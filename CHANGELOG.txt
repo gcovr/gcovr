@@ -3,8 +3,9 @@
 =================
 
 -------------------------------------------------------------------------------
- 1.0
+ 2.0
 -------------------------------------------------------------------------------
 
-- Initial release.
+- Initial release as a separate package.  Earlier versions of gcovr were
+  managed within the 'fast' Python package.
 
