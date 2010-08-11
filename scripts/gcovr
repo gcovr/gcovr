@@ -8,23 +8,22 @@
 # don't worry about parsing the *.gcna files, and backwards compatibility for
 # older versions of gcov is not supported.
 #
-# Copyright (2008) Sandia Corporation. Under the terms of Contract
-# DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government
-# retains certain rights in this software.
-# 
 # Outstanding issues
 #   - verify that gcov 3.4 or newer is being used
 #   - verify support for symbolic links
 #
-#  _________________________________________________________________________
+# gcovr is a FAST project.  For documentation, bug reporting, and
+# updates, see https://software.sandia.gov/trac/fast/wiki/gcovr
+# 
+# _________________________________________________________________________
 #
-#  FAST: Python tools for software testing.
-#  Copyright (c) 2008 Sandia Corporation.
-#  This software is distributed under the BSD License.
-#  Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
-#  the U.S. Government retains certain rights in this software.
-#  For more information, see the FAST README.txt file.
-#  _________________________________________________________________________
+# FAST: Utilities for Agile Software Development
+# Copyright (c) 2008 Sandia Corporation.
+# This software is distributed under the BSD License.
+# Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+# the U.S. Government retains certain rights in this software.
+# For more information, see the FAST README.txt file.
+# _________________________________________________________________________
 #
 
 import sys
