@@ -2,8 +2,8 @@
 #
 # A report generator for gcov 3.4
 #
-# This routine generates a format that is similar to the format generated 
-# by the Python coverage.py module.  This code is similar to the 
+# This routine generates a format that is similar to the format generated
+# by the Python coverage.py module.  This code is similar to the
 # data processing performed by lcov's geninfo command.  However, we
 # don't worry about parsing the *.gcna files, and backwards compatibility for
 # older versions of gcov is not supported.
@@ -14,7 +14,7 @@
 #
 # gcovr is a FAST project.  For documentation, bug reporting, and
 # updates, see https://software.sandia.gov/trac/fast/wiki/gcovr
-# 
+#
 # _________________________________________________________________________
 #
 # FAST: Utilities for Agile Software Development
@@ -35,7 +35,7 @@ import re
 import copy
 import xml.dom.minidom
 
-__version__ = "2.0.prerelease"
+__version__ = "2.1.prerelease"
 gcov_cmd = "gcov"
 
 output_re = re.compile("creating '(.*)'$")
@@ -412,7 +412,23 @@ def print_text_report(covdata):
 # Produce an XML report in the Cobertura format
 #
 def print_xml_report(covdata):
+    branchTotal = 0
+    branchCovered = 0
+    lineTotal = 0
+    lineCovered = 0
 
+    options.show_branch = True
+    for key in covdata.keys():
+        (total, covered, percent) = covdata[key].coverage()
+        branchTotal += total
+        branchCovered += covered
+
+    options.show_branch = False
+    for key in covdata.keys():
+        (total, covered, percent) = covdata[key].coverage()
+        lineTotal += total
+        lineCovered += covered
+    
     prefix = filter_pattern_size
 
     impl = xml.dom.minidom.getDOMImplementation()
@@ -421,7 +437,9 @@ def print_xml_report(covdata):
         "http://cobertura.sourceforge.net/xml/coverage-03.dtd" )
     doc = impl.createDocument(None, "coverage", docType)
     root = doc.documentElement
-
+    root.setAttribute("line-rate", str(lineCovered * 1.0 / lineTotal))
+    root.setAttribute("branch-rate", str(branchCovered * 1.0 / branchTotal))
+        
     if options.root is not None:
         source = doc.createElement("source")
         source.appendChild(doc.createTextNode(options.root))
@@ -486,7 +504,7 @@ def print_xml_report(covdata):
 
         className = fname.replace('.', '_')
         c.setAttribute("name", className)
-        c.setAttribute("filename", dir+os.sep+fname)
+        c.setAttribute("filename", os.path.join(dir, fname))
         c.setAttribute("line-rate", str(class_hits / (1.0*class_lines or 1.0)))
         c.setAttribute( "branch-rate",
                         str(class_branch_hits / (1.0*class_branches or 1.0)) )
