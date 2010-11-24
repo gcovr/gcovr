@@ -38,7 +38,7 @@ import xml.dom.minidom
 __version__ = "2.1.prerelease"
 gcov_cmd = "gcov"
 
-output_re = re.compile("creating '(.*)'$")
+output_re = re.compile("creating [`'](.*)'$")
 source_re = re.compile("cannot open source file")
 
 #
