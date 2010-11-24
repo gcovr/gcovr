@@ -329,7 +329,7 @@ def process_datafile(filename, covdata, options):
 
         # find the files that gcov created
         gcov_files = []
-        for line in out.split("\n"):
+        for line in out.split(os.linesep):
             found = output_re.search(line)
             if found is not None:
                 gcov_files.append(found.group(1))
