@@ -34,6 +34,7 @@ import os
 import re
 import copy
 import xml.dom.minidom
+from string import Template
 
 __version__ = "2.1.prerelease"
 gcov_cmd = "gcov"
@@ -310,17 +311,15 @@ def process_datafile(filename, covdata, options):
     (dirname,base) = os.path.split(filename)
     (name,ext) = os.path.splitext(base)
     prevdir = os.getcwd()
-    objdir = ''
-    (head, tail) = os.path.split(name)
     errors=[]
 
     while True:
         os.chdir(dirname)
         cmd = [gcov_cmd, "--branch-counts", "--branch-probabilities", 
                "--preserve-paths"]
-        if objdir:
-            cmd.extend(["--object-directory", objdir])
-        cmd.append(tail)
+        if options.objdir:
+            cmd.extend(["--object-directory", Template(options.objdir).substitute(filename=filename, dirname=dirname, tail=base, root=name, ext=ext)])
+        cmd.append(name)
 
         if options.verbose:
             print "running gcov: '"+" ".join(cmd)+"' in '"+os.getcwd()+"'"
@@ -574,6 +573,11 @@ parser.add_option("-v","--verbose",
         action="store_true",
         dest="verbose",
         default=False)
+parser.add_option('--object-directory',
+        help="Specify the directory that contains the gcov data files.  This option generates a directory specification for each source file that contains coverage information.  This option is a string, which is processed to generate the directory name using the following string macros:  ${filename} - the current filename, ${head} - the head of the filename, ${tail} - the tail of the filename, ${root} - the root of the tail, and ${ext} - the extension of the tail.  The default value is '${root}'.",
+        action="store",
+        dest="objdir",
+        default=None)
 parser.add_option("-o","--output",
         help="Print output to this filename",
         action="store",
