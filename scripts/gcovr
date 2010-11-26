@@ -382,14 +382,18 @@ def print_text_report(covdata):
     def _alpha(key):
         return key
 
+    if options.output:
+        OUTPUT = open(options.output,'w')
+    else:
+        OUTPUT = sys.stdout
     total_lines=0
     total_covered=0
     # Header
-    print "-"*78
+    print >>OUTPUT, "-"*78
     a = options.show_branch and "Branch" or "Lines"
     b = options.show_branch and "Taken" or "Exec"
-    print "File".ljust(40) + a.rjust(8) + b.rjust(8)+ "  Cover   Missing"
-    print "-"*78
+    print >>OUTPUT, "File".ljust(40) + a.rjust(8) + b.rjust(8)+ "  Cover   Missing"
+    print >>OUTPUT, "-"*78
 
     # Data
     keys = covdata.keys()
@@ -399,14 +403,18 @@ def print_text_report(covdata):
         (t, n, txt) = covdata[key].summary(options.root)
         total_lines += t
         total_covered += n
-        print txt
+        print >>OUTPUT, txt
 
     # Footer & summary
-    print "-"*78
+    print >>OUTPUT, "-"*78
     percent = total_lines and str(int(100.0*total_covered/total_lines)) or "--"
-    print "TOTAL".ljust(40) + str(total_lines).rjust(8) + \
+    print >>OUTPUT, "TOTAL".ljust(40) + str(total_lines).rjust(8) + \
           str(total_covered).rjust(8) + str(percent).rjust(6)+"%"
-    print "-"*78
+    print >>OUTPUT, "-"*78
+
+    # Close logfile
+    if options.output:
+        OUTPUT.close()
 
 #
 # Produce an XML report in the Cobertura format
@@ -437,8 +445,14 @@ def print_xml_report(covdata):
         "http://cobertura.sourceforge.net/xml/coverage-03.dtd" )
     doc = impl.createDocument(None, "coverage", docType)
     root = doc.documentElement
-    root.setAttribute("line-rate", str(lineCovered * 1.0 / lineTotal))
-    root.setAttribute("branch-rate", str(branchCovered * 1.0 / branchTotal))
+    if lineTotal == 0:
+        root.setAttribute("line-rate", '0.0')
+    else:
+        root.setAttribute("line-rate", str(lineCovered * 1.0 / lineTotal))
+    if branchTotal == 0:
+        root.setAttribute("branch-rate", '0.0')
+    else:
+        root.setAttribute("branch-rate", str(branchCovered * 1.0 / branchTotal))
         
     if options.root is not None:
         source = doc.createElement("source")
@@ -532,8 +546,13 @@ def print_xml_report(covdata):
 
 
     xmlString = doc.toprettyxml()
-    print xmlString
     #xml.dom.ext.PrettyPrint(doc)
+    if options.output is None:
+        print xmlString
+    else:
+        OUTPUT = open(options.output, 'w')
+        print >>OUTPUT, xmlString
+        OUTPUT.close()
 
 
 ##
