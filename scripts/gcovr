@@ -318,7 +318,7 @@ def process_datafile(filename, covdata, options):
         cmd = [gcov_cmd, "--branch-counts", "--branch-probabilities", 
                "--preserve-paths"]
         if options.objdir:
-            cmd.extend(["--object-directory", Template(options.objdir).substitute(filename=filename, dirname=dirname, tail=base, root=name, ext=ext)])
+            cmd.extend(["--object-directory", Template(options.objdir).substitute(filename=filename, head=dirname, tail=base, root=name, ext=ext)])
         cmd.append(name)
 
         if options.verbose:
