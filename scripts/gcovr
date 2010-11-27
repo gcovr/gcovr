@@ -36,7 +36,7 @@ import copy
 import xml.dom.minidom
 from string import Template
 
-__version__ = "2.1.prerelease"
+__version__ = "2.2-prerelease"
 gcov_cmd = "gcov"
 
 output_re = re.compile("creating [`'](.*)'$")

@@ -3,10 +3,36 @@
 =================
 
 -------------------------------------------------------------------------------
- 2.1
+ 2.2
 -------------------------------------------------------------------------------
 
 - Under development.
+
+-------------------------------------------------------------------------------
+ 2.1
+-------------------------------------------------------------------------------
+
+- Added the --object-directory option, which allows for a flexible
+  specification of the directory that contains the objects generated
+  by gcov.
+
+- Adding fix to compare the absolute path of a filename to an exclusion
+  pattern.
+
+- Adding error checking when no coverage results are found. The line and
+  branch counts can be zero.
+
+- Adding logic to process the -o/.output option. (Resolves #3870)
+
+- Adding patch to scan for lines that look like:
+    creating `foo'
+  as well as
+    creating 'foo'
+
+- Changing the semantics for EOL to be portable for MS Windows.
+
+- Add attributes to xml format so that it could be used by hudson/bamboo with
+  cobertura plug-in.
 
 -------------------------------------------------------------------------------
  2.0
