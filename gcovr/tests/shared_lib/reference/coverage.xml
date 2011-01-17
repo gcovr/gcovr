@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<!DOCTYPE coverage
+  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
+<coverage branch-rate="0.5" line-rate="0.8" timestamp="1295294926" version="gcovr 2.2-prerelease">
+	<sources>
+		<source>
+			.
+		</source>
+	</sources>
+	<packages>
+		<package branch-rate="0.5" complexity="0.0" line-rate="0.75" name="testApp">
+			<classes>
+				<class branch-rate="0.5" complexity="0.0" filename="testApp/tmp.cpp" line-rate="0.75" name="tmp_cpp">
+					<lines>
+						<line branch="false" hits="1" number="8"/>
+						<line branch="false" hits="1" number="3"/>
+						<line branch="true" condition-coverage="50% (1/2)" hits="1" number="5">
+							<conditions>
+								<condition coverage="50%" number="0" type="jump"/>
+							</conditions>
+						</line>
+						<line branch="false" hits="0" number="6"/>
+					</lines>
+				</class>
+			</classes>
+		</package>
+		<package branch-rate="0.5" complexity="0.0" line-rate="0.833333333333" name="lib">
+			<classes>
+				<class branch-rate="0.5" complexity="0.0" filename="lib/lib.cpp" line-rate="0.833333333333" name="lib_cpp">
+					<lines>
+						<line branch="false" hits="1" number="3"/>
+						<line branch="true" condition-coverage="50% (1/2)" hits="1" number="5">
+							<conditions>
+								<condition coverage="50%" number="0" type="jump"/>
+							</conditions>
+						</line>
+						<line branch="false" hits="1" number="6"/>
+						<line branch="false" hits="0" number="8"/>
+						<line branch="true" condition-coverage="50% (2/4)" hits="2" number="9">
+							<conditions>
+								<condition coverage="50%" number="0" type="jump"/>
+							</conditions>
+						</line>
+						<line branch="false" hits="1" number="10"/>
+					</lines>
+				</class>
+			</classes>
+		</package>
+	</packages>
+</coverage>
+
