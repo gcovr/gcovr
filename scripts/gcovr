@@ -445,14 +445,12 @@ def print_xml_report(covdata):
         "http://cobertura.sourceforge.net/xml/coverage-03.dtd" )
     doc = impl.createDocument(None, "coverage", docType)
     root = doc.documentElement
-    if lineTotal == 0:
-        root.setAttribute("line-rate", '0.0')
-    else:
-        root.setAttribute("line-rate", str(lineCovered * 1.0 / lineTotal))
-    if branchTotal == 0:
-        root.setAttribute("branch-rate", '0.0')
-    else:
-        root.setAttribute("branch-rate", str(branchCovered * 1.0 / branchTotal))
+    root.setAttribute( "line-rate", lineTotal == 0 and '0.0' or
+                       str(float(lineCovered) / lineTotal) )
+    root.setAttribute( "branch-rate", branchTotal == 0 and '0.0' or
+                       str(float(branchCovered) / branchTotal) )
+    root.setAttribute( "timestamp", str(int(time.time())) )
+    root.setAttribute( "version", "gcovr "+__version__ )
         
     if options.root is not None:
         source = doc.createElement("source")
