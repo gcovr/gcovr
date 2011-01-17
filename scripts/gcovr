@@ -136,15 +136,8 @@ class CoverageData(object):
         percent = total and str(int(100.0*cover/total)) or "--"
         return (total, cover, percent)
 
-    def summary(self,prefix):
-        if prefix is not None:
-            if prefix[-1] == os.sep:
-                tmp = self.fname[len(prefix):]
-            else:
-                tmp = self.fname[(len(prefix)+1):]
-        else:
-            tmp=self.fname
-        tmp = tmp.ljust(40)
+    def summary(self):
+        tmp = options.filter.sub('',self.fname).ljust(40)
         if len(tmp) > 40:
             tmp=tmp+"\n"+" "*40
 
@@ -226,7 +219,7 @@ def process_gcov_data(file, covdata, options):
     # Return if the filename matches the exclude pattern
     #
     for i in range(0,len(options.exclude)):
-        if options.exclude[i].match(fname[filter_pattern_size:]) or \
+        if options.exclude[i].match(options.filter.sub('',fname)) or \
                options.exclude[i].match(fname) or \
                options.exclude[i].match(os.path.abspath(fname)):
             if options.verbose:
@@ -476,7 +469,7 @@ def print_text_report(covdata):
     keys.sort(key=options.sort_uncovered and _num_uncovered or \
               options.sort_percent and _percent_uncovered or _alpha)
     for key in keys:
-        (t, n, txt) = covdata[key].summary(options.root)
+        (t, n, txt) = covdata[key].summary()
         total_lines += t
         total_covered += n
         print >>OUTPUT, txt
@@ -513,8 +506,6 @@ def print_xml_report(covdata):
         lineTotal += total
         lineCovered += covered
     
-    prefix = filter_pattern_size
-
     impl = xml.dom.minidom.getDOMImplementation()
     docType = impl.createDocumentType(
         "coverage", None,
@@ -528,9 +519,6 @@ def print_xml_report(covdata):
     root.setAttribute( "timestamp", str(int(time.time())) )
     root.setAttribute( "version", "gcovr "+__version__ )
 
-    # Generate the <sources> element: this is either the root directory
-    # (specified by --root), or the CWD.
-    source = doc.createElement("source")
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
     source = doc.createElement("source")
@@ -551,8 +539,9 @@ def print_xml_report(covdata):
     keys.sort()
     for f in keys:
         data = covdata[f]
-        (dir, fname) = os.path.split(f)
-        dir = dir[prefix:]
+        dir = options.filter.sub('',f)
+        (dir, fname) = os.path.split(dir)
+        
         
         package = packages.setdefault(
             dir, [ doc.createElement("package"), {},
@@ -736,22 +725,9 @@ for i in range(0,len(options.exclude)):
 if options.filter is not None:
     options.filter = re.compile(options.filter)
 elif options.root is not None:
-    #if options.root[0] != os.sep:
-    #    dir=os.getcwd()+os.sep+options.root
-    #    dir=os.path.abspath(dir)
-    #    options.root=dir
-    #else:
-    #    options.root=os.path.abspath(options.root)
-    #options.root=os.path.abspath(options.root)
-    #print "HERE",options.root
-    options.filter = re.compile(os.path.abspath(options.root).replace("\\","\\\\"))
-if options.filter is not None:
-    if options.filter.pattern[-1] == os.sep:
-        filter_pattern_size = len(options.filter.pattern)
-    else:
-        filter_pattern_size = len(options.filter.pattern) + len(os.sep)
-else:
-    filter_pattern_size = 0
+    options.filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
+if options.filter is None:
+    oprions.filter = re.compile('')
 #
 # Get data files
 #
