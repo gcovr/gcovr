@@ -452,12 +452,16 @@ def print_xml_report(covdata):
     root.setAttribute( "timestamp", str(int(time.time())) )
     root.setAttribute( "version", "gcovr "+__version__ )
         
+    # Generate the <sources> element: this is either the root directory
+    # (specified by --root), or the CWD.
+    source = doc.createElement("source")
     if options.root is not None:
-        source = doc.createElement("source")
         source.appendChild(doc.createTextNode(options.root))
-        sources = doc.createElement("sources")
-        sources.appendChild(source)
-        root.appendChild(sources)
+    else:
+        source.appendChild(doc.createTextNode('.'))
+    sources = doc.createElement("sources")
+    sources.appendChild(source)
+    root.appendChild(sources)
 
     packageXml = doc.createElement("packages")
     root.appendChild(packageXml)
