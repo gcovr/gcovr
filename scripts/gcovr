@@ -137,7 +137,12 @@ class CoverageData(object):
         return (total, cover, percent)
 
     def summary(self):
-        tmp = options.filter.sub('',self.fname).ljust(40)
+        tmp = options.filter.sub('',self.fname)
+        if not self.fname.endswith(tmp):
+            # Do no truncation if the filter does not start matching at
+            # the beginning of the string
+            tmp = self.fname
+        tmp = tmp.ljust(40)
         if len(tmp) > 40:
             tmp=tmp+"\n"+" "*40
 
@@ -540,8 +545,11 @@ def print_xml_report(covdata):
     for f in keys:
         data = covdata[f]
         dir = options.filter.sub('',f)
+        if not f.endswith(dir):
+            # Do no truncation if the filter does not start matching at
+            # the beginning of the string
+            dir = f
         (dir, fname) = os.path.split(dir)
-        
         
         package = packages.setdefault(
             dir, [ doc.createElement("package"), {},
