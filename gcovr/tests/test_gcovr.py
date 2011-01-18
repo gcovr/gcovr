@@ -49,7 +49,7 @@ def run(cmd):
 
 @unittest.nottest
 def gcovr_test_txt(self, suite, name):
-    os.chdir(os.path.join(basedir,f))
+    os.chdir(os.path.join(basedir,name))
     run(["make"]) or self.fail("Make failed")
     run(["make","run"]) or self.fail("Execution failed")
     self.failUnlessFileEqualsBaseline("coverage.txt", "reference/coverage.txt")
@@ -58,7 +58,7 @@ def gcovr_test_txt(self, suite, name):
 
 @unittest.nottest
 def gcovr_test_xml(self, suite, name):
-    os.chdir(os.path.join(basedir,f))
+    os.chdir(os.path.join(basedir,name))
     run(["make"]) or self.fail("Make failed")
     run(["make","run"]) or self.fail("Execution failed")
     self.compare_xml()
