@@ -735,7 +735,7 @@ if options.filter is not None:
 elif options.root is not None:
     options.filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
 if options.filter is None:
-    oprions.filter = re.compile('')
+    options.filter = re.compile('')
 #
 # Get data files
 #
