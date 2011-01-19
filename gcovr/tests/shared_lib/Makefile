@@ -3,9 +3,13 @@ all:
 	g++ -fprofile-arcs -ftest-coverage -fPIC -shared obj/libs.o -o lib/libs.so
 	cd testApp && make
 
-run:
+run: txt xml
+
+xml:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 	../../../scripts/gcovr -r . -v -d -x -o coverage.xml
+
+txt:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 	../../../scripts/gcovr -r . -d -o coverage.txt
 

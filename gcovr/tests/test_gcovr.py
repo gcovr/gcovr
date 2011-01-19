@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import re
 import sys
@@ -51,7 +52,7 @@ def run(cmd):
 def gcovr_test_txt(self, suite, name):
     os.chdir(os.path.join(basedir,name))
     run(["make"]) or self.fail("Make failed")
-    run(["make","run"]) or self.fail("Execution failed")
+    run(["make","txt"]) or self.fail("Execution failed")
     self.failUnlessFileEqualsBaseline("coverage.txt", "reference/coverage.txt")
     run(["make","clean"]) or self.fail("Clean failed")
     os.chdir(basedir)
@@ -60,7 +61,7 @@ def gcovr_test_txt(self, suite, name):
 def gcovr_test_xml(self, suite, name):
     os.chdir(os.path.join(basedir,name))
     run(["make"]) or self.fail("Make failed")
-    run(["make","run"]) or self.fail("Execution failed")
+    run(["make","xml"]) or self.fail("Execution failed")
     self.compare_xml()
     run(["make","clean"]) or self.fail("Clean failed")
     os.chdir(basedir)

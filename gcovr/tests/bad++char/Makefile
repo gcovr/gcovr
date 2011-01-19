@@ -1,9 +1,13 @@
 all:
 	g++ -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run:
+run: txt xml
+
+txt:
 	./testcase
 	../../../scripts/gcovr -r . -d -o coverage.txt
+
+xml:
 	./testcase
 	../../../scripts/gcovr -r . -d -x -o coverage.xml
 

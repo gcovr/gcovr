@@ -10,9 +10,13 @@ all:
 	mkdir -p build
 	cd build && cmake .. && make
 
-run:
+run: txt xml
+
+txt:
 	cd build && gcovrtest
 	../../../scripts/gcovr -r . -d -o coverage.txt
+
+xml:
 	cd build && gcovrtest
 	../../../scripts/gcovr -r . -d -x -o coverage.xml
 
