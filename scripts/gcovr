@@ -23,6 +23,9 @@
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
 # For more information, see the FAST README.txt file.
+#
+# $Revision$
+# $Date$
 # _________________________________________________________________________
 #
 
@@ -37,6 +40,7 @@ import xml.dom.minidom
 
 from optparse import OptionParser
 from string import Template
+from os.path import normpath
 
 __version__ = "2.2-prerelease"
 gcov_cmd = "gcov"
@@ -341,7 +345,7 @@ def process_datafile(filename, covdata, options):
 
     if options.objdir:
         src_components = abs_filename.split(os.sep)
-        components = os.path.normpath(options.objdir).split(os.sep)
+        components = normpath(options.objdir).split(os.sep)
         idx = 1
         while idx <= len(components):
             if idx > len(src_components):
@@ -526,26 +530,28 @@ def print_xml_report(covdata):
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
-    source = doc.createElement("source")
-    if options.root is not None:
-        source.appendChild(doc.createTextNode(options.root))
-    else:
-        source.appendChild(doc.createTextNode('.'))
     sources = doc.createElement("sources")
-    sources.appendChild(source)
     root.appendChild(sources)
 
     # Generate the coverage output (on a per-package basis)
     packageXml = doc.createElement("packages")
     root.appendChild(packageXml)
     packages = {}
+    source_dirs = set()
 
     keys = covdata.keys()
     keys.sort()
     for f in keys:
         data = covdata[f]
         dir = options.filter.sub('',f)
-        if not f.endswith(dir):
+        if f.endswith(dir):
+            src_path = f[:-1*len(dir)]
+            if len(src_path) > 0:
+                while dir.startswith(os.path.sep):
+                    src_path += os.path.sep
+                    dir = dir[len(os.path.sep):]
+                source_dirs.add(src_path)
+        else:
             # Do no truncation if the filter does not start matching at
             # the beginning of the string
             dir = f
@@ -623,6 +629,36 @@ def print_xml_report(covdata):
         package.setAttribute( "branch-rate", str(packageData[4] / (1.0*packageData[5] or 1.0) ))
         package.setAttribute("complexity", "0.0")
 
+
+    # Populate the <sources> element: this is either the root directory
+    # (specified by --root), or relative directories based
+    # on the filter, or the CWD
+    if options.root is not None:
+        source = doc.createElement("source")
+        source.appendChild(doc.createTextNode(options.root))
+        sources.appendChild(source)
+    elif len(source_dirs) > 0:
+        cwd = os.getcwd()
+        for d in source_dirs:
+            source = doc.createElement("source")
+            if d.startswith(cwd):
+                reldir = d[len(cwd):].lstrip(os.path.sep)
+            elif cwd.startswith(d):
+                i = 1
+                print d
+                print os.path.join(*tuple([cwd]+['..']*i))
+                while normpath(d) != \
+                          normpath(os.path.join(*tuple([cwd]+['..']*i))):
+                    i += 1
+                reldir = os.path.join(*tuple(['..']*i))
+            else:
+                reldir = d
+            source.appendChild(doc.createTextNode(reldir))
+            sources.appendChild(source)
+    else:
+        source = doc.createElement("source")
+        source.appendChild(doc.createTextNode('.'))
+        sources.appendChild(source)
 
     xmlString = doc.toprettyxml()
     #xml.dom.ext.PrettyPrint(doc)
@@ -721,7 +757,7 @@ if options.version:
     print "retains certain rights in this software."
     sys.exit(0)
 if options.objdir:
-    if os.path.normpath(options.objdir) != options.objdir.replace('/',os.sep):
+    if normpath(options.objdir) != options.objdir.replace('/',os.sep):
         print "WARNING: relative referencing in --object-directory; this could"
         print "         cause strange errors when gcovr attempts to identify"
         print "         the original gcc working directory."
