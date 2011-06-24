@@ -49,7 +49,7 @@ def run(cmd):
     
 
 @unittest.nottest
-def gcovr_test_txt(self, suite, name):
+def gcovr_test_txt(self, name):
     os.chdir(os.path.join(basedir,name))
     run(["make"]) or self.fail("Make failed")
     run(["make","txt"]) or self.fail("Execution failed")
@@ -58,7 +58,7 @@ def gcovr_test_txt(self, suite, name):
     os.chdir(basedir)
 
 @unittest.nottest
-def gcovr_test_xml(self, suite, name):
+def gcovr_test_xml(self, name):
     os.chdir(os.path.join(basedir,name))
     run(["make"]) or self.fail("Make failed")
     run(["make","xml"]) or self.fail("Execution failed")
