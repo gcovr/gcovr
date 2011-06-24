@@ -70,8 +70,8 @@ skip_dirs = [ '.', '..', '.svn' ]
 
 for f in os.listdir(basedir):
     if os.path.isdir(os.path.join(basedir,f)) and f not in skip_dirs:
-        GcovrTxt.add_fn_test(GcovrTxt, fn=gcovr_test_txt, name=f)
-        GcovrXml.add_fn_test(GcovrXml, fn=gcovr_test_xml, name=f)
+        GcovrTxt.add_fn_test(fn=gcovr_test_txt, name=f)
+        GcovrXml.add_fn_test(fn=gcovr_test_xml, name=f)
 	
 if __name__ == "__main__":
     unittest.main()
