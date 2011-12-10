@@ -3,10 +3,46 @@
 =================
 
 -------------------------------------------------------------------------------
- 2.2
+ 2.3
 -------------------------------------------------------------------------------
 
 - Under development.
+
+-------------------------------------------------------------------------------
+ 2.2
+-------------------------------------------------------------------------------
+
+- Added a test driver for gcovr.
+
+- Improved estimation of the <sources> element when using gcovr with filters.
+
+
+- Added revision and date keywords to gcovr so it is easier to
+  identify what version of the script users are using (especially
+  when they are running a snapshot from trunk).
+
+- Addressed special case mentioned in comment:ticket:3884:1: do not
+  truncate the reported file name if the filter does not start
+  matching at the beginning of the string.
+
+- Overhaul of the --root / --filter logic. This should resolve the
+  issue raised in #3884, along with the more general filter issue
+  raised in comment:ticket:3884:1
+
+- Overhaul of gcovr's logic for determining gcc/g++'s original
+  working directory. This resolves issues introduced in the original
+  implementation of --object-directory (resolves #3872) and fixes
+  #3883.
+
+- Bugfix: gcovr was only including a <sources> element in the XML
+  report if the user specified -r (resolves #3869)
+
+- Adding timestamp and version attributes to the gcovr XML report
+  (as documented in #3877).  It looks like the standard Cobertura
+  output reports number of seconds since the epoch for the timestamp
+  and a doted decimal version string.  Now, gcovr reports seconds
+  since the epoch and "gcovr "+__version__ (e.g. "gcovr 2.2") to
+  differentiate it from a pure Cobertura report.
 
 -------------------------------------------------------------------------------
  2.1
