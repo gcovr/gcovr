@@ -419,7 +419,22 @@ def process_datafile(filename, covdata, options):
         for line in out.split(os.linesep):
             found = output_re.search(line)
             if found is not None:
-                gcov_files.append(found.group(1))
+                fname = found.group(1)
+                if not options.gcov_filter.match(fname):
+                    if options.verbose:
+                        print "Filtering gcov file",fname
+                    continue
+                exclude=False
+                for i in range(0,len(options.gcov_exclude)):
+                    if options.gcov_exclude[i].match(options.gcov_filter.sub('',fname)) or \
+                           options.gcov_exclude[i].match(fname) or \
+                           options.gcov_exclude[i].match(os.path.abspath(fname)):
+                        exclude=True
+                        break
+                if not exclude:
+                    gcov_files.append(fname)
+                elif options.verbose:
+                    print "Excluding gcov file",fname
         #print "Output files\n" + "\n".join(gcov_files)
 
         if source_re.search(err):
@@ -718,6 +733,16 @@ parser.add_option("-e","--exclude",
         action="append",
         dest="exclude",
         default=[])
+parser.add_option("--gcov-filter",
+        help="Keep only gcov data files that match this regular expression",
+        action="store",
+        dest="gcov_filter",
+        default=None)
+parser.add_option("--gcov-exclude",
+        help="Exclude gcov data files that match this regular expression",
+        action="append",
+        dest="gcov_exclude",
+        default=[])
 parser.add_option("-r","--root",
         help="Defines the root directory.  This is used to filter the files, and to standardize the output.",
         action="store",
@@ -762,7 +787,7 @@ if options.objdir:
         print "         cause strange errors when gcovr attempts to identify"
         print "         the original gcc working directory."
 #
-# Setup filter
+# Setup filters
 #
 for i in range(0,len(options.exclude)):
     options.exclude[i] = re.compile(options.exclude[i])
@@ -772,6 +797,13 @@ elif options.root is not None:
     options.filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
 if options.filter is None:
     options.filter = re.compile('')
+#
+for i in range(0,len(options.gcov_exclude)):
+    options.gcov_exclude[i] = re.compile(options.gcov_exclude[i])
+if options.gcov_filter is not None:
+    options.gcov_filter = re.compile(options.gcov_filter)
+else:
+    options.gcov_filter = re.compile('')
 #
 # Get data files
 #
