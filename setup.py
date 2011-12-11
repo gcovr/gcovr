@@ -23,7 +23,7 @@ from setuptools import setup
 scripts = glob.glob("scripts/*")
 
 setup(name='gcovr',
-      version='2.3',
+      version='2.4',
       maintainer='William Hart',
       maintainer_email='wehart@sandia.gov',
       url = 'https://software.sandia.gov/svn/public/fast/gcovr',

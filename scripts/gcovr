@@ -42,7 +42,7 @@ from optparse import OptionParser
 from string import Template
 from os.path import normpath
 
-__version__ = "2.3-prerelease"
+__version__ = "2.4-prerelease"
 gcov_cmd = "gcov"
 
 output_re = re.compile("creating [`'](.*)'$")
