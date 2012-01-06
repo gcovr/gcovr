@@ -53,7 +53,7 @@ def gcovr_test_txt(self, name):
     os.chdir(os.path.join(basedir,name))
     run(["make"]) or self.fail("Make failed")
     run(["make","txt"]) or self.fail("Execution failed")
-    self.failUnlessFileEqualsBaseline("coverage.txt", "reference/coverage.txt")
+    self.assertFileEqualsBaseline("coverage.txt", "reference/coverage.txt")
     run(["make","clean"]) or self.fail("Clean failed")
     os.chdir(basedir)
 
