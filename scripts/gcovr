@@ -405,6 +405,7 @@ def process_datafile(filename, covdata, options):
         (out, err) = subprocess.Popen( cmd,
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE ).communicate()
+        out=str(out)
 
         # find the files that gcov created
         gcov_files = []
