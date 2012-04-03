@@ -43,10 +43,18 @@ from string import Template
 from os.path import normpath
 
 __version__ = "2.4-prerelease"
+src_revision = "$Revision$"
 gcov_cmd = "gcov"
 
 output_re = re.compile("creating [`'](.*)'$")
 source_re = re.compile("cannot open (source|graph) file")
+
+def version_str():
+    ans = __version__
+    m = re.match('\$Revision:\s*(\S+)\s*\$', src_revision)
+    if m:
+        ans = ans + " (r%s)" % (m.group(1))
+    return ans
 
 #
 # Container object for coverage statistics
@@ -534,7 +542,7 @@ def print_xml_report(covdata):
     root.setAttribute( "branch-rate", branchTotal == 0 and '0.0' or
                        str(float(branchCovered) / branchTotal) )
     root.setAttribute( "timestamp", str(int(time.time())) )
-    root.setAttribute( "version", "gcovr "+__version__ )
+    root.setAttribute( "version", "gcovr %s" % (version_str(),) )
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
@@ -768,7 +776,7 @@ parser.description="A utility to run gcov and generate a simple report that summ
 #
 (options, args) = parser.parse_args(args=sys.argv)
 if options.version:
-    sys.stdout.write("gcovr "+__version__+'\n')
+    sys.stdout.write("gcovr %s\n" % (version_str(),))
     sys.stdout.write("\n")
     sys.stdout.write("Copyright (2008) Sandia Corporation. Under the terms of Contract \n")
     sys.stdout.write("DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government \n")
