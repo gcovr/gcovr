@@ -38,12 +38,13 @@ def run(cmd):
         proc = subprocess.Popen( cmd,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT )
-        print proc.communicate()[0]
+        sys.stdout.write(proc.communicate()[0])
         return not proc.returncode
-    except Exception, e:
-        print "Caught unexpected exception in test driver: %s\n%s" % \
-               ( str(e), traceback.format_exc() )
-        return 0
+    except Exception:
+        e = sys.exc_info()[1]
+        sys.stdout.write("Caught unexpected exception in test driver: %s\n%s"
+                         % ( str(e), traceback.format_exc() ))
+        raise
     
 
     
