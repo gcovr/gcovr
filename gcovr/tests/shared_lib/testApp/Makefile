@@ -1,2 +1,6 @@
-all:
-	g++ -fprofile-arcs -ftest-coverage -I../lib/ tmp.cpp -o test/a.out -L../lib -ls
+CFLAGS=-fprofile-arcs -ftest-coverage
+
+all: test/a.out
+
+test/a.out: tmp.cpp
+	g++ $(CFLAGS) -I../lib/ $^ -o $@ -L../lib -ls
