@@ -417,7 +417,7 @@ def process_datafile(filename, covdata, options):
         err=str(err)
 
         # find the files that gcov created
-        gcov_files = []
+        gcov_files = {'active':[], 'filter':[], 'exclude':[]}
         for line in out.split(os.linesep):
             found = output_re.search(line)
             if found is not None:
@@ -425,6 +425,7 @@ def process_datafile(filename, covdata, options):
                 if not options.gcov_filter.match(fname):
                     if options.verbose:
                         sys.stdout.write("Filtering gcov file %s\n" % fname)
+                    gcov_files['filter'].append(fname)
                     continue
                 exclude=False
                 for i in range(0,len(options.gcov_exclude)):
@@ -434,22 +435,24 @@ def process_datafile(filename, covdata, options):
                         exclude=True
                         break
                 if not exclude:
-                    gcov_files.append(fname)
+                    gcov_files['active'].append(fname)
                 elif options.verbose:
                     sys.stdout.write("Excluding gcov file %s\n" % fname)
+                    gcov_files['exclude'].append(fname)
 
         if source_re.search(err):
             # gcov tossed errors: try the next potential_wd
             errors.append(err)
         else:
             # Process *.gcov files
-            for fname in gcov_files:
+            for fname in gcov_files['active']:
                 process_gcov_data(fname, covdata, options)
             Done = True
 
         if not options.keep:
-            for fname in gcov_files:
-                os.remove(fname)
+            for group in gcov_files.itervalues():
+                for fname in group:
+                    os.remove(fname)
 
     os.chdir(starting_dir)
     if options.delete:
