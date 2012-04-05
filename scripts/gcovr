@@ -222,7 +222,7 @@ def process_gcov_data(file, covdata, options):
     #
     # Return if the filename does not match the filter
     #
-    if options.filter is not None and not options.filter.match(fname):
+    if not options.filter.match(fname):
         if options.verbose:
             sys.stdout.write("  Filtering coverage data for file %s\n" % fname)
         return
