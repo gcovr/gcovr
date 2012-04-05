@@ -798,6 +798,11 @@ for i in range(0,len(options.exclude)):
 if options.filter is not None:
     options.filter = re.compile(options.filter)
 elif options.root is not None:
+    if not options.root:
+        sys.stderr.write("ERROR: empty --root option.\n"
+                         "   Root specifies the path to the root directory of your project: "
+                         "cannot be an empty string.\n")
+        sys.exit(1)
     options.filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
 if options.filter is None:
     options.filter = re.compile('')
