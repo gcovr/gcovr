@@ -216,12 +216,7 @@ def process_gcov_data(file, covdata, options):
     #
     line = INPUT.readline()
     segments=line.split(":")
-    fname = (segments[-1]).strip()
-    if fname[0] != os.sep:
-        #line = INPUT.readline()
-        #segments=line.split(":")
-        #fname = os.path.dirname((segments[-1]).strip())+os.sep+fname
-        fname = os.path.abspath(fname)
+    fname = os.path.abspath((segments[-1]).strip())
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
     #
