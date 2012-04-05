@@ -215,7 +215,9 @@ def process_gcov_data(file, covdata, options):
     # Get the filename
     #
     line = INPUT.readline()
-    segments=line.split(":")
+    segments=line.split(':',3)
+    if len(segments) != 4 or not segments[2].lower().strip().endswith('source'):
+        raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip())
     fname = os.path.abspath((segments[-1]).strip())
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
@@ -247,12 +249,13 @@ def process_gcov_data(file, covdata, options):
     #first_record=True
     lineno = 0
     for line in INPUT:
-        segments=line.split(":")
+        segments=line.split(":",2)
         tmp = segments[0].strip()
-        try:
-            lineno = int(segments[1].strip())
-        except:
-            pass # keep previous line number!
+        if len(segments) > 1:
+            try:
+                lineno = int(segments[1].strip())
+            except:
+                pass # keep previous line number!
             
         if tmp[0] == '#':
             uncovered.add( lineno )
