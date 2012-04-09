@@ -416,7 +416,7 @@ def process_datafile(filename, covdata, options):
 
         # find the files that gcov created
         gcov_files = {'active':[], 'filter':[], 'exclude':[]}
-        for line in out.split(os.linesep):
+        for line in out.splitlines():
             found = output_re.search(line.strip())
             if found is not None:
                 fname = found.group(1)
