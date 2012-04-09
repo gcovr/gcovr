@@ -484,6 +484,11 @@ def process_datafile(filename, covdata, options):
             "--branch-counts", "--branch-probabilities", "--preserve-paths", 
             '--object-directory', dirname ]
 
+    # NB: We are lazy English speakers, so we will only parse English output
+    env = dict(os.environ)
+    env['LC_ALL'] = 'en_US'
+    
+
     while len(potential_wd) > 0 and not Done:
         # NB: either len(potential_wd) == 1, or all entires are absolute
         # paths, so we don't have to chdir(starting_dir) at every
@@ -496,7 +501,7 @@ def process_datafile(filename, covdata, options):
 
         if options.verbose:
             sys.stdout.write("Running gcov: '%s' in '%s'\n" % ( ' '.join(cmd), os.getcwd() ))
-        (out, err) = subprocess.Popen( cmd,
+        (out, err) = subprocess.Popen( cmd, env=env,
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE ).communicate()
         out=out.decode('utf-8')
