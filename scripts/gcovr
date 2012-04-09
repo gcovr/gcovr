@@ -163,17 +163,106 @@ class CoverageData(object):
                  percent.rjust(6) + "%   " + self.uncovered_str() )
 
 
-def search_file(expr, path=None, abspath=False, follow_links=False):
+# This is UGLY.  Here's why: UNIX resolves symbolic links by walking the
+# entire directory structure.  What that means is that relative links
+# are always relative to the actual directory inode, and not the
+# "virtual" path that the user might have traversed (over symlinks) on
+# the way to that directory.  Here's the canonical example:
+#
+#   a / b / c / testfile
+#   a / d / e --> ../../a/b
+#   m / n --> /a
+#   x / y / z --> /m/n/d
+#
+# If we start in "y", we will see the following directory structure:
+#   y
+#   |-- z
+#       |-- c
+#           |-- testfile
+#
+# The problem is that using a simple traversal based on the Python
+# documentation:
+#
+#    (os.path.join(os.path.dirname(path), os.readlink(result)))
+#
+# will not work: we will see a link to /m/n/d from /x/y, but completely
+# miss the fact that n is itself a link.  If we then naively attempt to
+# apply the "c" relative link, we get an intermediate path that looks
+# like "/m/n/d/e/../../a/b", which would get normalized to "/m/n/a/b"; a
+# nonexistant path.  The solution is that we need to walk the original
+# path, along with the full path of all links 1 directory at a time and
+# check for embedded symlinks.
+#
+def link_walker(path):
+    def unalias_path(path):
+        match_found = False
+        while True:
+            for visited, alias in aliases.items():
+                if path.startswith(visited):
+                    path = alias + path[len(visited):]
+                    match_found = True
+                    break
+            for visited in main_targets:
+                if path.startswith(visited):
+                    return path, True
+            if match_found:
+                sys.stderr.write(
+                    "ERROR: violating fundamental assumption while walking "
+                    "directory tree.\n\tPlease report this to the gcovr "
+                    "developers.\n" )
+            return path, match_found
+    def dereference_path(orig_path):
+        drive,tmp = os.path.splitdrive(os.path.normpath(orig_path))
+        if not drive:
+            drive = os.path.sep
+        parts = tmp.split(os.path.sep)
+        actual_path = [drive]
+        while parts:
+            actual_path.append(parts.pop(0))
+            if not os.path.islink(os.path.join(*actual_path)):
+                continue
+            actual_path[-1] = os.readlink(os.path.join(*actual_path))
+            tmp_drive, tmp_path = os.path.splitdrive(
+                dereference_path(os.path.join(*actual_path)) )
+            if tmp_drive:
+                drive = tmp_drive
+            actual_path = [drive] + tmp_path.split(os.path.sep)
+        return os.path.join(*actual_path)
+
+    aliases = {}
+    main_targets = set()
+    preferred_name = {}
+    targets = [os.path.abspath(path)]
+    while targets:
+        target_dir = targets.pop(0)
+        actual_dir = dereference_path(target_dir)
+        #print "target dir: %s  (%s)" % (target_dir, actual_dir)
+        master_name, visited = unalias_path(actual_dir)
+        if visited:
+            #print "  ...root already visited as %s" % master_name
+            aliases[target_dir] = master_name
+            continue
+        if master_name != target_dir:
+            preferred_name[master_name] = target_dir
+            aliases[target_dir] = master_name
+        main_targets.add(master_name)
+        #print "  ...master name = %s" % master_name
+        #print "  ...walking %s" % target_dir
+        for root, dirs, files in os.walk(target_dir, topdown=True):
+            #print "    ...reading %s" % root
+            for d in dirs:
+                tmp = os.path.abspath(os.path.join(root, d))
+                #print "    ...checking %s" % tmp
+                if os.path.islink(tmp):
+                    #print "      ...buffering link %s" % tmp
+                    targets.append(tmp)
+            yield root, dirs, files
+
+
+def search_file(expr, path):
     """
     Given a search path, recursively descend to find files that match a
     regular expression.
-
-    Can specify the following options:
-       path - The directory that is searched recursively
-       executable_extension - This string is used to see if there is an
-           implicit extension in the filename
-       executable - Test if the file is an executable (default=False)
-       isfile - Test if the file is file (default=True)
     """
     ans = []
     pattern = re.compile(expr)
@@ -181,16 +270,14 @@ def search_file(expr, path=None, abspath=False, follow_links=False):
         path = os.getcwd()
     elif not os.path.exists(path):
         raise IOError("Unknown directory '"+path+"'")
-    for root, dirs, files in os.walk(path, topdown=True):
+    for root, dirs, files in link_walker(path):
         for name in files:
            if pattern.match(name):
                 name = os.path.join(root,name)
-                if follow_links and os.path.islink(name):
+                if os.path.islink(name):
                     ans.append( os.path.abspath(os.readlink(name)) )
-                elif abspath:
-                    ans.append( os.path.abspath(name) )
                 else:
-                    ans.append( name )
+                    ans.append( os.path.abspath(name) )
     return ans
 
 
@@ -201,8 +288,9 @@ def get_datafiles(flist, options, ext="gcda"):
     allfiles=[]
     for dir in flist:
         if options.verbose:
-            sys.stdout.write("Scanning directory "+dir+" for "+ext+" files...\n")
-        files = search_file(".*\."+ext, dir, abspath=True, follow_links=True)
+            sys.stdout.write( "Scanning directory %s for %s files...\n"
+                              % (dir, ext) )
+        files = search_file(".*\."+ext, dir)
         if options.verbose:
             sys.stdout.write("Found %d files \n" % len(files))
         allfiles += files
