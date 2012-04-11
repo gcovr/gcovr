@@ -177,8 +177,9 @@ class CoverageData(object):
 # If we start in "y", we will see the following directory structure:
 #   y
 #   |-- z
-#       |-- c
-#           |-- testfile
+#       |-- e
+#           |-- c
+#               |-- testfile
 #
 # The problem is that using a simple traversal based on the Python
 # documentation:
