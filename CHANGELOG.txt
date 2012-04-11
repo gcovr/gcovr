@@ -3,7 +3,7 @@
 
 === 2.4 ''(under development)'' ===
  - New approach to walking the directory tree that is more robust to
-   symbolic links
+   symbolic links (#3908)
  - Windows compatibility fixes
    - Fix for how we parse `source:` file names (#3913)
    - Better handling od EOL indicators (#3920)
@@ -13,7 +13,7 @@
  - Added compatibility with GCC 4.8 (#3918)
  - Added a check to warn users who specify an empty `--root` option (see #3917)
  - Force `gcov` to run with en_US localization, so the gcovr parser runs
-   correctly on systems with non-English locales.
+   correctly on systems with non-English locales (#3898, #3902).
  - Miscellaneous (Python 3.x) portability fixes
  - Added the master svn revision number as part of the verson identifier
 
