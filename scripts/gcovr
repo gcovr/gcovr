@@ -163,6 +163,78 @@ class CoverageData(object):
                  percent.rjust(6) + "%   " + self.uncovered_str() )
 
 
+def resolve_symlinks(orig_path):
+    """
+    Return the normalized absolute path name with all symbolic links resolved
+    """
+    drive,tmp = os.path.splitdrive(os.path.abspath(orig_path))
+    if not drive:
+        drive = os.path.sep
+    parts = tmp.split(os.path.sep)
+    actual_path = [drive]
+    while parts:
+        actual_path.append(parts.pop(0))
+        if not os.path.islink(os.path.join(*actual_path)):
+            continue
+        actual_path[-1] = os.readlink(os.path.join(*actual_path))
+        tmp_drive, tmp_path = os.path.splitdrive(
+            resolve_symlinks(os.path.join(*actual_path)) )
+        if tmp_drive:
+            drive = tmp_drive
+        actual_path = [drive] + tmp_path.split(os.path.sep)
+    return os.path.join(*actual_path)
+
+
+def path_startswith(path, base):
+    return path.startswith(base) and (
+        len(base) == len(path) or path[len(base)] == os.path.sep )
+
+
+class PathAliaser(object):
+    def __init__(self):
+        self.aliases = {}
+        self.master_targets = set()
+        self.preferred_name = {}
+
+    def master_path(self, path):
+        match_found = False
+        while True:
+            for base, alias in self.aliases.items():
+                if path_startswith(path, base):
+                    path = alias + path[len(base):]
+                    match_found = True
+                    break
+            for master_base in self.master_targets:
+                if path_startswith(path, master_base):
+                    return path, master_base, True
+            if match_found:
+                sys.stderr.write(
+                    "ERROR: violating fundamental assumption while walking "
+                    "directory tree.\n\tPlease report this to the gcovr "
+                    "developers.\n" )
+            return path, None, match_found
+
+    def unalias_path(self, path):
+        path = resolve_symlinks(path)
+        path, master_base, known_path = self.master_path(path)
+        if not known_path:
+            return path
+        # Try and resolve the preferred name for this location
+        if master_base in self.preferred_name:
+            return self.preferred_name[master_base] + path[len(master_base):]
+        return path
+
+    def add_master_target(self, master):
+        self.master_targets.add(master)
+
+    def add_alias(self, target, master):
+        self.aliases[target] = master
+
+    def set_preferred(self, master, preferred):
+        self.preferred_name[master] = preferred
+
+aliases = PathAliaser()
+
 # This is UGLY.  Here's why: UNIX resolves symbolic links by walking the
 # entire directory structure.  What that means is that relative links
 # are always relative to the actual directory inode, and not the
@@ -195,58 +267,20 @@ class CoverageData(object):
 # check for embedded symlinks.
 #
 def link_walker(path):
-    def unalias_path(path):
-        match_found = False
-        while True:
-            for visited, alias in aliases.items():
-                if path.startswith(visited):
-                    path = alias + path[len(visited):]
-                    match_found = True
-                    break
-            for visited in main_targets:
-                if path.startswith(visited):
-                    return path, True
-            if match_found:
-                sys.stderr.write(
-                    "ERROR: violating fundamental assumption while walking "
-                    "directory tree.\n\tPlease report this to the gcovr "
-                    "developers.\n" )
-            return path, match_found
-    def dereference_path(orig_path):
-        drive,tmp = os.path.splitdrive(os.path.normpath(orig_path))
-        if not drive:
-            drive = os.path.sep
-        parts = tmp.split(os.path.sep)
-        actual_path = [drive]
-        while parts:
-            actual_path.append(parts.pop(0))
-            if not os.path.islink(os.path.join(*actual_path)):
-                continue
-            actual_path[-1] = os.readlink(os.path.join(*actual_path))
-            tmp_drive, tmp_path = os.path.splitdrive(
-                dereference_path(os.path.join(*actual_path)) )
-            if tmp_drive:
-                drive = tmp_drive
-            actual_path = [drive] + tmp_path.split(os.path.sep)
-        return os.path.join(*actual_path)
-
-    aliases = {}
-    main_targets = set()
-    preferred_name = {}
     targets = [os.path.abspath(path)]
     while targets:
         target_dir = targets.pop(0)
-        actual_dir = dereference_path(target_dir)
+        actual_dir = resolve_symlinks(target_dir)
         #print "target dir: %s  (%s)" % (target_dir, actual_dir)
-        master_name, visited = unalias_path(actual_dir)
+        master_name, master_base, visited = aliases.master_path(actual_dir)
         if visited:
             #print "  ...root already visited as %s" % master_name
-            aliases[target_dir] = master_name
+            aliases.add_alias(target_dir, master_name)
             continue
         if master_name != target_dir:
-            preferred_name[master_name] = target_dir
-            aliases[target_dir] = master_name
-        main_targets.add(master_name)
+            aliases.set_preferred(master_name, target_dir)
+            aliases.add_alias(target_dir, master_name)
+        aliases.add_master_target(master_name)
         #print "  ...master name = %s" % master_name
         #print "  ...walking %s" % target_dir
         for root, dirs, files in os.walk(target_dir, topdown=True):
@@ -307,7 +341,7 @@ def process_gcov_data(file, covdata, options):
     segments=line.split(':',3)
     if len(segments) != 4 or not segments[2].lower().strip().endswith('source'):
         raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip())
-    fname = os.path.abspath((segments[-1]).strip())
+    fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
     #
