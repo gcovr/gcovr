@@ -1,91 +1,80 @@
-=================
- gcovr CHANGELOG
-=================
-
--------------------------------------------------------------------------------
- 2.4
--------------------------------------------------------------------------------
-
-- Under development.
-
--------------------------------------------------------------------------------
- 2.3.1
--------------------------------------------------------------------------------
-
-- Adding support for Python 3.x
-
--------------------------------------------------------------------------------
- 2.3
--------------------------------------------------------------------------------
-
-- Adding the --gcov-filter and --gcov-exclude options.
-
--------------------------------------------------------------------------------
- 2.2
--------------------------------------------------------------------------------
-
-- Added a test driver for gcovr.
-
-- Improved estimation of the <sources> element when using gcovr with filters.
+= `gcovr` Release History and Change Log =
 
 
-- Added revision and date keywords to gcovr so it is easier to
-  identify what version of the script users are using (especially
-  when they are running a snapshot from trunk).
+=== 2.4 ''(under development)'' ===
+ - New approach to walking the directory tree that is more robust to
+   symbolic links
+ - Windows compatibility fixes
+   - Fix for how we parse `source:` file names (#3913)
+   - Better handling od EOL indicators (#3920)
+ - Normalize all path names to full absolute path (#3921)
+ - Fix so that gcovr cleans up all `.gcov` files, even those filtered by
+   command line arguments
+ - Added compatibility with GCC 4.8 (#3918)
+ - Added a check to warn users who specify an empty `--root` option (see #3917)
+ - Force `gcov` to run with en_US localization, so the gcovr parser runs
+   correctly on systems with non-English locales.
+ - Miscellaneous (Python 3.x) portability fixes
+ - Added the master svn revision number as part of the verson identifier
 
-- Addressed special case mentioned in comment:ticket:3884:1: do not
-  truncate the reported file name if the filter does not start
-  matching at the beginning of the string.
 
-- Overhaul of the --root / --filter logic. This should resolve the
-  issue raised in #3884, along with the more general filter issue
-  raised in comment:ticket:3884:1
+=== 2.3.1 ''(6 January 2012)'' ===
+ - Adding support for Python 3.x
 
-- Overhaul of gcovr's logic for determining gcc/g++'s original
-  working directory. This resolves issues introduced in the original
-  implementation of --object-directory (resolves #3872) and fixes
-  #3883.
 
-- Bugfix: gcovr was only including a <sources> element in the XML
-  report if the user specified -r (resolves #3869)
+=== 2.3 ''(11 December 2011)'' ===
+ - Adding the --gcov-filter and --gcov-exclude options.
 
-- Adding timestamp and version attributes to the gcovr XML report
-  (as documented in #3877).  It looks like the standard Cobertura
-  output reports number of seconds since the epoch for the timestamp
-  and a doted decimal version string.  Now, gcovr reports seconds
-  since the epoch and "gcovr "+__version__ (e.g. "gcovr 2.2") to
-  differentiate it from a pure Cobertura report.
 
--------------------------------------------------------------------------------
- 2.1
--------------------------------------------------------------------------------
+=== 2.2 ''(10 December 2011)'' ===
+ - Added a test driver for gcovr.
+ - Improved estimation of the <sources> element when using gcovr with filters.
+ - Added revision and date keywords to gcovr so it is easier to identify
+   what version of the script users are using (especially when they are
+   running a snapshot from trunk).
+ - Addressed special case mentioned in comment:ticket:3884:1: do not
+   truncate the reported file name if the filter does not start matching
+   at the beginning of the string.
+ - Overhaul of the --root / --filter logic. This should resolve the
+   issue raised in #3884, along with the more general filter issue
+   raised in comment:ticket:3884:1
+ - Overhaul of gcovr's logic for determining gcc/g++'s original working
+   directory. This resolves issues introduced in the original
+   implementation of --object-directory (resolves #3872) and fixes
+   #3883.
+ - Bugfix: gcovr was only including a <sources> element in the XML
+   report if the user specified -r (resolves #3869)
+ - Adding timestamp and version attributes to the gcovr XML report (as
+   documented in #3877).  It looks like the standard Cobertura output
+   reports number of seconds since the epoch for the timestamp and a
+   doted decimal version string.  Now, gcovr reports seconds since the
+   epoch and "gcovr "+__version__ (e.g. "gcovr 2.2") to differentiate it
+   from a pure Cobertura report.
 
-- Added the --object-directory option, which allows for a flexible
-  specification of the directory that contains the objects generated
-  by gcov.
 
-- Adding fix to compare the absolute path of a filename to an exclusion
-  pattern.
+=== 2.1 ''(26 November 2010)'' ===
+ - Added the --object-directory option, which allows for a flexible
+   specification of the directory that contains the objects generated by
+   gcov.
+ - Adding fix to compare the absolute path of a filename to an exclusion
+   pattern.
+ - Adding error checking when no coverage results are found. The line and
+   branch counts can be zero.
+ - Adding logic to process the -o/.output option. (Resolves #3870)
+ - Adding patch to scan for lines that look like:
+   {{{
+creating `foo'
+}}}
+   as well as
+   {{{
+creating 'foo'
+}}}
+ - Changing the semantics for EOL to be portable for MS Windows.
+ - Add attributes to xml format so that it could be used by hudson/bamboo with
+   cobertura plug-in.
 
-- Adding error checking when no coverage results are found. The line and
-  branch counts can be zero.
 
-- Adding logic to process the -o/.output option. (Resolves #3870)
-
-- Adding patch to scan for lines that look like:
-    creating `foo'
-  as well as
-    creating 'foo'
-
-- Changing the semantics for EOL to be portable for MS Windows.
-
-- Add attributes to xml format so that it could be used by hudson/bamboo with
-  cobertura plug-in.
-
--------------------------------------------------------------------------------
- 2.0
--------------------------------------------------------------------------------
-
-- Initial release as a separate package.  Earlier versions of gcovr were
-  managed within the 'fast' Python package.
+=== 2.0 ''(22 August 2010)'' ===
+ - Initial release as a separate package.  Earlier versions of gcovr
+   were managed within the 'fast' Python package.
 
