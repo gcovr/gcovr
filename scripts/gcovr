@@ -209,7 +209,7 @@ class PathAliaser(object):
                     return path, master_base, True
             if match_found:
                 sys.stderr.write(
-                    "ERROR: violating fundamental assumption while walking "
+                    "(ERROR) violating fundamental assumption while walking "
                     "directory tree.\n\tPlease report this to the gcovr "
                     "developers.\n" )
             return path, None, match_found
@@ -414,7 +414,10 @@ def process_gcov_data(file, covdata, options):
             #prev = int(segments[1].strip())
             #first_record=True
         else:
-            sys.stdout.write("UNKNOWN LINE DATA: %s\n" % tmp)
+            sys.stderr.write(
+                "(WARNING) Unrecognized GCOV output: '%s'\n"
+                "\tThis is indicitive of a gcov output parse error.\n"
+                "\tPlease report this to the gcovr developers." % tmp )
     #
     # If the file is already in covdata, then we
     # remove lines that are covered here.  Otherwise,
@@ -585,9 +588,11 @@ def process_datafile(filename, covdata, options):
         os.remove(abs_filename)
         
     if not Done:
-        sys.stdout.write("GCOV produced the following errors processing %s:\n   %s" \
-              "(gcovr could not infer a working directory " \
-              "that resolved it.)\n" % ( filename, "   ".join(errors) ))
+        sys.stderr.write(
+            "(WARNING) GCOV produced the following errors processing %s:\n"
+            "\t   %s" 
+            "\t(gcovr could not infer a working directory that resolved it.)\n"
+            % ( filename, "\t   ".join(errors) ) )
 
 #
 # Produce the classic gcovr text report
@@ -790,8 +795,6 @@ def print_xml_report(covdata):
                 reldir = d[len(cwd):].lstrip(os.path.sep)
             elif cwd.startswith(d):
                 i = 1
-                sys.stdout.write(d+'\n')
-                sys.stdout.write(os.path.join(*tuple([cwd]+['..']*i)) + '\n')
                 while normpath(d) != \
                           normpath(os.path.join(*tuple([cwd]+['..']*i))):
                     i += 1
@@ -905,17 +908,23 @@ parser.description="A utility to run gcov and generate a simple report that summ
 #
 (options, args) = parser.parse_args(args=sys.argv)
 if options.version:
-    sys.stdout.write("gcovr %s\n" % (version_str(),))
-    sys.stdout.write("\n")
-    sys.stdout.write("Copyright (2008) Sandia Corporation. Under the terms of Contract \n")
-    sys.stdout.write("DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government \n")
-    sys.stdout.write("retains certain rights in this software.\n")
+    sys.stdout.write(
+        "gcovr %s\n"
+        "\n"
+        "Copyright (2008) Sandia Corporation. Under the terms of Contract\n"
+        "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
+        "retains certain rights in this software.\n"
+        % (version_str(),) )
     sys.exit(0)
 if options.objdir:
-    if normpath(options.objdir) != options.objdir.replace('/',os.sep):
-        sys.stdout.write("WARNING: relative referencing in --object-directory; this could\n")
-        sys.stdout.write("         cause strange errors when gcovr attempts to identify\n")
-        sys.stdout.write("         the original gcc working directory.\n")
+    tmp = options.objdir.replace('/',os.sep).replace('\\',os.sep)
+    while os.sep+os.sep in tmp:
+        tmp = tmp.replace(os.sep+os.sep, os.sep)
+    if normpath(options.objdir) != tmp:
+        sys.stderr.write(
+            "(WARNING) relative referencing in --object-directory.\n"
+            "\tthis could cause strange errors when gcovr attempts to\n"
+            "\tidentify the original gcc working directory.\n")
 #
 # Setup filters
 #
@@ -925,9 +934,10 @@ if options.filter is not None:
     options.filter = re.compile(options.filter)
 elif options.root is not None:
     if not options.root:
-        sys.stderr.write("ERROR: empty --root option.\n"
-                         "   Root specifies the path to the root directory of your project: "
-                         "cannot be an empty string.\n")
+        sys.stderr.write(
+            "(ERROR) empty --root option.\n"
+            "\tRoot specifies the path to the root directory of your project\n"
+            "\tand cannot be an empty string.\n")
         sys.exit(1)
     options.filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
 if options.filter is None:
