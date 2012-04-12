@@ -4,16 +4,22 @@
 === 2.4 ''(under development)'' ===
  - New approach to walking the directory tree that is more robust to
    symbolic links (#3908)
+ - Normalize all reported path names
+   - Normalize using the full absolute path (#3921)
+   - Attempt to resolve files refeenced through symlinks to a common
+     project-relative path
+ - Process `gcno` files when there is no corresponding `gcda` file to
+   provide coverage information for unexecuted modules (#3887)
  - Windows compatibility fixes
    - Fix for how we parse `source:` file names (#3913)
    - Better handling od EOL indicators (#3920)
- - Normalize all path names to full absolute path (#3921)
  - Fix so that gcovr cleans up all `.gcov` files, even those filtered by
    command line arguments
  - Added compatibility with GCC 4.8 (#3918)
  - Added a check to warn users who specify an empty `--root` option (see #3917)
  - Force `gcov` to run with en_US localization, so the gcovr parser runs
    correctly on systems with non-English locales (#3898, #3902).
+ - Segregate warning/error information onto the stderr stream (#3924)
  - Miscellaneous (Python 3.x) portability fixes
  - Added the master svn revision number as part of the verson identifier
 
