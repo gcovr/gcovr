@@ -38,7 +38,7 @@ def run(cmd):
         proc = subprocess.Popen( cmd,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT )
-        sys.stdout.write(proc.communicate()[0])
+        sys.stdout.write("%s"%proc.communicate()[0])
         return not proc.returncode
     except Exception:
         e = sys.exc_info()[1]
