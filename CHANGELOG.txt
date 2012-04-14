@@ -1,7 +1,7 @@
 = `gcovr` Release History and Change Log =
 
 
-=== 2.4 ''(under development)'' ===
+=== 2.4 ''(13 April 2012)'' ===
  - New approach to walking the directory tree that is more robust to
    symbolic links (#3908)
  - Normalize all reported path names
