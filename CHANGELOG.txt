@@ -29,7 +29,7 @@
 
 
 === 2.3 ''(11 December 2011)'' ===
- - Adding the --gcov-filter and --gcov-exclude options.
+ - Adding the `--gcov-filter` and `--gcov-exclude` options.
 
 
 === 2.2 ''(10 December 2011)'' ===
@@ -52,9 +52,9 @@
  - Adding timestamp and version attributes to the gcovr XML report (see
    #3877).  It looks like the standard Cobertura output reports number of
    seconds since the epoch for the timestamp and a doted decimal version
-   string.  Now, gcovr reports seconds since the epoch and "gcovr
-   "+__version__ (e.g. "gcovr 2.2") to differentiate it from a pure
-   Cobertura report.
+   string.  Now, gcovr reports seconds since the epoch and 
+   "`gcovr `"+`__version__` (e.g. "gcovr 2.2") to differentiate it 
+   from a pure Cobertura report.
 
 
 === 2.1 ''(26 November 2010)'' ===
