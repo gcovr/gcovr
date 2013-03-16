@@ -593,7 +593,9 @@ def process_datafile(filename, covdata, options):
         if not options.keep:
             for group in gcov_files.values():
                 for fname in group:
-                    os.remove(fname)
+                    if os.path.exists(fname):
+                        # Only remove files that actually exist.
+                        os.remove(fname)
 
     os.chdir(starting_dir)
     if options.delete:
