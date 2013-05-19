@@ -1,0 +1,216 @@
+Gcovr User Guide
+==================
+:doctype: article
+
+:cpp: {basebackend@docbook:c++:cpp}
+:makefile: {basebackend@docbook:make:makefile}
+
+:numbered!:
+[abstract]
+Abstract
+--------
+
+Gcovr provides a utility for managing the use of the GNU
+http://gcc.gnu.org/onlinedocs/gcc/Gcov.html[gcov] utility and
+generating summarized code coverage results. This command is inspired
+by the Python  http://nedbatchelder.com/code/coverage/[coverage.py]
+package, which provides a similar utility in Python. The +gcovr+
+command produces either compact human-readable summary reports or
+machine readable XML reports (in
+http://cobertura.sourceforge.net/[Cobertura] format). Thus, gcovr
+can be viewed as a command-line alternative to the
+http://ltp.sourceforge.net/coverage/lcov.php[lcov] utility, which
+runs gcov and generates an HTML-formatted report.
+
+:numbered:
+
+
+Overview
+--------
+
+Gcovr is a Python package that includes a self-contained +gcovr+
+script.  Gcovr is an extension of +gcov+, a GNU utility that
+summarizes the lines of code that are executed - or "covered" -
+while running an executable.  The +gcovr+ script interprets +gcov+
+data files to summarize code coverage in sevearl formats:
+
+* Text output with coverage statistics indicated with summary statistics and lists of uncovered line, and
+* XML output that is compatible with the Cobertura code coverage utility.
+
+////
+* HTML output with coverage rates indicated using colored bar graphs.
+////
+
+
+The http://gcovr.com[Gcovr Home Page] is
+http://gcovr.com[http://gcovr.com].  This webpage contains links
+for documentation in
+http://gcovr.com/guide.html[HTML],
+http://gcovr.com/guide.pdf[PDF], and
+http://gcovr.com/guide.epub[EPUB] formats.  The
+http://gcovr.com[Gcovr Home Page] also includes developer
+resources (e.g. https://software.sandia.gov/hudson/view/gcovr/[automated
+test results]).  Gcovr is available under the
+http://www.gnu.org/licenses/bsd.html[BSD]
+license.
+
+The Gcovr User Guide provides the following documentation:
+
+ - <<gettingStarted,Getting Started>>: Some simple examples that illustrate how to use Gcovr
+ - <<gcovrCommand,The +gcovr+ Command>>: Description of command-line options for +gcovr+
+ - <<installation,Installation>>: How to install Gcovr
+ - <<discussion,Status and Future Plans>>: Comments on the past, present and future of Gcovr
+
+
+[[gettingStarted]]
+Getting Started
+---------------
+
+Simple examples here ...
+
+A First Example
+~~~~~~~~~~~~~~~
+
+MORE HERE
+
+A Second Example
+~~~~~~~~~~~~~~~~
+
+MORE HERE
+
+
+[[gcovrCommand]]
+The +gcovr+ Command
+-----------------
+
+The +gcovr+ command processes ...
+
+The +--help+ option generates the following summary of the +gcovr+ command line options:
+
+----
+include::examples/gcovr.out[]
+----
+The following section describe illustrate the use of these command line options.
+
+
+General Options
+~~~~~~~~~~~~~~~
+
+TODO
+
+
+[[installation]]
+Installation
+------------
+
+Gcovr requires virtually no installation.
+
+////
+The +cxxtestgen+ script can be directly executed from the
++cxxtest/bin+ directory.  Simply adding this directory to the PATH
+environment of a command shell is sufficient for many applications.
+Beyond that, the build process for test runners simply needs to
+reference the +cxxtest+ root directory to enable proper includes
+during compilation.
+
+The FOG parser requires two Python packages:
+
+ - +ply+
+ - +ordereddict+ (This is needed when running Python 2.4, 2.5 or 2.6)
+
+If these packages are not available, then +cxxtestgen+ will generate an error when the 
+FOG parser option is selected.
+If you have
+http://pypi.python.org/pypi/setuptools[setuptools] or
+http://pypi.python.org/pypi/distribute[distribute]
+installed, then
+you can install these packages from PyPI by executing
+[source,bash]
+----
+easy_install ply
+easy_install ordereddict
+----
+
+The +cxxtestgen+ script has been tested with many different versions
+of Python:  2.4 - 3.3, though future releases will not support
+Python 2.4.  Note that this script has only been tested with the
+CPython implementation.  CxxTest 4.2.1 has been tested on Linux and
+Mac platforms using the `g++` and `clang++` compilers.
+////
+
+
+
+[[discussion]]
+Status and Future Plans
+-----------------------
+
+The Gcovr X.X release ...
+
+Gcovr is heavily
+used at Sandia National Laboratories, and Sandia's ongoing use of
+Gcovr is a major driver for CxxTest development.
+
+
+:numbered!:
+
+[[acknowledgements]] 
+Acknowledgements
+----------------
+
+The following developers contributed to the Gcovr X.x releases:
+
+* William Hart
+* John Siirola
+
+The CxxTest documentation is generated using
+http://www.methods.co.nz/asciidoc/[AsciiDoc].
+
+////
+CxxTest has greatly benefited from the support of the open source
+community.  We would like to thank the following organizations for
+providing web hosting and computing resources: GitHub, SourceForge,
+Tigris.org, Sandia National Laboratories, Google and COIN-OR.  The development
+of CxxTest has been partially supported by Sandia National Laboratories.
+Sandia National Laboratories is a multi-program laboratory managed
+and operated by Sandia Corporation, a wholly owned subsidiary of
+Lockheed Martin Corporation, for the U.S.  Department of Energy's
+National Nuclear Security Administration under contract DE-AC04-94AL85000.
+////
+
+
+[appendix]
+[[appendix_C]] 
+Testing Gcovr
+---------------
+
+In the +gcovr/test+ directory, you can execute
+[source,bash]
+----
+python test_gcovr.py 
+----
+to launch all tests.  By default, this script executes test suites
+on a variety of code configurations that reflect different use-cases for
+gcovr.
+
+You can execute a specific test suite by giving its name as an
+argument to this test script.  For example, the command
+[source,bash]
+----
+python test_gcovr.py GcovrXml
+----
+executes the +GcovrXml+ test suite, which tests gcovr with XML output.
+
+To run the +test_gcovr.py+ script, you will need to install the
+https://pypi.python.org/pypi/pyutilib.th[pyutilib.th] package.
+If you have
+http://pypi.python.org/pypi/setuptools[setuptools] or
+http://pypi.python.org/pypi/distribute[distribute]
+installed, then
+you can install this package from PyPI by executing
+[source,bash]
+----
+easy_install pyutilib.th
+----
+
+
+// vim: ft=asciidoc
