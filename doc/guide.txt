@@ -29,9 +29,9 @@ Overview
 --------
 
 Gcovr is a Python package that includes a self-contained +gcovr+
-script.  Gcovr is an extension of +gcov+, a GNU utility that
+command.  Gcovr is an extension of +gcov+, a GNU utility that
 summarizes the lines of code that are executed - or "covered" -
-while running an executable.  The +gcovr+ script interprets +gcov+
+while running an executable.  The +gcovr+ command interprets +gcov+
 data files to summarize code coverage in sevearl formats:
 
 * Text output with coverage statistics indicated with summary statistics and lists of uncovered line, and
@@ -66,12 +66,59 @@ The Gcovr User Guide provides the following documentation:
 Getting Started
 ---------------
 
-Simple examples here ...
+The +gcovr+ command provides a summary of the lines that have been
+executed in a program.  Code coverage statistics help you discover
+untested parts of a program, which is particularly important when
+assessing code quality.  Well-tested code is a characteristic of
+high quality code, and software developers often assess code coverage
+statistics when deciding if software is ready for a release.
+
+The +gcovr+ command can be used to analyze programs compiled with
+GCC.   The following sections illustrate the application of +gcovr+
+to test coverage of the following program:
+
+----
+include::examples/example1/example1.cpp[]
+----
+This code executes several subroutines, but not all code that is defined in the file.
 
 A First Example
 ~~~~~~~~~~~~~~~
 
-MORE HERE
+We compile +example1.cpp+ with the GCC compiler as follows:
+[bash]
+----
+include::examples/.example1_compile.sh[]
+----
+Note that we compile this program without optimization, because
+optimization may combine lines of code and otherwise change the
+flow of execution in the program.  Additionally, we compile with
+the +FOO+ compiler options, which add logic to generate output files
+that can be processed by the +gcov+ command.
+
+The compiler generates the +example1+ executable.  When we execute this command:
+[bash]
+----
+include::examples/.example1_run.sh[]
+----
+the following files are generated:
+[bash]
+----
+include::examples/.example1_ls.sh[]
+----
+These files are processed with by +gcov+ to generate code coverage statistics.  The +gcovr+ command calls +gcov+ and summarizes these code coverage statistics in various formats.  For example:
+[bash]
+----
+include::examples/.example1_gcovr1.sh[]
+----
+generates a text summary of the lines executed:
+
+----
+include::examples/example1/example1.out[]
+----
+
+Note that +gcov+ accumulates statistics by line.  Consequently, it works best with a programming style that places only one statement on each line.  In +example1.cpp+, the +MACRO+ macro executes multiple statements, but +gcov+ cannot discern which of these statements are executed.
+
 
 A Second Example
 ~~~~~~~~~~~~~~~~
@@ -83,14 +130,15 @@ MORE HERE
 The +gcovr+ Command
 -----------------
 
-The +gcovr+ command processes ...
-
-The +--help+ option generates the following summary of the +gcovr+ command line options:
+The +gcovr+ command recursively searches a directory tree to find
++gcov+ coverage files, and generates a text summary of the code
+coverage.  The +--help+ option generates the following summary of
+the +gcovr+ command line options:
 
 ----
 include::examples/gcovr.out[]
 ----
-The following section describe illustrate the use of these command line options.
+The following sections illustrate the use of these command line options.
 
 
 General Options
@@ -188,7 +236,7 @@ In the +gcovr/test+ directory, you can execute
 ----
 python test_gcovr.py 
 ----
-to launch all tests.  By default, this script executes test suites
+to launch all tests.  By default, this test script executes test suites
 on a variety of code configurations that reflect different use-cases for
 gcovr.
 
