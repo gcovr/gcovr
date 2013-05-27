@@ -53,7 +53,7 @@ fi
 #"$WORKSPACE"/vpython/bin/python setup.py install || exit 1
 
 # Run tests
-"$WORKSPACE"/vpython/bin/nosetests -v -v -w "$WORKSPACE"/src/gcovr \
+"$WORKSPACE"/vpython/bin/nosetests -I ".*pycache.*" -v -v -w "$WORKSPACE"/src/gcovr \
     --with-xunit --xunit-file="$WORKSPACE"/TEST-gcovr.xml \
     || echo "(INFO) nosetests returned non-zero return code"
 
