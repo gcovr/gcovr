@@ -17,7 +17,7 @@ by the Python  http://nedbatchelder.com/code/coverage/[coverage.py]
 package, which provides a similar utility in Python. The +gcovr+
 command produces either compact human-readable summary reports or
 machine readable XML reports (in
-http://cobertura.sourceforge.net/[Cobertura] format). Thus, gcovr
+http://cobertura.sourceforge.net/[Cobertura] format). Thus, +gcovr+
 can be viewed as a command-line alternative to the
 http://ltp.sourceforge.net/coverage/lcov.php[lcov] utility, which
 runs gcov and generates an HTML-formatted report.
@@ -116,9 +116,20 @@ generates a text summary of the lines executed:
 ----
 include::examples/example1.txt[]
 ----
-The +-r+ option specifies the root directory for the files that are being analyzed.  This 
-allows +gcovr+ to generate a simpler report (without absolute path names), and it allows 
-system header files to be excluded from the analysis.
+Each line of this output includes a summary for a given source file,
+including the number of lines instrumented, the number of lines
+executed, the percentage of lines executed, and a summary of the
+line numbers that were not executed.  To improve clarity, gcovr
+uses an aggressive approach to grouping uncovered lines and will
+combine uncovered lines separated by "non-code" lines (blank,
+freestanding braces, and single-line comments) into a single region.
+As a result, the number of lines listed in the "Missing" list may
+be greater than the difference of the "Lines" and "Exec" columns.
+
+The +-r+ option specifies the root directory for the files that are
+being analyzed.  This allows +gcovr+ to generate a simpler report
+(without absolute path names), and it allows system header files
+to be excluded from the analysis.
 
 Note that +gcov+ accumulates statistics by line.  Consequently, it
 works best with a programming style that places only one statement
@@ -157,9 +168,16 @@ This generates an XML summary of the lines executed:
 ----
 include::examples/example2.txt[]
 ----
-The +--xml+ option generates a denser XML output, and the +--xml-pretty+ option
-generates an indented XML output that is easier to read.
+This XML format is in the
+http://cobertura.sourceforge.net/xml/coverage-03.dtd[Cobertura XML]
+format suitable for import and display within the
+http://www.jenkins-ci.org/[Jenkins] and http://www.hudson-ci.org/[Hudson]
+continuous integration servers using the
+https://wiki.jenkins-ci.org/display/JENKINS/Cobertura+Plugin[Cobertura
+Plugin].
 
+The +--xml+ option generates a denser XML output, and the +--xml-pretty+
+option generates an indented XML output that is easier to read.
 Note that the XML output contains more information than the tabular
 summary.  The tabular summary shows the percentage of covered lines,
 while the XML output includes branch statistics and the number of
@@ -183,50 +201,36 @@ include::examples/gcovr.out[]
 The following sections illustrate the use of these command line options.
 
 
-General Options
-~~~~~~~~~~~~~~~
+Controlling Coverage
+~~~~~~~~~~~~~~~~~~~~
 
-TODO
+TODO: document options that control where data files and gcov files
+are found and filtering options for them.
+
 
 
 [[installation]]
 Installation
 ------------
 
-Gcovr requires virtually no installation.
+Gcovr requires virtually no installation.  The +gcovr+ command can
+be downloaded and used directly without installing additional files.
 
-////
-The +cxxtestgen+ script can be directly executed from the
-+cxxtest/bin+ directory.  Simply adding this directory to the PATH
-environment of a command shell is sufficient for many applications.
-Beyond that, the build process for test runners simply needs to
-reference the +cxxtest+ root directory to enable proper includes
-during compilation.
-
-The FOG parser requires two Python packages:
-
- - +ply+
- - +ordereddict+ (This is needed when running Python 2.4, 2.5 or 2.6)
-
-If these packages are not available, then +cxxtestgen+ will generate an error when the 
-FOG parser option is selected.
 If you have
 http://pypi.python.org/pypi/setuptools[setuptools] or
 http://pypi.python.org/pypi/distribute[distribute]
 installed, then
-you can install these packages from PyPI by executing
+you can install +Gcovr+ from PyPI by executing
 [source,bash]
 ----
-easy_install ply
-easy_install ordereddict
+easy_install gcovr
 ----
+This places the +gcovr+ executable in the +bin+ or +Scripts+ directory
+for you python installation.
 
-The +cxxtestgen+ script has been tested with many different versions
-of Python:  2.4 - 3.3, though future releases will not support
-Python 2.4.  Note that this script has only been tested with the
-CPython implementation.  CxxTest 4.2.1 has been tested on Linux and
-Mac platforms using the `g++` and `clang++` compilers.
-////
+The +gcovr+ script has been tested with many different versions of
+Python:  2.4 - 3.2.  Note that this script has only been tested
+with the CPython implementation.
 
 
 
@@ -234,11 +238,11 @@ Mac platforms using the `g++` and `clang++` compilers.
 Status and Future Plans
 -----------------------
 
-The Gcovr X.X release ...
-
-Gcovr is heavily
-used at Sandia National Laboratories, and Sandia's ongoing use of
-Gcovr is a major driver for CxxTest development.
+The Gcovr 3.0 release is the first release that is hosted a GitHub.
+Previous Gcovr development was hosted at Sandia National Laboratories
+as part of the FAST project.  However, Gcovr is now widely used
+outside of Sandia, and GitHub will facilitate the integration of
+contributions from a wider set of developers.
 
 
 :numbered!:
@@ -247,25 +251,22 @@ Gcovr is a major driver for CxxTest development.
 Acknowledgements
 ----------------
 
-The following developers contributed to the Gcovr X.x releases:
+The following developers contributed to the Gcovr 3.0 release:
 
 * William Hart
 * John Siirola
 
-The CxxTest documentation is generated using
+The Gcvor documentation is generated using
 http://www.methods.co.nz/asciidoc/[AsciiDoc].
 
-////
-CxxTest has greatly benefited from the support of the open source
-community.  We would like to thank the following organizations for
-providing web hosting and computing resources: GitHub, SourceForge,
-Tigris.org, Sandia National Laboratories, Google and COIN-OR.  The development
-of CxxTest has been partially supported by Sandia National Laboratories.
-Sandia National Laboratories is a multi-program laboratory managed
-and operated by Sandia Corporation, a wholly owned subsidiary of
-Lockheed Martin Corporation, for the U.S.  Department of Energy's
-National Nuclear Security Administration under contract DE-AC04-94AL85000.
-////
+We would like to thank the following organizations for providing
+web hosting and computing resources: GitHub and Sandia National
+Laboratories.  The development of Gcovr has been partially supported
+by Sandia National Laboratories.  Sandia National Laboratories is
+a multi-program laboratory managed and operated by Sandia Corporation,
+a wholly owned subsidiary of Lockheed Martin Corporation, for the
+U.S.  Department of Energy's National Nuclear Security Administration
+under contract DE-AC04-94AL85000.
 
 
 [appendix]
@@ -280,7 +281,7 @@ python test_gcovr.py
 ----
 to launch all tests.  By default, this test script executes test suites
 on a variety of code configurations that reflect different use-cases for
-gcovr.
++gcovr+.
 
 You can execute a specific test suite by giving its name as an
 argument to this test script.  For example, the command
@@ -288,7 +289,7 @@ argument to this test script.  For example, the command
 ----
 python test_gcovr.py GcovrXml
 ----
-executes the +GcovrXml+ test suite, which tests gcovr with XML output.
+executes the +GcovrXml+ test suite, which tests +gcovr+ with XML output.
 
 To run the +test_gcovr.py+ script, you will need to install the
 https://pypi.python.org/pypi/pyutilib.th[pyutilib.th] package.
