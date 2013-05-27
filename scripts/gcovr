@@ -405,6 +405,7 @@ def process_gcov_data(file, covdata, options):
     lineno = 0
     for line in INPUT:
         segments=line.split(":",2)
+        #print "HERE", segments
         tmp = segments[0].strip()
         if len(segments) > 1:
             try:
@@ -658,9 +659,9 @@ def print_text_report(covdata):
     total_covered=0
     # Header
     OUTPUT.write("-"*78 + '\n')
-    a = options.show_branch and "Branch" or "Lines"
+    a = options.show_branch and "Branches" or "Lines"
     b = options.show_branch and "Taken" or "Exec"
-    c = options.show_branch and "Missing [* exceptional]" or "Missing"
+    c = "Missing"
     OUTPUT.write("File".ljust(40) + a.rjust(8) + b.rjust(8)+ "  Cover   " + c + "\n") 
     OUTPUT.write("-"*78 + '\n')
 
@@ -848,9 +849,18 @@ def print_xml_report(covdata):
         source.appendChild(doc.createTextNode('.'))
         sources.appendChild(source)
 
-    xmlString = doc.toprettyxml()
-    #print xmlString
-    #xml.dom.ext.PrettyPrint(doc)
+    if options.prettyxml:
+        import textwrap
+        lines = doc.toprettyxml(" ").split('\n')
+        for i in xrange(len(lines)):
+            n=0
+            while n < len(lines[i]) and lines[i][n] == " ":
+                n += 1
+            lines[i] = "\n".join(textwrap.wrap(lines[i], 78, break_long_words=False, break_on_hyphens=False, subsequent_indent=" "+ n*" "))
+        xmlString = "\n".join(lines)
+        #print textwrap.wrap(doc.toprettyxml(" "), 80)
+    else:
+        xmlString = doc.toprettyxml(indent="")
     if options.output is None:
         sys.stdout.write(xmlString+'\n')
     else:
@@ -926,7 +936,12 @@ parser.add_option("-x","--xml",
         help="Generate XML instead of the normal tabular output.",
         action="store_true",
         dest="xml",
-        default=None)
+        default=False)
+parser.add_option("--xml-pretty",
+        help="Generate pretty XML instead of the normal dense format.",
+        action="store_true",
+        dest="prettyxml",
+        default=False)
 parser.add_option("-b","--branches",
         help="Tabulate the branch coverage instead of the line coverage.",
         action="store_true",
@@ -1008,7 +1023,7 @@ if options.verbose:
 #
 # Print report
 #
-if options.xml:
+if options.xml or options.prettyxml:
     print_xml_report(covdata)
 else:
     print_text_report(covdata)
