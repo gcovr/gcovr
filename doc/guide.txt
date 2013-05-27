@@ -83,8 +83,8 @@ include::examples/example1/example1.cpp[]
 This code executes several subroutines in this program, but some lines in the program are not
 executed.
 
-A First Example
-~~~~~~~~~~~~~~~
+Tabular Output of Code Coverage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We compile +example1.cpp+ with the GCC compiler as follows:
 [source,bash]
@@ -116,6 +116,9 @@ generates a text summary of the lines executed:
 ----
 include::examples/example1.txt[]
 ----
+The +-r+ option specifies the root directory for the files that are being analyzed.  This 
+allows +gcovr+ to generate a simpler report (without absolute path names), and it allows 
+system header files to be excluded from the analysis.
 
 Note that +gcov+ accumulates statistics by line.  Consequently, it
 works best with a programming style that places only one statement
@@ -123,10 +126,46 @@ on each line.  In +example1.cpp+, the +MACRO+ macro executes a
 branch, but +gcov+ cannot discern which branch is executed.
 
 
-A Second Example
-~~~~~~~~~~~~~~~~
+Tabular Output of Branch Coverage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-MORE HERE
+The +gcovr+ command can also summarize branch coverage using the +--branches+ option:
+[source,bash]
+----
+include::examples/.example3_gcovr.sh[]
+----
+This generates a tabular output that summarizes the number of branches, the number of
+branches taken and the branches that were not completely covered:
+
+----
+include::examples/example3.txt[]
+----
+
+
+XML Output
+~~~~~~~~~~
+
+The default output format for +gcovr+ is to generate a tabular
+summary in plain text.  The +gcovr+ command can also generate an
+XML output using the +--xml+ and +--xml-pretty+ options:
+[source,bash]
+----
+include::examples/.example2_gcovr.sh[]
+----
+This generates an XML summary of the lines executed:
+
+----
+include::examples/example2.txt[]
+----
+The +--xml+ option generates a denser XML output, and the +--xml-pretty+ option
+generates an indented XML output that is easier to read.
+
+Note that the XML output contains more information than the tabular
+summary.  The tabular summary shows the percentage of covered lines,
+while the XML output includes branch statistics and the number of
+times that each line was covered.  Consequently, XML output can be
+used to support performance optimization in the same manner that
++gcov+ does.
 
 
 [[gcovrCommand]]
