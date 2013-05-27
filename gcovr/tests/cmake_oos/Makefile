@@ -13,13 +13,14 @@ all:
 run: txt xml
 
 txt:
-	cd build && gcovrtest
+	cd build && ./gcovrtest
 	../../../scripts/gcovr -r . -d -o coverage.txt
 
 xml:
-	cd build && gcovrtest
+	cd build && ./gcovrtest
 	../../../scripts/gcovr -r . -d -x -o coverage.xml
 
 clean:
 	rm -rf build
 	rm -f coverage.txt coverage.xml
+
