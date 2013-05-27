@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<!DOCTYPE coverage
+  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
+<coverage branch-rate="0.666666666667" line-rate="0.642857142857" timestamp="1369669693" version="gcovr 2.5-prerelease (r2833)">
+<sources>
+<source>.</source>
+</sources>
+<packages>
+<package branch-rate="0.666666666667" complexity="0.0" line-rate="0.642857142857" name="">
+<classes>
+<class branch-rate="0.666666666667" complexity="0.0" filename="example1.cpp" line-rate="0.642857142857" name="example1_cpp">
+<lines>
+<line branch="false" hits="1" number="32"/>
+<line branch="false" hits="1" number="34"/>
+<line branch="false" hits="1" number="36"/>
+<line branch="false" hits="1" number="38"/>
+<line branch="false" hits="2" number="7"/>
+<line branch="true" condition-coverage="100% (2/2)" hits="2" number="9">
+<conditions>
+<condition coverage="100%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="1" number="11"/>
+<line branch="false" hits="1" number="15"/>
+<line branch="false" hits="0" number="19"/>
+<line branch="false" hits="0" number="21"/>
+<line branch="false" hits="0" number="23"/>
+<line branch="true" condition-coverage="50% (2/4)" hits="3" number="39">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="27"/>
+<line branch="false" hits="0" number="29"/>
+</lines>
+</class>
+</classes>
+</package>
+</packages>
+</coverage>
+
