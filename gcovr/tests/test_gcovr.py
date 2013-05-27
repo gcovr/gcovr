@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import os.path
 import re
 import sys
 import subprocess
@@ -21,7 +22,7 @@ class GcovrXml(unittest.TestCase):
         unittest.TestCase.__init__(self, *args, **kwds)
         self.xml_re = re.compile('((timestamp)|(version))="[^"]*"')
 
-    def compare_xml(self):
+    def Xcompare_xml(self):
         F = open("coverage.xml")
         testData = self.xml_re.sub('\\1=""',F.read()).replace("\r","")
         F.close()
@@ -29,6 +30,9 @@ class GcovrXml(unittest.TestCase):
         refData = self.xml_re.sub('\\1=""',F.read()).replace("\r","")
         F.close()
         self.assertSequenceEqual(testData.split('\n'), refData.split('\n'))
+
+    def compare_xml(self):
+        self.assertMatchesXmlBaseline('coverage.xml', os.path.join('reference','coverage.xml'))
 
 GcovrXml = unittest.category('smoke')(GcovrXml)
 
