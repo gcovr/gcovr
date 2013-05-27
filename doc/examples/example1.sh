@@ -5,7 +5,6 @@ export PATH=$CXXTEST/bin:$PATH:`pwd`/../../scripts
 
 cd example1
 ROOT=`pwd`
-echo $ROOT
 
 # @compile:
 g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example1.cpp -o program
@@ -15,8 +14,8 @@ g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example1.cpp -o program
 ./program
 # @:run
 
-gcovr -e /usr/include > ../example1.out
-# @run:
-gcovr -e /usr/include
-# @:run
+# @gcovr:
+gcovr -r .
+# @:gcovr
+
 \rm -f program *.gc*

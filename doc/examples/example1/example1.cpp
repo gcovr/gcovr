@@ -10,6 +10,14 @@ int foo(int param) {
   }
 }
 
+void bar(int param) {
+  if (param) {
+     std::cout << "param not null." << std::endl;
+  } else {
+     std::cout << "param is null." << std::endl;
+  }
+}
+
 
 int main(int argc, char* argv[]) {
   MACRO()

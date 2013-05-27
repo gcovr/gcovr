@@ -80,44 +80,47 @@ to test coverage of the following program:
 ----
 include::examples/example1/example1.cpp[]
 ----
-This code executes several subroutines, but not all code that is defined in the file.
+This code executes several subroutines in this program, but some lines in the program are not
+executed.
 
 A First Example
 ~~~~~~~~~~~~~~~
 
 We compile +example1.cpp+ with the GCC compiler as follows:
-[bash]
+[source,bash]
 ----
 include::examples/.example1_compile.sh[]
 ----
 Note that we compile this program without optimization, because
 optimization may combine lines of code and otherwise change the
 flow of execution in the program.  Additionally, we compile with
-the +FOO+ compiler options, which add logic to generate output files
-that can be processed by the +gcov+ command.
+the +-fprofile-arcs -ftest-coverage -fPIC+ compiler options, which
+add logic to generate output files that can be processed by the
++gcov+ command.
 
-The compiler generates the +example1+ executable.  When we execute this command:
-[bash]
+The compiler generates the +program+ executable.  When we execute this command:
+[source,bash]
 ----
 include::examples/.example1_run.sh[]
 ----
-the following files are generated:
-[bash]
+the files +example1.gcno+ and +example1.gcda+ are generated.  These
+files are processed with by +gcov+ to generate code coverage
+statistics.  The +gcovr+ command calls +gcov+ and summarizes these
+code coverage statistics in various formats.  For example:
+[source,bash]
 ----
-include::examples/.example1_ls.sh[]
-----
-These files are processed with by +gcov+ to generate code coverage statistics.  The +gcovr+ command calls +gcov+ and summarizes these code coverage statistics in various formats.  For example:
-[bash]
-----
-include::examples/.example1_gcovr1.sh[]
+include::examples/.example1_gcovr.sh[]
 ----
 generates a text summary of the lines executed:
 
 ----
-include::examples/example1/example1.out[]
+include::examples/example1.txt[]
 ----
 
-Note that +gcov+ accumulates statistics by line.  Consequently, it works best with a programming style that places only one statement on each line.  In +example1.cpp+, the +MACRO+ macro executes multiple statements, but +gcov+ cannot discern which of these statements are executed.
+Note that +gcov+ accumulates statistics by line.  Consequently, it
+works best with a programming style that places only one statement
+on each line.  In +example1.cpp+, the +MACRO+ macro executes a
+branch, but +gcov+ cannot discern which branch is executed.
 
 
 A Second Example
