@@ -49,11 +49,12 @@ fi
 
 # Install our source
 #  -- not necessary: nosetests will add the source to the sys.path.
-#cd "$WORKSPACE"/src
 #"$WORKSPACE"/vpython/bin/python setup.py install || exit 1
 
+cp -R $WORKSPACE/src $WORKSPACE/build
+
 # Run tests
-"$WORKSPACE"/vpython/bin/nosetests -v -v -w "$WORKSPACE"/src/gcovr \
+"$WORKSPACE"/vpython/bin/nosetests -v -v -w "$WORKSPACE"/build/gcovr \
     --with-xunit --xunit-file="$WORKSPACE"/TEST-gcovr.xml \
     || echo "(INFO) nosetests returned non-zero return code"
 
