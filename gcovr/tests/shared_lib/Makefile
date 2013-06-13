@@ -27,19 +27,23 @@ all:
 	g++ $(CFLAGS) $(SOFLAGS) -shared obj/libs.o -o lib/libs.$(DYNLIB_EXT)
 	cd testApp && $(MAKE)
 
-run: txt xml
+run: txt xml html
+
+txt:
+	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
+	../../../scripts/gcovr -r . -d -o coverage.txt
 
 xml:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 	../../../scripts/gcovr -r . -v -d -x -o coverage.xml
 
-txt:
+html:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-	../../../scripts/gcovr -r . -d -o coverage.txt
+	../../../scripts/gcovr -r . -v -d --html -o coverage.html
 
 clean:
 	rm -rf obj/*
 	rm -f lib/*.so
 	rm -rf testApp/test/*
 	rm -f testApp/*.gc*
-	rm -f coverage.xml coverage.txt
+	rm -f coverage.xml coverage.txt coverage.html
