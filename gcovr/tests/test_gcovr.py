@@ -22,17 +22,24 @@ class GcovrXml(unittest.TestCase):
         unittest.TestCase.__init__(self, *args, **kwds)
         self.xml_re = re.compile('((timestamp)|(version))="[^"]*"')
 
-    def Xcompare_xml(self):
+    def compare_xml(self):
         F = open("coverage.xml")
         testData = self.xml_re.sub('\\1=""',F.read()).replace("\r","")
+        F.close()
+        F = open('coverage.xml', 'w')
+        F.write(testData)
         F.close()
         F = open("reference/coverage.xml")
         refData = self.xml_re.sub('\\1=""',F.read()).replace("\r","")
         F.close()
-        self.assertSequenceEqual(testData.split('\n'), refData.split('\n'))
-
-    def compare_xml(self):
+        F = open('reference/coverage.xml', 'w')
+        F.write(refData)
+        F.close()
+        #self.assertSequenceEqual(testData.split('\n'), refData.split('\n'))
         self.assertMatchesXmlBaseline('coverage.xml', os.path.join('reference','coverage.xml'))
+
+    #def compare_xml(self):
+        #self.assertMatchesXmlBaseline('coverage.xml', os.path.join('reference','coverage.xml'))
 
 GcovrXml = unittest.category('smoke')(GcovrXml)
 
