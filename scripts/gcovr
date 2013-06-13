@@ -203,27 +203,31 @@ def resolve_symlinks(orig_path):
     return os.path.join(*actual_path)
 
 
-def path_startswith(path, base):
-    return path.startswith(base) and (
-        len(base) == len(path) or path[len(base)] == os.path.sep )
 
-
+#
+# Class that creates path aliases
+#
 class PathAliaser(object):
+
     def __init__(self):
         self.aliases = {}
         self.master_targets = set()
         self.preferred_name = {}
 
+    def path_startswith(self, path, base):
+        return path.startswith(base) and (
+            len(base) == len(path) or path[len(base)] == os.path.sep )
+
     def master_path(self, path):
         match_found = False
         while True:
             for base, alias in self.aliases.items():
-                if path_startswith(path, base):
+                if self.path_startswith(path, base):
                     path = alias + path[len(base):]
                     match_found = True
                     break
             for master_base in self.master_targets:
-                if path_startswith(path, master_base):
+                if self.path_startswith(path, master_base):
                     return path, master_base, True
             if match_found:
                 sys.stderr.write(
@@ -362,6 +366,9 @@ def get_datafiles(flist, options):
     return allfiles
 
 
+#
+# Process a single gcov datafile
+#
 def process_gcov_data(file, covdata, options):
     INPUT = open(file,"r")
     #
@@ -688,6 +695,9 @@ def print_text_report(covdata):
     if options.output:
         OUTPUT.close()
 
+#
+# CSS declarations for the HTML output
+#
 css = '''
     /* All views: initial background and text color */
     body
@@ -1253,6 +1263,9 @@ css = '''
     } 
 '''
 
+#
+# A string template for the HTML output
+#
 root_page = Template('''
 <html>
 
@@ -1473,6 +1486,9 @@ def print_html_report(covdata):
         OUTPUT.close()
 
 
+#
+# Generate the table row for a single file
+#
 def html_row(**kwargs):
     rowstr=Template('''
     <tr>
