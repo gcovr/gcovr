@@ -44,6 +44,12 @@ from optparse import OptionParser
 from string import Template
 from os.path import normpath
 
+medium_coverage = 75.0
+high_coverage = 90.0
+low_color = "LightPink"
+medium_color = "#FFFF55"
+high_color = "LightGreen"
+
 __version__ = "2.5-prerelease"
 src_revision = "$Revision$"
 gcov_cmd = "gcov"
@@ -698,535 +704,158 @@ def print_text_report(covdata):
 #
 # CSS declarations for the HTML output
 #
-css = '''
-    /* All views: initial background and text color */
+css = Template('''
     body
     {
       color: #000000;
       background-color: #FFFFFF;
     }
-    
-    /* All views: standard link format*/
+
+    /* Link formats: use maroon w/underlines */
     a:link
     {
-      color: #284FA8;
+      color: navy;
       text-decoration: underline;
     }
-    
-    /* All views: standard link - visited format */
     a:visited
     {
-      color: #00CB40;
+      color: maroon;
       text-decoration: underline;
     }
-    
-    /* All views: standard link - activated format */
     a:active
     {
-      color: #FF0040;
+      color: navy;
       text-decoration: underline;
     }
     
-    /* All views: main title format */
+    /*** TD formats ***/
+    td
+    {
+      font-family: sans-serif;
+    }
     td.title
     {
       text-align: center;
       padding-bottom: 10px;
-      font-family: sans-serif;
       font-size: 20pt;
       font-weight: bold;
     }
     
-    /* All views: header item format */
-    td.headerItem
+    /* TD Header Information */
+    td.headerName
     {
       text-align: right;
+      color: black;
       padding-right: 6px;
-      font-family: sans-serif;
       font-weight: bold;
       vertical-align: top;
       white-space: nowrap;
     }
-    
-    /* All views: header item value format */
     td.headerValue
     {
       text-align: left;
-      color: #284FA8;
-      font-family: sans-serif;
+      color: blue;
       font-weight: bold;
       white-space: nowrap;
     }
-
-    /* All views: header item coverage table heading */
-    td.headerCovTableHead
-    {
-      text-align: center;
-      padding-right: 6px;
-      padding-left: 6px;
-      padding-bottom: 0px;
-      font-family: sans-serif;
-      font-size: 90%;
-      white-space: nowrap;
-    }
-    
-    /* All views: header item coverage table entry */
-    td.headerCovTableEntry
+    td.headerTableEntry
     {
       text-align: right;
-      color: #284FA8;
-      font-family: sans-serif;
+      color: black;
       font-weight: bold;
       white-space: nowrap;
       padding-left: 12px;
       padding-right: 4px;
-      background-color: #DAE7FE;
+      background-color: LightBlue;
     }
-    
-    /* All views: header item coverage table entry for high coverage rate */
-    td.headerCovTableEntryHi
-    {
-      text-align: right;
-      color: #000000;
-      font-family: sans-serif;
-      font-weight: bold;
-      white-space: nowrap;
-      padding-left: 12px;
-      padding-right: 4px;
-      background-color: #A7FC9D;
-    }
-    
-    /* All views: header item coverage table entry for medium coverage rate */
-    td.headerCovTableEntryMed
-    {
-      text-align: right;
-      color: #000000;
-      font-family: sans-serif;
-      font-weight: bold;
-      white-space: nowrap;
-      padding-left: 12px;
-      padding-right: 4px;
-      background-color: #FFEA20;
-    }
-    
-    /* All views: header item coverage table entry for ow coverage rate */
-    td.headerCovTableEntryLo
-    {
-      text-align: right;
-      color: #000000;
-      font-family: sans-serif;
-      font-weight: bold;
-      white-space: nowrap;
-      padding-left: 12px;
-      padding-right: 4px;
-      background-color: #FF0000;
-    }
-    
-    /* All views: header legend value for legend entry */
     td.headerValueLeg
     {
       text-align: left;
-      color: #000000;
-      font-family: sans-serif;
+      color: black;
       font-size: 80%;
       white-space: nowrap;
-      padding-top: 4px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 2px;
     }
     
-    /* All views: color of horizontal ruler */
+    /* Color of horizontal ruler */
     td.hr
     {
-      background-color: #6688D4;
+      background-color: navy;
       height:3px;
     }
-    
-    /* All views: version string format */
-    td.versionInfo
+    /* Footer format */
+    td.footer
     {
       text-align: center;
       padding-top: 3px;
       font-family: sans-serif;
-      font-style: italic;
     }
-    
-    /* Directory view/File view (all)/Test case descriptions:
-       table headline format */
-    td.tableHead
+
+    /* Coverage Table */    
+
+    td.coverTableHead
     {
       text-align: center;
-      color: #FFFFFF;
-      background-color: #6688D4;
+      color: white;
+      background-color: SteelBlue;
       font-family: sans-serif;
       font-size: 120%;
-      font-weight: bold;
       white-space: nowrap;
       padding-left: 4px;
       padding-right: 4px;
     }
-
-    span.tableHeadSort
-    {
-      padding-right: 4px;
-    }
-    
-    /* Directory view/File view (all): filename entry format */
     td.coverFile
     {
       text-align: left;
       padding-left: 10px;
       padding-right: 20px; 
-      color: #284FA8;
-      background-color: #DAE7FE;
+      color: black;
+      background-color: LightBlue;
       font-family: monospace;
+      font-weight: bold;
+      font-size: 110%;
     }
-    
-    /* Directory view/File view (all): bar-graph entry format*/
     td.coverBar
     {
       padding-left: 10px;
       padding-right: 10px;
-      background-color: #DAE7FE;
+      background-color: LightBlue;
     }
-    
-    /* Directory view/File view (all): bar-graph outline color */
     td.coverBarOutline
     {
-      background-color: #000000;
+      background-color: white;
     }
-    
-    /* Directory view/File view (all): percentage entry for files with
-       high coverage rate */
-    td.coverPerHi
+    td.coverValue
     {
-      padding-top: 4px;
+      padding-top: 2px;
       text-align: right;
       padding-left: 10px;
       padding-right: 10px;
-      background-color: #A7FC9D;
-      font-weight: bold;
       font-family: sans-serif;
-    }
-    
-    /* Directory view/File view (all): line count entry for files with
-       high coverage rate */
-    td.coverNumHi
-    {
-      padding-top: 4px;
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: #A7FC9D;
       white-space: nowrap;
-      font-family: sans-serif;
-    }
-    
-    /* Directory view/File view (all): percentage entry for files with
-       medium coverage rate */
-    td.coverPerMed
-    {
-      padding-top: 4px;
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: #FFEA20;
       font-weight: bold;
-      font-family: sans-serif;
     }
     
-    /* Directory view/File view (all): line count entry for files with
-       medium coverage rate */
-    td.coverNumMed
-    {
-      padding-top: 4px;
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: #FFEA20;
-      white-space: nowrap;
-      font-family: sans-serif;
-    }
-    
-    /* Directory view/File view (all): percentage entry for files with
-       low coverage rate */
-    td.coverPerLo
-    {
-      text-align: right;
-      padding-top: 4px;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: #FF0000;
-      font-weight: bold;
-      font-family: sans-serif;
-    }
-    
-    /* Directory view/File view (all): line count entry for files with
-       low coverage rate */
-    td.coverNumLo
-    {
-      padding-top: 4px;
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: #FF0000;
-      white-space: nowrap;
-      font-family: sans-serif;
-    }
-    
-    /* File view (all): "show/hide details" link format */
+    /* Link Details */
     a.detail:link
     {
       color: #B8D0FF;
       font-size:80%;
     }
-    
-    /* File view (all): "show/hide details" link - visited format */
     a.detail:visited
     {
       color: #B8D0FF;
       font-size:80%;
     }
-    
-    /* File view (all): "show/hide details" link - activated format */
     a.detail:active
     {
       color: #FFFFFF;
       font-size:80%;
     }
     
-    /* File view (detail): test name entry */
-    td.testName
-    {
-      text-align: right;
-      padding-right: 10px;
-      background-color: #DAE7FE;
-      font-family: sans-serif;
-    }
-    
-    /* File view (detail): test percentage entry */
-    td.testPer
-    {
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px; 
-      background-color: #DAE7FE;
-      font-family: sans-serif;
-    }
-    
-    /* File view (detail): test lines count entry */
-    td.testNum
-    {
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px; 
-      background-color: #DAE7FE;
-      font-family: sans-serif;
-    }
-    
-    /* Test case descriptions: test name format*/
-    dt
-    {
-      font-family: sans-serif;
-      font-weight: bold;
-    }
-    
-    /* Test case descriptions: description table body */
-    td.testDescription
-    {
-      padding-top: 10px;
-      padding-left: 30px;
-      padding-bottom: 10px;
-      padding-right: 30px;
-      background-color: #DAE7FE;
-    }
-    
-    /* Source code view: function entry */
-    td.coverFn
-    {
-      text-align: left;
-      padding-left: 10px;
-      padding-right: 20px; 
-      color: #284FA8;
-      background-color: #DAE7FE;
-      font-family: monospace;
-    }
-
-    /* Source code view: function entry zero count*/
-    td.coverFnLo
-    {
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: #FF0000;
-      font-weight: bold;
-      font-family: sans-serif;
-    }
-
-    /* Source code view: function entry nonzero count*/
-    td.coverFnHi
-    {
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: #DAE7FE;
-      font-weight: bold;
-      font-family: sans-serif;
-    }
-
-    /* Source code view: source code format */
-    pre.source
-    {
-      font-family: monospace;
-      white-space: pre;
-      margin-top: 2px;
-    }
-    
-    /* Source code view: line number format */
-    span.lineNum
-    {
-      background-color: #EFE383;
-    }
-    
-    /* Source code view: format for lines which were executed */
-    td.lineCov,
-    span.lineCov
-    {
-      background-color: #CAD7FE;
-    }
-    
-    /* Source code view: format for Cov legend */
-    span.coverLegendCov
-    {
-      padding-left: 10px;
-      padding-right: 10px;
-      padding-bottom: 2px;
-      background-color: #CAD7FE;
-    }
-    
-    /* Source code view: format for lines which were not executed */
-    td.lineNoCov,
-    span.lineNoCov
-    {
-      background-color: #FF6230;
-    }
-    
-    /* Source code view: format for NoCov legend */
-    span.coverLegendNoCov
-    {
-      padding-left: 10px;
-      padding-right: 10px;
-      padding-bottom: 2px;
-      background-color: #FF6230;
-    }
-    
-    /* Source code view (function table): standard link - visited format */
-    td.lineNoCov > a:visited,
-    td.lineCov > a:visited
-    {  
-      color: black;
-      text-decoration: underline;
-    }  
-    
-    /* Source code view: format for lines which were executed only in a
-       previous version */
-    span.lineDiffCov
-    {
-      background-color: #B5F7AF;
-    }
-    
-    /* Source code view: format for branches which were executed
-     * and taken */
-    span.branchCov
-    {
-      background-color: #CAD7FE;
-    }
-
-    /* Source code view: format for branches which were executed
-     * but not taken */
-    span.branchNoCov
-    {
-      background-color: #FF6230;
-    }
-
-    /* Source code view: format for branches which were not executed */
-    span.branchNoExec
-    {
-      background-color: #FF6230;
-    }
-
-    /* Source code view: format for the source code heading line */
-    pre.sourceHeading
-    {
-      white-space: pre;
-      font-family: monospace;
-      font-weight: bold;
-      margin: 0px;
-    }
-
-    /* All views: header legend value for low rate */
-    td.headerValueLegL
-    {
-      font-family: sans-serif;
-      text-align: center;
-      white-space: nowrap;
-      padding-left: 4px;
-      padding-right: 2px;
-      background-color: #FF0000;
-      font-size: 80%;
-    }
-
-    /* All views: header legend value for med rate */
-    td.headerValueLegM
-    {
-      font-family: sans-serif;
-      text-align: center;
-      white-space: nowrap;
-      padding-left: 2px;
-      padding-right: 2px;
-      background-color: #FFEA20;
-      font-size: 80%;
-    }
-
-    /* All views: header legend value for hi rate */
-    td.headerValueLegH
-    {
-      font-family: sans-serif;
-      text-align: center;
-      white-space: nowrap;
-      padding-left: 2px;
-      padding-right: 4px;
-      background-color: #A7FC9D;
-      font-size: 80%;
-    }
-
-    /* All views except source code view: legend format for low coverage */
-    span.coverLegendCovLo
-    {
-      padding-left: 10px;
-      padding-right: 10px;
-      padding-top: 2px;
-      background-color: #FF0000;
-    }
-
-    /* All views except source code view: legend format for med coverage */
-    span.coverLegendCovMed
-    {
-      padding-left: 10px;
-      padding-right: 10px;
-      padding-top: 2px;
-      background-color: #FFEA20;
-    }
-
-    /* All views except source code view: legend format for hi coverage */
-    span.coverLegendCovHi
-    {
-      padding-left: 10px;
-      padding-right: 10px;
-      padding-top: 2px;
-      background-color: #A7FC9D;
-    }
-   
     .graphcont{
-        /* padding-top:10px; */
         color:#000;
         font-weight:700;
         float:left
@@ -1234,7 +863,6 @@ css = '''
 
     .graph{
         float:left;
-        /* margin-top:10px; */
         background-color: white;
         position:relative;
         width:280px;
@@ -1244,11 +872,7 @@ css = '''
     .graph .bar{
         display:block;
         position:relative;
-        /* background-image:url(images/bargraph.gif); */
-        /* background-position:right center; */
-        /* background-repeat:repeat-x; */
-        background-color: green;
-        border-right:#538e02 1px solid;
+        border:black 1px solid;
         text-align:center;
         color:#fff;
         height:10px;
@@ -1261,7 +885,7 @@ css = '''
         position:absolute;
         left:1em
     } 
-'''
+''')
 
 #
 # A string template for the HTML output
@@ -1287,35 +911,35 @@ root_page = Template('''
       <td width="100%">
         <table cellpadding=1 border=0 width="100%">
           <tr>
-            <td width="10%" class="headerItem">Directory:</td>
+            <td width="10%" class="headerName">Directory:</td>
             <td width="35%" class="headerValue">${DIRECTORY}</td>
             <td width="5%"></td>
             <td width="15%"></td>
-            <td width="10%" class="headerCovTableHead">Exec</td>
-            <td width="10%" class="headerCovTableHead">Lines</td>
-            <td width="15%" class="headerCovTableHead">Coverage</td>
+            <td width="10%" class="headerValue" style="text-align:right;">Exec</td>
+            <td width="10%" class="headerValue" style="text-align:right;">Total</td>
+            <td width="15%" class="headerValue" style="text-align:right;">Coverage</td>
           </tr>
           <tr>
-            <td class="headerItem">Date:</td>
+            <td class="headerName">Date:</td>
             <td class="headerValue">${DATE}</td>
             <td></td>
-            <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">${LINES_EXEC}</td>
-            <td class="headerCovTableEntry">${LINES_TOTAL}</td>
-            <td class="headerCovTableEntryHi">${LINES_COVERAGE} %</td>
+            <td class="headerName">Lines:</td>
+            <td class="headerTableEntry">${LINES_EXEC}</td>
+            <td class="headerTableEntry">${LINES_TOTAL}</td>
+            <td class="headerTableEntry" style="background-color:${LINES_COLOR}">${LINES_COVERAGE} %</td>
           </tr>
           <tr>
-            <td class="headerItem">Legend:</td>
+            <td class="headerName">Legend:</td>
             <td class="headerValueLeg">
-              <span class="coverLegendCovLo">low: &lt; ${COVERAGE_LOW} %</span>
-              <span class="coverLegendCovMed">medium: &gt;= ${COVERAGE_LOW} %</span>
-              <span class="coverLegendCovHi">high: &gt;= ${COVERAGE_HIGH} %</span>
+              <span style="background-color:${low_color}">low: &lt; ${COVERAGE_MED} %</span>
+              <span style="background-color:${medium_color}">medium: &gt;= ${COVERAGE_MED} %</span>
+              <span style="background-color:${high_color}">high: &gt;= ${COVERAGE_HIGH} %</span>
             </td>
             <td></td>
-            <td class="headerItem">Branches:</td>
-            <td class="headerCovTableEntry">${BRANCHES_EXEC}</td>
-            <td class="headerCovTableEntry">${BRANCHES_TOTAL}</td>
-            <td class="headerCovTableEntryMed">${BRANCHES_COVERAGE} %</td>
+            <td class="headerName">Branches:</td>
+            <td class="headerTableEntry">${BRANCHES_EXEC}</td>
+            <td class="headerTableEntry">${BRANCHES_TOTAL}</td>
+            <td class="headerTableEntry" style="background-color:${BRANCHES_COLOR}">${BRANCHES_COVERAGE} %</td>
           </tr>
         </table>
       </td>
@@ -1335,9 +959,9 @@ root_page = Template('''
       <td width="8%"></td>
     </tr>
     <tr>
-      <td class="tableHead">File</td>
-      <td class="tableHead" colspan=3>Lines</td>
-      <td class="tableHead" colspan=2>Branches</td>
+      <td class="coverTableHead">File</td>
+      <td class="coverTableHead" colspan=3>Lines</td>
+      <td class="coverTableHead" colspan=2>Branches</td>
     </tr>
 
     ${ROWS}
@@ -1355,7 +979,7 @@ root_page = Template('''
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="hr"><td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://gcovr.com">GCOVR (Version ${VERSION})</a></td></tr>
+    <tr><td class="footer">Generated by: <a href="http://gcovr.com">GCOVR (Version ${VERSION})</a></td></tr>
   </table>
   <br>
 
@@ -1374,9 +998,12 @@ def print_html_report(covdata):
     data['TIME'] = str(int(time.time()))
     data['DATE'] = datetime.date.today().isoformat()
     data['ROWS'] = []
-    data['COVERAGE_LOW'] = 75
-    data['COVERAGE_HIGH'] = 90
-    data['CSS'] = css
+    data['low_color'] = low_color
+    data['medium_color'] = medium_color
+    data['high_color'] = high_color
+    data['COVERAGE_MED'] = medium_coverage
+    data['COVERAGE_HIGH'] = high_coverage
+    data['CSS'] = css.substitute(low_color=low_color, medium_color=medium_color, high_color=high_color)
     data['DIRECTORY'] = ''
 
     branchTotal = 0
@@ -1388,7 +1015,14 @@ def print_html_report(covdata):
         branchCovered += covered
     data['BRANCHES_EXEC'] = str(branchCovered)
     data['BRANCHES_TOTAL'] = str(branchTotal)
-    data['BRANCHES_COVERAGE'] = branchTotal == 0 and '0.0' or str(round(100.0*branchCovered / branchTotal,1))
+    coverage = 0.0 if branchTotal == 0 else round(100.0*branchCovered / branchTotal,1)
+    data['BRANCHES_COVERAGE'] = str(coverage)
+    if coverage < medium_coverage:
+        data['BRANCHES_COLOR'] = low_color
+    elif coverage < high_coverage:
+        data['BRANCHES_COLOR'] = medium_color
+    else:
+        data['BRANCHES_COLOR'] = high_color
 
     lineTotal = 0
     lineCovered = 0
@@ -1399,7 +1033,14 @@ def print_html_report(covdata):
         lineCovered += covered
     data['LINES_EXEC'] = str(lineCovered)
     data['LINES_TOTAL'] = str(lineTotal)
-    data['LINES_COVERAGE'] = lineTotal == 0 and '0.0' or str(round(100.0*lineCovered / lineTotal,1))
+    coverage = 0.0 if lineTotal == 0 else round(100.0*lineCovered / lineTotal,1)
+    data['LINES_COVERAGE'] = str(coverage)
+    if coverage < medium_coverage:
+        data['LINES_COLOR'] = low_color
+    elif coverage < high_coverage:
+        data['LINES_COLOR'] = medium_color
+    else:
+        data['LINES_COLOR'] = high_color
     
 
     # Generate the coverage output (on a per-package basis)
@@ -1489,46 +1130,50 @@ def print_html_report(covdata):
 #
 # Generate the table row for a single file
 #
+nrows = 0
 def html_row(**kwargs):
     rowstr=Template('''
     <tr>
-      <td class="coverFile">${filename}</td>
-      <td class="coverBar" align="center">
+      <td class="coverFile" ${altstyle}>${filename}</td>
+      <td class="coverBar" align="center" ${altstyle}>
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:${LinesCoverage}%; background-color:${LinesColor}"></strong></div>
+                <div class="graph"><strong class="bar" style="width:${LinesCoverage}%; background-color:${LinesBar}"></strong></div>
                 </td></tr></table>
       </td>
-      <td class="${LinesPerClass}">${LinesCoverage}&nbsp;%</td>
-      <td class="${LinesNumClass}">${LinesExec} / ${LinesTotal}</td>
-      <td class="${BranchesPerClass}">${BranchesCoverage}&nbsp;%</td>
-      <td class="${BranchesNumClass}">${BranchesExec} / ${BranchesTotal}</td>
+      <td class="CoverValue" style="font-weight:bold; background-color:${LinesColor};">${LinesCoverage}&nbsp;%</td>
+      <td class="CoverValue" style="font-weight:bold; background-color:${LinesColor};">${LinesExec} / ${LinesTotal}</td>
+      <td class="CoverValue" style="background-color:${BranchesColor};">${BranchesCoverage}&nbsp;%</td>
+      <td class="CoverValue" style="background-color:${BranchesColor};">${BranchesExec} / ${BranchesTotal}</td>
     </tr>
 ''')
+    global nrows
+    nrows += 1
+    if nrows % 2 == 0:
+        kwargs['altstyle'] = 'style="background-color:LightSteelBlue"'
+    else:
+        kwargs['altstyle'] = ''
     kwargs['filename'] = kwargs['filename'][len(kwargs['directory']):]
     kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'],1)
-    if kwargs['LinesCoverage'] < 75.0:
-        kwargs['LinesColor'] = 'red'
-        kwargs['LinesPerClass'] = 'coverPerLo'
-        kwargs['LinesNumClass'] = 'coverNumLo'
-    elif kwargs['LinesCoverage'] < 90.0:
-        kwargs['LinesColor'] = 'yellow'
-        kwargs['LinesPerClass'] = 'coverPerMed'
-        kwargs['LinesNumClass'] = 'coverNumMed'
+    if kwargs['LinesCoverage'] < medium_coverage:
+        kwargs['LinesColor'] = low_color
+        kwargs['LinesBar'] = 'red'
+    elif kwargs['LinesCoverage'] < high_coverage:
+        kwargs['LinesColor'] = medium_color
+        kwargs['LinesBar'] = 'yellow'
     else:
-        kwargs['LinesColor'] = 'green'
-        kwargs['LinesPerClass'] = 'coverPerHi'
-        kwargs['LinesNumClass'] = 'coverNumHi'
+        kwargs['LinesColor'] = high_color
+        kwargs['LinesBar'] = 'green'
 
     kwargs['BranchesCoverage'] = round(kwargs['BranchesCoverage'],1)
-    if kwargs['BranchesCoverage'] < 75.0:
-        kwargs['BranchesPerClass'] = 'coverPerLo'
-        kwargs['BranchesNumClass'] = 'coverNumLo'
-    elif kwargs['BranchesCoverage'] < 90.0:
-        kwargs['BranchesPerClass'] = 'coverPerMed'
-        kwargs['BranchesNumClass'] = 'coverNumMed'
+    if kwargs['BranchesCoverage'] < medium_coverage:
+        kwargs['BranchesColor'] = low_color
+        kwargs['BranchesBar'] = 'red'
+    elif kwargs['BranchesCoverage'] < high_coverage:
+        kwargs['BranchesColor'] = medium_color
+        kwargs['BranchesBar'] = 'yellow'
     else:
-        kwargs['BranchesPerClass'] = 'coverPerHi'
-        kwargs['BranchesNumClass'] = 'coverNumHi'
+        kwargs['BranchesColor'] = high_color
+        kwargs['BranchesBar'] = 'green'
 
     return rowstr.substitute(**kwargs)
     
