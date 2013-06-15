@@ -1478,6 +1478,11 @@ if options.objdir:
             "(WARNING) relative referencing in --object-directory.\n"
             "\tthis could cause strange errors when gcovr attempts to\n"
             "\tidentify the original gcc working directory.\n")
+    if not os.path.exists(normpath(options.objdir)):
+        sys.stderr.write(
+            "(ERROR) Bad --object-directory option.\n"
+            "\tThe specified directory does not exist.\n")
+        sys.exit(1)
 #
 # Setup filters
 #
