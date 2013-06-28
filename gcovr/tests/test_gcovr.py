@@ -48,7 +48,8 @@ def run(cmd):
     try:
         proc = subprocess.Popen( cmd,
                                  stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT )
+                                 stderr=subprocess.STDOUT,
+                                 env=os.environ )
         print("STDOUT - START")
         sys.stdout.write("%s"%proc.communicate()[0])
         print("STDOUT - END")
