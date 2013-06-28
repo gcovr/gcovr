@@ -9,13 +9,7 @@ if test -n "$1"; then
 else
     PYTHON=python
 fi
-if test -n "$2"; then
-    CXX="$2"
-else
-    CXX=g++
-fi
 
-export CXX=$CXX
 export BUILD_SCRIPTS="`dirname $0`"
 export PATH="$WORKSPACE/vpython/bin:$PATH"
 
@@ -33,7 +27,7 @@ echo "  Python:"
 PYTHON_VER=`"$PYTHON" -c 'import sys; sys.stdout.write(str(sys.version_info[0]))'`
 echo
 # The following executables are required (missing app yields build failure)
-for app in $CXX; do
+for app in gcc; do
 echo "  $app:"
 $app --version 2>&1 | grep -v '^$' | sed 's/^/    /' || exit 1
 echo
