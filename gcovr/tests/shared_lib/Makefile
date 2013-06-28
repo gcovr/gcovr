@@ -23,8 +23,8 @@ ifndef DYNLIB_EXT
 endif
 
 all:
-	g++ $(CFLAGS) -c lib/lib.cpp -o obj/libs.o
-	g++ $(CFLAGS) $(SOFLAGS) -shared obj/libs.o -o lib/libs.$(DYNLIB_EXT)
+	$(CXX) $(CFLAGS) -c lib/lib.cpp -o obj/libs.o
+	$(CXX) $(CFLAGS) $(SOFLAGS) -shared obj/libs.o -o lib/libs.$(DYNLIB_EXT)
 	cd testApp && $(MAKE)
 
 run: txt xml html
