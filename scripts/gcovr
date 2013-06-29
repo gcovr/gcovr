@@ -1299,7 +1299,10 @@ def print_xml_report(covdata):
         package[4] += class_branch_hits
         package[5] += class_branches
 
-    for packageName, packageData in packages.items():
+    keys = list(packages.keys())
+    keys.sort()
+    for packageName in keys:
+        packageData = packages[packageName]
         package = packageData[0];
         packageXml.appendChild(package)
         classes = doc.createElement("classes")

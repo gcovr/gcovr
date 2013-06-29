@@ -63,7 +63,6 @@ def run(cmd):
 @unittest.nottest
 def gcovr_test_txt(self, name):
     os.chdir(os.path.join(basedir,name))
-    run(["env"]) or self.fail("Make failed")
     run(["make"]) or self.fail("Make failed")
     run(["make","txt"]) or self.fail("Execution failed")
     self.assertFileEqualsBaseline("coverage.txt", "reference/coverage.txt")
