@@ -10,9 +10,9 @@ else
     PYTHON=python
 fi
 if test -n "$2"; then
-    export CMAKE_CXX_COMPILER="$2"
+    export CXX="$2"
 else
-    export CMAKE_CXX_COMPILER="g++"
+    export CXX="g++"
 fi
 
 export BUILD_SCRIPTS="`dirname $0`"
@@ -32,7 +32,7 @@ echo "  Python:"
 PYTHON_VER=`"$PYTHON" -c 'import sys; sys.stdout.write(str(sys.version_info[0]))'`
 echo
 # The following executables are required (missing app yields build failure)
-for app in $CMAKE_CXX_COMPILER; do
+for app in $CXX; do
 echo "  $app:"
 $app --version 2>&1 | grep -v '^$' | sed 's/^/    /' || exit 1
 echo
