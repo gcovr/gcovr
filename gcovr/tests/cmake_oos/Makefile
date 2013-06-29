@@ -8,7 +8,7 @@
 
 all:
 	mkdir -p build
-	cd build && cmake .. && make
+	cd build && cmake --trace --debug-output .. && make
 
 run: txt xml
 
