@@ -229,7 +229,7 @@ This places the +gcovr+ executable in the +bin+ or +Scripts+ directory
 for you python installation.
 
 The +gcovr+ script has been tested with many different versions of
-Python:  2.4 - 3.2.  Note that this script has only been tested
+Python:  2.5 - 3.2.  Note that this script has only been tested
 with the CPython implementation.
 
 
@@ -256,7 +256,7 @@ The following developers contributed to the Gcovr 3.0 release:
 * William Hart
 * John Siirola
 
-The Gcvor documentation is generated using
+The Gcovr documentation is generated using
 http://www.methods.co.nz/asciidoc/[AsciiDoc].
 
 We would like to thank the following organizations for providing
