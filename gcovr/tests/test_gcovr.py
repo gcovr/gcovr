@@ -36,10 +36,7 @@ class GcovrXml(unittest.TestCase):
         F.write(refData)
         F.close()
         #self.assertSequenceEqual(testData.split('\n'), refData.split('\n'))
-        self.assertMatchesXmlBaseline('coverage.xml', os.path.join('reference','coverage.xml'))
-
-    #def compare_xml(self):
-        #self.assertMatchesXmlBaseline('coverage.xml', os.path.join('reference','coverage.xml'))
+        self.assertMatchesXmlBaseline('coverage.xml', os.path.join('reference','coverage.xml'), tolerance=1e-4)
 
 GcovrXml = unittest.category('smoke')(GcovrXml)
 
