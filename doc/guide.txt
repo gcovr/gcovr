@@ -76,7 +76,7 @@ statistics when deciding if software is ready for a release.
 The +gcovr+ command can be used to analyze programs compiled with
 GCC.   The following sections illustrate the application of +gcovr+
 to test coverage of the following program:
-
+[source,cpp,numbered]
 ----
 include::examples/example1/example1.cpp[]
 ----
@@ -184,6 +184,21 @@ while the XML output includes branch statistics and the number of
 times that each line was covered.  Consequently, XML output can be
 used to support performance optimization in the same manner that
 +gcov+ does.
+
+
+HTML Output
+~~~~~~~~~~~
+
+The +gcovr+ command can also generate a simple
+HTML output using the +--html+ option:
+[source,bash]
+----
+include::examples/.example4_gcovr.sh[]
+----
+This generates a HTML summary of the lines executed.  In this example, the file +example1.html+ is generated, which has the following output:
+
+image::examples/example1.png[align="center"]
+
 
 
 [[gcovrCommand]]
