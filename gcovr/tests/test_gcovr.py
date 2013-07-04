@@ -41,6 +41,30 @@ class GcovrXml(unittest.TestCase):
 GcovrXml = unittest.category('smoke')(GcovrXml)
 
 
+class GcovrHtml(unittest.TestCase):
+    def __init__(self, *args, **kwds):
+        unittest.TestCase.__init__(self, *args, **kwds)
+        self.xml_re = re.compile('((timestamp)|(version))="[^"]*"')
+
+    def compare_html(self):
+        F = open("coverage.html")
+        testData = self.xml_re.sub('\\1=""',F.read()).replace("\r","")
+        F.close()
+        F = open('coverage.html', 'w')
+        F.write(testData)
+        F.close()
+        F = open("reference/coverage.html")
+        refData = self.xml_re.sub('\\1=""',F.read()).replace("\r","")
+        F.close()
+        F = open('reference/coverage.html', 'w')
+        F.write(refData)
+        F.close()
+        #self.assertSequenceEqual(testData.split('\n'), refData.split('\n'))
+        self.assertMatchesXmlBaseline('coverage.html', os.path.join('reference','coverage.html'), tolerance=1e-4)
+
+GcovrHtml = unittest.category('smoke')(GcovrHtml)
+
+
 def run(cmd):
     try:
         proc = subprocess.Popen( cmd,
@@ -78,6 +102,15 @@ def gcovr_test_xml(self, name):
     run(["make","clean"]) or self.fail("Clean failed")
     os.chdir(basedir)
 
+@unittest.nottest
+def gcovr_test_html(self, name):
+    os.chdir(os.path.join(basedir,name))
+    run(["make"]) or self.fail("Make failed")
+    run(["make","html"]) or self.fail("Execution failed")
+    self.compare_html()
+    run(["make","clean"]) or self.fail("Clean failed")
+    os.chdir(basedir)
+
 skip_dirs = [ '.', '..', '.svn' ]
 
 for f in os.listdir(basedir):
@@ -86,6 +119,7 @@ for f in os.listdir(basedir):
             continue
         GcovrTxt.add_fn_test(fn=gcovr_test_txt, name=f)
         GcovrXml.add_fn_test(fn=gcovr_test_xml, name=f)
+        #GcovrHtml.add_fn_test(fn=gcovr_test_html, name=f)
 	
 if __name__ == "__main__":
     unittest.main()
