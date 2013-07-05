@@ -195,9 +195,34 @@ HTML output using the +--html+ option:
 ----
 include::examples/.example4_gcovr.sh[]
 ----
-This generates a HTML summary of the lines executed.  In this example, the file +example1.html+ is generated, which has the following output:
+This generates a HTML summary of the lines executed.  In this
+example, the file +example1.html+ is generated, which has the
+following output:
 
 image::examples/example1.png[align="center"]
+
+The default behavior of the +--html+ option is to generate HTML for
+a single webpage that summarizes the coverage for all files.  The
+HTML is printed to standard output, but the +-o+ (+--output+) option
+is used to specify a file that stores the HTML output.
+
+The +--html-details+ option is used to create a separate web page
+for each file.  Each of these web pages includes the contents of
+file with annotations that summarize code coverage.  Consider the following
+command:
+[source,bash]
+----
+include::examples/.example5_gcovr.sh[]
+----
+This generates the following HTML page for the file +example2.cpp+:
+
+image::examples/example2.example2.cpp.png[align="center"]
+
+Note that the +--html-details+ option can only be used with the
++-o+ (+--output+) option.  For example, if the +--output+ option
+specifies the output file +coverage.html+, then the web pages
+generated for each file will have names of the form
++coverage.<filename>.html+.
 
 
 
