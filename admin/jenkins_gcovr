@@ -41,7 +41,11 @@ done
 
 # Setup virtual Python environment
 \rm -Rf "$WORKSPACE"/vpython
-"$PYTHON" "$BUILD_SCRIPTS"/virtualenv.py "$WORKSPACE"/vpython || exit 1
+if test "$PYTHON_VER" -lt 2.6; then
+   "$PYTHON" "$BUILD_SCRIPTS"/virtualenv_1.7.py "$WORKSPACE"/vpython || exit 1
+else
+   "$PYTHON" "$BUILD_SCRIPTS"/virtualenv.py "$WORKSPACE"/vpython || exit 1
+fi
 "$WORKSPACE"/vpython/bin/easy_install nose || exit 1
 if test "$PYTHON_VER" -gt 2; then
     "$WORKSPACE"/vpython/bin/easy_install unittest2py3k || exit 1
