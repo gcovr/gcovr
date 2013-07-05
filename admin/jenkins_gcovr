@@ -41,7 +41,8 @@ done
 
 # Setup virtual Python environment
 \rm -Rf "$WORKSPACE"/vpython
-if test "$PYTHON_VER" -lt 2.6; then
+tmp=2.6
+if [ "yes" = "$(echo | awk "($PYTHON_VER < $tmp) { print \"yes\"; }")" ]; then
    "$PYTHON" "$BUILD_SCRIPTS"/virtualenv_1.7.py "$WORKSPACE"/vpython || exit 1
 else
    "$PYTHON" "$BUILD_SCRIPTS"/virtualenv.py "$WORKSPACE"/vpython || exit 1
