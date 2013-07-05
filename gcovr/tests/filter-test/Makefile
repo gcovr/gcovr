@@ -13,9 +13,9 @@ xml:
 
 html:
 	./testcase
-	../../../scripts/gcovr -f '.*/tests/' -d --html -o coverage.html
+	../../../scripts/gcovr -f '.*/tests/' -d --html --html-details -o coverage.html
 
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage.html
+	rm -f coverage.txt coverage.xml coverage*.html

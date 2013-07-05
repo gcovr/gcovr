@@ -20,9 +20,9 @@ xml:
 
 html:
 	./subdir/testcase
-	../../../scripts/gcovr -r . -d --html -o coverage.html
+	../../../scripts/gcovr -r . -d --html --html-details -o coverage.html
 
 clean:
 	rm -f ./subdir/testcase
 	rm -f *.gc* */*.gc* */*/*.gc*
-	rm -f coverage.txt coverage.xml coverage.html
+	rm -f coverage.txt coverage.xml coverage*.html

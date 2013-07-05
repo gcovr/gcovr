@@ -22,9 +22,9 @@ xml:
 
 html:
 	cd build && ./gcovrtest
-	../../../scripts/gcovr -r . -d --html -o coverage.html
+	../../../scripts/gcovr -r . -d --html --html-details -o coverage.html
 
 clean:
 	rm -rf build
-	rm -f coverage.txt coverage.xml
+	rm -f coverage.txt coverage.xml coverage*.html
 

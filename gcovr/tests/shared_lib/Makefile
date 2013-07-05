@@ -39,11 +39,11 @@ xml:
 
 html:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-	../../../scripts/gcovr -r . -v -d --html -o coverage.html
+	../../../scripts/gcovr -r . -v -d --html --html-details -o coverage.html
 
 clean:
 	rm -rf obj/*
 	rm -f lib/*.so
 	rm -rf testApp/test/*
 	rm -f testApp/*.gc*
-	rm -f coverage.xml coverage.txt coverage.html
+	rm -f coverage.xml coverage.txt coverage*.html
