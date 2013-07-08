@@ -83,6 +83,7 @@ include::examples/example1/example1.cpp[]
 This code executes several subroutines in this program, but some lines in the program are not
 executed.
 
+
 Tabular Output of Code Coverage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -241,12 +242,17 @@ include::examples/gcovr.out[]
 The following sections illustrate the use of these command line options.
 
 
+////
+WEH: This section needs to be added to explain the options that
+specify where files are located.
+
 Controlling Coverage
 ~~~~~~~~~~~~~~~~~~~~
 
 TODO: document options that control where data files and gcov files
 are found and filtering options for them.
 
+////
 
 
 [[installation]]
