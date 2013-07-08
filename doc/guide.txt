@@ -76,7 +76,7 @@ statistics when deciding if software is ready for a release.
 The +gcovr+ command can be used to analyze programs compiled with
 GCC.   The following sections illustrate the application of +gcovr+
 to test coverage of the following program:
-[source,cpp,numbered]
+[source,{cpp},numbered]
 ----
 include::examples/example1/example1.cpp[]
 ----
@@ -216,7 +216,7 @@ include::examples/.example5_gcovr.sh[]
 ----
 This generates the following HTML page for the file +example2.cpp+:
 
-image::examples/example2.example2.cpp.png[align="center"]
+image::examples/example2_example2_cpp.png[align="center"]
 
 Note that the +--html-details+ option can only be used with the
 +-o+ (+--output+) option.  For example, if the +--output+ option
