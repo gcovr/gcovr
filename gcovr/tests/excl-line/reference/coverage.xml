@@ -1,0 +1,36 @@
+<?xml version="" ?>
+<!DOCTYPE coverage
+  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
+<coverage branch-rate="0.5" line-rate="0.857143">
+<sources>
+<source>
+.
+</source>
+</sources>
+<packages>
+<package branch-rate="0.5" complexity="0.0" line-rate="0.857143" name="">
+<classes>
+<class branch-rate="0.5" complexity="0.0" filename="main.cpp" line-rate="0.857143" name="main_cpp">
+<lines>
+<line branch="false" hits="1" number="4"/>
+<line branch="true" condition-coverage="50% (1/2)" hits="1" number="5">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="6"/>
+<line branch="false" hits="1" number="20"/>
+<line branch="false" hits="1" number="21"/>
+<line branch="false" hits="1" number="23"/>
+<line branch="true" condition-coverage="50% (2/4)" hits="3" number="24">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+</lines>
+</class>
+</classes>
+</package>
+</packages>
+</coverage>
+
