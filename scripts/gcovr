@@ -1466,6 +1466,9 @@ def print_xml_report(covdata):
             dir, [ doc.createElement("package"), {},
                    0, 0, 0, 0 ] )
         c = doc.createElement("class")
+        # The Cobertura DTD requires a methods section, which isn't
+        # trivial to get from gcov (so we will leave it blank)
+        c.appendChild(doc.createElement("methods"))
         lines = doc.createElement("lines")
         c.appendChild(lines)
 
