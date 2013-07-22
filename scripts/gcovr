@@ -59,8 +59,6 @@ uncovered_color = "LightPink"
 __version__ = "2.5-prerelease"
 src_revision = "$Revision$"
 
-gcov_cmd = os.environ.get('GCOV',"gcov")
-
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("cannot open (source|graph) file")
 
@@ -623,7 +621,7 @@ def process_datafile(filename, covdata, options):
             if wd == potential_wd[-1]:
                 break
 
-    cmd = [ gcov_cmd, abs_filename,
+    cmd = [ options.gcov_cmd, abs_filename,
             "--branch-counts", "--branch-probabilities", "--preserve-paths", 
             '--object-directory', dirname ]
 
@@ -1686,6 +1684,12 @@ parser.add_option("-p","--sort-percentage",
         action="store_true",
         dest="sort_percent",
         default=None)
+parser.add_option("--gcov-executable", 
+        help="Defines the name/path to the gcov executable [defaults to the "
+                  "GCOV environment variable, if present; else 'gcov'].", 
+ 	action="store", 
+ 	dest="gcov_cmd", 
+ 	default=os.environ.get('GCOV', 'gcov') )
 parser.usage="gcovr [options]"
 parser.description="A utility to run gcov and generate a simple report that summarizes the coverage"
 #
