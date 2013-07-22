@@ -58,7 +58,8 @@ uncovered_color = "LightPink"
 
 __version__ = "2.5-prerelease"
 src_revision = "$Revision$"
-gcov_cmd = "gcov"
+
+gcov_cmd = os.environ.get('GCOV',"gcov")
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("cannot open (source|graph) file")
