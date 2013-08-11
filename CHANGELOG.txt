@@ -1,5 +1,25 @@
 = `gcovr` Release History and Change Log =
 
+=== 3.0 ''(10 August 2013)'' ===
+ - Adding the '--gcov-executable' option to specify
+   the name/location of the gcov executable. The command line option
+   overrides the environment variable, which overrides the default 'gcov'.
+ - Adding an empty "<methods/>" block to <classes/> in the XML output: this
+   makes out XML complient with the Cobertura DTD. (#3951)
+ - Allow the GCOV environment variable to override the default 'gcov' 
+   executable.  The default is to search the PATH for 'gcov' if the GCOV
+   environment variable is not set. (#3950)
+ - Adding support for LCOV-style flags for excluding certain lines from
+   coverage analysis. (#3942)
+ - Setup additional logic to test with Python 2.5.
+ - Added the --html and --html-details options to generate HTML.
+ - Sort output for XML to facilitate baseline tests.
+ - Added error when the --object-directory option specifies a bad directory.
+ - Added more flexible XML testing, which can ignore XML elements
+   that frequently change (e.g. timestamps).
+ - Added the '—xml-pretty' option, which is used to
+   generate pretty XML output for the user manual.
+ - Many documentation updates
 
 === 2.4 ''(13 April 2012)'' ===
  - New approach to walking the directory tree that is more robust to

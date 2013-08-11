@@ -13,9 +13,10 @@ compilerre = re.compile("^(?P<path>[^:]+)(?P<rest>:.*)$")
 dirre      = re.compile("^([^%s]*/)*" % re.escape(os.sep))
 xmlre      = re.compile("\"(?P<path>[^\"]*/[^\"]*)\"")
 datere     = re.compile("date=\"[^\"]*\"")
+versionre  = re.compile("version=\"[^\"]*\"")
+timestampre = re.compile("timestamp=\"[^\"]*\"")
 failure    = re.compile("^(?P<prefix>.+)file=\"(?P<path>[^\"]+)\"(?P<suffix>.*)$")
 
-#print "FOO", dirre 
 def filter(line):
     # for xml, remove prefixes from everything that looks like a 
     # file path inside ""
@@ -25,6 +26,10 @@ def filter(line):
             )
     # Remove date info
     line = datere.sub( lambda match: 'date=""', line)
+    # Remove version info
+    line = versionre.sub( lambda match: 'version=""', line)
+    # Remove timestamp info
+    line = timestampre.sub( lambda match: 'timestamp=""', line)
 
     if 'Running' in line:
         return False

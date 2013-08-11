@@ -2,7 +2,7 @@
 <!DOCTYPE coverage
   SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
 <coverage branch-rate="0.666666666667" line-rate="0.642857142857"
- timestamp="1369671648" version="gcovr 2.5-prerelease (r2833)">
+ timestamp="1376247833" version="gcovr 3.0 (r2887)">
  <sources>
   <source>.</source>
  </sources>
@@ -12,6 +12,7 @@
    <classes>
     <class branch-rate="0.666666666667" complexity="0.0"
      filename="example1.cpp" line-rate="0.642857142857" name="example1_cpp">
+     <methods/>
      <lines>
       <line branch="false" hits="1" number="32"/>
       <line branch="false" hits="1" number="34"/>
