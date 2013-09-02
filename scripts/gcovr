@@ -1700,7 +1700,7 @@ if options.version:
     sys.stdout.write(
         "gcovr %s\n"
         "\n"
-        "Copyright (2008) Sandia Corporation. Under the terms of Contract\n"
+        "Copyright (2013) Sandia Corporation. Under the terms of Contract\n"
         "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
         "retains certain rights in this software.\n"
         % (version_str(),) )
