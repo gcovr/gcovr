@@ -15,12 +15,13 @@ http://gcc.gnu.org/onlinedocs/gcc/Gcov.html[gcov] utility and
 generating summarized code coverage results. This command is inspired
 by the Python  http://nedbatchelder.com/code/coverage/[coverage.py]
 package, which provides a similar utility in Python. The +gcovr+
-command produces either compact human-readable summary reports or
+command produces either compact human-readable summary reports,
 machine readable XML reports (in
-http://cobertura.sourceforge.net/[Cobertura] format). Thus, +gcovr+
-can be viewed as a command-line alternative to the
-http://ltp.sourceforge.net/coverage/lcov.php[lcov] utility, which
-runs gcov and generates an HTML-formatted report.
+http://cobertura.sourceforge.net/[Cobertura] format) or simple HTML
+reports.  Thus, +gcovr+ can be viewed as a command-line alternative
+to the http://ltp.sourceforge.net/coverage/lcov.php[lcov] utility,
+which runs gcov and generates an HTML-formatted report.  This documentation describes
+Gcovr 3.0.
 
 :numbered:
 
