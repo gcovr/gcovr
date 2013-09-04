@@ -5,15 +5,15 @@ run: txt xml html
 
 txt:
 	./testcase
-	../../../scripts/gcovr -f '.*/tests/' -d -o coverage.txt
+	../../../scripts/gcovr -f '.*/tests/' -r '..' -d -o coverage.txt
 
 xml:
 	./testcase
-	../../../scripts/gcovr -f '.*/tests/' -d -x -o coverage.xml
+	../../../scripts/gcovr -f '.*/tests/' -r '..' -d -x -o coverage.xml
 
 html:
 	./testcase
-	../../../scripts/gcovr -f '.*/tests/' -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -f '.*/tests/' -r '..' -d --html --html-details -o coverage.html
 
 clean:
 	rm -f testcase

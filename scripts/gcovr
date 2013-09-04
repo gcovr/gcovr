@@ -175,7 +175,7 @@ class CoverageData(object):
         return (total, cover, percent)
 
     def summary(self):
-        tmp = options.filter.sub('',self.fname)
+        tmp = options.root_filter.sub('',self.fname)
         if not self.fname.endswith(tmp):
             # Do no truncation if the filter does not start matching at
             # the beginning of the string
@@ -1446,7 +1446,7 @@ def print_xml_report(covdata):
     keys.sort()
     for f in keys:
         data = covdata[f]
-        dir = options.filter.sub('',f)
+        dir = options.root_filter.sub('',f)
         if f.endswith(dir):
             src_path = f[:-1*len(dir)]
             if len(src_path) > 0:
@@ -1724,19 +1724,23 @@ if options.objdir:
 #
 for i in range(0,len(options.exclude)):
     options.exclude[i] = re.compile(options.exclude[i])
-if options.filter is not None:
-    options.filter = re.compile(options.filter)
-elif options.root is not None:
+
+if options.root is not None:
     if not options.root:
         sys.stderr.write(
             "(ERROR) empty --root option.\n"
             "\tRoot specifies the path to the root directory of your project.\n"
             "\tThis option cannot be an empty string.\n")
         sys.exit(1)
-    options.filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
-if options.filter is None:
-    options.filter = re.compile('')
-#
+    options.root_filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
+else:
+    options.root_filter = re.compile('')
+
+if options.filter is not None:
+    options.filter = re.compile(options.filter)
+else:
+    options.filter = options.root_filter
+
 for i in range(0,len(options.gcov_exclude)):
     options.gcov_exclude[i] = re.compile(options.gcov_exclude[i])
 if options.gcov_filter is not None:
