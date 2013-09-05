@@ -30,7 +30,7 @@ setup(name='gcovr',
       license = 'BSD',
       platforms = ["any"],
       description = 'A Python script for summarizing gcov data.',
-      long_description = read('README.txt'),
+      long_description = read('README.md'),
       classifiers = [
             'Development Status :: 4 - Beta',
             'Intended Audience :: End Users/Desktop',
