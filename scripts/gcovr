@@ -175,7 +175,7 @@ class CoverageData(object):
         return (total, cover, percent)
 
     def summary(self):
-        tmp = options.filter.sub('',self.fname)
+        tmp = options.root_filter.sub('',self.fname)
         if not self.fname.endswith(tmp):
             # Do no truncation if the filter does not start matching at
             # the beginning of the string
@@ -401,7 +401,12 @@ def process_gcov_data(data_fname, covdata, options):
     #
     # Return if the filename does not match the filter
     #
-    if not options.filter.match(fname):
+    filtered_fname = None
+    for i in range(0,len(options.filter)):
+        if options.filter[i].match(fname):
+            filtered_fname = options.filter[i].sub('',fname)
+            break
+    if filtered_fname is None:
         if options.verbose:
             sys.stdout.write("  Filtering coverage data for file %s\n" % fname)
         return
@@ -409,7 +414,7 @@ def process_gcov_data(data_fname, covdata, options):
     # Return if the filename matches the exclude pattern
     #
     for i in range(0,len(options.exclude)):
-        if options.exclude[i].match(options.filter.sub('',fname)) or \
+        if (filtered_fname is not None and options.exclude[i].match(filtered_fname)) or \
                options.exclude[i].match(fname) or \
                options.exclude[i].match(os.path.abspath(fname)):
             if options.verbose:
@@ -1446,7 +1451,7 @@ def print_xml_report(covdata):
     keys.sort()
     for f in keys:
         data = covdata[f]
-        dir = options.filter.sub('',f)
+        dir = options.root_filter.sub('',f)
         if f.endswith(dir):
             src_path = f[:-1*len(dir)]
             if len(src_path) > 0:
@@ -1626,9 +1631,9 @@ parser.add_option("-d","--delete",
         default=False)
 parser.add_option("-f","--filter",
         help="Keep only the data files that match this regular expression",
-        action="store",
+        action="append",
         dest="filter",
-        default=None)
+        default=[])
 parser.add_option("-e","--exclude",
         help="Exclude data files that match this regular expression",
         action="append",
@@ -1724,19 +1729,22 @@ if options.objdir:
 #
 for i in range(0,len(options.exclude)):
     options.exclude[i] = re.compile(options.exclude[i])
-if options.filter is not None:
-    options.filter = re.compile(options.filter)
-elif options.root is not None:
+
+if options.root is not None:
     if not options.root:
         sys.stderr.write(
             "(ERROR) empty --root option.\n"
             "\tRoot specifies the path to the root directory of your project.\n"
             "\tThis option cannot be an empty string.\n")
         sys.exit(1)
-    options.filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
-if options.filter is None:
-    options.filter = re.compile('')
-#
+    options.root_filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
+else:
+    options.root_filter = re.compile('')
+
+for i in range(0,len(options.filter)):
+    options.filter[i] = re.compile(options.filter[i])
+options.filter.append(options.root_filter)
+
 for i in range(0,len(options.gcov_exclude)):
     options.gcov_exclude[i] = re.compile(options.gcov_exclude[i])
 if options.gcov_filter is not None:
