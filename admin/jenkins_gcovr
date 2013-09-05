@@ -22,6 +22,7 @@ echo
 echo "Building on `hostname`:"
 echo
 echo "  Workspace: ${WORKSPACE}"
+echo "  Scripts: ${BUILD_SCRIPTS}"
 echo
 echo "  Environment:"
 /usr/bin/env 2>&1 | sort | sed 's/^/    /'
