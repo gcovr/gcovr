@@ -3,17 +3,19 @@ all:
 
 run: txt xml html
 
+GCOVR_TEST_OPTIONS = -f '.*/tests/' -f '.*/filter.*' -r '..'
+
 txt:
 	./testcase
-	../../../scripts/gcovr -f '.*/tests/' -d -o coverage.txt
+	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
 
 xml:
 	./testcase
-	../../../scripts/gcovr -f '.*/tests/' -d -x -o coverage.xml
+	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d -x -o coverage.xml
 
 html:
 	./testcase
-	../../../scripts/gcovr -f '.*/tests/' -d --html --html-details -o coverage.html
+	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d --html --html-details -o coverage.html
 
 clean:
 	rm -f testcase
