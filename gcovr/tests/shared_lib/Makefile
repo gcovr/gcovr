@@ -1,4 +1,5 @@
 CFLAGS=-fprofile-arcs -ftest-coverage
+INSTALL ?= install -p
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 ifeq ($(BASE_OS),Darwin)
@@ -23,9 +24,10 @@ ifndef DYNLIB_EXT
 endif
 
 all:
+	$(INSTALL) -d obj
 	$(CXX) $(CFLAGS) -c lib/lib.cpp -o obj/libs.o
 	$(CXX) $(CFLAGS) $(SOFLAGS) -shared obj/libs.o -o lib/libs.$(DYNLIB_EXT)
-	cd testApp && $(MAKE)
+	$(MAKE) -C testApp
 
 run: txt xml html
 
@@ -42,8 +44,7 @@ html:
 	../../../scripts/gcovr -r . -v -d --html --html-details -o coverage.html
 
 clean:
-	rm -rf obj/*
+	rm -rf obj
 	rm -f lib/*.so
-	rm -rf testApp/test/*
-	rm -f testApp/*.gc*
 	rm -f coverage.xml coverage.txt coverage*.html
+	$(MAKE) -C testApp clean
