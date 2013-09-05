@@ -15,7 +15,7 @@ else
     export CXX="g++"
 fi
 
-export BUILD_SCRIPTS="`dirname $0`"
+export BUILD_SCRIPTS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export PATH="$WORKSPACE/vpython/bin:$PATH"
 
 echo
