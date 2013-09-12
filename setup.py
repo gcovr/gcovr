@@ -19,7 +19,11 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 from setuptools import setup
+import os.path
 
+if os.path.exists('README.md'):
+    import shutil
+    shutil.copyfile('README.md', 'README.txt')
 scripts = glob.glob("scripts/*")
 
 setup(name='gcovr',
@@ -30,7 +34,7 @@ setup(name='gcovr',
       license = 'BSD',
       platforms = ["any"],
       description = 'A Python script for summarizing gcov data.',
-      long_description = read('README.md'),
+      long_description = read('README.txt'),
       classifiers = [
             'Development Status :: 4 - Beta',
             'Intended Audience :: End Users/Desktop',
