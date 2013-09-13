@@ -1204,20 +1204,23 @@ def print_html_report(covdata, details):
     #
     for f in keys:
         cdata = covdata[f]
-        dir = options.filter.sub('',f)
-        if f.endswith(dir):
-            src_path = f[:-1*len(dir)]
-            if len(src_path) > 0:
-                while dir.startswith(os.path.sep):
-                    src_path += os.path.sep
-                    dir = dir[len(os.path.sep):]
-                source_dirs.add(src_path)
-        else:
+        directory = None
+        for filter_ in options.filter:
+            dir_ = filter_.sub('',f)
+            if f.endswith(dir_):
+                src_path = f[:-1*len(dir_)]
+                if len(src_path) > 0:
+                    while dir_.startswith(os.path.sep):
+                        src_path += os.path.sep
+                        dir_ = dir_[len(os.path.sep):]
+                    source_dirs.add(src_path)
+                directory = dir_
+        if directory is None:
             # Do no truncation if the filter does not start matching at
             # the beginning of the string
-            dir = f
-        files.append(dir)
-        cdata._filename = dir
+            directory = f
+        files.append(directory)
+        cdata._filename = directory
         ttmp = options.output.split('.')
         if len(ttmp) > 1:
             cdata._sourcefile = '.'.join( ttmp[:-1] )  + '.' + cdata._filename.replace('/','_') + '.' + ttmp[-1]
@@ -1228,7 +1231,7 @@ def print_html_report(covdata, details):
         if commondir != '':
             data['DIRECTORY'] = commondir
     else:
-        dir_, file_ = os.path.split(dir)
+        dir_, file_ = os.path.split(directory)
         if dir_ != '':
             data['DIRECTORY'] = dir_ + os.sep
 
