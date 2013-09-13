@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>Head</title>
   <style media="screen" type="text/css">
   
@@ -187,6 +187,18 @@
         left:1em
     } 
 
+    td.coveredLine,
+    span.coveredLine
+    {
+        background-color: LightGreen;
+    }
+
+    td.uncoveredLine,
+    span.uncoveredLine
+    {
+        background-color: LightPink;
+    }
+
   </style>
 </head>
 
@@ -210,12 +222,12 @@
           </tr>
           <tr>
             <td class="headerName">Date:</td>
-            <td class="headerValue">2013-07-02</td>
+            <td class="headerValue">2013-09-12</td>
             <td></td>
             <td class="headerName">Lines:</td>
-            <td class="headerTableEntry">21</td>
             <td class="headerTableEntry">29</td>
-            <td class="headerTableEntry" style="background-color:LightPink">72.4 %</td>
+            <td class="headerTableEntry">39</td>
+            <td class="headerTableEntry" style="background-color:LightPink">74.4 %</td>
           </tr>
           <tr>
             <td class="headerName">Legend:</td>
@@ -226,8 +238,8 @@
             </td>
             <td></td>
             <td class="headerName">Branches:</td>
-            <td class="headerTableEntry">4</td>
-            <td class="headerTableEntry">8</td>
+            <td class="headerTableEntry">6</td>
+            <td class="headerTableEntry">12</td>
             <td class="headerTableEntry" style="background-color:LightPink">50.0 %</td>
           </tr>
         </table>
@@ -238,7 +250,7 @@
   </table>
 
   <center>
-  <table width="80%" cellpadding=1 cellspacing=1 boder=0>
+  <table width="80%" cellpadding=1 cellspacing=1 border=0>
     <tr>
       <td width="44%"><br></td>
       <td width="8%"></td>
@@ -255,7 +267,7 @@
 
     
     <tr>
-      <td class="coverFile" >A/file1.cpp</td>
+      <td class="coverFile" ><a href="coverage.subdir_A_C_D_file6.cpp.html">A/C/D/file6.cpp</a></td>
       <td class="coverBar" align="center" >
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:75.0%; background-color:yellow"></strong></div>
@@ -269,35 +281,7 @@
 
 
     <tr>
-      <td class="coverFile" style="background-color:LightSteelBlue">A/file2.cpp</td>
-      <td class="coverBar" align="center" style="background-color:LightSteelBlue">
-        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:57.1%; background-color:red"></strong></div>
-                </td></tr></table>
-      </td>
-      <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">57.1&nbsp;%</td>
-      <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">4 / 7</td>
-      <td class="CoverValue" style="background-color:LightGreen;">100.0&nbsp;%</td>
-      <td class="CoverValue" style="background-color:LightGreen;">0 / 0</td>
-    </tr>
-
-
-    <tr>
-      <td class="coverFile" >A/file3.cpp</td>
-      <td class="coverBar" align="center" >
-        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:57.1%; background-color:red"></strong></div>
-                </td></tr></table>
-      </td>
-      <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">57.1&nbsp;%</td>
-      <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">4 / 7</td>
-      <td class="CoverValue" style="background-color:LightGreen;">100.0&nbsp;%</td>
-      <td class="CoverValue" style="background-color:LightGreen;">0 / 0</td>
-    </tr>
-
-
-    <tr>
-      <td class="coverFile" style="background-color:LightSteelBlue">A/file4.cpp</td>
+      <td class="coverFile" style="background-color:LightSteelBlue"><a href="coverage.subdir_A_C_file5.cpp.html">A/C/file5.cpp</a></td>
       <td class="coverBar" align="center" style="background-color:LightSteelBlue">
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:75.0%; background-color:yellow"></strong></div>
@@ -311,14 +295,70 @@
 
 
     <tr>
-      <td class="coverFile" >B/main.cpp</td>
+      <td class="coverFile" ><a href="coverage.subdir_A_file1.cpp.html">A/file1.cpp</a></td>
+      <td class="coverBar" align="center" >
+        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
+                <div class="graph"><strong class="bar" style="width:75.0%; background-color:yellow"></strong></div>
+                </td></tr></table>
+      </td>
+      <td class="CoverValue" style="font-weight:bold; background-color:#FFFF55;">75.0&nbsp;%</td>
+      <td class="CoverValue" style="font-weight:bold; background-color:#FFFF55;">3 / 4</td>
+      <td class="CoverValue" style="background-color:LightPink;">50.0&nbsp;%</td>
+      <td class="CoverValue" style="background-color:LightPink;">1 / 2</td>
+    </tr>
+
+
+    <tr>
+      <td class="coverFile" style="background-color:LightSteelBlue"><a href="coverage.subdir_A_file2.cpp.html">A/file2.cpp</a></td>
+      <td class="coverBar" align="center" style="background-color:LightSteelBlue">
+        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
+                <div class="graph"><strong class="bar" style="width:57.1%; background-color:red"></strong></div>
+                </td></tr></table>
+      </td>
+      <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">57.1&nbsp;%</td>
+      <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">4 / 7</td>
+      <td class="CoverValue" style="background-color:LightGreen;">100.0&nbsp;%</td>
+      <td class="CoverValue" style="background-color:LightGreen;">0 / 0</td>
+    </tr>
+
+
+    <tr>
+      <td class="coverFile" ><a href="coverage.subdir_A_file3.cpp.html">A/file3.cpp</a></td>
+      <td class="coverBar" align="center" >
+        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
+                <div class="graph"><strong class="bar" style="width:57.1%; background-color:red"></strong></div>
+                </td></tr></table>
+      </td>
+      <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">57.1&nbsp;%</td>
+      <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">4 / 7</td>
+      <td class="CoverValue" style="background-color:LightGreen;">100.0&nbsp;%</td>
+      <td class="CoverValue" style="background-color:LightGreen;">0 / 0</td>
+    </tr>
+
+
+    <tr>
+      <td class="coverFile" style="background-color:LightSteelBlue"><a href="coverage.subdir_A_file4.cpp.html">A/file4.cpp</a></td>
+      <td class="coverBar" align="center" style="background-color:LightSteelBlue">
+        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
+                <div class="graph"><strong class="bar" style="width:75.0%; background-color:yellow"></strong></div>
+                </td></tr></table>
+      </td>
+      <td class="CoverValue" style="font-weight:bold; background-color:#FFFF55;">75.0&nbsp;%</td>
+      <td class="CoverValue" style="font-weight:bold; background-color:#FFFF55;">3 / 4</td>
+      <td class="CoverValue" style="background-color:LightPink;">50.0&nbsp;%</td>
+      <td class="CoverValue" style="background-color:LightPink;">1 / 2</td>
+    </tr>
+
+
+    <tr>
+      <td class="coverFile" ><a href="coverage.subdir_B_main.cpp.html">B/main.cpp</a></td>
       <td class="coverBar" align="center" >
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:100.0%; background-color:green"></strong></div>
                 </td></tr></table>
       </td>
       <td class="CoverValue" style="font-weight:bold; background-color:LightGreen;">100.0&nbsp;%</td>
-      <td class="CoverValue" style="font-weight:bold; background-color:LightGreen;">7 / 7</td>
+      <td class="CoverValue" style="font-weight:bold; background-color:LightGreen;">9 / 9</td>
       <td class="CoverValue" style="background-color:LightPink;">50.0&nbsp;%</td>
       <td class="CoverValue" style="background-color:LightPink;">2 / 4</td>
     </tr>
@@ -337,7 +377,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="hr"><td></tr>
-    <tr><td class="footer">Generated by: <a href="http://gcovr.com">GCOVR (Version 2.5-prerelease (r2871))</a></td></tr>
+    <tr><td class="footer">Generated by: <a href="http://gcovr.com">GCOVR (Version 3.1-prerelease)</a></td></tr>
   </table>
   <br>
 

@@ -1,16 +1,15 @@
 <?xml version="" ?>
 <!DOCTYPE coverage
   SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
-<coverage branch-rate="0.5" line-rate="0.724137931034" timestamp="" version="">
+<coverage branch-rate="0.5" line-rate="0.74358974359" timestamp="" version="">
 <sources>
-<source>
-.
-</source>
+<source>.</source>
 </sources>
 <packages>
 <package branch-rate="0.5" complexity="0.0" line-rate="0.636363636364" name="subdir.A">
 <classes>
 <class branch-rate="0.5" complexity="0.0" filename="subdir/A/file1.cpp" line-rate="0.75" name="file1_cpp">
+<methods/>
 <lines>
 <line branch="false" hits="1" number="1"/>
 <line branch="true" condition-coverage="50% (1/2)" hits="1" number="3">
@@ -23,6 +22,7 @@
 </lines>
 </class>
 <class branch-rate="0.0" complexity="0.0" filename="subdir/A/file2.cpp" line-rate="0.571428571429" name="file2_cpp">
+<methods/>
 <lines>
 <line branch="false" hits="1" number="1"/>
 <line branch="false" hits="1" number="3"/>
@@ -34,6 +34,7 @@
 </lines>
 </class>
 <class branch-rate="0.0" complexity="0.0" filename="subdir/A/file3.cpp" line-rate="0.571428571429" name="file3_cpp">
+<methods/>
 <lines>
 <line branch="false" hits="1" number="1"/>
 <line branch="false" hits="1" number="3"/>
@@ -45,6 +46,7 @@
 </lines>
 </class>
 <class branch-rate="0.5" complexity="0.0" filename="subdir/A/file4.cpp" line-rate="0.75" name="file4_cpp">
+<methods/>
 <lines>
 <line branch="false" hits="1" number="1"/>
 <line branch="true" condition-coverage="50% (1/2)" hits="1" number="3">
@@ -58,17 +60,54 @@
 </class>
 </classes>
 </package>
+<package branch-rate="0.5" complexity="0.0" line-rate="0.75" name="subdir.A.C">
+<classes>
+<class branch-rate="0.5" complexity="0.0" filename="subdir/A/C/file5.cpp" line-rate="0.75" name="file5_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="1"/>
+<line branch="true" condition-coverage="50% (1/2)" hits="1" number="3">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="4"/>
+<line branch="false" hits="1" number="6"/>
+</lines>
+</class>
+</classes>
+</package>
+<package branch-rate="0.5" complexity="0.0" line-rate="0.75" name="subdir.A.C.D">
+<classes>
+<class branch-rate="0.5" complexity="0.0" filename="subdir/A/C/D/file6.cpp" line-rate="0.75" name="file6_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="1"/>
+<line branch="true" condition-coverage="50% (1/2)" hits="1" number="3">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="4"/>
+<line branch="false" hits="1" number="6"/>
+</lines>
+</class>
+</classes>
+</package>
 <package branch-rate="0.5" complexity="0.0" line-rate="1.0" name="subdir.B">
 <classes>
 <class branch-rate="0.5" complexity="0.0" filename="subdir/B/main.cpp" line-rate="1.0" name="main_cpp">
+<methods/>
 <lines>
-<line branch="false" hits="1" number="9"/>
-<line branch="false" hits="1" number="10"/>
 <line branch="false" hits="1" number="11"/>
 <line branch="false" hits="1" number="12"/>
 <line branch="false" hits="1" number="13"/>
+<line branch="false" hits="1" number="14"/>
 <line branch="false" hits="1" number="15"/>
-<line branch="true" condition-coverage="50% (2/4)" hits="3" number="16">
+<line branch="false" hits="1" number="16"/>
+<line branch="false" hits="1" number="17"/>
+<line branch="false" hits="1" number="19"/>
+<line branch="true" condition-coverage="50% (2/4)" hits="3" number="20">
 <conditions>
 <condition coverage="50%" number="0" type="jump"/>
 </conditions>
