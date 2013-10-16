@@ -588,7 +588,8 @@ def process_datafile(filename, covdata, options):
         if idx > len(components):
             pass # a parent dir; the normal process will find it
         elif components[-1*idx] == '..':
-            dirs = [ os.path.join(src_components[:len(src_components)-idx+1]) ]
+            # NB: os.path.join does not re-add leading '/' characters!?!
+            dirs = [ os.path.sep.join(src_components[:len(src_components)-idx]) ]
             while idx <= len(components) and components[-1*idx] == '..':
                 tmp = []
                 for d in dirs:
@@ -630,7 +631,7 @@ def process_datafile(filename, covdata, options):
             "--branch-counts", "--branch-probabilities", "--preserve-paths", 
             '--object-directory', dirname ]
 
-    # NB: We are lazy English speakers, so we will only parse English output
+    # NB: Currently, we will only parse English output
     env = dict(os.environ)
     env['LC_ALL'] = 'en_US'
     
