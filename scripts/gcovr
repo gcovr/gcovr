@@ -199,6 +199,9 @@ def resolve_symlinks(orig_path):
     """
     Return the normalized absolute path name with all symbolic links resolved
     """
+    return os.path.realpath(orig_path)
+    # WEH - why doesn't os.path.realpath() suffice here?
+    #
     drive,tmp = os.path.splitdrive(os.path.abspath(orig_path))
     if not drive:
         drive = os.path.sep
@@ -302,32 +305,40 @@ aliases = PathAliaser()
 # path, along with the full path of all links 1 directory at a time and
 # check for embedded symlinks.
 #
+#
+# NB:  Users have complained that this code causes a performance issue.
+# I have replaced this logic with os.walk(), which works for Python >= 2.6
+#
 def link_walker(path):
-    targets = [os.path.abspath(path)]
-    while targets:
-        target_dir = targets.pop(0)
-        actual_dir = resolve_symlinks(target_dir)
-        #print "target dir: %s  (%s)" % (target_dir, actual_dir)
-        master_name, master_base, visited = aliases.master_path(actual_dir)
-        if visited:
-            #print "  ...root already visited as %s" % master_name
-            aliases.add_alias(target_dir, master_name)
-            continue
-        if master_name != target_dir:
-            aliases.set_preferred(master_name, target_dir)
-            aliases.add_alias(target_dir, master_name)
-        aliases.add_master_target(master_name)
-        #print "  ...master name = %s" % master_name
-        #print "  ...walking %s" % target_dir
-        for root, dirs, files in os.walk(target_dir, topdown=True):
-            #print "    ...reading %s" % root
-            for d in dirs:
-                tmp = os.path.abspath(os.path.join(root, d))
-                #print "    ...checking %s" % tmp
-                if os.path.islink(tmp):
-                    #print "      ...buffering link %s" % tmp
-                    targets.append(tmp)
-            yield root, dirs, files
+    if sys.version_info >= (2,6):
+        for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
+            yield os.path.abspath(os.path.realpath(root)), dirs, files
+    else:
+        targets = [os.path.abspath(path)]
+        while targets:
+            target_dir = targets.pop(0)
+            actual_dir = resolve_symlinks(target_dir)
+            #print "target dir: %s  (%s)" % (target_dir, actual_dir)
+            master_name, master_base, visited = aliases.master_path(actual_dir)
+            if visited:
+                #print "  ...root already visited as %s" % master_name
+                aliases.add_alias(target_dir, master_name)
+                continue
+            if master_name != target_dir:
+                aliases.set_preferred(master_name, target_dir)
+                aliases.add_alias(target_dir, master_name)
+            aliases.add_master_target(master_name)
+            #print "  ...master name = %s" % master_name
+            #print "  ...walking %s" % target_dir
+            for root, dirs, files in os.walk(target_dir, topdown=True):
+                #print "    ...reading %s" % root
+                for d in dirs:
+                    tmp = os.path.abspath(os.path.join(root, d))
+                    #print "    ...checking %s" % tmp
+                    if os.path.islink(tmp):
+                        #print "      ...buffering link %s" % tmp
+                        targets.append(tmp)
+                yield root, dirs, files
 
 
 def search_file(expr, path):
