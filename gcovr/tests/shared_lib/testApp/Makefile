@@ -9,4 +9,4 @@ test/a.out: tmp.cpp
 
 clean:
 	rm -rf test
-	rm -f testApp/*.gc*
+	rm -f *.gc*

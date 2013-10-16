@@ -15,7 +15,7 @@ g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example1.cpp -o program
 # @:run
 
 # @gcovr:
-gcovr -r . --xml-pretty
+../../../scripts/gcovr -r . --xml-pretty
 # @:gcovr
 
 \rm -f program *.gc*

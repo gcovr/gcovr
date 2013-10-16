@@ -15,7 +15,7 @@ g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example1.cpp -o program
 # @:run
 
 # @gcovr:
-gcovr -r .
+../../../scripts/gcovr -r .
 # @:gcovr
 
 \rm -f program *.gc*
