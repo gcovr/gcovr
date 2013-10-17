@@ -1,0 +1,21 @@
+This test case was inspired by the logic in gcovr
+that traverses symbolic links:
+
+# UNIX resolves symbolic links by walking the
+# entire directory structure.  What that means is that relative links
+# are always relative to the actual directory inode, and not the
+# "virtual" path that the user might have traversed (over symlinks) on
+# the way to that directory.  Here's the canonical example:
+#
+#   a / b / c / testfile
+#   a / d / e --> ../../a/b
+#   m / n --> /a
+#   x / y / z --> /m/n/d
+#
+# If we start in "y", we will see the following directory structure:
+#   y
+#   |-- z
+#       |-- e
+#           |-- c
+#               |-- testfile
+
