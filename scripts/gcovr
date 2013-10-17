@@ -367,7 +367,7 @@ def search_file(expr, path):
 # Get the list of datafiles in the directories specified by the user
 #
 def get_datafiles(flist, options):
-    allfiles=[]
+    allfiles=set()
     for dir in flist:
         if options.verbose:
             sys.stdout.write( "Scanning directory %s for gcda/gcno files...\n"
@@ -386,8 +386,8 @@ def get_datafiles(flist, options):
             sys.stdout.write(
                 "Found %d files (and will process %d)\n" %
                 ( len(files), len(gcda_files) + len(gcno_files) ) )
-        allfiles.extend(gcda_files)
-        allfiles.extend(gcno_files)
+        allfiles.update(gcda_files)
+        allfiles.update(gcno_files)
     return allfiles
 
 
@@ -405,7 +405,10 @@ def process_gcov_data(data_fname, covdata, options):
         raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip())
     currdir = os.getcwd()
     os.chdir(starting_dir)
-    fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
+    if sys.version_info >= (2,6):
+        fname = os.path.abspath((segments[-1]).strip())
+    else:
+        fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
     os.chdir(currdir)
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
@@ -445,7 +448,6 @@ def process_gcov_data(data_fname, covdata, options):
     lineno = 0
     for line in INPUT:
         segments=line.split(":",2)
-        #print "HERE", segments
         tmp = segments[0].strip()
         if len(segments) > 1:
             try:
