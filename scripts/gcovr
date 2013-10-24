@@ -67,6 +67,8 @@ starting_dir = os.getcwd()
 exclude_line_flag = "_EXCL_"
 exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
 
+c_style_comment_pattern = re.compile('/\*.*?\*/')
+cpp_style_comment_pattern = re.compile('//.*?$')
 
 def version_str():
     ans = __version__
@@ -446,6 +448,9 @@ def process_gcov_data(data_fname, covdata, options):
     branches = {}
     #first_record=True
     lineno = 0
+    last_code_line = ""
+    last_code_lineno = 0
+    last_code_line_excluded = False
     for line in INPUT:
         segments=line.split(":",2)
         tmp = segments[0].strip()
@@ -485,10 +490,12 @@ def process_gcov_data(data_fname, covdata, options):
                     excl_line = True
             if excl_line:
                 excluding.append(False)
-            
-        if tmp[0] == '-' or excluding:
-            # remember certain non-executed lines
+
+        is_code_statement = False
+        if tmp[0] == '-' or (excluding and tmp[0] in "0123456789"):
+            is_code_statement = True
             code = segments[2].strip()
+            # remember certain non-executed lines
             if excluding or len(code) == 0 or code == "{" or code == "}" or \
                     code.startswith("//") or code == 'else':
                 noncode.add( lineno )
@@ -497,15 +504,35 @@ def process_gcov_data(data_fname, covdata, options):
         elif tmp[0] == '=':
             uncovered_exceptional.add( lineno )
         elif tmp[0] in "0123456789":
+            is_code_statement = True
             covered[lineno] = int(segments[0].strip())
         elif tmp.startswith('branch'):
-            fields = line.split()
-            try:
-                count = int(fields[3])
-                branches.setdefault(lineno, {})[int(fields[1])] = count
-            except:
-                # We ignore branches that were "never executed"
-                pass
+            exclude_branch = False
+            if options.exclude_unreachable_branches and lineno == last_code_lineno:
+                if last_code_line_excluded:
+                    exclude_branch = True
+                    exclude_reason = "marked with exclude pattern"
+                else:
+                    code = last_code_line
+                    code = re.sub(cpp_style_comment_pattern, '', code)
+                    code = re.sub(c_style_comment_pattern, '', code)
+                    code = code.strip()
+                    code_nospace = code.replace(' ', '')
+                    exclude_branch = len(code) == 0 or code == '{' or code == '}' or code_nospace == '{}'
+                    exclude_reason = "detected as compiler-generated code"
+
+            if exclude_branch:
+                if options.verbose:
+                    sys.stdout.write("Excluding unreachable branch on line %d in file %s (%s).\n"
+                         % (lineno, fname, exclude_reason))
+            else:
+                fields = line.split()
+                try:
+                    count = int(fields[3])
+                    branches.setdefault(lineno, {})[int(fields[1])] = count
+                except:
+                    # We ignore branches that were "never executed"
+                    pass
         elif tmp.startswith('call'):
             pass
         elif tmp.startswith('function'):
@@ -527,9 +554,18 @@ def process_gcov_data(data_fname, covdata, options):
                 "\tThis is indicitive of a gcov output parse error.\n"
                 "\tPlease report this to the gcovr developers." % tmp )
 
-        # Clear the excluding flag for single-line excludes
+        # save the code line to use it later with branches
+        if is_code_statement:
+            last_code_line = "".join(segments[2:])
+            last_code_lineno = lineno
+            last_code_line_excluded = False
+            if excluding:
+                last_code_line_excluded = True
+
+        # clear the excluding flag for single-line excludes
         if excluding and not excluding[-1]:
             excluding.pop()
+
     ##print 'uncovered',uncovered
     ##print 'covered',covered
     ##print 'branches',branches
@@ -1712,6 +1748,12 @@ parser.add_option("--gcov-executable",
  	action="store", 
  	dest="gcov_cmd", 
  	default=os.environ.get('GCOV', 'gcov') )
+parser.add_option("--exclude-unreachable-branches",
+        help="Exclude from coverage branches which are marked to be excluded by LCOV/GCOV markers "
+                  "or are determined to be from lines containing only compiler-generated \"dead\" code.",
+        action="store_true",
+        dest="exclude_unreachable_branches",
+        default=False)
 parser.usage="gcovr [options]"
 parser.description="A utility to run gcov and generate a simple report that summarizes the coverage"
 #
