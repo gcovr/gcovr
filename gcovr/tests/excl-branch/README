@@ -1,0 +1,4 @@
+Test for --exclude-unreachable-branches option
+
+The test attempts to test both GCOV/LCOV exclusion markers
+and auto-detection of compiler-generated code.
