@@ -1368,7 +1368,8 @@ def print_html_report(covdata, details):
             data['LINES_COLOR'] = high_color
 
         data['ROWS'] = []
-        INPUT = open(data['FILENAME'], 'r')
+        #INPUT = open(data['FILENAME'], 'r')
+        INPUT = open(os.path.join(options.root,data['FILENAME']), 'r')
         ctr = 1
         for line in INPUT:
             data['ROWS'].append( source_row(ctr, line.rstrip(), cdata) )
