@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 class Bar
 {
@@ -34,13 +35,28 @@ int foo(int param) {
   return 0;
 }
 
+int bar(int param) { // never called, GCOV_EXCL_START
+  if (param) {
+    return 1;
+  }
+  return 0;
+} // GCOV_EXCL_STOP
+
 
 int main(int argc, char* argv[]) {
   for (int i = 0; i < 5; i++) { // 2/2 branches
     foo(i);
   }
 
-  Bar bar;
+  try {
+    Bar bar; // LCOV_EXCL_LINE
+  } catch (const std::exception &e) { // LCOV_EXCL_START
+    std::cout << "caught exception";
+    if (std::strlen(e.what()) > 0) {
+      std::cout << ": " << e.what();
+    }
+    std::cout << std::endl;
+  } // LCOV_EXCL_STOP
 
   return 0;
 } // compiler-generated destruction code - auto-detected and excluded

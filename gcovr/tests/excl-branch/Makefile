@@ -1,5 +1,5 @@
 all:
-	$(CXX) -fno-exceptions -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
 run: txt xml html
 
