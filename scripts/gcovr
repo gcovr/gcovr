@@ -1194,6 +1194,18 @@ source_page = Template('''
 # Produce an HTML report
 #
 def print_html_report(covdata, details):
+    def _num_uncovered(key):
+        (total, covered, percent) = covdata[key].coverage()
+        return total - covered
+    def _percent_uncovered(key):
+        (total, covered, percent) = covdata[key].coverage()
+        if covered:
+            return -1.0*covered/total
+        else:
+            return total or 1e6
+    def _alpha(key):
+        return key
+
     if options.output is None:
         details = False
     data = {}
@@ -1250,10 +1262,9 @@ def print_html_report(covdata, details):
     # Generate the coverage output (on a per-package basis)
     source_dirs = set()
     files = []
-
     keys = list(covdata.keys())
-    keys.sort()
-    #
+    keys.sort(key=options.sort_uncovered and _num_uncovered or \
+              options.sort_percent and _percent_uncovered or _alpha)
     for f in keys:
         cdata = covdata[f]
         directory = None
