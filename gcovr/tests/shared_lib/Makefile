@@ -37,11 +37,11 @@ txt:
 
 xml:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-	../../../scripts/gcovr -r . -v -d -x -o coverage.xml
+	../../../scripts/gcovr -r . -d -x -o coverage.xml
 
 html:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-	../../../scripts/gcovr -r . -v -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -r . -d --html --html-details -o coverage.html
 
 clean:
 	rm -rf obj

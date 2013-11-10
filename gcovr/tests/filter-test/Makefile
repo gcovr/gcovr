@@ -1,9 +1,13 @@
+CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
+
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) $(CFLAGS) -c file1.cpp -o file1.o
+	$(CXX) $(CFLAGS) -c main.cpp -o main.o
+	$(CXX) $(CFLAGS) main.o file1.o -o testcase
 
 run: txt xml html
 
-GCOVR_TEST_OPTIONS = -f '.*/tests/' -f '.*/filter.*' -r '..'
+GCOVR_TEST_OPTIONS = -f '.*main.cpp' -r '.'
 
 txt:
 	./testcase
@@ -19,5 +23,5 @@ html:
 
 clean:
 	rm -f testcase
-	rm -f *.gc*
+	rm -f *.gc* *.o
 	rm -f coverage.txt coverage.xml coverage*.html

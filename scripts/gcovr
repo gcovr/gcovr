@@ -406,7 +406,7 @@ def process_gcov_data(data_fname, covdata, options):
     if len(segments) != 4 or not segments[2].lower().strip().endswith('source'):
         raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip())
     currdir = os.getcwd()
-    os.chdir(starting_dir)
+    os.chdir(root_dir)
     if sys.version_info >= (2,6):
         fname = os.path.abspath((segments[-1]).strip())
     else:
@@ -1259,7 +1259,9 @@ def print_html_report(covdata, details):
         directory = None
         for filter_ in options.filter:
             dir_ = filter_.sub('',f)
-            if f.endswith(dir_):
+            if dir_ == "":
+                directory = f
+            elif f.endswith(dir_):
                 src_path = f[:-1*len(dir_)]
                 if len(src_path) > 0:
                     while dir_.startswith(os.path.sep):
@@ -1273,7 +1275,7 @@ def print_html_report(covdata, details):
             directory = f
         files.append(directory)
         cdata._filename = directory
-        ttmp = options.output.split('.')
+        ttmp = os.path.abspath(options.output).split('.')
         if len(ttmp) > 1:
             cdata._sourcefile = '.'.join( ttmp[:-1] )  + '.' + cdata._filename.replace('/','_') + '.' + ttmp[-1]
         else:
@@ -1368,13 +1370,15 @@ def print_html_report(covdata, details):
             data['LINES_COLOR'] = high_color
 
         data['ROWS'] = []
-        #INPUT = open(data['FILENAME'], 'r')
-        INPUT = open(os.path.join(options.root,data['FILENAME']), 'r')
+        currdir = os.getcwd()
+        os.chdir(root_dir)
+        INPUT = open(data['FILENAME'], 'r')
         ctr = 1
         for line in INPUT:
             data['ROWS'].append( source_row(ctr, line.rstrip(), cdata) )
             ctr += 1
         INPUT.close()
+        os.chdir(currdir)
         data['ROWS'] = '\n'.join(data['ROWS'])
         
         htmlString = source_page.substitute(**data)
@@ -1706,7 +1710,7 @@ parser.add_option("--gcov-exclude",
         dest="gcov_exclude",
         default=[])
 parser.add_option("-r","--root",
-        help="Defines the root directory.  This is used to filter the files, and to standardize the output.",
+        help="Defines the root directory for source files.  This is also used to filter the files, and to standardize the output.",
         action="store",
         dest="root",
         default=None)
@@ -1800,12 +1804,15 @@ if options.root is not None:
             "\tThis option cannot be an empty string.\n")
         sys.exit(1)
     options.root_filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
+    root_dir = os.path.abspath(options.root)
 else:
     options.root_filter = re.compile('')
+    root_dir = starting_dir
 
 for i in range(0,len(options.filter)):
     options.filter[i] = re.compile(options.filter[i])
-options.filter.append(options.root_filter)
+if len(options.filter) == 0:
+    options.filter.append(options.root_filter)
 
 for i in range(0,len(options.gcov_exclude)):
     options.gcov_exclude[i] = re.compile(options.gcov_exclude[i])
@@ -1817,7 +1824,10 @@ else:
 # Get data files
 #
 if len(args) == 1:
-    datafiles = get_datafiles(["."], options)
+    if options.root is None:
+        datafiles = get_datafiles(["."], options)
+    else:
+        datafiles = get_datafiles(options.root, options)
 else:
     datafiles = get_datafiles(args[1:], options)
 #

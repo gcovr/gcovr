@@ -1,5 +1,6 @@
 #include <iostream>
 
+int bar();
 
 int foo(int param) {
   if (param) {
@@ -11,7 +12,7 @@ int foo(int param) {
 
 
 int main(int argc, char* argv[]) {
-  foo(0);
+  foo(bar());
 
   return 0;
 }

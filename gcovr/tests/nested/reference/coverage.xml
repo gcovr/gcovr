@@ -3,7 +3,7 @@
   SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
 <coverage branch-rate="0.5" line-rate="0.74358974359" timestamp="" version="">
 <sources>
-<source>.</source>
+<source>..</source>
 </sources>
 <packages>
 <package branch-rate="0.5" complexity="0.0" line-rate="0.636363636364" name="subdir.A">
