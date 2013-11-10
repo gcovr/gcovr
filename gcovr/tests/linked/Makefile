@@ -14,7 +14,7 @@ run: txt xml html
 
 txt:
 	./subdir/testcase
-	../../../scripts/gcovr -v -r . -d -o coverage.txt
+	../../../scripts/gcovr -r . -d -o coverage.txt
 
 xml:
 	./subdir/testcase

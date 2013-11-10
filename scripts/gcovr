@@ -420,7 +420,7 @@ def process_gcov_data(data_fname, covdata, options):
     filtered_fname = None
     for i in range(0,len(options.filter)):
         if options.filter[i].match(fname):
-            filtered_fname = options.filter[i].sub('',fname)
+            filtered_fname = options.root_filter.sub('',fname)
             break
     if filtered_fname is None:
         if options.verbose:
@@ -1260,45 +1260,32 @@ def print_html_report(covdata, details):
     
 
     # Generate the coverage output (on a per-package basis)
-    source_dirs = set()
+    #source_dirs = set()
     files = []
     keys = list(covdata.keys())
     keys.sort(key=options.sort_uncovered and _num_uncovered or \
               options.sort_percent and _percent_uncovered or _alpha)
     for f in keys:
         cdata = covdata[f]
-        directory = None
-        for filter_ in options.filter:
-            dir_ = filter_.sub('',f)
-            if dir_ == "":
-                directory = f
-            elif f.endswith(dir_):
-                src_path = f[:-1*len(dir_)]
-                if len(src_path) > 0:
-                    while dir_.startswith(os.path.sep):
-                        src_path += os.path.sep
-                        dir_ = dir_[len(os.path.sep):]
-                    source_dirs.add(src_path)
-                directory = dir_
-        if directory is None:
-            # Do no truncation if the filter does not start matching at
-            # the beginning of the string
-            directory = f
-        files.append(directory)
-        cdata._filename = directory
+        filtered_fname = options.root_filter.sub('',f)
+        files.append(filtered_fname)
+        cdata._filename = filtered_fname
         ttmp = os.path.abspath(options.output).split('.')
         if len(ttmp) > 1:
             cdata._sourcefile = '.'.join( ttmp[:-1] )  + '.' + cdata._filename.replace('/','_') + '.' + ttmp[-1]
         else:
             cdata._sourcefile = ttmp[0] + '.' + cdata._filename.replace('/','_') + '.html'
+    # Define the common root directory, which may differ from options.root
+    # when source files share a common prefix.
     if len(files) > 1:
         commondir = posixpath.commonprefix(files)
         if commondir != '':
             data['DIRECTORY'] = commondir
     else:
-        dir_, file_ = os.path.split(directory)
+        dir_, file_ = os.path.split(filtered_fname)
         if dir_ != '':
             data['DIRECTORY'] = dir_ + os.sep
+
 
     for f in keys:
         cdata = covdata[f]
