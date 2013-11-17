@@ -125,7 +125,7 @@ class CoverageData(object):
 
             tmp.sort()
             return ",".join([str(x) for x in tmp]) or ""
-        
+
         if exceptional:
             tmp = list(self.uncovered_exceptional)
         else:
@@ -148,7 +148,7 @@ class CoverageData(object):
                        == item - last - 1:
                     last = item
                     continue
-                
+
                 if first==last:
                     ranges.append(str(first))
                 else:
@@ -172,7 +172,7 @@ class CoverageData(object):
         else:
             total = len(self.all_lines)
             cover = len(self.covered)
-            
+
         percent = total and str(int(100.0*cover/total)) or "--"
         return (total, cover, percent)
 
@@ -187,11 +187,11 @@ class CoverageData(object):
             tmp=tmp+"\n"+" "*40
 
         (total, cover, percent) = self.coverage()
-        uncovered_lines = self.uncovered_str(False) 
-        if not options.show_branch: 
-            t = self.uncovered_str(True) 
-            if len(t): 
-                uncovered_lines += " [* " + t + "]"; 
+        uncovered_lines = self.uncovered_str(False)
+        if not options.show_branch:
+            t = self.uncovered_str(True)
+            if len(t):
+                uncovered_lines += " [* " + t + "]";
         return ( total, cover,
                  tmp + str(total).rjust(8) + str(cover).rjust(8) + \
                  percent.rjust(6) + "%   " + uncovered_lines )
@@ -472,13 +472,13 @@ def process_gcov_data(data_fname, covdata, options):
                             sys.stderr.write(
                                 "(WARNING) %s_EXCL_START found on line %s "
                                 "was terminated by %s_EXCL_STOP on line %s, "
-                                "when processing %s\n" 
+                                "when processing %s\n"
                             % (_header, _line, header, lineno, fname) )
                     else:
                         sys.stderr.write(
                             "(WARNING) mismatched coverage exclusion flags.\n"
                             "\t%s_EXCL_STOP found on line %s without "
-                            "corresponding %s_EXCL_START, when processing %s\n" 
+                            "corresponding %s_EXCL_START, when processing %s\n"
                             % (header, lineno, header, fname) )
                 elif flag == 'LINE':
                     # We buffer the line exclusion so that it is always
@@ -666,7 +666,7 @@ def process_datafile(filename, covdata, options):
                 errors.append("ERROR: cannot identify the location where GCC "
                               "was run using --object-directory=%s\n" %
                               options.objdir)
-            # Revert to the normal 
+            # Revert to the normal
             #sys.exit(1)
 
     # no objdir was specified (or it was a parent dir); walk up the dir tree
@@ -679,21 +679,21 @@ def process_datafile(filename, covdata, options):
                 break
 
     cmd = [ options.gcov_cmd, abs_filename,
-            "--branch-counts", "--branch-probabilities", "--preserve-paths", 
+            "--branch-counts", "--branch-probabilities", "--preserve-paths",
             '--object-directory', dirname ]
 
     # NB: Currently, we will only parse English output
     env = dict(os.environ)
     env['LC_ALL'] = 'en_US'
-    
+
 
     while len(potential_wd) > 0 and not Done:
         # NB: either len(potential_wd) == 1, or all entires are absolute
         # paths, so we don't have to chdir(starting_dir) at every
         # iteration.
-        os.chdir(potential_wd.pop(0)) 
-        
-        
+        os.chdir(potential_wd.pop(0))
+
+
         #if options.objdir:
         #    cmd.extend(["--object-directory", Template(options.objdir).substitute(filename=filename, head=dirname, tail=base, root=name, ext=ext)])
 
@@ -749,11 +749,11 @@ def process_datafile(filename, covdata, options):
     if options.delete:
         if not abs_filename.endswith('gcno'):
             os.remove(abs_filename)
-        
+
     if not Done:
         sys.stderr.write(
             "(WARNING) GCOV produced the following errors processing %s:\n"
-            "\t   %s" 
+            "\t   %s"
             "\t(gcovr could not infer a working directory that resolved it.)\n"
             % ( filename, "\t   ".join(errors) ) )
 
@@ -784,7 +784,7 @@ def print_text_report(covdata):
     a = options.show_branch and "Branches" or "Lines"
     b = options.show_branch and "Taken" or "Exec"
     c = "Missing"
-    OUTPUT.write("File".ljust(40) + a.rjust(8) + b.rjust(8)+ "  Cover   " + c + "\n") 
+    OUTPUT.write("File".ljust(40) + a.rjust(8) + b.rjust(8)+ "  Cover   " + c + "\n")
     OUTPUT.write("-"*78 + '\n')
 
     # Data
@@ -834,7 +834,7 @@ css = Template('''
       color: navy;
       text-decoration: underline;
     }
-    
+
     /*** TD formats ***/
     td
     {
@@ -847,7 +847,7 @@ css = Template('''
       font-size: 20pt;
       font-weight: bold;
     }
-    
+
     /* TD Header Information */
     td.headerName
     {
@@ -885,7 +885,7 @@ css = Template('''
       padding-right: 10px;
       padding-top: 2px;
     }
-    
+
     /* Color of horizontal ruler */
     td.hr
     {
@@ -900,7 +900,7 @@ css = Template('''
       font-family: sans-serif;
     }
 
-    /* Coverage Table */    
+    /* Coverage Table */
 
     td.coverTableHead
     {
@@ -917,7 +917,7 @@ css = Template('''
     {
       text-align: left;
       padding-left: 10px;
-      padding-right: 20px; 
+      padding-right: 20px;
       color: black;
       background-color: LightBlue;
       font-family: monospace;
@@ -944,7 +944,7 @@ css = Template('''
       white-space: nowrap;
       font-weight: bold;
     }
-    
+
     /* Link Details */
     a.detail:link
     {
@@ -961,7 +961,7 @@ css = Template('''
       color: #FFFFFF;
       font-size:80%;
     }
-    
+
     .graphcont{
         color:#000;
         font-weight:700;
@@ -991,7 +991,7 @@ css = Template('''
     .graph .bar span{
         position:absolute;
         left:1em
-    } 
+    }
 
     td.coveredLine,
     span.coveredLine
@@ -1257,7 +1257,7 @@ def print_html_report(covdata, details):
         data['LINES_COLOR'] = medium_color
     else:
         data['LINES_COLOR'] = high_color
-    
+
 
     # Generate the coverage output (on a per-package basis)
     #source_dirs = set()
@@ -1309,7 +1309,7 @@ def print_html_report(covdata, details):
                 coverage = 100*b_hits/len(branches)
                 class_branch_hits += b_hits
                 class_branches += len(branches)
-                
+
         lines_covered = 100.0 if class_lines == 0 else 100.0*class_hits/class_lines
         branches_covered = 100.0 if class_branches == 0 else 100.0*class_branch_hits/class_branches
 
@@ -1378,12 +1378,12 @@ def print_html_report(covdata, details):
         INPUT.close()
         os.chdir(currdir)
         data['ROWS'] = '\n'.join(data['ROWS'])
-        
+
         htmlString = source_page.substitute(**data)
         OUTPUT = open(cdata._sourcefile, 'w')
         OUTPUT.write(htmlString +'\n')
         OUTPUT.close()
-        
+
 
 def source_row(lineno, source, cdata):
     rowstr=Template('''
@@ -1458,7 +1458,7 @@ def html_row(details, sourcefile, **kwargs):
         kwargs['BranchesBar'] = 'green'
 
     return rowstr.substitute(**kwargs)
-    
+
 
 #
 # Produce an XML report in the Cobertura format
@@ -1480,7 +1480,7 @@ def print_xml_report(covdata):
         (total, covered, percent) = covdata[key].coverage()
         lineTotal += total
         lineCovered += covered
-    
+
     impl = xml.dom.minidom.getDOMImplementation()
     docType = impl.createDocumentType(
         "coverage", None,
@@ -1522,7 +1522,7 @@ def print_xml_report(covdata):
             # the beginning of the string
             dir = f
         (dir, fname) = os.path.split(dir)
-        
+
         package = packages.setdefault(
             dir, [ doc.createElement("package"), {},
                    0, 0, 0, 0 ] )
@@ -1567,7 +1567,7 @@ def print_xml_report(covdata):
                 conditions = doc.createElement("conditions")
                 conditions.appendChild(cond)
                 l.appendChild(conditions)
-                
+
             lines.appendChild(l)
 
         className = fname.replace('.', '_')
@@ -1747,12 +1747,12 @@ parser.add_option("-p","--sort-percentage",
         action="store_true",
         dest="sort_percent",
         default=None)
-parser.add_option("--gcov-executable", 
+parser.add_option("--gcov-executable",
         help="Defines the name/path to the gcov executable [defaults to the "
-                  "GCOV environment variable, if present; else 'gcov'].", 
- 	action="store", 
- 	dest="gcov_cmd", 
- 	default=os.environ.get('GCOV', 'gcov') )
+                  "GCOV environment variable, if present; else 'gcov'].",
+        action="store",
+        dest="gcov_cmd",
+        default=os.environ.get('GCOV', 'gcov') )
 parser.add_option("--exclude-unreachable-branches",
         help="Exclude from coverage branches which are marked to be excluded by LCOV/GCOV markers "
                   "or are determined to be from lines containing only compiler-generated \"dead\" code.",
