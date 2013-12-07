@@ -5,10 +5,11 @@ all: links
 	$(CXX) $(CFLAGS) -c subdir/A/file2.cpp -o subdir/A/file2.o
 	$(CXX) $(CFLAGS) -c subdir/A/file3.cpp -o subdir/A/file3.o
 	$(CXX) $(CFLAGS) -c subdir/A/file4.cpp -o subdir/A/file4.o
+	$(CXX) $(CFLAGS) -c subdir/A/file7.cpp -o subdir/A/file7.o
 	$(CXX) $(CFLAGS) -c subdir/A/C/file5.cpp -o subdir/A/C/file5.o
 	$(CXX) $(CFLAGS) -c subdir/m/n/C/D/file6.cpp -o subdir/m/n/C/D/file6.o
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
-	$(CXX) $(CFLAGS) subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/m/n/C/D/file6.o subdir/B/main.o -o subdir/testcase
+	$(CXX) $(CFLAGS) subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/m/n/C/D/file6.o subdir/A/file7.o subdir/B/main.o -o subdir/testcase
 
 run: txt xml html
 

@@ -6,6 +6,7 @@ extern int bar();
 extern int fourbar();
 extern int foo5(int param);
 extern int foo6(int param);
+extern int uncovered();
 
 
 int main(int argc, char* argv[]) {
