@@ -21,7 +21,7 @@ http://cobertura.sourceforge.net/[Cobertura] format) or simple HTML
 reports.  Thus, +gcovr+ can be viewed as a command-line alternative
 to the http://ltp.sourceforge.net/coverage/lcov.php[lcov] utility,
 which runs gcov and generates an HTML-formatted report.  This documentation describes
-Gcovr 3.0.
+Gcovr 3.1.
 
 :numbered:
 
@@ -298,10 +298,13 @@ contributions from a wider set of developers.
 Acknowledgements
 ----------------
 
-The following developers contributed to the Gcovr 3.0 release:
+The following developers contributed to the Gcovr 3.1 release:
 
+* Piotr Dziwinski
 * William Hart
+* Robert Rosengren
 * John Siirola
+* Matsumoto Taichi
 
 The Gcovr documentation is generated using
 http://www.methods.co.nz/asciidoc/[AsciiDoc].

@@ -1,0 +1,7 @@
+Files that contain version information:
+
+CHANGELOG.txt
+setup.py
+scripts/gcovr
+doc/examples/example2.txt
+doc/guide.txt

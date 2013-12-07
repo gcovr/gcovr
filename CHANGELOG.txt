@@ -1,5 +1,16 @@
 = `gcovr` Release History and Change Log =
 
+=== 3.1 ''(6 December 2013)'' ===
+ - Change to make the -r/--root options define the root directory 
+   for source files.
+ - Fix to apply the -p option when the --html option is used.
+ - Adding new option, '--exclude-unreachable-branches' that
+   will exclude branches in certain lines from coverage report.
+ - Simplifying and standardizing the processing of linked files.
+ - Adding tests for deeply nested code, and symbolic links.
+ - Add support for multiple —filter options in same manner as —exclude 
+   option.
+
 === 3.0 ''(10 August 2013)'' ===
  - Adding the '--gcov-executable' option to specify
    the name/location of the gcov executable. The command line option

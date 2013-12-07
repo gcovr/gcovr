@@ -27,7 +27,7 @@ if os.path.exists('README.md'):
 scripts = glob.glob("scripts/*")
 
 setup(name='gcovr',
-      version='3.1-prerelease',
+      version='3.1',
       maintainer='William Hart',
       maintainer_email='wehart@sandia.gov',
       url = 'http://gcovr.com',
