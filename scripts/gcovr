@@ -1825,7 +1825,7 @@ if len(args) == 1:
     if options.root is None:
         datafiles = get_datafiles(["."], options)
     else:
-        datafiles = get_datafiles(options.root, options)
+        datafiles = get_datafiles([options.root], options)
 else:
     datafiles = get_datafiles(args[1:], options)
 #
