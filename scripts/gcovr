@@ -37,7 +37,6 @@ import copy
 import glob
 import os
 import re
-import subprocess
 import sys
 import time
 import xml.dom.minidom
@@ -47,6 +46,8 @@ import posixpath
 from optparse import OptionParser
 from jinja2 import Template
 from os.path import normpath
+
+from gcovr import process_files
 
 medium_coverage = 75.0
 high_coverage = 90.0
@@ -59,16 +60,6 @@ uncovered_color = "LightPink"
 __version__ = "3.2-prerelease"
 src_revision = "$Revision$"
 
-output_re = re.compile("[Cc]reating [`'](.*)'$")
-source_re = re.compile("cannot open (source|graph) file")
-
-starting_dir = os.getcwd()
-
-exclude_line_flag = "_EXCL_"
-exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
-
-c_style_comment_pattern = re.compile('/\*.*?\*/')
-cpp_style_comment_pattern = re.compile('//.*?$')
 
 def version_str():
     ans = __version__
@@ -76,125 +67,6 @@ def version_str():
     if m:
         ans = ans + " (r%s)" % (m.group(1))
     return ans
-
-#
-# Container object for coverage statistics
-#
-class CoverageData(object):
-
-    def __init__(self, fname, uncovered, uncovered_exceptional, covered, branches, noncode):
-        self.fname=fname
-        # Shallow copies are cheap & "safe" because the caller will
-        # throw away their copies of covered & uncovered after calling
-        # us exactly *once*
-        self.uncovered = copy.copy(uncovered)
-        self.uncovered_exceptional = copy.copy(uncovered_exceptional)
-        self.covered   = copy.copy(covered)
-        self.noncode   = copy.copy(noncode)
-        # But, a deep copy is required here
-        self.all_lines = copy.deepcopy(uncovered)
-        self.all_lines.update(uncovered_exceptional)
-        self.all_lines.update(covered.keys())
-        self.branches = copy.deepcopy(branches)
-
-    def update(self, uncovered, uncovered_exceptional, covered, branches, noncode):
-        self.all_lines.update(uncovered)
-        self.all_lines.update(uncovered_exceptional)
-        self.all_lines.update(covered.keys())
-        self.uncovered.update(uncovered)
-        self.uncovered_exceptional.update(uncovered_exceptional)
-        self.noncode.intersection_update(noncode)
-        for k in covered.keys():
-            self.covered[k] = self.covered.get(k,0) + covered[k]
-        for k in branches.keys():
-            for b in branches[k]:
-                d = self.branches.setdefault(k, {})
-                d[b] = d.get(b, 0) + branches[k][b]
-        self.uncovered.difference_update(self.covered.keys())
-        self.uncovered_exceptional.difference_update(self.covered.keys())
-
-    def uncovered_str(self, exceptional):
-        if options.show_branch:
-            # Don't do any aggregation on branch results
-            tmp = []
-            for line in self.branches.keys():
-                for branch in self.branches[line]:
-                    if self.branches[line][branch] == 0:
-                        tmp.append(line)
-                        break
-
-            tmp.sort()
-            return ",".join([str(x) for x in tmp]) or ""
-
-        if exceptional:
-            tmp = list(self.uncovered_exceptional)
-        else:
-            tmp = list(self.uncovered)
-        if len(tmp) == 0:
-            return ""
-
-        tmp.sort()
-        first = None
-        last = None
-        ranges=[]
-        for item in tmp:
-            if last is None:
-                first=item
-                last=item
-            elif item == (last+1):
-                last=item
-            else:
-                if len(self.noncode.intersection(range(last+1,item))) \
-                       == item - last - 1:
-                    last = item
-                    continue
-
-                if first==last:
-                    ranges.append(str(first))
-                else:
-                    ranges.append(str(first)+"-"+str(last))
-                first=item
-                last=item
-        if first==last:
-            ranges.append(str(first))
-        else:
-            ranges.append(str(first)+"-"+str(last))
-        return ",".join(ranges)
-
-    def coverage(self):
-        if ( options.show_branch ):
-            total = 0
-            cover = 0
-            for line in self.branches.keys():
-                for branch in self.branches[line].keys():
-                    total += 1
-                    cover += self.branches[line][branch] > 0 and 1 or 0
-        else:
-            total = len(self.all_lines)
-            cover = len(self.covered)
-
-        percent = total and str(int(100.0*cover/total)) or "--"
-        return (total, cover, percent)
-
-    def summary(self):
-        tmp = options.root_filter.sub('',self.fname)
-        if not self.fname.endswith(tmp):
-            # Do no truncation if the filter does not start matching at
-            # the beginning of the string
-            tmp = self.fname
-        tmp = tmp.ljust(40)
-        if len(tmp) > 40:
-            tmp=tmp+"\n"+" "*40
-
-        (total, cover, percent) = self.coverage()
-        uncovered_lines = self.uncovered_str(False)
-        if not options.show_branch:
-            t = self.uncovered_str(True)
-            if len(t):
-                uncovered_lines += " [* " + t + "]";
-        return ( total, cover,
-                 tmp + str(total).rjust(8) + str(cover).rjust(8) + \
-                 percent.rjust(6) + "%   " + uncovered_lines )
 
 
 def resolve_symlinks(orig_path):
@@ -401,7 +273,12 @@ def process_gcov_data(data_fname, covdata, options):
     #
     # Get the filename
     #
-    line = INPUT.readline()
+    try:
+        line = INPUT.readline()
+    except:
+        print(INPUT)
+        raise
+
     segments=line.split(':',3)
     if len(segments) != 4 or not segments[2].lower().strip().endswith('source'):
         raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip())
@@ -762,10 +639,10 @@ def process_datafile(filename, covdata, options):
 #
 def print_text_report(covdata):
     def _num_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         return total - covered
     def _percent_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         if covered:
             return -1.0*covered/total
         else:
@@ -792,7 +669,7 @@ def print_text_report(covdata):
     keys.sort(key=options.sort_uncovered and _num_uncovered or \
               options.sort_percent and _percent_uncovered or _alpha)
     for key in keys:
-        (t, n, txt) = covdata[key].summary()
+        (t, n, txt) = covdata[key].summary(options)
         total_lines += t
         total_covered += n
         OUTPUT.write(txt + '\n')
@@ -1015,20 +892,19 @@ root_page = Template(u'''
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>{{HEAD}}</title>
-  <style media="screen" type="text/css">
-  {{CSS}}
-  </style>
+  <link rel="stylesheet" type="text/css" href="bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap-theme.css">
 </head>
 
 <body>
 
-  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+  <table class="table">
     <tr><td class="title">GCC Code Coverage Report</td></tr>
     <tr><td class="hr"></td></tr>
 
     <tr>
       <td width="100%">
-        <table cellpadding=1 border=0 width="100%">
+        <table class="table">
           <tr>
             <td width="10%" class="headerName">Directory:</td>
             <td width="35%" class="headerValue">{{DIRECTORY}}</td>
@@ -1067,34 +943,18 @@ root_page = Template(u'''
     <tr><td class="hr"></td></tr>
   </table>
 
-  <center>
-  <table width="80%" cellpadding=1 cellspacing=1 border=0>
-    <tr>
-      <td width="44%"><br></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-    </tr>
-    <tr>
-      <td class="coverTableHead">File</td>
-      <td class="coverTableHead" colspan=3>Lines</td>
-      <td class="coverTableHead" colspan=2>Branches</td>
-    </tr>
-
+  <div class="container">
+  <table class="table">
+    <thead>
+      <th>File</td>
+      <th colspan=3>Lines</td>
+      <th colspan=2>Branches</td>
+    </thead>
+    <tbody>
     {{ROWS}}
-
-    <tr>
-      <td width="44%"><br></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-    </tr>
+    </tbody>
   </table>
-  </center>
+  </div>
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="hr"><td></tr>
@@ -1114,22 +974,22 @@ source_page = Template(u'''
 <html>
 
 <head>
+  <!DOCTYPE html>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>{{HEAD}}</title>
-  <style media="screen" type="text/css">
-  {{CSS}}
-  </style>
+  <link rel="stylesheet" type="text/css" href="bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap-theme.css">
 </head>
 
 <body>
 
-  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+  <table class="table">
     <tr><td class="title">GCC Code Coverage Report</td></tr>
     <tr><td class="hr"></td></tr>
 
     <tr>
       <td width="100%">
-        <table cellpadding=1 border=0 width="100%">
+        <table class="table">
           <tr>
             <td width="10%" class="headerName">Directory:</td>
             <td width="35%" class="headerValue">{{DIRECTORY}}</td>
@@ -1163,27 +1023,19 @@ source_page = Template(u'''
 
     <tr><td class="hr"></td></tr>
   </table>
-
-  <center>
-  <br>
-  <table cellpadding=3 cellspacing=0 border=1>
+  <div class="content">
+  <table class="table">
     <tr>
       <td width="10%" align="right">Line</td>
       <td width="10%" align="right">Exec</td>
       <td width="70%" align="left">Source</td>
     </tr>
-
     {{ROWS}}
-
   </table>
-  <br>
-  </center>
-
-  <table width="100%" border=0 cellspacing=0 cellpadding=0>
-    <tr><td class="hr"><td></tr>
-    <tr><td class="footer">Generated by: <a href="http://gcovr.com">GCOVR (Version {{VERSION}})</a></td></tr>
-  </table>
-  <br>
+  </div>
+  <footer>
+    <span>Generated by: <a href="http://gcovr.com">GCOVR (Version {{VERSION}})</a></span>
+  </footer>
 
 </body>
 
@@ -1195,10 +1047,10 @@ source_page = Template(u'''
 #
 def print_html_report(covdata, details):
     def _num_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         return total - covered
     def _percent_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         if covered:
             return -1.0*covered/total
         else:
@@ -1207,6 +1059,7 @@ def print_html_report(covdata, details):
         return key
 
     if options.output is None:
+        options.output = u"index.html"
         details = False
     if options.output and options.output[-1] == os.sep:
         try:
@@ -1234,7 +1087,7 @@ def print_html_report(covdata, details):
     branchCovered = 0
     options.show_branch = True
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         branchTotal += total
         branchCovered += covered
     data['BRANCHES_EXEC'] = str(branchCovered)
@@ -1252,7 +1105,7 @@ def print_html_report(covdata, details):
     lineCovered = 0
     options.show_branch = False
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         lineTotal += total
         lineCovered += covered
     data['LINES_EXEC'] = str(lineCovered)
@@ -1350,7 +1203,7 @@ def print_html_report(covdata, details):
         data['ROWS'] = ''
 
         options.show_branch = True
-        branchTotal, branchCovered, tmp = cdata.coverage()
+        branchTotal, branchCovered, tmp = cdata.coverage(options.show_branch)
         data['BRANCHES_EXEC'] = str(branchCovered)
         data['BRANCHES_TOTAL'] = str(branchTotal)
         coverage = 0.0 if branchTotal == 0 else round(100.0*branchCovered / branchTotal,1)
@@ -1363,7 +1216,7 @@ def print_html_report(covdata, details):
             data['BRANCHES_COLOR'] = high_color
 
         options.show_branch = False
-        lineTotal, lineCovered, tmp = cdata.coverage()
+        lineTotal, lineCovered, tmp = cdata.coverage(options.show_branch)
         data['LINES_EXEC'] = str(lineCovered)
         data['LINES_TOTAL'] = str(lineTotal)
         coverage = 0.0 if lineTotal == 0 else round(100.0*lineCovered / lineTotal,1)
@@ -1396,17 +1249,17 @@ def print_html_report(covdata, details):
 def source_row(lineno, source, cdata):
     rowstr = Template(u'''
     <tr>
-    <td align="right"><pre>{{lineno}}</pre></td>
-    <td align="right" {{covclass}}><pre>{{linecount}}</pre></td>
-    <td align="left" {{covclass}}><pre>{{source}}</pre></td>
+    <td>{{lineno}}</td>
+    <td class="{{covclass}}">{{linecount}}</td>
+    <td class="{{covclass}}">{{source}}</td>
     </tr>''')
     kwargs = {}
     kwargs['lineno'] = str(lineno)
     if lineno in cdata.covered:
-        kwargs['covclass'] = 'class="coveredLine"'
+        kwargs['covclass'] = 'coveredLine'
         kwargs['linecount'] = str(cdata.covered.get(lineno,0))
     elif lineno in cdata.uncovered:
-        kwargs['covclass'] = 'class="uncoveredLine"'
+        kwargs['covclass'] = 'uncoveredLine'
         kwargs['linecount'] = ''
     else:
         kwargs['covclass'] = ''
@@ -1421,49 +1274,50 @@ nrows = 0
 def html_row(details, sourcefile, **kwargs):
     rowstr=Template(u'''
     <tr>
-      <td class="coverFile" {{altstyle}}>{{filename}}</td>
-      <td class="coverBar" align="center" {{altstyle}}>
-        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:{{LinesCoverage}}%; background-color:{{LinesBar}}"></strong></div>
-                </td></tr></table>
+      <td>{{filename}}</td>
+      <td>
+        <div class="progress">
+            <div class="progress-bar progress-bar-{{LinesBar}}"
+                 role="progressbar"
+                 aria-valuenow="{{LinesCoverage}}"
+                 aria-valuemin="0" aria-valuemax="100"
+                 style="width: {{LinesCoverage}}%;"></div>
+            <span class="sr-only">{{LinesCoverage}}&nbsp;%</span>
+        </div>
       </td>
-      <td class="CoverValue" style="font-weight:bold; background-color:{{LinesColor}};">{{LinesCoverage}}&nbsp;%</td>
-      <td class="CoverValue" style="font-weight:bold; background-color:{{LinesColor}};">{{LinesExec}} / {{LinesTotal}}</td>
-      <td class="CoverValue" style="background-color:{{BranchesColor}};">{{BranchesCoverage}}&nbsp;%</td>
-      <td class="CoverValue" style="background-color:{{BranchesColor}};">{{BranchesExec}} / {{BranchesTotal}}</td>
+      <td class="{{LinesColor}}">{{LinesCoverage}}&nbsp;%</td>
+      <td class="{{LinesColor}}">{{LinesExec}} / {{LinesTotal}}</td>
+      <td class="{{BranchesColor}}">{{BranchesCoverage}}&nbsp;%</td>
+      <td class="{{BranchesColor}}">{{BranchesExec}} / {{BranchesTotal}}</td>
     </tr>
 ''')
     global nrows
     nrows += 1
-    if nrows % 2 == 0:
-        kwargs['altstyle'] = 'style="background-color:LightSteelBlue"'
-    else:
-        kwargs['altstyle'] = ''
     if details:
         kwargs['filename'] = '<a href="%s">%s</a>' % (sourcefile, kwargs['filename'][len(kwargs['directory']):])
     else:
         kwargs['filename'] = kwargs['filename'][len(kwargs['directory']):]
     kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'],1)
     if kwargs['LinesCoverage'] < medium_coverage:
-        kwargs['LinesColor'] = low_color
-        kwargs['LinesBar'] = 'red'
+        kwargs['LinesColor'] = 'danger'
+        kwargs['LinesBar'] = 'danger'
     elif kwargs['LinesCoverage'] < high_coverage:
-        kwargs['LinesColor'] = medium_color
-        kwargs['LinesBar'] = 'yellow'
+        kwargs['LinesColor'] = 'warning'
+        kwargs['LinesBar'] = 'warning'
     else:
-        kwargs['LinesColor'] = high_color
-        kwargs['LinesBar'] = 'green'
+        kwargs['LinesColor'] = 'success'
+        kwargs['LinesBar'] = 'success'
 
     kwargs['BranchesCoverage'] = round(kwargs['BranchesCoverage'],1)
     if kwargs['BranchesCoverage'] < medium_coverage:
-        kwargs['BranchesColor'] = low_color
-        kwargs['BranchesBar'] = 'red'
+        kwargs['BranchesColor'] = 'danger'
+        kwargs['BranchesBar'] =  'danger'
     elif kwargs['BranchesCoverage'] < high_coverage:
-        kwargs['BranchesColor'] = medium_color
-        kwargs['BranchesBar'] = 'yellow'
+        kwargs['BranchesColor'] = 'warning'
+        kwargs['BranchesBar'] = 'warning'
     else:
-        kwargs['BranchesColor'] = high_color
-        kwargs['BranchesBar'] = 'green'
+        kwargs['BranchesColor'] = 'success'
+        kwargs['BranchesBar'] = 'success'
 
     return rowstr.render(**kwargs)
 
@@ -1477,15 +1331,13 @@ def print_xml_report(covdata):
     lineTotal = 0
     lineCovered = 0
 
-    options.show_branch = True
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(True)
         branchTotal += total
         branchCovered += covered
 
-    options.show_branch = False
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(False)
         lineTotal += total
         lineCovered += covered
 
@@ -1796,6 +1648,7 @@ if options.objdir:
             "(ERROR) Bad --object-directory option.\n"
             "\tThe specified directory does not exist.\n")
         sys.exit(1)
+
 #
 # Setup filters
 #
@@ -1810,10 +1663,10 @@ if options.root is not None:
             "\tThis option cannot be an empty string.\n")
         sys.exit(1)
     options.root_filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
-    root_dir = os.path.abspath(options.root)
+    options.root_dir = os.path.abspath(options.root)
 else:
     options.root_filter = re.compile('')
-    root_dir = starting_dir
+    options.root_dir = os.getcwd()
 
 for i in range(0,len(options.filter)):
     options.filter[i] = re.compile(options.filter[i])
@@ -1839,11 +1692,18 @@ else:
 #
 # Get coverage data
 #
+
+"""
 covdata = {}
 for file in datafiles:
     process_datafile(file,covdata,options)
 if options.verbose:
     sys.stdout.write("Gathered coveraged data for "+str(len(covdata))+" files\n")
+"""
+
+covdata = process_files(datafiles, options)
+
+
 #
 # Print report
 #

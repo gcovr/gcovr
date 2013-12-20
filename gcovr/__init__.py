@@ -10,3 +10,4 @@
 
 # Empty gcovr package
 
+from .data import process_files
