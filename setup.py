@@ -18,7 +18,7 @@ import os
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import os.path
 
 if os.path.exists('README.md'):
@@ -47,8 +47,10 @@ setup(name='gcovr',
             'Programming Language :: Unix Shell',
             'Topic :: Software Development :: Libraries :: Python Modules'
         ],
-      packages=['gcovr'],
+      packages=find_packages(),
       keywords=['utility'],
+      include_package_data=True,
+      zip_safe=False,
       scripts=scripts
       )
 
