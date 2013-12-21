@@ -14,3 +14,4 @@ from .data import process_files
 from .version import version_str
 from .xml_report import print_xml_report
 from .text_report import print_text_report
+from .html_report import print_html_report

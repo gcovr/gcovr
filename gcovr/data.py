@@ -518,10 +518,11 @@ def process_datafile(filename, covdata, options):
 
 
 def process_files(datafiles, options):
-
+    start_dir = os.getcwd()
     covdata = {}
     for file in datafiles:
         process_datafile(file, covdata, options)
     if options.verbose:
         sys.stdout.write("Gathered coveraged data for "+str(len(covdata))+" files\n")
+    os.chdir(start_dir)
     return covdata

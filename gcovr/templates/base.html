@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% block head %}
+  <meta charset="UTF-8">
+  <title>{{HEAD}}</title>
+  {% block css %}
+  <link rel="stylesheet" type="text/css" href="bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap-theme.css">
+  {% endblock %}
+  {% endblock %}
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>
