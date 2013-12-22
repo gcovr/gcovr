@@ -206,16 +206,16 @@ def print_html_report(covdata, options):
         OUTPUT.write(htmlString +'\n')
         OUTPUT.close()
 
-    # Return, if no details are requested
-    if not options.html_details:
-        return
+    if options.html_details:
+         print_html_details(keys, covdata, options)
 
+def print_html_details(keys, covdata, options):
     #
     # Generate an HTML file for every source file
     #
     for f in keys:
         cdata = covdata[f]
-
+        data = {}
         data['FILENAME'] = cdata._filename
         data['ROWS'] = ''
 
