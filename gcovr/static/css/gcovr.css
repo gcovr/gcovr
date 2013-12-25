@@ -1,0 +1,8 @@
+
+table.gcovr-root td {
+    width: 10em;
+}
+
+table.gcovr-root td:first-child {
+    width: auto;
+}

@@ -27,8 +27,8 @@ high_coverage = 90.0
 low_color = "danger"
 medium_color = "warning"
 high_color = "success"
-covered_color = "LightGreen"
-uncovered_color = "LightPink"
+covered_color = "covered"
+uncovered_color = "uncovered"
 
 from jinja2 import Environment, PackageLoader, Template
 
@@ -61,6 +61,23 @@ def copy_static_content(options):
     makedirs(css_path)
     for file in os.listdir(resource):
         shutil.copy(os.path.join(resource, file), css_path)
+
+def coverage_info(covdata, show_branch):
+    total = 0
+    covered = 0
+    for key in covdata.keys():
+        (t, c, p) = covdata[key].coverage(show_branch)
+        total += t
+        covered += c
+
+    coverage = 0.0 if total == 0 else round(100.0 * covered / total, 1)
+    if coverage < medium_coverage:
+        return (total, covered, coverage, low_color)
+    elif coverage < high_coverage:
+        return (total, covered, coverage, medium_color)
+    else:
+        return (total, covered, coverage, high_color)
+
 
 #
 # Produce an HTML report
@@ -100,42 +117,19 @@ def print_html_report(covdata, options):
     data['COVERAGE_HIGH'] = high_coverage
     data['DIRECTORY'] = ''
 
-    branchTotal = 0
-    branchCovered = 0
-    options.show_branch = True
-    for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage(options.show_branch)
-        branchTotal += total
-        branchCovered += covered
-    data['BRANCHES_EXEC'] = str(branchCovered)
-    data['BRANCHES_TOTAL'] = str(branchTotal)
-    coverage = 0.0 if branchTotal == 0 else round(100.0*branchCovered / branchTotal,1)
+    (total, covered, coverage, color) = coverage_info(covdata, True)
+
+    data['BRANCHES_EXEC'] = str(covered)
+    data['BRANCHES_TOTAL'] = str(total)
     data['BRANCHES_COVERAGE'] = str(coverage)
-    if coverage < medium_coverage:
-        data['BRANCHES_COLOR'] = low_color
-    elif coverage < high_coverage:
-        data['BRANCHES_COLOR'] = medium_color
-    else:
-        data['BRANCHES_COLOR'] = high_color
+    data['BRANCHES_COLOR'] = color
 
-    lineTotal = 0
-    lineCovered = 0
-    options.show_branch = False
-    for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage(options.show_branch)
-        lineTotal += total
-        lineCovered += covered
-    data['LINES_EXEC'] = str(lineCovered)
-    data['LINES_TOTAL'] = str(lineTotal)
-    coverage = 0.0 if lineTotal == 0 else round(100.0*lineCovered / lineTotal,1)
+    (total, covered, coverage, color) = coverage_info(covdata, False)
+
+    data['LINES_EXEC'] = str(covered)
+    data['LINES_TOTAL'] = str(total)
     data['LINES_COVERAGE'] = str(coverage)
-    if coverage < medium_coverage:
-        data['LINES_COLOR'] = low_color
-    elif coverage < high_coverage:
-        data['LINES_COLOR'] = medium_color
-    else:
-        data['LINES_COLOR'] = high_color
-
+    data['LINES_COLOR'] = color
 
     # Generate the coverage output (on a per-package basis)
     #source_dirs = set()
@@ -143,9 +137,13 @@ def print_html_report(covdata, options):
     keys = list(covdata.keys())
     keys.sort(key=options.sort_uncovered and _num_uncovered or \
               options.sort_percent and _percent_uncovered or _alpha)
+
+    filtered_fname = None
+
     for f in keys:
         cdata = covdata[f]
         filtered_fname = options.root_filter.sub('',f)
+        print filtered_fname
         files.append(filtered_fname)
         cdata._filename = filtered_fname
         ttmp = os.path.abspath(options.output).split('.')
@@ -160,6 +158,7 @@ def print_html_report(covdata, options):
         if commondir != '':
             data['DIRECTORY'] = commondir
     else:
+        print filtered_fname
         dir_, file_ = os.path.split(filtered_fname)
         if dir_ != '':
             data['DIRECTORY'] = dir_ + os.sep
@@ -209,6 +208,42 @@ def print_html_report(covdata, options):
     if options.html_details:
          print_html_details(keys, covdata, options)
 
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_for_filename
+
+class GcovrHtmlFormatter(HtmlFormatter):
+    def __init__(self, covdata, **options):
+        HtmlFormatter.__init__(self, **options)
+        self.covdata = covdata
+
+    def wrap(self, source, outfile):
+        linenum = 1
+        cdata = self.covdata
+        yield 0, u'<table class="table table-compact table-striped">'
+        yield 0, u'<thead><tr><th>Line</th><th>Exec</th><th>Code</th></tr></thead><tbody>'
+        for code, line in source:
+            if code == 1:
+                html_class = ""
+                covered    = ""
+                if linenum in cdata.covered:
+                    html_class = " success"
+                    covered    = str(cdata.covered.get(linenum, 0))
+                elif linenum in cdata.uncovered:
+                    html_class = " warning"
+
+
+                l  = u'<tr>'
+                l += u'<td class="exec"><a id="' + str(linenum) + '" href="#l'
+                l += str(linenum) + '">' + str(linenum) + '</a></td>'
+                l += u'<td class="exec">' + covered
+                l += u'</td><td class="pre' + html_class + '">'
+                l += line
+                l += u'</td></tr>'
+                linenum += 1
+                yield 1, l
+        yield 0, u'</tbody></table>'
+
 def print_html_details(keys, covdata, options):
     #
     # Generate an HTML file for every source file
@@ -245,23 +280,35 @@ def print_html_details(keys, covdata, options):
         else:
             data['LINES_COLOR'] = high_color
 
-        data['ROWS'] = []
         currdir = os.getcwd()
         os.chdir(options.root_dir)
-        INPUT = open(data['FILENAME'], 'r')
-        ctr = 1
-        for line in INPUT:
-            data['ROWS'].append( source_row(ctr, line.rstrip(), cdata) )
-            ctr += 1
-        INPUT.close()
+
+        import codecs
+        INPUT = open(data['FILENAME'], 'rb')
+
+        code = INPUT.read()
+
+        formatter = GcovrHtmlFormatter(cdata)
+        try:
+            lexer = get_lexer_for_filename(data['FILENAME'], code, encoding="utf-8")
+        except:
+            lexer = TextLexer()
+
+        buf = highlight(code, lexer, formatter)
+
+        data['ROWS'] = buf.encode('utf-8').decode('utf-8')
+
         os.chdir(currdir)
-        data['ROWS'] = '\n'.join(data['ROWS'])
+        try:
 
-        htmlString = source_page.render(**data)
-        OUTPUT = open(cdata._sourcefile, 'w')
-        OUTPUT.write(htmlString +'\n')
-        OUTPUT.close()
+            htmlString = source_page.render(**data)
 
+            with open(cdata._sourcefile, 'w') as f:
+                f.write(htmlString.encode('utf-8'))
+        except:
+            print htmlString.__class__
+            print buf
+            raise
 
 def source_row(lineno, source, cdata):
     rowstr = Template(u'''
