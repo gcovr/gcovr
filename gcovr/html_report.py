@@ -234,7 +234,7 @@ class GcovrHtmlFormatter(HtmlFormatter):
 
 
                 l  = u'<tr>'
-                l += u'<td class="exec"><a id="' + str(linenum) + '" href="#l'
+                l += u'<td class="exec"><a name="l' + str(linenum) + '" href="#l'
                 l += str(linenum) + '">' + str(linenum) + '</a></td>'
                 l += u'<td class="exec">' + covered
                 l += u'</td><td class="pre' + html_class + '">'
