@@ -29,169 +29,15 @@
 # $Date$
 #
 
-try:
-    import html
-except:
-    import cgi as html
-import copy
-import glob
 import os
 import re
 import sys
-import time
-import datetime
 
 from optparse import OptionParser
 from os.path import normpath
 
-from gcovr import process_files, version_str
 from gcovr import print_xml_report, print_text_report, print_html_report
-
-
-def resolve_symlinks(orig_path):
-    """
-    Return the normalized absolute path name with all symbolic links resolved
-    """
-    return os.path.realpath(orig_path)
-    # WEH - why doesn't os.path.realpath() suffice here?
-    #
-    drive,tmp = os.path.splitdrive(os.path.abspath(orig_path))
-    if not drive:
-        drive = os.path.sep
-    parts = tmp.split(os.path.sep)
-    actual_path = [drive]
-    while parts:
-        actual_path.append(parts.pop(0))
-        if not os.path.islink(os.path.join(*actual_path)):
-            continue
-        actual_path[-1] = os.readlink(os.path.join(*actual_path))
-        tmp_drive, tmp_path = os.path.splitdrive(
-            resolve_symlinks(os.path.join(*actual_path)) )
-        if tmp_drive:
-            drive = tmp_drive
-        actual_path = [drive] + tmp_path.split(os.path.sep)
-    return os.path.join(*actual_path)
-
-
-
-#
-# Class that creates path aliases
-#
-class PathAliaser(object):
-
-    def __init__(self):
-        self.aliases = {}
-        self.master_targets = set()
-        self.preferred_name = {}
-
-    def path_startswith(self, path, base):
-        return path.startswith(base) and (
-            len(base) == len(path) or path[len(base)] == os.path.sep )
-
-    def master_path(self, path):
-        match_found = False
-        while True:
-            for base, alias in self.aliases.items():
-                if self.path_startswith(path, base):
-                    path = alias + path[len(base):]
-                    match_found = True
-                    break
-            for master_base in self.master_targets:
-                if self.path_startswith(path, master_base):
-                    return path, master_base, True
-            if match_found:
-                sys.stderr.write(
-                    "(ERROR) violating fundamental assumption while walking "
-                    "directory tree.\n\tPlease report this to the gcovr "
-                    "developers.\n" )
-            return path, None, match_found
-
-    def unalias_path(self, path):
-        path = resolve_symlinks(path)
-        path, master_base, known_path = self.master_path(path)
-        if not known_path:
-            return path
-        # Try and resolve the preferred name for this location
-        if master_base in self.preferred_name:
-            return self.preferred_name[master_base] + path[len(master_base):]
-        return path
-
-    def add_master_target(self, master):
-        self.master_targets.add(master)
-
-    def add_alias(self, target, master):
-        self.aliases[target] = master
-
-    def set_preferred(self, master, preferred):
-        self.preferred_name[master] = preferred
-
-aliases = PathAliaser()
-
-# This is UGLY.  Here's why: UNIX resolves symbolic links by walking the
-# entire directory structure.  What that means is that relative links
-# are always relative to the actual directory inode, and not the
-# "virtual" path that the user might have traversed (over symlinks) on
-# the way to that directory.  Here's the canonical example:
-#
-#   a / b / c / testfile
-#   a / d / e --> ../../a/b
-#   m / n --> /a
-#   x / y / z --> /m/n/d
-#
-# If we start in "y", we will see the following directory structure:
-#   y
-#   |-- z
-#       |-- e
-#           |-- c
-#               |-- testfile
-#
-# The problem is that using a simple traversal based on the Python
-# documentation:
-#
-#    (os.path.join(os.path.dirname(path), os.readlink(result)))
-#
-# will not work: we will see a link to /m/n/d from /x/y, but completely
-# miss the fact that n is itself a link.  If we then naively attempt to
-# apply the "c" relative link, we get an intermediate path that looks
-# like "/m/n/d/e/../../a/b", which would get normalized to "/m/n/a/b"; a
-# nonexistant path.  The solution is that we need to walk the original
-# path, along with the full path of all links 1 directory at a time and
-# check for embedded symlinks.
-#
-#
-# NB:  Users have complained that this code causes a performance issue.
-# I have replaced this logic with os.walk(), which works for Python >= 2.6
-#
-def link_walker(path):
-    if sys.version_info >= (2,6):
-        for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
-            yield os.path.abspath(os.path.realpath(root)), dirs, files
-    else:
-        targets = [os.path.abspath(path)]
-        while targets:
-            target_dir = targets.pop(0)
-            actual_dir = resolve_symlinks(target_dir)
-            #print "target dir: %s  (%s)" % (target_dir, actual_dir)
-            master_name, master_base, visited = aliases.master_path(actual_dir)
-            if visited:
-                #print "  ...root already visited as %s" % master_name
-                aliases.add_alias(target_dir, master_name)
-                continue
-            if master_name != target_dir:
-                aliases.set_preferred(master_name, target_dir)
-                aliases.add_alias(target_dir, master_name)
-            aliases.add_master_target(master_name)
-            #print "  ...master name = %s" % master_name
-            #print "  ...walking %s" % target_dir
-            for root, dirs, files in os.walk(target_dir, topdown=True):
-                #print "    ...reading %s" % root
-                for d in dirs:
-                    tmp = os.path.abspath(os.path.join(root, d))
-                    #print "    ...checking %s" % tmp
-                    if os.path.islink(tmp):
-                        #print "      ...buffering link %s" % tmp
-                        targets.append(tmp)
-                yield root, dirs, files
+from gcovr import process_files, version_str
 
 
 def search_file(expr, path):
@@ -204,27 +50,27 @@ def search_file(expr, path):
     if path is None or path == ".":
         path = os.getcwd()
     elif not os.path.exists(path):
-        raise IOError("Unknown directory '"+path+"'")
-    for root, dirs, files in link_walker(path):
+        raise IOError("Unknown directory '" + path + "'")
+    for root, dirs, files in os.walk(path):
         for name in files:
             if pattern.match(name):
-                name = os.path.join(root,name)
+                name = os.path.join(root, name)
                 if os.path.islink(name):
-                    ans.append( os.path.abspath(os.readlink(name)) )
+                    ans.append(os.path.abspath(os.readlink(name)))
                 else:
-                    ans.append( os.path.abspath(name) )
+                    ans.append(os.path.abspath(name))
     return ans
 
 
 #
-# Get the list of datafiles in the directories specified by the user
+# Get the list of data files in the directories specified by the user
 #
 def get_datafiles(flist, options):
-    allfiles=set()
+    allfiles = set()
     for dir in flist:
         if options.verbose:
-            sys.stdout.write( "Scanning directory %s for gcda/gcno files...\n"
-                              % (dir, ) )
+            sys.stdout.write("Scanning directory %s for gcda/gcno files...\n"
+                             % (dir, ))
         files = search_file(".*\.gc(da|no)$", dir)
         # gcno files will *only* produce uncovered results; however,
         # that is useful information for the case where a compilation
@@ -233,15 +79,16 @@ def get_datafiles(flist, options):
         # gcda file.
         gcda_files = [file for file in files if file.endswith('gcda')]
         tmp = set(gcda_files)
-        gcno_files = [ file for file in files if
-                       file.endswith('gcno') and file[:-2]+'da' not in tmp ]
+        gcno_files = [file for file in files if
+                      file.endswith('gcno') and file[:-2] + 'da' not in tmp]
         if options.verbose:
             sys.stdout.write(
                 "Found %d files (and will process %d)\n" %
-                ( len(files), len(gcda_files) + len(gcno_files) ) )
+                (len(files), len(gcda_files) + len(gcno_files)))
         allfiles.update(gcda_files)
         allfiles.update(gcno_files)
     return allfiles
+
 
 ##
 ## MAIN
@@ -252,109 +99,152 @@ def get_datafiles(flist, options):
 #
 parser = OptionParser()
 parser.add_option("--version",
-        help="Print the version number, then exit",
-        action="store_true",
-        dest="version",
-        default=False)
-parser.add_option("-v","--verbose",
-        help="Print progress messages",
-        action="store_true",
-        dest="verbose",
-        default=False)
+                  help="Print the version number, then exit",
+                  action="store_true",
+                  dest="version",
+                  default=False)
+parser.add_option("-v", "--verbose",
+                  help="Print progress messages",
+                  action="store_true",
+                  dest="verbose",
+                  default=False)
 parser.add_option('--object-directory',
-        help="Specify the directory that contains the gcov data files.  gcovr must be able to identify the path between the *.gcda files and the directory where gcc was originally run.  Normally, gcovr can guess correctly.  This option overrides gcovr's normal path detection and can specify either the path from gcc to the gcda file (i.e. what was passed to gcc's '-o' option), or the path from the gcda file to gcc's original working directory.",
-        action="store",
-        dest="objdir",
-        default=None)
-parser.add_option("-o","--output",
-        help="Print output to this filename/directory",
-        action="store",
-        dest="output",
-        default=None)
-parser.add_option("-k","--keep",
-        help="Keep the temporary *.gcov files generated by gcov.  By default, these are deleted.",
-        action="store_true",
-        dest="keep",
-        default=False)
-parser.add_option("-d","--delete",
-        help="Delete the coverage files after they are processed.  These are generated by the users's program, and by default gcovr does not remove these files.",
-        action="store_true",
-        dest="delete",
-        default=False)
-parser.add_option("-f","--filter",
-        help="Keep only the data files that match this regular expression",
-        action="append",
-        dest="filter",
-        default=[])
-parser.add_option("-e","--exclude",
-        help="Exclude data files that match this regular expression",
-        action="append",
-        dest="exclude",
-        default=[])
+                  help="""
+Specify the directory that contains the gcov data files.  gcovr must be able to
+identify the path between the *.gcda files and the directory where gcc was
+originally run.  Normally, gcovr can guess correctly.  This option overrides
+gcovr's normal path detection and can specify either the path from gcc to the
+gcda file (i.e. what was passed to gcc's '-o' option), or the path from the
+gcda file to gcc's original working directory.
+""",
+                  action="store",
+                  dest="objdir",
+                  default=None)
+parser.add_option("-o", "--output",
+                  help="Print output to this filename/directory",
+                  action="store",
+                  dest="output",
+                  default=None)
+parser.add_option("-k", "--keep",
+                  help="""
+Keep the temporary *.gcov files generated by gcov.  By default, these are
+deleted.
+""",
+                  action="store_true",
+                  dest="keep",
+                  default=False)
+parser.add_option("-d", "--delete",
+                  help="""
+Delete the coverage files after they are processed.  These are generated
+by the user's program and by default gcovr does not remove these files.
+""",
+                  action="store_true",
+                  dest="delete",
+                  default=False)
+parser.add_option("-f", "--filter",
+                  help="""
+Keep only the data files that match this regular expression.
+""",
+                  action="append",
+                  dest="filter",
+                  default=[])
+parser.add_option("-e", "--exclude",
+                  help="""
+Exclude data files that match this regular expression.
+""",
+                  action="append",
+                  dest="exclude",
+                  default=[])
 parser.add_option("--gcov-filter",
-        help="Keep only gcov data files that match this regular expression",
-        action="store",
-        dest="gcov_filter",
-        default=None)
+                  help="""
+Keep only gcov data files that match this regular expression.
+""",
+                  action="store",
+                  dest="gcov_filter",
+                  default=None)
 parser.add_option("--gcov-exclude",
-        help="Exclude gcov data files that match this regular expression",
-        action="append",
-        dest="gcov_exclude",
-        default=[])
-parser.add_option("-r","--root",
-        help="Defines the root directory for source files.  This is also used to filter the files, and to standardize the output.",
-        action="store",
-        dest="root",
-        default=None)
-parser.add_option("-x","--xml",
-        help="Generate XML instead of the normal tabular output.",
-        action="store_true",
-        dest="xml",
-        default=False)
+                  help="""
+Exclude gcov data files that match this regular expression.
+""",
+                  action="append",
+                  dest="gcov_exclude",
+                  default=[])
+parser.add_option("-r", "--root",
+                  help="""
+Defines the root directory for source files.  This is also used to filter the
+files, and to standardize the output.
+""",
+                  action="store",
+                  dest="root",
+                  default=None)
+parser.add_option("-x", "--xml",
+                  help="""
+Generate XML instead of the normal tabular output.
+""",
+                  action="store_true",
+                  dest="xml",
+                  default=False)
 parser.add_option("--xml-pretty",
-        help="Generate pretty XML instead of the normal dense format.",
-        action="store_true",
-        dest="prettyxml",
-        default=False)
+                  help="""
+Generate pretty XML instead of the normal dense format.
+""",
+                  action="store_true",
+                  dest="prettyxml",
+                  default=False)
 parser.add_option("--html",
-        help="Generate HTML instead of the normal tabular output.",
-        action="store_true",
-        dest="html",
-        default=False)
+                  help="""
+Generate HTML instead of the normal tabular output.
+""",
+                  action="store_true",
+                  dest="html",
+                  default=False)
 parser.add_option("--html-details",
-        help="Generate HTML output for source file coverage.",
-        action="store_true",
-        dest="html_details",
-        default=False)
-parser.add_option("-b","--branches",
-        help="Tabulate the branch coverage instead of the line coverage.",
-        action="store_true",
-        dest="show_branch",
-        default=None)
-parser.add_option("-u","--sort-uncovered",
-        help="Sort entries by increasing number of uncovered lines.",
-        action="store_true",
-        dest="sort_uncovered",
-        default=None)
-parser.add_option("-p","--sort-percentage",
-        help="Sort entries by decreasing percentage of covered lines.",
-        action="store_true",
-        dest="sort_percent",
-        default=None)
+                  help="Generate HTML output for source file coverage.",
+                  action="store_true",
+                  dest="html_details",
+                  default=False)
+parser.add_option("-b", "--branches",
+                  help="""
+Tabulate the branch coverage instead of the line coverage.
+""",
+                  action="store_true",
+                  dest="show_branch",
+                  default=None)
+parser.add_option("-u", "--sort-uncovered",
+                  help="Sort entries by increasing number of uncovered lines.",
+                  action="store_true",
+                  dest="sort_uncovered",
+                  default=None)
+parser.add_option("-p", "--sort-percentage",
+                  help="""
+Sort entries by decreasing percentage of covered lines.
+""",
+                  action="store_true",
+                  dest="sort_percent",
+                  default=None)
 parser.add_option("--gcov-executable",
-        help="Defines the name/path to the gcov executable [defaults to the "
-                  "GCOV environment variable, if present; else 'gcov'].",
-        action="store",
-        dest="gcov_cmd",
-        default=os.environ.get('GCOV', 'gcov') )
+                  help="""
+Defines the name/path to the gcov executable [defaults to the GCOV environment
+variable, if present; else 'gcov'].
+""",
+                  action="store",
+                  dest="gcov_cmd",
+                  default=os.environ.get('GCOV', 'gcov'))
 parser.add_option("--exclude-unreachable-branches",
-        help="Exclude from coverage branches which are marked to be excluded by LCOV/GCOV markers "
-                  "or are determined to be from lines containing only compiler-generated \"dead\" code.",
-        action="store_true",
-        dest="exclude_unreachable_branches",
-        default=False)
-parser.usage="gcovr [options]"
-parser.description="A utility to run gcov and generate a simple report that summarizes the coverage"
+                  help="""
+Exclude from coverage branches which are marked to be excluded by LCOV/GCOV
+markers or are determined to be from lines containing only compiler-generated
+\"dead\" code.
+""",
+                  action="store_true",
+                  dest="exclude_unreachable_branches",
+                  default=False)
+parser.usage = "gcovr [options]"
+parser.description = """
+A utility to run gcov and generate a simple report that summarizes the
+coverage.
+"""
+
 #
 # Process options
 #
@@ -366,10 +256,10 @@ if options.version:
         "Copyright (2013) Sandia Corporation. Under the terms of Contract\n"
         "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
         "retains certain rights in this software.\n"
-        % (version_str(),) )
+        % (version_str(),))
     sys.exit(0)
 if options.objdir:
-    tmp = options.objdir.replace('/',os.sep).replace('\\',os.sep)
+    tmp = options.objdir.replace('/', os.sep).replace('\\', os.sep)
     while os.sep+os.sep in tmp:
         tmp = tmp.replace(os.sep+os.sep, os.sep)
     if normpath(options.objdir) != tmp:
@@ -386,28 +276,30 @@ if options.objdir:
 #
 # Setup filters
 #
-for i in range(0,len(options.exclude)):
+for i in range(0, len(options.exclude)):
     options.exclude[i] = re.compile(options.exclude[i])
 
 if options.root is not None:
     if not options.root:
-        sys.stderr.write(
-            "(ERROR) empty --root option.\n"
-            "\tRoot specifies the path to the root directory of your project.\n"
-            "\tThis option cannot be an empty string.\n")
+        sys.stderr.write("""
+(ERROR) empty --root option.\n
+\tRoot specifies the path to the root directory of your project.\n
+\tThis option cannot be an empty string.\n
+""")
         sys.exit(1)
-    options.root_filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
+    options.root_filter = re.compile(re.escape(os.path.abspath(options.root) +
+                                               os.sep))
     options.root_dir = os.path.abspath(options.root)
 else:
     options.root_filter = re.compile('')
     options.root_dir = os.getcwd()
 
-for i in range(0,len(options.filter)):
+for i in range(0, len(options.filter)):
     options.filter[i] = re.compile(options.filter[i])
 if len(options.filter) == 0:
     options.filter.append(options.root_filter)
 
-for i in range(0,len(options.gcov_exclude)):
+for i in range(0, len(options.gcov_exclude)):
     options.gcov_exclude[i] = re.compile(options.gcov_exclude[i])
 if options.gcov_filter is not None:
     options.gcov_filter = re.compile(options.gcov_filter)
@@ -432,7 +324,8 @@ covdata = {}
 for file in datafiles:
     process_datafile(file,covdata,options)
 if options.verbose:
-    sys.stdout.write("Gathered coveraged data for "+str(len(covdata))+" files\n")
+    sys.stdout.write("Gathered coveraged data for " +
+                     str(len(covdata)) + " files\n")
 """
 
 covdata = process_files(datafiles, options)
