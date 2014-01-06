@@ -50,7 +50,8 @@ setup(name='gcovr',
       packages=find_packages(),
       keywords=['utility'],
       install_requires=[
-        'jinja2'
+        'jinja2',
+        'pygments'
       ],
       include_package_data=True,
       zip_safe=False,
