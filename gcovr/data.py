@@ -9,13 +9,11 @@
 #  _________________________________________________________________________
 
 
-import os
-import subprocess
-import re
-import sys
 import copy
-import glob
-import time
+import os
+import re
+import subprocess
+import sys
 
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
@@ -33,22 +31,24 @@ cpp_style_comment_pattern = re.compile('//.*?$')
 #
 class CoverageData(object):
 
-    def __init__(self, fname, uncovered, uncovered_exceptional, covered, branches, noncode):
-        self.fname=fname
+    def __init__(self, fname, uncovered, uncovered_exceptional, covered,
+                 branches, noncode):
+        self.fname = fname
         # Shallow copies are cheap & "safe" because the caller will
         # throw away their copies of covered & uncovered after calling
         # us exactly *once*
         self.uncovered = copy.copy(uncovered)
         self.uncovered_exceptional = copy.copy(uncovered_exceptional)
-        self.covered   = copy.copy(covered)
-        self.noncode   = copy.copy(noncode)
+        self.covered = copy.copy(covered)
+        self.noncode = copy.copy(noncode)
         # But, a deep copy is required here
         self.all_lines = copy.deepcopy(uncovered)
         self.all_lines.update(uncovered_exceptional)
         self.all_lines.update(covered.keys())
         self.branches = copy.deepcopy(branches)
 
-    def update(self, uncovered, uncovered_exceptional, covered, branches, noncode):
+    def update(self, uncovered, uncovered_exceptional, covered, branches,
+               noncode):
         self.all_lines.update(uncovered)
         self.all_lines.update(uncovered_exceptional)
         self.all_lines.update(covered.keys())
@@ -56,7 +56,7 @@ class CoverageData(object):
         self.uncovered_exceptional.update(uncovered_exceptional)
         self.noncode.intersection_update(noncode)
         for k in covered.keys():
-            self.covered[k] = self.covered.get(k,0) + covered[k]
+            self.covered[k] = self.covered.get(k, 0) + covered[k]
         for k in branches.keys():
             for b in branches[k]:
                 d = self.branches.setdefault(k, {})
@@ -87,26 +87,27 @@ class CoverageData(object):
         tmp.sort()
         first = None
         last = None
-        ranges=[]
+        ranges = []
         for item in tmp:
             if last is None:
-                first=item
-                last=item
+                first = item
+                last = item
             elif item == (last+1):
-                last=item
+                last = item
             else:
-                if len(self.noncode.intersection(range(last+1,item))) \
-                       == item - last - 1:
+                item_range = range(last + 1, item)
+                items_left = len(self.noncode.intersection(item_range))
+                if items_left == item - last - 1:
                     last = item
                     continue
 
-                if first==last:
+                if first == last:
                     ranges.append(str(first))
                 else:
                     ranges.append(str(first)+"-"+str(last))
-                first=item
-                last=item
-        if first==last:
+                first = item
+                last = item
+        if first == last:
             ranges.append(str(first))
         else:
             ranges.append(str(first)+"-"+str(last))
@@ -128,30 +129,32 @@ class CoverageData(object):
         return (total, cover, percent)
 
     def summary(self, options):
-        tmp = options.root_filter.sub('',self.fname)
+        tmp = options.root_filter.sub('', self.fname)
         if not self.fname.endswith(tmp):
             # Do no truncation if the filter does not start matching at
             # the beginning of the string
             tmp = self.fname
         tmp = tmp.ljust(40)
         if len(tmp) > 40:
-            tmp=tmp+"\n"+" "*40
+            tmp = tmp + "\n" + " " * 40
 
         (total, cover, percent) = self.coverage(options.show_branch)
         uncovered_lines = self.uncovered_str(False, options.show_branch)
         if not options.show_branch:
             t = self.uncovered_str(True, False)
             if len(t):
-                uncovered_lines += " [* " + t + "]";
-        return ( total, cover,
-                 tmp + str(total).rjust(8) + str(cover).rjust(8) + \
-                 percent.rjust(6) + "%   " + uncovered_lines )
+                uncovered_lines += " [* " + t + "]"
+
+        txt = "".join([tmp, str(total).rjust(8), str(cover).rjust(8),
+                       percent.rjust(6), "%   ", uncovered_lines])
+        return (total, cover, txt)
+
 
 #
 # Process a single gcov datafile
 #
 def process_gcov_data(data_fname, covdata, options):
-    INPUT = open(data_fname,"r")
+    INPUT = open(data_fname, "r")
     #
     # Get the filename
     #
@@ -161,15 +164,14 @@ def process_gcov_data(data_fname, covdata, options):
         print(INPUT)
         raise
 
-    segments=line.split(':',3)
-    if len(segments) != 4 or not segments[2].lower().strip().endswith('source'):
-        raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip())
+    segments = line.split(':', 3)
+    ends_with_source = segments[2].lower().strip().endswith('source')
+    if len(segments) != 4 or not ends_with_source:
+        raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' %
+                           line.rstrip())
     currdir = os.getcwd()
     os.chdir(options.root_dir)
-    if sys.version_info >= (2,6):
-        fname = os.path.abspath((segments[-1]).strip())
-    else:
-        fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
+    fname = os.path.abspath((segments[-1]).strip())
     os.chdir(currdir)
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
@@ -177,9 +179,9 @@ def process_gcov_data(data_fname, covdata, options):
     # Return if the filename does not match the filter
     #
     filtered_fname = None
-    for i in range(0,len(options.filter)):
+    for i in range(0, len(options.filter)):
         if options.filter[i].match(fname):
-            filtered_fname = options.root_filter.sub('',fname)
+            filtered_fname = options.root_filter.sub('', fname)
             break
     if filtered_fname is None:
         if options.verbose:
@@ -188,12 +190,17 @@ def process_gcov_data(data_fname, covdata, options):
     #
     # Return if the filename matches the exclude pattern
     #
-    for i in range(0,len(options.exclude)):
-        if (filtered_fname is not None and options.exclude[i].match(filtered_fname)) or \
-               options.exclude[i].match(fname) or \
-               options.exclude[i].match(os.path.abspath(fname)):
+    for i in range(0, len(options.exclude)):
+        excluded = False
+        if filtered_fname is not None:
+            excluded = excluded or options.exclude[i].match(filtered_fname)
+        excluded = excluded or options.exclude[i].match(fname)
+        excluded = excluded or options.exclude[i].match(os.path.abspath(fname))
+
+        if excluded:
             if options.verbose:
-                sys.stdout.write("  Excluding coverage data for file %s\n" % fname)
+                sys.stdout.write("  Excluding coverage data for file %s\n" %
+                                 fname)
             return
     #
     # Parse each line, and record the lines
@@ -211,13 +218,13 @@ def process_gcov_data(data_fname, covdata, options):
     last_code_lineno = 0
     last_code_line_excluded = False
     for line in INPUT:
-        segments=line.split(":",2)
+        segments = line.split(":", 2)
         tmp = segments[0].strip()
         if len(segments) > 1:
             try:
                 lineno = int(segments[1].strip())
             except:
-                pass # keep previous line number!
+                pass  # keep previous line number!
 
         if exclude_line_flag in line:
             excl_line = False
@@ -232,13 +239,13 @@ def process_gcov_data(data_fname, covdata, options):
                                 "(WARNING) %s_EXCL_START found on line %s "
                                 "was terminated by %s_EXCL_STOP on line %s, "
                                 "when processing %s\n"
-                            % (_header, _line, header, lineno, fname) )
+                                % (_header, _line, header, lineno, fname))
                     else:
                         sys.stderr.write(
                             "(WARNING) mismatched coverage exclusion flags.\n"
                             "\t%s_EXCL_STOP found on line %s without "
                             "corresponding %s_EXCL_START, when processing %s\n"
-                            % (header, lineno, header, fname) )
+                            % (header, lineno, header, fname))
                 elif flag == 'LINE':
                     # We buffer the line exclusion so that it is always
                     # the last thing added to the exclusion list (and so
@@ -257,19 +264,20 @@ def process_gcov_data(data_fname, covdata, options):
             # remember certain non-executed lines
             if excluding or len(code) == 0 or code == "{" or code == "}" or \
                     code.startswith("//") or code == 'else':
-                noncode.add( lineno )
+                noncode.add(lineno)
         elif tmp[0] == '#':
             is_code_statement = True
-            uncovered.add( lineno )
+            uncovered.add(lineno)
         elif tmp[0] == '=':
             is_code_statement = True
-            uncovered_exceptional.add( lineno )
+            uncovered_exceptional.add(lineno)
         elif tmp[0] in "0123456789":
             is_code_statement = True
             covered[lineno] = int(segments[0].strip())
         elif tmp.startswith('branch'):
             exclude_branch = False
-            if options.exclude_unreachable_branches and lineno == last_code_lineno:
+            on_last_code_line = lineno == last_code_lineno
+            if options.exclude_unreachable_branches and on_last_code_line:
                 if last_code_line_excluded:
                     exclude_branch = True
                     exclude_reason = "marked with exclude pattern"
@@ -279,13 +287,17 @@ def process_gcov_data(data_fname, covdata, options):
                     code = re.sub(c_style_comment_pattern, '', code)
                     code = code.strip()
                     code_nospace = code.replace(' ', '')
-                    exclude_branch = len(code) == 0 or code == '{' or code == '}' or code_nospace == '{}'
+                    exclude_branch = len(code) == 0
+                    exclude_branch = exclude_branch or code == '{'
+                    exclude_branch = exclude_branch or code == '}'
+                    exclude_branch = exclude_branch or code_nospace == '{}'
                     exclude_reason = "detected as compiler-generated code"
 
             if exclude_branch:
                 if options.verbose:
-                    sys.stdout.write("Excluding unreachable branch on line %d in file %s (%s).\n"
-                         % (lineno, fname, exclude_reason))
+                    sys.stdout.write("Excluding unreachable branch on "
+                                     "line %d in file %s (%s).\n"
+                                     % (lineno, fname, exclude_reason))
             else:
                 fields = line.split()
                 try:
@@ -313,7 +325,7 @@ def process_gcov_data(data_fname, covdata, options):
             sys.stderr.write(
                 "(WARNING) Unrecognized GCOV output: '%s'\n"
                 "\tThis is indicitive of a gcov output parse error.\n"
-                "\tPlease report this to the gcovr developers." % tmp )
+                "\tPlease report this to the gcovr developers." % tmp)
 
         # save the code line to use it later with branches
         if is_code_statement:
@@ -337,9 +349,11 @@ def process_gcov_data(data_fname, covdata, options):
     # initialize covdata
     #
     if not fname in covdata:
-        covdata[fname] = CoverageData(fname,uncovered,uncovered_exceptional,covered,branches,noncode)
+        covdata[fname] = CoverageData(fname, uncovered, uncovered_exceptional,
+                                      covered, branches, noncode)
     else:
-        covdata[fname].update(uncovered,uncovered_exceptional,covered,branches,noncode)
+        covdata[fname].update(uncovered, uncovered_exceptional, covered,
+                              branches, noncode)
     INPUT.close()
 
     for header, line in excluding:
@@ -347,6 +361,7 @@ def process_gcov_data(data_fname, covdata, options):
                          "%s_EXCL_START\n\ton line %d did not have "
                          "corresponding %s_EXCL_STOP flag\n\t in file %s.\n"
                          % (header, line, header, fname))
+
 
 # Process a datafile (generated by running the instrumented application)
 # and run gcov with the corresponding arguments
@@ -372,13 +387,12 @@ def process_gcov_data(data_fname, covdata, options):
 # identifying the original gcc working directory (there is a bit of
 # trial-and-error here)
 #
-
 def process_datafile(filename, covdata, options):
     #
     # Launch gcov
     #
     abs_filename = os.path.abspath(filename)
-    (dirname,fname) = os.path.split(abs_filename)
+    (dirname, fname) = os.path.split(abs_filename)
     #(name,ext) = os.path.splitext(base)
 
     potential_wd = []
@@ -387,7 +401,7 @@ def process_datafile(filename, covdata, options):
 
     if options.objdir:
         src_components = abs_filename.split(os.sep)
-        components = normpath(options.objdir).split(os.sep)
+        components = os.path.normpath(options.objdir).split(os.sep)
         idx = 1
         while idx <= len(components):
             if idx > len(src_components):
@@ -396,15 +410,15 @@ def process_datafile(filename, covdata, options):
                 break
             idx += 1
         if idx > len(components):
-            pass # a parent dir; the normal process will find it
+            pass  # a parent dir; the normal process will find it
         elif components[-1*idx] == '..':
             # NB: os.path.join does not re-add leading '/' characters!?!
-            dirs = [ os.path.sep.join(src_components[:len(src_components)-idx]) ]
+            dirs = [os.path.sep.join(src_components[:len(src_components)-idx])]
             while idx <= len(components) and components[-1*idx] == '..':
                 tmp = []
                 for d in dirs:
                     for f in os.listdir(d):
-                        x = os.path.join(d,f)
+                        x = os.path.join(d, f)
                         if os.path.isdir(x):
                             tmp.append(x)
                 dirs = tmp
@@ -413,14 +427,14 @@ def process_datafile(filename, covdata, options):
         else:
             if components[0] == '':
                 # absolute path
-                tmp = [ options.objdir ]
+                tmp = [options.objdir]
             else:
                 # relative path: check relative to both the cwd and the
                 # gcda file
-                tmp = [ os.path.join(x, options.objdir) for x in
-                        [os.path.dirname(abs_filename), os.getcwd()] ]
-            potential_wd = [ testdir for testdir in tmp
-                             if os.path.isdir(testdir) ]
+                tmp = [os.path.join(x, options.objdir) for x in
+                       [os.path.dirname(abs_filename), os.getcwd()]]
+            potential_wd = [testdir for testdir in tmp
+                            if os.path.isdir(testdir)]
             if len(potential_wd) == 0:
                 errors.append("ERROR: cannot identify the location where GCC "
                               "was run using --object-directory=%s\n" %
@@ -437,14 +451,13 @@ def process_datafile(filename, covdata, options):
             if wd == potential_wd[-1]:
                 break
 
-    cmd = [ options.gcov_cmd, abs_filename,
-            "--branch-counts", "--branch-probabilities", "--preserve-paths",
-            '--object-directory', dirname ]
+    cmd = [options.gcov_cmd, abs_filename,
+           "--branch-counts", "--branch-probabilities", "--preserve-paths",
+           '--object-directory', dirname]
 
     # NB: Currently, we will only parse English output
     env = dict(os.environ)
     env['LC_ALL'] = 'en_US'
-
 
     while len(potential_wd) > 0 and not Done:
         # NB: either len(potential_wd) == 1, or all entires are absolute
@@ -452,20 +465,17 @@ def process_datafile(filename, covdata, options):
         # iteration.
         os.chdir(potential_wd.pop(0))
 
-
-        #if options.objdir:
-        #    cmd.extend(["--object-directory", Template(options.objdir).substitute(filename=filename, head=dirname, tail=base, root=name, ext=ext)])
-
         if options.verbose:
-            sys.stdout.write("Running gcov: '%s' in '%s'\n" % ( ' '.join(cmd), os.getcwd() ))
-        (out, err) = subprocess.Popen( cmd, env=env,
-                                       stdout=subprocess.PIPE,
-                                       stderr=subprocess.PIPE ).communicate()
-        out=out.decode('utf-8')
-        err=err.decode('utf-8')
+            sys.stdout.write("Running gcov: '%s' in '%s'\n"
+                             % (' '.join(cmd), os.getcwd()))
+        (out, err) = subprocess.Popen(cmd, env=env,
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE).communicate()
+        out = out.decode('utf-8')
+        err = err.decode('utf-8')
 
         # find the files that gcov created
-        gcov_files = {'active':[], 'filter':[], 'exclude':[]}
+        gcov_files = {'active': [], 'filter': [], 'exclude': []}
         for line in out.splitlines():
             found = output_re.search(line.strip())
             if found is not None:
@@ -475,12 +485,15 @@ def process_datafile(filename, covdata, options):
                         sys.stdout.write("Filtering gcov file %s\n" % fname)
                     gcov_files['filter'].append(fname)
                     continue
-                exclude=False
-                for i in range(0,len(options.gcov_exclude)):
-                    if options.gcov_exclude[i].match(options.gcov_filter.sub('',fname)) or \
-                           options.gcov_exclude[i].match(fname) or \
-                           options.gcov_exclude[i].match(os.path.abspath(fname)):
-                        exclude=True
+                exclude = False
+                for i in range(0, len(options.gcov_exclude)):
+                    current_exclude = options.gcov_exclude[i]
+                    filtered_fname = options.gcov_filter.sub('', fname)
+                    exclude = exclude or current_exclude.match(filtered_fname)
+                    exclude = exclude or current_exclude.match(fname)
+                    absolute_path = os.path.abspath(fname)
+                    exclude = exclude or current_exclude.match(absolute_path)
+                    if exclude:
                         break
                 if not exclude:
                     gcov_files['active'].append(fname)
@@ -514,7 +527,7 @@ def process_datafile(filename, covdata, options):
             "(WARNING) GCOV produced the following errors processing %s:\n"
             "\t   %s"
             "\t(gcovr could not infer a working directory that resolved it.)\n"
-            % ( filename, "\t   ".join(errors) ) )
+            % (filename, "\t   ".join(errors)))
 
 
 def process_files(datafiles, options):
@@ -523,6 +536,7 @@ def process_files(datafiles, options):
     for file in datafiles:
         process_datafile(file, covdata, options)
     if options.verbose:
-        sys.stdout.write("Gathered coveraged data for "+str(len(covdata))+" files\n")
+        sys.stdout.write("".join(["Gathered coveraged data for ",
+                                  str(len(covdata)), " files\n"]))
     os.chdir(start_dir)
     return covdata
