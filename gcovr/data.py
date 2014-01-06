@@ -27,6 +27,15 @@ cpp_style_comment_pattern = re.compile('//.*?$')
 
 
 #
+# Errors encountered during execution of GCOV.
+#
+class GcovError(RuntimeError):
+    def __init__(self, message, filename):
+        super(RuntimeError, self).__init__(message)
+        self.filename = filename
+
+
+#
 # Container object for coverage statistics
 #
 class CoverageData(object):
@@ -468,9 +477,16 @@ def process_datafile(filename, covdata, options):
         if options.verbose:
             sys.stdout.write("Running gcov: '%s' in '%s'\n"
                              % (' '.join(cmd), os.getcwd()))
-        (out, err) = subprocess.Popen(cmd, env=env,
-                                      stdout=subprocess.PIPE,
-                                      stderr=subprocess.PIPE).communicate()
+        gcov_process = subprocess.Popen(cmd, env=env, stdout=subprocess.PIPE,
+                                        stderr=subprocess.PIPE)
+        (out, err) = gcov_process.communicate()
+        if gcov_process.returncode != 0:
+            error_msg = ["(ERROR) GCOV returned %d on file %s!"
+                         % (gcov_process.returncode, fname),
+                         "\n    ".join(["GCOV says:"] + err.split('\n'))]
+            error_msg = "\n".join(error_msg)
+            raise GcovError(error_msg, fname)
+
         out = out.decode('utf-8')
         err = err.decode('utf-8')
 
