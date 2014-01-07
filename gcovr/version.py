@@ -14,11 +14,10 @@ import re
 __version__ = "3.2-prerelease"
 src_revision = "$Revision$"
 
+
 def version_str():
     ans = __version__
     m = re.match('\$Revision:\s*(\S+)\s*\$', src_revision)
     if m:
         ans = ans + " (r%s)" % (m.group(1))
     return ans
-
-

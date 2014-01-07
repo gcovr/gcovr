@@ -33,7 +33,7 @@ uncovered_color = "uncovered"
 from jinja2 import Environment, PackageLoader, Template
 
 
-env = Environment(loader=PackageLoader('gcovr'));
+env = Environment(loader=PackageLoader('gcovr'))
 
 #
 # A string template for the root HTML output
@@ -45,12 +45,14 @@ root_page = env.get_template('index.html')
 #
 source_page = env.get_template('source.html')
 
+
 def makedirs(path):
     try:
         os.makedirs(path)
     except OSError as err:
         if err.errno == os.errno.EEXIST and os.path.isdir(path):
             pass
+
 
 def copy_static_content(options):
     from pkg_resources import resource_filename
@@ -61,6 +63,7 @@ def copy_static_content(options):
     makedirs(css_path)
     for file in os.listdir(resource):
         shutil.copy(os.path.join(resource, file), css_path)
+
 
 def coverage_info(covdata, show_branch):
     total = 0
@@ -86,12 +89,14 @@ def print_html_report(covdata, options):
     def _num_uncovered(key):
         (total, covered, percent) = covdata[key].coverage(options.show_branch)
         return total - covered
+
     def _percent_uncovered(key):
         (total, covered, percent) = covdata[key].coverage(options.show_branch)
         if covered:
             return -1.0*covered/total
         else:
             return total or 1e6
+
     def _alpha(key):
         return key
 
@@ -132,25 +137,28 @@ def print_html_report(covdata, options):
     data['LINES_COLOR'] = color
 
     # Generate the coverage output (on a per-package basis)
-    #source_dirs = set()
     files = []
     keys = list(covdata.keys())
-    keys.sort(key=options.sort_uncovered and _num_uncovered or \
-              options.sort_percent and _percent_uncovered or _alpha)
+    sort_uncovered = options.sort_uncovered and _num_uncovered
+    sort_percent = options.sort_percent and _percent_uncovered
+    keys.sort(key=sort_uncovered or sort_percent or _alpha)
 
     filtered_fname = None
 
     for f in keys:
         cdata = covdata[f]
-        filtered_fname = options.root_filter.sub('',f)
+        filtered_fname = options.root_filter.sub('', f)
         print filtered_fname
         files.append(filtered_fname)
         cdata._filename = filtered_fname
         ttmp = os.path.abspath(options.output).split('.')
         if len(ttmp) > 1:
-            cdata._sourcefile = '.'.join( ttmp[:-1] )  + '.' + cdata._filename.replace('/','_') + '.' + ttmp[-1]
+            cdata._sourcefile = ('.'.join(ttmp[:-1]) + '.' +
+                                 cdata._filename.replace('/', '_') + '.' +
+                                 ttmp[-1])
         else:
-            cdata._sourcefile = ttmp[0] + '.' + cdata._filename.replace('/','_') + '.html'
+            cdata._sourcefile = (ttmp[0] + '.' +
+                                 cdata._filename.replace('/', '_') + '.html')
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
     if len(files) > 1:
@@ -162,7 +170,6 @@ def print_html_report(covdata, options):
         dir_, file_ = os.path.split(filtered_fname)
         if dir_ != '':
             data['DIRECTORY'] = dir_ + os.sep
-
 
     for f in keys:
         cdata = covdata[f]
@@ -187,10 +194,24 @@ def print_html_report(covdata, options):
                 class_branch_hits += b_hits
                 class_branches += len(branches)
 
-        lines_covered = 100.0 if class_lines == 0 else 100.0*class_hits/class_lines
-        branches_covered = 100.0 if class_branches == 0 else 100.0*class_branch_hits/class_branches
+        if class_lines == 0:
+            lines_covered = 100.0
+        else:
+            lines_covered = 100.0 * class_hits / class_lines
+        if class_branches == 0:
+            branches_covered = 100.0
+        else:
+            branches_covered = 100.0 * class_branch_hits / class_branches
 
-        data['ROWS'].append( html_row(options.html_details, cdata._sourcefile, directory=data['DIRECTORY'], filename=cdata._filename, LinesExec=class_hits, LinesTotal=class_lines, LinesCoverage=lines_covered, BranchesExec=class_branch_hits, BranchesTotal=class_branches, BranchesCoverage=branches_covered ) )
+        data['ROWS'].append(html_row(options.html_details, cdata._sourcefile,
+                                     directory=data['DIRECTORY'],
+                                     filename=cdata._filename,
+                                     LinesExec=class_hits,
+                                     LinesTotal=class_lines,
+                                     LinesCoverage=lines_covered,
+                                     BranchesExec=class_branch_hits,
+                                     BranchesTotal=class_branches,
+                                     BranchesCoverage=branches_covered))
     data['ROWS'] = '\n'.join(data['ROWS'])
 
     if data['DIRECTORY'] == '':
@@ -202,15 +223,17 @@ def print_html_report(covdata, options):
         sys.stdout.write(htmlString+'\n')
     else:
         OUTPUT = open(options.output, 'w')
-        OUTPUT.write(htmlString +'\n')
+        OUTPUT.write(htmlString + '\n')
         OUTPUT.close()
 
     if options.html_details:
-         print_html_details(keys, covdata, options)
+        print_html_details(keys, covdata, options)
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
+from pygments.lexers import TextLexer
 from pygments.lexers import get_lexer_for_filename
+
 
 class GcovrHtmlFormatter(HtmlFormatter):
     def __init__(self, covdata, **options):
@@ -220,21 +243,26 @@ class GcovrHtmlFormatter(HtmlFormatter):
     def wrap(self, source, outfile):
         linenum = 1
         cdata = self.covdata
-        yield 0, u'<table class="table table-compact table-striped">'
-        yield 0, u'<thead><tr><th>Line</th><th>Exec</th><th>Code</th></tr></thead><tbody>'
+        yield 0, u'''
+<table class="table table-compact table-striped">
+'''
+        yield 0, u'''
+<thead><tr><th>Line</th><th>Exec</th><th>Code</th></tr></thead><tbody>
+'''
         for code, line in source:
             if code == 1:
                 html_class = ""
-                covered    = ""
+                covered = ""
                 if linenum in cdata.covered:
                     html_class = " success"
-                    covered    = str(cdata.covered.get(linenum, 0))
+                    covered = str(cdata.covered.get(linenum, 0))
                 elif linenum in cdata.uncovered:
                     html_class = " warning"
 
-
-                l  = u'<tr>'
-                l += u'<td class="exec"><a name="l' + str(linenum) + '" href="#l'
+                l = u'<tr>'
+                l += u'''
+<td class="exec"><a name="l' + str(linenum) + '" href="#l
+'''
                 l += str(linenum) + '">' + str(linenum) + '</a></td>'
                 l += u'<td class="exec">' + covered
                 l += u'</td><td class="pre' + html_class + '">'
@@ -243,6 +271,7 @@ class GcovrHtmlFormatter(HtmlFormatter):
                 linenum += 1
                 yield 1, l
         yield 0, u'</tbody></table>'
+
 
 def print_html_details(keys, covdata, options):
     #
@@ -258,7 +287,10 @@ def print_html_details(keys, covdata, options):
         branchTotal, branchCovered, tmp = cdata.coverage(options.show_branch)
         data['BRANCHES_EXEC'] = str(branchCovered)
         data['BRANCHES_TOTAL'] = str(branchTotal)
-        coverage = 0.0 if branchTotal == 0 else round(100.0*branchCovered / branchTotal,1)
+        if branchTotal == 0:
+            coverage = 0.0
+        else:
+            coverage = round(100.0 * branchCovered / branchTotal, 1)
         data['BRANCHES_COVERAGE'] = str(coverage)
         if coverage < medium_coverage:
             data['BRANCHES_COLOR'] = low_color
@@ -271,7 +303,10 @@ def print_html_details(keys, covdata, options):
         lineTotal, lineCovered, tmp = cdata.coverage(options.show_branch)
         data['LINES_EXEC'] = str(lineCovered)
         data['LINES_TOTAL'] = str(lineTotal)
-        coverage = 0.0 if lineTotal == 0 else round(100.0*lineCovered / lineTotal,1)
+        if lineTotal == 0:
+            coverage = 0.0
+        else:
+            coverage = round(100.0 * lineCovered / lineTotal, 1)
         data['LINES_COVERAGE'] = str(coverage)
         if coverage < medium_coverage:
             data['LINES_COLOR'] = low_color
@@ -283,24 +318,19 @@ def print_html_details(keys, covdata, options):
         currdir = os.getcwd()
         os.chdir(options.root_dir)
 
-        import codecs
         INPUT = open(data['FILENAME'], 'rb')
-
         code = INPUT.read()
-
         formatter = GcovrHtmlFormatter(cdata)
         try:
-            lexer = get_lexer_for_filename(data['FILENAME'], code, encoding="utf-8")
+            lexer = get_lexer_for_filename(data['FILENAME'], code,
+                                           encoding="utf-8")
         except:
             lexer = TextLexer()
-
         buf = highlight(code, lexer, formatter)
-
         data['ROWS'] = buf.encode('utf-8').decode('utf-8')
 
         os.chdir(currdir)
         try:
-
             htmlString = source_page.render(**data)
 
             with open(cdata._sourcefile, 'w') as f:
@@ -309,6 +339,7 @@ def print_html_details(keys, covdata, options):
             print htmlString.__class__
             print buf
             raise
+
 
 def source_row(lineno, source, cdata):
     rowstr = Template(u'''
@@ -321,7 +352,7 @@ def source_row(lineno, source, cdata):
     kwargs['lineno'] = str(lineno)
     if lineno in cdata.covered:
         kwargs['covclass'] = 'coveredLine'
-        kwargs['linecount'] = str(cdata.covered.get(lineno,0))
+        kwargs['linecount'] = str(cdata.covered.get(lineno, 0))
     elif lineno in cdata.uncovered:
         kwargs['covclass'] = 'uncoveredLine'
         kwargs['linecount'] = ''
@@ -331,12 +362,15 @@ def source_row(lineno, source, cdata):
     kwargs['source'] = html.escape(source)
     return rowstr.render(**kwargs)
 
+
+nrows = 0
+
+
 #
 # Generate the table row for a single file
 #
-nrows = 0
 def html_row(details, sourcefile, **kwargs):
-    rowstr=Template(u'''
+    rowstr = Template(u'''
     <tr>
       <td>{{filename}}</td>
       <td>
@@ -358,10 +392,11 @@ def html_row(details, sourcefile, **kwargs):
     global nrows
     nrows += 1
     if details:
-        kwargs['filename'] = '<a href="%s">%s</a>' % (sourcefile, kwargs['filename'][len(kwargs['directory']):])
+        sourcedir = kwargs['filename'][len(kwargs['directory']):]
+        kwargs['filename'] = '<a href="%s">%s</a>' % (sourcefile, sourcedir)
     else:
         kwargs['filename'] = kwargs['filename'][len(kwargs['directory']):]
-    kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'],1)
+    kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'], 1)
     if kwargs['LinesCoverage'] < medium_coverage:
         kwargs['LinesColor'] = 'danger'
         kwargs['LinesBar'] = 'danger'
@@ -372,10 +407,10 @@ def html_row(details, sourcefile, **kwargs):
         kwargs['LinesColor'] = 'success'
         kwargs['LinesBar'] = 'success'
 
-    kwargs['BranchesCoverage'] = round(kwargs['BranchesCoverage'],1)
+    kwargs['BranchesCoverage'] = round(kwargs['BranchesCoverage'], 1)
     if kwargs['BranchesCoverage'] < medium_coverage:
         kwargs['BranchesColor'] = 'danger'
-        kwargs['BranchesBar'] =  'danger'
+        kwargs['BranchesBar'] = 'danger'
     elif kwargs['BranchesCoverage'] < high_coverage:
         kwargs['BranchesColor'] = 'warning'
         kwargs['BranchesBar'] = 'warning'
@@ -384,5 +419,3 @@ def html_row(details, sourcefile, **kwargs):
         kwargs['BranchesBar'] = 'success'
 
     return rowstr.render(**kwargs)
-
-

@@ -15,6 +15,7 @@ import sys
 import time
 import xml.dom.minidom
 
+
 #
 # Produce an XML report in the Cobertura format
 #
@@ -37,15 +38,15 @@ def print_xml_report(covdata, options):
     impl = xml.dom.minidom.getDOMImplementation()
     docType = impl.createDocumentType(
         "coverage", None,
-        "http://cobertura.sourceforge.net/xml/coverage-03.dtd" )
+        "http://cobertura.sourceforge.net/xml/coverage-03.dtd")
     doc = impl.createDocument(None, "coverage", docType)
     root = doc.documentElement
-    root.setAttribute( "line-rate", lineTotal == 0 and '0.0' or
-                       str(float(lineCovered) / lineTotal) )
-    root.setAttribute( "branch-rate", branchTotal == 0 and '0.0' or
-                       str(float(branchCovered) / branchTotal) )
-    root.setAttribute( "timestamp", str(int(time.time())) )
-    root.setAttribute( "version", "gcovr %s" % (version_str(),) )
+    root.setAttribute("line-rate", lineTotal == 0 and '0.0' or
+                      str(float(lineCovered) / lineTotal))
+    root.setAttribute("branch-rate", branchTotal == 0 and '0.0' or
+                      str(float(branchCovered) / branchTotal))
+    root.setAttribute("timestamp", str(int(time.time())))
+    root.setAttribute("version", "gcovr %s" % (version_str(),))
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
@@ -62,7 +63,7 @@ def print_xml_report(covdata, options):
     keys.sort()
     for f in keys:
         data = covdata[f]
-        dir = options.root_filter.sub('',f)
+        dir = options.root_filter.sub('', f)
         if f.endswith(dir):
             src_path = f[:-1*len(dir)]
             if len(src_path) > 0:
@@ -77,8 +78,8 @@ def print_xml_report(covdata, options):
         (dir, fname) = os.path.split(dir)
 
         package = packages.setdefault(
-            dir, [ doc.createElement("package"), {},
-                   0, 0, 0, 0 ] )
+            dir, [doc.createElement("package"), {},
+                  0, 0, 0, 0])
         c = doc.createElement("class")
         # The Cobertura DTD requires a methods section, which isn't
         # trivial to get from gcov (so we will leave it blank)
@@ -108,13 +109,13 @@ def print_xml_report(covdata, options):
                         b_hits += 1
                 coverage = 100*b_hits/len(branches)
                 l.setAttribute("branch", "true")
-                l.setAttribute( "condition-coverage",
-                                "%i%% (%i/%i)" %
-                                (coverage, b_hits, len(branches)) )
+                l.setAttribute("condition-coverage",
+                               "%i%% (%i/%i)"
+                               % (coverage, b_hits, len(branches)))
                 cond = doc.createElement('condition')
                 cond.setAttribute("number", "0")
                 cond.setAttribute("type", "jump")
-                cond.setAttribute("coverage", "%i%%" % ( coverage ) )
+                cond.setAttribute("coverage", "%i%%" % (coverage))
                 class_branch_hits += b_hits
                 class_branches += float(len(branches))
                 conditions = doc.createElement("conditions")
@@ -127,8 +128,8 @@ def print_xml_report(covdata, options):
         c.setAttribute("name", className)
         c.setAttribute("filename", os.path.join(dir, fname))
         c.setAttribute("line-rate", str(class_hits / (1.0*class_lines or 1.0)))
-        c.setAttribute( "branch-rate",
-                        str(class_branch_hits / (1.0*class_branches or 1.0)) )
+        c.setAttribute("branch-rate",
+                       str(class_branch_hits / (1.0*class_branches or 1.0)))
         c.setAttribute("complexity", "0.0")
 
         package[1][className] = c
@@ -141,7 +142,7 @@ def print_xml_report(covdata, options):
     keys.sort()
     for packageName in keys:
         packageData = packages[packageName]
-        package = packageData[0];
+        package = packageData[0]
         packageXml.appendChild(package)
         classes = doc.createElement("classes")
         package.appendChild(classes)
@@ -150,10 +151,11 @@ def print_xml_report(covdata, options):
         for className in classNames:
             classes.appendChild(packageData[1][className])
         package.setAttribute("name", packageName.replace(os.sep, '.'))
-        package.setAttribute("line-rate", str(packageData[2]/(1.0*packageData[3] or 1.0)))
-        package.setAttribute( "branch-rate", str(packageData[4] / (1.0*packageData[5] or 1.0) ))
+        line_rate = packageData[2] / (1.0 * packageData[3] or 1.0)
+        package.setAttribute("line-rate", str(line_rate))
+        branch_rate = packageData[4] / (1.0 * packageData[5] or 1.0)
+        package.setAttribute("branch-rate", str(branch_rate))
         package.setAttribute("complexity", "0.0")
-
 
     # Populate the <sources> element: this is either the root directory
     # (specified by --root), or relative directories based
@@ -169,10 +171,10 @@ def print_xml_report(covdata, options):
             if d.startswith(cwd):
                 reldir = d[len(cwd):].lstrip(os.path.sep)
             elif cwd.startswith(d):
-                i = 1
-                while normpath(d) != normpath(os.path.join(*tuple([cwd]+['..']*i))):
-                    i += 1
-                reldir = os.path.join(*tuple(['..']*i))
+                reldir = os.pardir
+                norm_d = os.path.normpath(d)
+                while norm_d != os.path.normpath(os.path.join(cwd, reldir)):
+                    reldir = os.path.join(reldir, os.pardir)
             else:
                 reldir = d
             source.appendChild(doc.createTextNode(reldir.strip()))
@@ -186,10 +188,14 @@ def print_xml_report(covdata, options):
         import textwrap
         lines = doc.toprettyxml(" ").split('\n')
         for i in xrange(len(lines)):
-            n=0
+            n = 0
             while n < len(lines[i]) and lines[i][n] == " ":
                 n += 1
-            lines[i] = "\n".join(textwrap.wrap(lines[i], 78, break_long_words=False, break_on_hyphens=False, subsequent_indent=" "+ n*" "))
+            indent = " " + n * " "
+            lines[i] = "\n".join(textwrap.wrap(lines[i], 78,
+                                               break_long_words=False,
+                                               break_on_hyphens=False,
+                                               subsequent_indent=indent))
         xmlString = "\n".join(lines)
         #print textwrap.wrap(doc.toprettyxml(" "), 80)
     else:
@@ -198,6 +204,5 @@ def print_xml_report(covdata, options):
         sys.stdout.write(xmlString+'\n')
     else:
         OUTPUT = open(options.output, 'w')
-        OUTPUT.write(xmlString +'\n')
+        OUTPUT.write(xmlString + '\n')
         OUTPUT.close()
-
