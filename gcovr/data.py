@@ -12,6 +12,9 @@
 import copy
 import os
 import re
+import sre_compile
+import sre_constants
+import sre_parse
 import subprocess
 import sys
 import textwrap
@@ -19,12 +22,6 @@ import textwrap
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("cannot open (source|graph) file")
-
-exclude_line_flag = "_EXCL_"
-exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
-
-c_style_comment_pattern = re.compile('/\*.*?\*/')
-cpp_style_comment_pattern = re.compile('//.*?$')
 
 
 #
@@ -34,6 +31,12 @@ class GcovError(RuntimeError):
     def __init__(self, message, filename):
         super(RuntimeError, self).__init__(message)
         self.filename = filename
+
+
+class GcovParserError(ValueError):
+    def __init__(self, string):
+        super(ValueError, self).__init__(
+            "Unrecognized GCOV output: '%s'" % string)
 
 
 class ParameterValueError(ValueError):
@@ -167,217 +170,275 @@ class CoverageData(object):
         return (total, cover, txt)
 
 
-#
-# Process a single gcov datafile
-#
-def process_gcov_data(data_fname, covdata, options):
-    INPUT = open(data_fname, "r")
-    #
-    # Get the filename
-    #
-    try:
-        line = INPUT.readline()
-    except:
-        print(INPUT)
-        raise
+class GcovParser(object):
+    exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
+    c_style_comment_pattern = re.compile('/\*.*?\*/')
+    cpp_style_comment_pattern = re.compile('//.*?$')
 
-    segments = line.split(':', 3)
-    ends_with_source = segments[2].lower().strip().endswith('source')
-    if len(segments) != 4 or not ends_with_source:
-        raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' %
-                           line.rstrip())
-    currdir = os.getcwd()
-    os.chdir(options.root_dir)
-    fname = os.path.abspath((segments[-1]).strip())
-    os.chdir(currdir)
-    if options.verbose:
-        sys.stdout.write("Parsing coverage data for file %s\n" % fname)
-    #
-    # Return if the filename does not match the filter
-    #
-    filtered_fname = None
-    for i in range(0, len(options.filter)):
-        if options.filter[i].match(fname):
-            filtered_fname = options.root_filter.sub('', fname)
-            break
-    if filtered_fname is None:
-        if options.verbose:
-            sys.stdout.write("  Filtering coverage data for file %s\n" % fname)
-        return
-    #
-    # Return if the filename matches the exclude pattern
-    #
-    for i in range(0, len(options.exclude)):
-        excluded = False
-        if filtered_fname is not None:
-            excluded = excluded or options.exclude[i].match(filtered_fname)
-        excluded = excluded or options.exclude[i].match(fname)
-        excluded = excluded or options.exclude[i].match(os.path.abspath(fname))
-
-        if excluded:
-            if options.verbose:
-                sys.stdout.write("  Excluding coverage data for file %s\n" %
-                                 fname)
-            return
-    #
-    # Parse each line, and record the lines
-    # that are uncovered
-    #
-    excluding = []
-    noncode = set()
-    uncovered = set()
-    uncovered_exceptional = set()
-    covered = {}
-    branches = {}
-    #first_record=True
-    lineno = 0
-    last_code_line = ""
-    last_code_lineno = 0
-    last_code_line_excluded = False
-    for line in INPUT:
-        segments = line.split(":", 2)
-        tmp = segments[0].strip()
-        if len(segments) > 1:
-            try:
-                lineno = int(segments[1].strip())
-            except:
-                pass  # keep previous line number!
-
-        if exclude_line_flag in line:
-            excl_line = False
-            for header, flag in exclude_line_pattern.findall(line):
-                if flag == 'START':
-                    excluding.append((header, lineno))
-                elif flag == 'STOP':
-                    if excluding:
-                        _header, _line = excluding.pop()
-                        if _header != header:
-                            sys.stderr.write(
-                                "(WARNING) %s_EXCL_START found on line %s "
-                                "was terminated by %s_EXCL_STOP on line %s, "
-                                "when processing %s\n"
-                                % (_header, _line, header, lineno, fname))
-                    else:
-                        sys.stderr.write(
-                            "(WARNING) mismatched coverage exclusion flags.\n"
-                            "\t%s_EXCL_STOP found on line %s without "
-                            "corresponding %s_EXCL_START, when processing %s\n"
-                            % (header, lineno, header, fname))
-                elif flag == 'LINE':
-                    # We buffer the line exclusion so that it is always
-                    # the last thing added to the exclusion list (and so
-                    # only ONE is ever added to the list).  This guards
-                    # against cases where puts a _LINE and _START (or
-                    # _STOP) on the same line... it also guards against
-                    # duplicate _LINE flags.
-                    excl_line = True
-            if excl_line:
-                excluding.append(False)
-
+    class _State(object):
         is_code_statement = False
-        if tmp[0] == '-' or (excluding and tmp[0] in "#=0123456789"):
-            is_code_statement = True
-            code = segments[2].strip()
-            # remember certain non-executed lines
-            if excluding or len(code) == 0 or code == "{" or code == "}" or \
-                    code.startswith("//") or code == 'else':
-                noncode.add(lineno)
-        elif tmp[0] == '#':
-            is_code_statement = True
-            uncovered.add(lineno)
-        elif tmp[0] == '=':
-            is_code_statement = True
-            uncovered_exceptional.add(lineno)
-        elif tmp[0] in "0123456789":
-            is_code_statement = True
-            covered[lineno] = int(segments[0].strip())
-        elif tmp.startswith('branch'):
-            exclude_branch = False
-            on_last_code_line = lineno == last_code_lineno
-            if options.exclude_unreachable_branches and on_last_code_line:
-                if last_code_line_excluded:
-                    exclude_branch = True
-                    exclude_reason = "marked with exclude pattern"
-                else:
-                    code = last_code_line
-                    code = re.sub(cpp_style_comment_pattern, '', code)
-                    code = re.sub(c_style_comment_pattern, '', code)
-                    code = code.strip()
-                    code_nospace = code.replace(' ', '')
-                    exclude_branch = len(code) == 0
-                    exclude_branch = exclude_branch or code == '{'
-                    exclude_branch = exclude_branch or code == '}'
-                    exclude_branch = exclude_branch or code_nospace == '{}'
-                    exclude_reason = "detected as compiler-generated code"
+        filename = None
+        uncovered = set()
+        uncovered_exceptional = set()
+        covered = {}
+        branches = {}
+        excluding = []
+        segments = []
+        noncode = set()
+        lineno = 0
+        last_code_line = ""
+        last_code_lineno = 0
+        last_code_line_excluded = False
 
-            if exclude_branch:
-                if options.verbose:
-                    sys.stdout.write("Excluding unreachable branch on "
-                                     "line %d in file %s (%s).\n"
-                                     % (lineno, fname, exclude_reason))
+    def __init__(self, root_dir, file_filter, root_filter, exclude,
+                 exclude_unreachable_branches, verbose=False):
+        self.root_dir = root_dir
+        self.file_filter = file_filter
+        self.root_filter = root_filter
+        self.exclude = exclude
+        self.exclude_unreachable_branches = exclude_unreachable_branches
+        self.verbose = verbose
+
+        self._lexicon, self._scanner = self._build_scanner()
+
+    def _build_scanner(self):
+        lexicon = [
+            (r'^-.*', self._s_code),
+            (r'^#.*', self._s_uncovered),
+            (r'^=.*', self._s_uncovered_exceptional),
+            (r'^\d.*', self._s_covered),
+            (r'^branch.*', self._s_branch),
+            (r'^call.*', self._s_call),
+            (r'^function.*', self._s_function),
+            (r'^f.*', self._s_f),
+            (r'.*_EXCL_.*', self._s_exclude)]
+        parser = []
+        pattern = sre_parse.Pattern()
+        for phrase, action in lexicon:
+            data = [(sre_constants.SUBPATTERN,
+                     (len(parser) + 1, sre_parse.parse(phrase, 0)))]
+            parser.append(sre_parse.SubPattern(pattern, data))
+        pattern.groups = len(parser) + 1
+        data = [(sre_parse.BRANCH, (None, parser))]
+        parser = sre_parse.SubPattern(pattern, data)
+        return lexicon, sre_compile.compile(parser)
+
+    def _s_code(self, state, match):
+        state.is_code_statement = True
+        code = state.segments[2].strip()
+        # remember certain non-executed lines
+        zero_len = len(code) == 0
+        is_bracket = code == '{' or code == '}'
+        is_comment = code.startswith('//')
+        is_else = code == 'else'
+        if state.excluding or zero_len or is_bracket or is_comment or is_else:
+            state.noncode.add(state.lineno)
+
+    def _s_uncovered(self, state, match):
+        if state.excluding:
+            return self._s_code(state, match)
+        state.is_code_statement = True
+        state.uncovered.add(state.lineno)
+
+    def _s_uncovered_exceptional(self, state, match):
+        if state.excluding:
+            return self._s_code(state, match)
+        state.is_code_statement = True
+        state.uncovered_exceptional.add(state.lineno)
+
+    def _s_covered(self, state, match):
+        if state.excluding:
+            return self._s_code(state, match)
+        state.is_code_statement = True
+        state.covered[state.lineno] = int(state.segments[0].strip())
+
+    def _s_branch(self, state, match):
+        exclude_branch = False
+        on_last_code_line = state.lineno == state.last_code_lineno
+        if self.exclude_unreachable_branches and on_last_code_line:
+            if state.last_code_line_excluded:
+                exclude_branch = True
+                exclude_reason = "marked with exclude pattern"
             else:
-                fields = line.split()
+                code = state.last_code_line
+                code = re.sub(GcovParser.cpp_style_comment_pattern, '', code)
+                code = re.sub(GcovParser.c_style_comment_pattern, '', code)
+                code = code.strip()
+                code_nospace = code.replace(' ', '')
+                exclude_branch = len(code) == 0
+                exclude_branch = exclude_branch or code == '{'
+                exclude_branch = exclude_branch or code == '}'
+                exclude_branch = exclude_branch or code_nospace == '{}'
+                exclude_reason = "detected as compiler-generated code"
+
+        if exclude_branch:
+            if self.verbose:
+                sys.stdout.write("Excluding unreachable branch on "
+                                 "line %d in file %s (%s).\n"
+                                 % (state.lineno, state.filename,
+                                    exclude_reason))
+            else:
+                fields = match.string.split()
                 try:
                     count = int(fields[3])
-                    branches.setdefault(lineno, {})[int(fields[1])] = count
+                    field = int(fields[1])
+                    state.branches.setdefault(state.lineno, {})[field] = count
                 except:
                     # We ignore branches that were "never executed"
                     pass
-        elif tmp.startswith('call'):
-            pass
-        elif tmp.startswith('function'):
-            pass
-        elif tmp[0] == 'f':
-            pass
-            #if first_record:
-                #first_record=False
-                #uncovered.add(prev)
-            #if prev in uncovered:
-                #tokens=re.split('[ \t]+',tmp)
-                #if tokens[3] != "0":
-                    #uncovered.remove(prev)
-            #prev = int(segments[1].strip())
-            #first_record=True
-        else:
-            sys.stderr.write(
-                "(WARNING) Unrecognized GCOV output: '%s'\n"
-                "\tThis is indicitive of a gcov output parse error.\n"
-                "\tPlease report this to the gcovr developers." % tmp)
+
+    def _s_call(self, state, match):
+        pass
+
+    def _s_function(self, state, match):
+        pass
+
+    def _s_f(self, state, match):
+        pass
+
+    def _s_exclude(self, state, match):
+        excl_line = False
+        pattern = GcovParser.exclude_line_pattern
+        for header, flag in pattern.findall(match.string):
+            if flag == 'START':
+                state.excluding.append((header, state.lineno))
+            elif flag == 'STOP':
+                if state.excluding:
+                    header, line = state.excluding.pop()
+                    if header != header:
+                        sys.stderr.write(
+                            "(WARNING) %s_EXCL_START found on line %s "
+                            "was terminated by %s_EXCL_STOP on line %s, "
+                            "when processing %s\n"
+                            % (header, line, header, state.lineno,
+                               state.filename))
+                else:
+                    sys.stderr.write(
+                        "(WARNING) mismatched coverage exclusion flags.\n"
+                        "\t%s_EXCL_STOP found on line %s without "
+                        "corresponding %s_EXCL_START, when processing %s\n"
+                        % (header, state.lineno, header, state.filename))
+            elif flag == 'LINE':
+                # We buffer the line exclusion so that it is always
+                # the last thing added to the exclusion list (and so
+                # only ONE is ever added to the list).  This guards
+                # against cases where puts a _LINE and _START (or
+                # _STOP) on the same line... it also guards against
+                # duplicate _LINE flags.
+                excl_line = True
+        if excl_line:
+            state.excluding.append(False)
+
+    def _scan(self, string, state):
+        match = self._scanner.scanner(string).match()
+        i = 0
+        while True:
+            if not match:
+                raise GcovParserError(string)
+            j = match.end()
+            if i == j:
+                break
+            self._lexicon[match.lastindex - 1][1](state, match)
+            i = j
+
+    def _parse_line(self, state, line):
+        state.segments = line.split(":", 2)
+        if len(state.segments) > 1:
+            try:
+                state.lineno = int(state.segments[1].strip())
+            except:
+                pass  # keep previous line number!
+
+        self._scan(state.segments[0].strip(), state)
 
         # save the code line to use it later with branches
-        if is_code_statement:
-            last_code_line = "".join(segments[2:])
-            last_code_lineno = lineno
-            last_code_line_excluded = False
-            if excluding:
-                last_code_line_excluded = True
+        if state.is_code_statement:
+            state.last_code_line = "".join(state.segments[2:])
+            state.last_code_lineno = state.lineno
+            state.last_code_line_excluded = False
+            if state.excluding:
+                state.last_code_line_excluded = True
 
         # clear the excluding flag for single-line excludes
-        if excluding and not excluding[-1]:
-            excluding.pop()
+        if state.excluding and not state.excluding[-1]:
+            state.excluding.pop()
 
-    ##print 'uncovered',uncovered
-    ##print 'covered',covered
-    ##print 'branches',branches
-    ##print 'noncode',noncode
-    #
-    # If the file is already in covdata, then we
-    # remove lines that are covered here.  Otherwise,
-    # initialize covdata
-    #
-    if not fname in covdata:
-        covdata[fname] = CoverageData(fname, uncovered, uncovered_exceptional,
-                                      covered, branches, noncode)
-    else:
-        covdata[fname].update(uncovered, uncovered_exceptional, covered,
-                              branches, noncode)
-    INPUT.close()
+    def _update_coverage_data(self, state, coverage_data):
+        if not state.filename in coverage_data:
+            data = CoverageData(state.filename, state.uncovered,
+                                state.uncovered_exceptional, state.covered,
+                                state.branches, state.noncode)
+            coverage_data[state.filename] = data
+        else:
+            coverage_data[state.filename].update(state.uncovered,
+                                                 state.uncovered_exceptional,
+                                                 state.covered, state.branches,
+                                                 state.noncode)
 
-    for header, line in excluding:
-        sys.stderr.write("(WARNING) The coverage exclusion region start flag "
-                         "%s_EXCL_START\n\ton line %d did not have "
-                         "corresponding %s_EXCL_STOP flag\n\t in file %s.\n"
-                         % (header, line, header, fname))
+    def _is_excluded_file(self, filename):
+        filtered_fname = None
+        for i in range(0, len(self.file_filter)):
+            if self.file_filter[i].match(filename):
+                filtered_fname = self.root_filter.sub('', filename)
+                break
+        if filtered_fname is None:
+            if self.verbose:
+                sys.stdout.write("  Filtering coverage data for file %s\n"
+                                 % filename)
+            return True
+
+        for i in range(0, len(self.exclude)):
+            excluded = False
+            if filtered_fname is not None:
+                excluded = excluded or self.exclude[i].match(filtered_fname)
+            excluded = excluded or self.exclude[i].match(filename)
+            abs_path = os.path.abspath(filename)
+            excluded = excluded or self.exclude[i].match(abs_path)
+
+            if excluded:
+                if self.verbose:
+                    sys.stdout.write("  Excluding coverage data for file %s\n"
+                                     % filename)
+                return True
+        return False
+
+    def parse(self, filename, coverage_data):
+        file_input = open(filename, "r")
+        state = GcovParser._State()
+        # Get the filename
+        try:
+            line = file_input.readline()
+        except:
+            print(file_input)
+            raise
+
+        state.segments = line.split(':', 3)
+        ends_with_source = state.segments[2].lower().strip().endswith('source')
+        if len(state.segments) != 4 or not ends_with_source:
+            raise GcovParserError(line.rstrip())
+
+        currdir = os.getcwd()
+        os.chdir(self.root_dir)
+        state.filename = os.path.abspath((state.segments[-1]).strip())
+        os.chdir(currdir)
+        if self.verbose:
+            sys.stdout.write("Parsing coverage data for file %s\n"
+                             % state.filename)
+
+        if self._is_excluded_file(state.filename):
+            return
+
+        for line in file_input:
+            self._parse_line(state, line)
+        file_input.close()
+
+        self._update_coverage_data(state, coverage_data)
+
+        for header, line in state.excluding:
+            sys.stderr.write("(WARNING) The coverage exclusion region start "
+                             "flag %s_EXCL_START\n\ton line %d did not have "
+                             "corresponding %s_EXCL_STOP flag\n\t in file %s."
+                             "\n" % (header, line, header, state.filename))
 
 
 def find_gcov_files(gcov_filter, gcov_exclude, gcov_stdout, verbose=False):
@@ -451,8 +512,8 @@ def find_potential_wd(objdir, abs_filename):
                             if os.path.isdir(testdir)]
             if len(potential_wd) == 0:
                 raise ParameterValueError('object-directory', objdir,
-                                          "Cannot identify the location where GCC "
-                                          "was run.")
+                                          "Cannot identify the location where "
+                                          "compiler was run.")
 
     # no objdir was specified (or it was a parent dir); walk up the dir tree
     if len(potential_wd) == 0:
@@ -550,8 +611,12 @@ def process_datafile(filename, covdata, options):
             errors.append(err)
         else:
             # Process *.gcov files
+            gcov_parser = GcovParser(options.root_dir, options.filter,
+                                     options.root_filter, options.exclude,
+                                     options.exclude_unreachable_branches,
+                                     options.verbose)
             for fname in gcov_files['active']:
-                process_gcov_data(fname, covdata, options)
+                gcov_parser.parse(fname, covdata)
             Done = True
 
         if not options.keep:
