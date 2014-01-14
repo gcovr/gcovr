@@ -2,20 +2,27 @@
 <html>
 <head>
   {% block head %}
-  <meta charset="UTF-8">
-  <title>{{HEAD}}</title>
-  {% block css %}
-  <link rel="stylesheet" type="text/css" href="bootstrap.css">
-  <link rel="stylesheet" type="text/css" href="bootstrap-theme.css">
+  <title>{% block title %}{{title}}{% endblock %}</title>
+  {% block head_meta %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {% endblock %}
+  {% block css %}
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
+  {% endblock %}
+  {% endblock %}
+  {% block head_tail %}
   {% endblock %}
 </head>
 
 <body>
+    {% block body %}
     {% include 'header.html' %}
     <div class="container">
         {% block content %}{% endblock %}
     </div>
     {% include 'footer.html' %}
+    {% endblock %}
 </body>
 </html>
