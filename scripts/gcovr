@@ -36,6 +36,8 @@ import sys
 from optparse import OptionParser
 from os.path import normpath
 
+from gcovr import is_gcda
+from gcovr import is_gcno
 from gcovr import print_xml_report, print_text_report, print_html_report
 from gcovr import process_files, version_str
 
@@ -77,10 +79,10 @@ def get_datafiles(flist, options):
         # unit is never actually exercised by the test code.  So, we
         # will process gcno files, but ONLY if there is no corresponding
         # gcda file.
-        gcda_files = [file for file in files if file.endswith('gcda')]
+        gcda_files = [file for file in files if is_gcda(file)]
         tmp = set(gcda_files)
-        gcno_files = [file for file in files if
-                      file.endswith('gcno') and file[:-2] + 'da' not in tmp]
+        gcno_files = [file for file in files
+                      if is_gcno(file) and file[:-2] + 'da' not in tmp]
         if options.verbose:
             sys.stdout.write(
                 "Found %d files (and will process %d)\n" %

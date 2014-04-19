@@ -10,6 +10,8 @@
 
 # Empty gcovr package
 
+from .data import is_gcda
+from .data import is_gcno
 from .data import process_files
 from .version import version_str
 from .xml_report import print_xml_report

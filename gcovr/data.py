@@ -24,6 +24,16 @@ output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("cannot open (source|graph) file")
 
 
+def is_gcno(path):
+    _, ext = os.path.splitext(path)
+    return ext == ".gcno"
+
+
+def is_gcda(path):
+    _, ext = os.path.splitext(path)
+    return ext == ".gcda"
+
+
 #
 # Errors encountered during execution of GCOV.
 #
