@@ -10,6 +10,7 @@
 
 # Empty gcovr package
 
+from .data import gcov_prefix_split
 from .data import is_gcda
 from .data import is_gcno
 from .data import process_files

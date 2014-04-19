@@ -36,6 +36,7 @@ import sys
 from optparse import OptionParser
 from os.path import normpath
 
+from gcovr import gcov_prefix_split
 from gcovr import is_gcda
 from gcovr import is_gcno
 from gcovr import print_xml_report, print_text_report, print_html_report
@@ -69,11 +70,19 @@ def search_file(expr, path):
 #
 def get_datafiles(flist, options):
     allfiles = set()
-    for dir in flist:
+    for directory in flist:
         if options.verbose:
             sys.stdout.write("Scanning directory %s for gcda/gcno files...\n"
-                             % (dir, ))
-        files = search_file(".*\.gc(da|no)$", dir)
+                             % (directory, ))
+        files = search_file(".*\.gc(da|no)$", directory)
+        if options.gcov_prefix:
+            _, pfx, tail = gcov_prefix_split(directory, options.gcov_prefix,
+                                             options.gcov_prefix_strip)
+            dir_prefix = os.path.join(options.gcov_prefix, pfx, tail)
+            if options.verbose:
+                sys.stdout.write("Scanning prefix directory %s for gcda "
+                                 "files...\n" % (dir_prefix, ))
+            files += search_file(".*\.gcda", dir_prefix)
         # gcno files will *only* produce uncovered results; however,
         # that is useful information for the case where a compilation
         # unit is never actually exercised by the test code.  So, we
@@ -122,6 +131,22 @@ gcda file to gcc's original working directory.
                   action="store",
                   dest="objdir",
                   default=None)
+parser.add_option('--gcov-prefix',
+                  help="""
+Specify the GCOV_PREFIX used when the binary was run, if any.
+""",
+                  action="store",
+                  dest="gcov_prefix",
+                  default=None)
+parser.add_option('--gcov-prefix-strip',
+                  help="""
+Specify the GCOV_PREFIX_STRIP used when the binary was run, if any.  The
+default is 0.
+""",
+                  type="int",
+                  action="store",
+                  dest="gcov_prefix_strip",
+                  default=0)
 parser.add_option("-o", "--output",
                   help="Print output to this filename/directory",
                   action="store",
@@ -307,6 +332,7 @@ if options.gcov_filter is not None:
     options.gcov_filter = re.compile(options.gcov_filter)
 else:
     options.gcov_filter = re.compile('')
+
 #
 # Get data files
 #
@@ -317,10 +343,10 @@ if len(args) == 1:
         datafiles = get_datafiles([options.root], options)
 else:
     datafiles = get_datafiles(args[1:], options)
+
 #
 # Get coverage data
 #
-
 """
 covdata = {}
 for file in datafiles:
