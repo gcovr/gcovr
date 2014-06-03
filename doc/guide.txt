@@ -294,7 +294,7 @@ contributions from a wider set of developers.
 
 :numbered!:
 
-[[acknowledgements]] 
+[[acknowledgements]]
 Acknowledgements
 ----------------
 
@@ -320,14 +320,14 @@ under contract DE-AC04-94AL85000.
 
 
 [appendix]
-[[appendix_C]] 
+[[appendix_C]]
 Testing Gcovr
 ---------------
 
-In the +gcovr/test+ directory, you can execute
+In the +gcovr/tests+ directory, you can execute
 [source,bash]
 ----
-python test_gcovr.py 
+python test_gcovr.py
 ----
 to launch all tests.  By default, this test script executes test suites
 on a variety of code configurations that reflect different use-cases for
