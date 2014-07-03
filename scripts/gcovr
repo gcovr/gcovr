@@ -1514,7 +1514,7 @@ def html_row(details, sourcefile, **kwargs):
       <td class="coverFile" ${altstyle}>${filename}</td>
       <td class="coverBar" align="center" ${altstyle}>
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:${LinesCoverage}%; ${BarBorder} background-color:${LinesBar}"></strong></div>
+                <div class="graph"><strong class="bar" style="width:${LinesCoverage}%; ${BarBorder}background-color:${LinesBar}"></strong></div>
                 </td></tr></table>
       </td>
       <td class="CoverValue" style="font-weight:bold; background-color:${LinesColor};">${LinesCoverage}&nbsp;%</td>
@@ -1835,6 +1835,11 @@ parser.add_option("--html-details",
         action="store_true",
         dest="html_details",
         default=False)
+parser.add_option("--html-absolute-paths",
+        help="Set the paths in the HTML report to be absolute instead of relative",
+        action="store_false",
+        dest="relative_anchors",
+        default=True)
 parser.add_option("-b","--branches",
         help="Tabulate the branch coverage instead of the line coverage.",
         action="store_true",
@@ -1853,9 +1858,9 @@ parser.add_option("-p","--sort-percentage",
 parser.add_option("--gcov-executable", 
         help="Defines the name/path to the gcov executable [defaults to the "
                   "GCOV environment variable, if present; else 'gcov'].", 
- 	action="store", 
- 	dest="gcov_cmd", 
- 	default=os.environ.get('GCOV', 'gcov') )
+        action="store", 
+        dest="gcov_cmd", 
+        default=os.environ.get('GCOV', 'gcov') )
 parser.add_option("--exclude-unreachable-branches",
         help="Exclude from coverage branches which are marked to be excluded by LCOV/GCOV markers "
                   "or are determined to be from lines containing only compiler-generated \"dead\" code.",
@@ -1871,11 +1876,6 @@ parser.add_option("-s", "--print-summary",
         help="Prints a small report to stdout with line & branch percentage coverage",
         action="store_true",
         dest="print_summary",
-        default=False)
-parser.add_option("--relative-anchors",
-        help="Set the anchors in the HTML report to be relative instead of absolute (set this to use the report in a web server)",
-        action="store_true",
-        dest="relative_anchors",
         default=False)
 parser.usage="gcovr [options]"
 parser.description="A utility to run gcov and generate a simple report that summarizes the coverage"

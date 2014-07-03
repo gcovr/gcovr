@@ -190,13 +190,43 @@
     td.coveredLine,
     span.coveredLine
     {
-        background-color: LightGreen;
+        background-color: LightGreen!important;
     }
 
     td.uncoveredLine,
     span.uncoveredLine
     {
-        background-color: LightPink;
+        background-color: LightPink!important;
+    }
+
+    .linecount
+    {
+        border-right: 1px gray solid;
+        background-color: lightgray;
+    }
+
+    .src 
+    {
+        padding-left: 12px;
+    }
+
+    .srcHeader
+    {
+        font-family: monospace; 
+        font-weight: bold;
+    }
+
+    pre 
+    {
+        height : 15px;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .lineno
+    {
+        background-color: #EFE383;
+        border-right: 1px solid #BBB15F;
     }
 
   </style>
@@ -267,7 +297,7 @@
 
     
     <tr>
-      <td class="coverFile" ><a href="/Users/wehart/home/src/gcovr/gcovr/tests/nested/coverage.subdir_A_C_D_file6.cpp.html">A/C/D/file6.cpp</a></td>
+      <td class="coverFile" ><a href="coverage.subdir_A_C_D_file6.cpp.html">A/C/D/file6.cpp</a></td>
       <td class="coverBar" align="center" >
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:75.0%; background-color:yellow"></strong></div>
@@ -281,7 +311,7 @@
 
 
     <tr>
-      <td class="coverFile" style="background-color:LightSteelBlue"><a href="/Users/wehart/home/src/gcovr/gcovr/tests/nested/coverage.subdir_A_C_file5.cpp.html">A/C/file5.cpp</a></td>
+      <td class="coverFile" style="background-color:LightSteelBlue"><a href="coverage.subdir_A_C_file5.cpp.html">A/C/file5.cpp</a></td>
       <td class="coverBar" align="center" style="background-color:LightSteelBlue">
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:75.0%; background-color:yellow"></strong></div>
@@ -295,7 +325,7 @@
 
 
     <tr>
-      <td class="coverFile" ><a href="/Users/wehart/home/src/gcovr/gcovr/tests/nested/coverage.subdir_A_file1.cpp.html">A/file1.cpp</a></td>
+      <td class="coverFile" ><a href="coverage.subdir_A_file1.cpp.html">A/file1.cpp</a></td>
       <td class="coverBar" align="center" >
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:75.0%; background-color:yellow"></strong></div>
@@ -309,7 +339,7 @@
 
 
     <tr>
-      <td class="coverFile" style="background-color:LightSteelBlue"><a href="/Users/wehart/home/src/gcovr/gcovr/tests/nested/coverage.subdir_A_file2.cpp.html">A/file2.cpp</a></td>
+      <td class="coverFile" style="background-color:LightSteelBlue"><a href="coverage.subdir_A_file2.cpp.html">A/file2.cpp</a></td>
       <td class="coverBar" align="center" style="background-color:LightSteelBlue">
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:57.1%; background-color:red"></strong></div>
@@ -323,7 +353,7 @@
 
 
     <tr>
-      <td class="coverFile" ><a href="/Users/wehart/home/src/gcovr/gcovr/tests/nested/coverage.subdir_A_file3.cpp.html">A/file3.cpp</a></td>
+      <td class="coverFile" ><a href="coverage.subdir_A_file3.cpp.html">A/file3.cpp</a></td>
       <td class="coverBar" align="center" >
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:44.4%; background-color:red"></strong></div>
@@ -337,7 +367,7 @@
 
 
     <tr>
-      <td class="coverFile" style="background-color:LightSteelBlue"><a href="/Users/wehart/home/src/gcovr/gcovr/tests/nested/coverage.subdir_A_file4.cpp.html">A/file4.cpp</a></td>
+      <td class="coverFile" style="background-color:LightSteelBlue"><a href="coverage.subdir_A_file4.cpp.html">A/file4.cpp</a></td>
       <td class="coverBar" align="center" style="background-color:LightSteelBlue">
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:75.0%; background-color:yellow"></strong></div>
@@ -351,10 +381,10 @@
 
 
     <tr>
-      <td class="coverFile" ><a href="/Users/wehart/home/src/gcovr/gcovr/tests/nested/coverage.subdir_A_file7.cpp.html">A/file7.cpp</a></td>
+      <td class="coverFile" ><a href="coverage.subdir_A_file7.cpp.html">A/file7.cpp</a></td>
       <td class="coverBar" align="center" >
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:0.0%; background-color:red"></strong></div>
+                <div class="graph"><strong class="bar" style="width:0.0%; border:white; background-color:red"></strong></div>
                 </td></tr></table>
       </td>
       <td class="CoverValue" style="font-weight:bold; background-color:LightPink;">0.0&nbsp;%</td>
@@ -365,7 +395,7 @@
 
 
     <tr>
-      <td class="coverFile" style="background-color:LightSteelBlue"><a href="/Users/wehart/home/src/gcovr/gcovr/tests/nested/coverage.subdir_B_main.cpp.html">B/main.cpp</a></td>
+      <td class="coverFile" style="background-color:LightSteelBlue"><a href="coverage.subdir_B_main.cpp.html">B/main.cpp</a></td>
       <td class="coverBar" align="center" style="background-color:LightSteelBlue">
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
                 <div class="graph"><strong class="bar" style="width:100.0%; background-color:green"></strong></div>
