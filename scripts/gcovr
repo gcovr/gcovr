@@ -370,7 +370,7 @@ def search_file(expr, path):
 #
 def get_datafiles(flist, options):
     allfiles=set()
-    for dir in flist:
+    for dir in flist.split(' '):
         if options.verbose:
             sys.stdout.write( "Scanning directory %s for gcda/gcno files...\n"
                               % (dir, ) )
