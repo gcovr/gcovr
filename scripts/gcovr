@@ -417,13 +417,10 @@ def process_gcov_data(data_fname, covdata, options):
     segments=line.split(':',3)
     if len(segments) != 4 or not segments[2].lower().strip().endswith('source'):
         raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip())
-    currdir = os.getcwd()
-    os.chdir(root_dir)
     if sys.version_info >= (2,6):
         fname = os.path.abspath((segments[-1]).strip())
     else:
         fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
-    os.chdir(currdir)
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
     #
