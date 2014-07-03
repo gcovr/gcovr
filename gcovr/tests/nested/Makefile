@@ -19,7 +19,7 @@ run: txt xml html
 #       explicit path.
 txt:
 	./subdir/testcase
-	cd ./subdir; ../../../../scripts/gcovr -r `pwd`/.. -d -o ../coverage.txt
+	cd ./subdir; ../../../../scripts/gcovr -r `pwd -P`/.. -d -o ../coverage.txt
 
 xml:
 	./subdir/testcase
