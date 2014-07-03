@@ -1514,7 +1514,7 @@ def html_row(details, sourcefile, **kwargs):
       <td class="coverFile" ${altstyle}>${filename}</td>
       <td class="coverBar" align="center" ${altstyle}>
         <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:${LinesCoverage}%; background-color:${LinesBar}"></strong></div>
+                <div class="graph"><strong class="bar" style="width:${LinesCoverage}%; ${BarBorder} background-color:${LinesBar}"></strong></div>
                 </td></tr></table>
       </td>
       <td class="CoverValue" style="font-weight:bold; background-color:${LinesColor};">${LinesCoverage}&nbsp;%</td>
@@ -1534,6 +1534,11 @@ def html_row(details, sourcefile, **kwargs):
     else:
         kwargs['filename'] = kwargs['filename'][len(kwargs['directory']):]
     kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'],1)
+    # Disable the border if the bar is too short to see the color
+    if kwargs['LinesCoverage'] < 1e-7:
+        kwargs['BarBorder'] = "border:white; "
+    else:
+        kwargs['BarBorder'] = ""
     if kwargs['LinesCoverage'] < medium_coverage:
         kwargs['LinesColor'] = low_color
         kwargs['LinesBar'] = 'red'
