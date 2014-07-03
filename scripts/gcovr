@@ -371,25 +371,37 @@ def search_file(expr, path):
 def get_datafiles(flist, options):
     allfiles=set()
     for dir in flist:
-        if options.verbose:
-            sys.stdout.write( "Scanning directory %s for gcda/gcno files...\n"
-                              % (dir, ) )
-        files = search_file(".*\.gc(da|no)$", dir)
-        # gcno files will *only* produce uncovered results; however,
-        # that is useful information for the case where a compilation
-        # unit is never actually exercised by the test code.  So, we
-        # will process gcno files, but ONLY if there is no corresponding
-        # gcda file.
-        gcda_files = [file for file in files if file.endswith('gcda')]
-        tmp = set(gcda_files)
-        gcno_files = [ file for file in files if
-                       file.endswith('gcno') and file[:-2]+'da' not in tmp ]
-        if options.verbose:
-            sys.stdout.write(
-                "Found %d files (and will process %d)\n" %
-                ( len(files), len(gcda_files) + len(gcno_files) ) )
-        allfiles.update(gcda_files)
-        allfiles.update(gcno_files)
+        if options.gcov_files:
+            if options.verbose:
+                sys.stdout.write( "Scanning directory %s for gcov files...\n"
+                                  % (dir, ) )
+            files = search_file(".*\.gcov$", dir)
+            gcov_files = [file for file in files if file.endswith('gcov')]
+            if options.verbose:
+                sys.stdout.write(
+                    "Found %d files (and will process %d)\n" %
+                    ( len(files), len(gcov_files) ) )
+            allfiles.update(gcov_files)
+        else:
+            if options.verbose:
+                sys.stdout.write( "Scanning directory %s for gcda/gcno files...\n"
+                                  % (dir, ) )
+            files = search_file(".*\.gc(da|no)$", dir)
+            # gcno files will *only* produce uncovered results; however,
+            # that is useful information for the case where a compilation
+            # unit is never actually exercised by the test code.  So, we
+            # will process gcno files, but ONLY if there is no corresponding
+            # gcda file.
+            gcda_files = [file for file in files if file.endswith('gcda')]
+            tmp = set(gcda_files)
+            gcno_files = [ file for file in files if
+                           file.endswith('gcno') and file[:-2]+'da' not in tmp ]
+            if options.verbose:
+                sys.stdout.write(
+                    "Found %d files (and will process %d)\n" %
+                    ( len(files), len(gcda_files) + len(gcno_files) ) )
+            allfiles.update(gcda_files)
+            allfiles.update(gcno_files)
     return allfiles
 
 
@@ -755,6 +767,31 @@ def process_datafile(filename, covdata, options):
             "\t   %s" 
             "\t(gcovr could not infer a working directory that resolved it.)\n"
             % ( filename, "\t   ".join(errors) ) )
+
+#
+#  Process Already existing gcov files
+#
+def process_existing_gcov_file(filename, covdata, options):
+    if not options.gcov_filter.match(filename):
+        if options.verbose:
+            sys.stdout.write("Filtering gcov file %s\n" % filename)
+        return
+    
+    exclude=False
+    for i in range(0,len(options.gcov_exclude)):
+        if options.gcov_exclude[i].match(options.gcov_filter.sub('',filename)) or \
+               options.gcov_exclude[i].match(filename) or \
+               options.gcov_exclude[i].match(os.path.abspath(filename)):
+            if options.verbose:
+                sys.stdout.write("Excluding gcov file %s\n" % filename)
+            return
+    
+    process_gcov_data(filename, covdata, options)
+    
+    if not options.keep:
+        if os.path.exists(filename):
+            # Only remove files that actually exist.
+            os.remove(filename)
 
 #
 # Produce the classic gcovr text report
@@ -1759,6 +1796,11 @@ parser.add_option("--exclude-unreachable-branches",
         action="store_true",
         dest="exclude_unreachable_branches",
         default=False)
+parser.add_option("-g", "--use-gcov-files",
+        help="Use preprocessed gcov files for analysis.",
+        action="store_true",
+        dest="gcov_files",
+        default=False)
 parser.usage="gcovr [options]"
 parser.description="A utility to run gcov and generate a simple report that summarizes the coverage"
 #
@@ -1833,7 +1875,10 @@ else:
 #
 covdata = {}
 for file in datafiles:
-    process_datafile(file,covdata,options)
+    if options.gcov_files:
+        process_existing_gcov_file(file,covdata,options)
+    else:
+        process_datafile(file,covdata,options)
 if options.verbose:
     sys.stdout.write("Gathered coveraged data for "+str(len(covdata))+" files\n")
 #
