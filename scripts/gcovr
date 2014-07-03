@@ -1262,6 +1262,7 @@ def print_html_report(covdata, details):
     # Generate the coverage output (on a per-package basis)
     #source_dirs = set()
     files = []
+    filtered_fname = ''
     keys = list(covdata.keys())
     keys.sort(key=options.sort_uncovered and _num_uncovered or \
               options.sort_percent and _percent_uncovered or _alpha)
