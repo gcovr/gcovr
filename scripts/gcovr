@@ -1861,6 +1861,7 @@ parser.add_option("-g", "--use-gcov-files",
         help="Use preprocessed gcov files for analysis.",
         action="store_true",
         dest="gcov_files",
+        default=False)
 parser.add_option("-s", "--print-summary",
         help="Prints a small report to stdout with line & branch percentage coverage",
         action="store_true",
