@@ -1,12 +1,12 @@
 <?xml version="" ?>
 <!DOCTYPE coverage
   SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
-<coverage branch-rate="0.5" line-rate="0.707317073171" timestamp="" version="">
+<coverage branch-rate="0.428571428571" line-rate="0.674418604651" timestamp="" version="">
 <sources>
 <source>.</source>
 </sources>
 <packages>
-<package branch-rate="0.5" complexity="0.0" line-rate="0.583333333333" name="subdir.A">
+<package branch-rate="0.333333333333" complexity="0.0" line-rate="0.538461538462" name="subdir.A">
 <classes>
 <class branch-rate="0.5" complexity="0.0" filename="subdir/A/file1.cpp" line-rate="0.75" name="file1_cpp">
 <methods/>
@@ -33,7 +33,7 @@
 <line branch="false" hits="0" number="11"/>
 </lines>
 </class>
-<class branch-rate="0.0" complexity="0.0" filename="subdir/A/file3.cpp" line-rate="0.571428571429" name="file3_cpp">
+<class branch-rate="0.0" complexity="0.0" filename="subdir/A/file3.cpp" line-rate="0.444444444444" name="file3_cpp">
 <methods/>
 <lines>
 <line branch="false" hits="1" number="1"/>
@@ -42,7 +42,13 @@
 <line branch="false" hits="1" number="5"/>
 <line branch="false" hits="0" number="8"/>
 <line branch="false" hits="0" number="10"/>
-<line branch="false" hits="0" number="11"/>
+<line branch="true" condition-coverage="0% (0/2)" hits="0" number="11">
+<conditions>
+<condition coverage="0%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="12"/>
+<line branch="false" hits="0" number="14"/>
 </lines>
 </class>
 <class branch-rate="0.5" complexity="0.0" filename="subdir/A/file4.cpp" line-rate="0.75" name="file4_cpp">
