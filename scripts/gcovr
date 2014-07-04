@@ -370,12 +370,12 @@ def search_file(expr, path):
 #
 def get_datafiles(flist, options):
     allfiles=set()
-    for dir in flist:
+    for dir_ in flist:
         if options.gcov_files:
             if options.verbose:
                 sys.stdout.write( "Scanning directory %s for gcov files...\n"
-                                  % (dir, ) )
-            files = search_file(".*\.gcov$", dir)
+                                  % (dir_, ) )
+            files = search_file(".*\.gcov$", dir_)
             gcov_files = [file for file in files if file.endswith('gcov')]
             if options.verbose:
                 sys.stdout.write(
@@ -385,8 +385,8 @@ def get_datafiles(flist, options):
         else:
             if options.verbose:
                 sys.stdout.write( "Scanning directory %s for gcda/gcno files...\n"
-                                  % (dir, ) )
-            files = search_file(".*\.gc(da|no)$", dir)
+                                  % (dir_, ) )
+            files = search_file(".*\.gc(da|no)$", dir_)
             # gcno files will *only* produce uncovered results; however,
             # that is useful information for the case where a compilation
             # unit is never actually exercised by the test code.  So, we
@@ -1954,11 +1954,11 @@ else:
 # Get coverage data
 #
 covdata = {}
-for file in datafiles:
+for file_ in datafiles:
     if options.gcov_files:
-        process_existing_gcov_file(file,covdata,options)
+        process_existing_gcov_file(file_,covdata,options)
     else:
-        process_datafile(file,covdata,options)
+        process_datafile(file_,covdata,options)
 if options.verbose:
     sys.stdout.write("Gathered coveraged data for "+str(len(covdata))+" files\n")
 #
