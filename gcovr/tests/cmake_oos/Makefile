@@ -9,6 +9,7 @@
 all:
 	mkdir -p build
 	cd build && cmake .. && make
+	#cd build && cmake --debug-output --trace -Wdev --debug-trycompile .. && make
 
 run: txt xml html
 

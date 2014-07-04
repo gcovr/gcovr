@@ -13,21 +13,17 @@ all:
 
 run: txt xml html
 
-# NOTE: The explicit path used with '-r' here is used to test some logic in the 
-#       gcovr script.  The coverage.txt output is the same, but the 
-#       internal logic used by gcovr differs in a subtle manner when using an
-#       explicit path.
 txt:
 	./subdir/testcase
-	cd ./subdir; ../../../../scripts/gcovr -r `pwd -P`/.. -d -o ../coverage.txt
+	../../../scripts/gcovr -r subdir -d -o coverage.txt
 
 xml:
 	./subdir/testcase
-	cd ./subdir; ../../../../scripts/gcovr -r .. -d -x -o ../coverage.xml
+	../../../scripts/gcovr -r subdir -d -x -o coverage.xml
 
 html:
 	./subdir/testcase
-	cd ./subdir; ../../../../scripts/gcovr -r .. -d --html --html-details -o ../coverage.html
+	../../../scripts/gcovr -r subdir -d --html --html-details -o coverage.html
 
 clean:
 	rm -f ./subdir/testcase

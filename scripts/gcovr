@@ -418,7 +418,7 @@ def process_gcov_data(data_fname, covdata, options):
     if len(segments) != 4 or not segments[2].lower().strip().endswith('source'):
         raise RuntimeError('Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip())
     currdir = os.getcwd()
-    os.chdir(root_dir)
+    os.chdir(starting_dir)
     if sys.version_info >= (2,6):
         fname = os.path.abspath((segments[-1]).strip())
     else:
@@ -815,7 +815,11 @@ def print_text_report(covdata):
         OUTPUT = sys.stdout
     total_lines=0
     total_covered=0
+
     # Header
+    OUTPUT.write("-"*78 + '\n')
+    OUTPUT.write(" "*27 + "GCC Code Coverage Report\n")
+    OUTPUT.write("Directory: "+options.root+"\n")
     OUTPUT.write("-"*78 + '\n')
     a = options.show_branch and "Branches" or "Lines"
     b = options.show_branch and "Taken" or "Exec"
@@ -1919,8 +1923,8 @@ if options.root is not None:
             "\tRoot specifies the path to the root directory of your project.\n"
             "\tThis option cannot be an empty string.\n")
         sys.exit(1)
-    options.root_filter = re.compile(re.escape(os.path.abspath(options.root)+os.sep))
     root_dir = os.path.abspath(options.root)
+    options.root_filter = re.compile(re.escape(root_dir+os.sep))
 else:
     options.root_filter = re.compile('')
     root_dir = starting_dir
