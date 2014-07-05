@@ -21,7 +21,7 @@ http://cobertura.sourceforge.net/[Cobertura] format) or simple HTML
 reports.  Thus, +gcovr+ can be viewed as a command-line alternative
 to the http://ltp.sourceforge.net/coverage/lcov.php[lcov] utility,
 which runs gcov and generates an HTML-formatted report.  This documentation describes
-Gcovr 3.1.
+Gcovr 3.2.
 
 :numbered:
 
@@ -50,7 +50,7 @@ http://gcovr.com/guide.html[HTML],
 http://gcovr.com/guide.pdf[PDF], and
 http://gcovr.com/guide.epub[EPUB] formats.  The
 http://gcovr.com[Gcovr Home Page] also includes developer
-resources (e.g. https://software.sandia.gov/hudson/view/gcovr/[automated
+resources (e.g. https://software-login.sandia.gov/hudson/view/gcovr/[automated
 test results]).  Gcovr is available under the
 http://www.gnu.org/licenses/bsd.html[BSD]
 license.
@@ -216,9 +216,9 @@ command:
 ----
 include::examples/.example5_gcovr.sh[]
 ----
-This generates the following HTML page for the file +example2.cpp+:
+This generates the following HTML page for the file +example1.cpp+:
 
-image::examples/example2_example2_cpp.png[align="center"]
+image::examples/example2_example1_cpp.png[align="center"]
 
 Note that the +--html-details+ option can only be used with the
 +-o+ (+--output+) option.  For example, if the +--output+ option
@@ -264,19 +264,18 @@ Gcovr requires virtually no installation.  The +gcovr+ command can
 be downloaded and used directly without installing additional files.
 
 If you have
-http://pypi.python.org/pypi/setuptools[setuptools] or
-http://pypi.python.org/pypi/distribute[distribute]
+https://pip.pypa.io/en/latest/[pip]
 installed, then
-you can install +Gcovr+ from PyPI by executing
+you can install +Gcovr+ from the PyPI network servers by executing
 [source,bash]
 ----
-easy_install gcovr
+pip install gcovr
 ----
 This places the +gcovr+ executable in the +bin+ or +Scripts+ directory
 for you python installation.
 
 The +gcovr+ script has been tested with many different versions of
-Python:  2.5 - 3.2.  Note that this script has only been tested
+Python:  2.5 - 3.3.  Note that this script has only been tested
 with the CPython implementation.
 
 
@@ -291,20 +290,19 @@ as part of the FAST project.  However, Gcovr is now widely used
 outside of Sandia, and GitHub will facilitate the integration of
 contributions from a wider set of developers.
 
-
 :numbered!:
 
 [[acknowledgements]]
 Acknowledgements
 ----------------
 
-The following developers contributed to the Gcovr 3.1 release:
+The following developers contributed to the Gcovr 3.2 release:
 
-* Piotr Dziwinski
+* Sylvestre Ledru
+* Kevin Cai
+* Luke Woydziak
+* Nikolaj Schumacher
 * William Hart
-* Robert Rosengren
-* John Siirola
-* Matsumoto Taichi
 
 The Gcovr documentation is generated using
 http://www.methods.co.nz/asciidoc/[AsciiDoc].
@@ -344,13 +342,12 @@ executes the +GcovrXml+ test suite, which tests +gcovr+ with XML output.
 To run the +test_gcovr.py+ script, you will need to install the
 https://pypi.python.org/pypi/pyutilib.th[pyutilib.th] package.
 If you have
-http://pypi.python.org/pypi/setuptools[setuptools] or
-http://pypi.python.org/pypi/distribute[distribute]
+https://pip.pypa.io/en/latest/[pip]
 installed, then
 you can install this package from PyPI by executing
 [source,bash]
 ----
-easy_install pyutilib.th
+pip install pyutilib.th
 ----
 
 

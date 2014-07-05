@@ -1,5 +1,15 @@
 = `gcovr` Release History and Change Log =
 
+=== 3.2 ''(5 July 2014)'' ===
+ - Adding a test for out of source builds
+ - Using the starting directory when processing gcov filenames.
+   (#42)
+ - Making relative paths the default in html output.
+ - Simplify html bar with coverage is zero.
+ - Add option for using existing gcov files (#35)
+ - Fixing --root argument processing (#27)
+ - Adding logic to cover branches that are ignored (#28)
+
 === 3.1 ''(6 December 2013)'' ===
  - Change to make the -r/--root options define the root directory 
    for source files.

@@ -1,2 +1,4 @@
 William Hart - lead developer
 John Siirola - lead developer
+
+Each release documents author contributions.
