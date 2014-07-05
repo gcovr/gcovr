@@ -5,3 +5,9 @@ setup.py
 scripts/gcovr
 doc/examples/example2.txt
 doc/guide.txt
+
+Tagging a release
+
+  git tag -a 3.2
+  git push origin --tags
+
