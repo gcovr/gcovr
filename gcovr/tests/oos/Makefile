@@ -1,6 +1,7 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
 all:
+	mkdir -p build
 	$(CXX) $(CFLAGS) -c src/file1.cpp -o build/file1.o
 	$(CXX) $(CFLAGS) -c src/main.cpp -o build/main.o
 	$(CXX) $(CFLAGS) build/main.o build/file1.o -o build/testcase
