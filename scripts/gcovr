@@ -56,7 +56,7 @@ high_color = "LightGreen"
 covered_color = "LightGreen"
 uncovered_color = "LightPink"
 
-__version__ = "3.2"
+__version__ = "3.3-prerelease"
 src_revision = "$Revision$"
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
