@@ -14,6 +14,8 @@ Gcovr is available under the BSD License.
 
 A user guide can be downloaded from http://gcovr.com.
 
+Developer discussions are hosted by google-code:  https://groups.google.com/forum/#!forum/gcovr-developers
+
 Gcovr development moved to this repository in September, 2013 from
 Sandia National Laboratories.
 
