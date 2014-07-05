@@ -12,9 +12,9 @@ and generates an HTML-formatted report.
 
 Gcovr is available under the BSD License.
 
-A user guide can be downloaded from http://gcovr.com.
+A user guide can be downloaded from the [gcovr home page](http://gcovr.com).
 
-Developer discussions are hosted by google-code:  https://groups.google.com/forum/#!forum/gcovr-developers
+Developer discussions are hosted by [google groups](https://groups.google.com/forum/#!forum/gcovr-developers).
 
 Gcovr development moved to this repository in September, 2013 from
 Sandia National Laboratories.
