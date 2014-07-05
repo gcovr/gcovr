@@ -3,11 +3,11 @@
 . GetGlobals.sh
 export PATH=$CXXTEST/bin:$PATH:`pwd`/../../scripts
 
-cd example2
+cd example1
 ROOT=`pwd`
 
 # @compile:
-g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example2.cpp -o program
+g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example1.cpp -o program
 # @:compile
 
 # @run:
