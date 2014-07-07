@@ -60,7 +60,7 @@ __version__ = "3.3-prerelease"
 src_revision = "$Revision$"
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
-source_re = re.compile("cannot open (source|graph) file")
+source_re = re.compile("[Cc]annot open (source|graph) file")
 
 starting_dir = os.getcwd()
 
@@ -115,14 +115,15 @@ class CoverageData(object):
 
     def uncovered_str(self, exceptional):
         if options.show_branch:
+            #
             # Don't do any aggregation on branch results
+            #
             tmp = []
             for line in self.branches.keys():
                 for branch in self.branches[line]:
                     if self.branches[line][branch] == 0:
                         tmp.append(line)
                         break
-
             tmp.sort()
             return ",".join([str(x) for x in tmp]) or ""
         
@@ -133,6 +134,11 @@ class CoverageData(object):
         if len(tmp) == 0:
             return ""
 
+        #
+        # Walk through the uncovered lines in sorted order.
+        # Find blocks of consecutive uncovered lines, and return
+        # a string with that information.
+        #
         tmp.sort()
         first = None
         last = None
@@ -144,18 +150,23 @@ class CoverageData(object):
             elif item == (last+1):
                 last=item
             else:
-                if len(self.noncode.intersection(range(last+1,item))) \
-                       == item - last - 1:
-                    last = item
-                    continue
-                
+                #
+                # Should we include noncode lines in the range of lines
+                # to be covered???  This simplifies the ranges summary, but it
+                # provides a counterintuitive listing.
+                #
+                #if len(self.noncode.intersection(range(last+1,item))) \
+                #       == item - last - 1:
+                #    last = item
+                #    continue
+                # 
                 if first==last:
                     ranges.append(str(first))
                 else:
                     ranges.append(str(first)+"-"+str(last))
                 first=item
                 last=item
-        if first==last:
+        if first == last:
             ranges.append(str(first))
         else:
             ranges.append(str(first)+"-"+str(last))
@@ -465,6 +476,7 @@ def process_gcov_data(data_fname, covdata, options):
     last_code_line_excluded = False
     for line in INPUT:
         segments=line.split(":",2)
+        #print "\t","Y", segments
         tmp = segments[0].strip()
         if len(segments) > 1:
             try:
@@ -626,6 +638,8 @@ def process_gcov_data(data_fname, covdata, options):
 # trial-and-error here)
 #
 def process_datafile(filename, covdata, options):
+    #print ""
+    #print "PROCESS",filename
     #
     # Launch gcov
     #
@@ -638,6 +652,7 @@ def process_datafile(filename, covdata, options):
     Done = False
 
     if options.objdir:
+        #print "X - objdir"
         src_components = abs_filename.split(os.sep)
         components = normpath(options.objdir).split(os.sep)
         idx = 1
@@ -682,11 +697,16 @@ def process_datafile(filename, covdata, options):
 
     # no objdir was specified (or it was a parent dir); walk up the dir tree
     if len(potential_wd) == 0:
+        potential_wd.append(root_dir)
+        #print "X - potential_wd", root_dir
         wd = os.path.split(abs_filename)[0]
         while True:
             potential_wd.append(wd)
             wd = os.path.split(wd)[0]
             if wd == potential_wd[-1]:
+                #
+                # Stop at the root of the file system
+                #
                 break
 
     cmd = [ options.gcov_cmd, abs_filename,
@@ -698,12 +718,18 @@ def process_datafile(filename, covdata, options):
     env['LC_ALL'] = 'en_US'
     
 
+    #print "HERE", potential_wd
     while len(potential_wd) > 0 and not Done:
         # NB: either len(potential_wd) == 1, or all entires are absolute
         # paths, so we don't have to chdir(starting_dir) at every
         # iteration.
-        os.chdir(potential_wd.pop(0)) 
-        
+
+        #
+        # Iterate from the end of the potential_wd list, which is the root directory
+        #
+        dir_ = potential_wd.pop(0)
+        #print "X DIR:", dir_
+        os.chdir(dir_)
         
         #if options.objdir:
         #    cmd.extend(["--object-directory", Template(options.objdir).substitute(filename=filename, head=dirname, tail=base, root=name, ext=ext)])
@@ -740,11 +766,16 @@ def process_datafile(filename, covdata, options):
                     sys.stdout.write("Excluding gcov file %s\n" % fname)
                     gcov_files['exclude'].append(fname)
 
+        #print "HERE", err, "XXX", source_re.search(err)
         if source_re.search(err):
+            #
             # gcov tossed errors: try the next potential_wd
+            #
             errors.append(err)
         else:
+            #
             # Process *.gcov files
+            #
             for fname in gcov_files['active']:
                 process_gcov_data(fname, covdata, options)
             Done = True
