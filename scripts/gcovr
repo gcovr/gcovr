@@ -42,10 +42,8 @@ from os.path import normpath
 
 from gcov.args import parse_arguments
 from gcov.prints.html import print_html_report
+from gcov.version import version_str
 
-
-__version__ = "3.3-prerelease"
-src_revision = "$Revision$"
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc]annot open (source|graph) file")
@@ -55,14 +53,6 @@ exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
 
 c_style_comment_pattern = re.compile('/\*.*?\*/')
 cpp_style_comment_pattern = re.compile('//.*?$')
-
-
-def version_str():
-    ans = __version__
-    m = re.match('\$Revision:\s*(\S+)\s*\$', src_revision)
-    if m:
-        ans = ans + " (r%s)" % (m.group(1))
-    return ans
 
 
 #

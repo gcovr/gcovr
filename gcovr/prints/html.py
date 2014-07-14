@@ -22,6 +22,8 @@ from string import Template
 from datetime import date
 from posixpath import commonprefix
 
+from ..version import version_str
+
 
 medium_coverage = 75.0
 high_coverage = 90.0
@@ -465,7 +467,7 @@ def print_html_report(covdata, options):
         details = False
     data = {}
     data['HEAD'] = "Head"
-    data['VERSION'] = "FIXME"  # version_str()
+    data['VERSION'] = version_str()
     data['TIME'] = str(int(time.time()))
     data['DATE'] = date.today().isoformat()
     data['ROWS'] = []
