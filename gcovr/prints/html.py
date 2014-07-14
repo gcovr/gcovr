@@ -9,6 +9,8 @@
 #  For more information, see the README.md file.
 #  _________________________________________________________________________
 
+from __future__ import absolute_import
+
 try:
     import html
 except:
@@ -468,7 +470,7 @@ def print_html_report(covdata, options):
     data = {}
     data['HEAD'] = "Head"
     data['VERSION'] = version_str()
-    data['TIME'] = str(int(time.time()))
+    data['TIME'] = str(int(time()))
     data['DATE'] = date.today().isoformat()
     data['ROWS'] = []
     data['low_color'] = low_color

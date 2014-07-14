@@ -9,10 +9,13 @@
 #  For more information, see the README.md file.
 #  _________________________________________________________________________
 
+from __future__ import absolute_import
+
 import os
 import sys
-import xml
 import time
+
+from xml.dom.minidom import getDOMImplementation
 
 from ..version import version_str
 
@@ -38,7 +41,7 @@ def print_xml_report(covdata, options):
         lineTotal += total
         lineCovered += covered
 
-    impl = xml.dom.minidom.getDOMImplementation()
+    impl = getDOMImplementation()
     docType = impl.createDocumentType(
         "coverage", None,
         "http://cobertura.sourceforge.net/xml/coverage-03.dtd"
