@@ -28,13 +28,13 @@ def print_xml_report(covdata, options):
 
     options.show_branch = True
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         branchTotal += total
         branchCovered += covered
 
     options.show_branch = False
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         lineTotal += total
         lineCovered += covered
 

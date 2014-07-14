@@ -17,11 +17,11 @@ import sys
 #
 def print_text_report(covdata, options):
     def _num_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         return total - covered
 
     def _percent_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         if covered:
             return -1.0 * covered / total
         else:
@@ -57,7 +57,7 @@ def print_text_report(covdata, options):
         options.sort_percent and _percent_uncovered or _alpha
     )
     for key in keys:
-        (t, n, txt) = covdata[key].summary()
+        (t, n, txt) = covdata[key].summary(options)
         total_lines += t
         total_covered += n
         OUTPUT.write(txt + '\n')
@@ -90,12 +90,12 @@ def print_summary(covdata, options):
 
     for key in keys:
         options.show_branch = False
-        (t, n, txt) = covdata[key].coverage()
+        (t, n, txt) = covdata[key].coverage(options.show_branch)
         lines_total += t
         lines_covered += n
 
         options.show_branch = True
-        (t, n, txt) = covdata[key].coverage()
+        (t, n, txt) = covdata[key].coverage(options.show_branch)
         branches_total += t
         branches_covered += n
 

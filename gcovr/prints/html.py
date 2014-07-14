@@ -449,11 +449,11 @@ source_page = Template('''
 #
 def print_html_report(covdata, options):
     def _num_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         return total - covered
 
     def _percent_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         if covered:
             return -1.0 * covered / total
         else:
@@ -486,7 +486,7 @@ def print_html_report(covdata, options):
     branchCovered = 0
     options.show_branch = True
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         branchTotal += total
         branchCovered += covered
     data['BRANCHES_EXEC'] = str(branchCovered)
@@ -505,7 +505,7 @@ def print_html_report(covdata, options):
     lineCovered = 0
     options.show_branch = False
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage()
+        (total, covered, percent) = covdata[key].coverage(options.show_branch)
         lineTotal += total
         lineCovered += covered
     data['LINES_EXEC'] = str(lineCovered)
@@ -621,7 +621,7 @@ def print_html_report(covdata, options):
         data['ROWS'] = ''
 
         options.show_branch = True
-        branchTotal, branchCovered, tmp = cdata.coverage()
+        branchTotal, branchCovered, tmp = cdata.coverage(options.show_branch)
         data['BRANCHES_EXEC'] = str(branchCovered)
         data['BRANCHES_TOTAL'] = str(branchTotal)
         coverage = 0.0 if branchTotal == 0 else \
@@ -635,7 +635,7 @@ def print_html_report(covdata, options):
             data['BRANCHES_COLOR'] = high_color
 
         options.show_branch = False
-        lineTotal, lineCovered, tmp = cdata.coverage()
+        lineTotal, lineCovered, tmp = cdata.coverage(options.show_branch)
         data['LINES_EXEC'] = str(lineCovered)
         data['LINES_TOTAL'] = str(lineTotal)
         coverage = 0.0 if lineTotal == 0 else \
