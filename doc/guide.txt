@@ -33,7 +33,7 @@ Gcovr is a Python package that includes a self-contained +gcovr+
 command.  Gcovr is an extension of +gcov+, a GNU utility that
 summarizes the lines of code that are executed - or "covered" -
 while running an executable.  The +gcovr+ command interprets +gcov+
-data files to summarize code coverage in sevearl formats:
+data files to summarize code coverage in several formats:
 
 * Text output with coverage statistics indicated with summary statistics and lists of uncovered line, and
 * XML output that is compatible with the Cobertura code coverage utility.
