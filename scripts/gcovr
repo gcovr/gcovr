@@ -36,5 +36,5 @@ except ImportError:
 
     import gcovr.driver
 
-gcovr.driver.main()
+gcovr.driver.main_()
 
