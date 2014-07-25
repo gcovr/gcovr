@@ -47,7 +47,7 @@ setup(name='gcovr',
             'Programming Language :: Unix Shell',
             'Topic :: Software Development :: Libraries :: Python Modules'
         ],
-      packages=['gcovr'],
+      packages=['gcovr', 'gcovr.prints'],
       keywords=['utility'],
       scripts=scripts
       )
