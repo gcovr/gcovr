@@ -132,6 +132,7 @@ def main(options, args):
         print_summary(covdata, options)
 
 
-if __name__ == '__main__':
+def main_():
     options, args = parse_arguments()
     main(options, args)
+
