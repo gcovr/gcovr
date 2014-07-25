@@ -93,6 +93,8 @@ def main(options, args):
             sys.exit(1)
         options.root_dir = os.path.abspath(options.root)
         options.root_filter = re.compile(re.escape(options.root_dir + os.sep))
+    else:
+        options.root = "."
 
     for i in range(0, len(options.filter)):
         options.filter[i] = re.compile(options.filter[i])
@@ -111,10 +113,7 @@ def main(options, args):
     #
     paths = args
     if len(args) == 0:
-        if options.root is None:
-            paths = ["."]
-        else:
-            paths = [options.root]
+        paths = [options.root]
 
     covdata = get_coverage_data(paths, options)
 
