@@ -11,7 +11,7 @@
 
 import re
 
-__version__ = "3.3-prerelease"
+__version__ = "4.0-prerelease"
 src_revision = "$Revision$"
 
 
