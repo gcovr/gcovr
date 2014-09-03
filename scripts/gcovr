@@ -894,7 +894,9 @@ def print_text_report(covdata):
     # Header
     OUTPUT.write("-" * 78 + '\n')
     OUTPUT.write(" " * 27 + "GCC Code Coverage Report\n")
-    OUTPUT.write("Directory: " + options.root + "\n")
+    if options.root is not None:
+        OUTPUT.write("Directory: " + options.root + "\n")
+    
     OUTPUT.write("-" * 78 + '\n')
     a = options.show_branch and "Branches" or "Lines"
     b = options.show_branch and "Taken" or "Exec"
