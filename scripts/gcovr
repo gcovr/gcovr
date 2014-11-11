@@ -2137,6 +2137,16 @@ else:
     options.root_filter = re.compile('')
     root_dir = starting_dir
 
+if options.objdir is not None:
+    if not options.objdir:
+        sys.stderr.write(
+            "(ERROR) empty --object-directory option.\n"
+            "\tThis option specifies the path to the object file "
+            "directory of your project.\n"
+            "\tThis option cannot be an empty string.\n"
+        )
+        sys.exit(1)
+
 for i in range(0, len(options.filter)):
     options.filter[i] = re.compile(options.filter[i])
 if len(options.filter) == 0:
@@ -2155,7 +2165,10 @@ if len(args) == 1:
     if options.root is None:
         datafiles = get_datafiles(["."], options)
     else:
-        datafiles = get_datafiles([options.root], options)
+        if options.objdir is not None:
+            datafiles = get_datafiles([options.objdir, options.root], options)
+        else:
+            datafiles = get_datafiles([options.root], options)
 else:
     datafiles = get_datafiles(args[1:], options)
 #
