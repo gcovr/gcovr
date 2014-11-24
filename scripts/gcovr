@@ -55,6 +55,8 @@ medium_color = "#FFFF55"
 high_color = "LightGreen"
 covered_color = "LightGreen"
 uncovered_color = "LightPink"
+takenBranch_color = "Green"
+notTakenBranch_color = "Red"
 
 __version__ = "3.3-prerelease"
 src_revision = "$Revision$"
@@ -1164,18 +1166,32 @@ css = Template('''
         background-color: ${uncovered_color}!important;
     }
 
-    .linecount
+    .linebranch, .linecount
     {
         border-right: 1px gray solid;
         background-color: lightgray;
     }
-
+    
+    span.takenBranch
+    {
+        color: ${takenBranch_color}!important;
+        cursor: help;
+    }
+    
+    span.notTakenBranch
+    {
+        color: ${notTakenBranch_color}!important;
+        cursor: help;
+    }
+    
     .src
     {
         padding-left: 12px;
     }
 
-    .srcHeader
+    .srcHeader,
+    span.takenBranch,
+    span.notTakenBranch
     {
         font-family: monospace;
         font-weight: bold;
@@ -1357,7 +1373,8 @@ source_page = Template('''
   <table cellspacing="0" cellpadding="1">
     <tr>
       <td width="5%" align="right" class="srcHeader">Line</td>
-      <td width="10%" align="right" class="srcHeader">Exec</td>
+      <td width="5%" align="right" class="srcHeader">Branch</td>
+      <td width="5%" align="right" class="srcHeader">Exec</td>
       <td width="75%" align="left" class="srcHeader src">Source</td>
     </tr>
 
@@ -1409,9 +1426,9 @@ def print_html_report(covdata, details):
     data['high_color'] = high_color
     data['COVERAGE_MED'] = medium_coverage
     data['COVERAGE_HIGH'] = high_coverage
-    data['CSS'] = css.substitute(
-        low_color=low_color, medium_color=medium_color, high_color=high_color,
-        covered_color=covered_color, uncovered_color=uncovered_color
+    data['CSS'] = css.substitute(low_color=low_color, medium_color=medium_color, high_color=high_color,
+                                 covered_color=covered_color, uncovered_color=uncovered_color,
+                                 takenBranch_color=takenBranch_color, notTakenBranch_color=notTakenBranch_color
     )
     data['DIRECTORY'] = ''
 
@@ -1605,6 +1622,7 @@ def source_row(lineno, source, cdata):
     rowstr = Template('''
     <tr>
     <td align="right" class="lineno"><pre>${lineno}</pre></td>
+    <td align="right" class="linebranch">${linebranch}</td>
     <td align="right" class="linecount ${covclass}"><pre>${linecount}</pre></td>
     <td align="left" class="src ${covclass}"><pre>${source}</pre></td>
     </tr>''')
@@ -1612,12 +1630,28 @@ def source_row(lineno, source, cdata):
     kwargs['lineno'] = str(lineno)
     if lineno in cdata.covered:
         kwargs['covclass'] = 'coveredLine'
+        kwargs['linebranch'] = ''
+        # If line has branches them show them with ticks or crosses
+        if lineno in cdata.branches.keys():
+            branches = cdata.branches.get(lineno)
+            branchcounter = 0
+            for branch in branches:
+                if branches[branch] > 0:
+                    kwargs['linebranch'] += '<span class="takenBranch" title="Branch ' + str(branch) + ' taken ' + str(branches[branch]) + ' times">&check;</span>'
+                else:
+                    kwargs['linebranch'] += '<span class="notTakenBranch" title="Branch ' + str(branch) + ' not taken">&cross;</span>'
+                branchcounter += 1
+                # Wrap at 4 branches to avoid too wide column
+                if (branchcounter > 0) and ((branchcounter % 4) == 0):
+                    kwargs['linebranch'] += '<br/>'
         kwargs['linecount'] = str(cdata.covered.get(lineno, 0))
     elif lineno in cdata.uncovered:
         kwargs['covclass'] = 'uncoveredLine'
+        kwargs['linebranch'] = ''
         kwargs['linecount'] = ''
     else:
         kwargs['covclass'] = ''
+        kwargs['linebranch'] = ''
         kwargs['linecount'] = ''
     kwargs['source'] = html.escape(source)
     return rowstr.substitute(**kwargs)
