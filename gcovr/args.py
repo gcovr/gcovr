@@ -9,8 +9,9 @@
 #  For more information, see the README.md file.
 #  _________________________________________________________________________
 
-from os import environ
 from optparse import OptionParser
+from os import environ
+import os.path
 
 
 def parse_arguments():
@@ -200,5 +201,7 @@ def parse_arguments():
     parser.description = \
         'A utility to run gcov and generate a simple report that summarizes ' \
         'the coverage'
-
-    return parser.parse_args()
+    (options, args) = parser.parse_args()
+    if options.output is not None:
+        options.output = os.path.abspath(options.output)
+    return (options, args)

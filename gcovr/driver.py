@@ -81,7 +81,7 @@ def main(options, args):
         options.exclude[i] = re.compile(options.exclude[i])
 
     options.root_filter = re.compile('')
-    options.root_dir = os.getcwd()
+    options.root_dir = os.path.normpath(os.getcwd())
     if options.root is not None:
         if not options.root:
             sys.stderr.write(
@@ -91,7 +91,7 @@ def main(options, args):
                 "\tThis option cannot be an empty string.\n"
             )
             sys.exit(1)
-        options.root_dir = os.path.abspath(options.root)
+        options.root_dir = os.path.normcase(os.path.abspath(options.root))
         options.root_filter = re.compile(re.escape(options.root_dir + os.sep))
     else:
         options.root = "."
@@ -111,9 +111,24 @@ def main(options, args):
     #
     # Get coverage data
     #
-    paths = args
-    if len(args) == 0:
-        paths = [options.root]
+
+    #
+    # if the objdir is given i think it also should be used to get the coverage data
+    #
+    if options.objdir:
+        paths = [options.objdir]
+    else:
+        paths = args
+        if len(args) == 0:
+            paths = [options.root]
+
+    if options.verbose:
+        if options.root is not None:
+            sys.stdout.write("\noptions.root: "+options.root)
+        if options.root_dir is not None:
+            sys.stdout.write("\noptions.root_dir: "+options.root_dir)
+        if options.objdir is not None:
+            sys.stdout.write("\noptions.objdir: " + options.objdir)
 
     covdata = get_coverage_data(paths, options)
 

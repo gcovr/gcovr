@@ -38,3 +38,4 @@ except ImportError:
 
 gcovr.driver.main_()
 
+
