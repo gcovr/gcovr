@@ -536,15 +536,11 @@ def print_html_report(covdata, options):
         filtered_fname = options.root_filter.sub('', f)
         files.append(filtered_fname)
         cdata._filename = filtered_fname
-        ttmp = os.path.abspath(options.output).split('.')
-        if len(ttmp) > 1:
-            cdata._sourcefile = \
-                '.'.join(ttmp[:-1]) + \
-                '.' + cdata._filename.replace('/', '_') + \
-                '.' + ttmp[-1]
-        else:
-            cdata._sourcefile = \
-                ttmp[0] + '.' + cdata._filename.replace('/', '_') + '.html'
+        path, ext = os.path.splitext(os.path.abspath(options.output))
+        if not ext:
+            ext = '.html'
+        cdata._sourcefile = '%s.%s%s' % (
+            path, cdata._filename.replace('/', '_'), ext)
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
     if len(files) > 1:
