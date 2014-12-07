@@ -220,13 +220,19 @@ css = Template('''
         left:1em
     }
 
-    td.coveredLine,
+    tr.coveredLine td,
     span.coveredLine
     {
         background-color: ${covered_color}!important;
     }
 
-    td.uncoveredLine,
+    tr.halfcoveredLine td,
+    span.halfcoveredLine
+    {
+        background-color: ${medium_color}!important;
+    }
+
+    tr.uncoveredLine td,
     span.uncoveredLine
     {
         background-color: ${uncovered_color}!important;
@@ -425,8 +431,9 @@ source_page = Template('''
   <table cellspacing="0" cellpadding="1">
     <tr>
       <td width="5%" align="right" class="srcHeader">Line</td>
+      <td width="5%" align="left" class="srcHeader src">Branches</td>
+      <td width="80%" align="left" class="srcHeader src">Source</td>
       <td width="10%" align="right" class="srcHeader">Exec</td>
-      <td width="75%" align="left" class="srcHeader src">Source</td>
     </tr>
 
     ${ROWS}
@@ -672,16 +679,26 @@ def print_html_report(covdata, options):
 
 def source_row(lineno, source, cdata):
     rowstr = Template('''
-    <tr>
-    <td align="right" class="lineno"><pre>${lineno}</pre></td>
-    <td align="right" class="linecount ${covclass}"><pre>${linecount}</pre></td>
-    <td align="left" class="src ${covclass}"><pre>${source}</pre></td>
+    <tr class="${covclass}">
+    <td align="right" class="lineno">${lineno}</td>
+    <td align="right" class="linecount">${branches}</td>
+    <td class="src"><pre>${source}</pre></td>
+    <td class="linecount">${linecount}</td>
     </tr>''')
     kwargs = {}
     kwargs['lineno'] = str(lineno)
+    kwargs['branches'] = ''
     if lineno in cdata.covered:
         kwargs['covclass'] = 'coveredLine'
         kwargs['linecount'] = str(cdata.covered.get(lineno, 0))
+        branches = cdata.branches.get(lineno)
+        if branches:
+            b_hits = 0
+            for v in branches.values():
+                if v > 0: b_hits += 1
+            kwargs['branches'] = "{0}/{1}".format(str(len(branches)), b_hits)
+            if b_hits < len(branches):
+                kwargs['covclass'] = 'halfcoveredLine'
     elif lineno in cdata.uncovered:
         kwargs['covclass'] = 'uncoveredLine'
         kwargs['linecount'] = ''
