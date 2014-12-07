@@ -18,6 +18,7 @@ except:
 
 import os
 import sys
+import re
 
 from time import time
 from string import Template
@@ -531,6 +532,10 @@ def print_html_report(covdata, options):
         key=options.sort_uncovered and _num_uncovered or
         options.sort_percent and _percent_uncovered or _alpha
     )
+
+    # These path separators are not allowed in the file name part
+    PATH_CHAR_RE = re.compile(r'[/\\:]')
+
     for f in keys:
         cdata = covdata[f]
         filtered_fname = options.root_filter.sub('', f)
@@ -540,7 +545,7 @@ def print_html_report(covdata, options):
         if not ext:
             ext = '.html'
         cdata._sourcefile = '%s.%s%s' % (
-            path, cdata._filename.replace('/', '_'), ext)
+            path, PATH_CHAR_RE.sub('_', cdata._filename), ext)
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
     if len(files) > 1:
