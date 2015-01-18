@@ -1471,7 +1471,7 @@ def print_html_report(covdata, details):
         if len(ttmp) > 1:
             cdata._sourcefile = \
                 '.'.join(ttmp[:-1]) + \
-                '.' + cdata._filename.replace('/', '_') + \
+                '.' + cdata._filename.replace('/', '_').replace(os.sep,'_') + \
                 '.' + ttmp[-1]
         else:
             cdata._sourcefile = \
