@@ -333,6 +333,11 @@ def link_walker(path):
         for root, dirs, files in os.walk(
             os.path.abspath(path), followlinks=True
         ):
+            for exc in options.exclude_dirs:
+                for d in dirs:
+                    m = exc.search(d)
+                    if m is not None:
+                        dirs[:] = [d for d in dirs if d is not m.group()]
             yield (os.path.abspath(os.path.realpath(root)), dirs, files)
     else:
         targets = [os.path.abspath(path)]
@@ -2070,6 +2075,13 @@ parser.add_option(
     default=False
 )
 parser.add_option(
+    "--exclude-directories",
+    help="Exclude directories from search path that match this regular expression",
+    action="append",
+    dest="exclude_dirs",
+    default=[]
+)
+parser.add_option(
     "-g", "--use-gcov-files",
     help="Use preprocessed gcov files for analysis.",
     action="store_true",
@@ -2136,6 +2148,10 @@ if options.root is not None:
 else:
     options.root_filter = re.compile('')
     root_dir = starting_dir
+
+if options.exclude_dirs is not None:
+    for i in range(0, len(options.exclude_dirs)):
+        options.exclude_dirs[i] = re.compile(options.exclude_dirs[i])
 
 for i in range(0, len(options.filter)):
     options.filter[i] = re.compile(options.filter[i])
