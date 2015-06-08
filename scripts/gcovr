@@ -1456,6 +1456,7 @@ def print_html_report(covdata, details):
     # Generate the coverage output (on a per-package basis)
     #source_dirs = set()
     files = []
+    dirs = []
     filtered_fname = ''
     keys = list(covdata.keys())
     keys.sort(
@@ -1466,6 +1467,7 @@ def print_html_report(covdata, details):
         cdata = covdata[f]
         filtered_fname = options.root_filter.sub('', f)
         files.append(filtered_fname)
+        dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata._filename = filtered_fname
         ttmp = os.path.abspath(options.output).split('.')
         if len(ttmp) > 1:
@@ -1479,7 +1481,7 @@ def print_html_report(covdata, details):
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
     if len(files) > 1:
-        commondir = posixpath.commonprefix(files)
+        commondir = os.path.commonprefix(dirs)
         if commondir != '':
             data['DIRECTORY'] = commondir
     else:
