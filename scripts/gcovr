@@ -2122,6 +2122,9 @@ if options.objdir:
 for i in range(0, len(options.exclude)):
     options.exclude[i] = re.compile(options.exclude[i])
 
+if options.output is not None:
+    options.output = os.path.abspath(options.output)
+
 if options.root is not None:
     if not options.root:
         sys.stderr.write(
@@ -2133,6 +2136,7 @@ if options.root is not None:
         sys.exit(1)
     root_dir = os.path.abspath(options.root)
     options.root_filter = re.compile(re.escape(root_dir + os.sep))
+    starting_dir = root_dir
 else:
     options.root_filter = re.compile('')
     root_dir = starting_dir
