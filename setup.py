@@ -49,6 +49,7 @@ setup(name='gcovr',
         ],
       packages=['gcovr'],
       keywords=['utility'],
-      scripts=scripts
+      scripts=scripts,
+      install_requires=["plac"],
       )
 
