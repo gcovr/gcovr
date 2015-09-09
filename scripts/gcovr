@@ -47,6 +47,15 @@ import posixpath
 from optparse import OptionParser
 from string import Template
 from os.path import normpath
+import logging
+import plac
+import tempfile
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+logger.addHandler(ch)
 
 medium_coverage = 75.0
 high_coverage = 90.0
@@ -70,6 +79,11 @@ exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
 c_style_comment_pattern = re.compile('/\*.*?\*/')
 cpp_style_comment_pattern = re.compile('//.*?$')
 
+gcov_default=os.environ.get('GCOV', 'gcov')
+coverage_min_default = 0.0
+
+RETURN_CODE_VERSION_MESSAGE = 0
+RETURN_CODE_COVERAGE_NOT_REACHED = 1
 
 def version_str():
     ans = __version__
@@ -86,7 +100,7 @@ class CoverageData(object):
 
     def __init__(
             self, fname, uncovered, uncovered_exceptional, covered, branches,
-            noncode):
+            noncode, root_filter, show_branches):
         self.fname = fname
         # Shallow copies are cheap & "safe" because the caller will
         # throw away their copies of covered & uncovered after calling
@@ -100,6 +114,8 @@ class CoverageData(object):
         self.all_lines.update(uncovered_exceptional)
         self.all_lines.update(covered.keys())
         self.branches = copy.deepcopy(branches)
+        self.root_filter = root_filter
+        self.show_branches= show_branches
 
     def update(
             self, uncovered, uncovered_exceptional, covered, branches,
@@ -120,7 +136,7 @@ class CoverageData(object):
         self.uncovered_exceptional.difference_update(self.covered.keys())
 
     def uncovered_str(self, exceptional):
-        if options.show_branch:
+        if self.show_branches:
             #
             # Don't do any aggregation on branch results
             #
@@ -179,7 +195,10 @@ class CoverageData(object):
         return ",".join(ranges)
 
     def coverage(self):
-        if options.show_branch:
+        """
+        @return a `tuple` of (all lines x # covered lines x percentage of the former in form of a string or '--' if )
+        """
+        if self.show_branches:
             total = 0
             cover = 0
             for line in self.branches.keys():
@@ -194,7 +213,7 @@ class CoverageData(object):
         return (total, cover, percent)
 
     def summary(self):
-        tmp = options.root_filter.sub('', self.fname)
+        tmp = self.root_filter.sub('', self.fname)
         if not self.fname.endswith(tmp):
             # Do no truncation if the filter does not start matching at
             # the beginning of the string
@@ -205,7 +224,7 @@ class CoverageData(object):
 
         (total, cover, percent) = self.coverage()
         uncovered_lines = self.uncovered_str(False)
-        if not options.show_branch:
+        if not self.show_branches:
             t = self.uncovered_str(True)
             if len(t):
                 uncovered_lines += " [* " + t + "]"
@@ -387,26 +406,19 @@ def search_file(expr, path):
 #
 # Get the list of datafiles in the directories specified by the user
 #
-def get_datafiles(flist, options):
+def get_datafiles(flist, use_gcov_files):
     allfiles = set()
     for dir_ in flist:
-        if options.gcov_files:
-            if options.verbose:
-                sys.stdout.write(
-                    "Scanning directory %s for gcov files...\n" % (dir_, )
-                )
+        if use_gcov_files:
+            logger.debug("Scanning directory %s for gcov files...\n" % (dir_, )                )
             files = search_file(".*\.gcov$", dir_)
             gcov_files = [file for file in files if file.endswith('gcov')]
-            if options.verbose:
-                sys.stdout.write(
-                    "Found %d files (and will process %d)\n" %
+            logger.debug("Found %d files (and will process %d)\n" %
                     (len(files), len(gcov_files))
                 )
             allfiles.update(gcov_files)
         else:
-            if options.verbose:
-                sys.stdout.write(
-                    "Scanning directory %s for gcda/gcno files...\n" % (dir_, )
+            logger.debug("Scanning directory %s for gcda/gcno files...\n" % (dir_, )
                 )
             files = search_file(".*\.gc(da|no)$", dir_)
             # gcno files will *only* produce uncovered results; however,
@@ -422,9 +434,7 @@ def get_datafiles(flist, options):
                 filenm for filenm in files if
                 filenm.endswith('gcno') and filenm[:-2] + 'da' not in tmp
             ]
-            if options.verbose:
-                sys.stdout.write(
-                    "Found %d files (and will process %d)\n" %
+            logger.debug("Found %d files (and will process %d)\n" %
                     (len(files), len(gcda_files) + len(gcno_files)))
             allfiles.update(gcda_files)
             allfiles.update(gcno_files)
@@ -434,7 +444,7 @@ def get_datafiles(flist, options):
 #
 # Process a single gcov datafile
 #
-def process_gcov_data(data_fname, covdata, options):
+def process_gcov_data(data_fname, covdata, filters, root_filter, excludes, exclude_unreachable_branches, show_branches):
     INPUT = open(data_fname, "r")
     #
     # Get the filename
@@ -453,30 +463,26 @@ def process_gcov_data(data_fname, covdata, options):
     else:
         fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
     os.chdir(currdir)
-    if options.verbose:
-        sys.stdout.write("Parsing coverage data for file %s\n" % fname)
+    logger.debug("Parsing coverage data for file %s\n" % fname)
     #
     # Return if the filename does not match the filter
     #
     filtered_fname = None
-    for i in range(0, len(options.filter)):
-        if options.filter[i].match(fname):
-            filtered_fname = options.root_filter.sub('', fname)
+    for i in range(0, len(filters)):
+        if filters[i].match(fname):
+            filtered_fname = root_filter.sub('', fname)
             break
     if filtered_fname is None:
-        if options.verbose:
-            sys.stdout.write("  Filtering coverage data for file %s\n" % fname)
+        logger.debug("  Filtering coverage data for file %s\n" % fname)
         return
     #
     # Return if the filename matches the exclude pattern
     #
-    for exc in options.exclude:
+    for exc in excludes:
         if (filtered_fname is not None and exc.match(filtered_fname)) or \
                 exc.match(fname) or \
                 exc.match(os.path.abspath(fname)):
-            if options.verbose:
-                sys.stdout.write(
-                    "  Excluding coverage data for file %s\n" % fname
+            logger.debug("  Excluding coverage data for file %s\n" % fname
                 )
             return
     #
@@ -556,7 +562,7 @@ def process_gcov_data(data_fname, covdata, options):
             covered[lineno] = int(segments[0].strip())
         elif tmp.startswith('branch'):
             exclude_branch = False
-            if options.exclude_unreachable_branches and \
+            if exclude_unreachable_branches and \
                     lineno == last_code_lineno:
                 if last_code_line_excluded:
                     exclude_branch = True
@@ -572,9 +578,7 @@ def process_gcov_data(data_fname, covdata, options):
                     exclude_reason = "detected as compiler-generated code"
 
             if exclude_branch:
-                if options.verbose:
-                    sys.stdout.write(
-                        "Excluding unreachable branch on line %d "
+                logger.debug("Excluding unreachable branch on line %d "
                         "in file %s (%s).\n"
                         % (lineno, fname, exclude_reason)
                     )
@@ -630,7 +634,7 @@ def process_gcov_data(data_fname, covdata, options):
     #
     if not fname in covdata:
         covdata[fname] = CoverageData(
-            fname, uncovered, uncovered_exceptional, covered, branches, noncode
+            fname, uncovered, uncovered_exceptional, covered, branches, noncode, root_filter=root_filter, show_branches=show_branches
         )
     else:
         covdata[fname].update(
@@ -670,7 +674,7 @@ def process_gcov_data(data_fname, covdata, options):
 # identifying the original gcc working directory (there is a bit of
 # trial-and-error here)
 #
-def process_datafile(filename, covdata, options):
+def process_datafile(filename, covdata, filters, root_filter, excludes, exclude_unreachable_branches, object_directory, gcov, gcov_filter, gcov_excludes, delete, keep, root_dir, show_branches):
     #print ""
     #print "PROCESS",filename
     #
@@ -684,10 +688,10 @@ def process_datafile(filename, covdata, options):
     errors = []
     Done = False
 
-    if options.objdir:
+    if object_directory:
         #print "X - objdir"
         src_components = abs_filename.split(os.sep)
-        components = normpath(options.objdir).split(os.sep)
+        components = normpath(object_directory).split(os.sep)
         idx = 1
         while idx <= len(components):
             if idx > len(src_components):
@@ -715,12 +719,12 @@ def process_datafile(filename, covdata, options):
         else:
             if components[0] == '':
                 # absolute path
-                tmp = [options.objdir]
+                tmp = [object_directory]
             else:
                 # relative path: check relative to both the cwd and the
                 # gcda file
                 tmp = [
-                    os.path.join(x, options.objdir) for x in
+                    os.path.join(x, object_directory) for x in
                     [os.path.dirname(abs_filename), os.getcwd()]
                 ]
             potential_wd = [
@@ -729,7 +733,7 @@ def process_datafile(filename, covdata, options):
             if len(potential_wd) == 0:
                 errors.append("ERROR: cannot identify the location where GCC "
                               "was run using --object-directory=%s\n" %
-                              options.objdir)
+                              object_directory)
             # Revert to the normal
             #sys.exit(1)
 
@@ -748,7 +752,7 @@ def process_datafile(filename, covdata, options):
                 break
 
     cmd = [
-        options.gcov_cmd, abs_filename,
+        gcov, abs_filename,
         "--branch-counts", "--branch-probabilities", "--preserve-paths",
         '--object-directory', dirname
     ]
@@ -771,9 +775,7 @@ def process_datafile(filename, covdata, options):
         #print "X DIR:", dir_
         os.chdir(dir_)
 
-        if options.verbose:
-            sys.stdout.write(
-                "Running gcov: '%s' in '%s'\n" % (' '.join(cmd), os.getcwd())
+        logger.debug("Running gcov: '%s' in '%s'\n" % (' '.join(cmd), os.getcwd())
             )
         out, err = subprocess.Popen(
             cmd, env=env,
@@ -788,22 +790,21 @@ def process_datafile(filename, covdata, options):
             found = output_re.search(line.strip())
             if found is not None:
                 fname = found.group(1)
-                if not options.gcov_filter.match(fname):
-                    if options.verbose:
-                        sys.stdout.write("Filtering gcov file %s\n" % fname)
+                if not gcov_filter.match(fname):
+                    logger.debug("Filtering gcov file %s\n" % fname)
                     gcov_files['filter'].append(fname)
                     continue
                 exclude = False
-                for exc in options.gcov_exclude:
-                    if exc.match(options.gcov_filter.sub('', fname)) or \
+                for exc in gcov_excludes:
+                    if exc.match(gcov_filter.sub('', fname)) or \
                             exc.match(fname) or \
                             exc.match(os.path.abspath(fname)):
                         exclude = True
                         break
                 if not exclude:
                     gcov_files['active'].append(fname)
-                elif options.verbose:
-                    sys.stdout.write("Excluding gcov file %s\n" % fname)
+                else:
+                    logger.debug("Excluding gcov file %s\n" % fname)
                     gcov_files['exclude'].append(fname)
 
         #print "HERE", err, "XXX", source_re.search(err)
@@ -817,10 +818,10 @@ def process_datafile(filename, covdata, options):
             # Process *.gcov files
             #
             for fname in gcov_files['active']:
-                process_gcov_data(fname, covdata, options)
+                process_gcov_data(fname, covdata, filters, root_filter, excludes, exclude_unreachable_branches, show_branches)
             Done = True
 
-        if not options.keep:
+        if not keep:
             for group in gcov_files.values():
                 for fname in group:
                     if os.path.exists(fname):
@@ -828,7 +829,7 @@ def process_datafile(filename, covdata, options):
                         os.remove(fname)
 
     os.chdir(starting_dir)
-    if options.delete:
+    if delete:
         if not abs_filename.endswith('gcno'):
             os.remove(abs_filename)
 
@@ -844,23 +845,21 @@ def process_datafile(filename, covdata, options):
 #
 #  Process Already existing gcov files
 #
-def process_existing_gcov_file(filename, covdata, options):
-    if not options.gcov_filter.match(filename):
-        if options.verbose:
-            sys.stdout.write("Filtering gcov file %s\n" % filename)
+def process_existing_gcov_file(filename, covdata, filters, root_filter, excludes, gcov_excludes, gcov_filter, exclude_unreachable_branches, keep, show_branches):
+    if not gcov_filter.match(filename):
+        logger.debug("Filtering gcov file %s\n" % filename)
         return
 
-    for exc in options.gcov_exclude:
-        if exc.match(options.gcov_filter.sub('', filename)) or \
+    for exc in gcov_excludes:
+        if exc.match(gcov_filter.sub('', filename)) or \
                 exc.match(filename) or \
                 exc.match(os.path.abspath(filename)):
-            if options.verbose:
-                sys.stdout.write("Excluding gcov file %s\n" % filename)
+            logger.debug("Excluding gcov file %s\n" % filename)
             return
 
-    process_gcov_data(filename, covdata, options)
+    process_gcov_data(filename, covdata, filters, root_filter, excludes, exclude_unreachable_branches, show_branches=show_branches)
 
-    if not options.keep:
+    if not keep:
         if os.path.exists(filename):
             # Only remove files that actually exist.
             os.remove(filename)
@@ -869,7 +868,10 @@ def process_existing_gcov_file(filename, covdata, options):
 #
 # Produce the classic gcovr text report
 #
-def print_text_report(covdata):
+# @args output a path to a file which will be opened for writing (and closed
+# after being written) or `None` to indicate writing output to `sys.stdout`
+#
+def print_text_report(covdata, output, root, show_branches, sort_percentage, sort_uncovered):
     def _num_uncovered(key):
         (total, covered, percent) = covdata[key].coverage()
         return total - covered
@@ -884,20 +886,20 @@ def print_text_report(covdata):
     def _alpha(key):
         return key
 
-    if options.output:
-        OUTPUT = open(options.output, 'w')
-    else:
-        OUTPUT = sys.stdout
     total_lines = 0
     total_covered = 0
 
+    if output is None:
+        OUTPUT = sys.stdout
+    else:
+        OUTPUT = open(output, 'w')
     # Header
     OUTPUT.write("-" * 78 + '\n')
     OUTPUT.write(" " * 27 + "GCC Code Coverage Report\n")
-    OUTPUT.write("Directory: " + options.root + "\n")
+    OUTPUT.write("Directory: " + root + "\n")
     OUTPUT.write("-" * 78 + '\n')
-    a = options.show_branch and "Branches" or "Lines"
-    b = options.show_branch and "Taken" or "Exec"
+    a = show_branches and "Branches" or "Lines"
+    b = show_branches and "Taken" or "Exec"
     c = "Missing"
     OUTPUT.write(
         "File".ljust(40) + a.rjust(8) + b.rjust(8) + "  Cover   " + c + "\n"
@@ -907,8 +909,8 @@ def print_text_report(covdata):
     # Data
     keys = list(covdata.keys())
     keys.sort(
-        key=options.sort_uncovered and _num_uncovered or
-        options.sort_percent and _percent_uncovered or _alpha
+        key=sort_uncovered and _num_uncovered or
+        sort_percentage and _percent_uncovered or _alpha
     )
     for key in keys:
         (t, n, txt) = covdata[key].summary()
@@ -927,14 +929,14 @@ def print_text_report(covdata):
     OUTPUT.write("-" * 78 + '\n')
 
     # Close logfile
-    if options.output:
+    if not output is None:
         OUTPUT.close()
 
 
 #
 # Prints a small report to the standard output
 #
-def print_summary(covdata):
+def print_summary(covdata, show_branches):
     lines_total = 0
     lines_covered = 0
     branches_total = 0
@@ -943,12 +945,12 @@ def print_summary(covdata):
     keys = list(covdata.keys())
 
     for key in keys:
-        options.show_branch = False
+        show_branches = False
         (t, n, txt) = covdata[key].coverage()
         lines_total += t
         lines_covered += n
 
-        options.show_branch = True
+        show_branches = True
         (t, n, txt) = covdata[key].coverage()
         branches_total += t
         branches_covered += n
@@ -1381,7 +1383,7 @@ source_page = Template('''
 #
 # Produce an HTML report
 #
-def print_html_report(covdata, details):
+def print_html_report(covdata, details, html_absolute_anchors, output, show_branches, sort_uncovered, sort_percentage, root_filter):
     def _num_uncovered(key):
         (total, covered, percent) = covdata[key].coverage()
         return total - covered
@@ -1396,7 +1398,7 @@ def print_html_report(covdata, details):
     def _alpha(key):
         return key
 
-    if options.output is None:
+    if output is None:
         details = False
     data = {}
     data['HEAD'] = "Head"
@@ -1417,7 +1419,7 @@ def print_html_report(covdata, details):
 
     branchTotal = 0
     branchCovered = 0
-    options.show_branch = True
+    show_branches = True
     for key in covdata.keys():
         (total, covered, percent) = covdata[key].coverage()
         branchTotal += total
@@ -1436,7 +1438,7 @@ def print_html_report(covdata, details):
 
     lineTotal = 0
     lineCovered = 0
-    options.show_branch = False
+    show_branches = False
     for key in covdata.keys():
         (total, covered, percent) = covdata[key].coverage()
         lineTotal += total
@@ -1459,15 +1461,19 @@ def print_html_report(covdata, details):
     filtered_fname = ''
     keys = list(covdata.keys())
     keys.sort(
-        key=options.sort_uncovered and _num_uncovered or
-        options.sort_percent and _percent_uncovered or _alpha
+        key=sort_uncovered and _num_uncovered or
+        sort_percentage and _percent_uncovered or _alpha
     )
+    ttmp_dir = tempfile.mkdtemp() # returns the path of the temporary directory
     for f in keys:
         cdata = covdata[f]
-        filtered_fname = options.root_filter.sub('', f)
+        filtered_fname = root_filter.sub('', f)
         files.append(filtered_fname)
         cdata._filename = filtered_fname
-        ttmp = os.path.abspath(options.output).split('.')
+        if output is None:
+            ttmp = [tempfile.mkstemp(dir=ttmp_dir)[1]] # list in order to deal equally with split result
+        else:
+            ttmp = os.path.abspath(output).split('.')
         if len(ttmp) > 1:
             cdata._sourcefile = \
                 '.'.join(ttmp[:-1]) + \
@@ -1476,7 +1482,7 @@ def print_html_report(covdata, details):
         else:
             cdata._sourcefile = \
                 ttmp[0] + '.' + cdata._filename.replace('/', '_') + '.html'
-    # Define the common root directory, which may differ from options.root
+    # Define the common root directory, which may differ from root
     # when source files share a common prefix.
     if len(files) > 1:
         commondir = posixpath.commonprefix(files)
@@ -1516,7 +1522,7 @@ def print_html_report(covdata, details):
             100.0 * class_branch_hits / class_branches
 
         data['ROWS'].append(html_row(
-            details, cdata._sourcefile,
+            details, cdata._sourcefile, html_absolute_anchors,
             directory=data['DIRECTORY'],
             filename=cdata._filename,
             LinesExec=class_hits,
@@ -1533,10 +1539,10 @@ def print_html_report(covdata, details):
 
     htmlString = root_page.substitute(**data)
 
-    if options.output is None:
+    if output is None:
         sys.stdout.write(htmlString + '\n')
     else:
-        OUTPUT = open(options.output, 'w')
+        OUTPUT = open(output, 'w')
         OUTPUT.write(htmlString + '\n')
         OUTPUT.close()
 
@@ -1553,7 +1559,7 @@ def print_html_report(covdata, details):
         data['FILENAME'] = cdata._filename
         data['ROWS'] = ''
 
-        options.show_branch = True
+        show_branches = True
         branchTotal, branchCovered, tmp = cdata.coverage()
         data['BRANCHES_EXEC'] = str(branchCovered)
         data['BRANCHES_TOTAL'] = str(branchTotal)
@@ -1567,7 +1573,7 @@ def print_html_report(covdata, details):
         else:
             data['BRANCHES_COLOR'] = high_color
 
-        options.show_branch = False
+        show_branches = False
         lineTotal, lineCovered, tmp = cdata.coverage()
         data['LINES_EXEC'] = str(lineCovered)
         data['LINES_TOTAL'] = str(lineTotal)
@@ -1628,8 +1634,8 @@ def source_row(lineno, source, cdata):
 nrows = 0
 
 
-def html_row(details, sourcefile, **kwargs):
-    if options.relative_anchors:
+def html_row(details, sourcefile, html_absolute_anchors, **kwargs):
+    if html_absolute_anchors:
         sourcefile = os.path.basename(sourcefile)
     rowstr = Template('''
     <tr>
@@ -1690,19 +1696,19 @@ def html_row(details, sourcefile, **kwargs):
 #
 # Produce an XML report in the Cobertura format
 #
-def print_xml_report(covdata):
+def print_xml_report(covdata, root, output, root_filter, show_branches, xml_pretty):
     branchTotal = 0
     branchCovered = 0
     lineTotal = 0
     lineCovered = 0
 
-    options.show_branch = True
+    show_branches = True
     for key in covdata.keys():
         (total, covered, percent) = covdata[key].coverage()
         branchTotal += total
         branchCovered += covered
 
-    options.show_branch = False
+    show_branches = False
     for key in covdata.keys():
         (total, covered, percent) = covdata[key].coverage()
         lineTotal += total
@@ -1714,30 +1720,30 @@ def print_xml_report(covdata):
         "http://cobertura.sourceforge.net/xml/coverage-03.dtd"
     )
     doc = impl.createDocument(None, "coverage", docType)
-    root = doc.documentElement
-    root.setAttribute(
+    root_element = doc.documentElement
+    root_element.setAttribute(
         "line-rate", lineTotal == 0 and '0.0' or
         str(float(lineCovered) / lineTotal)
     )
-    root.setAttribute(
+    root_element.setAttribute(
         "branch-rate", branchTotal == 0 and '0.0' or
         str(float(branchCovered) / branchTotal)
     )
-    root.setAttribute(
+    root_element.setAttribute(
         "timestamp", str(int(time.time()))
     )
-    root.setAttribute(
+    root_element.setAttribute(
         "version", "gcovr %s" % (version_str(),)
     )
 
-    # Generate the <sources> element: this is either the root directory
+    # Generate the <sources> element: this is either the root_element directory
     # (specified by --root), or the CWD.
     sources = doc.createElement("sources")
-    root.appendChild(sources)
+    root_element.appendChild(sources)
 
     # Generate the coverage output (on a per-package basis)
     packageXml = doc.createElement("packages")
-    root.appendChild(packageXml)
+    root_element.appendChild(packageXml)
     packages = {}
     source_dirs = set()
 
@@ -1745,7 +1751,7 @@ def print_xml_report(covdata):
     keys.sort()
     for f in keys:
         data = covdata[f]
-        directory = options.root_filter.sub('', f)
+        directory = root_filter.sub('', f)
         if f.endswith(directory):
             src_path = f[:-1 * len(directory)]
             if len(src_path) > 0:
@@ -1847,12 +1853,12 @@ def print_xml_report(covdata):
         )
         package.setAttribute("complexity", "0.0")
 
-    # Populate the <sources> element: this is either the root directory
+    # Populate the <sources> element: this is either the root_element directory
     # (specified by --root), or relative directories based
     # on the filter, or the CWD
-    if options.root is not None:
+    if root_element is not None:
         source = doc.createElement("source")
-        source.appendChild(doc.createTextNode(options.root.strip()))
+        source.appendChild(doc.createTextNode(root.strip()))
         sources.appendChild(source)
     elif len(source_dirs) > 0:
         cwd = os.getcwd()
@@ -1875,7 +1881,7 @@ def print_xml_report(covdata):
         source.appendChild(doc.createTextNode('.'))
         sources.appendChild(source)
 
-    if options.prettyxml:
+    if xml_pretty:
         import textwrap
         lines = doc.toprettyxml(" ").split('\n')
         for i in xrange(len(lines)):
@@ -1892,294 +1898,163 @@ def print_xml_report(covdata):
         #print textwrap.wrap(doc.toprettyxml(" "), 80)
     else:
         xmlString = doc.toprettyxml(indent="")
-    if options.output is None:
+    if output is None:
         sys.stdout.write(xmlString + '\n')
     else:
-        OUTPUT = open(options.output, 'w')
+        OUTPUT = open(output, 'w')
         OUTPUT.write(xmlString + '\n')
         OUTPUT.close()
 
+__coverage_min_doc__ = "the minimal coverage which all files have to reach. If one file doesn't reach this coverage, `gcovr` will return with returncode %d" % (RETURN_CODE_COVERAGE_NOT_REACHED,)
 
-##
-## MAIN
-##
+def gcovr(root, object_directory=None, output=None, keep=False, delete=False, filters=[], excludes=[], gcov_filter="", gcov_excludes=[], xml=False, xml_pretty=False, html=False, html_details=False, html_absolute_anchors=False, show_branches=False, sort_uncovered=False, sort_percentage=False, gcov=gcov_default, exclude_unreachable_branches=False, use_gcov_files=False, summary=False, coverage_min=coverage_min_default):
+    """
+    @args coverage_min %(__coverage_min_doc__)s.
+    """ % {"__coverage_min_doc__": __coverage_min_doc__}
+    if object_directory:
+        tmp = object_directory.replace('/', os.sep).replace('\\', os.sep)
+        while os.sep + os.sep in tmp:
+            tmp = tmp.replace(os.sep + os.sep, os.sep)
+        if normpath(object_directory) != tmp:
+            sys.stderr.write(
+                "(WARNING) relative referencing in --object-directory.\n"
+                "\tthis could cause strange errors when gcovr attempts to\n"
+                "\tidentify the original gcc working directory.\n")
+        if not os.path.exists(normpath(object_directory)):
+            raise ValueError(
+                "(ERROR) Bad --object-directory option.\n"
+                "\tThe specified directory does not exist.\n")
+    #
+    # Setup filters
+    #
+    for i in range(0, len(excludes)):
+        excludes[i] = re.compile(excludes[i])
 
-#
-# Create option parser
-#
-parser = OptionParser()
-parser.add_option(
-    "--version",
-    help="Print the version number, then exit",
-    action="store_true",
-    dest="version",
-    default=False
-)
-parser.add_option(
-    "-v", "--verbose",
-    help="Print progress messages",
-    action="store_true",
-    dest="verbose",
-    default=False
-)
-parser.add_option(
-    '--object-directory',
-    help="Specify the directory that contains the gcov data files.  gcovr "
+    if root is not None:
+        if root == "":
+            raise ValueError(
+                "(ERROR) empty --root option.\n"
+                "\tRoot specifies the path to the root "
+                "directory of your project.\n"
+                "\tThis option cannot be an empty string.\n"
+            )
+        root_dir = os.path.abspath(root)
+        root_filter = re.compile(re.escape(root_dir + os.sep))
+    else:
+        root_filter = re.compile('')
+        root_dir = starting_dir
+
+    for i in range(0, len(filters)):
+        filters[i] = re.compile(filters[i])
+    if len(filters) == 0:
+        filters.append(root_filter)
+
+    for i in range(0, len(gcov_excludes)):
+        gcov_excludes[i] = re.compile(gcov_excludes[i])
+    if gcov_filter is not None:
+        gcov_filter = re.compile(gcov_filter)
+    else:
+        gcov_filter = re.compile('')
+    #
+    # Get data files
+    #
+    datafiles = get_datafiles([root], use_gcov_files)
+    #
+    # Get coverage data
+    #
+    covdata = {}
+    for file_ in datafiles:
+        if use_gcov_files:
+            process_existing_gcov_file(file_, covdata, filters, root_filter=root_filter, excludes=excludes, exclude_unreachable_branches=exclude_unreachable_branches)
+        else:
+            process_datafile(file_, covdata, filters, root_filter=root_filter, excludes=excludes, exclude_unreachable_branches=exclude_unreachable_branches, object_directory=object_directory, gcov=gcov, gcov_filter=gcov_filter, gcov_excludes=gcov_excludes, delete=delete, keep=keep, root_dir=root_dir, show_branches=show_branches)
+    logger.debug("Gathered coveraged data for " + str(len(covdata)) + " files\n"
+        )
+    # assert that minimal coverage is fulfilled
+    for key in covdata:
+        data = covdata[key]
+        try:
+            data_coverage = float(data.coverage()[2]) # third field is a str and might be '--'
+            if data_coverage < coverage_min:
+                logger.warn("the file '%s' didn't reach the specified minimal coverage of %d (was %d)" % (data.fname, coverage_min, data_coverage,))
+                sys.exit(RETURN_CODE_COVERAGE_NOT_REACHED)
+        except ValueError:
+            logger.info("skipping unknown coverage in file '%s'" % (data.fname,))
+    #
+    # Print report
+    #
+    if xml or xml_pretty:
+        print_xml_report(covdata, root, output, root_filter, show_branches, xml_pretty)
+    elif html:
+        print_html_report(covdata, html_details, html_absolute_anchors, output, show_branches, sort_uncovered, sort_percentage, root_filter)
+    else:
+        print_text_report(covdata, output=output, root=root, show_branches=show_branches, sort_percentage=sort_percentage, sort_uncovered=sort_uncovered)
+
+    if summary:
+        print_summary(covdata, show_branches=show_branches)
+
+@plac.annotations(root=("Defines the root directory for source files.  "
+         "This is also used to filter the files, and to standardize "
+         "the output.", "positional"),
+         object_directory=("Specify the directory that contains the gcov data files.  gcovr "
          "must be able to identify the path between the *.gcda files and the "
          "directory where gcc was originally run.  Normally, gcovr can guess "
          "correctly.  This option overrides gcovr's normal path detection and "
          "can specify either the path from gcc to the gcda file (i.e. what "
          "was passed to gcc's '-o' option), or the path from the gcda file to "
-         "gcc's original working directory.",
-    action="store",
-    dest="objdir",
-    default=None
-)
-parser.add_option(
-    "-o", "--output",
-    help="Print output to this filename",
-    action="store",
-    dest="output",
-    default=None
-)
-parser.add_option(
-    "-k", "--keep",
-    help="Keep the temporary *.gcov files generated by gcov.  "
-         "By default, these are deleted.",
-    action="store_true",
-    dest="keep",
-    default=False
-)
-parser.add_option(
-    "-d", "--delete",
-    help="Delete the coverage files after they are processed.  "
+         "gcc's original working directory.", "option"),
+    output=("Print output to this filename", "option"),
+    keep=("Keep the temporary *.gcov files generated by gcov.  "
+         "By default, these are deleted.", "flag"),
+     delete=("Delete the coverage files after they are processed.  "
          "These are generated by the users's program, and by default gcovr "
-         "does not remove these files.",
-    action="store_true",
-    dest="delete",
-    default=False
-)
-parser.add_option(
-    "-f", "--filter",
-    help="Keep only the data files that match this regular expression",
-    action="append",
-    dest="filter",
-    default=[]
-)
-parser.add_option(
-    "-e", "--exclude",
-    help="Exclude data files that match this regular expression",
-    action="append",
-    dest="exclude",
-    default=[]
-)
-parser.add_option(
-    "--gcov-filter",
-    help="Keep only gcov data files that match this regular expression",
-    action="store",
-    dest="gcov_filter",
-    default=None
-)
-parser.add_option(
-    "--gcov-exclude",
-    help="Exclude gcov data files that match this regular expression",
-    action="append",
-    dest="gcov_exclude",
-    default=[]
-)
-parser.add_option(
-    "-r", "--root",
-    help="Defines the root directory for source files.  "
-         "This is also used to filter the files, and to standardize "
-         "the output.",
-    action="store",
-    dest="root",
-    default=None
-)
-parser.add_option(
-    "-x", "--xml",
-    help="Generate XML instead of the normal tabular output.",
-    action="store_true",
-    dest="xml",
-    default=False
-)
-parser.add_option(
-    "--xml-pretty",
-    help="Generate pretty XML instead of the normal dense format.",
-    action="store_true",
-    dest="prettyxml",
-    default=False
-)
-parser.add_option(
-    "--html",
-    help="Generate HTML instead of the normal tabular output.",
-    action="store_true",
-    dest="html",
-    default=False
-)
-parser.add_option(
-    "--html-details",
-    help="Generate HTML output for source file coverage.",
-    action="store_true",
-    dest="html_details",
-    default=False
-)
-parser.add_option(
-    "--html-absolute-paths",
-    help="Set the paths in the HTML report to be absolute instead of relative",
-    action="store_false",
-    dest="relative_anchors",
-    default=True
-)
-parser.add_option(
-    "-b", "--branches",
-    help="Tabulate the branch coverage instead of the line coverage.",
-    action="store_true",
-    dest="show_branch",
-    default=None
-)
-parser.add_option(
-    "-u", "--sort-uncovered",
-    help="Sort entries by increasing number of uncovered lines.",
-    action="store_true",
-    dest="sort_uncovered",
-    default=None
-)
-parser.add_option(
-    "-p", "--sort-percentage",
-    help="Sort entries by decreasing percentage of covered lines.",
-    action="store_true",
-    dest="sort_percent",
-    default=None
-)
-parser.add_option(
-    "--gcov-executable",
-    help="Defines the name/path to the gcov executable [defaults to the "
-         "GCOV environment variable, if present; else 'gcov'].",
-    action="store",
-    dest="gcov_cmd",
-    default=os.environ.get('GCOV', 'gcov')
-)
-parser.add_option(
-    "--exclude-unreachable-branches",
-    help="Exclude from coverage branches which are marked to be excluded by "
+         "does not remove these files.", "flag"),
+     filters=("Keep only the data files that match this regular expression", "option"),
+     excludes=("Exclude data files that match this regular expression", "option"),
+    gcov_filter=("Keep only gcov data files that match this regular expression", "option"),
+    gcov_excludes=("Exclude gcov data files that match this regular expression", "option"),
+     xml=("Generate XML instead of the normal tabular output.", "flag"),
+     xml_pretty=("Generate pretty XML instead of the normal dense format.", "flag"),
+     html=("Generate HTML instead of the normal tabular output.", "flag"),
+     html_details=("Generate HTML output for source file coverage.", "flag"),
+     html_absolute_anchors=("Set the paths in the HTML report to be absolute instead of relative", "flag"),
+     show_branches=("Tabulate the branch coverage instead of the line coverage.", "flag"),
+     sort_uncovered=("Sort entries by increasing number of uncovered lines.", "flag"),
+     sort_percentage=("Sort entries by decreasing percentage of covered lines.", "flag"),
+     gcov=("Defines the name/path to the gcov executable [defaults to the "
+         "GCOV environment variable, if present; else 'gcov'].", "option"),
+     exclude_unreachable_branches=("Exclude from coverage branches which are marked to be excluded by "
          "LCOV/GCOV markers or are determined to be from lines containing "
-         "only compiler-generated \"dead\" code.",
-    action="store_true",
-    dest="exclude_unreachable_branches",
-    default=False
+         "only compiler-generated \"dead\" code.", "flag"),
+     use_gcov_files=("Use preprocessed gcov files for analysis.", "flag"),
+     summary=("Prints a small report to stdout with line & branch "
+         "percentage coverage", "flag"),
+    coverage_min=plac.Annotation(__coverage_min_doc__, "option", type=float),
+    version=("Print the version number, then exit", "flag"),
+    verbose=("Print progress messages", "flag"),
 )
-parser.add_option(
-    "-g", "--use-gcov-files",
-    help="Use preprocessed gcov files for analysis.",
-    action="store_true",
-    dest="gcov_files",
-    default=False
-)
-parser.add_option(
-    "-s", "--print-summary",
-    help="Prints a small report to stdout with line & branch "
-         "percentage coverage",
-    action="store_true",
-    dest="print_summary",
-    default=False
-)
-parser.usage = "gcovr [options]"
-parser.description = \
-    "A utility to run gcov and generate a simple report that summarizes " \
-    "the coverage"
-#
-# Process options
-#
-options, args = parser.parse_args(args=sys.argv)
-if options.version:
-    sys.stdout.write(
-        "gcovr %s\n"
-        "\n"
-        "Copyright (2013) Sandia Corporation. Under the terms of Contract\n"
-        "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
-        "retains certain rights in this software.\n"
-        % (version_str(), )
-    )
-    sys.exit(0)
-if options.objdir:
-    tmp = options.objdir.replace('/', os.sep).replace('\\', os.sep)
-    while os.sep + os.sep in tmp:
-        tmp = tmp.replace(os.sep + os.sep, os.sep)
-    if normpath(options.objdir) != tmp:
-        sys.stderr.write(
-            "(WARNING) relative referencing in --object-directory.\n"
-            "\tthis could cause strange errors when gcovr attempts to\n"
-            "\tidentify the original gcc working directory.\n")
-    if not os.path.exists(normpath(options.objdir)):
-        sys.stderr.write(
-            "(ERROR) Bad --object-directory option.\n"
-            "\tThe specified directory does not exist.\n")
-        sys.exit(1)
-#
-# Setup filters
-#
-for i in range(0, len(options.exclude)):
-    options.exclude[i] = re.compile(options.exclude[i])
-
-if options.root is not None:
-    if not options.root:
-        sys.stderr.write(
-            "(ERROR) empty --root option.\n"
-            "\tRoot specifies the path to the root "
-            "directory of your project.\n"
-            "\tThis option cannot be an empty string.\n"
+def gcovr_wrapper(root, object_directory=None, output=None, keep=False, delete=False, filters=[], excludes=[], gcov_filter="", gcov_excludes=[], xml=False, xml_pretty=False, html=False, html_details=False, version=False, verbose=False, html_absolute_anchors=False, show_branches=False, sort_uncovered=False, sort_percentage=False, gcov=gcov_default, exclude_unreachable_branches=False, use_gcov_files=False, summary=False, coverage_min=coverage_min_default):
+    #
+    # Process options
+    #
+    if version is True:
+        sys.stdout.write(
+            "gcovr %s\n"
+            "\n"
+            "Copyright (2013) Sandia Corporation. Under the terms of Contract\n"
+            "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
+            "retains certain rights in this software.\n"
+            % (version_str(), )
         )
-        sys.exit(1)
-    root_dir = os.path.abspath(options.root)
-    options.root_filter = re.compile(re.escape(root_dir + os.sep))
-else:
-    options.root_filter = re.compile('')
-    root_dir = starting_dir
+        sys.exit(RETURN_CODE_VERSION_MESSAGE)
+    if verbose is True:
+        logger.setLevel(logging.DEBUG)
+        ch.setLevel(logging.DEBUG)
+    gcovr(root=root, object_directory=object_directory, output=output, keep=keep, delete=delete, filters=filters, excludes=excludes, gcov_filter=gcov_filter, gcov_excludes=gcov_excludes, xml=xml, xml_pretty=xml_pretty, html=html, html_details=html_details, html_absolute_anchors=html_absolute_anchors, show_branches=show_branches, sort_uncovered=sort_uncovered, sort_percentage=sort_percentage, gcov=gcov, exclude_unreachable_branches=exclude_unreachable_branches, use_gcov_files=use_gcov_files, summary=summary, coverage_min=coverage_min)
 
-for i in range(0, len(options.filter)):
-    options.filter[i] = re.compile(options.filter[i])
-if len(options.filter) == 0:
-    options.filter.append(options.root_filter)
+def main():
+    # setuptools entry_points wrapper
+    plac.call(gcovr_wrapper)
 
-for i in range(0, len(options.gcov_exclude)):
-    options.gcov_exclude[i] = re.compile(options.gcov_exclude[i])
-if options.gcov_filter is not None:
-    options.gcov_filter = re.compile(options.gcov_filter)
-else:
-    options.gcov_filter = re.compile('')
-#
-# Get data files
-#
-if len(args) == 1:
-    if options.root is None:
-        datafiles = get_datafiles(["."], options)
-    else:
-        datafiles = get_datafiles([options.root], options)
-else:
-    datafiles = get_datafiles(args[1:], options)
-#
-# Get coverage data
-#
-covdata = {}
-for file_ in datafiles:
-    if options.gcov_files:
-        process_existing_gcov_file(file_, covdata, options)
-    else:
-        process_datafile(file_, covdata, options)
-if options.verbose:
-    sys.stdout.write(
-        "Gathered coveraged data for " + str(len(covdata)) + " files\n"
-    )
-#
-# Print report
-#
-if options.xml or options.prettyxml:
-    print_xml_report(covdata)
-elif options.html:
-    print_html_report(covdata, options.html_details)
-else:
-    print_text_report(covdata)
-
-if options.print_summary:
-    print_summary(covdata)
+if __name__ == "__main__":
+    main()
