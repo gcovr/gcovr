@@ -2163,12 +2163,14 @@ else:
 #
 if len(args) == 1:
     if options.root is None:
-        datafiles = get_datafiles(["."], options)
+        search_paths = ["."]
     else:
-        if options.objdir is not None:
-            datafiles = get_datafiles([options.objdir, options.root], options)
-        else:
-            datafiles = get_datafiles([options.root], options)
+        search_paths = [options.root]
+    
+    if options.objdir is not None:
+        search_paths.append(options.objdir)
+    
+    datafiles = get_datafiles(search_paths, options)
 else:
     datafiles = get_datafiles(args[1:], options)
 #
