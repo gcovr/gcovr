@@ -1378,6 +1378,19 @@ source_page = Template('''
 ''')
 
 
+def calculate_coverage(covered, total):
+    return 0.0 if total == 0 else round(100.0 * covered / total, 1)
+
+
+def coverage_to_color(coverage):
+    if coverage < medium_coverage:
+        return low_color
+    elif coverage < high_coverage:
+        return medium_color
+    else:
+        return high_color
+
+
 #
 # Produce an HTML report
 #
@@ -1424,15 +1437,9 @@ def print_html_report(covdata, details):
         branchCovered += covered
     data['BRANCHES_EXEC'] = str(branchCovered)
     data['BRANCHES_TOTAL'] = str(branchTotal)
-    coverage = 0.0 if branchTotal == 0 else \
-        round(100.0 * branchCovered / branchTotal, 1)
+    coverage = calculate_coverage(branchCovered, branchTotal)
     data['BRANCHES_COVERAGE'] = str(coverage)
-    if coverage < medium_coverage:
-        data['BRANCHES_COLOR'] = low_color
-    elif coverage < high_coverage:
-        data['BRANCHES_COLOR'] = medium_color
-    else:
-        data['BRANCHES_COLOR'] = high_color
+    data['BRANCHES_COLOR'] = coverage_to_color(coverage)
 
     lineTotal = 0
     lineCovered = 0
@@ -1443,15 +1450,9 @@ def print_html_report(covdata, details):
         lineCovered += covered
     data['LINES_EXEC'] = str(lineCovered)
     data['LINES_TOTAL'] = str(lineTotal)
-    coverage = 0.0 if lineTotal == 0 else \
-        round(100.0 * lineCovered / lineTotal, 1)
+    coverage = calculate_coverage(lineCovered, lineTotal)
     data['LINES_COVERAGE'] = str(coverage)
-    if coverage < medium_coverage:
-        data['LINES_COLOR'] = low_color
-    elif coverage < high_coverage:
-        data['LINES_COLOR'] = medium_color
-    else:
-        data['LINES_COLOR'] = high_color
+    data['LINES_COLOR'] = coverage_to_color(coverage_to_color)
 
     # Generate the coverage output (on a per-package basis)
     #source_dirs = set()
@@ -1557,29 +1558,17 @@ def print_html_report(covdata, details):
         branchTotal, branchCovered, tmp = cdata.coverage()
         data['BRANCHES_EXEC'] = str(branchCovered)
         data['BRANCHES_TOTAL'] = str(branchTotal)
-        coverage = 0.0 if branchTotal == 0 else \
-            round(100.0 * branchCovered / branchTotal, 1)
+        coverage = calculate_coverage(branchCovered, branchTotal)
         data['BRANCHES_COVERAGE'] = str(coverage)
-        if coverage < medium_coverage:
-            data['BRANCHES_COLOR'] = low_color
-        elif coverage < high_coverage:
-            data['BRANCHES_COLOR'] = medium_color
-        else:
-            data['BRANCHES_COLOR'] = high_color
+        data['BRANCHES_COLOR'] = coverage_to_color(coverage)
 
         options.show_branch = False
         lineTotal, lineCovered, tmp = cdata.coverage()
         data['LINES_EXEC'] = str(lineCovered)
         data['LINES_TOTAL'] = str(lineTotal)
-        coverage = 0.0 if lineTotal == 0 else \
-            round(100.0 * lineCovered / lineTotal, 1)
+        coverage = calculate_coverage(lineCovered, lineTotal)
         data['LINES_COVERAGE'] = str(coverage)
-        if coverage < medium_coverage:
-            data['LINES_COLOR'] = low_color
-        elif coverage < high_coverage:
-            data['LINES_COLOR'] = medium_color
-        else:
-            data['LINES_COLOR'] = high_color
+        data['LINES_COLOR'] = coverage_to_color(coverage)
 
         data['ROWS'] = []
         currdir = os.getcwd()
