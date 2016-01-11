@@ -43,6 +43,7 @@ import time
 import xml.dom.minidom
 import datetime
 import posixpath
+import itertools
 
 from optparse import OptionParser
 from string import Template
@@ -382,6 +383,30 @@ def search_file(expr, path):
                 else:
                     ans.append(os.path.abspath(name))
     return ans
+
+
+def commonpath( files ):
+
+    if len(files) == 1:
+        return os.path.join( os.path.relpath( os.path.split( files[0] )[0] ), '' )
+
+    common_path = os.path.realpath(files[0])
+    common_dirs = common_path.split( os.path.sep )
+
+    for f in files[1:]:
+        path = os.path.realpath(f)
+        dirs = path.split( os.path.sep )
+        common = []
+        for a, b in itertools.izip( dirs, common_dirs ):
+            if a == b:
+                common.append( a )
+            elif common:
+                common_dirs = common
+                break
+            else:
+                return ''
+
+    return os.path.join( os.path.relpath( os.path.sep.join( common_dirs ) ), '' )
 
 
 #
@@ -1479,7 +1504,7 @@ def print_html_report(covdata, details):
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
     if len(files) > 1:
-        commondir = posixpath.commonprefix(files)
+        commondir = commonpath(files)
         if commondir != '':
             data['DIRECTORY'] = commondir
     else:
@@ -1518,7 +1543,7 @@ def print_html_report(covdata, details):
         data['ROWS'].append(html_row(
             details, cdata._sourcefile,
             directory=data['DIRECTORY'],
-            filename=cdata._filename,
+            filename=os.path.relpath( os.path.realpath( cdata._filename ), data['DIRECTORY'] ),
             LinesExec=class_hits,
             LinesTotal=class_lines,
             LinesCoverage=lines_covered,
@@ -1653,10 +1678,8 @@ def html_row(details, sourcefile, **kwargs):
         kwargs['altstyle'] = ''
     if details:
         kwargs['filename'] = '<a href="%s">%s</a>' % (
-            sourcefile, kwargs['filename'][len(kwargs['directory']):]
+            sourcefile, kwargs['filename']
         )
-    else:
-        kwargs['filename'] = kwargs['filename'][len(kwargs['directory']):]
     kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'], 1)
     # Disable the border if the bar is too short to see the color
     if kwargs['LinesCoverage'] < 1e-7:
