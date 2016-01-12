@@ -49,6 +49,11 @@ from optparse import OptionParser
 from string import Template
 from os.path import normpath
 
+try:
+    xrange
+except NameError:
+    xrange = range
+
 medium_coverage = 75.0
 high_coverage = 90.0
 low_color = "LightPink"
