@@ -919,7 +919,9 @@ def print_text_report(covdata):
     # Header
     OUTPUT.write("-" * 78 + '\n')
     OUTPUT.write(" " * 27 + "GCC Code Coverage Report\n")
-    OUTPUT.write("Directory: " + options.root + "\n")
+    if options.root is not None:
+        OUTPUT.write("Directory: " + options.root + "\n")
+    
     OUTPUT.write("-" * 78 + '\n')
     a = options.show_branch and "Branches" or "Lines"
     b = options.show_branch and "Taken" or "Exec"
@@ -1496,11 +1498,11 @@ def print_html_report(covdata, details):
         if len(ttmp) > 1:
             cdata._sourcefile = \
                 '.'.join(ttmp[:-1]) + \
-                '.' + cdata._filename.replace('/', '_') + \
+                '.' + cdata._filename.replace('/', '_').replace('\\', '_') + \
                 '.' + ttmp[-1]
         else:
             cdata._sourcefile = \
-                ttmp[0] + '.' + cdata._filename.replace('/', '_') + '.html'
+                ttmp[0] + '.' + cdata._filename.replace('/', '_').replace('\\', '_') + '.html'
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
     if len(files) > 1:
@@ -2157,8 +2159,8 @@ if options.root is not None:
     root_dir = os.path.abspath(options.root)
     options.root_filter = re.compile(re.escape(root_dir + os.sep))
 else:
-    options.root_filter = re.compile('')
     root_dir = starting_dir
+    options.root_filter = re.compile(re.escape(root_dir + os.sep))
 
 for i in range(0, len(options.filter)):
     options.filter[i] = re.compile(options.filter[i])
