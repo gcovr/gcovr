@@ -136,6 +136,13 @@ def parse_arguments():
         default=False
     )
     parser.add_option(
+        '--html-encoding',
+        help='HTML file encoding (default: UTF-8).',
+        action='store',
+        dest='html_encoding',
+        default='UTF-8'
+    )
+    parser.add_option(
         '--html-absolute-paths',
         help='Set the paths in the HTML report to be absolute instead '
              'of relative.',

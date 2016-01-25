@@ -270,7 +270,7 @@ root_page = Template('''
 <html>
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=${ENC}"/>
   <title>${HEAD}</title>
   <style media="screen" type="text/css">
   ${CSS}
@@ -371,7 +371,7 @@ source_page = Template('''
 <html>
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=${ENC}"/>
   <title>${HEAD}</title>
   <style media="screen" type="text/css">
   ${CSS}
@@ -469,6 +469,7 @@ def print_html_report(covdata, options):
         details = False
     data = {}
     data['HEAD'] = "Head"
+    data['ENC'] = options.html_encoding
     data['VERSION'] = version_str()
     data['TIME'] = str(int(time()))
     data['DATE'] = date.today().isoformat()
