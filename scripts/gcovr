@@ -805,6 +805,12 @@ def process_datafile(filename, covdata, options):
             sys.stdout.write(
                 "Running gcov: '%s' in '%s'\n" % (' '.join(cmd), os.getcwd())
             )
+
+        # If the first element of cmd - the executable name - has embedded spaces it probably
+        # includes extra arguments.  Replace the first element of "cmd" with a sequence consisting
+        # of its space-separated components:
+        cmd[0:1]=cmd[0].split(' ')
+
         out, err = subprocess.Popen(
             cmd, env=env,
             stdout=subprocess.PIPE,
