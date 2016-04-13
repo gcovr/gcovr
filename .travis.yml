@@ -1,0 +1,19 @@
+language: python
+
+matrix:
+  include:
+    - python: "2.7"
+    #- python: "pypy"
+    #- python: "3.4"
+    #- python: "3.5"
+    #- python: "pypy3"
+    #- python: "3.5"
+
+install:
+    - pip install pyutilib
+    - pip install ply
+    - pip install ordereddict
+    - python setup.py develop
+
+script:
+    - nosetests
