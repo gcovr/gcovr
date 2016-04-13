@@ -14,6 +14,7 @@ addons:
 matrix:
   include:
     - python: "2.7"
+    - env: COMPILER=g++-5
     #- python: "pypy"
     #- python: "3.4"
     #- python: "3.5"
@@ -22,7 +23,7 @@ matrix:
 
 install:
     - printenv
-    - gcc --version
+    - g++ --version
     - pip install ply
     - pip install ordereddict
     - pip install pyutilib
