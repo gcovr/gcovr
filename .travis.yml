@@ -10,10 +10,12 @@ matrix:
     #- python: "3.5"
 
 install:
-    - pip install pyutilib
+    - printenv
+    - gcc --version
     - pip install ply
     - pip install ordereddict
+    - pip install pyutilib
     - python setup.py develop
 
 script:
-    - nosetests
+    - nosetests -v
