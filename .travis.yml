@@ -14,7 +14,7 @@ addons:
 matrix:
   include:
     - python: "2.7"
-      env: CXX=g++-5 CC=gcc-5
+      env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
     #- python: "pypy"
     #- python: "3.4"
     #- python: "3.5"
