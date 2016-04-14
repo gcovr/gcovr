@@ -23,8 +23,6 @@ matrix:
       env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
     - python: "pypy3"
       env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
-    - python: "3.5"
-      env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
 
 install:
     - printenv
