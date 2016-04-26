@@ -231,6 +231,11 @@ def process_gcov_data(data_fname, covdata, options):
         fname = os.path.abspath((segments[-1]).strip())
     else:
         fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
+    #
+    # this fixes the problem on windows machines
+    #
+    fname = os.path.normcase(fname)
+
     os.chdir(currdir)
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
@@ -239,9 +244,21 @@ def process_gcov_data(data_fname, covdata, options):
     #
     filtered_fname = None
     for i in range(0, len(options.filter)):
+
+        if options.verbose:
+            sys.stdout.write("\n\nFilter: %s" % options.filter[i].pattern)
+            sys.stdout.write("\nfname: %s" % fname)
+
         if options.filter[i].match(fname):
             filtered_fname = options.root_filter.sub('', fname)
             break
+        else:
+            if options.verbose:
+                sys.stdout.write("\nno match")
+
+    if options.verbose:
+        sys.stdout.write("\n\n")
+
     if filtered_fname is None:
         if options.verbose:
             sys.stdout.write("  Filtering coverage data for file %s\n" % fname)
