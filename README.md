@@ -1,4 +1,6 @@
-Overview
+[![Build Status](https://travis-ci.org/gcovr/gcovr.png?branch=master)](https://travis-ci.org/gcovr/gcovr) 
+
+Gcovr Overview
 --------
 
 Gcovr provides a utility for managing the use of the GNU gcov utility
