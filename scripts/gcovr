@@ -44,6 +44,7 @@ import xml.dom.minidom
 import datetime
 import posixpath
 import itertools
+import zlib
 
 from optparse import OptionParser
 from string import Template
@@ -1501,14 +1502,25 @@ def print_html_report(covdata, details):
         files.append(filtered_fname)
         cdata._filename = filtered_fname
         ttmp = os.path.abspath(options.output).split('.')
-        if len(ttmp) > 1:
-            cdata._sourcefile = \
-                '.'.join(ttmp[:-1]) + \
-                '.' + cdata._filename.replace('/', '_').replace('\\', '_') + \
-                '.' + ttmp[-1]
-        else:
-            cdata._sourcefile = \
-                ttmp[0] + '.' + cdata._filename.replace('/', '_').replace('\\', '_') + '.html'
+
+        longname = cdata._filename.replace('/', '_').replace('\\', '_')
+        longname_hash = ""
+        while True:
+            if len(ttmp) > 1:
+                cdata._sourcefile = \
+                    '.'.join(ttmp[:-1]) + \
+                    '.' + longname + longname_hash + \
+                    '.' + ttmp[-1]
+            else:
+                cdata._sourcefile = \
+                    ttmp[0] + '.' + longname + longname_hash + '.html'
+            # we add a hash at the end and attempt to shorten the 
+            # filename if it exceeds common filesystem limitations
+            if len(os.path.basename(cdata._sourcefile)) < 256:
+                break
+            longname_hash = "_" + hex(zlib.crc32(longname) & 0xffffffff)[2:]
+            longname = longname[(len(cdata._sourcefile) - len(longname_hash)):]
+
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
     if len(files) > 1:
