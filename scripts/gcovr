@@ -777,8 +777,12 @@ def process_datafile(filename, covdata, options):
                 #
                 break
 
-    cmd = [
-        options.gcov_cmd, abs_filename,
+    #
+    # If the first element of cmd - the executable name - has embedded spaces it probably
+    # includes extra arguments.
+    #
+    cmd = options.gcov_cmd.split(' ') + [
+        abs_filename,
         "--branch-counts", "--branch-probabilities", "--preserve-paths",
         '--object-directory', dirname
     ]
