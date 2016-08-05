@@ -1526,7 +1526,7 @@ def print_html_report(covdata, details):
         class_hits = 0
         class_branches = 0
         class_branch_hits = 0
-        for line in cdata.all_lines:
+        for line in sorted(cdata.all_lines):
             hits = cdata.covered.get(line, 0)
             class_lines += 1
             if hits > 0:
@@ -1792,7 +1792,7 @@ def print_xml_report(covdata):
         class_hits = 0
         class_branches = 0
         class_branch_hits = 0
-        for line in data.all_lines:
+        for line in sorted(data.all_lines):
             hits = data.covered.get(line, 0)
             class_lines += 1
             if hits > 0:
