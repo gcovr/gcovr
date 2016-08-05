@@ -11,19 +11,11 @@
 <class branch-rate="0.8" complexity="0.0" filename="main.cpp" line-rate="0.8888888888888888" name="main_cpp">
 <methods/>
 <lines>
-<line branch="false" hits="5" number="16"/>
-<line branch="false" hits="1" number="35"/>
 <line branch="false" hits="1" number="7"/>
 <line branch="false" hits="1" number="8"/>
 <line branch="false" hits="1" number="9"/>
 <line branch="false" hits="1" number="10"/>
-<line branch="false" hits="1" number="46"/>
-<line branch="true" condition-coverage="100% (2/2)" hits="6" number="47">
-<conditions>
-<condition coverage="100%" number="0" type="jump"/>
-</conditions>
-</line>
-<line branch="false" hits="5" number="48"/>
+<line branch="false" hits="5" number="16"/>
 <line branch="true" condition-coverage="100% (4/4)" hits="5" number="17">
 <conditions>
 <condition coverage="100%" number="0" type="jump"/>
@@ -43,6 +35,14 @@
 </conditions>
 </line>
 <line branch="false" hits="0" number="24"/>
+<line branch="false" hits="1" number="35"/>
+<line branch="false" hits="1" number="46"/>
+<line branch="true" condition-coverage="100% (2/2)" hits="6" number="47">
+<conditions>
+<condition coverage="100%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="5" number="48"/>
 <line branch="false" hits="1" number="61"/>
 <line branch="false" hits="3" number="62"/>
 </lines>
