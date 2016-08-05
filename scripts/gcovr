@@ -461,6 +461,11 @@ def get_datafiles(flist, options):
     return allfiles
 
 
+def is_non_code(code):
+    code = code.strip().translate(None, '}{)(;')
+    return len(code) == 0 or code.startswith("//") or code == 'else'
+
+
 #
 # Process a single gcov datafile
 #
@@ -572,12 +577,14 @@ def process_gcov_data(data_fname, covdata, options):
             is_code_statement = True
             code = segments[2].strip()
             # remember certain non-executed lines
-            if excluding or len(code) == 0 or code == "{" or code == "}" or \
-                    code.startswith("//") or code == 'else':
+            if excluding or is_non_code(segments[2]):
                 noncode.add(lineno)
         elif tmp[0] == '#':
             is_code_statement = True
-            uncovered.add(lineno)
+            if is_non_code(segments[2]):
+                noncode.add( lineno )
+            else:
+                uncovered.add( lineno )
         elif tmp[0] == '=':
             is_code_statement = True
             uncovered_exceptional.add(lineno)
