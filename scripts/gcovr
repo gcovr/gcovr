@@ -77,6 +77,13 @@ c_style_comment_pattern = re.compile('/\*.*?\*/')
 cpp_style_comment_pattern = re.compile('//.*?$')
 
 
+def find_file(path, name):
+    result = []
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            result.append(os.path.join(root, name))
+    return result
+
 def version_str():
     ans = __version__
     m = re.match('\$Revision:\s*(\S+)\s*\$', src_revision)
@@ -491,6 +498,18 @@ def process_gcov_data(data_fname, covdata, options):
         fname = os.path.abspath((segments[-1]).strip())
     else:
         fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
+    if not os.path.isfile(fname):
+        fname_matches = find_file(starting_dir, segments[-1].strip())
+        if len(fname_matches) == 0 and options.objdir:
+            fname_matches = find_file(options.objdir, segments[-1].strip())
+        if len(fname_matches) == 1:
+            fname = fname_matches[0]
+        elif len(fname_matches) == 0:
+            if options.verbose:
+                sys.stdout.write('No source file found for gcov file "%s" (looking for "%s")\n' % (data_fname, segments[-1].strip()))
+            return
+        elif options.verbose:
+            sys.stdout.write('Multiple source files found for gcov file "%s": \n\t%s\n' % (data_fname, '\n\t'.join(fname_matches)))
     os.chdir(currdir)
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
