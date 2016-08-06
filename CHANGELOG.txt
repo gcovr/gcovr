@@ -1,5 +1,17 @@
 = `gcovr` Release History and Change Log =
 
+=== 3.3 ''(6 August 2016)'' ===
+ - Added CI testing using TravisCI
+ - Added more tests for out of source builds and other nested builds
+ - Avoid common file prefixes in HTML output (#103)
+ - Added the --execlude-directories argument to exclude directories
+   from the search for symlinks (#87)
+ - Added branches taken/not taken to HTML (#75)
+ - Use --object-directory to scan for gcov data files (#72)
+ - Improved logic for nested makefiles (#135)
+ - Fixed unexpected semantics with --root argument (#108)
+ - More careful checks for covered lines (#109)
+
 === 3.2 ''(5 July 2014)'' ===
  - Adding a test for out of source builds
  - Using the starting directory when processing gcov filenames.
