@@ -1,4 +1,5 @@
 language: python
+
 addons:
   apt:
     sources:
@@ -7,6 +8,7 @@ addons:
     packages:
     - gcc-5
     - g++-5
+
 matrix:
   include:
   - python: '2.7'
@@ -19,6 +21,7 @@ matrix:
     env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
   - python: pypy3
     env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
+
 install:
 - printenv
 - $CXX --version
