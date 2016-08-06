@@ -26,16 +26,29 @@ install:
 - pip install ordereddict
 - pip install pyutilib
 - python setup.py develop
+
 script:
 - nosetests -v
+
 deploy:
-  provider: pypi
-  server: https://testpypi.python.org/pypi
-  user: whart111
-  password:
-    secure: "TpOWxwD/izvCyz585nvwIq4plfbgi8BKqUW5Xm8uJRWEZ6g1/1K2Om7jxY2sP2XunzrlV85Nnl0juFKzVGfQEXo5yFGpUqx1r74cfFMd3mMATh5VndZuyrR8ZWB70mt/AGEFCPCFt82UqW2gbbZcO8T1i++5vl9hhTUlcaLo9vM="
-  distributions: sdist --format=gztar bdist_wheel
-  on:
-    tags: false
-    branch: master
-    python: '2.7'
+  matrix:
+  - provider: pypi
+    server: https://testpypi.python.org/pypi
+    user: whart111
+    password:
+      secure: "TpOWxwD/izvCyz585nvwIq4plfbgi8BKqUW5Xm8uJRWEZ6g1/1K2Om7jxY2sP2XunzrlV85Nnl0juFKzVGfQEXo5yFGpUqx1r74cfFMd3mMATh5VndZuyrR8ZWB70mt/AGEFCPCFt82UqW2gbbZcO8T1i++5vl9hhTUlcaLo9vM="
+    distributions: sdist --format=gztar bdist_wheel
+    on:
+      tags: false
+      branch: master
+      python: '2.7'
+  - provider: pypi
+    user: whart111
+    password:
+      secure: "TpOWxwD/izvCyz585nvwIq4plfbgi8BKqUW5Xm8uJRWEZ6g1/1K2Om7jxY2sP2XunzrlV85Nnl0juFKzVGfQEXo5yFGpUqx1r74cfFMd3mMATh5VndZuyrR8ZWB70mt/AGEFCPCFt82UqW2gbbZcO8T1i++5vl9hhTUlcaLo9vM="
+    distributions: sdist --format=gztar bdist_wheel
+    on:
+      tags: true
+      branch: master
+      python: '2.7'
+
