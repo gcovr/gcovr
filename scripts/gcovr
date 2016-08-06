@@ -463,7 +463,10 @@ def get_datafiles(flist, options):
 
 noncode_mapper = dict.fromkeys(ord(i) for i in '}{)(;')
 def is_non_code(code):
-    code = code.strip().translate(noncode_mapper)
+    if sys.version_info < (3,0):
+        code = code.strip().translate(None, '}{)(;')
+    else:
+        code = code.strip().translate(noncode_mapper)
     return len(code) == 0 or code.startswith("//") or code == 'else'
 
 
@@ -2163,6 +2166,9 @@ if options.objdir:
 #
 for i in range(0, len(options.exclude)):
     options.exclude[i] = re.compile(options.exclude[i])
+
+if options.output is not None:
+    options.output = os.path.abspath(options.output)
 
 if options.root is not None:
     if not options.root:
