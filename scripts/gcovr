@@ -887,24 +887,35 @@ def process_datafile(filename, covdata, options):
 #  Process Already existing gcov files
 #
 def process_existing_gcov_file(filename, covdata, options):
+    #
+    # Ignore this file if it does not match the gcov filter
+    #
     if not options.gcov_filter.match(filename):
         if options.verbose:
-            sys.stdout.write("Filtering gcov file %s\n" % filename)
+            sys.stdout.write("This gcov file does not match the filter: %s\n" % filename)
         return
-
+    #
+    # Ignore this file if it matches one of the exclusion regex's
+    #
     for exc in options.gcov_exclude:
         if exc.match(options.gcov_filter.sub('', filename)) or \
                 exc.match(filename) or \
                 exc.match(os.path.abspath(filename)):
             if options.verbose:
-                sys.stdout.write("Excluding gcov file %s\n" % filename)
+                sys.stdout.write("Excluding gcov file: %s\n" % filename)
             return
-
+    #
+    # Process the gcov data file
+    #
     process_gcov_data(filename, covdata, options)
-
+    #
+    # Remove the file unless the user has indicated that we keep gcov data files
+    #
     if not options.keep:
+        #
+        # Only remove files that actually exist.
+        #
         if os.path.exists(filename):
-            # Only remove files that actually exist.
             os.remove(filename)
 
 
