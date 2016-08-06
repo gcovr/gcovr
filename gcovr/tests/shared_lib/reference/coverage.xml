@@ -6,24 +6,6 @@
 <source>.</source>
 </sources>
 <packages>
-<package branch-rate="0.5" complexity="0.0" line-rate="0.8" name="">
-<classes>
-<class branch-rate="0.5" complexity="0.0" filename="tmp.cpp" line-rate="0.8" name="tmp_cpp">
-<methods/>
-<lines>
-<line branch="false" hits="1" number="3"/>
-<line branch="true" condition-coverage="50% (1/2)" hits="1" number="5">
-<conditions>
-<condition coverage="50%" number="0" type="jump"/>
-</conditions>
-</line>
-<line branch="false" hits="0" number="6"/>
-<line branch="false" hits="1" number="8"/>
-<line branch="false" hits="1" number="9"/>
-</lines>
-</class>
-</classes>
-</package>
 <package branch-rate="0.5" complexity="0.0" line-rate="0.8" name="lib">
 <classes>
 <class branch-rate="0.5" complexity="0.0" filename="lib/lib.cpp" line-rate="0.8" name="lib_cpp">
@@ -42,6 +24,24 @@
 <condition coverage="50%" number="0" type="jump"/>
 </conditions>
 </line>
+</lines>
+</class>
+</classes>
+</package>
+<package branch-rate="0.5" complexity="0.0" line-rate="0.8" name="testApp">
+<classes>
+<class branch-rate="0.5" complexity="0.0" filename="testApp/tmp.cpp" line-rate="0.8" name="tmp_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="3"/>
+<line branch="true" condition-coverage="50% (1/2)" hits="1" number="5">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="6"/>
+<line branch="false" hits="1" number="8"/>
+<line branch="false" hits="1" number="9"/>
 </lines>
 </class>
 </classes>
