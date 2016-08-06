@@ -1,17 +1,17 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage
   SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
-<coverage branch-rate="0.5" line-rate="0.857142857143" timestamp="1404574600"
- version="gcovr 3.2">
+<coverage branch-rate="0.5" line-rate="0.8571428571428571"
+ timestamp="1470497828" version="gcovr 3.3">
  <sources>
   <source>.</source>
  </sources>
  <packages>
-  <package branch-rate="0.5" complexity="0.0" line-rate="0.857142857143"
+  <package branch-rate="0.5" complexity="0.0" line-rate="0.8571428571428571"
    name="">
    <classes>
     <class branch-rate="0.5" complexity="0.0" filename="example1.cpp"
-     line-rate="0.857142857143" name="example1_cpp">
+     line-rate="0.8571428571428571" name="example1_cpp">
      <methods/>
      <lines>
       <line branch="false" hits="1" number="3"/>
