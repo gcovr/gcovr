@@ -65,7 +65,7 @@ uncovered_color = "LightPink"
 takenBranch_color = "Green"
 notTakenBranch_color = "Red"
 
-__version__ = "3.3-prerelease"
+__version__ = "3.3"
 src_revision = "$Revision$"
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
@@ -1550,7 +1550,7 @@ def print_html_report(covdata, details):
     data['LINES_TOTAL'] = str(lineTotal)
     coverage = calculate_coverage(lineCovered, lineTotal)
     data['LINES_COVERAGE'] = str(coverage)
-    data['LINES_COLOR'] = coverage_to_color(coverage_to_color)
+    data['LINES_COLOR'] = coverage_to_color(coverage)
 
     # Generate the coverage output (on a per-package basis)
     #source_dirs = set()
