@@ -1,0 +1,134 @@
+<?xml version="" ?>
+<!DOCTYPE coverage
+  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
+<coverage branch-rate="0.428571428571" line-rate="0.674418604651" timestamp="" version="">
+<sources>
+<source>subdir</source>
+</sources>
+<packages>
+<package branch-rate="0.333333333333" complexity="0.0" line-rate="0.538461538462" name="A">
+<classes>
+<class branch-rate="0.5" complexity="0.0" filename="A/file1.cpp" line-rate="0.75" name="file1_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="1"/>
+<line branch="true" condition-coverage="50% (1/2)" hits="1" number="3">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="4"/>
+<line branch="false" hits="1" number="6"/>
+</lines>
+</class>
+<class branch-rate="0.0" complexity="0.0" filename="A/file2.cpp" line-rate="0.571428571429" name="file2_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="1"/>
+<line branch="false" hits="1" number="3"/>
+<line branch="false" hits="1" number="4"/>
+<line branch="false" hits="1" number="5"/>
+<line branch="false" hits="0" number="8"/>
+<line branch="false" hits="0" number="10"/>
+<line branch="false" hits="0" number="11"/>
+</lines>
+</class>
+<class branch-rate="0.0" complexity="0.0" filename="A/file3.cpp" line-rate="0.444444444444" name="file3_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="1"/>
+<line branch="false" hits="1" number="3"/>
+<line branch="false" hits="1" number="4"/>
+<line branch="false" hits="1" number="5"/>
+<line branch="false" hits="0" number="8"/>
+<line branch="false" hits="0" number="10"/>
+<line branch="true" condition-coverage="0% (0/2)" hits="0" number="11">
+<conditions>
+<condition coverage="0%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="12"/>
+<line branch="false" hits="0" number="14"/>
+</lines>
+</class>
+<class branch-rate="0.5" complexity="0.0" filename="A/file4.cpp" line-rate="0.75" name="file4_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="1"/>
+<line branch="true" condition-coverage="50% (1/2)" hits="1" number="3">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="1" number="4"/>
+<line branch="false" hits="0" number="6"/>
+</lines>
+</class>
+<class branch-rate="0.0" complexity="0.0" filename="A/file7.cpp" line-rate="0.0" name="file7_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="0" number="1"/>
+<line branch="false" hits="0" number="3"/>
+</lines>
+</class>
+</classes>
+</package>
+<package branch-rate="0.5" complexity="0.0" line-rate="0.75" name="A.C">
+<classes>
+<class branch-rate="0.5" complexity="0.0" filename="A/C/file5.cpp" line-rate="0.75" name="file5_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="1"/>
+<line branch="true" condition-coverage="50% (1/2)" hits="1" number="3">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="4"/>
+<line branch="false" hits="1" number="6"/>
+</lines>
+</class>
+</classes>
+</package>
+<package branch-rate="0.5" complexity="0.0" line-rate="0.75" name="A.C.D">
+<classes>
+<class branch-rate="0.5" complexity="0.0" filename="A/C/D/file6.cpp" line-rate="0.75" name="file6_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="1"/>
+<line branch="true" condition-coverage="50% (1/2)" hits="1" number="3">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="0" number="4"/>
+<line branch="false" hits="1" number="6"/>
+</lines>
+</class>
+</classes>
+</package>
+<package branch-rate="0.5" complexity="0.0" line-rate="1.0" name="B">
+<classes>
+<class branch-rate="0.5" complexity="0.0" filename="B/main.cpp" line-rate="1.0" name="main_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="12"/>
+<line branch="false" hits="1" number="13"/>
+<line branch="false" hits="1" number="14"/>
+<line branch="false" hits="1" number="15"/>
+<line branch="false" hits="1" number="16"/>
+<line branch="false" hits="1" number="17"/>
+<line branch="false" hits="1" number="18"/>
+<line branch="false" hits="1" number="20"/>
+<line branch="true" condition-coverage="50% (2/4)" hits="3" number="21">
+<conditions>
+<condition coverage="50%" number="0" type="jump"/>
+</conditions>
+</line>
+</lines>
+</class>
+</classes>
+</package>
+</packages>
+</coverage>
+

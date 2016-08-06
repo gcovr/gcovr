@@ -487,10 +487,12 @@ def process_gcov_data(data_fname, covdata, options):
         )
     currdir = os.getcwd()
     os.chdir(starting_dir)
+    common_dir = os.path.commonprefix([currdir, starting_dir])
+    subdir = currdir[len(common_dir)+1:]
     if sys.version_info >= (2, 6):
-        fname = os.path.abspath((segments[-1]).strip())
+        fname = os.path.abspath(os.path.join(subdir,(segments[-1]).strip()))
     else:
-        fname = aliases.unalias_path(os.path.abspath((segments[-1]).strip()))
+        fname = aliases.unalias_path(os.path.abspath(os.path.join(subdir,(segments[-1]).strip())))
     os.chdir(currdir)
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
