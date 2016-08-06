@@ -31,7 +31,6 @@ script:
 - nosetests -v
 
 deploy:
-  matrix:
   - provider: pypi
     server: https://testpypi.python.org/pypi
     user: whart111
