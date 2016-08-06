@@ -1,0 +1,6 @@
+This test case was inspired by github ticket #31:
+
+   https://github.com/gcovr/gcovr/issues/31
+
+This tests out of source builds.
+
