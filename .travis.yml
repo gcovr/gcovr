@@ -49,5 +49,3 @@ deploy:
       tags: true
       branch: master
       python: '2.7'
-  password:
-    secure: RI9uWBpEOScq0E3Cwl/2E6T18tvn1WuoPVgk+hKIYenXrahAb23ykSX3t28szMUyTHW1qaC+IG122wh+71lcDfeW87tR1mOKk2M9Z15ieUxjY6e8wcVw9qoNTtlwBzLxnEwdQWxmBttHbjI02qJA8vhf2TaQudFWTkaSao12Wxg=
