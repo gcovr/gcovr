@@ -1301,7 +1301,7 @@ root_page = Template('''
 <html>
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=${ENC}"/>
   <title>${HEAD}</title>
   <style media="screen" type="text/css">
   ${CSS}
@@ -1402,7 +1402,7 @@ source_page = Template('''
 <html>
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=${ENC}"/>
   <title>${HEAD}</title>
   <style media="screen" type="text/css">
   ${CSS}
@@ -1517,6 +1517,7 @@ def print_html_report(covdata, details):
     data['TIME'] = str(int(time.time()))
     data['DATE'] = datetime.date.today().isoformat()
     data['ROWS'] = []
+    data['ENC'] = options.html_encoding
     data['low_color'] = low_color
     data['medium_color'] = medium_color
     data['high_color'] = high_color
@@ -2146,6 +2147,13 @@ parser.add_option(
     action="store_false",
     dest="relative_anchors",
     default=True
+)
+parser.add_option(
+    '--html-encoding',
+    help='HTML file encoding (default: UTF-8).',
+    action='store',
+    dest='html_encoding',
+    default='UTF-8'
 )
 parser.add_option(
     "-b", "--branches",
