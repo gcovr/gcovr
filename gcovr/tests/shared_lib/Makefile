@@ -33,15 +33,15 @@ run: txt xml html
 
 txt:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-	../../../scripts/gcovr -r . -d -o coverage.txt
+	../../../scripts/gcovr -d -o coverage.txt
 
 xml:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-	../../../scripts/gcovr -r . -d -x -o coverage.xml
+	../../../scripts/gcovr -d -x -o coverage.xml
 
 html:
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-	../../../scripts/gcovr -r . -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -d --html --html-details -o coverage.html
 
 clean:
 	rm -rf obj

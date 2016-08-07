@@ -7,7 +7,7 @@ all:
 
 run: txt xml html
 
-GCOVR_TEST_OPTIONS = -f '.*main.cpp' -r '.'
+GCOVR_TEST_OPTIONS = -f '.*main.cpp'
 
 txt:
 	./testcase

@@ -8,7 +8,7 @@ all:
 
 run: txt xml html
 
-GCOVR_TEST_OPTIONS = -r '.'
+GCOVR_TEST_OPTIONS =
 
 txt:
 	build/testcase
