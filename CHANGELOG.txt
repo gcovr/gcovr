@@ -1,5 +1,9 @@
 = `gcovr` Release History and Change Log =
 
+=== 3.4 ''(TODO)'' ===
+ - Fix to support filtering with absolute paths
+ - Added --html-encoding command line option (#139)
+
 === 3.3 ''(6 August 2016)'' ===
  - Added CI testing using TravisCI
  - Added more tests for out of source builds and other nested builds
