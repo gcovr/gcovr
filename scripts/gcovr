@@ -828,7 +828,6 @@ def process_datafile(filename, covdata, options):
     env = dict(os.environ)
     env['LC_ALL'] = 'en_US'
 
-    #print "HERE", potential_wd
     while len(potential_wd) > 0 and not Done:
         # NB: either len(potential_wd) == 1, or all entires are absolute
         # paths, so we don't have to chdir(starting_dir) at every
@@ -2225,6 +2224,9 @@ if options.version:
     )
     sys.exit(0)
 
+if options.output is not None:
+    options.output = os.path.abspath(options.output)
+
 if options.objdir is not None:
     if not options.objdir:
         sys.stderr.write(
@@ -2248,9 +2250,6 @@ if options.objdir is not None:
             "\tThe specified directory does not exist.\n")
         sys.exit(1)
 
-if options.output is not None:
-    options.output = os.path.abspath(options.output)
-
 if options.root is not None:
     if not options.root:
         sys.stderr.write(
@@ -2267,7 +2266,6 @@ else:
 #
 # Setup filters
 #
-options.root_filter = re.compile(re.escape(root_dir + os.sep))
 for i in range(0, len(options.exclude)):
     options.exclude[i] = re.compile(options.exclude[i])
 
@@ -2275,6 +2273,7 @@ if options.exclude_dirs is not None:
     for i in range(0, len(options.exclude_dirs)):
         options.exclude_dirs[i] = re.compile(options.exclude_dirs[i])
 
+options.root_filter = re.compile(re.escape(root_dir + os.sep))
 for i in range(0, len(options.filter)):
     options.filter[i] = re.compile(options.filter[i])
 if len(options.filter) == 0:
