@@ -71,7 +71,7 @@ src_revision = "$Revision$"
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc]annot open (source|graph) file")
 
-starting_dir = os.getcwd()
+starting_dir = os.path.abspath(os.getcwd())
 
 exclude_line_flag = "_EXCL_"
 exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
@@ -497,7 +497,10 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
     # Find the source file
     #
     currdir = os.getcwd()
-    root_dir = os.path.abspath(options.root)
+    if options.root is None:
+        root_dir = starting_dir
+    else:
+        root_dir = os.path.abspath(options.root)
     if source_fname is None:
         common_dir = os.path.commonprefix([data_fname, currdir])
         if sys.version_info >= (2, 6):
