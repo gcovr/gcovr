@@ -508,11 +508,18 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         else:
             fname = aliases.unalias_path(os.path.join(common_dir, segments[-1]).strip())
     else:
-        #     1. Try using the path to common prefix with the root_dir as the source directory
-        fname = os.path.join(root_dir, segments[-1].strip())
+        # 0. Try using the current working directory as the source directory
+        fname = os.path.join(currdir, segments[-1].strip())
         if not os.path.exists(fname):
-            # 2. Try using the path to the gcda file as the source directory
-            fname = os.path.join(os.path.dirname(source_fname), os.path.basename(segments[-1].strip()))
+            # 1. Try using the path to common prefix with the root_dir as the source directory
+            fname = os.path.join(root_dir, segments[-1].strip())
+            if not os.path.exists(fname):
+                # 2. Try using the starting directory as the source directory
+                fname = os.path.join(starting_dir, segments[-1].strip())
+                if not os.path.exists(fname):
+                    # 3. Try using the path to the gcda file as the source directory
+                    fname = os.path.join(os.path.dirname(source_fname), os.path.basename(segments[-1].strip()))
+
 
     if options.verbose:
         print("Finding source file corresponding to a gcov data file")
@@ -816,6 +823,9 @@ def process_datafile(filename, covdata, options):
                 # Stop at the root of the file system
                 #
                 break
+    else:
+        # Always add the root directory
+        potential_wd.append(root_dir)
 
     #
     # If the first element of cmd - the executable name - has embedded spaces it probably
