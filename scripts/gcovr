@@ -469,10 +469,10 @@ def get_datafiles(flist, options):
     return allfiles
 
 
-noncode_mapper = dict.fromkeys(ord(i) for i in '}{)(;')
+noncode_mapper = dict.fromkeys(ord(i) for i in '}{')
 def is_non_code(code):
     if sys.version_info < (3,0):
-        code = code.strip().translate(None, '}{)(;')
+        code = code.strip().translate(None, '}{')
     else:
         code = code.strip().translate(noncode_mapper)
     return len(code) == 0 or code.startswith("//") or code == 'else'
@@ -701,9 +701,9 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
 
     if options.verbose:
         print('uncovered '+str(uncovered))
-        #print('covered ',+covered)
-        #print('branches ',+str(branches))
-        #print('noncode ',+str(noncode))
+        print('covered '+str(covered))
+        print('branches '+str(branches))
+        print('noncode '+str(noncode))
     #
     # If the file is already in covdata, then we
     # remove lines that are covered here.  Otherwise,
