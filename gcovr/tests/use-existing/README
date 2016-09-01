@@ -1,0 +1,2 @@
+A test that verifies coverage when using existing *.gcov coverage files with verbose output.
+All files identical to gcovr/tests/simple1 except for this README file and Makefile
