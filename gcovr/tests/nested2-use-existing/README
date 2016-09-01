@@ -1,0 +1,22 @@
+This test uses the same layout and build than nested2 test.
+The difference is that gcov is ran outside of gcovr following gcov
+documentation: gcov should be run with the current directory the same as that
+when you invoked the compiler.
+
+./subdir/B/main.cpp is built from ./
+./subdir/B/testcase is built from ./
+./subdir/A/file*.cpp are built from ./subdir/A/
+./subdir/A/C/file5.cpp is built from ./subdir/A/C/
+./subdir/A/C/D/file6.cpp is built from ./subdir/A/C/D/
+
+Exluding system headers coverage files, here's what we get running gcov
+./subdir/A/file7.cpp.gcov
+./subdir/A/file1.cpp.gcov
+./subdir/A/file4.cpp.gcov
+./subdir/A/C/file5.cpp.gcov
+./subdir/A/C/D/file6.cpp.gcov
+./subdir/A/file2.cpp.gcov
+./subdir/A/file3.cpp.gcov
+./subdir#B#main.cpp.gcov
+
+Every gcov file is generated in the directory in which gcov was invoked.
