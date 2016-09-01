@@ -535,7 +535,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         print('  currdir      '+currdir)
         print('  gcov_fname   '+data_fname)
         print('               '+str(segments))
-        print('  source_fname '+source_fname)
+        print('  source_fname '+str(source_fname))
         print('  root         '+root_dir)
         #print('  common_dir   '+common_dir)
         #print('  subdir       '+subdir)
