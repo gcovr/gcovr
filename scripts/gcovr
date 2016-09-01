@@ -515,6 +515,12 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
             fname = aliases.unalias_path(os.path.join(common_dir, segments[-1].strip()))
         else:
             fname = aliases.unalias_path(os.path.join(common_dir, segments[-1]).strip())
+        if not os.path.exists(fname):
+            # let's try using the path to the gcov file as base directory
+            # Test before assigning not to change behavior compared to previous versions
+            possible_gcov_fname = aliases.unalias_path(os.path.join(os.path.dirname(data_fname), segments[-1].strip()))
+            if os.path.exists(possible_gcov_fname):
+                fname = possible_gcov_fname
     else:
         # gcov writes filenames with '/' path seperators even if the OS
         # separator is different, so we replace it with the correct separator
