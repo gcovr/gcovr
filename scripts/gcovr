@@ -2005,7 +2005,7 @@ def print_xml_report(covdata):
     if options.prettyxml:
         import textwrap
         lines = doc.toprettyxml(" ").split('\n')
-        for i in xrange(len(lines)):
+        for i in range(len(lines)):
             n = 0
             while n < len(lines[i]) and lines[i][n] == " ":
                 n += 1
