@@ -88,6 +88,13 @@ def version_str():
     return ans
 
 
+# fake open() encoding errors handling on Python 2
+if sys.version_info[0] == 2:
+    __open = open
+    def open(file, mode='r', buffering=-1, errors=None):
+        return __open(file, mode, buffering)
+
+
 #
 # Container object for coverage statistics
 #
@@ -482,7 +489,7 @@ def is_non_code(code):
 # Process a single gcov datafile
 #
 def process_gcov_data(data_fname, covdata, source_fname, options):
-    INPUT = open(data_fname, "r")
+    INPUT = open(data_fname, "r", errors="surrogateescape")
     #
     # Get the filename
     #
@@ -1696,7 +1703,7 @@ def print_html_report(covdata, details):
         data['ROWS'] = []
         currdir = os.getcwd()
         os.chdir(root_dir)
-        INPUT = open(data['FILENAME'], 'r')
+        INPUT = open(data['FILENAME'], 'r', errors="surrogateescape")
         ctr = 1
         for line in INPUT:
             data['ROWS'].append(
