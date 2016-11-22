@@ -540,11 +540,12 @@ def print_html_report(covdata, options):
         if len(ttmp) > 1:
             cdata._sourcefile = \
                 '.'.join(ttmp[:-1]) + \
-                '.' + cdata._filename.replace('/', '_') + \
+                '.' + cdata._filename.replace(os.sep, '_').replace(':', '') + \
                 '.' + ttmp[-1]
         else:
             cdata._sourcefile = \
-                ttmp[0] + '.' + cdata._filename.replace('/', '_') + '.html'
+                ttmp[0] + '.' + \
+                cdata._filename.replace(os.sep, '_').replace(':', '') + '.html'
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
     if len(files) > 1:
