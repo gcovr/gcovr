@@ -2372,23 +2372,33 @@ else:
 #
 # Setup filters
 #
+def build_filter(regex):
+    if os.name == 'nt':
+        # Windows path separators must be escaped before being parsed into a
+        # regex, but we do not want to escape the regex itself, so instead of
+        # using realpath, we escape the path and join it manually (realpath
+        # doesn't resolve symlinks on Windows anyway)
+        return re.compile(re.escape(os.getcwd() + "\\") + regex)
+    else:
+        return re.compile(os.path.realpath(regex))
+
 for i in range(0, len(options.exclude)):
-    options.exclude[i] = re.compile(os.path.realpath(options.exclude[i]))
+    options.exclude[i] = build_filter(options.exclude[i])
 
 if options.exclude_dirs is not None:
     for i in range(0, len(options.exclude_dirs)):
-        options.exclude_dirs[i] = re.compile(os.path.realpath(options.exclude_dirs[i]))
+        options.exclude_dirs[i] = build_filter(options.exclude_dirs[i])
 
 options.root_filter = re.compile(re.escape(root_dir + os.sep))
 for i in range(0, len(options.filter)):
-    options.filter[i] = re.compile(os.path.realpath(options.filter[i]))
+    options.filter[i] = build_filter(options.filter[i])
 if len(options.filter) == 0:
     options.filter.append(options.root_filter)
 
 for i in range(0, len(options.gcov_exclude)):
-    options.gcov_exclude[i] = re.compile(os.path.realpath(options.gcov_exclude[i]))
+    options.gcov_exclude[i] = build_filter(options.gcov_exclude[i])
 if options.gcov_filter is not None:
-    options.gcov_filter = re.compile(os.path.realpath(options.gcov_filter))
+    options.gcov_filter = build_filter(options.gcov_filter)
 else:
     options.gcov_filter = re.compile('')
 #
