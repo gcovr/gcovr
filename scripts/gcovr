@@ -55,6 +55,12 @@ try:
 except NameError:
     xrange = range
 
+# In Python3, zip is equivalent to izip
+try:
+    izip = itertools.izip
+except AttributeError:
+    izip = zip
+
 medium_coverage = 75.0
 high_coverage = 90.0
 low_color = "LightPink"
@@ -410,7 +416,7 @@ def commonpath( files ):
         path = os.path.realpath(f)
         dirs = path.split( os.path.sep )
         common = []
-        for a, b in itertools.izip( dirs, common_dirs ):
+        for a, b in izip( dirs, common_dirs ):
             if a == b:
                 common.append( a )
             elif common:
