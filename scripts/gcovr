@@ -1566,7 +1566,7 @@ def print_html_report(covdata, details):
     data['HEAD'] = "Head"
     data['VERSION'] = version_str()
     data['TIME'] = str(int(time.time()))
-    data['DATE'] = datetime.date.today().isoformat()
+    data['DATE'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data['ROWS'] = []
     data['ENC'] = options.html_encoding
     data['low_color'] = low_color
