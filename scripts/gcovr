@@ -55,6 +55,12 @@ try:
 except NameError:
     xrange = range
 
+# iZip is only available in 2.x
+try:
+    from itertools import izip as zip
+except ImportError: 
+    pass
+
 medium_coverage = 75.0
 high_coverage = 90.0
 low_color = "LightPink"
@@ -410,7 +416,7 @@ def commonpath( files ):
         path = os.path.realpath(f)
         dirs = path.split( os.path.sep )
         common = []
-        for a, b in itertools.izip( dirs, common_dirs ):
+        for a, b in zip( dirs, common_dirs ):
             if a == b:
                 common.append( a )
             elif common:
