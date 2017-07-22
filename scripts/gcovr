@@ -1039,9 +1039,9 @@ def print_text_report(covdata):
 
 
 #
-# Prints a small report to the standard output
+# Get global statistics
 #
-def print_summary(covdata):
+def get_global_stats(covdata):
     lines_total = 0
     lines_covered = 0
     branches_total = 0
@@ -1064,6 +1064,18 @@ def print_summary(covdata):
     percent_branches = branches_total and \
         (100.0 * branches_covered / branches_total)
 
+    return (lines_total, lines_covered, percent,
+            branches_total, branches_covered, percent_branches)
+
+
+#
+# Prints a small report to the standard output
+#
+def print_summary(covdata):
+    (lines_total, lines_covered, percent,
+        branches_total, branches_covered,
+        percent_branches) = get_global_stats(covdata)
+
     lines_out = "lines: %0.1f%% (%s out of %s)\n" % (
         percent, lines_covered, lines_total
     )
@@ -1073,6 +1085,22 @@ def print_summary(covdata):
 
     sys.stdout.write(lines_out)
     sys.stdout.write(branches_out)
+
+
+#
+# Exits with status 2 if below threshold
+#
+def fail_under(covdata, threshold_line, threshold_branch):
+    (lines_total, lines_covered, percent,
+        branches_total, branches_covered,
+        percent_branches) = get_global_stats(covdata)
+
+    if percent < threshold_line and percent_branches < threshold_branch:
+        sys.exit(6)
+    if percent < threshold_line:
+        sys.exit(2)
+    if percent_branches < threshold_branch:
+        sys.exit(4)
 
 
 #
@@ -2260,6 +2288,28 @@ parser.add_option(
     dest="print_summary",
     default=False
 )
+parser.add_option(
+    "--fail-under-line",
+    type="float",
+    metavar="MIN",
+    help="Exit with a status of 2 if the total line coverage is less "
+         "than MIN. "
+         "Can be ORed with exit status of '--fail-under-branch' option",
+    action="store",
+    dest="fail_under_line",
+    default=0.0
+)
+parser.add_option(
+    "--fail-under-branch",
+    type="float",
+    metavar="MIN",
+    help="Exit with a status of 4 if the total branch coverage is less "
+         "than MIN. "
+         "Can be ORed with exit status of '--fail-under-line' option",
+    action="store",
+    dest="fail_under_branch",
+    default=0.0
+)
 parser.usage = "gcovr [options]"
 parser.description = \
     "A utility to run gcov and generate a simple report that summarizes " \
@@ -2381,3 +2431,6 @@ else:
 
 if options.print_summary:
     print_summary(covdata)
+
+if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
+    fail_under(covdata, options.fail_under_line, options.fail_under_branch)
