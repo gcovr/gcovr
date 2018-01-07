@@ -20,22 +20,28 @@ GcovrTxt = unittest.category('smoke')(GcovrTxt)
 class GcovrXml(unittest.TestCase):
     def __init__(self, *args, **kwds):
         unittest.TestCase.__init__(self, *args, **kwds)
-        self.xml_re = re.compile('((timestamp)|(version))="[^"]*"')
+        self.xml_attrs_re = re.compile(r'(timestamp)="[^"]*"')
+        self.gcovr_version_re = re.compile(r'version="gcovr [^"]+"')
+
+    def scrub_xml(self, filename):
+        F = open(filename)
+        contents = F.read()
+        F.close()
+
+        contents = self.xml_attrs_re.sub('\\1=""', contents)
+        contents = self.gcovr_version_re.sub('version=""', contents)
+        contents = contents.replace("\r","")
+
+        F = open(filename, 'w')
+        F.write(contents)
+        F.close()
 
     def compare_xml(self):
-        F = open("coverage.xml")
-        testData = self.xml_re.sub('\\1=""',F.read()).replace("\r","")
-        F.close()
-        F = open('coverage.xml', 'w')
-        F.write(testData)
-        F.close()
-        F = open("reference/coverage.xml")
-        refData = self.xml_re.sub('\\1=""',F.read()).replace("\r","")
-        F.close()
-        F = open('reference/coverage.xml', 'w')
-        F.write(refData)
-        F.close()
-        self.assertMatchesXmlBaseline('coverage.xml', os.path.join('reference','coverage.xml'), tolerance=1e-4)
+        coverage = 'coverage.xml'
+        reference = os.path.join('reference', 'coverage.xml')
+        self.scrub_xml(coverage)
+        self.scrub_xml(reference)
+        self.assertMatchesXmlBaseline(coverage, reference, tolerance=1e-4)
 
 GcovrXml = unittest.category('smoke')(GcovrXml)
 
