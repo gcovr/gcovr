@@ -1,7 +1,7 @@
-<?xml version="" ?>
+<?xml version="1.0" ?>
 <!DOCTYPE coverage
-  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
-<coverage branch-rate="0.5" line-rate="0.875" timestamp="" version="">
+  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage branch-rate="0.5" branches-covered="3" branches-valid="6" complexity="0.0" line-rate="0.875" lines-covered="7" lines-valid="8" timestamp="" version="">
 <sources>
 <source>.</source>
 </sources>

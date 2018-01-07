@@ -1,16 +1,14 @@
-<?xml version="" ?>
+<?xml version="1.0" ?>
 <!DOCTYPE coverage
-  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>
-<coverage branch-rate="0.5" line-rate="0.857143">
+  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage branch-rate="0.5" branches-covered="3" branches-valid="6" complexity="0.0" line-rate="0.857142857143" lines-covered="6" lines-valid="7" timestamp="" version="">
 <sources>
-<source>
-.
-</source>
+<source>.</source>
 </sources>
 <packages>
-<package branch-rate="0.5" complexity="0.0" line-rate="0.857143" name="">
+<package branch-rate="0.5" complexity="0.0" line-rate="0.857142857143" name="">
 <classes>
-<class branch-rate="0.5" complexity="0.0" filename="main.cpp" line-rate="0.857143" name="main_cpp">
+<class branch-rate="0.5" complexity="0.0" filename="main.cpp" line-rate="0.857142857143" name="main_cpp">
 <methods/>
 <lines>
 <line branch="false" hits="1" number="4"/>

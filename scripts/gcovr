@@ -1847,7 +1847,7 @@ def print_xml_report(covdata):
     impl = xml.dom.minidom.getDOMImplementation()
     docType = impl.createDocumentType(
         "coverage", None,
-        "http://cobertura.sourceforge.net/xml/coverage-03.dtd"
+        "http://cobertura.sourceforge.net/xml/coverage-04.dtd"
     )
     doc = impl.createDocument(None, "coverage", docType)
     root = doc.documentElement
@@ -1858,6 +1858,21 @@ def print_xml_report(covdata):
     root.setAttribute(
         "branch-rate", branchTotal == 0 and '0.0' or
         str(float(branchCovered) / branchTotal)
+    )
+    root.setAttribute(
+        "lines-covered", str(lineCovered)
+    )
+    root.setAttribute(
+        "lines-valid", str(lineTotal)
+    )
+    root.setAttribute(
+        "branches-covered", str(branchCovered)
+    )
+    root.setAttribute(
+        "branches-valid", str(branchTotal)
+    )
+    root.setAttribute(
+        "complexity", "0.0"
     )
     root.setAttribute(
         "timestamp", str(int(time.time()))
