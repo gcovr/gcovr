@@ -514,18 +514,21 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         else:
             fname = aliases.unalias_path(os.path.join(common_dir, segments[-1]).strip())
     else:
+        # gcov writes filenames with '/' path seperators even if the OS
+        # separator is different, so we replace it with the correct separator
+        gcovname = segments[-1].strip().replace('/', os.sep)
+
         # 0. Try using the current working directory as the source directory
-        fname = os.path.join(currdir, segments[-1].strip())
+        fname = os.path.join(currdir, gcovname)
         if not os.path.exists(fname):
             # 1. Try using the path to common prefix with the root_dir as the source directory
-            fname = os.path.join(root_dir, segments[-1].strip())
+            fname = os.path.join(root_dir, gcovname)
             if not os.path.exists(fname):
                 # 2. Try using the starting directory as the source directory
-                fname = os.path.join(starting_dir, segments[-1].strip())
+                fname = os.path.join(starting_dir, gcovname)
                 if not os.path.exists(fname):
                     # 3. Try using the path to the gcda file as the source directory
-                    fname = os.path.join(os.path.dirname(source_fname), os.path.basename(segments[-1].strip()))
-
+                    fname = os.path.join(os.path.dirname(source_fname), os.path.basename(gcovname))
 
     if options.verbose:
         print("Finding source file corresponding to a gcov data file")
