@@ -41,7 +41,7 @@ class GcovrXml(unittest.TestCase):
         reference = os.path.join('reference', 'coverage.xml')
         self.scrub_xml(coverage)
         self.scrub_xml(reference)
-        self.assertMatchesXmlBaseline(coverage, reference, tolerance=1e-4)
+        self.assertMatchesXmlBaseline(coverage, reference, tolerance=1e-4, exact=True)
 
 GcovrXml = unittest.category('smoke')(GcovrXml)
 
