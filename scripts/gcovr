@@ -32,7 +32,7 @@
 
 try:
     import html
-except:
+except ImportError:
     import cgi as html
 import copy
 import os
@@ -42,8 +42,6 @@ import sys
 import time
 import xml.dom.minidom
 import datetime
-import posixpath
-import itertools
 import zlib
 
 from optparse import OptionParser
@@ -58,7 +56,7 @@ except NameError:
 # iZip is only available in 2.x
 try:
     from itertools import izip as zip
-except ImportError: 
+except ImportError:
     pass
 
 medium_coverage = 75.0
@@ -176,10 +174,10 @@ class CoverageData(object):
                 # to be covered???  This simplifies the ranges summary, but it
                 # provides a counterintuitive listing.
                 #
-                #if len(self.noncode.intersection(range(last+1,item))) \
-                #       == item - last - 1:
-                #    last = item
-                #    continue
+                # if len(self.noncode.intersection(range(last+1,item))) \
+                #        == item - last - 1:
+                #     last = item
+                #     continue
                 #
                 if first == last:
                     ranges.append(str(first))
@@ -305,6 +303,7 @@ class PathAliaser(object):
     def set_preferred(self, master, preferred):
         self.preferred_name[master] = preferred
 
+
 aliases = PathAliaser()
 
 
@@ -359,25 +358,25 @@ def link_walker(path):
         while targets:
             target_dir = targets.pop(0)
             actual_dir = resolve_symlinks(target_dir)
-            #print "target dir: %s  (%s)" % (target_dir, actual_dir)
+            # print "target dir: %s  (%s)" % (target_dir, actual_dir)
             master_name, master_base, visited = aliases.master_path(actual_dir)
             if visited:
-                #print "  ...root already visited as %s" % master_name
+                # print "  ...root already visited as %s" % master_name
                 aliases.add_alias(target_dir, master_name)
                 continue
             if master_name != target_dir:
                 aliases.set_preferred(master_name, target_dir)
                 aliases.add_alias(target_dir, master_name)
             aliases.add_master_target(master_name)
-            #print "  ...master name = %s" % master_name
-            #print "  ...walking %s" % target_dir
+            # print "  ...master name = %s" % master_name
+            # print "  ...walking %s" % target_dir
             for root, dirs, files in os.walk(target_dir, topdown=True):
-                #print "    ...reading %s" % root
+                # print "    ...reading %s" % root
                 for d in dirs:
                     tmp = os.path.abspath(os.path.join(root, d))
-                    #print "    ...checking %s" % tmp
+                    # print "    ...checking %s" % tmp
                     if os.path.islink(tmp):
-                        #print "      ...buffering link %s" % tmp
+                        # print "      ...buffering link %s" % tmp
                         targets.append(tmp)
                 yield (root, dirs, files)
 
@@ -404,28 +403,28 @@ def search_file(expr, path):
     return ans
 
 
-def commonpath( files ):
+def commonpath(files):
 
     if len(files) == 1:
-        return os.path.join( os.path.relpath( os.path.split( files[0] )[0] ), '' )
+        return os.path.join(os.path.relpath(os.path.split(files[0])[0]), '')
 
     common_path = os.path.realpath(files[0])
-    common_dirs = common_path.split( os.path.sep )
+    common_dirs = common_path.split(os.path.sep)
 
     for f in files[1:]:
         path = os.path.realpath(f)
-        dirs = path.split( os.path.sep )
+        dirs = path.split(os.path.sep)
         common = []
-        for a, b in zip( dirs, common_dirs ):
+        for a, b in zip(dirs, common_dirs):
             if a == b:
-                common.append( a )
+                common.append(a)
             elif common:
                 common_dirs = common
                 break
             else:
                 return ''
 
-    return os.path.join( os.path.relpath( os.path.sep.join( common_dirs ) ), '' )
+    return os.path.join(os.path.relpath(os.path.sep.join(common_dirs)), '')
 
 
 #
@@ -476,8 +475,10 @@ def get_datafiles(flist, options):
 
 
 noncode_mapper = dict.fromkeys(ord(i) for i in '}{')
+
+
 def is_non_code(code):
-    if sys.version_info < (3,0):
+    if sys.version_info < (3, 0):
         code = code.strip().translate(None, '}{')
     else:
         code = code.strip().translate(noncode_mapper)
@@ -537,8 +538,8 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         print('               '+str(segments))
         print('  source_fname '+str(source_fname))
         print('  root         '+root_dir)
-        #print('  common_dir   '+common_dir)
-        #print('  subdir       '+subdir)
+        # print('  common_dir   '+common_dir)
+        # print('  subdir       '+subdir)
         print('  fname        '+fname)
 
     if options.verbose:
@@ -576,14 +577,14 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
     uncovered_exceptional = set()
     covered = {}
     branches = {}
-    #first_record=True
+    # first_record=True
     lineno = 0
     last_code_line = ""
     last_code_lineno = 0
     last_code_line_excluded = False
     for line in INPUT:
         segments = line.split(":", 2)
-        #print "\t","Y", segments
+        # print "\t","Y", segments
         tmp = segments[0].strip()
         if len(segments) > 1:
             try:
@@ -634,9 +635,9 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         elif tmp[0] == '#':
             is_code_statement = True
             if is_non_code(segments[2]):
-                noncode.add( lineno )
+                noncode.add(lineno)
             else:
-                uncovered.add( lineno )
+                uncovered.add(lineno)
         elif tmp[0] == '=':
             is_code_statement = True
             uncovered_exceptional.add(lineno)
@@ -680,15 +681,15 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
             pass
         elif tmp[0] == 'f':
             pass
-            #if first_record:
-                #first_record=False
-                #uncovered.add(prev)
-            #if prev in uncovered:
-                #tokens=re.split('[ \t]+',tmp)
-                #if tokens[3] != "0":
-                    #uncovered.remove(prev)
-            #prev = int(segments[1].strip())
-            #first_record=True
+            # if first_record:
+            #     first_record=False
+            #     uncovered.add(prev)
+            # if prev in uncovered:
+            #     tokens=re.split('[ \t]+',tmp)
+            #     if tokens[3] != "0":
+            #         uncovered.remove(prev)
+            # prev = int(segments[1].strip())
+            # first_record=True
         else:
             sys.stderr.write(
                 "(WARNING) Unrecognized GCOV output: '%s'\n"
@@ -718,7 +719,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
     # remove lines that are covered here.  Otherwise,
     # initialize covdata
     #
-    if not fname in covdata:
+    if fname not in covdata:
         covdata[fname] = CoverageData(
             fname, uncovered, uncovered_exceptional, covered, branches, noncode
         )
@@ -733,6 +734,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
                          "%s_EXCL_START\n\ton line %d did not have "
                          "corresponding %s_EXCL_STOP flag\n\t in file %s.\n"
                          % (header, line, header, fname))
+
 
 #
 # Process a datafile (generated by running the instrumented application)
@@ -773,7 +775,7 @@ def process_datafile(filename, covdata, options):
     Done = False
 
     if options.objdir:
-        #print "X - objdir"
+        # print "X - objdir"
         src_components = abs_filename.split(os.sep)
         components = normpath(options.objdir).split(os.sep)
         idx = 1
@@ -822,7 +824,7 @@ def process_datafile(filename, covdata, options):
     # no objdir was specified (or it was a parent dir); walk up the dir tree
     if len(potential_wd) == 0:
         potential_wd.append(root_dir)
-        #print "X - potential_wd", root_dir
+        # print "X - potential_wd", root_dir
         wd = os.path.split(abs_filename)[0]
         while True:
             potential_wd.append(wd)
@@ -837,8 +839,8 @@ def process_datafile(filename, covdata, options):
         potential_wd.append(root_dir)
 
     #
-    # If the first element of cmd - the executable name - has embedded spaces it probably
-    # includes extra arguments.
+    # If the first element of cmd - the executable name - has embedded spaces
+    # it probably includes extra arguments.
     #
     cmd = options.gcov_cmd.split(' ') + [
         abs_filename,
@@ -860,7 +862,7 @@ def process_datafile(filename, covdata, options):
         # directory
         #
         dir_ = potential_wd.pop(0)
-        #print "X DIR:", dir_
+        # print "X DIR:", dir_
         os.chdir(dir_)
 
         if options.verbose:
@@ -875,7 +877,7 @@ def process_datafile(filename, covdata, options):
         err = err.decode('utf-8')
 
         # find the files that gcov created
-        gcov_files = {'active' : [], 'filter' : [], 'exclude' : []}
+        gcov_files = {'active': [], 'filter': [], 'exclude': []}
         for line in out.splitlines():
             found = output_re.search(line.strip())
             if found is not None:
@@ -898,7 +900,7 @@ def process_datafile(filename, covdata, options):
                     sys.stdout.write("Excluding gcov file %s\n" % fname)
                     gcov_files['exclude'].append(fname)
 
-        #print "HERE", err, "XXX", source_re.search(err)
+        # print "HERE", err, "XXX", source_re.search(err)
         if source_re.search(err):
             #
             # gcov tossed errors: try the next potential_wd
@@ -968,6 +970,7 @@ def process_existing_gcov_file(filename, covdata, options):
         if os.path.exists(filename):
             os.remove(filename)
 
+
 #
 # Produce the classic gcovr text report
 #
@@ -998,7 +1001,7 @@ def print_text_report(covdata):
     OUTPUT.write(" " * 27 + "GCC Code Coverage Report\n")
     if options.root is not None:
         OUTPUT.write("Directory: " + options.root + "\n")
-    
+
     OUTPUT.write("-" * 78 + '\n')
     a = options.show_branch and "Branches" or "Lines"
     b = options.show_branch and "Taken" or "Exec"
@@ -1070,6 +1073,7 @@ def print_summary(covdata):
 
     sys.stdout.write(lines_out)
     sys.stdout.write(branches_out)
+
 
 #
 # CSS declarations for the HTML output
@@ -1273,19 +1277,19 @@ css = Template('''
         border-right: 1px gray solid;
         background-color: lightgray;
     }
-    
+
     span.takenBranch
     {
         color: ${takenBranch_color}!important;
         cursor: help;
     }
-    
+
     span.notTakenBranch
     {
         color: ${notTakenBranch_color}!important;
         cursor: help;
     }
-    
+
     .src
     {
         padding-left: 12px;
@@ -1542,9 +1546,14 @@ def print_html_report(covdata, details):
     data['high_color'] = high_color
     data['COVERAGE_MED'] = medium_coverage
     data['COVERAGE_HIGH'] = high_coverage
-    data['CSS'] = css.substitute(low_color=low_color, medium_color=medium_color, high_color=high_color,
-                                 covered_color=covered_color, uncovered_color=uncovered_color,
-                                 takenBranch_color=takenBranch_color, notTakenBranch_color=notTakenBranch_color
+    data['CSS'] = css.substitute(
+        low_color=low_color,
+        medium_color=medium_color,
+        high_color=high_color,
+        covered_color=covered_color,
+        uncovered_color=uncovered_color,
+        takenBranch_color=takenBranch_color,
+        notTakenBranch_color=notTakenBranch_color
     )
     data['DIRECTORY'] = ''
 
@@ -1575,7 +1584,7 @@ def print_html_report(covdata, details):
     data['LINES_COLOR'] = coverage_to_color(coverage)
 
     # Generate the coverage output (on a per-package basis)
-    #source_dirs = set()
+    # source_dirs = set()
     files = []
     dirs = []
     filtered_fname = ''
@@ -1602,7 +1611,7 @@ def print_html_report(covdata, details):
             else:
                 cdata._sourcefile = \
                     ttmp[0] + '.' + longname + longname_hash + '.html'
-            # we add a hash at the end and attempt to shorten the 
+            # we add a hash at the end and attempt to shorten the
             # filename if it exceeds common filesystem limitations
             if len(os.path.basename(cdata._sourcefile)) < 256:
                 break
@@ -1651,7 +1660,8 @@ def print_html_report(covdata, details):
         data['ROWS'].append(html_row(
             details, cdata._sourcefile,
             directory=data['DIRECTORY'],
-            filename=os.path.relpath( os.path.realpath( cdata._filename ), data['DIRECTORY'] ),
+            filename=os.path.relpath(
+                os.path.realpath(cdata._filename), data['DIRECTORY']),
             LinesExec=class_hits,
             LinesTotal=class_lines,
             LinesCoverage=lines_covered,
@@ -1759,6 +1769,7 @@ def source_row(lineno, source, cdata):
         kwargs['linecount'] = ''
     kwargs['source'] = html.escape(source)
     return rowstr.substitute(**kwargs)
+
 
 #
 # Generate the table row for a single file
@@ -1929,20 +1940,20 @@ def print_xml_report(covdata):
             class_lines += 1
             if hits > 0:
                 class_hits += 1
-            l = doc.createElement("line")
-            l.setAttribute("number", str(line))
-            l.setAttribute("hits", str(hits))
+            L = doc.createElement("line")
+            L.setAttribute("number", str(line))
+            L.setAttribute("hits", str(hits))
             branches = data.branches.get(line)
             if branches is None:
-                l.setAttribute("branch", "false")
+                L.setAttribute("branch", "false")
             else:
                 b_hits = 0
                 for v in branches.values():
                     if v > 0:
                         b_hits += 1
                 coverage = 100 * b_hits / len(branches)
-                l.setAttribute("branch", "true")
-                l.setAttribute(
+                L.setAttribute("branch", "true")
+                L.setAttribute(
                     "condition-coverage",
                     "%i%% (%i/%i)" % (coverage, b_hits, len(branches))
                 )
@@ -1954,9 +1965,9 @@ def print_xml_report(covdata):
                 class_branches += float(len(branches))
                 conditions = doc.createElement("conditions")
                 conditions.appendChild(cond)
-                l.appendChild(conditions)
+                L.appendChild(conditions)
 
-            lines.appendChild(l)
+            lines.appendChild(L)
 
         className = fname.replace('.', '_')
         c.setAttribute("name", className)
@@ -2040,7 +2051,7 @@ def print_xml_report(covdata):
                 subsequent_indent=" " + n * " "
             ))
         xmlString = "\n".join(lines)
-        #print textwrap.wrap(doc.toprettyxml(" "), 80)
+        # print textwrap.wrap(doc.toprettyxml(" "), 80)
     else:
         xmlString = doc.toprettyxml(indent="")
     if options.output is None:
@@ -2051,9 +2062,9 @@ def print_xml_report(covdata):
         OUTPUT.close()
 
 
-##
-## MAIN
-##
+# #
+# # MAIN
+# #
 
 #
 # Create option parser
@@ -2338,10 +2349,10 @@ if len(args) == 1:
         search_paths = ["."]
     else:
         search_paths = [options.root]
-    
+
     if options.objdir is not None:
         search_paths.append(options.objdir)
-    
+
     datafiles = get_datafiles(search_paths, options)
 else:
     datafiles = get_datafiles(args[1:], options)
