@@ -13,8 +13,9 @@ pat3 = re.compile('([^@]+)@:([a-zA-Z0-9]+)')
 
 processed = set()
 
+
 def process(dir, root, suffix):
-    #print "PROCESS ",root, suffix
+    # print "PROCESS ",root, suffix
     bname = "%s%s" % (dir, root)
     global processed
     if bname in processed:
@@ -39,14 +40,14 @@ def process(dir, root, suffix):
     INPUT.close()
     for anchor in anchors:
         if anchor != '':
-            print "ERROR: anchor '%s' did not terminate" % anchor
+            print("ERROR: anchor '%s' did not terminate" % anchor)
         anchors[anchor].close()
     #
     processed.add(bname)
 
 
 for file in sys.argv[1:]:
-    print "Processing file '%s' ..." % file
+    print("Processing file '%s' ..." % file)
     INPUT = open(file, 'r')
     for line in INPUT:
         suffix = None
@@ -69,13 +70,12 @@ for file in sys.argv[1:]:
             if m:
                 suffix = 'cpp'
         #
-        if not suffix is None:
-            #print "HERE", line, suffix
-            fname = m.group(1)+m.group(2)+'.'+suffix
+        if suffix is not None:
+            # print "HERE", line, suffix
+            fname = m.group(1) + m.group(2) + '.' + suffix
             if not os.path.exists(fname):
-                print line
-                print "ERROR: file '%s' does not exist!" % fname
+                print(line)
+                print("ERROR: file '%s' does not exist!" % fname)
                 sys.exit(1)
             process(m.group(1), m.group(2), suffix)
     INPUT.close()
-

@@ -14,12 +14,13 @@ Script to generate the installer for gcovr.
 
 import glob
 import os
+import os.path
+from setuptools import setup
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-from setuptools import setup
-import os.path
 
 if os.path.exists('README.md'):
     import shutil
@@ -30,25 +31,24 @@ setup(name='gcovr',
       version='3.3',
       maintainer='William Hart',
       maintainer_email='wehart@sandia.gov',
-      url = 'http://gcovr.com',
-      license = 'BSD',
-      platforms = ["any"],
-      description = 'A Python script for summarizing gcov data.',
-      long_description = read('README.txt'),
-      classifiers = [
-            'Development Status :: 4 - Beta',
-            'Intended Audience :: End Users/Desktop',
-            'Intended Audience :: Science/Research',
-            'License :: OSI Approved :: BSD License',
-            'Natural Language :: English',
-            'Operating System :: Microsoft :: Windows',
-            'Operating System :: Unix',
-            'Programming Language :: Python',
-            'Programming Language :: Unix Shell',
-            'Topic :: Software Development :: Libraries :: Python Modules'
-        ],
+      url='http://gcovr.com',
+      license='BSD',
+      platforms=["any"],
+      description='A Python script for summarizing gcov data.',
+      long_description=read('README.txt'),
+      classifiers=[
+          'Development Status :: 4 - Beta',
+          'Intended Audience :: End Users/Desktop',
+          'Intended Audience :: Science/Research',
+          'License :: OSI Approved :: BSD License',
+          'Natural Language :: English',
+          'Operating System :: Microsoft :: Windows',
+          'Operating System :: Unix',
+          'Programming Language :: Python',
+          'Programming Language :: Unix Shell',
+          'Topic :: Software Development :: Libraries :: Python Modules'
+      ],
       packages=['gcovr'],
       keywords=['utility'],
       scripts=scripts
       )
-

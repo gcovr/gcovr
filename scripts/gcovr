@@ -533,14 +533,14 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
 
     if options.verbose:
         print("Finding source file corresponding to a gcov data file")
-        print('  currdir      '+currdir)
-        print('  gcov_fname   '+data_fname)
-        print('               '+str(segments))
-        print('  source_fname '+str(source_fname))
-        print('  root         '+root_dir)
-        # print('  common_dir   '+common_dir)
-        # print('  subdir       '+subdir)
-        print('  fname        '+fname)
+        print('  currdir      ' + currdir)
+        print('  gcov_fname   ' + data_fname)
+        print('               ' + str(segments))
+        print('  source_fname ' + str(source_fname))
+        print('  root         ' + root_dir)
+        # print('  common_dir   ' + common_dir)
+        # print('  subdir       ' + subdir)
+        print('  fname        ' + fname)
 
     if options.verbose:
         sys.stdout.write("Parsing coverage data for file %s\n" % fname)
@@ -589,7 +589,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         if len(segments) > 1:
             try:
                 lineno = int(segments[1].strip())
-            except:
+            except:  # noqa E722
                 pass  # keep previous line number!
 
         if exclude_line_flag in line:
@@ -672,7 +672,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
                 fields = line.split()
                 try:
                     count = int(fields[3])
-                except:
+                except:  # noqa E722
                     count = 0
                 branches.setdefault(lineno, {})[int(fields[1])] = count
         elif tmp.startswith('call'):
@@ -710,10 +710,10 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
             excluding.pop()
 
     if options.verbose:
-        print('uncovered '+str(uncovered))
-        print('covered '+str(covered))
-        print('branches '+str(branches))
-        print('noncode '+str(noncode))
+        print('uncovered ' + str(uncovered))
+        print('covered ' + str(covered))
+        print('branches ' + str(branches))
+        print('noncode ' + str(noncode))
     #
     # If the file is already in covdata, then we
     # remove lines that are covered here.  Otherwise,
@@ -763,7 +763,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
 #
 def process_datafile(filename, covdata, options):
     if options.verbose:
-        print("Processing file: "+filename)
+        print("Processing file: " + filename)
     #
     # Launch gcov
     #
@@ -2369,6 +2369,7 @@ if options.root is not None:
 else:
     root_dir = starting_dir
 
+
 #
 # Setup filters
 #
@@ -2381,6 +2382,7 @@ def build_filter(regex):
         return re.compile(re.escape(os.getcwd() + "\\") + regex)
     else:
         return re.compile(os.path.realpath(regex))
+
 
 for i in range(0, len(options.exclude)):
     options.exclude[i] = build_filter(options.exclude[i])
