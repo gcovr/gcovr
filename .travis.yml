@@ -28,9 +28,11 @@ install:
 - pip install ply
 - pip install ordereddict
 - pip install pyutilib
+- pip install flake8
 - python setup.py develop
 
 script:
+- flake8 --ignore=E501 --exclude=admin scripts/gcovr .
 - nosetests -v
 
 deploy:
