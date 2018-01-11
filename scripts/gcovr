@@ -44,7 +44,7 @@ import xml.dom.minidom
 import datetime
 import zlib
 
-from optparse import OptionParser
+from optparse import Option, OptionParser, OptionValueError
 from string import Template
 from os.path import normpath
 
@@ -2097,7 +2097,25 @@ def print_xml_report(covdata):
 #
 # Create option parser
 #
-parser = OptionParser()
+
+# helper for percentage actions
+def check_percentage(option, opt, value):
+    try:
+        x = float(value)
+        if not (0.0 <= x <= 100.0):
+            raise ValueError()
+    except ValueError:
+        raise OptionValueError("option %s: %r not in range [0.0, 100.0]" % (opt, value))
+    return x
+
+
+class PercentageOption (Option):
+    TYPES = Option.TYPES + ("percentage",)
+    TYPE_CHECKER = copy.copy(Option.TYPE_CHECKER)
+    TYPE_CHECKER["percentage"] = check_percentage
+
+
+parser = OptionParser(option_class=PercentageOption)
 parser.add_option(
     "--version",
     help="Print the version number, then exit",
@@ -2290,7 +2308,7 @@ parser.add_option(
 )
 parser.add_option(
     "--fail-under-line",
-    type="float",
+    type="percentage",
     metavar="MIN",
     help="Exit with a status of 2 if the total line coverage is less "
          "than MIN. "
@@ -2301,7 +2319,7 @@ parser.add_option(
 )
 parser.add_option(
     "--fail-under-branch",
-    type="float",
+    type="percentage",
     metavar="MIN",
     help="Exit with a status of 4 if the total branch coverage is less "
          "than MIN. "
