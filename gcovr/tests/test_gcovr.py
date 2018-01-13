@@ -11,14 +11,13 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 starting_dir = os.getcwd()
 
 
+@unittest.category('smoke')
 class GcovrTxt(unittest.TestCase):
     def __init__(self, *args, **kwds):
         unittest.TestCase.__init__(self, *args, **kwds)
 
 
-GcovrTxt = unittest.category('smoke')(GcovrTxt)
-
-
+@unittest.category('smoke')
 class GcovrXml(unittest.TestCase):
     def __init__(self, *args, **kwds):
         unittest.TestCase.__init__(self, *args, **kwds)
@@ -46,9 +45,7 @@ class GcovrXml(unittest.TestCase):
         self.assertMatchesXmlBaseline(coverage, reference, tolerance=1e-4, exact=True)
 
 
-GcovrXml = unittest.category('smoke')(GcovrXml)
-
-
+@unittest.category('smoke')
 class GcovrHtml(unittest.TestCase):
     def __init__(self, *args, **kwds):
         unittest.TestCase.__init__(self, *args, **kwds)
@@ -78,9 +75,6 @@ class GcovrHtml(unittest.TestCase):
         # because HTML doesn't parse as valid XML.
         # The pyutilib does not seem to contain HTML comparison functions.
         self.assertFileEqualsBaseline('coverage.html', os.path.join('reference', 'coverage.html'), tolerance=1e-4)
-
-
-GcovrHtml = unittest.category('smoke')(GcovrHtml)
 
 
 def run(cmd):
