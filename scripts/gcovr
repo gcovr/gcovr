@@ -203,7 +203,8 @@ class CoverageData(object):
             total = len(self.all_lines)
             cover = len(self.covered)
 
-        percent = total and str(int(100.0 * cover / total)) or "--"
+        percent = calculate_coverage(cover, total, nan_value=None)
+        percent = "--" if percent is None else str(int(percent))
         return (total, cover, percent)
 
     def summary(self):
@@ -1025,8 +1026,8 @@ def print_text_report(covdata):
 
     # Footer & summary
     OUTPUT.write("-" * 78 + '\n')
-    percent = total_lines and str(int(100.0 * total_covered / total_lines)) \
-        or "--"
+    percent = calculate_coverage(total_covered, total_lines, nan_value=None)
+    percent = "--" if percent is None else str(int(percent))
     OUTPUT.write(
         "TOTAL".ljust(40) + str(total_lines).rjust(8) +
         str(total_covered).rjust(8) + str(percent).rjust(6) + "%" + '\n'
@@ -1060,9 +1061,8 @@ def get_global_stats(covdata):
         branches_total += t
         branches_covered += n
 
-    percent = lines_total and (100.0 * lines_covered / lines_total)
-    percent_branches = branches_total and \
-        (100.0 * branches_covered / branches_total)
+    percent = calculate_coverage(lines_covered, lines_total)
+    percent_branches = calculate_coverage(branches_covered, branches_total)
 
     return (lines_total, lines_covered, percent,
             branches_total, branches_covered, percent_branches)
@@ -1094,6 +1094,9 @@ def fail_under(covdata, threshold_line, threshold_branch):
     (lines_total, lines_covered, percent,
         branches_total, branches_covered,
         percent_branches) = get_global_stats(covdata)
+
+    if branches_total == 0:
+        percent_branches = 100.0
 
     if percent < threshold_line and percent_branches < threshold_branch:
         sys.exit(6)
@@ -1529,12 +1532,14 @@ source_page = Template('''
 ''')
 
 
-def calculate_coverage(covered, total):
-    return 0.0 if total == 0 else round(100.0 * covered / total, 1)
+def calculate_coverage(covered, total, nan_value=0.0):
+    return nan_value if total == 0 else round(100.0 * covered / total, 1)
 
 
 def coverage_to_color(coverage):
-    if coverage < medium_coverage:
+    if coverage is None:
+        return 'LightGray'
+    elif coverage < medium_coverage:
         return low_color
     elif coverage < high_coverage:
         return medium_color
@@ -1594,8 +1599,8 @@ def print_html_report(covdata, details):
         branchCovered += covered
     data['BRANCHES_EXEC'] = str(branchCovered)
     data['BRANCHES_TOTAL'] = str(branchTotal)
-    coverage = calculate_coverage(branchCovered, branchTotal)
-    data['BRANCHES_COVERAGE'] = str(coverage)
+    coverage = calculate_coverage(branchCovered, branchTotal, nan_value=None)
+    data['BRANCHES_COVERAGE'] = '-' if coverage is None else str(coverage)
     data['BRANCHES_COLOR'] = coverage_to_color(coverage)
 
     lineTotal = 0
@@ -1680,10 +1685,8 @@ def print_html_report(covdata, details):
                 class_branch_hits += b_hits
                 class_branches += len(branches)
 
-        lines_covered = 100.0 if class_lines == 0 else \
-            100.0 * class_hits / class_lines
-        branches_covered = 100.0 if class_branches == 0 else \
-            100.0 * class_branch_hits / class_branches
+        lines_covered = calculate_coverage(class_hits, class_lines, nan_value=100.0)
+        branches_covered = calculate_coverage(class_branch_hits, class_branches, nan_value=None)
 
         data['ROWS'].append(html_row(
             details, cdata._sourcefile,
@@ -1728,8 +1731,8 @@ def print_html_report(covdata, details):
         branchTotal, branchCovered, tmp = cdata.coverage()
         data['BRANCHES_EXEC'] = str(branchCovered)
         data['BRANCHES_TOTAL'] = str(branchTotal)
-        coverage = calculate_coverage(branchCovered, branchTotal)
-        data['BRANCHES_COVERAGE'] = str(coverage)
+        coverage = calculate_coverage(branchCovered, branchTotal, nan_value=None)
+        data['BRANCHES_COVERAGE'] = '-' if coverage is None else str(coverage)
         data['BRANCHES_COLOR'] = coverage_to_color(coverage)
 
         options.show_branch = False
@@ -1848,16 +1851,8 @@ def html_row(details, sourcefile, **kwargs):
         kwargs['LinesColor'] = high_color
         kwargs['LinesBar'] = 'green'
 
-    kwargs['BranchesCoverage'] = round(kwargs['BranchesCoverage'], 1)
-    if kwargs['BranchesCoverage'] < medium_coverage:
-        kwargs['BranchesColor'] = low_color
-        kwargs['BranchesBar'] = 'red'
-    elif kwargs['BranchesCoverage'] < high_coverage:
-        kwargs['BranchesColor'] = medium_color
-        kwargs['BranchesBar'] = 'yellow'
-    else:
-        kwargs['BranchesColor'] = high_color
-        kwargs['BranchesBar'] = 'green'
+    kwargs['BranchesColor'] = coverage_to_color(kwargs['BranchesCoverage'])
+    kwargs['BranchesCoverage'] = '-' if kwargs['BranchesCoverage'] is None else round(kwargs['BranchesCoverage'], 1)
 
     return rowstr.substitute(**kwargs)
 
