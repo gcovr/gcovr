@@ -3,7 +3,9 @@ gcovr
 
 generate GCC code coverage reports
 
-[website] • [documentation] • [bugtracker] • [GitHub][repo] • [![Build Status][travis-ci-badge]][travis-ci]
+[website] • [documentation] • [bugtracker] • [GitHub][repo]
+
+[![Build Status][travis-ci-badge]][travis-ci] [![Install from PyPI][pypi-badge]][pypi]
 
 Gcovr provides a utility for managing the use of the GNU gcov utility
 and generating summarized code coverage results. This command is
@@ -37,7 +39,9 @@ Example HTML details:
   [repo]:       https://github.com/gcovr/gcovr/
   [bugtracker]: https://github.com/gcovr/gcovr/issues
   [travis-ci]: https://travis-ci.org/gcovr/gcovr
-  [travis-ci-badge]: https://api.travis-ci.org/gcovr/gcovr.svg?branch=master
+  [travis-ci-badge]: https://travis-ci.org/gcovr/gcovr.svg?branch=master
+  [pypi]: https://pypi.python.org/pypi/gcovr
+  [pypi-badge]: https://img.shields.io/pypi/v/gcovr.svg
 
 Installation
 ------------
