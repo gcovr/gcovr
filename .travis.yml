@@ -32,7 +32,7 @@ install:
 - python setup.py develop
 
 script:
-- flake8 --ignore=E501 --exclude=admin scripts/gcovr .
+- flake8 --ignore=E501 scripts/gcovr .
 - nosetests -v
 
 deploy:
