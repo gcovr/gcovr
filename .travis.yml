@@ -37,7 +37,7 @@ script:
 
 deploy:
   - provider: pypi
-    server: https://testpypi.python.org/pypi
+    server: https://test.pypi.org/legacy/
     user: whart111
     password:
       secure: "TpOWxwD/izvCyz585nvwIq4plfbgi8BKqUW5Xm8uJRWEZ6g1/1K2Om7jxY2sP2XunzrlV85Nnl0juFKzVGfQEXo5yFGpUqx1r74cfFMd3mMATh5VndZuyrR8ZWB70mt/AGEFCPCFt82UqW2gbbZcO8T1i++5vl9hhTUlcaLo9vM="
