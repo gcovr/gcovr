@@ -6,9 +6,11 @@
 #   make
 #   gcovrtest
 
+CMAKE ?= cmake
+
 all:
 	mkdir -p build
-	cd build && cmake .. && make
+	cd build && $(CMAKE) .. && make
 
 run: txt xml html
 

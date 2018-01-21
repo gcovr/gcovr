@@ -1,5 +1,12 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
+BASE_OS:=$(shell uname | cut -d'-' -f1)
+ifeq ($(BASE_OS),MSYS_NT)
+  GCOVR_TEST_OPTIONS := -f $(shell pwd | cygpath -w)\\main.cpp
+else
+  GCOVR_TEST_OPTIONS := -f $(shell pwd)/main.cpp
+endif
+
 all:
 	$(CXX) $(CFLAGS) -c file1.cpp -o file1.o
 	$(CXX) $(CFLAGS) -c main.cpp -o main.o
@@ -7,10 +14,9 @@ all:
 
 run: txt xml html
 
-GCOVR_TEST_OPTIONS = -f `pwd`'/main.cpp'
-
 txt:
 	./testcase
+	echo "$(GCOVR_TEST_OPTIONS)"
 	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
 
 xml:

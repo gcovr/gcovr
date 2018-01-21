@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 import os
 import os.path
+import platform
 import re
 import sys
 import subprocess
 import traceback
 import pyutilib.th as unittest
+import nose
 
 basedir = os.path.split(os.path.abspath(__file__))[0]
 starting_dir = os.getcwd()
@@ -118,6 +120,8 @@ def gcovr_test_xml(self, name):
 
 @unittest.nottest
 def gcovr_test_html(self, name):
+    if name == 'linked' and platform.system() == 'Windows':
+        raise nose.SkipTest
     os.chdir(os.path.join(basedir, name))
     run(["make"]) or self.fail("Make failed")
     run(["make", "html"]) or self.fail("Execution failed")

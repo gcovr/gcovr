@@ -19,7 +19,7 @@ from setuptools import setup
 
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return open(os.path.join(os.path.dirname(__file__), *rnames), 'rb').read().decode("UTF-8")
 
 
 if os.path.exists('README.md'):
