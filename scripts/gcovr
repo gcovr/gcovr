@@ -213,7 +213,7 @@ class CoverageData(object):
             # Do no truncation if the filter does not start matching at
             # the beginning of the string
             tmp = self.fname
-        tmp = tmp.ljust(40)
+        tmp = tmp.replace('\\', '/').ljust(40)
         if len(tmp) > 40:
             tmp = tmp + "\n" + " " * 40
 
@@ -1678,6 +1678,7 @@ def print_html_report(covdata, details):
 
     if data['DIRECTORY'] == '':
         data['DIRECTORY'] = "."
+    data['DIRECTORY'] = data['DIRECTORY'].replace('\\', '/')
 
     htmlString = root_page.substitute(**data)
 
@@ -1807,7 +1808,7 @@ def html_row(details, sourcefile, **kwargs):
         kwargs['altstyle'] = ''
     if details:
         kwargs['filename'] = '<a href="%s">%s</a>' % (
-            sourcefile, kwargs['filename']
+            sourcefile, kwargs['filename'].replace('\\', '/')
         )
     kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'], 1)
     # Disable the border if the bar is too short to see the color
@@ -1968,7 +1969,7 @@ def print_xml_report(covdata):
 
         className = fname.replace('.', '_')
         c.setAttribute("name", className)
-        c.setAttribute("filename", os.path.join(directory, fname))
+        c.setAttribute("filename", os.path.join(directory, fname).replace('\\', '/'))
         c.setAttribute(
             "line-rate",
             str(class_hits / (1.0 * class_lines or 1.0))
