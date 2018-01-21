@@ -1,0 +1,37 @@
+# see also: https://packaging.python.org/guides/supporting-windows-using-appveyor/
+
+# select image with MinGW-w64 available
+image: Visual Studio 2015
+
+environment:
+
+  matrix:
+    - PYTHON: C:\Python27\python.exe
+    # TODO add more Python versions,
+    # see https://www.appveyor.com/docs/build-environment/#python
+
+  global:
+    PATH:  C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin;C:\msys64\usr\bin;$(PATH)
+    CXX:   g++
+    CC:    gcc
+    GCOV:  gcov
+    MAKE:  mingw32-make
+    CMAKE: cmake -G "MSYS Makefiles"
+
+install:
+  # display available tools
+  - dir C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin
+  # verify compiler version
+  - '%CXX% --version'
+  # check available cmake generators
+  - cmake --help
+  - '%PYTHON% -m pip install nose'
+  - '%PYTHON% -m pip install ply'
+  - '%PYTHON% -m pip install ordereddict'
+  - '%PYTHON% -m pip install pyutilib'
+  - '%PYTHON% setup.py develop'
+
+build: off
+
+test_script:
+  - '%PYTHON% -m nose -v'
