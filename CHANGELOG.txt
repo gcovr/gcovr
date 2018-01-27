@@ -3,6 +3,27 @@
 === 3.4 ''(TODO)'' ===
  - Fix to support filtering with absolute paths
  - Added --html-encoding command line option (#139)
+ - Fix gcov '/'s breaking --html-details on Windows (#157)
+ - Fixed issue with python 3.x that prevented to create html reports due
+   to missing 'iZip' function in itertools (#168)
+ - Fix verbose output when using existing gcov files (#143, #144)
+ - Add support for coverage-04.dtd Cobertura format (#164)
+ - Saner XML tests (#188)
+ - Add --fail-under-line and --fail-under-branch options to return exit
+   status 2/4/6 under a threshold (#173, #194)
+ - Fix HTML tests (#185)
+ - Fix exclude filters on Windows (#158)
+ - Fix most PEP 8 warnings and add CI tests for those (#187, #192)
+ - Show fulltimestamp instead of just date in the HTML report (#165)
+ - Remove vendored virtualenv script (#190)
+ - In HTML output, use LightGray and '-' output when there are no branches
+   (#196)
+ - Expand README with user + contribution guides (#193)
+ - Fix source filename handling when using --use-gcov-files (#145, #146)
+ - Build universal wheel (#198)
+ - Drop support for Python < 2.6 (#195)
+ - Add AppVeyor CI (#200)
+
 
 === 3.3 ''(6 August 2016)'' ===
  - Added CI testing using TravisCI
@@ -27,14 +48,14 @@
  - Adding logic to cover branches that are ignored (#28)
 
 === 3.1 ''(6 December 2013)'' ===
- - Change to make the -r/--root options define the root directory 
+ - Change to make the -r/--root options define the root directory
    for source files.
  - Fix to apply the -p option when the --html option is used.
  - Adding new option, '--exclude-unreachable-branches' that
    will exclude branches in certain lines from coverage report.
  - Simplifying and standardizing the processing of linked files.
  - Adding tests for deeply nested code, and symbolic links.
- - Add support for multiple —filter options in same manner as —exclude 
+ - Add support for multiple —filter options in same manner as —exclude
    option.
 
 === 3.0 ''(10 August 2013)'' ===
@@ -43,7 +64,7 @@
    overrides the environment variable, which overrides the default 'gcov'.
  - Adding an empty "<methods/>" block to <classes/> in the XML output: this
    makes out XML complient with the Cobertura DTD. (#3951)
- - Allow the GCOV environment variable to override the default 'gcov' 
+ - Allow the GCOV environment variable to override the default 'gcov'
    executable.  The default is to search the PATH for 'gcov' if the GCOV
    environment variable is not set. (#3950)
  - Adding support for LCOV-style flags for excluding certain lines from
@@ -109,8 +130,8 @@
  - Adding timestamp and version attributes to the gcovr XML report (see
    #3877).  It looks like the standard Cobertura output reports number of
    seconds since the epoch for the timestamp and a doted decimal version
-   string.  Now, gcovr reports seconds since the epoch and 
-   "`gcovr `"+`__version__` (e.g. "gcovr 2.2") to differentiate it 
+   string.  Now, gcovr reports seconds since the epoch and
+   "`gcovr `"+`__version__` (e.g. "gcovr 2.2") to differentiate it
    from a pure Cobertura report.
 
 
