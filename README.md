@@ -60,6 +60,8 @@ Install development version from GitHub:
 
     pip install git+https://github.com/gcovr/gcovr.git
 
+:warning: Even though gcovr could be used as a single python script file, future enhancements will break this capability.
+
 Quickstart
 ----------
 
