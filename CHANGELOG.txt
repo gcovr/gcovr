@@ -1,8 +1,24 @@
 = `gcovr` Release History and Change Log =
 
 === 3.4 ''(TODO)'' ===
- - Fix to support filtering with absolute paths
- - Added --html-encoding command line option (#139)
+ - Added --html-encoding command line option (#139).
+ - Added --fail-under-line and --fail-under-branch options,
+   which will error under a given minimum coverage. (#173, #116)
+ - Better pathname resolution heuristics for --use-gcov-file. (#146)
+ - The --root option defaults to current directory '.'.
+ - Improved reports for "(", ")", ";" lines.
+ - HTML reports show full timestamp, not just date. (#165)
+ - HTML reports treat 0/0 coverage as NaN, not 100% or 0%. (#105, #149, #196)
+ - Add support for coverage-04.dtd Cobertura XML format (#164, #186)
+ - Only Python 2.6+ is supported, with 2.7+ or 3.4+ recommended. (#195)
+ - Added CI testing for Windows using Appveyor. (#189, #200)
+ - Reports use forward slashes in paths, even on Windows. (#200)
+ - Fix to support filtering with absolute paths.
+ - Fix HTML generation with Python 3. (#168, #182, #163)
+ - Fix --html-details under Windows. (#157)
+ - Fix filters under Windows. (#158)
+ - Fix verbose output when using existing gcov files (#143, #144)
+
 
 === 3.3 ''(6 August 2016)'' ===
  - Added CI testing using TravisCI
@@ -16,6 +32,7 @@
  - Fixed unexpected semantics with --root argument (#108)
  - More careful checks for covered lines (#109)
 
+
 === 3.2 ''(5 July 2014)'' ===
  - Adding a test for out of source builds
  - Using the starting directory when processing gcov filenames.
@@ -25,6 +42,7 @@
  - Add option for using existing gcov files (#35)
  - Fixing --root argument processing (#27)
  - Adding logic to cover branches that are ignored (#28)
+
 
 === 3.1 ''(6 December 2013)'' ===
  - Change to make the -r/--root options define the root directory 
@@ -36,6 +54,7 @@
  - Adding tests for deeply nested code, and symbolic links.
  - Add support for multiple —filter options in same manner as —exclude 
    option.
+
 
 === 3.0 ''(10 August 2013)'' ===
  - Adding the '--gcov-executable' option to specify
@@ -57,6 +76,7 @@
  - Added the '—xml-pretty' option, which is used to
    generate pretty XML output for the user manual.
  - Many documentation updates
+
 
 === 2.4 ''(13 April 2012)'' ===
  - New approach to walking the directory tree that is more robust to
