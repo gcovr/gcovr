@@ -10,7 +10,6 @@ import pyutilib.th as unittest
 import nose
 
 basedir = os.path.split(os.path.abspath(__file__))[0]
-starting_dir = os.getcwd()
 
 
 @unittest.category('smoke')
