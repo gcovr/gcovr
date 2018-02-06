@@ -1,0 +1,5 @@
+/examples/.*_*
+/examples/gcovr.out
+/guide.html
+/guide.epub
+/guide.pdf
