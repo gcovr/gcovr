@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH=$PATH:`pwd`/../../scripts
+export PATH=`pwd`/../../scripts:$PATH
 
 cd example1
 ROOT=`pwd`
@@ -14,7 +14,7 @@ g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example1.cpp -o program
 # @:run
 
 # @gcovr:
-../../../scripts/gcovr -r . --html -o example1.html
+gcovr -r . --html -o example1.html
 # @:gcovr
 mv example1.html ..
 
