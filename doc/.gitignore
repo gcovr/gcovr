@@ -1,5 +1,3 @@
-/examples/.*_*
-/examples/gcovr.out
-/guide.html
-/guide.epub
-/guide.pdf
+examples/.*_*
+examples/gcovr.out
+guide.html
