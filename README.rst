@@ -103,53 +103,9 @@ For complete documentation, read the `manual <documentation_>`_.
 Contributing
 ------------
 
-When reporting a bug, first `search our issues <search all issues_>`_ to avoid duplicates.
-In your bug report, please describe what you expected gcovr to do, and what it actually did.
-Also try to include the following details:
-
--  how you invoked gcovr, i.e. the exact flags and from which directory
--  your project layout
--  your gcovr version
--  your compiler version
--  your operating system
--  and any other relevant details.
-
-Ideally, you can provide a short script
-and the smallest possible source file to reproduce the problem.
-
-If you would like to help out, please take a look at our `open issues <bugtracker_>`_ and `pull requests <pull requests_>`_.
-Maybe you know the answer to some problem,
-or can contribute your perspective as a gcovr user.
-In particular, testing proposed changes in your real-world project is very valuable.
-The issues labeled “\ `help wanted <label help wanted_>`_\ ” and “\ `needs review <label needs review_>`_\ ” would have the greatest impact.
-
-.. _label help wanted: https://github.com/gcovr/gcovr/labels/help%20wanted
-.. _label needs review: https://github.com/gcovr/gcovr/labels/needs%20review
-.. _pull requests: https://github.com/gcovr/gcovr/pulls
-.. _search all issues: https://github.com/gcovr/gcovr/issues?q=is%3Aissue
-
-Pull requests with bugfixes are welcome!
-If you want to contribute an enhancement,
-please open a new issue first so that your proposal can be discussed and honed.
-
-To work on the gcovr source code, you can clone the git repository,
-then run “\ ``pip install -e .``\ ”.
-To run the tests, you also have to “\ ``pip install pyutilib``\ ”.
-
-Currently, the whole program is in the ``scripts/gcovr`` file.
-It is roughly divided in coverage processing, the various output formats, and in the command line interface.
-The tests are in the ``gcovr/tests`` directory.
-You can run the tests with ``nosetests -v``.
-
-After you've contributed a bit, consider becoming a gcovr developer.
-As a developer, you can:
-
--  manage issues (label and close them)
--  approve pull requests
--  merge approved pull requests
--  participate in votes
-
-Just open an issue that you're interested, and we'll have a quick vote.
+If you want to report a bug or contribute to gcovr development,
+please read our contributing guidelines first:
+`<https://github.com/gcovr/gcovr/blob/master/CONTRIBUTING.rst>`_
 
 License
 -------
@@ -166,4 +122,3 @@ See AUTHORS.txt for the full list of contributors.
 
 Gcovr development moved to this repository in September, 2013 from
 Sandia National Laboratories.
-

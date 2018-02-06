@@ -321,39 +321,4 @@ a wholly owned subsidiary of Lockheed Martin Corporation, for the
 U.S.  Department of Energy's National Nuclear Security Administration
 under contract DE-AC04-94AL85000.
 
-
-[appendix]
-[[appendix_C]]
-Testing Gcovr
----------------
-
-In the +gcovr/tests+ directory, you can execute
-[source,bash]
-----
-python test_gcovr.py
-----
-to launch all tests.  By default, this test script executes test suites
-on a variety of code configurations that reflect different use-cases for
-+gcovr+.
-
-You can execute a specific test suite by giving its name as an
-argument to this test script.  For example, the command
-[source,bash]
-----
-python test_gcovr.py GcovrXml
-----
-executes the +GcovrXml+ test suite, which tests +gcovr+ with XML output.
-
-To run the +test_gcovr.py+ script, you will need to install the
-https://pypi.python.org/pypi/pyutilib.th[pyutilib.th] package.
-If you have
-https://pip.pypa.io/en/latest/[pip]
-installed, then
-you can install this package from PyPI by executing
-[source,bash]
-----
-pip install pyutilib.th
-----
-
-
 // vim: ft=asciidoc
