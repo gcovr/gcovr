@@ -1,7 +1,6 @@
 #!/bin/bash
 
-. GetGlobals.sh
-export PATH=$CXXTEST/bin:$PATH:`pwd`/../../scripts
+export PATH=$PATH:`pwd`/../../scripts
 
 cd example1
 ROOT=`pwd`
