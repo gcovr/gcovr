@@ -57,11 +57,15 @@ class Test(unittest.TestCase):
 
 if not sys.platform.startswith('win'):
     # Find all *.sh files, and use them to define baseline tests
-    for file in glob.glob(datadir + '*.sh'):
-        bname = basename(file)
+    for script in glob.glob(datadir + '*.sh'):
+        bname = basename(script)
         name = bname.split('.')[0]
-        if os.path.exists(datadir + name + '.txt'):
-            Test.add_baseline_test(cwd=datadir, cmd=file, baseline=datadir + name + '.txt', name=name, filter=filter)
+        for extension in '.txt .xml'.split():
+            baseline = datadir + name + extension
+            if os.path.exists(baseline):
+                Test.add_baseline_test(
+                    cwd=datadir, cmd=script, name=name,
+                    baseline=baseline, filter=filter)
 
 # Execute the tests
 if __name__ == '__main__':

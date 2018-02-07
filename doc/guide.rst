@@ -53,8 +53,6 @@ The Gcovr User Guide provides the following documentation:
 -   `Status and Future Plans`_: Comments on the past, present and future of Gcovr
 
 
-.. _gettingStarted:
-
 Getting Started
 ---------------
 
@@ -69,7 +67,7 @@ The ``gcovr`` command can be used to analyze programs compiled with
 GCC.   The following sections illustrate the application of ``gcovr``
 to test coverage of the following program:
 
-.. include:: examples/example1/example1.cpp
+.. include:: examples/example.cpp
     :code: cpp
     :number-lines: 1
 
@@ -82,10 +80,10 @@ Tabular Output of Code Coverage
 
 We compile +example1.cpp+ with the GCC compiler as follows:
 
-.. include:: examples/example1.sh
+.. include:: examples/example.sh
     :code: bash
-    :start-after: # @compile:
-    :end-before: # @:compile
+    :start-after: #BEGIN compile
+    :end-before: #END compile
 
 Note that we compile this program without optimization, because
 optimization may combine lines of code and otherwise change the
@@ -96,24 +94,24 @@ add logic to generate output files that can be processed by the
 
 The compiler generates the +program+ executable.  When we execute this command:
 
-.. include:: examples/example1.sh
+.. include:: examples/example.sh
     :code: bash
-    :start-after: # @run:
-    :end-before: # @:run
+    :start-after: #BEGIN run
+    :end-before: #END run
 
 the files ``example1.gcno`` and ``example1.gcda`` are generated.  These
 files are processed with by ``gcov`` to generate code coverage
 statistics.  The ``gcovr`` command calls ``gcov`` and summarizes these
 code coverage statistics in various formats.  For example:
 
-.. include:: examples/example1.sh
+.. include:: examples/example.sh
     :code: bash
-    :start-after: # @gcovr:
-    :end-before: # @:gcovr
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
 
 generates a text summary of the lines executed:
 
-.. include:: examples/example1.txt
+.. include:: examples/example.txt
     :literal:
 
 Each line of this output includes a summary for a given source file,
@@ -136,9 +134,8 @@ works best with a programming style that places only one statement
 on each line.
 
 ..
-    In ``example1.cpp``, the ``MACRO`` macro executes a
+    In ``example.cpp``, the ``MACRO`` macro executes a
     branch, but ``gcov`` cannot discern which branch is executed.
-
 
 
 Tabular Output of Branch Coverage
@@ -146,15 +143,15 @@ Tabular Output of Branch Coverage
 
 The ``gcovr`` command can also summarize branch coverage using the ``--branches`` option:
 
-.. include:: examples/example3.sh
+.. include:: ./examples/example_branches.sh
     :code: bash
-    :start-after: # @gcovr:
-    :end-before: # @:gcovr
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
 
 This generates a tabular output that summarizes the number of branches, the number of
 branches taken and the branches that were not completely covered:
 
-.. include:: examples/example3.txt
+.. include:: ./examples/example_branches.txt
     :literal:
 
 
@@ -165,14 +162,14 @@ The default output format for ``gcovr`` is to generate a tabular
 summary in plain text.  The ``gcovr`` command can also generate an
 XML output using the ``--xml`` and ``--xml-pretty`` options:
 
-.. include:: examples/example2.sh
+.. include:: ./examples/example_xml.sh
     :code: bash
-    :start-after: # @gcovr:
-    :end-before: # @:gcovr
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
 
 This generates an XML summary of the lines executed:
 
-.. include:: examples/example2.txt
+.. include:: ./examples/example_xml.xml
     :code: xml
 
 This XML format is in the
@@ -198,16 +195,16 @@ HTML Output
 The ``gcovr`` command can also generate a simple
 HTML output using the ``--html`` option:
 
-.. include:: examples/example4.sh
+.. include:: ./examples/example_html.sh
     :code: bash
-    :start-after: # @gcovr:
-    :end-before: # @:gcovr
+    :start-after: #BEGIN gcovr html
+    :end-before: #END gcovr html
 
 This generates a HTML summary of the lines executed.  In this
 example, the file ``example1.html`` is generated, which has the
 following output:
 
-.. image:: examples/example1.png
+.. image:: ./screenshot-html.png
     :align: center
 
 The default behavior of the ``--html`` option is to generate HTML for
@@ -220,14 +217,14 @@ for each file.  Each of these web pages includes the contents of
 file with annotations that summarize code coverage.  Consider the following
 command:
 
-.. include:: examples/example5.sh
+.. include:: ./examples/example_html.sh
     :code: bash
-    :start-after: # @gcovr:
-    :end-before: # @:gcovr
+    :start-after: #BEGIN gcovr html details
+    :end-before: #END gcovr html details
 
 This generates the following HTML page for the file ``example1.cpp``:
 
-.. image:: examples/example2_example1_cpp.png
+.. image:: ./screenshot-html-details.png
     :align: center
 
 Note that the ``--html-details`` option can only be used with the

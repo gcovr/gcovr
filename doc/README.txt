@@ -20,12 +20,11 @@ Otherwise:
 
 2.  in the examples directory, run
 
-        ./example4.sh
-        ./example5.sh
+        ./example_html.sh
 
 3.  make screenshots of
 
-        examples/example1.html
-        examples/example1/example2.example1.cpp.html
+        examples/example-html.html
+        examples/example-html-details.example.cpp.html
 
 4.  resize the screenshots to a maximum width of 700 pixels

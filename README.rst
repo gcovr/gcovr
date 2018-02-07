@@ -25,11 +25,11 @@ and generates an HTML-formatted report.
 
 Example HTML summary:
 
-.. image:: doc/examples/example1.png
+.. image:: ./doc/screenshot-html.png
 
 Example HTML details:
 
-.. image:: doc/examples/example2_example1_cpp.png
+.. image:: ./doc/screenshot-html-details.png
 
 .. _website:        http://gcovr.com/
 .. _documentation:  http://gcovr.com/guide.html

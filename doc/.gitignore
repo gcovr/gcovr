@@ -1,4 +1,3 @@
 examples/gcovr.out
-examples/example1.html
-examples/example1/example2*.html
+examples/example-*.html
 guide.html
