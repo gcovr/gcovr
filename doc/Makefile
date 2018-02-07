@@ -1,16 +1,13 @@
-.PHONY: all anchors outputs clean tests
+.PHONY: all outputs clean tests
 
 PYTHON ?= python
 
-%.html: %.txt anchors outputs
-	asciidoc -a data-uri -v -b html -d article -n -a toc2 -a icons $<
+%.html: %.rst outputs
+	rst2html5.py --embed-stylesheet $< $@
 
 all: guide.html
 
 html: guide.html
-
-anchors: guide.txt
-	$(PYTHON) include_anchors.py $<
 
 outputs:
 	../scripts/gcovr -h > examples/gcovr.out
