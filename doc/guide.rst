@@ -294,19 +294,7 @@ contributions from a wider set of developers.
 Acknowledgements
 ----------------
 
-The following developers contributed to the Gcovr 3.3 release:
-
--   ja11sop
--   Jörg Kreuzberger
--   Arvin Schnell
--   Andrew Stone
--   Attie Grande
--   Mikael Salson
--   Kai Blaschke
--   mikkleini
--   trapzero
--   B Brian Bauer
--   William Hart
+.. include:: ../AUTHORS.txt
 
 We would like to thank the following organizations for providing
 web hosting and computing resources:

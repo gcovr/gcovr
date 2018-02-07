@@ -1,39 +1,38 @@
-Maintainers:
+Gcovr is maintained by:
 
-* William Hart
-* John Siirola
-* Lukas Atkinson
+    William Hart,
+    John Siirola,
+    and Lukas Atkinson.
 
-Contributors, ordered alphabetically:
+The following developers contributed to gcovr (ordered alphabetically):
 
-* Andrew Stone
-* Arvin Schnell
-* Attie Grande
-* Bernhard Breinbauer
-* Carlos Jenkins
-* goriy
-* ja11sop
-* Jessica Levine
-* John Siirola
-* Jörg Kreuzberger
-* Kai Blaschke
-* Kevin Cai
-* libPhipp
-* Lukas Atkinson
-* Luke Woydziak
-* Matsumoto Taichi
-* Matthias Schmieder
-* Matthieu Darbois
-* Michał Pszona
-* Mikael Salson
-* Mikk Leini
-* Nikolaj Schumacher
-* Piotr Dziwinski
-* Reto Schneider
-* Robert Rosengren
-* Steven Myint
-* Sylvestre Ledru
-* trapzero
-* William Hart
-
-Additionally, each release documents author contributions.
+    Andrew Stone,
+    Arvin Schnell,
+    Attie Grande,
+    Bernhard Breinbauer,
+    Carlos Jenkins,
+    goriy,
+    ja11sop,
+    Jessica Levine,
+    John Siirola,
+    Jörg Kreuzberger,
+    Kai Blaschke,
+    Kevin Cai,
+    libPhipp,
+    Lukas Atkinson,
+    Luke Woydziak,
+    Matsumoto Taichi,
+    Matthias Schmieder,
+    Matthieu Darbois,
+    Michał Pszona,
+    Mikael Salson,
+    Mikk Leini,
+    Nikolaj Schumacher,
+    Piotr Dziwinski,
+    Reto Schneider,
+    Robert Rosengren,
+    Steven Myint,
+    Sylvestre Ledru,
+    trapzero,
+    William Hart,
+    and possibly others.
