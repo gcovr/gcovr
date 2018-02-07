@@ -7,21 +7,32 @@ website_ • documentation_ • bugtracker_ • `GitHub <repo_>`_
 
 |travis-ci-badge| |appveyor-ci-badge| |pypi-badge|
 
-Gcovr provides a utility for managing the use of the GNU gcov utility
+.. begin abstract
+
+Gcovr provides a utility for managing the use of the GNU gcov_ utility
 and generating summarized code coverage results. This command is
-inspired by the Python coverage.py package, which provides a similar
+inspired by the Python coverage.py_ package, which provides a similar
 utility for Python.
 
-The gcovr command can produce different kinds of coverage reports:
+The ``gcovr`` command can produce different kinds of coverage reports:
 
 -  default: compact human-readable summaries
--  ``--xml``: machine readable XML reports in Cobertura format
+-  ``--xml``: machine readable XML reports in Cobertura_ format
 -  ``--html``: HTML summaries
 -  ``--html-details``: HTML report with annotated source files
 
 Thus, gcovr can be viewed
-as a command-line alternative to the lcov utility, which runs gcov
+as a command-line alternative to the lcov_ utility, which runs gcov
 and generates an HTML-formatted report.
+The development of gcovr was motivated by the need for
+text summaries and XML reports.
+
+.. _gcov: http://gcc.gnu.org/onlinedocs/gcc/Gcov.html
+.. _coverage.py: http://nedbatchelder.com/code/coverage/
+.. _cobertura: http://cobertura.sourceforge.net/
+.. _lcov: http://ltp.sourceforge.net/coverage/lcov.php
+
+.. end abstract
 
 Example HTML summary:
 

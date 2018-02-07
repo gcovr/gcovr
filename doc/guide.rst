@@ -4,19 +4,11 @@ Gcovr User Guide
 
 .. topic:: Abstract
 
-    Gcovr provides a utility for managing the use of the GNU
-    `gcov <http://gcc.gnu.org/onlinedocs/gcc/Gcov.html>`__ utility and
-    generating summarized code coverage results. This command is inspired
-    by the Python `coverage.py <http://nedbatchelder.com/code/coverage/>`__
-    package, which provides a similar utility in Python. The ``gcovr``
-    command produces either compact human-readable summary reports,
-    machine readable XML reports (in
-    `Cobertura <http://cobertura.sourceforge.net/>`__ format) or simple HTML
-    reports.  Thus, ``gcovr`` can be viewed as a command-line alternative
-    to the `lcov <http://ltp.sourceforge.net/coverage/lcov.php>`__ utility,
-    which runs gcov and generates an HTML-formatted report; the development
-    of gcovr was motivated by the need for text and XML reports.  This
-    documentation describes Gcovr 3.3.
+    .. include:: ../README.rst
+        :start-after: .. begin abstract
+        :end-before: .. end abstract
+
+    This documentation describes Gcovr 3.3.
 
 .. section-numbering::
 
@@ -48,7 +40,7 @@ Gcovr is available under the
 The Gcovr User Guide provides the following documentation:
 
 -   `Getting Started`_: Some simple examples that illustrate how to use Gcovr
--   `The gcovr Command`_: Description of command-line options for +gcovr+
+-   `The gcovr Command`_: Description of command-line options for ``gcovr``
 -   `Installation`_: How to install Gcovr
 -   `Status and Future Plans`_: Comments on the past, present and future of Gcovr
 
@@ -78,7 +70,7 @@ but some lines in the program are not executed.
 Tabular Output of Code Coverage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We compile +example1.cpp+ with the GCC compiler as follows:
+We compile ``example1.cpp`` with the GCC compiler as follows:
 
 .. include:: examples/example.sh
     :code: bash
@@ -92,7 +84,7 @@ the ``-fprofile-arcs -ftest-coverage -fPIC`` compiler options, which
 add logic to generate output files that can be processed by the
 ``gcov`` command.
 
-The compiler generates the +program+ executable.  When we execute this command:
+The compiler generates the ``program`` executable.  When we execute this command:
 
 .. include:: examples/example.sh
     :code: bash
@@ -264,7 +256,7 @@ Installation
 
 Gcovr is available as a Python package that can be installed via pip.
 
-You can install +Gcovr+ from the PyPI network servers by executing
+You can install ``Gcovr`` from the PyPI network servers by executing
 
 .. code:: bash
 
