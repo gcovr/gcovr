@@ -1,7 +1,5 @@
 This directory supports the creation of the Gcovr User Guide using
-asciidoc and a2x commands.
-
-HTML
+docutils (`rst2html5.py`).
 
 The command
 
@@ -9,25 +7,25 @@ The command
 
 creates the guide.html file.
 
+When updating for a new gcovr version,
+the screenshots will have to be regenerated.
+If you have wkhtmltopdf installed, run
 
-NOTE: when updating the version of gcovr, the following files need to
-be manually updated:
+    make clean-images
+    make
 
-gcovr/doc/examples/example1.png:
-    cd gcovr/doc/examples
-    lbin ./example4.sh
-    open example1.html
-    <Capture this HTML page and save in the example1.png file.>
-    convert example1.png -resize 700x700 example1.png
+Otherwise:
 
-examples/example2_example1_cpp.png:
-    cd gcovr/doc/examples
-    lbin ./example5.sh
-    cd example1
-    open example2.html
-    <Click example1.cpp link>
-    <Capture this HTML page and save in the example2_example1.cpp.png file.>
-    convert example2_example1_cpp.png -resize 700x900 example2_example1_cpp.png
-    
+1.  delete the examples/*.png files
 
+2.  in the examples directory, run
 
+        ./example4.sh
+        ./example5.sh
+
+3.  make screenshots of
+
+        examples/example1.html
+        examples/example1/example2.example1.cpp.html
+
+4.  resize the screenshots to a maximum width of 700 pixels
