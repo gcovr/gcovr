@@ -1,6 +1,12 @@
 Gcovr User Guide
 ================
 
+.. github display
+
+    This file does not render correctly on GitHub.
+    Please view the user guide for the latest gcovr release at
+    http://gcovr.com/guide.html
+
 .. topic:: Abstract
 
     .. include:: ../README.rst
