@@ -248,6 +248,7 @@ the ``gcovr`` command line options:
 
 The above `Getting Started`_ guide
 illustrates the use of some command line options.
+`Using Filters`_ is discussed below.
 
 .. admonition:: TODO
 
@@ -257,7 +258,64 @@ illustrates the use of some command line options.
     ## Controlling Coverage
 
     TODO: document options that control where data files and gcov files
-    are found and filtering options for them.
+    are found.
+
+
+Using Filters
+~~~~~~~~~~~~~
+
+Gcovr tries to only report coverage for files within your project,
+not for your libraries. This is influenced by the following options:
+
+-   ``-r``, ``--root``
+-   ``-f``, ``--filter``
+-   ``-e``, ``--exclude``
+-   ``--gcov-filter``
+-   ``--gcov-exclude``
+-   ``--exclude-directories``
+-   (the current working directory where gcovr is invoked)
+
+These options take filters.
+A filter is a regular expression that matches a file path.
+If the filter looks like an absolute path,
+it is used as is.
+Otherwise, the filter is treated as relative to the current directory.
+Because filters are regexes, you will have to escape “special” characters.
+
+If no ``--filter`` is provided, the ``--root`` is turned into a default filter.
+Therefore, files outside of the ``--root`` directory are excluded.
+
+To be included in a report, the source file must match any ``--filter``,
+and must not match any ``--exclude`` filter.
+
+The ``--gcov-filter`` and ``--gcov-exclude`` filters apply to the ``.gcov`` files created by ``gcov``.
+This is useful mostly when running gcov yourself,
+and then invoking gcovr with ``-g``/``--use-gcov-files``.
+But these filters also apply when gcov is launched by gcovr.
+
+.. note::
+    The filters will be matched as a regex against an absolute path.
+    The filter must therefore not include symlinks or relative directories like “..”.
+
+.. warning::
+    Currently, only relative filters are supported on Windows.
+
+.. warning::
+    The behavior of Windows filters will change in a future release.
+
+    Currently, the filters are matched against normal backslash paths like
+    ``C:\project\directory\file.cpp``.
+    To match that, you need to escape the backslashes like
+    ``directory\\file\.cpp``.
+
+    In the future, the paths will use forward slashes,
+    so that the same filters can be used on Linux and Windows.
+    You would then have to use filters like
+    ``directory/file\.cpp``.
+
+    To avoid problems when upgrading, do not use path separators in Windows filters.
+    If absolutely necessary, use a placeholder ``.`` or a charclass ``[/\\]``
+    in place of path separators.
 
 
 Installation
