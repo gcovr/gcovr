@@ -1,7 +1,6 @@
 Gcovr User Guide
 ================
 
-
 .. topic:: Abstract
 
     .. include:: ../README.rst
@@ -14,6 +13,10 @@ Gcovr User Guide
 
 .. contents::
     :depth: 2
+
+.. footer:: last updated |timestamp|
+
+.. |timestamp| date::
 
 
 Overview
@@ -254,24 +257,14 @@ illustrates the use of some command line options.
 Installation
 ------------
 
-Gcovr is available as a Python package that can be installed via pip.
-
-You can install ``Gcovr`` from the PyPI network servers by executing
-
-.. code:: bash
-
-    pip install gcovr
-
-This places the ``gcovr`` executable in the ``bin`` or ``Scripts`` directory
-for your Python installation.
+.. include:: ../README.rst
+    :start-after: .. begin installation
+    :end-before: .. end installation
 
 The ``gcovr`` script has been tested with many different versions of
 CPython 2.7, 3.4, and 3.5, and PyPy 2.7 and 3.5.
-
-.. WARNING::
-    Even though gcovr could be used as a single python script file,
-    future enhancements will break this capability.
-
+The Linux, Windows, and macOS platforms are supported.
+Gcovr works with GCC and Clang compilers.
 
 Status and Future Plans
 -----------------------

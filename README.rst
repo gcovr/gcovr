@@ -59,23 +59,30 @@ Example HTML details:
 Installation
 ------------
 
+.. begin installation
+
 Gcovr is available as a Python package that can be installed via pip_.
 
 .. _pip: https://pip.pypa.io/en/stable
 
-Install newest stable release from PyPI:
+Install newest stable ``gcovr`` release from PyPI:
 
-::
+.. code:: bash
 
     pip install gcovr
 
 Install development version from GitHub:
 
-::
+.. code:: bash
 
     pip install git+https://github.com/gcovr/gcovr.git
 
-.. warning:: Even though gcovr could be used as a single python script file, future enhancements will break this capability.
+.. warning::
+    Even though gcovr could be used as a single python script file,
+    future enhancements will break this capability.
+    Instead: always use pip for the installation.
+
+.. end installation
 
 Quickstart
 ----------
