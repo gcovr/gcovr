@@ -4,7 +4,7 @@ PYTHON ?= python
 
 SCREENSHOT_FROM_HTML = wkhtmltoimage --width 700
 
-SCREENSHOTS = screenshot-html.png screenshot-html-details.png
+SCREENSHOTS = screenshot-html.png screenshot-html-details.example.cpp.png
 
 %.html: %.rst outputs
 	rst2html5.py --embed-stylesheet $< $@

@@ -225,7 +225,7 @@ command:
 
 This generates the following HTML page for the file ``example1.cpp``:
 
-.. image:: ./screenshot-html-details.png
+.. image:: ./screenshot-html-details.example.cpp.png
     :align: center
 
 Note that the ``--html-details`` option can only be used with the

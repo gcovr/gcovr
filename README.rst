@@ -40,7 +40,7 @@ Example HTML summary:
 
 Example HTML details:
 
-.. image:: ./doc/screenshot-html-details.png
+.. image:: ./doc/screenshot-html-details.example.cpp.png
 
 .. _website:        http://gcovr.com/
 .. _documentation:  http://gcovr.com/guide.html
