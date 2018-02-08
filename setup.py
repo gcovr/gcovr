@@ -25,7 +25,7 @@ def read(*rnames):
 scripts = glob.glob("scripts/*")
 
 setup(name='gcovr',
-      version='3.3',
+      version='3.4rc1',
       maintainer='William Hart',
       maintainer_email='wehart@sandia.gov',
       url='http://gcovr.com',

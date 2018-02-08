@@ -13,7 +13,7 @@ Gcovr User Guide
         :start-after: .. begin abstract
         :end-before: .. end abstract
 
-    This documentation describes Gcovr 3.3.
+    This documentation describes Gcovr 3.4.
 
 .. section-numbering::
 

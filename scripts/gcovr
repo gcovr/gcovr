@@ -69,8 +69,7 @@ uncovered_color = "LightPink"
 takenBranch_color = "Green"
 notTakenBranch_color = "Red"
 
-__version__ = "3.3"
-src_revision = "$Revision$"
+__version__ = "3.4rc1"
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc]annot open (source|graph) file")
@@ -85,11 +84,7 @@ cpp_style_comment_pattern = re.compile('//.*?$')
 
 
 def version_str():
-    ans = __version__
-    m = re.match('\$Revision:\s*(\S+)\s*\$', src_revision)
-    if m:
-        ans = ans + " (r%s)" % (m.group(1))
-    return ans
+    return __version__
 
 
 #
