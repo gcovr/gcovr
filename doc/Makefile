@@ -2,7 +2,7 @@
 
 PYTHON ?= python
 
-SCREENSHOT_FROM_HTML = wkhtmltoimage --width 700
+SCREENSHOT_FROM_HTML = wkhtmltoimage --width 700 --quality 5
 
 SCREENSHOTS = screenshot-html.png screenshot-html-details.example.cpp.png
 
