@@ -325,10 +325,20 @@ Installation
     :start-after: .. begin installation
     :end-before: .. end installation
 
-The ``gcovr`` script has been tested with many different versions of
-CPython 2.7, 3.4, and 3.5, and PyPy 2.7 and 3.5.
-The Linux, Windows, and macOS platforms are supported.
-Gcovr works with GCC and Clang compilers.
+Which environments does ``gcovr`` support?
+
+-   Python: 2.7+ and 3.4+.
+    Python 2.6 is supported on a best-effort basis.
+
+    The automated tests run on CPython 2.7, 3.4, and 3.5, and PyPy 2.7 and 3.5.
+
+-   Operating System: Linux, Windows, and macOS.
+
+    The automated tests run on Ubuntu 14.04 and Windows Server 2012.
+
+-   Compiler: GCC and Clang.
+
+    The automated tests run on GCC 5.
 
 Status and Future Plans
 -----------------------
