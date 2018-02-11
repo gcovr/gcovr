@@ -13,7 +13,7 @@ xml:
 
 html:
 	./testcase
-	../../../scripts/gcovr --exclude-unreachable-branches -b -d --html --html-details -o coverage.html
+	../../../scripts/gcovr --exclude-unreachable-branches -b -d --html-details -o coverage.html
 
 clean:
 	rm -f testcase

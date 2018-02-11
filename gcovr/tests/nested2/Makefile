@@ -17,7 +17,7 @@ xml:
 
 html:
 	./subdir/B/testcase
-	../../../scripts/gcovr -r subdir -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -r subdir -d --html-details -o coverage.html
 
 clean:
 	rm -f ./subdir/B/testcase subdir/lib.a

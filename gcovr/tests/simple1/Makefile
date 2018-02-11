@@ -17,7 +17,7 @@ xml:
 
 html:
 	./testcase
-	../../../scripts/gcovr -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -d --html-details -o coverage.html
 
 clean:
 	rm -f testcase

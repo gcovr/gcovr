@@ -25,7 +25,7 @@ xml:
 
 html:
 	./subdir/testcase
-	../../../scripts/gcovr -r subdir --object-directory objs -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -r subdir --object-directory objs -d --html-details -o coverage.html
 
 clean:
 	rm -f ./subdir/testcase

@@ -57,7 +57,7 @@ ifeq ($(BASE_OS),MSYS_NT)
 else
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 endif
-	../../../scripts/gcovr -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -d --html-details -o coverage.html
 
 clean:
 	rm -rf obj

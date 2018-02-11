@@ -19,7 +19,7 @@ xml:
 
 html:
 	./testcase
-	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d --html --html-details -o coverage.html
+	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
 
 clean:
 	rm -f testcase

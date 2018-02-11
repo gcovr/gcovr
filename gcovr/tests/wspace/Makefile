@@ -13,7 +13,7 @@ xml:
 
 html:
 	cd 'src code'; ./testcase
-	../../../scripts/gcovr -r 'src code' -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -r 'src code' -d --html-details -o coverage.html
 
 clean:
 	rm -f */testcase

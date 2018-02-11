@@ -2419,7 +2419,7 @@ if options.verbose:
 #
 if options.xml or options.prettyxml:
     print_xml_report(covdata)
-elif options.html:
+elif options.html or options.html_details:
     print_html_report(covdata, options.html_details)
 else:
     print_text_report(covdata)
