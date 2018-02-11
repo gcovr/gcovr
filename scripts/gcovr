@@ -1736,7 +1736,7 @@ def print_html_report(covdata, details):
 def source_row(lineno, source, cdata):
     rowstr = Template('''
     <tr>
-    <td align="right" class="lineno"><pre>${lineno}</pre></td>
+    <td align="right" class="lineno"><pre><a href="#${lineno}">${lineno}</a></pre></td>
     <td align="right" class="linebranch">${linebranch}</td>
     <td align="right" class="linecount ${covclass}"><pre>${linecount}</pre></td>
     <td align="left" class="src ${covclass}"><pre>${source}</pre></td>
