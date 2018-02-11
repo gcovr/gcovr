@@ -1597,7 +1597,7 @@ def print_html_report(covdata, details):
     )
     for f in keys:
         cdata = covdata[f]
-        filtered_fname = options.root_filter.sub('', f)
+        filtered_fname = os.path.normpath(options.root_filter.sub('', f))
         files.append(filtered_fname)
         dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata._filename = filtered_fname
