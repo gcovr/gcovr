@@ -13,7 +13,7 @@ xml:
 
 html:
 	./testcase
-	../../../scripts/gcovr -d --fail-under-branch 100.0 --html --html-details -o coverage.html
+	../../../scripts/gcovr -d --fail-under-branch 100.0 --html-details -o coverage.html
 
 clean:
 	rm -f testcase

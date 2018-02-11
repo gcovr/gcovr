@@ -22,7 +22,7 @@ xml:
 
 html:
 	./.subdir/testcase
-	../../../scripts/gcovr -r . -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -r . -d --html-details -o coverage.html
 
 clean:
 	rm -f ./.subdir/testcase

@@ -26,7 +26,7 @@ html:
 	./subdir/B/testcase
 	make -C subdir/A coverage
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	../../../scripts/gcovr -r subdir -g -k --html --html-details -o coverage.html .
+	../../../scripts/gcovr -r subdir -g -k --html-details -o coverage.html .
 
 clean:
 	rm -f ./subdir/B/testcase subdir/lib.a

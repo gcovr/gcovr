@@ -18,7 +18,7 @@ xml:
 html:
 	./testcase
 	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
-	../../../scripts/gcovr -v -g -d --html --html-details -o coverage.html
+	../../../scripts/gcovr -v -g -d --html-details -o coverage.html
 
 clean:
 	rm -f testcase
