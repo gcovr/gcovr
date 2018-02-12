@@ -69,7 +69,7 @@ uncovered_color = "LightPink"
 takenBranch_color = "Green"
 notTakenBranch_color = "Red"
 
-__version__ = "3.4rc1"
+__version__ = "3.4"
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc]annot open (source|graph) file")

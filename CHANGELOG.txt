@@ -1,6 +1,6 @@
 = `gcovr` Release History and Change Log =
 
-=== 3.4 ''(TODO)'' ===
+=== 3.4 ''(12 February 2018)'' ===
  - Added --html-encoding command line option (#139).
  - Added --fail-under-line and --fail-under-branch options,
    which will error under a given minimum coverage. (#173, #116)
