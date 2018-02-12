@@ -13,8 +13,8 @@
 #   - verify that gcov 3.4 or newer is being used
 #   - verify support for symbolic links
 #
-# gcovr is a FAST project.  For documentation, bug reporting, and
-# updates, see https://software.sandia.gov/trac/fast/wiki/gcovr
+# For documentation, bug reporting, and updates,
+# see http://gcovr.com/
 #
 #  _________________________________________________________________________
 #
@@ -73,8 +73,6 @@ __version__ = "3.4"
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc]annot open (source|graph) file")
-
-starting_dir = os.path.abspath(os.getcwd())
 
 exclude_line_flag = "_EXCL_"
 exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
@@ -471,10 +469,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
     # Find the source file
     #
     currdir = os.getcwd()
-    if options.root is None:
-        root_dir = starting_dir
-    else:
-        root_dir = os.path.abspath(options.root)
+    root_dir = options.root_dir
     if source_fname is None:
         common_dir = os.path.commonprefix([data_fname, currdir])
         fname = aliases.unalias_path(os.path.join(common_dir, segments[-1].strip()))
@@ -496,7 +491,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
             fname = os.path.join(root_dir, gcovname)
             if not os.path.exists(fname):
                 # 2. Try using the starting directory as the source directory
-                fname = os.path.join(starting_dir, gcovname)
+                fname = os.path.join(options.starting_dir, gcovname)
                 if not os.path.exists(fname):
                     # 3. Try using the path to the gcda file as the source directory
                     fname = os.path.join(os.path.dirname(source_fname), os.path.basename(gcovname))
@@ -793,8 +788,8 @@ def process_datafile(filename, covdata, options):
 
     # no objdir was specified (or it was a parent dir); walk up the dir tree
     if len(potential_wd) == 0:
-        potential_wd.append(root_dir)
-        # print "X - potential_wd", root_dir
+        potential_wd.append(options.root_dir)
+        # print "X - potential_wd", options.root_dir
         wd = os.path.split(abs_filename)[0]
         while True:
             potential_wd.append(wd)
@@ -806,7 +801,7 @@ def process_datafile(filename, covdata, options):
                 break
     else:
         # Always add the root directory
-        potential_wd.append(root_dir)
+        potential_wd.append(options.root_dir)
 
     #
     # If the first element of cmd - the executable name - has embedded spaces
@@ -891,7 +886,7 @@ def process_datafile(filename, covdata, options):
                         # Only remove files that actually exist.
                         os.remove(fname)
 
-    os.chdir(starting_dir)
+    os.chdir(options.root_dir)
     if options.delete:
         if not abs_filename.endswith('gcno'):
             os.remove(abs_filename)
@@ -944,7 +939,7 @@ def process_existing_gcov_file(filename, covdata, options):
 #
 # Produce the classic gcovr text report
 #
-def print_text_report(covdata):
+def print_text_report(covdata, options):
     def _num_uncovered(key):
         (total, covered, percent) = covdata[key].coverage()
         return total - covered
@@ -1519,7 +1514,7 @@ def coverage_to_color(coverage):
 #
 # Produce an HTML report
 #
-def print_html_report(covdata, details):
+def print_html_report(covdata, options):
     def _num_uncovered(key):
         (total, covered, percent) = covdata[key].coverage()
         return total - covered
@@ -1534,6 +1529,7 @@ def print_html_report(covdata, details):
     def _alpha(key):
         return key
 
+    details = options.html_details
     if options.output is None:
         details = False
     data = {}
@@ -1715,7 +1711,7 @@ def print_html_report(covdata, details):
 
         data['ROWS'] = []
         currdir = os.getcwd()
-        os.chdir(root_dir)
+        os.chdir(options.root_dir)
         INPUT = open(data['FILENAME'], 'r')
         ctr = 1
         for line in INPUT:
@@ -1830,7 +1826,7 @@ def html_row(details, sourcefile, **kwargs):
 #
 # Produce an XML report in the Cobertura format
 #
-def print_xml_report(covdata):
+def print_xml_report(covdata, options):
     branchTotal = 0
     branchCovered = 0
     lineTotal = 0
@@ -2059,10 +2055,6 @@ def print_xml_report(covdata):
 # # MAIN
 # #
 
-#
-# Create option parser
-#
-
 # helper for percentage actions
 def check_percentage(option, opt, value):
     try:
@@ -2080,282 +2072,232 @@ class PercentageOption (Option):
     TYPE_CHECKER["percentage"] = check_percentage
 
 
-parser = OptionParser(option_class=PercentageOption)
-parser.add_option(
-    "--version",
-    help="Print the version number, then exit",
-    action="store_true",
-    dest="version",
-    default=False
-)
-parser.add_option(
-    "-v", "--verbose",
-    help="Print progress messages",
-    action="store_true",
-    dest="verbose",
-    default=False
-)
-parser.add_option(
-    '--object-directory',
-    help="Specify the directory that contains the gcov data files.  gcovr "
-         "must be able to identify the path between the *.gcda files and the "
-         "directory where gcc was originally run.  Normally, gcovr can guess "
-         "correctly.  This option overrides gcovr's normal path detection and "
-         "can specify either the path from gcc to the gcda file (i.e. what "
-         "was passed to gcc's '-o' option), or the path from the gcda file to "
-         "gcc's original working directory.",
-    action="store",
-    dest="objdir",
-    default=None
-)
-parser.add_option(
-    "-o", "--output",
-    help="Print output to this filename",
-    action="store",
-    dest="output",
-    default=None
-)
-parser.add_option(
-    "-k", "--keep",
-    help="Keep the temporary *.gcov files generated by gcov.  "
-         "By default, these are deleted.",
-    action="store_true",
-    dest="keep",
-    default=False
-)
-parser.add_option(
-    "-d", "--delete",
-    help="Delete the coverage files after they are processed.  "
-         "These are generated by the users's program, and by default gcovr "
-         "does not remove these files.",
-    action="store_true",
-    dest="delete",
-    default=False
-)
-parser.add_option(
-    "-f", "--filter",
-    help="Keep only the data files that match this regular expression",
-    action="append",
-    dest="filter",
-    default=[]
-)
-parser.add_option(
-    "-e", "--exclude",
-    help="Exclude data files that match this regular expression",
-    action="append",
-    dest="exclude",
-    default=[]
-)
-parser.add_option(
-    "--gcov-filter",
-    help="Keep only gcov data files that match this regular expression",
-    action="store",
-    dest="gcov_filter",
-    default=None
-)
-parser.add_option(
-    "--gcov-exclude",
-    help="Exclude gcov data files that match this regular expression",
-    action="append",
-    dest="gcov_exclude",
-    default=[]
-)
-parser.add_option(
-    "-r", "--root",
-    help="Defines the root directory for source files.  "
-         "This is also used to filter the files, and to standardize "
-         "the output.",
-    action="store",
-    dest="root",
-    default='.'
-)
-parser.add_option(
-    "-x", "--xml",
-    help="Generate XML instead of the normal tabular output.",
-    action="store_true",
-    dest="xml",
-    default=False
-)
-parser.add_option(
-    "--xml-pretty",
-    help="Generate pretty XML instead of the normal dense format.",
-    action="store_true",
-    dest="prettyxml",
-    default=False
-)
-parser.add_option(
-    "--html",
-    help="Generate HTML instead of the normal tabular output.",
-    action="store_true",
-    dest="html",
-    default=False
-)
-parser.add_option(
-    "--html-details",
-    help="Generate HTML output for source file coverage.",
-    action="store_true",
-    dest="html_details",
-    default=False
-)
-parser.add_option(
-    "--html-absolute-paths",
-    help="Set the paths in the HTML report to be absolute instead of relative",
-    action="store_false",
-    dest="relative_anchors",
-    default=True
-)
-parser.add_option(
-    '--html-encoding',
-    help='HTML file encoding (default: UTF-8).',
-    action='store',
-    dest='html_encoding',
-    default='UTF-8'
-)
-parser.add_option(
-    "-b", "--branches",
-    help="Tabulate the branch coverage instead of the line coverage.",
-    action="store_true",
-    dest="show_branch",
-    default=None
-)
-parser.add_option(
-    "-u", "--sort-uncovered",
-    help="Sort entries by increasing number of uncovered lines.",
-    action="store_true",
-    dest="sort_uncovered",
-    default=None
-)
-parser.add_option(
-    "-p", "--sort-percentage",
-    help="Sort entries by decreasing percentage of covered lines.",
-    action="store_true",
-    dest="sort_percent",
-    default=None
-)
-parser.add_option(
-    "--gcov-executable",
-    help="Defines the name/path to the gcov executable [defaults to the "
-         "GCOV environment variable, if present; else 'gcov'].",
-    action="store",
-    dest="gcov_cmd",
-    default=os.environ.get('GCOV', 'gcov')
-)
-parser.add_option(
-    "--exclude-unreachable-branches",
-    help="Exclude from coverage branches which are marked to be excluded by "
-         "LCOV/GCOV markers or are determined to be from lines containing "
-         "only compiler-generated \"dead\" code.",
-    action="store_true",
-    dest="exclude_unreachable_branches",
-    default=False
-)
-parser.add_option(
-    "--exclude-directories",
-    help="Exclude directories from search path that match this regular expression",
-    action="append",
-    dest="exclude_dirs",
-    default=[]
-)
-parser.add_option(
-    "-g", "--use-gcov-files",
-    help="Use preprocessed gcov files for analysis.",
-    action="store_true",
-    dest="gcov_files",
-    default=False
-)
-parser.add_option(
-    "-s", "--print-summary",
-    help="Prints a small report to stdout with line & branch "
-         "percentage coverage",
-    action="store_true",
-    dest="print_summary",
-    default=False
-)
-parser.add_option(
-    "--fail-under-line",
-    type="percentage",
-    metavar="MIN",
-    help="Exit with a status of 2 if the total line coverage is less "
-         "than MIN. "
-         "Can be ORed with exit status of '--fail-under-branch' option",
-    action="store",
-    dest="fail_under_line",
-    default=0.0
-)
-parser.add_option(
-    "--fail-under-branch",
-    type="percentage",
-    metavar="MIN",
-    help="Exit with a status of 4 if the total branch coverage is less "
-         "than MIN. "
-         "Can be ORed with exit status of '--fail-under-line' option",
-    action="store",
-    dest="fail_under_branch",
-    default=0.0
-)
-parser.usage = "gcovr [options]"
-parser.description = \
-    "A utility to run gcov and generate a simple report that summarizes " \
-    "the coverage"
-#
-# Process options
-#
-options, args = parser.parse_args(args=sys.argv)
-
-if options.version:
-    sys.stdout.write(
-        "gcovr %s\n"
-        "\n"
-        "Copyright (2013) Sandia Corporation. Under the terms of Contract\n"
-        "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
-        "retains certain rights in this software.\n"
-        % (version_str(), )
+def parse_arguments():
+    """
+    Create and parse arguments.
+    """
+    parser = OptionParser(option_class=PercentageOption)
+    parser.add_option(
+        "--version",
+        help="Print the version number, then exit",
+        action="store_true",
+        dest="version",
+        default=False
     )
-    sys.exit(0)
+    parser.add_option(
+        "-v", "--verbose",
+        help="Print progress messages",
+        action="store_true",
+        dest="verbose",
+        default=False
+    )
+    parser.add_option(
+        '--object-directory',
+        help="Specify the directory that contains the gcov data files.  gcovr "
+             "must be able to identify the path between the *.gcda files and the "
+             "directory where gcc was originally run.  Normally, gcovr can guess "
+             "correctly.  This option overrides gcovr's normal path detection and "
+             "can specify either the path from gcc to the gcda file (i.e. what "
+             "was passed to gcc's '-o' option), or the path from the gcda file to "
+             "gcc's original working directory.",
+        action="store",
+        dest="objdir",
+        default=None
+    )
+    parser.add_option(
+        "-o", "--output",
+        help="Print output to this filename",
+        action="store",
+        dest="output",
+        default=None
+    )
+    parser.add_option(
+        "-k", "--keep",
+        help="Keep the temporary *.gcov files generated by gcov.  "
+             "By default, these are deleted.",
+        action="store_true",
+        dest="keep",
+        default=False
+    )
+    parser.add_option(
+        "-d", "--delete",
+        help="Delete the coverage files after they are processed.  "
+             "These are generated by the users's program, and by default gcovr "
+             "does not remove these files.",
+        action="store_true",
+        dest="delete",
+        default=False
+    )
+    parser.add_option(
+        "-f", "--filter",
+        help="Keep only the data files that match this regular expression",
+        action="append",
+        dest="filter",
+        default=[]
+    )
+    parser.add_option(
+        "-e", "--exclude",
+        help="Exclude data files that match this regular expression",
+        action="append",
+        dest="exclude",
+        default=[]
+    )
+    parser.add_option(
+        "--gcov-filter",
+        help="Keep only gcov data files that match this regular expression",
+        action="store",
+        dest="gcov_filter",
+        default=None
+    )
+    parser.add_option(
+        "--gcov-exclude",
+        help="Exclude gcov data files that match this regular expression",
+        action="append",
+        dest="gcov_exclude",
+        default=[]
+    )
+    parser.add_option(
+        "-r", "--root",
+        help="Defines the root directory for source files.  "
+             "This is also used to filter the files, and to standardize "
+             "the output.",
+        action="store",
+        dest="root",
+        default='.'
+    )
+    parser.add_option(
+        "-x", "--xml",
+        help="Generate XML instead of the normal tabular output.",
+        action="store_true",
+        dest="xml",
+        default=False
+    )
+    parser.add_option(
+        "--xml-pretty",
+        help="Generate pretty XML instead of the normal dense format.",
+        action="store_true",
+        dest="prettyxml",
+        default=False
+    )
+    parser.add_option(
+        "--html",
+        help="Generate HTML instead of the normal tabular output.",
+        action="store_true",
+        dest="html",
+        default=False
+    )
+    parser.add_option(
+        "--html-details",
+        help="Generate HTML output for source file coverage.",
+        action="store_true",
+        dest="html_details",
+        default=False
+    )
+    parser.add_option(
+        "--html-absolute-paths",
+        help="Set the paths in the HTML report to be absolute instead "
+             "of relative",
+        action="store_false",
+        dest="relative_anchors",
+        default=True
+    )
+    parser.add_option(
+        '--html-encoding',
+        help='HTML file encoding (default: UTF-8).',
+        action='store',
+        dest='html_encoding',
+        default='UTF-8'
+    )
+    parser.add_option(
+        "-b", "--branches",
+        help="Tabulate the branch coverage instead of the line coverage.",
+        action="store_true",
+        dest="show_branch",
+        default=None
+    )
+    parser.add_option(
+        "-u", "--sort-uncovered",
+        help="Sort entries by increasing number of uncovered lines.",
+        action="store_true",
+        dest="sort_uncovered",
+        default=None
+    )
+    parser.add_option(
+        "-p", "--sort-percentage",
+        help="Sort entries by decreasing percentage of covered lines.",
+        action="store_true",
+        dest="sort_percent",
+        default=None
+    )
+    parser.add_option(
+        "--gcov-executable",
+        help="Defines the name/path to the gcov executable [defaults to the "
+             "GCOV environment variable, if present; else 'gcov'].",
+        action="store",
+        dest="gcov_cmd",
+        default=os.environ.get('GCOV', 'gcov')
+    )
+    parser.add_option(
+        "--exclude-unreachable-branches",
+        help="Exclude from coverage branches which are marked to be excluded "
+             "by LCOV/GCOV markers or are determined to be from lines "
+             "containing only compiler-generated \"dead\" code.",
+        action="store_true",
+        dest="exclude_unreachable_branches",
+        default=False
+    )
+    parser.add_option(
+        "--exclude-directories",
+        help="Exclude directories from search path that match this regular expression",
+        action="append",
+        dest="exclude_dirs",
+        default=[]
+    )
+    parser.add_option(
+        "-g", "--use-gcov-files",
+        help="Use preprocessed gcov files for analysis.",
+        action="store_true",
+        dest="gcov_files",
+        default=False
+    )
+    parser.add_option(
+        "-s", "--print-summary",
+        help="Prints a small report to stdout with line & branch "
+             "percentage coverage",
+        action="store_true",
+        dest="print_summary",
+        default=False
+    )
+    parser.add_option(
+        "--fail-under-line",
+        type="percentage",
+        metavar="MIN",
+        help="Exit with a status of 2 if the total line coverage is less "
+             "than MIN. "
+             "Can be ORed with exit status of '--fail-under-branch' option",
+        action="store",
+        dest="fail_under_line",
+        default=0.0
+    )
+    parser.add_option(
+        "--fail-under-branch",
+        type="percentage",
+        metavar="MIN",
+        help="Exit with a status of 4 if the total branch coverage is less "
+             "than MIN. "
+             "Can be ORed with exit status of '--fail-under-line' option",
+        action="store",
+        dest="fail_under_branch",
+        default=0.0
+    )
+    parser.usage = "gcovr [options]"
+    parser.description = \
+        "A utility to run gcov and generate a simple report that summarizes " \
+        "the coverage"
 
-if options.output is not None:
-    options.output = os.path.abspath(options.output)
-
-if options.objdir is not None:
-    if not options.objdir:
-        sys.stderr.write(
-            "(ERROR) empty --object-directory option.\n"
-            "\tThis option specifies the path to the object file "
-            "directory of your project.\n"
-            "\tThis option cannot be an empty string.\n"
-        )
-        sys.exit(1)
-    tmp = options.objdir.replace('/', os.sep).replace('\\', os.sep)
-    while os.sep + os.sep in tmp:
-        tmp = tmp.replace(os.sep + os.sep, os.sep)
-    if normpath(options.objdir) != tmp:
-        sys.stderr.write(
-            "(WARNING) relative referencing in --object-directory.\n"
-            "\tthis could cause strange errors when gcovr attempts to\n"
-            "\tidentify the original gcc working directory.\n")
-    if not os.path.exists(normpath(options.objdir)):
-        sys.stderr.write(
-            "(ERROR) Bad --object-directory option.\n"
-            "\tThe specified directory does not exist.\n")
-        sys.exit(1)
-
-if options.root is not None:
-    if not options.root:
-        sys.stderr.write(
-            "(ERROR) empty --root option.\n"
-            "\tRoot specifies the path to the root "
-            "directory of your project.\n"
-            "\tThis option cannot be an empty string.\n"
-        )
-        sys.exit(1)
-    root_dir = os.path.abspath(options.root)
-else:
-    root_dir = starting_dir
+    return parser.parse_args()
 
 
-#
-# Setup filters
-#
 def build_filter(regex):
     if os.name == 'nt':
         # Windows path separators must be escaped before being parsed into a
@@ -2367,65 +2309,126 @@ def build_filter(regex):
         return re.compile(os.path.realpath(regex))
 
 
-for i in range(0, len(options.exclude)):
-    options.exclude[i] = build_filter(options.exclude[i])
+def main(options, args):
 
-if options.exclude_dirs is not None:
-    for i in range(0, len(options.exclude_dirs)):
-        options.exclude_dirs[i] = build_filter(options.exclude_dirs[i])
+    if options.version:
+        sys.stdout.write(
+            "gcovr %s\n"
+            "\n"
+            "Copyright (2013) Sandia Corporation. Under the terms of Contract\n"
+            "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
+            "retains certain rights in this software.\n"
+            % (version_str(), )
+        )
+        sys.exit(0)
 
-options.root_filter = re.compile(re.escape(root_dir + os.sep))
-for i in range(0, len(options.filter)):
-    options.filter[i] = build_filter(options.filter[i])
-if len(options.filter) == 0:
-    options.filter.append(options.root_filter)
-
-for i in range(0, len(options.gcov_exclude)):
-    options.gcov_exclude[i] = build_filter(options.gcov_exclude[i])
-if options.gcov_filter is not None:
-    options.gcov_filter = build_filter(options.gcov_filter)
-else:
-    options.gcov_filter = re.compile('')
-#
-# Get data files
-#
-if len(args) == 1:
-    if options.root is None:
-        search_paths = ["."]
-    else:
-        search_paths = [options.root]
+    if options.output is not None:
+        options.output = os.path.abspath(options.output)
 
     if options.objdir is not None:
-        search_paths.append(options.objdir)
+        if not options.objdir:
+            sys.stderr.write(
+                "(ERROR) empty --object-directory option.\n"
+                "\tThis option specifies the path to the object file "
+                "directory of your project.\n"
+                "\tThis option cannot be an empty string.\n"
+            )
+            sys.exit(1)
+        tmp = options.objdir.replace('/', os.sep).replace('\\', os.sep)
+        while os.sep + os.sep in tmp:
+            tmp = tmp.replace(os.sep + os.sep, os.sep)
+        if normpath(options.objdir) != tmp:
+            sys.stderr.write(
+                "(WARNING) relative referencing in --object-directory.\n"
+                "\tthis could cause strange errors when gcovr attempts to\n"
+                "\tidentify the original gcc working directory.\n")
+        if not os.path.exists(normpath(options.objdir)):
+            sys.stderr.write(
+                "(ERROR) Bad --object-directory option.\n"
+                "\tThe specified directory does not exist.\n")
+            sys.exit(1)
 
-    datafiles = get_datafiles(search_paths, options)
-else:
-    datafiles = get_datafiles(args[1:], options)
-#
-# Get coverage data
-#
-covdata = {}
-for file_ in datafiles:
-    if options.gcov_files:
-        process_existing_gcov_file(file_, covdata, options)
+    options.starting_dir = os.path.abspath(os.getcwd())
+    options.root_dir = options.starting_dir
+    if options.root is not None:
+        if not options.root:
+            sys.stderr.write(
+                "(ERROR) empty --root option.\n"
+                "\tRoot specifies the path to the root "
+                "directory of your project.\n"
+                "\tThis option cannot be an empty string.\n"
+            )
+            sys.exit(1)
+        options.root_dir = os.path.abspath(options.root)
+
+    #
+    # Setup filters
+    #
+
+    for i in range(0, len(options.exclude)):
+        options.exclude[i] = build_filter(options.exclude[i])
+
+    if options.exclude_dirs is not None:
+        for i in range(0, len(options.exclude_dirs)):
+            options.exclude_dirs[i] = build_filter(options.exclude_dirs[i])
+
+    options.root_filter = re.compile(re.escape(options.root_dir + os.sep))
+    for i in range(0, len(options.filter)):
+        options.filter[i] = build_filter(options.filter[i])
+    if len(options.filter) == 0:
+        options.filter.append(options.root_filter)
+
+    for i in range(0, len(options.gcov_exclude)):
+        options.gcov_exclude[i] = build_filter(options.gcov_exclude[i])
+    if options.gcov_filter is not None:
+        options.gcov_filter = build_filter(options.gcov_filter)
     else:
-        process_datafile(file_, covdata, options)
-if options.verbose:
-    sys.stdout.write(
-        "Gathered coveraged data for " + str(len(covdata)) + " files\n"
-    )
-#
-# Print report
-#
-if options.xml or options.prettyxml:
-    print_xml_report(covdata)
-elif options.html or options.html_details:
-    print_html_report(covdata, options.html_details)
-else:
-    print_text_report(covdata)
+        options.gcov_filter = re.compile('')
+    #
+    # Get data files
+    #
+    if len(args) == 0:
+        if options.root is None:
+            search_paths = ["."]
+        else:
+            search_paths = [options.root]
 
-if options.print_summary:
-    print_summary(covdata)
+        if options.objdir is not None:
+            search_paths.append(options.objdir)
 
-if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
-    fail_under(covdata, options.fail_under_line, options.fail_under_branch)
+        datafiles = get_datafiles(search_paths, options)
+    else:
+        datafiles = get_datafiles(args, options)
+    #
+    # Get coverage data
+    #
+    covdata = {}
+    for file_ in datafiles:
+        if options.gcov_files:
+            process_existing_gcov_file(file_, covdata, options)
+        else:
+            process_datafile(file_, covdata, options)
+    if options.verbose:
+        sys.stdout.write(
+            "Gathered coveraged data for " + str(len(covdata)) + " files\n"
+        )
+    #
+    # Print report
+    #
+    if options.xml or options.prettyxml:
+        print_xml_report(covdata, options)
+    elif options.html or options.html_details:
+        print_html_report(covdata, options)
+    else:
+        print_text_report(covdata, options)
+
+    if options.print_summary:
+        print_summary(covdata, options)
+
+    if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
+        fail_under(covdata, options.fail_under_line, options.fail_under_branch)
+
+
+if __name__ == '__main__':
+    options, args = parse_arguments()
+    main(options, args)
