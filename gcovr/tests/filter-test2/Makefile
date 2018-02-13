@@ -2,7 +2,10 @@ CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 ifeq ($(BASE_OS),MSYS_NT)
-  GCOVR_TEST_OPTIONS := -f $(shell pwd | cygpath -w)\\main.cpp
+  # Absolute filters are known to not work on Windows right now.
+  # Use relative path instead
+  # GCOVR_TEST_OPTIONS := -f $(shell cygpath -w "$$PWD")\main.cpp
+  GCOVR_TEST_OPTIONS := -f main.cpp
 else
   GCOVR_TEST_OPTIONS := -f $(shell pwd)/main.cpp
 endif
