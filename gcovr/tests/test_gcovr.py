@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+import glob
 import os
 import os.path
 import platform
 import re
+import shutil
 import sys
 import subprocess
 import traceback
@@ -10,10 +12,19 @@ import pyutilib.th as unittest
 import nose
 
 
+from .. import __main__  # noqa, allow coverage with nose
+
+
 basedir = os.path.split(os.path.abspath(__file__))[0]
+coverage_path = os.path.abspath(os.path.join(basedir, '..', '..'))
 python_interpreter = sys.executable.replace('\\', '/')  # use forward slash on windows as well
 env = os.environ
-env['GCOVR'] = python_interpreter + ' -m gcovr'
+if 'coverage' in sys.modules:
+    run_coverage = True
+    env['GCOVR'] = python_interpreter + ' -m coverage run --branch --parallel-mode -m gcovr'
+else:
+    run_coverage = False
+    env['GCOVR'] = python_interpreter + ' -m gcovr'
 
 
 @unittest.category('smoke')
@@ -97,6 +108,10 @@ def run(cmd):
         sys.stdout.write("Caught unexpected exception in test driver: %s\n%s"
                          % (str(e), traceback.format_exc()))
         raise
+    finally:
+        if run_coverage:
+            for file in glob.glob('./.coverage*'):
+                shutil.move(file, coverage_path)
 
 
 @unittest.nottest
