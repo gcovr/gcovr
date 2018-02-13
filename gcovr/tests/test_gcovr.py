@@ -22,7 +22,7 @@ env = os.environ
 if 'coverage' in sys.modules:
     run_coverage = True
     env['GCOVR'] = python_interpreter + ' -m coverage run --branch --parallel-mode -m gcovr'
-else:
+else:  # pragma: no cover
     run_coverage = False
     env['GCOVR'] = python_interpreter + ' -m gcovr'
 
@@ -103,13 +103,13 @@ def run(cmd):
         sys.stdout.write("%s" % proc.communicate()[0])
         print("STDOUT - END")
         return not proc.returncode
-    except Exception:
+    except Exception:  # pragma: no cover
         e = sys.exc_info()[1]
         sys.stdout.write("Caught unexpected exception in test driver: %s\n%s"
                          % (str(e), traceback.format_exc()))
         raise
     finally:
-        if run_coverage:
+        if run_coverage:  # pragma: no branch
             for file in glob.glob('./.coverage*'):
                 shutil.move(file, coverage_path)
 
@@ -158,5 +158,5 @@ for f in os.listdir(basedir):
         GcovrXml.add_fn_test(fn=gcovr_test_xml, name=f)
         GcovrHtml.add_fn_test(fn=gcovr_test_html, name=f)
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     unittest.main()
