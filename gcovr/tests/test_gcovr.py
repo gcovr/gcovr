@@ -9,7 +9,11 @@ import traceback
 import pyutilib.th as unittest
 import nose
 
+
 basedir = os.path.split(os.path.abspath(__file__))[0]
+python_interpreter = sys.executable.replace('\\', '/')  # use forward slash on windows as well
+env = os.environ
+env['GCOVR'] = python_interpreter + ' -m gcovr'
 
 
 @unittest.category('smoke')
@@ -83,7 +87,7 @@ def run(cmd):
         proc = subprocess.Popen(cmd,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT,
-                                env=os.environ)
+                                env=env)
         print("STDOUT - START")
         sys.stdout.write("%s" % proc.communicate()[0])
         print("STDOUT - END")

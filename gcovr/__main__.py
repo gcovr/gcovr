@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 #
 # A report generator for gcov 3.4
@@ -2309,7 +2308,9 @@ def build_filter(regex):
         return re.compile(os.path.realpath(regex))
 
 
-def main(options, args):
+def main():
+    global options
+    options, args = parse_arguments()
 
     if options.version:
         sys.stdout.write(
@@ -2430,5 +2431,4 @@ def main(options, args):
 
 
 if __name__ == '__main__':
-    options, args = parse_arguments()
-    main(options, args)
+    main()

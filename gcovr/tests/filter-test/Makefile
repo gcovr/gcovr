@@ -11,15 +11,15 @@ GCOVR_TEST_OPTIONS = -f '.*main.cpp'
 
 txt:
 	./testcase
-	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
 
 xml:
 	./testcase
-	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d -x -o coverage.xml
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -x -o coverage.xml
 
 html:
 	./testcase
-	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
 
 clean:
 	rm -f testcase

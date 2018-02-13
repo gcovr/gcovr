@@ -5,15 +5,15 @@ run: txt xml html
 
 txt:
 	./testcase
-	../../../scripts/gcovr --exclude-unreachable-branches -b -d -o coverage.txt
+	$(GCOVR) --exclude-unreachable-branches -b -d -o coverage.txt
 
 xml:
 	./testcase
-	../../../scripts/gcovr --exclude-unreachable-branches -b -d -x -o coverage.xml
+	$(GCOVR) --exclude-unreachable-branches -b -d -x -o coverage.xml
 
 html:
 	./testcase
-	../../../scripts/gcovr --exclude-unreachable-branches -b -d --html-details -o coverage.html
+	$(GCOVR) --exclude-unreachable-branches -b -d --html-details -o coverage.html
 
 clean:
 	rm -f testcase
