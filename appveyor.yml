@@ -6,8 +6,8 @@ image: Visual Studio 2015
 environment:
 
   matrix:
-    - PYTHON: C:\Python27\python.exe
-    - PYTHON: C:\Python36-x64\python.exe
+    - PYTHONPATH: C:\Python27
+    - PYTHONPATH: C:\Python36-x64
     # TODO add more Python versions,
     # see https://www.appveyor.com/docs/build-environment/#python
 
@@ -21,14 +21,19 @@ environment:
 
 install:
   # verify compiler version
+  - 'set PATH=%PYTHONPATH%;%PYTHONPATH%\Scripts;%PATH%'
+  - 'python -V'
   - '%CXX% --version'
-  - '%PYTHON% -m pip install nose'
-  - '%PYTHON% -m pip install ply'
-  - '%PYTHON% -m pip install ordereddict'
-  - '%PYTHON% -m pip install pyutilib'
-  - '%PYTHON% setup.py develop'
+  - 'python -m pip install nose'
+  - 'python -m pip install ply'
+  - 'python -m pip install ordereddict'
+  - 'python -m pip install pyutilib'
+  - 'python -m pip install coverage'
+  - 'python -m pip install codecov'
+  - 'python setup.py develop'
 
 build: off
 
 test_script:
-  - '%PYTHON% -m nose -v'
+  - 'nosetests -v --with-coverage'
+  - 'codecov -X gcov search'
