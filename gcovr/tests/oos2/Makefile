@@ -12,15 +12,15 @@ GCOVR_TEST_OPTIONS =
 
 txt:
 	build/testcase
-	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
 
 xml:
 	build/testcase
-	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d -x -o coverage.xml
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -x -o coverage.xml
 
 html:
 	build/testcase
-	../../../scripts/gcovr $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
 
 clean:
 	rm -f build/*

@@ -5,15 +5,15 @@ run: txt xml html
 
 txt:
 	./testcase
-	../../../scripts/gcovr -d --branch --fail-under-branch 100.0 -o coverage.txt
+	$(GCOVR) -d --branch --fail-under-branch 100.0 -o coverage.txt
 
 xml:
 	./testcase
-	../../../scripts/gcovr -d --fail-under-branch 100.0 -x -o coverage.xml
+	$(GCOVR) -d --fail-under-branch 100.0 -x -o coverage.xml
 
 html:
 	./testcase
-	../../../scripts/gcovr -d --fail-under-branch 100.0 --html-details -o coverage.html
+	$(GCOVR) -d --fail-under-branch 100.0 --html-details -o coverage.html
 
 clean:
 	rm -f testcase

@@ -8,17 +8,17 @@ run: txt xml html
 txt:
 	./testcase
 	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
-	../../../scripts/gcovr -v -g -d -o coverage.txt
+	$(GCOVR) -v -g -d -o coverage.txt
 
 xml:
 	./testcase
 	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
-	../../../scripts/gcovr -v -g -d -x -o coverage.xml
+	$(GCOVR) -v -g -d -x -o coverage.xml
 
 html:
 	./testcase
 	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
-	../../../scripts/gcovr -v -g -d --html-details -o coverage.html
+	$(GCOVR) -v -g -d --html-details -o coverage.html
 
 clean:
 	rm -f testcase

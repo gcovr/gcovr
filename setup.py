@@ -12,7 +12,6 @@
 Script to generate the installer for gcovr.
 """
 
-import glob
 import os
 import os.path
 from setuptools import setup
@@ -21,8 +20,6 @@ from setuptools import setup
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames), 'rb').read().decode("UTF-8")
 
-
-scripts = glob.glob("scripts/*")
 
 setup(name='gcovr',
       version='3.4',
@@ -51,5 +48,9 @@ setup(name='gcovr',
       ],
       packages=['gcovr'],
       keywords=['utility'],
-      scripts=scripts
+      entry_points={
+          'console_scripts': [
+              'gcovr=gcovr.__main__:main',
+          ],
+      },
       )

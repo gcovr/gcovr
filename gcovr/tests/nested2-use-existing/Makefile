@@ -14,19 +14,19 @@ txt:
 	./subdir/B/testcase
 	make -C subdir/A coverage
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	../../../scripts/gcovr -r subdir -g -k -o coverage.txt .
+	$(GCOVR) -r subdir -g -k -o coverage.txt .
 
 xml:
 	./subdir/B/testcase
 	make -C subdir/A coverage
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	../../../scripts/gcovr -r subdir -g -k -x -o coverage.xml .
+	$(GCOVR) -r subdir -g -k -x -o coverage.xml .
 
 html:
 	./subdir/B/testcase
 	make -C subdir/A coverage
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	../../../scripts/gcovr -r subdir -g -k --html-details -o coverage.html .
+	$(GCOVR) -r subdir -g -k --html-details -o coverage.html .
 
 clean:
 	rm -f ./subdir/B/testcase subdir/lib.a

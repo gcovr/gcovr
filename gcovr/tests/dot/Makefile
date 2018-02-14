@@ -14,15 +14,15 @@ run: txt xml html
 
 txt:
 	./.subdir/testcase
-	../../../scripts/gcovr -r . -d -o coverage.txt
+	$(GCOVR) -r . -d -o coverage.txt
 
 xml:
 	./.subdir/testcase
-	../../../scripts/gcovr -r . -d -x -o coverage.xml
+	$(GCOVR) -r . -d -x -o coverage.xml
 
 html:
 	./.subdir/testcase
-	../../../scripts/gcovr -r . -d --html-details -o coverage.html
+	$(GCOVR) -r . -d --html-details -o coverage.html
 
 clean:
 	rm -f ./.subdir/testcase

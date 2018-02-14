@@ -16,15 +16,15 @@ run: txt xml html
 
 txt:
 	cd build && ./gcovrtest
-	../../../scripts/gcovr -d -o coverage.txt
+	$(GCOVR) -d -o coverage.txt
 
 xml:
 	cd build && ./gcovrtest
-	../../../scripts/gcovr -d -x -o coverage.xml
+	$(GCOVR) -d -x -o coverage.xml
 
 html:
 	cd build && ./gcovrtest
-	../../../scripts/gcovr -d --html-details -o coverage.html
+	$(GCOVR) -d --html-details -o coverage.html
 
 clean:
 	rm -rf build

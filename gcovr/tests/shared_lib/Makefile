@@ -41,7 +41,7 @@ ifeq ($(BASE_OS),MSYS_NT)
 else
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 endif
-	../../../scripts/gcovr -d -o coverage.txt
+	$(GCOVR) -d -o coverage.txt
 
 xml:
 ifeq ($(BASE_OS),MSYS_NT)
@@ -49,7 +49,7 @@ ifeq ($(BASE_OS),MSYS_NT)
 else
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 endif
-	../../../scripts/gcovr -d -x -o coverage.xml
+	$(GCOVR) -d -x -o coverage.xml
 
 html:
 ifeq ($(BASE_OS),MSYS_NT)
@@ -57,7 +57,7 @@ ifeq ($(BASE_OS),MSYS_NT)
 else
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 endif
-	../../../scripts/gcovr -d --html-details -o coverage.html
+	$(GCOVR) -d --html-details -o coverage.html
 
 clean:
 	rm -rf obj
