@@ -5,7 +5,7 @@ generate GCC code coverage reports
 
 website_ • documentation_ • bugtracker_ • `GitHub <repo_>`_
 
-|travis-ci-badge| |appveyor-ci-badge| |pypi-badge|
+|travis-ci-badge| |appveyor-ci-badge| |pypi-badge| |codecov-badge|
 
 .. begin abstract
 
@@ -55,6 +55,9 @@ Example HTML details:
 .. |pypi-badge| image:: https://img.shields.io/pypi/v/gcovr.svg
    :target: https://pypi.python.org/pypi/gcovr
    :alt: install from PyPI
+.. |codecov-badge| image:: https://codecov.io/gh/gcovr/gcovr/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/gcovr/gcovr/branch/master
+   :alt: Codecov status
 
 Installation
 ------------
