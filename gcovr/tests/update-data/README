@@ -1,0 +1,4 @@
+A test that verifies CoverageData.update function.
+
+The same header will be included by 2 source files and
+shall report 100% coverage.
