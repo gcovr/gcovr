@@ -963,8 +963,7 @@ def print_text_report(covdata, options):
     # Header
     OUTPUT.write("-" * 78 + '\n')
     OUTPUT.write(" " * 27 + "GCC Code Coverage Report\n")
-    if options.root is not None:
-        OUTPUT.write("Directory: " + options.root + "\n")
+    OUTPUT.write("Directory: " + options.root + "\n")
 
     OUTPUT.write("-" * 78 + '\n')
     a = options.show_branch and "Branches" or "Lines"
@@ -1997,33 +1996,10 @@ def print_xml_report(covdata, options):
         )
         package.setAttribute("complexity", "0.0")
 
-    # Populate the <sources> element: this is either the root directory
-    # (specified by --root), or relative directories based
-    # on the filter, or the CWD
-    if options.root is not None:
-        source = doc.createElement("source")
-        source.appendChild(doc.createTextNode(options.root.strip()))
-        sources.appendChild(source)
-    elif len(source_dirs) > 0:
-        cwd = os.getcwd()
-        for d in source_dirs:
-            source = doc.createElement("source")
-            if d.startswith(cwd):
-                reldir = d[len(cwd):].lstrip(os.path.sep)
-            elif cwd.startswith(d):
-                i = 1
-                while normpath(d) != \
-                        normpath(os.path.join(*tuple([cwd] + ['..'] * i))):
-                    i += 1
-                reldir = os.path.join(*tuple(['..'] * i))
-            else:
-                reldir = d
-            source.appendChild(doc.createTextNode(reldir.strip()))
-            sources.appendChild(source)
-    else:
-        source = doc.createElement("source")
-        source.appendChild(doc.createTextNode('.'))
-        sources.appendChild(source)
+    # Populate the <sources> element: this is the root directory
+    source = doc.createElement("source")
+    source.appendChild(doc.createTextNode(options.root.strip()))
+    sources.appendChild(source)
 
     if options.prettyxml:
         import textwrap
@@ -2350,17 +2326,15 @@ def main():
             sys.exit(1)
 
     options.starting_dir = os.path.abspath(os.getcwd())
-    options.root_dir = options.starting_dir
-    if options.root is not None:
-        if not options.root:
-            sys.stderr.write(
-                "(ERROR) empty --root option.\n"
-                "\tRoot specifies the path to the root "
-                "directory of your project.\n"
-                "\tThis option cannot be an empty string.\n"
-            )
-            sys.exit(1)
-        options.root_dir = os.path.abspath(options.root)
+    if not options.root:
+        sys.stderr.write(
+            "(ERROR) empty --root option.\n"
+            "\tRoot specifies the path to the root "
+            "directory of your project.\n"
+            "\tThis option cannot be an empty string.\n"
+        )
+        sys.exit(1)
+    options.root_dir = os.path.abspath(options.root)
 
     #
     # Setup filters
@@ -2389,10 +2363,7 @@ def main():
     # Get data files
     #
     if len(args) == 0:
-        if options.root is None:
-            search_paths = ["."]
-        else:
-            search_paths = [options.root]
+        search_paths = [options.root]
 
         if options.objdir is not None:
             search_paths.append(options.objdir)
