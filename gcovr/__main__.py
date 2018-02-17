@@ -1595,24 +1595,27 @@ def print_html_report(covdata, options):
         files.append(filtered_fname)
         dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata._filename = filtered_fname
-        ttmp = os.path.abspath(options.output).split('.')
-        longname = cdata._filename.replace(os.sep, '_')
-        longname_hash = ""
-        while True:
-            if len(ttmp) > 1:
-                cdata._sourcefile = \
-                    '.'.join(ttmp[:-1]) + \
-                    '.' + longname + longname_hash + \
-                    '.' + ttmp[-1]
-            else:
-                cdata._sourcefile = \
-                    ttmp[0] + '.' + longname + longname_hash + '.html'
-            # we add a hash at the end and attempt to shorten the
-            # filename if it exceeds common filesystem limitations
-            if len(os.path.basename(cdata._sourcefile)) < 256:
-                break
-            longname_hash = "_" + hex(zlib.crc32(longname) & 0xffffffff)[2:]
-            longname = longname[(len(cdata._sourcefile) - len(longname_hash)):]
+        if not details:
+            cdata._sourcefile = None
+        else:
+            ttmp = os.path.abspath(options.output).split('.')
+            longname = cdata._filename.replace(os.sep, '_')
+            longname_hash = ""
+            while True:
+                if len(ttmp) > 1:
+                    cdata._sourcefile = \
+                        '.'.join(ttmp[:-1]) + \
+                        '.' + longname + longname_hash + \
+                        '.' + ttmp[-1]
+                else:
+                    cdata._sourcefile = \
+                        ttmp[0] + '.' + longname + longname_hash + '.html'
+                # we add a hash at the end and attempt to shorten the
+                # filename if it exceeds common filesystem limitations
+                if len(os.path.basename(cdata._sourcefile)) < 256:
+                    break
+                longname_hash = "_" + hex(zlib.crc32(longname) & 0xffffffff)[2:]
+                longname = longname[(len(cdata._sourcefile) - len(longname_hash)):]
 
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
@@ -1773,7 +1776,7 @@ nrows = 0
 
 
 def html_row(details, sourcefile, **kwargs):
-    if options.relative_anchors:
+    if details and options.relative_anchors:
         sourcefile = os.path.basename(sourcefile)
     rowstr = Template('''
     <tr>
