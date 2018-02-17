@@ -2050,7 +2050,7 @@ class PercentageOption (Option):
     TYPE_CHECKER["percentage"] = check_percentage
 
 
-def parse_arguments():
+def parse_arguments(args):
     """
     Create and parse arguments.
     """
@@ -2273,7 +2273,7 @@ def parse_arguments():
         "A utility to run gcov and generate a simple report that summarizes " \
         "the coverage"
 
-    return parser.parse_args()
+    return parser.parse_args(args=args)
 
 
 def build_filter(regex):
@@ -2287,9 +2287,9 @@ def build_filter(regex):
         return re.compile(os.path.realpath(regex))
 
 
-def main():
+def main(args=None):
     global options
-    options, args = parse_arguments()
+    options, args = parse_arguments(args)
 
     if options.version:
         sys.stdout.write(
