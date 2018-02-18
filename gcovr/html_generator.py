@@ -591,6 +591,7 @@ def print_html_report(covdata, options):
         if dir_ != '':
             data['DIRECTORY'] = dir_ + os.sep
 
+    nrows = 0
     for f in keys:
         cdata = covdata[f]
         class_lines = 0
@@ -617,8 +618,9 @@ def print_html_report(covdata, options):
         lines_covered = calculate_coverage(class_hits, class_lines, nan_value=100.0)
         branches_covered = calculate_coverage(class_branch_hits, class_branches, nan_value=None)
 
+        nrows += 1
         data['ROWS'].append(html_row(
-            options, details, cdata._sourcefile,
+            options, details, cdata._sourcefile, nrows,
             directory=data['DIRECTORY'],
             filename=os.path.relpath(
                 os.path.realpath(cdata._filename), data['DIRECTORY']),
@@ -733,10 +735,7 @@ def source_row(lineno, source, cdata):
 #
 # Generate the table row for a single file
 #
-nrows = 0
-
-
-def html_row(options, details, sourcefile, **kwargs):
+def html_row(options, details, sourcefile, nrows, **kwargs):
     if details and options.relative_anchors:
         sourcefile = os.path.basename(sourcefile)
     rowstr = Template('''
@@ -753,8 +752,6 @@ def html_row(options, details, sourcefile, **kwargs):
       <td class="CoverValue" style="background-color:${BranchesColor};">${BranchesExec} / ${BranchesTotal}</td>
     </tr>
 ''')
-    global nrows
-    nrows += 1
     if nrows % 2 == 0:
         kwargs['altstyle'] = 'style="background-color:LightSteelBlue"'
     else:
