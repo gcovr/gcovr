@@ -45,25 +45,7 @@ from .version import __version__, version_str
 from .cobertura_xml_generator import print_xml_report
 from .html_generator import print_html_report
 from .txt_generator import print_text_report
-
-
-#
-# Prints a small report to the standard output
-#
-def print_summary(covdata):
-    (lines_total, lines_covered, percent,
-        branches_total, branches_covered,
-        percent_branches) = get_global_stats(covdata)
-
-    lines_out = "lines: %0.1f%% (%s out of %s)\n" % (
-        percent, lines_covered, lines_total
-    )
-    branches_out = "branches: %0.1f%% (%s out of %s)\n" % (
-        percent_branches, branches_covered, branches_total
-    )
-
-    sys.stdout.write(lines_out)
-    sys.stdout.write(branches_out)
+from .summary_generator import print_summary
 
 
 #
@@ -84,10 +66,6 @@ def fail_under(covdata, threshold_line, threshold_branch):
     if percent_branches < threshold_branch:
         sys.exit(4)
 
-
-# #
-# # MAIN
-# #
 
 # helper for percentage actions
 def check_percentage(option, opt, value):
