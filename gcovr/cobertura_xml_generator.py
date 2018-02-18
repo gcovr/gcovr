@@ -11,7 +11,7 @@ import sys
 import time
 import xml.dom.minidom
 
-from .version import version_str
+from .version import __version__
 
 try:
     xrange
@@ -72,7 +72,7 @@ def print_xml_report(covdata, options):
         "timestamp", str(int(time.time()))
     )
     root.setAttribute(
-        "version", "gcovr %s" % (version_str(),)
+        "version", "gcovr %s" % (__version__,)
     )
 
     # Generate the <sources> element: this is either the root directory

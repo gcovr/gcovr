@@ -39,7 +39,7 @@ from os.path import normpath
 
 from .gcov import get_datafiles, process_existing_gcov_file, process_datafile
 from .utils import get_global_stats, build_filter
-from .version import __version__, version_str
+from .version import __version__
 
 # generators
 from .cobertura_xml_generator import print_xml_report
@@ -321,7 +321,7 @@ def main(args=None):
             "Copyright (2013) Sandia Corporation. Under the terms of Contract\n"
             "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
             "retains certain rights in this software.\n"
-            % (version_str(), )
+            % (__version__, )
         )
         sys.exit(0)
 

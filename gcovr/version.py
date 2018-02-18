@@ -11,7 +11,3 @@
 # This module may not depend on other parts of gcovr.
 
 __version__ = "3.4"
-
-
-def version_str():
-    return __version__

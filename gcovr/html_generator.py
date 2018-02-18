@@ -19,7 +19,7 @@ import zlib
 
 from string import Template
 
-from .version import version_str
+from .version import __version__
 from .utils import commonpath
 
 medium_coverage = 75.0
@@ -497,7 +497,7 @@ def print_html_report(covdata, options):
         details = False
     data = {}
     data['HEAD'] = "Head"
-    data['VERSION'] = version_str()
+    data['VERSION'] = __version__
     data['TIME'] = str(int(time.time()))
     data['DATE'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data['ROWS'] = []
