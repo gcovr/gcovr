@@ -47,6 +47,8 @@ from optparse import Option, OptionParser, OptionValueError
 from string import Template
 from os.path import normpath
 
+from .version import __version__, version_str
+
 try:
     xrange
 except NameError:
@@ -68,8 +70,6 @@ uncovered_color = "LightPink"
 takenBranch_color = "Green"
 notTakenBranch_color = "Red"
 
-__version__ = "3.4"
-
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc]annot open (source|graph) file")
 
@@ -78,10 +78,6 @@ exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
 
 c_style_comment_pattern = re.compile('/\*.*?\*/')
 cpp_style_comment_pattern = re.compile('//.*?$')
-
-
-def version_str():
-    return __version__
 
 
 #

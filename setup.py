@@ -14,6 +14,7 @@ Script to generate the installer for gcovr.
 
 import os
 import os.path
+import runpy
 from setuptools import setup
 
 
@@ -21,8 +22,10 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames), 'rb').read().decode("UTF-8")
 
 
+version = runpy.run_path('./gcovr/version.py')['__version__']
+
 setup(name='gcovr',
-      version='3.4',
+      version=version,
       maintainer='William Hart',
       maintainer_email='wehart@sandia.gov',
       url='http://gcovr.com',
