@@ -89,6 +89,13 @@ class TestArgs(unittest.TestCase):
             '(ERROR) empty --object-directory option.'))
         self.assertEqual(c.exception.code, 1)
 
+    def test_invalid_objdir(self):
+        c = capture(['--object-directory', 'not-existing-dir'])
+        self.assertEqual(c.out, '')
+        self.assertTrue(c.err.startswith(
+            '(ERROR) Bad --object-directory option.'))
+        self.assertEqual(c.exception.code, 1)
+
     def test_branch_threshold_nan(self):
         c = capture(['--fail-under-branch', 'nan'])
         self.assertEqual(c.out, '')
