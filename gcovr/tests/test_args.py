@@ -1,7 +1,8 @@
 import sys
 import unittest
 
-from ..__main__ import main, version_str
+from ..__main__ import main
+from ..version import __version__
 
 
 try:
@@ -67,7 +68,7 @@ class TestArgs(unittest.TestCase):
     def test_version(self):
         c = capture(['--version'])
         self.assertEqual(c.err, '')
-        self.assertTrue(c.out.startswith('gcovr %s' % version_str()))
+        self.assertTrue(c.out.startswith('gcovr %s' % __version__))
         self.assertEqual(c.exception.code, 0)
 
     def test_help(self):
