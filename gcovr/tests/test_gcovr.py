@@ -89,7 +89,7 @@ SCRUBBERS = dict(
 OUTPUT_PATTERN = dict(
     txt='coverage.txt',
     xml='coverage.xml',
-    html='coverage.html')
+    html='coverage*.html')
 
 ASSERT_EQUALS = dict(
     xml=assert_xml_equals)
@@ -120,7 +120,8 @@ def test_build(name, format):
         if assert_equals is not None:
             assert_equals(coverage, reference)
         else:
-            assert coverage == reference
+            assert coverage == reference, "coverage={}, reference={}".format(
+                coverage_file, reference_file)
 
     assert run(["make", "clean"])
     os.chdir(basedir)

@@ -6,11 +6,6 @@
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
-try:
-    import html
-except ImportError:
-    import cgi as html
-
 import os
 import sys
 import time
@@ -31,6 +26,16 @@ covered_color = "LightGreen"
 uncovered_color = "LightPink"
 takenBranch_color = "Green"
 notTakenBranch_color = "Red"
+
+
+def html_escape(s):
+    """Escape string for inclusion in a HTML body.
+
+    Does not escape ``'``, ``"``, or ``>``.
+    """
+    s = s.replace('&', '&amp;')
+    s = s.replace('<', '&lt;')
+    return s
 
 
 #
@@ -285,7 +290,7 @@ root_page = Template('''
   <meta http-equiv="Content-Type" content="text/html; charset=${ENC}"/>
   <title>${HEAD}</title>
   <style media="screen" type="text/css">
-  ${CSS}
+${CSS}
   </style>
 </head>
 
@@ -352,7 +357,7 @@ root_page = Template('''
       <td class="coverTableHead" colspan=2>Branches</td>
     </tr>
 
-    ${ROWS}
+${ROWS}
 
     <tr>
       <td width="44%"><br></td>
@@ -386,7 +391,7 @@ source_page = Template('''
   <meta http-equiv="Content-Type" content="text/html; charset=${ENC}"/>
   <title>${HEAD}</title>
   <style media="screen" type="text/css">
-  ${CSS}
+${CSS}
   </style>
 </head>
 
@@ -442,7 +447,7 @@ source_page = Template('''
       <td width="75%" align="left" class="srcHeader src">Source</td>
     </tr>
 
-    ${ROWS}
+${ROWS}
 
   </table>
   <br>
@@ -728,7 +733,7 @@ def source_row(lineno, source, cdata):
         kwargs['covclass'] = ''
         kwargs['linebranch'] = ''
         kwargs['linecount'] = ''
-    kwargs['source'] = html.escape(source)
+    kwargs['source'] = html_escape(source)
     return rowstr.substitute(**kwargs)
 
 
