@@ -45,7 +45,7 @@ To work on the gcovr source code, you can clone the git repository,
 then run “\ ``pip install -e .``\ ”.
 You can then run gcovr as ``gcovr`` or ``python -m gcovr``.
 
-To run the tests, you also have to “\ ``pip install pyutilib nose flake8``\ ”.
+To run the tests, you also have to “\ ``pip install pyutilib pytest flake8``\ ”.
 
 The program entrypoint and command line interface is in ``gcovr/__main__.py``.
 The coverage data is parsed in the ``gcovr.gcov`` module.
@@ -53,7 +53,7 @@ The HTML, XML, text, and summary reports
 are in ``gcovr.html_generator`` and respective modules.
 
 The tests are in the ``gcovr/tests`` directory.
-You can run the tests with ``nosetests -v`` or ``python -m nose -v``.
+You can run the tests with ``python -m pytest -v``.
 
 The test suite compiles example programs
 and compares the gcovr output against baseline files.
@@ -63,7 +63,7 @@ you can limit the tests to a specific output format, e.g.:
 
 ::
 
-    nosetests -v gcovr.tests.test_gcovr.GcovrTxt
+    python -m pytest -v -k GcovrTxt
 
 The output formats are ``Txt``, ``Html``, and ``Xml``.
 

@@ -1,15 +1,12 @@
 #!/usr/bin/env python
-import glob
 import os
 import os.path
 import platform
 import re
-import shutil
 import sys
 import subprocess
-import traceback
 import pyutilib.th as unittest
-import nose
+import pytest
 
 
 from .. import __main__  # noqa, allow coverage with nose
@@ -19,12 +16,7 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 coverage_path = os.path.abspath(os.path.join(basedir, '..', '..'))
 python_interpreter = sys.executable.replace('\\', '/')  # use forward slash on windows as well
 env = os.environ
-if 'coverage' in sys.modules:
-    run_coverage = True
-    env['GCOVR'] = python_interpreter + ' -m coverage run --branch --parallel-mode -m gcovr'
-else:  # pragma: no cover
-    run_coverage = False
-    env['GCOVR'] = python_interpreter + ' -m gcovr'
+env['GCOVR'] = python_interpreter + ' -m gcovr'
 
 
 @unittest.category('smoke')
@@ -94,24 +86,10 @@ class GcovrHtml(unittest.TestCase):
 
 
 def run(cmd):
-    try:
-        proc = subprocess.Popen(cmd,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT,
-                                env=env)
-        print("STDOUT - START")
-        sys.stdout.write("%s" % proc.communicate()[0])
-        print("STDOUT - END")
-        return not proc.returncode
-    except Exception:  # pragma: no cover
-        e = sys.exc_info()[1]
-        sys.stdout.write("Caught unexpected exception in test driver: %s\n%s"
-                         % (str(e), traceback.format_exc()))
-        raise
-    finally:
-        if run_coverage:  # pragma: no branch
-            for file in glob.glob('./.coverage*'):
-                shutil.move(file, coverage_path)
+    print("STDOUT - START")
+    returncode = subprocess.call(cmd, stderr=subprocess.STDOUT, env=env)
+    print("STDOUT - END")
+    return returncode == 0
 
 
 @unittest.nottest
@@ -139,7 +117,7 @@ def gcovr_test_xml(self, name):
 @unittest.nottest
 def gcovr_test_html(self, name):
     if name == 'linked' and platform.system() == 'Windows':
-        raise nose.SkipTest
+        pytest.xfail("have yet to figure out symlinks on Windows")
     os.chdir(os.path.join(basedir, name))
     run(["make"]) or self.fail("Make failed")
     run(["make", "html"]) or self.fail("Execution failed")
@@ -157,6 +135,3 @@ for f in os.listdir(basedir):
         GcovrTxt.add_fn_test(fn=gcovr_test_txt, name=f)
         GcovrXml.add_fn_test(fn=gcovr_test_xml, name=f)
         GcovrHtml.add_fn_test(fn=gcovr_test_html, name=f)
-
-if __name__ == "__main__":  # pragma: no cover
-    unittest.main()

@@ -24,7 +24,7 @@ install:
   - 'set PATH=%PYTHONPATH%;%PYTHONPATH%\Scripts;%PATH%'
   - 'python -V'
   - '%CXX% --version'
-  - 'python -m pip install nose'
+  - 'python -m pip install pytest pytest-cov'
   - 'python -m pip install ply'
   - 'python -m pip install ordereddict'
   - 'python -m pip install pyutilib'
@@ -35,5 +35,5 @@ install:
 build: off
 
 test_script:
-  - 'nosetests -v --with-coverage'
+  - 'python -m pytest -v --cov=gcovr --cov-branch gcovr'
   - 'codecov -X gcov search'

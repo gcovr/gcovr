@@ -12,19 +12,20 @@ addons:
 matrix:
   include:
   - python: '2.7'
-    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5 NOSE_WITH_COVERAGE=1
+    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5 COVERAGE_OPTS='--cov=gcovr --cov-branch'
   - python: pypy
     env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
   - python: '3.4'
     env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
   - python: '3.5'
-    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5 NOSE_WITH_COVERAGE=1
+    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5 COVERAGE_OPTS='--cov=gcovr --cov-branch'
   - python: pypy3.5-5.8.0
     env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
 
 install:
 - printenv
 - $CXX --version
+- pip install pytest pytest-cov
 - pip install ply
 - pip install ordereddict
 - pip install pyutilib
@@ -35,8 +36,8 @@ install:
 
 script:
 - flake8 --ignore=E501
-- nosetests -v
-- if [ "${NOSE_WITH_COVERAGE}" == "1" ]; then codecov -X gcov search; fi
+- python -m pytest -v $COVERAGE_OPTS gcovr
+- if [ -n "$COVERAGE_OPTS" ]; then codecov -X gcov search; fi
 
 deploy:
     # disable testpypi deployment until #197 is fixed
