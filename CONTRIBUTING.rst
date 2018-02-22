@@ -53,19 +53,26 @@ The HTML, XML, text, and summary reports
 are in ``gcovr.html_generator`` and respective modules.
 
 The tests are in the ``gcovr/tests`` directory.
-You can run the tests with ``python -m pytest -v``.
+You can run the tests with ``python -m pytest``.
 
 The test suite compiles example programs
 and compares the gcovr output against baseline files.
 This is driven by a Makefile in each ``gcovr/tests/*`` directory.
 Because the tests are a bit slow,
-you can limit the tests to a specific output format, e.g.:
+you can limit the tests to a specific output format or test case, e.g.:
 
-::
+.. code:: bash
 
-    python -m pytest -v -k GcovrTxt
+    # run only XML tests
+    python -m pytest -k xml
+    # run the simple1 tests
+    python -m pytest -k simple1
+    # run the simple1 tests only for XML
+    python -m pytest -k 'xml and simple1'
 
-The output formats are ``Txt``, ``Html``, and ``Xml``.
+The output formats are ``txt``, ``html``, and ``xml``.
+To see all tests, run pytest in ``-v`` verbose mode.
+To see which tests would be run, add the ``--collect-only`` option.
 
 The tests currently assume that you are using GCC 5.
 
