@@ -36,7 +36,7 @@ install:
 
 script:
 - flake8 --ignore=E501
-- python -m pytest -v $COVERAGE_OPTS gcovr
+- python -m pytest -v $COVERAGE_OPTS gcovr doc/examples
 - if [ -n "$COVERAGE_OPTS" ]; then codecov -X gcov search; fi
 
 deploy:

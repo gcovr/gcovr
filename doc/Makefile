@@ -25,7 +25,7 @@ outputs:
 	../scripts/gcovr -h > examples/gcovr.out
 
 tests:
-	$(PYTHON) examples/test_examples.py -v
+	$(PYTHON) -m pytest examples -v
 
 clean:
 	rm -f `cat .gitignore`

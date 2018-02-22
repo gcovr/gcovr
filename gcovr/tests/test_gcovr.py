@@ -17,6 +17,8 @@ env['GCOVR'] = python_interpreter + ' -m gcovr'
 
 basedir = os.path.split(os.path.abspath(__file__))[0]
 
+RE_DECIMAL = re.compile(r'(\d+\.\d+)')
+
 RE_TXT_WHITESPACE = re.compile(r'[ ]+$', flags=re.MULTILINE)
 
 RE_XML_ATTRS = re.compile(r'(timestamp)="[^"]*"')
@@ -34,7 +36,8 @@ def scrub_txt(contents):
 
 
 def scrub_xml(contents):
-    contents = RE_XML_ATTRS.sub('\\1=""', contents)
+    contents = RE_DECIMAL.sub(lambda m: str(round(float(m.group(1)), 5)), contents)
+    contents = RE_XML_ATTRS.sub(r'\1=""', contents)
     contents = RE_XML_GCOVR_VERSION.sub('version=""', contents)
     contents = contents.replace("\r", "")
     return contents

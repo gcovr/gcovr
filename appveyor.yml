@@ -35,5 +35,5 @@ install:
 build: off
 
 test_script:
-  - 'python -m pytest -v --cov=gcovr --cov-branch gcovr'
+  - 'python -m pytest -v --cov=gcovr --cov-branch gcovr doc/examples'
   - 'codecov -X gcov search'
