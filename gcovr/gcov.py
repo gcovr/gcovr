@@ -90,113 +90,167 @@ def is_non_code(code):
 # Process a single gcov datafile
 #
 def process_gcov_data(data_fname, covdata, source_fname, options):
+    logger = Logger(options.verbose)
+
     INPUT = open(data_fname, "r")
-    #
-    # Get the filename
-    #
-    line = INPUT.readline()
-    segments = line.split(':', 3)
-    if len(segments) != 4 or not \
-            segments[2].lower().strip().endswith('source'):
-        raise RuntimeError(
-            'Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip()
-        )
-    #
+
     # Find the source file
-    #
-    currdir = os.getcwd()
-    root_dir = options.root_dir
-    if source_fname is None:
-        common_dir = os.path.commonprefix([data_fname, currdir])
-        fname = aliases.unalias_path(os.path.join(common_dir, segments[-1].strip()))
-        if not os.path.exists(fname):
-            # let's try using the path to the gcov file as base directory
-            # Test before assigning not to change behavior compared to previous versions
-            possible_gcov_fname = aliases.unalias_path(os.path.join(os.path.dirname(data_fname), segments[-1].strip()))
-            if os.path.exists(possible_gcov_fname):
-                fname = possible_gcov_fname
-    else:
-        # gcov writes filenames with '/' path seperators even if the OS
-        # separator is different, so we replace it with the correct separator
-        gcovname = segments[-1].strip().replace('/', os.sep)
+    firstline = INPUT.readline()
+    fname = guess_source_file_name(
+        firstline, data_fname, source_fname,
+        root_dir=options.root_dir, starting_dir=options.starting_dir,
+        logger=logger)
 
-        # 0. Try using the current working directory as the source directory
-        fname = os.path.join(currdir, gcovname)
-        if not os.path.exists(fname):
-            # 1. Try using the path to common prefix with the root_dir as the source directory
-            fname = os.path.join(root_dir, gcovname)
-            if not os.path.exists(fname):
-                # 2. Try using the starting directory as the source directory
-                fname = os.path.join(options.starting_dir, gcovname)
-                if not os.path.exists(fname):
-                    # 3. Try using the path to the gcda file as the source directory
-                    fname = os.path.join(os.path.dirname(source_fname), os.path.basename(gcovname))
+    logger.verbose_msg("Parsing coverage data for file {}", fname)
 
-    if options.verbose:
-        print("Finding source file corresponding to a gcov data file")
-        print('  currdir      ' + currdir)
-        print('  gcov_fname   ' + data_fname)
-        print('               ' + str(segments))
-        print('  source_fname ' + str(source_fname))
-        print('  root         ' + root_dir)
-        # print('  common_dir   ' + common_dir)
-        # print('  subdir       ' + subdir)
-        print('  fname        ' + fname)
-
-    if options.verbose:
-        sys.stdout.write("Parsing coverage data for file %s\n" % fname)
-    #
     # Return if the filename does not match the filter
-    #
     filtered_fname = None
     for i in range(0, len(options.filter)):
         if options.filter[i].match(fname):
             filtered_fname = options.root_filter.sub('', fname)
             break
     if filtered_fname is None:
-        if options.verbose:
-            sys.stdout.write("  Filtering coverage data for file %s\n" % fname)
+        logger.verbose_msg("  Filtering coverage data for file {}", fname)
         return
-    #
+
     # Return if the filename matches the exclude pattern
-    #
     for exc in options.exclude:
         if (filtered_fname is not None and exc.match(filtered_fname)) or \
                 exc.match(fname) or \
                 exc.match(os.path.abspath(fname)):
-            if options.verbose:
-                sys.stdout.write(
-                    "  Excluding coverage data for file %s\n" % fname
-                )
+            logger.verbose_msg("  Excluding coverage data for file {}", fname)
             return
-    #
-    # Parse each line, and record the lines that are uncovered
-    #
-    excluding = []
-    noncode = set()
-    uncovered = set()
-    uncovered_exceptional = set()
-    covered = {}
-    branches = {}
-    # first_record=True
-    lineno = 0
-    last_code_line = ""
-    last_code_lineno = 0
-    last_code_line_excluded = False
+
+    parser = GcovParser(fname, logger=logger)
     for line in INPUT:
+        parser.parse_line(line, options.exclude_unreachable_branches)
+    parser.update_coverage(covdata)
+    parser.check_unclosed_exclusions()
+
+    INPUT.close()
+
+
+def guess_source_file_name(
+        line, data_fname, source_fname, root_dir, starting_dir, logger):
+    segments = line.split(':', 3)
+    if len(segments) != 4 or not \
+            segments[2].lower().strip().endswith('source'):
+        raise RuntimeError(
+            'Fatal error parsing gcov file, line 1: \n\t"%s"' % line.rstrip()
+        )
+
+    gcovname = segments[-1].strip()
+    currdir = os.getcwd()
+    if source_fname is None:
+        fname = guess_source_file_name_via_aliases(
+            gcovname, currdir, data_fname)
+    else:
+        fname = guess_source_file_name_heuristics(
+            gcovname, currdir, root_dir, starting_dir, source_fname)
+
+    logger.verbose_msg(
+        "Finding source file corresponding to a gcov data file\n"
+        '  currdir      {currdir}\n'
+        '  gcov_fname   {data_fname}\n'
+        '               {segments}\n'
+        '  source_fname {source_fname}\n'
+        '  root         {root_dir}\n'
+        # '  common_dir   {common_dir}\n'
+        # '  subdir       {subdir}\n'
+        '  fname        {fname}',
+        currdir=currdir, data_fname=data_fname, segments=segments,
+        source_fname=source_fname, root_dir=root_dir,
+        # common_dir=common_dir, subdir=subdir,
+        fname=fname)
+
+    return fname
+
+
+def guess_source_file_name_via_aliases(gcovname, currdir, data_fname):
+    common_dir = os.path.commonprefix([data_fname, currdir])
+    fname = aliases.unalias_path(os.path.join(common_dir, gcovname))
+    if os.path.exists(fname):
+        return fname
+
+    initial_fname = fname
+
+    data_fname_dir = os.path.dirname(data_fname)
+    fname = aliases.unalias_path(os.path.join(data_fname_dir, gcovname))
+    if os.path.exists(fname):
+        return fname
+
+    # @latk-2018: The original code is *very* insistent
+    # on returning the inital guess. Why?
+    return initial_fname
+
+
+def guess_source_file_name_heuristics(
+        gcovname, currdir, root_dir, starting_dir, source_fname):
+
+    # gcov writes filenames with '/' path seperators even if the OS
+    # separator is different, so we replace it with the correct separator
+    gcovname = gcovname.replace('/', os.sep)
+
+    # 0. Try using the current working directory as the source directory
+    fname = os.path.join(currdir, gcovname)
+    if os.path.exists(fname):
+        return fname
+
+    # 1. Try using the path to common prefix with the root_dir as the source directory
+    fname = os.path.join(root_dir, gcovname)
+    if os.path.exists(fname):
+        return fname
+
+    # 2. Try using the starting directory as the source directory
+    fname = os.path.join(starting_dir, gcovname)
+    if os.path.exists(fname):
+        return fname
+
+    # 3. Try using the path to the gcda file as the source directory
+    source_fname_dir = os.path.dirname(source_fname)
+    fname = os.path.join(source_fname_dir, os.path.basename(gcovname))
+    return fname
+
+
+class GcovParser(object):
+    def __init__(self, fname, logger):
+        self.logger = logger
+        self.excluding = []
+        self.noncode = set()
+        self.uncovered = set()
+        self.uncovered_exceptional = set()
+        self.covered = dict()
+        self.branches = dict()
+        # self.first_record = True
+        self.fname = fname
+        self.lineno = 0
+        self.last_code_line = ""
+        self.last_code_lineno = 0
+        self.last_code_line_excluded = False
+
+    def parse_line(self, line, exclude_unreachable_branches):
+        # If this is a tag line, we stay on the same line number
+        # and can return immediately after processing it.
+        # A tag line cannot hold exclusion markers.
+        if self.parse_tag_line(line, exclude_unreachable_branches):
+            return
+
+        # If this isn't a tag line, this is metadata or source code.
+        # e.g.  "  -:  0:Data:foo.gcda" (metadata)
+        # or    "  3:  7:  c += 1"      (source code)
+
         segments = line.split(":", 2)
         # print "\t","Y", segments
-        tmp = segments[0].strip()
         if len(segments) > 1:
             try:
-                lineno = int(segments[1].strip())
-            except:  # noqa E722
+                self.lineno = int(segments[1].strip())
+            except ValueError:
                 pass  # keep previous line number!
 
         if exclude_line_flag in line:
             excl_line = False
             for header, flag in exclude_line_pattern.findall(line):
-                if process_exclusion_marker(header, flag, excluding, lineno=lineno, fname=fname):
+                if self.parse_exclusion_marker(header, flag):
                     excl_line = True
 
             # We buffer the line exclusion so that it is always
@@ -206,36 +260,71 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
             # _STOP) on the same line... it also guards against
             # duplicate _LINE flags.
             if excl_line:
-                excluding.append(False)
+                self.excluding.append(False)
 
-        is_code_statement = False
-        if tmp[0] == '-' or (excluding and tmp[0] in "#=0123456789"):
-            is_code_statement = True
-            code = segments[2].strip()
+        status = segments[0].strip()
+        code = segments[2] if 2 < len(segments) else ""
+        is_code_statement = self.parse_code_line(status, code)
+
+        if not is_code_statement:
+            self.logger.verbose_msg(
+                "Unrecognized GCOV output: {line}\n"
+                "\tThis is indicitive of a gcov output parse error.\n"
+                "\tPlease report this to the gcovr developers.",
+                line=line)
+
+        # save the code line to use it later with branches
+        if is_code_statement:
+            self.last_code_line = "".join(segments[2:])
+            self.last_code_lineno = self.lineno
+            self.last_code_line_excluded = bool(self.excluding)
+
+        # clear the excluding flag for single-line excludes
+        if self.excluding and not self.excluding[-1]:
+            self.excluding.pop()
+
+    def parse_code_line(self, status, code):
+        firstchar = status[0]
+
+        if firstchar == '-' or (self.excluding and firstchar in "#=0123456789"):
             # remember certain non-executed lines
-            if excluding or is_non_code(segments[2]):
-                noncode.add(lineno)
-        elif tmp[0] == '#':
-            is_code_statement = True
-            if is_non_code(segments[2]):
-                noncode.add(lineno)
+            if self.excluding or is_non_code(code):
+                self.noncode.add(self.lineno)
+            return True
+
+        if firstchar == '#':
+            if is_non_code(code):
+                self.noncode.add(self.lineno)
             else:
-                uncovered.add(lineno)
-        elif tmp[0] == '=':
-            is_code_statement = True
-            uncovered_exceptional.add(lineno)
-        elif tmp[0] in "0123456789":
-            is_code_statement = True
-            covered[lineno] = int(segments[0].strip())
-        elif tmp.startswith('branch'):
+                self.uncovered.add(self.lineno)
+            return True
+
+        if firstchar == '=':
+            self.uncovered_exceptional.add(self.lineno)
+            return True
+
+        if firstchar in "0123456789":
+            self.covered[self.lineno] = int(status)
+            return True
+
+        return False
+
+    def parse_tag_line(self, line, exclude_unreachable_branches):
+        if line.startswith('function '):
+            return True
+
+        if line.startswith('call '):
+            return True
+
+        if line.startswith('branch '):
             exclude_branch = False
-            if options.exclude_unreachable_branches and \
-                    lineno == last_code_lineno:
-                if last_code_line_excluded:
+            if exclude_unreachable_branches and \
+                    self.lineno == self.last_code_lineno:
+                if self.last_code_line_excluded:
                     exclude_branch = True
                     exclude_reason = "marked with exclude pattern"
                 else:
-                    code = last_code_line
+                    code = self.last_code_line
                     code = re.sub(cpp_style_comment_pattern, '', code)
                     code = re.sub(c_style_comment_pattern, '', code)
                     code = code.strip()
@@ -245,132 +334,126 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
                     exclude_reason = "detected as compiler-generated code"
 
             if exclude_branch:
-                if options.verbose:
-                    sys.stdout.write(
-                        "Excluding unreachable branch on line %d "
-                        "in file %s (%s).\n"
-                        % (lineno, fname, exclude_reason)
-                    )
-            else:
-                fields = line.split()
-                try:
-                    count = int(fields[3])
-                except:  # noqa E722
-                    count = 0
-                branches.setdefault(lineno, {})[int(fields[1])] = count
-        elif tmp.startswith('call'):
-            pass
-        elif tmp.startswith('function'):
-            pass
-        elif tmp[0] == 'f':
-            pass
-            # if first_record:
-            #     first_record=False
-            #     uncovered.add(prev)
-            # if prev in uncovered:
-            #     tokens=re.split('[ \t]+',tmp)
-            #     if tokens[3] != "0":
-            #         uncovered.remove(prev)
-            # prev = int(segments[1].strip())
-            # first_record=True
-        else:
-            sys.stderr.write(
-                "(WARNING) Unrecognized GCOV output: '%s'\n"
-                "\tThis is indicitive of a gcov output parse error.\n"
-                "\tPlease report this to the gcovr developers." % tmp
-            )
+                self.logger.verbose_msg(
+                    "Excluding unreachable branch on line {line} "
+                    "in file {fname}: {reason}",
+                    line=self.lineno, fname=self.fname,
+                    reason=exclude_reason)
+                return True
 
-        # save the code line to use it later with branches
-        if is_code_statement:
-            last_code_line = "".join(segments[2:])
-            last_code_lineno = lineno
-            last_code_line_excluded = False
-            if excluding:
-                last_code_line_excluded = True
+            fields = line.split()  # e.g. "branch  0 taken 0% (fallthrough)"
+            branch_index = int(fields[1])
+            try:
+                count = int(fields[3])
+            except (ValueError, IndexError):
+                count = 0
+            self.branches.setdefault(self.lineno, {})[branch_index] = count
+            return True
 
-        # clear the excluding flag for single-line excludes
-        if excluding and not excluding[-1]:
-            excluding.pop()
-
-    if options.verbose:
-        print('uncovered ' + str(uncovered))
-        print('covered ' + str(covered))
-        print('branches ' + str(branches))
-        print('noncode ' + str(noncode))
-    #
-    # If the file is already in covdata, then we
-    # remove lines that are covered here.  Otherwise,
-    # initialize covdata
-    #
-    if fname not in covdata:
-        covdata[fname] = CoverageData(
-            fname, uncovered, uncovered_exceptional, covered, branches, noncode
-        )
-    else:
-        covdata[fname].update(
-            uncovered, uncovered_exceptional, covered, branches, noncode
-        )
-    INPUT.close()
-
-    for header, line in excluding:
-        sys.stderr.write("(WARNING) The coverage exclusion region start flag "
-                         "%s_EXCL_START\n\ton line %d did not have "
-                         "corresponding %s_EXCL_STOP flag\n\t in file %s.\n"
-                         % (header, line, header, fname))
-
-
-def log_warn(pattern, *args, **kwargs):
-    """Write a formatted warning to STDERR.
-
-    pattern: a str.format pattern
-    args, kwargs: str.format arguments
-    """
-    pattern = "(WARNING) " + pattern + "\n"
-    sys.stderr.write(pattern.format(*args, **kwargs))
-
-
-def process_exclusion_marker(header, flag, exclusion_stack, lineno, fname):
-    """Process the exclusion marker
-
-    - START markers are added to the exclusion_stack
-    - STOP markers remove a marker from the exclusion_stack
-    - LINE markers return True
-
-    returns: True when this line should be excluded, False for n/a.
-
-    header: exclusion marker name, e.g. "LCOV" or "GCOVR"
-    flag: exclusion marker action, one of "START", "STOP", or "LINE"
-    exclusion_stack: list of (flag, lineno) tuples, will be modified
-    lineno, fname: for error messages
-    """
-    if flag == 'START':
-        exclusion_stack.append((header, lineno))
         return False
 
-    if flag == 'STOP':
-        if not exclusion_stack:
-            log_warn(
-                "mismatched coverage exclusion flags.\n"
-                "\t{header}_EXCL_STOP found on line {lineno} "
-                "without corresponding {header}_EXCL_START, "
-                "when processing {fname}",
-                header=header, lineno=lineno, fname=fname)
+    def parse_exclusion_marker(self, header, flag):
+        """Process the exclusion marker
+
+        - START markers are added to the exclusion_stack
+        - STOP markers remove a marker from the exclusion_stack
+        - LINE markers return True
+
+        returns: True when this line should be excluded, False for n/a.
+
+        header: exclusion marker name, e.g. "LCOV" or "GCOVR"
+        flag: exclusion marker action, one of "START", "STOP", or "LINE"
+        """
+        if flag == 'START':
+            self.excluding.append((header, self.lineno))
             return False
 
-        start_header, start_line = exclusion_stack.pop()
-        if header != start_header:
-            log_warn(
-                "{start_header}_EXCL_START found on line {start_line} "
-                "was terminated by {header}_EXCL_STOP "
-                "on line {lineno}, when processing {fname}",
-                start_header=start_header, start_line=start_line,
-                header=header, lineno=lineno, fname=fname)
-        return False
+        if flag == 'STOP':
+            if not self.excluding:
+                self.logger.warn(
+                    "mismatched coverage exclusion flags.\n"
+                    "\t{header}_EXCL_STOP found on line {lineno} "
+                    "without corresponding {header}_EXCL_START, "
+                    "when processing {fname}",
+                    header=header, lineno=self.lineno, fname=self.fname)
+                return False
 
-    if flag == 'LINE':
-        return True
+            start_header, start_line = self.excluding.pop()
+            if header != start_header:
+                self.logger.warn(
+                    "{start_header}_EXCL_START found on line {start_line} "
+                    "was terminated by {header}_EXCL_STOP "
+                    "on line {lineno}, when processing {fname}",
+                    start_header=start_header, start_line=start_line,
+                    header=header, lineno=self.lineno, fname=self.fname)
+            return False
 
-    assert False, "unknown exclusion marker"  # pragma: no cover
+        if flag == 'LINE':
+            return True
+
+        assert False, "unknown exclusion marker"  # pragma: no cover
+
+    def check_unclosed_exclusions(self):
+        for header, line in self.excluding:
+            self.logger.warn(
+                "The coverage exclusion region start flag {header}_EXCL_START\n"
+                "\ton line {line} did not have corresponding {header}_EXCL_STOP flag\n"
+                "\tin file {fname}.",
+                header=header, line=line, fname=self.fname)
+
+    def update_coverage(self, covdata):
+        self.logger.verbose_msg(
+            "uncovered: {parser.uncovered}\n"
+            "covered:   {parser.covered}\n"
+            "branches:  {parser.branches}\n"
+            "noncode:   {parser.noncode}",
+            parser=self)
+
+        # If the file is already in covdata, then we
+        # remove lines that are covered here.  Otherwise,
+        # initialize covdata
+        if self.fname not in covdata:
+            covdata[self.fname] = CoverageData(
+                self.fname, self.uncovered, self.uncovered_exceptional, self.covered, self.branches, self.noncode
+            )
+        else:
+            covdata[self.fname].update(
+                uncovered=self.uncovered,
+                uncovered_exceptional=self.uncovered_exceptional,
+                covered=self.covered,
+                branches=self.branches,
+                noncode=self.noncode)
+
+
+class Logger(object):
+    def __init__(self, verbose=False):
+        self.verbose = verbose
+
+    def warn(self, pattern, *args, **kwargs):
+        """Write a formatted warning to STDERR.
+
+        pattern: a str.format pattern
+        args, kwargs: str.format arguments
+        """
+        pattern = "(WARNING) " + pattern + "\n"
+        sys.stderr.write(pattern.format(*args, **kwargs))
+
+    def msg(self, pattern, *args, **kwargs):
+        """Write a formatted message to STDOUT.
+
+        pattern: a str.format pattern
+        args, kwargs: str.format arguments
+        """
+        pattern = pattern + "\n"
+        sys.stdout.write(pattern.format(*args, **kwargs))
+
+    def verbose_msg(self, pattern, *args, **kwargs):
+        """Write a formatted message to STDOUT if in verbose mode.
+
+        see: self.msg()
+        """
+        if self.verbose:
+            self.msg(pattern, *args, **kwargs)
 
 
 #
