@@ -196,33 +196,15 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         if exclude_line_flag in line:
             excl_line = False
             for header, flag in exclude_line_pattern.findall(line):
-                if flag == 'START':
-                    excluding.append((header, lineno))
-                elif flag == 'STOP':
-                    if excluding:
-                        _header, _line = excluding.pop()
-                        if _header != header:
-                            sys.stderr.write(
-                                "(WARNING) %s_EXCL_START found on line %s "
-                                "was terminated by %s_EXCL_STOP on line %s, "
-                                "when processing %s\n"
-                                % (_header, _line, header, lineno, fname)
-                            )
-                    else:
-                        sys.stderr.write(
-                            "(WARNING) mismatched coverage exclusion flags.\n"
-                            "\t%s_EXCL_STOP found on line %s without "
-                            "corresponding %s_EXCL_START, when processing %s\n"
-                            % (header, lineno, header, fname)
-                        )
-                elif flag == 'LINE':
-                    # We buffer the line exclusion so that it is always
-                    # the last thing added to the exclusion list (and so
-                    # only ONE is ever added to the list).  This guards
-                    # against cases where puts a _LINE and _START (or
-                    # _STOP) on the same line... it also guards against
-                    # duplicate _LINE flags.
+                if process_exclusion_marker(header, flag, excluding, lineno=lineno, fname=fname):
                     excl_line = True
+
+            # We buffer the line exclusion so that it is always
+            # the last thing added to the exclusion list (and so
+            # only ONE is ever added to the list).  This guards
+            # against cases where puts a _LINE and _START (or
+            # _STOP) on the same line... it also guards against
+            # duplicate _LINE flags.
             if excl_line:
                 excluding.append(False)
 
@@ -335,6 +317,60 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
                          "%s_EXCL_START\n\ton line %d did not have "
                          "corresponding %s_EXCL_STOP flag\n\t in file %s.\n"
                          % (header, line, header, fname))
+
+
+def log_warn(pattern, *args, **kwargs):
+    """Write a formatted warning to STDERR.
+
+    pattern: a str.format pattern
+    args, kwargs: str.format arguments
+    """
+    pattern = "(WARNING) " + pattern + "\n"
+    sys.stderr.write(pattern.format(*args, **kwargs))
+
+
+def process_exclusion_marker(header, flag, exclusion_stack, lineno, fname):
+    """Process the exclusion marker
+
+    - START markers are added to the exclusion_stack
+    - STOP markers remove a marker from the exclusion_stack
+    - LINE markers return True
+
+    returns: True when this line should be excluded, False for n/a.
+
+    header: exclusion marker name, e.g. "LCOV" or "GCOVR"
+    flag: exclusion marker action, one of "START", "STOP", or "LINE"
+    exclusion_stack: list of (flag, lineno) tuples, will be modified
+    lineno, fname: for error messages
+    """
+    if flag == 'START':
+        exclusion_stack.append((header, lineno))
+        return False
+
+    if flag == 'STOP':
+        if not exclusion_stack:
+            log_warn(
+                "mismatched coverage exclusion flags.\n"
+                "\t{header}_EXCL_STOP found on line {lineno} "
+                "without corresponding {header}_EXCL_START, "
+                "when processing {fname}",
+                header=header, lineno=lineno, fname=fname)
+            return False
+
+        start_header, start_line = exclusion_stack.pop()
+        if header != start_header:
+            log_warn(
+                "{start_header}_EXCL_START found on line {start_line} "
+                "was terminated by {header}_EXCL_STOP "
+                "on line {lineno}, when processing {fname}",
+                start_header=start_header, start_line=start_line,
+                header=header, lineno=lineno, fname=fname)
+        return False
+
+    if flag == 'LINE':
+        return True
+
+    assert False, "unknown exclusion marker"  # pragma: no cover
 
 
 #
