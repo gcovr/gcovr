@@ -6,32 +6,21 @@
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
-import copy
-
 from .utils import calculate_coverage
 
 
-#
-# Container object for coverage statistics
-#
 class CoverageData(object):
+    """Container for coverage statistics of one file.
+    """
 
-    def __init__(
-            self, fname, uncovered, uncovered_exceptional, covered, branches,
-            noncode):
+    def __init__(self, fname):
         self.fname = fname
-        # Shallow copies are cheap & "safe" because the caller will
-        # throw away their copies of covered & uncovered after calling
-        # us exactly *once*
-        self.uncovered = copy.copy(uncovered)
-        self.uncovered_exceptional = copy.copy(uncovered_exceptional)
-        self.covered = copy.copy(covered)
-        self.noncode = copy.copy(noncode)
-        # But, a deep copy is required here
-        self.all_lines = copy.deepcopy(uncovered)
-        self.all_lines.update(uncovered_exceptional)
-        self.all_lines.update(covered.keys())
-        self.branches = copy.deepcopy(branches)
+        self.uncovered = set()
+        self.uncovered_exceptional = set()
+        self.covered = dict()
+        self.noncode = set()
+        self.all_lines = set()
+        self.branches = dict()
 
     def update(
             self, uncovered, uncovered_exceptional, covered, branches,
@@ -42,28 +31,23 @@ class CoverageData(object):
         self.uncovered.update(uncovered)
         self.uncovered_exceptional.update(uncovered_exceptional)
         self.noncode.intersection_update(noncode)
-        for k in covered.keys():
-            self.covered[k] = self.covered.get(k, 0) + covered[k]
+        update_counters(self.covered, covered)
         for k in branches.keys():
-            for b in branches[k]:
-                d = self.branches.setdefault(k, {})
-                d[b] = d.get(b, 0) + branches[k][b]
+            d = self.branches.setdefault(k, {})
+            update_counters(d, branches[k])
         self.uncovered.difference_update(self.covered.keys())
         self.uncovered_exceptional.difference_update(self.covered.keys())
 
+    def lines_with_uncovered_branches(self):
+        for line in self.branches.keys():
+            if any(count == 0 for count in self.branches[line].values()):
+                yield line
+
     def uncovered_str(self, exceptional, show_branch):
         if show_branch:
-            #
             # Don't do any aggregation on branch results
-            #
-            tmp = []
-            for line in self.branches.keys():
-                for branch in self.branches[line]:
-                    if self.branches[line][branch] == 0:
-                        tmp.append(line)
-                        break
-            tmp.sort()
-            return ",".join([str(x) for x in tmp]) or ""
+            tmp = list(self.lines_with_uncovered_branches())
+            return ",".join(str(x) for x in sorted(tmp))
 
         if exceptional:
             tmp = list(self.uncovered_exceptional)
@@ -72,43 +56,16 @@ class CoverageData(object):
         if len(tmp) == 0:
             return ""
 
-        #
         # Walk through the uncovered lines in sorted order.
         # Find blocks of consecutive uncovered lines, and return
         # a string with that information.
         #
-        tmp.sort()
-        first = None
-        last = None
-        ranges = []
-        for item in tmp:
-            if last is None:
-                first = item
-                last = item
-            elif item == (last + 1):
-                last = item
-            else:
-                #
-                # Should we include noncode lines in the range of lines
-                # to be covered???  This simplifies the ranges summary, but it
-                # provides a counterintuitive listing.
-                #
-                # if len(self.noncode.intersection(range(last+1,item))) \
-                #        == item - last - 1:
-                #     last = item
-                #     continue
-                #
-                if first == last:
-                    ranges.append(str(first))
-                else:
-                    ranges.append(str(first) + "-" + str(last))
-                first = item
-                last = item
-        if first == last:
-            ranges.append(str(first))
-        else:
-            ranges.append(str(first) + "-" + str(last))
-        return ",".join(ranges)
+        # Should we include noncode lines in the range of lines
+        # to be covered???  This simplifies the ranges summary, but it
+        # provides a counterintuitive listing.
+        return ",".join(
+            format_range(first, last)
+            for first, last in find_consecutive_ranges(sorted(tmp)))
 
     def coverage(self, show_branch):
         if show_branch:
@@ -117,7 +74,7 @@ class CoverageData(object):
             for line in self.branches.keys():
                 for branch in self.branches[line].keys():
                     total += 1
-                    cover += self.branches[line][branch] > 0 and 1 or 0
+                    cover += 1 if self.branches[line][branch] > 0 else 0
         else:
             total = len(self.all_lines)
             cover = len(self.covered)
@@ -125,3 +82,32 @@ class CoverageData(object):
         percent = calculate_coverage(cover, total, nan_value=None)
         percent = "--" if percent is None else str(int(percent))
         return (total, cover, percent)
+
+
+def update_counters(target, source):
+    for k in source:
+        target[k] = target.get(k, 0) + source[k]
+
+
+def find_consecutive_ranges(items):
+    first = last = None
+    for item in items:
+        if last is None:
+            first = last = item
+            continue
+
+        if item == (last + 1):
+            last = item
+            continue
+
+        yield first, last
+        first = last = item
+
+    if last is not None:
+        yield first, last
+
+
+def format_range(first, last):
+    if first == last:
+        return str(first)
+    return "{}-{}".format(first, last)

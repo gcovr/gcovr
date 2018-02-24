@@ -402,16 +402,13 @@ class GcovParser(object):
         # remove lines that are covered here.  Otherwise,
         # initialize covdata
         if self.fname not in covdata:
-            covdata[self.fname] = CoverageData(
-                self.fname, self.uncovered, self.uncovered_exceptional, self.covered, self.branches, self.noncode
-            )
-        else:
-            covdata[self.fname].update(
-                uncovered=self.uncovered,
-                uncovered_exceptional=self.uncovered_exceptional,
-                covered=self.covered,
-                branches=self.branches,
-                noncode=self.noncode)
+            covdata[self.fname] = CoverageData(self.fname)
+        covdata[self.fname].update(
+            uncovered=self.uncovered,
+            uncovered_exceptional=self.uncovered_exceptional,
+            covered=self.covered,
+            branches=self.branches,
+            noncode=self.noncode)
 
 
 #
