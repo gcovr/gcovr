@@ -30,27 +30,23 @@ cpp_style_comment_pattern = re.compile('//.*?$')
 # Get the list of datafiles in the directories specified by the user
 #
 def get_datafiles(flist, options):
+    logger = Logger(options.verbose)
+
     allfiles = set()
     for dir_ in flist:
         if options.gcov_files:
-            if options.verbose:
-                sys.stdout.write(
-                    "Scanning directory %s for gcov files...\n" % (dir_, )
-                )
+            logger.verbose_msg(
+                "Scanning directory {} for gcov files...", dir_)
             files = search_file(
                 ".*\.gcov$", dir_, exclude_dirs=options.exclude_dirs)
             gcov_files = [file for file in files if file.endswith('gcov')]
-            if options.verbose:
-                sys.stdout.write(
-                    "Found %d files (and will process %d)\n" %
-                    (len(files), len(gcov_files))
-                )
+            logger.verbose_msg(
+                "Found {} files (and will process {})",
+                len(files), len(gcov_files))
             allfiles.update(gcov_files)
         else:
-            if options.verbose:
-                sys.stdout.write(
-                    "Scanning directory %s for gcda/gcno files...\n" % (dir_, )
-                )
+            logger.verbose_msg(
+                "Scanning directory {} for gcda/gcno files...", dir_)
             files = search_file(
                 ".*\.gc(da|no)$", dir_, exclude_dirs=options.exclude_dirs)
             # gcno files will *only* produce uncovered results; however,
@@ -66,10 +62,9 @@ def get_datafiles(flist, options):
                 filenm for filenm in files if
                 filenm.endswith('gcno') and filenm[:-2] + 'da' not in tmp
             ]
-            if options.verbose:
-                sys.stdout.write(
-                    "Found %d files (and will process %d)\n" %
-                    (len(files), len(gcda_files) + len(gcno_files)))
+            logger.verbose_msg(
+                "Found {} files (and will process {})",
+                len(files), len(gcda_files) + len(gcno_files))
             allfiles.update(gcda_files)
             allfiles.update(gcno_files)
     return allfiles
@@ -104,22 +99,17 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
     logger.verbose_msg("Parsing coverage data for file {}", fname)
 
     # Return if the filename does not match the filter
-    filtered_fname = None
-    for i in range(0, len(options.filter)):
-        if options.filter[i].match(fname):
-            filtered_fname = options.root_filter.sub('', fname)
-            break
-    if filtered_fname is None:
+    # Return if the filename matches the exclude pattern
+    filtered, excluded = apply_filter_include_exclude(
+        fname, options.filter, options.exclude, strip=options.root_filter)
+
+    if filtered:
         logger.verbose_msg("  Filtering coverage data for file {}", fname)
         return
 
-    # Return if the filename matches the exclude pattern
-    for exc in options.exclude:
-        if (filtered_fname is not None and exc.match(filtered_fname)) or \
-                exc.match(fname) or \
-                exc.match(os.path.abspath(fname)):
-            logger.verbose_msg("  Excluding coverage data for file {}", fname)
-            return
+    if excluded:
+        logger.verbose_msg("  Excluding coverage data for file {}", fname)
+        return
 
     parser = GcovParser(fname, logger=logger)
     for line in INPUT:
@@ -240,7 +230,6 @@ class GcovParser(object):
         # or    "  3:  7:  c += 1"      (source code)
 
         segments = line.split(":", 2)
-        # print "\t","Y", segments
         if len(segments) > 1:
             try:
                 self.lineno = int(segments[1].strip())
@@ -482,69 +471,21 @@ class Logger(object):
 # trial-and-error here)
 #
 def process_datafile(filename, covdata, options):
-    if options.verbose:
-        print("Processing file: " + filename)
-    #
-    # Launch gcov
-    #
+    logger = Logger(options.verbose)
+
+    logger.verbose_msg("Processing file: {}", filename)
+
     abs_filename = os.path.abspath(filename)
     dirname, fname = os.path.split(abs_filename)
 
-    potential_wd = []
     errors = []
-    Done = False
 
-    if options.objdir:
-        # print "X - objdir"
-        src_components = abs_filename.split(os.sep)
-        components = normpath(options.objdir).split(os.sep)
-        idx = 1
-        while idx <= len(components):
-            if idx > len(src_components):
-                break
-            if components[-1 * idx] != src_components[-1 * idx]:
-                break
-            idx += 1
-        if idx > len(components):
-            pass  # a parent dir; the normal process will find it
-        elif components[-1 * idx] == '..':
-            # NB: os.path.join does not re-add leading '/' characters!?!
-            dirs = [
-                os.path.sep.join(src_components[:len(src_components) - idx])
-            ]
-            while idx <= len(components) and components[-1 * idx] == '..':
-                tmp = []
-                for d in dirs:
-                    for f in os.listdir(d):
-                        x = os.path.join(d, f)
-                        if os.path.isdir(x):
-                            tmp.append(x)
-                dirs = tmp
-                idx += 1
-            potential_wd = dirs
-        else:
-            if components[0] == '':
-                # absolute path
-                tmp = [options.objdir]
-            else:
-                # relative path: check relative to both the cwd and the
-                # gcda file
-                tmp = [
-                    os.path.join(x, options.objdir) for x in
-                    [os.path.dirname(abs_filename), os.getcwd()]
-                ]
-            potential_wd = [
-                testdir for testdir in tmp if os.path.isdir(testdir)
-            ]
-            if len(potential_wd) == 0:
-                errors.append("ERROR: cannot identify the location where GCC "
-                              "was run using --object-directory=%s\n" %
-                              options.objdir)
+    potential_wd = find_potential_working_directories_via_objdir(
+        abs_filename, options.objdir, errors=errors)
 
     # no objdir was specified (or it was a parent dir); walk up the dir tree
     if len(potential_wd) == 0:
         potential_wd.append(options.root_dir)
-        # print "X - potential_wd", options.root_dir
         wd = os.path.split(abs_filename)[0]
         while True:
             potential_wd.append(wd)
@@ -558,10 +499,96 @@ def process_datafile(filename, covdata, options):
         # Always add the root directory
         potential_wd.append(options.root_dir)
 
+    # Iterate from the end of the potential_wd list, which is the root
+    # directory
     #
+    # @latk - 2018: not true, this iterates from the start of the list.
+    # Is that a bug?
+    done = False
+    for dir_ in potential_wd:
+        if done:
+            break
+
+        # NB: either len(potential_wd) == 1, or all entires are absolute
+        # paths, so we don't have to chdir(starting_dir) at every
+        # iteration.
+        os.chdir(dir_)
+
+        done = run_gcov_and_process_files(
+            abs_filename, dirname, covdata,
+            options=options, logger=logger, errors=errors)
+
+    os.chdir(options.root_dir)
+    if options.delete:
+        if not abs_filename.endswith('gcno'):
+            os.remove(abs_filename)
+
+    if not done:
+        logger.warn(
+            "GCOV produced the following errors processing {}:\n"
+            "\t{}\n"
+            "\t(gcovr could not infer a working directory that resolved it.)",
+            filename, "\n\t".join(errors))
+
+
+def find_potential_working_directories_via_objdir(abs_filename, objdir, errors):
+    if not objdir:
+        return []
+
+    src_components = abs_filename.split(os.sep)
+    components = normpath(objdir).split(os.sep)
+
+    # find last different component
+    idx = 1
+    while idx <= len(components) and idx <= len(src_components):
+        if components[-idx] != src_components[-idx]:
+            break
+        idx += 1
+
+    if idx > len(components):
+        return []  # a parent dir; the normal process will find it
+
+    if components[-idx] == '..':
+        # NB: os.path.join does not re-add leading '/' characters!?!
+        dirs = [os.path.sep.join(src_components[:-idx])]
+        while idx <= len(components) and components[-idx] == '..':
+            dirs = list(expand_subdirectories(*dirs))
+            idx += 1
+        return dirs
+
+    if components[0] == '':
+        # absolute path
+        tmp = [objdir]
+    else:
+        # relative path: check relative to both the cwd and the
+        # gcda file
+        tmp = [
+            os.path.join(x, objdir) for x in
+            [os.path.dirname(abs_filename), os.getcwd()]
+        ]
+
+    potential_wd = [testdir for testdir in tmp if os.path.isdir(testdir)]
+
+    if len(potential_wd) == 0:
+        errors.append("ERROR: cannot identify the location where GCC "
+                      "was run using --object-directory=%s\n" %
+                      objdir)
+
+    return potential_wd
+
+
+def expand_subdirectories(*directories):
+    for directory in directories:
+        for entry in os.listdir(directory):
+            subdir = os.path.join(directory, entry)
+            if os.path.isdir(subdir):
+                yield subdir
+
+
+def run_gcov_and_process_files(
+        abs_filename, dirname, covdata, options, logger, errors):
     # If the first element of cmd - the executable name - has embedded spaces
     # it probably includes extra arguments.
-    #
     cmd = options.gcov_cmd.split(' ') + [
         abs_filename,
         "--branch-counts", "--branch-probabilities", "--preserve-paths",
@@ -572,120 +599,137 @@ def process_datafile(filename, covdata, options):
     env = dict(os.environ)
     env['LC_ALL'] = 'en_US'
 
-    while len(potential_wd) > 0 and not Done:
-        # NB: either len(potential_wd) == 1, or all entires are absolute
-        # paths, so we don't have to chdir(starting_dir) at every
-        # iteration.
+    logger.verbose_msg(
+        "Running gcov: '{}' in '{}'", ' '.join(cmd), os.getcwd())
 
-        #
-        # Iterate from the end of the potential_wd list, which is the root
-        # directory
-        #
-        dir_ = potential_wd.pop(0)
-        # print "X DIR:", dir_
-        os.chdir(dir_)
+    out, err = subprocess.Popen(
+        cmd, env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE).communicate()
+    out = out.decode('utf-8')
+    err = err.decode('utf-8')
 
-        if options.verbose:
-            sys.stdout.write(
-                "Running gcov: '%s' in '%s'\n" % (' '.join(cmd), os.getcwd())
-            )
-        out, err = subprocess.Popen(
-            cmd, env=env,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE).communicate()
-        out = out.decode('utf-8')
-        err = err.decode('utf-8')
+    # find the files that gcov created
+    active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
+        out,
+        gcov_filter=options.gcov_filter,
+        gcov_exclude=options.gcov_exclude,
+        logger=logger)
 
-        # find the files that gcov created
-        gcov_files = {'active': [], 'filter': [], 'exclude': []}
-        for line in out.splitlines():
-            found = output_re.search(line.strip())
-            if found is not None:
-                fname = found.group(1)
-                if not options.gcov_filter.match(fname):
-                    if options.verbose:
-                        sys.stdout.write("Filtering gcov file %s\n" % fname)
-                    gcov_files['filter'].append(fname)
-                    continue
-                exclude = False
-                for exc in options.gcov_exclude:
-                    if exc.match(options.gcov_filter.sub('', fname)) or \
-                            exc.match(fname) or \
-                            exc.match(os.path.abspath(fname)):
-                        exclude = True
-                        break
-                if not exclude:
-                    gcov_files['active'].append(fname)
-                elif options.verbose:
-                    sys.stdout.write("Excluding gcov file %s\n" % fname)
-                    gcov_files['exclude'].append(fname)
+    if source_re.search(err):
+        # gcov tossed errors: try the next potential_wd
+        errors.append(err)
+        done = False
+    else:
+        # Process *.gcov files
+        for fname in active_gcov_files:
+            process_gcov_data(fname, covdata, abs_filename, options)
+        done = True
 
-        # print "HERE", err, "XXX", source_re.search(err)
-        if source_re.search(err):
-            #
-            # gcov tossed errors: try the next potential_wd
-            #
-            errors.append(err)
-        else:
-            #
-            # Process *.gcov files
-            #
-            for fname in gcov_files['active']:
-                process_gcov_data(fname, covdata, abs_filename, options)
-            Done = True
+    if not options.keep:
+        for fname in all_gcov_files:
+            remove_file_if_it_exists(fname)
 
-        if not options.keep:
-            for group in gcov_files.values():
-                for fname in group:
-                    if os.path.exists(fname):
-                        # Only remove files that actually exist.
-                        os.remove(fname)
+    return done
 
-    os.chdir(options.root_dir)
-    if options.delete:
-        if not abs_filename.endswith('gcno'):
-            os.remove(abs_filename)
 
-    if not Done:
-        sys.stderr.write(
-            "(WARNING) GCOV produced the following errors processing %s:\n"
-            "\t   %s"
-            "\t(gcovr could not infer a working directory that resolved it.)\n"
-            % (filename, "\t   ".join(errors))
-        )
+def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger):
+    active_files = []
+    all_files = []
+
+    for line in out.splitlines():
+        found = output_re.search(line.strip())
+        if found is None:
+            continue
+
+        fname = found.group(1)
+        all_files.append(fname)
+
+        filtered, excluded = apply_filter_include_exclude(
+            fname, [gcov_filter], gcov_exclude)
+
+        if filtered:
+            logger.verbose_msg("Filtering gcov file {}", fname)
+            continue
+
+        if excluded:
+            logger.verbose_msg("Excluding gcov file {}", fname)
+            continue
+
+        active_files.append(fname)
+
+    return active_files, all_files
 
 
 #
 #  Process Already existing gcov files
 #
 def process_existing_gcov_file(filename, covdata, options):
-    #
-    # Ignore this file if it does not match the gcov filter
-    #
-    if not options.gcov_filter.match(filename):
-        if options.verbose:
-            sys.stdout.write("This gcov file does not match the filter: %s\n" % filename)
+    logger = Logger(options.verbose)
+
+    filtered, excluded = apply_filter_include_exclude(
+        filename, [options.gcov_filter], options.gcov_exclude)
+
+    if filtered:
+        logger.verbose_msg(
+            "This gcov file does not match the filter: {}", filename)
         return
-    #
-    # Ignore this file if it matches one of the exclusion regex's
-    #
-    for exc in options.gcov_exclude:
-        if exc.match(options.gcov_filter.sub('', filename)) or \
-                exc.match(filename) or \
-                exc.match(os.path.abspath(filename)):
-            if options.verbose:
-                sys.stdout.write("Excluding gcov file: %s\n" % filename)
-            return
-    #
-    # Process the gcov data file
-    #
+
+    if excluded:
+        logger.verbose_msg("Excluding gcov file: {}", filename)
+        return
+
     process_gcov_data(filename, covdata, None, options)
-    #
-    # Remove the file unless the user has indicated that we keep gcov data files
-    #
+
     if not options.keep:
-        #
-        # Only remove files that actually exist.
-        #
-        if os.path.exists(filename):
-            os.remove(filename)
+        remove_file_if_it_exists(filename)
+
+
+def apply_filter_include_exclude(
+        filename, include_filters, exclude_filters, strip=None):
+    """Apply inclusion/exclusion filters to filename
+
+    The include_filters are tested against
+    the given (relative) filename.
+    The exclude_filters are tested against
+    the stripped, given (relative), and absolute filenames.
+
+    filename (str): the file path to match, should be relative
+    include_filters (list of regex): ANY of these filters must match
+    exclude_filters (list of regex): NONE of these filters must match
+    strip (optional regex): Strip prefix from filename.
+        If None, use matched include filter.
+
+    returns: (filtered, exclude)
+        filtered (bool): True when filename failed the include_filter
+        excluded (bool): True when filename failed the exclude_filters
+    """
+    filtered = True
+    excluded = False
+
+    filtered_filename = None
+    for filter in include_filters:
+        if filter.match(filename):
+            filtered = False
+            if strip is None:
+                filtered_filename = filter.sub('', filename)
+            else:
+                filtered_filename = strip.sub('', filename)
+            break
+
+    if filtered:
+        return filtered, excluded
+
+    abs_filename = os.path.abspath(filename)
+
+    excluded = any(
+        exc.match(f)
+        for f in [filtered_filename, filename, abs_filename]
+        for exc in exclude_filters)
+
+    return filtered, excluded
+
+
+def remove_file_if_it_exists(filename):
+    if os.path.exists(filename):
+        os.remove(filename)
