@@ -112,9 +112,9 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         return
 
     parser = GcovParser(fname, logger=logger)
-    for line in INPUT:
-        parser.parse_line(line, options.exclude_unreachable_branches)
+    parser.parse_all_lines(INPUT, options.exclude_unreachable_branches)
     parser.update_coverage(covdata)
+    parser.check_unrecognized_lines()
     parser.check_unclosed_exclusions()
 
     INPUT.close()
@@ -217,6 +217,17 @@ class GcovParser(object):
         self.last_code_line = ""
         self.last_code_lineno = 0
         self.last_code_line_excluded = False
+        self.unrecognized_lines = []
+        self.deferred_exceptions = []
+        self.last_was_specialization_section_marker = False
+
+    def parse_all_lines(self, lines, exclude_unreachable_branches):
+        for line in lines:
+            try:
+                self.parse_line(line, exclude_unreachable_branches)
+            except Exception as ex:
+                self.unrecognized_lines.append(line)
+                self.deferred_exceptions.append(ex)
 
     def parse_line(self, line, exclude_unreachable_branches):
         # If this is a tag line, we stay on the same line number
@@ -256,11 +267,7 @@ class GcovParser(object):
         is_code_statement = self.parse_code_line(status, code)
 
         if not is_code_statement:
-            self.logger.verbose_msg(
-                "Unrecognized GCOV output: {line}\n"
-                "\tThis is indicitive of a gcov output parse error.\n"
-                "\tPlease report this to the gcovr developers.",
-                line=line)
+            self.unrecognized_lines.append(line)
 
         # save the code line to use it later with branches
         if is_code_statement:
@@ -293,12 +300,44 @@ class GcovParser(object):
             return True
 
         if firstchar in "0123456789":
-            self.covered[self.lineno] = int(status)
+            # GCOV 8 marks partial coverage
+            # with a trailing "*" after the execution count.
+            self.covered[self.lineno] = int(status.rstrip('*'))
             return True
 
         return False
 
     def parse_tag_line(self, line, exclude_unreachable_branches):
+        # Start or end a template/macro specialization section
+        if line.startswith('-----'):
+            self.last_was_specialization_section_marker = True
+            return True
+
+        last_was_marker = self.last_was_specialization_section_marker
+        self.last_was_specialization_section_marker = False
+
+        # A specialization section marker is either followed by a section or
+        # ends it. If it starts a section, the next line contains a function
+        # name, followed by a colon. A function name cannot be parsed reliably,
+        # so we assume it is a function, and try to disprove this assumption by
+        # comparing with other kinds of lines.
+        if last_was_marker:
+            # 1. a function must end with a colon
+            is_function = line.endswith(':')
+
+            # 2. a function cannot start with space
+            if is_function:
+                is_function = not line.startswith(' ')
+
+            # 3. a function cannot start with a tag
+            if is_function:
+                tags = 'function call branch'.split()
+                is_function = not any(
+                    line.startswith(tag + ' ') for tag in tags)
+
+            # If this line turned out to be a function, discard it.
+            return True
+
         if line.startswith('function '):
             return True
 
@@ -389,6 +428,24 @@ class GcovParser(object):
                 "\ton line {line} did not have corresponding {header}_EXCL_STOP flag\n"
                 "\tin file {fname}.",
                 header=header, line=line, fname=self.fname)
+
+    def check_unrecognized_lines(self):
+        if self.unrecognized_lines:
+            self.logger.warn(
+                "Unrecognized GCOV output for {source}\n"
+                "\t  {lines}\n"
+                "\tThis is indicitive of a gcov output parse error.\n"
+                "\tPlease report this to the gcovr developers\n"
+                "\tat <https://github.com/gcovr/gcovr/issues>.",
+                source=self.fname,
+                lines="\n\t  ".join(self.unrecognized_lines))
+        for ex in self.deferred_exceptions:
+            self.logger.warn(
+                "Exception during parsing:\n"
+                "\t{type}: {msg}",
+                type=type(ex).__name__, msg=ex)
+
+        return bool(self.unrecognized_lines)
 
     def update_coverage(self, covdata):
         self.logger.verbose_msg(
