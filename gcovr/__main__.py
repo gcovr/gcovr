@@ -38,7 +38,7 @@ from optparse import Option, OptionParser, OptionValueError
 from os.path import normpath
 
 from .gcov import get_datafiles, process_existing_gcov_file, process_datafile
-from .utils import get_global_stats, build_filter
+from .utils import get_global_stats, build_filter, Logger
 from .version import __version__
 
 # generators
@@ -314,15 +314,16 @@ def main(args=None):
     global options
     options, args = parse_arguments(args)
 
+    logger = Logger(options.verbose)
+
     if options.version:
-        sys.stdout.write(
-            "gcovr %s\n"
+        logger.msg(
+            "gcovr {version}\n"
             "\n"
             "Copyright (2013) Sandia Corporation. Under the terms of Contract\n"
             "DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government\n"
-            "retains certain rights in this software.\n"
-            % (__version__, )
-        )
+            "retains certain rights in this software.",
+            version=__version__)
         sys.exit(0)
 
     if options.output is not None:
@@ -330,35 +331,33 @@ def main(args=None):
 
     if options.objdir is not None:
         if not options.objdir:
-            sys.stderr.write(
-                "(ERROR) empty --object-directory option.\n"
+            logger.error(
+                "empty --object-directory option.\n"
                 "\tThis option specifies the path to the object file "
                 "directory of your project.\n"
-                "\tThis option cannot be an empty string.\n"
-            )
+                "\tThis option cannot be an empty string.")
             sys.exit(1)
         tmp = options.objdir.replace('/', os.sep).replace('\\', os.sep)
         while os.sep + os.sep in tmp:
             tmp = tmp.replace(os.sep + os.sep, os.sep)
         if normpath(options.objdir) != tmp:
-            sys.stderr.write(
-                "(WARNING) relative referencing in --object-directory.\n"
+            logger.warn(
+                "relative referencing in --object-directory.\n"
                 "\tthis could cause strange errors when gcovr attempts to\n"
-                "\tidentify the original gcc working directory.\n")
+                "\tidentify the original gcc working directory.")
         if not os.path.exists(normpath(options.objdir)):
-            sys.stderr.write(
-                "(ERROR) Bad --object-directory option.\n"
-                "\tThe specified directory does not exist.\n")
+            logger.error(
+                "Bad --object-directory option.\n"
+                "\tThe specified directory does not exist.")
             sys.exit(1)
 
     options.starting_dir = os.path.abspath(os.getcwd())
     if not options.root:
-        sys.stderr.write(
-            "(ERROR) empty --root option.\n"
+        logger.error(
+            "empty --root option.\n"
             "\tRoot specifies the path to the root "
             "directory of your project.\n"
-            "\tThis option cannot be an empty string.\n"
-        )
+            "\tThis option cannot be an empty string.")
         sys.exit(1)
     options.root_dir = os.path.abspath(options.root)
 
@@ -385,9 +384,8 @@ def main(args=None):
         options.gcov_filter = build_filter(options.gcov_filter)
     else:
         options.gcov_filter = re.compile('')
-    #
+
     # Get data files
-    #
     if len(args) == 0:
         search_paths = [options.root]
 
@@ -397,22 +395,17 @@ def main(args=None):
         datafiles = get_datafiles(search_paths, options)
     else:
         datafiles = get_datafiles(args, options)
-    #
+
     # Get coverage data
-    #
     covdata = {}
     for file_ in datafiles:
         if options.gcov_files:
             process_existing_gcov_file(file_, covdata, options)
         else:
             process_datafile(file_, covdata, options)
-    if options.verbose:
-        sys.stdout.write(
-            "Gathered coveraged data for " + str(len(covdata)) + " files\n"
-        )
-    #
+    logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
+
     # Print report
-    #
     if options.xml or options.prettyxml:
         print_xml_report(covdata, options)
     elif options.html or options.html_details:

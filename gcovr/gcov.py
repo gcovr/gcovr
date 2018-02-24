@@ -14,7 +14,7 @@ import sys
 from os.path import normpath
 
 from .coverage import CoverageData
-from .utils import aliases, search_file
+from .utils import aliases, search_file, Logger
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc]annot open (source|graph) file")
@@ -412,37 +412,6 @@ class GcovParser(object):
                 covered=self.covered,
                 branches=self.branches,
                 noncode=self.noncode)
-
-
-class Logger(object):
-    def __init__(self, verbose=False):
-        self.verbose = verbose
-
-    def warn(self, pattern, *args, **kwargs):
-        """Write a formatted warning to STDERR.
-
-        pattern: a str.format pattern
-        args, kwargs: str.format arguments
-        """
-        pattern = "(WARNING) " + pattern + "\n"
-        sys.stderr.write(pattern.format(*args, **kwargs))
-
-    def msg(self, pattern, *args, **kwargs):
-        """Write a formatted message to STDOUT.
-
-        pattern: a str.format pattern
-        args, kwargs: str.format arguments
-        """
-        pattern = pattern + "\n"
-        sys.stdout.write(pattern.format(*args, **kwargs))
-
-    def verbose_msg(self, pattern, *args, **kwargs):
-        """Write a formatted message to STDOUT if in verbose mode.
-
-        see: self.msg()
-        """
-        if self.verbose:
-            self.msg(pattern, *args, **kwargs)
 
 
 #

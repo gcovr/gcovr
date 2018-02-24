@@ -228,3 +228,43 @@ def build_filter(regex):
         return re.compile(re.escape(os.getcwd() + "\\") + regex)
     else:
         return re.compile(os.path.realpath(regex))
+
+
+class Logger(object):
+    def __init__(self, verbose=False):
+        self.verbose = verbose
+
+    def warn(self, pattern, *args, **kwargs):
+        """Write a formatted warning to STDERR.
+
+        pattern: a str.format pattern
+        args, kwargs: str.format arguments
+        """
+        pattern = "(WARNING) " + pattern + "\n"
+        sys.stderr.write(pattern.format(*args, **kwargs))
+
+    def error(self, pattern, *args, **kwargs):
+        """Write a formatted error to STDERR.
+
+        pattern: a str.format pattern
+        args, kwargs: str.format parameters
+        """
+        pattern = "(ERROR) " + pattern + "\n"
+        sys.stderr.write(pattern.format(*args, **kwargs))
+
+    def msg(self, pattern, *args, **kwargs):
+        """Write a formatted message to STDOUT.
+
+        pattern: a str.format pattern
+        args, kwargs: str.format arguments
+        """
+        pattern = pattern + "\n"
+        sys.stdout.write(pattern.format(*args, **kwargs))
+
+    def verbose_msg(self, pattern, *args, **kwargs):
+        """Write a formatted message to STDOUT if in verbose mode.
+
+        see: self.msg()
+        """
+        if self.verbose:
+            self.msg(pattern, *args, **kwargs)
