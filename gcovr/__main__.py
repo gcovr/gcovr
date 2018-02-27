@@ -39,6 +39,7 @@ from os.path import normpath
 from .gcov import get_datafiles, process_existing_gcov_file, process_datafile
 from .utils import get_global_stats, build_filter, Logger
 from .version import __version__
+from .workers import Workers
 
 # generators
 from .cobertura_xml_generator import print_xml_report
@@ -377,7 +378,15 @@ def parse_arguments(args):
         dest="delete",
         default=False
     )
-
+    gcov_options.add_argument(
+        "-j",
+        help="Set the number of threads to use in parallel.",
+        nargs="?",
+        const=0,
+        type=int,
+        dest="gcov_parallel",
+        default=1
+    )
     return parser.parse_args(args=args)
 
 
@@ -472,13 +481,16 @@ def main(args=None):
 
     # Get coverage data
     covdata = {}
+    pool = Workers(options.gcov_parallel)
+    if options.verbose:
+        print("Pool started with %d workers" % pool.size())
     for file_ in datafiles:
         if options.gcov_files:
-            process_existing_gcov_file(file_, covdata, options)
+            pool.add(process_existing_gcov_file, file_, covdata, options)
         else:
-            process_datafile(file_, covdata, options)
+            pool.add(process_datafile, file_, covdata, options)
+    pool.wait()
     logger.verbose_msg("Gathered coveraged data for {0} files", len(covdata))
-
     # Print report
     if options.xml or options.prettyxml:
         print_xml_report(covdata, options)
