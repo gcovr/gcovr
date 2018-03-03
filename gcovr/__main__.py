@@ -302,6 +302,15 @@ def parse_arguments(args):
         dest="fail_under_branch",
         default=0.0
     )
+    parser.add_option(
+        '--gcov-ignore-parse-errors',
+        help="Skip lines with parse errors in GCOV files "
+             "instead of exiting with an error. "
+             "A report will be shown on stderr.",
+        action="store_true",
+        dest="gcov_ignore_parse_errors",
+        default=False
+    )
     parser.usage = "gcovr [options]"
     parser.description = \
         "A utility to run gcov and generate a simple report that summarizes " \

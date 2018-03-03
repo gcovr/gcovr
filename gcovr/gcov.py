@@ -112,10 +112,11 @@ def process_gcov_data(data_fname, covdata, source_fname, options):
         return
 
     parser = GcovParser(fname, logger=logger)
-    parser.parse_all_lines(INPUT, options.exclude_unreachable_branches)
+    parser.parse_all_lines(
+        INPUT,
+        exclude_unreachable_branches=options.exclude_unreachable_branches,
+        ignore_parse_errors=options.gcov_ignore_parse_errors)
     parser.update_coverage(covdata)
-    parser.check_unrecognized_lines()
-    parser.check_unclosed_exclusions()
 
     INPUT.close()
 
@@ -221,13 +222,16 @@ class GcovParser(object):
         self.deferred_exceptions = []
         self.last_was_specialization_section_marker = False
 
-    def parse_all_lines(self, lines, exclude_unreachable_branches):
+    def parse_all_lines(self, lines, exclude_unreachable_branches, ignore_parse_errors):
         for line in lines:
             try:
                 self.parse_line(line, exclude_unreachable_branches)
             except Exception as ex:
                 self.unrecognized_lines.append(line)
                 self.deferred_exceptions.append(ex)
+
+        self.check_unclosed_exclusions()
+        self.check_unrecognized_lines(ignore_parse_errors=ignore_parse_errors)
 
     def parse_line(self, line, exclude_unreachable_branches):
         # If this is a tag line, we stay on the same line number
@@ -429,23 +433,38 @@ class GcovParser(object):
                 "\tin file {fname}.",
                 header=header, line=line, fname=self.fname)
 
-    def check_unrecognized_lines(self):
-        if self.unrecognized_lines:
-            self.logger.warn(
-                "Unrecognized GCOV output for {source}\n"
-                "\t  {lines}\n"
-                "\tThis is indicitive of a gcov output parse error.\n"
-                "\tPlease report this to the gcovr developers\n"
-                "\tat <https://github.com/gcovr/gcovr/issues>.",
-                source=self.fname,
-                lines="\n\t  ".join(self.unrecognized_lines))
+    def check_unrecognized_lines(self, ignore_parse_errors):
+        if not self.unrecognized_lines:
+            return
+
+        self.logger.warn(
+            "Unrecognized GCOV output for {source}\n"
+            "\t  {lines}\n"
+            "\tThis is indicative of a gcov output parse error.\n"
+            "\tPlease report this to the gcovr developers\n"
+            "\tat <https://github.com/gcovr/gcovr/issues>.",
+            source=self.fname,
+            lines="\n\t  ".join(self.unrecognized_lines))
+
         for ex in self.deferred_exceptions:
             self.logger.warn(
                 "Exception during parsing:\n"
                 "\t{type}: {msg}",
                 type=type(ex).__name__, msg=ex)
 
-        return bool(self.unrecognized_lines)
+        if ignore_parse_errors:
+            return
+
+        self.logger.error(
+            "Exiting because of parse errors.\n"
+            "\tYou can run gcovr with --gcov-ignore-parse-errors\n"
+            "\tto continue anyway.")
+
+        # if we caught an exception, re-raise it for the traceback
+        for ex in self.deferred_exceptions:
+            raise ex
+
+        sys.exit(1)
 
     def update_coverage(self, covdata):
         self.logger.verbose_msg(

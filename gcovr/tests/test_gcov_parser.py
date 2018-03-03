@@ -6,6 +6,7 @@
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
+import re
 import pytest
 
 from ..gcov import GcovParser
@@ -185,7 +186,10 @@ def test_gcov_8(capsys, sourcename):
     expected_uncovered_branches = GCOV_8_EXPECTED_UNCOVERED_BRANCHES[sourcename]
 
     parser = GcovParser("tmp.cpp", Logger())
-    parser.parse_all_lines(lines, exclude_unreachable_branches=False)
+    parser.parse_all_lines(
+        lines,
+        exclude_unreachable_branches=False,
+        ignore_parse_errors=False)
 
     covdata = dict()
     parser.update_coverage(covdata)
@@ -197,21 +201,36 @@ def test_gcov_8(capsys, sourcename):
         exceptional=False, show_branch=True)
     assert uncovered_lines == expected_uncovered_lines
     assert uncovered_branches == expected_uncovered_branches
-    out, err = capsys.readouterr()
-    assert (out, err) == ('', '')
 
-    parser.check_unrecognized_lines()
-    parser.check_unclosed_exclusions()
     out, err = capsys.readouterr()
     assert (out, err) == ('', '')
 
 
-def test_unknown_tags(capsys):
+def contains_phrases(string, *phrases):
+    phrase_re = re.compile(
+        '.*'.join(re.escape(p) for p in phrases),
+        flags=re.DOTALL)
+    return bool(phrase_re.search(string))
+
+
+@pytest.mark.parametrize('ignore_errors', [True, False])
+def test_unknown_tags(capsys, ignore_errors):
     source = r"bananas 7 times 3"
     lines = source.splitlines()
 
     parser = GcovParser("foo.c", Logger())
-    parser.parse_all_lines(lines, exclude_unreachable_branches=False)
+
+    def run_the_parser():
+        parser.parse_all_lines(
+            lines,
+            exclude_unreachable_branches=False,
+            ignore_parse_errors=ignore_errors)
+
+    if ignore_errors:
+        run_the_parser()
+    else:
+        with pytest.raises(SystemExit):
+            run_the_parser()
 
     covdata = dict()
     parser.update_coverage(covdata)
@@ -223,11 +242,7 @@ def test_unknown_tags(capsys):
         exceptional=False, show_branch=True)
     assert uncovered_lines == ''
     assert uncovered_branches == ''
-    out, err = capsys.readouterr()
-    assert (out, err) == ('', '')
 
-    parser.check_unrecognized_lines()
-    parser.check_unclosed_exclusions()
     out, err = capsys.readouterr()
     assert out == ''
     err_phrases = [
@@ -235,8 +250,9 @@ def test_unknown_tags(capsys):
         'bananas',
         'github.com/gcovr/gcovr',
     ]
-    for phrase in err_phrases:
-        assert phrase in err
+    if not ignore_errors:
+        err_phrases.append('(ERROR) Exiting')
+    assert contains_phrases(err, *err_phrases)
 
 
 def test_pathologic_codeline(capsys):
@@ -244,15 +260,19 @@ def test_pathologic_codeline(capsys):
     lines = source.splitlines()
 
     parser = GcovParser("foo.c", Logger())
-    parser.parse_all_lines(lines, exclude_unreachable_branches=False)
-    parser.check_unrecognized_lines()
+    with pytest.raises(IndexError):
+        parser.parse_all_lines(
+            lines,
+            exclude_unreachable_branches=False,
+            ignore_parse_errors=False)
+
     out, err = capsys.readouterr()
     assert out == ''
-    err_phrases = [
+    assert contains_phrases(
+        err,
         '(WARNING) Unrecognized GCOV output',
         ': 7:haha',
         'Exception during parsing',
         'IndexError',
-    ]
-    for phrase in err_phrases:
-        assert phrase in err
+        '(ERROR) Exiting',
+        'run gcovr with --gcov-ignore-parse-errors')
