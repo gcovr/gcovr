@@ -56,7 +56,8 @@ class GCovSupportChecker(object):
                         pass
 
                     raise EnvironmentError(
-                        "'" + gcov_path + "' does not support " + option)
+                        "gcov command: '" + gcov_path +
+                        "' does not support " + option)
 
         return self.checked[gcov_path]
 

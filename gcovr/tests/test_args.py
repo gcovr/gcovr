@@ -29,6 +29,12 @@ def test_version(capsys):
     assert c.exception.code == 0
 
 
+def test_incompatible_gcov(capsys):
+    c = capture(capsys, ['--gcov-executable=/bin/sh'])
+    assert c.exception.code != 0
+    assert c.err.startswith("(ERROR) gcov command: '/bin/sh' does not support ")
+
+
 def test_help(capsys):
     c = capture(capsys, ['-h'])
     assert c.err == ''
