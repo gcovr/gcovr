@@ -15,7 +15,7 @@ import zlib
 from string import Template
 
 from .version import __version__
-from .utils import commonpath
+from .utils import commonpath, sort_coverage
 
 medium_coverage = 75.0
 high_coverage = 90.0
@@ -483,20 +483,6 @@ def coverage_to_color(coverage):
 # Produce an HTML report
 #
 def print_html_report(covdata, options):
-    def _num_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage(show_branch=False)
-        return total - covered
-
-    def _percent_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage(show_branch=False)
-        if covered:
-            return -1.0 * covered / total
-        else:
-            return total or 1e6
-
-    def _alpha(key):
-        return key
-
     details = options.html_details
     if options.output is None:
         details = False
@@ -552,11 +538,10 @@ def print_html_report(covdata, options):
     files = []
     dirs = []
     filtered_fname = ''
-    keys = list(covdata.keys())
-    keys.sort(
-        key=options.sort_uncovered and _num_uncovered or
-        options.sort_percent and _percent_uncovered or _alpha
-    )
+    keys = sort_coverage(
+        covdata, show_branch=False,
+        by_num_uncovered=options.sort_uncovered,
+        by_percent_uncovered=options.sort_percent)
     for f in keys:
         cdata = covdata[f]
         filtered_fname = options.root_filter.sub('', f)

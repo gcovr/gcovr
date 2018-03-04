@@ -268,3 +268,38 @@ class Logger(object):
         """
         if self.verbose:
             self.msg(pattern, *args, **kwargs)
+
+
+def sort_coverage(covdata, show_branch,
+                  by_num_uncovered=False, by_percent_uncovered=False):
+    """Sort a coverage dict.
+
+    covdata (dict): the coverage dictionary
+    show_branch (bool): select branch coverage (True) or line coverage (False)
+    by_num_uncovered, by_percent_uncovered (bool):
+        select the sort mode. By default, sort alphabetically.
+
+    returns: the sorted keys
+    """
+    def num_uncovered_key(key):
+        (total, covered, _) = covdata[key].coverage(show_branch)
+        uncovered = total - covered
+        return uncovered
+
+    def percent_uncovered_key(key):
+        (total, covered, _) = covdata[key].coverage(show_branch)
+        if covered:
+            return -1.0 * covered / total
+        elif total:
+            return total
+        else:
+            return 1e6
+
+    if by_num_uncovered:
+        key_fn = num_uncovered_key
+    elif by_percent_uncovered:
+        key_fn = percent_uncovered_key
+    else:
+        key_fn = None  # default key, sort alphabetically
+
+    return sorted(covdata, key=key_fn)

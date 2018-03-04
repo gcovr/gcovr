@@ -8,27 +8,13 @@
 
 import sys
 
-from .utils import calculate_coverage
+from .utils import calculate_coverage, sort_coverage
 
 
 #
 # Produce the classic gcovr text report
 #
 def print_text_report(covdata, options):
-    def _num_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage(options.show_branch)
-        return total - covered
-
-    def _percent_uncovered(key):
-        (total, covered, percent) = covdata[key].coverage(options.show_branch)
-        if covered:
-            return -1.0 * covered / total
-        else:
-            return total or 1e6
-
-    def _alpha(key):
-        return key
-
     if options.output:
         OUTPUT = open(options.output, 'w')
     else:
@@ -51,11 +37,10 @@ def print_text_report(covdata, options):
     OUTPUT.write("-" * 78 + '\n')
 
     # Data
-    keys = list(covdata.keys())
-    keys.sort(
-        key=options.sort_uncovered and _num_uncovered or
-        options.sort_percent and _percent_uncovered or _alpha
-    )
+    keys = sort_coverage(
+        covdata, show_branch=options.show_branch,
+        by_num_uncovered=options.sort_uncovered,
+        by_percent_uncovered=options.sort_percent)
 
     def _summarize_file_coverage(coverage):
         tmp = options.root_filter.sub('', coverage.fname)
