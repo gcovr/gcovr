@@ -25,6 +25,45 @@ exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
 c_style_comment_pattern = re.compile('/\*.*?\*/')
 cpp_style_comment_pattern = re.compile('//.*?$')
 
+gcov_required_options = [
+    "--branch-counts",
+    "--branch-probabilities",
+    "--preserve-paths",
+    '--object-directory']
+
+
+class GCovSupportChecker(object):
+    """Check that gcov supports the options we need"""
+    def __init__(self):
+        self.checked = {}
+
+    def check(self, gcov_path):
+        if gcov_path not in self.checked:
+            cmd = gcov_path.split()
+            cmd.append("--help")
+            self.checked[gcov_path] = False
+            try:
+                help = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError as cpe:
+                help = cpe.output
+            help = str(help)
+            for option in gcov_required_options:
+                if option not in help:
+                    try:
+                        gcov_path = subprocess.check_output(
+                            ["which", gcov_path]).strip().decode("utf-8")
+                    except subprocess.CalledProcessError:
+                        pass
+
+                    raise EnvironmentError(
+                        "gcov command: '" + gcov_path +
+                        "' does not support " + option)
+
+        return self.checked[gcov_path]
+
+
+gcov_support = GCovSupportChecker()
+
 
 #
 # Get the list of datafiles in the directories specified by the user
@@ -440,14 +479,13 @@ def process_datafile(filename, covdata, options):
         potential_wd.append(options.root_dir)
 
     #
-    # If the first element of cmd - the executable name - has embedded spaces
-    # it probably includes extra arguments.
+    # If the first element of cmd - the executable name - has embedded
+    # whitespace it probably includes extra arguments.
     #
-    cmd = options.gcov_cmd.split(' ') + [
-        abs_filename,
-        "--branch-counts", "--branch-probabilities", "--preserve-paths",
-        '--object-directory', dirname
-    ]
+    cmd = options.gcov_cmd.split()
+    cmd.append(abs_filename)
+    cmd.extend(gcov_required_options)
+    cmd.append(dirname)
 
     # NB: Currently, we will only parse English output
     env = dict(os.environ)
