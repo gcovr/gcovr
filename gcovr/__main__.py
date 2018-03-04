@@ -37,7 +37,8 @@ import sys
 from optparse import Option, OptionParser, OptionValueError
 from os.path import normpath
 
-from .gcov import get_datafiles, process_existing_gcov_file, process_datafile
+from .gcov import get_datafiles, process_existing_gcov_file, process_datafile, \
+    gcov_support
 from .utils import get_global_stats, build_filter
 from .version import __version__
 
@@ -361,6 +362,13 @@ def main(args=None):
         )
         sys.exit(1)
     options.root_dir = os.path.abspath(options.root)
+
+    # check that gcov is new enough
+    try:
+        gcov_support.check(options.gcov_cmd)
+    except EnvironmentError as err:
+        sys.stderr.write("(ERROR) " + str(err) + "\n")
+        sys.exit(1)
 
     #
     # Setup filters
