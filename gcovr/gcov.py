@@ -688,7 +688,7 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger):
         all_files.append(fname)
 
         filtered, excluded = apply_filter_include_exclude(
-            fname, [gcov_filter], gcov_exclude)
+            fname, gcov_filter, gcov_exclude)
 
         if filtered:
             logger.verbose_msg("Filtering gcov file {}", fname)
@@ -710,7 +710,7 @@ def process_existing_gcov_file(filename, covdata, options):
     logger = Logger(options.verbose)
 
     filtered, excluded = apply_filter_include_exclude(
-        filename, [options.gcov_filter], options.gcov_exclude)
+        filename, options.gcov_filter, options.gcov_exclude)
 
     if filtered:
         logger.verbose_msg(

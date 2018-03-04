@@ -279,10 +279,10 @@ def parse_arguments(args):
     filter_options.add_option(
         "--gcov-filter",
         help="Keep only gcov data files that match this filter. "
-             "Can only be specified once.",  # TODO
-        action="store",
+             "Can be specified multiple times.",
+        action="append",
         dest="gcov_filter",
-        default=None
+        default=[]
     )
     filter_options.add_option(
         "--gcov-exclude",
@@ -459,10 +459,10 @@ def main(args=None):
 
     for i in range(0, len(options.gcov_exclude)):
         options.gcov_exclude[i] = build_filter(options.gcov_exclude[i])
-    if options.gcov_filter is not None:
-        options.gcov_filter = build_filter(options.gcov_filter)
-    else:
-        options.gcov_filter = re.compile('')
+    for i in range(0, len(options.gcov_filter)):
+        options.gcov_filter[i] = build_filter(options.gcov_filter[i])
+    if len(options.gcov_filter) == 0:
+        options.gcov_filter.append(re.compile(''))
 
     # Get data files
     if len(args) == 0:
