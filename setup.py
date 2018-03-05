@@ -50,6 +50,9 @@ setup(name='gcovr',
           'Topic :: Software Development :: Libraries :: Python Modules',
       ],
       packages=['gcovr'],
+      install_requires=[
+          'jinja2',
+      ],
       keywords=['utility'],
       entry_points={
           'console_scripts': [
