@@ -12,10 +12,40 @@ import time
 import datetime
 import zlib
 
-from jinja2 import Template
-
 from .version import __version__
 from .utils import commonpath
+
+
+class lazy(object):
+    def __init__(self, fn):
+
+        def load():
+            result = fn()
+
+            def reuse_value():
+                return result
+
+            self.get = reuse_value
+            return result
+
+        self.get = load
+
+    def __call__(self):
+        return self.get()
+
+
+# Loading Jinja and preparing the environmen is fairly costly.
+# Only do this work if templates are actually used.
+# This speeds up text and XML output.
+@lazy
+def templates():
+    from jinja2 import Environment, PackageLoader
+    return Environment(
+        loader=PackageLoader('gcovr'),
+        autoescape=False,
+        trim_blocks=True,
+        lstrip_blocks=True)
+
 
 medium_coverage = 75.0
 high_coverage = 90.0
@@ -36,436 +66,6 @@ def html_escape(s):
     s = s.replace('&', '&amp;')
     s = s.replace('<', '&lt;')
     return s
-
-
-#
-# CSS declarations for the HTML output
-#
-css = Template('''
-    body
-    {
-      color: #000000;
-      background-color: #FFFFFF;
-    }
-
-    /* Link formats: use maroon w/underlines */
-    a:link
-    {
-      color: navy;
-      text-decoration: underline;
-    }
-    a:visited
-    {
-      color: maroon;
-      text-decoration: underline;
-    }
-    a:active
-    {
-      color: navy;
-      text-decoration: underline;
-    }
-
-    /*** TD formats ***/
-    td
-    {
-      font-family: sans-serif;
-    }
-    td.title
-    {
-      text-align: center;
-      padding-bottom: 10px;
-      font-size: 20pt;
-      font-weight: bold;
-    }
-
-    /* TD Header Information */
-    td.headerName
-    {
-      text-align: right;
-      color: black;
-      padding-right: 6px;
-      font-weight: bold;
-      vertical-align: top;
-      white-space: nowrap;
-    }
-    td.headerValue
-    {
-      text-align: left;
-      color: blue;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-    td.headerTableEntry
-    {
-      text-align: right;
-      color: black;
-      font-weight: bold;
-      white-space: nowrap;
-      padding-left: 12px;
-      padding-right: 4px;
-      background-color: LightBlue;
-    }
-    td.headerValueLeg
-    {
-      text-align: left;
-      color: black;
-      font-size: 80%;
-      white-space: nowrap;
-      padding-left: 10px;
-      padding-right: 10px;
-      padding-top: 2px;
-    }
-
-    /* Color of horizontal ruler */
-    td.hr
-    {
-      background-color: navy;
-      height:3px;
-    }
-    /* Footer format */
-    td.footer
-    {
-      text-align: center;
-      padding-top: 3px;
-      font-family: sans-serif;
-    }
-
-    /* Coverage Table */
-
-    td.coverTableHead
-    {
-      text-align: center;
-      color: white;
-      background-color: SteelBlue;
-      font-family: sans-serif;
-      font-size: 120%;
-      white-space: nowrap;
-      padding-left: 4px;
-      padding-right: 4px;
-    }
-    td.coverFile
-    {
-      text-align: left;
-      padding-left: 10px;
-      padding-right: 20px;
-      color: black;
-      background-color: LightBlue;
-      font-family: monospace;
-      font-weight: bold;
-      font-size: 110%;
-    }
-    td.coverBar
-    {
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: LightBlue;
-    }
-    td.coverBarOutline
-    {
-      background-color: white;
-    }
-    td.coverValue
-    {
-      padding-top: 2px;
-      text-align: right;
-      padding-left: 10px;
-      padding-right: 10px;
-      font-family: sans-serif;
-      white-space: nowrap;
-      font-weight: bold;
-    }
-
-    /* Link Details */
-    a.detail:link
-    {
-      color: #B8D0FF;
-      font-size:80%;
-    }
-    a.detail:visited
-    {
-      color: #B8D0FF;
-      font-size:80%;
-    }
-    a.detail:active
-    {
-      color: #FFFFFF;
-      font-size:80%;
-    }
-
-    .graphcont{
-        color:#000;
-        font-weight:700;
-        float:left
-    }
-
-    .graph{
-        float:left;
-        background-color: white;
-        position:relative;
-        width:280px;
-        padding:0
-    }
-
-    .graph .bar{
-        display:block;
-        position:relative;
-        border:black 1px solid;
-        text-align:center;
-        color:#fff;
-        height:10px;
-        font-family:Arial,Helvetica,sans-serif;
-        font-size:12px;
-        line-height:1.9em
-    }
-
-    .graph .bar span{
-        position:absolute;
-        left:1em
-    }
-
-    td.coveredLine,
-    span.coveredLine
-    {
-        background-color: {{covered_color}}!important;
-    }
-
-    td.uncoveredLine,
-    span.uncoveredLine
-    {
-        background-color: {{uncovered_color}}!important;
-    }
-
-    .linebranch, .linecount
-    {
-        border-right: 1px gray solid;
-        background-color: lightgray;
-    }
-
-    span.takenBranch
-    {
-        color: {{takenBranch_color}}!important;
-        cursor: help;
-    }
-
-    span.notTakenBranch
-    {
-        color: {{notTakenBranch_color}}!important;
-        cursor: help;
-    }
-
-    .src
-    {
-        padding-left: 12px;
-    }
-
-    .srcHeader,
-    span.takenBranch,
-    span.notTakenBranch
-    {
-        font-family: monospace;
-        font-weight: bold;
-    }
-
-    pre
-    {
-        height : 15px;
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
-    .lineno
-    {
-        background-color: #EFE383;
-        border-right: 1px solid #BBB15F;
-    }
-''')
-
-#
-# A string template for the root HTML output
-#
-root_page = Template('''
-<html>
-
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset={{ENC}}"/>
-  <title>{{HEAD}}</title>
-  <style media="screen" type="text/css">
-{{CSS}}
-
-  </style>
-</head>
-
-<body>
-
-  <table width="100%" border=0 cellspacing=0 cellpadding=0>
-    <tr><td class="title">GCC Code Coverage Report</td></tr>
-    <tr><td class="hr"></td></tr>
-
-    <tr>
-      <td width="100%">
-        <table cellpadding=1 border=0 width="100%">
-          <tr>
-            <td width="10%" class="headerName">Directory:</td>
-            <td width="35%" class="headerValue">{{DIRECTORY}}</td>
-            <td width="5%"></td>
-            <td width="15%"></td>
-            <td width="10%" class="headerValue" style="text-align:right;">Exec</td>
-            <td width="10%" class="headerValue" style="text-align:right;">Total</td>
-            <td width="15%" class="headerValue" style="text-align:right;">Coverage</td>
-          </tr>
-          <tr>
-            <td class="headerName">Date:</td>
-            <td class="headerValue">{{DATE}}</td>
-            <td></td>
-            <td class="headerName">Lines:</td>
-            <td class="headerTableEntry">{{LINES_EXEC}}</td>
-            <td class="headerTableEntry">{{LINES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{LINES_COLOR}}">{{LINES_COVERAGE}} %</td>
-          </tr>
-          <tr>
-            <td class="headerName">Legend:</td>
-            <td class="headerValueLeg">
-              <span style="background-color:{{low_color}}">low: &lt; {{COVERAGE_MED}} %</span>
-              <span style="background-color:{{medium_color}}">medium: &gt;= {{COVERAGE_MED}} %</span>
-              <span style="background-color:{{high_color}}">high: &gt;= {{COVERAGE_HIGH}} %</span>
-            </td>
-            <td></td>
-            <td class="headerName">Branches:</td>
-            <td class="headerTableEntry">{{BRANCHES_EXEC}}</td>
-            <td class="headerTableEntry">{{BRANCHES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{BRANCHES_COLOR}}">{{BRANCHES_COVERAGE}} %</td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-
-    <tr><td class="hr"></td></tr>
-  </table>
-
-  <center>
-  <table width="80%" cellpadding=1 cellspacing=1 border=0>
-    <tr>
-      <td width="44%"><br></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-    </tr>
-    <tr>
-      <td class="coverTableHead">File</td>
-      <td class="coverTableHead" colspan=3>Lines</td>
-      <td class="coverTableHead" colspan=2>Branches</td>
-    </tr>
-
-{{ROWS}}
-
-    <tr>
-      <td width="44%"><br></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-    </tr>
-  </table>
-  </center>
-
-  <table width="100%" border=0 cellspacing=0 cellpadding=0>
-    <tr><td class="hr"><td></tr>
-    <tr><td class="footer">Generated by: <a href="http://gcovr.com">GCOVR (Version {{VERSION}})</a></td></tr>
-  </table>
-  <br>
-
-</body>
-
-</html>
-
-''')
-
-#
-# A string template for the source file HTML output
-#
-source_page = Template('''
-<html>
-
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset={{ENC}}"/>
-  <title>{{HEAD}}</title>
-  <style media="screen" type="text/css">
-{{CSS}}
-
-  </style>
-</head>
-
-<body>
-
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr><td class="title">GCC Code Coverage Report</td></tr>
-    <tr><td class="hr"></td></tr>
-
-    <tr>
-      <td width="100%">
-        <table cellpadding="1" border="0" width="100%">
-          <tr>
-            <td width="10%" class="headerName">Directory:</td>
-            <td width="35%" class="headerValue">{{DIRECTORY}}</td>
-            <td width="5%"></td>
-            <td width="15%"></td>
-            <td width="10%" class="headerValue" style="text-align:right;">Exec</td>
-            <td width="10%" class="headerValue" style="text-align:right;">Total</td>
-            <td width="15%" class="headerValue" style="text-align:right;">Coverage</td>
-          </tr>
-          <tr>
-            <td class="headerName">File:</td>
-            <td class="headerValue">{{FILENAME}}</td>
-            <td></td>
-            <td class="headerName">Lines:</td>
-            <td class="headerTableEntry">{{LINES_EXEC}}</td>
-            <td class="headerTableEntry">{{LINES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{LINES_COLOR}}">{{LINES_COVERAGE}} %</td>
-          </tr>
-          <tr>
-            <td class="headerName">Date:</td>
-            <td class="headerValue">{{DATE}}</td>
-            <td></td>
-            <td class="headerName">Branches:</td>
-            <td class="headerTableEntry">{{BRANCHES_EXEC}}</td>
-            <td class="headerTableEntry">{{BRANCHES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{BRANCHES_COLOR}}">{{BRANCHES_COVERAGE}} %</td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-
-    <tr><td class="hr"></td></tr>
-  </table>
-
-  <br>
-  <table cellspacing="0" cellpadding="1">
-    <tr>
-      <td width="5%" align="right" class="srcHeader">Line</td>
-      <td width="5%" align="right" class="srcHeader">Branch</td>
-      <td width="5%" align="right" class="srcHeader">Exec</td>
-      <td width="75%" align="left" class="srcHeader src">Source</td>
-    </tr>
-
-{{ROWS}}
-
-  </table>
-  <br>
-
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr><td class="hr"><td></tr>
-    <tr><td class="footer">Generated by: <a href="http://gcovr.com">GCOVR (Version {{VERSION}})</a></td></tr>
-  </table>
-  <br>
-
-</body>
-
-</html>
-
-''')
 
 
 def calculate_coverage(covered, total, nan_value=0.0):
@@ -516,7 +116,7 @@ def print_html_report(covdata, options):
     data['high_color'] = high_color
     data['COVERAGE_MED'] = medium_coverage
     data['COVERAGE_HIGH'] = high_coverage
-    data['CSS'] = css.render(
+    data['CSS'] = templates().get_template('style.css').render(
         low_color=low_color,
         medium_color=medium_color,
         high_color=high_color,
@@ -640,13 +240,12 @@ def print_html_report(covdata, options):
             BranchesTotal=class_branches,
             BranchesCoverage=branches_covered
         ))
-    data['ROWS'] = '\n'.join(data['ROWS'])
 
     if data['DIRECTORY'] == '':
         data['DIRECTORY'] = "."
     data['DIRECTORY'] = data['DIRECTORY'].replace('\\', '/')
 
-    htmlString = root_page.render(**data)
+    htmlString = templates().get_template('root_page.html').render(**data)
 
     if options.output is None:
         sys.stdout.write(htmlString + '\n')
@@ -694,22 +293,14 @@ def print_html_report(covdata, options):
             ctr += 1
         INPUT.close()
         os.chdir(currdir)
-        data['ROWS'] = '\n'.join(data['ROWS'])
 
-        htmlString = source_page.render(**data)
+        htmlString = templates().get_template('source_page.html').render(**data)
         OUTPUT = open(cdata._sourcefile, 'w')
         OUTPUT.write(htmlString + '\n')
         OUTPUT.close()
 
 
 def source_row(lineno, source, cdata):
-    rowstr = Template('''
-    <tr>
-    <td align="right" class="lineno"><pre>{{lineno}}</pre></td>
-    <td align="right" class="linebranch">{{linebranch}}</td>
-    <td align="right" class="linecount {{covclass}}"><pre>{{linecount}}</pre></td>
-    <td align="left" class="src {{covclass}}"><pre>{{source}}</pre></td>
-    </tr>''')
     kwargs = {}
     kwargs['lineno'] = str(lineno)
     if lineno in cdata.covered:
@@ -738,7 +329,7 @@ def source_row(lineno, source, cdata):
         kwargs['linebranch'] = ''
         kwargs['linecount'] = ''
     kwargs['source'] = html_escape(source)
-    return rowstr.render(**kwargs)
+    return kwargs
 
 
 #
@@ -747,21 +338,6 @@ def source_row(lineno, source, cdata):
 def html_row(options, details, sourcefile, nrows, **kwargs):
     if details and options.relative_anchors:
         sourcefile = os.path.basename(sourcefile)
-    rowstr = Template('''
-    <tr>
-      <td class="coverFile" {{altstyle}}>{{filename}}</td>
-      <td class="coverBar" align="center" {{altstyle}}>
-        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:{{LinesCoverage}}%; {{BarBorder}}background-color:{{LinesBar}}"></strong></div>
-                </td></tr></table>
-      </td>
-      <td class="CoverValue" style="font-weight:bold; background-color:{{LinesColor}};">{{LinesCoverage}}&nbsp;%</td>
-      <td class="CoverValue" style="font-weight:bold; background-color:{{LinesColor}};">{{LinesExec}} / {{LinesTotal}}</td>
-      <td class="CoverValue" style="background-color:{{BranchesColor}};">{{BranchesCoverage}}&nbsp;%</td>
-      <td class="CoverValue" style="background-color:{{BranchesColor}};">{{BranchesExec}} / {{BranchesTotal}}</td>
-    </tr>
-
-''')
     if nrows % 2 == 0:
         kwargs['altstyle'] = 'style="background-color:LightSteelBlue"'
     else:
@@ -789,4 +365,4 @@ def html_row(options, details, sourcefile, nrows, **kwargs):
     kwargs['BranchesColor'] = coverage_to_color(kwargs['BranchesCoverage'])
     kwargs['BranchesCoverage'] = '-' if kwargs['BranchesCoverage'] is None else round(kwargs['BranchesCoverage'], 1)
 
-    return rowstr.render(**kwargs)
+    return kwargs

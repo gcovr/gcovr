@@ -53,6 +53,9 @@ setup(name='gcovr',
       install_requires=[
           'jinja2',
       ],
+      package_data={
+          'gcovr': ['templates/*.css', 'templates/*.html'],
+      },
       keywords=['utility'],
       entry_points={
           'console_scripts': [
