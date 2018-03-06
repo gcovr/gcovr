@@ -479,7 +479,7 @@ def main(args=None):
             process_existing_gcov_file(file_, covdata, options)
         else:
             process_datafile(file_, covdata, options)
-    logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
+    logger.verbose_msg("Gathered coveraged data for {0} files", len(covdata))
 
     # Print report
     if options.xml or options.prettyxml:

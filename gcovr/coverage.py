@@ -110,4 +110,4 @@ def find_consecutive_ranges(items):
 def format_range(first, last):
     if first == last:
         return str(first)
-    return "{}-{}".format(first, last)
+    return "{first}-{last}".format(first=first, last=last)

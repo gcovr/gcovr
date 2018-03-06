@@ -12,11 +12,12 @@ datadir = os.path.dirname(os.path.abspath(__file__))
 def find_test_cases():
     if sys.platform.startswith('win'):
         return
-    for script in glob.glob('{}/*.sh'.format(datadir)):
+    for script in glob.glob(datadir + '/*.sh'):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
         for ext in 'txt xml'.split():
-            baseline = '{}/{}.{}'.format(datadir, name, ext)
+            baseline = '{datadir}/{name}.{ext}'.format(
+                datadir=datadir, name=name, ext=ext)
             if not os.path.exists(baseline):
                 continue
             yield (name, script, baseline)
