@@ -23,6 +23,14 @@ def find_test_cases():
             yield (name, script, baseline)
 
 
+def check_output(cmd):
+    """Emulate subprocess.check_output() for Python 2.6"""
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    (out, err) = p.communicate()
+    assert p.poll() == 0
+    return out
+
+
 @pytest.mark.parametrize(
     'args', find_test_cases(),
     ids=lambda args: os.path.basename(args[2]))
@@ -34,7 +42,7 @@ def test_example(args):
 
     startdir = os.getcwd()
     os.chdir(datadir)
-    output = scrub(subprocess.check_output(cmd).decode())
+    output = scrub(check_output(cmd).decode())
     with open(baseline_file) as f:
         baseline = scrub(f.read())
     if assert_equals is not None:
