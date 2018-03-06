@@ -1,8 +1,6 @@
 #!/bin/bash
 
-export PATH=`pwd`/../../scripts:$PATH
-
-g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example.cpp -o program
+${CXX:-g++} -fprofile-arcs -ftest-coverage -fPIC -O0 example.cpp -o program
 
 ./program
 
