@@ -1,6 +1,8 @@
 #!/bin/bash
 
-export PATH=`pwd`/../../scripts:$PATH
+g++() {
+	$(which ${CXX:-g++}) $*
+}
 
 #BEGIN compile
 g++ -fprofile-arcs -ftest-coverage -fPIC -O0 example.cpp -o program
