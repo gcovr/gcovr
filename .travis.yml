@@ -9,35 +9,38 @@ addons:
     - gcc-5
     - g++-5
 
+env:
+  global:
+  - CXX=g++-5 CC=gcc-5 GCOV=gcov-5
+  - RUN_LINTER=1
+
 matrix:
   include:
+  - python: '2.6'
+    env: RUN_LINTER=
   - python: '2.7'
-    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5 COVERAGE_OPTS='--cov=gcovr --cov-branch'
+    env: COVERAGE_OPTS='--cov=gcovr --cov-branch'
   - python: pypy
-    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
   - python: '3.4'
-    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
   - python: '3.5'
-    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5 COVERAGE_OPTS='--cov=gcovr --cov-branch'
+    env: COVERAGE_OPTS='--cov=gcovr --cov-branch'
   - python: pypy3.5-5.8.0
-    env: CXX=g++-5 CC=gcc-5 GCOV=gcov-5
+  allow_failures:
+  - python: '2.6'
 
 install:
 - printenv
 - $CXX --version
-- pip install pytest pytest-cov
-- pip install ply
-- pip install ordereddict
-- pip install pyutilib
-- pip install flake8
-- pip install coverage
-- pip install codecov
+- pip install pytest
+- pip install ply ordereddict pyutilib
+- test -z "$RUN_LINTER" || pip install flake8
+- test -z "$COVERAGE_OPTS" || pip install pytest-cov coverage codecov
 - python setup.py develop
 
 script:
-- flake8 --ignore=E501
+- test -z "$RUN_LINTER" || flake8 --ignore=E501
 - python -m pytest -v $COVERAGE_OPTS gcovr doc/examples
-- if [ -n "$COVERAGE_OPTS" ]; then codecov -X gcov search; fi
+- test -z "$COVERAGE_OPTS" || codecov -X gcov search
 
 deploy:
     # disable testpypi deployment until #197 is fixed

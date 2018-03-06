@@ -22,7 +22,17 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames), 'rb').read().decode("UTF-8")
 
 
-version = runpy.run_path('./gcovr/version.py')['__version__']
+def run_path(filename):
+    variables = dict()
+    execfile(filename, globals(), variables)  # noqa: F821 execfile()
+    return variables
+
+
+# Retrieve the gcovr version. This prefers to use runpy.run_path() which is
+# only supported in Python 2.7 or later, and falls back to execfile() which
+# does not exist in Python 3.x.
+run_path = getattr(runpy, 'run_path', run_path)
+version = run_path('./gcovr/version.py')['__version__']
 
 setup(name='gcovr',
       version=version,
