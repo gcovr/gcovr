@@ -92,7 +92,7 @@ def parse_arguments(args):
         option_class=PercentageOption,
         add_help_option=False
     )
-    parser.usage = "gcovr [options]"
+    parser.usage = "gcovr [options] [search_paths...]"
     parser.description = \
         "A utility to run gcov and summarize the coverage in simple reports."
 
@@ -393,7 +393,7 @@ COPYRIGHT = (
 
 def main(args=None):
     global options
-    options, args = parse_arguments(args)
+    options, search_paths = parse_arguments(args)
 
     logger = Logger(options.verbose)
 
@@ -465,15 +465,12 @@ def main(args=None):
         options.gcov_filter.append(re.compile(''))
 
     # Get data files
-    if len(args) == 0:
+    if not search_paths:
         search_paths = [options.root]
 
         if options.objdir is not None:
             search_paths.append(options.objdir)
-
-        datafiles = get_datafiles(search_paths, options)
-    else:
-        datafiles = get_datafiles(args, options)
+    datafiles = get_datafiles(search_paths, options)
 
     # Get coverage data
     covdata = {}
