@@ -14,6 +14,9 @@ from pyutilib.misc.xmltodict import parse as parse_xml
 python_interpreter = sys.executable.replace('\\', '/')  # use forward slash on windows as well
 env = os.environ
 env['GCOVR'] = python_interpreter + ' -m gcovr'
+if sys.version_info < (2, 7):  # pragma: no cover
+    # fallback for "python -m module"
+    env['GCOVR'] = 'gcovr'
 
 basedir = os.path.split(os.path.abspath(__file__))[0]
 
