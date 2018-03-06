@@ -29,12 +29,11 @@
 # $Date$
 #
 
-import copy
 import os
 import re
 import sys
 
-from optparse import Option, OptionParser, OptionValueError
+from argparse import ArgumentParser, ArgumentTypeError
 from os.path import normpath
 
 from .gcov import get_datafiles, process_existing_gcov_file, process_datafile
@@ -68,30 +67,22 @@ def fail_under(covdata, threshold_line, threshold_branch):
 
 
 # helper for percentage actions
-def check_percentage(option, opt, value):
+def check_percentage(value):
     try:
         x = float(value)
         if not (0.0 <= x <= 100.0):
             raise ValueError()
     except ValueError:
-        raise OptionValueError("option %s: %r not in range [0.0, 100.0]" % (opt, value))
+        raise ArgumentTypeError(
+            "{value} not in range [0.0, 100.0]".format(value=value))
     return x
-
-
-class PercentageOption (Option):
-    TYPES = Option.TYPES + ("percentage",)
-    TYPE_CHECKER = copy.copy(Option.TYPE_CHECKER)
-    TYPE_CHECKER["percentage"] = check_percentage
 
 
 def parse_arguments(args):
     """
     Create and parse arguments.
     """
-    parser = OptionParser(
-        option_class=PercentageOption,
-        add_help_option=False
-    )
+    parser = ArgumentParser(add_help=False)
     parser.usage = "gcovr [options] [search_paths...]"
     parser.description = \
         "A utility to run gcov and summarize the coverage in simple reports."
@@ -103,19 +94,20 @@ def parse_arguments(args):
     # - Phrase first sentence as a command:
     #   “Print report”, not “Prints report”.
 
-    parser.add_option(
+    options = parser.add_argument_group('Options')
+    options.add_argument(
         "-h", "--help",
         help="Show this help message, then exit.",
         action="help"
     )
-    parser.add_option(
+    options.add_argument(
         "--version",
         help="Print the version number, then exit.",
         action="store_true",
         dest="version",
         default=False
     )
-    parser.add_option(
+    options.add_argument(
         "-v", "--verbose",
         help="Print progress messages. "
              "Please include this output in bug reports.",
@@ -123,19 +115,25 @@ def parse_arguments(args):
         dest="verbose",
         default=False
     )
-    parser.add_option(
+    options.add_argument(
         "-r", "--root",
         help="The root directory of your source files. "
-             "Defaults to '%default', the current directory. "
+             "Defaults to '%(default)s', the current directory. "
              "File names are reported relative to this root. "
              "The --root is the default --filter.",
         action="store",
         dest="root",
         default='.'
     )
-    parser.add_option(
+    options.add_argument(
+        'search_paths',
+        help="Search these directories for coverage files. "
+             "Defaults to --root and --object-directory.",
+        nargs='*',
+    )
+    options.add_argument(
         "--fail-under-line",
-        type="percentage",
+        type=check_percentage,
         metavar="MIN",
         help="Exit with a status of 2 "
              "if the total line coverage is less than MIN. "
@@ -144,9 +142,9 @@ def parse_arguments(args):
         dest="fail_under_line",
         default=0.0
     )
-    parser.add_option(
+    options.add_argument(
         "--fail-under-branch",
-        type="percentage",
+        type=check_percentage,
         metavar="MIN",
         help="Exit with a status of 4 "
              "if the total branch coverage is less than MIN. "
@@ -156,12 +154,12 @@ def parse_arguments(args):
         default=0.0
     )
 
-    output_options = parser.add_option_group(
+    output_options = parser.add_argument_group(
         "Output Options",
         description="Gcovr prints a text report by default, "
                     "but can switch to XML or HTML."
     )
-    output_options.add_option(
+    output_options.add_argument(
         "-o", "--output",
         help="Print output to this filename. Defaults to stdout. "
              "Required for --html-details.",
@@ -169,7 +167,7 @@ def parse_arguments(args):
         dest="output",
         default=None
     )
-    output_options.add_option(
+    output_options.add_argument(
         "-b", "--branches",
         help="Report the branch coverage instead of the line coverage. "
              "For text report only.",
@@ -177,7 +175,7 @@ def parse_arguments(args):
         dest="show_branch",
         default=None
     )
-    output_options.add_option(
+    output_options.add_argument(
         "-u", "--sort-uncovered",
         help="Sort entries by increasing number of uncovered lines. "
              "For text and HTML report.",
@@ -185,7 +183,7 @@ def parse_arguments(args):
         dest="sort_uncovered",
         default=None
     )
-    output_options.add_option(
+    output_options.add_argument(
         "-p", "--sort-percentage",
         help="Sort entries by increasing percentage of uncovered lines. "
              "For text and HTML report.",
@@ -193,28 +191,28 @@ def parse_arguments(args):
         dest="sort_percent",
         default=None
     )
-    output_options.add_option(
+    output_options.add_argument(
         "-x", "--xml",
         help="Generate a Cobertura XML report.",
         action="store_true",
         dest="xml",
         default=False
     )
-    output_options.add_option(
+    output_options.add_argument(
         "--xml-pretty",
-        help="Pretty-print the XML report. Implies --xml. Default: %default.",
+        help="Pretty-print the XML report. Implies --xml. Default: %(default)s.",
         action="store_true",
         dest="prettyxml",
         default=False
     )
-    output_options.add_option(
+    output_options.add_argument(
         "--html",
         help="Generate a HTML report.",
         action="store_true",
         dest="html",
         default=False
     )
-    output_options.add_option(
+    output_options.add_argument(
         "--html-details",
         help="Add annotated source code reports to the HTML report. "
              "Requires --output as a basename for the reports. "
@@ -223,7 +221,7 @@ def parse_arguments(args):
         dest="html_details",
         default=False
     )
-    output_options.add_option(
+    output_options.add_argument(
         "--html-absolute-paths",
         help="Use absolute paths to link the --html-details reports. "
              "Defaults to relative links.",
@@ -231,35 +229,35 @@ def parse_arguments(args):
         dest="relative_anchors",
         default=True
     )
-    output_options.add_option(
+    output_options.add_argument(
         '--html-encoding',
         help="Override the declared HTML report encoding. "
-             "Defaults to %default. "
+             "Defaults to %(default)s. "
              "May be necessary for unusual source file encodings. "
              "Encoding support is likely to change in the future.",
         action='store',
         dest='html_encoding',
         default='UTF-8'
     )
-    output_options.add_option(
+    output_options.add_argument(
         "-s", "--print-summary",
         help="Print a small report to stdout "
              "with line & branch percentage coverage. "
              "This is in addition to other reports. "
-             "Default: %default.",
+             "Default: %(default)s.",
         action="store_true",
         dest="print_summary",
         default=False
     )
 
-    filter_options = parser.add_option_group(
+    filter_options = parser.add_argument_group(
         "Filter Options",
         description="Filters decide which files are included in the report. "
                     "Any filter must match, and no exclude filter must match. "
                     "A filter is a regular expression that matches a path. "
                     "On Windows, the filter must match a relative path."
     )
-    filter_options.add_option(
+    filter_options.add_argument(
         "-f", "--filter",
         help="Keep only source files that match this filter. "
              "Can be specified multiple times. "
@@ -268,7 +266,7 @@ def parse_arguments(args):
         dest="filter",
         default=[]
     )
-    filter_options.add_option(
+    filter_options.add_argument(
         "-e", "--exclude",
         help="Exclude source files that match this filter. "
              "Can be specified multiple times.",
@@ -276,7 +274,7 @@ def parse_arguments(args):
         dest="exclude",
         default=[]
     )
-    filter_options.add_option(
+    filter_options.add_argument(
         "--gcov-filter",
         help="Keep only gcov data files that match this filter. "
              "Can be specified multiple times.",
@@ -284,7 +282,7 @@ def parse_arguments(args):
         dest="gcov_filter",
         default=[]
     )
-    filter_options.add_option(
+    filter_options.add_argument(
         "--gcov-exclude",
         help="Exclude gcov data files that match this filter. "
              "Can be specified multiple times.",
@@ -292,7 +290,7 @@ def parse_arguments(args):
         dest="gcov_exclude",
         default=[]
     )
-    filter_options.add_option(
+    filter_options.add_argument(
         "--exclude-directories",
         help="Exclude directories that match this regex "
              "while searching raw coverage files. "
@@ -302,54 +300,54 @@ def parse_arguments(args):
         default=[]
     )
 
-    gcov_options = parser.add_option_group(
+    gcov_options = parser.add_argument_group(
         "GCOV Options",
         "The 'gcov' tool turns raw coverage files (*.gcda and *.gcno) "
         "into *.gcov files that are then processed by gcovr. "
         "The gcno files are generated by the compiler. "
         "The gcda files are generated when the instrumented program is executed."
     )
-    gcov_options.add_option(
+    gcov_options.add_argument(
         "--gcov-executable",
         help="Use a particular gcov executable. "
              "Must match the compiler you are using, "
              "e.g. 'llvm-cov gcov' for Clang. "
              "Can include additional arguments. "
              "Defaults to the GCOV environment variable, "
-             "or 'gcov': '%default'.",
+             "or 'gcov': '%(default)s'.",
         action="store",
         dest="gcov_cmd",
         default=os.environ.get('GCOV', 'gcov')
     )
-    gcov_options.add_option(
+    gcov_options.add_argument(
         "--exclude-unreachable-branches",
         help="Exclude branch coverage with LCOV/GCOV exclude markers. "
              "Additionally, exclude branch coverage from lines "
              "without useful source code "
              "(often, compiler-generated \"dead\" code). "
-             "Default: %default.",
+             "Default: %(default)s.",
         action="store_true",
         dest="exclude_unreachable_branches",
         default=False
     )
-    gcov_options.add_option(
+    gcov_options.add_argument(
         "-g", "--use-gcov-files",
-        help="Use existing gcov files for analysis. Default: %default.",
+        help="Use existing gcov files for analysis. Default: %(default)s.",
         action="store_true",
         dest="gcov_files",
         default=False
     )
-    gcov_options.add_option(
+    gcov_options.add_argument(
         '--gcov-ignore-parse-errors',
         help="Skip lines with parse errors in GCOV files "
              "instead of exiting with an error. "
              "A report will be shown on stderr. "
-             "Default: %default.",
+             "Default: %(default)s.",
         action="store_true",
         dest="gcov_ignore_parse_errors",
         default=False
     )
-    gcov_options.add_option(
+    gcov_options.add_argument(
         '--object-directory',
         help="Override normal working directory detection. "
              "Gcovr needs to identify the path between gcda files "
@@ -362,19 +360,19 @@ def parse_arguments(args):
         dest="objdir",
         default=None
     )
-    gcov_options.add_option(
+    gcov_options.add_argument(
         "-k", "--keep",
         help="Keep gcov files after processing. "
              "This applies both to files that were generated by gcovr, "
              "or were supplied via the --use-gcov-files option. "
-             "Default: %default.",
+             "Default: %(default)s.",
         action="store_true",
         dest="keep",
         default=False
     )
-    gcov_options.add_option(
+    gcov_options.add_argument(
         "-d", "--delete",
-        help="Delete gcda files after processing. Default: %default.",
+        help="Delete gcda files after processing. Default: %(default)s.",
         action="store_true",
         dest="delete",
         default=False
@@ -393,7 +391,7 @@ COPYRIGHT = (
 
 def main(args=None):
     global options
-    options, search_paths = parse_arguments(args)
+    options = parse_arguments(args)
 
     logger = Logger(options.verbose)
 
@@ -465,12 +463,12 @@ def main(args=None):
         options.gcov_filter.append(re.compile(''))
 
     # Get data files
-    if not search_paths:
-        search_paths = [options.root]
+    if not options.search_paths:
+        options.search_paths = [options.root]
 
         if options.objdir is not None:
-            search_paths.append(options.objdir)
-    datafiles = get_datafiles(search_paths, options)
+            options.search_paths.append(options.objdir)
+    datafiles = get_datafiles(options.search_paths, options)
 
     # Get coverage data
     covdata = {}

@@ -60,6 +60,9 @@ setup(name='gcovr',
           'Topic :: Software Development :: Libraries :: Python Modules',
       ],
       packages=['gcovr'],
+      install_requires=[
+          'argparse ; python_version < "2.7"',
+      ],
       keywords=['utility'],
       entry_points={
           'console_scripts': [
