@@ -32,7 +32,7 @@ def test_version(capsys):
 def test_help(capsys):
     c = capture(capsys, ['-h'])
     assert c.err == ''
-    assert c.out.startswith('Usage: gcovr [options]')
+    assert c.out.startswith('usage: gcovr [options]')
     assert c.exception.code == 0
 
 
