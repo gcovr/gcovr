@@ -1,6 +1,9 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
+ifeq ($(BASE_OS),MINGW32_NT)
+  BASE_OS:=MSYS_NT
+endif
 ifeq ($(BASE_OS),MSYS_NT)
   # Absolute filters are known to not work on Windows right now.
   # Use relative path instead

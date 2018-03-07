@@ -7,6 +7,9 @@ ifeq ($(BASE_OS),Darwin)
   CFLAGS     += -fPIC
   SOFLAGS    += -dynamiclib -undefined dynamic_lookup
 endif
+ifeq ($(BASE_OS),MINGW32_NT)
+  BASE_OS:=MSYS_NT
+endif
 ifeq ($(BASE_OS),CYGWIN_NT)
   DYNLIB_EXT = dll
   #DEFINES   += -mno-cygwin
