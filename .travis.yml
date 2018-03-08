@@ -25,13 +25,11 @@ matrix:
   - python: '3.5'
     env: COVERAGE_OPTS='--cov=gcovr --cov-branch'
   - python: pypy3.5-5.8.0
-  allow_failures:
-  - python: '2.6'
 
 install:
 - printenv
 - $CXX --version
-- pip install pytest
+- pip install pytest --upgrade
 - pip install ply ordereddict pyutilib
 - test -z "$RUN_LINTER" || pip install flake8
 - test -z "$COVERAGE_OPTS" || pip install pytest-cov coverage codecov

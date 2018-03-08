@@ -20,7 +20,10 @@ def find_test_cases():
                 datadir=datadir, name=name, ext=ext)
             if not os.path.exists(baseline):
                 continue
-            yield (name, script, baseline)
+            if ext == 'xml' and sys.version_info < (2, 7):
+                yield pytest.param((name, script, baseline), marks=pytest.mark.xfail)
+            else:
+                yield (name, script, baseline)
 
 
 def check_output(cmd):
