@@ -3,7 +3,6 @@
 # This file is part of gcovr <http://gcovr.com/>.
 #
 # Copyright 2013-2018 the gcovr authors
-# Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
 
@@ -12,9 +11,9 @@ from contextlib import contextmanager
 
 import sys
 if sys.version_info[0] >= 3:
-    from queue import Queue, Empty
+    from queue import Queue
 else:
-    from Queue import Queue, Empty
+    from Queue import Queue
 
 
 class LockedDirectories(object):
@@ -58,43 +57,22 @@ def locked_directory(dir_):
 locked_directory.global_object = LockedDirectories()
 
 
-class WorkThread(Thread):
+def worker(queue, context, exceptions):
     """
-    The work thread class continuously gets work and
-    completes it
+    Run work items from the queue until the sentinal
+    None value is hit
     """
-    def __init__(self, pool):
-        """
-        Initialise with a reference to the pool object
-        which houses the queue
-        """
-        super(WorkThread, self).__init__()
-        import tempfile
-        self.pool = pool
-        self.workdir = tempfile.mkdtemp()
-
-    def run(self):
-        """
-        Run until the queue is empty
-        """
-        while True:
-            try:
-                work, args, kwargs = self.pool.get()
-            except Empty:
-                break
-            kwargs['workdir'] = self.workdir
+    while True:
+        work, args, kwargs = queue.get(True)
+        if not work:
+            break
+        kwargs.update(context)
+        try:
             work(*args, **kwargs)
-
-    def close(self):
-        """
-        Empty the working directory
-        """
-        import shutil
-
-        # On Windows the files may still be in use. This
-        # is unlikely, the files are small, and are in a
-        # temporary directory so we can skip this.
-        shutil.rmtree(self.workdir, ignore_errors=True)
+        except:  # noqa: E722
+            import sys
+            exceptions.append(sys.exc_info())
+            break
 
 
 class Workers(object):
@@ -103,15 +81,14 @@ class Workers(object):
     add method and will run until work is complete
     """
 
-    def __init__(self, number=0):
-        """
-        Initialise with a number of workers
-        """
+    def __init__(self, number, context):
+        assert(number >= 1)
         self.q = Queue()
-        if number == 0:
-            from multiprocessing import cpu_count
-            number = cpu_count()
-        self.workers = [WorkThread(self) for _ in range(0, number)]
+        self.exceptions = []
+        self.contexts = [context() for _ in range(0, number)]
+        self.workers = [Thread(target=worker, args=(self.q, c, self.exceptions)) for c in self.contexts]
+        for w in self.workers:
+            w.start()
 
     def add(self, work, *args, **kwargs):
         """
@@ -126,19 +103,17 @@ class Workers(object):
         """
         return len(self.workers)
 
-    def get(self):
-        """
-        Get the next piece of work
-        """
-        return self.q.get(False, 5)
-
     def wait(self):
         """
         Wait until all work is complete
         """
         for w in self.workers:
-            w.start()
+            self.add(None)
         for w in self.workers:
             w.join()
-        for w in self.workers:
-            w.close()
+        for exc_type, exc_obj, exc_trace in self.exceptions:
+            import traceback
+            traceback.print_exception(exc_type, exc_obj, exc_trace)
+        if self.exceptions:
+            raise self.exceptions[0][1]
+        return self.contexts

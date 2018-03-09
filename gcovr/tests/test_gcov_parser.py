@@ -191,7 +191,7 @@ def test_gcov_8(capsys, sourcename):
         exclude_unreachable_branches=False,
         ignore_parse_errors=False)
 
-    covdata = dict()
+    covdata = {}
     parser.update_coverage(covdata)
     coverage = covdata['tmp.cpp']
 
@@ -232,7 +232,7 @@ def test_unknown_tags(capsys, ignore_errors):
         with pytest.raises(SystemExit):
             run_the_parser()
 
-    covdata = dict()
+    covdata = {}
     parser.update_coverage(covdata)
     coverage = covdata['foo.c']
 

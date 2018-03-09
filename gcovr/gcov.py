@@ -13,9 +13,9 @@ import sys
 
 from os.path import normpath
 
-from .coverage import CoverageData
 from .utils import aliases, search_file, Logger
 from .workers import locked_directory
+from .coverage import CoverageData
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc]annot open (source|graph) file")
@@ -512,7 +512,7 @@ class GcovParser(object):
 # identifying the original gcc working directory (there is a bit of
 # trial-and-error here)
 #
-def process_datafile(filename, covdata, options, workdir=None):
+def process_datafile(filename, covdata, options, toerase, workdir):
     logger = Logger(options.verbose)
 
     logger.verbose_msg("Processing file: {0}", filename)
@@ -563,11 +563,11 @@ def process_datafile(filename, covdata, options, workdir=None):
         with locked_directory(dir_):
             done = run_gcov_and_process_files(
                 abs_filename, dirname, covdata,
-                options=options, logger=logger, errors=errors, chdir=dir_, tempdir=workdir)
+                options=options, logger=logger, toerase=toerase, errors=errors, chdir=dir_, tempdir=workdir)
 
-    if options.delete:
-        if not abs_filename.endswith('gcno'):
-            os.remove(abs_filename)
+            if options.delete:
+                if not abs_filename.endswith('gcno'):
+                    toerase.add(abs_filename)
 
     if not done:
         logger.warn(
@@ -632,7 +632,7 @@ def expand_subdirectories(*directories):
 
 
 def run_gcov_and_process_files(
-        abs_filename, dirname, covdata, options, logger, errors, chdir, tempdir=None):
+        abs_filename, dirname, covdata, options, logger, errors, toerase, chdir, tempdir):
     # If the first element of cmd - the executable name - has embedded spaces
     # it probably includes extra arguments.
     cmd = options.gcov_cmd.split(' ') + [
@@ -677,13 +677,12 @@ def run_gcov_and_process_files(
         done = True
 
     if not options.keep:
-        for fname in all_gcov_files:
-            remove_file_if_it_exists(fname)
+        toerase.update(all_gcov_files)
 
     return done
 
 
-def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger, chdir, tempdir=None):
+def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger, chdir, tempdir):
     active_files = []
     all_files = []
 
@@ -693,7 +692,8 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger, chdir,
             continue
 
         fname = found.group(1)
-        all_files.append(fname)
+        full = os.path.join(chdir, fname)
+        all_files.append(full)
 
         filtered, excluded = apply_filter_include_exclude(
             fname, gcov_filter, gcov_exclude)
@@ -706,13 +706,12 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger, chdir,
             logger.verbose_msg("Excluding gcov file {0}", fname)
             continue
 
-        if tempdir:
+        if tempdir and tempdir != chdir:
             import shutil
             active_files.append(os.path.join(tempdir, fname))
-            if chdir != tempdir:
-                shutil.copyfile(os.path.join(chdir, fname), active_files[-1])
+            shutil.copyfile(full, active_files[-1])
         else:
-            active_files.append(os.path.join(chdir, fname))
+            active_files.append(full)
 
     return active_files, all_files
 
@@ -720,7 +719,7 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger, chdir,
 #
 #  Process Already existing gcov files
 #
-def process_existing_gcov_file(filename, covdata, options, workdir=None):
+def process_existing_gcov_file(filename, covdata, options, toerase, workdir):
     logger = Logger(options.verbose)
 
     filtered, excluded = apply_filter_include_exclude(
@@ -738,7 +737,7 @@ def process_existing_gcov_file(filename, covdata, options, workdir=None):
     process_gcov_data(filename, covdata, None, options)
 
     if not options.keep:
-        remove_file_if_it_exists(filename)
+        toerase.add(filename)
 
 
 def apply_filter_include_exclude(
@@ -784,8 +783,3 @@ def apply_filter_include_exclude(
         for exc in exclude_filters)
 
     return filtered, excluded
-
-
-def remove_file_if_it_exists(filename):
-    if os.path.exists(filename):
-        os.remove(filename)
