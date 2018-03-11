@@ -17,7 +17,7 @@ from .coverage import CoverageData
 from .utils import aliases, search_file, Logger
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
-source_re = re.compile("[Cc]annot open (source|graph) file")
+source_re = re.compile("[Cc](annot|ould not) open (source|graph|output) file")
 
 exclude_line_flag = "_EXCL_"
 exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
