@@ -11,9 +11,9 @@ from contextlib import contextmanager
 
 import sys
 if sys.version_info[0] >= 3:
-    from queue import Queue
+    from queue import Queue, Empty
 else:
-    from Queue import Queue
+    from Queue import Queue, Empty
 
 
 class LockedDirectories(object):
@@ -57,6 +57,22 @@ def locked_directory(dir_):
 locked_directory.global_object = LockedDirectories()
 
 
+def drain(queue):
+    """
+    Drain a queue of all items
+    """
+    sentinel_count = 0
+    while True:
+        try:
+            work, args, kwargs = queue.get(False)
+            if not work:
+                sentinel_count += 1
+        except Empty:
+            break
+    for _ in range(0, 1 + sentinel_count):
+        queue.put((None, None, None))
+
+
 def worker(queue, context, exceptions):
     """
     Run work items from the queue until the sentinal
@@ -65,11 +81,13 @@ def worker(queue, context, exceptions):
     while True:
         work, args, kwargs = queue.get(True)
         if not work:
+            queue.put((None, None, None))
             break
         kwargs.update(context)
         try:
             work(*args, **kwargs)
         except:  # noqa: E722
+            drain(queue)
             import sys
             exceptions.append(sys.exc_info())
             break
@@ -95,7 +113,8 @@ class Workers(object):
         Add in a method and the arguments to be used
         when running it
         """
-        self.q.put((work, args, kwargs))
+        if not work or not self.exceptions:
+            self.q.put((work, args, kwargs))
 
     def size(self):
         """
@@ -110,10 +129,19 @@ class Workers(object):
         for w in self.workers:
             self.add(None)
         for w in self.workers:
-            w.join()
+            while w.is_alive():
+                w.join(timeout=0.1)
         for exc_type, exc_obj, exc_trace in self.exceptions:
             import traceback
             traceback.print_exception(exc_type, exc_obj, exc_trace)
         if self.exceptions:
             raise self.exceptions[0][1]
         return self.contexts
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_val is not None:
+            drain(self.q)
+        self.wait()

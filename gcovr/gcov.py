@@ -560,14 +560,13 @@ def process_datafile(filename, covdata, options, toerase, workdir):
         # paths, so we don't have to chdir(starting_dir) at every
         # iteration.
 
-        with locked_directory(dir_):
-            done = run_gcov_and_process_files(
-                abs_filename, dirname, covdata,
-                options=options, logger=logger, toerase=toerase, errors=errors, chdir=dir_, tempdir=workdir)
+        done = run_gcov_and_process_files(
+            abs_filename, dirname, covdata,
+            options=options, logger=logger, toerase=toerase, errors=errors, chdir=dir_, tempdir=workdir)
 
-            if options.delete:
-                if not abs_filename.endswith('gcno'):
-                    toerase.add(abs_filename)
+        if options.delete:
+            if not abs_filename.endswith('gcno'):
+                toerase.add(abs_filename)
 
     if not done:
         logger.warn(
@@ -650,21 +649,22 @@ def run_gcov_and_process_files(
         cmd=' '.join(cmd),
         cwd=chdir)
 
-    out, err = subprocess.Popen(
-        cmd, env=env, cwd=chdir,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE).communicate()
-    out = out.decode('utf-8')
-    err = err.decode('utf-8')
+    with locked_directory(chdir):
+        out, err = subprocess.Popen(
+            cmd, env=env, cwd=chdir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE).communicate()
+        out = out.decode('utf-8')
+        err = err.decode('utf-8')
 
-    # find the files that gcov created
-    active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
-        out,
-        gcov_filter=options.gcov_filter,
-        gcov_exclude=options.gcov_exclude,
-        logger=logger,
-        chdir=chdir,
-        tempdir=tempdir)
+        # find the files that gcov created
+        active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
+            out,
+            gcov_filter=options.gcov_filter,
+            gcov_exclude=options.gcov_exclude,
+            logger=logger,
+            chdir=chdir,
+            tempdir=tempdir)
 
     if source_re.search(err):
         # gcov tossed errors: try the next potential_wd

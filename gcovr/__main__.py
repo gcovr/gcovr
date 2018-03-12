@@ -484,19 +484,18 @@ def main(args=None):
     datafiles = get_datafiles(options.search_paths, options)
 
     # Get coverage data
-    pool = Workers(options.gcov_parallel, lambda: {
-        'covdata': dict(),
-        'workdir': mkdtemp(),
-        'toerase': set(),
-        'options': options
-    })
-    logger.verbose_msg("Pool started with {0} threads", pool.size())
-    for file_ in datafiles:
-        if options.gcov_files:
-            pool.add(process_existing_gcov_file, file_)
-        else:
-            pool.add(process_datafile, file_)
-    contexts = pool.wait()
+    with Workers(options.gcov_parallel, lambda: {
+                 'covdata': dict(),
+                 'workdir': mkdtemp(),
+                 'toerase': set(),
+                 'options': options}) as pool:
+        logger.verbose_msg("Pool started with {0} threads", pool.size())
+        for file_ in datafiles:
+            if options.gcov_files:
+                pool.add(process_existing_gcov_file, file_)
+            else:
+                pool.add(process_datafile, file_)
+        contexts = pool.wait()
 
     covdata = dict()
     toerase = set()
