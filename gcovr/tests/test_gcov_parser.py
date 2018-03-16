@@ -282,21 +282,21 @@ def test_pathologic_codeline(capsys):
         'run gcovr with --gcov-ignore-parse-errors')
 
 
-def check_and_raise(number, total, exc_raised, queue_full):
+def check_and_raise(number, mutable, exc_raised, queue_full):
     queue_full.wait()
     if number == 0:
         raise Exception("Number == 0")
     exc_raised.wait()
-    total[0] += 1
+    mutable.append(None)
 
 
 @pytest.mark.parametrize('threads', [1, 2, 4, 8])
 def test_pathologic_threads(capsys, threads):
-    mutable = [0]
+    mutable = []
     queue_full = Event()
     exc_raised = Event()
     with pytest.raises(Exception) as excinfo:
-        with Workers(threads, lambda: {'total': mutable, 'exc_raised': exc_raised, 'queue_full': queue_full}) as pool:
+        with Workers(threads, lambda: {'mutable': mutable, 'exc_raised': exc_raised, 'queue_full': queue_full}) as pool:
             for extra in range(0, 10000):
                 pool.add(check_and_raise, extra)
 
@@ -305,6 +305,7 @@ def test_pathologic_threads(capsys, threads):
 
             # Wait until the exception has been completed
             while not pool.exceptions:
+                # Yield to the worker threads
                 time.sleep(0)
 
             # Queue should be drained and exception raised
@@ -314,5 +315,7 @@ def test_pathologic_threads(capsys, threads):
     # Outer level catches correct exception
     assert excinfo.value.args[0] == "Number == 0"
 
-    # Fewer than 1 job per thread is executed
-    assert mutable[0] < threads
+    # At most (threads - 1) appends can take place as the
+    # first job throws an exception and every other thread
+    # can action at most one job before the queue is drained
+    assert len(mutable) <= threads - 1

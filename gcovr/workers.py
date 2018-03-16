@@ -6,7 +6,7 @@
 # This software is distributed under the BSD license.
 
 
-from threading import Thread, Condition
+from threading import Thread, Condition, RLock
 from contextlib import contextmanager
 
 import sys
@@ -57,23 +57,7 @@ def locked_directory(dir_):
 locked_directory.global_object = LockedDirectories()
 
 
-def drain(queue):
-    """
-    Drain a queue of all items
-    """
-    sentinel_count = 0
-    while True:
-        try:
-            work, args, kwargs = queue.get(False)
-            if not work:
-                sentinel_count += 1
-        except Empty:
-            break
-    for _ in range(0, 1 + sentinel_count):
-        queue.put((None, None, None))
-
-
-def worker(queue, context, exceptions):
+def worker(queue, context, pool):
     """
     Run work items from the queue until the sentinal
     None value is hit
@@ -81,15 +65,13 @@ def worker(queue, context, exceptions):
     while True:
         work, args, kwargs = queue.get(True)
         if not work:
-            queue.put((None, None, None))
             break
         kwargs.update(context)
         try:
             work(*args, **kwargs)
         except:  # noqa: E722
-            drain(queue)
             import sys
-            exceptions.append(sys.exc_info())
+            pool.raise_exception(sys.exc_info())
             break
 
 
@@ -102,9 +84,10 @@ class Workers(object):
     def __init__(self, number, context):
         assert(number >= 1)
         self.q = Queue()
+        self.lock = RLock()
         self.exceptions = []
         self.contexts = [context() for _ in range(0, number)]
-        self.workers = [Thread(target=worker, args=(self.q, c, self.exceptions)) for c in self.contexts]
+        self.workers = [Thread(target=worker, args=(self.q, c, self)) for c in self.contexts]
         for w in self.workers:
             w.start()
 
@@ -113,8 +96,38 @@ class Workers(object):
         Add in a method and the arguments to be used
         when running it
         """
-        if not work or not self.exceptions:
-            self.q.put((work, args, kwargs))
+        with self.lock:
+            if not self.exceptions:
+                self.q.put((work, args, kwargs))
+
+    def add_sentinels(self):
+        """
+        Add the sentinels to the end of the queue so
+        the threads know to stop
+        """
+        with self.lock:
+            for _ in self.workers:
+                self.q.put((None, [], dict()))
+
+    def drain(self):
+        """
+        Drain the queue
+        """
+        with self.lock:
+            while True:
+                try:
+                    work, args, kwargs = self.q.get(False)
+                except Empty:
+                    break
+            self.add_sentinels()
+
+    def raise_exception(self, exc_info):
+        """
+        A thread has failed and needs to raise an exception.
+        """
+        with self.lock:
+            self.drain()
+            self.exceptions.append(exc_info)
 
     def size(self):
         """
@@ -126,11 +139,11 @@ class Workers(object):
         """
         Wait until all work is complete
         """
+        self.add_sentinels()
         for w in self.workers:
-            self.add(None)
-        for w in self.workers:
+            # Allow interrupts in Thread.join
             while w.is_alive():
-                w.join(timeout=0.1)
+                w.join(timeout=1)
         for exc_type, exc_obj, exc_trace in self.exceptions:
             import traceback
             traceback.print_exception(exc_type, exc_obj, exc_trace)
@@ -143,5 +156,5 @@ class Workers(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_val is not None:
-            drain(self.q)
+            self.drain()
         self.wait()
