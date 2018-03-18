@@ -8,9 +8,13 @@
 
 import re
 import pytest
+import time
+
+from threading import Event
 
 from ..gcov import GcovParser
 from ..utils import Logger
+from ..workers import Workers
 
 # This example is taken from the GCC 8 Gcov documentation:
 # <https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html>
@@ -191,7 +195,7 @@ def test_gcov_8(capsys, sourcename):
         exclude_unreachable_branches=False,
         ignore_parse_errors=False)
 
-    covdata = dict()
+    covdata = {}
     parser.update_coverage(covdata)
     coverage = covdata['tmp.cpp']
 
@@ -232,7 +236,7 @@ def test_unknown_tags(capsys, ignore_errors):
         with pytest.raises(SystemExit):
             run_the_parser()
 
-    covdata = dict()
+    covdata = {}
     parser.update_coverage(covdata)
     coverage = covdata['foo.c']
 
@@ -276,3 +280,42 @@ def test_pathologic_codeline(capsys):
         'IndexError',
         '(ERROR) Exiting',
         'run gcovr with --gcov-ignore-parse-errors')
+
+
+def check_and_raise(number, mutable, exc_raised, queue_full):
+    queue_full.wait()
+    if number == 0:
+        raise Exception("Number == 0")
+    exc_raised.wait()
+    mutable.append(None)
+
+
+@pytest.mark.parametrize('threads', [1, 2, 4, 8])
+def test_pathologic_threads(capsys, threads):
+    mutable = []
+    queue_full = Event()
+    exc_raised = Event()
+    with pytest.raises(Exception) as excinfo:
+        with Workers(threads, lambda: {'mutable': mutable, 'exc_raised': exc_raised, 'queue_full': queue_full}) as pool:
+            for extra in range(0, 10000):
+                pool.add(check_and_raise, extra)
+
+            # Queue is filled
+            queue_full.set()
+
+            # Wait until the exception has been completed
+            while not pool.exceptions:
+                # Yield to the worker threads
+                time.sleep(0)
+
+            # Queue should be drained and exception raised
+            exc_raised.set()
+            pool.wait()
+
+    # Outer level catches correct exception
+    assert excinfo.value.args[0] == "Number == 0"
+
+    # At most (threads - 1) appends can take place as the
+    # first job throws an exception and every other thread
+    # can action at most one job before the queue is drained
+    assert len(mutable) <= threads - 1
