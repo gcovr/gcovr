@@ -526,7 +526,7 @@ def main(args=None):
         print_text_report(covdata, options)
 
     if options.print_summary:
-        print_summary(covdata, options)
+        print_summary(covdata)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
         fail_under(covdata, options.fail_under_line, options.fail_under_branch)
