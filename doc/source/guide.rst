@@ -9,7 +9,7 @@ Gcovr User Guide
 
 .. topic:: Abstract
 
-    .. include:: ../README.rst
+    .. include:: ../../README.rst
         :start-after: .. begin abstract
         :end-before: .. end abstract
 
@@ -68,7 +68,7 @@ The ``gcovr`` command can be used to analyze programs compiled with
 GCC.   The following sections illustrate the application of ``gcovr``
 to test coverage of the following program:
 
-.. include:: examples/example.cpp
+.. include:: ../examples/example.cpp
     :code: cpp
     :number-lines: 1
 
@@ -81,7 +81,7 @@ Tabular Output of Code Coverage
 
 We compile ``example1.cpp`` with the GCC compiler as follows:
 
-.. include:: examples/example.sh
+.. include:: ../examples/example.sh
     :code: bash
     :start-after: #BEGIN compile
     :end-before: #END compile
@@ -95,7 +95,7 @@ add logic to generate output files that can be processed by the
 
 The compiler generates the ``program`` executable.  When we execute this command:
 
-.. include:: examples/example.sh
+.. include:: ../examples/example.sh
     :code: bash
     :start-after: #BEGIN run
     :end-before: #END run
@@ -105,14 +105,14 @@ files are processed with by ``gcov`` to generate code coverage
 statistics.  The ``gcovr`` command calls ``gcov`` and summarizes these
 code coverage statistics in various formats.  For example:
 
-.. include:: examples/example.sh
+.. include:: ../examples/example.sh
     :code: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 generates a text summary of the lines executed:
 
-.. include:: examples/example.txt
+.. include:: ../examples/example.txt
     :literal:
 
 Each line of this output includes a summary for a given source file,
@@ -144,7 +144,7 @@ Tabular Output of Branch Coverage
 
 The ``gcovr`` command can also summarize branch coverage using the ``--branches`` option:
 
-.. include:: ./examples/example_branches.sh
+.. include:: ../examples/example_branches.sh
     :code: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
@@ -152,7 +152,7 @@ The ``gcovr`` command can also summarize branch coverage using the ``--branches`
 This generates a tabular output that summarizes the number of branches, the number of
 branches taken and the branches that were not completely covered:
 
-.. include:: ./examples/example_branches.txt
+.. include:: ../examples/example_branches.txt
     :literal:
 
 
@@ -163,14 +163,14 @@ The default output format for ``gcovr`` is to generate a tabular
 summary in plain text.  The ``gcovr`` command can also generate an
 XML output using the ``--xml`` and ``--xml-pretty`` options:
 
-.. include:: ./examples/example_xml.sh
+.. include:: ../examples/example_xml.sh
     :code: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 This generates an XML summary of the lines executed:
 
-.. include:: ./examples/example_xml.xml
+.. include:: ../examples/example_xml.xml
     :code: xml
 
 This XML format is in the
@@ -196,7 +196,7 @@ HTML Output
 The ``gcovr`` command can also generate a simple
 HTML output using the ``--html`` option:
 
-.. include:: ./examples/example_html.sh
+.. include:: ../examples/example_html.sh
     :code: bash
     :start-after: #BEGIN gcovr html
     :end-before: #END gcovr html
@@ -205,7 +205,7 @@ This generates a HTML summary of the lines executed.  In this
 example, the file ``example1.html`` is generated, which has the
 following output:
 
-.. image:: ./screenshot-html.png
+.. image:: ../images/screenshot-html.png
     :align: center
 
 The default behavior of the ``--html`` option is to generate HTML for
@@ -218,14 +218,14 @@ for each file.  Each of these web pages includes the contents of
 file with annotations that summarize code coverage.  Consider the following
 command:
 
-.. include:: ./examples/example_html.sh
+.. include:: ../examples/example_html.sh
     :code: bash
     :start-after: #BEGIN gcovr html details
     :end-before: #END gcovr html details
 
 This generates the following HTML page for the file ``example1.cpp``:
 
-.. image:: ./screenshot-html-details.example.cpp.png
+.. image:: ../images/screenshot-html-details.example.cpp.png
     :align: center
 
 Note that the ``--html-details`` option can only be used with the
@@ -243,7 +243,7 @@ The ``gcovr`` command recursively searches a directory tree to find
 coverage.  The ``--help`` option generates the following summary of
 the ``gcovr`` command line options:
 
-.. include:: examples/gcovr.out
+.. include:: ../examples/gcovr.out
     :literal:
 
 The above `Getting Started`_ guide
@@ -321,7 +321,7 @@ But these filters also apply when gcov is launched by gcovr.
 Installation
 ------------
 
-.. include:: ../README.rst
+.. include:: ../../README.rst
     :start-after: .. begin installation
     :end-before: .. end installation
 
@@ -353,7 +353,7 @@ contributions from a wider set of developers.
 Acknowledgements
 ----------------
 
-.. include:: ../AUTHORS.txt
+.. include:: ../../AUTHORS.txt
 
 We would like to thank the following organizations for providing
 web hosting and computing resources:

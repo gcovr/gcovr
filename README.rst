@@ -36,11 +36,11 @@ text summaries and XML reports.
 
 Example HTML summary:
 
-.. image:: ./doc/screenshot-html.png
+.. image:: ./doc/images/screenshot-html.png
 
 Example HTML details:
 
-.. image:: ./doc/screenshot-html-details.example.cpp.png
+.. image:: ./doc/images/screenshot-html-details.example.cpp.png
 
 .. _website:        http://gcovr.com/
 .. _documentation:  http://gcovr.com/guide.html
