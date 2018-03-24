@@ -1,9 +1,9 @@
 This directory supports the creation of the Gcovr User Guide using
 sphinx.
 
-The following python packages have to be installed, e.g. with pip:
+The necessary python packages have to be installed, e.g. with pip:
 
-    pip install sphinx sphinx_rtd_theme
+    pip install -r requirements.txt
 
 The command
 
