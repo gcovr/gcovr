@@ -15,8 +15,6 @@ Gcovr User Guide
 
     This documentation describes Gcovr 3.4.
 
-.. section-numbering::
-
 .. contents::
     :depth: 2
 
