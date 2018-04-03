@@ -12,21 +12,21 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
-
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
+import gcovr.version # noqa
 
 # -- Project information -----------------------------------------------------
 
 project = u'gcovr'
-copyright = u'2018, William Hart, John Siirola and and Lukas Atkinson.'
-author = u'William Hart, John Siirola and and Lukas Atkinson.'
+copyright = u'2018, the gcovr authors'
+author = u'the gcovr authors'
 
 # The short X.Y version
-version = u''
+version = gcovr.version.__version__
 # The full version, including alpha/beta/rc tags
-release = u''
+release = version
 
 
 # -- General configuration ---------------------------------------------------
@@ -130,7 +130,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'gcovr.tex', u'gcovr Documentation',
-     u'William Hart, John Siirola and and Lukas Atkinson.', 'manual'),
+     author, 'manual'),
 ]
 
 
