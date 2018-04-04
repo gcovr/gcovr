@@ -1,6 +1,8 @@
-= `gcovr` Release History and Change Log =
+``gcovr`` Release History and Change Log
 
-=== 3.4 ''(12 February 2018)'' ===
+3.4 (12 February 2018)
+----------------------
+
  - Added --html-encoding command line option (#139).
  - Added --fail-under-line and --fail-under-branch options,
    which will error under a given minimum coverage. (#173, #116)
@@ -20,7 +22,9 @@
  - Fix verbose output when using existing gcov files (#143, #144)
 
 
-=== 3.3 ''(6 August 2016)'' ===
+3.3 (6 August 2016)
+-------------------
+
  - Added CI testing using TravisCI
  - Added more tests for out of source builds and other nested builds
  - Avoid common file prefixes in HTML output (#103)
@@ -33,7 +37,9 @@
  - More careful checks for covered lines (#109)
 
 
-=== 3.2 ''(5 July 2014)'' ===
+3.2 (5 July 2014)
+-----------------
+
  - Adding a test for out of source builds
  - Using the starting directory when processing gcov filenames.
    (#42)
@@ -44,7 +50,9 @@
  - Adding logic to cover branches that are ignored (#28)
 
 
-=== 3.1 ''(6 December 2013)'' ===
+3.1 (6 December 2013)
+---------------------
+
  - Change to make the -r/--root options define the root directory 
    for source files.
  - Fix to apply the -p option when the --html option is used.
@@ -56,7 +64,9 @@
    option.
 
 
-=== 3.0 ''(10 August 2013)'' ===
+3.0 (10 August 2013)
+--------------------
+
  - Adding the '--gcov-executable' option to specify
    the name/location of the gcov executable. The command line option
    overrides the environment variable, which overrides the default 'gcov'.
@@ -78,85 +88,102 @@
  - Many documentation updates
 
 
-=== 2.4 ''(13 April 2012)'' ===
+2.4 (13 April 2012)
+-------------------
+
  - New approach to walking the directory tree that is more robust to
    symbolic links (#3908)
  - Normalize all reported path names
+
    - Normalize using the full absolute path (#3921)
-   - Attempt to resolve files refeenced through symlinks to a common
+   - Attempt to resolve files referenced through symlinks to a common
      project-relative path
- - Process `gcno` files when there is no corresponding `gcda` file to
+
+ - Process ``gcno`` files when there is no corresponding ``gcda`` file to
    provide coverage information for unexecuted modules (#3887)
  - Windows compatibility fixes
-   - Fix for how we parse `source:` file names (#3913)
+
+   - Fix for how we parse ``source:`` file names (#3913)
    - Better handling od EOL indicators (#3920)
- - Fix so that gcovr cleans up all `.gcov` files, even those filtered by
+
+ - Fix so that gcovr cleans up all ``.gcov`` files, even those filtered by
    command line arguments
  - Added compatibility with GCC 4.8 (#3918)
- - Added a check to warn users who specify an empty `--root` option (see #3917)
- - Force `gcov` to run with en_US localization, so the gcovr parser runs
+ - Added a check to warn users who specify an empty ``--root`` option (see #3917)
+ - Force ``gcov`` to run with en_US localization, so the gcovr parser runs
    correctly on systems with non-English locales (#3898, #3902).
  - Segregate warning/error information onto the stderr stream (#3924)
  - Miscellaneous (Python 3.x) portability fixes
  - Added the master svn revision number as part of the verson identifier
 
 
-=== 2.3.1 ''(6 January 2012)'' ===
+2.3.1 (6 January 2012)
+----------------------
+
  - Adding support for Python 3.x
 
 
-=== 2.3 ''(11 December 2011)'' ===
- - Adding the `--gcov-filter` and `--gcov-exclude` options.
+2.3 (11 December 2011)
+----------------------
+
+ - Adding the ``--gcov-filter`` and ``--gcov-exclude`` options.
 
 
-=== 2.2 ''(10 December 2011)'' ===
+2.2 (10 December 2011)
+----------------------
+
  - Added a test driver for gcovr.
- - Improved estimation of the `<sources>` element when using gcovr with filters.
+ - Improved estimation of the ``<sources>`` element when using gcovr with filters.
  - Added revision and date keywords to gcovr so it is easier to identify
    what version of the script users are using (especially when they are
    running a snapshot from trunk).
  - Addressed special case mentioned in [comment:ticket:3884:1]: do not
    truncate the reported file name if the filter does not start matching
    at the beginning of the string.
- - Overhaul of the `--root` / `--filter` logic. This should resolve the
+ - Overhaul of the ``--root`` / ``--filter`` logic. This should resolve the
    issue raised in #3884, along with the more general filter issue
    raised in [comment:ticket:3884:1]
  - Overhaul of gcovr's logic for determining gcc/g++'s original working
    directory. This resolves issues introduced in the original
-   implementation of `--object-directory` (#3872, #3883).
- - Bugfix: gcovr was only including a `<sources>` element in the XML
-   report if the user specified `-r` (#3869)
+   implementation of ``--object-directory`` (#3872, #3883).
+ - Bugfix: gcovr was only including a ``<sources>`` element in the XML
+   report if the user specified ``-r`` (#3869)
  - Adding timestamp and version attributes to the gcovr XML report (see
    #3877).  It looks like the standard Cobertura output reports number of
    seconds since the epoch for the timestamp and a doted decimal version
    string.  Now, gcovr reports seconds since the epoch and 
-   "`gcovr `"+`__version__` (e.g. "gcovr 2.2") to differentiate it 
+   "``gcovr ``"+``__version__`` (e.g. "gcovr 2.2") to differentiate it 
    from a pure Cobertura report.
 
 
-=== 2.1 ''(26 November 2010)'' ===
- - Added the `--object-directory` option, which allows for a flexible
+2.1 (26 November 2010)
+----------------------
+
+ - Added the ``--object-directory`` option, which allows for a flexible
    specification of the directory that contains the objects generated by
    gcov.
  - Adding fix to compare the absolute path of a filename to an exclusion
    pattern.
  - Adding error checking when no coverage results are found. The line and
    branch counts can be zero.
- - Adding logic to process the `-o`/`--output` option (#3870).
- - Adding patch to scan for lines that look like:
-   {{{
-creating `foo'
-}}}
+ - Adding logic to process the ``-o``/``--output`` option (#3870).
+ - Adding patch to scan for lines that look like::
+
+        creating `foo'
+
    as well as
-   {{{
-creating 'foo'
-}}}
+   ::
+
+        creating 'foo'
+
  - Changing the semantics for EOL to be portable for MS Windows.
  - Add attributes to xml format so that it could be used by hudson/bamboo with
    cobertura plug-in.
 
 
-=== 2.0 ''(22 August 2010)'' ===
+2.0 (22 August 2010)
+--------------------
+
  - Initial release as a separate package.  Earlier versions of gcovr
    were managed within the 'fast' Python package.
 
