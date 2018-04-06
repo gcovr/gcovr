@@ -40,6 +40,7 @@ release = version
 # ones.
 extensions = [
     'sphinx.ext.todo',
+    'sphinx.ext.extlinks',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -162,3 +163,8 @@ texinfo_documents = [
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+# -- Options for extlinks extension ------------------------------------------
+
+# see http://www.sphinx-doc.org/en/master/ext/extlinks.html
+extlinks = {'issue': ('https://github.com/gcovr/gcovr/issues/%s', '#')}
