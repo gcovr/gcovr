@@ -3,23 +3,23 @@
 3.4 (12 February 2018)
 ----------------------
 
- - Added --html-encoding command line option (#139).
+ - Added --html-encoding command line option (:issue:`139`).
  - Added --fail-under-line and --fail-under-branch options,
-   which will error under a given minimum coverage. (#173, #116)
- - Better pathname resolution heuristics for --use-gcov-file. (#146)
+   which will error under a given minimum coverage. (:issue:`173`, :issue:`116`)
+ - Better pathname resolution heuristics for --use-gcov-file. (:issue:`146`)
  - The --root option defaults to current directory '.'.
  - Improved reports for "(", ")", ";" lines.
- - HTML reports show full timestamp, not just date. (#165)
- - HTML reports treat 0/0 coverage as NaN, not 100% or 0%. (#105, #149, #196)
- - Add support for coverage-04.dtd Cobertura XML format (#164, #186)
- - Only Python 2.6+ is supported, with 2.7+ or 3.4+ recommended. (#195)
- - Added CI testing for Windows using Appveyor. (#189, #200)
- - Reports use forward slashes in paths, even on Windows. (#200)
+ - HTML reports show full timestamp, not just date. (:issue:`165`)
+ - HTML reports treat 0/0 coverage as NaN, not 100% or 0%. (:issue:`105`, :issue:`149`, :issue:`196`)
+ - Add support for coverage-04.dtd Cobertura XML format (:issue:`164`, :issue:`186`)
+ - Only Python 2.6+ is supported, with 2.7+ or 3.4+ recommended. (:issue:`195`)
+ - Added CI testing for Windows using Appveyor. (:issue:`189`, :issue:`200`)
+ - Reports use forward slashes in paths, even on Windows. (:issue:`200`)
  - Fix to support filtering with absolute paths.
- - Fix HTML generation with Python 3. (#168, #182, #163)
- - Fix --html-details under Windows. (#157)
- - Fix filters under Windows. (#158)
- - Fix verbose output when using existing gcov files (#143, #144)
+ - Fix HTML generation with Python 3. (:issue:`168`, :issue:`182`, :issue:`163`)
+ - Fix --html-details under Windows. (:issue:`157`)
+ - Fix filters under Windows. (:issue:`158`)
+ - Fix verbose output when using existing gcov files (:issue:`143`, :issue:`144`)
 
 
 3.3 (6 August 2016)
@@ -27,14 +27,14 @@
 
  - Added CI testing using TravisCI
  - Added more tests for out of source builds and other nested builds
- - Avoid common file prefixes in HTML output (#103)
+ - Avoid common file prefixes in HTML output (:issue:`103`)
  - Added the --execlude-directories argument to exclude directories
-   from the search for symlinks (#87)
- - Added branches taken/not taken to HTML (#75)
- - Use --object-directory to scan for gcov data files (#72)
- - Improved logic for nested makefiles (#135)
- - Fixed unexpected semantics with --root argument (#108)
- - More careful checks for covered lines (#109)
+   from the search for symlinks (:issue:`87`)
+ - Added branches taken/not taken to HTML (:issue:`75`)
+ - Use --object-directory to scan for gcov data files (:issue:`72`)
+ - Improved logic for nested makefiles (:issue:`135`)
+ - Fixed unexpected semantics with --root argument (:issue:`108`)
+ - More careful checks for covered lines (:issue:`109`)
 
 
 3.2 (5 July 2014)
@@ -42,12 +42,12 @@
 
  - Adding a test for out of source builds
  - Using the starting directory when processing gcov filenames.
-   (#42)
+   (:issue:`42`)
  - Making relative paths the default in html output.
  - Simplify html bar with coverage is zero.
- - Add option for using existing gcov files (#35)
- - Fixing --root argument processing (#27)
- - Adding logic to cover branches that are ignored (#28)
+ - Add option for using existing gcov files (:issue:`35`)
+ - Fixing --root argument processing (:issue:`27`)
+ - Adding logic to cover branches that are ignored (:issue:`28`)
 
 
 3.1 (6 December 2013)
