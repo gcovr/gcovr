@@ -46,6 +46,7 @@ then run “\ ``pip install -e .``\ ”.
 You can then run gcovr as ``gcovr`` or ``python -m gcovr``.
 
 To run the tests, you also have to “\ ``pip install pyutilib pytest flake8``\ ”.
+To build the documentation, you also have to “\ ``pip install -r doc/requirements.txt``\ ”.
 
 The program entrypoint and command line interface is in ``gcovr/__main__.py``.
 The coverage data is parsed in the ``gcovr.gcov`` module.

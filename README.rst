@@ -36,11 +36,13 @@ text summaries and XML reports.
 
 Example HTML summary:
 
-.. image:: ./doc/screenshot-html.png
+.. image:: ./doc/images/screenshot-html.png
 
 Example HTML details:
 
-.. image:: ./doc/screenshot-html-details.example.cpp.png
+.. image:: ./doc/images/screenshot-html-details.example.cpp.png
+
+.. begin links
 
 .. _website:        http://gcovr.com/
 .. _documentation:  http://gcovr.com/guide.html
@@ -58,6 +60,8 @@ Example HTML details:
 .. |codecov-badge| image:: https://codecov.io/gh/gcovr/gcovr/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/gcovr/gcovr/branch/master
    :alt: Codecov status
+
+.. end links
 
 Installation
 ------------
@@ -90,6 +94,8 @@ Install development version from GitHub:
 Quickstart
 ----------
 
+.. begin quickstart
+
 GCC can instrument the executables to emit coverage data.
 You need to recompile your code with the following flags:
 
@@ -121,6 +127,8 @@ This only matters if you have a separate build directory.
 
 For complete documentation, read the `manual <documentation_>`_.
 
+.. end quickstart
+
 Contributing
 ------------
 
@@ -130,6 +138,8 @@ please read our contributing guidelines first:
 
 License
 -------
+
+.. begin license
 
 Copyright 2013-2018 the gcovr authors
 
@@ -143,3 +153,5 @@ See AUTHORS.txt for the full list of contributors.
 
 Gcovr development moved to this repository in September, 2013 from
 Sandia National Laboratories.
+
+.. end license

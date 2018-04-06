@@ -1,11 +1,15 @@
 This directory supports the creation of the Gcovr User Guide using
-docutils (`rst2html5.py`).
+sphinx.
+
+The necessary python packages have to be installed, e.g. with pip:
+
+    pip install -r requirements.txt
 
 The command
 
     make html
 
-creates the guide.html file.
+creates the documentation in the folder build/html.
 
 When updating for a new gcovr version,
 the screenshots will have to be regenerated.
