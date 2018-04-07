@@ -17,8 +17,6 @@ env:
 
 matrix:
   include:
-  - python: '2.6'
-    env: RUN_LINTER=
   - python: '2.7'
     env: COVERAGE_OPTS='--cov=gcovr --cov-branch'
   - python: pypy

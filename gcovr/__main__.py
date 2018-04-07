@@ -490,7 +490,7 @@ def main(args=None):
                  'workdir': mkdtemp(),
                  'toerase': set(),
                  'options': options}) as pool:
-        logger.verbose_msg("Pool started with {0} threads", pool.size())
+        logger.verbose_msg("Pool started with {} threads", pool.size())
         for file_ in datafiles:
             if options.gcov_files:
                 pool.add(process_existing_gcov_file, file_)
@@ -516,7 +516,7 @@ def main(args=None):
         if os.path.exists(filepath):
             os.remove(filepath)
 
-    logger.verbose_msg("Gathered coveraged data for {0} files", len(covdata))
+    logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
 
     # Print report
     if options.xml or options.prettyxml:

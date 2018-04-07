@@ -20,18 +20,8 @@ def find_test_cases():
                 datadir=datadir, name=name, ext=ext)
             if not os.path.exists(baseline):
                 continue
-            if ext == 'xml' and sys.version_info < (2, 7):
-                yield pytest.param((name, script, baseline), marks=pytest.mark.xfail)
             else:
                 yield (name, script, baseline)
-
-
-def check_output(cmd):
-    """Emulate subprocess.check_output() for Python 2.6"""
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    (out, err) = p.communicate()
-    assert p.poll() == 0
-    return out
 
 
 @pytest.mark.parametrize(
@@ -45,7 +35,7 @@ def test_example(args):
 
     startdir = os.getcwd()
     os.chdir(datadir)
-    output = scrub(check_output(cmd).decode())
+    output = scrub(subprocess.check_output(cmd).decode())
     with open(baseline_file) as f:
         baseline = scrub(f.read())
     if assert_equals is not None:
