@@ -13,6 +13,7 @@ env:
   global:
   - CXX=g++-5 CC=gcc-5 GCOV=gcov-5
   - RUN_LINTER=1
+  - BUILD_DOCS=
 
 matrix:
   include:
@@ -23,7 +24,7 @@ matrix:
   - python: pypy
   - python: '3.4'
   - python: '3.5'
-    env: COVERAGE_OPTS='--cov=gcovr --cov-branch'
+    env: COVERAGE_OPTS='--cov=gcovr --cov-branch' BUILD_DOCS=1
   - python: pypy3.5-5.8.0
 
 install:
@@ -33,12 +34,14 @@ install:
 - pip install ply ordereddict pyutilib
 - test -z "$RUN_LINTER" || pip install flake8
 - test -z "$COVERAGE_OPTS" || pip install pytest-cov coverage codecov
+- test -z "$BUILD_DOCS" || pip install -r doc/requirements.txt
 - python setup.py develop
 
 script:
 - test -z "$RUN_LINTER" || flake8 --ignore=E501
 - python -m pytest -v $COVERAGE_OPTS gcovr doc/examples
 - test -z "$COVERAGE_OPTS" || codecov -X gcov search
+- test -z "$BUILD_DOCS" || (cd doc; make html O=-W)
 
 deploy:
   - provider: pypi
