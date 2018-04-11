@@ -5,24 +5,19 @@ gcovr
    :start-after: .. begin abstract
    :end-before: .. end abstract
 
-.. include:: <isonum.txt>
+.. admonition:: Quick Links
 
-* Getting Help
+    * Getting Help
 
-  * Submit a ticket |rarr| `<https://github.com/gcovr/gcovr/issues>`_
-  * Stack Overflow |rarr| `<http://stackoverflow.com/search?q=[gcovr]>`_
-  * Chat on Gitter |rarr| `<https://gitter.im/gcovr/gcovr>`_
+      * `Submit a ticket <https://github.com/gcovr/gcovr/issues>`_
+      * `Stack Overflow <https://stackoverflow.com/questions/tagged/gcovr>`_
+      * `Chat on Gitter <https://gitter.im/gcovr/gcovr>`_
 
-* Download
+    * Install from `PyPI <https://pypi.org/project/gcovr/>`_: ``pip install gcovr``
 
-  * PyPI |rarr| `<https://pypi.org/project/gcovr/>`_
+    * `Source Code on GitHub <https://github.com/gcovr/gcovr>`_
 
-* Source Code
-
-  * Browse Source (GitHub) |rarr| `<https://github.com/gcovr/gcovr>`_
-  * Source Downloads |rarr| `<https://github.com/gcovr/gcovr/releases>`_
-
-..    Change Log |rarr| https://raw.github.com/gcovr/gcovr/master/CHANGELOG.txt
+    * :doc:`changelog`
 
 .. toctree::
    :maxdepth: 2
