@@ -11,6 +11,7 @@ gcovr
 
   * Submit a ticket |rarr| `<https://github.com/gcovr/gcovr/issues>`_
   * Stack Overflow |rarr| `<http://stackoverflow.com/search?q=[gcovr]>`_
+  * Chat on Gitter |rarr| `<https://gitter.im/gcovr/gcovr>`_
 
 * Download
 

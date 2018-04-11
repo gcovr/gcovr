@@ -105,6 +105,13 @@ This can take a week.
 Please fix any issues that are discovered during this process.
 Feel free to force-push your updates to the pull request branch.
 
+If you need assistance for your pull request, you can
+
+  - chat in `our Gitter room <https://gitter.im/gcovr/gcovr>`_
+  - discuss your problem in an issue
+  - open an unfinished pull request as a work in progress (WIP),
+    and explain what you've like to get reviewed
+
 How to set up a development environment
 ---------------------------------------
 

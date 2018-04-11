@@ -5,7 +5,7 @@ generate GCC code coverage reports
 
 website_ • documentation_ • bugtracker_ • `GitHub <repo_>`_
 
-|travis-ci-badge| |appveyor-ci-badge| |pypi-badge| |codecov-badge|
+|travis-ci-badge| |appveyor-ci-badge| |pypi-badge| |codecov-badge| |gitter-badge|
 
 .. begin abstract
 
@@ -60,6 +60,9 @@ Example HTML details:
 .. |codecov-badge| image:: https://codecov.io/gh/gcovr/gcovr/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/gcovr/gcovr/branch/master
    :alt: Codecov status
+.. |gitter-badge| image:: https://badges.gitter.im/gcovr/gcovr.svg
+   :target: https://gitter.im/gcovr/gcovr
+   :alt: Gitter chat
 
 .. end links
 
