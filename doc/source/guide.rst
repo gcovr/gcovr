@@ -241,8 +241,9 @@ The ``gcovr`` command recursively searches a directory tree to find
 coverage.  The ``--help`` option generates the following summary of
 the ``gcovr`` command line options:
 
-.. include:: ../examples/gcovr.out
-    :literal:
+.. autoprogram:: gcovr.__main__:create_argument_parser()
+    :prog: gcovr
+    :groups:
 
 The above `Getting Started`_ guide
 illustrates the use of some command line options.

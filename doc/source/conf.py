@@ -41,6 +41,7 @@ release = version
 extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.extlinks',
+    'sphinxcontrib.autoprogram',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -70,6 +71,12 @@ exclude_patterns = []
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
+# Disable smart dashes ("--" → "–"; "---" → "—")
+# because this interferes with option names like "--foobar".
+# q – smartify quotes: ", '
+# D – smartify dashes --    (DISABLED)
+# e – smartify ellipsis ...
+smartquotes_action = "qe"
 
 # -- Options for HTML output -------------------------------------------------
 
