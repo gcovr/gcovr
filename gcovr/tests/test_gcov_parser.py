@@ -9,6 +9,7 @@
 import re
 import pytest
 import time
+import sys
 
 from threading import Event
 
@@ -164,6 +165,11 @@ call    4 never executed
 GCOV_8_SOURCES = dict(
     gcov_8_example=GCOV_8_EXAMPLE,
     nautilus_example=GCOV_8_NAUTILUS)
+
+if sys.version_info < (3, 0):
+    GCOV_8_SOURCES = dict(
+        gcov_8_example=GCOV_8_EXAMPLE.decode(),
+        nautilus_example=GCOV_8_NAUTILUS.decode())
 
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     gcov_8_example='33',
