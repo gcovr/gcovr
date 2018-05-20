@@ -1,7 +1,7 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
-ifeq ($(BASE_OS),MINGW32_NT)
+ifneq (,$(findstring MINGW,$(BASE_OS)))
   BASE_OS:=MSYS_NT
 endif
 ifeq ($(BASE_OS),MSYS_NT)
