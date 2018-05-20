@@ -100,7 +100,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
     # Return if the filename does not match the filter
     # Return if the filename matches the exclude pattern
     filtered, excluded = apply_filter_include_exclude(
-        fname, options.filter, options.exclude, strip=options.root_filter)
+        fname, options.filter, options.exclude)
 
     if filtered:
         logger.verbose_msg("  Filtering coverage data for file {}", fname)
@@ -740,7 +740,7 @@ def process_existing_gcov_file(filename, covdata, options, toerase, workdir):
 
 
 def apply_filter_include_exclude(
-        filename, include_filters, exclude_filters, strip=None):
+        filename, include_filters, exclude_filters):
     """Apply inclusion/exclusion filters to filename
 
     The include_filters are tested against
@@ -751,34 +751,18 @@ def apply_filter_include_exclude(
     filename (str): the file path to match, should be relative
     include_filters (list of regex): ANY of these filters must match
     exclude_filters (list of regex): NONE of these filters must match
-    strip (optional regex): Strip prefix from filename.
-        If None, use matched include filter.
 
     returns: (filtered, exclude)
         filtered (bool): True when filename failed the include_filter
         excluded (bool): True when filename failed the exclude_filters
     """
-    filtered = True
-    excluded = False
 
-    filtered_filename = None
-    for filter in include_filters:
-        if filter.match(filename):
-            filtered = False
-            if strip is None:
-                filtered_filename = filter.sub('', filename)
-            else:
-                filtered_filename = strip.sub('', filename)
-            break
+    filtered = not any(f.match(filename) for f in include_filters)
+    excluded = False
 
     if filtered:
         return filtered, excluded
 
-    abs_filename = os.path.abspath(filename)
-
-    excluded = any(
-        exc.match(f)
-        for f in [filtered_filename, filename, abs_filename]
-        for exc in exclude_filters)
+    excluded = any(f.match(filename) for f in exclude_filters)
 
     return filtered, excluded

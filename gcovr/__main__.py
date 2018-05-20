@@ -41,7 +41,8 @@ from tempfile import mkdtemp
 from shutil import rmtree
 
 from .gcov import get_datafiles, process_existing_gcov_file, process_datafile
-from .utils import get_global_stats, build_filter, Logger
+from .utils import (get_global_stats, build_filter, AlwaysMatchFilter,
+                    DirectoryPrefixFilter, Logger)
 from .version import __version__
 from .workers import Workers
 from .coverage import CoverageData
@@ -464,25 +465,35 @@ def main(args=None):
     # Setup filters
     #
 
-    for i in range(0, len(options.exclude)):
-        options.exclude[i] = build_filter(options.exclude[i])
+    # The root filter isn't technically a filter,
+    # but is used to turn absolute paths into relative paths
+    options.root_filter = re.compile(re.escape(options.root_dir + os.sep))
 
     if options.exclude_dirs is not None:
-        for i in range(0, len(options.exclude_dirs)):
-            options.exclude_dirs[i] = build_filter(options.exclude_dirs[i])
+        options.exclude_dirs = [build_filter(f) for f in options.exclude_dirs]
 
-    options.root_filter = re.compile(re.escape(options.root_dir + os.sep))
-    for i in range(0, len(options.filter)):
-        options.filter[i] = build_filter(options.filter[i])
-    if len(options.filter) == 0:
-        options.filter.append(options.root_filter)
+    options.exclude = [build_filter(f) for f in options.exclude]
+    options.filter = [build_filter(f) for f in options.filter]
+    if not options.filter:
+        options.filter = [DirectoryPrefixFilter(options.root_dir)]
 
-    for i in range(0, len(options.gcov_exclude)):
-        options.gcov_exclude[i] = build_filter(options.gcov_exclude[i])
-    for i in range(0, len(options.gcov_filter)):
-        options.gcov_filter[i] = build_filter(options.gcov_filter[i])
-    if len(options.gcov_filter) == 0:
-        options.gcov_filter.append(re.compile(''))
+    options.gcov_exclude = [build_filter(f) for f in options.gcov_exclude]
+    options.gcov_filter = [build_filter(f) for f in options.gcov_filter]
+    if not options.gcov_filter:
+        options.gcov_filter = [AlwaysMatchFilter()]
+
+    # Output the filters for debugging
+    for name, filters in [
+        ('--root', [options.root_filter]),
+        ('--filter', options.filter),
+        ('--exclude', options.exclude),
+        ('--gcov-filter', options.gcov_filter),
+        ('--gcov-exclude', options.gcov_exclude),
+        ('--exclude-directories', options.exclude_dirs),
+    ]:
+        logger.verbose_msg('Filters for {}: ({})', name, len(filters))
+        for f in filters:
+            logger.verbose_msg('- {}', f)
 
     # Get data files
     if not options.search_paths:

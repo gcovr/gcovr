@@ -220,14 +220,58 @@ def calculate_coverage(covered, total, nan_value=0.0):
 
 
 def build_filter(regex):
-    if os.name == 'nt':
-        # Windows path separators must be escaped before being parsed into a
-        # regex, but we do not want to escape the regex itself, so instead of
-        # using realpath, we escape the path and join it manually (realpath
-        # doesn't resolve symlinks on Windows anyway)
-        return re.compile(re.escape(os.getcwd() + os.path.sep) + regex)
+    if os.path.isabs(regex):
+        return AbsoluteFilter(regex)
     else:
-        return re.compile(os.path.realpath(regex))
+        return RelativeFilter(os.getcwd(), regex)
+
+
+class Filter(object):
+    def __init__(self, pattern):
+        self.pattern = re.compile(pattern)
+
+    def match(self, path):
+        os_independent_path = path.replace(os.path.sep, '/')
+        return self.pattern.match(os_independent_path)
+
+    def __str__(self):
+        return "{name}({pattern})".format(
+            name=type(self).__name__, pattern=self.pattern.pattern)
+
+
+class AbsoluteFilter(Filter):
+    def match(self, path):
+        abspath = os.path.abspath(path)
+        return super(AbsoluteFilter, self).match(abspath)
+
+
+class RelativeFilter(Filter):
+    def __init__(self, root, pattern):
+        super(RelativeFilter, self).__init__(pattern)
+        self.root = root
+
+    def match(self, path):
+        relpath = os.path.relpath(path, self.root)
+        return super(RelativeFilter, self).match(relpath)
+
+    def __str__(self):
+        return "RelativeFilter({} root={})".format(
+            self.pattern.pattern, self.root)
+
+
+class AlwaysMatchFilter(Filter):
+    def __init__(self):
+        super(AlwaysMatchFilter, self).__init__("")
+
+    def match(self, path):
+        return True
+
+
+class DirectoryPrefixFilter(Filter):
+    def __init__(self, directory):
+        os_independent_dir = directory.replace(os.path.sep, '/')
+        pattern = re.escape(os_independent_dir + '/')
+        super(DirectoryPrefixFilter, self).__init__(pattern)
 
 
 class Logger(object):
