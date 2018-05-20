@@ -1,5 +1,39 @@
 ``gcovr`` Release History and Change Log
 
+to be released
+--------------
+
+Breaking changes:
+
+ - This release drops support for Python 2.6. (:issue:`250`)
+ - PIP is the only supported installation method.
+
+Improvements and new features:
+
+ - Improved --help output. (:issue:`236`)
+ - Parse the GCC 8 gcov format. (:issue:`226`, :issue:`228`)
+ - New --gcov-ignore-parse-errors flag.
+   By default, gcovr will now abort upon parse errors. (:issue:`228`)
+ - Detect the error when gcov cannot create its output files (:issue:`243`,
+   :issue:`244`)
+ - Add -j flag to run gcov processes in parallel. (:issue:`3`, :issue:`36`,
+   :issue:`239`)
+ - The --html-details flag now implies --html. (:issue:`93`, :issue:`211`)
+ - The --html output can now be used without an --output filename
+   (:issue:`223`)
+ - The docs are now managed with Sphinx.
+   (:issue:`235`, :issue:`248`, :issue:`249`, :issue:`252`, :issue:`253`)
+
+Internal changes:
+
+ - Huge refactoring. (:issue:`214`, :issue:`215`, :issue:`221` :issue:`225`,
+   :issue:`228`, :issue:`237`, :issue:`246`)
+ - Various testing improvements. (:issue:`213`, :issue:`214`, :issue:`216`,
+   :issue:`217`, :issue:`218`, :issue:`222`, :issue:`223`, :issue:`224`,
+   :issue:`227`, :issue:`240`, :issue:`241`, :issue:`245`)
+ - HTML reports are now rendered with Jinja2 templates. (:issue:`234`)
+ - New contributing guide. (:issue:`253`)
+
 3.4 (12 February 2018)
 ----------------------
 
