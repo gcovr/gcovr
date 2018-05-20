@@ -11,6 +11,7 @@ import sys
 import time
 import datetime
 import zlib
+import io
 
 from .version import __version__
 from .utils import commonpath, sort_coverage
@@ -235,7 +236,8 @@ def print_html_report(covdata, options):
     if options.output is None:
         sys.stdout.write(htmlString + '\n')
     else:
-        OUTPUT = open(options.output, 'w')
+        OUTPUT = io.open(options.output, 'w', encoding=options.html_encoding,
+                         errors='replace')
         OUTPUT.write(htmlString + '\n')
         OUTPUT.close()
 
@@ -269,7 +271,8 @@ def print_html_report(covdata, options):
         data['ROWS'] = []
         currdir = os.getcwd()
         os.chdir(options.root_dir)
-        INPUT = open(data['FILENAME'], 'r')
+        INPUT = io.open(data['FILENAME'], 'r', encoding=options.source_encoding,
+                        errors='replace')
         ctr = 1
         for line in INPUT:
             data['ROWS'].append(
@@ -280,7 +283,8 @@ def print_html_report(covdata, options):
         os.chdir(currdir)
 
         htmlString = templates().get_template('source_page.html').render(**data)
-        OUTPUT = open(cdata._sourcefile, 'w')
+        OUTPUT = io.open(cdata._sourcefile, 'w', encoding=options.html_encoding,
+                         errors='replace')
         OUTPUT.write(htmlString + '\n')
         OUTPUT.close()
 

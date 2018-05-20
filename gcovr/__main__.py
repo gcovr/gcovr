@@ -159,6 +159,14 @@ def create_argument_parser():
         dest="fail_under_branch",
         default=0.0
     )
+    options.add_argument(
+        '--source-encoding',
+        help="Override the declared source encoding. "
+             "Defaults to the system default encoding.",
+        action='store',
+        dest='source_encoding',
+        default=None
+    )
 
     output_options = parser.add_argument_group(
         "Output Options",

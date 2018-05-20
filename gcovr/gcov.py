@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 import sys
+import io
 
 from os.path import normpath
 
@@ -75,10 +76,7 @@ noncode_mapper = dict.fromkeys(ord(i) for i in '}{')
 
 
 def is_non_code(code):
-    if sys.version_info < (3, 0):
-        code = code.strip().translate(None, '}{')
-    else:
-        code = code.strip().translate(noncode_mapper)
+    code = code.strip().translate(noncode_mapper)
     return len(code) == 0 or code.startswith("//") or code == 'else'
 
 
@@ -87,7 +85,8 @@ def is_non_code(code):
 #
 def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
     logger = Logger(options.verbose)
-    INPUT = open(data_fname, "r")
+    INPUT = io.open(data_fname, "r", encoding=options.source_encoding,
+                    errors='replace')
 
     # Find the source file
     firstline = INPUT.readline()
