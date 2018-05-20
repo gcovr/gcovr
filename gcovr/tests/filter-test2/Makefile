@@ -5,10 +5,8 @@ ifneq (,$(findstring MINGW,$(BASE_OS)))
   BASE_OS:=MSYS_NT
 endif
 ifeq ($(BASE_OS),MSYS_NT)
-  # Absolute filters are known to not work on Windows right now.
-  # Use relative path instead
-  # GCOVR_TEST_OPTIONS := -f $(shell cygpath -w "$$PWD")\main.cpp
-  GCOVR_TEST_OPTIONS := -f main.cpp
+  # "cygpath -m" is the mixed mode: Windows drive letters but forward slashes
+  GCOVR_TEST_OPTIONS := -f $(shell cygpath -m "$$PWD")/main.cpp
 else
   GCOVR_TEST_OPTIONS := -f $(shell pwd)/main.cpp
 endif
