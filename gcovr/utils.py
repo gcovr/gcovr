@@ -225,7 +225,7 @@ def build_filter(regex):
         # regex, but we do not want to escape the regex itself, so instead of
         # using realpath, we escape the path and join it manually (realpath
         # doesn't resolve symlinks on Windows anyway)
-        return re.compile(re.escape(os.getcwd() + "\\") + regex)
+        return re.compile(re.escape(os.getcwd() + os.path.sep) + regex)
     else:
         return re.compile(os.path.realpath(regex))
 
