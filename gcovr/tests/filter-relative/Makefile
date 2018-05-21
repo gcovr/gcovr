@@ -7,7 +7,7 @@ all:
 
 run: txt xml html
 
-GCOVR_TEST_OPTIONS = -f '.*main.cpp'
+GCOVR_TEST_OPTIONS = -f 'main.cpp'  # use a relative filter here
 
 txt:
 	./testcase
