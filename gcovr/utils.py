@@ -241,7 +241,7 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path):
-        abspath = os.path.abspath(path)
+        abspath = os.path.realpath(path)
         return super(AbsoluteFilter, self).match(abspath)
 
 
@@ -251,7 +251,8 @@ class RelativeFilter(Filter):
         self.root = root
 
     def match(self, path):
-        relpath = os.path.relpath(path, self.root)
+        abspath = os.path.realpath(path)
+        relpath = os.path.relpath(abspath, self.root)
         return super(RelativeFilter, self).match(relpath)
 
     def __str__(self):

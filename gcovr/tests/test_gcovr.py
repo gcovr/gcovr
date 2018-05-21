@@ -103,7 +103,11 @@ def test_build(name, format):
     assert_equals = ASSERT_EQUALS.get(format, None)
 
     is_windows = platform.system() == 'Windows'
-    if name == 'linked' and format == 'html' and is_windows:
+    needs_symlinks = any([
+        name == 'linked' and format == 'html',
+        name == 'filter-relative-lib',
+    ])
+    if needs_symlinks and is_windows:
         pytest.xfail("have yet to figure out symlinks on Windows")
 
     os.chdir(os.path.join(basedir, name))
