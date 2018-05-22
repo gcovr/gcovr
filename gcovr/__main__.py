@@ -262,7 +262,7 @@ def create_argument_parser():
         description="Filters decide which files are included in the report. "
                     "Any filter must match, and no exclude filter must match. "
                     "A filter is a regular expression that matches a path. "
-                    "On Windows, the filter must match a relative path."
+                    "Filter paths use forward slashes, even on Windows."
     )
     filter_options.add_argument(
         "-f", "--filter",

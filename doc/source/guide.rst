@@ -261,61 +261,97 @@ illustrates the use of some command line options.
 
 
 Using Filters
-~~~~~~~~~~~~~
+-------------
 
 Gcovr tries to only report coverage for files within your project,
 not for your libraries. This is influenced by the following options:
 
--   ``-r``, ``--root``
--   ``-f``, ``--filter``
--   ``-e``, ``--exclude``
--   ``--gcov-filter``
--   ``--gcov-exclude``
--   ``--exclude-directories``
+-   :option:`-r`, :option:`--root`
+-   :option:`-f`, :option:`--filter`
+-   :option:`-e`, :option:`--exclude`
+-   :option:`--gcov-filter`
+-   :option:`--gcov-exclude`
+-   :option:`--exclude-directories`
 -   (the current working directory where gcovr is invoked)
 
 These options take filters.
 A filter is a regular expression that matches a file path.
+Because filters are regexes,
+you will have to escape “special” characters with a backslash ``\``.
+
+Always use forward slashes ``/`` as path separators, even on Windows:
+
+-   wrong:   ``--filter C:\project\src\``
+-   correct: ``--filter C:/project/src/``
+
 If the filter looks like an absolute path,
-it is used as is.
-Otherwise, the filter is treated as relative to the current directory.
-Because filters are regexes, you will have to escape “special” characters.
+it is matched against an absolute path.
+Otherwise, the filter is matched against a relative path,
+where that path is relative to the current directory.
+Examples of relative filters:
 
-If no ``--filter`` is provided, the ``--root`` is turned into a default filter.
-Therefore, files outside of the ``--root`` directory are excluded.
+-   ``--filter subdir/`` matches only that subdirectory
 
-To be included in a report, the source file must match any ``--filter``,
-and must not match any ``--exclude`` filter.
+-   ``--filter '\.\./src/'`` matches a sibling directory ``../src``.
+    But because a dot ``.`` matches any character in a regex,
+    we have to escape it.
+    You have to use additional shell escaping.
+    This example uses single quotes for Bash or POSIX shell.
 
-The ``--gcov-filter`` and ``--gcov-exclude`` filters apply to the ``.gcov`` files created by ``gcov``.
+-   ``--filter '(.+/)?foo\.c$'`` matches only files called ``foo.c``.
+    The regex must match from the start of the relative path,
+    so we ignore any leading directory parts with ``(.+/)?``.
+    The ``$`` at the end ensures that the path ends here.
+
+If no :option:`--filter` is provided,
+the :option:`--root` is turned into a default filter.
+Therefore, files outside of the :option:`--root` directory are excluded.
+
+To be included in a report, the source file must match any :option:`--filter`,
+and must not match any :option:`--exclude` filter.
+
+The :option:`--gcov-filter` and :option:`--gcov-exclude` filters apply to the ``.gcov`` files created by ``gcov``.
 This is useful mostly when running gcov yourself,
-and then invoking gcovr with ``-g``/``--use-gcov-files``.
+and then invoking gcovr with :option:`-g`/:option:`--use-gcov-files`.
 But these filters also apply when gcov is launched by gcovr.
 
+Filters for symlinks
+~~~~~~~~~~~~~~~~~~~~
+
+Gcovr matches filters against *real paths*
+that have all their symlinks resolved.
+E.g. consider this project layout::
+
+    /home/you/
+    ├─ project/  (pwd)
+    │  ├─ src/
+    │  ├─ relevant-library/ -> ../external-library/
+    │  └─ ignore-this/
+    └─ external-library/
+       └─ src/
+
+.. compare the filter-relative-lib test case
+
+Here, the ``relevant-library``
+has the real path ``/home/you/external-library``.
+
+To write a filter that includes both ``src/`` and ``relevant-library/src/``,
+we cannot use ``--filter relevant-library/src/``
+because that contains a symlink.
+Instead, we have to use an absolute path to the real name::
+
+    gcovr --filter src/ --filter /home/you/external-library/src/
+
+or a relative path to the real path::
+
+    gcovr --filter src/ --filter '\.\./external-library/src/'
+
 .. note::
-    The filters will be matched as a regex against an absolute path.
-    The filter must therefore not include symlinks or relative directories like “..”.
-
-.. warning::
-    Currently, only relative filters are supported on Windows.
-
-.. warning::
-    The behavior of Windows filters will change in a future release.
-
-    Currently, the filters are matched against normal backslash paths like
-    ``C:\project\directory\file.cpp``.
-    To match that, you need to escape the backslashes like
-    ``directory\\file\.cpp``.
-
-    In the future, the paths will use forward slashes,
-    so that the same filters can be used on Linux and Windows.
-    You would then have to use filters like
-    ``directory/file\.cpp``.
-
-    To avoid problems when upgrading, do not use path separators in Windows filters.
-    If absolutely necessary, use a placeholder ``.`` or a charclass ``[/\\]``
-    in place of path separators.
-
+    This section discusses symlinks on Unix systems.
+    The behavior under Windows is unclear.
+    If you have more insight,
+    please update this section by submitting a pull request
+    (see our :doc:`contributing guide <contributing>`).
 
 Installation
 ------------
