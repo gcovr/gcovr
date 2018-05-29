@@ -237,7 +237,7 @@ def print_html_report(covdata, options):
         sys.stdout.write(htmlString + '\n')
     else:
         OUTPUT = io.open(options.output, 'w', encoding=options.html_encoding,
-                         errors='replace')
+                         errors='xmlcharrefreplace')
         OUTPUT.write(htmlString + '\n')
         OUTPUT.close()
 
@@ -284,7 +284,7 @@ def print_html_report(covdata, options):
 
         htmlString = templates().get_template('source_page.html').render(**data)
         OUTPUT = io.open(cdata._sourcefile, 'w', encoding=options.html_encoding,
-                         errors='replace')
+                         errors='xmlcharrefreplace')
         OUTPUT.write(htmlString + '\n')
         OUTPUT.close()
 
