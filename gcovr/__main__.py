@@ -470,15 +470,18 @@ def main(args=None):
     options.root_filter = re.compile(re.escape(options.root_dir + os.sep))
 
     if options.exclude_dirs is not None:
-        options.exclude_dirs = [build_filter(f) for f in options.exclude_dirs]
+        options.exclude_dirs = [
+            build_filter(logger, f) for f in options.exclude_dirs]
 
-    options.exclude = [build_filter(f) for f in options.exclude]
-    options.filter = [build_filter(f) for f in options.filter]
+    options.exclude = [build_filter(logger, f) for f in options.exclude]
+    options.filter = [build_filter(logger, f) for f in options.filter]
     if not options.filter:
         options.filter = [DirectoryPrefixFilter(options.root_dir)]
 
-    options.gcov_exclude = [build_filter(f) for f in options.gcov_exclude]
-    options.gcov_filter = [build_filter(f) for f in options.gcov_filter]
+    options.gcov_exclude = [
+        build_filter(logger, f) for f in options.gcov_exclude]
+    options.gcov_filter = [
+        build_filter(logger, f) for f in options.gcov_filter]
     if not options.gcov_filter:
         options.gcov_filter = [AlwaysMatchFilter()]
 
