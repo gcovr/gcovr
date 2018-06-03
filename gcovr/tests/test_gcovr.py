@@ -1,4 +1,5 @@
 import glob
+import io
 import os
 import os.path
 import platform
@@ -106,15 +107,19 @@ def test_build(name, format):
     if name == 'linked' and format == 'html' and is_windows:
         pytest.xfail("have yet to figure out symlinks on Windows")
 
+    encoding = 'utf8'
+    if format == 'html' and name.startswith('html-encoding-'):
+        encoding = re.match('^html-encoding-(.*)$', name).group(1)
+
     os.chdir(os.path.join(basedir, name))
     assert run(["make", "clean"])
     assert run(["make"])
     assert run(["make", format])
 
     for coverage_file, reference_file in find_reference_files(output_pattern):
-        with open(coverage_file) as f:
+        with io.open(coverage_file, encoding=encoding) as f:
             coverage = scrub(f.read())
-        with open(reference_file) as f:
+        with io.open(reference_file, encoding=encoding) as f:
             reference = scrub(f.read())
 
         if assert_equals is not None:
