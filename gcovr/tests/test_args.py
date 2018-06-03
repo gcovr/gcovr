@@ -1,5 +1,7 @@
 from ..__main__ import main
 from ..version import __version__
+import re
+import sys
 
 
 # The CaptureObject class holds the capture method result
@@ -12,11 +14,15 @@ class CaptureObject:
 
 # The capture method calls the main method and captures its output/error
 # streams and exit code
-def capture(capsys, args):
+def capture(capsys, args, other_ex=()):
     e = None
     try:
         main(args)
+        # Explicit SystemExit exception in case main() returns normally
+        sys.exit(0)
     except SystemExit as exception:
+        e = exception
+    except other_ex as exception:
         e = exception
     out, err = capsys.readouterr()
     return CaptureObject(out, err, e)
@@ -78,3 +84,15 @@ def test_line_threshold_100_1(capsys):
     assert c.out == ''
     assert 'not in range [0.0, 100.0]' in c.err
     assert c.exception.code != 0
+
+
+def test_filter_backslashes_are_detected(capsys):
+    c = capture(
+        capsys,
+        args=['--filter', r'C:\\foo\moo', '--gcov-exclude', ''],
+        other_ex=re.error)
+    assert c.err.startswith(
+        '(WARNING) filters must use forward slashes as path separators\n'
+        '(WARNING) your filter : C:\\\\foo\\moo\n'
+        '(WARNING) did you mean: C:/foo/moo\n')
+    assert isinstance(c.exception, re.error) or c.exception.code == 0

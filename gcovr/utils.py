@@ -219,7 +219,18 @@ def calculate_coverage(covered, total, nan_value=0.0):
     return nan_value if total == 0 else round(100.0 * covered / total, 1)
 
 
-def build_filter(regex):
+def build_filter(logger, regex):
+    # Try to detect unintended backslashes and warn.
+    # Later, the regex engine may or may not raise a syntax error.
+    # An unintended backslash is a literal backslash r"\\",
+    # or a regex escape that doesn't exist.
+    (suggestion, bs_count) = re.subn(
+        r'\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])', '/', regex)
+    if bs_count:
+        logger.warn("filters must use forward slashes as path separators")
+        logger.warn("your filter : {}", regex)
+        logger.warn("did you mean: {}", suggestion)
+
     if os.path.isabs(regex):
         return AbsoluteFilter(regex)
     else:
