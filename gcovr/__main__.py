@@ -29,6 +29,7 @@
 # $Date$
 #
 
+import locale
 import os
 import re
 import sys
@@ -161,11 +162,11 @@ def create_argument_parser():
     )
     options.add_argument(
         '--source-encoding',
-        help="Override the declared source encoding. "
-             "Defaults to the system default encoding.",
+        help="Select the source file encoding. "
+             "Defaults to the system default encoding (%(default)s).",
         action='store',
         dest='source_encoding',
-        default=None
+        default=locale.getpreferredencoding()
     )
 
     output_options = parser.add_argument_group(
@@ -247,8 +248,7 @@ def create_argument_parser():
         '--html-encoding',
         help="Override the declared HTML report encoding. "
              "Defaults to %(default)s. "
-             "May be necessary for unusual source file encodings. "
-             "Encoding support is likely to change in the future.",
+             "See also --source-encoding.",
         action='store',
         dest='html_encoding',
         default='UTF-8'
