@@ -1,4 +1,4 @@
-// example1.cpp
+// example.cpp
 
 int foo(int param)
 {

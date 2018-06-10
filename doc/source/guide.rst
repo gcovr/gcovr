@@ -7,34 +7,9 @@ Gcovr User Guide
     Please view the user guide for the latest gcovr release at
     http://gcovr.com/guide.html
 
-.. topic:: Abstract
-
-    .. include:: ../../README.rst
-        :start-after: .. begin abstract
-        :end-before: .. end abstract
-
-    This documentation describes Gcovr |release|.
-
-.. contents::
-    :depth: 2
-
-.. footer:: last updated |timestamp|
-
-.. |timestamp| date::
-
-
-Overview
---------
-
-Gcovr is a Python package that includes a self-contained ``gcovr``
-command.  Gcovr is an extension of ``gcov``, a GNU utility that
-summarizes the lines of code that are executed - or "covered" -
-while running an executable.  The ``gcovr`` command interprets ``gcov``
-data files to summarize code coverage in several formats:
-
--   Text output with coverage statistics indicated with summary statistics and lists of uncovered line, and
--   XML output that is compatible with the Cobertura code coverage utility.
--   HTML output with coverage rates indicated using colored bar graphs.
+.. include:: ../../README.rst
+    :start-after: .. begin abstract
+    :end-before: .. end abstract
 
 The `Gcovr Home Page <http://gcovr.com>`__ is
 `<http://gcovr.com>`__.
@@ -44,12 +19,13 @@ Automated test results are available through
 Gcovr is available under the
 `BSD <http://www.gnu.org/licenses/bsd.html>`__ license.
 
-The Gcovr User Guide provides the following documentation:
+This documentation describes Gcovr |release|.
 
--   `Getting Started`_: Some simple examples that illustrate how to use Gcovr
--   `The gcovr Command`_: Description of command-line options for ``gcovr``
--   `Installation`_: How to install Gcovr
+This User Guide provides the following sections:
 
+.. contents::
+    :local:
+    :depth: 2
 
 Getting Started
 ---------------
