@@ -49,7 +49,6 @@ The Gcovr User Guide provides the following documentation:
 -   `Getting Started`_: Some simple examples that illustrate how to use Gcovr
 -   `The gcovr Command`_: Description of command-line options for ``gcovr``
 -   `Installation`_: How to install Gcovr
--   `Status and Future Plans`_: Comments on the past, present and future of Gcovr
 
 
 Getting Started
@@ -249,16 +248,6 @@ The above `Getting Started`_ guide
 illustrates the use of some command line options.
 `Using Filters`_ is discussed below.
 
-.. admonition:: TODO
-
-    WEH: This section needs to be added to explain the options that
-    specify where files are located.
-
-    ## Controlling Coverage
-
-    TODO: document options that control where data files and gcov files
-    are found.
-
 
 Using Filters
 -------------
@@ -377,29 +366,15 @@ Which environments does ``gcovr`` support?
 
     The automated tests run on GCC 5.
 
-Status and Future Plans
------------------------
-
-The Gcovr 3.0 release is the first release that is hosted a GitHub.
-Previous Gcovr development was hosted at Sandia National Laboratories
-as part of the FAST project.  However, Gcovr is now widely used
-outside of Sandia, and GitHub will facilitate the integration of
-contributions from a wider set of developers.
-
 
 Acknowledgements
 ----------------
 
 .. include:: ../../AUTHORS.txt
 
-We would like to thank the following organizations for providing
-web hosting and computing resources:
-
--   The development of Gcovr has been partially supported
-    by Sandia National Laboratories.  Sandia National Laboratories is
-    a multi-program laboratory managed and operated by Sandia Corporation,
-    a wholly owned subsidiary of Lockheed Martin Corporation, for the
-    U.S.  Department of Energy's National Nuclear Security Administration
-    under contract DE-AC04-94AL85000.
--   The source code is hosted on GitHub.
--   The automated test suites are run by Travis CI and Appveyor.
+The development of Gcovr has been partially supported
+by Sandia National Laboratories.  Sandia National Laboratories is
+a multi-program laboratory managed and operated by Sandia Corporation,
+a wholly owned subsidiary of Lockheed Martin Corporation, for the
+U.S.  Department of Energy's National Nuclear Security Administration
+under contract DE-AC04-94AL85000.
