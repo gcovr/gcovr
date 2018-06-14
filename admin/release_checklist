@@ -1,13 +1,82 @@
-Files that contain version information:
+#!/usr/bin/env bash
+set -eu
 
-CHANGELOG.txt
-setup.py
-scripts/gcovr
-doc/examples/example2.txt
-doc/guide.txt
+# This is an automated release checklist. Call it to ensure that all known
+# mentions of the gcovr version have been updated to a target version.
 
-Tagging a release
+printerr() {
+    echo "$@" >&2
+}
 
-  git tag -a 3.2
-  git push origin --tags
+verify_tags=yes
+target_version=
+usage="usage: $0 [--no-verify-tags] TARGET_REVISION"
 
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        --no-verify-tags)
+            verify_tags=no
+            shift
+            ;;
+        -*)
+            printerr "unknown argument $1"
+            printerr "$usage"
+            exit 1
+            ;;
+        *)
+            target_version="$1"
+            shift
+            break
+            ;;
+    esac
+done
+
+if [[ -z "$target_version" || "$#" -ne 0 ]]; then
+    printerr "$usage"
+    exit 1
+fi
+
+ok=yes
+
+error() {
+    ok=no
+    printerr "ERROR:" "$@"
+}
+
+if ! [[ -d .git ]]; then
+    error "Please run this script from the repository root"
+    exit 1
+fi
+
+grep -qE "^__version__ = ['\"]$target_version['\"]\$" gcovr/version.py \
+    || error "gcovr/version.py: Please update with this version"
+
+grep -qE "^$target_version \\(.+\\)\$" CHANGELOG.rst \
+    || error "CHANGELOG.rst: Please update with this version"
+
+grep -qE "version=['\"]gcovr $target_version['\"]" doc/examples/example_xml.xml \
+    || error "examples: Please regenerate: " \
+             "cd doc/examples; ./example_xml.sh > example_xml.xml"
+
+grep -qE "^- .*$0 --no-verify-tags $target_version\$" .travis.yml \
+    || error ".travis.yml: Please update the $0 version"
+
+if [[ "$verify_tags" = yes ]]; then
+    if git tag | grep -qE "^$target_version\$"; then
+        # grandfathering of non-annotated 3.4 tag
+        [[ "$target_version" = 3.4 ]] \
+            || [[ "$(git cat-file -t "$target_version")" = tag ]] \
+            || error "Please use annotated tags (git tag -a) for releases"
+    else
+        error "Please tag this release: git tag -a $target_version"
+    fi
+else
+    printerr "SKIPPING: tag validation"
+fi
+
+if [[ "$ok" = yes ]]; then
+    echo "SUCCESS: release may proceed"
+else
+    echo "FAILURE: please fix the above problems"
+    exit 1
+fi
