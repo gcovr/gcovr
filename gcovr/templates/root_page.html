@@ -41,9 +41,14 @@
           <tr>
             <td class="headerName">Legend:</td>
             <td class="headerValueLeg">
+            {% if COVERAGE_MED == COVERAGE_HIGH %}
+              <span style="background-color:{{low_color}}">low: &lt; {{COVERAGE_HIGH}} %</span>
+              <span style="background-color:{{high_color}}">high: &gt;= {{COVERAGE_HIGH}} %</span>
+            {% else %}
               <span style="background-color:{{low_color}}">low: &lt; {{COVERAGE_MED}} %</span>
               <span style="background-color:{{medium_color}}">medium: &gt;= {{COVERAGE_MED}} %</span>
               <span style="background-color:{{high_color}}">high: &gt;= {{COVERAGE_HIGH}} %</span>
+            {% endif %}
             </td>
             <td></td>
             <td class="headerName">Branches:</td>

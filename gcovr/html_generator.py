@@ -48,8 +48,8 @@ def templates():
         lstrip_blocks=True)
 
 
-medium_coverage = 75.0
-high_coverage = 90.0
+medium_threshold = None
+high_threshold = None
 low_color = "LightPink"
 medium_color = "#FFFF55"
 high_color = "LightGreen"
@@ -76,9 +76,9 @@ def calculate_coverage(covered, total, nan_value=0.0):
 def coverage_to_color(coverage):
     if coverage is None:
         return 'LightGray'
-    elif coverage < medium_coverage:
+    elif coverage < medium_threshold:
         return low_color
-    elif coverage < high_coverage:
+    elif coverage < high_threshold:
         return medium_color
     else:
         return high_color
@@ -88,11 +88,15 @@ def coverage_to_color(coverage):
 # Produce an HTML report
 #
 def print_html_report(covdata, options):
+    global medium_threshold
+    medium_threshold = options.html_medium_threshold
+    global high_threshold
+    high_threshold = options.html_high_threshold
     details = options.html_details
     if options.output is None:
         details = False
     data = {}
-    data['HEAD'] = "Head"
+    data['HEAD'] = options.html_title
     data['VERSION'] = __version__
     data['TIME'] = str(int(time.time()))
     data['DATE'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -101,8 +105,8 @@ def print_html_report(covdata, options):
     data['low_color'] = low_color
     data['medium_color'] = medium_color
     data['high_color'] = high_color
-    data['COVERAGE_MED'] = medium_coverage
-    data['COVERAGE_HIGH'] = high_coverage
+    data['COVERAGE_MED'] = medium_threshold
+    data['COVERAGE_HIGH'] = high_threshold
     data['CSS'] = templates().get_template('style.css').render(
         low_color=low_color,
         medium_color=medium_color,
@@ -341,10 +345,10 @@ def html_row(options, details, sourcefile, nrows, **kwargs):
         kwargs['BarBorder'] = "border:white; "
     else:
         kwargs['BarBorder'] = ""
-    if kwargs['LinesCoverage'] < medium_coverage:
+    if kwargs['LinesCoverage'] < medium_threshold:
         kwargs['LinesColor'] = low_color
         kwargs['LinesBar'] = 'red'
-    elif kwargs['LinesCoverage'] < high_coverage:
+    elif kwargs['LinesCoverage'] < high_threshold:
         kwargs['LinesColor'] = medium_color
         kwargs['LinesBar'] = 'yellow'
     else:
