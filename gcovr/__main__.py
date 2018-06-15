@@ -245,6 +245,32 @@ def create_argument_parser():
         dest="html_title",
         default="Head"
     )
+    options.add_argument(
+        "--html-medium-threshold",
+        type=check_percentage,
+        metavar="MEDIUM",
+        help="If the coverage is below MEDIUM, the value is marked "
+             "as low coverage in the HTML report. "
+             "MEDIUM has to be lower than or equal to value of --html-high-threshold. "
+             "If MEDIUM is equal to value of --html-high-threshold the report has "
+             "only high and low coverage. Default is %(default)s.",
+        action="store",
+        dest="html_medium_threshold",
+        default=75.0
+    )
+    options.add_argument(
+        "--html-high-threshold",
+        type=check_percentage,
+        metavar="HIGH",
+        help="If the coverage is below HIGH, the value is marked "
+             "as medium coverage in the HTML report. "
+             "HIGH has to be greater than or equal to value of --html-medium-threshold. "
+             "If HIGH is equal to value of --html-medium-threshold the report has "
+             "only high and low coverage. Default is %(default)s.",
+        action="store",
+        dest="html_high_threshold",
+        default=90.0
+    )
     output_options.add_argument(
         "--html-absolute-paths",
         help="Use absolute paths to link the --html-details reports. "
@@ -433,6 +459,13 @@ def main(args=None):
             "{copyright}",
             version=__version__, copyright=COPYRIGHT)
         sys.exit(0)
+
+    if options.html_medium_threshold > options.html_high_threshold:
+        logger.error(
+            "value of --html-medium-threshold={} should be\n"
+            "lower than or equal to the value of --html-high-threshold={}.",
+            options.html_medium_threshold, options.html_high_threshold)
+        sys.exit(1)
 
     if options.output is not None:
         options.output = os.path.abspath(options.output)

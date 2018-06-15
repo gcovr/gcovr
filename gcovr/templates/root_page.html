@@ -42,7 +42,9 @@
             <td class="headerName">Legend:</td>
             <td class="headerValueLeg">
               <span style="background-color:{{low_color}}">low: &lt; {{COVERAGE_MED}} %</span>
+              {% if COVERAGE_MED != COVERAGE_HIGH %}
               <span style="background-color:{{medium_color}}">medium: &gt;= {{COVERAGE_MED}} %</span>
+              {% endif %}
               <span style="background-color:{{high_color}}">high: &gt;= {{COVERAGE_HIGH}} %</span>
             </td>
             <td></td>

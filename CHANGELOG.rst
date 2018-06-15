@@ -24,6 +24,7 @@ Improvements and new features:
  - The docs are now managed with Sphinx.
    (:issue:`235`, :issue:`248`, :issue:`249`, :issue:`252`, :issue:`253`)
  - New --html-title option to change the title of the HTML report.
+ - New options --html-medium-threshold and --html-high-threshold (:issue:`261`)
 
 Internal changes:
 

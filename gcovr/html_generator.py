@@ -48,8 +48,6 @@ def templates():
         lstrip_blocks=True)
 
 
-medium_coverage = 75.0
-high_coverage = 90.0
 low_color = "LightPink"
 medium_color = "#FFFF55"
 high_color = "LightGreen"
@@ -73,12 +71,12 @@ def calculate_coverage(covered, total, nan_value=0.0):
     return nan_value if total == 0 else round(100.0 * covered / total, 1)
 
 
-def coverage_to_color(coverage):
+def coverage_to_color(coverage, medium_threshold, high_threshold):
     if coverage is None:
         return 'LightGray'
-    elif coverage < medium_coverage:
+    elif coverage < medium_threshold:
         return low_color
-    elif coverage < high_coverage:
+    elif coverage < high_threshold:
         return medium_color
     else:
         return high_color
@@ -88,6 +86,8 @@ def coverage_to_color(coverage):
 # Produce an HTML report
 #
 def print_html_report(covdata, options):
+    medium_threshold = options.html_medium_threshold
+    high_threshold = options.html_high_threshold
     details = options.html_details
     if options.output is None:
         details = False
@@ -101,8 +101,8 @@ def print_html_report(covdata, options):
     data['low_color'] = low_color
     data['medium_color'] = medium_color
     data['high_color'] = high_color
-    data['COVERAGE_MED'] = medium_coverage
-    data['COVERAGE_HIGH'] = high_coverage
+    data['COVERAGE_MED'] = medium_threshold
+    data['COVERAGE_HIGH'] = high_threshold
     data['CSS'] = templates().get_template('style.css').render(
         low_color=low_color,
         medium_color=medium_color,
@@ -124,7 +124,7 @@ def print_html_report(covdata, options):
     data['BRANCHES_TOTAL'] = str(branchTotal)
     coverage = calculate_coverage(branchCovered, branchTotal, nan_value=None)
     data['BRANCHES_COVERAGE'] = '-' if coverage is None else str(coverage)
-    data['BRANCHES_COLOR'] = coverage_to_color(coverage)
+    data['BRANCHES_COLOR'] = coverage_to_color(coverage, medium_threshold, high_threshold)
 
     lineTotal = 0
     lineCovered = 0
@@ -136,7 +136,7 @@ def print_html_report(covdata, options):
     data['LINES_TOTAL'] = str(lineTotal)
     coverage = calculate_coverage(lineCovered, lineTotal)
     data['LINES_COVERAGE'] = str(coverage)
-    data['LINES_COLOR'] = coverage_to_color(coverage)
+    data['LINES_COLOR'] = coverage_to_color(coverage, medium_threshold, high_threshold)
 
     # Generate the coverage output (on a per-package basis)
     # source_dirs = set()
@@ -259,14 +259,14 @@ def print_html_report(covdata, options):
         data['BRANCHES_TOTAL'] = str(branchTotal)
         coverage = calculate_coverage(branchCovered, branchTotal, nan_value=None)
         data['BRANCHES_COVERAGE'] = '-' if coverage is None else str(coverage)
-        data['BRANCHES_COLOR'] = coverage_to_color(coverage)
+        data['BRANCHES_COLOR'] = coverage_to_color(coverage, medium_threshold, high_threshold)
 
         lineTotal, lineCovered, tmp = cdata.coverage(show_branch=False)
         data['LINES_EXEC'] = str(lineCovered)
         data['LINES_TOTAL'] = str(lineTotal)
         coverage = calculate_coverage(lineCovered, lineTotal)
         data['LINES_COVERAGE'] = str(coverage)
-        data['LINES_COLOR'] = coverage_to_color(coverage)
+        data['LINES_COLOR'] = coverage_to_color(coverage, medium_threshold, high_threshold)
 
         data['ROWS'] = []
         currdir = os.getcwd()
@@ -341,17 +341,17 @@ def html_row(options, details, sourcefile, nrows, **kwargs):
         kwargs['BarBorder'] = "border:white; "
     else:
         kwargs['BarBorder'] = ""
-    if kwargs['LinesCoverage'] < medium_coverage:
+    if kwargs['LinesCoverage'] < options.html_medium_threshold:
         kwargs['LinesColor'] = low_color
         kwargs['LinesBar'] = 'red'
-    elif kwargs['LinesCoverage'] < high_coverage:
+    elif kwargs['LinesCoverage'] < options.html_high_threshold:
         kwargs['LinesColor'] = medium_color
         kwargs['LinesBar'] = 'yellow'
     else:
         kwargs['LinesColor'] = high_color
         kwargs['LinesBar'] = 'green'
 
-    kwargs['BranchesColor'] = coverage_to_color(kwargs['BranchesCoverage'])
+    kwargs['BranchesColor'] = coverage_to_color(kwargs['BranchesCoverage'], options.html_medium_threshold, options.html_high_threshold)
     kwargs['BranchesCoverage'] = '-' if kwargs['BranchesCoverage'] is None else round(kwargs['BranchesCoverage'], 1)
 
     return kwargs

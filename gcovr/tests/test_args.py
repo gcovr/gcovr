@@ -96,3 +96,38 @@ def test_filter_backslashes_are_detected(capsys):
         '(WARNING) your filter : C:\\\\foo\\moo\n'
         '(WARNING) did you mean: C:/foo/moo\n')
     assert isinstance(c.exception, re.error) or c.exception.code == 0
+
+
+def test_html_medium_threshold_nan(capsys):
+    c = capture(capsys, ['--html-medium-threshold', 'nan'])
+    assert c.out == ''
+    assert 'not in range [0.0, 100.0]' in c.err
+    assert c.exception.code != 0
+
+
+def test_html_medium_threshold_negative(capsys):
+    c = capture(capsys, ['--html-medium-threshold', '-0.1'])
+    assert c.out == ''
+    assert 'not in range [0.0, 100.0]' in c.err
+    assert c.exception.code != 0
+
+
+def test_html_high_threshold_nan(capsys):
+    c = capture(capsys, ['--html-high-threshold', 'nan'])
+    assert c.out == ''
+    assert 'not in range [0.0, 100.0]' in c.err
+    assert c.exception.code != 0
+
+
+def test_html_high_threshold_negative(capsys):
+    c = capture(capsys, ['--html-high-threshold', '-0.1'])
+    assert c.out == ''
+    assert 'not in range [0.0, 100.0]' in c.err
+    assert c.exception.code != 0
+
+
+def test_html_medium_threshold_gt_html_high_threshold(capsys):
+    c = capture(capsys, ['--html-medium-threshold', '60', '--html-high-threshold', '50'])
+    assert c.out == ''
+    assert 'value of --html-medium-threshold=60.0 should be\nlower than or equal to the value of --html-high-threshold=50.0.' in c.err
+    assert c.exception.code != 0
