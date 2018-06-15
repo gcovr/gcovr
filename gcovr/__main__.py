@@ -238,6 +238,14 @@ def create_argument_parser():
         default=False
     )
     output_options.add_argument(
+        "--html-title",
+        metavar="TITLE",
+        help="Use TITLE as title for the HTML report. Default is %(default)s.",
+        action="store",
+        dest="html_title",
+        default="Head"
+    )
+    output_options.add_argument(
         "--html-absolute-paths",
         help="Use absolute paths to link the --html-details reports. "
              "Defaults to relative links.",

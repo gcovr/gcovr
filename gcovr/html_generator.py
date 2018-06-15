@@ -92,7 +92,7 @@ def print_html_report(covdata, options):
     if options.output is None:
         details = False
     data = {}
-    data['HEAD'] = "Head"
+    data['HEAD'] = options.html_title
     data['VERSION'] = __version__
     data['TIME'] = str(int(time.time()))
     data['DATE'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

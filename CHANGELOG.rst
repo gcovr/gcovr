@@ -23,6 +23,7 @@ Improvements and new features:
    (:issue:`223`)
  - The docs are now managed with Sphinx.
    (:issue:`235`, :issue:`248`, :issue:`249`, :issue:`252`, :issue:`253`)
+ - New --html-title option to change the title of the HTML report.
 
 Internal changes:
 
