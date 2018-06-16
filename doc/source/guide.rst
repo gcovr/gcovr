@@ -73,7 +73,6 @@ to test coverage of the following program:
 This code executes several subroutines in this program,
 but some lines in the program are not executed.
 
-
 Tabular Output of Code Coverage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

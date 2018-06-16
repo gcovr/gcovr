@@ -24,6 +24,7 @@ gcovr
    :caption: Contents:
 
    guide
+   cookbook
    contributing
    changelog
    license
