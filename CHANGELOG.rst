@@ -1,6 +1,6 @@
 ``gcovr`` Release History and Change Log
 
-4.0 (17 July 2018)
+4.0 (17 June 2018)
 ------------------
 
 Breaking changes:
