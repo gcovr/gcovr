@@ -7,11 +7,21 @@ Breaking changes:
 
  - This release drops support for Python 2.6. (:issue:`250`)
  - PIP is the only supported installation method.
+ - No longer encoding-agnostic under Python 2.7.
+   If your source files do not use the system encoding (probably UTF-8),
+   you will have to specify a --source-encoding.
+   (:issue:`148`, :issue:`156`, :issue:`256`)
+ - Filters now use forward slashes as path separators, even on Windows.
+   (:issue:`191`, :issue:`257`)
+ - Filters are no longer normalized into pseudo-paths.
+   This could change the interpretation of filters in some edge cases.
 
 Improvements and new features:
 
  - Improved --help output. (:issue:`236`)
  - Parse the GCC 8 gcov format. (:issue:`226`, :issue:`228`)
+ - New --source-encoding option, which fixes decoding under Python 3.
+   (:issue:`256`)
  - New --gcov-ignore-parse-errors flag.
    By default, gcovr will now abort upon parse errors. (:issue:`228`)
  - Detect the error when gcov cannot create its output files (:issue:`243`,
@@ -24,7 +34,9 @@ Improvements and new features:
  - The docs are now managed with Sphinx.
    (:issue:`235`, :issue:`248`, :issue:`249`, :issue:`252`, :issue:`253`)
  - New --html-title option to change the title of the HTML report.
- - New options --html-medium-threshold and --html-high-threshold (:issue:`261`)
+   (:issue:`261`, :issue:`263`)
+ - New options --html-medium-threshold and --html-high-threshold
+   to customize the color legend. (:issue:`261`, :issue:`264`)
 
 Internal changes:
 
