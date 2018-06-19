@@ -28,6 +28,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     Luke Woydziak,
     Martin Mraz,
     Matsumoto Taichi,
+    Matthew Stadelman,
     Matthias Schmieder,
     Matthieu Darbois,
     Michał Pszona,

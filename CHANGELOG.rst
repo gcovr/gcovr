@@ -1,5 +1,10 @@
 ``gcovr`` Release History and Change Log
 
+to be released
+--------------
+
+ -  New "Cookbook" section in the documentation. (:issue:`265`)
+
 4.0 (17 June 2018)
 ------------------
 
