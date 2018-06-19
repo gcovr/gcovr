@@ -26,6 +26,7 @@ gcovr
    installation
    guide
    cookbook
+   faq
    contributing
    changelog
    license

@@ -31,6 +31,8 @@ Related documents:
 
 - :doc:`installation`
 - :doc:`contributing` (includes instructions for bug reports)
+- :doc:`cookbook`
+- :doc:`faq`
 - :doc:`changelog`
 - :doc:`license`
 
