@@ -134,11 +134,9 @@ aliases = PathAliaser()
 #
 def link_walker(path, exclude_dirs):
     for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
-        for exc in exclude_dirs:
-            for d in dirs:
-                m = exc.search(d)
-                if m is not None:
-                    dirs[:] = [d for d in dirs if d is not m.group()]
+        dirs[:] = [d for d in dirs
+                   if not any(exc.match(os.path.join(root, d))
+                              for exc in exclude_dirs)]
         yield (os.path.abspath(os.path.realpath(root)), dirs, files)
 
 
@@ -153,7 +151,7 @@ def search_file(expr, path, exclude_dirs):
         path = os.getcwd()
     elif not os.path.exists(path):
         raise IOError("Unknown directory '" + path + "'")
-    for root, dirs, files in link_walker(path, exclude_dirs):
+    for root, _, files in link_walker(path, exclude_dirs):
         for name in files:
             if pattern.match(name):
                 name = os.path.join(root, name)
@@ -165,15 +163,14 @@ def search_file(expr, path, exclude_dirs):
 
 
 def commonpath(files):
-
     if len(files) == 1:
         return os.path.join(os.path.relpath(os.path.split(files[0])[0]), '')
 
     common_path = os.path.realpath(files[0])
     common_dirs = common_path.split(os.path.sep)
 
-    for f in files[1:]:
-        path = os.path.realpath(f)
+    for filepath in files[1:]:
+        path = os.path.realpath(filepath)
         dirs = path.split(os.path.sep)
         common = []
         for a, b in zip(dirs, common_dirs):
@@ -200,13 +197,13 @@ def get_global_stats(covdata):
     keys = list(covdata.keys())
 
     for key in keys:
-        (t, n, txt) = covdata[key].coverage(show_branch=False)
-        lines_total += t
-        lines_covered += n
+        (total, covered, _) = covdata[key].coverage(show_branch=False)
+        lines_total += total
+        lines_covered += covered
 
-        (t, n, txt) = covdata[key].coverage(show_branch=True)
-        branches_total += t
-        branches_covered += n
+        (total, covered, _) = covdata[key].coverage(show_branch=True)
+        branches_total += total
+        branches_covered += covered
 
     percent = calculate_coverage(lines_covered, lines_total)
     percent_branches = calculate_coverage(branches_covered, branches_total)
