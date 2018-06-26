@@ -1,6 +1,7 @@
 *.py[cod]
 
 # C extensions
+*.o
 *.so
 
 # Packages
@@ -22,9 +23,13 @@ lib64
 pip-log.txt
 
 # Unit test / coverage reports
+.pytest_cache/
 .coverage
+*.gcda
+*.gcno
 .tox
 nosetests.xml
+testcase
 
 # Translations
 *.mo
