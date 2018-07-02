@@ -37,7 +37,7 @@ install:
 
 script:
 - test -z "$RUN_LINTER" || flake8 --ignore=E501
-- test -z "$RUN_LINTER" || admin/release_checklist --no-verify-tags 4.0
+- test -z "$RUN_LINTER" || admin/release_checklist --no-verify-tags 4.1
 - python -m pytest -v $COVERAGE_OPTS gcovr doc/examples
 - test -z "$COVERAGE_OPTS" || codecov -X gcov search
 - test -z "$BUILD_DOCS" || (cd doc; make html O=-W)

@@ -1,9 +1,10 @@
 ``gcovr`` Release History and Change Log
 
-to be released
---------------
+4.1 (2 July 2018)
+-----------------
 
- -  New "Cookbook" section in the documentation. (:issue:`265`)
+ - Fixed/improved --exclude-directories option. (:issue:`266`)
+ - New "Cookbook" section in the documentation. (:issue:`265`)
 
 4.0 (17 June 2018)
 ------------------

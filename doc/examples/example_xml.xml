@@ -3,7 +3,7 @@
   SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage branch-rate="0.5" branches-covered="1" branches-valid="2"
  complexity="0.0" line-rate="0.8571428571428571" lines-covered="6"
- lines-valid="7" timestamp="1529246640" version="gcovr 4.0">
+ lines-valid="7" timestamp="1530565116" version="gcovr 4.1">
  <sources>
   <source>.</source>
  </sources>
