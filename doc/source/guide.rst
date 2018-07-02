@@ -288,6 +288,47 @@ This is useful mostly when running gcov yourself,
 and then invoking gcovr with :option:`-g`/:option:`--use-gcov-files`.
 But these filters also apply when gcov is launched by gcovr.
 
+Speeding up coverage data search
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :option:`--exclude-directories` filter is used
+while searching for raw coverage data
+(or for existing ``.gcov`` files when :option:`--use-gcov-files` is active).
+This filter is matched against directory paths, not file paths.
+If a directory matches,
+all its contents (files and subdirectories) will be excluded from the search.
+For example, consider this build directory::
+
+    build/
+    ├─ main.o
+    ├─ main.gcda
+    ├─ main.gcno
+    ├─ a/
+    │  ├─ awesome_code.o
+    │  ├─ awesome_code.gcda
+    │  └─ awesome_code.gcno
+    └─ b/
+       ├─ better_code.o
+       ├─ better_code.gcda
+       └─ better_code.gcno
+
+If we run ``gcovr --exclude-directories 'build/a$'``,
+this will exclude anything in the ``build/a`` directory
+but will use the coverage data for ``better_code.o`` and ``main.o``.
+
+This can speed up gcovr when you have a complicated build directory structure.
+Consider also using the :option:`search_paths`
+or :option:`--object-directory` arguments
+to specify where gcovr starts searching.
+If you are unsure which directories are being searched,
+run gcovr in :option:`--verbose` mode.
+
+For each found coverage data file gcovr will invoke the ``gcov`` tool.
+This is typically the slowest part,
+and other filters can only be applied *after* this step.
+In some cases, parallel execution with the :option:`-j` option
+might be helpful to speed up processing.
+
 Filters for symlinks
 ~~~~~~~~~~~~~~~~~~~~
 
