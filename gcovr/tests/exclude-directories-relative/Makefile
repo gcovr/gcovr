@@ -24,5 +24,5 @@ html:
 
 clean:
 	rm -f testcase
-	rm -f *.gc* *.o
+	rm -rf build  # remove *.gc* *.o
 	rm -f coverage.txt coverage.xml coverage*.html
