@@ -56,10 +56,24 @@ def test_empty_exclude(capsys):
     assert c.exception.code != 0
 
 
+def test_no_argument_exclude(capsys):
+    c = capture(capsys, ['--exclude'])
+    assert c.out == ''
+    assert 'expected one argument' in c.err
+    assert c.exception.code != 0
+
+
 def test_empty_exclude_directories(capsys):
     c = capture(capsys, ['--exclude-directories', ''])
     assert c.out == ''
     assert 'value should not be empty' in c.err
+    assert c.exception.code != 0
+
+
+def test_no_argument_exclude_directories(capsys):
+    c = capture(capsys, ['--exclude-directories'])
+    assert c.out == ''
+    assert 'expected one argument' in c.err
     assert c.exception.code != 0
 
 
