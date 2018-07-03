@@ -85,6 +85,12 @@ def check_percentage(value):
     return x
 
 
+def check_non_empty(value):
+    if not value:
+        raise ArgumentTypeError("value should not be empty")
+    return value
+
+
 def create_argument_parser():
     """Create the argument parser."""
 
@@ -321,6 +327,7 @@ def create_argument_parser():
              "Can be specified multiple times.",
         action="append",
         dest="exclude",
+        type=check_non_empty,
         default=[]
     )
     filter_options.add_argument(
@@ -346,6 +353,7 @@ def create_argument_parser():
              "Can be specified multiple times.",
         action="append",
         dest="exclude_dirs",
+        type=check_non_empty,
         default=[]
     )
 
