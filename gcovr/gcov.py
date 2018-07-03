@@ -14,7 +14,7 @@ import io
 
 from os.path import normpath
 
-from .utils import aliases, search_file, Logger
+from .utils import search_file, Logger
 from .workers import locked_directory
 from .coverage import CoverageData
 
@@ -158,14 +158,14 @@ def guess_source_file_name(
 
 def guess_source_file_name_via_aliases(gcovname, currdir, data_fname):
     common_dir = os.path.commonprefix([data_fname, currdir])
-    fname = aliases.unalias_path(os.path.join(common_dir, gcovname))
+    fname = os.path.realpath(os.path.join(common_dir, gcovname))
     if os.path.exists(fname):
         return fname
 
     initial_fname = fname
 
     data_fname_dir = os.path.dirname(data_fname)
-    fname = aliases.unalias_path(os.path.join(data_fname_dir, gcovname))
+    fname = os.path.realpath(os.path.join(data_fname_dir, gcovname))
     if os.path.exists(fname):
         return fname
 
