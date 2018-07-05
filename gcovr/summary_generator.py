@@ -1,5 +1,9 @@
 # -*- coding:utf-8 -*-
 
+'''
+Generator of the coverage summary.
+'''
+
 # This file is part of gcovr <http://gcovr.com/>.
 #
 # Copyright 2013-2018 the gcovr authors
@@ -11,13 +15,14 @@ import sys
 from .utils import get_global_stats
 
 
-#
-# Prints a small report to the standard output
-#
 def print_summary(covdata):
+    '''Print a small report to the standard output.
+    Output the percentage, covered and total lines and branches.
+    '''
+
     (lines_total, lines_covered, percent,
-        branches_total, branches_covered,
-        percent_branches) = get_global_stats(covdata)
+     branches_total, branches_covered,
+     percent_branches) = get_global_stats(covdata)
 
     lines_out = "lines: %0.1f%% (%s out of %s)\n" % (
         percent, lines_covered, lines_total
