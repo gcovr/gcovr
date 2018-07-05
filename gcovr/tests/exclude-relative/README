@@ -1,4 +1,2 @@
-This test case was inspired by ticket #3884:
-
-   https://software.sandia.gov/trac/fast/ticket/3884
+A simple test for excluding source files using relative filepaths.
 

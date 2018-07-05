@@ -1,5 +1,1 @@
-A simple test that verifies coverage.
-
-The second conditional in main() includes lines with 
-(, ) and ; characters.  These need to be treated as 
-covered lines.
+A simple test that verifies generated summary.
