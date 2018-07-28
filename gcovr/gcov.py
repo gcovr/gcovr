@@ -34,7 +34,8 @@ def find_existing_gcov_files(search_path, logger, exclude_dirs):
     logger.verbose_msg(
         "Scanning directory {} for gcov files...", search_path)
     gcov_files = list(search_file(
-        ".*\.gcov$", search_path, exclude_dirs=exclude_dirs))
+        re.compile(".*\.gcov$").match, search_path,
+        exclude_dirs=exclude_dirs))
     logger.verbose_msg(
         "Found {} files (and will process all of them)",
         len(gcov_files))
@@ -52,7 +53,8 @@ def find_datafiles(search_path, logger, exclude_dirs):
     logger.verbose_msg(
         "Scanning directory {} for gcda/gcno files...", search_path)
     files = list(search_file(
-        ".*\.gc(da|no)$", search_path, exclude_dirs=exclude_dirs))
+        re.compile(".*\.gc(da|no)$").match, search_path,
+        exclude_dirs=exclude_dirs))
     gcda_files = []
     gcno_files = []
     known_file_stems = set()

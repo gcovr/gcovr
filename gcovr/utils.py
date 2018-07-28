@@ -11,27 +11,24 @@ import re
 import sys
 
 
-def link_walker(path, exclude_dirs):
-    for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
-        dirs[:] = [d for d in dirs
-                   if not any(exc.match(os.path.join(root, d))
-                              for exc in exclude_dirs)]
-        yield (os.path.realpath(root), dirs, files)
-
-
-def search_file(expr, path, exclude_dirs):
+def search_file(predicate, path, exclude_dirs):
     """
-    Given a search path, recursively descend to find files that match a
-    regular expression.
+    Given a search path, recursively descend to find files that satisfy a
+    predicate.
     """
-    pattern = re.compile(expr)
     if path is None or path == ".":
         path = os.getcwd()
     elif not os.path.exists(path):
         raise IOError("Unknown directory '" + path + "'")
-    for root, _, files in link_walker(path, exclude_dirs):
+
+    for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
+        dirs[:] = [d for d in dirs
+                   if not any(exc.match(os.path.join(root, d))
+                              for exc in exclude_dirs)]
+        root = os.path.realpath(root)
+
         for name in files:
-            if pattern.match(name):
+            if predicate(name):
                 yield os.path.realpath(os.path.join(root, name))
 
 
