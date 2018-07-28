@@ -39,7 +39,8 @@ from tempfile import mkdtemp
 from shutil import rmtree
 
 from .configuration import argument_parser_setup, GCOVR_CONFIG_OPTIONS
-from .gcov import get_datafiles, process_existing_gcov_file, process_datafile
+from .gcov import (find_existing_gcov_files, find_datafiles,
+                   process_existing_gcov_file, process_datafile)
 from .utils import (get_global_stats, build_filter, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__
@@ -208,13 +209,22 @@ def main(args=None):
         for f in filters:
             logger.verbose_msg('- {}', f)
 
+    find_files = find_datafiles
+    process_file = process_datafile
+    if options.gcov_files:
+        find_files = find_existing_gcov_files
+        process_file = process_existing_gcov_file
+
     # Get data files
     if not options.search_paths:
         options.search_paths = [options.root]
 
         if options.objdir is not None:
             options.search_paths.append(options.objdir)
-    datafiles = get_datafiles(options.search_paths, options)
+
+    datafiles = set()
+    for search_path in options.search_paths:
+        datafiles.update(find_files(search_path, logger, options.exclude_dirs))
 
     # Get coverage data
     with Workers(options.gcov_parallel, lambda: {
@@ -224,10 +234,7 @@ def main(args=None):
                  'options': options}) as pool:
         logger.verbose_msg("Pool started with {} threads", pool.size())
         for file_ in datafiles:
-            if options.gcov_files:
-                pool.add(process_existing_gcov_file, file_)
-            else:
-                pool.add(process_datafile, file_)
+            pool.add(process_file, file_)
         contexts = pool.wait()
 
     covdata = dict()

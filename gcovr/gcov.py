@@ -28,48 +28,51 @@ c_style_comment_pattern = re.compile('/\*.*?\*/')
 cpp_style_comment_pattern = re.compile('//.*?$')
 
 
-#
-# Get the list of datafiles in the directories specified by the user
-#
-def get_datafiles(flist, options):
-    logger = Logger(options.verbose)
+def find_existing_gcov_files(search_path, logger, exclude_dirs):
+    """Find .gcov files under the given search path.
+    """
+    logger.verbose_msg(
+        "Scanning directory {} for gcov files...", search_path)
+    gcov_files = list(search_file(
+        ".*\.gcov$", search_path, exclude_dirs=exclude_dirs))
+    logger.verbose_msg(
+        "Found {} files (and will process all of them)",
+        len(gcov_files))
+    return gcov_files
 
-    allfiles = set()
-    for dir_ in flist:
-        if options.gcov_files:
-            logger.verbose_msg(
-                "Scanning directory {} for gcov files...", dir_)
-            files = search_file(
-                ".*\.gcov$", dir_, exclude_dirs=options.exclude_dirs)
-            gcov_files = [file for file in files if file.endswith('gcov')]
-            logger.verbose_msg(
-                "Found {} files (and will process {})",
-                len(files), len(gcov_files))
-            allfiles.update(gcov_files)
-        else:
-            logger.verbose_msg(
-                "Scanning directory {} for gcda/gcno files...", dir_)
-            files = search_file(
-                ".*\.gc(da|no)$", dir_, exclude_dirs=options.exclude_dirs)
-            # gcno files will *only* produce uncovered results; however,
-            # that is useful information for the case where a compilation
-            # unit is never actually exercised by the test code.  So, we
-            # will process gcno files, but ONLY if there is no corresponding
-            # gcda file.
-            gcda_files = [
-                filenm for filenm in files if filenm.endswith('gcda')
-            ]
-            tmp = set(gcda_files)
-            gcno_files = [
-                filenm for filenm in files if
-                filenm.endswith('gcno') and filenm[:-2] + 'da' not in tmp
-            ]
-            logger.verbose_msg(
-                "Found {} files (and will process {})",
-                len(files), len(gcda_files) + len(gcno_files))
-            allfiles.update(gcda_files)
-            allfiles.update(gcno_files)
-    return allfiles
+
+def find_datafiles(search_path, logger, exclude_dirs):
+    """Find .gcda and .gcno files under the given search path.
+
+    The .gcno files will *only* produce uncovered results.
+    However, that is useful information when a compilation unit
+    is never actually exercised by the test code.
+    So we ONLY return them if there's no corresponding .gcda file.
+    """
+    logger.verbose_msg(
+        "Scanning directory {} for gcda/gcno files...", search_path)
+    files = list(search_file(
+        ".*\.gc(da|no)$", search_path, exclude_dirs=exclude_dirs))
+    gcda_files = []
+    gcno_files = []
+    known_file_stems = set()
+    for filename in files:
+        stem, ext = os.path.splitext(filename)
+        if ext == '.gcda':
+            gcda_files.append(filename)
+            known_file_stems.add(stem)
+        elif ext == '.gcno':
+            gcno_files.append(filename)
+    # remove gcno files that match a gcno stem
+    gcno_files = [
+        filename
+        for filename in gcno_files
+        if os.path.splitext(filename)[0] not in known_file_stems
+    ]
+    logger.verbose_msg(
+        "Found {} files (and will process {})",
+        len(files), len(gcda_files) + len(gcno_files))
+    return gcda_files + gcno_files
 
 
 noncode_mapper = dict.fromkeys(ord(i) for i in '}{')
