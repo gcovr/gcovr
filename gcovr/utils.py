@@ -10,12 +10,6 @@ import os
 import re
 import sys
 
-# iZip is only available in 2.x
-try:
-    from itertools import izip as zip
-except ImportError:
-    pass
-
 
 def link_walker(path, exclude_dirs):
     for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
@@ -30,7 +24,6 @@ def search_file(expr, path, exclude_dirs):
     Given a search path, recursively descend to find files that match a
     regular expression.
     """
-    ans = []
     pattern = re.compile(expr)
     if path is None or path == ".":
         path = os.getcwd()
@@ -39,32 +32,58 @@ def search_file(expr, path, exclude_dirs):
     for root, _, files in link_walker(path, exclude_dirs):
         for name in files:
             if pattern.match(name):
-                name = os.path.join(root, name)
-                ans.append(os.path.realpath(name))
-    return ans
+                yield os.path.realpath(os.path.join(root, name))
 
 
 def commonpath(files):
+    r"""Find the common prefix of all files.
+
+    This differs from the standard library os.path.commonpath():
+     - We first normalize all paths to a realpath.
+     - We return a path with a trailing path separator.
+
+    No common path exists under the following circumstances:
+     - on Windows when the paths have different drives.
+       E.g.: commonpath([r'C:\foo', r'D:\foo']) == ''
+     - when the `files` are empty.
+
+    Arguments:
+        files (list): the input paths, may be relative or absolute.
+
+    Returns: str
+        The common prefix directory as a relative path.
+        Always ends with a path separator.
+        Returns the empty string if no common path exists.
+    """
+    if not files:
+        return ''
+
     if len(files) == 1:
-        return os.path.join(os.path.relpath(os.path.split(files[0])[0]), '')
-
-    common_path = os.path.realpath(files[0])
-    common_dirs = common_path.split(os.path.sep)
-
-    for filepath in files[1:]:
-        path = os.path.realpath(filepath)
-        dirs = path.split(os.path.sep)
-        common = []
-        for a, b in zip(dirs, common_dirs):
-            if a == b:
-                common.append(a)
-            elif common:
-                common_dirs = common
+        prefix_path = os.path.dirname(os.path.realpath(files[0]))
+    else:
+        split_paths = [os.path.realpath(path).split(os.path.sep)
+                       for path in files]
+        # We only have to compare the lexicographically minimum and maximum
+        # paths to find the common prefix of all, e.g.:
+        #   /a/b/c/d  <- min
+        #   /a/b/d
+        #   /a/c/a    <- max
+        #
+        # compare:
+        # https://github.com/python/cpython/blob/3.6/Lib/posixpath.py#L487
+        min_path = min(split_paths)
+        max_path = max(split_paths)
+        common = min_path  # assume that min_path is a prefix of max_path
+        for i in range(min(len(min_path), len(max_path))):
+            if min_path[i] != max_path[i]:
+                common = min_path[:i]  # disproven, slice for actual prefix
                 break
-            else:
-                return ''
+        prefix_path = os.path.sep.join(common)
 
-    return os.path.join(os.path.relpath(os.path.sep.join(common_dirs)), '')
+    # make the path relative and add a trailing slash
+    if prefix_path:
+        prefix_path = os.path.join(os.path.relpath(prefix_path), '')
+    return prefix_path
 
 
 #
