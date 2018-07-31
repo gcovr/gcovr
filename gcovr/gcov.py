@@ -12,8 +12,6 @@ import subprocess
 import sys
 import io
 
-from os.path import normpath
-
 from .utils import search_file, Logger
 from .workers import locked_directory
 from .coverage import CoverageData
@@ -526,11 +524,14 @@ def process_datafile(filename, covdata, options, toerase, workdir):
 
     errors = []
 
-    potential_wd = find_potential_working_directories_via_objdir(
-        abs_filename, options.objdir, errors=errors)
+    potential_wd = []
+
+    if options.objdir:
+        potential_wd = find_potential_working_directories_via_objdir(
+            abs_filename, options.objdir, error=errors.append)
 
     # no objdir was specified (or it was a parent dir); walk up the dir tree
-    if len(potential_wd) == 0:
+    if not potential_wd:
         potential_wd.append(options.root_dir)
         wd = os.path.split(abs_filename)[0]
         while True:
@@ -566,7 +567,8 @@ def process_datafile(filename, covdata, options, toerase, workdir):
 
         done = run_gcov_and_process_files(
             abs_filename, dirname, covdata,
-            options=options, logger=logger, toerase=toerase, errors=errors, chdir=dir_, tempdir=workdir)
+            options=options, logger=logger, toerase=toerase,
+            error=errors.append, chdir=dir_, tempdir=workdir)
 
         if options.delete:
             if not abs_filename.endswith('gcno'):
@@ -580,62 +582,32 @@ def process_datafile(filename, covdata, options, toerase, workdir):
             filename=filename, errors="\n\t".join(errors))
 
 
-def find_potential_working_directories_via_objdir(abs_filename, objdir, errors):
-    if not objdir:
-        return []
+def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
+    # absolute path - just return the objdir
+    if os.path.isabs(objdir):
+        if os.path.isdir(objdir):
+            return [objdir]
 
-    src_components = abs_filename.split(os.sep)
-    components = normpath(objdir).split(os.sep)
-
-    # find last different component
-    idx = 1
-    while idx <= len(components) and idx <= len(src_components):
-        if components[-idx] != src_components[-idx]:
-            break
-        idx += 1
-
-    if idx > len(components):
-        return []  # a parent dir; the normal process will find it
-
-    if components[-idx] == '..':
-        # NB: os.path.join does not re-add leading '/' characters!?!
-        dirs = [os.path.sep.join(src_components[:-idx])]
-        while idx <= len(components) and components[-idx] == '..':
-            dirs = list(expand_subdirectories(*dirs))
-            idx += 1
-        return dirs
-
-    if components[0] == '':
-        # absolute path
-        tmp = [objdir]
+    # relative path: check relative to both the cwd and the gcda file
     else:
-        # relative path: check relative to both the cwd and the
-        # gcda file
-        tmp = [
-            os.path.join(x, objdir) for x in
-            [os.path.dirname(abs_filename), os.getcwd()]
+        potential_wd = [
+            testdir
+            for prefix in [os.path.dirname(abs_filename), os.getcwd()]
+            for testdir in [os.path.join(prefix, objdir)]
+            if os.path.isdir(testdir)
         ]
 
-    potential_wd = [testdir for testdir in tmp if os.path.isdir(testdir)]
+        if potential_wd:
+            return potential_wd
 
-    if len(potential_wd) == 0:
-        errors.append("ERROR: cannot identify the location where GCC "
-                      "was run using --object-directory=%s\n" %
-                      objdir)
+    error("ERROR: cannot identify the location where GCC "
+          "was run using --object-directory=%s\n" % objdir)
 
-    return potential_wd
-
-
-def expand_subdirectories(*directories):
-    for directory in directories:
-        for entry in os.listdir(directory):
-            subdir = os.path.join(directory, entry)
-            if os.path.isdir(subdir):
-                yield subdir
+    return []
 
 
 def run_gcov_and_process_files(
-        abs_filename, dirname, covdata, options, logger, errors, toerase, chdir, tempdir):
+        abs_filename, dirname, covdata, options, logger, error, toerase, chdir, tempdir):
     # If the first element of cmd - the executable name - has embedded spaces
     # it probably includes extra arguments.
     cmd = options.gcov_cmd.split(' ') + [
@@ -672,7 +644,7 @@ def run_gcov_and_process_files(
 
     if source_re.search(err):
         # gcov tossed errors: try the next potential_wd
-        errors.append(err)
+        error(err)
         done = False
     else:
         # Process *.gcov files
