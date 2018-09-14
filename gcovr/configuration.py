@@ -131,8 +131,11 @@ class GcovrConfigOption(object):
         self.help = help.format(**self.__dict__)
 
     def __repr__(self):
-        r"""String representation of instance."""
+        r"""String representation of instance.
 
+        >>> GcovrConfigOption('foo', ['-f', '--foo'], help="fooify")
+        GcovrConfigOption('foo', [-f, --foo], ..., help='fooify', ...)
+        """
         kwargs = [
             '{k}={v!r}'.format(k=k, v=v)
             for k, v in sorted(self.__dict__.items())
