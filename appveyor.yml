@@ -24,6 +24,7 @@ install:
   - 'set PATH=%PYTHONPATH%;%PYTHONPATH%\Scripts;%PATH%'
   - 'python -V'
   - '%CXX% --version'
+  - 'python -m pip install --upgrade pip'
   - 'python -m pip install pytest pytest-cov'
   - 'python -m pip install ply'
   - 'python -m pip install ordereddict'

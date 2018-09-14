@@ -28,7 +28,8 @@ matrix:
 install:
 - printenv
 - $CXX --version
-- pip install pytest --upgrade
+- pip install --upgrade pip  # avoid installation problems
+- pip install --upgrade pytest
 - pip install ply ordereddict pyutilib
 - test -z "$RUN_LINTER" || pip install flake8
 - test -z "$COVERAGE_OPTS" || pip install pytest-cov coverage codecov
