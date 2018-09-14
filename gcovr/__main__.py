@@ -38,7 +38,7 @@ from os.path import normpath
 from tempfile import mkdtemp
 from shutil import rmtree
 
-from .configuration import GCOVR_CONFIG_OPTION_GROUPS, GCOVR_CONFIG_OPTIONS
+from .configuration import argument_parser_setup, GCOVR_CONFIG_OPTIONS
 from .gcov import get_datafiles, process_existing_gcov_file, process_datafile
 from .utils import (get_global_stats, build_filter, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
@@ -96,21 +96,8 @@ def create_argument_parser():
         default=False
     )
 
-    # setup option groups
-    groups = {}
-    for (key, args) in GCOVR_CONFIG_OPTION_GROUPS.items():
-        #
-        group = parser.add_argument_group(args["name"],
-                                          description=args["description"])
-        groups[key] = group
+    argument_parser_setup(parser, options)
 
-    # create each option value
-    for opt in GCOVR_CONFIG_OPTIONS:
-        if opt.group is None:
-            opt.add_option_to_parser(options)
-        else:
-            opt.add_option_to_parser(groups[opt.group])
-    #
     return parser
 
 
