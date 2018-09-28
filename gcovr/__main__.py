@@ -32,13 +32,16 @@
 import os
 import re
 import sys
+import io
 
 from argparse import ArgumentParser
 from os.path import normpath
 from tempfile import mkdtemp
 from shutil import rmtree
 
-from .configuration import argument_parser_setup, GCOVR_CONFIG_OPTIONS
+from .configuration import (
+    argument_parser_setup, merge_options_and_set_defaults,
+    parse_config_file, parse_config_into_dict)
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
 from .utils import (get_global_stats, build_filter, AlwaysMatchFilter,
@@ -110,19 +113,42 @@ COPYRIGHT = (
 )
 
 
+def find_config_name(partial_options):
+    cfg_name = getattr(partial_options, 'config', None)
+    if cfg_name is not None:
+        return cfg_name
+
+    root = getattr(partial_options, 'root', '')
+    if root:
+        return os.path.join(root, 'gcovr.cfg')
+
+    return 'gcovr.cfg'
+
+
+class Options(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+
 def main(args=None):
     parser = create_argument_parser()
-    options = parser.parse_args(args=args)
+    cli_options = parser.parse_args(args=args)
 
-    # process namespace to add a default value for any options that
-    # weren't provided.
-    for opt in GCOVR_CONFIG_OPTIONS:
-        if not hasattr(options, opt.name):
-            setattr(options, opt.name, opt.default)
+    # load the config
+    cfg_name = find_config_name(cli_options)
+    cfg_options = {}
+    if os.path.isfile(cfg_name):
+        with io.open(cfg_name, encoding='UTF-8') as cfg_file:
+            cfg_options = parse_config_into_dict(
+                parse_config_file(cfg_file, filename=cfg_name))
+
+    options_dict = merge_options_and_set_defaults(
+        [cfg_options, cli_options.__dict__])
+    options = Options(**options_dict)
 
     logger = Logger(options.verbose)
 
-    if options.version:
+    if cli_options.version:
         logger.msg(
             "gcovr {version}\n"
             "\n"

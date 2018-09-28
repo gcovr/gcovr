@@ -13,12 +13,18 @@ from argparse import ArgumentTypeError, SUPPRESS
 from locale import getpreferredencoding
 from multiprocessing import cpu_count
 import os
+import re
 
 
 def check_percentage(value):
     r"""
     Check that the percentage is within a reasonable range and if so return it.
     """
+
+    # strip trailing percent sign if present, useful for config files
+    if value.endswith('%'):
+        value = value[:-1]
+
     try:
         x = float(value)
         if not (0.0 <= x <= 100.0):
@@ -51,18 +57,23 @@ class GcovrConfigOption(object):
             Destination (options object field),
             must be valid Python identifier.
         flags (list of str, optional):
-            Any command line flags. If empty, the option is positional.
+            Any command line flags.
 
     Keyword Arguments:
         action (str, optional):
-            What to do when the option is parsed.
-            See the available *argparse* actions. In particular:
+            What to do when the option is parsed:
             - store (default): store the option argument
             - store_const: store the const value
             - store_true, store_false: shortcuts for store_const
             - append: append the option argument
-        choices (list):
+            (Compare also the *argparse* documentation.)
+        choices (list, optional):
             Value must be one of these after conversion.
+        config (str or bool, optional):
+            Configuration file key.
+            If absent, the first ``--flag`` is used without the leading dashes.
+            If explicitly set to False,
+            the option cannot be set from a config file.
         const (any, optional):
             Assigned by the "store_const" action.
         default (any, optional):
@@ -81,19 +92,44 @@ class GcovrConfigOption(object):
             How often the option may occur.
             Special case for "?": if the option exists but has no value,
             the const value is stored.
+        positional (bool, optional):
+            Whether this is a positional option, defaults to False.
+            A positional argument cannot have flags.
         required (bool, optional):
             Whether this option is required, defaults to False.
         type (function, optional):
             Check and convert the option value, may throw exceptions.
+
+    Constraint: an option must be either have a flag or be positional
+    or have a config key, or a combination thereof.
     """
 
     def __init__(
         self, name, flags=None,
-        action='store', choices=None, const=None, default=None, group=None,
-        help=None, metavar=None, nargs=None, required=False, type=None,
+        action='store', choices=None, const=None, config=None,
+        default=None, group=None,
+        help=None, metavar=None, nargs=None, positional=False,
+        required=False, type=None,
     ):
         if flags is None:
             flags = []
+
+        assert not (flags and positional), \
+            "option cannot have flags and be positional"
+
+        if config is None:
+            for flag in flags:
+                if not flag.startswith('--'):
+                    continue
+                config = flag.lstrip('-')
+                break
+        elif config is False:
+            config = None
+
+        assert config is None or isinstance(config, str)
+
+        assert flags or positional or config, \
+            "option must be named, positional, or config argument."
 
         assert help is not None, "help required"
 
@@ -113,17 +149,21 @@ class GcovrConfigOption(object):
             const = False
             default = True
 
+        assert action in ('store', 'store_const', 'append')
+
         self.name = name
         self.flags = flags
 
         self.action = action
         self.choices = choices
+        self.config = config
         self.const = const
         self.default = default
         self.group = group
         self.help = None  # assigned later
         self.metavar = metavar
         self.nargs = nargs
+        self.positional = positional
         self.required = required
         self.type = type
 
@@ -183,8 +223,120 @@ def argument_parser_setup(parser, default_group):
             kwargs["dest"] = opt.name
             kwargs["required"] = opt.required  # only meaningful for flags
             group.add_argument(*opt.flags, **kwargs)
-        else:
+        elif opt.positional:
             group.add_argument(opt.name, **kwargs)
+
+
+def parse_config_into_dict(config_entry_source, all_options=None):
+    # type: (Iterable[ConfigEntry], Iterable[GcovrConfigOption]) -> Any
+    cfg_dict = {}
+
+    if all_options is None:
+        all_options = GCOVR_CONFIG_OPTIONS
+
+    options_lookup = {}
+    for option in all_options:
+        if option.config is not None:
+            options_lookup[option.config] = option
+
+    for cfg_entry in config_entry_source:  # type: ConfigEntry
+        try:
+            option = options_lookup[cfg_entry.key]  # type: GcovrConfigOption
+        except KeyError:
+            raise cfg_entry.error("unknown config option")
+
+        value = _get_value_from_config_entry(cfg_entry, option)
+        _assign_value_to_dict(cfg_dict, value, option, is_single_value=True)
+
+    return cfg_dict
+
+
+def _get_value_from_config_entry(cfg_entry, option):
+
+    def get_boolean(silent_error=False):
+        try:
+            return cfg_entry.value_as_bool
+        except ValueError:
+            if silent_error:
+                return None
+            raise
+
+    # special case: store_const expects a boolean
+    if option.action == 'store_const':
+        use_const = get_boolean()
+    # special case: nargs=? optionally expects a boolean
+    elif option.nargs == '?':
+        use_const = get_boolean(silent_error=True)
+    else:
+        use_const = None  # marker to continue with parsing
+
+    if use_const is True:
+        return option.const
+    if use_const is False:
+        return option.default
+    assert use_const is None
+
+    # parse the value
+    if option.type is bool:
+        value = cfg_entry.value_as_bool
+    elif option.type is not None:
+        try:
+            value = option.type(cfg_entry.value)
+        except (ValueError, ArgumentTypeError) as err:
+            raise cfg_entry.error(str(err))
+    else:
+        value = cfg_entry.value
+
+    # verify choices:
+    if option.choices is not None:
+        if value not in option.choices:
+            raise cfg_entry.error(  # pylint: disable=raising-format-tuple
+                "must be one of ({}) but got {!r}",
+                ', '.join(repr(choice) for choice in option.choices),
+                value)
+
+    return value
+
+
+def _assign_value_to_dict(namespace, value, option, is_single_value):
+
+    if option.action in ('store', 'store_const'):
+        namespace[option.name] = value
+        return
+
+    if option.action == 'append':
+        append_target = namespace.setdefault(option.name, [])
+        if is_single_value:
+            append_target.append(value)
+        else:
+            append_target.extend(value)
+        return
+
+    assert False, "unexpected action for {name}: {action!r}".format(
+        name=option.name, action=option.action)
+
+
+def merge_options_and_set_defaults(partial_namespaces, all_options=None):
+    assert partial_namespaces, "at least one namespace required"
+
+    if all_options is None:
+        all_options = GCOVR_CONFIG_OPTIONS
+
+    target = {}
+    for namespace in partial_namespaces:
+        for option in all_options:
+
+            if option.name not in namespace:
+                continue
+
+            _assign_value_to_dict(
+                target, namespace[option.name], option, is_single_value=False)
+
+    # if no value was provided, set the default.
+    for option in all_options:
+        target.setdefault(option.name, option.default)
+
+    return target
 
 
 GCOVR_CONFIG_OPTION_GROUPS = [
@@ -238,10 +390,10 @@ GCOVR_CONFIG_OPTIONS = [
         default='.',
     ),
     GcovrConfigOption(
-        'search_paths',
+        'search_paths', config='search-path',
+        positional=True, nargs='*',
         help="Search these directories for coverage files. "
              "Defaults to --root and --object-directory.",
-        nargs='*',
     ),
     GcovrConfigOption(
         "fail_under_line", ["--fail-under-line"],
@@ -275,7 +427,7 @@ GCOVR_CONFIG_OPTIONS = [
         default=None,
     ),
     GcovrConfigOption(
-        "show_branch", ["-b", "--branches"],
+        "show_branch", ["-b", "--branches"], config='txt-branch',
         group="output_options",
         help="Report the branch coverage instead of the line coverage. "
              "For text report only.",
@@ -468,7 +620,7 @@ GCOVR_CONFIG_OPTIONS = [
              "or the path from the gcda file to gcc's working directory.",
     ),
     GcovrConfigOption(
-        "keep", ["-k", "--keep"],
+        "keep", ["-k", "--keep"], config='keep-gcov-files',
         group="gcov_options",
         help="Keep gcov files after processing. "
              "This applies both to files that were generated by gcovr, "
@@ -477,13 +629,13 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
-        "delete", ["-d", "--delete"],
+        "delete", ["-d", "--delete"], config='delete-gcov-files',
         group="gcov_options",
         help="Delete gcda files after processing. Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "gcov_parallel", ["-j"],
+        "gcov_parallel", ["-j"], config='gcov-parallel',
         group="gcov_options",
         help="Set the number of threads to use in parallel.",
         nargs="?",
@@ -492,3 +644,150 @@ GCOVR_CONFIG_OPTIONS = [
         default=1,
     )
 ]
+
+
+CONFIG_HASH_COMMENT = re.compile(
+    r'(?:^|\s+) [#] .* $', re.X)
+CONFIG_SEMICOLON_COMMENT = re.compile(
+    r'(?:^|\s+) [;] .* $', re.X)
+CONFIG_KV = re.compile(
+    r'^((?=\w)[\w-]+) \s* = \s* (.*) $', re.X)
+CONFIG_POSSIBLE_VARIABLE = re.compile(
+    r'[$][\w{(]')  # "$" followed by word, open brace, or open parenthesis.
+
+
+def parse_config_file(open_file, filename, first_lineno=1):
+    r"""
+    Parse an ini-style configuration format.
+
+    Yields: ConfigEntry
+
+    Example: basic syntax.
+
+    >>> import io
+    >>> cfg = u'''
+    ... # this is a comment
+    ... key =   value  # trailing comment
+    ... # the next line is empty
+    ...
+    ... key = can have multiple values
+    ... another-key =  # can be empty
+    ... optional=spaces
+    ... '''
+    >>> open_file = io.StringIO(cfg[1:])
+    >>> for entry in parse_config_file(open_file, 'test.cfg'):
+    ...     print(entry)
+    test.cfg: 2: key = value
+    test.cfg: 5: key = can have multiple values
+    test.cfg: 6: another-key = # empty
+    test.cfg: 7: optional = spaces
+    """
+
+    for lineno, line in enumerate(open_file, first_lineno):
+        line = line.rstrip()
+
+        def error(pattern, *args, **kwargs):
+            # pylint: disable=cell-var-from-loop
+            message = pattern.format(*args, **kwargs)
+            message += "\non this line: " + line
+            return SyntaxError(': '.join([filename, str(lineno), message]))
+
+        # strip (trailing) comments
+        line = CONFIG_HASH_COMMENT.sub('', line)
+
+        if CONFIG_SEMICOLON_COMMENT.search(line):
+            raise error("semicolon comment ; ... is reserved")
+
+        if line.isspace() or not line:  # skip empty lines
+            continue
+
+        match = CONFIG_KV.match(line)
+        if not match:
+            raise error('expected "key = value" entry')
+
+        key, value = match.group(1, 2)  # type: str, str
+        value = value.strip()
+
+        if value.startswith('"'):
+            raise error("leading quote \" is reserved")
+        if value.startswith("'"):
+            raise error("leading quote \' is reserved")
+        if value.endswith('\\'):
+            raise error("trailing backslash \\ is reserved")
+        if CONFIG_POSSIBLE_VARIABLE.search(value):
+            raise error("variable substitution syntax "
+                        "(${{var}}, $(var), or $var) is reserved")
+
+        yield ConfigEntry(key, value, filename=filename, lineno=lineno)
+
+
+class ConfigEntry(object):
+    r"""
+    A "key = value" config file entry.
+
+    Attributes:
+        key (str):
+            The key. There might be other entries with the same key.
+        value (str):
+            The un-parsed value.
+        filename (str, optional):
+            path of the config file, for error messages.
+        lineno (int, optional):
+            Line of the entry in the config file, for error messages.
+    """
+    def __init__(self, key, value, filename=None, lineno=None):
+        self.key = key
+        self.value = value
+        self.filename = filename
+        self.lineno = lineno
+
+    def __str__(self):
+        r"""
+        Display the config entry.
+
+        >>> print(ConfigEntry("the-key", "value",
+        ...                   filename="foo.cfg", lineno=17))
+        foo.cfg: 17: the-key = value
+        """
+        return '{filename}: {lineno}: {key} = {value}'.format(
+            filename=self.filename or '<config>',
+            lineno=self.lineno or '??',
+            key=self.key,
+            value=self.value or "# empty")
+
+    @property
+    def value_as_bool(self):
+        r"""
+        The value converted to a boolean.
+
+        >>> ConfigEntry("k", "yes").value_as_bool
+        True
+
+        >>> ConfigEntry("k", "no").value_as_bool
+        False
+
+        >>> ConfigEntry("k", "foo").value_as_bool
+        Traceback (most recent call last):
+        ValueError: <config>: ??: k: boolean option must be "yes" or "no"
+        """
+        value = self.value
+        if value == 'yes':
+            return True
+        if value == 'no':
+            return False
+        raise self.error('boolean option must be "yes" or "no"')
+
+    def error(self, pattern, *args, **kwargs):
+        r"""
+        Format but NOT RAISE a ValueError.
+
+        >>> entry = ConfigEntry('jobs', 'nun', lineno=3)
+        >>> raise entry.error("expected number but got {value!r}")
+        Traceback (most recent call last):
+        ValueError: <config>: 3: jobs: expected number but got 'nun'
+        """
+        filename = self.filename or '<config>'
+        lineno = str(self.lineno or '??')
+        kwargs.update(key=self.key, value=self.value)
+        message = pattern.format(*args, **kwargs)
+        return ValueError(': '.join([filename, lineno, self.key, message]))
