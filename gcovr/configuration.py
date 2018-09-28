@@ -132,6 +132,8 @@ class GcovrConfigOption(object):
             "option must be named, positional, or config argument."
 
         assert help is not None, "help required"
+        if (flags or positional) and config and '--' + config not in flags:
+            help += ' Config key: {config}.'
 
         # the store_true and store_false actions have hardcoded boolean
         # constants in their definitions so they need switched to the generic
@@ -394,6 +396,11 @@ GCOVR_CONFIG_OPTIONS = [
         positional=True, nargs='*',
         help="Search these directories for coverage files. "
              "Defaults to --root and --object-directory.",
+    ),
+    GcovrConfigOption(
+        'config', ['--config'], config=False,
+        help="Load that configuration file. "
+             "Defaults to gcovr.cfg in the --root directory.",
     ),
     GcovrConfigOption(
         "fail_under_line", ["--fail-under-line"],

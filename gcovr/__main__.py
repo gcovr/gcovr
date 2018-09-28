@@ -120,9 +120,14 @@ def find_config_name(partial_options):
 
     root = getattr(partial_options, 'root', '')
     if root:
-        return os.path.join(root, 'gcovr.cfg')
+        cfg_name = os.path.join(root, 'gcovr.cfg')
+    else:
+        cfg_name = 'gcovr.cfg'
 
-    return 'gcovr.cfg'
+    if os.path.isfile(cfg_name):
+        return cfg_name
+
+    return None
 
 
 class Options(object):
@@ -137,7 +142,7 @@ def main(args=None):
     # load the config
     cfg_name = find_config_name(cli_options)
     cfg_options = {}
-    if os.path.isfile(cfg_name):
+    if cfg_name is not None:
         with io.open(cfg_name, encoding='UTF-8') as cfg_file:
             cfg_options = parse_config_into_dict(
                 parse_config_file(cfg_file, filename=cfg_name))
