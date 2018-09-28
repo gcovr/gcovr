@@ -8,7 +8,8 @@ all: links
 
 run: txt xml html
 
-GCOVR_TEST_OPTIONS = -f src/ -f '\.\./external-library/src'
+# the src/ filter is provided by the project/gcovr.cfg configuration file
+GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
 
 txt:
 	cd project; ./testcase
