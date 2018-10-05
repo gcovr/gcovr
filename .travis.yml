@@ -53,6 +53,7 @@ deploy:
     skip_existing: true
     on:
       tags: false
+      repo: gcovr/gcovr
       branch: master
       python: '2.7'
   - provider: pypi
@@ -62,6 +63,7 @@ deploy:
     distributions: sdist --format=gztar bdist_wheel
     on:
       tags: true
+      repo: gcovr/gcovr
       branch: master
       python: '2.7'
 
