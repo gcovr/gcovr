@@ -39,5 +39,6 @@ links:
 	   ln -s ../../../nested/subdir/A n;\
 	   cd ..;\
 	   ln -s m/n A;\
+	   ln -s . loop;\
 	   cd ..;\
 	fi
