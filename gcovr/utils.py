@@ -120,11 +120,11 @@ def get_global_stats(covdata):
     keys = list(covdata.keys())
 
     for key in keys:
-        (total, covered, _) = covdata[key].coverage(show_branch=False)
+        (total, covered, _) = covdata[key].line_coverage()
         lines_total += total
         lines_covered += covered
 
-        (total, covered, _) = covdata[key].coverage(show_branch=True)
+        (total, covered, _) = covdata[key].branch_coverage()
         branches_total += total
         branches_covered += covered
 
@@ -258,12 +258,16 @@ def sort_coverage(covdata, show_branch,
     returns: the sorted keys
     """
     def num_uncovered_key(key):
-        (total, covered, _) = covdata[key].coverage(show_branch)
+        cov = covdata[key]
+        (total, covered, _) = \
+            cov.branch_coverage() if show_branch else cov.line_coverage()
         uncovered = total - covered
         return uncovered
 
     def percent_uncovered_key(key):
-        (total, covered, _) = covdata[key].coverage(show_branch)
+        cov = covdata[key]
+        (total, covered, _) = \
+            cov.branch_coverage() if show_branch else cov.line_coverage()
         if covered:
             return -1.0 * covered / total
         elif total:

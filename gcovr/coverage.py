@@ -9,7 +9,9 @@
 from .utils import calculate_coverage
 
 # for type annotations:
-if False: from typing import List, Dict, Optional  # noqa, pylint: disable=all
+if False: from typing import (  # noqa, pylint: disable=all
+    Callable, Dict, Iterable, List, Optional, Tuple,
+)
 
 
 class BranchCoverage(object):
@@ -24,6 +26,8 @@ class BranchCoverage(object):
             Whether this is an exception-handling branch. None if unknown.
     """
 
+    __slots__ = 'count', 'fallthrough', 'throw'
+
     def __init__(self, count, fallthrough=None, throw=None):
         # type: (int, Optional[bool], Optional[bool]) -> None
         assert count >= 0
@@ -33,7 +37,7 @@ class BranchCoverage(object):
         self.throw = throw
 
     @property
-    def is_coverered(self):
+    def is_covered(self):
         # type: () -> bool
         return self.count > 0
 
@@ -58,6 +62,9 @@ class LineCoverage(object):
         noncode (bool, optional):
             Whether any coverage info on this line should be ignored.
     """
+
+    __slots__ = 'lineno', 'count', 'noncode', 'branches'
+
     def __init__(self, lineno, count=0, noncode=False):
         # type: (int, int, bool) -> None
         assert lineno > 0
@@ -71,7 +78,16 @@ class LineCoverage(object):
     @property
     def is_covered(self):
         # type: () -> bool
+        if self.noncode:
+            return False
         return self.count > 0
+
+    @property
+    def is_uncovered(self):
+        # type: () -> bool
+        if self.noncode:
+            return False
+        return self.count == 0
 
     def branch(self, branch_id):
         # type: (int) -> BranchCoverage
@@ -91,8 +107,21 @@ class LineCoverage(object):
         for branch_id, branch_cov in other.branches.items():
             self.branch(branch_id).update(branch_cov)
 
+    def branch_coverage(self):
+        # type: () -> Tuple[int, int, Optional[float]]
+        total = len(self.branches)
+        cover = 0
+        for branch in self.branches.values():
+            if branch.is_covered:
+                cover += 1
+
+        percent = calculate_coverage(cover, total, nan_value=None)
+        return total, cover, percent
+
 
 class FileCoverage(object):
+    __slots__ = 'filename', 'lines'
+
     def __init__(self, filename):
         # type: (str) -> None
         self.filename = filename
@@ -114,71 +143,13 @@ class FileCoverage(object):
         for lineno, line_cov in other.lines.items():
             self.line(lineno).update(line_cov)
 
-    def to_coverage_data(self):
-        # type: () -> CoverageData
-        noncode = set()
-        uncovered = set()
-        covered = dict()
-        branches = dict()  # type: Dict[int, Dict[int, int]]
+    def uncovered_lines_str(self):
+        # type: () -> str
+        uncovered_lines = sorted(
+            lineno for lineno, line in self.lines.items()
+            if line.is_uncovered)
 
-        for line_cov in self.lines.values():
-            if line_cov.noncode:
-                noncode.add(line_cov.lineno)
-
-            if line_cov.is_covered:
-                covered[line_cov.lineno] = line_cov.count
-            elif not line_cov.noncode:
-                uncovered.add(line_cov.lineno)
-
-            line_branches = branches[line_cov.lineno] = {}
-            for branch_id, branch_cov in line_cov.branches.items():
-                line_branches[branch_id] = branch_cov.count
-
-        coverage = CoverageData(self.filename)
-        coverage.update(
-            uncovered=uncovered,
-            covered=covered,
-            branches=branches,
-            noncode=noncode,
-        )
-        return coverage
-
-
-class CoverageData(object):
-    """Container for coverage statistics of one file.
-    """
-
-    def __init__(self, fname):
-        self.fname = fname
-        self.uncovered = set()
-        self.covered = dict()
-        self.noncode = set()
-        self.all_lines = set()
-        self.branches = dict()
-
-    def update(self, uncovered, covered, branches, noncode):
-        self.all_lines.update(uncovered)
-        self.all_lines.update(covered.keys())
-        self.uncovered.update(uncovered)
-        self.noncode.intersection_update(noncode)
-        update_counters(self.covered, covered)
-        for k in branches.keys():
-            d = self.branches.setdefault(k, {})
-            update_counters(d, branches[k])
-        self.uncovered.difference_update(self.covered.keys())
-
-    def lines_with_uncovered_branches(self):
-        for line in self.branches.keys():
-            if any(count == 0 for count in self.branches[line].values()):
-                yield line
-
-    def uncovered_str(self, show_branch):
-        if show_branch:
-            # Don't do any aggregation on branch results
-            tmp = list(self.lines_with_uncovered_branches())
-            return ",".join(str(x) for x in sorted(tmp))
-
-        if not self.uncovered:
+        if not uncovered_lines:
             return ""
 
         # Walk through the uncovered lines in sorted order.
@@ -189,32 +160,46 @@ class CoverageData(object):
         # to be covered???  This simplifies the ranges summary, but it
         # provides a counterintuitive listing.
         return ",".join(
-            format_range(first, last)
-            for first, last in find_consecutive_ranges(sorted(self.uncovered)))
+            _format_range(first, last)
+            for first, last in _find_consecutive_ranges(uncovered_lines))
 
-    def coverage(self, show_branch):
-        if show_branch:
-            total = 0
-            cover = 0
-            for line in self.branches.keys():
-                for branch in self.branches[line].keys():
-                    total += 1
-                    cover += 1 if self.branches[line][branch] > 0 else 0
-        else:
-            total = len(self.all_lines)
-            cover = len(self.covered)
+    def uncovered_branches_str(self):
+        # type: () -> str
+        uncovered_lines = sorted(
+            lineno for lineno, line in self.lines.items()
+            if not all(branch.is_covered for branch in line.branches.values())
+        )
+
+        # Don't do any aggregation on branch results
+        return ",".join(str(x) for x in uncovered_lines)
+
+    def line_coverage(self):
+        # type: () -> Tuple[int, int, Optional[float]]
+        total = 0
+        cover = 0
+        for line in self.lines.values():
+            if line.is_covered or line.is_uncovered:
+                total += 1
+            if line.is_covered:
+                cover += 1
 
         percent = calculate_coverage(cover, total, nan_value=None)
-        percent = "--" if percent is None else str(int(percent))
-        return (total, cover, percent)
+        return total, cover, percent
+
+    def branch_coverage(self):
+        # type: () -> Tuple[int, int, Optional[float]]
+        total = 0
+        cover = 0
+        for line in self.lines.values():
+            b_total, b_cover, _ = line.branch_coverage()
+            total += b_total
+            cover += b_cover
+
+        percent = calculate_coverage(cover, total, nan_value=None)
+        return total, cover, percent
 
 
-def update_counters(target, source):
-    for k in source:
-        target[k] = target.get(k, 0) + source[k]
-
-
-def find_consecutive_ranges(items):
+def _find_consecutive_ranges(items):
     first = last = None
     for item in items:
         if last is None:
@@ -232,7 +217,7 @@ def find_consecutive_ranges(items):
         yield first, last
 
 
-def format_range(first, last):
+def _format_range(first, last):
     if first == last:
         return str(first)
     return "{first}-{last}".format(first=first, last=last)

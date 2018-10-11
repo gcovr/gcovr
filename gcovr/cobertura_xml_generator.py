@@ -29,12 +29,12 @@ def print_xml_report(covdata, options):
     lineCovered = 0
 
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage(show_branch=True)
+        (total, covered, percent) = covdata[key].branch_coverage()
         branchTotal += total
         branchCovered += covered
 
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].coverage(show_branch=False)
+        (total, covered, percent) = covdata[key].line_coverage()
         lineTotal += total
         lineCovered += covered
 
@@ -86,9 +86,7 @@ def print_xml_report(covdata, options):
     packages = {}
     source_dirs = set()
 
-    keys = list(covdata.keys())
-    keys.sort()
-    for f in keys:
+    for f in sorted(covdata):
         data = covdata[f]
         directory = options.root_filter.sub('', f)
         if f.endswith(directory):
@@ -118,32 +116,32 @@ def print_xml_report(covdata, options):
         class_hits = 0
         class_branches = 0
         class_branch_hits = 0
-        for line in sorted(data.all_lines):
-            hits = data.covered.get(line, 0)
-            class_lines += 1
-            if hits > 0:
+        for lineno in sorted(data.lines):
+            line_cov = data.lines[lineno]
+            if line_cov.is_covered or line_cov.is_uncovered:
+                class_lines += 1
+            else:
+                continue
+            if line_cov.is_covered:
                 class_hits += 1
+            hits = line_cov.count
             L = doc.createElement("line")
-            L.setAttribute("number", str(line))
+            L.setAttribute("number", str(lineno))
             L.setAttribute("hits", str(hits))
-            branches = data.branches.get(line)
+            branches = line_cov.branches
             if not branches:
                 L.setAttribute("branch", "false")
             else:
-                b_hits = 0
-                for v in branches.values():
-                    if v > 0:
-                        b_hits += 1
-                coverage = 100 * b_hits / len(branches)
+                b_total, b_hits, coverage = line_cov.branch_coverage()
                 L.setAttribute("branch", "true")
                 L.setAttribute(
                     "condition-coverage",
-                    "%i%% (%i/%i)" % (coverage, b_hits, len(branches))
+                    "{}% ({}/{})".format(int(coverage), b_hits, b_total)
                 )
                 cond = doc.createElement('condition')
                 cond.setAttribute("number", "0")
                 cond.setAttribute("type", "jump")
-                cond.setAttribute("coverage", "%i%%" % (coverage))
+                cond.setAttribute("coverage", "{}%".format(int(coverage)))
                 class_branch_hits += b_hits
                 class_branches += float(len(branches))
                 conditions = doc.createElement("conditions")

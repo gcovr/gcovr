@@ -14,7 +14,7 @@ import io
 
 from .utils import search_file, Logger
 from .workers import locked_directory
-from .coverage import BranchCoverage, LineCoverage, FileCoverage
+from .coverage import FileCoverage
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc](annot|ould not) open (source|graph|output) file")

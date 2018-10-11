@@ -48,7 +48,6 @@ from .utils import (get_global_stats, build_filter, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__
 from .workers import Workers
-from .coverage import CoverageData
 
 # generators
 from .cobertura_xml_generator import print_xml_report
@@ -272,14 +271,10 @@ def main(args=None):
     toerase = set()
     for context in contexts:
         for fname, cov in context['covdata'].items():
-            cov = cov.to_coverage_data()
             if fname not in covdata:
-                covdata[fname] = CoverageData(fname)
-            covdata[fname].update(
-                uncovered=cov.uncovered,
-                covered=cov.covered,
-                branches=cov.branches,
-                noncode=cov.noncode)
+                covdata[fname] = cov
+            else:
+                covdata[fname].update(cov)
         toerase.update(context['toerase'])
         rmtree(context['workdir'])
     for filepath in toerase:

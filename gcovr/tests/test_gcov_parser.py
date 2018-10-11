@@ -202,12 +202,12 @@ def test_gcov_8(capsys, sourcename):
         ignore_parse_errors=False)
 
     covdata = {
-        parser.fname: parser.coverage.to_coverage_data(),
+        parser.fname: parser.coverage,
     }
     coverage = covdata['tmp.cpp']
 
-    uncovered_lines = coverage.uncovered_str(show_branch=False)
-    uncovered_branches = coverage.uncovered_str(show_branch=True)
+    uncovered_lines = coverage.uncovered_lines_str()
+    uncovered_branches = coverage.uncovered_branches_str()
     assert uncovered_lines == expected_uncovered_lines
     assert uncovered_branches == expected_uncovered_branches
 
@@ -242,12 +242,12 @@ def test_unknown_tags(capsys, ignore_errors):
             run_the_parser()
 
     covdata = {
-        parser.fname: parser.coverage.to_coverage_data(),
+        parser.fname: parser.coverage,
     }
     coverage = covdata['foo.c']
 
-    uncovered_lines = coverage.uncovered_str(show_branch=False)
-    uncovered_branches = coverage.uncovered_str(show_branch=True)
+    uncovered_lines = coverage.uncovered_lines_str()
+    uncovered_branches = coverage.uncovered_branches_str()
     assert uncovered_lines == ''
     assert uncovered_branches == ''
 

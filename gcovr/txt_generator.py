@@ -43,18 +43,22 @@ def print_text_report(covdata, options):
         by_percent_uncovered=options.sort_percent)
 
     def _summarize_file_coverage(coverage):
-        tmp = options.root_filter.sub('', coverage.fname)
-        if not coverage.fname.endswith(tmp):
+        tmp = options.root_filter.sub('', coverage.filename)
+        if not coverage.filename.endswith(tmp):
             # Do no truncation if the filter does not start matching at
             # the beginning of the string
-            tmp = coverage.fname
+            tmp = coverage.filename
         tmp = tmp.replace('\\', '/').ljust(40)
         if len(tmp) > 40:
             tmp = tmp + "\n" + " " * 40
 
-        (total, cover, percent) = coverage.coverage(options.show_branch)
-        uncovered_lines = coverage.uncovered_str(
-            show_branch=options.show_branch)
+        if options.show_branch:
+            total, cover, percent = coverage.branch_coverage()
+            uncovered_lines = coverage.uncovered_branches_str()
+        else:
+            total, cover, percent = coverage.line_coverage()
+            uncovered_lines = coverage.uncovered_lines_str()
+        percent = '--' if percent is None else str(int(percent))
         return (total, cover,
                 tmp + str(total).rjust(8) + str(cover).rjust(8) +
                 percent.rjust(6) + "%   " + uncovered_lines)

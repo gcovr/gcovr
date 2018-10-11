@@ -67,7 +67,12 @@
 
     <tr>
     <td align="right" class="lineno"><pre>{{row.lineno}}</pre></td>
-    <td align="right" class="linebranch">{{row.linebranch}}</td>
+    <td align="right" class="linebranch">
+      {%- for branch in row.linebranch -%}
+      <span class="{{branch.class}}" title="{{branch.message}}">{{branch.symbol}}</span>
+      {%- if branch.wrap %}<br/>{% endif -%}
+      {%- endfor -%}
+    </td>
     <td align="right" class="linecount {{row.covclass}}"><pre>{{row.linecount}}</pre></td>
     <td align="left" class="src {{row.covclass}}"><pre>{{row.source}}</pre></td>
     </tr>
