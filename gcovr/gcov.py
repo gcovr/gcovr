@@ -211,7 +211,6 @@ class GcovParser(object):
         self.excluding = []
         self.noncode = set()
         self.uncovered = set()
-        self.uncovered_exceptional = set()
         self.covered = dict()
         self.branches = dict()
         # self.first_record = True
@@ -294,15 +293,13 @@ class GcovParser(object):
                 self.noncode.add(self.lineno)
             return True
 
-        if firstchar == '#':
+        # "#": uncovered
+        # "=": uncovered, but only reachable through exceptions
+        if firstchar in "#=":
             if is_non_code(code):
                 self.noncode.add(self.lineno)
             else:
                 self.uncovered.add(self.lineno)
-            return True
-
-        if firstchar == '=':
-            self.uncovered_exceptional.add(self.lineno)
             return True
 
         if firstchar in "0123456789":
@@ -483,7 +480,6 @@ class GcovParser(object):
             covdata[self.fname] = CoverageData(self.fname)
         covdata[self.fname].update(
             uncovered=self.uncovered,
-            uncovered_exceptional=self.uncovered_exceptional,
             covered=self.covered,
             branches=self.branches,
             noncode=self.noncode)

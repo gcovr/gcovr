@@ -16,44 +16,36 @@ class CoverageData(object):
     def __init__(self, fname):
         self.fname = fname
         self.uncovered = set()
-        self.uncovered_exceptional = set()
         self.covered = dict()
         self.noncode = set()
         self.all_lines = set()
         self.branches = dict()
 
     def update(
-            self, uncovered, uncovered_exceptional, covered, branches,
+            self, uncovered, covered, branches,
             noncode):
         self.all_lines.update(uncovered)
-        self.all_lines.update(uncovered_exceptional)
         self.all_lines.update(covered.keys())
         self.uncovered.update(uncovered)
-        self.uncovered_exceptional.update(uncovered_exceptional)
         self.noncode.intersection_update(noncode)
         update_counters(self.covered, covered)
         for k in branches.keys():
             d = self.branches.setdefault(k, {})
             update_counters(d, branches[k])
         self.uncovered.difference_update(self.covered.keys())
-        self.uncovered_exceptional.difference_update(self.covered.keys())
 
     def lines_with_uncovered_branches(self):
         for line in self.branches.keys():
             if any(count == 0 for count in self.branches[line].values()):
                 yield line
 
-    def uncovered_str(self, exceptional, show_branch):
+    def uncovered_str(self, show_branch):
         if show_branch:
             # Don't do any aggregation on branch results
             tmp = list(self.lines_with_uncovered_branches())
             return ",".join(str(x) for x in sorted(tmp))
 
-        if exceptional:
-            tmp = list(self.uncovered_exceptional)
-        else:
-            tmp = list(self.uncovered)
-        if len(tmp) == 0:
+        if not self.uncovered:
             return ""
 
         # Walk through the uncovered lines in sorted order.
@@ -65,7 +57,7 @@ class CoverageData(object):
         # provides a counterintuitive listing.
         return ",".join(
             format_range(first, last)
-            for first, last in find_consecutive_ranges(sorted(tmp)))
+            for first, last in find_consecutive_ranges(sorted(self.uncovered)))
 
     def coverage(self, show_branch):
         if show_branch:

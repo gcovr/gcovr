@@ -54,12 +54,7 @@ def print_text_report(covdata, options):
 
         (total, cover, percent) = coverage.coverage(options.show_branch)
         uncovered_lines = coverage.uncovered_str(
-            exceptional=False, show_branch=options.show_branch)
-        if not options.show_branch:
-            t = coverage.uncovered_str(
-                exceptional=True, show_branch=options.show_branch)
-            if len(t):
-                uncovered_lines += " [* " + t + "]"
+            show_branch=options.show_branch)
         return (total, cover,
                 tmp + str(total).rjust(8) + str(cover).rjust(8) +
                 percent.rjust(6) + "%   " + uncovered_lines)

@@ -276,7 +276,6 @@ def main(args=None):
                 covdata[fname] = CoverageData(fname)
             covdata[fname].update(
                 uncovered=cov.uncovered,
-                uncovered_exceptional=cov.uncovered_exceptional,
                 covered=cov.covered,
                 branches=cov.branches,
                 noncode=cov.noncode)
