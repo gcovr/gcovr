@@ -156,24 +156,8 @@ def print_html_report(covdata, options):
         if not details:
             cdata._sourcefile = None
         else:
-            ttmp = os.path.abspath(options.output).split('.')
-            longname = cdata._filename.replace(os.sep, '_')
-            longname_hash = ""
-            while True:
-                if len(ttmp) > 1:
-                    cdata._sourcefile = \
-                        '.'.join(ttmp[:-1]) + \
-                        '.' + longname + longname_hash + \
-                        '.' + ttmp[-1]
-                else:
-                    cdata._sourcefile = \
-                        ttmp[0] + '.' + longname + longname_hash + '.html'
-                # we add a hash at the end and attempt to shorten the
-                # filename if it exceeds common filesystem limitations
-                if len(os.path.basename(cdata._sourcefile)) < 256:
-                    break
-                longname_hash = "_" + hex(zlib.crc32(longname) & 0xffffffff)[2:]
-                longname = longname[(len(cdata._sourcefile) - len(longname_hash)):]
+            cdata._sourcefile = _make_short_sourcename(
+                options.output, filtered_fname)
 
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
@@ -355,3 +339,34 @@ def html_row(options, details, sourcefile, nrows, **kwargs):
     kwargs['BranchesCoverage'] = '-' if kwargs['BranchesCoverage'] is None else round(kwargs['BranchesCoverage'], 1)
 
     return kwargs
+
+
+def _make_short_sourcename(output_file, filename):
+    # type: (str, str) -> str
+    r"""Make a short-ish file path for --html-detail output.
+
+    Args:
+        output_file (str): The --output path.
+        filename (str): Path from root to source code.
+    """
+
+    output_file_parts = os.path.abspath(output_file).split('.')
+    if len(output_file_parts) > 1:
+        output_prefix = '.'.join(output_file_parts[:-1])
+        output_suffix = output_file_parts[-1]
+    else:
+        output_prefix = output_file
+        output_suffix = 'html'
+
+    longname = filename.replace(os.sep, '_')
+    longname_hash = ""
+    while True:
+        sourcename = '.'.join((
+            output_prefix, longname + longname_hash, output_suffix))
+        # we add a hash at the end and attempt to shorten the
+        # filename if it exceeds common filesystem limitations
+        if len(os.path.basename(sourcename)) < 256:
+            break
+        longname_hash = "_" + hex(zlib.crc32(longname) & 0xffffffff)[2:]
+        longname = longname[(len(sourcename) - len(longname_hash)):]
+    return sourcename
