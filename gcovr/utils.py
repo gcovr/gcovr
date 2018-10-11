@@ -7,8 +7,27 @@
 # This software is distributed under the BSD license.
 
 import os
+import platform
 import re
 import sys
+
+if not (platform.system() == 'Windows' and sys.version_info[0] == 2):
+    class LoopChecker(object):
+        def __init__(self):
+            self._seen = set()
+
+        def already_visited(self, path):
+            st = os.stat(path)
+            key = (st.st_dev, st.st_ino)
+            if key in self._seen:
+                return True
+
+            self._seen.add(key)
+            return False
+else:
+    class LoopChecker(object):
+        def already_visited(self, path):
+            return False
 
 
 def search_file(predicate, path, exclude_dirs):
@@ -21,7 +40,13 @@ def search_file(predicate, path, exclude_dirs):
     elif not os.path.exists(path):
         raise IOError("Unknown directory '" + path + "'")
 
+    loop_checker = LoopChecker()
     for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
+        # Check if we've already visited 'root' through the magic of symlinks
+        if loop_checker.already_visited(root):
+            dirs[:] = []
+            continue
+
         dirs[:] = [d for d in dirs
                    if not any(exc.match(os.path.join(root, d))
                               for exc in exclude_dirs)]
