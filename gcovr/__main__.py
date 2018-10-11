@@ -272,6 +272,7 @@ def main(args=None):
     toerase = set()
     for context in contexts:
         for fname, cov in context['covdata'].items():
+            cov = cov.to_coverage_data()
             if fname not in covdata:
                 covdata[fname] = CoverageData(fname)
             covdata[fname].update(

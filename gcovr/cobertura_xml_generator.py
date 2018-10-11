@@ -127,7 +127,7 @@ def print_xml_report(covdata, options):
             L.setAttribute("number", str(line))
             L.setAttribute("hits", str(hits))
             branches = data.branches.get(line)
-            if branches is None:
+            if not branches:
                 L.setAttribute("branch", "false")
             else:
                 b_hits = 0

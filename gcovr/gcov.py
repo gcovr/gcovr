@@ -14,7 +14,7 @@ import io
 
 from .utils import search_file, Logger
 from .workers import locked_directory
-from .coverage import CoverageData
+from .coverage import BranchCoverage, LineCoverage, FileCoverage
 
 output_re = re.compile("[Cc]reating [`'](.*)'$")
 source_re = re.compile("[Cc](annot|ould not) open (source|graph|output) file")
@@ -118,7 +118,8 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         INPUT,
         exclude_unreachable_branches=options.exclude_unreachable_branches,
         ignore_parse_errors=options.gcov_ignore_parse_errors)
-    parser.update_coverage(covdata)
+
+    covdata.setdefault(fname, FileCoverage(fname)).update(parser.coverage)
 
     INPUT.close()
 
@@ -209,10 +210,7 @@ class GcovParser(object):
     def __init__(self, fname, logger):
         self.logger = logger
         self.excluding = []
-        self.noncode = set()
-        self.uncovered = set()
-        self.covered = dict()
-        self.branches = dict()
+        self.coverage = FileCoverage(fname)
         # self.first_record = True
         self.fname = fname
         self.lineno = 0
@@ -290,22 +288,22 @@ class GcovParser(object):
         if firstchar == '-' or (self.excluding and firstchar in "#=0123456789"):
             # remember certain non-executed lines
             if self.excluding or is_non_code(code):
-                self.noncode.add(self.lineno)
+                self.coverage.line(self.lineno).noncode = True
             return True
 
         # "#": uncovered
         # "=": uncovered, but only reachable through exceptions
         if firstchar in "#=":
             if is_non_code(code):
-                self.noncode.add(self.lineno)
+                self.coverage.line(self.lineno).noncode = True
             else:
-                self.uncovered.add(self.lineno)
+                self.coverage.line(self.lineno).count = 0
             return True
 
         if firstchar in "0123456789":
             # GCOV 8 marks partial coverage
             # with a trailing "*" after the execution count.
-            self.covered[self.lineno] = int(status.rstrip('*'))
+            self.coverage.line(self.lineno).count = int(status.rstrip('*'))
             return True
 
         return False
@@ -378,7 +376,7 @@ class GcovParser(object):
                 count = int(fields[3])
             except (ValueError, IndexError):
                 count = 0
-            self.branches.setdefault(self.lineno, {})[branch_index] = count
+            self.coverage.line(self.lineno).branch(branch_index).count = count
             return True
 
         return False
@@ -464,25 +462,6 @@ class GcovParser(object):
             raise ex
 
         sys.exit(1)
-
-    def update_coverage(self, covdata):
-        self.logger.verbose_msg(
-            "uncovered: {parser.uncovered}\n"
-            "covered:   {parser.covered}\n"
-            "branches:  {parser.branches}\n"
-            "noncode:   {parser.noncode}",
-            parser=self)
-
-        # If the file is already in covdata, then we
-        # remove lines that are covered here.  Otherwise,
-        # initialize covdata
-        if self.fname not in covdata:
-            covdata[self.fname] = CoverageData(self.fname)
-        covdata[self.fname].update(
-            uncovered=self.uncovered,
-            covered=self.covered,
-            branches=self.branches,
-            noncode=self.noncode)
 
 
 def process_datafile(filename, covdata, options, toerase, workdir):

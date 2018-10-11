@@ -183,7 +183,7 @@ def print_html_report(covdata, options):
             if hits > 0:
                 class_hits += 1
             branches = cdata.branches.get(line)
-            if branches is None:
+            if not branches:
                 pass
             else:
                 b_hits = 0
