@@ -164,20 +164,28 @@ call    4 never executed
 
 GCOV_8_SOURCES = dict(
     gcov_8_example=GCOV_8_EXAMPLE,
+    gcov_8_exclude_throw=GCOV_8_EXAMPLE,
     nautilus_example=GCOV_8_NAUTILUS)
 
 if sys.version_info < (3, 0):
     GCOV_8_SOURCES = dict(
         gcov_8_example=GCOV_8_EXAMPLE.decode(),
+        gcov_8_exclude_throw=GCOV_8_EXAMPLE.decode(),
         nautilus_example=GCOV_8_NAUTILUS.decode())
 
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     gcov_8_example='33',
+    gcov_8_exclude_throw='33',
     nautilus_example='51,53')
 
 GCOV_8_EXPECTED_UNCOVERED_BRANCHES = dict(
     gcov_8_example='21,23,24,30,32,33,35',
+    gcov_8_exclude_throw='30,32,33',
     nautilus_example='51')
+
+GCOV_8_EXCLUDE_THROW_BRANCHES = dict(
+    gcov_8_exclude_throw=True,
+)
 
 
 @pytest.mark.parametrize('sourcename', sorted(GCOV_8_SOURCES))
@@ -192,13 +200,18 @@ def test_gcov_8(capsys, sourcename):
 
     source = GCOV_8_SOURCES[sourcename]
     lines = source.splitlines()[1:]
-    expected_uncovered_lines = GCOV_8_EXPECTED_UNCOVERED_LINES[sourcename]
-    expected_uncovered_branches = GCOV_8_EXPECTED_UNCOVERED_BRANCHES[sourcename]
+    expected_uncovered_lines = \
+        GCOV_8_EXPECTED_UNCOVERED_LINES[sourcename]
+    expected_uncovered_branches = \
+        GCOV_8_EXPECTED_UNCOVERED_BRANCHES[sourcename]
+    exclude_throw_branches = \
+        GCOV_8_EXCLUDE_THROW_BRANCHES.get(sourcename, False)
 
     parser = GcovParser("tmp.cpp", Logger())
     parser.parse_all_lines(
         lines,
         exclude_unreachable_branches=False,
+        exclude_throw_branches=exclude_throw_branches,
         ignore_parse_errors=False)
 
     covdata = {
@@ -233,6 +246,7 @@ def test_unknown_tags(capsys, ignore_errors):
         parser.parse_all_lines(
             lines,
             exclude_unreachable_branches=False,
+            exclude_throw_branches=False,
             ignore_parse_errors=ignore_errors)
 
     if ignore_errors:
@@ -272,6 +286,7 @@ def test_pathologic_codeline(capsys):
         parser.parse_all_lines(
             lines,
             exclude_unreachable_branches=False,
+            exclude_throw_branches=False,
             ignore_parse_errors=False)
 
     out, err = capsys.readouterr()

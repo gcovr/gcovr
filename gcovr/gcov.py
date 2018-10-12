@@ -117,6 +117,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
     parser.parse_all_lines(
         INPUT,
         exclude_unreachable_branches=options.exclude_unreachable_branches,
+        exclude_throw_branches=options.exclude_throw_branches,
         ignore_parse_errors=options.gcov_ignore_parse_errors)
 
     covdata.setdefault(fname, FileCoverage(fname)).update(parser.coverage)
@@ -221,10 +222,14 @@ class GcovParser(object):
         self.deferred_exceptions = []
         self.last_was_specialization_section_marker = False
 
-    def parse_all_lines(self, lines, exclude_unreachable_branches, ignore_parse_errors):
+    def parse_all_lines(
+        self, lines, exclude_unreachable_branches, exclude_throw_branches,
+        ignore_parse_errors
+    ):
         for line in lines:
             try:
-                self.parse_line(line, exclude_unreachable_branches)
+                self.parse_line(
+                    line, exclude_unreachable_branches, exclude_throw_branches)
             except Exception as ex:
                 self.unrecognized_lines.append(line)
                 self.deferred_exceptions.append(ex)
@@ -232,11 +237,15 @@ class GcovParser(object):
         self.check_unclosed_exclusions()
         self.check_unrecognized_lines(ignore_parse_errors=ignore_parse_errors)
 
-    def parse_line(self, line, exclude_unreachable_branches):
+    def parse_line(
+        self, line, exclude_unreachable_branches, exclude_throw_branches
+    ):
         # If this is a tag line, we stay on the same line number
         # and can return immediately after processing it.
         # A tag line cannot hold exclusion markers.
-        if self.parse_tag_line(line, exclude_unreachable_branches):
+        if self.parse_tag_line(
+            line, exclude_unreachable_branches, exclude_throw_branches
+        ):
             return
 
         # If this isn't a tag line, this is metadata or source code.
@@ -308,7 +317,9 @@ class GcovParser(object):
 
         return False
 
-    def parse_tag_line(self, line, exclude_unreachable_branches):
+    def parse_tag_line(
+        self, line, exclude_unreachable_branches, exclude_throw_branches
+    ):
         # Start or end a template/macro specialization section
         if line.startswith('-----'):
             self.last_was_specialization_section_marker = True
@@ -398,11 +409,17 @@ class GcovParser(object):
             else:
                 count = int(fields[3])
 
+            is_fallthrough = fields[-1] == '(fallthrough)'
+            is_throw = fields[-1] == '(throw)'
+
+            if exclude_throw_branches and is_throw:
+                return True
+
             branch_cov = self.coverage.line(self.lineno).branch(branch_index)
             branch_cov.count += count
-            if fields[-1] == '(fallthrough)':
+            if is_fallthrough:
                 branch_cov.fallthrough = True
-            if fields[-1] == '(throw)':
+            if is_throw:
                 branch_cov.throw = True
 
             return True

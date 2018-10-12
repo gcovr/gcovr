@@ -593,12 +593,19 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "exclude_unreachable_branches", ["--exclude-unreachable-branches"],
         group="gcov_options",
-        help="Exclude branch coverage with LCOV/GCOV exclude markers. "
-             "Additionally, exclude branch coverage from lines "
-             "without useful source code "
+        help="Exclude branch coverage from lines without useful source code "
              "(often, compiler-generated \"dead\" code). "
              "Default: {default!s}.",
         action="store_true",
+    ),
+    GcovrConfigOption(
+        "exclude_throw_branches", ["--exclude-throw-branches"],
+        group="gcov_options",
+        help="For branch coverage, exclude branches "
+             "that the compiler generates for exception handling. "
+             "This often leads to more \"sensible\" coverage reports. "
+             "Default: {default!s}.",
+        action="store_true"
     ),
     GcovrConfigOption(
         "gcov_files", ["-g", "--use-gcov-files"],
