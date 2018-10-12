@@ -346,23 +346,26 @@ class GcovParser(object):
             return True
 
         if line.startswith('branch '):
-            exclude_branch = False
-            if exclude_unreachable_branches and \
-                    self.lineno == self.last_code_lineno:
-                if self.last_code_line_excluded:
-                    exclude_branch = True
-                    exclude_reason = "marked with exclude pattern"
-                else:
-                    code = self.last_code_line
-                    code = re.sub(cpp_style_comment_pattern, '', code)
-                    code = re.sub(c_style_comment_pattern, '', code)
-                    code = code.strip()
-                    code_nospace = code.replace(' ', '')
-                    exclude_branch = \
-                        code in ['', '{', '}'] or code_nospace == '{}'
+
+            exclude_reason = None
+
+            if self.lineno != self.last_code_lineno:
+                # apply no exclusions if this doesn't look like a code line.
+                pass
+
+            elif self.last_code_line_excluded:
+                exclude_reason = "marked with exclude pattern"
+
+            elif exclude_unreachable_branches:
+                code = self.last_code_line
+                code = re.sub(cpp_style_comment_pattern, '', code)
+                code = re.sub(c_style_comment_pattern, '', code)
+                code = code.strip()
+                code_nospace = code.replace(' ', '')
+                if code_nospace in ['', '{', '}', '{}']:
                     exclude_reason = "detected as compiler-generated code"
 
-            if exclude_branch:
+            if exclude_reason is not None:
                 self.logger.verbose_msg(
                     "Excluding unreachable branch on line {line} "
                     "in file {fname}: {reason}",
@@ -370,13 +373,38 @@ class GcovParser(object):
                     reason=exclude_reason)
                 return True
 
+            # branch tags can look like:
+            #   branch  1 never executed
+            #   branch  2 taken 12%
+            #   branch  3 taken 12% (fallthrough)
+            #   branch  3 taken 12% (throw)
+            # where the percentage should usually be a count.
+
             fields = line.split()  # e.g. "branch  0 taken 0% (fallthrough)"
+            assert len(fields) >= 4, \
+                "Unclear branch tag format: {}".format(line)
+
             branch_index = int(fields[1])
-            try:
-                count = int(fields[3])
-            except (ValueError, IndexError):
+
+            if fields[2:] == ['never', 'executed']:
                 count = 0
-            self.coverage.line(self.lineno).branch(branch_index).count = count
+
+            elif fields[3].endswith('%'):
+                percentage = int(fields[3][:-1])
+                # can't really convert percentage to count,
+                # so normalize to zero/one
+                count = 1 if percentage > 0 else 0
+
+            else:
+                count = int(fields[3])
+
+            branch_cov = self.coverage.line(self.lineno).branch(branch_index)
+            branch_cov.count += count
+            if fields[-1] == '(fallthrough)':
+                branch_cov.fallthrough = True
+            if fields[-1] == '(throw)':
+                branch_cov.throw = True
+
             return True
 
         return False

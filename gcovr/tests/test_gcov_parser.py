@@ -176,7 +176,7 @@ GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     nautilus_example='51,53')
 
 GCOV_8_EXPECTED_UNCOVERED_BRANCHES = dict(
-    gcov_8_example='21,23,24,27,30,32,33,35',
+    gcov_8_example='21,23,24,30,32,33,35',
     nautilus_example='51')
 
 
