@@ -110,6 +110,8 @@ def test_build(name, format):
     ])
     if needs_symlinks and is_windows:
         pytest.xfail("have yet to figure out symlinks on Windows")
+    if name == 'exclude-throw-branches' and format == 'html' and is_windows:
+        pytest.xfail("branch coverage details seem to be platform-dependent")
 
     encoding = 'utf8'
     if format == 'html' and name.startswith('html-encoding-'):
