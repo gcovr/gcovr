@@ -9,6 +9,16 @@ from gcovr.tests.test_gcovr import SCRUBBERS, ASSERT_EQUALS
 datadir = os.path.dirname(os.path.abspath(__file__))
 
 
+class Example(object):
+    def __init__(self, name, script, baseline):
+        self.name = name
+        self.script = script
+        self.baseline = baseline
+
+    def __str__(self):
+        return self.os.path.basename(self.baseline)
+
+
 def find_test_cases():
     if sys.platform.startswith('win'):
         return
@@ -21,14 +31,13 @@ def find_test_cases():
             if not os.path.exists(baseline):
                 continue
             else:
-                yield (name, script, baseline)
+                yield Example(name, script, baseline)
 
 
-@pytest.mark.parametrize(
-    'args', find_test_cases(),
-    ids=lambda args: os.path.basename(args[2]))
-def test_example(args):
-    name, cmd, baseline_file = args
+@pytest.mark.parametrize('example', find_test_cases())
+def test_example(example):
+    cmd = example.script
+    baseline_file = example.baseline
     ext = os.path.splitext(baseline_file)[1][1:]
     scrub = SCRUBBERS[ext]
     assert_equals = ASSERT_EQUALS.get(ext, None)
