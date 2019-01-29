@@ -113,14 +113,16 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         logger.verbose_msg("  Excluding coverage data for file {}", fname)
         return
 
-    parser = GcovParser(fname, logger=logger)
+    key = os.path.normpath(fname)
+
+    parser = GcovParser(key, logger=logger)
     parser.parse_all_lines(
         INPUT,
         exclude_unreachable_branches=options.exclude_unreachable_branches,
         exclude_throw_branches=options.exclude_throw_branches,
         ignore_parse_errors=options.gcov_ignore_parse_errors)
 
-    covdata.setdefault(fname, FileCoverage(fname)).update(parser.coverage)
+    covdata.setdefault(key, FileCoverage(key)).update(parser.coverage)
 
     INPUT.close()
 

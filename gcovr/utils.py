@@ -201,9 +201,14 @@ class AlwaysMatchFilter(Filter):
 
 class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
-        os_independent_dir = directory.replace(os.path.sep, '/')
+        abspath = os.path.realpath(directory)
+        os_independent_dir = abspath.replace(os.path.sep, '/')
         pattern = re.escape(os_independent_dir + '/')
         super(DirectoryPrefixFilter, self).__init__(pattern)
+
+    def match(self, path):
+        normpath = os.path.normpath(path)
+        return super(DirectoryPrefixFilter, self).match(normpath)
 
 
 class Logger(object):

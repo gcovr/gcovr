@@ -3,19 +3,19 @@
   SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage branch-rate="0.5" branches-covered="3" branches-valid="6" complexity="0.0" line-rate="0.9" lines-covered="9" lines-valid="10" timestamp="" version="">
 <sources>
-<source>.</source>
+<source>../src</source>
 </sources>
 <packages>
-<package branch-rate="0.5" complexity="0.0" line-rate="0.9" name="src">
+<package branch-rate="0.5" complexity="0.0" line-rate="0.9" name="">
 <classes>
-<class branch-rate="0.0" complexity="0.0" filename="src/file1.cpp" line-rate="1.0" name="file1_cpp">
+<class branch-rate="0.0" complexity="0.0" filename="file1.cpp" line-rate="1.0" name="file1_cpp">
 <methods/>
 <lines>
 <line branch="false" hits="1" number="2"/>
 <line branch="false" hits="1" number="4"/>
 </lines>
 </class>
-<class branch-rate="0.5" complexity="0.0" filename="src/main.cpp" line-rate="0.875" name="main_cpp">
+<class branch-rate="0.5" complexity="0.0" filename="main.cpp" line-rate="0.875" name="main_cpp">
 <methods/>
 <lines>
 <line branch="false" hits="1" number="5"/>
