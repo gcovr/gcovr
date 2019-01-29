@@ -60,8 +60,8 @@ def print_text_report(covdata, options):
             uncovered_lines = coverage.uncovered_lines_str()
         percent = '--' if percent is None else str(int(percent))
         return (total, cover,
-                tmp + str(total).rjust(8) + str(cover).rjust(8) +
-                percent.rjust(6) + "%   " + uncovered_lines)
+                tmp + str(total).rjust(8) + str(cover).rjust(8)
+                + percent.rjust(6) + "%   " + uncovered_lines)
 
     for key in keys:
         (t, n, txt) = _summarize_file_coverage(covdata[key])
@@ -74,8 +74,8 @@ def print_text_report(covdata, options):
     percent = calculate_coverage(total_covered, total_lines, nan_value=None)
     percent = "--" if percent is None else str(int(percent))
     OUTPUT.write(
-        "TOTAL".ljust(40) + str(total_lines).rjust(8) +
-        str(total_covered).rjust(8) + str(percent).rjust(6) + "%" + '\n'
+        "TOTAL".ljust(40) + str(total_lines).rjust(8)
+        + str(total_covered).rjust(8) + str(percent).rjust(6) + "%" + '\n'
     )
     OUTPUT.write("-" * 78 + '\n')
 

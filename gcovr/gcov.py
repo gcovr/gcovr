@@ -16,14 +16,14 @@ from .utils import search_file, Logger
 from .workers import locked_directory
 from .coverage import FileCoverage
 
-output_re = re.compile("[Cc]reating [`'](.*)'$")
-source_re = re.compile("[Cc](annot|ould not) open (source|graph|output) file")
+output_re = re.compile(r"[Cc]reating [`'](.*)'$")
+source_re = re.compile(r"[Cc](annot|ould not) open (source|graph|output) file")
 
 exclude_line_flag = "_EXCL_"
-exclude_line_pattern = re.compile('([GL]COVR?)_EXCL_(LINE|START|STOP)')
+exclude_line_pattern = re.compile(r'([GL]COVR?)_EXCL_(LINE|START|STOP)')
 
-c_style_comment_pattern = re.compile('/\*.*?\*/')
-cpp_style_comment_pattern = re.compile('//.*?$')
+c_style_comment_pattern = re.compile(r'/\*.*?\*/')
+cpp_style_comment_pattern = re.compile(r'//.*?$')
 
 
 def find_existing_gcov_files(search_path, logger, exclude_dirs):
@@ -32,7 +32,7 @@ def find_existing_gcov_files(search_path, logger, exclude_dirs):
     logger.verbose_msg(
         "Scanning directory {} for gcov files...", search_path)
     gcov_files = list(search_file(
-        re.compile(".*\.gcov$").match, search_path,
+        re.compile(r".*\.gcov$").match, search_path,
         exclude_dirs=exclude_dirs))
     logger.verbose_msg(
         "Found {} files (and will process all of them)",
@@ -51,7 +51,7 @@ def find_datafiles(search_path, logger, exclude_dirs):
     logger.verbose_msg(
         "Scanning directory {} for gcda/gcno files...", search_path)
     files = list(search_file(
-        re.compile(".*\.gc(da|no)$").match, search_path,
+        re.compile(r".*\.gc(da|no)$").match, search_path,
         exclude_dirs=exclude_dirs))
     gcda_files = []
     gcno_files = []

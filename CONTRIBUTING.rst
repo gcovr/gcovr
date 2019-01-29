@@ -80,7 +80,7 @@ Please follow this checklist for your pull request:
     The source code should conform to the :pep:`8` standard.
     Please check your code::
 
-        python -m flake8 doc gcovr --ignore E501
+        python -m flake8 doc gcovr --ignore E501,W503
 
 -   **Add yourself as an author.**
     If this is your first contribution to gcovr,

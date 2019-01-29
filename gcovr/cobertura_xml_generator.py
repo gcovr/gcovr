@@ -46,12 +46,12 @@ def print_xml_report(covdata, options):
     doc = impl.createDocument(None, "coverage", docType)
     root = doc.documentElement
     root.setAttribute(
-        "line-rate", lineTotal == 0 and '0.0' or
-        str(float(lineCovered) / lineTotal)
+        "line-rate", lineTotal == 0 and '0.0'
+        or str(float(lineCovered) / lineTotal)
     )
     root.setAttribute(
-        "branch-rate", branchTotal == 0 and '0.0' or
-        str(float(branchCovered) / branchTotal)
+        "branch-rate", branchTotal == 0 and '0.0'
+        or str(float(branchCovered) / branchTotal)
     )
     root.setAttribute(
         "lines-covered", str(lineCovered)
