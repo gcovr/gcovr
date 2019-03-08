@@ -7,6 +7,14 @@
 # This software is distributed under the BSD license.
 
 import time
+from contextlib import contextmanager
+
+try:
+    from lxml import etree
+    LXML_AVAILABLE = True
+except ImportError:
+    import xml.etree.ElementTree as etree
+    LXML_AVAILABLE = False
 
 from lxml import etree
 
@@ -14,8 +22,29 @@ from .version import __version__
 from .utils import open_binary_for_writing, presentable_filename
 
 
-def print_xml_report(covdata, output_file, options):
-    """produce an XML report in the Cobertura format"""
+@contextmanager
+def smart_open(filename=None):
+    if filename and filename != '-':
+        # files in write binary mode for UTF-8
+        fh = open(filename, 'wb')
+    elif (sys.version_info > (3, 0)):
+        # python 3 wants stdout.buffer for binary output
+        fh = sys.stdout.buffer
+    else:
+        # python2 doesn't care as much, no stdout.buffer
+        fh = sys.stdout
+
+    try:
+        yield fh
+    finally:
+        if fh is not sys.stdout:
+            fh.close()
+#
+# Produce an XML report in the Cobertura format
+#
+
+
+def print_xml_report(covdata, options):
     branchTotal = 0
     branchCovered = 0
     lineTotal = 0
@@ -31,6 +60,13 @@ def print_xml_report(covdata, output_file, options):
         lineTotal += total
         lineCovered += covered
 
+    # impl = xml.dom.minidom.getDOMImplementation()
+    # docType = impl.createDocumentType(
+    #     "coverage", None,
+    #     "http://cobertura.sourceforge.net/xml/coverage-04.dtd"
+    # )
+    # doc = impl.createDocument(None, "coverage", docType)
+    # root = doc.documentElement
     root = etree.Element("coverage")
     root.set(
         "line-rate", lineTotal == 0 and '0.0'
@@ -65,10 +101,12 @@ def print_xml_report(covdata, output_file, options):
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
     # sources = doc.createElement("sources")
+    # root.appendChild(sources)
     sources = etree.SubElement(root, "sources")
 
     # Generate the coverage output (on a per-package basis)
     # packageXml = doc.createElement("packages")
+    # root.appendChild(packageXml)
     packageXml = etree.SubElement(root, "packages")
     packages = {}
 
@@ -129,7 +167,7 @@ def print_xml_report(covdata, output_file, options):
 
         className = fname.replace('.', '_')
         c.set("name", className)
-        c.set("filename", filename)
+        c.set("filename", os.path.join(directory, fname).replace('\\', '/'))
         c.set(
             "line-rate",
             str(class_hits / (1.0 * class_lines or 1.0))
@@ -157,7 +195,7 @@ def print_xml_report(covdata, output_file, options):
         classNames.sort()
         for className in classNames:
             classes.append(packageData[1][className])
-        package.set("name", packageName.replace('/', '.'))
+        package.set("name", packageName.replace(os.sep, '.'))
         package.set(
             "line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0))
         )
@@ -169,10 +207,13 @@ def print_xml_report(covdata, output_file, options):
     # Populate the <sources> element: this is the root directory
     etree.SubElement(sources, "source").text = options.root.strip()
 
-    with open_binary_for_writing(output_file) as fh:
-        fh.write(
-            etree.tostring(root,
-                           pretty_print=options.prettyxml,
-                           encoding="UTF-8",
-                           xml_declaration=True,
-                           doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))
+    with smart_open(options.output) as fh:
+        if LXML_AVAILABLE:
+            fh.write(
+                etree.tostring(root,
+                               pretty_print=options.prettyxml,
+                               encoding="UTF-8",
+                               xml_declaration=True,
+                               doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))
+        else:
+            fh.write(etree.tostring(root, encoding="UTF-8"))
