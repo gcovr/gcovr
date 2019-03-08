@@ -220,7 +220,7 @@ def print_xml_report(covdata, options):
                 pretty_print=options.prettyxml,
                 encoding="UTF-8",
                 xml_declaration=True,
-                doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>")
+                doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>")
         else :
             print >>fh, etree.tostring(root, encoding="UTF-8")
 
