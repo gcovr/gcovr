@@ -12,9 +12,11 @@ import time
 from contextlib import contextmanager
 
 try:
-    from lxml import etree as ET
+    from lxml import etree
+    LXML_AVAILABLE = True
 except ImportError:
-    import xml.etree.ElementTree as ET
+    import xml.etree.ElementTree as etree
+    LXML_AVAILABLE = False
 
 from .version import __version__
 
@@ -62,7 +64,7 @@ def print_xml_report(covdata, options):
     #)
     #doc = impl.createDocument(None, "coverage", docType)
     #root = doc.documentElement
-    root = ET.Element("coverage")
+    root = etree.Element("coverage")
     root.set(
         "line-rate", lineTotal == 0 and '0.0'
         or str(float(lineCovered) / lineTotal)
@@ -97,12 +99,12 @@ def print_xml_report(covdata, options):
     # (specified by --root), or the CWD.
     #sources = doc.createElement("sources")
     #root.appendChild(sources)
-    sources = ET.SubElement(root, "sources")
+    sources = etree.SubElement(root, "sources")
 
     # Generate the coverage output (on a per-package basis)
     #packageXml = doc.createElement("packages")
     #root.appendChild(packageXml)
-    packageXml = ET.SubElement(root, "packages")
+    packageXml = etree.SubElement(root, "packages")
     packages = {}
     source_dirs = set()
 
@@ -123,13 +125,13 @@ def print_xml_report(covdata, options):
         directory, fname = os.path.split(directory)
 
         package = packages.setdefault(
-            directory, [ET.Element("package"), {}, 0, 0, 0, 0]
+            directory, [etree.Element("package"), {}, 0, 0, 0, 0]
         )
-        c = ET.Element("class")
+        c = etree.Element("class")
         # The Cobertura DTD requires a methods section, which isn't
         # trivial to get from gcov (so we will leave it blank)
-        ET.SubElement(c, "methods")
-        lines = ET.SubElement(c, "lines")
+        etree.SubElement(c, "methods")
+        lines = etree.SubElement(c, "lines")
 
         class_lines = 0
         class_hits = 0
@@ -144,7 +146,7 @@ def print_xml_report(covdata, options):
             if line_cov.is_covered:
                 class_hits += 1
             hits = line_cov.count
-            L = ET.Element("line")
+            L = etree.Element("line")
             L.set("number", str(lineno))
             L.set("hits", str(hits))
             branches = line_cov.branches
@@ -157,13 +159,13 @@ def print_xml_report(covdata, options):
                     "condition-coverage",
                     "{}% ({}/{})".format(int(coverage), b_hits, b_total)
                 )
-                cond = ET.Element('condition')
+                cond = etree.Element('condition')
                 cond.set("number", "0")
                 cond.set("type", "jump")
                 cond.set("coverage", "{}%".format(int(coverage)))
                 class_branch_hits += b_hits
                 class_branches += float(len(branches))
-                conditions = ET.Element("conditions")
+                conditions = etree.Element("conditions")
                 conditions.append(cond)
                 L.append(conditions)
 
@@ -194,7 +196,7 @@ def print_xml_report(covdata, options):
         packageData = packages[packageName]
         package = packageData[0]
         packageXml.append(package)
-        classes = ET.SubElement(classes, "classes")
+        classes = etree.SubElement(package, "classes")
         classNames = list(packageData[1].keys())
         classNames.sort()
         for className in classNames:
@@ -209,12 +211,16 @@ def print_xml_report(covdata, options):
         package.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
-    ET.SubElement(sources, "source").text = options.root.strip()
+    etree.SubElement(sources, "source").text = options.root.strip()
 
 
     with smart_open(options.output) as fh:
-        ET.write(fh,
-            pretty_print=options.prettyxml,
-            encoding="UTF-8",
-            xml_declaration=True,
-            doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>")
+        if LXML_AVAILABLE :
+            print >>fh, etree.tostring(root,
+                pretty_print=options.prettyxml,
+                encoding="UTF-8",
+                xml_declaration=True,
+                doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-03.dtd'>")
+        else :
+            print >>fh, etree.tostring(root, encoding="UTF-8")
+
