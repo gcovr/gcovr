@@ -41,6 +41,8 @@ def smart_open(filename=None):
 #
 # Produce an XML report in the Cobertura format
 #
+
+
 def print_xml_report(covdata, options):
     branchTotal = 0
     branchCovered = 0
@@ -57,13 +59,13 @@ def print_xml_report(covdata, options):
         lineTotal += total
         lineCovered += covered
 
-    #impl = xml.dom.minidom.getDOMImplementation()
-    #docType = impl.createDocumentType(
-    #    "coverage", None,
-    #    "http://cobertura.sourceforge.net/xml/coverage-04.dtd"
-    #)
-    #doc = impl.createDocument(None, "coverage", docType)
-    #root = doc.documentElement
+    # impl = xml.dom.minidom.getDOMImplementation()
+    # docType = impl.createDocumentType(
+    #     "coverage", None,
+    #     "http://cobertura.sourceforge.net/xml/coverage-04.dtd"
+    # )
+    # doc = impl.createDocument(None, "coverage", docType)
+    # root = doc.documentElement
     root = etree.Element("coverage")
     root.set(
         "line-rate", lineTotal == 0 and '0.0'
@@ -97,13 +99,13 @@ def print_xml_report(covdata, options):
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
-    #sources = doc.createElement("sources")
-    #root.appendChild(sources)
+    # sources = doc.createElement("sources")
+    # root.appendChild(sources)
     sources = etree.SubElement(root, "sources")
 
     # Generate the coverage output (on a per-package basis)
-    #packageXml = doc.createElement("packages")
-    #root.appendChild(packageXml)
+    # packageXml = doc.createElement("packages")
+    # root.appendChild(packageXml)
     packageXml = etree.SubElement(root, "packages")
     packages = {}
     source_dirs = set()
@@ -213,14 +215,13 @@ def print_xml_report(covdata, options):
     # Populate the <sources> element: this is the root directory
     etree.SubElement(sources, "source").text = options.root.strip()
 
-
     with smart_open(options.output) as fh:
-        if LXML_AVAILABLE :
-            print >>fh, etree.tostring(root,
-                pretty_print=options.prettyxml,
-                encoding="UTF-8",
-                xml_declaration=True,
-                doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>")
-        else :
+        if LXML_AVAILABLE:
+            print >>fh, \
+                etree.tostring(root,
+                               pretty_print=options.prettyxml,
+                               encoding="UTF-8",
+                               xml_declaration=True,
+                               doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>")
+        else:
             print >>fh, etree.tostring(root, encoding="UTF-8")
-
