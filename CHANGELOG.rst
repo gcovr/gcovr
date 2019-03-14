@@ -1,5 +1,20 @@
 ``gcovr`` Release History and Change Log
 
+Future Directions
+-----------------
+
+.. warning::
+
+   Python 2.7 will reach its end of life on Jan 1, 2020.
+   With its first release on or after that date,
+   gcovr will drop support for Python 2.7 and 3.4.
+   Subsequently, gcovr will only support Python versions
+   that enjoy upstream support.
+
+   Please note that gcovr does not use a strict SemVer version number.
+   When support for a Python version is dropped,
+   gcovr will not necessarily increment its major version.
+
 4.1 (2 July 2018)
 -----------------
 
