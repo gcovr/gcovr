@@ -1,3 +1,4 @@
-pyutilib
+flake8 >= 3.7
 pytest
-flake8
+pyutilib
+typing ; python_version < '3.5'

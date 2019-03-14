@@ -15,6 +15,7 @@ import io
 
 from .version import __version__
 from .utils import commonpath, sort_coverage
+from .coverage import FileCoverage
 
 
 class lazy(object):
@@ -174,7 +175,7 @@ def print_html_report(covdata, options):
 
     nrows = 0
     for f in keys:
-        cdata = covdata[f]  # type: gcovr.coverage.FileCoverage
+        cdata = covdata[f]  # type: FileCoverage
         class_lines = 0
         class_hits = 0
         class_branches = 0
