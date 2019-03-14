@@ -12,7 +12,7 @@ import subprocess
 import sys
 import io
 
-from .utils import search_file, Logger
+from .utils import search_file, Logger, commonpath
 from .workers import locked_directory
 from .coverage import FileCoverage
 
@@ -164,7 +164,7 @@ def guess_source_file_name(
 
 
 def guess_source_file_name_via_aliases(gcovname, currdir, data_fname):
-    common_dir = os.path.commonprefix([data_fname, currdir])
+    common_dir = commonpath([data_fname, currdir])
     fname = os.path.realpath(os.path.join(common_dir, gcovname))
     if os.path.exists(fname):
         return fname
