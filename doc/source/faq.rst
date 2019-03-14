@@ -102,3 +102,22 @@ Despite these approaches,
 
 .. _Godbolt Compiler Explorer: https://godbolt.org/
 .. _Gcov and Optimization: https://gcc.gnu.org/onlinedocs/gcc/Gcov-and-Optimization.html
+
+.. _uncovered file not shown:
+
+Why are uncovered files not reported?
+-------------------------------------
+
+Gcovr does report files that have zero coverage,
+even when no .gcda file is available for that compilation unit.
+
+However, the gcov tool in some versions of GCC
+refuses to generate output for uncovered files.
+
+To fix this, upgrade GCC to:
+
+* version 5.5 or later,
+* version 6.2 or later, or
+* any version since 7.
+
+Note that the compiler may ignore ``inline`` functions that are never used.
