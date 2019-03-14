@@ -1,5 +1,8 @@
 ``gcovr`` Release History and Change Log
 
+.. program is needed to resolve option links
+.. program::  gcovr
+
 Future Directions
 -----------------
 
@@ -14,6 +17,51 @@ Future Directions
    Please note that gcovr does not use a strict SemVer version number.
    When support for a Python version is dropped,
    gcovr will not necessarily increment its major version.
+
+Unreleased
+----------
+
+Improvements and new features:
+
+ - :ref:`Configuration file <configuration>` support (experimental).
+   (:issue:`167`, :issue:`229`, :issue:`279`, :issue:`281`, :issue:`293`)
+ - Handle cyclic symlinks correctly during coverage data search.
+   (:issue:`284`)
+ - Simplification of :option:`--object-directory` heuristics.
+   (:issue:`18`, :issue:`273`, :issue:`280`)
+ - Exception-only code like a ``catch`` clause is now shown as uncovered.
+   (:issue:`283`)
+ - New :option:`--exclude-throw-branches` option
+   to exclude exception handler branches. (:issue:`283`)
+ - Support ``--root ..`` style invocation,
+   which might fix some CMake-related problems. (:issue:`294`)
+ - Fix wrong names in report
+   when source and build directories have similar names. (:issue:`299`)
+ - Stricter argument handling. (:issue:`267`)
+
+Known issues:
+
+ - The :option:`--keep` option only works when using existing gcov files
+   with :option:`-g`/:option:`--use-gcov-files`.
+   (:issue:`285`, :issue:`286`)
+ - Gcovr may get confused
+   when header files in different directories have the same name.
+   (:issue:`271`)
+ - Gcovr may not work when no en_US locale is available.
+   (:issue:`166`)
+
+Documentation:
+
+ - :ref:`Exclusion marker <exclusion markers>` documentation.
+ - FAQ: :ref:`exception branches` (:issue:`283`)
+ - FAQ: :ref:`uncovered files not shown`
+   (:issue:`33`, :issue:`100`, :issue:`154`, :issue:`290`, :issue:`298`)
+
+Internal changes:
+
+ - More tests. (:issue:`269`, :issue:`268`, :issue:`269`)
+ - Refactoring and removal of dead code. (:issue:`280`)
+ - New internal data model.
 
 4.1 (2 July 2018)
 -----------------

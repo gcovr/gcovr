@@ -103,7 +103,7 @@ Despite these approaches,
 .. _Godbolt Compiler Explorer: https://godbolt.org/
 .. _Gcov and Optimization: https://gcc.gnu.org/onlinedocs/gcc/Gcov-and-Optimization.html
 
-.. _uncovered file not shown:
+.. _uncovered files not shown:
 
 Why are uncovered files not reported?
 -------------------------------------

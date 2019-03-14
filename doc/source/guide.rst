@@ -368,6 +368,8 @@ or a relative path to the real path::
     (see our :doc:`contributing guide <contributing>`).
 
 
+.. _configuration:
+
 Configuration Files
 -------------------
 
@@ -438,6 +440,8 @@ Some config file syntax is explicitly reserved for future extensions:
 Semicolon comments, INI-style sections, multi-line values, quoted values,
 variable substitutions, alternative key–value separators, …
 
+
+.. _exclusion markers:
 
 Exclusion Markers
 -----------------
