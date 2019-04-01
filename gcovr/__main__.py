@@ -45,7 +45,6 @@ from .configuration import (
     parse_config_file, parse_config_into_dict, OutputOrDefault)
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
-from .json_generator import (gcovr_json_files_to_coverage)
 from .utils import (get_global_stats, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__

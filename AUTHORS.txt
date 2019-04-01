@@ -42,7 +42,6 @@ The following developers contributed to gcovr (ordered alphabetically):
     Mikk Leini,
     Nikolaj Schumacher,
     Piotr Dziwinski,
-    Phil Clapham,
     Richard Kjerstadius,
     Reto Schneider,
     Robert Rosengren,

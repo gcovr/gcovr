@@ -18,6 +18,12 @@ import re
 
 from .utils import FilterOption
 
+try:
+    from typing import Iterable, Any
+except ImportError:
+    if sys.version_info >= (3, 5):
+        raise
+
 
 def check_percentage(value):
     r"""
