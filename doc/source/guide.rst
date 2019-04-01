@@ -415,6 +415,9 @@ For example, :option:`--filter` can be provided multiple times::
     filter = lib/foo/
     filter = *./main\.cpp
 
+Note that relative filters specified in config files will be interpreted
+relative to the location of the config file itself.
+
 Option arguments are parsed with the following precedence:
 
 -   First the config file is parsed, if any.
