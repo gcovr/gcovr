@@ -16,6 +16,8 @@ import os
 import re
 import sys
 
+from .utils import FilterOption
+
 try:
     from typing import Iterable, Any
 except ImportError:
@@ -290,7 +292,11 @@ def _get_value_from_config_entry(cfg_entry, option):
         value = cfg_entry.value_as_bool
     elif option.type is not None:
         try:
-            value = option.type(cfg_entry.value)
+            if option.type is FilterOption:
+                value = option.type(cfg_entry.value,
+                                    os.path.dirname(cfg_entry.filename))
+            else:
+                value = option.type(cfg_entry.value)
         except (ValueError, ArgumentTypeError) as err:
             raise cfg_entry.error(str(err))
     else:
@@ -549,6 +555,7 @@ GCOVR_CONFIG_OPTIONS = [
              "Can be specified multiple times. "
              "If no filters are provided, defaults to --root.",
         action="append",
+        type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -557,7 +564,7 @@ GCOVR_CONFIG_OPTIONS = [
         help="Exclude source files that match this filter. "
              "Can be specified multiple times.",
         action="append",
-        type=check_non_empty,
+        type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -566,6 +573,7 @@ GCOVR_CONFIG_OPTIONS = [
         help="Keep only gcov data files that match this filter. "
              "Can be specified multiple times.",
         action="append",
+        type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -574,6 +582,7 @@ GCOVR_CONFIG_OPTIONS = [
         help="Exclude gcov data files that match this filter. "
              "Can be specified multiple times.",
         action="append",
+        type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -583,7 +592,7 @@ GCOVR_CONFIG_OPTIONS = [
              "while searching raw coverage files. "
              "Can be specified multiple times.",
         action="append",
-        type=check_non_empty,
+        type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(

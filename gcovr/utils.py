@@ -6,6 +6,7 @@
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
+from argparse import ArgumentTypeError
 import os
 import platform
 import re
@@ -139,22 +140,31 @@ def calculate_coverage(covered, total, nan_value=0.0):
     return nan_value if total == 0 else round(100.0 * covered / total, 1)
 
 
-def build_filter(logger, regex):
-    # Try to detect unintended backslashes and warn.
-    # Later, the regex engine may or may not raise a syntax error.
-    # An unintended backslash is a literal backslash r"\\",
-    # or a regex escape that doesn't exist.
-    (suggestion, bs_count) = re.subn(
-        r'\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])', '/', regex)
-    if bs_count:
-        logger.warn("filters must use forward slashes as path separators")
-        logger.warn("your filter : {}", regex)
-        logger.warn("did you mean: {}", suggestion)
+class FilterOption(object):
+    def __init__(self, regex, path_context=None):
+        if not regex:
+            raise ArgumentTypeError("filter cannot be empty")
+        self.regex = regex
+        self.path_context = path_context
 
-    if os.path.isabs(regex):
-        return AbsoluteFilter(regex)
-    else:
-        return RelativeFilter(os.getcwd(), regex)
+    def build_filter(self, logger):
+        # Try to detect unintended backslashes and warn.
+        # Later, the regex engine may or may not raise a syntax error.
+        # An unintended backslash is a literal backslash r"\\",
+        # or a regex escape that doesn't exist.
+        (suggestion, bs_count) = re.subn(
+            r'\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])', '/', self.regex)
+        if bs_count:
+            logger.warn("filters must use forward slashes as path separators")
+            logger.warn("your filter : {}", self.regex)
+            logger.warn("did you mean: {}", suggestion)
+
+        if os.path.isabs(self.regex):
+            return AbsoluteFilter(self.regex)
+        else:
+            path_context = (self.path_context if self.path_context is not None
+                            else os.getcwd())
+            return RelativeFilter(path_context, self.regex)
 
 
 class Filter(object):

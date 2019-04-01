@@ -52,14 +52,14 @@ def test_empty_root(capsys):
 def test_empty_exclude(capsys):
     c = capture(capsys, ['--exclude', ''])
     assert c.out == ''
-    assert 'value should not be empty' in c.err
+    assert 'filter cannot be empty' in c.err
     assert c.exception.code != 0
 
 
 def test_empty_exclude_directories(capsys):
     c = capture(capsys, ['--exclude-directories', ''])
     assert c.out == ''
-    assert 'value should not be empty' in c.err
+    assert 'filter cannot be empty' in c.err
     assert c.exception.code != 0
 
 
@@ -103,7 +103,7 @@ def test_line_threshold_100_1(capsys):
 def test_filter_backslashes_are_detected(capsys):
     c = capture(
         capsys,
-        args=['--filter', r'C:\\foo\moo', '--gcov-exclude', ''],
+        args=['--filter', r'C:\\foo\moo'],
         other_ex=re.error)
     assert c.err.startswith(
         '(WARNING) filters must use forward slashes as path separators\n'

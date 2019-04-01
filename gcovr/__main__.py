@@ -44,7 +44,7 @@ from .configuration import (
     parse_config_file, parse_config_into_dict)
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
-from .utils import (get_global_stats, build_filter, AlwaysMatchFilter,
+from .utils import (get_global_stats, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__
 from .workers import Workers
@@ -212,17 +212,16 @@ def main(args=None):
 
     if options.exclude_dirs is not None:
         options.exclude_dirs = [
-            build_filter(logger, f) for f in options.exclude_dirs]
+            f.build_filter(logger) for f in options.exclude_dirs]
 
-    options.exclude = [build_filter(logger, f) for f in options.exclude]
-    options.filter = [build_filter(logger, f) for f in options.filter]
+    options.exclude = [f.build_filter(logger) for f in options.exclude]
+    options.filter = [f.build_filter(logger) for f in options.filter]
     if not options.filter:
         options.filter = [DirectoryPrefixFilter(options.root_dir)]
 
     options.gcov_exclude = [
-        build_filter(logger, f) for f in options.gcov_exclude]
-    options.gcov_filter = [
-        build_filter(logger, f) for f in options.gcov_filter]
+        f.build_filter(logger) for f in options.gcov_exclude]
+    options.gcov_filter = [f.build_filter(logger) for f in options.gcov_filter]
     if not options.gcov_filter:
         options.gcov_filter = [AlwaysMatchFilter()]
 
