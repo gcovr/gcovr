@@ -519,6 +519,18 @@ GCOVR_CONFIG_OPTIONS = [
         default=90.0,
     ),
     GcovrConfigOption(
+        "json", ["--json"],
+        group="output_options",
+        help="Generate a JSON report.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "prettyjson", ["--json-pretty"],
+        group="output_options",
+        help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "relative_anchors", ["--html-absolute-paths"],
         group="output_options",
         help="Use absolute paths to link the --html-details reports. "

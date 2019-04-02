@@ -52,6 +52,7 @@ from .workers import Workers
 # generators
 from .cobertura_xml_generator import print_xml_report
 from .html_generator import print_html_report
+from .json_generator import print_json_report
 from .txt_generator import print_text_report
 from .summary_generator import print_summary
 
@@ -288,6 +289,8 @@ def main(args=None):
         print_xml_report(covdata, options)
     elif options.html or options.html_details:
         print_html_report(covdata, options)
+    elif options.json:
+        print_json_report(covdata, options)
     else:
         print_text_report(covdata, options)
 
