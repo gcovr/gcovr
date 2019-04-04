@@ -11,7 +11,7 @@ import sys
 from .utils import calculate_coverage, sort_coverage
 
 PRETTY_JSON_INDENT = 4
-
+FORMAT_VERSION = 0.1
 
 #
 # Produce gcovr json report
@@ -25,8 +25,9 @@ def print_json_report(covdata, options):
     total_covered = 0
 
     json_dict = {}
-    json_dict['root'] = options.root
-    json_dict['files'] = {}
+    json_dict['current_working_directory'] = options.root
+    json_dict['format_version'] = FORMAT_VERSION
+    json_dict['files'] = []
 
     # Data
     keys = sort_coverage(
@@ -55,21 +56,21 @@ def print_json_report(covdata, options):
         (filename, t, n, percent, uncovered_lines) = _summarize_file_coverage(covdata[key])
         total_lines += t
         total_covered += n
-        json_dict['files'][filename] = {
+        json_dict['files'].append({
+            'file': filename,
             'total': t,
             'covered': n,
             'percent': percent,
-            'uncovered_lines': uncovered_lines
         }
 
     # Footer & summary
     percent = calculate_coverage(total_covered, total_lines, nan_value=None)
 
     json_dict['total'] = total_lines
-    json_dict['total_covered'] = total_covered
+    json_dict['covered'] = total_covered
     json_dict['percent'] = percent
 
-    if options.prettyjson:
+    if options.json_summary_pretty:
         json_str = json.dumps(json_dict, indent=PRETTY_JSON_INDENT)
     else:
         json_str = json.dumps(json_dict)

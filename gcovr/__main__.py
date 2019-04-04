@@ -325,7 +325,7 @@ def collect_coverage_from_gcov(covdata, options, logger):
         print_xml_report(covdata, options)
     elif options.html or options.html_details:
         print_html_report(covdata, options)
-    elif options.json:
+    elif options.json_summary:
         print_json_report(covdata, options)
     else:
         print_text_report(covdata, options)
