@@ -13,6 +13,7 @@ from .utils import calculate_coverage, sort_coverage
 PRETTY_JSON_INDENT = 4
 FORMAT_VERSION = 0.1
 
+
 #
 # Produce gcovr json report
 #
@@ -61,7 +62,7 @@ def print_json_report(covdata, options):
             'total': t,
             'covered': n,
             'percent': percent,
-        }
+        })
 
     # Footer & summary
     percent = calculate_coverage(total_covered, total_lines, nan_value=None)
