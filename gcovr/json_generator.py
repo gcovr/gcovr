@@ -71,7 +71,7 @@ def print_json_report(covdata, options):
     json_dict['covered'] = total_covered
     json_dict['percent'] = percent
 
-    if options.json_summary_pretty:
+    if options.json_pretty_summary:
         json_str = json.dumps(json_dict, indent=PRETTY_JSON_INDENT)
     else:
         json_str = json.dumps(json_dict)
