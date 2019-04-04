@@ -571,7 +571,7 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
-        "json_pretty_summary", ["--json-summary-pretty"],
+        "json_pretty_summary", ["--json-pretty-summary"],
         group="output_options",
         help="Pretty-print the JSON summary report. "
         "Implies --json-summary. Default: {default!s}.",
