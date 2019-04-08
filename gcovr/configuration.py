@@ -44,12 +44,6 @@ def check_percentage(value):
     return x
 
 
-def check_non_empty(value):
-    if not value:
-        raise ArgumentTypeError("value should not be empty")
-    return value
-
-
 class GcovrConfigOption(object):
     r"""
     Represents a single setting for a gcovr runtime parameter.
