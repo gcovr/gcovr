@@ -220,10 +220,6 @@ class DirectoryPrefixFilter(Filter):
         pattern = re.escape(os_independent_dir + '/')
         super(DirectoryPrefixFilter, self).__init__(pattern)
 
-    def match(self, path):
-        normpath = os.path.normpath(path)
-        return super(DirectoryPrefixFilter, self).match(normpath)
-
 
 class Logger(object):
     def __init__(self, verbose=False):
