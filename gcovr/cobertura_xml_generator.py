@@ -31,11 +31,11 @@ def smart_open(filename=None):
     if filename and filename != '-':
         # files in write binary mode for UTF-8
         fh = open(filename, 'wb')
-    elif (sys.version_info > (3,0)):
-        #python 3 wants stdout.buffer for binary output
+    elif (sys.version_info > (3, 0)):
+        # python 3 wants stdout.buffer for binary output
         fh = sys.stdout.buffer
     else:
-        #python2 doesn't care as much, no stdout.buffer
+        # python2 doesn't care as much, no stdout.buffer
         fh = sys.stdout
 
     try:
