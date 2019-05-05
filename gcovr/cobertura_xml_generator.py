@@ -217,11 +217,12 @@ def print_xml_report(covdata, options):
 
     with smart_open(options.output) as fh:
         if LXML_AVAILABLE:
-            fh.write(
+            print(
                 etree.tostring(root,
                                pretty_print=options.prettyxml,
                                encoding="UTF-8",
                                xml_declaration=True,
-                               doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))
+                               doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"),
+                file=fh)
         else:
-            fh.write(etree.tostring(root, encoding="UTF-8"))
+            print(etree.tostring(root, encoding="UTF-8"), file=fh)
