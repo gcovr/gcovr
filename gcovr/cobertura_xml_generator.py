@@ -29,8 +29,13 @@ except NameError:
 @contextmanager
 def smart_open(filename=None):
     if filename and filename != '-':
-        fh = open(filename, 'w')
+        # files in write binary mode for UTF-8
+        fh = open(filename, 'wb')
+    elif (sys.version_info > (3,0)):
+        #python 3 wants stdout.buffer for binary output
+        fh = sys.stdout.buffer
     else:
+        #python2 doesn't care as much, no stdout.buffer
         fh = sys.stdout
 
     try:
@@ -217,12 +222,11 @@ def print_xml_report(covdata, options):
 
     with smart_open(options.output) as fh:
         if LXML_AVAILABLE:
-            print(
+            fh.write(
                 etree.tostring(root,
                                pretty_print=options.prettyxml,
                                encoding="UTF-8",
                                xml_declaration=True,
-                               doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"),
-                file=fh)
+                               doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))
         else:
-            print(etree.tostring(root, encoding="UTF-8"), file=fh)
+            fh.write(etree.tostring(root, encoding="UTF-8"))
