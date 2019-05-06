@@ -15,6 +15,8 @@ xml:
 
 html:
 
+sonarqube:
+
 clean:
 	rm -f testcase
 	rm -f *.gc*

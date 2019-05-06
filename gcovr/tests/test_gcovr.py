@@ -85,19 +85,21 @@ def find_reference_files(pattern):
 SCRUBBERS = dict(
     txt=scrub_txt,
     xml=scrub_xml,
-    html=scrub_html)
+    html=scrub_html,
+    sonarqube=scrub_xml)
 
 OUTPUT_PATTERN = dict(
     txt='coverage.txt',
     xml='coverage.xml',
-    html='coverage*.html')
+    html='coverage*.html',
+    sonarqube='sonarqube.xml')
 
 ASSERT_EQUALS = dict(
     xml=assert_xml_equals)
 
 
 @pytest.mark.parametrize('name', findtests(basedir))
-@pytest.mark.parametrize('format', ['txt', 'xml', 'html'])
+@pytest.mark.parametrize('format', ['txt', 'xml', 'html', 'sonarqube'])
 def test_build(name, format):
     scrub = SCRUBBERS[format]
     output_pattern = OUTPUT_PATTERN[format]

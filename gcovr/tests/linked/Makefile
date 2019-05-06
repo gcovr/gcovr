@@ -11,7 +11,7 @@ all: links
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CFLAGS) subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/m/n/C/D/file6.o subdir/A/file7.o subdir/B/main.o -o subdir/testcase
 
-run: txt xml html
+run: txt xml html sonarqube
 
 txt:
 	./subdir/testcase
@@ -25,9 +25,13 @@ html:
 	./subdir/testcase
 	$(GCOVR) -d --html-details -o coverage.html
 
+sonarqube:
+	./subdir/testcase
+	$(GCOVR) -d --sonarqube sonarqube.xml
+
 clean:
 	rm -Rf subdir
-	rm -f coverage.txt coverage.xml coverage*.html
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
 
 links:
 	if ! [ -d "subdir" ]; then\

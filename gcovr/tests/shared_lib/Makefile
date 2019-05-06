@@ -36,7 +36,7 @@ all:
 	$(CXX) $(CFLAGS) $(SOFLAGS) obj/libs.o -o lib/libs.$(DYNLIB_EXT)
 	$(MAKE) -C testApp
 
-run: txt xml html
+run: txt xml html sonarqube
 
 txt:
 ifeq ($(BASE_OS),MSYS_NT)
@@ -62,8 +62,16 @@ else
 endif
 	$(GCOVR) -d --html-details -o coverage.html
 
+sonarqube:
+ifeq ($(BASE_OS),MSYS_NT)
+	PATH="`pwd`/lib:${PATH}" testApp/test/a.out
+else
+	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
+endif
+	$(GCOVR) -d --sonarqube sonarqube.xml
+
 clean:
 	rm -rf obj
 	rm -f lib/*.$(DYNLIB_EXT)
-	rm -f coverage.xml coverage.txt coverage*.html
+	rm -f coverage.xml coverage.txt coverage*.html sonarqube.xml
 	$(MAKE) -C testApp clean

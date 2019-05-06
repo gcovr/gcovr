@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html
+run: txt xml html sonarqube
 
 txt:
 	./testcase
@@ -18,8 +18,12 @@ html:
 	$(GCOVR)    --html-details                          -o coverage-throw.html
 	$(GCOVR) -d --html-details --exclude-throw-branches -o coverage-excl-throw.html
 
+sonarqube:
+	./testcase
+	$(GCOVR)			     --sonarqube sonarqube-throw.xml
+	$(GCOVR) -d --exclude-throw-branches --sonarqube sonarqube-excl-throw.xml
 
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage-*.txt coverage-*.xml coverage-*.html
+	rm -f coverage-*.txt coverage-*.xml coverage-*.html sonarqube.xml
