@@ -556,6 +556,12 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "sonarqube", ["--sonarqube"],
+        group="output_options",
+        help="Generate sonarqube generic coverage report in this file name.",
+        default=None,
+    ),
+    GcovrConfigOption(
         "filter", ["-f", "--filter"],
         group="filter_options",
         help="Keep only source files that match this filter. "
