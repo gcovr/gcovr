@@ -5,7 +5,7 @@ all:
 	$(CXX) $(CFLAGS) -c main.cpp -o main.o
 	$(CXX) $(CFLAGS) main.o file1.o -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube
 
 GCOVR_TEST_OPTIONS = -e 'file1.cpp'  # use a relative filter here
 
@@ -24,9 +24,6 @@ html:
 sonarqube:
 	./testcase
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube sonarqube.xml
-
-json:
-	# pass
 
 clean:
 	rm -f testcase

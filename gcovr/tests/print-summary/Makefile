@@ -17,8 +17,6 @@ html:
 
 sonarqube:
 
-json:
-
 clean:
 	rm -f testcase
 	rm -f *.gc*
