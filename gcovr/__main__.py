@@ -58,7 +58,6 @@ from .json_generator import print_json_report
 from .txt_generator import print_text_report
 from .summary_generator import print_summary
 from .sonarqube_generator import print_sonarqube_report
-from .json_generator import print_json_report
 
 
 #
@@ -327,6 +326,9 @@ def collect_coverage_from_gcov(covdata, options, logger):
         print_html_report(covdata, options)
     elif options.json_summary:
         print_json_report(covdata, options)
+    elif options.sonarqube is not None:
+        options.sonarqube = os.path.abspath(options.sonarqube)
+        print_sonarqube_report(covdata, options)
     else:
         print_text_report(covdata, options)
 

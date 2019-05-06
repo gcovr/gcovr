@@ -121,6 +121,15 @@ You can also generate detailed HTML reports:
 
 Gcovr will create one HTML report per source file next to the coverage.html summary.
 
+To generate code coverage report for sonarqube:
+
+::
+
+    gcovr -r . --xml-pretty --sonarqube coverage.xml
+
+This will create coverage.xml containing the sonarqube generic coverage report described at:
+`<https://docs.sonarqube.org/latest/analysis/generic-test/>`_
+
 You should run gcovr from the build directory.
 The ``-r`` option should point to the root of your project.
 This only matters if you have a separate build directory.

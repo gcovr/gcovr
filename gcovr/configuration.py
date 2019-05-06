@@ -604,30 +604,8 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "sonarqube", ["--sonarqube"],
         group="output_options",
-        metavar='OUTPUT',
-        help="Generate sonarqube generic coverage report in this file name. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
+        help="Generate sonarqube generic coverage report in this file name.",
         default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "json", ["--json"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate a JSON report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "prettyjson", ["--json-pretty"],
-        group="output_options",
-        help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
-        action="store_true",
     ),
     GcovrConfigOption(
         "filter", ["-f", "--filter"],
