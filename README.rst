@@ -123,7 +123,7 @@ To generate code coverage report for sonarqube:
 
 ::
 
-    gcovr -r . --xml-pretty --sonarqube coverage.xml
+    gcovr -r . --sonarqube coverage.xml
 
 This will create coverage.xml containing the sonarqube generic coverage report described at:
 `<https://docs.sonarqube.org/latest/analysis/generic-test/>`_
