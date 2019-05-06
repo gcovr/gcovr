@@ -6,7 +6,7 @@ all:
 	$(CXX) $(CFLAGS) -c b/main.cpp -o build/b/main.o
 	$(CXX) $(CFLAGS) build/b/main.o build/a/file1.o -o testcase
 
-run: txt xml html
+run: txt xml html sonarqube
 
 GCOVR_TEST_OPTIONS = --exclude-directories 'build/a'
 
@@ -22,7 +22,11 @@ html:
 	./testcase
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
 
+sonarqube:
+	./testcase
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube sonarqube.xml
+
 clean:
 	rm -f testcase
 	rm -rf build  # remove *.gc* *.o
-	rm -f coverage.txt coverage.xml coverage*.html
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml

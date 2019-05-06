@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+<file path="b/main.cpp">
+<lineToCover covered="true" lineNumber="5"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="6"/>
+<lineToCover covered="false" lineNumber="7"/>
+<lineToCover covered="true" lineNumber="9"/>
+<lineToCover covered="true" lineNumber="14"/>
+<lineToCover covered="true" lineNumber="15"/>
+<lineToCover covered="true" lineNumber="17"/>
+<lineToCover branchesToCover="4" covered="true" coveredBranches="2" lineNumber="18"/>
+</file>
+</coverage>
+

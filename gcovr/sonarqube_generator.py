@@ -69,23 +69,7 @@ def print_sonarqube_report(covdata, options):
 
         root.appendChild(fileNode)
 
-    if options.prettyxml:
-        import textwrap
-        lines = doc.toprettyxml(" ").split('\n')
-        for i in xrange(len(lines)):
-            n = 0
-            while n < len(lines[i]) and lines[i][n] == " ":
-                n += 1
-            lines[i] = "\n".join(textwrap.wrap(
-                lines[i], 78,
-                break_long_words=False,
-                break_on_hyphens=False,
-                subsequent_indent=" " + n * " "
-            ))
-        xmlString = "\n".join(lines)
-        # print textwrap.wrap(doc.toprettyxml(" "), 80)
-    else:
-        xmlString = doc.toprettyxml(indent="")
+    xmlString = doc.toprettyxml(indent="")
 
     OUTPUT = open(options.sonarqube, 'w')
     OUTPUT.write(xmlString + '\n')

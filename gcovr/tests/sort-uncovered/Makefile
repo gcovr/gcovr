@@ -8,7 +8,7 @@ all:
 	$(CXX) $(CFLAGS) -c main.cpp -o main.o
 	$(CXX) $(CFLAGS) main.o file1.o file2.o file3.o file4.o -o testcase
 
-run: txt xml html
+run: txt xml html sonarqube
 
 GCOVR_TEST_OPTIONS = --sort-uncovered
 
@@ -21,6 +21,9 @@ xml:
 html:
 	./testcase
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
+
+sonarqube:
+	# pass
 
 clean:
 	rm -f testcase

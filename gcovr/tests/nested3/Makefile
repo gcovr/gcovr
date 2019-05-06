@@ -13,7 +13,7 @@ all:
 	cd subdir; $(CXX) $(CFLAGS) -c B/main.cpp -o ../objs/main.o
 	cd subdir; $(CXX) $(CFLAGS) ../objs/file1.o ../objs/file2.o ../objs/file3.o ../objs/file4.o ../objs/file5.o ../objs/file6.o ../objs/file7.o ../objs/main.o -o ./testcase
 
-run: txt xml html
+run: txt xml html sonarqube
 
 txt:
 	./subdir/testcase
@@ -27,8 +27,12 @@ html:
 	./subdir/testcase
 	$(GCOVR) -r subdir --object-directory objs -d --html-details -o coverage.html
 
+sonarqube:
+	./subdir/testcase
+	$(GCOVR) -r subdir --object-directory objs -d --sonarqube sonarqube.xml
+
 clean:
 	rm -f ./subdir/testcase
 	rm -f *.gc* */*.gc* */*/*.gc* */*/*/*.gc* */*/*/*/*.gc*
 	rm -f *.o */*.o */*/*.o */*/*/*.o */*/*/*/*.o
-	rm -f coverage.txt coverage.xml coverage*.html
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
