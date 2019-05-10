@@ -32,5 +32,5 @@ links:
 	   test -d relevant-library || ln -sT ../external-library relevant-library
 
 clean:
-	cd project; rm -f testcase *.gc* *.o relevant-library
+	cd project; rm -f testcase *.gc* *.o; rm -rf relevant-library
 	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
