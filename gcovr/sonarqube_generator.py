@@ -7,7 +7,6 @@
 # This software is distributed under the BSD license.
 
 import os
-import xml.dom.minidom
 
 try:
     xrange
@@ -19,11 +18,7 @@ except NameError:
 # Produce an XML report in the Sonarqube generic coverage format
 #
 def print_sonarqube_report(covdata, options):
-
-    impl = xml.dom.minidom.getDOMImplementation()
-    doc = impl.createDocument(None, "coverage", None)
-    root = doc.documentElement
-    root.setAttribute("version", "1")
+    root = "<?xml version=\"1.0\" ?>\n" + "<coverage version=\"1\">\n"
     source_dirs = set()
 
     for f in sorted(covdata):
@@ -42,34 +37,40 @@ def print_sonarqube_report(covdata, options):
             directory = f
         directory, fname = os.path.split(directory)
 
-        fileNode = doc.createElement("file")
-
         filename = os.path.join(directory, fname).replace('\\', '/')
-        fileNode.setAttribute("path", filename)
+        fileNode = "<file path=\"" + filename + "\">\n"
 
         for lineno in sorted(data.lines):
             line_cov = data.lines[lineno]
             if not line_cov.is_covered and not line_cov.is_uncovered:
                 continue
 
-            L = doc.createElement("lineToCover")
-            L.setAttribute("lineNumber", str(lineno))
+            attrLineNum = " lineNumber=\"" + str(lineno) + "\""
+            attrCovered = " covered="
             if line_cov.is_covered:
-                L.setAttribute("covered", "true")
+                attrCovered += "\"true\""
             else:
-                L.setAttribute("covered", "false")
+                attrCovered += "\"false\""
 
+            attrBranchesToCover = ""
+            attrCoveredBranches = ""
             branches = line_cov.branches
             if branches:
                 b_total, b_hits, coverage = line_cov.branch_coverage()
-                L.setAttribute("branchesToCover", str(b_total))
-                L.setAttribute("coveredBranches", str(b_hits))
+                attrBranchesToCover = " branchesToCover=\"" + str(b_total) + "\""
+                attrCoveredBranches = " coveredBranches=\"" + str(b_hits) + "\""
 
-            fileNode.appendChild(L)
+            L =  "<lineToCover"
+            L += attrBranchesToCover
+            L += attrCovered
+            L += attrCoveredBranches
+            L += attrLineNum
+            L += "/>\n"
+            fileNode += L
 
-        root.appendChild(fileNode)
+        root += fileNode + "</file>\n"
 
-    xmlString = doc.toprettyxml(indent="")
+    xmlString = root + "</coverage>\n"
 
     OUTPUT = open(options.sonarqube, 'w')
     OUTPUT.write(xmlString + '\n')
