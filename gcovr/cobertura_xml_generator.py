@@ -2,87 +2,75 @@
 
 # This file is part of gcovr <http://gcovr.com/>.
 #
-# Copyright 2013-2018 the gcovr authors
+# Copyright 2013-2019 the gcovr authors
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
 import os
-import sys
 import time
-import xml.dom.minidom
+
+from lxml import etree
 
 from .version import __version__
-
-try:
-    xrange
-except NameError:
-    xrange = range
+from .utils import open_binary_for_writing
 
 
-#
-# Produce an XML report in the Cobertura format
-#
 def print_xml_report(covdata, options):
+    """produce an XML report in the Cobertura format"""
     branchTotal = 0
     branchCovered = 0
     lineTotal = 0
     lineCovered = 0
 
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].branch_coverage()
+        (total, covered, _) = covdata[key].branch_coverage()
         branchTotal += total
         branchCovered += covered
 
     for key in covdata.keys():
-        (total, covered, percent) = covdata[key].line_coverage()
+        (total, covered, _) = covdata[key].line_coverage()
         lineTotal += total
         lineCovered += covered
 
-    impl = xml.dom.minidom.getDOMImplementation()
-    docType = impl.createDocumentType(
-        "coverage", None,
-        "http://cobertura.sourceforge.net/xml/coverage-04.dtd"
-    )
-    doc = impl.createDocument(None, "coverage", docType)
-    root = doc.documentElement
-    root.setAttribute(
+    root = etree.Element("coverage")
+    root.set(
         "line-rate", lineTotal == 0 and '0.0'
         or str(float(lineCovered) / lineTotal)
     )
-    root.setAttribute(
+    root.set(
         "branch-rate", branchTotal == 0 and '0.0'
         or str(float(branchCovered) / branchTotal)
     )
-    root.setAttribute(
+    root.set(
         "lines-covered", str(lineCovered)
     )
-    root.setAttribute(
+    root.set(
         "lines-valid", str(lineTotal)
     )
-    root.setAttribute(
+    root.set(
         "branches-covered", str(branchCovered)
     )
-    root.setAttribute(
+    root.set(
         "branches-valid", str(branchTotal)
     )
-    root.setAttribute(
+    root.set(
         "complexity", "0.0"
     )
-    root.setAttribute(
+    root.set(
         "timestamp", str(int(time.time()))
     )
-    root.setAttribute(
+    root.set(
         "version", "gcovr %s" % (__version__,)
     )
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
-    sources = doc.createElement("sources")
-    root.appendChild(sources)
+    # sources = doc.createElement("sources")
+    sources = etree.SubElement(root, "sources")
 
     # Generate the coverage output (on a per-package basis)
-    packageXml = doc.createElement("packages")
-    root.appendChild(packageXml)
+    # packageXml = doc.createElement("packages")
+    packageXml = etree.SubElement(root, "packages")
     packages = {}
     source_dirs = set()
 
@@ -103,14 +91,13 @@ def print_xml_report(covdata, options):
         directory, fname = os.path.split(directory)
 
         package = packages.setdefault(
-            directory, [doc.createElement("package"), {}, 0, 0, 0, 0]
+            directory, [etree.Element("package"), {}, 0, 0, 0, 0]
         )
-        c = doc.createElement("class")
+        c = etree.Element("class")
         # The Cobertura DTD requires a methods section, which isn't
         # trivial to get from gcov (so we will leave it blank)
-        c.appendChild(doc.createElement("methods"))
-        lines = doc.createElement("lines")
-        c.appendChild(lines)
+        etree.SubElement(c, "methods")
+        lines = etree.SubElement(c, "lines")
 
         class_lines = 0
         class_hits = 0
@@ -125,43 +112,43 @@ def print_xml_report(covdata, options):
             if line_cov.is_covered:
                 class_hits += 1
             hits = line_cov.count
-            L = doc.createElement("line")
-            L.setAttribute("number", str(lineno))
-            L.setAttribute("hits", str(hits))
+            L = etree.Element("line")
+            L.set("number", str(lineno))
+            L.set("hits", str(hits))
             branches = line_cov.branches
             if not branches:
-                L.setAttribute("branch", "false")
+                L.set("branch", "false")
             else:
                 b_total, b_hits, coverage = line_cov.branch_coverage()
-                L.setAttribute("branch", "true")
-                L.setAttribute(
+                L.set("branch", "true")
+                L.set(
                     "condition-coverage",
                     "{}% ({}/{})".format(int(coverage), b_hits, b_total)
                 )
-                cond = doc.createElement('condition')
-                cond.setAttribute("number", "0")
-                cond.setAttribute("type", "jump")
-                cond.setAttribute("coverage", "{}%".format(int(coverage)))
+                cond = etree.Element('condition')
+                cond.set("number", "0")
+                cond.set("type", "jump")
+                cond.set("coverage", "{}%".format(int(coverage)))
                 class_branch_hits += b_hits
                 class_branches += float(len(branches))
-                conditions = doc.createElement("conditions")
-                conditions.appendChild(cond)
-                L.appendChild(conditions)
+                conditions = etree.Element("conditions")
+                conditions.append(cond)
+                L.append(conditions)
 
-            lines.appendChild(L)
+            lines.append(L)
 
         className = fname.replace('.', '_')
-        c.setAttribute("name", className)
-        c.setAttribute("filename", os.path.join(directory, fname).replace('\\', '/'))
-        c.setAttribute(
+        c.set("name", className)
+        c.set("filename", os.path.join(directory, fname).replace('\\', '/'))
+        c.set(
             "line-rate",
             str(class_hits / (1.0 * class_lines or 1.0))
         )
-        c.setAttribute(
+        c.set(
             "branch-rate",
             str(class_branch_hits / (1.0 * class_branches or 1.0))
         )
-        c.setAttribute("complexity", "0.0")
+        c.set("complexity", "0.0")
 
         package[1][className] = c
         package[2] += class_hits
@@ -174,47 +161,28 @@ def print_xml_report(covdata, options):
     for packageName in keys:
         packageData = packages[packageName]
         package = packageData[0]
-        packageXml.appendChild(package)
-        classes = doc.createElement("classes")
-        package.appendChild(classes)
+        packageXml.append(package)
+        classes = etree.SubElement(package, "classes")
         classNames = list(packageData[1].keys())
         classNames.sort()
         for className in classNames:
-            classes.appendChild(packageData[1][className])
-        package.setAttribute("name", packageName.replace(os.sep, '.'))
-        package.setAttribute(
+            classes.append(packageData[1][className])
+        package.set("name", packageName.replace(os.sep, '.'))
+        package.set(
             "line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0))
         )
-        package.setAttribute(
+        package.set(
             "branch-rate", str(packageData[4] / (1.0 * packageData[5] or 1.0))
         )
-        package.setAttribute("complexity", "0.0")
+        package.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
-    source = doc.createElement("source")
-    source.appendChild(doc.createTextNode(options.root.strip()))
-    sources.appendChild(source)
+    etree.SubElement(sources, "source").text = options.root.strip()
 
-    if options.prettyxml:
-        import textwrap
-        lines = doc.toprettyxml(" ").split('\n')
-        for i in xrange(len(lines)):
-            n = 0
-            while n < len(lines[i]) and lines[i][n] == " ":
-                n += 1
-            lines[i] = "\n".join(textwrap.wrap(
-                lines[i], 78,
-                break_long_words=False,
-                break_on_hyphens=False,
-                subsequent_indent=" " + n * " "
-            ))
-        xmlString = "\n".join(lines)
-        # print textwrap.wrap(doc.toprettyxml(" "), 80)
-    else:
-        xmlString = doc.toprettyxml(indent="")
-    if options.output is None:
-        sys.stdout.write(xmlString + '\n')
-    else:
-        OUTPUT = open(options.output, 'w')
-        OUTPUT.write(xmlString + '\n')
-        OUTPUT.close()
+    with open_binary_for_writing(options.output) as fh:
+        fh.write(
+            etree.tostring(root,
+                           pretty_print=options.prettyxml,
+                           encoding="UTF-8",
+                           xml_declaration=True,
+                           doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))

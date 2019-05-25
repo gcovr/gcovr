@@ -38,6 +38,8 @@ Improvements and new features:
  - Fix wrong names in report
    when source and build directories have similar names. (:issue:`299`)
  - Stricter argument handling. (:issue:`267`)
+ - Reduce XML memory usage by moving to lxml.
+   (:issue:`1`, :issue:`118`, :issue:`307`)
 
 Known issues:
 
