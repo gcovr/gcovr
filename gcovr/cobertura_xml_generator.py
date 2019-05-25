@@ -12,7 +12,7 @@ import time
 from lxml import etree
 
 from .version import __version__
-from .utils import open_binary_for_writing
+from .utils import open_binary_for_writing, presentable_filename
 
 
 def print_xml_report(covdata, options):
@@ -130,7 +130,7 @@ def print_xml_report(covdata, options):
 
         className = fname.replace('.', '_')
         c.set("name", className)
-        c.set("filename", os.path.join(directory, fname).replace('\\', '/'))
+        c.set("filename", filename)
         c.set(
             "line-rate",
             str(class_hits / (1.0 * class_lines or 1.0))
@@ -158,7 +158,7 @@ def print_xml_report(covdata, options):
         classNames.sort()
         for className in classNames:
             classes.append(packageData[1][className])
-        package.set("name", packageName.replace(os.sep, '.'))
+        package.set("name", packageName.replace('/', '.'))
         package.set(
             "line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0))
         )
