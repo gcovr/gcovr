@@ -137,8 +137,8 @@ branches taken and the branches that were not completely covered:
     :literal:
 
 
-XML Output
-~~~~~~~~~~
+Cobertura XML Output
+~~~~~~~~~~~~~~~~~~~~
 
 The default output format for ``gcovr`` is to generate a tabular
 summary in plain text.  The ``gcovr`` command can also generate an
@@ -160,6 +160,7 @@ format suitable for import and display within the
 `Jenkins <http://www.jenkins-ci.org/>`__ and `Hudson <http://www.hudson-ci.org/>`__
 continuous integration servers using the
 `Cobertura Plugin <https://wiki.jenkins-ci.org/display/JENKINS/Cobertura+Plugin>`__.
+Gcovr also supports a `Sonarqube XML Output`_
 
 The ``--xml`` option generates a denser XML output, and the ``--xml-pretty``
 option generates an indented XML output that is easier to read.
@@ -214,6 +215,20 @@ Note that the ``--html-details`` option can only be used with the
 specifies the output file ``coverage.html``, then the web pages
 generated for each file will have names of the form
 ``coverage.<filename>.html``.
+
+
+Sonarqube XML Output
+~~~~~~~~~~~~~~~~~~~~
+
+If you are using Sonarqube, you can get a coverage report
+in a suitable XML format via the :option:`gcovr --sonarqube` option::
+
+    gcovr --sonarqube=coverage.xml
+
+Note that the ``-o``/``--output`` option cannot be used here.
+
+The Sonarqube XML format is documented at
+`<https://docs.sonarqube.org/latest/analysis/generic-test/>`_.
 
 
 The gcovr Command
