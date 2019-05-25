@@ -6,13 +6,12 @@
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
-import os
 from lxml import etree
 
 from .utils import open_binary_for_writing, presentable_filename
 
 
-def print_sonarqube_report(covdata, options):
+def print_sonarqube_report(covdata, output_file, options):
     """produce an XML report in the Sonarqube generic coverage format"""
 
     root = etree.Element("coverage")
@@ -47,7 +46,7 @@ def print_sonarqube_report(covdata, options):
 
         root.append(fileNode)
 
-    with open_binary_for_writing(options.sonarqube) as fh:
+    with open_binary_for_writing(output_file) as fh:
         fh.write(
             etree.tostring(root,
                            encoding="UTF-8",

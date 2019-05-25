@@ -348,6 +348,26 @@ def merge_options_and_set_defaults(partial_namespaces, all_options=None):
     return target
 
 
+class OutputOrDefault(object):
+    """An output path that may be empty.
+
+    - ``None``: the option is not set
+    - ``OutputOrDefault(None)``: fall back to some default value
+    - ``OutputOrDefault(path)``: use that path
+    """
+
+    def __init__(self, value):
+        self.value = value
+
+    @classmethod
+    def choose(_cls, choices, default=None):
+        """select the first choice that contains a value"""
+        for choice in choices:
+            if choice and choice.value:
+                return choice
+        return default
+
+
 GCOVR_CONFIG_OPTION_GROUPS = [
     {
         "key": "output_options",
@@ -437,7 +457,7 @@ GCOVR_CONFIG_OPTIONS = [
         "output", ["-o", "--output"],
         group="output_options",
         help="Print output to this filename. Defaults to stdout. "
-             "Required for --html-details.",
+        "Individual output formats can override this.",
         default=None,
     ),
     GcovrConfigOption(
@@ -464,8 +484,13 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "xml", ["-x", "--xml"],
         group="output_options",
-        help="Generate a Cobertura XML report.",
-        action="store_true",
+        metavar='OUTPUT',
+        help="Generate a Cobertura XML report. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
         "prettyxml", ["--xml-pretty"],
@@ -476,16 +501,25 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "html", ["--html"],
         group="output_options",
-        help="Generate a HTML report.",
-        action="store_true",
+        metavar='OUTPUT',
+        help="Generate a HTML report. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
         "html_details", ["--html-details"],
         group="output_options",
+        metavar="OUTPUT",
         help="Add annotated source code reports to the HTML report. "
-             "Requires --output as a basename for the reports. "
-             "Implies --html.",
-        action="store_true",
+             "Implies --html. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
         "html_title", ["--html-title"],
@@ -560,8 +594,11 @@ GCOVR_CONFIG_OPTIONS = [
         group="output_options",
         metavar='OUTPUT',
         help="Generate sonarqube generic coverage report in this file name. "
-             "Does not use the -o/--output option.",
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
         default=None,
+        const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
         "filter", ["-f", "--filter"],
