@@ -2,7 +2,7 @@
 
 # This file is part of gcovr <http://gcovr.com/>.
 #
-# Copyright 2013-2018 the gcovr authors
+# Copyright 2013-2019 the gcovr authors
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
@@ -10,6 +10,7 @@ import os
 import platform
 import re
 import sys
+from contextlib import contextmanager
 
 if not (platform.system() == 'Windows' and sys.version_info[0] == 2):
     class LoopChecker(object):
@@ -284,3 +285,29 @@ def sort_coverage(covdata, show_branch,
         key_fn = None  # default key, sort alphabetically
 
     return sorted(covdata, key=key_fn)
+
+
+@contextmanager
+def open_binary_for_writing(filename=None):
+    """Context manager to open and close a file for binary writing.
+
+    Stdout is used if `filename` is None or '-'.
+    """
+    if filename and filename != '-':
+        # files in write binary mode for UTF-8
+        fh = open(filename, 'wb')
+        close = True
+    elif (sys.version_info > (3, 0)):
+        # python 3 wants stdout.buffer for binary output
+        fh = sys.stdout.buffer
+        close = False
+    else:
+        # python2 doesn't care as much, no stdout.buffer
+        fh = sys.stdout
+        close = False
+
+    try:
+        yield fh
+    finally:
+        if close:
+            fh.close()
