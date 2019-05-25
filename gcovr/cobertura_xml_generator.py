@@ -2,53 +2,21 @@
 
 # This file is part of gcovr <http://gcovr.com/>.
 #
-# Copyright 2013-2018 the gcovr authors
+# Copyright 2013-2019 the gcovr authors
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
 import os
-import sys
 import time
-from contextlib import contextmanager
 
-try:
-    from lxml import etree
-    LXML_AVAILABLE = True
-except ImportError:
-    import xml.etree.ElementTree as etree
-    LXML_AVAILABLE = False
+from lxml import etree
 
 from .version import __version__
-
-try:
-    xrange
-except NameError:
-    xrange = range
-
-
-@contextmanager
-def smart_open(filename=None):
-    if filename and filename != '-':
-        # files in write binary mode for UTF-8
-        fh = open(filename, 'wb')
-    elif (sys.version_info > (3, 0)):
-        # python 3 wants stdout.buffer for binary output
-        fh = sys.stdout.buffer
-    else:
-        # python2 doesn't care as much, no stdout.buffer
-        fh = sys.stdout
-
-    try:
-        yield fh
-    finally:
-        if fh is not sys.stdout:
-            fh.close()
-#
-# Produce an XML report in the Cobertura format
-#
+from .utils import open_binary_for_writing
 
 
 def print_xml_report(covdata, options):
+    """produce an XML report in the Cobertura format"""
     branchTotal = 0
     branchCovered = 0
     lineTotal = 0
@@ -64,13 +32,6 @@ def print_xml_report(covdata, options):
         lineTotal += total
         lineCovered += covered
 
-    # impl = xml.dom.minidom.getDOMImplementation()
-    # docType = impl.createDocumentType(
-    #     "coverage", None,
-    #     "http://cobertura.sourceforge.net/xml/coverage-04.dtd"
-    # )
-    # doc = impl.createDocument(None, "coverage", docType)
-    # root = doc.documentElement
     root = etree.Element("coverage")
     root.set(
         "line-rate", lineTotal == 0 and '0.0'
@@ -105,12 +66,10 @@ def print_xml_report(covdata, options):
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
     # sources = doc.createElement("sources")
-    # root.appendChild(sources)
     sources = etree.SubElement(root, "sources")
 
     # Generate the coverage output (on a per-package basis)
     # packageXml = doc.createElement("packages")
-    # root.appendChild(packageXml)
     packageXml = etree.SubElement(root, "packages")
     packages = {}
     source_dirs = set()
@@ -220,13 +179,10 @@ def print_xml_report(covdata, options):
     # Populate the <sources> element: this is the root directory
     etree.SubElement(sources, "source").text = options.root.strip()
 
-    with smart_open(options.output) as fh:
-        if LXML_AVAILABLE:
-            fh.write(
-                etree.tostring(root,
-                               pretty_print=options.prettyxml,
-                               encoding="UTF-8",
-                               xml_declaration=True,
-                               doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))
-        else:
-            fh.write(etree.tostring(root, encoding="UTF-8"))
+    with open_binary_for_writing(options.output) as fh:
+        fh.write(
+            etree.tostring(root,
+                           pretty_print=options.prettyxml,
+                           encoding="UTF-8",
+                           xml_declaration=True,
+                           doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))
