@@ -310,8 +310,13 @@ def open_binary_for_writing(filename=None):
         # files in write binary mode for UTF-8
         fh = open(filename, 'wb')
         close = True
-    else:
+    elif (sys.version_info > (3, 0)):
+        # python 3 wants stdout.buffer for binary output
         fh = sys.stdout.buffer
+        close = False
+    else:
+        # python2 doesn't care as much, no stdout.buffer
+        fh = sys.stdout
         close = False
 
     try:
@@ -319,21 +324,3 @@ def open_binary_for_writing(filename=None):
     finally:
         if close:
             fh.close()
-
-
-def presentable_filename(filename, root_filter):
-    # type: (str, re.Regex) -> str
-    """mangle a filename so that it is suitable for a report"""
-
-    normalized = root_filter.sub('', filename)
-    if filename.endswith(normalized):
-        # remove any slashes between the removed prefix and the normalized name
-        if filename != normalized:
-            while normalized.startswith(os.path.sep):
-                normalized = normalized[len(os.path.sep):]
-    else:
-        # Do no truncation if the filter does not start matching
-        # at the beginning of the string
-        normalized = filename
-
-    return normalized.replace('\\', '/')
