@@ -351,12 +351,29 @@ Sonarqube XML Output
 If you are using Sonarqube, you can get a coverage report
 in a suitable XML format via the :option:`gcovr --sonarqube` option::
 
-    gcovr --sonarqube=coverage.xml
-
-Note that the ``-o``/``--output`` option cannot be used here.
+    gcovr --sonarqube coverage.xml
 
 The Sonarqube XML format is documented at
 `<https://docs.sonarqube.org/latest/analysis/generic-test/>`_.
+
+
+Multiple Output Formats
+~~~~~~~~~~~~~~~~~~~~~~~
+
+You can write multiple report formats with one gcovr invocation
+by passing the output filename directly to the report format flag.
+If no filename is specified for the format,
+the value from :option:`-o/--output<gcovr --output>` is used by default,
+which itself defaults to stdout.
+
+The following report format flags can take an optional output file name:
+
+- :option:`gcovr --xml`
+- :option:`gcovr --html`
+- :option:`gcovr --html-details`
+- :option:`gcovr --sonarqube`
+
+Note that --html-details overrides any value of --html if it is present.
 
 
 The gcovr Command

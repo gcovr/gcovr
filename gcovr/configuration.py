@@ -606,8 +606,11 @@ GCOVR_CONFIG_OPTIONS = [
         group="output_options",
         metavar='OUTPUT',
         help="Generate sonarqube generic coverage report in this file name. "
-             "Does not use the -o/--output option.",
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
         default=None,
+        const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
         "filter", ["-f", "--filter"],

@@ -31,6 +31,17 @@ Breaking changes:
    To keep the old meaning, separate positional arguments like
    ``gcovr --xml -- foo``.
 
+Breaking changes:
+
+ - Format flag parameters like :option:`--xml` or :option:`--html`
+   now take an optional output file name.
+   This potentially changes the interpretation of search paths.
+   In ``gcovr --xml foo``,
+   previous gcovr versions would search the ``foo`` directory for coverage data.
+   Now, gcovr will try to write the Cobertura report to the ``foo`` file.
+   To keep the old meaning, separate positional arguments like
+   ``gcovr --xml -- foo``.
+
 Improvements and new features:
 
  - :ref:`Configuration file <configuration>` support (experimental).
@@ -56,12 +67,11 @@ Improvements and new features:
  - Stricter argument handling. (:issue:`267`)
  - Reduce XML memory usage by moving to lxml.
    (:issue:`1`, :issue:`118`, :issue:`307`)
- - Can write :ref:`multiple reports <multiple output formats>` at the same time
+ - Can write multiple reports at the same time
    by giving the output file name to the report format parameter.
    Now, ``gcovr --html -o cov.html`` and ``gcovr --html cov.html``
-   are equivalent. (:issue:`291`)
- - Override gcov locale properly. (:issue:`334`)
- - Make gcov parser more robust when used with GCC 8. (:issue:`315`)
+   are equivalent.
+ - Added -json-sumamry option to generate json summary report.
 
 Known issues:
 
@@ -194,14 +204,14 @@ Internal changes:
 3.1 (6 December 2013)
 ---------------------
 
- - Change to make the -r/--root options define the root directory 
+ - Change to make the -r/--root options define the root directory
    for source files.
  - Fix to apply the -p option when the --html option is used.
  - Adding new option, '--exclude-unreachable-branches' that
    will exclude branches in certain lines from coverage report.
  - Simplifying and standardizing the processing of linked files.
  - Adding tests for deeply nested code, and symbolic links.
- - Add support for multiple —filter options in same manner as —exclude 
+ - Add support for multiple —filter options in same manner as —exclude
    option.
 
 
@@ -213,7 +223,7 @@ Internal changes:
    overrides the environment variable, which overrides the default 'gcov'.
  - Adding an empty "<methods/>" block to <classes/> in the XML output: this
    makes out XML complient with the Cobertura DTD. (#3951)
- - Allow the GCOV environment variable to override the default 'gcov' 
+ - Allow the GCOV environment variable to override the default 'gcov'
    executable.  The default is to search the PATH for 'gcov' if the GCOV
    environment variable is not set. (#3950)
  - Adding support for LCOV-style flags for excluding certain lines from
@@ -292,8 +302,8 @@ Internal changes:
  - Adding timestamp and version attributes to the gcovr XML report (see
    #3877).  It looks like the standard Cobertura output reports number of
    seconds since the epoch for the timestamp and a doted decimal version
-   string.  Now, gcovr reports seconds since the epoch and 
-   "``gcovr ``"+``__version__`` (e.g. "gcovr 2.2") to differentiate it 
+   string.  Now, gcovr reports seconds since the epoch and
+   "``gcovr ``"+``__version__`` (e.g. "gcovr 2.2") to differentiate it
    from a pure Cobertura report.
 
 
@@ -327,4 +337,3 @@ Internal changes:
 
  - Initial release as a separate package.  Earlier versions of gcovr
    were managed within the 'fast' Python package.
-

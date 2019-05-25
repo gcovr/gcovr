@@ -13,13 +13,6 @@ xml html sonarqube:
 	$(GCOVR) -r 'src code' -d -x -o coverage.xml \
 		--html-details coverage.html --sonarqube sonarqube.xml
 
-json:
-	# pass
-
-sonarqube:
-	cd 'src code'; ./testcase
-	$(GCOVR) -r 'src code' -d --sonarqube sonarqube.xml
-
 clean:
 	rm -f */testcase
 	rm -f */*.gc*

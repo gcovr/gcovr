@@ -319,18 +319,69 @@ def collect_coverage_from_gcov(covdata, options, logger):
             os.remove(filepath)
 
 
-    # Print report
-    if options.xml or options.prettyxml:
-        print_xml_report(covdata, options)
-    elif options.html or options.html_details:
-        print_html_report(covdata, options)
-    elif options.json_summary:
-        print_json_report(covdata, options)
-    elif options.sonarqube is not None:
-        options.sonarqube = os.path.abspath(options.sonarqube)
-        print_sonarqube_report(covdata, options)
-    else:
-        print_text_report(covdata, options)
+    # Print reports
+    print_reports(covdata, options, logger)
+
+
+def print_reports(covdata, options, logger):
+    reports_were_written = False
+    default_output = OutputOrDefault(options.output)
+
+    generators = []
+
+    generators.append((
+        lambda: options.xml or options.prettyxml,
+        [options.xml],
+        print_xml_report,
+        lambda: logger.warn(
+            "Cobertura output skipped - "
+            "consider providing an output file with `--xml=OUTPUT`.")))
+
+    generators.append((
+        lambda: options.html or options.html_details,
+        [options.html, options.html_details],
+        print_html_report,
+        lambda: logger.warn(
+            "HTML output skipped - "
+            "consider providing an output file with `--html=OUTPUT`.")))
+
+    generators.append((
+        lambda: options.json_summary,
+        [options.json_summary],
+        print_json_report,
+        lambda: logger.warn(
+            "JSON summary output skipped - "
+            "consider providing an output file with `--json-summary=OUTPUT`.")))
+
+    generators.append((
+        lambda: options.sonarqube,
+        [options.sonarqube],
+        print_sonarqube_report,
+        lambda: logger.warn(
+            "Sonarqube output skipped - "
+            "consider providing output file with `--sonarqube=OUTPUT`.")))
+
+    generators.append((
+        lambda: not reports_were_written,
+        [],
+        print_text_report,
+        lambda: None))
+
+    for should_run, output_choices, generator, on_no_output in generators:
+        if should_run():
+            output = OutputOrDefault.choose(output_choices,
+                                            default=default_output)
+            if output is default_output:
+                default_output = None
+            if output is not None:
+                generator(covdata, output.value, options)
+                reports_were_written = True
+            else:
+                on_no_output()
+
+    if default_output is not None and default_output.value is not None:
+        logger.warn("--output={!r} option was provided but not used.",
+                    default_output.value)
 
     if options.print_summary:
         print_summary(covdata)
