@@ -21,7 +21,6 @@ The ``gcovr`` command can produce different kinds of coverage reports:
 -  ``--html-details``: HTML report with annotated source files
 -  ``--xml``: machine readable XML reports in Cobertura_ format
 -  ``--sonarqube``: machine readable XML reports in Sonarqube format
--  ``--json``: JSON report with source files structure and coverage
 
 Thus, gcovr can be viewed
 as a command-line alternative to the lcov_ utility, which runs gcov
@@ -120,15 +119,6 @@ You can also generate detailed HTML reports:
     gcovr -r . --html --html-details -o coverage.html
 
 Gcovr will create one HTML report per source file next to the coverage.html summary.
-
-To generate code coverage report for sonarqube:
-
-::
-
-    gcovr -r . --sonarqube coverage.xml
-
-This will create coverage.xml containing the sonarqube generic coverage report described at:
-`<https://docs.sonarqube.org/latest/analysis/generic-test/>`_
 
 You should run gcovr from the build directory.
 The ``-r`` option should point to the root of your project.

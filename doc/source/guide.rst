@@ -345,6 +345,20 @@ place your pathnames with wildcards in double quotation marks::
 
     gcovr --add-tracefile "run-*.json" --html-details coverage.html
 
+Sonarqube XML Output
+~~~~~~~~~~~~~~~~~~~~
+
+If you are using Sonarqube, you can get a coverage report
+in a suitable XML format via the :option:`gcovr --sonarqube` option::
+
+    gcovr --sonarqube=coverage.xml
+
+Note that the ``-o``/``--output`` option cannot be used here.
+
+The Sonarqube XML format is documented at
+`<https://docs.sonarqube.org/latest/analysis/generic-test/>`_.
+
+
 The gcovr Command
 -----------------
 
