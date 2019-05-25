@@ -86,11 +86,11 @@ def coverage_to_color(coverage, medium_threshold, high_threshold):
 #
 # Produce an HTML report
 #
-def print_html_report(covdata, options):
+def print_html_report(covdata, output_file, options):
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
     details = options.html_details
-    if options.output is None:
+    if output_file is None:
         details = False
     data = {}
     data['HEAD'] = options.html_title
@@ -160,7 +160,7 @@ def print_html_report(covdata, options):
             cdata_sourcefile[f] = None
         else:
             cdata_sourcefile[f] = _make_short_sourcename(
-                options.output, filtered_fname)
+                output_file, filtered_fname)
 
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
@@ -210,13 +210,12 @@ def print_html_report(covdata, options):
 
     htmlString = templates().get_template('root_page.html').render(**data)
 
-    if options.output is None:
+    if output_file is None:
         sys.stdout.write(htmlString + '\n')
     else:
-        OUTPUT = io.open(options.output, 'w', encoding=options.html_encoding,
-                         errors='xmlcharrefreplace')
-        OUTPUT.write(htmlString + '\n')
-        OUTPUT.close()
+        with io.open(output_file, 'w', encoding=options.html_encoding,
+                     errors='xmlcharrefreplace') as fh:
+            fh.write(htmlString + '\n')
 
     # Return, if no details are requested
     if not details:
@@ -255,10 +254,9 @@ def print_html_report(covdata, options):
         os.chdir(currdir)
 
         htmlString = templates().get_template('source_page.html').render(**data)
-        OUTPUT = io.open(cdata_sourcefile[f], 'w', encoding=options.html_encoding,
-                         errors='xmlcharrefreplace')
-        OUTPUT.write(htmlString + '\n')
-        OUTPUT.close()
+        with io.open(cdata_sourcefile[f], 'w', encoding=options.html_encoding,
+                     errors='xmlcharrefreplace') as fh:
+            fh.write(htmlString + '\n')
 
 
 def source_row(lineno, source, line_cov):

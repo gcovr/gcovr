@@ -17,9 +17,10 @@ utility for Python.
 The ``gcovr`` command can produce different kinds of coverage reports:
 
 -  default: compact human-readable summaries
--  ``--xml``: machine readable XML reports in Cobertura_ format
 -  ``--html``: HTML summaries
 -  ``--html-details``: HTML report with annotated source files
+-  ``--xml``: machine readable XML reports in Cobertura_ format
+-  ``--sonarqube``: machine readable XML reports in Sonarqube format
 
 Thus, gcovr can be viewed
 as a command-line alternative to the lcov_ utility, which runs gcov
@@ -124,6 +125,7 @@ The ``-r`` option should point to the root of your project.
 This only matters if you have a separate build directory.
 
 For complete documentation, read the `manual <documentation_>`_.
+
 
 .. end quickstart
 

@@ -6,7 +6,7 @@ all:
 	cd build; $(CXX) $(CFLAGS) -c ../src/main.cpp  -o main.o
 	cd build; $(CXX) $(CFLAGS) main.o file1.o -o testcase
 
-run: txt xml html
+run: txt xml html sonarqube
 
 GCOVR_TEST_OPTIONS = -r ../src .
 
@@ -22,6 +22,10 @@ html:
 	build/testcase
 	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o ../coverage.html
 
+sonarqube:
+	build/testcase
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube ../sonarqube.xml
+
 clean:
 	rm -f build/*
-	rm -f coverage.txt coverage.xml coverage*.html
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml

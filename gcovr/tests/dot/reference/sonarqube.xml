@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+<file path=".subdir/A/C/D/file6.cpp">
+<lineToCover covered="true" lineNumber="1"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="3"/>
+<lineToCover covered="false" lineNumber="4"/>
+<lineToCover covered="true" lineNumber="6"/>
+</file>
+<file path=".subdir/A/C/file5.cpp">
+<lineToCover covered="true" lineNumber="1"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="3"/>
+<lineToCover covered="false" lineNumber="4"/>
+<lineToCover covered="true" lineNumber="6"/>
+</file>
+<file path=".subdir/A/file1.cpp">
+<lineToCover covered="true" lineNumber="1"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="3"/>
+<lineToCover covered="false" lineNumber="4"/>
+<lineToCover covered="true" lineNumber="6"/>
+</file>
+<file path=".subdir/A/file2.cpp">
+<lineToCover covered="true" lineNumber="1"/>
+<lineToCover covered="true" lineNumber="3"/>
+<lineToCover covered="true" lineNumber="4"/>
+<lineToCover covered="true" lineNumber="5"/>
+<lineToCover covered="false" lineNumber="8"/>
+<lineToCover covered="false" lineNumber="10"/>
+<lineToCover covered="false" lineNumber="11"/>
+</file>
+<file path=".subdir/A/file3.cpp">
+<lineToCover covered="true" lineNumber="1"/>
+<lineToCover covered="true" lineNumber="3"/>
+<lineToCover covered="true" lineNumber="4"/>
+<lineToCover covered="true" lineNumber="5"/>
+<lineToCover covered="false" lineNumber="8"/>
+<lineToCover covered="false" lineNumber="10"/>
+<lineToCover covered="false" lineNumber="11"/>
+</file>
+<file path=".subdir/A/file4.cpp">
+<lineToCover covered="true" lineNumber="1"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="3"/>
+<lineToCover covered="true" lineNumber="4"/>
+<lineToCover covered="false" lineNumber="6"/>
+</file>
+<file path=".subdir/B/main.cpp">
+<lineToCover covered="true" lineNumber="11"/>
+<lineToCover covered="true" lineNumber="12"/>
+<lineToCover covered="true" lineNumber="13"/>
+<lineToCover covered="true" lineNumber="14"/>
+<lineToCover covered="true" lineNumber="15"/>
+<lineToCover covered="true" lineNumber="16"/>
+<lineToCover covered="true" lineNumber="17"/>
+<lineToCover covered="true" lineNumber="19"/>
+<lineToCover branchesToCover="4" covered="true" coveredBranches="2" lineNumber="20"/>
+</file>
+</coverage>
+

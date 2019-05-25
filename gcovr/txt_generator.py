@@ -8,17 +8,19 @@
 
 import sys
 
-from .utils import calculate_coverage, sort_coverage
+from .utils import calculate_coverage, sort_coverage, presentable_filename
 
 
-#
-# Produce the classic gcovr text report
-#
-def print_text_report(covdata, options):
-    if options.output:
-        OUTPUT = open(options.output, 'w')
+def print_text_report(covdata, output_file, options):
+    """produce the classic gcovr text report"""
+    if output_file:
+        with open(output_file, 'w') as fh:
+            _real_print_text_report(covdata, fh, options)
     else:
-        OUTPUT = sys.stdout
+        _real_print_text_report(covdata, sys.stdout, options)
+
+
+def _real_print_text_report(covdata, OUTPUT, options):
     total_lines = 0
     total_covered = 0
 
@@ -43,14 +45,11 @@ def print_text_report(covdata, options):
         by_percent_uncovered=options.sort_percent)
 
     def _summarize_file_coverage(coverage):
-        tmp = options.root_filter.sub('', coverage.filename)
-        if not coverage.filename.endswith(tmp):
-            # Do no truncation if the filter does not start matching at
-            # the beginning of the string
-            tmp = coverage.filename
-        tmp = tmp.replace('\\', '/').ljust(40)
-        if len(tmp) > 40:
-            tmp = tmp + "\n" + " " * 40
+        filename = presentable_filename(
+            coverage.filename, root_filter=options.root_filter)
+        filename = filename.ljust(40)
+        if len(filename) > 40:
+            filename = filename + "\n" + " " * 40
 
         if options.show_branch:
             total, cover, percent = coverage.branch_coverage()
@@ -60,7 +59,7 @@ def print_text_report(covdata, options):
             uncovered_lines = coverage.uncovered_lines_str()
         percent = '--' if percent is None else str(int(percent))
         return (total, cover,
-                tmp + str(total).rjust(8) + str(cover).rjust(8)
+                filename + str(total).rjust(8) + str(cover).rjust(8)
                 + percent.rjust(6) + "%   " + uncovered_lines)
 
     for key in keys:
@@ -78,7 +77,3 @@ def print_text_report(covdata, options):
         + str(total_covered).rjust(8) + str(percent).rjust(6) + "%" + '\n'
     )
     OUTPUT.write("-" * 78 + '\n')
-
-    # Close logfile
-    if options.output:
-        OUTPUT.close()
