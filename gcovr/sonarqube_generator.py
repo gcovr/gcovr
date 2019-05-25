@@ -9,7 +9,7 @@
 import os
 from lxml import etree
 
-from .utils import open_binary_for_writing
+from .utils import open_binary_for_writing, presentable_filename
 
 
 def print_sonarqube_report(covdata, options):
@@ -17,27 +17,12 @@ def print_sonarqube_report(covdata, options):
 
     root = etree.Element("coverage")
     root.set("version", "1")
-    source_dirs = set()
 
     for f in sorted(covdata):
         data = covdata[f]
-        directory = options.root_filter.sub('', f)
-        if f.endswith(directory):
-            src_path = f[:-1 * len(directory)]
-            if len(src_path) > 0:
-                while directory.startswith(os.path.sep):
-                    src_path += os.path.sep
-                    directory = directory[len(os.path.sep):]
-                source_dirs.add(src_path)
-        else:
-            # Do no truncation if the filter does not start matching at
-            # the beginning of the string
-            directory = f
-        directory, fname = os.path.split(directory)
+        filename = presentable_filename(f, root_filter=options.root_filter)
 
         fileNode = etree.Element("file")
-
-        filename = os.path.join(directory, fname).replace('\\', '/')
         fileNode.set("path", filename)
 
         for lineno in sorted(data.lines):

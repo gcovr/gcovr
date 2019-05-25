@@ -311,3 +311,21 @@ def open_binary_for_writing(filename=None):
     finally:
         if close:
             fh.close()
+
+
+def presentable_filename(filename, root_filter):
+    # type: (str, re.Regex) -> str
+    """mangle a filename so that it is suitable for a report"""
+
+    normalized = root_filter.sub('', filename)
+    if filename.endswith(normalized):
+        # remove any slashes between the removed prefix and the normalized name
+        if filename != normalized:
+            while normalized.startswith(os.path.sep):
+                normalized = normalized[len(os.path.sep):]
+    else:
+        # Do no truncation if the filter does not start matching
+        # at the beginning of the string
+        normalized = filename
+
+    return normalized.replace('\\', '/')

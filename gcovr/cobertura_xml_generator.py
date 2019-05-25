@@ -12,7 +12,7 @@ import time
 from lxml import etree
 
 from .version import __version__
-from .utils import open_binary_for_writing
+from .utils import open_binary_for_writing, presentable_filename
 
 
 def print_xml_report(covdata, options):
@@ -72,23 +72,14 @@ def print_xml_report(covdata, options):
     # packageXml = doc.createElement("packages")
     packageXml = etree.SubElement(root, "packages")
     packages = {}
-    source_dirs = set()
 
     for f in sorted(covdata):
         data = covdata[f]
-        directory = options.root_filter.sub('', f)
-        if f.endswith(directory):
-            src_path = f[:-1 * len(directory)]
-            if len(src_path) > 0:
-                while directory.startswith(os.path.sep):
-                    src_path += os.path.sep
-                    directory = directory[len(os.path.sep):]
-                source_dirs.add(src_path)
+        filename = presentable_filename(f, root_filter=options.root_filter)
+        if '/' in filename:
+            directory, fname = filename.rsplit('/', 1)
         else:
-            # Do no truncation if the filter does not start matching at
-            # the beginning of the string
-            directory = f
-        directory, fname = os.path.split(directory)
+            directory, fname = '', filename
 
         package = packages.setdefault(
             directory, [etree.Element("package"), {}, 0, 0, 0, 0]
@@ -139,7 +130,7 @@ def print_xml_report(covdata, options):
 
         className = fname.replace('.', '_')
         c.set("name", className)
-        c.set("filename", os.path.join(directory, fname).replace('\\', '/'))
+        c.set("filename", filename)
         c.set(
             "line-rate",
             str(class_hits / (1.0 * class_lines or 1.0))
@@ -167,7 +158,7 @@ def print_xml_report(covdata, options):
         classNames.sort()
         for className in classNames:
             classes.append(packageData[1][className])
-        package.set("name", packageName.replace(os.sep, '.'))
+        package.set("name", packageName.replace('/', '.'))
         package.set(
             "line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0))
         )
