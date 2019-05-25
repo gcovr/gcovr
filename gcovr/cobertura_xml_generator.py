@@ -6,7 +6,6 @@
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
-import os
 import time
 
 from lxml import etree
