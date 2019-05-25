@@ -95,7 +95,8 @@ OUTPUT_PATTERN = dict(
     sonarqube='sonarqube.xml')
 
 ASSERT_EQUALS = dict(
-    xml=assert_xml_equals)
+    xml=assert_xml_equals,
+    sonarqube=assert_xml_equals)
 
 
 @pytest.mark.parametrize('name', findtests(basedir))
