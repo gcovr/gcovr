@@ -11,14 +11,16 @@ import sys
 from .utils import calculate_coverage, sort_coverage, presentable_filename
 
 
-#
-# Produce the classic gcovr text report
-#
-def print_text_report(covdata, options):
-    if options.output:
-        OUTPUT = open(options.output, 'w')
+def print_text_report(covdata, output_file, options):
+    """produce the classic gcovr text report"""
+    if output_file:
+        with open(output_file, 'w') as fh:
+            _real_print_text_report(covdata, fh, options)
     else:
-        OUTPUT = sys.stdout
+        _real_print_text_report(covdata, sys.stdout, options)
+
+
+def _real_print_text_report(covdata, OUTPUT, options):
     total_lines = 0
     total_covered = 0
 
@@ -75,7 +77,3 @@ def print_text_report(covdata, options):
         + str(total_covered).rjust(8) + str(percent).rjust(6) + "%" + '\n'
     )
     OUTPUT.write("-" * 78 + '\n')
-
-    # Close logfile
-    if options.output:
-        OUTPUT.close()

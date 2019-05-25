@@ -7,17 +7,11 @@ txt:
 	cd 'src code'; ./testcase
 	$(GCOVR) -r 'src code' -d -o coverage.txt
 
-xml:
+# generate multiple output formats together
+xml html sonarqube:
 	cd 'src code'; ./testcase
-	$(GCOVR) -r 'src code' -d -x -o coverage.xml
-
-html:
-	cd 'src code'; ./testcase
-	$(GCOVR) -r 'src code' -d --html-details -o coverage.html
-
-sonarqube:
-	cd 'src code'; ./testcase
-	$(GCOVR) -r 'src code' -d --sonarqube sonarqube.xml
+	$(GCOVR) -r 'src code' -d -x -o coverage.xml \
+		--html-details coverage.html --sonarqube sonarqube.xml
 
 clean:
 	rm -f */testcase

@@ -15,7 +15,7 @@ from .version import __version__
 from .utils import open_binary_for_writing, presentable_filename
 
 
-def print_xml_report(covdata, options):
+def print_xml_report(covdata, output_file, options):
     """produce an XML report in the Cobertura format"""
     branchTotal = 0
     branchCovered = 0
@@ -170,7 +170,7 @@ def print_xml_report(covdata, options):
     # Populate the <sources> element: this is the root directory
     etree.SubElement(sources, "source").text = options.root.strip()
 
-    with open_binary_for_writing(options.output) as fh:
+    with open_binary_for_writing(output_file) as fh:
         fh.write(
             etree.tostring(root,
                            pretty_print=options.prettyxml,

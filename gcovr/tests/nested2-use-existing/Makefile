@@ -16,11 +16,13 @@ txt:
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
 	$(GCOVR) -r subdir -g -k -o coverage.txt .
 
+# this test also includes a separator "--"
+# to ensure that nargs=? arguments can be terminated
 xml:
 	./subdir/B/testcase
 	make -C subdir/A coverage
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	$(GCOVR) -r subdir -g -k -x -o coverage.xml .
+	$(GCOVR) -r subdir -g -k -o coverage.xml -x -- .
 
 html:
 	./subdir/B/testcase

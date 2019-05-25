@@ -21,6 +21,17 @@ Future Directions
 Unreleased
 ----------
 
+Breaking changes:
+
+ - Format flag parameters like :option:`--xml` or :option:`--html`
+   now take an optional output file name.
+   This potentially changes the interpretation of search paths.
+   In ``gcovr --xml foo``,
+   previous gcovr versions would search the ``foo`` directory for coverage data.
+   Now, gcovr will try to write the Cobertura report to the ``foo`` file.
+   To keep the old meaning, separate positional arguments like
+   ``gcovr --xml -- foo``.
+
 Improvements and new features:
 
  - :ref:`Configuration file <configuration>` support (experimental).
@@ -40,6 +51,10 @@ Improvements and new features:
  - Stricter argument handling. (:issue:`267`)
  - Reduce XML memory usage by moving to lxml.
    (:issue:`1`, :issue:`118`, :issue:`307`)
+ - Can write multiple reports at the same time
+   by giving the output file name to the report format parameter.
+   Now, ``gcovr --html -o cov.html`` and ``gcovr --html cov.html``
+   are equivalent.
 
 Known issues:
 

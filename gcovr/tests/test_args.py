@@ -145,3 +145,10 @@ def test_html_medium_threshold_gt_html_high_threshold(capsys):
     assert c.out == ''
     assert 'value of --html-medium-threshold=60.0 should be\nlower than or equal to the value of --html-high-threshold=50.0.' in c.err
     assert c.exception.code != 0
+
+
+def test_multiple_output_formats_to_stdout(capsys):
+    c = capture(capsys, ['--xml', '--html', '--sonarqube'])
+    assert 'HTML output skipped' in c.err
+    assert 'Sonarqube output skipped' in c.err
+    assert c.exception.code == 0
