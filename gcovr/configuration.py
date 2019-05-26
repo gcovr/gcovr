@@ -6,7 +6,7 @@
 # passed into gcovr.
 #
 #
-# Copyright 2013-2018 the gcovr authors
+# Copyright 2013-2019 the gcovr authors
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 from argparse import ArgumentTypeError, SUPPRESS
@@ -15,6 +15,8 @@ from multiprocessing import cpu_count
 import os
 import re
 import sys
+
+from .utils import FilterOption
 
 try:
     from typing import Iterable, Any
@@ -40,12 +42,6 @@ def check_percentage(value):
         raise ArgumentTypeError(
             "{value} not in range [0.0, 100.0]".format(value=value))
     return x
-
-
-def check_non_empty(value):
-    if not value:
-        raise ArgumentTypeError("value should not be empty")
-    return value
 
 
 class GcovrConfigOption(object):
@@ -288,11 +284,18 @@ def _get_value_from_config_entry(cfg_entry, option):
     # parse the value
     if option.type is bool:
         value = cfg_entry.value_as_bool
+
     elif option.type is not None:
+
+        args = ()
+        if isinstance(option.type, FilterOption):
+            args = [os.path.dirname(cfg_entry.filename)]
+
         try:
-            value = option.type(cfg_entry.value)
+            value = option.type(cfg_entry.value, *args)
         except (ValueError, ArgumentTypeError) as err:
             raise cfg_entry.error(str(err))
+
     else:
         value = cfg_entry.value
 
@@ -594,6 +597,7 @@ GCOVR_CONFIG_OPTIONS = [
              "Can be specified multiple times. "
              "If no filters are provided, defaults to --root.",
         action="append",
+        type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -602,7 +606,7 @@ GCOVR_CONFIG_OPTIONS = [
         help="Exclude source files that match this filter. "
              "Can be specified multiple times.",
         action="append",
-        type=check_non_empty,
+        type=FilterOption.NonEmpty,
         default=[],
     ),
     GcovrConfigOption(
@@ -611,6 +615,7 @@ GCOVR_CONFIG_OPTIONS = [
         help="Keep only gcov data files that match this filter. "
              "Can be specified multiple times.",
         action="append",
+        type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -619,6 +624,7 @@ GCOVR_CONFIG_OPTIONS = [
         help="Exclude gcov data files that match this filter. "
              "Can be specified multiple times.",
         action="append",
+        type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -628,7 +634,7 @@ GCOVR_CONFIG_OPTIONS = [
              "while searching raw coverage files. "
              "Can be specified multiple times.",
         action="append",
-        type=check_non_empty,
+        type=FilterOption.NonEmpty,
         default=[],
     ),
     GcovrConfigOption(

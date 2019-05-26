@@ -35,7 +35,8 @@ Breaking changes:
 Improvements and new features:
 
  - :ref:`Configuration file <configuration>` support (experimental).
-   (:issue:`167`, :issue:`229`, :issue:`279`, :issue:`281`, :issue:`293`)
+   (:issue:`167`, :issue:`229`, :issue:`279`, :issue:`281`, :issue:`293`,
+   :issue:`300`, :issue:`304`)
  - Handle cyclic symlinks correctly during coverage data search.
    (:issue:`284`)
  - Simplification of :option:`--object-directory` heuristics.
