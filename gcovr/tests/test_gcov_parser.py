@@ -162,26 +162,119 @@ call    4 never executed
     #####:   53:qux();
 """
 
+# This example is taken from the GCC 8 Gcov documentation:
+# <https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html>
+# And modified so that the un-hit for line 7 comes after the
+# hit.
+GCOV_8_EXAMPLE_2 = r"""
+        -:    0:Source:tmp.cpp
+        -:    0:Graph:tmp.gcno
+        -:    0:Data:tmp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdio.h>
+        -:    2:
+        -:    3:template<class T>
+        -:    4:class Foo
+        -:    5:{
+        -:    6:  public:
+       1*:    7:  Foo(): b (1000) {}
+------------------
+Foo<int>::Foo():
+function Foo<int>::Foo() called 1 returned 100% blocks executed 100%
+        1:    7:  Foo(): b (1000) {}
+------------------
+Foo<char>::Foo():
+function Foo<char>::Foo() called 0 returned 0% blocks executed 0%
+    #####:    7:  Foo(): b (1000) {}
+------------------
+       2*:    8:  void inc () { b++; }
+------------------
+Foo<char>::inc():
+function Foo<char>::inc() called 0 returned 0% blocks executed 0%
+    #####:    8:  void inc () { b++; }
+------------------
+Foo<int>::inc():
+function Foo<int>::inc() called 2 returned 100% blocks executed 100%
+        2:    8:  void inc () { b++; }
+------------------
+        -:    9:
+        -:   10:  private:
+        -:   11:  int b;
+        -:   12:};
+        -:   13:
+        -:   14:template class Foo<int>;
+        -:   15:template class Foo<char>;
+        -:   16:
+        -:   17:int
+function main called 1 returned 100% blocks executed 81%
+        1:   18:main (void)
+        -:   19:{
+        -:   20:  int i, total;
+        1:   21:  Foo<int> counter;
+call    0 returned 100%
+branch  1 taken 100% (fallthrough)
+branch  2 taken 0% (throw)
+        -:   22:
+        1:   23:  counter.inc();
+call    0 returned 100%
+branch  1 taken 100% (fallthrough)
+branch  2 taken 0% (throw)
+        1:   24:  counter.inc();
+call    0 returned 100%
+branch  1 taken 100% (fallthrough)
+branch  2 taken 0% (throw)
+        1:   25:  total = 0;
+        -:   26:
+       11:   27:  for (i = 0; i < 10; i++)
+branch  0 taken 91% (fallthrough)
+branch  1 taken 9%
+       10:   28:    total += i;
+        -:   29:
+       1*:   30:  int v = total > 100 ? 1 : 2;
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:   31:
+        1:   32:  if (total != 45)
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:   33:    printf ("Failure\n");
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+        -:   34:  else
+        1:   35:    printf ("Success\n");
+call    0 returned 100%
+branch  1 taken 100% (fallthrough)
+branch  2 taken 0% (throw)
+        1:   36:  return 0;
+        -:   37:}"""
+
 GCOV_8_SOURCES = dict(
     gcov_8_example=GCOV_8_EXAMPLE,
     gcov_8_exclude_throw=GCOV_8_EXAMPLE,
-    nautilus_example=GCOV_8_NAUTILUS)
+    nautilus_example=GCOV_8_NAUTILUS,
+    gcov_8_example_2=GCOV_8_EXAMPLE_2)
 
 if sys.version_info < (3, 0):
     GCOV_8_SOURCES = dict(
         gcov_8_example=GCOV_8_EXAMPLE.decode(),
         gcov_8_exclude_throw=GCOV_8_EXAMPLE.decode(),
-        nautilus_example=GCOV_8_NAUTILUS.decode())
+        nautilus_example=GCOV_8_NAUTILUS.decode(),
+        gcov_8_example_2=GCOV_8_EXAMPLE_2.decode())
 
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     gcov_8_example='33',
     gcov_8_exclude_throw='33',
-    nautilus_example='51,53')
+    nautilus_example='51,53',
+    gcov_8_example_2='33')
 
 GCOV_8_EXPECTED_UNCOVERED_BRANCHES = dict(
     gcov_8_example='21,23,24,30,32,33,35',
     gcov_8_exclude_throw='30,32,33',
-    nautilus_example='51')
+    nautilus_example='51',
+    gcov_8_example_2='21,23,24,30,32,33,35',
+)
 
 GCOV_8_EXCLUDE_THROW_BRANCHES = dict(
     gcov_8_exclude_throw=True,
