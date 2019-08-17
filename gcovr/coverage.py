@@ -103,7 +103,7 @@ class LineCoverage(object):
         r"""Merge LineCoverage information."""
         assert self.lineno == other.lineno
         self.count += other.count
-        self.noncode |= other.noncode
+        self.noncode &= other.noncode
         for branch_id, branch_cov in other.branches.items():
             self.branch(branch_id).update(branch_cov)
 
@@ -127,13 +127,13 @@ class FileCoverage(object):
         self.filename = filename
         self.lines = {}  # type: Dict[int, LineCoverage]
 
-    def line(self, lineno):
+    def line(self, lineno, **defaults):
         # type: (int) -> LineCoverage
         r"""Get or create the LineCoverage for that lineno."""
         try:
             return self.lines[lineno]
         except KeyError:
-            self.lines[lineno] = line_cov = LineCoverage(lineno)
+            self.lines[lineno] = line_cov = LineCoverage(lineno, **defaults)
             return line_cov
 
     def update(self, other):
@@ -141,7 +141,7 @@ class FileCoverage(object):
         r"""Merge FileCoverage information."""
         assert self.filename == other.filename
         for lineno, line_cov in other.lines.items():
-            self.line(lineno).update(line_cov)
+            self.line(lineno, noncode=True).update(line_cov)
 
     def uncovered_lines_str(self):
         # type: () -> str
