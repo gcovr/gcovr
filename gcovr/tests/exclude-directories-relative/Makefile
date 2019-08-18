@@ -6,7 +6,7 @@ all:
 	$(CXX) $(CFLAGS) -c b/main.cpp -o build/b/main.o
 	$(CXX) $(CFLAGS) build/b/main.o build/a/file1.o -o testcase
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube json
 
 GCOVR_TEST_OPTIONS = --exclude-directories 'build/a'
 
@@ -25,6 +25,9 @@ html:
 sonarqube:
 	./testcase
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube sonarqube.xml
+
+json:
+	# pass
 
 clean:
 	rm -f testcase

@@ -36,7 +36,7 @@ all:
 	$(CXX) $(CFLAGS) $(SOFLAGS) obj/libs.o -o lib/libs.$(DYNLIB_EXT)
 	$(MAKE) -C testApp
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube json
 
 txt:
 ifeq ($(BASE_OS),MSYS_NT)
@@ -69,6 +69,9 @@ else
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 endif
 	$(GCOVR) -d --sonarqube sonarqube.xml
+
+json:
+	# pass
 
 clean:
 	rm -rf obj

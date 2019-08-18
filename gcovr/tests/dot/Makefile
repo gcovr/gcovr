@@ -10,7 +10,7 @@ all:
 	$(CXX) $(CFLAGS) -c .subdir/B/main.cpp -o .subdir/B/main.o
 	$(CXX) $(CFLAGS) .subdir/A/file1.o .subdir/A/file2.o .subdir/A/file3.o .subdir/A/file4.o .subdir/A/C/file5.o .subdir/A/C/D/file6.o .subdir/B/main.o -o .subdir/testcase
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube json
 
 txt:
 	./.subdir/testcase
@@ -27,6 +27,9 @@ html:
 sonarqube:
 	./.subdir/testcase
 	$(GCOVR) -r . -d --sonarqube sonarqube.xml
+
+json:
+	# pass
 
 clean:
 	rm -f ./.subdir/testcase
