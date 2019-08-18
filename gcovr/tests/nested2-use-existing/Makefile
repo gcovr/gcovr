@@ -8,7 +8,7 @@ all:
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CFLAGS) subdir/B/main.o subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/A/C/D/file6.o subdir/A/file7.o  -o subdir/B/testcase -lgcov
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube json
 
 txt:
 	./subdir/B/testcase
@@ -35,6 +35,9 @@ sonarqube:
 	make -C subdir/A coverage
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
 	$(GCOVR) -r subdir -g -k --sonarqube sonarqube.xml .
+
+json:
+	# pass
 
 clean:
 	rm -f ./subdir/B/testcase subdir/lib.a

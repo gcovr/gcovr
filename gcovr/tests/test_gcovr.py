@@ -86,13 +86,15 @@ SCRUBBERS = dict(
     txt=scrub_txt,
     xml=scrub_xml,
     html=scrub_html,
-    sonarqube=scrub_xml)
+    sonarqube=scrub_xml,
+    json=lambda x: x)
 
 OUTPUT_PATTERN = dict(
     txt='coverage.txt',
     xml='coverage.xml',
     html='coverage*.html',
-    sonarqube='sonarqube.xml')
+    sonarqube='sonarqube.xml',
+    json='coverage*.json')
 
 ASSERT_EQUALS = dict(
     xml=assert_xml_equals,
@@ -100,7 +102,7 @@ ASSERT_EQUALS = dict(
 
 
 @pytest.mark.parametrize('name', findtests(basedir))
-@pytest.mark.parametrize('format', ['txt', 'xml', 'html', 'sonarqube'])
+@pytest.mark.parametrize('format', ['txt', 'xml', 'html', 'sonarqube', 'json'])
 def test_build(name, format):
     scrub = SCRUBBERS[format]
     output_pattern = OUTPUT_PATTERN[format]
