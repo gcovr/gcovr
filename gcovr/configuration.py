@@ -422,6 +422,18 @@ GCOVR_CONFIG_OPTIONS = [
         default='.',
     ),
     GcovrConfigOption(
+        "add_tracefile", ["-a", "--add-tracefile"],
+        help="Combine the coverage data from JSON files. "
+             "Coverage files contains source files structure relative "
+             "to root directory. Those structures are combined "
+             "in the output relative to the current root directory. "
+             "Option can be specified multiple times. "
+             "When option is used gcov is not run to collect "
+             "the new coverage data.",
+        action="append",
+        default=[],
+    ),
+    GcovrConfigOption(
         'search_paths', config='search-path',
         positional=True, nargs='*',
         help="Search these directories for coverage files. "
