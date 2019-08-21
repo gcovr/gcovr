@@ -21,6 +21,7 @@ The ``gcovr`` command can produce different kinds of coverage reports:
 -  ``--html-details``: HTML report with annotated source files
 -  ``--xml``: machine readable XML reports in Cobertura_ format
 -  ``--sonarqube``: machine readable XML reports in Sonarqube format
+-  ``--json``: JSON report with source files structure and coverage
 
 Thus, gcovr can be viewed
 as a command-line alternative to the lcov_ utility, which runs gcov
