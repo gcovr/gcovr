@@ -2,81 +2,72 @@
 
 # This file is part of gcovr <http://gcovr.com/>.
 #
-# Copyright 2013-2019 the gcovr authors
+# Copyright 2019 the gcovr authors
 # This software is distributed under the BSD license.
 
 import json
+import os
 import sys
+import functools
 
-from .utils import calculate_coverage, sort_coverage
+from .utils import presentable_filename, Logger
+from .coverage import FileCoverage
 
+
+JSON_FORMAT_VERSION = 0.1
 PRETTY_JSON_INDENT = 4
-FORMAT_VERSION = 0.1
 
 
 #
-# Produce gcovr json report
+# Produce gcovr JSON report
 #
-def print_json_report(covdata, options):
+def print_json_report(covdata, output_file, options):
+    r"""produce an JSON report in the format partially
+    compatible with gcov JSON output"""
+
+    gcovr_json_root = {}
+    gcovr_json_root['gcovr/format_version'] = JSON_FORMAT_VERSION
+    gcovr_json_root['files'] = []
+
+    for no in sorted(covdata):
+        gcovr_json_file = {}
+        gcovr_json_file['file'] = presentable_filename(covdata[no].filename, root_filter=options.root_filter)
+        gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
+        gcovr_json_root['files'].append(gcovr_json_file)
+
+    write_json = json.dump
+    if options.prettyjson:
+        write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT)
+
     if options.output:
-        OUTPUT = open(options.output, 'w')
+        with open(options.output, 'w') as output:
+            write_json(gcovr_json_root, output)
     else:
-        OUTPUT = sys.stdout
-    total_lines = 0
-    total_covered = 0
+        write_json(gcovr_json_root, sys.stdout)
 
-    json_dict = {}
-    json_dict['current_working_directory'] = options.root
-    json_dict['format_version'] = FORMAT_VERSION
-    json_dict['files'] = []
 
-    # Data
-    keys = sort_coverage(
-        covdata, show_branch=options.show_branch,
-        by_num_uncovered=options.sort_uncovered,
-        by_percent_uncovered=options.sort_percent)
+def _json_from_lines(lines):
+    json_lines = [_json_from_line(lines[no]) for no in sorted(lines)]
+    return json_lines
 
-    def _summarize_file_coverage(coverage):
-        filename_str = options.root_filter.sub('', coverage.filename)
-        if not coverage.filename.endswith(filename_str):
-            # Do no truncation if the filter does not start matching at
-            # the beginning of the string
-            filename_str = coverage.filename
-        filename_str = filename_str.replace('\\', '/')
 
-        if options.show_branch:
-            total, cover, percent = coverage.branch_coverage()
-            uncovered_lines = coverage.uncovered_branches_str()
-        else:
-            total, cover, percent = coverage.line_coverage()
-            uncovered_lines = coverage.uncovered_lines_str()
+def _json_from_line(line):
+    json_line = {}
+    json_line['branches'] = _json_from_branches(line.branches)
+    json_line['count'] = line.count
+    json_line['line_number'] = line.lineno
+    json_line['gcovr/noncode'] = line.noncode
+    return json_line
 
-        return (filename_str, total, cover, percent, uncovered_lines)
 
-    for key in keys:
-        (filename, t, n, percent, uncovered_lines) = _summarize_file_coverage(covdata[key])
-        total_lines += t
-        total_covered += n
-        json_dict['files'].append({
-            'file': filename,
-            'total': t,
-            'covered': n,
-            'percent': percent,
-        })
+def _json_from_branches(branches):
+    json_branches = [_json_from_branch(branches[no]) for no in sorted(branches)]
+    return json_branches
 
-    # Footer & summary
-    percent = calculate_coverage(total_covered, total_lines, nan_value=None)
 
-    json_dict['total'] = total_lines
-    json_dict['covered'] = total_covered
-    json_dict['percent'] = percent
-
-    if options.json_pretty_summary:
-        json_str = json.dumps(json_dict, indent=PRETTY_JSON_INDENT)
-    else:
-        json_str = json.dumps(json_dict)
-    OUTPUT.write(json_str)
-
-    # Close logfile
-    if options.output:
-        OUTPUT.close()
+def _json_from_branch(branch):
+    json_branch = {}
+    json_branch['count'] = branch.count
+    json_branch['fallthrough'] = bool(branch.fallthrough)
+    json_branch['throw'] = bool(branch.throw)
+    return json_branch

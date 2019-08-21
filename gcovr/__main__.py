@@ -57,6 +57,7 @@ from .json_generator import print_json_report
 from .txt_generator import print_text_report
 from .summary_generator import print_summary
 from .sonarqube_generator import print_sonarqube_report
+from .json_generator import print_json_report
 
 
 #
@@ -359,6 +360,14 @@ def print_reports(covdata, options, logger):
         lambda: logger.warn(
             "Sonarqube output skipped - "
             "consider providing output file with `--sonarqube=OUTPUT`.")))
+
+    generators.append((
+        lambda: options.json or options.prettyjson,
+        [options.json],
+        print_json_report,
+        lambda: logger.warn(
+            "JSON output skipped - "
+            "consider providing output file with `--json=OUTPUT`.")))
 
     generators.append((
         lambda: not reports_were_written,
