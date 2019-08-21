@@ -604,6 +604,23 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
+        "json", ["--json"],
+        group="output_options",
+        metavar='OUTPUT',
+        help="Generate a JSON report. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "prettyjson", ["--json-pretty"],
+        group="output_options",
+        help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "filter", ["-f", "--filter"],
         group="filter_options",
         help="Keep only source files that match this filter. "
