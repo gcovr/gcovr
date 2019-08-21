@@ -37,7 +37,9 @@ def print_json_report(covdata, output_file, options):
 
     write_json = json.dump
     if options.prettyjson:
-        write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT, separators=(',', ': '))
+        write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT, separators=(',', ': '), sort_keys=True)
+    else:
+        write_json = functools.partial(write_json, sort_keys=True)
 
     if options.output:
         with open(options.output, 'w') as output:
