@@ -16,7 +16,7 @@ json_foo:
 
 json_bar:
 	./testcase_bar
-	$(GCOVR) -d --json coverage_bar.json
+	$(GCOVR) -d --json -o coverage_bar.json
 
 txt: json_foo json_bar
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json -o coverage.txt
@@ -31,7 +31,7 @@ sonarqube: json_foo json_bar
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json --sonarqube sonarqube.xml
 
 json: json_foo json_bar
-	$(GCOVR) -a 'coverage_*.json' --json-pretty -o coverage.json
+	$(GCOVR) -a coverage_foo.json -a coverage_bar.json --json-pretty -o coverage.json
 
 clean:
 	rm -f testcase_*
