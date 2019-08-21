@@ -45,6 +45,7 @@ from .configuration import (
     parse_config_file, parse_config_into_dict, OutputOrDefault)
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
+from .json_generator import (gcovr_json_files_to_coverage)
 from .utils import (get_global_stats, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__
@@ -242,81 +243,61 @@ def main(args=None):
         for f in filters:
             logger.verbose_msg('- {}', f)
 
+    datafiles = set()
     covdata = dict()
+
     if options.add_tracefile:
-        collect_coverage_from_tracefiles(covdata, options, logger)
+        # Get coverage via JSON data files
+        for trace_file in options.add_tracefile:
+            if not os.path.exists(normpath(trace_file)):
+                logger.error(
+                    "Bad --add-tracefile option.\n"
+                    "\tThe specified file does not exist.")
+                sys.exit(1)
+            datafiles.add(trace_file)
+        options.root_dir = os.path.abspath(options.root)
+        gcovr_json_files_to_coverage(datafiles, covdata, options)
     else:
-        collect_coverage_from_gcov(covdata, options, logger)
+        find_files = find_datafiles
+        process_file = process_datafile
+        if options.gcov_files:
+            find_files = find_existing_gcov_files
+            process_file = process_existing_gcov_file
 
-    logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
+        # Get data files
+        if not options.search_paths:
+            options.search_paths = [options.root]
 
-    # Print reports
-    print_reports(covdata, options, logger)
+            if options.objdir is not None:
+                options.search_paths.append(options.objdir)
 
-    if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
-        fail_under(covdata, options.fail_under_line, options.fail_under_branch)
+        for search_path in options.search_paths:
+            datafiles.update(find_files(search_path, logger, options.exclude_dirs))
 
+        # Get coverage data
+        with Workers(options.gcov_parallel, lambda: {
+                     'covdata': dict(),
+                     'workdir': mkdtemp(),
+                     'toerase': set(),
+                     'options': options}) as pool:
+            logger.verbose_msg("Pool started with {} threads", pool.size())
+            for file_ in datafiles:
+                pool.add(process_file, file_)
+            contexts = pool.wait()
 
-def collect_coverage_from_tracefiles(covdata, options, logger):
-    datafiles = set()
-
-    for trace_files_regex in options.add_tracefile:
-        trace_files = glob(trace_files_regex, recursive=True)
-        if not trace_files:
-            logger.error(
-                "Bad --add-tracefile option.\n"
-                "\tThe specified file does not exist.")
-            sys.exit(1)
-        else:
-            for trace_file in trace_files:
-                datafiles.add(normpath(trace_file))
-
-    options.root_dir = os.path.abspath(options.root)
-    gcovr_json_files_to_coverage(datafiles, covdata, options)
-
-
-def collect_coverage_from_gcov(covdata, options, logger):
-    datafiles = set()
-
-    find_files = find_datafiles
-    process_file = process_datafile
-    if options.gcov_files:
-        find_files = find_existing_gcov_files
-        process_file = process_existing_gcov_file
-
-    # Get data files
-    if not options.search_paths:
-        options.search_paths = [options.root]
-
-        if options.objdir is not None:
-            options.search_paths.append(options.objdir)
-
-    for search_path in options.search_paths:
-        datafiles.update(find_files(search_path, logger, options.exclude_dirs))
-
-    # Get coverage data
-    with Workers(options.gcov_parallel, lambda: {
-                 'covdata': dict(),
-                 'workdir': mkdtemp(),
-                 'toerase': set(),
-                 'options': options}) as pool:
-        logger.verbose_msg("Pool started with {} threads", pool.size())
-        for file_ in datafiles:
-            pool.add(process_file, file_)
-        contexts = pool.wait()
-
-    toerase = set()
-    for context in contexts:
-        for fname, cov in context['covdata'].items():
-            if fname not in covdata:
-                covdata[fname] = cov
-            else:
-                covdata[fname].update(cov)
-        toerase.update(context['toerase'])
-        rmtree(context['workdir'])
-    for filepath in toerase:
-        if os.path.exists(filepath):
-            os.remove(filepath)
+        # Get coverage via gcov method
+        toerase = set()
+        for context in contexts:
+            for fname, cov in context['covdata'].items():
+                if fname not in covdata:
+                    covdata[fname] = cov
+                else:
+                    covdata[fname].update(cov)
+            toerase.update(context['toerase'])
+            rmtree(context['workdir'])
+        for filepath in toerase:
+            if os.path.exists(filepath):
+                os.remove(filepath)
 
 
     # Print reports
