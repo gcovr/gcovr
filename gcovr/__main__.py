@@ -39,22 +39,22 @@ from os.path import normpath
 from tempfile import mkdtemp
 from shutil import rmtree
 
-from .configuration import (
+from configuration import (
     argument_parser_setup, merge_options_and_set_defaults,
     parse_config_file, parse_config_into_dict, OutputOrDefault)
-from .gcov import (find_existing_gcov_files, find_datafiles,
+from gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
-from .utils import (get_global_stats, AlwaysMatchFilter,
+from utils import (get_global_stats, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
-from .version import __version__
-from .workers import Workers
+from version import __version__
+from workers import Workers
 
 # generators
-from .cobertura_xml_generator import print_xml_report
-from .html_generator import print_html_report
-from .txt_generator import print_text_report
-from .summary_generator import print_summary
-from .sonarqube_generator import print_sonarqube_report
+from cobertura_xml_generator import print_xml_report
+from html_generator import print_html_report
+from txt_generator import print_text_report
+from summary_generator import print_summary
+from sonarqube_generator import print_sonarqube_report
 
 
 #

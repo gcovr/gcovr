@@ -12,7 +12,7 @@ Generator of the coverage summary.
 
 import sys
 
-from .utils import get_global_stats
+from utils import get_global_stats
 
 
 def print_summary(covdata):

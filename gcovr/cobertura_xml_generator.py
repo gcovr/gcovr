@@ -10,8 +10,8 @@ import time
 
 from lxml import etree
 
-from .version import __version__
-from .utils import open_binary_for_writing, presentable_filename
+from version import __version__
+from utils import open_binary_for_writing, presentable_filename
 
 
 def print_xml_report(covdata, output_file, options):

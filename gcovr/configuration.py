@@ -16,7 +16,7 @@ import os
 import re
 import sys
 
-from .utils import FilterOption
+from utils import FilterOption
 
 try:
     from typing import Iterable, Any

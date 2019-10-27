@@ -12,9 +12,9 @@ import subprocess
 import sys
 import io
 
-from .utils import search_file, Logger, commonpath
-from .workers import locked_directory
-from .coverage import FileCoverage
+from utils import search_file, Logger, commonpath
+from workers import locked_directory
+from coverage import FileCoverage
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(r"[Cc](annot|ould not) open (source|graph|output) file")

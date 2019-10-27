@@ -8,7 +8,7 @@
 
 from lxml import etree
 
-from .utils import open_binary_for_writing, presentable_filename
+from utils import open_binary_for_writing, presentable_filename
 
 
 def print_sonarqube_report(covdata, output_file, options):

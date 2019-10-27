@@ -8,7 +8,7 @@
 
 import sys
 
-from .utils import calculate_coverage, sort_coverage, presentable_filename
+from utils import calculate_coverage, sort_coverage, presentable_filename
 
 
 def print_text_report(covdata, output_file, options):

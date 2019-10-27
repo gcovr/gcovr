@@ -6,7 +6,7 @@
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
-from .utils import calculate_coverage
+from utils import calculate_coverage
 
 # for type annotations:
 if False: from typing import (  # noqa, pylint: disable=all

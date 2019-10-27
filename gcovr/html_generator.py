@@ -13,9 +13,9 @@ import datetime
 import zlib
 import io
 
-from .version import __version__
-from .utils import commonpath, sort_coverage
-from .coverage import FileCoverage
+from version import __version__
+from utils import commonpath, sort_coverage
+from coverage import FileCoverage
 
 
 class lazy(object):
