@@ -43,9 +43,9 @@ script:
 deploy:
   - provider: pypi
     server: https://test.pypi.org/legacy/
-    user: whart111
+    user: "__token__"
     password:
-      secure: "TpOWxwD/izvCyz585nvwIq4plfbgi8BKqUW5Xm8uJRWEZ6g1/1K2Om7jxY2sP2XunzrlV85Nnl0juFKzVGfQEXo5yFGpUqx1r74cfFMd3mMATh5VndZuyrR8ZWB70mt/AGEFCPCFt82UqW2gbbZcO8T1i++5vl9hhTUlcaLo9vM="
+      secure: "Ue89uIWHANXhdbKUEbDRdbwbtnJtvc5jzJqzufMlo4X0GBHL/6zVb2QB1BQCuCih7p5rhNgq2LSrob7adzRjCHvY5q8PEMI4V8veR4APhTuUkx4aE+wTzBpwjAvVdheZgI3PCdAvhf0+Zrbo5pG8NRlogpkNkEt3iQXo9FdOdldWwZaZ8/kwmCEO1amhhoMCq3km9maffHTXAv3P1Y1TgcIeMQqaDC2UPvGeXY33F07p+8kUynlGa11XZwQNZkBuaK6S4krsCRuC/OSaO/W2RFpHbmC87nliELwYqc/SAHYZd0ubBpqnmNqfclxrSDrtqJ05/BzJG7RL1Jjc/4eI0vyRESPXJGM/+70exK+76qpNlC1yE4UQmejfgTpVPxq0zogcbavPYl4C+yDaZs8mFIIG16nVLQvGdS+Zn2u62J4P9OHqpoh3fx8gMBYyVwSx9XObRY7MsRanckGX//myLgtIfv/Q7w7O9Q85FgqvoOI3s5OZ7suM/JJC/m9RlcfzQXKalQhTXAWTu2a4XSvl9hsWaklpUS1vSOEIASw+HxnBqyp8IwZ4pnc6RItWfzFusTCBHdlhNovmRV8GpmxRh7ifPGaQ4jfJBGh2QR3CTnoW2ogbjGjJY5HniSJWQE+qWTzA3iSqW+tJdf45AOpuMBgmRWNhLmgPTsrv9OogKMU="
     distributions: sdist --format=gztar bdist_wheel
     skip_existing: true
     on:
@@ -54,9 +54,9 @@ deploy:
       branch: master
       python: '3.7'
   - provider: pypi
-    user: whart111
+    user: "__token__"
     password:
-      secure: "TpOWxwD/izvCyz585nvwIq4plfbgi8BKqUW5Xm8uJRWEZ6g1/1K2Om7jxY2sP2XunzrlV85Nnl0juFKzVGfQEXo5yFGpUqx1r74cfFMd3mMATh5VndZuyrR8ZWB70mt/AGEFCPCFt82UqW2gbbZcO8T1i++5vl9hhTUlcaLo9vM="
+      secure: "CuQO0pdB2uVfRzDnzh309wmRfEF2WQSjsRz9Q58ykk6lQjAhN8XqOsADWZo4mjSNLPro3UwTYL/B5jKtIydzMBRZHnidJlTrYN7LOkWGLHtRJX2sC1iNJ+pcIS7QyN38GNWjGwamg/5MX5ueMfqkK6yTuddH325LqMQ8UP4vXuTqtDob5hRxL2cpT/H7ydu4qxE6w2UGvmIW3EvwUDt/fnBfO7Fxq+7jwy/Ex3A+KfByamiD0tIpp8l4tL6pwAtS0f85CZZMA6m5cNSzW58jSxo/TRuw1c0H5672j/6an0EWBvNpVf0NwHkP+8hBJt6lG3vK8eN5/KTi3Va8A033fLypZWBS1cKVwII6oAsY+WDssYjpS4KJSEqmmq3CFWN3t/3/MiR6dybzmJ1PewXbB+6srPbd0bBddAp4gPz3OQVGhZd+8Tg1tl/NgkjBedXDKsyeCxIxNoAvTLlRbplMV9BDMVUJpK8YsftgjWva4BfB+SfvlyMcFCyC+BIyRZxTdKvFiaocASaTZ8ngMU1Tde2e4M81dSrAJ7lA3JqMIeV6sa5HDTQMGaZGNBk4XNv6CJ+M+spdGakZoymY0YDcb/1ugBxlQ7ySUYthIDXrZVV22eHEg4rO6JOwSq0aWFlzAGhLzBMPiBbwhwSXLf+NTo+V4r7a1F2M5vUjSJE3aDE="
     distributions: sdist --format=gztar bdist_wheel
     on:
       tags: true
