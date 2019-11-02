@@ -422,6 +422,18 @@ GCOVR_CONFIG_OPTIONS = [
         default='.',
     ),
     GcovrConfigOption(
+        "add_tracefile", ["-a", "--add-tracefile"],
+        help="Combine the coverage data from JSON files. "
+             "Coverage files contains source files structure relative "
+             "to root directory. Those structures are combined "
+             "in the output relative to the current root directory. "
+             "Option can be specified multiple times. "
+             "When option is used gcov is not run to collect "
+             "the new coverage data.",
+        action="append",
+        default=[],
+    ),
+    GcovrConfigOption(
         'search_paths', config='search-path',
         positional=True, nargs='*',
         help="Search these directories for coverage files. "
@@ -589,6 +601,23 @@ GCOVR_CONFIG_OPTIONS = [
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "json", ["--json"],
+        group="output_options",
+        metavar='OUTPUT',
+        help="Generate a JSON report. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "prettyjson", ["--json-pretty"],
+        group="output_options",
+        help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
+        action="store_true",
     ),
     GcovrConfigOption(
         "filter", ["-f", "--filter"],

@@ -44,6 +44,7 @@ from .configuration import (
     parse_config_file, parse_config_into_dict, OutputOrDefault)
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
+from .json_generator import (gcovr_json_files_to_coverage)
 from .utils import (get_global_stats, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__
@@ -55,6 +56,7 @@ from .html_generator import print_html_report
 from .txt_generator import print_text_report
 from .summary_generator import print_summary
 from .sonarqube_generator import print_sonarqube_report
+from .json_generator import print_json_report
 
 
 #
@@ -239,6 +241,38 @@ def main(args=None):
         for f in filters:
             logger.verbose_msg('- {}', f)
 
+    covdata = dict()
+    if options.add_tracefile:
+        collect_coverage_from_tracefiles(covdata, options, logger)
+    else:
+        collect_coverage_from_gcov(covdata, options, logger)
+
+    logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
+
+    # Print reports
+    print_reports(covdata, options, logger)
+
+    if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
+        fail_under(covdata, options.fail_under_line, options.fail_under_branch)
+
+
+def collect_coverage_from_tracefiles(covdata, options, logger):
+    datafiles = set()
+
+    for trace_file in options.add_tracefile:
+        if not os.path.exists(normpath(trace_file)):
+            logger.error(
+                "Bad --add-tracefile option.\n"
+                "\tThe specified file does not exist.")
+            sys.exit(1)
+        datafiles.add(trace_file)
+    options.root_dir = os.path.abspath(options.root)
+    gcovr_json_files_to_coverage(datafiles, covdata, options)
+
+
+def collect_coverage_from_gcov(covdata, options, logger):
+    datafiles = set()
+
     find_files = find_datafiles
     process_file = process_datafile
     if options.gcov_files:
@@ -252,7 +286,6 @@ def main(args=None):
         if options.objdir is not None:
             options.search_paths.append(options.objdir)
 
-    datafiles = set()
     for search_path in options.search_paths:
         datafiles.update(find_files(search_path, logger, options.exclude_dirs))
 
@@ -267,7 +300,6 @@ def main(args=None):
             pool.add(process_file, file_)
         contexts = pool.wait()
 
-    covdata = dict()
     toerase = set()
     for context in contexts:
         for fname, cov in context['covdata'].items():
@@ -280,14 +312,6 @@ def main(args=None):
     for filepath in toerase:
         if os.path.exists(filepath):
             os.remove(filepath)
-
-    logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
-
-    # Print reports
-    print_reports(covdata, options, logger)
-
-    if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
-        fail_under(covdata, options.fail_under_line, options.fail_under_branch)
 
 
 def print_reports(covdata, options, logger):
@@ -319,6 +343,14 @@ def print_reports(covdata, options, logger):
         lambda: logger.warn(
             "Sonarqube output skipped - "
             "consider providing output file with `--sonarqube=OUTPUT`.")))
+
+    generators.append((
+        lambda: options.json or options.prettyjson,
+        [options.json],
+        print_json_report,
+        lambda: logger.warn(
+            "JSON output skipped - "
+            "consider providing output file with `--json=OUTPUT`.")))
 
     generators.append((
         lambda: not reports_were_written,

@@ -228,6 +228,72 @@ in a suitable XML format via the :option:`gcovr --sonarqube` option::
 The Sonarqube XML format is documented at
 `<https://docs.sonarqube.org/latest/analysis/generic-test/>`_.
 
+.. _json_output:
+
+JSON Output
+~~~~~~~~~~~~~~~~~~~~
+
+The ``gcovr`` command can also generate a JSON output using
+the ``--json`` and ``--json-pretty`` options::
+
+    gcovr --json coverage.json
+
+The ``--json-pretty`` option generates an indented JSON output
+that is easier to read.
+
+Structure of file is based on gcov JSON intermediate format
+with additional key names specific to gcovr.
+
+Structure of the JSON is following:
+::
+
+    {
+        "gcovr/format_version": gcovr_json_version
+        "files": [file]
+    }
+
+*gcovr_json_version*: version of gcovr JSON format
+
+Each *file* has the following form:
+::
+
+    {
+        "file": file
+        "lines": [line]
+    }
+
+*file*: path to source code file, relative to gcovr
+root directory.
+
+Each *line* has the following form:
+::
+
+    {
+        "branches": [branch]
+        "count": count
+        "line_number": line_number
+        "gcovr/noncode": gcovr_noncode
+    }
+
+*gcovr_noncode*: if True coverage info on this line should be ignored
+
+Each *branch* has the following form:
+::
+
+    {
+      "count": count
+      "fallthrough": fallthrough
+      "throw": throw
+    }
+
+*file*, *line* and *branch* have the structure defined in gcov
+intermediate format. This format is documented at
+`<https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html#Invoking-Gcov>`_.
+
+Multiple JSON files can be merged into the coverage data
+with sum of lines and branches execution
+
+.. _multiple output formats:
 
 Multiple Output Formats
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -244,8 +310,30 @@ The following report format flags can take an optional output file name:
 - :option:`gcovr --html`
 - :option:`gcovr --html-details`
 - :option:`gcovr --sonarqube`
+- :option:`gcovr --json`
 
 Note that --html-details overrides any value of --html if it is present.
+
+.. _combining_tracefiles:
+
+Combining Tracefiles
+~~~~~~~~~~~~~~~~~~~~
+
+You can merge coverage data from multiple runs with :option:`gcovr --add-tracefile`.
+
+For each run, generate :ref:`JSON output <json_output>`:
+
+.. code-block:: bash
+
+    ...  # compile and run first test case
+    gcovr ... --json run-1.json
+    ...  # compile and run second test case
+    gcovr ... --json run-2.json
+
+
+Next, merge the json files and generate the desired report::
+
+    gcovr --add-tracefile run-1.json --add-tracefile run-2.json --html-details coverage.html
 
 
 The gcovr Command
