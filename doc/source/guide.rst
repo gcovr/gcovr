@@ -228,6 +228,8 @@ in a suitable XML format via the :option:`gcovr --sonarqube` option::
 The Sonarqube XML format is documented at
 `<https://docs.sonarqube.org/latest/analysis/generic-test/>`_.
 
+.. _json_output:
+
 JSON Output
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -289,7 +291,9 @@ intermediate format. This format is documented at
 `<https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html#Invoking-Gcov>`_.
 
 Multiple JSON files can be merged into the coverage data
-with sum of lines and branches execution.
+with sum of lines and branches execution
+
+.. _multiple output formats:
 
 Multiple Output Formats
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -309,6 +313,27 @@ The following report format flags can take an optional output file name:
 - :option:`gcovr --json`
 
 Note that --html-details overrides any value of --html if it is present.
+
+.. _combining_tracefiles:
+
+Combining Tracefiles
+~~~~~~~~~~~~~~~~~~~~
+
+You can merge coverage data from multiple runs with :option:`gcovr --add-tracefile`.
+
+For each run, generate :ref:`JSON output <json_output>`:
+
+.. code-block:: bash
+
+    ...  # compile and run first test case
+    gcovr ... --json run-1.json
+    ...  # compile and run second test case
+    gcovr ... --json run-2.json
+
+
+Next, merge the json files and generate the desired report::
+
+    gcovr --add-tracefile run-1.json --add-tracefile run-2.json --html-details coverage.html
 
 
 The gcovr Command
