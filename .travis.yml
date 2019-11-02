@@ -21,7 +21,7 @@ matrix:
   - python: '2.7'
     env: COVERAGE_OPTS='--cov=gcovr --cov-branch'
   - python: pypy
-  - python: '3.4'
+  - python: '3.5'
   - python: '3.7'
     env: COVERAGE_OPTS='--cov=gcovr --cov-branch' BUILD_DOCS=1
   - python: pypy3.5
@@ -57,7 +57,7 @@ deploy:
       tags: false
       repo: gcovr/gcovr
       branch: master
-      python: '3.6'
+      python: '3.7'
   - provider: pypi
     user: whart111
     password:
@@ -67,7 +67,7 @@ deploy:
       tags: true
       repo: gcovr/gcovr
       branch: master
-      python: '3.6'
+      python: '3.7'
 
 notifications:
   webhooks:
