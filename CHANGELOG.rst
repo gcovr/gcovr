@@ -61,6 +61,7 @@ Improvements and new features:
    by giving the output file name to the report format parameter.
    Now, ``gcovr --html -o cov.html`` and ``gcovr --html cov.html``
    are equivalent.
+ - Override gcov locale properly. (:issue:`334`)
 
 Known issues:
 

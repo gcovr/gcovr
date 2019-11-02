@@ -6,6 +6,7 @@ Gcovr is maintained by:
 
 The following developers contributed to gcovr (ordered alphabetically):
 
+    alex43dm,
     Andrew Stone,
     Arvin Schnell,
     Attie Grande,

@@ -642,6 +642,7 @@ def run_gcov_and_process_files(
     # NB: Currently, we will only parse English output
     env = dict(os.environ)
     env['LC_ALL'] = 'en_US'
+    env['LANGUAGE'] = 'en_US'
 
     logger.verbose_msg(
         "Running gcov: '{cmd}' in '{cwd}'",
