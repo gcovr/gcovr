@@ -10,7 +10,7 @@ Future Directions
 
    Python 2.7 will reach its end of life on Jan 1, 2020.
    With its first release on or after that date,
-   gcovr will drop support for Python 2.7 and 3.4.
+   gcovr will drop support for that version.
    Subsequently, gcovr will only support Python versions
    that enjoy upstream support.
 
@@ -23,6 +23,7 @@ Unreleased
 
 Breaking changes:
 
+ - Dropped support for Python 3.4.
  - Format flag parameters like :option:`--xml` or :option:`--html`
    now take an optional output file name.
    This potentially changes the interpretation of search paths.
