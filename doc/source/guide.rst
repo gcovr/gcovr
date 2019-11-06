@@ -216,6 +216,7 @@ specifies the output file ``coverage.html``, then the web pages
 generated for each file will have names of the form
 ``coverage.<filename>.html``.
 
+.. _sonarqube_xml_output:
 
 Sonarqube XML Output
 ~~~~~~~~~~~~~~~~~~~~
@@ -231,7 +232,7 @@ The Sonarqube XML format is documented at
 .. _json_output:
 
 JSON Output
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
 
 The ``gcovr`` command can also generate a JSON output using
 the ``--json`` and ``--json-pretty`` options::

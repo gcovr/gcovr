@@ -42,6 +42,7 @@ Improvements and new features:
  - :ref:`Combining tracefiles <combining_tracefiles>`
    with :option:`gcovr --add-tracefile`.
    (:issue:`10`, :issue:`326`)
+ - :ref:`SonarQube XML Output <sonarqube_xml_output>`. (:issue:`308`)
  - Handle cyclic symlinks correctly during coverage data search.
    (:issue:`284`)
  - Simplification of :option:`--object-directory` heuristics.
@@ -60,8 +61,9 @@ Improvements and new features:
  - Can write :ref:`multiple reports <multiple output formats>` at the same time
    by giving the output file name to the report format parameter.
    Now, ``gcovr --html -o cov.html`` and ``gcovr --html cov.html``
-   are equivalent.
+   are equivalent. (:issue:`291`)
  - Override gcov locale properly. (:issue:`334`)
+ - Make gcov parser more robust when used with GCC 8. (:issue:`315`)
 
 Known issues:
 
