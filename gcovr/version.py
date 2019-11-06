@@ -10,4 +10,4 @@
 # It is executed by setup.py to load the current version.
 # This module may not depend on other parts of gcovr.
 
-__version__ = "4.1"
+__version__ = "4.2"
