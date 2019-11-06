@@ -1,35 +1,29 @@
-<?xml version="1.0" ?>
-<!DOCTYPE coverage
-  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage branch-rate="0.5" branches-covered="1" branches-valid="2"
- complexity="0.0" line-rate="0.8571428571428571" lines-covered="6"
- lines-valid="7" timestamp="1530565116" version="gcovr 4.1">
- <sources>
-  <source>.</source>
- </sources>
- <packages>
-  <package branch-rate="0.5" complexity="0.0" line-rate="0.8571428571428571"
-   name="">
-   <classes>
-    <class branch-rate="0.5" complexity="0.0" filename="example.cpp"
-     line-rate="0.8571428571428571" name="example_cpp">
-     <methods/>
-     <lines>
-      <line branch="false" hits="1" number="3"/>
-      <line branch="true" condition-coverage="50% (1/2)" hits="1" number="5">
-       <conditions>
-        <condition coverage="50%" number="0" type="jump"/>
-       </conditions>
-      </line>
-      <line branch="false" hits="0" number="7"/>
-      <line branch="false" hits="1" number="11"/>
-      <line branch="false" hits="1" number="15"/>
-      <line branch="false" hits="1" number="17"/>
-      <line branch="false" hits="1" number="19"/>
-     </lines>
-    </class>
-   </classes>
-  </package>
- </packages>
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.8571428571428571" branch-rate="0.5" lines-covered="6" lines-valid="7" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1573053861" version="gcovr 4.2">
+  <sources>
+    <source>.</source>
+  </sources>
+  <packages>
+    <package name="" line-rate="0.8571428571428571" branch-rate="0.5" complexity="0.0">
+      <classes>
+        <class name="example_cpp" filename="example.cpp" line-rate="0.8571428571428571" branch-rate="0.5" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="3" hits="1" branch="false"/>
+            <line number="5" hits="1" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="7" hits="0" branch="false"/>
+            <line number="11" hits="1" branch="false"/>
+            <line number="15" hits="1" branch="false"/>
+            <line number="17" hits="1" branch="false"/>
+            <line number="19" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
 </coverage>
-

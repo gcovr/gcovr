@@ -18,8 +18,8 @@ Future Directions
    When support for a Python version is dropped,
    gcovr will not necessarily increment its major version.
 
-Unreleased
-----------
+4.2 (6 November 2019)
+---------------------
 
 Breaking changes:
 
