@@ -16,22 +16,8 @@ Breaking changes:
 
 Documentation:
 
- - Cookbook: :ref:`oos cmake` (:issue:`340`, :issue:`341`)
-
 4.2 (6 November 2019)
 ---------------------
-
-Breaking changes:
-
- - Dropped support for Python 3.4.
- - Format flag parameters like :option:`--xml` or :option:`--html`
-   now take an optional output file name.
-   This potentially changes the interpretation of search paths.
-   In ``gcovr --xml foo``,
-   previous gcovr versions would search the ``foo`` directory for coverage data.
-   Now, gcovr will try to write the Cobertura report to the ``foo`` file.
-   To keep the old meaning, separate positional arguments like
-   ``gcovr --xml -- foo``.
 
 Breaking changes:
 
