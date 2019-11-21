@@ -130,6 +130,7 @@ In order to pass the correct compiler and linker flags, the following
 commands need to be in ``CMakeLists.txt``:
 
 .. include:: ../examples/CMakeLists.txt
+    :code: cmake
     :start-after: #BEGIN cmakecmds
     :end-before: #END cmakecmds
 
@@ -138,12 +139,14 @@ These assume a sufficiently recent version of both ``gcc`` and ``cmake``.
 We then follow a normal ``cmake`` build process:
 
 .. include:: ../examples/example_cmake.sh
+    :code: bash
     :start-after: #BEGIN cmake_build
     :end-before: #END cmake_build
 
 and run the program:
 
 .. include:: ../examples/example_cmake.sh
+    :code: bash
     :start-after: #BEGIN cmake_run
     :end-before: #END cmake_run
 
@@ -153,6 +156,7 @@ directory in ``BLD_DIR``, rather than next to the sources. Since
 ``gcovr`` requires both, the invocation  then becomes
 
 .. include:: ../examples/example_cmake.sh
+    :code: bash
     :start-after: #BEGIN cmake_gcovr
     :end-before: #END cmake_gcovr
 
