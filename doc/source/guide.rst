@@ -150,10 +150,10 @@ and run the program:
     :start-after: #BEGIN cmake_run
     :end-before: #END cmake_run
 
-However, the command to ``gcovr`` itself has to change. The assorted 
+However, invocation of ``gcovr`` itself has to change. The assorted 
 ``.gcno`` and ``.gcda`` files will appear under the ``CMakeFiles``
 directory in ``BLD_DIR``, rather than next to the sources. Since
-``gcovr`` requires both, the invocation  then becomes
+``gcovr`` requires both, the command we need to run is:
 
 .. include:: ../examples/example_cmake.sh
     :code: bash
