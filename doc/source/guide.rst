@@ -120,6 +120,43 @@ on each line.
     branch, but ``gcov`` cannot discern which branch is executed.
 
 
+Out-of-Source Builds with CMake
+"""""""""""""""""""""""""""""""
+
+Tools such as ``cmake`` encourage the use of out-of-source builds,
+where the code is compiled in a directory other than the one which
+contains the sources. This is an extra complication for ``gcov``.
+In order to pass the correct compiler and linker flags, the following
+commands need to be in ``CMakeLists.txt``:
+
+.. include:: ../examples/CMakeLists.txt
+    :start-after: #BEGIN cmakecmds
+    :end-before: #END cmakecmds
+
+These assume a sufficiently recent version of both ``gcc`` and ``cmake``.
+
+We then follow a normal ``cmake`` build process:
+
+.. include:: ../examples/example_cmake.sh
+    :start-after: #BEGIN cmake_build
+    :end-before: #END cmake_build
+
+and run the program:
+
+.. include:: ../examples/example_cmake.sh
+    :start-after: #BEGIN cmake_run
+    :end-before: #END cmake_run
+
+However, the command to ``gcovr`` itself has to change. The assorted 
+``.gcno`` and ``.gcda`` files will appear under the ``CMakeFiles``
+directory in ``BLD_DIR``, rather than next to the sources. Since
+``gcovr`` requires both, the invocation  then becomes
+
+.. include:: ../examples/example_cmake.sh
+    :start-after: #BEGIN cmake_gcovr
+    :end-before: #END cmake_gcovr
+
+
 Tabular Output of Branch Coverage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
