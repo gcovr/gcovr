@@ -121,7 +121,7 @@ on each line.
 
 
 Out-of-Source Builds with CMake
-"""""""""""""""""""""""""""""""
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Tools such as ``cmake`` encourage the use of out-of-source builds,
 where the code is compiled in a directory other than the one which
