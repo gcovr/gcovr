@@ -64,7 +64,13 @@ commands need to be in ``CMakeLists.txt``:
     :start-after: #BEGIN cmakecmds
     :end-before: #END cmakecmds
 
-These assume a sufficiently recent version of both ``gcc`` and ``cmake``.
+The ``--coverage`` compiler flag is an alternative to
+``fprofile-arcs -ftest-coverage`` for
+`recent version of gcc <https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html>`__.
+In versions 3.13 and later of ``cmake``, the
+``target_link_libraries`` command can be removed and
+``add_link_options("--coverage")`` added after
+the ``add_compile_options`` command.
 
 We then follow a normal ``cmake`` build process:
 

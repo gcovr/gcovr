@@ -52,3 +52,11 @@ def test_example(example):
     else:
         assert output == baseline
     os.chdir(startdir)
+
+
+def test_cmake():
+    startdir = os.getcwd()
+    os.chdir(datadir)
+    subprocess.check_call('./example_cmake.sh')
+    # TODO: Verify the output
+    os.chdir(startdir)
