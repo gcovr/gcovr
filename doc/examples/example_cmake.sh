@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export SRC_DIR=`pwd`
 export BLD_DIR=/tmp/bld
 
