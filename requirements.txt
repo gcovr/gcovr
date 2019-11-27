@@ -1,5 +1,5 @@
 cmake
-flake8
+flake8 >= 3.7
 jinja2
 lxml
 pytest

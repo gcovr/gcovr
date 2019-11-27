@@ -247,9 +247,6 @@ For example:
     # run the simple1 tests only for XML
     python3 -m pytest -k 'xml and simple1'
 
-    # set filters using the Makefile:
-    make test TEST_OPTS="-k 'xml and simple1'"
-
 To see all tests, run pytest in ``-v`` verbose mode.
 To see which tests would be run, add the ``--collect-only`` option.
 
