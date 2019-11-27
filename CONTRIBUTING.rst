@@ -65,14 +65,17 @@ Please follow this checklist for your pull request:
 -   **Does it work?**
     Please run the tests locally::
 
-        python -m pytest
+        make test
+
+    (see also: :ref:`test suite`)
 
     In any case, the tests will run automatically
     when you open the pull request.
     But please prevent unnecessary build failures
     and run the tests yourself first.
     If you cannot run the tests locally,
-    you can activate Travis CI or Appveyor for your fork.
+    you can activate Travis CI or Appveyor for your fork,
+    or run the tests with Docker.
 
     If you add new features, please try to add a test case.
 
@@ -80,7 +83,14 @@ Please follow this checklist for your pull request:
     The source code should conform to the :pep:`8` standard.
     Please check your code::
 
-        python -m flake8 doc gcovr --ignore E501,W503
+        make lint
+
+        # or:
+
+        python3 -m flake8 doc gcovr --ignore E501,W503
+
+    The command ``make qa`` will run the linter, run the tests,
+    and check that the docs can be built.
 
 -   **Add yourself as an author.**
     If this is your first contribution to gcovr,
@@ -115,23 +125,32 @@ If you need assistance for your pull request, you can
 How to set up a development environment
 ---------------------------------------
 
+For working on gcovr, you will need a supported version of Python 3,
+and GCC version 5. Other GCC versions are supported by gcovr,
+but will cause spurious test failures.
+
 -   (Optional) Fork the project on GitHub.
 
 -   Clone the git repository.
 
--   (Optional) Set up a virtualenv.
+-   (Optional) Set up a virtualenv (e.g. with ``python3 -m venv my-venv``)
 
 -   Install gcovr in development mode, and install the test requirements::
+
+        make setup-dev  # install all test + doc dependencies
+
+        # or:
 
         pip install -e .
         pip install -r requirements.txt
 
-    You can then run gcovr as ``gcovr`` or ``python -m gcovr``.
+    You can then run gcovr as ``gcovr`` or ``python3 -m gcovr``.
 
-    Run the tests to verify that everything works (see below).
+    Run the tests to verify that everything works (see :ref:`test suite`).
 
 -   (Optional) Install documentation requirements::
 
+        # would be already done by `make setup-dev`
         pip install -r doc/requirements.txt
 
     See ``doc/README.txt`` for details on working with the documentation.
@@ -142,9 +161,10 @@ How to set up a development environment
     These tests will also be run
     when you open a pull request to the main gcovr repository.
 
-Tip: If you have problems getting everything set up, consider looking at the
-``.travis.yml`` (Linux) and
-``appveyor.yml`` (Windows) files.
+Tip: If you have problems getting everything set up, consider looking at these files:
+
+-   for Linux: ``.travis.yml`` and ``admin/Dockerfile.qa``
+-   for Windows: ``appveyor.yml``
 
 On **Windows**, you will need to install a GCC toolchain
 as the tests expect a Unix-like environment.
@@ -152,6 +172,10 @@ You can use MinGW-W64 or MinGW.
 To run the tests,
 please make sure that the ``make`` and ``cmake`` from your MinGW distribution 
 are in the system ``PATH``.
+
+If setting up a local toolchain is too complicated,
+you can also run the tests in a Docker container
+(see :ref:`test suite`).
 
 Project Structure
 -----------------
@@ -175,15 +199,29 @@ The coverage data is parsed in the ``gcovr.gcov`` module.
 The HTML, XML, text, and summary reports
 are in ``gcovr.html_generator`` and respective modules.
 
+.. _test suite:
+
 Test suite
 ----------
 
+The QA process (``make qa``) consists of multiple parts:
+
+- linting (``make lint``)
+
+- tests (``make test``)
+
+   - unit tests in ``gcovr/tests``
+   - integration tests in ``gcovr/tests``
+   - documentation examples in ``doc/examples``
+
+- documentation build (``make doc``)
+
 The tests are in the ``gcovr/tests`` directory.
-You can run the tests with ``python -m pytest``.
+You can run the tests with ``make test`` or ``python3 -m pytest gcovr``.
 
 There are unit tests for some parts of gcovr,
 and a comprehensive corpus of example projects
-that are executed as the ``test_gcovr.py`` test.
+that are executed as the ``test_gcovr.py`` integration test.
 Each ``gcovr/tests/*`` directory is one such example project.
 
 Each project in the corpus
@@ -192,7 +230,7 @@ The Makefile controls how the project is built,
 and how gcovr should be invoked.
 The reference directory contains baseline files against
 which the gcovr output is compared.
-Each project is tested three times to cover ``txt``, ``html``, and ``xml`` output.
+Each project is once per output format (txt, html, xml, json, sonarqube, ...).
 
 Because the tests are a bit slow, you can limit the tests to a specific
 test file, example project, or output format.
@@ -201,18 +239,40 @@ For example:
 .. code:: bash
 
     # run only XML tests
-    python -m pytest -k xml
+    python3 -m pytest -k xml
 
     # run the simple1 tests
-    python -m pytest -k simple1
+    python3 -m pytest -k simple1
 
     # run the simple1 tests only for XML
-    python -m pytest -k 'xml and simple1'
+    python3 -m pytest -k 'xml and simple1'
 
 To see all tests, run pytest in ``-v`` verbose mode.
 To see which tests would be run, add the ``--collect-only`` option.
 
 The tests currently assume that you are using GCC 5.
+
+If you can't set up a toolchain locally, you can run the QA process via Docker.
+First, build the container image:
+
+.. code:: bash
+
+    make docker-qa-build
+
+    # or:
+
+    docker build --tag gcovr-qa --file admin/Dockerfile.qa .
+
+Then, run the container, which executes ``make qa`` within the container:
+
+.. code:: bash
+
+    make docker-qa
+
+    # or:
+
+    docker run --rm -v `pwd`:/gcovr gcovr-qa
+
 
 Become a gcovr developer
 ------------------------

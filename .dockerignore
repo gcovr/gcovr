@@ -1,0 +1,24 @@
+# ignore all by default
+*
+
+# explicitly allow certain code files, build files config files, and documentation
+!*.py
+!gcovr/**.py
+!doc/**.py
+!admin
+!**/Makefile
+!**.md
+!**.rst
+!*.txt
+!*.cfg
+!**/requirements.txt
+
+# explicitly allow resources
+!gcovr/templates
+
+# explicitly allow tests
+!doc/examples
+!gcovr/tests
+
+# always ignore these files
+**/*.pyc
