@@ -1,22 +1,50 @@
 #!/bin/bash
+set -eo pipefail
 
-set -e
+# 1. Prepare the example workspace.
 
-export SRC_DIR=`pwd`
-export BLD_DIR=/tmp/bld
+WORKSPACE=example_cmake_workspace
+mkdir -p "$WORKSPACE"
+rm -rf $WORKSPACE/*
 
-mkdir $BLD_DIR
+# clean up afterwards, or else the *other* examples will fail.
+trap 'rm -rf $WORKSPACE/*' EXIT ERR
+
+mkdir $WORKSPACE/src $WORKSPACE/bld
+# Path variables.
+# The SRC_DIR would usually be an absolute path,
+# but that would prevent the tests from being reproducible.
+# As that variable is only used from within the BLD_DIR,
+# we can hardcode it here.
+BLD_DIR="$(cd $WORKSPACE/bld; pwd)"
+SRC_DIR=../src
+cp example.cpp CMakeLists.txt $WORKSPACE/src
+
+# 2. Build the software.
+(
+exec >&2  # redirect output to STDERR
 
 #BEGIN cmake_build
 cd $BLD_DIR
 cmake $SRC_DIR
 make VERBOSE=1
 #END cmake_build
+)
+
+# 3. Execute the program.
+(
+exec >&2  # redirect output to STDERR
 
 #BEGIN cmake_run
+cd $BLD_DIR
 ./program
 #END cmake_run
+)
 
+# 4. Execute gcovr.
+(
 #BEGIN cmake_gcovr
-gcovr -r $SRC_DIR $BLD_DIR
+cd $BLD_DIR
+gcovr -r $SRC_DIR .
 #END cmake_gcovr
+)

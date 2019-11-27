@@ -1,6 +1,8 @@
 Gcovr Cookbook
 ==============
 
+.. _c extensions in python:
+
 How to collect coverage for C extensions in Python
 --------------------------------------------------
 
@@ -49,6 +51,7 @@ A shell session might look like this:
     rm -rf coverage; mkdir coverage
     gcovr --filter src/ --print-summary --html-details -o coverage/index.html
 
+.. _oos cmake:
 
 Out-of-Source Builds with CMake
 -------------------------------
