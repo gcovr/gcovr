@@ -1,0 +1,3 @@
+
+recursive-include gcovr/static *
+recursive-include gcovr/templates *

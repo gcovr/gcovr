@@ -4,54 +4,51 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset={{ENC}}"/>
   <title>{{HEAD}}</title>
-  <style media="screen" type="text/css">
-
-    {{CSS | indent}}
-
-  </style>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/gcovr.css">
 </head>
 
 <body>
 
-  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+  <table class="table">
     <tr><td class="title">GCC Code Coverage Report</td></tr>
     <tr><td class="hr"></td></tr>
 
     <tr>
       <td width="100%">
-        <table cellpadding=1 border=0 width="100%">
+        <table class="table">
           <tr>
-            <td width="10%" class="headerName">Directory:</td>
-            <td width="35%" class="headerValue">{{DIRECTORY}}</td>
+            <td width="10%">Directory:</td>
+            <td width="35%">{{DIRECTORY}}</td>
             <td width="5%"></td>
             <td width="15%"></td>
-            <td width="10%" class="headerValue" style="text-align:right;">Exec</td>
-            <td width="10%" class="headerValue" style="text-align:right;">Total</td>
-            <td width="15%" class="headerValue" style="text-align:right;">Coverage</td>
+            <td width="10%">Exec</td>
+            <td width="10%">Total</td>
+            <td width="15%">Coverage</td>
           </tr>
           <tr>
-            <td class="headerName">Date:</td>
-            <td class="headerValue">{{DATE}}</td>
+            <td>Date:</td>
+            <td>{{DATE}}</td>
             <td></td>
-            <td class="headerName">Lines:</td>
-            <td class="headerTableEntry">{{LINES_EXEC}}</td>
-            <td class="headerTableEntry">{{LINES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{LINES_COLOR}}">{{LINES_COVERAGE}} %</td>
+            <td>Lines:</td>
+            <td>{{LINES_EXEC}}</td>
+            <td>{{LINES_TOTAL}}</td>
+            <td class="table-{{LINES_COLOR}}">{{LINES_COVERAGE}} %</td>
           </tr>
           <tr>
-            <td class="headerName">Legend:</td>
-            <td class="headerValueLeg">
-              <span style="background-color:{{low_color}}">low: &lt; {{COVERAGE_MED}} %</span>
+            <td>Legend:</td>
+            <td>
+              <span class="badge badge-danger">low: &lt; {{COVERAGE_MED}} %</span>
               {% if COVERAGE_MED != COVERAGE_HIGH %}
-              <span style="background-color:{{medium_color}}">medium: &gt;= {{COVERAGE_MED}} %</span>
+              <span class="badge badge-warning">medium: &gt;= {{COVERAGE_MED}} %</span>
               {% endif %}
-              <span style="background-color:{{high_color}}">high: &gt;= {{COVERAGE_HIGH}} %</span>
+              <span class="badge badge-success">high: &gt;= {{COVERAGE_HIGH}} %</span>
             </td>
             <td></td>
-            <td class="headerName">Branches:</td>
-            <td class="headerTableEntry">{{BRANCHES_EXEC}}</td>
-            <td class="headerTableEntry">{{BRANCHES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{BRANCHES_COLOR}}">{{BRANCHES_COVERAGE}} %</td>
+            <td>Branches:</td>
+            <td>{{BRANCHES_EXEC}}</td>
+            <td>{{BRANCHES_TOTAL}}</td>
+            <td class="table-{{BRANCHES_COLOR}}">{{BRANCHES_COVERAGE}} %</td>
           </tr>
         </table>
       </td>
@@ -60,49 +57,39 @@
     <tr><td class="hr"></td></tr>
   </table>
 
-  <center>
-  <table width="80%" cellpadding=1 cellspacing=1 border=0>
-    <tr>
-      <td width="44%"><br></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-    </tr>
-    <tr>
-      <td class="coverTableHead">File</td>
-      <td class="coverTableHead" colspan=3>Lines</td>
-      <td class="coverTableHead" colspan=2>Branches</td>
-    </tr>
-
-    {% for row in ROWS %}
+  <div class="container">
+    <table class="table table-striped">
+      <thead>
+	<th>File</th>
+	<th colspan=3>Lines</th>
+	<th colspan=2>Branches</th>
+      </thead>
+      <tbody>
+	{% for row in ROWS %}
 
     <tr>
-      <td class="coverFile" {{row.altstyle}}>{{row.filename}}</td>
-      <td class="coverBar" align="center" {{row.altstyle}}>
-        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:{{row.LinesCoverage}}%; {{row.BarBorder}}background-color:{{row.LinesBar}}"></strong></div>
-                </td></tr></table>
+      <td>{{row.filename}}</td>
+      <td>
+	<div class="progress">
+	  <div class="progress-bar bg-{{row.LinesBar}}"
+	       role="progressbar"
+               aria-valuenow="{{row.LinesCoverage}}"
+               aria-valuemin="0" aria-valuemax="100"
+               style="width: {{row.LinesCoverage}}%;"></div>
+          <span class="sr-only">{{row.LinesCoverage}}&nbsp;%</span>
+	</div>
       </td>
-      <td class="CoverValue" style="font-weight:bold; background-color:{{row.LinesColor}};">{{row.LinesCoverage}}&nbsp;%</td>
-      <td class="CoverValue" style="font-weight:bold; background-color:{{row.LinesColor}};">{{row.LinesExec}} / {{row.LinesTotal}}</td>
-      <td class="CoverValue" style="background-color:{{row.BranchesColor}};">{{row.BranchesCoverage}}&nbsp;%</td>
-      <td class="CoverValue" style="background-color:{{row.BranchesColor}};">{{row.BranchesExec}} / {{row.BranchesTotal}}</td>
+      <td class="table-{{row.LinesColor}}">{{row.LinesCoverage}}&nbsp;%</td>
+      <td class="table-{{row.LinesColor}}">{{row.LinesExec}} / {{row.LinesTotal}}</td>
+      <td class="table-{{row.BranchesColor}}">{{row.BranchesCoverage}}&nbsp;%</td>
+      <td class="table-{{row.BranchesColor}}">{{row.BranchesExec}} / {{row.BranchesTotal}}</td>
     </tr>
 
     {% endfor %}
 
-    <tr>
-      <td width="44%"><br></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-    </tr>
-  </table>
-  </center>
+      </tbody>
+    </table>
+  </div>
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="hr"><td></tr>

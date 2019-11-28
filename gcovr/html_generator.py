@@ -7,11 +7,13 @@
 # This software is distributed under the BSD license.
 
 import os
+import errno
 import sys
 import time
 import datetime
 import zlib
 import io
+import shutil
 
 from .version import __version__
 from .utils import commonpath, sort_coverage
@@ -49,13 +51,13 @@ def templates():
         lstrip_blocks=True)
 
 
-low_color = "LightPink"
-medium_color = "#FFFF55"
-high_color = "LightGreen"
-covered_color = "LightGreen"
-uncovered_color = "LightPink"
-takenBranch_color = "Green"
-notTakenBranch_color = "Red"
+low_color = "danger"
+medium_color = "warning"
+high_color = "success"
+covered_color = "success"
+uncovered_color = "danger"
+takenBranch_color = "success"
+notTakenBranch_color = "danger"
 
 
 def html_escape(s):
@@ -76,11 +78,30 @@ def coverage_to_color(coverage, medium_threshold, high_threshold):
     if coverage is None:
         return 'LightGray'
     elif coverage < medium_threshold:
-        return low_color
+        return 'danger'
     elif coverage < high_threshold:
-        return medium_color
+        return 'warning'
     else:
-        return high_color
+        return 'success'
+
+
+def makedirs(path):
+    try:
+        os.makedirs(path)
+    except OSError as err:
+        if err.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+
+
+def copy_static_content(options):
+    from pkg_resources import resource_filename
+
+    css_path = os.path.join(os.path.dirname(options.output), 'css')
+
+    resource = resource_filename(__name__, 'static/css')
+    makedirs(css_path)
+    for file in os.listdir(resource):
+        shutil.copy(os.path.join(resource, file), css_path)
 
 
 #
@@ -90,8 +111,12 @@ def print_html_report(covdata, output_file, options):
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
     details = options.html_details
+
     if output_file is None:
         details = False
+
+    copy_static_content(options)
+
     data = {}
     data['HEAD'] = options.html_title
     data['VERSION'] = __version__
@@ -264,7 +289,7 @@ def source_row(lineno, source, line_cov):
     kwargs['lineno'] = str(lineno)
     kwargs['linebranch'] = []
     if line_cov and line_cov.is_covered:
-        kwargs['covclass'] = 'coveredLine'
+        kwargs['covclass'] = covered_color
         # If line has branches them show them with ticks or crosses
         branches = line_cov.branches
         branchcounter = 0
@@ -273,12 +298,12 @@ def source_row(lineno, source, line_cov):
             branch = branches[branch_id]
             branch_args = {}
             if branch.is_covered:
-                branch_args['class'] = 'takenBranch'
+                branch_args['class'] = takenBranch_color
                 branch_args['message'] = 'Branch {name} taken {count} times'.format(
                     name=branch_id, count=branch.count)
                 branch_args['symbol'] = '&check;'
             else:
-                branch_args['class'] = 'notTakenBranch'
+                branch_args['class'] = notTakenBranch_color
                 branch_args['message'] = 'Branch {name} not taken'.format(
                     name=branch_id)
                 branch_args['symbol'] = '&cross;'
@@ -286,7 +311,7 @@ def source_row(lineno, source, line_cov):
             kwargs['linebranch'].append(branch_args)
         kwargs['linecount'] = str(line_cov.count)
     elif line_cov and line_cov.is_uncovered:
-        kwargs['covclass'] = 'uncoveredLine'
+        kwargs['covclass'] = uncovered_color
         kwargs['linebranch'] = ''
         kwargs['linecount'] = ''
     else:
@@ -303,29 +328,21 @@ def source_row(lineno, source, line_cov):
 def html_row(options, details, sourcefile, nrows, **kwargs):
     if details and options.relative_anchors:
         sourcefile = os.path.basename(sourcefile)
-    if nrows % 2 == 0:
-        kwargs['altstyle'] = 'style="background-color:LightSteelBlue"'
-    else:
-        kwargs['altstyle'] = ''
     if details:
         kwargs['filename'] = '<a href="%s">%s</a>' % (
             sourcefile, kwargs['filename'].replace('\\', '/')
         )
     kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'], 1)
-    # Disable the border if the bar is too short to see the color
-    if kwargs['LinesCoverage'] < 1e-7:
-        kwargs['BarBorder'] = "border:white; "
-    else:
-        kwargs['BarBorder'] = ""
+
     if kwargs['LinesCoverage'] < options.html_medium_threshold:
-        kwargs['LinesColor'] = low_color
-        kwargs['LinesBar'] = 'red'
+        kwargs['LinesColor'] = 'danger'
+        kwargs['LinesBar'] = 'danger'
     elif kwargs['LinesCoverage'] < options.html_high_threshold:
-        kwargs['LinesColor'] = medium_color
-        kwargs['LinesBar'] = 'yellow'
+        kwargs['LinesColor'] = 'warning'
+        kwargs['LinesBar'] = 'warning'
     else:
-        kwargs['LinesColor'] = high_color
-        kwargs['LinesBar'] = 'green'
+        kwargs['LinesColor'] = 'success'
+        kwargs['LinesBar'] = 'success'
 
     kwargs['BranchesColor'] = coverage_to_color(kwargs['BranchesCoverage'], options.html_medium_threshold, options.html_high_threshold)
     kwargs['BranchesCoverage'] = '-' if kwargs['BranchesCoverage'] is None else round(kwargs['BranchesCoverage'], 1)

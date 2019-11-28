@@ -1,0 +1,10 @@
+.src {
+    white-space: pre;
+    class: text-monospace;
+}
+
+.title,
+.footer,
+body footer {
+   text-align: center;
+}
