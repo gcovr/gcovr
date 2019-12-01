@@ -310,13 +310,8 @@ def open_binary_for_writing(filename=None):
         # files in write binary mode for UTF-8
         fh = open(filename, 'wb')
         close = True
-    elif (sys.version_info > (3, 0)):
-        # python 3 wants stdout.buffer for binary output
-        fh = sys.stdout.buffer
-        close = False
     else:
-        # python2 doesn't care as much, no stdout.buffer
-        fh = sys.stdout
+        fh = sys.stdout.buffer
         close = False
 
     try:
