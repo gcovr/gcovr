@@ -6,7 +6,6 @@ image: Visual Studio 2015
 environment:
 
   matrix:
-    - PYTHONPATH: C:\Python27
     - PYTHONPATH: C:\Python37-x64
     # TODO add more Python versions,
     # see https://www.appveyor.com/docs/build-environment/#python
@@ -20,23 +19,16 @@ environment:
     CMAKE: cmake -G "MSYS Makefiles"
 
 install:
-  # verify compiler version
   - 'set PATH=%PYTHONPATH%;%PYTHONPATH%\Scripts;%PATH%'
-  - 'python -V'
+  - 'python --version'
   - '%CXX% --version'
-  - 'python -m pip install --upgrade pip'
-  - 'python -m pip install pytest pytest-cov'
-  - 'python -m pip install ply'
-  - 'python -m pip install ordereddict'
-  - 'python -m pip install pyutilib'
-  - 'python -m pip install coverage'
-  - 'python -m pip install codecov'
-  - 'python setup.py develop'
+  - 'python -m pip install --upgrade pip pytest coverage codecov'
+  - '%MAKE% setup-dev PYTHON=python'
 
 build: off
 
 test_script:
-  - 'python -m pytest -v --doctest-modules --cov=gcovr --cov-branch gcovr doc/examples'
+  - '%MAKE% test PYTHON=python TEST_OPTS="--cov=gcovr --cov-branch"'
   - 'codecov -X gcov search'
 
 

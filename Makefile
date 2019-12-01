@@ -3,6 +3,7 @@ CC ?= gcc-5
 CXX ?= g++-5
 GCOV ?= gcov-5
 QA_CONTAINER ?= gcovr-qa
+TEST_OPTS ?=
 
 .PHONY: help setup-dev qa lint test doc docker-qa docker-qa-build
 
@@ -22,6 +23,7 @@ help:
 	@echo "  PYTHON     Python executable to use [current: $(PYTHON)]"
 	@echo "  CC, CXX, GCOV"
 	@echo "             the gcc version to use [current: CC=$(CC) CXX=$(CXX) GCOV=$(GCOV)]"
+	@echo "  TEST_OPTS  additional flags for pytest [current: $(TEST_OPTS)]"
 	@echo "  QA_CONTAINER"
 	@echo "             tag for the qa docker container [current: $(QA_CONTAINER)]"
 
@@ -35,7 +37,7 @@ lint:
 	find ./* -type f -name '*.py' -exec $(PYTHON) -m flake8 --ignore=E501,W503 -- {} +
 
 test:
-	CC=$(CC) CXX=$(CXX) GCOV=$(GCOV) $(PYTHON) -m pytest -v --doctest-modules gcovr doc/examples
+	CC=$(CC) CXX=$(CXX) GCOV=$(GCOV) $(PYTHON) -m pytest -v --doctest-modules $(TEST_OPTS) -- gcovr doc/examples
 
 doc:
 	cd doc && make html O=-W
