@@ -67,6 +67,9 @@ We compile ``example1.cpp`` with the GCC compiler as follows:
     :start-after: #BEGIN compile
     :end-before: #END compile
 
+(If you are using CMake,
+also see :ref:`oos cmake`.)
+
 Note that we compile this program without optimization, because
 optimization may combine lines of code and otherwise change the
 flow of execution in the program.  Additionally, we compile with

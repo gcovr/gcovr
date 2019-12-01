@@ -16,7 +16,7 @@ class Example(object):
         self.baseline = baseline
 
     def __str__(self):
-        return self.os.path.basename(self.baseline)
+        return os.path.basename(self.baseline)
 
 
 def find_test_cases():
@@ -34,7 +34,7 @@ def find_test_cases():
                 yield Example(name, script, baseline)
 
 
-@pytest.mark.parametrize('example', find_test_cases())
+@pytest.mark.parametrize('example', find_test_cases(), ids=str)
 def test_example(example):
     cmd = example.script
     baseline_file = example.baseline

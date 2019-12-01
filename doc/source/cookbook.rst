@@ -1,6 +1,8 @@
 Gcovr Cookbook
 ==============
 
+.. _c extensions in python:
+
 How to collect coverage for C extensions in Python
 --------------------------------------------------
 
@@ -48,3 +50,51 @@ A shell session might look like this:
     # run gcovr
     rm -rf coverage; mkdir coverage
     gcovr --filter src/ --print-summary --html-details -o coverage/index.html
+
+.. _oos cmake:
+
+Out-of-Source Builds with CMake
+-------------------------------
+
+Tools such as ``cmake`` encourage the use of out-of-source builds,
+where the code is compiled in a directory other than the one which
+contains the sources. This is an extra complication for ``gcov``.
+In order to pass the correct compiler and linker flags, the following
+commands need to be in ``CMakeLists.txt``:
+
+.. include:: ../examples/CMakeLists.txt
+    :code: cmake
+    :start-after: #BEGIN cmakecmds
+    :end-before: #END cmakecmds
+
+The ``--coverage`` compiler flag is an alternative to
+``fprofile-arcs -ftest-coverage`` for
+`recent version of gcc <https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html>`__.
+In versions 3.13 and later of ``cmake``, the
+``target_link_libraries`` command can be removed and
+``add_link_options("--coverage")`` added after
+the ``add_compile_options`` command.
+
+We then follow a normal ``cmake`` build process:
+
+.. include:: ../examples/example_cmake.sh
+    :code: bash
+    :start-after: #BEGIN cmake_build
+    :end-before: #END cmake_build
+
+and run the program:
+
+.. include:: ../examples/example_cmake.sh
+    :code: bash
+    :start-after: #BEGIN cmake_run
+    :end-before: #END cmake_run
+
+However, invocation of ``gcovr`` itself has to change. The assorted 
+``.gcno`` and ``.gcda`` files will appear under the ``CMakeFiles``
+directory in ``BLD_DIR``, rather than next to the sources. Since
+``gcovr`` requires both, the command we need to run is:
+
+.. include:: ../examples/example_cmake.sh
+    :code: bash
+    :start-after: #BEGIN cmake_gcovr
+    :end-before: #END cmake_gcovr
