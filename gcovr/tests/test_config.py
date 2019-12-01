@@ -2,7 +2,6 @@ r"""Tests related to config file support."""
 
 import io
 import re
-import sys
 
 import pytest
 
@@ -17,10 +16,6 @@ from ..configuration import (
 
 def run_cfg_test(contents, filename='test.cfg'):
     r"""Helper to parse a config file from a string."""
-
-    # make sure the config parser gets Unicode
-    if sys.version_info < (3,):
-        contents = contents.decode()
 
     open_file = io.StringIO(contents)
     return parse_config_file(open_file, filename=filename)

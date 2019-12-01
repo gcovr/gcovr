@@ -9,8 +9,6 @@
 import re
 import pytest
 import time
-import sys
-
 from threading import Event
 
 from ..gcov import GcovParser
@@ -255,13 +253,6 @@ GCOV_8_SOURCES = dict(
     gcov_8_exclude_throw=GCOV_8_EXAMPLE,
     nautilus_example=GCOV_8_NAUTILUS,
     gcov_8_example_2=GCOV_8_EXAMPLE_2)
-
-if sys.version_info < (3, 0):
-    GCOV_8_SOURCES = dict(
-        gcov_8_example=GCOV_8_EXAMPLE.decode(),
-        gcov_8_exclude_throw=GCOV_8_EXAMPLE.decode(),
-        nautilus_example=GCOV_8_NAUTILUS.decode(),
-        gcov_8_example_2=GCOV_8_EXAMPLE_2.decode())
 
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     gcov_8_example='33',
