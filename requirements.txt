@@ -1,8 +1,7 @@
 cmake
-flake8 >= 3.7
+flake8
 jinja2
 lxml
 pytest
 pytest-cov
 pyutilib
-typing ; python_version < '3.5'

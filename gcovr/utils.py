@@ -8,28 +8,23 @@
 
 from argparse import ArgumentTypeError
 import os
-import platform
 import re
 import sys
 from contextlib import contextmanager
 
-if not (platform.system() == 'Windows' and sys.version_info[0] == 2):
-    class LoopChecker(object):
-        def __init__(self):
-            self._seen = set()
 
-        def already_visited(self, path):
-            st = os.stat(path)
-            key = (st.st_dev, st.st_ino)
-            if key in self._seen:
-                return True
+class LoopChecker(object):
+    def __init__(self):
+        self._seen = set()
 
-            self._seen.add(key)
-            return False
-else:
-    class LoopChecker(object):
-        def already_visited(self, path):
-            return False
+    def already_visited(self, path):
+        st = os.stat(path)
+        key = (st.st_dev, st.st_ino)
+        if key in self._seen:
+            return True
+
+        self._seen.add(key)
+        return False
 
 
 def search_file(predicate, path, exclude_dirs):
@@ -319,13 +314,8 @@ def open_binary_for_writing(filename=None):
         # files in write binary mode for UTF-8
         fh = open(filename, 'wb')
         close = True
-    elif (sys.version_info > (3, 0)):
-        # python 3 wants stdout.buffer for binary output
-        fh = sys.stdout.buffer
-        close = False
     else:
-        # python2 doesn't care as much, no stdout.buffer
-        fh = sys.stdout
+        fh = sys.stdout.buffer
         close = False
 
     try:

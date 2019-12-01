@@ -12,17 +12,11 @@
 from argparse import ArgumentTypeError, SUPPRESS
 from locale import getpreferredencoding
 from multiprocessing import cpu_count
+from typing import Iterable, Any
 import os
 import re
-import sys
 
 from .utils import FilterOption
-
-try:
-    from typing import Iterable, Any
-except ImportError:
-    if sys.version_info >= (3, 5):
-        raise
 
 
 def check_percentage(value):

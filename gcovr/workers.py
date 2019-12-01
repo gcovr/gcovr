@@ -8,12 +8,7 @@
 
 from threading import Thread, Condition, RLock
 from contextlib import contextmanager
-
-import sys
-if sys.version_info[0] >= 3:
-    from queue import Queue, Empty
-else:
-    from Queue import Queue, Empty
+from queue import Queue, Empty
 
 
 class LockedDirectories(object):

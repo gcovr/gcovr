@@ -3,20 +3,18 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
-Future Directions
------------------
+Next Release
+------------
 
-.. warning::
+Breaking changes:
 
-   Python 2.7 will reach its end of life on Jan 1, 2020.
-   With its first release on or after that date,
-   gcovr will drop support for that version.
-   Subsequently, gcovr will only support Python versions
+ - Dropped support for Python 2.
+   From now on, gcovr will only support Python versions
    that enjoy upstream support.
 
-   Please note that gcovr does not use a strict SemVer version number.
-   When support for a Python version is dropped,
-   gcovr will not necessarily increment its major version.
+Documentation:
+
+ - Cookbook: :ref:`oos cmake` (:issue:`340`, :issue:`341`)
 
 4.2 (6 November 2019)
 ---------------------
