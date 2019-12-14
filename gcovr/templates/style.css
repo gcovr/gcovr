@@ -72,6 +72,59 @@ td.headerValueLeg
   padding-top: 2px;
 }
 
+td.coverage-unknown,
+span.coverage-unknown
+{
+    background-color: LightGray;
+}
+
+td.coverage-none,
+span.coverage-none,
+td.coverage-low,
+span.coverage-low
+{
+    background-color: {{low_color}};
+}
+
+td.coverage-medium,
+span.coverage-medium
+{
+    background-color: {{medium_color}};
+}
+
+td.coverage-high,
+span.coverage-high
+{
+    background-color: {{high_color}};
+}
+
+.graph .coverage-unknown
+{
+    background-color: gray;
+    border:white !important;
+}
+
+.graph .coverage-none
+{
+    background-color: white;
+    border:white !important;
+}
+
+.graph .coverage-low
+{
+    background-color: red;
+}
+
+.graph .coverage-medium
+{
+    background-color: yellow;
+}
+
+.graph .coverage-high
+{
+    background-color: green;
+}
+
 /* Color of horizontal ruler */
 td.hr
 {
@@ -99,6 +152,7 @@ td.coverTableHead
   padding-left: 4px;
   padding-right: 4px;
 }
+
 td.coverFile
 {
   text-align: left;
@@ -110,12 +164,23 @@ td.coverFile
   font-weight: bold;
   font-size: 110%;
 }
+
 td.coverBar
 {
   padding-left: 10px;
   padding-right: 10px;
   background-color: LightBlue;
 }
+
+tr:nth-child(even) {
+    td.coverFile {
+	background: LightSteelBlue
+    }
+    td.coverBar {
+	background: LightSteelBlue
+    }
+}
+
 td.coverBarOutline
 {
   background-color: white;
@@ -195,6 +260,13 @@ span.uncoveredLine
 {
     border-right: 1px gray solid;
     background-color: lightgray;
+    text-align: right;
+}
+
+.linecount
+{
+    font-family: monospace;
+    white-space: pre;
 }
 
 span.takenBranch
@@ -212,6 +284,10 @@ span.notTakenBranch
 .src
 {
     padding-left: 12px;
+    text-align: left;
+
+    font-family: monospace;
+    white-space: pre;
 }
 
 .srcHeader,
@@ -229,8 +305,68 @@ pre
     margin-bottom: 0;
 }
 
+.source-line
+{
+    height : 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
 .lineno
 {
     background-color: #EFE383;
     border-right: 1px solid #BBB15F;
+    text-align: right;
+    display: block;
+    unicode-bidi: embed;
+    font-family: monospace;
+    white-space: pre;
+}
+
+/* new grid layout */
+.root-page
+{
+    display: grid;
+    font-family: sans-serif;
+}
+
+div.title
+{
+    grid-column: 1;
+
+    text-align: center;
+    padding-bottom: 10px;
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+div.hr
+{
+    grid-column: 1;
+
+    background-color: navy;
+    height:3px;
+}
+
+.summary
+{
+    display: grid;
+    grid-column: 1;
+}
+
+.summary .legend
+{
+    grid-column: 1;
+}
+
+.summary .coverage
+{
+    grid-column: 2;
+}
+
+/* Footer format */
+.footer
+{
+  text-align: center;
+  padding-top: 3px;
+  font-family: sans-serif;
 }
