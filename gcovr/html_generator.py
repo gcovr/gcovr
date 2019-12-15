@@ -157,7 +157,7 @@ class RootInfo(object):
             branches['exec'], branches['total'], nan_value=None)
 
         self.files.append(html_row(
-            self.options, self.options.html_details, cdata_sourcefile,
+            self.options, cdata_sourcefile,
             directory=self.directory,
             filename=os.path.relpath(
                 os.path.realpath(cdata_fname), self.directory),
@@ -172,9 +172,6 @@ class RootInfo(object):
 def print_html_report(covdata, output_file, options):
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
-    details = options.html_details
-    if output_file is None:
-        details = False
     data = {}
     root_info = RootInfo(options)
     data['info'] = root_info
@@ -204,7 +201,7 @@ def print_html_report(covdata, output_file, options):
         files.append(filtered_fname)
         dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata_fname[f] = filtered_fname
-        if not details:
+        if not options.html_details:
             cdata_sourcefile[f] = None
         else:
             cdata_sourcefile[f] = _make_short_sourcename(
@@ -237,7 +234,7 @@ def print_html_report(covdata, output_file, options):
             fh.write(htmlString + '\n')
 
     # Return, if no details are requested
-    if not details:
+    if not options.html_details:
         return
 
     #
@@ -318,10 +315,10 @@ def source_row(lineno, source, line_cov):
 #
 # Generate the table row for a single file
 #
-def html_row(options, details, sourcefile, **kwargs):
-    if details and options.relative_anchors:
+def html_row(options, sourcefile, **kwargs):
+    if options.html_details and options.relative_anchors:
         sourcefile = os.path.basename(sourcefile)
-    if details:
+    if options.html_details:
         kwargs['filename'] = '<a href="{}">{}</a>'.format(
             sourcefile, kwargs['filename'].replace('\\', '/')
         )
