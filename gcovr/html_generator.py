@@ -16,7 +16,7 @@ from .version import __version__
 from .utils import commonpath, sort_coverage
 
 
-class lazy(object):
+class Lazy:
     def __init__(self, fn):
 
         def load():
@@ -37,7 +37,7 @@ class lazy(object):
 # Loading Jinja and preparing the environmen is fairly costly.
 # Only do this work if templates are actually used.
 # This speeds up text and XML output.
-@lazy
+@Lazy
 def templates():
     from jinja2 import Environment, PackageLoader
     return Environment(
@@ -96,7 +96,7 @@ def coverage_to_class(coverage, medium_threshold, high_threshold):
     return 'coverage-high'
 
 
-class RootInfo(object):
+class RootInfo:
 
     def __init__(self, options):
         self.medium_threshold = options.html_medium_threshold
@@ -111,6 +111,7 @@ class RootInfo(object):
         self.directory = None
         self.branches = dict()
         self.lines = dict()
+        self.files = []
 
     def set_directory(self, directory):
         self.directory = directory
@@ -119,31 +120,30 @@ class RootInfo(object):
         return "." if self.directory == '' else self.directory.replace('\\', '/')
 
     def calculate_branch_coverage(self, covdata):
-        branchTotal = 0
-        branchCovered = 0
+        branch_total = 0
+        branch_covered = 0
         for key in covdata.keys():
-            (total, covered, percent) = covdata[key].branch_coverage()
-            branchTotal += total
-            branchCovered += covered
-        self.branches['exec'] = str(branchCovered)
-        self.branches['total'] = str(branchTotal)
-        coverage = calculate_coverage(branchCovered, branchTotal, nan_value=None)
+            (total, covered, _percent) = covdata[key].branch_coverage()
+            branch_total += total
+            branch_covered += covered
+        self.branches['exec'] = str(branch_covered)
+        self.branches['total'] = str(branch_total)
+        coverage = calculate_coverage(branch_covered, branch_total, nan_value=None)
         self.branches['coverage'] = '-' if coverage is None else str(coverage)
-        self.branches['class'] = coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
-        self.files = []
+        self.branches['class'] = self._coverage_to_class(coverage)
 
     def calculate_line_coverage(self, covdata):
-        lineTotal = 0
-        lineCovered = 0
+        line_total = 0
+        line_covered = 0
         for key in covdata.keys():
-            (total, covered, percent) = covdata[key].line_coverage()
-            lineTotal += total
-            lineCovered += covered
-        self.lines['exec'] = str(lineCovered)
-        self.lines['total'] = str(lineTotal)
-        coverage = calculate_coverage(lineCovered, lineTotal)
+            (total, covered, _percent) = covdata[key].line_coverage()
+            line_total += total
+            line_covered += covered
+        self.lines['exec'] = str(line_covered)
+        self.lines['total'] = str(line_total)
+        coverage = calculate_coverage(line_covered, line_total)
         self.lines['coverage'] = str(coverage)
-        self.lines['class'] = coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
+        self.lines['class'] = self._coverage_to_class(coverage)
 
     def add_file(self, cdata, cdata_sourcefile, cdata_fname):
         lines = dict()
@@ -239,7 +239,7 @@ def print_html_report(covdata, output_file, options):
         if commondir != '':
             root_directory = commondir
     else:
-        dir_, file_ = os.path.split(filtered_fname)
+        dir_, _file = os.path.split(filtered_fname)
         if dir_ != '':
             root_directory = dir_ + os.sep
 
@@ -248,14 +248,14 @@ def print_html_report(covdata, output_file, options):
     for f in keys:
         root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
 
-    htmlString = templates().get_template('root_page.html').render(**data)
+    html_string = templates().get_template('root_page.html').render(**data)
 
     if output_file is None:
-        sys.stdout.write(htmlString + '\n')
+        sys.stdout.write(html_string + '\n')
     else:
         with io.open(output_file, 'w', encoding=options.html_encoding,
                      errors='xmlcharrefreplace') as fh:
-            fh.write(htmlString + '\n')
+            fh.write(html_string + '\n')
 
     # Return, if no details are requested
     if not options.html_details:
@@ -292,10 +292,10 @@ def print_html_report(covdata, output_file, options):
                 )
         os.chdir(currdir)
 
-        htmlString = templates().get_template('source_page.html').render(**data)
+        html_string = templates().get_template('source_page.html').render(**data)
         with io.open(cdata_sourcefile[f], 'w', encoding=options.html_encoding,
                      errors='xmlcharrefreplace') as fh:
-            fh.write(htmlString + '\n')
+            fh.write(html_string + '\n')
 
 
 def source_row(lineno, source, line_cov):
