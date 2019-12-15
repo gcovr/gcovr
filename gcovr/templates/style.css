@@ -338,7 +338,11 @@ div.hr
     grid-column: 2;
 }
 
-/* Footer format */
+.file-list
+{
+    margin: 0 auto;
+}
+
 .footer
 {
   text-align: center;

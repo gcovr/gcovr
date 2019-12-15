@@ -50,47 +50,45 @@
       <div class="hr"></div>
 
       <div class="file-list">
-	<center>
-	  <table width="80%" cellpadding=1 cellspacing=1 border=0>
-	    <tr>
-	      <td width="44%"><br></td>
-	      <td width="8%"></td>
-	      <td width="8%"></td>
-	      <td width="8%"></td>
-	      <td width="8%"></td>
-	      <td width="8%"></td>
-	    </tr>
-	    <tr>
-	      <td class="coverTableHead">File</td>
-	      <td class="coverTableHead" colspan=3>Lines</td>
-	      <td class="coverTableHead" colspan=2>Branches</td>
-	    </tr>
+	<table width="80%" cellpadding=1 cellspacing=1 border=0>
+	  <tr>
+	    <td width="44%"><br></td>
+	    <td width="8%"></td>
+	    <td width="8%"></td>
+	    <td width="8%"></td>
+	    <td width="8%"></td>
+	    <td width="8%"></td>
+	  </tr>
+	  <tr>
+	    <td class="coverTableHead">File</td>
+	    <td class="coverTableHead" colspan=3>Lines</td>
+	    <td class="coverTableHead" colspan=2>Branches</td>
+	  </tr>
 
-	    {% for row in info.files %}
+	  {% for row in info.files %}
 
-	    <tr>
-	      <td class="coverFile">{{row.filename}}</td>
-	      <td class="coverBar">
-		<meter class="{{row.lines.bar}}" min="0" max="100" low="{{COVERAGE_MED}}" high="{{COVERAGE_HIGH}}" optimum="99" value="{{row.lines.coverage}}" title="%">{{row.lines.coverage}}</meter>
-	      </td>
-	      <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}&nbsp;%</td>
-	      <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>
-	      <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.coverage}}&nbsp;%</td>
-	      <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.exec}} / {{row.branches.total}}</td>
-	    </tr>
+	  <tr>
+	    <td class="coverFile">{{row.filename}}</td>
+	    <td class="coverBar">
+	      <meter class="{{row.lines.bar}}" min="0" max="100" low="{{COVERAGE_MED}}" high="{{COVERAGE_HIGH}}" optimum="99" value="{{row.lines.coverage}}" title="%">{{row.lines.coverage}}</meter>
+	    </td>
+	    <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}&nbsp;%</td>
+	    <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>
+	    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.coverage}}&nbsp;%</td>
+	    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.exec}} / {{row.branches.total}}</td>
+	  </tr>
 
-	    {% endfor %}
+	  {% endfor %}
 
-	    <tr>
-	      <td width="44%"><br></td>
-	      <td width="8%"></td>
-	      <td width="8%"></td>
-	      <td width="8%"></td>
-	      <td width="8%"></td>
-	      <td width="8%"></td>
-	    </tr>
-	  </table>
-	</center>
+	  <tr>
+	    <td width="44%"><br></td>
+	    <td width="8%"></td>
+	    <td width="8%"></td>
+	    <td width="8%"></td>
+	    <td width="8%"></td>
+	    <td width="8%"></td>
+	  </tr>
+	</table>
       </div>
 {% endblock %}
 
