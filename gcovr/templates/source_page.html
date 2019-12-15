@@ -3,10 +3,10 @@
 {% block content %}
       <div class="summary">
 	<div class="legend">
-          <table cellpadding=1 border=0 width="100%">
+          <table>
             <tr>
-              <td width="10%" class="headerName">Directory:</td>
-              <td width="35%" class="headerValue">{{info.get_directory()}}</td>
+              <td class="headerName">Directory:</td>
+              <td class="headerValue">{{info.get_directory()}}</td>
             </tr>
             <tr>
               <td class="headerName">File:</td>
@@ -19,12 +19,12 @@
 	  </table>
 	</div>
 	<div class="coverage">
-          <table cellpadding=1 border=0 width="100%">
+          <table>
             <tr>
-              <td width="30%"></td>
-              <td width="20%" class="headerValue" style="text-align:right;">Exec</td>
-              <td width="20%" class="headerValue" style="text-align:right;">Total</td>
-              <td width="30%" class="headerValue" style="text-align:right;">Coverage</td>
+              <td ></td>
+              <td class="headerValue">Exec</td>
+              <td class="headerValue">Total</td>
+              <td class="headerValue">Coverage</td>
 	    </tr>
 	    <tr>
 	      <td class="headerName">Lines:</td>
@@ -45,12 +45,12 @@
       <div class="hr"></div>
 
       <div class="file-source">
-	<table cellspacing="0" cellpadding="1">
+	<table>
 	  <tr>
-	    <td width="5%" align="right" class="srcHeader">Line</td>
-	    <td width="5%" align="right" class="srcHeader">Branch</td>
-	    <td width="5%" align="right" class="srcHeader">Exec</td>
-	    <td width="75%" align="left" class="srcHeader src">Source</td>
+	    <td align="right" class="srcHeader">Line</td>
+	    <td align="right" class="srcHeader">Branch</td>
+	    <td align="right" class="srcHeader">Exec</td>
+	    <td align="left" class="srcHeader src">Source</td>
 	  </tr>
 
 	  {% for row in source_lines %}
