@@ -70,14 +70,8 @@
 
 	    <tr>
 	      <td class="coverFile">{{row.filename}}</td>
-	      <td class="coverBar" align="center">
-		<table border=0 cellspacing=0 cellpadding=1>
-		  <tr><td class="coverBarOutline">
-		      <div class="graph">
-			<strong class="bar {{row.lines.bar}}" style="width:{{row.lines.coverage}}%"></strong>
-		      </div>
-		  </td></tr>
-		</table>
+	      <td class="coverBar">
+		<meter class="{{row.lines.bar}}" min="0" max="100" low="{{COVERAGE_MED}}" high="{{COVERAGE_HIGH}}" optimum="99" value="{{row.lines.coverage}}" title="%">{{row.lines.coverage}}</meter>
 	      </td>
 	      <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}&nbsp;%</td>
 	      <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>

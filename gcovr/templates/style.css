@@ -97,33 +97,6 @@ span.coverage-high
     background-color: {{high_color}};
 }
 
-.graph .coverage-unknown
-{
-    background-color: gray;
-    border:white !important;
-}
-
-.graph .coverage-none
-{
-    background-color: white;
-    border:white !important;
-}
-
-.graph .coverage-low
-{
-    background-color: red;
-}
-
-.graph .coverage-medium
-{
-    background-color: yellow;
-}
-
-.graph .coverage-high
-{
-    background-color: green;
-}
-
 /* Color of horizontal ruler */
 td.hr
 {
@@ -178,11 +151,6 @@ tr:nth-child(even) {
     }
 }
 
-td.coverBarOutline
-{
-  background-color: white;
-}
-
 td.CoverValue
 {
   padding-top: 2px;
@@ -210,35 +178,46 @@ a.detail:active
   font-size:80%;
 }
 
-.graphcont{
-    color:#000;
-    font-weight:700;
-    float:left
-}
+meter {
+    -moz-appearance: none;
 
-.graph{
-    float:left;
-    background-color: white;
-    position:relative;
     width:280px;
-    padding:0
+    height: 12px;
+    padding: 0;
+    background: white;
+    vertical-align: baseline;
 }
 
-.graph .bar{
-    display:block;
-    position:relative;
-    border:black 1px solid;
-    text-align:center;
-    color:#fff;
-    height:10px;
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:12px;
-    line-height:1.9em
+meter::-webkit-meter-bar {
+  background: none;
+  background-color: white;
 }
 
-.graph .bar span{
-    position:absolute;
-    left:1em
+meter::-webkit-meter-optimum-value
+{
+  background: green;
+}
+
+meter::-webkit-meter-suboptimum-value {
+    background: yellow;
+}
+
+meter::-webkit-meter-even-less-good-value {
+    background: red;
+}
+
+meter:-moz-meter-optimum::-moz-meter-bar
+{
+  background: green;
+}
+
+meter:-moz-meter-sub-optimum::-moz-meter-bar {
+  background: yellow;
+}
+
+meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
+{
+    background: red;
 }
 
 td.coveredLine,
