@@ -1,3 +1,5 @@
+* { font-family: sans-serif; }
+
 body
 {
   color: #000000;
@@ -22,10 +24,7 @@ a:active
 }
 
 /*** TD formats ***/
-td
-{
-  font-family: sans-serif;
-}
+
 td.title
 {
   text-align: center;
@@ -136,7 +135,6 @@ td.footer
 {
   text-align: center;
   padding-top: 3px;
-  font-family: sans-serif;
 }
 
 /* Coverage Table */
@@ -146,7 +144,6 @@ td.coverTableHead
   text-align: center;
   color: white;
   background-color: SteelBlue;
-  font-family: sans-serif;
   font-size: 120%;
   white-space: nowrap;
   padding-left: 4px;
@@ -185,13 +182,13 @@ td.coverBarOutline
 {
   background-color: white;
 }
-td.coverValue
+
+td.CoverValue
 {
   padding-top: 2px;
   text-align: right;
   padding-left: 10px;
   padding-right: 10px;
-  font-family: sans-serif;
   white-space: nowrap;
   font-weight: bold;
 }
@@ -323,10 +320,9 @@ pre
 }
 
 /* new grid layout */
-.root-page
+.content
 {
     display: grid;
-    font-family: sans-serif;
 }
 
 div.title
@@ -368,5 +364,4 @@ div.hr
 {
   text-align: center;
   padding-top: 3px;
-  font-family: sans-serif;
 }
