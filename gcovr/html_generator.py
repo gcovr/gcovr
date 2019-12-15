@@ -99,9 +99,10 @@ def coverage_to_class(coverage, medium_threshold, high_threshold):
 class RootInfo(object):
 
     def __init__(self, options):
-        self.options = options
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
+        self.details = options.html_details
+        self.relative_anchors = options.relative_anchors
 
         self.version = __version__
         self.head = options.html_title
@@ -156,14 +157,37 @@ class RootInfo(object):
         branches['coverage'] = calculate_coverage(
             branches['exec'], branches['total'], nan_value=None)
 
-        self.files.append(html_row(
-            self.options, cdata_sourcefile,
+        self.files.append(self._html_row(
+            cdata_sourcefile,
             directory=self.directory,
             filename=os.path.relpath(
                 os.path.realpath(cdata_fname), self.directory),
             lines=lines,
             branches=branches
         ))
+
+    def _coverage_to_class(self, coverage):
+        return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
+
+    #
+    # Generate the table row for a single file
+    #
+    def _html_row(self, sourcefile, **kwargs):
+        if self.details and self.relative_anchors:
+            sourcefile = os.path.basename(sourcefile)
+        if self.details:
+            kwargs['filename'] = '<a href="{}">{}</a>'.format(
+                sourcefile, kwargs['filename'].replace('\\', '/')
+            )
+
+        kwargs['lines']['coverage'] = round(kwargs['lines']['coverage'], 1)
+        kwargs['lines']['class'] = self._coverage_to_class(kwargs['lines']['coverage'])
+        kwargs['lines']['bar'] = self._coverage_to_class(kwargs['lines']['coverage'])
+
+        kwargs['branches']['class'] = self._coverage_to_class(kwargs['branches']['coverage'])
+        kwargs['branches']['coverage'] = '-' if kwargs['branches']['coverage'] is None else round(kwargs['branches']['coverage'], 1)
+
+        return kwargs
 
 
 #
@@ -309,27 +333,6 @@ def source_row(lineno, source, line_cov):
         kwargs['linebranch'] = ''
         kwargs['linecount'] = ''
     kwargs['source'] = html_escape(source)
-    return kwargs
-
-
-#
-# Generate the table row for a single file
-#
-def html_row(options, sourcefile, **kwargs):
-    if options.html_details and options.relative_anchors:
-        sourcefile = os.path.basename(sourcefile)
-    if options.html_details:
-        kwargs['filename'] = '<a href="{}">{}</a>'.format(
-            sourcefile, kwargs['filename'].replace('\\', '/')
-        )
-
-    kwargs['lines']['coverage'] = round(kwargs['lines']['coverage'], 1)
-    kwargs['lines']['class'] = coverage_to_class(kwargs['lines']['coverage'], options.html_medium_threshold, options.html_high_threshold)
-    kwargs['lines']['bar'] = coverage_to_class(kwargs['lines']['coverage'], options.html_medium_threshold, options.html_high_threshold)
-
-    kwargs['branches']['class'] = coverage_to_class(kwargs['branches']['coverage'], options.html_medium_threshold, options.html_high_threshold)
-    kwargs['branches']['coverage'] = '-' if kwargs['branches']['coverage'] is None else round(kwargs['branches']['coverage'], 1)
-
     return kwargs
 
 
