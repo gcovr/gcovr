@@ -13,7 +13,7 @@ xml:
 
 html:
 	./testcase
-	$(GCOVR) -d --html-details > coverage.html
+	$(GCOVR) -d --html > coverage.html
 
 sonarqube:
 	# pass
