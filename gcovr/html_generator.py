@@ -126,10 +126,10 @@ class RootInfo:
             (total, covered, _percent) = covdata[key].branch_coverage()
             branch_total += total
             branch_covered += covered
-        self.branches['exec'] = str(branch_covered)
-        self.branches['total'] = str(branch_total)
+        self.branches['exec'] = branch_covered
+        self.branches['total'] = branch_total
         coverage = calculate_coverage(branch_covered, branch_total, nan_value=None)
-        self.branches['coverage'] = '-' if coverage is None else str(coverage)
+        self.branches['coverage'] = '-' if coverage is None else coverage
         self.branches['class'] = self._coverage_to_class(coverage)
 
     def calculate_line_coverage(self, covdata):
@@ -139,10 +139,10 @@ class RootInfo:
             (total, covered, _percent) = covdata[key].line_coverage()
             line_total += total
             line_covered += covered
-        self.lines['exec'] = str(line_covered)
-        self.lines['total'] = str(line_total)
+        self.lines['exec'] = line_covered
+        self.lines['total'] = line_total
         coverage = calculate_coverage(line_covered, line_total)
-        self.lines['coverage'] = str(coverage)
+        self.lines['coverage'] = coverage
         self.lines['class'] = self._coverage_to_class(coverage)
 
     def add_file(self, cdata, cdata_sourcefile, cdata_fname):
@@ -300,7 +300,7 @@ def print_html_report(covdata, output_file, options):
 
 def source_row(lineno, source, line_cov):
     kwargs = {}
-    kwargs['lineno'] = str(lineno)
+    kwargs['lineno'] = lineno
     kwargs['linebranch'] = []
     if line_cov and line_cov.is_covered:
         kwargs['covclass'] = 'coveredLine'
@@ -323,7 +323,7 @@ def source_row(lineno, source, line_cov):
                 branch_args['symbol'] = '&cross;'
             branch_args['wrap'] = (branchcounter % 4) == 0
             kwargs['linebranch'].append(branch_args)
-        kwargs['linecount'] = str(line_cov.count)
+        kwargs['linecount'] = line_cov.count
     elif line_cov and line_cov.is_uncovered:
         kwargs['covclass'] = 'uncoveredLine'
         kwargs['linebranch'] = ''
