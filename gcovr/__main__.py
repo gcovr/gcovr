@@ -170,6 +170,12 @@ def main(args=None):
             options.html_medium_threshold, options.html_high_threshold)
         sys.exit(1)
 
+    if options.html_details and not (options.html_details.value or options.output):
+        logger.error(
+            "a named output must be given, if the option --html-details\n"
+            "is used.")
+        sys.exit(1)
+
     if options.output is not None:
         options.output = os.path.abspath(options.output)
 

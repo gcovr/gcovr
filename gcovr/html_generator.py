@@ -8,17 +8,15 @@
 
 import os
 import sys
-import time
 import datetime
 import zlib
 import io
 
 from .version import __version__
 from .utils import commonpath, sort_coverage
-from .coverage import FileCoverage
 
 
-class lazy(object):
+class Lazy:
     def __init__(self, fn):
 
         def load():
@@ -39,7 +37,7 @@ class lazy(object):
 # Loading Jinja and preparing the environmen is fairly costly.
 # Only do this work if templates are actually used.
 # This speeds up text and XML output.
-@lazy
+@Lazy
 def templates():
     from jinja2 import Environment, PackageLoader
     return Environment(
@@ -49,13 +47,27 @@ def templates():
         lstrip_blocks=True)
 
 
-low_color = "LightPink"
-medium_color = "#FFFF55"
-high_color = "LightGreen"
-covered_color = "LightGreen"
-uncovered_color = "LightPink"
-takenBranch_color = "Green"
-notTakenBranch_color = "Red"
+class CssRenderer():
+
+    low_color = "LightPink"
+    medium_color = "#FFFF55"
+    high_color = "LightGreen"
+    covered_color = "LightGreen"
+    uncovered_color = "LightPink"
+    takenBranch_color = "Green"
+    notTakenBranch_color = "Red"
+
+    @staticmethod
+    def render():
+        return templates().get_template('style.css').render(
+            low_color=CssRenderer.low_color,
+            medium_color=CssRenderer.medium_color,
+            high_color=CssRenderer.high_color,
+            covered_color=CssRenderer.covered_color,
+            uncovered_color=CssRenderer.uncovered_color,
+            takenBranch_color=CssRenderer.takenBranch_color,
+            notTakenBranch_color=CssRenderer.notTakenBranch_color
+        )
 
 
 def html_escape(s):
@@ -72,15 +84,110 @@ def calculate_coverage(covered, total, nan_value=0.0):
     return nan_value if total == 0 else round(100.0 * covered / total, 1)
 
 
-def coverage_to_color(coverage, medium_threshold, high_threshold):
+def coverage_to_class(coverage, medium_threshold, high_threshold):
     if coverage is None:
-        return 'LightGray'
-    elif coverage < medium_threshold:
-        return low_color
-    elif coverage < high_threshold:
-        return medium_color
-    else:
-        return high_color
+        return 'coverage-unknown'
+    if coverage == 0:
+        return 'coverage-none'
+    if coverage < medium_threshold:
+        return 'coverage-low'
+    if coverage < high_threshold:
+        return 'coverage-medium'
+    return 'coverage-high'
+
+
+class RootInfo:
+
+    def __init__(self, options):
+        self.medium_threshold = options.html_medium_threshold
+        self.high_threshold = options.html_high_threshold
+        self.details = options.html_details
+        self.relative_anchors = options.relative_anchors
+
+        self.version = __version__
+        self.head = options.html_title
+        self.date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.encoding = options.html_encoding
+        self.directory = None
+        self.branches = dict()
+        self.lines = dict()
+        self.files = []
+
+    def set_directory(self, directory):
+        self.directory = directory
+
+    def get_directory(self):
+        return "." if self.directory == '' else self.directory.replace('\\', '/')
+
+    def calculate_branch_coverage(self, covdata):
+        branch_total = 0
+        branch_covered = 0
+        for key in covdata.keys():
+            (total, covered, _percent) = covdata[key].branch_coverage()
+            branch_total += total
+            branch_covered += covered
+        self.branches['exec'] = branch_covered
+        self.branches['total'] = branch_total
+        coverage = calculate_coverage(branch_covered, branch_total, nan_value=None)
+        self.branches['coverage'] = '-' if coverage is None else coverage
+        self.branches['class'] = self._coverage_to_class(coverage)
+
+    def calculate_line_coverage(self, covdata):
+        line_total = 0
+        line_covered = 0
+        for key in covdata.keys():
+            (total, covered, _percent) = covdata[key].line_coverage()
+            line_total += total
+            line_covered += covered
+        self.lines['exec'] = line_covered
+        self.lines['total'] = line_total
+        coverage = calculate_coverage(line_covered, line_total)
+        self.lines['coverage'] = coverage
+        self.lines['class'] = self._coverage_to_class(coverage)
+
+    def add_file(self, cdata, cdata_sourcefile, cdata_fname):
+        lines = dict()
+        branches = dict()
+
+        lines['total'], lines['exec'], _ = cdata.line_coverage()
+        branches['total'], branches['exec'], _ = cdata.branch_coverage()
+
+        lines['coverage'] = calculate_coverage(
+            lines['exec'], lines['total'], nan_value=100.0)
+        branches['coverage'] = calculate_coverage(
+            branches['exec'], branches['total'], nan_value=None)
+
+        self.files.append(self._html_row(
+            cdata_sourcefile,
+            directory=self.directory,
+            filename=os.path.relpath(
+                os.path.realpath(cdata_fname), self.directory),
+            lines=lines,
+            branches=branches
+        ))
+
+    def _coverage_to_class(self, coverage):
+        return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
+
+    #
+    # Generate the table row for a single file
+    #
+    def _html_row(self, sourcefile, **kwargs):
+        if self.details and self.relative_anchors:
+            sourcefile = os.path.basename(sourcefile)
+        if self.details:
+            kwargs['filename'] = '<a href="{}">{}</a>'.format(
+                sourcefile, kwargs['filename'].replace('\\', '/')
+            )
+
+        kwargs['lines']['coverage'] = round(kwargs['lines']['coverage'], 1)
+        kwargs['lines']['class'] = self._coverage_to_class(kwargs['lines']['coverage'])
+        kwargs['lines']['bar'] = self._coverage_to_class(kwargs['lines']['coverage'])
+
+        kwargs['branches']['class'] = self._coverage_to_class(kwargs['branches']['coverage'])
+        kwargs['branches']['coverage'] = '-' if kwargs['branches']['coverage'] is None else round(kwargs['branches']['coverage'], 1)
+
+        return kwargs
 
 
 #
@@ -89,55 +196,17 @@ def coverage_to_color(coverage, medium_threshold, high_threshold):
 def print_html_report(covdata, output_file, options):
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
-    details = options.html_details
-    if output_file is None:
-        details = False
     data = {}
-    data['HEAD'] = options.html_title
-    data['VERSION'] = __version__
-    data['TIME'] = str(int(time.time()))
-    data['DATE'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    data['ROWS'] = []
-    data['ENC'] = options.html_encoding
-    data['low_color'] = low_color
-    data['medium_color'] = medium_color
-    data['high_color'] = high_color
+    root_info = RootInfo(options)
+    data['info'] = root_info
+
     data['COVERAGE_MED'] = medium_threshold
     data['COVERAGE_HIGH'] = high_threshold
-    data['CSS'] = templates().get_template('style.css').render(
-        low_color=low_color,
-        medium_color=medium_color,
-        high_color=high_color,
-        covered_color=covered_color,
-        uncovered_color=uncovered_color,
-        takenBranch_color=takenBranch_color,
-        notTakenBranch_color=notTakenBranch_color
-    )
-    data['DIRECTORY'] = ''
 
-    branchTotal = 0
-    branchCovered = 0
-    for key in covdata.keys():
-        (total, covered, percent) = covdata[key].branch_coverage()
-        branchTotal += total
-        branchCovered += covered
-    data['BRANCHES_EXEC'] = str(branchCovered)
-    data['BRANCHES_TOTAL'] = str(branchTotal)
-    coverage = calculate_coverage(branchCovered, branchTotal, nan_value=None)
-    data['BRANCHES_COVERAGE'] = '-' if coverage is None else str(coverage)
-    data['BRANCHES_COLOR'] = coverage_to_color(coverage, medium_threshold, high_threshold)
+    data['css'] = CssRenderer.render()
 
-    lineTotal = 0
-    lineCovered = 0
-    for key in covdata.keys():
-        (total, covered, percent) = covdata[key].line_coverage()
-        lineTotal += total
-        lineCovered += covered
-    data['LINES_EXEC'] = str(lineCovered)
-    data['LINES_TOTAL'] = str(lineTotal)
-    coverage = calculate_coverage(lineCovered, lineTotal)
-    data['LINES_COVERAGE'] = str(coverage)
-    data['LINES_COLOR'] = coverage_to_color(coverage, medium_threshold, high_threshold)
+    root_info.calculate_branch_coverage(covdata)
+    root_info.calculate_line_coverage(covdata)
 
     # Generate the coverage output (on a per-package basis)
     # source_dirs = set()
@@ -156,7 +225,7 @@ def print_html_report(covdata, output_file, options):
         files.append(filtered_fname)
         dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata_fname[f] = filtered_fname
-        if not details:
+        if not options.html_details:
             cdata_sourcefile[f] = None
         else:
             cdata_sourcefile[f] = _make_short_sourcename(
@@ -164,61 +233,32 @@ def print_html_report(covdata, output_file, options):
 
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
+    root_directory = ''
     if len(files) > 1:
         commondir = commonpath(files)
         if commondir != '':
-            data['DIRECTORY'] = commondir
+            root_directory = commondir
     else:
-        dir_, file_ = os.path.split(filtered_fname)
+        dir_, _file = os.path.split(filtered_fname)
         if dir_ != '':
-            data['DIRECTORY'] = dir_ + os.sep
+            root_directory = dir_ + os.sep
 
-    nrows = 0
+    root_info.set_directory(root_directory)
+
     for f in keys:
-        cdata = covdata[f]  # type: FileCoverage
-        class_lines = 0
-        class_hits = 0
-        class_branches = 0
-        class_branch_hits = 0
-        class_lines, class_hits, _ = cdata.line_coverage()
-        b_total, b_hits, _ = cdata.branch_coverage()
-        class_branch_hits += b_hits
-        class_branches += b_total
+        root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
 
-        lines_covered = calculate_coverage(
-            class_hits, class_lines, nan_value=100.0)
-        branches_covered = calculate_coverage(
-            class_branch_hits, class_branches, nan_value=None)
-
-        nrows += 1
-        data['ROWS'].append(html_row(
-            options, details, cdata_sourcefile[f], nrows,
-            directory=data['DIRECTORY'],
-            filename=os.path.relpath(
-                os.path.realpath(cdata_fname[f]), data['DIRECTORY']),
-            LinesExec=class_hits,
-            LinesTotal=class_lines,
-            LinesCoverage=lines_covered,
-            BranchesExec=class_branch_hits,
-            BranchesTotal=class_branches,
-            BranchesCoverage=branches_covered
-        ))
-
-    if data['DIRECTORY'] == '':
-        data['DIRECTORY'] = "."
-    data['DIRECTORY'] = data['DIRECTORY'].replace('\\', '/')
-
-    htmlString = templates().get_template('root_page.html').render(**data)
+    html_string = templates().get_template('root_page.html').render(**data)
 
     if output_file is None:
-        sys.stdout.write(htmlString + '\n')
+        sys.stdout.write(html_string + '\n')
     else:
         with io.open(output_file, 'w', encoding=options.html_encoding,
                      errors='xmlcharrefreplace') as fh:
-            fh.write(htmlString + '\n')
+            fh.write(html_string + '\n')
 
     # Return, if no details are requested
-    if not details:
+    if not options.html_details:
         return
 
     #
@@ -227,41 +267,40 @@ def print_html_report(covdata, output_file, options):
     for f in keys:
         cdata = covdata[f]
 
-        data['FILENAME'] = cdata_fname[f]
-        data['ROWS'] = ''
+        data['filename'] = cdata_fname[f]
 
-        branchTotal, branchCovered, coverage = cdata.branch_coverage()
-        data['BRANCHES_EXEC'] = str(branchCovered)
-        data['BRANCHES_TOTAL'] = str(branchTotal)
-        data['BRANCHES_COVERAGE'] = '-' if coverage is None else str(coverage)
-        data['BRANCHES_COLOR'] = coverage_to_color(coverage, medium_threshold, high_threshold)
+        branches = dict()
+        data['branches'] = branches
 
-        lineTotal, lineCovered, coverage = cdata.line_coverage()
-        data['LINES_EXEC'] = str(lineCovered)
-        data['LINES_TOTAL'] = str(lineTotal)
-        data['LINES_COVERAGE'] = str(coverage)
-        data['LINES_COLOR'] = coverage_to_color(coverage, medium_threshold, high_threshold)
+        branches['total'], branches['exec'], branches['coverage'] = cdata.branch_coverage()
+        branches['class'] = coverage_to_class(branches['coverage'], medium_threshold, high_threshold)
+        branches['coverage'] = '-' if branches['coverage'] is None else branches['coverage']
 
-        data['ROWS'] = []
+        lines = dict()
+        data['lines'] = lines
+        lines['total'], lines['exec'], lines['coverage'] = cdata.line_coverage()
+        lines['class'] = coverage_to_class(lines['coverage'], medium_threshold, high_threshold)
+
+        data['source_lines'] = []
         currdir = os.getcwd()
         os.chdir(options.root_dir)
-        with io.open(data['FILENAME'], 'r', encoding=options.source_encoding,
-                     errors='replace') as INPUT:
-            for ctr, line in enumerate(INPUT, 1):
-                data['ROWS'].append(
+        with io.open(data['filename'], 'r', encoding=options.source_encoding,
+                     errors='replace') as source_file:
+            for ctr, line in enumerate(source_file, 1):
+                data['source_lines'].append(
                     source_row(ctr, line.rstrip(), cdata.lines.get(ctr))
                 )
         os.chdir(currdir)
 
-        htmlString = templates().get_template('source_page.html').render(**data)
+        html_string = templates().get_template('source_page.html').render(**data)
         with io.open(cdata_sourcefile[f], 'w', encoding=options.html_encoding,
                      errors='xmlcharrefreplace') as fh:
-            fh.write(htmlString + '\n')
+            fh.write(html_string + '\n')
 
 
 def source_row(lineno, source, line_cov):
     kwargs = {}
-    kwargs['lineno'] = str(lineno)
+    kwargs['lineno'] = lineno
     kwargs['linebranch'] = []
     if line_cov and line_cov.is_covered:
         kwargs['covclass'] = 'coveredLine'
@@ -284,7 +323,7 @@ def source_row(lineno, source, line_cov):
                 branch_args['symbol'] = '&cross;'
             branch_args['wrap'] = (branchcounter % 4) == 0
             kwargs['linebranch'].append(branch_args)
-        kwargs['linecount'] = str(line_cov.count)
+        kwargs['linecount'] = line_cov.count
     elif line_cov and line_cov.is_uncovered:
         kwargs['covclass'] = 'uncoveredLine'
         kwargs['linebranch'] = ''
@@ -294,42 +333,6 @@ def source_row(lineno, source, line_cov):
         kwargs['linebranch'] = ''
         kwargs['linecount'] = ''
     kwargs['source'] = html_escape(source)
-    return kwargs
-
-
-#
-# Generate the table row for a single file
-#
-def html_row(options, details, sourcefile, nrows, **kwargs):
-    if details and options.relative_anchors:
-        sourcefile = os.path.basename(sourcefile)
-    if nrows % 2 == 0:
-        kwargs['altstyle'] = 'style="background-color:LightSteelBlue"'
-    else:
-        kwargs['altstyle'] = ''
-    if details:
-        kwargs['filename'] = '<a href="%s">%s</a>' % (
-            sourcefile, kwargs['filename'].replace('\\', '/')
-        )
-    kwargs['LinesCoverage'] = round(kwargs['LinesCoverage'], 1)
-    # Disable the border if the bar is too short to see the color
-    if kwargs['LinesCoverage'] < 1e-7:
-        kwargs['BarBorder'] = "border:white; "
-    else:
-        kwargs['BarBorder'] = ""
-    if kwargs['LinesCoverage'] < options.html_medium_threshold:
-        kwargs['LinesColor'] = low_color
-        kwargs['LinesBar'] = 'red'
-    elif kwargs['LinesCoverage'] < options.html_high_threshold:
-        kwargs['LinesColor'] = medium_color
-        kwargs['LinesBar'] = 'yellow'
-    else:
-        kwargs['LinesColor'] = high_color
-        kwargs['LinesBar'] = 'green'
-
-    kwargs['BranchesColor'] = coverage_to_color(kwargs['BranchesCoverage'], options.html_medium_threshold, options.html_high_threshold)
-    kwargs['BranchesCoverage'] = '-' if kwargs['BranchesCoverage'] is None else round(kwargs['BranchesCoverage'], 1)
-
     return kwargs
 
 

@@ -1,3 +1,5 @@
+* { font-family: sans-serif; }
+
 body
 {
   color: #000000;
@@ -22,10 +24,7 @@ a:active
 }
 
 /*** TD formats ***/
-td
-{
-  font-family: sans-serif;
-}
+
 td.title
 {
   text-align: center;
@@ -72,6 +71,32 @@ td.headerValueLeg
   padding-top: 2px;
 }
 
+td.coverage-unknown,
+span.coverage-unknown
+{
+    background-color: LightGray;
+}
+
+td.coverage-none,
+span.coverage-none,
+td.coverage-low,
+span.coverage-low
+{
+    background-color: {{low_color}};
+}
+
+td.coverage-medium,
+span.coverage-medium
+{
+    background-color: {{medium_color}};
+}
+
+td.coverage-high,
+span.coverage-high
+{
+    background-color: {{high_color}};
+}
+
 /* Color of horizontal ruler */
 td.hr
 {
@@ -83,7 +108,6 @@ td.footer
 {
   text-align: center;
   padding-top: 3px;
-  font-family: sans-serif;
 }
 
 /* Coverage Table */
@@ -93,12 +117,12 @@ td.coverTableHead
   text-align: center;
   color: white;
   background-color: SteelBlue;
-  font-family: sans-serif;
   font-size: 120%;
   white-space: nowrap;
   padding-left: 4px;
   padding-right: 4px;
 }
+
 td.coverFile
 {
   text-align: left;
@@ -110,23 +134,29 @@ td.coverFile
   font-weight: bold;
   font-size: 110%;
 }
+
 td.coverBar
 {
   padding-left: 10px;
   padding-right: 10px;
   background-color: LightBlue;
 }
-td.coverBarOutline
-{
-  background-color: white;
+
+tr:nth-child(even) {
+    td.coverFile {
+	background: LightSteelBlue
+    }
+    td.coverBar {
+	background: LightSteelBlue
+    }
 }
-td.coverValue
+
+td.CoverValue
 {
   padding-top: 2px;
   text-align: right;
   padding-left: 10px;
   padding-right: 10px;
-  font-family: sans-serif;
   white-space: nowrap;
   font-weight: bold;
 }
@@ -148,35 +178,46 @@ a.detail:active
   font-size:80%;
 }
 
-.graphcont{
-    color:#000;
-    font-weight:700;
-    float:left
-}
+meter {
+    -moz-appearance: none;
 
-.graph{
-    float:left;
-    background-color: white;
-    position:relative;
     width:280px;
-    padding:0
+    height: 12px;
+    padding: 0;
+    background: white;
+    vertical-align: baseline;
 }
 
-.graph .bar{
-    display:block;
-    position:relative;
-    border:black 1px solid;
-    text-align:center;
-    color:#fff;
-    height:10px;
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:12px;
-    line-height:1.9em
+meter::-webkit-meter-bar {
+  background: none;
+  background-color: white;
 }
 
-.graph .bar span{
-    position:absolute;
-    left:1em
+meter::-webkit-meter-optimum-value
+{
+  background: green;
+}
+
+meter::-webkit-meter-suboptimum-value {
+    background: yellow;
+}
+
+meter::-webkit-meter-even-less-good-value {
+    background: red;
+}
+
+meter:-moz-meter-optimum::-moz-meter-bar
+{
+  background: green;
+}
+
+meter:-moz-meter-sub-optimum::-moz-meter-bar {
+  background: yellow;
+}
+
+meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
+{
+    background: red;
 }
 
 td.coveredLine,
@@ -195,6 +236,13 @@ span.uncoveredLine
 {
     border-right: 1px gray solid;
     background-color: lightgray;
+    text-align: right;
+}
+
+.linecount
+{
+    font-family: monospace;
+    white-space: pre;
 }
 
 span.takenBranch
@@ -212,6 +260,10 @@ span.notTakenBranch
 .src
 {
     padding-left: 12px;
+    text-align: left;
+
+    font-family: monospace;
+    white-space: pre;
 }
 
 .srcHeader,
@@ -229,8 +281,101 @@ pre
     margin-bottom: 0;
 }
 
+.source-line
+{
+    height : 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
 .lineno
 {
     background-color: #EFE383;
     border-right: 1px solid #BBB15F;
+    text-align: right;
+    display: block;
+    unicode-bidi: embed;
+    font-family: monospace;
+    white-space: pre;
+}
+
+/* new grid layout */
+.content
+{
+    display: grid;
+}
+
+div.title
+{
+    grid-column: 1;
+
+    text-align: center;
+    padding-bottom: 10px;
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+div.hr
+{
+    grid-column: 1;
+
+    background-color: navy;
+    height:3px;
+}
+
+.summary
+{
+    display: grid;
+    grid-column: 1;
+}
+
+.summary .legend
+{
+    grid-column: 1;
+}
+
+.summary .coverage
+{
+    grid-column: 2;
+}
+
+.coverage table,
+.legend table
+{
+    width: 100%;
+    border: 0;
+}
+
+.coverage .headerValue
+{
+    text-align: right;
+}
+
+.file-list
+{
+    margin: 0 auto;
+}
+
+.file-list table
+{
+    border: 0;
+    border-spacing: 1px;
+}
+
+.file-source table
+{
+    border-spacing: 0;
+}
+
+.file-source table td {
+    padding: 1px 10px;
+}
+
+.file-source table td:last-child
+{
+    width: 100%;
+}
+.footer
+{
+  text-align: center;
+  padding-top: 3px;
 }
