@@ -1,55 +1,56 @@
+{# -*- engine: jinja -*- #}
 {% extends "base.html" %}
 
 {% block content %}
-      <div class="summary">
+<div class="summary">
 	<div class="legend">
-          <table>
-            <tr>
-              <td class="headerName">Directory:</td>
-              <td class="headerValue">{{info.get_directory()}}</td>
-            </tr>
-            <tr>
-              <td class="headerName">Date:</td>
-              <td class="headerValue">{{info.date}}</td>
-            <tr>
-              <td class="headerName">Legend:</td>
-              <td class="headerValueLeg">
-		<span class="coverage-low">low: &lt; {{COVERAGE_MED}} %</span>
-		{% if COVERAGE_MED != COVERAGE_HIGH %}
-		<span class="coverage-medium">medium: &gt;= {{COVERAGE_MED}} %</span>
-		{% endif %}
-		<span class="coverage-high">high: &gt;= {{COVERAGE_HIGH}} %</span>
-              </td>
-	    </tr>
+    <table>
+      <tr>
+        <td class="headerName">Directory:</td>
+        <td class="headerValue">{{info.get_directory()}}</td>
+      </tr>
+      <tr>
+        <td class="headerName">Date:</td>
+        <td class="headerValue">{{info.date}}</td>
+        <tr>
+          <td class="headerName">Legend:</td>
+          <td class="headerValueLeg">
+		        <span class="coverage-low">low: &lt; {{COVERAGE_MED}} %</span>
+		        {% if COVERAGE_MED != COVERAGE_HIGH %}
+		        <span class="coverage-medium">medium: &gt;= {{COVERAGE_MED}} %</span>
+		        {% endif %}
+		        <span class="coverage-high">high: &gt;= {{COVERAGE_HIGH}} %</span>
+          </td>
+	      </tr>
 	  </table>
 	</div>
 	<div class="coverage">
-          <table>
-            <tr>
-              <td ></td>
-              <td class="headerValue">Exec</td>
-              <td class="headerValue">Total</td>
-              <td class="headerValue">Coverage</td>
+    <table>
+      <tr>
+        <td ></td>
+        <td class="headerValue">Exec</td>
+        <td class="headerValue">Total</td>
+        <td class="headerValue">Coverage</td>
 	    </tr>
 	    <tr>
 	      <td class="headerName">Lines:</td>
-              <td class="headerTableEntry">{{info.lines.exec}}</td>
-              <td class="headerTableEntry">{{info.lines.total}}</td>
-              <td class="headerTableEntry {{info.lines.class}}">{{info.lines.coverage}} %</td>
-            </tr>
+        <td class="headerTableEntry">{{info.lines.exec}}</td>
+        <td class="headerTableEntry">{{info.lines.total}}</td>
+        <td class="headerTableEntry {{info.lines.class}}">{{info.lines.coverage}} %</td>
+      </tr>
 	    <tr>
 	      <td class="headerName">Branches:</td>
-              <td class="headerTableEntry">{{info.branches.exec}}</td>
-              <td class="headerTableEntry">{{info.branches.total}}</td>
-              <td class="headerTableEntry {{info.branches.class}}">{{info.branches.coverage}} %</td>
-            </tr>
+        <td class="headerTableEntry">{{info.branches.exec}}</td>
+        <td class="headerTableEntry">{{info.branches.total}}</td>
+        <td class="headerTableEntry {{info.branches.class}}">{{info.branches.coverage}} %</td>
+      </tr>
 	  </table>
 	</div>
-      </div>
+</div>
 
-      <div class="hr"></div>
+<div class="hr"></div>
 
-      <div class="file-list">
+<div class="file-list">
 	<table>
 	  <tr>
 	    <td><br></td>
@@ -63,12 +64,12 @@
 	  {% for row in info.files %}
 
 	  <tr>
-	      <td class="coverFile">
-            {% if row.link is not none %}
-                <a href="{{row.link}}">{{row.filename}}</a>
-            {% else %}
-                {{row.filename}}
-            {% endif %}</td>
+	    <td class="coverFile">
+        {% if row.link is not none %}
+        <a href="{{row.link}}">{{row.filename}}</a>
+        {% else %}
+        {{row.filename}}
+        {% endif %}</td>
 	    <td class="coverBar">
 	      <meter class="{{row.lines.class}}" min="0" max="100" low="{{COVERAGE_MED}}" high="{{COVERAGE_HIGH}}" optimum="99" value="{{row.lines.coverage}}" title="%">{{row.lines.coverage}}</meter>
 	    </td>
@@ -84,6 +85,5 @@
 	    <td><br></td>
 	  </tr>
 	</table>
-      </div>
+</div>
 {% endblock %}
-

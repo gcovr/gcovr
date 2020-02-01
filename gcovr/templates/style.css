@@ -2,73 +2,73 @@
 
 body
 {
-  color: #000000;
-  background-color: #FFFFFF;
+    color: #000000;
+    background-color: #FFFFFF;
 }
 
 /* Link formats: use maroon w/underlines */
 a:link
 {
-  color: navy;
-  text-decoration: underline;
+    color: navy;
+    text-decoration: underline;
 }
 a:visited
 {
-  color: maroon;
-  text-decoration: underline;
+    color: maroon;
+    text-decoration: underline;
 }
 a:active
 {
-  color: navy;
-  text-decoration: underline;
+    color: navy;
+    text-decoration: underline;
 }
 
 /*** TD formats ***/
 
 td.title
 {
-  text-align: center;
-  padding-bottom: 10px;
-  font-size: 20pt;
-  font-weight: bold;
+    text-align: center;
+    padding-bottom: 10px;
+    font-size: 20pt;
+    font-weight: bold;
 }
 
 /* TD Header Information */
 td.headerName
 {
-  text-align: right;
-  color: black;
-  padding-right: 6px;
-  font-weight: bold;
-  vertical-align: top;
-  white-space: nowrap;
+    text-align: right;
+    color: black;
+    padding-right: 6px;
+    font-weight: bold;
+    vertical-align: top;
+    white-space: nowrap;
 }
 td.headerValue
 {
-  text-align: left;
-  color: blue;
-  font-weight: bold;
-  white-space: nowrap;
+    text-align: left;
+    color: blue;
+    font-weight: bold;
+    white-space: nowrap;
 }
 td.headerTableEntry
 {
-  text-align: right;
-  color: black;
-  font-weight: bold;
-  white-space: nowrap;
-  padding-left: 12px;
-  padding-right: 4px;
-  background-color: LightBlue;
+    text-align: right;
+    color: black;
+    font-weight: bold;
+    white-space: nowrap;
+    padding-left: 12px;
+    padding-right: 4px;
+    background-color: LightBlue;
 }
 td.headerValueLeg
 {
-  text-align: left;
-  color: black;
-  font-size: 80%;
-  white-space: nowrap;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 2px;
+    text-align: left;
+    color: black;
+    font-size: 80%;
+    white-space: nowrap;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
 }
 
 td.coverage-unknown,
@@ -100,82 +100,82 @@ span.coverage-high
 /* Color of horizontal ruler */
 td.hr
 {
-  background-color: navy;
-  height:3px;
+    background-color: navy;
+    height:3px;
 }
 /* Footer format */
 td.footer
 {
-  text-align: center;
-  padding-top: 3px;
+    text-align: center;
+    padding-top: 3px;
 }
 
 /* Coverage Table */
 
 td.coverTableHead
 {
-  text-align: center;
-  color: white;
-  background-color: SteelBlue;
-  font-size: 120%;
-  white-space: nowrap;
-  padding-left: 4px;
-  padding-right: 4px;
+    text-align: center;
+    color: white;
+    background-color: SteelBlue;
+    font-size: 120%;
+    white-space: nowrap;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 td.coverFile
 {
-  text-align: left;
-  padding-left: 10px;
-  padding-right: 20px;
-  color: black;
-  background-color: LightBlue;
-  font-family: monospace;
-  font-weight: bold;
-  font-size: 110%;
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 20px;
+    color: black;
+    background-color: LightBlue;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 110%;
 }
 
 td.coverBar
 {
-  padding-left: 10px;
-  padding-right: 10px;
-  background-color: LightBlue;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: LightBlue;
 }
 
 tr:nth-child(even) {
     td.coverFile {
-	background: LightSteelBlue
+	      background: LightSteelBlue
     }
     td.coverBar {
-	background: LightSteelBlue
+	      background: LightSteelBlue
     }
 }
 
 td.CoverValue
 {
-  padding-top: 2px;
-  text-align: right;
-  padding-left: 10px;
-  padding-right: 10px;
-  white-space: nowrap;
-  font-weight: bold;
+    padding-top: 2px;
+    text-align: right;
+    padding-left: 10px;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
 }
 
 /* Link Details */
 a.detail:link
 {
-  color: #B8D0FF;
-  font-size:80%;
+    color: #B8D0FF;
+    font-size:80%;
 }
 a.detail:visited
 {
-  color: #B8D0FF;
-  font-size:80%;
+    color: #B8D0FF;
+    font-size:80%;
 }
 a.detail:active
 {
-  color: #FFFFFF;
-  font-size:80%;
+    color: #FFFFFF;
+    font-size:80%;
 }
 
 meter {
@@ -189,13 +189,13 @@ meter {
 }
 
 meter::-webkit-meter-bar {
-  background: none;
-  background-color: white;
+    background: none;
+    background-color: white;
 }
 
 meter::-webkit-meter-optimum-value
 {
-  background: green;
+    background: green;
 }
 
 meter::-webkit-meter-suboptimum-value {
@@ -208,11 +208,11 @@ meter::-webkit-meter-even-less-good-value {
 
 meter:-moz-meter-optimum::-moz-meter-bar
 {
-  background: green;
+    background: green;
 }
 
 meter:-moz-meter-sub-optimum::-moz-meter-bar {
-  background: yellow;
+    background: yellow;
 }
 
 meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
@@ -376,6 +376,6 @@ div.hr
 }
 .footer
 {
-  text-align: center;
-  padding-top: 3px;
+    text-align: center;
+    padding-top: 3px;
 }
