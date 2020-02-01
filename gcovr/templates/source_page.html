@@ -41,7 +41,7 @@
 	  </table>
 	</div>
       </div>
-      
+
       <div class="hr"></div>
 
       <div class="file-source">
@@ -58,9 +58,13 @@
 	  <tr class="source-line">
 	    <td class="lineno">{{row.lineno}}</td>
 	    <td class="linebranch">
-	      {%- for branch in row.linebranch -%}
-	      <span class="{{branch.class}}" title="{{branch.message}}">{{branch.symbol}}</span>
-	      {%- if branch.wrap %}<br/>{% endif -%}
+	        {%- for branch in row.linebranch -%}
+          {%- if branch.taken -%}
+          <span class="takenBranch" title="Branch {{branch.name}} taken {{branch.count}} times">&check;</span>
+          {%- else -%}
+          <span class="notTakenBranch" title="Branch {{branch.name}} not taken">&cross;</span>
+          {%- endif -%}
+	      {%- if loop.index is divisibleby 4 %}<br/>{% endif -%}
 	      {%- endfor -%}
 	    </td>
 	    <td class="linecount {{row.covclass}}">{{row.linecount}}</td>

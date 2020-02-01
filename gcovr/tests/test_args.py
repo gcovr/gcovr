@@ -153,3 +153,27 @@ def test_multiple_output_formats_to_stdout(capsys):
     assert 'HTML output skipped' in c.err
     assert 'Sonarqube output skipped' in c.err
     assert c.exception.code == 0
+
+
+def test_html_injection_via_json(capsys):
+    import json
+    import tempfile
+    import markupsafe
+
+    script = '<script>alert("pwned")</script>'
+    jsondata = {
+        'gcovr/format_version': 0.1,
+        'files': [
+            {'file': script, 'lines': []},
+            {'file': 'other', 'lines': []},
+        ],
+    }
+
+    with tempfile.NamedTemporaryFile('w+') as jsonfile:
+        json.dump(jsondata, jsonfile)
+        jsonfile.flush()
+        jsonfile.seek(0)
+        c = capture(capsys, ['-a', jsonfile.name, '--html'])
+    assert script not in c.out
+    assert str(markupsafe.escape(script)) in c.out, f'--- got:\n{c.out}\n---'
+    assert c.exception.code == 0

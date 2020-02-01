@@ -42,7 +42,7 @@ def templates():
     from jinja2 import Environment, PackageLoader
     return Environment(
         loader=PackageLoader('gcovr'),
-        autoescape=False,
+        autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True)
 
@@ -68,16 +68,6 @@ class CssRenderer():
             takenBranch_color=CssRenderer.takenBranch_color,
             notTakenBranch_color=CssRenderer.notTakenBranch_color
         )
-
-
-def html_escape(s):
-    """Escape string for inclusion in a HTML body.
-
-    Does not escape ``'``, ``"``, or ``>``.
-    """
-    s = s.replace('&', '&amp;')
-    s = s.replace('<', '&lt;')
-    return s
 
 
 def calculate_coverage(covered, total, nan_value=0.0):
@@ -145,49 +135,47 @@ class RootInfo:
         self.lines['coverage'] = coverage
         self.lines['class'] = self._coverage_to_class(coverage)
 
-    def add_file(self, cdata, cdata_sourcefile, cdata_fname):
-        lines = dict()
-        branches = dict()
+    def add_file(self, cdata, link_report, cdata_fname):
+        lines_total, lines_exec, _ = cdata.line_coverage()
+        branches_total, branches_exec, _ = cdata.branch_coverage()
 
-        lines['total'], lines['exec'], _ = cdata.line_coverage()
-        branches['total'], branches['exec'], _ = cdata.branch_coverage()
+        line_coverage = calculate_coverage(
+            lines_exec, lines_total, nan_value=100.0)
+        branch_coverage = calculate_coverage(
+            branches_exec, branches_total, nan_value=None)
 
-        lines['coverage'] = calculate_coverage(
-            lines['exec'], lines['total'], nan_value=100.0)
-        branches['coverage'] = calculate_coverage(
-            branches['exec'], branches['total'], nan_value=None)
+        lines = {
+            'total': lines_total,
+            'exec': lines_exec,
+            'coverage': round(line_coverage, 1),
+            'class': self._coverage_to_class(line_coverage),
+        }
 
-        self.files.append(self._html_row(
-            cdata_sourcefile,
+        branches = {
+            'total': branches_total,
+            'exec': branches_exec,
+            'coverage': '-' if branch_coverage is None else round(branch_coverage, 1),
+            'class': self._coverage_to_class(branch_coverage),
+        }
+
+        display_filename = (
+            os.path.relpath(os.path.realpath(cdata_fname), self.directory)
+            .replace('\\', '/'))
+
+        if link_report is not None:
+            if self.relative_anchors:
+                link_report = os.path.basename(link_report)
+
+        self.files.append(dict(
             directory=self.directory,
-            filename=os.path.relpath(
-                os.path.realpath(cdata_fname), self.directory),
+            filename=display_filename,
+            link=link_report,
             lines=lines,
-            branches=branches
+            branches=branches,
         ))
 
     def _coverage_to_class(self, coverage):
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
-
-    #
-    # Generate the table row for a single file
-    #
-    def _html_row(self, sourcefile, **kwargs):
-        if self.details and self.relative_anchors:
-            sourcefile = os.path.basename(sourcefile)
-        if self.details:
-            kwargs['filename'] = '<a href="{}">{}</a>'.format(
-                sourcefile, kwargs['filename'].replace('\\', '/')
-            )
-
-        kwargs['lines']['coverage'] = round(kwargs['lines']['coverage'], 1)
-        kwargs['lines']['class'] = self._coverage_to_class(kwargs['lines']['coverage'])
-        kwargs['lines']['bar'] = self._coverage_to_class(kwargs['lines']['coverage'])
-
-        kwargs['branches']['class'] = self._coverage_to_class(kwargs['branches']['coverage'])
-        kwargs['branches']['coverage'] = '-' if kwargs['branches']['coverage'] is None else round(kwargs['branches']['coverage'], 1)
-
-        return kwargs
 
 
 #
@@ -304,25 +292,14 @@ def source_row(lineno, source, line_cov):
     kwargs['linebranch'] = []
     if line_cov and line_cov.is_covered:
         kwargs['covclass'] = 'coveredLine'
-        # If line has branches them show them with ticks or crosses
         branches = line_cov.branches
-        branchcounter = 0
         for branch_id in sorted(branches):
-            branchcounter += 1
             branch = branches[branch_id]
-            branch_args = {}
-            if branch.is_covered:
-                branch_args['class'] = 'takenBranch'
-                branch_args['message'] = 'Branch {name} taken {count} times'.format(
-                    name=branch_id, count=branch.count)
-                branch_args['symbol'] = '&check;'
-            else:
-                branch_args['class'] = 'notTakenBranch'
-                branch_args['message'] = 'Branch {name} not taken'.format(
-                    name=branch_id)
-                branch_args['symbol'] = '&cross;'
-            branch_args['wrap'] = (branchcounter % 4) == 0
-            kwargs['linebranch'].append(branch_args)
+            kwargs['linebranch'].append({
+                'taken': branch.is_covered,
+                'name': branch_id,
+                'count': branch.count,
+            })
         kwargs['linecount'] = line_cov.count
     elif line_cov and line_cov.is_uncovered:
         kwargs['covclass'] = 'uncoveredLine'
@@ -332,7 +309,7 @@ def source_row(lineno, source, line_cov):
         kwargs['covclass'] = ''
         kwargs['linebranch'] = ''
         kwargs['linecount'] = ''
-    kwargs['source'] = html_escape(source)
+    kwargs['source'] = source
     return kwargs
 
 
