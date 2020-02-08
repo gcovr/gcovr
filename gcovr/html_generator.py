@@ -287,30 +287,49 @@ def print_html_report(covdata, output_file, options):
 
 
 def source_row(lineno, source, line_cov):
-    kwargs = {}
-    kwargs['lineno'] = lineno
-    kwargs['linebranch'] = []
-    if line_cov and line_cov.is_covered:
-        kwargs['covclass'] = 'coveredLine'
-        branches = line_cov.branches
-        for branch_id in sorted(branches):
-            branch = branches[branch_id]
-            kwargs['linebranch'].append({
-                'taken': branch.is_covered,
-                'name': branch_id,
-                'count': branch.count,
-            })
-        kwargs['linecount'] = line_cov.count
-    elif line_cov and line_cov.is_uncovered:
-        kwargs['covclass'] = 'uncoveredLine'
-        kwargs['linebranch'] = ''
-        kwargs['linecount'] = ''
-    else:
-        kwargs['covclass'] = ''
-        kwargs['linebranch'] = ''
-        kwargs['linecount'] = ''
-    kwargs['source'] = source
-    return kwargs
+    linebranch = None
+    linecount = ''
+    covclass = ''
+    if line_cov:
+        if line_cov.is_covered:
+            covclass = 'coveredLine'
+            linebranch = source_row_branch(line_cov.branches)
+            linecount = line_cov.count
+        elif line_cov.is_uncovered:
+            covclass = 'uncoveredLine'
+    return {
+        'lineno': lineno,
+        'source': source,
+        'covclass': covclass,
+        'linebranch': linebranch,
+        'linecount': linecount,
+    }
+
+
+def source_row_branch(branches):
+    if not branches:
+        return None
+
+    taken = 0
+    total = 0
+    items = []
+
+    for branch_id in sorted(branches):
+        branch = branches[branch_id]
+        if branch.is_covered:
+            taken += 1
+        total += 1
+        items.append({
+            'taken': branch.is_covered,
+            'name': branch_id,
+            'count': branch.count,
+        })
+
+    return {
+        'taken': taken,
+        'total': total,
+        'branches': items,
+    }
 
 
 def _make_short_sourcename(output_file, filename):

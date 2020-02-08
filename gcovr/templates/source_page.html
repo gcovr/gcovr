@@ -1,50 +1,44 @@
 {# -*- engine: jinja -*- #}
 {% extends "base.html" %}
 
+{% block summary %}
+<table class="legend">
+  <tr>
+    <th scope="row">Directory:</th>
+    <td>{{info.get_directory()}}</td>
+  </tr>
+  <tr>
+    <th scope="row">File:</th>
+    <td>{{filename}}</td>
+  </tr>
+  <tr>
+    <th scope="row">Date:</th>
+    <td>{{info.date}}</td>
+  </tr>
+</table>
+<table class="coverage">
+  <tr>
+    <th></th>
+    <th scope="col">Exec</th>
+    <th scope="col">Total</th>
+    <th scope="col">Coverage</th>
+  </tr>
+  <tr>
+    <th scope="row">Lines:</th>
+    <td>{{lines.exec}}</td>
+    <td>{{lines.total}}</td>
+    <td class="{{lines.class}}">{{lines.coverage}}%</td>
+  </tr>
+  <tr>
+    <th scope="row">Branches:</th>
+    <td>{{branches.exec}}</td>
+    <td>{{branches.total}}</td>
+    <td class="{{branches.class}}">{{branches.coverage}}%</td>
+  </tr>
+</table>
+{% endblock %}
+
 {% block content %}
-<div class="summary">
-  <div class="legend">
-    <table>
-      <tr>
-        <td class="headerName">Directory:</td>
-        <td class="headerValue">{{info.get_directory()}}</td>
-      </tr>
-      <tr>
-        <td class="headerName">File:</td>
-        <td class="headerValue">{{filename}}</td>
-      </tr>
-      <tr>
-        <td class="headerName">Date:</td>
-        <td class="headerValue">{{info.date}}</td>
-      </tr>
-    </table>
-  </div>
-  <div class="coverage">
-    <table>
-      <tr>
-        <td ></td>
-        <td class="headerValue">Exec</td>
-        <td class="headerValue">Total</td>
-        <td class="headerValue">Coverage</td>
-      </tr>
-      <tr>
-        <td class="headerName">Lines:</td>
-        <td class="headerTableEntry">{{lines.exec}}</td>
-        <td class="headerTableEntry">{{lines.total}}</td>
-        <td class="headerTableEntry {{lines.class}}">{{lines.coverage}} %</td>
-      </tr>
-      <tr>
-        <td class="headerName">Branches:</td>
-        <td class="headerTableEntry">{{branches.exec}}</td>
-        <td class="headerTableEntry">{{branches.total}}</td>
-        <td class="headerTableEntry {{branches.class}}">{{branches.coverage}} %</td>
-      </tr>
-    </table>
-  </div>
-</div>
-
-<div class="hr"></div>
-
 <div class="file-source">
   <table>
     <tr>
@@ -59,14 +53,20 @@
     <tr class="source-line">
       <td class="lineno">{{row.lineno}}</td>
       <td class="linebranch">
-        {%- for branch in row.linebranch -%}
-        {%- if branch.taken -%}
-        <span class="takenBranch" title="Branch {{branch.name}} taken {{branch.count}} times">&check;</span>
-        {%- else -%}
-        <span class="notTakenBranch" title="Branch {{branch.name}} not taken">&cross;</span>
-        {%- endif -%}
-        {%- if loop.index is divisibleby 4 %}<br/>{% endif -%}
-        {%- endfor -%}
+        {% if row.linebranch %}
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
+        <div class="linebranchContents">
+          {% for branch in row.linebranch.branches %}
+          {% if branch.taken %}
+          <div class="takenBranch">&check; Branch {{branch.name}} taken {{branch.count}} times.</div>
+          {% else %}
+          <div class="notTakenBranch">&cross; Branch {{branch.name}} not taken.</div>
+          {% endif%}
+          {% endfor %}
+        </div>
+        </details>
+        {% endif %}
       </td>
       <td class="linecount {{row.covclass}}">{{row.linecount}}</td>
       <td class="src {{row.covclass}}">{{row.source}}</td>
