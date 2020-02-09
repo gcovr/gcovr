@@ -175,5 +175,5 @@ def test_html_injection_via_json(capsys):
         jsonfile.seek(0)
         c = capture(capsys, ['-a', jsonfile.name, '--html'])
     assert script not in c.out
-    assert str(markupsafe.escape(script)) in c.out, f'--- got:\n{c.out}\n---'
+    assert str(markupsafe.escape(script)) in c.out, '--- got:\n{}\n---'.format(c.out)
     assert c.exception.code == 0
