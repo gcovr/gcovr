@@ -3,7 +3,7 @@ GCOV ?= gcov
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube
 
 txt: all
 	./testcase
@@ -24,9 +24,6 @@ sonarqube: all
 	./testcase
 	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
 	$(GCOVR) -v -g -d --sonarqube sonarqube.xml
-
-json: all
-	# pass
 
 clean: clean-each
 

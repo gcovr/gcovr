@@ -3,13 +3,15 @@ Contributing
 
 This document contains:
 
--   our `guidelines for bug reports <How to report bugs_>`_
--   `general contribution guidelines <How to help_>`_
--   a `checklist for pull requests <How to submit a Pull Request_>`_
+-   our :ref:`guidelines for bug reports <report bugs>`
+-   :ref:`general contribution guidelines <help out>`
+-   a :ref:`checklist for pull requests <pull request>`
 -   a developer guide that explains the
-    `development environment <How to set up a development environment_>`_,
-    `project structure <Project Structure_>`_,
-    and `test suite <Test suite_>`_
+    :ref:`development environment <development environment>`,
+    :ref:`project structure <project structure>`,
+    and :ref:`test suite <test suite>`
+
+.. _report bugs:
 
 How to report bugs
 ------------------
@@ -29,6 +31,8 @@ Ideally, you can provide a short script
 and the smallest possible source file to reproduce the problem.
 
 .. _search all issues: https://github.com/gcovr/gcovr/issues?q=is%3Aissue
+
+.. _help out:
 
 How to help
 -----------
@@ -50,6 +54,8 @@ There are many ways how you can help:
 .. _label help wanted: https://github.com/gcovr/gcovr/labels/help%20wanted
 .. _label needs review: https://github.com/gcovr/gcovr/labels/needs%20review
 .. _pull requests: https://github.com/gcovr/gcovr/pulls
+
+.. _pull request:
 
 How to submit a Pull Request
 ----------------------------
@@ -122,6 +128,8 @@ If you need assistance for your pull request, you can
   - open an unfinished pull request as a work in progress (WIP),
     and explain what you've like to get reviewed
 
+.. _development environment:
+
 How to set up a development environment
 ---------------------------------------
 
@@ -170,12 +178,14 @@ On **Windows**, you will need to install a GCC toolchain
 as the tests expect a Unix-like environment.
 You can use MinGW-W64 or MinGW.
 To run the tests,
-please make sure that the ``make`` and ``cmake`` from your MinGW distribution 
+please make sure that the ``make`` and ``cmake`` from your MinGW distribution
 are in the system ``PATH``.
 
 If setting up a local toolchain is too complicated,
 you can also run the tests in a Docker container
 (see :ref:`test suite`).
+
+.. _project structure:
 
 Project Structure
 -----------------
@@ -224,13 +234,55 @@ and a comprehensive corpus of example projects
 that are executed as the ``test_gcovr.py`` integration test.
 Each ``gcovr/tests/*`` directory is one such example project.
 
+The next sections discuss
+the :ref:`structure of integration tests <integration tests>`,
+how to :ref:`run and filter tests <run tests>`,
+and how to :ref:`run tests with Docker <docker tests>`.
+
+.. _integration tests:
+
+Structure of integration tests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Each project in the corpus
-contains a ``Makefile`` and a ``reference`` directory.
+contains a ``Makefile`` and a ``reference`` directory::
+
+   gcovr/tests/sometest/
+     reference/
+     Makefile
+     README
+     example.cpp
+
 The Makefile controls how the project is built,
 and how gcovr should be invoked.
 The reference directory contains baseline files against
 which the gcovr output is compared.
-Each project is once per output format (txt, html, xml, json, sonarqube, ...).
+Tests can be executed even without baseline files.
+
+Each Makefile contains the following targets:
+
+* ``all:`` builds the example project. Can be shared between gcovr invocations.
+* ``run:`` lists available targets
+  which must be a subset of the available output formats.
+* ``clean:`` remove any generated files
+  after all tests of the scenario have finished.
+* output formats (txt, html, json, sonarqube, ...):
+  invoke gcovr to produce output files of the correct format.
+  The test runner automatically finds the generated files (if any)
+  and compares them to the baseline files in the reference directory.
+  All formats are optional,
+  but using at least JSON is recommended.
+* ``clean-each:`` if provided, will be invoked by the test runner
+  after testing each format.
+
+.. _run tests:
+
+Run and filter tests
+~~~~~~~~~~~~~~~~~~~~
+
+To run all tests, use ``make test`` or ``make qa``.
+The tests currently assume that you are using GCC 5
+and have set up a :ref:`development environment <development environment>`.
 
 Because the tests are a bit slow, you can limit the tests to a specific
 test file, example project, or output format.
@@ -253,7 +305,10 @@ For example:
 To see all tests, run pytest in ``-v`` verbose mode.
 To see which tests would be run, add the ``--collect-only`` option.
 
-The tests currently assume that you are using GCC 5.
+.. _docker tests:
+
+Run tests with Docker
+~~~~~~~~~~~~~~~~~~~~~
 
 If you can't set up a toolchain locally, you can run the QA process via Docker.
 First, build the container image:
@@ -276,11 +331,12 @@ Then, run the container, which executes ``make qa`` within the container:
 
     docker run --rm -v `pwd`:/gcovr gcovr-qa
 
+.. _join:
 
 Become a gcovr developer
 ------------------------
 
-After you've contributed a bit 
+After you've contributed a bit
 (whether with discussions, documentation, or code),
 consider becoming a gcovr developer.
 As a developer, you can:

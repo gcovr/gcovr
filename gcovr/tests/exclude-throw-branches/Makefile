@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube
 
 txt:
 	./testcase
@@ -22,9 +22,6 @@ sonarqube:
 	./testcase
 	$(GCOVR)			     --sonarqube sonarqube-throw.xml
 	$(GCOVR) -d --exclude-throw-branches --sonarqube sonarqube-excl-throw.xml
-
-json:
-	# pass
 
 clean:
 	rm -f testcase

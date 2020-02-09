@@ -82,9 +82,8 @@ def find_reference_files(pattern):
         yield coverage, reference
 
 
-@pytest.fixture(scope='module', params=findtests(basedir))
-def name(request):
-    name = request.param
+@pytest.fixture(scope='module')
+def compiled(request, name):
     path = os.path.join(basedir, name)
     assert run(['make', 'clean'], cwd=path)
     assert run(['make', 'all'], cwd=path)
@@ -92,10 +91,74 @@ def name(request):
     assert run(['make', 'clean'], cwd=path)
 
 
-@pytest.fixture(scope='module')
-def available_targets(request, name):
+KNOWN_FORMATS = ['txt', 'xml', 'html', 'sonarqube', 'json']
+
+
+def pytest_generate_tests(metafunc):
+    """generate a list of all available integration tests."""
+
+    is_windows = platform.system() == 'Windows'
+
+    collected_params = []
+
+    for name in findtests(basedir):
+        targets = parse_makefile_for_available_targets(
+            os.path.join(basedir, name, 'Makefile'))
+
+        # check that the "run" target lists no unknown formats
+        target_run = targets.get('run', set())
+        unknown_formats = target_run.difference(KNOWN_FORMATS)
+        if unknown_formats:
+            raise ValueError("{}/Makefile target 'run' references unknown format {}".format(
+                name, unknown_formats))
+
+        # check that all "run" targets are actually available
+        unresolved_prereqs = target_run.difference(targets)
+        if unresolved_prereqs:
+            raise ValueError("{}/Makefile target 'run' has unresolved prerequisite {}".format(
+                name, unresolved_prereqs))
+
+        # check that all available known formats are also listed in the "run" target
+        unreferenced_formats = set(KNOWN_FORMATS).intersection(targets).difference(target_run)
+        if unreferenced_formats:
+            raise ValueError("{}/Makefile target 'run' doesn't reference available target {}".format(
+                name, unreferenced_formats))
+
+        for format in KNOWN_FORMATS:
+
+            # only test formats where the Makefile provides a target
+            if format not in targets:
+                continue
+
+            needs_symlinks = any([
+                name == 'linked' and format == 'html',
+                name == 'filter-relative-lib',
+            ])
+
+            marks = [
+                pytest.mark.xfail(
+                    needs_symlinks and is_windows,
+                    reason="have yet to figure out symlinks on Windows"),
+                pytest.mark.xfail(
+                    name == 'exclude-throw-branches' and format == 'html' and is_windows,
+                    reason="branch coverage details seem to be platform-dependent")
+            ]
+
+            collected_params.append(pytest.param(
+                name, format, targets,
+                marks=marks,
+                id='-'.join([name, format]),
+            ))
+
+    metafunc.parametrize(
+        'name, format, available_targets', collected_params,
+        indirect=False,
+        scope='module')
+
+
+def parse_makefile_for_available_targets(path):
     targets = {}
-    with open(os.path.join(basedir, name, 'Makefile')) as makefile:
+    with open(path) as makefile:
         for line in makefile:
             m = re.match(r'^(\w[\w -]*):([\s\w.-]*)$', line)
             if m:
@@ -103,33 +166,6 @@ def available_targets(request, name):
                 for target in m.group(1).split():
                     targets.setdefault(target, set()).update(deps)
     return targets
-
-
-@pytest.fixture(params=['txt', 'xml', 'html', 'sonarqube', 'json'])
-def format(request, name, available_targets):
-    format = request.param
-    path = os.path.join(basedir, name)
-
-    if format not in available_targets:
-        return pytest.skip("no target in Makefile")
-
-    is_windows = platform.system() == 'Windows'
-    needs_symlinks = any([
-        name == 'linked' and format == 'html',
-        name == 'filter-relative-lib',
-    ])
-    if needs_symlinks and is_windows:
-        request.applymarker(pytest.mark.xfail(
-            reason="have yet to figure out symlinks on Windows"))
-    if name == 'exclude-throw-branches' and format == 'html' and is_windows:
-        request.applymarker(pytest.mark.xfail(
-            reason="branch coverage details seem to be platform-dependent"))
-
-    yield request.param
-
-    # some tests require additional cleanup after each test
-    if 'clean-each' in available_targets:
-        assert run(['make', 'clean-each'], cwd=path)
 
 
 SCRUBBERS = dict(
@@ -151,7 +187,8 @@ ASSERT_EQUALS = dict(
     sonarqube=assert_xml_equals)
 
 
-def test_build(name, format):
+def test_build(compiled, format, available_targets):
+    name = compiled
     scrub = SCRUBBERS[format]
     output_pattern = OUTPUT_PATTERN[format]
     assert_equals = ASSERT_EQUALS.get(format, None)
@@ -174,5 +211,9 @@ def test_build(name, format):
         else:
             assert coverage == reference, "coverage={}, reference={}".format(
                 coverage_file, reference_file)
+
+    # some tests require additional cleanup after each test
+    if 'clean-each' in available_targets:
+        assert run(['make', 'clean-each'])
 
     os.chdir(basedir)
