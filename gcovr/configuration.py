@@ -356,11 +356,44 @@ class OutputOrDefault(object):
     def __init__(self, value):
         self.value = value
 
+    def __repr__(self):
+        return '{}({!r})'.format(self.__class__.__name__, self.value)
+
     @classmethod
     def choose(_cls, choices, default=None):
-        """select the first choice that contains a value"""
+        """select the first choice that contains a value
+
+        Example: chooses a truthy value over None:
+        >>> OutputOrDefault.choose([None, OutputOrDefault(42)])
+        OutputOrDefault(42)
+
+        Example: chooses a truthy value over empty value:
+        >>> OutputOrDefault.choose([OutputOrDefault(None), OutputOrDefault('x')])
+        OutputOrDefault('x')
+
+        Example: chooses default when given empty list
+        >>> OutputOrDefault.choose([], default=OutputOrDefault('default'))
+        OutputOrDefault('default')
+
+        Example: chooses default when only given falsey values:
+        >>> OutputOrDefault.choose(
+        ...     [None, OutputOrDefault(None)],
+        ...     default=OutputOrDefault('default'))
+        OutputOrDefault('default')
+
+        Example: throws when given other value
+        >>> OutputOrDefault.choose([True])
+        Traceback (most recent call last):
+          ...
+        TypeError: ...
+        """
         for choice in choices:
-            if choice and choice.value:
+            if choice is None:
+                continue
+            if not isinstance(choice, OutputOrDefault):
+                raise TypeError(
+                    "expected OutputOrDefault instance, got: {}".format(choice))
+            if choice.value is not None:
                 return choice
         return default
 
