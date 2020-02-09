@@ -5,29 +5,24 @@ all:
 
 run: txt xml html sonarqube
 
-txt: all
+coverage.json:
 	./testcase
 	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
-	$(GCOVR) -v -g -d -o coverage.txt
+	$(GCOVR) -v -g -d --json $@
 
-xml: all
-	./testcase
-	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
-	$(GCOVR) -v -g -d -x -o coverage.xml
+txt: coverage.json
+	$(GCOVR) -v -a $< -o coverage.txt
 
-html: all
-	./testcase
-	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
-	$(GCOVR) -v -g -d --html-details -o coverage.html
+xml: coverage.json
+	$(GCOVR) -v -a $< -x -o coverage.xml
 
-sonarqube: all
-	./testcase
-	$(GCOV) *.gcda --branch-counts --branch-probabilities --preserve-paths
-	$(GCOVR) -v -g -d --sonarqube sonarqube.xml
+html: coverage.json
+	$(GCOVR) -v -a $< --html-details -o coverage.html
 
-clean: clean-each
+sonarqube: coverage.json
+	$(GCOVR) -v -a $< --sonarqube sonarqube.xml
 
-clean-each:
+clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json

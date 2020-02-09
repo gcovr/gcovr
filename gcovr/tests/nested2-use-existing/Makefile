@@ -10,36 +10,28 @@ all:
 
 run: txt xml html sonarqube
 
-txt: all
-	./subdir/B/testcase
-	make -C subdir/A coverage
-	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	$(GCOVR) -r subdir -g -k -o coverage.txt .
-
 # this test also includes a separator "--"
 # to ensure that nargs=? arguments can be terminated
-xml: all
+coverage.json:
 	./subdir/B/testcase
 	make -C subdir/A coverage
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	$(GCOVR) -r subdir -g -k -o coverage.xml -x -- .
+	$(GCOVR) -r subdir -g -k -o $@ --json -- .
 
-html: all
-	./subdir/B/testcase
-	make -C subdir/A coverage
-	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	$(GCOVR) -r subdir -g -k --html-details -o coverage.html .
+txt: coverage.json
+	$(GCOVR) -r subdir -a $< -o coverage.txt .
 
-sonarqube: all
-	./subdir/B/testcase
-	make -C subdir/A coverage
-	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	$(GCOVR) -r subdir -g -k --sonarqube sonarqube.xml .
+xml: coverage.json
+	$(GCOVR) -r subdir -a $< -o coverage.xml -x -- .
 
-clean-each:
+html: coverage.json
+	$(GCOVR) -r subdir -a $< --html-details -o coverage.html .
+
+sonarqube: coverage.json
+	$(GCOVR) -r subdir -a $< --sonarqube sonarqube.xml .
+
+clean:
 	rm -f ./subdir/B/testcase subdir/lib.a
 	rm -f *.gc* */*.gc* */*/*.gc* */*/*/*.gc* */*/*/*/*.gc*
 	rm -f *.o */*.o */*/*.o */*/*/*.o */*/*/*/*.o
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
-
-clean: clean-each
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json

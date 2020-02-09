@@ -12,15 +12,17 @@ run: txt html
 
 GCOVR_TEST_OPTIONS = --sort-uncovered
 
-txt:
+coverage.json:
 	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
+	$(GCOVR) --json $@
 
-html:
-	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
+txt: coverage.json
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< -o coverage.txt
+
+html: coverage.json
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --html-details -o coverage.html
 
 clean:
 	rm -f testcase
 	rm -f *.gc* *.o
-	rm -f coverage.txt coverage.xml coverage*.html
+	rm -f coverage.txt coverage.xml coverage*.html coverage.json

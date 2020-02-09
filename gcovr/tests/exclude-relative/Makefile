@@ -7,25 +7,23 @@ all:
 
 run: txt xml html sonarqube
 
-GCOVR_TEST_OPTIONS = -e 'file1.cpp'  # use a relative filter here
-
-txt:
+coverage.json:
 	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
+	$(GCOVR) -e 'file1.cpp'  --json $@  # use a relative filter here
 
-xml:
-	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -x -o coverage.xml
+txt: coverage.json
+	$(GCOVR) -a $< -o coverage.txt
 
-html:
-	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
+xml: coverage.json
+	$(GCOVR) -a $< -x -o coverage.xml
 
-sonarqube:
-	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube sonarqube.xml
+html: coverage.json
+	$(GCOVR) -a $< --html-details -o coverage.html
+
+sonarqube: coverage.json
+	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
 clean:
 	rm -f testcase
 	rm -f *.gc* *.o
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json

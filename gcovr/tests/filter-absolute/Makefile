@@ -2,13 +2,13 @@ CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 ifneq (,$(findstring MINGW,$(BASE_OS)))
-  BASE_OS:=MSYS_NT
+	BASE_OS:=MSYS_NT
 endif
 ifeq ($(BASE_OS),MSYS_NT)
-  # "cygpath -m" is the mixed mode: Windows drive letters but forward slashes
-  GCOVR_TEST_OPTIONS := -f $(shell cygpath -m "$$PWD")/main.cpp
+	# "cygpath -m" is the mixed mode: Windows drive letters but forward slashes
+	GCOVR_TEST_OPTIONS := -f $(shell cygpath -m "$$PWD")/main.cpp
 else
-  GCOVR_TEST_OPTIONS := -f $(shell pwd)/main.cpp
+	GCOVR_TEST_OPTIONS := -f $(shell pwd)/main.cpp
 endif
 
 all:
@@ -18,24 +18,25 @@ all:
 
 run: txt xml html sonarqube
 
-txt:
+coverage.json:
 	./testcase
-	echo "$(GCOVR_TEST_OPTIONS)"
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -o coverage.txt
+	echo "running gcovr: $(GCOVR_TEST_OPTIONS)"
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) --json $@
 
-xml:
-	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -x -o coverage.xml
+txt: coverage.json
+	$(GCOVR) -a $< -o coverage.txt
 
-html:
-	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o coverage.html
+xml: coverage.json
+	$(GCOVR) -a $< -x -o coverage.xml
 
-sonarqube:
+html: coverage.json
+	$(GCOVR) -a $< --html-details -o coverage.html
+
+sonarqube: coverage.json
 	./testcase
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube sonarqube.xml
+	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
 clean:
 	rm -f testcase
 	rm -f *.gc* *.o
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json

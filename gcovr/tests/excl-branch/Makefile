@@ -3,23 +3,23 @@ all:
 
 run: txt xml html sonarqube
 
-txt:
-	./testcase
-	$(GCOVR) --exclude-unreachable-branches -b -d -o coverage.txt
+txt: coverage.json
+	$(GCOVR) -a $< -b -o coverage.txt
 
-xml:
-	./testcase
-	$(GCOVR) --exclude-unreachable-branches -b -d -x -o coverage.xml
+xml: coverage.json
+	$(GCOVR) -a $< -b -x -o coverage.xml
 
-html:
-	./testcase
-	$(GCOVR) --exclude-unreachable-branches -b -d --html-details -o coverage.html
+html: coverage.json
+	$(GCOVR) -a $< -b --html-details -o coverage.html
 
-sonarqube:
+sonarqube: coverage.json
+	$(GCOVR) -a $< -b --sonarqube sonarqube.xml
+
+coverage.json:
 	./testcase
-	$(GCOVR) --exclude-unreachable-branches -b -d --sonarqube sonarqube.xml
+	$(GCOVR) --exclude-unreachable-branches --json $@
 
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json

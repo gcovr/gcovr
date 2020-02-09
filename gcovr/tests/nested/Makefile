@@ -13,24 +13,24 @@ all:
 
 run: txt xml html sonarqube
 
-txt:
+coverage.json:
 	./subdir/testcase
-	$(GCOVR) -r subdir -d -o coverage.txt
+	$(GCOVR) -r subdir --json $@
 
-xml:
-	./subdir/testcase
-	$(GCOVR) -r subdir -d -x -o coverage.xml
+txt: coverage.json
+	$(GCOVR) -r subdir -a $< -o coverage.txt
 
-html:
-	./subdir/testcase
-	$(GCOVR) -r subdir -d --html-details -o coverage.html
+xml: coverage.json
+	$(GCOVR) -r subdir -a $< -x -o coverage.xml
 
-sonarqube:
-	./subdir/testcase
-	$(GCOVR) -r subdir -d --sonarqube sonarqube.xml
+html: coverage.json
+	$(GCOVR) -r subdir -a $< --html-details -o coverage.html
+
+sonarqube: coverage.json
+	$(GCOVR) -r subdir -a $< --sonarqube sonarqube.xml
 
 clean:
 	rm -f ./subdir/testcase
 	rm -f *.gc* */*.gc* */*/*.gc* */*/*/*.gc* */*/*/*/*.gc*
 	rm -f *.o */*.o */*/*.o */*/*/*.o */*/*/*/*.o
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json
