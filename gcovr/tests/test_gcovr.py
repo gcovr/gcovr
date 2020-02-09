@@ -69,9 +69,9 @@ def assert_xml_equals(coverage, reference):
     compare_xml(reference_repn, coverage_repn, tolerance=1e-4, exact=True)
 
 
-def run(cmd):
+def run(cmd, cwd=None):
     print("STDOUT - START", str(cmd))
-    returncode = subprocess.call(cmd, stderr=subprocess.STDOUT, env=env)
+    returncode = subprocess.call(cmd, stderr=subprocess.STDOUT, env=env, cwd=cwd)
     print("STDOUT - END")
     return returncode == 0
 
@@ -80,6 +80,56 @@ def find_reference_files(pattern):
     for reference in glob.glob("reference/" + pattern):
         coverage = os.path.basename(reference)
         yield coverage, reference
+
+
+@pytest.fixture(scope='module', params=findtests(basedir))
+def name(request):
+    name = request.param
+    path = os.path.join(basedir, name)
+    assert run(['make', 'clean'], cwd=path)
+    assert run(['make', 'all'], cwd=path)
+    yield name
+    assert run(['make', 'clean'], cwd=path)
+
+
+@pytest.fixture(scope='module')
+def available_targets(request, name):
+    targets = {}
+    with open(os.path.join(basedir, name, 'Makefile')) as makefile:
+        for line in makefile:
+            m = re.match(r'^(\w[\w -]*):([\s\w.-]*)$', line)
+            if m:
+                deps = m.group(2).split()
+                for target in m.group(1).split():
+                    targets.setdefault(target, set()).update(deps)
+    return targets
+
+
+@pytest.fixture(params=['txt', 'xml', 'html', 'sonarqube', 'json'])
+def format(request, name, available_targets):
+    format = request.param
+    path = os.path.join(basedir, name)
+
+    if format not in available_targets:
+        return pytest.skip("no target in Makefile")
+
+    is_windows = platform.system() == 'Windows'
+    needs_symlinks = any([
+        name == 'linked' and format == 'html',
+        name == 'filter-relative-lib',
+    ])
+    if needs_symlinks and is_windows:
+        request.applymarker(pytest.mark.xfail(
+            reason="have yet to figure out symlinks on Windows"))
+    if name == 'exclude-throw-branches' and format == 'html' and is_windows:
+        request.applymarker(pytest.mark.xfail(
+            reason="branch coverage details seem to be platform-dependent"))
+
+    yield request.param
+
+    # some tests require additional cleanup after each test
+    if 'clean-each' in available_targets:
+        assert run(['make', 'clean-each'], cwd=path)
 
 
 SCRUBBERS = dict(
@@ -101,30 +151,16 @@ ASSERT_EQUALS = dict(
     sonarqube=assert_xml_equals)
 
 
-@pytest.mark.parametrize('name', findtests(basedir))
-@pytest.mark.parametrize('format', ['txt', 'xml', 'html', 'sonarqube', 'json'])
 def test_build(name, format):
     scrub = SCRUBBERS[format]
     output_pattern = OUTPUT_PATTERN[format]
     assert_equals = ASSERT_EQUALS.get(format, None)
-
-    is_windows = platform.system() == 'Windows'
-    needs_symlinks = any([
-        name == 'linked' and format == 'html',
-        name == 'filter-relative-lib',
-    ])
-    if needs_symlinks and is_windows:
-        pytest.xfail("have yet to figure out symlinks on Windows")
-    if name == 'exclude-throw-branches' and format == 'html' and is_windows:
-        pytest.xfail("branch coverage details seem to be platform-dependent")
 
     encoding = 'utf8'
     if format == 'html' and name.startswith('html-encoding-'):
         encoding = re.match('^html-encoding-(.*)$', name).group(1)
 
     os.chdir(os.path.join(basedir, name))
-    assert run(["make", "clean"])
-    assert run(["make"])
     assert run(["make", format])
 
     for coverage_file, reference_file in find_reference_files(output_pattern):
@@ -139,5 +175,4 @@ def test_build(name, format):
             assert coverage == reference, "coverage={}, reference={}".format(
                 coverage_file, reference_file)
 
-    assert run(["make", "clean"])
     os.chdir(basedir)
