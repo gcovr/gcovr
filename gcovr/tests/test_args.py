@@ -155,9 +155,8 @@ def test_multiple_output_formats_to_stdout(capsys):
     assert c.exception.code == 0
 
 
-def test_html_injection_via_json(capsys):
+def test_html_injection_via_json(capsys, tmp_path):
     import json
-    import tempfile
     import markupsafe
 
     script = '<script>alert("pwned")</script>'
@@ -169,11 +168,13 @@ def test_html_injection_via_json(capsys):
         ],
     }
 
-    with tempfile.NamedTemporaryFile('w+') as jsonfile:
+    tempfile = tmp_path / 'injection.json'
+
+    with tempfile.open('w+') as jsonfile:
         json.dump(jsondata, jsonfile)
-        jsonfile.flush()
-        jsonfile.seek(0)
-        c = capture(capsys, ['-a', jsonfile.name, '--html'])
+
+    c = capture(capsys, ['-a', str(tempfile), '--html'])
+
     assert script not in c.out
     assert str(markupsafe.escape(script)) in c.out, '--- got:\n{}\n---'.format(c.out)
     assert c.exception.code == 0
