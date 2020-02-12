@@ -47,6 +47,11 @@ table.legend td.legend
     font-size: 80%;
 }
 
+table.legend td.warning_text
+{
+    color: var(--warning_color);
+}
+
 table.coverage td,
 table.coverage th
 {

@@ -49,6 +49,7 @@ from typing import (
 )
 
 from .coverage import FileCoverage
+from .decision_analysis import DecisionParser
 from .utils import Logger
 
 _EXCLUDE_LINE_FLAG = "_EXCL_"
@@ -259,6 +260,9 @@ class ParserFlags(enum.Flag):
     RESPECT_EXCLUSION_MARKERS = enum.auto()
     """Whether the eclusion markers shall be used."""
 
+    PARSE_DECISIONS = enum.auto()
+    """Whether decision coverage shall be generated."""
+
 
 _LineWithError = Tuple[str, Exception]
 
@@ -276,6 +280,7 @@ def parse_coverage(
     logger: Logger,
     exclude_lines_by_pattern: Optional[str],
     flags: ParserFlags,
+    source_encoding: str,
 ) -> FileCoverage:
     """
     Extract coverage data from a gcov report.
@@ -346,6 +351,10 @@ def parse_coverage(
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
         _add_coverage_for_function(coverage, state.lineno + 1, function, context)
+
+    if flags & ParserFlags.PARSE_DECISIONS:
+        decision_parser = DecisionParser(filename, coverage, source_encoding, logger)
+        decision_parser.parse_all_lines()
 
     _report_lines_with_errors(lines_with_errors, context)
 
@@ -854,7 +863,7 @@ class _ExclusionRangeWarnings:
     >>> import sys; sys.stderr = sys.stdout  # redirect warnings
     >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
     ...     source.splitlines(), filename='example.cpp', logger=Logger(),
-    ...    flags=ParserFlags.NONE, exclude_lines_by_pattern=None)
+    ...    flags=ParserFlags.NONE, exclude_lines_by_pattern=None, source_encoding=None)
     (WARNING) mismatched coverage exclusion flags.
               LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp.
     (WARNING) GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.

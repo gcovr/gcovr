@@ -30,10 +30,10 @@ from ..utils import (
     open_text_for_writing,
 )
 
-from ..coverage import FileCoverage
+from ..coverage import DecisionCoverage, FileCoverage
 
 
-JSON_FORMAT_VERSION = "0.2"
+JSON_FORMAT_VERSION = "0.3"
 JSON_SUMMARY_FORMAT_VERSION = "0.4"
 PRETTY_JSON_INDENT = 4
 
@@ -229,6 +229,8 @@ def _json_from_lines(lines):
 def _json_from_line(line):
     json_line = {}
     json_line["branches"] = _json_from_branches(line.branches)
+    if line.decisions:
+        json_line["decision"] = _json_from_decision(line.decisions)
     json_line["count"] = line.count
     json_line["line_number"] = line.lineno
     json_line["gcovr/noncode"] = line.noncode
@@ -246,6 +248,19 @@ def _json_from_branch(branch):
     json_branch["fallthrough"] = bool(branch.fallthrough)
     json_branch["throw"] = bool(branch.throw)
     return json_branch
+
+
+def _json_from_decision(decisions):
+    json_decision = {}
+    if len(decisions) == 1:
+        json_decision["is_switch"] = True
+        json_decision["count_true"] = decisions[0].count
+    elif len(decisions) == 2:
+        json_decision["is_switch"] = False
+        json_decision["count_true"] = decisions[0].count
+        json_decision["count_false"] = decisions[1].count
+        json_decision["uncheckable"] = decisions[0].uncheckable
+    return json_decision
 
 
 def _json_from_functions(functions):
@@ -287,6 +302,8 @@ def _line_from_json(line, json_line):
     line.noncode = json_line["gcovr/noncode"]
     line.count = json_line["count"]
     _branches_from_json(line, json_line["branches"])
+    if "decision" in json_line:
+        _decision_from_json(line, json_line["decision"])
 
 
 def _branches_from_json(line, json_branches):
@@ -300,3 +317,18 @@ def _branch_from_json(branch, json_branch):
     branch.fallthrough = json_branch["fallthrough"]
     branch.throw = json_branch["throw"]
     branch.count = json_branch["count"]
+
+
+def _decision_from_json(line, json_decision):
+    line.decisions = dict()
+    if json_decision["is_switch"]:
+        line.decisions[0] = DecisionCoverage(json_decision["count_true"], False)
+    else:
+        line.decisions[0] = DecisionCoverage(
+            json_decision["count_true"],
+            json_decision["uncheckable"]
+        )
+        line.decisions[1] = DecisionCoverage(
+            json_decision["count_false"],
+            json_decision["uncheckable"]
+        )

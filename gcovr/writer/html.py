@@ -81,25 +81,33 @@ def user_templates():
 class CssRenderer():
 
     Themes = {
-        'green': {
-            'unknown_color': "LightGray",
-            'low_color': "#FF6666",
-            'medium_color': "#F9FD63",
-            'high_color': "#85E485",
-            'covered_color': "#85E485",
-            'uncovered_color': "#FF8C8C",
-            'takenBranch_color': "Green",
-            'notTakenBranch_color': "Red"
+        "green": {
+            "unknown_color": "LightGray",
+            "low_color": "#FF6666",
+            "medium_color": "#F9FD63",
+            "high_color": "#85E485",
+            "covered_color": "#85E485",
+            "uncovered_color": "#FF8C8C",
+            "warning_color": "orangered",
+            "takenBranch_color": "Green",
+            "notTakenBranch_color": "Red",
+            "takenDecision_color": "Green",
+            "uncheckedDecision_color": "DarkOrange",
+            "notTakenDecision_color": "Red",
         },
-        'blue': {
-            'unknown_color': "LightGray",
-            'low_color': "#FF6666",
-            'medium_color': "#F9FD63",
-            'high_color': "#66B4FF",
-            'covered_color': "#66B4FF",
-            'uncovered_color': "#FF8C8C",
-            'takenBranch_color': "Blue",
-            'notTakenBranch_color': "Red"
+        "blue": {
+            "unknown_color": "LightGray",
+            "low_color": "#FF6666",
+            "medium_color": "#F9FD63",
+            "high_color": "#66B4FF",
+            "covered_color": "#66B4FF",
+            "uncovered_color": "#FF8C8C",
+            "warning_color": "orangered",
+            "takenBranch_color": "Blue",
+            "notTakenBranch_color": "Red",
+            "takenDecision_color": "Green",
+            "uncheckedDecision_color": "DarkOrange",
+            "notTakenDecision_color": "Red",
         }
     }
 
@@ -194,6 +202,7 @@ class RootInfo:
         self.encoding = options.html_encoding
         self.directory = None
         self.branches = dict()
+        self.decisions = dict()
         self.functions = dict()
         self.lines = dict()
         self.files = []
@@ -216,6 +225,22 @@ class RootInfo:
         coverage = calculate_coverage(branch_covered, branch_total, nan_value=None)
         self.branches['coverage'] = '-' if coverage is None else coverage
         self.branches['class'] = self._coverage_to_class(coverage)
+
+    def calculate_decision_coverage(self, covdata):
+        decision_total = 0
+        decision_covered = 0
+        decision_unchecked = 0
+        for key in covdata.keys():
+            (total, covered, unchecked, _percent) = covdata[key].decision_coverage()
+            decision_total += total
+            decision_covered += covered
+            decision_unchecked += unchecked
+        self.decisions['exec'] = decision_covered
+        self.decisions['unchecked'] = decision_unchecked
+        self.decisions['total'] = decision_total
+        coverage = calculate_coverage(decision_covered, decision_total, nan_value=None)
+        self.decisions['coverage'] = '-' if coverage is None else coverage
+        self.decisions['class'] = self._coverage_to_class(coverage)
 
     def calculate_function_coverage(self, covdata):
         function_total = 0
@@ -246,34 +271,44 @@ class RootInfo:
     def add_file(self, cdata, link_report, cdata_fname):
         lines_total, lines_exec, _ = cdata.line_coverage()
         branches_total, branches_exec, _ = cdata.branch_coverage()
+        decisions_total, decisions_exec, decisions_unchecked, _ = cdata.decision_coverage()
         functions_total, functions_exec, _ = cdata.function_coverage()
 
         line_coverage = calculate_coverage(
             lines_exec, lines_total, nan_value=100.0)
         branch_coverage = calculate_coverage(
             branches_exec, branches_total, nan_value=None)
+        decision_coverage = calculate_coverage(
+            decisions_exec, decisions_total, nan_value=None)
         function_coverage = calculate_coverage(
             functions_exec, functions_total, nan_value=None)
 
         lines = {
-            'total': lines_total,
-            'exec': lines_exec,
-            'coverage': line_coverage,
-            'class': self._coverage_to_class(line_coverage),
+            "total": lines_total,
+            "exec": lines_exec,
+            "coverage": line_coverage,
+            "class": self._coverage_to_class(line_coverage),
         }
 
         branches = {
-            'total': branches_total,
-            'exec': branches_exec,
-            'coverage': '-' if branch_coverage is None else branch_coverage,
-            'class': self._coverage_to_class(branch_coverage),
+            "total": branches_total,
+            "exec": branches_exec,
+            "coverage": "-" if branch_coverage is None else branch_coverage,
+            "class": self._coverage_to_class(branch_coverage),
         }
 
+        decisions = {
+            "total": decisions_total,
+            "exec": decisions_exec,
+            "unchecked": decisions_unchecked,
+            "coverage": "-" if decision_coverage is None else round(decision_coverage, 1),
+            "class": self._coverage_to_class(decision_coverage),
+        }
         functions = {
-            'total': functions_total,
-            'exec': functions_exec,
-            'coverage': '-' if function_coverage is None else function_coverage,
-            'class': self._coverage_to_class(function_coverage),
+            "total": functions_total,
+            "exec": functions_exec,
+            "coverage": "-" if function_coverage is None else function_coverage,
+            "class": self._coverage_to_class(function_coverage),
         }
 
         display_filename = (
@@ -290,6 +325,7 @@ class RootInfo:
             link=link_report,
             lines=lines,
             branches=branches,
+            decisions=decisions,
             functions=functions,
         ))
 
@@ -305,11 +341,13 @@ def print_html_report(covdata, output_file, options):
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
+    show_decision = options.show_decision
 
     data = {}
     root_info = RootInfo(options)
     data['info'] = root_info
 
+    data['SHOW_DECISION'] = show_decision
     data['COVERAGE_MED'] = medium_threshold
     data['COVERAGE_HIGH'] = high_threshold
 
@@ -342,6 +380,7 @@ def print_html_report(covdata, output_file, options):
         data['css_link'] = css_link
 
     root_info.calculate_branch_coverage(covdata)
+    root_info.calculate_decision_coverage(covdata)
     root_info.calculate_function_coverage(covdata)
     root_info.calculate_line_coverage(covdata)
 
@@ -417,19 +456,24 @@ def print_html_report(covdata, output_file, options):
                 high_threshold
             )
             data['function_list'].append(fdata)
+
         functions = dict()
         data['functions'] = functions
-
         functions['total'], functions['exec'], functions['coverage'] = cdata.function_coverage()
         functions['class'] = coverage_to_class(functions['coverage'], medium_threshold, high_threshold)
         functions['coverage'] = '-' if functions['coverage'] is None else functions['coverage']
 
         branches = dict()
         data['branches'] = branches
-
         branches['total'], branches['exec'], branches['coverage'] = cdata.branch_coverage()
         branches['class'] = coverage_to_class(branches['coverage'], medium_threshold, high_threshold)
         branches['coverage'] = '-' if branches['coverage'] is None else branches['coverage']
+
+        decisions = dict()
+        data['decisions'] = decisions
+        decisions['total'], decisions['exec'], decisions['unchecked'], decisions['coverage'] = cdata.decision_coverage()
+        decisions['class'] = coverage_to_class(decisions['coverage'], medium_threshold, high_threshold)
+        decisions['coverage'] = '-' if decisions['coverage'] is None else decisions['coverage']
 
         lines = dict()
         data['lines'] = lines
@@ -473,20 +517,24 @@ def print_html_report(covdata, output_file, options):
 
 def source_row(lineno, source, line_cov):
     linebranch = None
+    linedecision = None
     linecount = ''
     covclass = ''
     if line_cov:
         if line_cov.is_covered:
             covclass = 'coveredLine'
             linebranch = source_row_branch(line_cov.branches)
+            linedecision = source_row_decision(line_cov.decisions)
             linecount = line_cov.count
         elif line_cov.is_uncovered:
             covclass = 'uncoveredLine'
+            linedecision = source_row_decision(line_cov.decisions)
     return {
         'lineno': lineno,
         'source': source,
         'covclass': covclass,
         'linebranch': linebranch,
+        'linedecision': linedecision,
         'linecount': linecount,
     }
 
@@ -514,6 +562,35 @@ def source_row_branch(branches):
         'taken': taken,
         'total': total,
         'branches': items,
+    }
+
+
+def source_row_decision(decisions):
+    if not decisions:
+        return None
+
+    taken = 0
+    uncheckable = False
+    total = 0
+    items = []
+
+    for decision_id in sorted(decisions):
+        decision = decisions[decision_id]
+        if decision.is_covered:
+            taken += 1
+        total += 1
+        items.append({
+            'taken': decision.is_covered,
+            'uncheckable': decision.is_uncheckable,
+            'name': decision_id,
+            'count': decision.count,
+        })
+
+    return {
+        'taken': taken,
+        'uncheckable': uncheckable,
+        'total': total,
+        'decisions': items,
     }
 
 
