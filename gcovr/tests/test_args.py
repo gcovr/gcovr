@@ -155,6 +155,13 @@ def test_multiple_output_formats_to_stdout(capsys):
     assert c.exception.code == 0
 
 
+def test_no_self_contained_without_file(capsys):
+    c = capture(capsys, ['--no-html-self-contained', '--html'])
+    assert c.out == ''
+    assert 'can only disable --html-self-contained when a named output is given' in c.err
+    assert c.exception.code != 0
+
+
 def test_html_injection_via_json(capsys, tmp_path):
     import json
     import markupsafe

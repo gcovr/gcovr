@@ -10,4 +10,4 @@ html:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage*.html
+	rm -f coverage*.html coverage*.css

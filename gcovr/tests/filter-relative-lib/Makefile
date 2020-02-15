@@ -33,4 +33,4 @@ links:
 
 clean:
 	cd project; rm -f testcase *.gc* *.o; rm -rf relevant-library
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json
+	rm -f coverage*.* sonarqube.xml

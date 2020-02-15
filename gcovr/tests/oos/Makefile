@@ -26,4 +26,4 @@ sonarqube: coverage.json
 
 clean:
 	rm -f build/*
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json
+	rm -f coverage*.* sonarqube*.*

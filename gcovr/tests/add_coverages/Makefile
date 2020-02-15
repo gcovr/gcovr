@@ -42,4 +42,4 @@ clean:
 	rm -f testcase_*
 	rm -f *.gc*
 	rm -f *.o
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage*.json
+	rm -f coverage*.* sonarqube*.*

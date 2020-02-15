@@ -31,7 +31,7 @@ sonarqube: coverage.json
 
 clean:
 	rm -Rf subdir
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage.json
+	rm -f coverage*.* sonarqube*.*
 
 links:
 	if ! [ -d "subdir" ]; then\

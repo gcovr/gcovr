@@ -61,5 +61,5 @@ sonarqube: coverage.json
 clean:
 	rm -rf obj
 	rm -f lib/*.$(DYNLIB_EXT)
-	rm -f coverage.xml coverage.txt coverage*.html sonarqube.xml coverage.json
+	rm -f coverage*.* sonarqube*.*
 	$(MAKE) -C testApp clean
