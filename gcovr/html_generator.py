@@ -191,7 +191,22 @@ def print_html_report(covdata, output_file, options):
     data['COVERAGE_MED'] = medium_threshold
     data['COVERAGE_HIGH'] = high_threshold
 
-    data['css'] = CssRenderer.render()
+    self_contained = options.html_self_contained
+    if self_contained is None:
+        self_contained = not options.html_details
+
+    if self_contained:
+        data['css'] = CssRenderer.render()
+    else:
+        css_output = os.path.splitext(output_file)[0] + '.css'
+        with open(css_output, 'w') as f:
+            f.write(CssRenderer.render())
+
+        if options.relative_anchors:
+            css_link = os.path.basename(css_output)
+        else:
+            css_link = css_output
+        data['css_link'] = css_link
 
     root_info.calculate_branch_coverage(covdata)
     root_info.calculate_line_coverage(covdata)

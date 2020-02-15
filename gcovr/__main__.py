@@ -170,10 +170,19 @@ def main(args=None):
             options.html_medium_threshold, options.html_high_threshold)
         sys.exit(1)
 
-    if options.html_details and not (options.html_details.value or options.output):
+    potential_html_output = (
+        (options.html and options.html.value)
+        or (options.html_details and options.html_details.value)
+        or options.output)
+    if options.html_details and not potential_html_output:
         logger.error(
             "a named output must be given, if the option --html-details\n"
             "is used.")
+        sys.exit(1)
+
+    if options.html_self_contained is False and not potential_html_output:
+        logger.error(
+            "can only disable --html-self-contained when a named output is given.")
         sys.exit(1)
 
     if options.output is not None:

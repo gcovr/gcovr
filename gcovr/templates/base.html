@@ -6,11 +6,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset={{info.encoding}}"/>
     <title>{{info.head}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <style media="screen" type="text/css">
-
-      {{css | indent | safe}}
-
+    {% if css_link is defined %}
+    <link rel="stylesheet" href="{{css_link}}">
+    {% else %}
+    <style type="text/css">
+      {{css | safe}}
     </style>
+    {% endif %}
   </head>
 
   <body>
