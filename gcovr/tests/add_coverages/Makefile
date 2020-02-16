@@ -16,7 +16,7 @@ json_foo:
 
 json_bar:
 	./testcase_bar
-	$(GCOVR) -d --json -o coverage_bar.json
+	$(GCOVR) -d --json coverage_bar.json
 
 txt: json_foo json_bar
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json -o coverage.txt

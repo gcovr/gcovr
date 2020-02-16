@@ -41,8 +41,8 @@ def print_json_report(covdata, output_file, options):
     else:
         write_json = functools.partial(write_json, sort_keys=True)
 
-    if options.output:
-        with open(options.output, 'w') as output:
+    if output_file is not None:
+        with open(output_file, 'w') as output:
             write_json(gcovr_json_root, output)
     else:
         write_json(gcovr_json_root, sys.stdout)
