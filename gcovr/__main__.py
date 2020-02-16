@@ -38,6 +38,7 @@ from argparse import ArgumentParser
 from os.path import normpath
 from tempfile import mkdtemp
 from shutil import rmtree
+from glob import glob
 
 from .configuration import (
     argument_parser_setup, merge_options_and_set_defaults,
@@ -259,13 +260,17 @@ def main(args=None):
 def collect_coverage_from_tracefiles(covdata, options, logger):
     datafiles = set()
 
-    for trace_file in options.add_tracefile:
-        if not os.path.exists(normpath(trace_file)):
+    for trace_files_regex in options.add_tracefile:
+        trace_files = glob(trace_files_regex, recursive=True)
+        if not trace_files:
             logger.error(
                 "Bad --add-tracefile option.\n"
                 "\tThe specified file does not exist.")
             sys.exit(1)
-        datafiles.add(trace_file)
+        else:
+            for trace_file in trace_files:
+                datafiles.add(normpath(trace_file))
+
     options.root_dir = os.path.abspath(options.root)
     gcovr_json_files_to_coverage(datafiles, covdata, options)
 
