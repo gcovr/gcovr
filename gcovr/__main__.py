@@ -258,6 +258,16 @@ def main(args=None):
         for f in filters:
             logger.verbose_msg('- {}', f)
 
+    if options.exclude_lines_by_pattern:
+        try:
+            re.compile(options.exclude_lines_by_pattern)
+        except re.error as e:
+            logger.error(
+                "--exclude-lines-by-pattern: "
+                "Invalid regular expression: {}, error: {}",
+                repr(options.exclude_lines_by_pattern), e)
+            sys.exit(1)
+
     covdata = dict()
     if options.add_tracefile:
         collect_coverage_from_tracefiles(covdata, options, logger)

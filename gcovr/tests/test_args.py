@@ -185,3 +185,9 @@ def test_html_injection_via_json(capsys, tmp_path):
     assert script not in c.out
     assert str(markupsafe.escape(script)) in c.out, '--- got:\n{}\n---'.format(c.out)
     assert c.exception.code == 0
+
+
+def test_exclude_lines_by_pattern(capsys):
+    c = capture(capsys, ['--exclude-lines-by-pattern', 'example.**'])
+    assert 'Invalid regular expression' in c.err
+    assert c.exception.code != 0

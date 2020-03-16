@@ -769,6 +769,13 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true"
     ),
     GcovrConfigOption(
+        "exclude_lines_by_pattern", ["--exclude-lines-by-pattern"],
+        group="gcov_options",
+        help="Exclude lines that match this regex.",
+        default='.*[GL]COVR?_EXCL_LINE.*',
+        type=str
+    ),
+    GcovrConfigOption(
         "gcov_files", ["-g", "--use-gcov-files"],
         group="gcov_options",
         help="Use existing gcov files for analysis. Default: {default!s}.",
