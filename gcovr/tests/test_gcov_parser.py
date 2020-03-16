@@ -296,7 +296,9 @@ def test_gcov_8(capsys, sourcename):
         lines,
         exclude_unreachable_branches=False,
         exclude_throw_branches=exclude_throw_branches,
-        ignore_parse_errors=False)
+        ignore_parse_errors=False,
+        exclude_lines_by_pattern=None
+    )
 
     covdata = {
         parser.fname: parser.coverage,
@@ -331,7 +333,8 @@ def test_unknown_tags(capsys, ignore_errors):
             lines,
             exclude_unreachable_branches=False,
             exclude_throw_branches=False,
-            ignore_parse_errors=ignore_errors)
+            ignore_parse_errors=ignore_errors,
+            exclude_lines_by_pattern=None)
 
     if ignore_errors:
         run_the_parser()
@@ -371,7 +374,8 @@ def test_pathologic_codeline(capsys):
             lines,
             exclude_unreachable_branches=False,
             exclude_throw_branches=False,
-            ignore_parse_errors=False)
+            ignore_parse_errors=False,
+            exclude_lines_by_pattern=None)
 
     out, err = capsys.readouterr()
     assert out == ''
