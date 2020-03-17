@@ -188,17 +188,22 @@ def guess_source_file_name_heuristics(
     # separator is different, so we replace it with the correct separator
     gcovname = gcovname.replace('/', os.sep)
 
-    # 0. Try using the current working directory as the source directory
+    # 0. Try using the source file relative path as the source directory
+    fname = os.path.join(os.path.dirname(source_fname), gcovname)
+    if os.path.exists(fname):
+        return fname
+
+    # 1. Try using the current working directory as the source directory
     fname = os.path.join(currdir, gcovname)
     if os.path.exists(fname):
         return fname
 
-    # 1. Try using the path to common prefix with the root_dir as the source directory
+    # 2. Try using the path to common prefix with the root_dir as the source directory
     fname = os.path.join(root_dir, gcovname)
     if os.path.exists(fname):
         return fname
 
-    # 2. Try using the starting directory as the source directory
+    # 3. Try using the starting directory as the source directory
     fname = os.path.join(starting_dir, gcovname)
     if os.path.exists(fname):
         return fname
@@ -206,12 +211,12 @@ def guess_source_file_name_heuristics(
     # Get path of gcda file
     source_fname_dir = os.path.dirname(source_fname)
 
-    # 3. Try using the path to the gcda as the source directory
+    # 4. Try using the path to the gcda file as the source directory
     fname = os.path.join(source_fname_dir, gcovname)
     if os.path.exists(fname):
         return os.path.normpath(fname)
 
-    # 4. Try using the path to the gcda file as the source directory, removing the path part from the gcov file
+    # 5. Try using the path to the gcda file as the source directory, removing the path part from the gcov file
     fname = os.path.join(source_fname_dir, os.path.basename(gcovname))
     return fname
 
@@ -313,7 +318,8 @@ class GcovParser(object):
             if self.excluding or is_non_code(code):
                 self.coverage.line(self.lineno).noncode = True
             else:
-                self.coverage.line(self.lineno)  # sets count to 0 if not present before
+                # sets count to 0 if not present before
+                self.coverage.line(self.lineno)
             return True
 
         if firstchar in "0123456789":
