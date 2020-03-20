@@ -188,23 +188,23 @@ def guess_source_file_name_heuristics(
     # separator is different, so we replace it with the correct separator
     gcovname = gcovname.replace('/', os.sep)
 
-    # 0. Try using the source file relative path as the source directory
-    fname = os.path.join(os.path.dirname(source_fname), gcovname)
-    if os.path.exists(fname):
-        return fname
-
-    # 1. Try using the current working directory as the source directory
+    # 0. Try using the current working directory as the source directory
     fname = os.path.join(currdir, gcovname)
     if os.path.exists(fname):
         return fname
 
-    # 2. Try using the path to common prefix with the root_dir as the source directory
+    # 1. Try using the path to common prefix with the root_dir as the source directory
     fname = os.path.join(root_dir, gcovname)
     if os.path.exists(fname):
         return fname
 
-    # 3. Try using the starting directory as the source directory
+    # 2. Try using the starting directory as the source directory
     fname = os.path.join(starting_dir, gcovname)
+    if os.path.exists(fname):
+        return fname
+
+    # 3. Try using the source file relative path as the source directory
+    fname = os.path.join(os.path.dirname(source_fname), gcovname)
     if os.path.exists(fname):
         return fname
 
