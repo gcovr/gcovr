@@ -256,6 +256,9 @@ class ParserFlags(enum.Flag):
     EXCLUDE_THROW_BRANCHES = enum.auto()
     """Whether coverage for exception-only branches shall be ignored."""
 
+    RESPECT_EXCLUSION_MARKERS = enum.auto()
+    """Whether the eclusion markers shall be used."""
+
 
 _LineWithError = Tuple[str, Exception]
 
@@ -313,15 +316,16 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
-    line_is_excluded = _find_excluded_ranges(
-        lines=[
-            (line.lineno, line.source_code)
-            for line, _ in tokenized_lines
-            if isinstance(line, _SourceLine)
-        ],
-        warnings=_ExclusionRangeWarnings(logger, filename),
-        exclude_lines_by_pattern=exclude_lines_by_pattern,
-    )
+    if flags.RESPECT_EXCLUSION_MARKERS:
+        line_is_excluded = _find_excluded_ranges(
+            lines=[
+                (line.lineno, line.source_code)
+                for line, _ in tokenized_lines
+                if isinstance(line, _SourceLine)
+            ],
+            warnings=_ExclusionRangeWarnings(logger, filename),
+            exclude_lines_by_pattern=exclude_lines_by_pattern,
+        )
 
     coverage = FileCoverage(filename)
     state = _ParserState()

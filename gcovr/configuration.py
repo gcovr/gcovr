@@ -579,6 +579,12 @@ GCOVR_CONFIG_OPTIONS = [
              "Defaults to gcovr.cfg in the --root directory.",
     ),
     GcovrConfigOption(
+        "respect_exclusion_markers", ["--no-markers"],
+        help="Turn off exclusion markers. Any exclusion markers "
+             "specified in source files will be ignored.",
+        action="store_false",
+    ),
+    GcovrConfigOption(
         "fail_under_line", ["--fail-under-line"],
         type=check_percentage,
         metavar="MIN",
