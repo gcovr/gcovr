@@ -10,7 +10,7 @@ import os
 import sys
 import functools
 
-from .utils import presentable_filename, Logger
+from .utils import presentable_filename, Logger, calculate_coverage
 from .coverage import FileCoverage
 
 
@@ -29,11 +29,35 @@ def print_json_report(covdata, output_file, options):
     gcovr_json_root['gcovr/format_version'] = JSON_FORMAT_VERSION
     gcovr_json_root['files'] = []
 
+    global_line_total = 0
+    global_line_covered = 0
+    global_branch_total = 0
+    global_branch_covered = 0
     for no in sorted(covdata):
+        (line_total, line_covered, line_percent) = covdata[no].line_coverage()
+        (branch_total, branch_covered, branch_percent) = covdata[no].branch_coverage()
+        global_line_total += line_total
+        global_line_covered += line_covered
+        global_branch_total += branch_total
+        global_branch_covered += branch_covered
         gcovr_json_file = {}
         gcovr_json_file['file'] = presentable_filename(covdata[no].filename, root_filter=options.root_filter)
         gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
         gcovr_json_root['files'].append(gcovr_json_file)
+        gcovr_json_file['line_summary'] = { 'exec': line_covered, 'total': line_total, 'coverage': line_percent }
+        gcovr_json_file['branch_summary'] = { 'exec': branch_covered, 'total': branch_total, 'coverage': branch_percent }
+
+    # Summary key names consistent with html generator
+    gcovr_json_root['line_summary'] = {
+        'exec': global_line_covered,
+        'total': global_line_total,
+        'coverage': calculate_coverage(global_line_covered, global_line_total),
+    }
+    gcovr_json_root['branch_summary'] = {
+        'exec': global_branch_covered,
+        'total': global_branch_total,
+        'coverage': calculate_coverage(global_branch_covered, global_branch_total),
+    }
 
     write_json = json.dump
     if options.prettyjson:
