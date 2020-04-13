@@ -624,7 +624,7 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "prettyjson", ["--json-pretty"],
         group="output_options",
-        help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
+        help="Pretty-print the JSON report. Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(
