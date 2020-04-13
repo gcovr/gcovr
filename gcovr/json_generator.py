@@ -10,6 +10,7 @@ import os
 import sys
 import functools
 
+
 from .utils import (calculate_coverage, Logger, presentable_filename,
                     sort_coverage)
 from .coverage import FileCoverage
@@ -17,6 +18,7 @@ from .coverage import FileCoverage
 
 JSON_FORMAT_VERSION = 0.1
 PRETTY_JSON_INDENT = 4
+
 
 def _write_json_result(gcovr_json_dict, output_file, options):
     r"""helper utility to output json format dictionary to a file/STDOUT """
@@ -34,6 +36,7 @@ def _write_json_result(gcovr_json_dict, output_file, options):
         with open(output_file, 'w') as output:
             write_json(gcovr_json_dict, output)
 
+            
 #
 # Produce gcovr JSON report
 #
@@ -51,8 +54,18 @@ def print_json_report(covdata, output_file, options):
         gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
         gcovr_json_root['files'].append(gcovr_json_file)
 
-    _write_json_result(gcovr_json_root, output_file, options)
+    write_json = json.dump
+    if options.prettyjson:
+        write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT, separators=(',', ': '), sort_keys=True)
+    else:
+        write_json = functools.partial(write_json, sort_keys=True)
 
+    if output_file is not None:
+        with open(output_file, 'w') as output:
+            write_json(gcovr_json_root, output)
+    else:
+        write_json(gcovr_json_root, sys.stdout)
+                
 #
 # Produce gcovr json summary report
 #

@@ -421,6 +421,10 @@ GCOVR_CONFIG_OPTIONS = [
              "Coverage files contains source files structure relative "
              "to root directory. Those structures are combined "
              "in the output relative to the current root directory. "
+             "Unix style wildcards can be used to add the pathnames "
+             "matching a specified pattern. In this case pattern "
+             "must be set in double quotation marks. "
+
              "Option can be specified multiple times. "
              "When option is used gcov is not run to collect "
              "the new coverage data.",

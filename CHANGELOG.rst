@@ -59,14 +59,10 @@ Improvements and new features:
  - Can write :ref:`multiple reports <multiple output formats>` at the same time
    by giving the output file name to the report format parameter.
    Now, ``gcovr --html -o cov.html`` and ``gcovr --html cov.html``
-<<<<<<< HEAD
-   are equivalent.
- - Added -json-sumamry option to generate json summary report.
-=======
    are equivalent. (:issue:`291`)
+ - Added -json-sumamry option to generate json summary report.
  - Override gcov locale properly. (:issue:`334`)
  - Make gcov parser more robust when used with GCC 8. (:issue:`315`)
->>>>>>> add references in changelog
 
 Known issues:
 
