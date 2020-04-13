@@ -58,7 +58,6 @@ from .json_generator import print_json_report, print_json_summary_report
 from .txt_generator import print_text_report
 from .summary_generator import print_summary
 from .sonarqube_generator import print_sonarqube_report
-from .json_generator import print_json_report
 
 
 #

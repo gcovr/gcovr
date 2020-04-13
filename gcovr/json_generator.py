@@ -114,6 +114,7 @@ def print_json_summary_report(covdata, output_file, options):
 
     _write_json_result(json_dict, output_file, options)
 
+
 #
 #  Get coverage from already existing gcovr JSON files
 #
