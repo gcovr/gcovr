@@ -26,7 +26,7 @@ sonarqube:
 
 json_summary:
 	./testcase
-	$(GCOVR) -d --json-summary --json-pretty -o coverage_summary.json
+	$(GCOVR) -d --json-summary --json-pretty -o summary_coverage.json
 
 json:
 	# pass
@@ -34,4 +34,4 @@ json:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage_summary.json
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml summary_coverage.json

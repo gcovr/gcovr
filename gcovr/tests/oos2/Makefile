@@ -6,7 +6,7 @@ all:
 	cd build; $(CXX) $(CFLAGS) -c ../src/main.cpp  -o main.o
 	cd build; $(CXX) $(CFLAGS) main.o file1.o -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 GCOVR_TEST_OPTIONS = -r ../src .
 
@@ -27,6 +27,9 @@ sonarqube:
 	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube ../sonarqube.xml
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 clean:

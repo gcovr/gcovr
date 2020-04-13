@@ -6,7 +6,7 @@ all: links
 	cd project; $(CXX) $(CFLAGS) -c relevant-library/src/yes.cpp -o yes.o
 	cd project; $(CXX) $(CFLAGS) main.o no.o yes.o -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 # the src/ filter is provided by the project/gcovr.cfg configuration file
 GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
@@ -28,6 +28,9 @@ sonarqube:
 	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube ../sonarqube.xml
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 links:

@@ -1,0 +1,27 @@
+{
+    "covered": 13,
+    "current_working_directory": ".",
+    "files": [
+        {
+            "covered": 4,
+            "file": "bar.cpp",
+            "percent": 100.0,
+            "total": 4
+        },
+        {
+            "covered": 4,
+            "file": "foo.cpp",
+            "percent": 100.0,
+            "total": 4
+        },
+        {
+            "covered": 5,
+            "file": "main.cpp",
+            "percent": 100.0,
+            "total": 5
+        }
+    ],
+    "gcovr/format_version": 0.1,
+    "percent": 100.0,
+    "total": 13
+}
