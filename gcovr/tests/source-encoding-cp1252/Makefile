@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC --encoding cp1252 main.cpp -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 txt:
 	# pass
@@ -17,6 +17,9 @@ sonarqube:
 	# pass
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 clean:

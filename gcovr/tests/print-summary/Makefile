@@ -19,6 +19,8 @@ sonarqube:
 
 json:
 
+json_summary:
+
 clean:
 	rm -f testcase
 	rm -f *.gc*

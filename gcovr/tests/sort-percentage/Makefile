@@ -8,7 +8,7 @@ all:
 	$(CXX) $(CFLAGS) -c main.cpp -o main.o
 	$(CXX) $(CFLAGS) main.o file1.o file2.o file3.o file4.o -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 GCOVR_TEST_OPTIONS = --sort-percentage
 
@@ -26,6 +26,9 @@ sonarqube:
 	# pass
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 clean:

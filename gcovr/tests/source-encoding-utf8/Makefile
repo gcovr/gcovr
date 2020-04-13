@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 txt:
 	# pass
@@ -18,6 +18,10 @@ sonarqube:
 
 json:
 	# pass
+
+json_summary:
+	# pass
+
 
 clean:
 	rm -f testcase

@@ -11,7 +11,7 @@ all: links
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CFLAGS) subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/m/n/C/D/file6.o subdir/A/file7.o subdir/B/main.o -o subdir/testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 txt:
 	./subdir/testcase
@@ -30,6 +30,9 @@ sonarqube:
 	$(GCOVR) -d --sonarqube sonarqube.xml
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 clean:

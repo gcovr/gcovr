@@ -96,7 +96,7 @@ OUTPUT_PATTERN = dict(
     html='coverage*.html',
     sonarqube='sonarqube.xml',
     json='coverage*.json',
-    json_summary='coverage_summary.json'
+    json_summary='summary_coverage.json'
 )
 
 ASSERT_EQUALS = dict(

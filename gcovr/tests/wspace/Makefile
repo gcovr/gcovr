@@ -1,7 +1,7 @@
 all:
 	cd 'src code'; $(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 txt:
 	cd 'src code'; ./testcase
@@ -14,6 +14,9 @@ xml html sonarqube:
 		--html-details coverage.html --sonarqube sonarqube.xml
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 clean:

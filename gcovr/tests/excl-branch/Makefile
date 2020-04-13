@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 txt:
 	./testcase
@@ -20,6 +20,9 @@ sonarqube:
 	$(GCOVR) --exclude-unreachable-branches -b -d --sonarqube sonarqube.xml
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 clean:
