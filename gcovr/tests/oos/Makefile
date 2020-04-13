@@ -29,6 +29,10 @@ sonarqube:
 json:
 	# pass
 
+json_summary:
+	build/testcase
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --json-summary -o coverage_summary.json
+
 clean:
 	rm -f build/*
 	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml

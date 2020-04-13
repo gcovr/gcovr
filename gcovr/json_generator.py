@@ -36,7 +36,7 @@ def _write_json_result(gcovr_json_dict, output_file, options):
         with open(output_file, 'w') as output:
             write_json(gcovr_json_dict, output)
 
-            
+
 #
 # Produce gcovr JSON report
 #
@@ -50,24 +50,16 @@ def print_json_report(covdata, output_file, options):
 
     for no in sorted(covdata):
         gcovr_json_file = {}
-        gcovr_json_file['file'] = presentable_filename(covdata[no].filename, root_filter=options.root_filter)
+        gcovr_json_file['file'] = presentable_filename(covdata[no].filename,
+                                                       root_filter=options.root_filter)
         gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
         gcovr_json_root['files'].append(gcovr_json_file)
 
-    write_json = json.dump
-    if options.prettyjson:
-        write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT, separators=(',', ': '), sort_keys=True)
-    else:
-        write_json = functools.partial(write_json, sort_keys=True)
+    _write_json_result(gcovr_json_root, output_file, options)
 
-    if output_file is not None:
-        with open(output_file, 'w') as output:
-            write_json(gcovr_json_root, output)
-    else:
-        write_json(gcovr_json_root, sys.stdout)
-                
+
 #
-# Produce gcovr json summary report
+# Produce gcovr JSON summary report
 #
 def print_json_summary_report(covdata, output_file, options):
 
