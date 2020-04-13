@@ -424,7 +424,6 @@ GCOVR_CONFIG_OPTIONS = [
              "Unix style wildcards can be used to add the pathnames "
              "matching a specified pattern. In this case pattern "
              "must be set in double quotation marks. "
-
              "Option can be specified multiple times. "
              "When option is used gcov is not run to collect "
              "the new coverage data.",
