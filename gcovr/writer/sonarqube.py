@@ -34,6 +34,17 @@ def print_sonarqube_report(covdata, output_file, options):
         fileNode = etree.Element("file")
         fileNode.set("path", filename)
 
+        for function_name in sorted(data.functions):
+            function_cov = data.functions[function_name]
+            L = etree.Element("functionToCover")
+            L.set("functionName", str(function_name))
+            L.set("lineNumber", str(function_cov.lineno))
+            if function_cov.count > 0:
+                L.set("covered", "true")
+            else:
+                L.set("covered", "false")
+            fileNode.append(L)
+
         for lineno in sorted(data.lines):
             line_cov = data.lines[lineno]
             if not line_cov.is_covered and not line_cov.is_uncovered:
