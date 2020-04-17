@@ -44,6 +44,12 @@
       <td class="{{info.lines.class}}">{{info.lines.coverage}}%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>{{info.functions.exec}}</td>
+      <td>{{info.functions.total}}</td>
+      <td class="{{info.functions.class}}">{{info.functions.coverage}}%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>{{info.branches.exec}}</td>
       <td>{{info.branches.total}}</td>
@@ -58,10 +64,12 @@
   <col/>
   <colgroup span="3"/>
   <colgroup span="2"/>
+  <colgroup span="2"/>
 
   <tr>
     <th scope="col">File</th>
     <th scope="colgroup" colspan=3>Lines</th>
+    <th scope="colgroup" colspan=2>Functions</th>
     <th scope="colgroup" colspan=2>Branches</th>
   </tr>
 
@@ -80,6 +88,8 @@
     </td>
     <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}%</td>
     <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>
+    <td class="CoverValue function-coverage {{row.functions.class}}">{{row.functions.coverage}}%</td>
+    <td class="CoverValue function-coverage {{row.functions.class}}">{{row.functions.exec}} / {{row.functions.total}}</td>
     <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.coverage}}%</td>
     <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.exec}} / {{row.branches.total}}</td>
   </tr>
