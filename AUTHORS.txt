@@ -1,4 +1,4 @@
-Gcovr is maintained by:
+﻿Gcovr is maintained by:
 
     William Hart,
     John Siirola,
@@ -28,6 +28,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     Joel Klinghed,
     John Siirola,
     Jörg Kreuzberger,
+    Jordi Sabater,
     Kai Blaschke,
     Kevin Broselge,
     Kevin Cai,
