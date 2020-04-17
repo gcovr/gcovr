@@ -54,6 +54,7 @@ from .writer.coveralls import print_coveralls_report
 #
 def fail_under(covdata, threshold_line, threshold_branch, logger):
     (lines_total, lines_covered, percent_lines,
+        functions_total, functions_covered, percent_functions,
         branches_total, branches_covered,
         percent_branches) = get_global_stats(covdata)
 

@@ -409,5 +409,7 @@ def summarize_file_coverage(coverage, root_filter):
 
     branch_total, branch_covered, branch_percent = coverage.branch_coverage()
     line_total, line_covered, line_percent = coverage.line_coverage()
+    function_total, function_covered, function_percent = coverage.function_coverage()
     return (filename, line_total, line_covered, fixup_percent(line_percent),
-            branch_total, branch_covered, fixup_percent(branch_percent))
+            branch_total, branch_covered, fixup_percent(branch_percent),
+            function_total, function_covered, fixup_percent(function_percent))

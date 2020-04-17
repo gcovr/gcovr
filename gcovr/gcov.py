@@ -390,6 +390,37 @@ class GcovParser(object):
 
         if line.startswith('function '):
             self.last_was_function_marker = True
+            # function tags look like:
+            #   function X called 0 returned 0% blocks executed 0%
+            #   function X Y called 0 returned 0% blocks executed 0%
+            #   function X Y Z called 0 returned 0% blocks executed 0%
+            #   function X Y Z ... called 0 returned 0% blocks executed 0%
+            # where the percentage should usually be a count.
+            # we could also use a regex: "^function\s+(.+)\s+called\s+(\d+)\s+"
+
+            fields = line.split()  # e.g. "function X Y Z called 0 returned 0% blocks executed 0%"
+            assert len(fields) >= 9, \
+                "Unclear function tag format (count {}): {}".format(len(fields), line)
+
+            # We take all fields excepting the first and the last 7
+            function_name = ' '.join(fields[1:len(fields) - 7])
+            function_call_count = int(fields[len(fields) - 6])
+
+            # special names for construction/destruction of static objects will be ignored
+            # "__tcf_0", "__static...", "_GLOBAL..."
+            if function_name.startswith("__") or function_name.startswith("_GLOBAL__sub_I__"):
+                self.logger.verbose_msg(
+                    "Ignoring Symbol {func_name} in line {line} "
+                    "in file {file_name}", func_name=fields[1],
+                    line=self.lineno, file_name=self.fname)
+                return True
+
+            # modern GCOV versions can demangle the C++ names
+            function_cov = self.coverage.function(function_name)
+            # function tag appears before the "source code line". Add always 1
+            function_cov.lineno = self.lineno + 1
+            function_cov.count += function_call_count
+
             return True
 
         if line.startswith('call '):
@@ -666,6 +697,7 @@ def run_gcov_and_process_files(
     # (other than within quotes), it probably includes extra arguments.
     cmd = shlex.split(options.gcov_cmd) + [
         abs_filename,
+        "--demangled-names",
         "--branch-counts", "--branch-probabilities", "--preserve-paths",
         '--object-directory', os.path.dirname(abs_filename),
     ]

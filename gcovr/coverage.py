@@ -61,6 +61,26 @@ class BranchCoverage(object):
             self.throw = other.throw
 
 
+class FunctionCoverage(object):
+    __slots__ = 'lineno', 'count', 'name'
+
+    def __init__(self, name, call_count=0):
+        # type: (int, int) -> None
+        assert call_count >= 0
+        self.count = call_count
+        self.lineno = 0
+        self.name = name
+
+    def update(self, other):
+        # type: (FunctionCoverage) -> None
+        r"""Merge FunctionCoverage information"""
+        self.count += other.count
+        if self.lineno == 0:
+            self.lineno = other.lineno
+        else:
+            assert self.lineno == other.lineno
+
+
 class LineCoverage(object):
     r"""Represent coverage information about a line.
 
@@ -73,7 +93,7 @@ class LineCoverage(object):
             Whether any coverage info on this line should be ignored.
     """
 
-    __slots__ = 'lineno', 'count', 'noncode', 'branches'
+    __slots__ = 'lineno', 'count', 'noncode', 'branches', 'functions'
 
     def __init__(self, lineno, count=0, noncode=False):
         # type: (int, int, bool) -> None
@@ -84,6 +104,12 @@ class LineCoverage(object):
         self.count = count  # type: int
         self.noncode = noncode
         self.branches = {}  # type: Dict[int, BranchCoverage]
+
+        # There can be only one (user) function per line but:
+        # * (multiple) template instantiations
+        # * non explicitly defined destructors, called via base virtual destructor!
+        # For that reason we need a dictionary instead of a scalar
+        self.functions = {} # type: Dict[str, FunctionCoverage]
 
     @property
     def is_covered(self):
@@ -114,6 +140,9 @@ class LineCoverage(object):
         assert self.lineno == other.lineno
         self.count += other.count
         self.noncode &= other.noncode
+
+        for other_function in other.functions.values():
+            self.add_function(other_function)
         for branch_id, branch_cov in other.branches.items():
             self.branch(branch_id).update(branch_cov)
 
@@ -130,11 +159,12 @@ class LineCoverage(object):
 
 
 class FileCoverage(object):
-    __slots__ = 'filename', 'lines'
+    __slots__ = 'filename', 'functions', 'lines'
 
     def __init__(self, filename):
         # type: (str) -> None
         self.filename = filename
+        self.functions = {}  # type: Dict[str, FunctionCoverage]
         self.lines = {}  # type: Dict[int, LineCoverage]
 
     def line(self, lineno, **defaults):
@@ -146,12 +176,30 @@ class FileCoverage(object):
             self.lines[lineno] = line_cov = LineCoverage(lineno, **defaults)
             return line_cov
 
+    def function(self, function_name):
+        # type: (str) -> FunctionCoverage
+        r"""Get or create the FunctionCoverage for that function."""
+        try:
+            return self.functions[function_name]
+        except KeyError:
+            self.functions[function_name] = function_cov = FunctionCoverage(function_name)
+            return function_cov
+
+    def add_function(self, function):
+        assert function is not None
+        if function.name in self.functions:
+            self.functions[function.name].count += function.count  # Add the calls to destructor via base class (virtual destructor)
+        else:
+            self.functions[function.name] = function
+
     def update(self, other):
         # type: (FileCoverage) -> None
         r"""Merge FileCoverage information."""
         assert self.filename == other.filename
         for lineno, line_cov in other.lines.items():
             self.line(lineno, noncode=True).update(line_cov)
+        for fct_name, fct_cov in other.functions.items():
+            self.function(fct_name).update(fct_cov)
 
     def uncovered_lines_str(self):
         # type: () -> str
@@ -182,6 +230,17 @@ class FileCoverage(object):
 
         # Don't do any aggregation on branch results
         return ",".join(str(x) for x in uncovered_lines)
+
+    def function_coverage(self):
+        # type: () -> Tuple[int, int, Optional[float]]
+        total = len(self.functions.values())
+        cover = 0
+        for function in self.functions.values():
+            cover += 1 if function.count > 0 else 0
+
+        percent = calculate_coverage(cover, total, nan_value=None)
+
+        return total, cover, percent
 
     def line_coverage(self):
         # type: () -> Tuple[int, int, Optional[float]]
