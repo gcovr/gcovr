@@ -770,7 +770,7 @@ GCOVR_CONFIG_OPTIONS = [
         "print_summary", ["-s", "--print-summary"],
         group="output_options",
         help="Print a small report to stdout "
-             "with line & branch percentage coverage. "
+             "with line & function & branch percentage coverage. "
              "This is in addition to other reports. "
              "Default: {default!s}.",
         action="store_true",

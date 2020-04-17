@@ -121,6 +121,8 @@ def commonpath(files):
 def get_global_stats(covdata):
     lines_total = 0
     lines_covered = 0
+    functions_total = 0
+    functions_covered = 0
     branches_total = 0
     branches_covered = 0
 
@@ -131,14 +133,20 @@ def get_global_stats(covdata):
         lines_total += total
         lines_covered += covered
 
+        (total, covered, _) = covdata[key].function_coverage()
+        functions_total += total
+        functions_covered += covered
+
         (total, covered, _) = covdata[key].branch_coverage()
         branches_total += total
         branches_covered += covered
 
     percent = calculate_coverage(lines_covered, lines_total)
+    percent_functions = calculate_coverage(functions_covered, functions_total)
     percent_branches = calculate_coverage(branches_covered, branches_total)
 
     return (lines_total, lines_covered, percent,
+            functions_total, functions_covered, percent_functions,
             branches_total, branches_covered, percent_branches)
 
 
