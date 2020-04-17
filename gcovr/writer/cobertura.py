@@ -26,10 +26,17 @@ from ..utils import open_binary_for_writing, presentable_filename
 
 def print_xml_report(covdata, output_file, options):
     """produce an XML report in the Cobertura format"""
+    functionTotal = 0
+    functionCovered = 0
     branchTotal = 0
     branchCovered = 0
     lineTotal = 0
     lineCovered = 0
+
+    for key in covdata.keys():
+        (total, covered, _) = covdata[key].function_coverage()
+        functionTotal += total
+        functionCovered += covered
 
     for key in covdata.keys():
         (total, covered, _) = covdata[key].branch_coverage()
@@ -47,6 +54,10 @@ def print_xml_report(covdata, output_file, options):
         or str(float(lineCovered) / lineTotal)
     )
     root.set(
+        "function-rate", functionTotal == 0 and '0.0'
+                       or str(float(functionCovered) / functionTotal)
+    )
+    root.set(
         "branch-rate", branchTotal == 0 and '0.0'
         or str(float(branchCovered) / branchTotal)
     )
@@ -55,6 +66,12 @@ def print_xml_report(covdata, output_file, options):
     )
     root.set(
         "lines-valid", str(lineTotal)
+    )
+    root.set(
+        "functions-covered", str(functionCovered)
+    )
+    root.set(
+        "functions-valid", str(functionTotal)
     )
     root.set(
         "branches-covered", str(branchCovered)
@@ -91,7 +108,7 @@ def print_xml_report(covdata, output_file, options):
             directory, fname = '', filename
 
         package = packages.setdefault(
-            directory, [etree.Element("package"), {}, 0, 0, 0, 0]
+            directory, [etree.Element("package"), {}, 0, 0, 0, 0, 0, 0]
         )
         c = etree.Element("class")
         # The Cobertura DTD requires a methods section, which isn't
@@ -156,6 +173,16 @@ def print_xml_report(covdata, output_file, options):
         package[4] += class_branch_hits
         package[5] += class_branches
 
+        class_functions = 0
+        class_function_hits = 0
+        for function_name in data.functions:
+            class_functions += 1
+            if data.functions[function_name].count > 0:
+                class_function_hits += 1
+
+        package[6] = class_function_hits
+        package[7] = class_functions
+
     keys = list(packages.keys())
     keys.sort()
     for packageName in keys:
@@ -170,6 +197,9 @@ def print_xml_report(covdata, output_file, options):
         package.set("name", packageName.replace('/', '.'))
         package.set(
             "line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0))
+        )
+        package.set(
+            "function-rate", str(packageData[6] / (1.0 * packageData[7] or 1.0))
         )
         package.set(
             "branch-rate", str(packageData[4] / (1.0 * packageData[5] or 1.0))
