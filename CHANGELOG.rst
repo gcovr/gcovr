@@ -66,6 +66,7 @@ Improvements and new features:
    are equivalent. (:issue:`291`)
  - Override gcov locale properly. (:issue:`334`)
  - Make gcov parser more robust when used with GCC 8. (:issue:`315`)
+ - Added -json-sumamry option to generate json summary report. (:issue:`302`)
 >>>>>>> add references in changelog
 
 Known issues:
