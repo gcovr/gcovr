@@ -274,6 +274,7 @@ def collect_coverage_from_tracefiles(covdata, options, logger):
     options.root_dir = os.path.abspath(options.root)
     gcovr_json_files_to_coverage(datafiles, covdata, options)
 
+
 def collect_coverage_from_gcov(covdata, options, logger):
     datafiles = set()
 

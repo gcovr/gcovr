@@ -18,6 +18,7 @@ from .coverage import FileCoverage
 JSON_FORMAT_VERSION = 0.1
 PRETTY_JSON_INDENT = 4
 
+
 def _write_json_result(gcovr_json_dict, output_file, options):
     r"""helper utility to output json format dictionary to a file/STDOUT """
     write_json = json.dump
