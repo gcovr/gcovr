@@ -248,24 +248,31 @@ def main(args=None):
     else:
         collect_coverage_from_gcov(covdata, options, logger)
 
+    logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
 
     # Print reports
     print_reports(covdata, options, logger)
+
+    if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
+        fail_under(covdata, options.fail_under_line, options.fail_under_branch)
 
 
 def collect_coverage_from_tracefiles(covdata, options, logger):
     datafiles = set()
 
-    for trace_file in options.add_tracefile:
-        if not os.path.exists(normpath(trace_file)):
+    for trace_files_regex in options.add_tracefile:
+        trace_files = glob(trace_files_regex, recursive=True)
+        if not trace_files:
             logger.error(
                 "Bad --add-tracefile option.\n"
                 "\tThe specified file does not exist.")
             sys.exit(1)
-        datafiles.add(trace_file)
+        else:
+            for trace_file in trace_files:
+                datafiles.add(normpath(trace_file))
+
     options.root_dir = os.path.abspath(options.root)
     gcovr_json_files_to_coverage(datafiles, covdata, options)
-
 
 def collect_coverage_from_gcov(covdata, options, logger):
     datafiles = set()
@@ -332,14 +339,6 @@ def print_reports(covdata, options, logger):
         lambda: logger.warn(
             "HTML output skipped - "
             "consider providing an output file with `--html=OUTPUT`.")))
-
-    generators.append((
-        lambda: options.json_summary,
-        [options.json_summary],
-        print_json_report,
-        lambda: logger.warn(
-            "JSON summary output skipped - "
-            "consider providing an output file with `--json-summary=OUTPUT`.")))
 
     generators.append((
         lambda: options.sonarqube,

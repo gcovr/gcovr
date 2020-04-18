@@ -339,6 +339,11 @@ Next, merge the json files and generate the desired report::
 
     gcovr --add-tracefile run-1.json --add-tracefile run-2.json --html-details coverage.html
 
+You can also use unix style wildcards to merge the json files without
+duplicating :option:`gcovr --add-tracefile`. With this option you have to
+place your pathnames with wildcards in double quotation marks::
+
+    gcovr --add-tracefile "run-*.json" --html-details coverage.html
 
 The gcovr Command
 -----------------
