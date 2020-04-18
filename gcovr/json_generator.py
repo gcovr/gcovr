@@ -77,12 +77,8 @@ def print_json_summary_report(covdata, output_file, options):
         by_percent_uncovered=options.sort_percent)
 
     def _summarize_file_coverage(coverage):
-        filename_str = options.root_filter.sub('', coverage.filename)
-        if not coverage.filename.endswith(filename_str):
-            # Do no truncation if the filter does not start matching at
-            # the beginning of the string
-            filename_str = coverage.filename
-        filename_str = filename_str.replace('\\', '/')
+        filename = presentable_filename(coverage.filename,
+                                        root_filter=options.root_filter)
 
         if options.show_branch:
             total, cover, percent = coverage.branch_coverage()
@@ -91,7 +87,7 @@ def print_json_summary_report(covdata, output_file, options):
             total, cover, percent = coverage.line_coverage()
             uncovered_lines = coverage.uncovered_lines_str()
 
-        return (filename_str, total, cover, percent, uncovered_lines)
+        return (filename, total, cover, percent, uncovered_lines)
 
     for key in keys:
         (filename, t, n, percent, uncovered_lines) = _summarize_file_coverage(covdata[key])
