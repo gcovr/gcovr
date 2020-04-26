@@ -3,7 +3,7 @@ all:
 	$(CC) -fprofile-arcs -ftest-coverage -fPIC -c update-data.c -o update-data.o
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -o testcase main.o update-data.o
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 txt:
 	./testcase
@@ -22,6 +22,9 @@ sonarqube:
 	$(GCOVR) -d --sonarqube sonarqube.xml
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 clean:

@@ -13,7 +13,7 @@ all:
 	cd subdir; $(CXX) $(CFLAGS) -c B/main.cpp -o ../objs/main.o
 	cd subdir; $(CXX) $(CFLAGS) ../objs/file1.o ../objs/file2.o ../objs/file3.o ../objs/file4.o ../objs/file5.o ../objs/file6.o ../objs/file7.o ../objs/main.o -o ./testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 txt:
 	./subdir/testcase
@@ -32,6 +32,9 @@ sonarqube:
 	$(GCOVR) -r subdir --object-directory objs -d --sonarqube sonarqube.xml
 
 json:
+	# pass
+
+json_summary:
 	# pass
 
 clean:

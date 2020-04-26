@@ -6,7 +6,7 @@ all:
 	$(CXX) $(CFLAGS) -c src/main.cpp -o build/main.o
 	$(CXX) $(CFLAGS) build/main.o build/file1.o -o build/testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 GCOVR_TEST_OPTIONS =
 
@@ -29,6 +29,10 @@ sonarqube:
 json:
 	# pass
 
+json_summary:
+	build/testcase
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --json-summary -o summary_coverage.json
+
 clean:
 	rm -f build/*
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml summary_coverage.json

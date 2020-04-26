@@ -10,12 +10,30 @@ import os
 import sys
 import functools
 
-from .utils import presentable_filename, Logger
+from .utils import (calculate_coverage, Logger, presentable_filename,
+                    sort_coverage)
 from .coverage import FileCoverage
 
 
 JSON_FORMAT_VERSION = 0.1
 PRETTY_JSON_INDENT = 4
+
+
+def _write_json_result(gcovr_json_dict, output_file, options):
+    r"""helper utility to output json format dictionary to a file/STDOUT """
+    write_json = json.dump
+
+    if options.prettyjson:
+        write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT,
+                                       separators=(',', ': '), sort_keys=True)
+    else:
+        write_json = functools.partial(write_json, sort_keys=True)
+
+    if output_file is None:
+        write_json(gcovr_json_dict, sys.stdout)
+    else:
+        with open(output_file, 'w') as output:
+            write_json(gcovr_json_dict, output)
 
 
 #
@@ -31,21 +49,65 @@ def print_json_report(covdata, output_file, options):
 
     for no in sorted(covdata):
         gcovr_json_file = {}
-        gcovr_json_file['file'] = presentable_filename(covdata[no].filename, root_filter=options.root_filter)
+        gcovr_json_file['file'] = presentable_filename(covdata[no].filename,
+                                                       root_filter=options.root_filter)
         gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
         gcovr_json_root['files'].append(gcovr_json_file)
 
-    write_json = json.dump
-    if options.prettyjson:
-        write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT, separators=(',', ': '), sort_keys=True)
-    else:
-        write_json = functools.partial(write_json, sort_keys=True)
+    _write_json_result(gcovr_json_root, output_file, options)
 
-    if output_file is not None:
-        with open(output_file, 'w') as output:
-            write_json(gcovr_json_root, output)
-    else:
-        write_json(gcovr_json_root, sys.stdout)
+
+#
+# Produce gcovr JSON summary report
+#
+def print_json_summary_report(covdata, output_file, options):
+
+    total_lines = 0
+    total_covered = 0
+
+    json_dict = {}
+    json_dict['current_working_directory'] = options.root
+    json_dict['gcovr/format_version'] = JSON_FORMAT_VERSION
+    json_dict['files'] = []
+
+    # Data
+    keys = sort_coverage(
+        covdata, show_branch=options.show_branch,
+        by_num_uncovered=options.sort_uncovered,
+        by_percent_uncovered=options.sort_percent)
+
+    def _summarize_file_coverage(coverage):
+        filename = presentable_filename(coverage.filename,
+                                        root_filter=options.root_filter)
+
+        if options.show_branch:
+            total, cover, percent = coverage.branch_coverage()
+            uncovered_lines = coverage.uncovered_branches_str()
+        else:
+            total, cover, percent = coverage.line_coverage()
+            uncovered_lines = coverage.uncovered_lines_str()
+
+        return (filename, total, cover, percent, uncovered_lines)
+
+    for key in keys:
+        (filename, t, n, percent, uncovered_lines) = _summarize_file_coverage(covdata[key])
+        total_lines += t
+        total_covered += n
+        json_dict['files'].append({
+            'file': filename,
+            'total': t,
+            'covered': n,
+            'percent': percent,
+        })
+
+    # Footer & summary
+    percent = calculate_coverage(total_covered, total_lines, nan_value=None)
+
+    json_dict['total'] = total_lines
+    json_dict['covered'] = total_covered
+    json_dict['percent'] = percent
+
+    _write_json_result(json_dict, output_file, options)
 
 
 #

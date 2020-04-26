@@ -8,15 +8,15 @@ all:
 	$(CXX) $(CFLAGS) -DBAR -c main.cpp -o main_bar.o
 	$(CXX) $(CFLAGS) main_bar.o bar.o -o testcase_bar
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 json_foo:
 	./testcase_foo
-	$(GCOVR) -d --json-pretty -o coverage_foo.json
+	$(GCOVR) -d --json --json-pretty -o coverage_foo.json
 
 json_bar:
 	./testcase_bar
-	$(GCOVR) -d --json coverage_bar.json
+	$(GCOVR) -d --json -o coverage_bar.json
 
 txt: json_foo json_bar
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json -o coverage.txt
@@ -31,10 +31,14 @@ sonarqube: json_foo json_bar
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json --sonarqube sonarqube.xml
 
 json: json_foo json_bar
-	$(GCOVR) -a 'coverage_*.json' --json-pretty -o coverage.json
+	$(GCOVR) -a 'coverage_*.json' --json --json-pretty -o coverage.json
+
+json_summary: json_foo json_bar
+	$(GCOVR) -a 'coverage_*.json' --json-summary --json-pretty -o summary_coverage.json
 
 clean:
 	rm -f testcase_*
 	rm -f *.gc*
 	rm -f *.o
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage*.json
+	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml coverage*.json \
+	      summary_coverage.json
