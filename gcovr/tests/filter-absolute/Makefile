@@ -33,7 +33,6 @@ html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
 
 sonarqube: coverage.json
-	./testcase
 	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
 clean:
