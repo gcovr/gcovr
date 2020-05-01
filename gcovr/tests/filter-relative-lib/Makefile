@@ -13,19 +13,19 @@ GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
 
 coverage.json:
 	cd project; ./testcase
-	cd project; $(GCOVR) -f '\.\./external-library/src' --json $(abspath $@)
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) --json $(abspath $@)
 
 txt: coverage.json
-	cd project; $(GCOVR) -a ../coverage.json -o ../coverage.txt
+	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json -o ../coverage.txt
 
 xml: coverage.json
-	cd project; $(GCOVR) -a ../coverage.json -x -o ../coverage.xml
+	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json -x -o ../coverage.xml
 
 html: coverage.json
-	cd project; $(GCOVR) -a ../coverage.json --html-details -o ../coverage.html
+	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --html-details -o ../coverage.html
 
 sonarqube: coverage.json
-	cd project; $(GCOVR) -a ../coverage.json --sonarqube ../sonarqube.xml
+	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --sonarqube ../sonarqube.xml
 
 links:
 	cd project; \
