@@ -205,7 +205,7 @@ def test_build(compiled, format, available_targets):
     os.chdir(os.path.join(basedir, name))
     assert run(["make", format])
 
-    if GENERATE_REFERENCE:
+    if GENERATE_REFERENCE:  # pragma: no cover
         for generated_file in glob.glob(output_pattern):
             reference_file = os.path.join('reference', generated_file)
             if os.path.isfile(reference_file):
