@@ -52,6 +52,8 @@ def scrub_html(contents):
     contents = RE_HTML_FOOTER_VERSION.sub("\\1 4.x\\2", contents)
     contents = RE_HTML_HEADER_DATE.sub("\\1>0000-00-00 00:00:00<\\2", contents)
     contents = contents.replace("\r", "")
+    # Replace windows file separator for html reports generated in Windows
+    contents = contents.replace('\\', '/')
     return contents
 
 
