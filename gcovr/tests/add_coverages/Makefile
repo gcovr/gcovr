@@ -12,7 +12,7 @@ run: txt xml html sonarqube json json_summary
 
 json_foo:
 	./testcase_foo
-	$(GCOVR) -d --json --json-pretty -o coverage_foo.json
+	$(GCOVR) -d --json-pretty -o coverage_foo.json
 
 json_bar:
 	./testcase_bar
@@ -31,10 +31,10 @@ sonarqube: json_foo json_bar
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json --sonarqube sonarqube.xml
 
 json: json_foo json_bar
-	$(GCOVR) -a 'coverage_*.json' --json --json-pretty -o coverage.json
+	$(GCOVR) -a 'coverage_*.json' --json-pretty -o coverage.json
 
 json_summary: json_foo json_bar
-	$(GCOVR) -a 'coverage_*.json' --json-summary --json-pretty -o summary_coverage.json
+	$(GCOVR) -a 'coverage_*.json' --json-summary-pretty -o summary_coverage.json
 
 clean:
 	rm -f testcase_*

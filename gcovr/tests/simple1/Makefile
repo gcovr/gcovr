@@ -26,7 +26,7 @@ sonarqube:
 
 json_summary:
 	./testcase
-	$(GCOVR) -d --json-summary --json-pretty -o summary_coverage.json
+	$(GCOVR) -d --json-summary-pretty -o summary_coverage.json
 
 json:
 	# pass

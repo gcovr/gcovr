@@ -350,7 +350,7 @@ def print_reports(covdata, options, logger):
             "consider providing output file with `--sonarqube=OUTPUT`.")))
 
     generators.append((
-        lambda: options.json,
+        lambda: options.json or options.prettyjson,
         [options.json],
         print_json_report,
         lambda: logger.warn(
@@ -358,7 +358,7 @@ def print_reports(covdata, options, logger):
             "consider providing output file with `--json=OUTPUT`.")))
 
     generators.append((
-        lambda: options.json_summary,
+        lambda: options.json_summary or options.json_summary_pretty,
         [options.json_summary],
         print_json_summary_report,
         lambda: logger.warn(

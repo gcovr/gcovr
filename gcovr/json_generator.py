@@ -19,11 +19,11 @@ JSON_FORMAT_VERSION = 0.1
 PRETTY_JSON_INDENT = 4
 
 
-def _write_json_result(gcovr_json_dict, output_file, options):
+def _write_json_result(gcovr_json_dict, output_file, pretty):
     r"""helper utility to output json format dictionary to a file/STDOUT """
     write_json = json.dump
 
-    if options.prettyjson:
+    if pretty:
         write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT,
                                        separators=(',', ': '), sort_keys=True)
     else:
@@ -54,7 +54,7 @@ def print_json_report(covdata, output_file, options):
         gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
         gcovr_json_root['files'].append(gcovr_json_file)
 
-    _write_json_result(gcovr_json_root, output_file, options)
+    _write_json_result(gcovr_json_root, output_file, options.prettyjson)
 
 
 #
@@ -107,7 +107,7 @@ def print_json_summary_report(covdata, output_file, options):
     json_dict['covered'] = total_covered
     json_dict['percent'] = percent
 
-    _write_json_result(json_dict, output_file, options)
+    _write_json_result(json_dict, output_file, options.json_summary_pretty)
 
 
 #

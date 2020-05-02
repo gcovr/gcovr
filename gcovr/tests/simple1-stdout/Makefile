@@ -23,7 +23,7 @@ json:
 
 json_summary:
 	./testcase
-	$(GCOVR) -d --json-summary --json-pretty > summary_coverage.json
+	$(GCOVR) -d --json-summary-pretty > summary_coverage.json
 
 clean:
 	rm -f testcase

@@ -23,7 +23,8 @@ json:
 	# pass
 
 json_summary:
-	# pass
+	./testcase
+	$(GCOVR) --exclude-unreachable-branches -b -d --json-summary-pretty -o summary_coverage.json
 
 clean:
 	rm -f testcase
