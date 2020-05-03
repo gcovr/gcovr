@@ -16,6 +16,7 @@ from .coverage import FileCoverage
 
 
 JSON_FORMAT_VERSION = 0.1
+JSON_SUMMARY_FORMAT_VERSION = 0.1
 PRETTY_JSON_INDENT = 4
 
 
@@ -67,7 +68,7 @@ def print_json_summary_report(covdata, output_file, options):
 
     json_dict = {}
     json_dict['current_working_directory'] = options.root
-    json_dict['gcovr/format_version'] = JSON_FORMAT_VERSION
+    json_dict['gcovr/summary_format_version'] = JSON_SUMMARY_FORMAT_VERSION
     json_dict['files'] = []
 
     # Data
