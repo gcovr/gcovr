@@ -68,7 +68,9 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
 
         coverage = {}
         for gcovr_file in gcovr_json_data['files']:
-            file_path = os.path.join(os.path.abspath(options.root), gcovr_file['file'])
+            file_path = os.path.join(
+                os.path.abspath(options.root),
+                os.path.normpath(gcovr_file['file']))
             file_coverage = FileCoverage(file_path)
             _lines_from_json(file_coverage, gcovr_file['lines'])
             coverage[file_path] = file_coverage

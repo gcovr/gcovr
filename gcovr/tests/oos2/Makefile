@@ -6,29 +6,26 @@ all:
 	cd build; $(CXX) $(CFLAGS) -c ../src/main.cpp  -o main.o
 	cd build; $(CXX) $(CFLAGS) main.o file1.o -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube
 
 GCOVR_TEST_OPTIONS = -r ../src .
 
-txt:
+coverage.json:
 	build/testcase
-	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d -o ../coverage.txt
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) --json $(abspath $@)
 
-xml:
-	build/testcase
-	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d -x -o ../coverage.xml
+txt: coverage.json
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json -o ../coverage.txt
 
-html:
-	build/testcase
-	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o ../coverage.html
+xml: coverage.json
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json -x -o ../coverage.xml
 
-sonarqube:
-	build/testcase
-	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube ../sonarqube.xml
+html: coverage.json
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --html-details -o ../coverage.html
 
-json:
-	# pass
+sonarqube: coverage.json
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --sonarqube ../sonarqube.xml
 
 clean:
 	rm -f build/*
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage*.* sonarqube*.*

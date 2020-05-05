@@ -36,45 +36,30 @@ all:
 	$(CXX) $(CFLAGS) $(SOFLAGS) obj/libs.o -o lib/libs.$(DYNLIB_EXT)
 	$(MAKE) -C testApp
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube
 
-txt:
+coverage.json:
 ifeq ($(BASE_OS),MSYS_NT)
 	PATH="`pwd`/lib:${PATH}" testApp/test/a.out
 else
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 endif
-	$(GCOVR) -d -o coverage.txt
+	$(GCOVR) --json $@
 
-xml:
-ifeq ($(BASE_OS),MSYS_NT)
-	PATH="`pwd`/lib:${PATH}" testApp/test/a.out
-else
-	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-endif
-	$(GCOVR) -d -x -o coverage.xml
+txt: coverage.json
+	$(GCOVR) -a $< -o coverage.txt
 
-html:
-ifeq ($(BASE_OS),MSYS_NT)
-	PATH="`pwd`/lib:${PATH}" testApp/test/a.out
-else
-	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-endif
-	$(GCOVR) -d --html-details -o coverage.html
+xml: coverage.json
+	$(GCOVR) -a $< -x -o coverage.xml
 
-sonarqube:
-ifeq ($(BASE_OS),MSYS_NT)
-	PATH="`pwd`/lib:${PATH}" testApp/test/a.out
-else
-	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
-endif
-	$(GCOVR) -d --sonarqube sonarqube.xml
+html: coverage.json
+	$(GCOVR) -a $< --html-details -o coverage.html
 
-json:
-	# pass
+sonarqube: coverage.json
+	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
 clean:
 	rm -rf obj
 	rm -f lib/*.$(DYNLIB_EXT)
-	rm -f coverage.xml coverage.txt coverage*.html sonarqube.xml
+	rm -f coverage*.* sonarqube*.*
 	$(MAKE) -C testApp clean

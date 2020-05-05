@@ -1,0 +1,16 @@
+# see https://editorconfig.org
+
+root = true
+
+[*]
+indent_style = space
+# end_of_line = not relevant because managed by Git
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.py]
+indent_size = 4
+
+# for the web templates, use more compact indent
+[gcovr/templates/*]
+indent_size = 2

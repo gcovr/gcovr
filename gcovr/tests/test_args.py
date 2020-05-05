@@ -153,3 +153,35 @@ def test_multiple_output_formats_to_stdout(capsys):
     assert 'HTML output skipped' in c.err
     assert 'Sonarqube output skipped' in c.err
     assert c.exception.code == 0
+
+
+def test_no_self_contained_without_file(capsys):
+    c = capture(capsys, ['--no-html-self-contained', '--html'])
+    assert c.out == ''
+    assert 'can only disable --html-self-contained when a named output is given' in c.err
+    assert c.exception.code != 0
+
+
+def test_html_injection_via_json(capsys, tmp_path):
+    import json
+    import markupsafe
+
+    script = '<script>alert("pwned")</script>'
+    jsondata = {
+        'gcovr/format_version': 0.1,
+        'files': [
+            {'file': script, 'lines': []},
+            {'file': 'other', 'lines': []},
+        ],
+    }
+
+    tempfile = tmp_path / 'injection.json'
+
+    with tempfile.open('w+') as jsonfile:
+        json.dump(jsondata, jsonfile)
+
+    c = capture(capsys, ['-a', str(tempfile), '--html'])
+
+    assert script not in c.out
+    assert str(markupsafe.escape(script)) in c.out, '--- got:\n{}\n---'.format(c.out)
+    assert c.exception.code == 0
