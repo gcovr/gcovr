@@ -15,11 +15,15 @@
   <tr>
     <th scope="row">Legend:</th>
     <td class="legend">
-      <span class="coverage-low">low: &lt; {{COVERAGE_MED}} %</span>
+      <span class="coverage-low">[low: &gt;= 0%]</span>
       {% if COVERAGE_MED != COVERAGE_HIGH %}
-      <span class="coverage-medium">medium: &gt;= {{COVERAGE_MED}} %</span>
+      <span class="coverage-medium">[medium: &gt;= {{COVERAGE_MED}}%]</span>
       {% endif %}
-      <span class="coverage-high">high: &gt;= {{COVERAGE_HIGH}} %</span>
+      {% if COVERAGE_HIGH < 100 %}
+      <span class="coverage-high">[high: &gt;= {{COVERAGE_HIGH}}%]</span>
+      {% else %}
+      <span class="coverage-high">[high: = 100%]</span>
+      {% endif %}
     </td>
   </tr>
 </table>
@@ -70,7 +74,7 @@
       {% endif %}
     </th>
     <td>
-      <meter min="0" max="100" low="{{COVERAGE_MED}}" high="{{COVERAGE_HIGH}}" optimum="99" value="{{row.lines.coverage}}" title="%">{{row.lines.coverage}}</meter>
+      <meter class="{{row.lines.class}}" min="0" max="100" value="{{row.lines.coverage}}" title="%">{{row.lines.coverage}}</meter>
     </td>
     <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}%</td>
     <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>
