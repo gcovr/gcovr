@@ -127,6 +127,13 @@ def test_html_medium_threshold_negative(capsys):
     assert c.exception.code != 0
 
 
+def test_html_medium_threshold_zero(capsys):
+    c = capture(capsys, ['--html-medium-threshold', '0.0'])
+    assert c.out == ''
+    assert 'value of --html-medium-threshold= should not be zero.' in c.err
+    assert c.exception.code != 0
+
+
 def test_html_high_threshold_nan(capsys):
     c = capture(capsys, ['--html-high-threshold', 'nan'])
     assert c.out == ''

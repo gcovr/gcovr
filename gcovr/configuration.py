@@ -601,7 +601,8 @@ GCOVR_CONFIG_OPTIONS = [
         metavar="MEDIUM",
         help="If the coverage is below MEDIUM, the value is marked "
              "as low coverage in the HTML report. "
-             "MEDIUM has to be lower than or equal to value of --html-high-threshold. "
+             "MEDIUM has to be lower than or equal to value of --html-high-threshold "
+             "and greater than 0. "
              "If MEDIUM is equal to value of --html-high-threshold the report has "
              "only high and low coverage. Default is {default!s}.",
         default=75.0,

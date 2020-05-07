@@ -156,21 +156,10 @@ meter::-webkit-meter-bar {
     background-color: white;
 }
 
-meter::-webkit-meter-optimum-value
-{
-    background: green;
-    border: solid 1px black;
-}
-
-meter::-webkit-meter-suboptimum-value
-{
-    background: yellow;
-    border: solid 1px black;
-}
-
+meter::-webkit-meter-optimum-value,
+meter::-webkit-meter-suboptimum-value,
 meter::-webkit-meter-even-less-good-value
 {
-    background: red;
     border: solid 1px black;
 }
 
@@ -179,22 +168,27 @@ meter::-moz-meter-bar
     box-sizing: border-box;
 }
 
-meter:-moz-meter-optimum::-moz-meter-bar
-{
-    background: green;
-    border: solid 1px black;
-}
-
-meter:-moz-meter-sub-optimum::-moz-meter-bar
-{
-    background: yellow;
-    border: solid 1px black;
-}
-
+meter:-moz-meter-optimum::-moz-meter-bar,
+meter:-moz-meter-sub-optimum::-moz-meter-bar,
 meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
 {
-    background: red;
     border: solid 1px black;
+}
+
+meter.coverage-none:-moz-meter-optimum::-moz-meter-bar,
+meter.coverage-low:-moz-meter-optimum::-moz-meter-bar
+{
+    background: red;
+}
+
+meter.coverage-medium:-moz-meter-optimum::-moz-meter-bar
+{
+    background: yellow;
+}
+
+meter.coverage-high:-moz-meter-optimum::-moz-meter-bar
+{
+    background: green;
 }
 
 td.coveredLine,
@@ -375,9 +369,9 @@ footer
   <tr>
     <th scope="row">Legend:</th>
     <td class="legend">
-      <span class="coverage-low">low: &lt; 75.0 %</span>
-      <span class="coverage-medium">medium: &gt;= 75.0 %</span>
-      <span class="coverage-high">high: &gt;= 90.0 %</span>
+      <span class="coverage-low">[low: &gt;= 0%]</span>
+      <span class="coverage-medium">[medium: &gt;= 75.0%]</span>
+      <span class="coverage-high">[high: &gt;= 90.0%]</span>
     </td>
   </tr>
 </table>
@@ -424,7 +418,7 @@ footer
       main.cpp
     </th>
     <td>
-      <meter min="0" max="100" low="75.0" high="90.0" optimum="99" value="80.0" title="%">80.0</meter>
+      <meter class="coverage-medium" min="0" max="100" value="80.0" title="%">80.0</meter>
     </td>
     <td class="CoverValue line-coverage coverage-medium">80.0%</td>
     <td class="CoverValue line-coverage coverage-medium">8 / 10</td>

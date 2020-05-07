@@ -164,6 +164,11 @@ def main(args=None):
             version=__version__, copyright=COPYRIGHT)
         sys.exit(0)
 
+    if options.html_medium_threshold == 0:
+        logger.error(
+            "value of --html-medium-threshold= should not be zero.")
+        sys.exit(1)
+
     if options.html_medium_threshold > options.html_high_threshold:
         logger.error(
             "value of --html-medium-threshold={} should be\n"
