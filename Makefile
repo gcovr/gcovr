@@ -49,8 +49,10 @@ test:
 doc:
 	cd doc && make html O=-W
 
+docker-qa: export TEST_OPTS := $(TEST_OPTS)
+
 docker-qa: | docker-qa-build
-	docker run --rm -v `pwd`:/gcovr $(QA_CONTAINER)
+	docker run --rm -e TEST_OPTS -v `pwd`:/gcovr $(QA_CONTAINER)
 
 docker-qa-build: admin/Dockerfile.qa requirements.txt doc/requirements.txt
 	docker build --tag $(QA_CONTAINER) --file admin/Dockerfile.qa .
