@@ -113,6 +113,13 @@ def test_filter_backslashes_are_detected(capsys):
     assert isinstance(c.exception, re.error) or c.exception.code == 0
 
 
+def test_html_title_empty_string(capsys):
+    c = capture(capsys, ['--html-title', ''])
+    assert c.out == ''
+    assert 'an empty --html_title= is not allowed.' in c.err
+    assert c.exception.code != 0
+
+
 def test_html_medium_threshold_nan(capsys):
     c = capture(capsys, ['--html-medium-threshold', 'nan'])
     assert c.out == ''
