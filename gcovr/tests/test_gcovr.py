@@ -8,18 +8,18 @@ import re
 import shutil
 import subprocess
 import sys
+import difflib
 
 from pyutilib.misc.pyyaml_util import compare_repn as compare_xml
 from pyutilib.misc.xmltodict import parse as parse_xml
-
-
-GENERATE_REFERENCE = False
 
 python_interpreter = sys.executable.replace('\\', '/')  # use forward slash on windows as well
 env = os.environ
 env['GCOVR'] = python_interpreter + ' -m gcovr'
 
 basedir = os.path.split(os.path.abspath(__file__))[0]
+
+skip_clean = None
 
 RE_DECIMAL = re.compile(r'(\d+\.\d+)')
 
@@ -101,7 +101,8 @@ def compiled(request, name):
     assert run(['make', 'clean'], cwd=path)
     assert run(['make', 'all'], cwd=path)
     yield name
-    assert run(['make', 'clean'], cwd=path)
+    if not skip_clean:
+        assert run(['make', 'clean'], cwd=path)
 
 
 KNOWN_FORMATS = ['txt', 'xml', 'html', 'sonarqube', 'json', 'csv']
@@ -111,6 +112,11 @@ def pytest_generate_tests(metafunc):
     """generate a list of all available integration tests."""
 
     is_windows = platform.system() == 'Windows'
+
+    global skip_clean
+    skip_clean = metafunc.config.getoption("skip_clean")
+    generate_reference = metafunc.config.getoption("generate_reference")
+    update_reference = metafunc.config.getoption("update_reference")
 
     collected_params = []
 
@@ -158,13 +164,13 @@ def pytest_generate_tests(metafunc):
             ]
 
             collected_params.append(pytest.param(
-                name, format, targets,
+                name, format, targets, generate_reference, update_reference,
                 marks=marks,
                 id='-'.join([name, format]),
             ))
 
     metafunc.parametrize(
-        'name, format, available_targets', collected_params,
+        'name, format, available_targets, generate_reference, update_reference', collected_params,
         indirect=False,
         scope='module')
 
@@ -202,7 +208,7 @@ ASSERT_EQUALS = dict(
     sonarqube=assert_xml_equals)
 
 
-def test_build(compiled, format, available_targets):
+def test_build(compiled, format, available_targets, generate_reference, update_reference):
     name = compiled
     scrub = SCRUBBERS[format]
     output_pattern = OUTPUT_PATTERN[format]
@@ -215,7 +221,7 @@ def test_build(compiled, format, available_targets):
     os.chdir(os.path.join(basedir, name))
     assert run(["make", format])
 
-    if GENERATE_REFERENCE:  # pragma: no cover
+    if generate_reference:  # pragma: no cover
         for generated_file in glob.glob(output_pattern):
             reference_file = os.path.join('reference', generated_file)
             if os.path.isfile(reference_file):
@@ -232,15 +238,20 @@ def test_build(compiled, format, available_targets):
 
     for coverage_file, reference_file in find_reference_files(output_pattern):
         with io.open(coverage_file, encoding=encoding) as f:
-            coverage = scrub(f.read())
+            coverage_raw = f.read()
+            coverage = scrub(coverage_raw)
         with io.open(reference_file, encoding=encoding) as f:
             reference = scrub(f.read())
 
         if assert_equals is not None:
             assert_equals(coverage, reference)
         else:
-            assert coverage == reference, "coverage={}, reference={}".format(
-                coverage_file, reference_file)
+            diff_out = list(difflib.unified_diff(reference.splitlines(keepends=True), coverage.splitlines(keepends=True), fromfile=reference_file, tofile=coverage_file))
+            diff_is_empty = len(diff_out) == 0
+            if not diff_is_empty and update_reference:  # pragma: no cover
+                with io.open(reference_file, mode="w", encoding=encoding) as f:
+                    f.write(coverage_raw)
+            assert diff_is_empty, "Unified diff output:\n" + "".join(diff_out)
 
     # some tests require additional cleanup after each test
     if 'clean-each' in available_targets:
