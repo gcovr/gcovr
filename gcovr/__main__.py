@@ -165,6 +165,11 @@ def main(args=None):
             version=__version__, copyright=COPYRIGHT)
         sys.exit(0)
 
+    if options.html_title == '':
+        logger.error(
+            "an empty --html_title= is not allowed.")
+        sys.exit(1)
+
     if options.html_medium_threshold == 0:
         logger.error(
             "value of --html-medium-threshold= should not be zero.")

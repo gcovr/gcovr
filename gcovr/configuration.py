@@ -591,8 +591,8 @@ GCOVR_CONFIG_OPTIONS = [
         "html_title", ["--html-title"],
         group="output_options",
         metavar="TITLE",
-        help="Use TITLE as title for the HTML report. Default is {default!s}.",
-        default="Head",
+        help="Use TITLE as title for the HTML report. Default is '{default!s}'.",
+        default="GCC Code Coverage Report",
     ),
     GcovrConfigOption(
         "html_medium_threshold", ["--html-medium-threshold"],
