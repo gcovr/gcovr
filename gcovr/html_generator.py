@@ -394,7 +394,7 @@ def _make_short_sourcename(output_file, filename):
         output_prefix = output_file
         output_suffix = 'html'
 
-    longname = filename.replace(os.sep, '_')
+    longname = filename.replace(os.sep, '_').replace(':','_')
     longname_hash = ""
     while True:
         sourcename = '.'.join((
