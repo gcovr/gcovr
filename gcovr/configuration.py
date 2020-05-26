@@ -683,6 +683,17 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "csv", ["--csv"],
+        group="output_options",
+        metavar='OUTPUT',
+        help="Generate a CSV summary report. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
         "filter", ["-f", "--filter"],
         group="filter_options",
         help="Keep only source files that match this filter. "

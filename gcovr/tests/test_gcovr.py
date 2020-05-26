@@ -39,6 +39,14 @@ def scrub_txt(contents):
     return RE_TXT_WHITESPACE.sub('', contents)
 
 
+def scrub_csv(contents):
+    contents = contents.replace("\r", "")
+    contents = contents.replace("\n\n", "\n")
+    # Replace windows file separator for html reports generated in Windows
+    contents = contents.replace('\\', '/')
+    return contents
+
+
 def scrub_xml(contents):
     contents = RE_DECIMAL.sub(lambda m: str(round(float(m.group(1)), 5)), contents)
     contents = RE_XML_ATTRS.sub(r'\1=""', contents)
@@ -96,7 +104,7 @@ def compiled(request, name):
     assert run(['make', 'clean'], cwd=path)
 
 
-KNOWN_FORMATS = ['txt', 'xml', 'html', 'sonarqube', 'json']
+KNOWN_FORMATS = ['txt', 'xml', 'html', 'sonarqube', 'json', 'csv']
 
 
 def pytest_generate_tests(metafunc):
@@ -178,14 +186,16 @@ SCRUBBERS = dict(
     xml=scrub_xml,
     html=scrub_html,
     sonarqube=scrub_xml,
-    json=lambda x: x)
+    json=lambda x: x,
+    csv=scrub_csv)
 
 OUTPUT_PATTERN = dict(
     txt='coverage.txt',
     xml='coverage.xml',
     html='coverage*.html',
     sonarqube='sonarqube.xml',
-    json='coverage*.json')
+    json='coverage*.json',
+    csv='coverage.csv')
 
 ASSERT_EQUALS = dict(
     xml=assert_xml_equals,
