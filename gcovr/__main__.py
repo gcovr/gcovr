@@ -182,6 +182,11 @@ def main(args=None):
             options.html_medium_threshold, options.html_high_threshold)
         sys.exit(1)
 
+    if options.html_tab_size < 1:
+        logger.error(
+            "value of --html-tab-size= should be greater 0.")
+        sys.exit(1)
+
     potential_html_output = (
         (options.html and options.html.value)
         or (options.html_details and options.html_details.value)

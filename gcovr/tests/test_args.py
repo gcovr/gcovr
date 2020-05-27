@@ -162,6 +162,13 @@ def test_html_medium_threshold_gt_html_high_threshold(capsys):
     assert c.exception.code != 0
 
 
+def test_html_tab_size_zero(capsys):
+    c = capture(capsys, ['--html-tab-size', '0'])
+    assert c.out == ''
+    assert 'value of --html-tab-size= should be greater 0.' in c.err
+    assert c.exception.code != 0
+
+
 def test_multiple_output_formats_to_stdout(capsys):
     c = capture(capsys, ['--xml', '--html', '--sonarqube'])
     assert 'HTML output skipped' in c.err
