@@ -58,7 +58,7 @@ class CssRenderer():
     notTakenBranch_color = "Red"
 
     @staticmethod
-    def render():
+    def render(tab_size):
         return templates().get_template('style.css').render(
             low_color=CssRenderer.low_color,
             medium_color=CssRenderer.medium_color,
@@ -66,7 +66,8 @@ class CssRenderer():
             covered_color=CssRenderer.covered_color,
             uncovered_color=CssRenderer.uncovered_color,
             takenBranch_color=CssRenderer.takenBranch_color,
-            notTakenBranch_color=CssRenderer.notTakenBranch_color
+            notTakenBranch_color=CssRenderer.notTakenBranch_color,
+            tab_size=tab_size
         )
 
 
@@ -184,6 +185,7 @@ class RootInfo:
 def print_html_report(covdata, output_file, options):
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
+    tab_size = options.html_tab_size
     data = {}
     root_info = RootInfo(options)
     data['info'] = root_info
@@ -196,11 +198,11 @@ def print_html_report(covdata, output_file, options):
         self_contained = not options.html_details
 
     if self_contained:
-        data['css'] = CssRenderer.render()
+        data['css'] = CssRenderer.render(tab_size)
     else:
         css_output = os.path.splitext(output_file)[0] + '.css'
         with open(css_output, 'w') as f:
-            f.write(CssRenderer.render())
+            f.write(CssRenderer.render(tab_size))
 
         if options.relative_anchors:
             css_link = os.path.basename(css_output)

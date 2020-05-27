@@ -620,6 +620,13 @@ GCOVR_CONFIG_OPTIONS = [
         default=90.0,
     ),
     GcovrConfigOption(
+        'html_tab_size', ['--html-tab-size'],
+        group="output_options",
+        help="Used spaces for a tab in a source file. Default is {default!s}",
+        type=int,
+        default=4,
+    ),
+    GcovrConfigOption(
         "relative_anchors", ["--html-absolute-paths"],
         group="output_options",
         help="Use absolute paths to link the --html-details reports. "

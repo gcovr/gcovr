@@ -241,6 +241,9 @@ span.uncoveredLine
 
     font-family: monospace;
     white-space: pre;
+
+    tab-size: {{tab_size}};
+    -moz-tab-size: {{tab_size}};
 }
 
 .srcHeader,
