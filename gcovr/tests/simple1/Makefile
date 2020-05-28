@@ -11,7 +11,7 @@ txt:
 	$(GCOVR) --fail-under-line 80.1 --fail-under-branch 50.1; test $$? -eq 6
 	$(GCOVR) --fail-under-line 79.9 --fail-under-branch 49.9
 	# generate actual output
-	$(GCOVR) -d -o coverage.txt
+	$(GCOVR) -d --txt -o coverage.txt
 
 xml:
 	./testcase

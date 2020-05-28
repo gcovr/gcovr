@@ -5,7 +5,7 @@ run: txt xml html json
 
 txt:
 	./testcase
-	$(GCOVR) -d > coverage.txt
+	$(GCOVR) -d --txt > coverage.txt
 
 xml:
 	./testcase

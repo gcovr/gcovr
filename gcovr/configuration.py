@@ -584,6 +584,17 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "txt", ["--txt"],
+        group="output_options",
+        metavar='OUTPUT',
+        help="Generate a text report. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
         "xml", ["-x", "--xml"],
         group="output_options",
         metavar='OUTPUT',
