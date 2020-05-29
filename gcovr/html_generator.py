@@ -185,7 +185,14 @@ class RootInfo:
 def print_html_report(covdata, output_file, options):
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
-    tab_size = options.html_tab_size
+
+    html_css = options.html_css
+    if html_css is None:
+        css_data = CssRenderer.render(options.html_tab_size)
+    else:
+        with open(html_css, 'r') as f:
+            css_data = f.read()
+
     data = {}
     root_info = RootInfo(options)
     data['info'] = root_info
@@ -198,11 +205,11 @@ def print_html_report(covdata, output_file, options):
         self_contained = not options.html_details
 
     if self_contained:
-        data['css'] = CssRenderer.render(tab_size)
+        data['css'] = css_data
     else:
         css_output = os.path.splitext(output_file)[0] + '.css'
         with open(css_output, 'w') as f:
-            f.write(CssRenderer.render(tab_size))
+            f.write(css_data)
 
         if options.relative_anchors:
             css_link = os.path.basename(css_output)

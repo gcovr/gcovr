@@ -38,6 +38,18 @@ def check_percentage(value):
     return x
 
 
+def check_inputfile(value):
+    r"""
+    Check that the input file is present. Return the full path.
+    """
+
+    if not os.path.isfile(value):
+        raise ArgumentTypeError(
+            "Element {value} is not a file.".format(value=value))
+
+    return os.path.abspath(value)
+
+
 class GcovrConfigOption(object):
     r"""
     Represents a single setting for a gcovr runtime parameter.
@@ -586,6 +598,14 @@ GCOVR_CONFIG_OPTIONS = [
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "html_css", ["--html-css"],
+        group="output_options",
+        type=check_inputfile,
+        metavar="CSS",
+        help="Use given CSS stylesheet for the HTML report. Default is '{default!s}'.",
+        default=None
     ),
     GcovrConfigOption(
         "html_title", ["--html-title"],

@@ -5,11 +5,11 @@ run: html css
 
 html:
 	./testcase
-	$(GCOVR) -d --html-details --html-tab-size=2 -o coverage.html
+	$(GCOVR) -d --html-details --html-css=style.css -o coverage.html
 
 css:
 	./testcase
-	$(GCOVR) -d --html-details --html-tab-size=2 -o coverage.html
+	$(GCOVR) -d --html-details --html-css=style.css -o coverage.html
 
 clean:
 	rm -f testcase
