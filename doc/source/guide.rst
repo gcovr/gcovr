@@ -115,9 +115,9 @@ being analyzed.  This allows ``gcovr`` to generate a simpler report
 to be excluded from the analysis.
 
 The ``--json-summary`` and ``--json-summary-pretty`` options output
-coverage summary in a machine-consumable format for additional post processing.
-The format is identical to JSON output
-:option:`gcovr --json` option:: without ``lines`` information.
+coverage summary in a machine-readable format for additional
+post processing. The format is identical to JSON output
+:option:`gcovr --json` option without detailed ``lines`` information.
 Here is an example of json summary format:
 
 ::
@@ -334,6 +334,10 @@ Each *branch* has the following form:
 intermediate format. This format is documented at
 `<https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html#Invoking-Gcov>`_.
 
+If you just need a summary of the coverage information, similar to the
+tabulated text based output, you can use :option:`gcovr --json-summary`
+instead.
+
 Multiple JSON files can be merged into the coverage data
 with sum of lines and branches execution
 
@@ -355,6 +359,7 @@ The following report format flags can take an optional output file name:
 - :option:`gcovr --html-details`
 - :option:`gcovr --sonarqube`
 - :option:`gcovr --json`
+- :option:`gcovr --json-summary`
 
 Note that --html-details overrides any value of --html if it is present.
 
