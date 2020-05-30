@@ -114,6 +114,30 @@ being analyzed.  This allows ``gcovr`` to generate a simpler report
 (without absolute path names), and it allows system header files
 to be excluded from the analysis.
 
+The ``--json-summary`` and ``--json-summary-pretty`` options output
+coverage summary in a machine-consumable format for additional post processing.
+The format is identical to JSON output
+:option:`gcovr --json` option:: without ``lines`` information.
+Here is an example of json summary format:
+
+::
+
+    {
+        "gcovr/summary_format_version": 0.1,
+        "percent": 80.0,
+        "total": 10,
+        "covered": 8,
+        "current_working_directory": ".",
+        "files": [
+            {
+                "covered": 8,
+                "file": "main.cpp",
+                "percent": 80.0,
+                "total": 10
+            }
+        ]
+    }
+
 Note that ``gcov`` accumulates statistics by line.  Consequently, it
 works best with a programming style that places only one statement
 on each line.
