@@ -9,13 +9,23 @@ printerr() {
 }
 
 verify_tags=yes
+verify_docs_next_version=yes
 target_version=
-usage="usage: $0 [--no-verify-tags] TARGET_REVISION"
+usage="usage: $0 [OPTIONS] TARGET_REVISION
+
+Options:
+  --no-verify-tags
+  --no-verify-docs-next-version
+"
 
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
         --no-verify-tags)
             verify_tags=no
+            shift
+            ;;
+        --no-verify-docs-next-version)
+            verify_docs_next_version=no
             shift
             ;;
         -*)
@@ -38,9 +48,20 @@ fi
 
 ok=yes
 
+maybe_error() {
+    local iserr="$1"
+    shift
+    if [[ "$iserr" = yes ]]; then
+        ok=no
+        printerr "ERROR:" "$@"
+    else
+        # ok stays unchanged
+        printerr "WARNING:" "$@"
+    fi
+}
+
 error() {
-    ok=no
-    printerr "ERROR:" "$@"
+    maybe_error yes "$@"
 }
 
 if ! [[ -d .git ]]; then
@@ -58,20 +79,28 @@ grep -qE "version=['\"]gcovr $target_version['\"]" doc/examples/example_xml.xml 
     || error "examples: Please regenerate: " \
              "cd doc/examples; ./example_xml.sh > example_xml.xml"
 
-grep -qE "^- .*$0 --no-verify-tags $target_version\$" .travis.yml \
+grep -qE "^- .*$0 --no-verify-tags --no-verify-docs-next-version $target_version\$" .travis.yml \
     || error ".travis.yml: Please update the $0 version"
 
-if [[ "$verify_tags" = yes ]]; then
-    if git tag | grep -qE "^$target_version\$"; then
-        # grandfathering of non-annotated 3.4 tag
-        [[ "$target_version" = 3.4 ]] \
-            || [[ "$(git cat-file -t "$target_version")" = tag ]] \
-            || error "Please use annotated tags (git tag -a) for releases"
-    else
-        error "Please tag this release: git tag -a $target_version"
-    fi
+occurrences="$(
+  grep -E '\.\. (versionadded|versionchanged|deprecated):: NEXT' \
+       -A 1 doc/source/*.rst)"
+test -z "$occurrences" || {
+    maybe_error $verify_docs_next_version \
+                "doc/source/*.rst: please update notes with next version"
+    # shellcheck disable=SC2001
+    echo "$occurrences" | sed 's/^/INFO: /' >&2
+}
+
+if git tag | grep -qE "^$target_version\$"; then
+    # grandfathering of non-annotated 3.4 tag
+    [[ "$target_version" = 3.4 ]] \
+        || [[ "$(git cat-file -t "$target_version")" = tag ]] \
+        || maybe_error $verify_tags \
+                       "Please use annotated tags (git tag -a) for releases"
 else
-    printerr "SKIPPING: tag validation"
+    maybe_error $verify_tags \
+                "Please tag this release: git tag -a $target_version"
 fi
 
 if [[ "$ok" = yes ]]; then

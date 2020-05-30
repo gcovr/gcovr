@@ -5,32 +5,26 @@ all:
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CFLAGS) subdir/B/main.o subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/A/C/D/file6.o subdir/A/file7.o  -o subdir/B/testcase -lgcov
 
-run: txt xml html sonarqube json json_summary
+run: txt xml html sonarqube
 
-txt:
+coverage.json:
 	./subdir/B/testcase
-	$(GCOVR) -r subdir -d -o coverage.txt
+	$(GCOVR) -r subdir --json $@
 
-xml:
-	./subdir/B/testcase
-	$(GCOVR) -r subdir -d -x -o coverage.xml
+txt: coverage.json
+	$(GCOVR) -r subdir -a $< -o coverage.txt
 
-html:
-	./subdir/B/testcase
-	$(GCOVR) -r subdir -d --html-details -o coverage.html
+xml: coverage.json
+	$(GCOVR) -r subdir -a $< -x -o coverage.xml
 
-sonarqube:
-	./subdir/B/testcase
-	$(GCOVR) -r subdir -d --sonarqube sonarqube.xml
+html: coverage.json
+	$(GCOVR) -r subdir -a $< --html-details -o coverage.html
 
-json:
-	# pass
-
-json_summary:
-	# pass
+sonarqube: coverage.json
+	$(GCOVR) -r subdir -a $< --sonarqube sonarqube.xml
 
 clean:
 	rm -f ./subdir/B/testcase subdir/lib.a
 	rm -f *.gc* */*.gc* */*/*.gc* */*/*/*.gc* */*/*/*/*.gc*
 	rm -f *.o */*.o */*/*.o */*/*/*.o */*/*/*/*.o
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage*.* sonarqube*.*

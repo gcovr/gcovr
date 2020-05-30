@@ -1,7 +1,14 @@
-PYTHON ?= python3
-CC ?= gcc-5
-CXX ?= g++-5
-GCOV ?= gcov-5
+# This Makefile helps perform some developer tasks, like linting or testing.
+# Run `make` or `make help` to see a list of tasks.
+
+# Set a variable if it's empty or provided by `make`.
+# usage: $(call set_sensible_default, NAME, value)
+set_sensible_default = $(if $(filter undefined default,$(origin $(1))),$(2),$(value $(1)))
+
+PYTHON := $(call set_sensible_default,PYTHON,python3)
+CC := $(call set_sensible_default,CC,gcc-5)
+CXX := $(call set_sensible_default,CXX,g++-5)
+GCOV := $(call set_sensible_default,GCOV,gcov-5)
 QA_CONTAINER ?= gcovr-qa
 TEST_OPTS ?=
 
@@ -42,8 +49,10 @@ test:
 doc:
 	cd doc && make html O=-W
 
+docker-qa: export TEST_OPTS := $(TEST_OPTS)
+
 docker-qa: | docker-qa-build
-	docker run --rm -v `pwd`:/gcovr $(QA_CONTAINER)
+	docker run --rm -e TEST_OPTS -v `pwd`:/gcovr $(QA_CONTAINER)
 
 docker-qa-build: admin/Dockerfile.qa requirements.txt doc/requirements.txt
 	docker build --tag $(QA_CONTAINER) --file admin/Dockerfile.qa .

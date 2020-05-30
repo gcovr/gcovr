@@ -1,35 +1,30 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json json_summary
+run: txt xml html sonarqube
 
-txt:
+coverage-throw.json coverage-excl-throw.json:
 	./testcase
-	$(GCOVR) -b                             -o coverage-throw.txt
-	$(GCOVR) -b -d --exclude-throw-branches -o coverage-excl-throw.txt
+	$(GCOVR) --json coverage-throw.json
+	$(GCOVR) --json coverage-excl-throw.json --exclude-throw-branches
 
-xml:
-	./testcase
-	$(GCOVR)    -x                          -o coverage-throw.xml
-	$(GCOVR) -d -x --exclude-throw-branches -o coverage-excl-throw.xml
+txt: coverage-throw.json coverage-excl-throw.json
+	$(GCOVR) -a coverage-throw.json -o coverage-throw.txt
+	$(GCOVR) -a coverage-excl-throw.json -o coverage-excl-throw.txt
 
-html:
-	./testcase
-	$(GCOVR)    --html-details                          -o coverage-throw.html
-	$(GCOVR) -d --html-details --exclude-throw-branches -o coverage-excl-throw.html
+xml: coverage-throw.json coverage-excl-throw.json
+	$(GCOVR) -x -a coverage-throw.json -o coverage-throw.xml
+	$(GCOVR) -x -a coverage-excl-throw.json -o coverage-excl-throw.xml
 
-sonarqube:
-	./testcase
-	$(GCOVR)			     --sonarqube sonarqube-throw.xml
-	$(GCOVR) -d --exclude-throw-branches --sonarqube sonarqube-excl-throw.xml
+html: coverage-throw.json coverage-excl-throw.json
+	$(GCOVR) --html-details -a coverage-throw.json -o coverage-throw.html
+	$(GCOVR) --html-details -a coverage-excl-throw.json -o coverage-excl-throw.html
 
-json:
-	# pass
-
-json_summary:
-	# pass
+sonarqube: coverage-throw.json coverage-excl-throw.json
+	$(GCOVR) --sonarqube -a coverage-throw.json -o sonarqube-throw.xml
+	$(GCOVR) --sonarqube -a coverage-excl-throw.json -o sonarqube-excl-throw.xml
 
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage-*.txt coverage-*.xml coverage-*.html sonarqube-*.xml
+	rm -f coverage*.* sonarqube*.*

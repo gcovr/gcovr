@@ -1,31 +1,25 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json json_summary
+run: txt xml html sonarqube
 
-txt:
+coverage.json:
 	./testcase
-	$(GCOVR) -d --branch --fail-under-branch 100.0 -o coverage.txt
+	$(GCOVR) --json $@
 
-xml:
-	./testcase
-	$(GCOVR) -d --fail-under-branch 100.0 -x -o coverage.xml
+txt: coverage.json
+	$(GCOVR) -a $< --branch --fail-under-branch 100.0 -o coverage.txt
 
-html:
-	./testcase
-	$(GCOVR) -d --fail-under-branch 100.0 --html-details -o coverage.html
+xml: coverage.json
+	$(GCOVR) -a $< --fail-under-branch 100.0 -x -o coverage.xml
 
-sonarqube:
-	./testcase
-	$(GCOVR) -d --fail-under-branch 100.0 --sonarqube sonarqube.xml
+html: coverage.json
+	$(GCOVR) -a $< --fail-under-branch 100.0 --html-details -o coverage.html
 
-json:
-	# pass
-
-json_summary:
-	# pass
+sonarqube: coverage.json
+	$(GCOVR) -a $< --fail-under-branch 100.0 --sonarqube sonarqube.xml
 
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage*.* sonarqube*.*

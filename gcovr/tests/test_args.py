@@ -113,6 +113,13 @@ def test_filter_backslashes_are_detected(capsys):
     assert isinstance(c.exception, re.error) or c.exception.code == 0
 
 
+def test_html_title_empty_string(capsys):
+    c = capture(capsys, ['--html-title', ''])
+    assert c.out == ''
+    assert 'an empty --html_title= is not allowed.' in c.err
+    assert c.exception.code != 0
+
+
 def test_html_medium_threshold_nan(capsys):
     c = capture(capsys, ['--html-medium-threshold', 'nan'])
     assert c.out == ''
@@ -124,6 +131,13 @@ def test_html_medium_threshold_negative(capsys):
     c = capture(capsys, ['--html-medium-threshold', '-0.1'])
     assert c.out == ''
     assert 'not in range [0.0, 100.0]' in c.err
+    assert c.exception.code != 0
+
+
+def test_html_medium_threshold_zero(capsys):
+    c = capture(capsys, ['--html-medium-threshold', '0.0'])
+    assert c.out == ''
+    assert 'value of --html-medium-threshold= should not be zero.' in c.err
     assert c.exception.code != 0
 
 
@@ -148,8 +162,53 @@ def test_html_medium_threshold_gt_html_high_threshold(capsys):
     assert c.exception.code != 0
 
 
+def test_html_tab_size_zero(capsys):
+    c = capture(capsys, ['--html-tab-size', '0'])
+    assert c.out == ''
+    assert 'value of --html-tab-size= should be greater 0.' in c.err
+    assert c.exception.code != 0
+
+
 def test_multiple_output_formats_to_stdout(capsys):
     c = capture(capsys, ['--xml', '--html', '--sonarqube'])
     assert 'HTML output skipped' in c.err
     assert 'Sonarqube output skipped' in c.err
     assert c.exception.code == 0
+
+
+def test_no_self_contained_without_file(capsys):
+    c = capture(capsys, ['--no-html-self-contained', '--html'])
+    assert c.out == ''
+    assert 'can only disable --html-self-contained when a named output is given' in c.err
+    assert c.exception.code != 0
+
+
+def test_html_injection_via_json(capsys, tmp_path):
+    import json
+    import markupsafe
+
+    script = '<script>alert("pwned")</script>'
+    jsondata = {
+        'gcovr/format_version': 0.1,
+        'files': [
+            {'file': script, 'lines': []},
+            {'file': 'other', 'lines': []},
+        ],
+    }
+
+    tempfile = tmp_path / 'injection.json'
+
+    with tempfile.open('w+') as jsonfile:
+        json.dump(jsondata, jsonfile)
+
+    c = capture(capsys, ['-a', str(tempfile), '--html'])
+
+    assert script not in c.out
+    assert str(markupsafe.escape(script)) in c.out, '--- got:\n{}\n---'.format(c.out)
+    assert c.exception.code == 0
+
+
+def test_exclude_lines_by_pattern(capsys):
+    c = capture(capsys, ['--exclude-lines-by-pattern', 'example.**'])
+    assert 'Invalid regular expression' in c.err
+    assert c.exception.code != 0

@@ -213,11 +213,27 @@ This generates the following HTML page for the file ``example1.cpp``:
 .. image:: ../images/screenshot-html-details.example.cpp.png
     :align: center
 
-Note that the ``--html-details`` option can only be used with the
-``-o`` (``--output``) option.  For example, if the ``--output`` option
-specifies the output file ``coverage.html``, then the web pages
-generated for each file will have names of the form
+Note that the ``--html-details`` option needs a named output,
+e.g. via the the ``-o`` (``--output``) option.
+For example, if the output is named ``coverage.html``,
+then the web pages generated for each file will have names of the form
 ``coverage.<filename>.html``.
+
+The ``--html-self-contained`` option controls whether assets like CSS styles
+are bundled into the HTML file.
+The ``--html`` report defaults to self-contained mode.
+but ``--html-details`` defaults to ``--no-html-self-contained``
+in order to avoid problems with the `Content Security Policy <CSP_>`_
+of some servers, especially Jenkins.
+
+.. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+
+.. versionadded:: NEXT
+   Added ``--html-self-contained`` and ``--no-html-self-contained``.
+
+.. versionchanged:: NEXT
+   Default to external CSS file for ``--html-details``.
+
 
 .. _sonarqube_xml_output:
 

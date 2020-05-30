@@ -11,33 +11,27 @@ all: links
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CFLAGS) subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/m/n/C/D/file6.o subdir/A/file7.o subdir/B/main.o -o subdir/testcase
 
-run: txt xml html sonarqube json json_summary
+run: txt xml html sonarqube
 
-txt:
+coverage.json:
 	./subdir/testcase
-	$(GCOVR) -d -o coverage.txt
+	$(GCOVR) --json $@
 
-xml:
-	./subdir/testcase
-	$(GCOVR) -d -x -o coverage.xml
+txt: coverage.json
+	$(GCOVR) -a $< -o coverage.txt
 
-html:
-	./subdir/testcase
-	$(GCOVR) -d --html-details -o coverage.html
+xml: coverage.json
+	$(GCOVR) -a $< -x -o coverage.xml
 
-sonarqube:
-	./subdir/testcase
-	$(GCOVR) -d --sonarqube sonarqube.xml
+html: coverage.json
+	$(GCOVR) -a $< --html-details -o coverage.html
 
-json:
-	# pass
-
-json_summary:
-	# pass
+sonarqube: coverage.json
+	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
 clean:
 	rm -Rf subdir
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage*.* sonarqube*.*
 
 links:
 	if ! [ -d "subdir" ]; then\

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>GCC Code Coverage Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style type="text/css">
+      :root { font-family: sans-serif; }
+
+body
+{
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+/* Link formats: use maroon w/underlines */
+a:link
+{
+    color: navy;
+    text-decoration: underline;
+}
+a:visited
+{
+    color: maroon;
+    text-decoration: underline;
+}
+
+/*** TD formats ***/
+
+/* TD Header Information */
+th[scope=row]
+{
+    text-align: right;
+    color: black;
+    padding-right: 6px;
+    font-weight: bold;
+    vertical-align: top;
+    white-space: nowrap;
+}
+th[scope=col],
+table.legend td
+{
+    text-align: left;
+    color: blue;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.coverage td
+{
+    text-align: right;
+    color: black;
+    font-weight: bold;
+    white-space: nowrap;
+    padding-left: 12px;
+    padding-right: 4px;
+    background-color: LightBlue;
+}
+
+table.legend td.legend
+{
+    color: black;
+    font-size: 80%;
+    font-weight: normal;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+}
+
+td.legend > span
+{
+    margin: 2px;
+}
+
+td.coverage-unknown,
+span.coverage-unknown
+{
+    background-color: LightGray;
+}
+
+td.coverage-none,
+span.coverage-none,
+td.coverage-low,
+span.coverage-low
+{
+    background-color: LightPink !important;
+}
+
+td.coverage-medium,
+span.coverage-medium
+{
+    background-color: #FFFF55 !important;
+}
+
+td.coverage-high,
+span.coverage-high
+{
+    background-color: LightGreen !important;
+}
+
+/* Coverage Table */
+
+.file-list td, .file-list th {
+    padding: 0 10px;
+    font-weight: bold;
+}
+
+.file-list th[scope^=col]
+{
+    text-align: center;
+    color: white;
+    background-color: SteelBlue;
+    font-size: 120%;
+}
+
+.file-list th[scope=row]
+{
+    text-align: left;
+    color: black;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 110%;
+}
+
+.file-list tr > td,
+.file-list tr > th {
+    background: LightBlue;
+}
+
+.file-list tr:nth-child(even) > td,
+.file-list tr:nth-child(even) > th {
+	  background: LightSteelBlue
+}
+
+td.CoverValue
+{
+    text-align: right;
+    white-space: nowrap;
+}
+
+meter {
+    -moz-appearance: none;
+
+    width: 30vw;
+    min-width: 4em;
+    max-width: 15em;
+    height: 12px;
+    padding: 0;
+    background: white;
+    vertical-align: baseline;
+}
+
+meter::-webkit-meter-bar {
+    background: none;
+    background-color: white;
+}
+
+meter::-webkit-meter-optimum-value,
+meter::-webkit-meter-suboptimum-value,
+meter::-webkit-meter-even-less-good-value
+{
+    border: solid 1px black;
+}
+
+meter::-moz-meter-bar
+{
+    box-sizing: border-box;
+}
+
+meter:-moz-meter-optimum::-moz-meter-bar,
+meter:-moz-meter-sub-optimum::-moz-meter-bar,
+meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
+{
+    border: solid 1px black;
+}
+
+meter.coverage-none:-moz-meter-optimum::-moz-meter-bar,
+meter.coverage-low:-moz-meter-optimum::-moz-meter-bar
+{
+    background: red;
+}
+
+meter.coverage-medium:-moz-meter-optimum::-moz-meter-bar
+{
+    background: yellow;
+}
+
+meter.coverage-high:-moz-meter-optimum::-moz-meter-bar
+{
+    background: green;
+}
+
+td.coveredLine,
+span.coveredLine
+{
+    background-color: LightGreen!important;
+}
+
+td.uncoveredLine,
+span.uncoveredLine
+{
+    background-color: LightPink!important;
+}
+
+.linebranch, .linecount
+{
+    font-family: monospace;
+    border-right: 1px gray solid;
+    background-color: lightgray;
+    text-align: right;
+}
+
+.linebranchDetails
+{
+    position: relative;
+}
+.linebranchSummary
+{
+    cursor: help;
+}
+.linebranchContents
+{
+    font-family: sans-serif;
+    font-size: small;
+    text-align: left;
+    position: absolute;
+    width: 15em;
+    padding: 1em;
+    background: white;
+    border: solid gray 1px;
+    box-shadow: 5px 5px 10px gray;
+}
+
+.takenBranch
+{
+    color: Green!important;
+}
+
+.notTakenBranch
+{
+    color: Red!important;
+}
+
+.src
+{
+    padding-left: 12px;
+    text-align: left;
+
+    font-family: monospace;
+    white-space: pre;
+
+    tab-size: 4;
+    -moz-tab-size: 4;
+}
+
+.srcHeader,
+span.takenBranch,
+span.notTakenBranch
+{
+    font-family: monospace;
+    font-weight: bold;
+}
+
+pre
+{
+    height : 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.source-line
+{
+    height : 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.lineno
+{
+    background-color: #EFE383;
+    border-right: 1px solid #BBB15F;
+    text-align: right;
+    unicode-bidi: embed;
+    font-family: monospace;
+    white-space: pre;
+}
+
+h1
+{
+    text-align: center;
+    margin: 0;
+    padding-bottom: 10px;
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+hr
+{
+    background-color: navy;
+    height: 3px;
+    border: 0;
+}
+
+.summary
+{
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 100%;
+    justify-content: flex-start;
+}
+
+.summary > table
+{
+    flex: 1 0 7em;
+    border: 0;
+}
+
+.summary > :last-child {
+    margin-left: auto;
+}
+
+.coverage .headerValue
+{
+    text-align: right;
+}
+
+.file-list
+{
+    margin: 1em auto;
+    border: 0;
+    border-spacing: 1px;
+}
+
+.file-source table
+{
+    border-spacing: 0;
+}
+
+.file-source table td {
+    padding: 1px 10px;
+}
+
+.file-source table td:last-child
+{
+    width: 100%;
+}
+
+footer
+{
+    text-align: center;
+    padding-top: 3px;
+}
+    </style>
+  </head>
+
+  <body>
+    <h1>GCC Code Coverage Report</h1>
+
+    <hr/>
+
+    <div class="summary">
+
+<table class="legend">
+  <tr>
+    <th scope="row">Directory:</th>
+    <td>.</td>
+  </tr>
+  <tr>
+    <th scope="row">Date:</th>
+    <td>2020-04-26 16:22:21</td>
+  </tr>
+  <tr>
+    <th scope="row">Legend:</th>
+    <td class="legend">
+      <span class="coverage-low">[low: &gt;= 0%]</span>
+      <span class="coverage-medium">[medium: &gt;= 75.0%]</span>
+      <span class="coverage-high">[high: &gt;= 90.0%]</span>
+    </td>
+  </tr>
+</table>
+
+<table class="coverage">
+  <tr>
+    <th></th>
+    <th scope="col">Exec</th>
+    <th scope="col">Total</th>
+    <th scope="col">Coverage</th>
+  </tr>
+  <tr>
+    <th scope="row">Lines:</th>
+    <td>8</td>
+    <td>10</td>
+    <td class="coverage-medium">80.0%</td>
+  </tr>
+  <tr>
+    <th scope="row">Branches:</th>
+    <td>4</td>
+    <td>8</td>
+    <td class="coverage-low">50.0%</td>
+  </tr>
+</table>
+
+    </div>
+
+    <hr/>
+
+<table class="file-list">
+  <col/>
+  <colgroup span="3"/>
+  <colgroup span="2"/>
+
+  <tr>
+    <th scope="col">File</th>
+    <th scope="colgroup" colspan=3>Lines</th>
+    <th scope="colgroup" colspan=2>Branches</th>
+  </tr>
+
+
+  <tr>
+    <th scope="row">
+      <a href="coverage-details-includecss.main.cpp.html">main.cpp</a>
+    </th>
+    <td>
+      <meter class="coverage-medium" min="0" max="100" value="80.0" title="%">80.0</meter>
+    </td>
+    <td class="CoverValue line-coverage coverage-medium">80.0%</td>
+    <td class="CoverValue line-coverage coverage-medium">8 / 10</td>
+    <td class="CoverValue branch-coverage coverage-low">50.0%</td>
+    <td class="CoverValue branch-coverage coverage-low">4 / 8</td>
+  </tr>
+
+</table>
+
+    <hr/>
+
+    <footer>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 4.2)</a>
+    </footer>
+  </body>
+</html>

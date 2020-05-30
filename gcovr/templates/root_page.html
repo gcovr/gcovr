@@ -1,116 +1,87 @@
+{# -*- engine: jinja -*- #}
+{% extends "base.html" %}
 
-<html>
+{% block summary %}
 
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset={{ENC}}"/>
-  <title>{{HEAD}}</title>
-  <style media="screen" type="text/css">
+<table class="legend">
+  <tr>
+    <th scope="row">Directory:</th>
+    <td>{{info.get_directory()}}</td>
+  </tr>
+  <tr>
+    <th scope="row">Date:</th>
+    <td>{{info.date}}</td>
+  </tr>
+  <tr>
+    <th scope="row">Legend:</th>
+    <td class="legend">
+      <span class="coverage-low">[low: &gt;= 0%]</span>
+      {% if COVERAGE_MED != COVERAGE_HIGH %}
+      <span class="coverage-medium">[medium: &gt;= {{COVERAGE_MED}}%]</span>
+      {% endif %}
+      {% if COVERAGE_HIGH < 100 %}
+      <span class="coverage-high">[high: &gt;= {{COVERAGE_HIGH}}%]</span>
+      {% else %}
+      <span class="coverage-high">[high: = 100%]</span>
+      {% endif %}
+    </td>
+  </tr>
+</table>
 
-    {{CSS | indent}}
+<table class="coverage">
+  <tr>
+    <th></th>
+    <th scope="col">Exec</th>
+    <th scope="col">Total</th>
+    <th scope="col">Coverage</th>
+  </tr>
+  <tr>
+    <th scope="row">Lines:</th>
+    <td>{{info.lines.exec}}</td>
+    <td>{{info.lines.total}}</td>
+    <td class="{{info.lines.class}}">{{info.lines.coverage}}%</td>
+  </tr>
+  <tr>
+    <th scope="row">Branches:</th>
+    <td>{{info.branches.exec}}</td>
+    <td>{{info.branches.total}}</td>
+    <td class="{{info.branches.class}}">{{info.branches.coverage}}%</td>
+  </tr>
+</table>
 
-  </style>
-</head>
+{% endblock %}
 
-<body>
+{% block content %}
+<table class="file-list">
+  <col/>
+  <colgroup span="3"/>
+  <colgroup span="2"/>
 
-  <table width="100%" border=0 cellspacing=0 cellpadding=0>
-    <tr><td class="title">GCC Code Coverage Report</td></tr>
-    <tr><td class="hr"></td></tr>
+  <tr>
+    <th scope="col">File</th>
+    <th scope="colgroup" colspan=3>Lines</th>
+    <th scope="colgroup" colspan=2>Branches</th>
+  </tr>
 
-    <tr>
-      <td width="100%">
-        <table cellpadding=1 border=0 width="100%">
-          <tr>
-            <td width="10%" class="headerName">Directory:</td>
-            <td width="35%" class="headerValue">{{DIRECTORY}}</td>
-            <td width="5%"></td>
-            <td width="15%"></td>
-            <td width="10%" class="headerValue" style="text-align:right;">Exec</td>
-            <td width="10%" class="headerValue" style="text-align:right;">Total</td>
-            <td width="15%" class="headerValue" style="text-align:right;">Coverage</td>
-          </tr>
-          <tr>
-            <td class="headerName">Date:</td>
-            <td class="headerValue">{{DATE}}</td>
-            <td></td>
-            <td class="headerName">Lines:</td>
-            <td class="headerTableEntry">{{LINES_EXEC}}</td>
-            <td class="headerTableEntry">{{LINES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{LINES_COLOR}}">{{LINES_COVERAGE}} %</td>
-          </tr>
-          <tr>
-            <td class="headerName">Legend:</td>
-            <td class="headerValueLeg">
-              <span style="background-color:{{low_color}}">low: &lt; {{COVERAGE_MED}} %</span>
-              {% if COVERAGE_MED != COVERAGE_HIGH %}
-              <span style="background-color:{{medium_color}}">medium: &gt;= {{COVERAGE_MED}} %</span>
-              {% endif %}
-              <span style="background-color:{{high_color}}">high: &gt;= {{COVERAGE_HIGH}} %</span>
-            </td>
-            <td></td>
-            <td class="headerName">Branches:</td>
-            <td class="headerTableEntry">{{BRANCHES_EXEC}}</td>
-            <td class="headerTableEntry">{{BRANCHES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{BRANCHES_COLOR}}">{{BRANCHES_COVERAGE}} %</td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+  {% for row in info.files %}
 
-    <tr><td class="hr"></td></tr>
-  </table>
+  <tr>
+    <th scope="row">
+      {% if row.link is not none %}
+      <a href="{{row.link}}">{{row.filename}}</a>
+      {% else %}
+      {{row.filename}}
+      {% endif %}
+    </th>
+    <td>
+      <meter class="{{row.lines.class}}" min="0" max="100" value="{{row.lines.coverage}}" title="%">{{row.lines.coverage}}</meter>
+    </td>
+    <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}%</td>
+    <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>
+    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.coverage}}%</td>
+    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.exec}} / {{row.branches.total}}</td>
+  </tr>
 
-  <center>
-  <table width="80%" cellpadding=1 cellspacing=1 border=0>
-    <tr>
-      <td width="44%"><br></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-    </tr>
-    <tr>
-      <td class="coverTableHead">File</td>
-      <td class="coverTableHead" colspan=3>Lines</td>
-      <td class="coverTableHead" colspan=2>Branches</td>
-    </tr>
-
-    {% for row in ROWS %}
-
-    <tr>
-      <td class="coverFile" {{row.altstyle}}>{{row.filename}}</td>
-      <td class="coverBar" align="center" {{row.altstyle}}>
-        <table border=0 cellspacing=0 cellpadding=1><tr><td class="coverBarOutline">
-                <div class="graph"><strong class="bar" style="width:{{row.LinesCoverage}}%; {{row.BarBorder}}background-color:{{row.LinesBar}}"></strong></div>
-                </td></tr></table>
-      </td>
-      <td class="CoverValue" style="font-weight:bold; background-color:{{row.LinesColor}};">{{row.LinesCoverage}}&nbsp;%</td>
-      <td class="CoverValue" style="font-weight:bold; background-color:{{row.LinesColor}};">{{row.LinesExec}} / {{row.LinesTotal}}</td>
-      <td class="CoverValue" style="background-color:{{row.BranchesColor}};">{{row.BranchesCoverage}}&nbsp;%</td>
-      <td class="CoverValue" style="background-color:{{row.BranchesColor}};">{{row.BranchesExec}} / {{row.BranchesTotal}}</td>
-    </tr>
-
-    {% endfor %}
-
-    <tr>
-      <td width="44%"><br></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-      <td width="8%"></td>
-    </tr>
-  </table>
-  </center>
-
-  <table width="100%" border=0 cellspacing=0 cellpadding=0>
-    <tr><td class="hr"><td></tr>
-    <tr><td class="footer">Generated by: <a href="http://gcovr.com">GCOVR (Version {{VERSION}})</a></td></tr>
-  </table>
-  <br>
-
-</body>
-
-</html>
-
+  {% endfor %}
+</table>
+{% endblock %}

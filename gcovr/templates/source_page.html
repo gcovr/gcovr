@@ -1,93 +1,78 @@
+{# -*- engine: jinja -*- #}
+{% extends "base.html" %}
 
-<html>
+{% block summary %}
+<table class="legend">
+  <tr>
+    <th scope="row">Directory:</th>
+    <td>{{info.get_directory()}}</td>
+  </tr>
+  <tr>
+    <th scope="row">File:</th>
+    <td>{{filename}}</td>
+  </tr>
+  <tr>
+    <th scope="row">Date:</th>
+    <td>{{info.date}}</td>
+  </tr>
+</table>
+<table class="coverage">
+  <tr>
+    <th></th>
+    <th scope="col">Exec</th>
+    <th scope="col">Total</th>
+    <th scope="col">Coverage</th>
+  </tr>
+  <tr>
+    <th scope="row">Lines:</th>
+    <td>{{lines.exec}}</td>
+    <td>{{lines.total}}</td>
+    <td class="{{lines.class}}">{{lines.coverage}}%</td>
+  </tr>
+  <tr>
+    <th scope="row">Branches:</th>
+    <td>{{branches.exec}}</td>
+    <td>{{branches.total}}</td>
+    <td class="{{branches.class}}">{{branches.coverage}}%</td>
+  </tr>
+</table>
+{% endblock %}
 
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset={{ENC}}"/>
-  <title>{{HEAD}}</title>
-  <style media="screen" type="text/css">
-
-    {{CSS | indent}}
-
-  </style>
-</head>
-
-<body>
-
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr><td class="title">GCC Code Coverage Report</td></tr>
-    <tr><td class="hr"></td></tr>
-
+{% block content %}
+<div class="file-source">
+  <table>
     <tr>
-      <td width="100%">
-        <table cellpadding="1" border="0" width="100%">
-          <tr>
-            <td width="10%" class="headerName">Directory:</td>
-            <td width="35%" class="headerValue">{{DIRECTORY}}</td>
-            <td width="5%"></td>
-            <td width="15%"></td>
-            <td width="10%" class="headerValue" style="text-align:right;">Exec</td>
-            <td width="10%" class="headerValue" style="text-align:right;">Total</td>
-            <td width="15%" class="headerValue" style="text-align:right;">Coverage</td>
-          </tr>
-          <tr>
-            <td class="headerName">File:</td>
-            <td class="headerValue">{{FILENAME}}</td>
-            <td></td>
-            <td class="headerName">Lines:</td>
-            <td class="headerTableEntry">{{LINES_EXEC}}</td>
-            <td class="headerTableEntry">{{LINES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{LINES_COLOR}}">{{LINES_COVERAGE}} %</td>
-          </tr>
-          <tr>
-            <td class="headerName">Date:</td>
-            <td class="headerValue">{{DATE}}</td>
-            <td></td>
-            <td class="headerName">Branches:</td>
-            <td class="headerTableEntry">{{BRANCHES_EXEC}}</td>
-            <td class="headerTableEntry">{{BRANCHES_TOTAL}}</td>
-            <td class="headerTableEntry" style="background-color:{{BRANCHES_COLOR}}">{{BRANCHES_COVERAGE}} %</td>
-          </tr>
-        </table>
+      <td align="right" class="srcHeader">Line</td>
+      <td align="right" class="srcHeader">Branch</td>
+      <td align="right" class="srcHeader">Exec</td>
+      <td align="left" class="srcHeader src">Source</td>
+    </tr>
+
+    {% for row in source_lines %}
+
+    <tr class="source-line">
+      <td class="lineno">{{row.lineno}}</td>
+      <td class="linebranch">
+        {% if row.linebranch %}
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
+        <div class="linebranchContents">
+          {% for branch in row.linebranch.branches %}
+          {% if branch.taken %}
+          <div class="takenBranch">&check; Branch {{branch.name}} taken {{branch.count}} times.</div>
+          {% else %}
+          <div class="notTakenBranch">&cross; Branch {{branch.name}} not taken.</div>
+          {% endif%}
+          {% endfor %}
+        </div>
+        </details>
+        {% endif %}
       </td>
-    </tr>
-
-    <tr><td class="hr"></td></tr>
-  </table>
-
-  <br>
-  <table cellspacing="0" cellpadding="1">
-    <tr>
-      <td width="5%" align="right" class="srcHeader">Line</td>
-      <td width="5%" align="right" class="srcHeader">Branch</td>
-      <td width="5%" align="right" class="srcHeader">Exec</td>
-      <td width="75%" align="left" class="srcHeader src">Source</td>
-    </tr>
-
-    {% for row in ROWS %}
-
-    <tr>
-    <td align="right" class="lineno"><pre>{{row.lineno}}</pre></td>
-    <td align="right" class="linebranch">
-      {%- for branch in row.linebranch -%}
-      <span class="{{branch.class}}" title="{{branch.message}}">{{branch.symbol}}</span>
-      {%- if branch.wrap %}<br/>{% endif -%}
-      {%- endfor -%}
-    </td>
-    <td align="right" class="linecount {{row.covclass}}"><pre>{{row.linecount}}</pre></td>
-    <td align="left" class="src {{row.covclass}}"><pre>{{row.source}}</pre></td>
+      <td class="linecount {{row.covclass}}">{{row.linecount}}</td>
+      <td class="src {{row.covclass}}">{{row.source}}</td>
     </tr>
     {% endfor %}
 
   </table>
-  <br>
-
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr><td class="hr"><td></tr>
-    <tr><td class="footer">Generated by: <a href="http://gcovr.com">GCOVR (Version {{VERSION}})</a></td></tr>
-  </table>
-  <br>
-
-</body>
-
-</html>
-
+</div>
+{% endblock %}

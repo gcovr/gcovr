@@ -1,182 +1,186 @@
+:root { font-family: sans-serif; }
+
 body
 {
-  color: #000000;
-  background-color: #FFFFFF;
+    color: #000000;
+    background-color: #FFFFFF;
 }
 
 /* Link formats: use maroon w/underlines */
 a:link
 {
-  color: navy;
-  text-decoration: underline;
+    color: navy;
+    text-decoration: underline;
 }
 a:visited
 {
-  color: maroon;
-  text-decoration: underline;
-}
-a:active
-{
-  color: navy;
-  text-decoration: underline;
+    color: maroon;
+    text-decoration: underline;
 }
 
 /*** TD formats ***/
-td
-{
-  font-family: sans-serif;
-}
-td.title
-{
-  text-align: center;
-  padding-bottom: 10px;
-  font-size: 20pt;
-  font-weight: bold;
-}
 
 /* TD Header Information */
-td.headerName
+th[scope=row]
 {
-  text-align: right;
-  color: black;
-  padding-right: 6px;
-  font-weight: bold;
-  vertical-align: top;
-  white-space: nowrap;
+    text-align: right;
+    color: black;
+    padding-right: 6px;
+    font-weight: bold;
+    vertical-align: top;
+    white-space: nowrap;
 }
-td.headerValue
+th[scope=col],
+table.legend td
 {
-  text-align: left;
-  color: blue;
-  font-weight: bold;
-  white-space: nowrap;
-}
-td.headerTableEntry
-{
-  text-align: right;
-  color: black;
-  font-weight: bold;
-  white-space: nowrap;
-  padding-left: 12px;
-  padding-right: 4px;
-  background-color: LightBlue;
-}
-td.headerValueLeg
-{
-  text-align: left;
-  color: black;
-  font-size: 80%;
-  white-space: nowrap;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 2px;
+    text-align: left;
+    color: blue;
+    font-weight: bold;
+    white-space: nowrap;
 }
 
-/* Color of horizontal ruler */
-td.hr
+.coverage td
 {
-  background-color: navy;
-  height:3px;
+    text-align: right;
+    color: black;
+    font-weight: bold;
+    white-space: nowrap;
+    padding-left: 12px;
+    padding-right: 4px;
+    background-color: LightBlue;
 }
-/* Footer format */
-td.footer
+
+table.legend td.legend
 {
-  text-align: center;
-  padding-top: 3px;
-  font-family: sans-serif;
+    color: black;
+    font-size: 80%;
+    font-weight: normal;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+}
+
+td.legend > span
+{
+    margin: 2px;
+}
+
+td.coverage-unknown,
+span.coverage-unknown
+{
+    background-color: LightGray;
+}
+
+td.coverage-none,
+span.coverage-none,
+td.coverage-low,
+span.coverage-low
+{
+    background-color: {{low_color}} !important;
+}
+
+td.coverage-medium,
+span.coverage-medium
+{
+    background-color: {{medium_color}} !important;
+}
+
+td.coverage-high,
+span.coverage-high
+{
+    background-color: {{high_color}} !important;
 }
 
 /* Coverage Table */
 
-td.coverTableHead
-{
-  text-align: center;
-  color: white;
-  background-color: SteelBlue;
-  font-family: sans-serif;
-  font-size: 120%;
-  white-space: nowrap;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-td.coverFile
-{
-  text-align: left;
-  padding-left: 10px;
-  padding-right: 20px;
-  color: black;
-  background-color: LightBlue;
-  font-family: monospace;
-  font-weight: bold;
-  font-size: 110%;
-}
-td.coverBar
-{
-  padding-left: 10px;
-  padding-right: 10px;
-  background-color: LightBlue;
-}
-td.coverBarOutline
-{
-  background-color: white;
-}
-td.coverValue
-{
-  padding-top: 2px;
-  text-align: right;
-  padding-left: 10px;
-  padding-right: 10px;
-  font-family: sans-serif;
-  white-space: nowrap;
-  font-weight: bold;
+.file-list td, .file-list th {
+    padding: 0 10px;
+    font-weight: bold;
 }
 
-/* Link Details */
-a.detail:link
+.file-list th[scope^=col]
 {
-  color: #B8D0FF;
-  font-size:80%;
-}
-a.detail:visited
-{
-  color: #B8D0FF;
-  font-size:80%;
-}
-a.detail:active
-{
-  color: #FFFFFF;
-  font-size:80%;
+    text-align: center;
+    color: white;
+    background-color: SteelBlue;
+    font-size: 120%;
 }
 
-.graphcont{
-    color:#000;
-    font-weight:700;
-    float:left
+.file-list th[scope=row]
+{
+    text-align: left;
+    color: black;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 110%;
 }
 
-.graph{
-    float:left;
+.file-list tr > td,
+.file-list tr > th {
+    background: LightBlue;
+}
+
+.file-list tr:nth-child(even) > td,
+.file-list tr:nth-child(even) > th {
+	  background: LightSteelBlue
+}
+
+td.CoverValue
+{
+    text-align: right;
+    white-space: nowrap;
+}
+
+meter {
+    -moz-appearance: none;
+
+    width: 30vw;
+    min-width: 4em;
+    max-width: 15em;
+    height: 12px;
+    padding: 0;
+    background: white;
+    vertical-align: baseline;
+}
+
+meter::-webkit-meter-bar {
+    background: none;
     background-color: white;
-    position:relative;
-    width:280px;
-    padding:0
 }
 
-.graph .bar{
-    display:block;
-    position:relative;
-    border:black 1px solid;
-    text-align:center;
-    color:#fff;
-    height:10px;
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:12px;
-    line-height:1.9em
+meter::-webkit-meter-optimum-value,
+meter::-webkit-meter-suboptimum-value,
+meter::-webkit-meter-even-less-good-value
+{
+    border: solid 1px black;
 }
 
-.graph .bar span{
-    position:absolute;
-    left:1em
+meter::-moz-meter-bar
+{
+    box-sizing: border-box;
+}
+
+meter:-moz-meter-optimum::-moz-meter-bar,
+meter:-moz-meter-sub-optimum::-moz-meter-bar,
+meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
+{
+    border: solid 1px black;
+}
+
+meter.coverage-none:-moz-meter-optimum::-moz-meter-bar,
+meter.coverage-low:-moz-meter-optimum::-moz-meter-bar
+{
+    background: red;
+}
+
+meter.coverage-medium:-moz-meter-optimum::-moz-meter-bar
+{
+    background: yellow;
+}
+
+meter.coverage-high:-moz-meter-optimum::-moz-meter-bar
+{
+    background: green;
 }
 
 td.coveredLine,
@@ -193,25 +197,53 @@ span.uncoveredLine
 
 .linebranch, .linecount
 {
+    font-family: monospace;
     border-right: 1px gray solid;
     background-color: lightgray;
+    text-align: right;
 }
 
-span.takenBranch
+.linebranchDetails
+{
+    position: relative;
+}
+.linebranchSummary
+{
+    cursor: help;
+}
+.linebranchContents
+{
+    font-family: sans-serif;
+    font-size: small;
+    text-align: left;
+    position: absolute;
+    width: 15em;
+    padding: 1em;
+    background: white;
+    border: solid gray 1px;
+    box-shadow: 5px 5px 10px gray;
+}
+
+.takenBranch
 {
     color: {{takenBranch_color}}!important;
-    cursor: help;
 }
 
-span.notTakenBranch
+.notTakenBranch
 {
     color: {{notTakenBranch_color}}!important;
-    cursor: help;
 }
 
 .src
 {
     padding-left: 12px;
+    text-align: left;
+
+    font-family: monospace;
+    white-space: pre;
+
+    tab-size: {{tab_size}};
+    -moz-tab-size: {{tab_size}};
 }
 
 .srcHeader,
@@ -229,8 +261,84 @@ pre
     margin-bottom: 0;
 }
 
+.source-line
+{
+    height : 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
 .lineno
 {
     background-color: #EFE383;
     border-right: 1px solid #BBB15F;
+    text-align: right;
+    unicode-bidi: embed;
+    font-family: monospace;
+    white-space: pre;
+}
+
+h1
+{
+    text-align: center;
+    margin: 0;
+    padding-bottom: 10px;
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+hr
+{
+    background-color: navy;
+    height: 3px;
+    border: 0;
+}
+
+.summary
+{
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 100%;
+    justify-content: flex-start;
+}
+
+.summary > table
+{
+    flex: 1 0 7em;
+    border: 0;
+}
+
+.summary > :last-child {
+    margin-left: auto;
+}
+
+.coverage .headerValue
+{
+    text-align: right;
+}
+
+.file-list
+{
+    margin: 1em auto;
+    border: 0;
+    border-spacing: 1px;
+}
+
+.file-source table
+{
+    border-spacing: 0;
+}
+
+.file-source table td {
+    padding: 1px 10px;
+}
+
+.file-source table td:last-child
+{
+    width: 100%;
+}
+
+footer
+{
+    text-align: center;
+    padding-top: 3px;
 }

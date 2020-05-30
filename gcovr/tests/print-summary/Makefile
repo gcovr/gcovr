@@ -11,16 +11,6 @@ txt:
 	./testcase
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d -o coverage-output.txt > coverage.txt
 
-xml:
-
-html:
-
-sonarqube:
-
-json:
-
-json_summary:
-
 clean:
 	rm -f testcase
 	rm -f *.gc*

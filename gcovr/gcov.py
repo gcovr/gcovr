@@ -20,7 +20,7 @@ output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(r"[Cc](annot|ould not) open (source|graph|output) file")
 
 exclude_line_flag = "_EXCL_"
-exclude_line_pattern = re.compile(r'([GL]COVR?)_EXCL_(LINE|START|STOP)')
+exclude_line_pattern = re.compile(r'([GL]COVR?)_EXCL_(START|STOP)')
 
 c_style_comment_pattern = re.compile(r'/\*.*?\*/')
 cpp_style_comment_pattern = re.compile(r'//.*?$')
@@ -120,7 +120,8 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         INPUT,
         exclude_unreachable_branches=options.exclude_unreachable_branches,
         exclude_throw_branches=options.exclude_throw_branches,
-        ignore_parse_errors=options.gcov_ignore_parse_errors)
+        ignore_parse_errors=options.gcov_ignore_parse_errors,
+        exclude_lines_by_pattern=options.exclude_lines_by_pattern)
 
     covdata.setdefault(key, FileCoverage(key)).update(parser.coverage)
 
@@ -226,12 +227,16 @@ class GcovParser(object):
 
     def parse_all_lines(
         self, lines, exclude_unreachable_branches, exclude_throw_branches,
-        ignore_parse_errors
+        ignore_parse_errors, exclude_lines_by_pattern
     ):
+        exclude_lines_by_pattern_regex = (re.compile(exclude_lines_by_pattern)
+                                          if exclude_lines_by_pattern
+                                          else None)
         for line in lines:
             try:
                 self.parse_line(
-                    line, exclude_unreachable_branches, exclude_throw_branches)
+                    line, exclude_unreachable_branches, exclude_throw_branches,
+                    exclude_lines_by_pattern_regex)
             except Exception as ex:
                 self.unrecognized_lines.append(line)
                 self.deferred_exceptions.append(ex)
@@ -240,7 +245,8 @@ class GcovParser(object):
         self.check_unrecognized_lines(ignore_parse_errors=ignore_parse_errors)
 
     def parse_line(
-        self, line, exclude_unreachable_branches, exclude_throw_branches
+        self, line, exclude_unreachable_branches, exclude_throw_branches,
+        exclude_lines_by_pattern_regex
     ):
         # If this is a tag line, we stay on the same line number
         # and can return immediately after processing it.
@@ -261,23 +267,16 @@ class GcovParser(object):
             except ValueError:
                 pass  # keep previous line number!
 
-        if exclude_line_flag in line:
-            excl_line = False
-            for header, flag in exclude_line_pattern.findall(line):
-                if self.parse_exclusion_marker(header, flag):
-                    excl_line = True
-
-            # We buffer the line exclusion so that it is always
-            # the last thing added to the exclusion list (and so
-            # only ONE is ever added to the list).  This guards
-            # against cases where puts a _LINE and _START (or
-            # _STOP) on the same line... it also guards against
-            # duplicate _LINE flags.
-            if excl_line:
-                self.excluding.append(False)
-
         status = segments[0].strip()
         code = segments[2] if 2 < len(segments) else ""
+
+        if exclude_line_flag in line:
+            for header, flag in exclude_line_pattern.findall(line):
+                self.parse_exclusion_marker(header, flag)
+        if exclude_lines_by_pattern_regex:
+            if exclude_lines_by_pattern_regex.match(code):
+                self.excluding.append(False)
+
         is_code_statement = self.parse_code_line(status, code)
 
         if not is_code_statement:
@@ -305,7 +304,7 @@ class GcovParser(object):
         # "#": uncovered
         # "=": uncovered, but only reachable through exceptions
         if firstchar in "#=":
-            if is_non_code(code):
+            if self.excluding or is_non_code(code):
                 self.coverage.line(self.lineno).noncode = True
             else:
                 self.coverage.line(self.lineno)  # sets count to 0 if not present before
@@ -433,16 +432,13 @@ class GcovParser(object):
 
         - START markers are added to the exclusion_stack
         - STOP markers remove a marker from the exclusion_stack
-        - LINE markers return True
-
-        returns: True when this line should be excluded, False for n/a.
 
         header: exclusion marker name, e.g. "LCOV" or "GCOVR"
-        flag: exclusion marker action, one of "START", "STOP", or "LINE"
+        flag: exclusion marker action, one of "START", "STOP"
         """
         if flag == 'START':
             self.excluding.append((header, self.lineno))
-            return False
+            return
 
         if flag == 'STOP':
             if not self.excluding:
@@ -452,7 +448,7 @@ class GcovParser(object):
                     "without corresponding {header}_EXCL_START, "
                     "when processing {fname}",
                     header=header, lineno=self.lineno, fname=self.fname)
-                return False
+                return
 
             start_header, start_line = self.excluding.pop()
             if header != start_header:
@@ -462,10 +458,7 @@ class GcovParser(object):
                     "on line {lineno}, when processing {fname}",
                     start_header=start_header, start_line=start_line,
                     header=header, lineno=self.lineno, fname=self.fname)
-            return False
-
-        if flag == 'LINE':
-            return True
+            return
 
         assert False, "unknown exclusion marker"  # pragma: no cover
 

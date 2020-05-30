@@ -1,0 +1,18 @@
+# ignore all HTML and CSS files
+*.html
+*.css
+# except in reference directories
+!*/reference/*
+
+# C extensions
+*.o
+*.so
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+*.gcda
+*.gcno
+.tox
+nosetests.xml
+testcase

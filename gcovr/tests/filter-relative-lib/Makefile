@@ -6,32 +6,26 @@ all: links
 	cd project; $(CXX) $(CFLAGS) -c relevant-library/src/yes.cpp -o yes.o
 	cd project; $(CXX) $(CFLAGS) main.o no.o yes.o -o testcase
 
-run: txt xml html sonarqube json json_summary
+run: txt xml html sonarqube
 
 # the src/ filter is provided by the project/gcovr.cfg configuration file
 GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
 
-txt:
+coverage.json:
 	cd project; ./testcase
-	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d -o ../coverage.txt
+	cd project; $(GCOVR) -f '\.\./external-library/src' --json $(abspath $@)
 
-xml:
-	cd project; ./testcase
-	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d -x -o ../coverage.xml
+txt: coverage.json
+	cd project; $(GCOVR) -a ../coverage.json -o ../coverage.txt
 
-html:
-	cd project; ./testcase
-	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d --html-details -o ../coverage.html
+xml: coverage.json
+	cd project; $(GCOVR) -a ../coverage.json -x -o ../coverage.xml
 
-sonarqube:
-	cd project; ./testcase
-	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -d --sonarqube ../sonarqube.xml
+html: coverage.json
+	cd project; $(GCOVR) -a ../coverage.json --html-details -o ../coverage.html
 
-json:
-	# pass
-
-json_summary:
-	# pass
+sonarqube: coverage.json
+	cd project; $(GCOVR) -a ../coverage.json --sonarqube ../sonarqube.xml
 
 links:
 	cd project; \
@@ -39,4 +33,4 @@ links:
 
 clean:
 	cd project; rm -f testcase *.gc* *.o; rm -rf relevant-library
-	rm -f coverage.txt coverage.xml coverage*.html sonarqube.xml
+	rm -f coverage*.* sonarqube.xml
