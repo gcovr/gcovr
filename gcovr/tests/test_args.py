@@ -79,6 +79,55 @@ def test_invalid_objdir(capsys):
     assert c.exception.code == 1
 
 
+def test_invalid_output(capsys):
+    c = capture(capsys, ['--output', 'not-existing-dir/file.txt'])
+    assert c.out == ''
+    assert 'Directory not-existing-dir does not exist' in c.err
+    assert c.exception.code != 0
+
+
+def test_invalid_xml(capsys):
+    c = capture(capsys, ['--xml', 'not-existing-dir/file.txt'])
+    assert c.out == ''
+    assert 'Directory not-existing-dir does not exist' in c.err
+    assert c.exception.code != 0
+
+
+def test_invalid_html(capsys):
+    c = capture(capsys, ['--html', 'not-existing-dir/file.txt'])
+    assert c.out == ''
+    assert 'Directory not-existing-dir does not exist' in c.err
+    assert c.exception.code != 0
+
+
+def test_invalid_html_details(capsys):
+    c = capture(capsys, ['--html-details', 'not-existing-dir/file.txt'])
+    assert c.out == ''
+    assert 'Directory not-existing-dir does not exist' in c.err
+    assert c.exception.code != 0
+
+
+def test_invalid_sonarqube(capsys):
+    c = capture(capsys, ['--sonarqube', 'not-existing-dir/file.txt'])
+    assert c.out == ''
+    assert 'Directory not-existing-dir does not exist' in c.err
+    assert c.exception.code != 0
+
+
+def test_invalid_json(capsys):
+    c = capture(capsys, ['--json', 'not-existing-dir/file.txt'])
+    assert c.out == ''
+    assert 'Directory not-existing-dir does not exist' in c.err
+    assert c.exception.code != 0
+
+
+def test_invalid_csv(capsys):
+    c = capture(capsys, ['--csv', 'not-existing-dir/file.txt'])
+    assert c.out == ''
+    assert 'Directory not-existing-dir does not exist' in c.err
+    assert c.exception.code != 0
+
+
 def test_branch_threshold_nan(capsys):
     c = capture(capsys, ['--fail-under-branch', 'nan'])
     assert c.out == ''

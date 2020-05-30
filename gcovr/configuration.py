@@ -50,6 +50,30 @@ def check_inputfile(value):
     return os.path.abspath(value)
 
 
+def check_output_file(value):
+    r"""
+    Check if the output file can be created.
+    """
+
+    if value is not None:
+        if os.path.isfile(value) and not os.access(value, os.W_OK):
+            raise ArgumentTypeError(
+                "File {value} exist but is not writable".format(value=value))
+
+        dirname = os.path.dirname(value)
+        if dirname == '':
+            dirname = '.'
+        if not os.path.isdir(dirname):
+            raise ArgumentTypeError(
+                "Directory {dirname} does not exist".format(dirname=dirname))
+
+        if not os.access(dirname, os.W_OK):
+            raise ArgumentTypeError(
+                "Directory {dirname} is not writable".format(dirname=dirname))
+
+    return value
+
+
 class GcovrConfigOption(object):
     r"""
     Represents a single setting for a gcovr runtime parameter.
@@ -387,6 +411,7 @@ class OutputOrDefault(object):
     """
 
     def __init__(self, value):
+        check_output_file(str(value))
         self.value = value
 
     def __repr__(self):
@@ -537,6 +562,7 @@ GCOVR_CONFIG_OPTIONS = [
         help="Print output to this filename. Defaults to stdout. "
         "Individual output formats can override this.",
         default=None,
+        type=check_output_file
     ),
     GcovrConfigOption(
         "show_branch", ["-b", "--branches"], config='txt-branch',
