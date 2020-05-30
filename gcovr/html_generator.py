@@ -403,6 +403,6 @@ def _make_short_sourcename(output_file, filename):
         # filename if it exceeds common filesystem limitations
         if len(os.path.basename(sourcename)) < 256:
             break
-        longname_hash = "_" + hex(zlib.crc32(longname) & 0xffffffff)[2:]
+        longname_hash = "_" + hex(zlib.crc32(longname.encode('utf-8')) & 0xffffffff)[2:]
         longname = longname[(len(sourcename) - len(longname_hash)):]
     return sourcename
