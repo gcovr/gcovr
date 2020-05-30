@@ -1,4 +1,5 @@
 import pytest
+import sys
 from ..html_generator import _make_short_sourcename
 
 
@@ -11,6 +12,7 @@ from ..html_generator import _make_short_sourcename
                                                      ('C:/gcovr', 'C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c'),
                                                      ('C:/gcovr_files', 'C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c')
                                                      ])
+@pytest.mark.skipif(sys.platform != 'win32', reason="not in Win31")
 def test_windows__make_short_sourcename(outfile, source_filename):
 
     result = _make_short_sourcename(outfile, source_filename)
