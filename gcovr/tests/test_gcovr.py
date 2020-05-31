@@ -65,10 +65,6 @@ def scrub_html(contents):
     return contents
 
 
-def scrub_css(contents):
-    return contents
-
-
 def findtests(basedir):
     for f in os.listdir(basedir):
         if not os.path.isdir(os.path.join(basedir, f)):
@@ -109,7 +105,7 @@ def compiled(request, name):
         assert run(['make', 'clean'], cwd=path)
 
 
-KNOWN_FORMATS = ['txt', 'xml', 'html', 'css', 'sonarqube', 'json', 'csv']
+KNOWN_FORMATS = ['txt', 'xml', 'html', 'sonarqube', 'json', 'csv']
 
 
 def pytest_generate_tests(metafunc):
@@ -195,7 +191,6 @@ SCRUBBERS = dict(
     txt=scrub_txt,
     xml=scrub_xml,
     html=scrub_html,
-    css=scrub_css,
     sonarqube=scrub_xml,
     json=lambda x: x,
     csv=scrub_csv)
@@ -204,7 +199,6 @@ OUTPUT_PATTERN = dict(
     txt='coverage.txt',
     xml='coverage.xml',
     html='coverage*.html',
-    css='coverage.css',
     sonarqube='sonarqube.xml',
     json='coverage*.json',
     csv='coverage.csv')

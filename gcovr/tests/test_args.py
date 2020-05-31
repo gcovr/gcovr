@@ -114,9 +114,9 @@ def test_filter_backslashes_are_detected(capsys):
 
 
 def test_html_css_not_exists(capsys):
-    c = capture(capsys, ['--html-css', '/File/does/not/exist'])
+    c = capture(capsys, ['--html-css', '/File/does/not/\texist'])
     assert c.out == ''
-    assert 'Element /File/does/not/exist is not a file.' in c.err
+    assert 'Should be a file that already exists: \'/File/does/not/\\texist\'' in c.err
     assert c.exception.code != 0
 
 

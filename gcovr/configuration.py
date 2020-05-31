@@ -45,7 +45,7 @@ def check_inputfile(value):
 
     if not os.path.isfile(value):
         raise ArgumentTypeError(
-            "Element {value} is not a file.".format(value=value))
+            "Should be a file that already exists: {value!r}".format(value=value))
 
     return os.path.abspath(value)
 
@@ -604,7 +604,7 @@ GCOVR_CONFIG_OPTIONS = [
         group="output_options",
         type=check_inputfile,
         metavar="CSS",
-        help="Use given CSS stylesheet for the HTML report. Default is '{default!s}'.",
+        help="Override the default style sheet for the HTML report.",
         default=None
     ),
     GcovrConfigOption(
