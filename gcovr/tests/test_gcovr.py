@@ -89,10 +89,11 @@ def run(cmd, cwd=None):
     return returncode == 0
 
 
-def find_reference_files(pattern):
-    for reference in glob.glob("reference/" + pattern):
-        coverage = os.path.basename(reference)
-        yield coverage, reference
+def find_reference_files(output_pattern):
+    for pattern in output_pattern:
+        for reference in glob.glob("reference/" + pattern):
+            coverage = os.path.basename(reference)
+            yield coverage, reference
 
 
 @pytest.fixture(scope='module')
@@ -196,12 +197,12 @@ SCRUBBERS = dict(
     csv=scrub_csv)
 
 OUTPUT_PATTERN = dict(
-    txt='coverage.txt',
-    xml='coverage.xml',
-    html='coverage*.html',
-    sonarqube='sonarqube.xml',
-    json='coverage*.json',
-    csv='coverage.csv')
+    txt=['coverage.txt'],
+    xml=['coverage.xml'],
+    html=['coverage*.html', 'coverage.css'],
+    sonarqube=['sonarqube.xml'],
+    json=['coverage*.json'],
+    csv=['coverage.csv'])
 
 ASSERT_EQUALS = dict(
     xml=assert_xml_equals,
@@ -222,19 +223,20 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
     assert run(["make", format])
 
     if generate_reference:  # pragma: no cover
-        for generated_file in glob.glob(output_pattern):
-            reference_file = os.path.join('reference', generated_file)
-            if os.path.isfile(reference_file):
-                continue
-            else:
-                try:
-                    os.makedirs('reference')
-                except FileExistsError:
-                    # directory already exists
-                    pass
+        for pattern in output_pattern:
+            for generated_file in glob.glob(pattern):
+                reference_file = os.path.join('reference', generated_file)
+                if os.path.isfile(reference_file):
+                    continue
+                else:
+                    try:
+                        os.makedirs('reference')
+                    except FileExistsError:
+                        # directory already exists
+                        pass
 
-                print('copying %s to %s' % (generated_file, reference_file))
-                shutil.copyfile(generated_file, reference_file)
+                    print('copying %s to %s' % (generated_file, reference_file))
+                    shutil.copyfile(generated_file, reference_file)
 
     for coverage_file, reference_file in find_reference_files(output_pattern):
         with io.open(coverage_file, encoding=encoding) as f:
