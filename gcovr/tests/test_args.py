@@ -113,6 +113,13 @@ def test_filter_backslashes_are_detected(capsys):
     assert isinstance(c.exception, re.error) or c.exception.code == 0
 
 
+def test_html_css_not_exists(capsys):
+    c = capture(capsys, ['--html-css', '/File/does/not/\texist'])
+    assert c.out == ''
+    assert 'Should be a file that already exists: \'/File/does/not/\\texist\'' in c.err
+    assert c.exception.code != 0
+
+
 def test_html_title_empty_string(capsys):
     c = capture(capsys, ['--html-title', ''])
     assert c.out == ''
