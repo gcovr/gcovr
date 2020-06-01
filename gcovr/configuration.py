@@ -38,7 +38,7 @@ def check_percentage(value):
     return x
 
 
-def check_inputfile(value):
+def check_input_file(value):
     r"""
     Check that the input file is present. Return the full path.
     """
@@ -55,23 +55,16 @@ def check_output_file(value):
     Check if the output file can be created.
     """
 
-    if value is not None:
-        if os.path.isfile(value) and not os.access(value, os.W_OK):
-            raise ArgumentTypeError(
-                "File {value} exist but is not writable".format(value=value))
+    if value is None:
+        return None
 
-        dirname = os.path.dirname(value)
-        if dirname == '':
-            dirname = '.'
-        if not os.path.isdir(dirname):
-            raise ArgumentTypeError(
-                "Directory {dirname} does not exist".format(dirname=dirname))
-
-        if not os.access(dirname, os.W_OK):
-            raise ArgumentTypeError(
-                "Directory {dirname} is not writable".format(dirname=dirname))
-
-    return value
+    try:
+        with open(value, 'w') as _:
+            pass
+        os.unlink(value)
+    except OSError as e:
+        raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=value, error=e.strerror))
+    return os.path.abspath(value)
 
 
 class GcovrConfigOption(object):
@@ -338,12 +331,16 @@ def _get_value_from_config_entry(cfg_entry, option):
 
     elif option.type is not None:
 
+        value = cfg_entry.value
         args = ()
         if isinstance(option.type, FilterOption):
             args = [os.path.dirname(cfg_entry.filename)]
+        if option.type in [check_input_file, check_output_file] or isinstance(option.type, OutputOrDefault):
+            if not os.path.isabs(value):
+                value = os.path.join(os.path.dirname(cfg_entry.filename), value)
 
         try:
-            value = option.type(cfg_entry.value, *args)
+            value = option.type(value, *args)
         except (ValueError, ArgumentTypeError) as err:
             raise cfg_entry.error(str(err))
 
@@ -628,7 +625,7 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "html_css", ["--html-css"],
         group="output_options",
-        type=check_inputfile,
+        type=check_input_file,
         metavar="CSS",
         help="Override the default style sheet for the HTML report.",
         default=None
