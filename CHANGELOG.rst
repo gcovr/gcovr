@@ -12,6 +12,10 @@ Breaking changes:
    From now on, gcovr will only support Python versions
    that enjoy upstream support.
 
+Improvements and new features:
+
+ - Handles spaces in ``gcov`` path. (:issue:`385`)
+
 Documentation:
 
  - Cookbook: :ref:`oos cmake` (:issue:`340`, :issue:`341`)

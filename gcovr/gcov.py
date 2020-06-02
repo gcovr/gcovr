@@ -8,6 +8,7 @@
 
 import os
 import re
+import shlex
 import subprocess
 import sys
 import io
@@ -625,8 +626,8 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
 def run_gcov_and_process_files(
         abs_filename, covdata, options, logger, error, toerase, chdir, tempdir):
     # If the first element of cmd - the executable name - has embedded spaces
-    # it probably includes extra arguments.
-    cmd = options.gcov_cmd.split(' ') + [
+    # (other than within quotes), it probably includes extra arguments.
+    cmd = shlex.split(options.gcov_cmd) + [
         abs_filename,
         "--branch-counts", "--branch-probabilities", "--preserve-paths",
         '--object-directory', os.path.dirname(abs_filename),
