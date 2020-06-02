@@ -55,16 +55,17 @@ def check_output_file(value):
     Check if the output file can be created.
     """
 
-    if value is None:
-        return None
+    if value is not None:
+        try:
+            with open(value, 'w') as _:
+                pass
+            os.unlink(value)
+        except OSError as e:
+            raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=value, error=e.strerror))
 
-    try:
-        with open(value, 'w') as _:
-            pass
-        os.unlink(value)
-    except OSError as e:
-        raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=value, error=e.strerror))
-    return os.path.abspath(value)
+        value = os.path.abspath(value)
+
+    return value
 
 
 class GcovrConfigOption(object):

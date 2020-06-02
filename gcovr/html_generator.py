@@ -49,9 +49,21 @@ def templates():
 
 @Lazy
 def user_templates():
-    from jinja2 import Environment, FileSystemLoader
+    from jinja2 import Environment, FunctionLoader
+
+    def load_user_template(template):
+        contents = None
+        try:
+            with open(template, "rb") as f:
+                contents = f.read().decode("utf-8")
+        # This exception can only occure if the file gets inaccesable while gcovr is running.
+        except Exception:  # pragma: no cover
+            pass
+
+        return contents
+
     return Environment(
-        loader=FileSystemLoader('.'),
+        loader=FunctionLoader(load_user_template),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True)
