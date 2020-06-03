@@ -3,6 +3,8 @@
 *.css
 # except in reference directories
 !*/reference/*
+# and input stylesheet
+!style.css
 
 # C extensions
 *.o

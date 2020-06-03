@@ -47,6 +47,16 @@ def templates():
         lstrip_blocks=True)
 
 
+@Lazy
+def user_templates():
+    from jinja2 import Environment, FileSystemLoader
+    return Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=True,
+        trim_blocks=True,
+        lstrip_blocks=True)
+
+
 class CssRenderer():
 
     low_color = "LightPink"
@@ -58,8 +68,13 @@ class CssRenderer():
     notTakenBranch_color = "Red"
 
     @staticmethod
-    def render(tab_size):
-        return templates().get_template('style.css').render(
+    def render(options):
+        template = None
+        if options.html_css is not None:
+            template = user_templates().get_template(os.path.relpath(options.html_css))
+        else:
+            template = templates().get_template('style.css')
+        return template.render(
             low_color=CssRenderer.low_color,
             medium_color=CssRenderer.medium_color,
             high_color=CssRenderer.high_color,
@@ -67,7 +82,7 @@ class CssRenderer():
             uncovered_color=CssRenderer.uncovered_color,
             takenBranch_color=CssRenderer.takenBranch_color,
             notTakenBranch_color=CssRenderer.notTakenBranch_color,
-            tab_size=tab_size
+            tab_size=options.html_tab_size
         )
 
 
@@ -183,9 +198,10 @@ class RootInfo:
 # Produce an HTML report
 #
 def print_html_report(covdata, output_file, options):
+    css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
-    tab_size = options.html_tab_size
+
     data = {}
     root_info = RootInfo(options)
     data['info'] = root_info
@@ -198,11 +214,11 @@ def print_html_report(covdata, output_file, options):
         self_contained = not options.html_details
 
     if self_contained:
-        data['css'] = CssRenderer.render(tab_size)
+        data['css'] = css_data
     else:
         css_output = os.path.splitext(output_file)[0] + '.css'
         with open(css_output, 'w') as f:
-            f.write(CssRenderer.render(tab_size))
+            f.write(css_data)
 
         if options.relative_anchors:
             css_link = os.path.basename(css_output)
