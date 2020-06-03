@@ -9,7 +9,9 @@ run: txt xml html sonarqube
 
 coverage.json:
 	./testcase
-	$(GCOVR) -e 'file1.cpp'  --json $@  # use a relative filter here
+	# use a relative filter here
+	# if testcase.exe exists (windows) use wrong case to check caseinsensitive filter
+	$(GCOVR) -e '$(if $(wildcard ./testcase.exe),File1.cpp,file1.cpp)'  --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt

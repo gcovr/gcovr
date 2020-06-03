@@ -180,7 +180,12 @@ FilterOption.NonEmpty = NonEmptyFilterOption
 
 class Filter(object):
     def __init__(self, pattern):
-        self.pattern = re.compile(pattern)
+        cwd = os.getcwd()
+        is_fs_case_insensitive = os.path.exists(cwd.upper()) and os.path.exists(cwd.lower())
+        flags = 0
+        if is_fs_case_insensitive:
+            flags |= re.IGNORECASE
+        self.pattern = re.compile(pattern, flags)
 
     def match(self, path):
         os_independent_path = path.replace(os.path.sep, '/')
