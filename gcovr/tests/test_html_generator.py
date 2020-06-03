@@ -12,11 +12,11 @@ from ..html_generator import _make_short_sourcename
                                                      ('C:/gcovr', 'C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c'),
                                                      ('C:/gcovr_files', 'C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c')
                                                      ])
-@pytest.mark.skipif(sys.platform != 'win32', reason="not in Win31")
+@pytest.mark.skipif(sys.platform != 'win32', reason="only for Windows")
 def test_windows__make_short_sourcename(outfile, source_filename):
 
     result = _make_short_sourcename(outfile, source_filename)
 
-    assert result.find(':') < 0 or (result.find(':') == 1 and result.find('C:') == 0)
+    assert ':' not in result or (result.startswith('C:') and ':' not in result[2:])
 
     assert len(result) < 256
