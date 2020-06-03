@@ -5,7 +5,7 @@ run: html
 
 html:
 	./testcase
-	$(GCOVR) -d --html --html-self-contained --html-css=config/style.css -o coverage.html
+	$(GCOVR) -d --html --html-self-contained --config config/gcovr.config
 
 clean:
 	rm -f testcase

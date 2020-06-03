@@ -38,7 +38,7 @@ def check_percentage(value):
     return x
 
 
-def check_inputfile(value):
+def check_input_file(value):
     r"""
     Check that the input file is present. Return the full path.
     """
@@ -48,6 +48,24 @@ def check_inputfile(value):
             "Should be a file that already exists: {value!r}".format(value=value))
 
     return os.path.abspath(value)
+
+
+def check_output_file(value):
+    r"""
+    Check if the output file can be created.
+    """
+
+    if value is not None:
+        try:
+            with open(value, 'w') as _:
+                pass
+            os.unlink(value)
+        except OSError as e:
+            raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=value, error=e.strerror))
+
+        value = os.path.abspath(value)
+
+    return value
 
 
 class GcovrConfigOption(object):
@@ -314,12 +332,16 @@ def _get_value_from_config_entry(cfg_entry, option):
 
     elif option.type is not None:
 
+        value = cfg_entry.value
         args = ()
         if isinstance(option.type, FilterOption):
             args = [os.path.dirname(cfg_entry.filename)]
+        if option.type in [check_input_file, check_output_file] or isinstance(option.type, OutputOrDefault):
+            if not os.path.isabs(value):
+                value = os.path.join(os.path.dirname(cfg_entry.filename), value)
 
         try:
-            value = option.type(cfg_entry.value, *args)
+            value = option.type(value, *args)
         except (ValueError, ArgumentTypeError) as err:
             raise cfg_entry.error(str(err))
 
@@ -387,6 +409,7 @@ class OutputOrDefault(object):
     """
 
     def __init__(self, value):
+        check_output_file(str(value))
         self.value = value
 
     def __repr__(self):
@@ -537,6 +560,7 @@ GCOVR_CONFIG_OPTIONS = [
         help="Print output to this filename. Defaults to stdout. "
         "Individual output formats can override this.",
         default=None,
+        type=check_output_file
     ),
     GcovrConfigOption(
         "show_branch", ["-b", "--branches"], config='txt-branch',
@@ -602,7 +626,7 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "html_css", ["--html-css"],
         group="output_options",
-        type=check_inputfile,
+        type=check_input_file,
         metavar="CSS",
         help="Override the default style sheet for the HTML report.",
         default=None
