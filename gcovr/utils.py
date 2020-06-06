@@ -133,7 +133,14 @@ def get_global_stats(covdata):
 
 
 def calculate_coverage(covered, total, nan_value=0.0):
-    return nan_value if total == 0 else round(100.0 * covered / total, 1)
+    coverage = nan_value
+    if total != 0:
+        coverage = round(100.0 * covered / total, 1)
+        # If we get 100.0% and not all branches are covered use 99.9%
+        if (coverage == 100.0) and (covered != total):
+            coverage = 99.9
+
+    return coverage
 
 
 class FilterOption(object):
