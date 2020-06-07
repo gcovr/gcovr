@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>GCC Code Coverage Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="coverage-excl-throw.css">
+    <link rel="stylesheet" href="coverage.blue.css">
   </head>
 
   <body>
@@ -25,7 +25,7 @@
   </tr>
   <tr>
     <th scope="row">Date:</th>
-    <td>2020-06-04 18:49:09</td>
+    <td>2020-06-04 20:47:08</td>
   </tr>
 </table>
 <table class="coverage">
@@ -37,15 +37,15 @@
   </tr>
   <tr>
     <th scope="row">Lines:</th>
-    <td>19</td>
-    <td>21</td>
-    <td class="coverage-high">90.5%</td>
+    <td>18</td>
+    <td>20</td>
+    <td class="coverage-high">90.0%</td>
   </tr>
   <tr>
     <th scope="row">Branches:</th>
-    <td>9</td>
-    <td>13</td>
-    <td class="coverage-low">69.2%</td>
+    <td>7</td>
+    <td>14</td>
+    <td class="coverage-low">50.0%</td>
   </tr>
 </table>
     </div>
@@ -105,10 +105,12 @@
       <td class="lineno">5</td>
       <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">2/2</summary>
+        <summary class="linebranchSummary">2/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
         </div>
         </details>
       </td>
@@ -296,9 +298,10 @@
       <td class="lineno">28</td>
       <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">0/1</summary>
+        <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
         </div>
         </details>
       </td>
@@ -312,8 +315,8 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">0/2</summary>
         <div class="linebranchContents">
-          <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-          <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
         </div>
         </details>
       </td>
@@ -348,18 +351,9 @@
     <tr class="source-line">
       <td class="lineno">33</td>
       <td class="linebranch">
-        <details class="linebranchDetails">
-        <summary class="linebranchSummary">3/4</summary>
-        <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
-          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
-          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
-        </div>
-        </details>
       </td>
-      <td class="linecount coveredLine">2</td>
-      <td class="src coveredLine">    RAII raii(die_again);</td>
+      <td class="linecount "></td>
+      <td class="src ">    // GCOV_EXCL_START</td>
     </tr>
 
     <tr class="source-line">
@@ -367,7 +361,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">    RAII raii(die_again);</td>
     </tr>
 
     <tr class="source-line">
@@ -375,16 +369,33 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    try {</td>
+      <td class="src ">    // GCOV_EXCL_STOP</td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno">36</td>
       <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno">37</td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    try {</td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno">38</td>
+      <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">1/1</summary>
+        <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
@@ -393,7 +404,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno">37</td>
+      <td class="lineno">39</td>
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
@@ -401,7 +412,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno">38</td>
+      <td class="lineno">40</td>
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
@@ -409,33 +420,11 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno">39</td>
+      <td class="lineno">41</td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
       <td class="src ">    }</td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno">40</td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno">41</td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-        <summary class="linebranchSummary">1/1</summary>
-        <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
-        </div>
-        </details>
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">    function_that_may_throw(argc != 1);</td>
     </tr>
 
     <tr class="source-line">
@@ -449,9 +438,16 @@
     <tr class="source-line">
       <td class="lineno">43</td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">    return 0;</td>
+      <td class="src coveredLine">    function_that_may_throw(argc != 1);</td>
     </tr>
 
     <tr class="source-line">
@@ -459,15 +455,15 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">}</td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno">45</td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">    return 0;</td>
     </tr>
 
     <tr class="source-line">
@@ -475,11 +471,27 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">}</td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno">47</td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno">48</td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno">49</td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">1</td>
@@ -487,7 +499,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno">48</td>
+      <td class="lineno">50</td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">1</td>
@@ -495,7 +507,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno">49</td>
+      <td class="lineno">51</td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>

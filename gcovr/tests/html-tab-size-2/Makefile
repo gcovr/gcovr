@@ -5,7 +5,7 @@ run: html
 
 html:
 	./testcase
-	$(GCOVR) -d --html-details --html-self-contained --html-tab-size=2 -o coverage.html
+	$(GCOVR) -d --html --no-html-self-contained --html-tab-size=2 -o coverage.html
 
 clean:
 	rm -f testcase

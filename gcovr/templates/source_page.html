@@ -68,7 +68,7 @@
         </details>
         {% endif %}
       </td>
-      <td class="linecount {{row.covclass}}">{{row.linecount}}</td>
+      <td class="linecount {{row.covclass}}">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% endif %}{{row.linecount}}</td>
       <td class="src {{row.covclass}}">{{row.source}}</td>
     </tr>
     {% endfor %}

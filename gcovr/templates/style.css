@@ -1,4 +1,13 @@
-:root { font-family: sans-serif; }
+:root {
+    font-family: sans-serif;
+    --low_color: {{low_color}};
+    --medium_color: {{medium_color}};
+    --high_color: {{high_color}};
+    --covered_color: {{covered_color}};
+    --uncovered_color: {{uncovered_color}};
+    --takenBranch_color: {{takenBranch_color}};
+    --notTakenBranch_color: {{notTakenBranch_color}};
+}
 
 body
 {
@@ -76,19 +85,19 @@ span.coverage-none,
 td.coverage-low,
 span.coverage-low
 {
-    background-color: {{low_color}} !important;
+    background-color: var(--low_color) !important;
 }
 
 td.coverage-medium,
 span.coverage-medium
 {
-    background-color: {{medium_color}} !important;
+    background-color: var(--medium_color) !important;
 }
 
 td.coverage-high,
 span.coverage-high
 {
-    background-color: {{high_color}} !important;
+    background-color: var(--high_color) !important;
 }
 
 /* Coverage Table */
@@ -186,13 +195,13 @@ meter.coverage-high:-moz-meter-optimum::-moz-meter-bar
 td.coveredLine,
 span.coveredLine
 {
-    background-color: {{covered_color}}!important;
+    background-color: var(--covered_color)!important;
 }
 
 td.uncoveredLine,
 span.uncoveredLine
 {
-    background-color: {{uncovered_color}}!important;
+    background-color: var(--uncovered_color)!important;
 }
 
 .linebranch, .linecount
@@ -222,16 +231,17 @@ span.uncoveredLine
     background: white;
     border: solid gray 1px;
     box-shadow: 5px 5px 10px gray;
+    z-index: 1; /* show in front of the table entries */
 }
 
 .takenBranch
 {
-    color: {{takenBranch_color}}!important;
+    color: var(--takenBranch_color)!important;
 }
 
 .notTakenBranch
 {
-    color: {{notTakenBranch_color}}!important;
+    color: var(--notTakenBranch_color)!important;
 }
 
 .src
@@ -242,8 +252,8 @@ span.uncoveredLine
     font-family: monospace;
     white-space: pre;
 
-    tab-size: {{tab_size}};
-    -moz-tab-size: {{tab_size}};
+    tab-size: var(--tab_size);
+    -moz-tab-size: var(--tab_size);
 }
 
 .srcHeader,
