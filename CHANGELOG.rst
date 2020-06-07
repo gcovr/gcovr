@@ -40,6 +40,11 @@ Internal changes:
  - Extend tests to use an unified diff in the assert. Add test options `--generate-reference`,
    `--update_reference` and `--skip_clean`. (:issue:`374`)
  - Set make variable TEST_OPTS as environment variable inside docker. (:issue: `372`)
+ - Extend test framework for CI (:issue:`392`):
+
+   - Extend test option `--update_reference` for all formats.
+   - New option `--archive_differences` to save the different files as ZIP.
+     Use this ZIP as artifact in AppVeyor.
 
 4.2 (6 November 2019)
 ---------------------

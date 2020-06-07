@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import difflib
+import zipfile
 
 from pyutilib.misc.pyyaml_util import compare_repn as compare_xml
 from pyutilib.misc.xmltodict import parse as parse_xml
@@ -66,7 +67,7 @@ def scrub_html(contents):
 
 
 def findtests(basedir):
-    for f in os.listdir(basedir):
+    for f in sorted(os.listdir(basedir)):
         if not os.path.isdir(os.path.join(basedir, f)):
             continue
         if f.startswith('.'):
@@ -118,8 +119,14 @@ def pytest_generate_tests(metafunc):
     skip_clean = metafunc.config.getoption("skip_clean")
     generate_reference = metafunc.config.getoption("generate_reference")
     update_reference = metafunc.config.getoption("update_reference")
+    archive_differences = metafunc.config.getoption("archive_differences")
 
     collected_params = []
+
+    if archive_differences:  # pragma no cover
+        diffs_zip = os.path.join(basedir, 'diff.zip')
+        # Create an empty ZIP
+        zipfile.ZipFile(diffs_zip, mode='w').close()
 
     for name in findtests(basedir):
         targets = parse_makefile_for_available_targets(
@@ -168,13 +175,13 @@ def pytest_generate_tests(metafunc):
             ]
 
             collected_params.append(pytest.param(
-                name, format, targets, generate_reference, update_reference,
+                name, format, targets, generate_reference, update_reference, archive_differences,
                 marks=marks,
                 id='-'.join([name, format]),
             ))
 
     metafunc.parametrize(
-        'name, format, available_targets, generate_reference, update_reference', collected_params,
+        'name, format, available_targets, generate_reference, update_reference, archive_differences', collected_params,
         indirect=False,
         scope='module')
 
@@ -216,7 +223,7 @@ ASSERT_EQUALS = dict(
     sonarqube=assert_xml_equals)
 
 
-def test_build(compiled, format, available_targets, generate_reference, update_reference):
+def test_build(compiled, format, available_targets, generate_reference, update_reference, archive_differences):
     name = compiled
     scrub = SCRUBBERS[format]
     output_pattern = OUTPUT_PATTERN[format]
@@ -245,22 +252,31 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
                     print('copying %s to %s' % (generated_file, reference_file))
                     shutil.copyfile(generated_file, reference_file)
 
+    whole_diff_output = []
     for coverage_file, reference_file in find_reference_files(output_pattern):
         with io.open(coverage_file, encoding=encoding) as f:
-            coverage_raw = f.read()
-            coverage = scrub(coverage_raw)
+            coverage = scrub(f.read())
         with io.open(reference_file, encoding=encoding) as f:
             reference = scrub(f.read())
 
-        if assert_equals is not None:
-            assert_equals(coverage, reference)
-        else:
-            diff_out = list(difflib.unified_diff(reference.splitlines(keepends=True), coverage.splitlines(keepends=True), fromfile=reference_file, tofile=coverage_file))
-            diff_is_empty = len(diff_out) == 0
-            if not diff_is_empty and update_reference:  # pragma: no cover
-                with io.open(reference_file, mode="w", encoding=encoding) as f:
-                    f.write(coverage_raw)
-            assert diff_is_empty, "Unified diff output:\n" + "".join(diff_out)
+        try:
+            if assert_equals is not None:
+                assert_equals(coverage, reference)
+            else:
+                diff_out = list(difflib.unified_diff(reference.splitlines(keepends=True), coverage.splitlines(keepends=True), fromfile=reference_file, tofile=coverage_file))
+                diff_is_empty = len(diff_out) == 0
+                assert diff_is_empty, "".join(diff_out)
+        except Exception as e:  # pragma: no cover
+            whole_diff_output += "  " + str(e) + "\n"
+            if update_reference:
+                shutil.copyfile(coverage_file, reference_file)
+            if archive_differences:
+                diffs_zip = os.path.join('..', 'diff.zip')
+                with zipfile.ZipFile(diffs_zip, mode='a') as f:
+                    f.write(coverage_file, os.path.join(name, coverage_file).replace(os.path.sep, '/'))
+
+    diff_is_empty = len(whole_diff_output) == 0
+    assert diff_is_empty, "Diff output:\n" + "".join(whole_diff_output)
 
     # some tests require additional cleanup after each test
     if 'clean-each' in available_targets:
