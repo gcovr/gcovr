@@ -238,6 +238,7 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
                     print('copying %s to %s' % (generated_file, reference_file))
                     shutil.copyfile(generated_file, reference_file)
 
+    whole_diff_output = []
     for coverage_file, reference_file in find_reference_files(output_pattern):
         with io.open(coverage_file, encoding=encoding) as f:
             coverage_raw = f.read()
@@ -245,15 +246,21 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
         with io.open(reference_file, encoding=encoding) as f:
             reference = scrub(f.read())
 
-        if assert_equals is not None:
-            assert_equals(coverage, reference)
-        else:
-            diff_out = list(difflib.unified_diff(reference.splitlines(keepends=True), coverage.splitlines(keepends=True), fromfile=reference_file, tofile=coverage_file))
-            diff_is_empty = len(diff_out) == 0
-            if not diff_is_empty and update_reference:  # pragma: no cover
+        try:
+            if assert_equals is not None:
+                assert_equals(coverage, reference)
+            else:
+                diff_out = list(difflib.unified_diff(reference.splitlines(keepends=True), coverage.splitlines(keepends=True), fromfile=reference_file, tofile=coverage_file))
+                diff_is_empty = len(diff_out) == 0
+                assert diff_is_empty, "".join(diff_out)
+        except Exception as e:
+            whole_diff_output += "  " + str(e) + "\n"
+            if update_reference:  # pragma: no cover
                 with io.open(reference_file, mode="w", encoding=encoding) as f:
                     f.write(coverage_raw)
-            assert diff_is_empty, "Unified diff output:\n" + "".join(diff_out)
+
+    diff_is_empty = len(whole_diff_output) == 0
+    assert diff_is_empty, "Diff output:\n" + "".join(whole_diff_output)
 
     # some tests require additional cleanup after each test
     if 'clean-each' in available_targets:
