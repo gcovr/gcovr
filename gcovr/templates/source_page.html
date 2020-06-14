@@ -2,50 +2,54 @@
 {% extends "base.html" %}
 
 {% block summary %}
-<table class="legend">
-  <tr>
-    <th scope="row">Directory:</th>
-    <td>{{info.get_directory()}}</td>
-  </tr>
-  <tr>
-    <th scope="row">File:</th>
-    <td>{{filename}}</td>
-  </tr>
-  <tr>
-    <th scope="row">Date:</th>
-    <td>{{info.date}}</td>
-  </tr>
-</table>
-<table class="coverage">
-  <tr>
-    <th></th>
-    <th scope="col">Exec</th>
-    <th scope="col">Total</th>
-    <th scope="col">Coverage</th>
-  </tr>
-  <tr>
-    <th scope="row">Lines:</th>
-    <td>{{lines.exec}}</td>
-    <td>{{lines.total}}</td>
-    <td class="{{lines.class}}">{{lines.coverage}}%</td>
-  </tr>
-  <tr>
-    <th scope="row">Branches:</th>
-    <td>{{branches.exec}}</td>
-    <td>{{branches.total}}</td>
-    <td class="{{branches.class}}">{{branches.coverage}}%</td>
-  </tr>
-</table>
+<div>
+  <table class="legend">
+    <tr>
+      <th scope="row">Directory:</th>
+      <td>{{info.get_directory()}}</td>
+    </tr>
+    <tr>
+      <th scope="row">File:</th>
+      <td>{{filename}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Date:</th>
+      <td>{{info.date}}</td>
+    </tr>
+  </table>
+</div>
+<div>
+  <table class="coverage">
+    <tr>
+      <th></th>
+      <th scope="col">Exec</th>
+      <th scope="col">Total</th>
+      <th scope="col">Coverage</th>
+    </tr>
+    <tr>
+      <th scope="row">Lines:</th>
+      <td>{{lines.exec}}</td>
+      <td>{{lines.total}}</td>
+      <td class="{{lines.class}}">{{lines.coverage}}%</td>
+    </tr>
+    <tr>
+      <th scope="row">Branches:</th>
+      <td>{{branches.exec}}</td>
+      <td>{{branches.total}}</td>
+      <td class="{{branches.class}}">{{branches.coverage}}%</td>
+    </tr>
+  </table>
+</div>
 {% endblock %}
 
 {% block content %}
 <div class="file-source">
   <table>
     <tr>
-      <td align="right" class="srcHeader">Line</td>
-      <td align="right" class="srcHeader">Branch</td>
-      <td align="right" class="srcHeader">Exec</td>
-      <td align="left" class="srcHeader src">Source</td>
+      <th align="right">Line</th>
+      <th align="right">Branch</th>
+      <th align="right">Exec</th>
+      <th align="left">Source</th>
     </tr>
 
     {% for row in source_lines %}
@@ -68,7 +72,7 @@
         </details>
         {% endif %}
       </td>
-      <td class="linecount {{row.covclass}}">{{row.linecount}}</td>
+      <td class="linecount {{row.covclass}}">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% endif %}{{row.linecount}}</td>
       <td class="src {{row.covclass}}">{{row.source}}</td>
     </tr>
     {% endfor %}

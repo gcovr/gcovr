@@ -635,6 +635,15 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
+        "html_theme", ["--html-theme"],
+        group="output_options",
+        type=str,
+        choices=['green', 'blue'],
+        metavar="THEME",
+        help="Override the default color theme for the HTML report. Default is {default!s}.",
+        default='green'
+    ),
+    GcovrConfigOption(
         "html_css", ["--html-css"],
         group="output_options",
         type=check_input_file,
