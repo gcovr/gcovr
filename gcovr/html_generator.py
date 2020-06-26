@@ -9,7 +9,7 @@
 import os
 import sys
 import datetime
-import zlib
+import hashlib
 import io
 
 from .version import __version__
@@ -394,15 +394,9 @@ def _make_short_sourcename(output_file, filename):
         output_prefix = output_file
         output_suffix = 'html'
 
-    longname = filename.replace(os.sep, '_').replace(':', '_')
-    longname_hash = ""
-    while True:
-        sourcename = '.'.join((
-            output_prefix, longname + longname_hash, output_suffix))
-        # we add a hash at the end and attempt to shorten the
-        # filename if it exceeds common filesystem limitations
-        if len(os.path.basename(sourcename)) < 256:
-            break
-        longname_hash = "_" + hex(zlib.crc32(longname.encode('utf-8')) & 0xffffffff)[2:]
-        longname = longname[(len(sourcename) - len(longname_hash)):]
+    filename = filename.replace(os.sep, '/')
+    sourcename = '.'.join((output_prefix,
+                           os.path.basename(filename),
+                           hashlib.md5(filename.encode('utf-8')).hexdigest(),
+                           output_suffix))
     return sourcename
