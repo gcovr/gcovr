@@ -386,17 +386,12 @@ def _make_short_sourcename(output_file, filename):
         filename (str): Path from root to source code.
     """
 
-    output_file_parts = os.path.abspath(output_file).split('.')
-    if len(output_file_parts) > 1:
-        output_prefix = '.'.join(output_file_parts[:-1])
-        output_suffix = output_file_parts[-1]
-    else:
-        output_prefix = output_file
-        output_suffix = 'html'
+    (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
+    if output_suffix == '':
+        output_suffix = '.html'
 
     filename = filename.replace(os.sep, '/')
     sourcename = '.'.join((output_prefix,
-                           os.path.basename(filename),
-                           hashlib.md5(filename.encode('utf-8')).hexdigest(),
-                           output_suffix))
+                          os.path.basename(filename),
+                          hashlib.md5(filename.encode('utf-8')).hexdigest())) + output_suffix
     return sourcename
