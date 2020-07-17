@@ -13,7 +13,7 @@ import hashlib
 import io
 
 from .version import __version__
-from .utils import commonpath, sort_coverage
+from .utils import commonpath, sort_coverage, calculate_coverage
 
 
 class Lazy:
@@ -98,10 +98,6 @@ class CssRenderer():
         )
 
 
-def calculate_coverage(covered, total, nan_value=0.0):
-    return nan_value if total == 0 else round(100.0 * covered / total, 1)
-
-
 def coverage_to_class(coverage, medium_threshold, high_threshold):
     if coverage is None:
         return 'coverage-unknown'
@@ -175,14 +171,14 @@ class RootInfo:
         lines = {
             'total': lines_total,
             'exec': lines_exec,
-            'coverage': round(line_coverage, 1),
+            'coverage': line_coverage,
             'class': self._coverage_to_class(line_coverage),
         }
 
         branches = {
             'total': branches_total,
             'exec': branches_exec,
-            'coverage': '-' if branch_coverage is None else round(branch_coverage, 1),
+            'coverage': '-' if branch_coverage is None else branch_coverage,
             'class': self._coverage_to_class(branch_coverage),
         }
 
