@@ -79,6 +79,37 @@ def test_invalid_objdir(capsys):
     assert c.exception.code == 1
 
 
+def helper_test_non_existing_directory_output(capsys, option='--output'):
+    c = capture(capsys, [option, 'not-existing-dir/file.txt'])
+    assert c.out == ''
+    assert 'Could not create output file \'not-existing-dir/file.txt\': ' in c.err
+    assert c.exception.code != 0
+
+
+def test_non_existing_directory_xml(capsys):
+    helper_test_non_existing_directory_output(capsys, '--xml')
+
+
+def test_non_existing_directory_html(capsys):
+    helper_test_non_existing_directory_output(capsys, '--html')
+
+
+def test_non_existing_directory_html_details(capsys):
+    helper_test_non_existing_directory_output(capsys, '--html-details')
+
+
+def test_non_existing_directory_sonarqube(capsys):
+    helper_test_non_existing_directory_output(capsys, '--sonarqube')
+
+
+def test_non_existing_directory_json(capsys):
+    helper_test_non_existing_directory_output(capsys, '--json')
+
+
+def test_non_existing_directory_csv(capsys):
+    helper_test_non_existing_directory_output(capsys, '--csv')
+
+
 def test_branch_threshold_nan(capsys):
     c = capture(capsys, ['--fail-under-branch', 'nan'])
     assert c.out == ''

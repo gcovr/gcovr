@@ -9,11 +9,11 @@
 import os
 import sys
 import datetime
-import zlib
+import hashlib
 import io
 
 from .version import __version__
-from .utils import commonpath, sort_coverage
+from .utils import commonpath, sort_coverage, calculate_coverage
 
 
 class Lazy:
@@ -49,9 +49,21 @@ def templates():
 
 @Lazy
 def user_templates():
-    from jinja2 import Environment, FileSystemLoader
+    from jinja2 import Environment, FunctionLoader
+
+    def load_user_template(template):
+        contents = None
+        try:
+            with open(template, "rb") as f:
+                contents = f.read().decode("utf-8")
+        # This exception can only occure if the file gets inaccesable while gcovr is running.
+        except Exception:  # pragma: no cover
+            pass
+
+        return contents
+
     return Environment(
-        loader=FileSystemLoader('.'),
+        loader=FunctionLoader(load_user_template),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True)
@@ -84,10 +96,6 @@ class CssRenderer():
             notTakenBranch_color=CssRenderer.notTakenBranch_color,
             tab_size=options.html_tab_size
         )
-
-
-def calculate_coverage(covered, total, nan_value=0.0):
-    return nan_value if total == 0 else round(100.0 * covered / total, 1)
 
 
 def coverage_to_class(coverage, medium_threshold, high_threshold):
@@ -163,14 +171,14 @@ class RootInfo:
         lines = {
             'total': lines_total,
             'exec': lines_exec,
-            'coverage': round(line_coverage, 1),
+            'coverage': line_coverage,
             'class': self._coverage_to_class(line_coverage),
         }
 
         branches = {
             'total': branches_total,
             'exec': branches_exec,
-            'coverage': '-' if branch_coverage is None else round(branch_coverage, 1),
+            'coverage': '-' if branch_coverage is None else branch_coverage,
             'class': self._coverage_to_class(branch_coverage),
         }
 
@@ -374,23 +382,12 @@ def _make_short_sourcename(output_file, filename):
         filename (str): Path from root to source code.
     """
 
-    output_file_parts = os.path.abspath(output_file).split('.')
-    if len(output_file_parts) > 1:
-        output_prefix = '.'.join(output_file_parts[:-1])
-        output_suffix = output_file_parts[-1]
-    else:
-        output_prefix = output_file
-        output_suffix = 'html'
+    (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
+    if output_suffix == '':
+        output_suffix = '.html'
 
-    longname = filename.replace(os.sep, '_')
-    longname_hash = ""
-    while True:
-        sourcename = '.'.join((
-            output_prefix, longname + longname_hash, output_suffix))
-        # we add a hash at the end and attempt to shorten the
-        # filename if it exceeds common filesystem limitations
-        if len(os.path.basename(sourcename)) < 256:
-            break
-        longname_hash = "_" + hex(zlib.crc32(longname) & 0xffffffff)[2:]
-        longname = longname[(len(sourcename) - len(longname_hash)):]
+    filename = filename.replace(os.sep, '/')
+    sourcename = '.'.join((output_prefix,
+                          os.path.basename(filename),
+                          hashlib.md5(filename.encode('utf-8')).hexdigest())) + output_suffix
     return sourcename

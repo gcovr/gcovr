@@ -161,7 +161,10 @@ def pytest_generate_tests(metafunc):
                     reason="have yet to figure out symlinks on Windows"),
                 pytest.mark.xfail(
                     name == 'exclude-throw-branches' and format == 'html' and is_windows,
-                    reason="branch coverage details seem to be platform-dependent")
+                    reason="branch coverage details seem to be platform-dependent"),
+                pytest.mark.xfail(
+                    name == 'rounding' and is_windows,
+                    reason="branch coverage seem to be platform-dependent")
             ]
 
             collected_params.append(pytest.param(
