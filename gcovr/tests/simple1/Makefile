@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json
+run: txt xml html sonarqube json json_summary
 
 txt:
 	./testcase
@@ -29,6 +29,11 @@ sonarqube:
 	./testcase
 	$(GCOVR) -d --sonarqube sonarqube.xml
 
+
+json_summary:
+	./testcase
+	$(GCOVR) -d --json-summary-pretty -o summary_coverage.json
+
 json:
 	./testcase
 	$(GCOVR) --json coverage.json
@@ -36,4 +41,4 @@ json:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html coverage*.css sonarqube.xml coverage.json
+	rm -f coverage.txt coverage.xml coverage*.html coverage*.css sonarqube.xml coverage.json summary_coverage.json

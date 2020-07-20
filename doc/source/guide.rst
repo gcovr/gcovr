@@ -114,6 +114,30 @@ being analyzed.  This allows ``gcovr`` to generate a simpler report
 (without absolute path names), and it allows system header files
 to be excluded from the analysis.
 
+The ``--json-summary`` and ``--json-summary-pretty`` options output
+coverage summary in a machine-readable format for additional
+post processing. The format is identical to JSON output
+:option:`gcovr --json` option without detailed ``lines`` information.
+Here is an example of json summary format:
+
+::
+
+    {
+        "gcovr/summary_format_version": 0.1,
+        "percent": 80.0,
+        "total": 10,
+        "covered": 8,
+        "current_working_directory": ".",
+        "files": [
+            {
+                "covered": 8,
+                "file": "main.cpp",
+                "percent": 80.0,
+                "total": 10
+            }
+        ]
+    }
+
 Note that ``gcov`` accumulates statistics by line.  Consequently, it
 works best with a programming style that places only one statement
 on each line.
@@ -310,6 +334,10 @@ Each *branch* has the following form:
 intermediate format. This format is documented at
 `<https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html#Invoking-Gcov>`_.
 
+If you just need a summary of the coverage information, similar to the
+tabulated text based output, you can use :option:`gcovr --json-summary`
+instead.
+
 Multiple JSON files can be merged into the coverage data
 with sum of lines and branches execution
 
@@ -331,6 +359,7 @@ The following report format flags can take an optional output file name:
 - :option:`gcovr --html-details`
 - :option:`gcovr --sonarqube`
 - :option:`gcovr --json`
+- :option:`gcovr --json-summary`
 
 Note that --html-details overrides any value of --html if it is present.
 

@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube json_summary
 
 txt: coverage.json
 	$(GCOVR) -a $< -b -o coverage.txt
@@ -19,7 +19,11 @@ coverage.json:
 	./testcase
 	$(GCOVR) --exclude-unreachable-branches --json $@
 
+json_summary:
+	./testcase
+	$(GCOVR) --exclude-unreachable-branches -b -d --json-summary-pretty -o summary_coverage.json
+
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage*.* sonarqube*.*
+	rm -f coverage*.* sonarqube*.* summary_coverage.json

@@ -54,11 +54,11 @@ from .workers import Workers
 # generators
 from .cobertura_xml_generator import print_xml_report
 from .html_generator import print_html_report
+from .json_generator import print_json_report, print_json_summary_report
 from .txt_generator import print_text_report
 from .csv_generator import print_csv_report
 from .summary_generator import print_summary
 from .sonarqube_generator import print_sonarqube_report
-from .json_generator import print_json_report
 
 
 #
@@ -394,6 +394,14 @@ def print_reports(covdata, options, logger):
             lambda: logger.warn(
                 "JSON output skipped - "
                 "consider providing output file with `--json=OUTPUT`.")))
+
+    if options.json_summary or options.json_summary_pretty:
+        generators.append((
+            [options.json_summary],
+            print_json_summary_report,
+            lambda: logger.warn(
+                "JSON summary output skipped - "
+                "consider providing output file with `--json-summary=OUTPUT`.")))
 
     if options.csv:
         generators.append((

@@ -106,7 +106,7 @@ def compiled(request, name):
         assert run(['make', 'clean'], cwd=path)
 
 
-KNOWN_FORMATS = ['txt', 'xml', 'html', 'sonarqube', 'json', 'csv']
+KNOWN_FORMATS = ['txt', 'xml', 'html', 'sonarqube', 'json', 'json_summary', 'csv']
 
 
 def pytest_generate_tests(metafunc):
@@ -197,7 +197,9 @@ SCRUBBERS = dict(
     html=scrub_html,
     sonarqube=scrub_xml,
     json=lambda x: x,
+    json_summary=lambda x: x,
     csv=scrub_csv)
+
 
 OUTPUT_PATTERN = dict(
     txt=['coverage.txt'],
@@ -205,7 +207,9 @@ OUTPUT_PATTERN = dict(
     html=['coverage*.html', 'coverage.css'],
     sonarqube=['sonarqube.xml'],
     json=['coverage*.json'],
+    json_summary=['summary_coverage.json'],
     csv=['coverage.csv'])
+
 
 ASSERT_EQUALS = dict(
     xml=assert_xml_equals,

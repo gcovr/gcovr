@@ -22,6 +22,7 @@ The ``gcovr`` command can produce different kinds of coverage reports:
 -  ``--xml``: machine readable XML reports in Cobertura_ format
 -  ``--sonarqube``: machine readable XML reports in Sonarqube format
 -  ``--json``: JSON report with source files structure and coverage
+-  ``--json-summary``: JSON summary coverage report
 -  ``--csv``: CSV report summarizing the coverage of each file
 
 Thus, gcovr can be viewed

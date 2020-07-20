@@ -735,6 +735,23 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "json_summary", ["--json-summary"],
+        group="output_options",
+        metavar='OUTPUT',
+        help="Generate a JSON summary report. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "json_summary_pretty", ["--json-summary-pretty"],
+        group="output_options",
+        help="Pretty-print the JSON SUMMARY report. Implies --json-summary. Default: {default!s}.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "csv", ["--csv"],
         group="output_options",
         metavar='OUTPUT',
