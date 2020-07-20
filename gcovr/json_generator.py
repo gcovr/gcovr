@@ -10,13 +10,14 @@ import os
 import sys
 import functools
 
-from .utils import (calculate_coverage, Logger, presentable_filename,
-                    sort_coverage)
+from .utils import (get_global_stats, Logger, presentable_filename,
+                    sort_coverage, summarize_file_coverage)
+
 from .coverage import FileCoverage
 
 
 JSON_FORMAT_VERSION = 0.1
-JSON_SUMMARY_FORMAT_VERSION = 0.1
+JSON_SUMMARY_FORMAT_VERSION = 0.2
 PRETTY_JSON_INDENT = 4
 
 
@@ -63,11 +64,9 @@ def print_json_report(covdata, output_file, options):
 #
 def print_json_summary_report(covdata, output_file, options):
 
-    total_lines = 0
-    total_covered = 0
-
     json_dict = {}
-    json_dict['current_working_directory'] = options.root
+
+    json_dict['root'] = os.path.relpath(options.root, output_file)
     json_dict['gcovr/summary_format_version'] = JSON_SUMMARY_FORMAT_VERSION
     json_dict['files'] = []
 
@@ -77,36 +76,34 @@ def print_json_summary_report(covdata, output_file, options):
         by_num_uncovered=options.sort_uncovered,
         by_percent_uncovered=options.sort_percent)
 
-    def _summarize_file_coverage(coverage):
-        filename = presentable_filename(coverage.filename,
-                                        root_filter=options.root_filter)
-
-        if options.show_branch:
-            total, cover, percent = coverage.branch_coverage()
-            uncovered_lines = coverage.uncovered_branches_str()
-        else:
-            total, cover, percent = coverage.line_coverage()
-            uncovered_lines = coverage.uncovered_lines_str()
-
-        return (filename, total, cover, percent, uncovered_lines)
-
     for key in keys:
-        (filename, t, n, percent, uncovered_lines) = _summarize_file_coverage(covdata[key])
-        total_lines += t
-        total_covered += n
+        (filename, line_total, line_covered, line_percent,
+         branch_total, branch_covered,
+         branch_percent) = summarize_file_coverage(covdata[key],
+                                                   options.root_filter)
+
         json_dict['files'].append({
-            'file': filename,
-            'total': t,
-            'covered': n,
-            'percent': percent,
+            'filename': filename,
+            'line_total': line_total,
+            'line_covered': line_covered,
+            'line_percent': line_percent,
+            'branch_total': branch_total,
+            'branch_covered': branch_covered,
+            'branch_percent': branch_percent,
         })
 
-    # Footer & summary
-    percent = calculate_coverage(total_covered, total_lines, nan_value=None)
+    (lines_total, lines_covered, lines_percent,
+     branches_total, branches_covered,
+     branches_percent) = get_global_stats(covdata)
 
-    json_dict['total'] = total_lines
-    json_dict['covered'] = total_covered
-    json_dict['percent'] = percent
+    # Footer & summary
+    json_dict['line_total'] = lines_total
+    json_dict['line_covered'] = lines_covered
+    json_dict['line_percent'] = lines_percent
+
+    json_dict['branch_total'] = branches_total
+    json_dict['branch_covered'] = branches_covered
+    json_dict['branch_percent'] = branches_percent
 
     _write_json_result(json_dict, output_file, options.json_summary_pretty)
 

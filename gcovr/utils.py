@@ -348,3 +348,18 @@ def presentable_filename(filename, root_filter):
         normalized = filename
 
     return normalized.replace('\\', '/')
+
+
+def fixup_percent(percent):
+    # output csv percent values in range [0,1.0]
+    return percent / 100 if percent is not None else None
+
+
+def summarize_file_coverage(coverage, root_filter):
+    filename = presentable_filename(
+        coverage.filename, root_filter=root_filter)
+
+    branch_total, branch_covered, branch_percent = coverage.branch_coverage()
+    line_total, line_covered, line_percent = coverage.line_coverage()
+    return (filename, line_total, line_covered, fixup_percent(line_percent),
+            branch_total, branch_covered, fixup_percent(branch_percent))

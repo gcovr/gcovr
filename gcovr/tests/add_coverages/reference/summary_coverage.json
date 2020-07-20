@@ -1,27 +1,39 @@
 {
-    "covered": 13,
-    "current_working_directory": ".",
+    "branch_covered": 2,
+    "branch_percent": 50.0,
+    "branch_total": 4,
     "files": [
         {
-            "covered": 4,
-            "file": "bar.cpp",
-            "percent": 100.0,
-            "total": 4
+            "branch_covered": 0,
+            "branch_percent": null,
+            "branch_total": 0,
+            "filename": "bar.cpp",
+            "line_covered": 4,
+            "line_percent": 1.0,
+            "line_total": 4
         },
         {
-            "covered": 4,
-            "file": "foo.cpp",
-            "percent": 100.0,
-            "total": 4
+            "branch_covered": 0,
+            "branch_percent": null,
+            "branch_total": 0,
+            "filename": "foo.cpp",
+            "line_covered": 4,
+            "line_percent": 1.0,
+            "line_total": 4
         },
         {
-            "covered": 5,
-            "file": "main.cpp",
-            "percent": 100.0,
-            "total": 5
+            "branch_covered": 2,
+            "branch_percent": 0.5,
+            "branch_total": 4,
+            "filename": "main.cpp",
+            "line_covered": 5,
+            "line_percent": 1.0,
+            "line_total": 5
         }
     ],
-    "gcovr/summary_format_version": 0.1,
-    "percent": 100.0,
-    "total": 13
+    "gcovr/summary_format_version": 0.2,
+    "line_covered": 13,
+    "line_percent": 100.0,
+    "line_total": 13,
+    "root": ".."
 }
