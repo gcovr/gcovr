@@ -363,6 +363,14 @@ def collect_coverage_from_gcov(covdata, options, logger):
 def print_reports(covdata, options, logger):
     generators = []
 
+    if options.txt:
+        generators.append((
+            [options.txt],
+            print_text_report,
+            lambda: logger.warn(
+                "Text output skipped - "
+                "consider providing an output file with `--txt=OUTPUT`.")))
+
     if options.xml or options.prettyxml:
         generators.append((
             [options.xml],

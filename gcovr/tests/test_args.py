@@ -86,6 +86,10 @@ def helper_test_non_existing_directory_output(capsys, option='--output'):
     assert c.exception.code != 0
 
 
+def test_non_existing_directory_txt(capsys):
+    helper_test_non_existing_directory_output(capsys, '--txt')
+
+
 def test_non_existing_directory_xml(capsys):
     helper_test_non_existing_directory_output(capsys, '--xml')
 
