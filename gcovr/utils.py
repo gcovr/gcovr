@@ -183,7 +183,7 @@ class Filter(object):
         cwd = os.getcwd()
         # Guessing if file system is case insensitive.
         # The working directory is not the root and accessible in upper and lower case.
-        is_fs_case_insensitive = ( cwd != os.path.sep ) and os.path.exists(cwd.upper()) and os.path.exists(cwd.lower())
+        is_fs_case_insensitive = (cwd != os.path.sep) and os.path.exists(cwd.upper()) and os.path.exists(cwd.lower())
         flags = re.IGNORECASE if is_fs_case_insensitive else 0
         self.pattern = re.compile(pattern, flags)
 
