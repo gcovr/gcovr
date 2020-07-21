@@ -180,7 +180,12 @@ FilterOption.NonEmpty = NonEmptyFilterOption
 
 class Filter(object):
     def __init__(self, pattern):
-        self.pattern = re.compile(pattern)
+        cwd = os.getcwd()
+        # Guessing if file system is case insensitive.
+        # The working directory is not the root and accessible in upper and lower case.
+        is_fs_case_insensitive = (cwd != os.path.sep) and os.path.exists(cwd.upper()) and os.path.exists(cwd.lower())
+        flags = re.IGNORECASE if is_fs_case_insensitive else 0
+        self.pattern = re.compile(pattern, flags)
 
     def match(self, path):
         os_independent_path = path.replace(os.path.sep, '/')
