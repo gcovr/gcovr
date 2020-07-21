@@ -94,6 +94,17 @@ class CssRenderer():
         }
     }
 
+
+    @staticmethod
+    def get_themes():
+        return list(CssRenderer.Themes.keys())
+
+
+    @staticmethod
+    def get_default_theme():
+        return 'green'
+
+
     @staticmethod
     def render(options):
         template = None
