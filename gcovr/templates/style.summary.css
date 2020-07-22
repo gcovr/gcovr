@@ -86,7 +86,7 @@ table.legend span
 table.legend span.coverage-unknown,
 table.coverage td.coverage-unknown
 {
-    background-color: var(--unknown_color);
+    background-color: var(--unknown_color) !important;
 }
 
 table.legend span.coverage-none,

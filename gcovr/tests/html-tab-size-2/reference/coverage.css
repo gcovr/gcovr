@@ -1,6 +1,6 @@
 :root {
     font-family: sans-serif;
-    --unknown_color: #lightgray;
+    --unknown_color: LightGray;
     --low_color: #FF4040;
     --medium_color: #F9FD63;
     --high_color: #85E485;
@@ -132,7 +132,7 @@ table.legend span
 table.legend span.coverage-unknown,
 table.coverage td.coverage-unknown
 {
-    background-color: var(--unknown_color);
+    background-color: var(--unknown_color) !important;
 }
 
 table.legend span.coverage-none,

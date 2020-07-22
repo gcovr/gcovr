@@ -73,7 +73,7 @@ class CssRenderer():
 
     Themes = {
         'green': {
-            'unknown_color': "#lightgray",
+            'unknown_color': "LightGray",
             'low_color': "#FF4040",
             'medium_color': "#F9FD63",
             'high_color': "#85E485",
@@ -83,7 +83,7 @@ class CssRenderer():
             'notTakenBranch_color': "Red"
         },
         'blue': {
-            'unknown_color': "#lightgray",
+            'unknown_color': "LightGray",
             'low_color': "#FF4040",
             'medium_color': "#F9FD63",
             'high_color': "#6675FF",
@@ -94,16 +94,13 @@ class CssRenderer():
         }
     }
 
-
     @staticmethod
     def get_themes():
         return list(CssRenderer.Themes.keys())
 
-
     @staticmethod
     def get_default_theme():
         return 'green'
-
 
     @staticmethod
     def render(options):
