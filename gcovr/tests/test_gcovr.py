@@ -123,7 +123,7 @@ def pytest_generate_tests(metafunc):
 
     collected_params = []
 
-    if archive_differences:  # pragma no cover
+    if archive_differences:  # pragma: no cover
         diffs_zip = os.path.join(basedir, 'diff.zip')
         # Create an empty ZIP
         zipfile.ZipFile(diffs_zip, mode='w').close()
@@ -273,7 +273,7 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
             if archive_differences:
                 diffs_zip = os.path.join('..', 'diff.zip')
                 with zipfile.ZipFile(diffs_zip, mode='a') as f:
-                    f.write(coverage_file, os.path.join(name, coverage_file).replace(os.path.sep, '/'))
+                    f.write(coverage_file, os.path.join(name, 'reference', coverage_file).replace(os.path.sep, '/'))
 
     diff_is_empty = len(whole_diff_output) == 0
     assert diff_is_empty, "Diff output:\n" + "".join(whole_diff_output)
