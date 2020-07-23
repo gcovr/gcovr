@@ -85,8 +85,8 @@ The compiler generates the ``program`` executable.  When we execute this command
     :end-before: #END run
 
 the files ``example1.gcno`` and ``example1.gcda`` are generated.  These
-files are processed with by ``gcov`` to generate code coverage
-statistics.  The ``gcovr`` command calls ``gcov`` and summarizes these
+files are processed by ``gcov`` to generate code coverage statistics.
+The ``gcovr`` command calls ``gcov`` and summarizes these
 code coverage statistics in various formats.  For example:
 
 .. include:: ../examples/example.sh
@@ -354,6 +354,8 @@ which itself defaults to stdout.
 
 The following report format flags can take an optional output file name:
 
+- :option:`gcovr --csv`
+- :option:`gcovr --txt`
 - :option:`gcovr --xml`
 - :option:`gcovr --html`
 - :option:`gcovr --html-details`

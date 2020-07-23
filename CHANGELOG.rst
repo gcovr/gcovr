@@ -15,10 +15,31 @@ Breaking changes:
 Improvements and new features:
 
  - Handles spaces in ``gcov`` path. (:issue:`385`)
+ - Early fail when output cannot be created. (:issue:`346`)
+ - Add option :option:`--txt` for text output. (:issue:`387`)
+ - Add option :option:`--csv` for CSV output. (:issue:`376`)
+ - Add :option:`--exclude-lines-by-pattern` to filter out source lines by arbitrary
+   regex. (:issue:`356`)
+ - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
+ - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`375`)
+ - Changes for HTML output format:
+
+   - Change legend for threshold in html report. (:issue:`369`)
+   - Use HTML title also for report heading. Default value for :option:`--html-title` changed. (:issue:`296`)
+   - Add :option:`--html-tab-size` to configure tab size in HTML details. (:issue:`377`)
+   - Add option :option:`--html-css` for user defined styling. (:issue:`380`)
+   - Create details html filename independent from OS. (:issue:`375`)
 
 Documentation:
 
  - Cookbook: :ref:`oos cmake` (:issue:`340`, :issue:`341`)
+
+Internal changes:
+
+ - Support multiple output patterns in integration tests (:issue:`383`)
+ - Extend tests to use an unified diff in the assert. Add test options `--generate-reference`,
+   `--update_reference` and `--skip_clean`. (:issue:`374`)
+ - Set make variable TEST_OPTS as environment variable inside docker. (:issue: `372`)
 
 4.2 (6 November 2019)
 ---------------------
