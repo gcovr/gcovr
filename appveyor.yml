@@ -28,9 +28,11 @@ install:
 build: off
 
 test_script:
-  - '%MAKE% test PYTHON=python TEST_OPTS="--cov=gcovr --cov-branch"'
+  - '%MAKE% test PYTHON=python TEST_OPTS="--cov=gcovr --cov-branch --archive_differences"'
   - 'codecov -X gcov search'
 
+on_failure:
+  - 'appveyor PushArtifact gcovr/tests/diff.zip'
 
 notifications:
   - provider: Webhook

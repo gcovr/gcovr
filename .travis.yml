@@ -32,7 +32,7 @@ install:
 script:
 - test -z "$RUN_LINTER" || make lint
 - test -z "$RUN_LINTER" || admin/release_checklist --no-verify-tags --no-verify-docs-next-version 4.2
-- make test TEST_OPTS="$COVERAGE_OPTS"
+- make test TEST_OPTS="$COVERAGE_OPTS --archive_differences"
 - test -z "$COVERAGE_OPTS" || codecov -X gcov search
 - test -z "$BUILD_DOCS" || make doc
 

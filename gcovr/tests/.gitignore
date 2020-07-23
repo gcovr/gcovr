@@ -1,4 +1,8 @@
-# ignore all HTML and CSS files
+# Ignore output files
+coverage*.txt
+coverage*.json
+coverage*.xml
+sonarqube*.xml
 *.html
 *.css
 # except in reference directories
@@ -15,6 +19,10 @@
 .coverage
 *.gcda
 *.gcno
+*.gcov
 .tox
 nosetests.xml
 testcase
+
+# Differences
+diff.zip
