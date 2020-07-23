@@ -71,13 +71,36 @@ def user_templates():
 
 class CssRenderer():
 
-    low_color = "LightPink"
-    medium_color = "#FFFF55"
-    high_color = "LightGreen"
-    covered_color = "LightGreen"
-    uncovered_color = "LightPink"
-    takenBranch_color = "Green"
-    notTakenBranch_color = "Red"
+    Themes = {
+        'green': {
+            'unknown_color': "LightGray",
+            'low_color': "#FF6666",
+            'medium_color': "#F9FD63",
+            'high_color': "#85E485",
+            'covered_color': "#85E485",
+            'uncovered_color': "#FF8C8C",
+            'takenBranch_color': "Green",
+            'notTakenBranch_color': "Red"
+        },
+        'blue': {
+            'unknown_color': "LightGray",
+            'low_color': "#FF6666",
+            'medium_color': "#F9FD63",
+            'high_color': "#66B4FF",
+            'covered_color': "#66B4FF",
+            'uncovered_color': "#FF8C8C",
+            'takenBranch_color': "Blue",
+            'notTakenBranch_color': "Red"
+        }
+    }
+
+    @staticmethod
+    def get_themes():
+        return list(CssRenderer.Themes.keys())
+
+    @staticmethod
+    def get_default_theme():
+        return 'green'
 
     @staticmethod
     def render(options):
@@ -87,13 +110,7 @@ class CssRenderer():
         else:
             template = templates().get_template('style.css')
         return template.render(
-            low_color=CssRenderer.low_color,
-            medium_color=CssRenderer.medium_color,
-            high_color=CssRenderer.high_color,
-            covered_color=CssRenderer.covered_color,
-            uncovered_color=CssRenderer.uncovered_color,
-            takenBranch_color=CssRenderer.takenBranch_color,
-            notTakenBranch_color=CssRenderer.notTakenBranch_color,
+            CssRenderer.Themes[options.html_theme],
             tab_size=options.html_tab_size
         )
 

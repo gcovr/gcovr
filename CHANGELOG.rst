@@ -29,6 +29,7 @@ Improvements and new features:
    - Add :option:`--html-tab-size` to configure tab size in HTML details. (:issue:`377`)
    - Add option :option:`--html-css` for user defined styling. (:issue:`380`)
    - Create details html filename independent from OS. (:issue:`375`)
+   - Add :option:`--html-theme` to change the color theme. (:issue:`381`)
 
 Documentation:
 

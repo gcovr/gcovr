@@ -17,6 +17,7 @@ import os
 import re
 
 from .utils import FilterOption
+from .html_generator import CssRenderer
 
 
 def check_percentage(value):
@@ -633,6 +634,15 @@ GCOVR_CONFIG_OPTIONS = [
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "html_theme", ["--html-theme"],
+        group="output_options",
+        type=str,
+        choices=CssRenderer.get_themes(),
+        metavar="THEME",
+        help="Override the default color theme for the HTML report. Default is {default!s}.",
+        default=CssRenderer.get_default_theme()
     ),
     GcovrConfigOption(
         "html_css", ["--html-css"],

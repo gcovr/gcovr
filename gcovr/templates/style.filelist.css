@@ -1,0 +1,37 @@
+.file-list td, .file-list th {
+    padding: 0 10px;
+    font-weight: bold;
+}
+
+.file-list th[scope^=col]
+{
+    text-align: center;
+    color: white;
+    background-color: SteelBlue;
+    font-size: 120%;
+}
+
+.file-list th[scope=row]
+{
+    text-align: left;
+    color: black;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 110%;
+}
+
+.file-list tr > td,
+.file-list tr > th {
+    background: aliceblue;
+}
+
+.file-list tr:nth-child(even) > td,
+.file-list tr:nth-child(even) > th {
+    background: LightSteelBlue
+}
+
+.file-list tr:hover > td,
+.file-list tr:hover > th[scope=row]
+{
+    background-color: #ddd;
+}
