@@ -11,10 +11,10 @@ meter {
     height: 12px;
     padding: 0;
     vertical-align: baseline;
+    margin-top: 3px;
     /* Outer background for Mozilla */
     background: none;
     background-color: whitesmoke;
-    box-shadow: 0 5px 5px -5px #333 inset;
 }
 
 /* Webkit */
@@ -23,7 +23,6 @@ meter::-webkit-meter-bar {
     /* Outer background for Webkit */
     background: none;
     background-color: whitesmoke;
-    box-shadow: 0 5px 5px -5px #333 inset;
 }
 
 meter::-webkit-meter-optimum-value,
@@ -31,7 +30,6 @@ meter::-webkit-meter-suboptimum-value,
 meter::-webkit-meter-even-less-good-value
 {
     /* Inner shadow for Webkit */
-    box-shadow: 0 5px 5px -5px #333 inset;
     border: solid 1px black;
 }
 
@@ -63,7 +61,6 @@ meter:-moz-meter-sub-optimum::-moz-meter-bar,
 meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
 {
     /* Inner shadow for Mozilla */
-    box-shadow: 0 5px 5px -5px #333 inset;
     border: solid 1px black;
 }
 

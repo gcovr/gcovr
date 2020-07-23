@@ -74,20 +74,20 @@ class CssRenderer():
     Themes = {
         'green': {
             'unknown_color': "LightGray",
-            'low_color': "#FF4040",
+            'low_color': "#FF6666",
             'medium_color': "#F9FD63",
             'high_color': "#85E485",
-            'covered_color': "LightGreen",
+            'covered_color': "#85E485",
             'uncovered_color': "#FF8C8C",
             'takenBranch_color': "Green",
             'notTakenBranch_color': "Red"
         },
         'blue': {
             'unknown_color': "LightGray",
-            'low_color': "#FF4040",
+            'low_color': "#FF6666",
             'medium_color': "#F9FD63",
-            'high_color': "#6675FF",
-            'covered_color': "dodgerblue",
+            'high_color': "#66B4FF",
+            'covered_color': "#66B4FF",
             'uncovered_color': "#FF8C8C",
             'takenBranch_color': "Blue",
             'notTakenBranch_color': "Red"

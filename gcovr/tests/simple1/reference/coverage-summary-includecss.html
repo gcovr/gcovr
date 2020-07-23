@@ -9,10 +9,10 @@
       :root {
     font-family: sans-serif;
     --unknown_color: LightGray;
-    --low_color: #FF4040;
+    --low_color: #FF6666;
     --medium_color: #F9FD63;
     --high_color: #85E485;
-    --covered_color: LightGreen;
+    --covered_color: #85E485;
     --uncovered_color: #FF8C8C;
     --takenBranch_color: Green;
     --notTakenBranch_color: Red;
@@ -138,6 +138,16 @@ table.legend span
 }
 
 table.legend span.coverage-unknown,
+table.legend span.coverage-none,
+table.legend span.coverage-low,
+table.legend span.coverage-medium,
+table.legend span.coverage-high
+{
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+table.legend span.coverage-unknown,
 table.coverage td.coverage-unknown
 {
     background-color: var(--unknown_color) !important;
@@ -178,10 +188,10 @@ meter {
     height: 12px;
     padding: 0;
     vertical-align: baseline;
+    margin-top: 3px;
     /* Outer background for Mozilla */
     background: none;
     background-color: whitesmoke;
-    box-shadow: 0 5px 5px -5px #333 inset;
 }
 
 /* Webkit */
@@ -190,7 +200,6 @@ meter::-webkit-meter-bar {
     /* Outer background for Webkit */
     background: none;
     background-color: whitesmoke;
-    box-shadow: 0 5px 5px -5px #333 inset;
 }
 
 meter::-webkit-meter-optimum-value,
@@ -198,7 +207,6 @@ meter::-webkit-meter-suboptimum-value,
 meter::-webkit-meter-even-less-good-value
 {
     /* Inner shadow for Webkit */
-    box-shadow: 0 5px 5px -5px #333 inset;
     border: solid 1px black;
 }
 
@@ -230,7 +238,6 @@ meter:-moz-meter-sub-optimum::-moz-meter-bar,
 meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
 {
     /* Inner shadow for Mozilla */
-    box-shadow: 0 5px 5px -5px #333 inset;
     border: solid 1px black;
 }
 
@@ -438,14 +445,14 @@ footer
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2020-07-22 20:05:11</td>
+      <td>2020-07-23 19:52:09</td>
     </tr>
     <tr>
       <th scope="row">Legend:</th>
       <td class="legend">
-        <span class="coverage-low">&nbsplow: &gt;= 0%&nbsp</span>
-        <span class="coverage-medium">&nbspmedium: &gt;= 75.0%&nbsp</span>
-        <span class="coverage-high">&nbsphigh: &gt;= 90.0%&nbsp</span>
+        <span class="coverage-low">low: &gt;= 0%</span>
+        <span class="coverage-medium">medium: &gt;= 75.0%</span>
+        <span class="coverage-high">high: &gt;= 90.0%</span>
       </td>
     </tr>
   </table>

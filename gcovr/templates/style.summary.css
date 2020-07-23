@@ -84,6 +84,16 @@ table.legend span
 }
 
 table.legend span.coverage-unknown,
+table.legend span.coverage-none,
+table.legend span.coverage-low,
+table.legend span.coverage-medium,
+table.legend span.coverage-high
+{
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+table.legend span.coverage-unknown,
 table.coverage td.coverage-unknown
 {
     background-color: var(--unknown_color) !important;
