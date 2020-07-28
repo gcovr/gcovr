@@ -2,6 +2,7 @@ cmake
 flake8
 jinja2
 lxml
+pygments
 pytest
 pytest-cov
 pyutilib

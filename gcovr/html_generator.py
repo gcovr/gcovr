@@ -13,16 +13,16 @@ import hashlib
 import io
 
 from .version import __version__
-from .utils import commonpath, sort_coverage, calculate_coverage
+from .utils import commonpath, sort_coverage, calculate_coverage, Logger
 
 
 class Lazy:
     def __init__(self, fn):
 
-        def load():
-            result = fn()
+        def load(*args):
+            result = fn(*args)
 
-            def reuse_value():
+            def reuse_value(*args):
                 return result
 
             self.get = reuse_value
@@ -30,8 +30,8 @@ class Lazy:
 
         self.get = load
 
-    def __call__(self):
-        return self.get()
+    def __call__(self, *args):
+        return self.get(*args)
 
 
 # Loading Jinja and preparing the environmen is fairly costly.
@@ -113,6 +113,50 @@ class CssRenderer():
             CssRenderer.Themes[options.html_theme],
             tab_size=options.html_tab_size
         )
+
+
+class NullHighlighting:
+    def get_css(self):
+        return ''
+
+    @staticmethod
+    def highlighter_for_file(filename):
+        return lambda code: [line.rstrip() for line in code.split("\n")]
+
+
+class PygmentHighlighting:
+    def __init__(self, options):
+        self.logger = Logger(options.verbose)
+        self.formatter = None
+        try:
+            from pygments.formatters.html import HtmlFormatter
+            self.formatter = HtmlFormatter(nowrap=True)
+        except ImportError as e:  # pragma: no cover
+            self.logger.warn("No syntax highlighting availabel: {}".format(str(e)))
+
+    def get_css(self):
+        if self.formatter is None:
+            return ''
+        return "\n\n/* pygments syntax highlighting */\n" + self.formatter.get_style_defs()
+
+    # Set the lexer for the given filename. Return true if a lexer is found
+    def highlighter_for_file(self, filename):
+        if self.formatter is None:
+            return NullHighlighting.highlighter_for_file(filename)
+
+        import pygments
+        from pygments.lexers import get_lexer_for_filename
+        from jinja2 import Markup
+        try:
+            lexer = get_lexer_for_filename(filename)
+            return lambda code: [Markup(line.rstrip()) for line in pygments.highlight(code, lexer, self.formatter).split("\n")]
+        except pygments.util.ClassNotFound:  # pragma: no cover
+            return NullHighlighting.highlighter_for_file(filename)
+
+
+@Lazy
+def get_formatter(options):
+    return PygmentHighlighting(options) if options.html_details_syntax_highlighting else NullHighlighting()
 
 
 def coverage_to_class(coverage, medium_threshold, high_threshold):
@@ -238,6 +282,9 @@ def print_html_report(covdata, output_file, options):
     if self_contained is None:
         self_contained = not options.html_details
 
+    formatter = get_formatter(options)
+    css_data += formatter.get_css()
+
     if self_contained:
         data['css'] = css_data
     else:
@@ -271,11 +318,11 @@ def print_html_report(covdata, output_file, options):
         files.append(filtered_fname)
         dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata_fname[f] = filtered_fname
-        if not options.html_details:
-            cdata_sourcefile[f] = None
-        else:
+        if options.html_details:
             cdata_sourcefile[f] = _make_short_sourcename(
                 output_file, filtered_fname)
+        else:
+            cdata_sourcefile[f] = None
 
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
@@ -332,9 +379,10 @@ def print_html_report(covdata, output_file, options):
         os.chdir(options.root_dir)
         with io.open(data['filename'], 'r', encoding=options.source_encoding,
                      errors='replace') as source_file:
-            for ctr, line in enumerate(source_file, 1):
+            lines = formatter.highlighter_for_file(data['filename'])(source_file.read())
+            for ctr, line in enumerate(lines, 1):
                 data['source_lines'].append(
-                    source_row(ctr, line.rstrip(), cdata.lines.get(ctr))
+                    source_row(ctr, line, cdata.lines.get(ctr))
                 )
         os.chdir(currdir)
 

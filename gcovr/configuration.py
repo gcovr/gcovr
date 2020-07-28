@@ -642,6 +642,13 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
+        "html_details_syntax_highlighting", ["--html-details-no-syntax-highlighting"],
+        group="output_options",
+        help="Disable syntax highlighting in HTML details page. "
+             "Default is activ syntax highlighting.",
+        action="store_false",
+    ),
+    GcovrConfigOption(
         "html_theme", ["--html-theme"],
         group="output_options",
         type=str,

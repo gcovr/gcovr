@@ -23,6 +23,7 @@ Improvements and new features:
  - Add :option:`--json-summary` to generate a :ref:`JSON Summary <json_summary_output>` report. (:issue:`366`)
  - Add :option:`--coveralls` to generate a :ref:`Coveralls <coveralls_output>` compatible JSON report. (:issue:`328`)
  - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
+ - Enable filter option in add JSON tracefiles mode. (:issue:`373`)
  - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`375`)
  - Changes for HTML output format:
 
@@ -33,6 +34,7 @@ Improvements and new features:
    - Create details html filename independent from OS. (:issue:`375`)
    - Add :option:`--html-theme` to change the color theme. (:issue:`381`)
    - Add linkable lines in HTML details. (:issue:`401`)
+   - Add syntax highlighting in the details HTML report. This can be turned of with :option:`--html-details-no-sysntax-highlighting`. (:issue:`402`)
 
 Documentation:
 

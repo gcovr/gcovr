@@ -26,6 +26,7 @@ setup(name='gcovr',
       install_requires=[
           'jinja2',
           'lxml',
+          'pygments'
       ],
       package_data={
           'gcovr': ['templates/*.css', 'templates/*.html'],
