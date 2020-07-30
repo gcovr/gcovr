@@ -377,6 +377,7 @@ pre
     margin-top: 0;
     margin-bottom: 0;
 }
+
 .lineno
 {
     background-color: #EFE383;
@@ -385,6 +386,12 @@ pre
     unicode-bidi: embed;
     font-family: monospace;
     white-space: pre;
+}
+
+.lineno > a
+{
+    text-decoration: none;
+    color: inherit;
 }
 
 .file-list
