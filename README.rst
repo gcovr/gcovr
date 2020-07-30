@@ -103,7 +103,7 @@ You need to recompile your code with the following flags:
 
 ::
 
-    -fprofile-arcs -ftest-coverage -g -O0
+    --coverage -g -O0
 
 Next, run your test suite.
 This will generate raw coverage files.
