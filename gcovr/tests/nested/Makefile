@@ -11,7 +11,7 @@ all:
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CFLAGS) subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/A/C/D/file6.o subdir/A/file7.o subdir/B/main.o -o subdir/testcase
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube coveralls
 
 coverage.json:
 	./subdir/testcase
@@ -29,8 +29,11 @@ html: coverage.json
 sonarqube: coverage.json
 	$(GCOVR) -r subdir -a $< --sonarqube sonarqube.xml
 
+coveralls: coverage.json
+	$(GCOVR) -r subdir -a $< --coveralls coveralls.json
+
 clean:
 	rm -f ./subdir/testcase
 	rm -f *.gc* */*.gc* */*/*.gc* */*/*/*.gc* */*/*/*/*.gc*
 	rm -f *.o */*.o */*/*.o */*/*/*.o */*/*/*/*.o
-	rm -f coverage*.* sonarqube*.*
+	rm -f coverage*.* sonarqube*.* coveralls.json

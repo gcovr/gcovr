@@ -784,6 +784,17 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
+        "coveralls", ["--coveralls"],
+        group="output_options",
+        metavar='OUTPUT',
+        help="Generate Coveralls API coverage report in this file name. "
+             "OUTPUT is optional and defaults to --output.",
+        nargs='?',
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
         "filter", ["-f", "--filter"],
         group="filter_options",
         help="Keep only source files that match this filter. "

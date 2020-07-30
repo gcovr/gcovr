@@ -59,6 +59,7 @@ from .txt_generator import print_text_report
 from .csv_generator import print_csv_report
 from .summary_generator import print_summary
 from .sonarqube_generator import print_sonarqube_report
+from .coveralls_generator import print_coveralls_report
 
 
 #
@@ -418,6 +419,14 @@ def print_reports(covdata, options, logger):
             lambda: logger.warn(
                 "CSV output skipped - "
                 "consider providing output file with `--csv=OUTPUT`.")))
+
+    if options.coveralls:
+        generators.append((
+            [options.coveralls],
+            print_coveralls_report,
+            lambda: logger.warn(
+                "Coveralls output skipped - "
+                "consider providing output file with `--coveralls=OUTPUT`.")))
 
     reports_were_written = False
     default_output = OutputOrDefault(options.output)

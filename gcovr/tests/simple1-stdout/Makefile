@@ -2,8 +2,7 @@ all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
 
-run: txt xml html json json_summary
-
+run: txt xml html json json_summary coveralls
 
 txt:
 	./testcase
@@ -25,7 +24,10 @@ json_summary:
 	./testcase
 	$(GCOVR) -d --json-summary-pretty > summary_coverage.json
 
+coveralls:
+	$(GCOVR) -d --coveralls > coveralls.json
+
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html coverage.json summary_coverage.json
+	rm -f coverage.txt coverage.xml coverage*.html coverage.json summary_coverage.json coveralls.json

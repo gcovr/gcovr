@@ -341,6 +341,22 @@ instead.
 Multiple JSON files can be merged into the coverage data
 with sum of lines and branches execution
 
+Coveralls JSON Output
+~~~~~~~~~~~~~~~~~~~~~
+
+If you are using Coveralls, you can get a coverage report
+in a suitable JSON format via the :option:`gcovr --coveralls` option::
+
+    gcovr --coveralls coverage.json
+
+NOTE: If available, environment variable COVERALLS_REPO_TOKEN will be
+      consumed and baked into the JSON output. Also, Travis CI environment
+      variables TRAVIS_JOB_ID, TRAVIS_BUILD_NUMBER and TRAVIS_PULL_REQUEST
+      will be consumed (typically available when executed from Travis CI).
+
+The Coveralls JSON format is documented at
+`<https://docs.coveralls.io/api-introduction>`_.
+
 .. _multiple output formats:
 
 Multiple Output Formats
@@ -362,6 +378,7 @@ The following report format flags can take an optional output file name:
 - :option:`gcovr --sonarqube`
 - :option:`gcovr --json`
 - :option:`gcovr --json-summary`
+- :option:`gcovr --coveralls`
 
 Note that --html-details overrides any value of --html if it is present.
 

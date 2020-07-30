@@ -36,7 +36,7 @@ all:
 	$(CXX) $(CFLAGS) $(SOFLAGS) obj/libs.o -o lib/libs.$(DYNLIB_EXT)
 	$(MAKE) -C testApp
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube coveralls
 
 coverage.json:
 ifeq ($(BASE_OS),MSYS_NT)
@@ -58,8 +58,11 @@ html: coverage.json
 sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
+coveralls: coverage.json
+	$(GCOVR) -a $< --coveralls coveralls.json
+
 clean:
 	rm -rf obj
 	rm -f lib/*.$(DYNLIB_EXT)
-	rm -f coverage*.* sonarqube*.*
+	rm -f coverage*.* sonarqube*.* coveralls.json
 	$(MAKE) -C testApp clean

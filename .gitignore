@@ -28,3 +28,6 @@ pip-log.txt
 
 # MacOS
 .DS_Store
+
+# VS Code
+.vscode
