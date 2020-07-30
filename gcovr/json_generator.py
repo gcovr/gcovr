@@ -9,6 +9,7 @@ import json
 import os
 import sys
 import functools
+from .gcov import apply_filter_include_exclude
 
 from .utils import (get_global_stats, Logger, presentable_filename,
                     sort_coverage, summarize_file_coverage)
@@ -131,6 +132,20 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
             file_path = os.path.join(
                 os.path.abspath(options.root),
                 os.path.normpath(gcovr_file['file']))
+
+            filtered, excluded = apply_filter_include_exclude(
+                file_path, options.filter, options.exclude)
+
+            # Ignore if the filename does not match the filter
+            if filtered:
+                logger.verbose_msg("  Filtering coverage data for file {}", file_path)
+                continue
+
+            # Ignore if the filename matches the exclude pattern
+            if excluded:
+                logger.verbose_msg("  Excluding coverage data for file {}", file_path)
+                continue
+
             file_coverage = FileCoverage(file_path)
             _lines_from_json(file_coverage, gcovr_file['lines'])
             coverage[file_path] = file_coverage
