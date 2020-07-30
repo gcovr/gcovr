@@ -55,7 +55,7 @@
     {% for row in source_lines %}
 
     <tr class="source-line">
-      <td class="lineno">{{row.lineno}}</td>
+      <td class="lineno"><a id="l{{row.lineno}}" href="#l{{row.lineno}}">{{row.lineno}}</a></td>
       <td class="linebranch">
         {% if row.linebranch %}
         <details class="linebranchDetails">
