@@ -160,6 +160,7 @@ def pytest_generate_tests(metafunc):
             needs_symlinks = any([
                 name == 'linked' and format == 'html',
                 name == 'filter-relative-lib',
+                name == 'filter-relative-lib-from-unfiltered-tracefile',
             ])
 
             marks = [

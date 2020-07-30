@@ -11,21 +11,21 @@ run: txt xml html sonarqube
 # the src/ filter is provided by the project/gcovr.cfg configuration file
 GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
 
-coverage.json:
+coverage_unfiltered.json:
 	cd project; ./testcase
-	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) --json $(abspath $@)
+	cd project; $(GCOVR) --config gcovr_empty.cfg --json $(abspath $@)
 
-txt: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json -o ../coverage.txt
+txt: coverage_unfiltered.json
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< -o ../coverage.txt
 
-xml: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json -x -o ../coverage.xml
+xml: coverage_unfiltered.json
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< -x -o ../coverage.xml
 
-html: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --html-details -o ../coverage.html
+html: coverage_unfiltered.json
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --html-details -o ../coverage.html
 
-sonarqube: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --sonarqube ../sonarqube.xml
+sonarqube: coverage_unfiltered.json
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --sonarqube ../sonarqube.xml
 
 links:
 	cd project; \

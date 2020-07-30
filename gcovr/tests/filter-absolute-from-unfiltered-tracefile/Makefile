@@ -18,22 +18,21 @@ all:
 
 run: txt xml html sonarqube
 
-coverage.json:
+coverage_unfiltered.json:
 	./testcase
-	echo "running gcovr: $(GCOVR_TEST_OPTIONS)"
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) --json $@
+	$(GCOVR) --json $@
 
-txt: coverage.json
-	$(GCOVR) -a $< -o coverage.txt
+txt: coverage_unfiltered.json
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< -o coverage.txt
 
-xml: coverage.json
-	$(GCOVR) -a $< -x -o coverage.xml
+xml: coverage_unfiltered.json
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< -x -o coverage.xml
 
-html: coverage.json
-	$(GCOVR) -a $< --html-details -o coverage.html
+html: coverage_unfiltered.json
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --html-details -o coverage.html
 
-sonarqube: coverage.json
-	$(GCOVR) -a $< --sonarqube sonarqube.xml
+sonarqube: coverage_unfiltered.json
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --sonarqube sonarqube.xml
 
 clean:
 	rm -f testcase
