@@ -44,7 +44,7 @@ lint:
 	find ./* -type f -name '*.py' -exec $(PYTHON) -m flake8 --ignore=E501,W503 -- {} +
 
 test:
-	CC=$(CC) CXX=$(CXX) GCOV=$(GCOV) $(PYTHON) -m pytest -v --doctest-modules $(TEST_OPTS) -- gcovr doc/examples
+	GCOVR_TEST_SUITE=1 CC=$(CC) CXX=$(CXX) GCOV=$(GCOV) $(PYTHON) -m pytest -v --doctest-modules $(TEST_OPTS) -- gcovr doc/examples
 
 doc:
 	cd doc && make html O=-W

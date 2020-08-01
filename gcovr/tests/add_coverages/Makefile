@@ -8,7 +8,7 @@ all:
 	$(CXX) $(CFLAGS) -DBAR -c main.cpp -o main_bar.o
 	$(CXX) $(CFLAGS) main_bar.o bar.o -o testcase_bar
 
-run: txt xml html sonarqube json json_summary
+run: txt xml html sonarqube json json_summary coveralls
 
 # Enable JSON output via the --json-pretty mode.
 # However, this option cannot take a filename directly
@@ -40,6 +40,9 @@ json: coverage_foo.json coverage_bar.json
 
 json_summary: coverage_foo.json coverage_bar.json
 	$(GCOVR) -a 'coverage_*.json' --json-summary-pretty -o summary_coverage.json
+
+coveralls: coverage_foo.json coverage_bar.json
+	$(GCOVR) -a coverage_foo.json -a coverage_bar.json --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f testcase_*

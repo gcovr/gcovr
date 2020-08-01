@@ -21,7 +21,7 @@ sonarqube:
 
 coveralls:
 	./testcase
-	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --coveralls coveralls.xml
+	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --coveralls coveralls.json
 
 clean:
 	rm -f testcase

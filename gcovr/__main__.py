@@ -396,7 +396,7 @@ def print_reports(covdata, options, logger):
                 "Sonarqube output skipped - "
                 "consider providing output file with `--sonarqube=OUTPUT`.")))
 
-    if options.json or options.prettyjson:
+    if options.json or options.json_pretty:
         generators.append((
             [options.json],
             print_json_report,

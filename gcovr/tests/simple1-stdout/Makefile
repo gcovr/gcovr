@@ -25,6 +25,7 @@ json_summary:
 	$(GCOVR) -d --json-summary-pretty > summary_coverage.json
 
 coveralls:
+	./testcase
 	$(GCOVR) -d --coveralls > coveralls.json
 
 clean:

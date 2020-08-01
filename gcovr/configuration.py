@@ -750,7 +750,7 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "prettyjson", ["--json-pretty"],
+        "json_pretty", ["--json-pretty"],
         group="output_options",
         help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
         action="store_true",
@@ -793,6 +793,12 @@ GCOVR_CONFIG_OPTIONS = [
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "coveralls_pretty", ["--coveralls-pretty"],
+        group="output_options",
+        help="Pretty-print the coveralls report. Implies --coveralls. Default: {default!s}.",
+        action="store_true",
     ),
     GcovrConfigOption(
         "filter", ["-f", "--filter"],

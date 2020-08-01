@@ -3,6 +3,8 @@ coverage*.txt
 coverage*.json
 coverage*.xml
 sonarqube*.xml
+coverage*.csv
+coveralls*.json
 *.html
 *.css
 # except in reference directories

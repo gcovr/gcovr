@@ -29,9 +29,8 @@ RE_TXT_WHITESPACE = re.compile(r'[ ]+$', flags=re.MULTILINE)
 RE_XML_ATTRS = re.compile(r'(timestamp)="[^"]*"')
 RE_XML_GCOVR_VERSION = re.compile(r'version="gcovr [^"]+"')
 
-RE_JSON_TS = re.compile(r'"run_at": "[^"]*"')
-RE_JSON_GIT = re.compile(r'"git": {[^}]*}[^}]*}')
-RE_JSON_GCOVR_VERSION = re.compile(r'"version": "gcovr [^"]+"')
+RE_COVERALLSE_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at|(?:service_[a-z_]+)|version)": "[^"]*"')
+RE_COVERALLSE_GIT = re.compile(r'"git": \{(?:"[^"]*": (?:"[^"]*"|\{[^\}]*\}|\[[^\]]*\])(?:, )?)+\}, ')
 
 RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')
 RE_HTML_FOOTER_VERSION = re.compile(
@@ -71,9 +70,10 @@ def scrub_html(contents):
 
 
 def scrub_coveralls(contents):
-    contents = RE_JSON_TS.sub('"run_at": ""', contents)
-    contents = RE_JSON_GIT.sub('"git": ""', contents)
-    contents = RE_JSON_GCOVR_VERSION.sub('"version": ""', contents)
+    if '\n' not in contents:
+        contents += '\n'
+    contents = RE_COVERALLSE_CLEAN_KEYS.sub('"\\1": ""', contents)
+    contents = RE_COVERALLSE_GIT.sub('', contents)
     return contents
 
 

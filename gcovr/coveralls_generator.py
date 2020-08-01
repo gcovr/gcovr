@@ -15,12 +15,34 @@
 from __future__ import absolute_import
 
 import json
-from datetime import datetime
-from functools import partial
-from .gitrepo.gitrepo import gitrepo
+import datetime
+import functools
+import os
+import shutil
+import subprocess
+import sys
+
 from hashlib import md5
-from os import environ
 from .utils import presentable_filename
+
+PRETTY_JSON_INDENT = 4
+
+
+def _write_coveralls_result(gcovr_json_dict, output_file, pretty):
+    r"""helper utility to output json format dictionary to a file/STDOUT """
+    write_json = json.dump
+
+    if pretty:
+        write_json = functools.partial(write_json, indent=PRETTY_JSON_INDENT,
+                                       separators=(',', ': '), sort_keys=True)
+    else:
+        write_json = functools.partial(write_json, sort_keys=True)
+
+    if output_file is None:
+        write_json(gcovr_json_dict, sys.stdout)
+    else:
+        with open(output_file, 'w') as output:
+            write_json(gcovr_json_dict, output)
 
 
 def print_coveralls_report(covdata, output_file, options):
@@ -33,29 +55,93 @@ def print_coveralls_report(covdata, output_file, options):
     """
 
     # Create object to collect coverage data
-    root = {}
+    json_dict = {}
 
     # Capture timestamp
-    root['run_at'] = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    json_dict['run_at'] = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Pull environment variables
-    root['repo_token'] = environ.get('COVERALLS_REPO_TOKEN')
+    if(os.environ.get('COVERALLS_REPO_TOKEN') is not None):
+        json_dict['repo_token'] = os.environ.get('COVERALLS_REPO_TOKEN')
 
+    CurrentBranch = None
+    CurrentCommit = None
     # Consume Travis CI specific environment variables _(if available)_
-    root['service_job_id'] = environ.get('TRAVIS_JOB_ID')
-    if (root['service_job_id'] is not None):
-        root['service_name'] = "travis-ci"
-        root['service_number'] = environ.get('TRAVIS_BUILD_NUMBER')
-        root['service_pull_request'] = environ.get('TRAVIS_PULL_REQUEST')
-    else:
-        root['service_name'] = ""
-        del root['service_job_id']
+    # See https://docs.travis-ci.com/user/environment-variables
+    if (os.environ.get('TRAVIS_JOB_ID') is not None):
+        json_dict['service_name'] = "travis-ci"
+        json_dict['service_job_id'] = os.environ.get('TRAVIS_JOB_ID')
+        json_dict['service_number'] = os.environ.get('TRAVIS_BUILD_NUMBER')
+        json_dict['service_pull_request'] = os.environ.get('TRAVIS_PULL_REQUEST')
+        CurrentCommit = os.environ.get('TRAVIS_COMMIT')
+        CurrentBranch = os.environ.get('TRAVIS_BRANCH')
+    # Consume Appveyor specific environment variables _(if available)_
+    # See https://www.appveyor.com/docs/environment-variables/
+    elif (os.environ.get('APPVEYOR_URL') is not None):
+        json_dict['service_name'] = "appveyor"
+        json_dict['service_job_id'] = os.environ.get('APPVEYOR_JOB_ID')
+        json_dict['service_number'] = os.environ.get('APPVEYOR_JOB_NUMBER')
+        json_dict['service_pull_request'] = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER')
+        CurrentCommit = os.environ.get('APPVEYOR_REPO_COMMIT')
+        CurrentBranch = os.environ.get('APPVEYOR_REPO_BRANCH')
+    # Consume Jenkins specific environment variables _(if available)_
+    # See https://opensource.triology.de/jenkins/pipeline-syntax/globals
+    elif (os.environ.get('JENKINS_URL') is not None):
+        json_dict['service_name'] = "jenkins-ci"
+        json_dict['service_job_id'] = os.environ.get('JOB_NAME')
+        json_dict['service_number'] = os.environ.get('BUILD_ID')
+        json_dict['service_pull_request'] = os.environ.get('CHANGE_ID')
+        if (os.environ.get('GIT_COMMIT') is not None):
+            CurrentCommit = os.environ.get('GIT_COMMIT')
+        CurrentBranch = os.environ.get('BRANCH_NAME')
+    elif (os.environ.get('GCOVR_TEST_SUITE') is not None):
+        json_dict['service_name'] = "gcovr-test-suite"
+        json_dict['service_job_id'] = 'id'
+        json_dict['service_number'] = 'number'
+        json_dict['service_pull_request'] = 'pr'
+        CurrentCommit = None
+        CurrentBranch = 'branch'
 
-    # Add last git commit information
-    root['git'] = gitrepo(options.root_dir)
+    git = shutil.which('git')
+
+    def run_git_cmd(*args):
+        process = subprocess.Popen([git] + list(args),
+                                   stdout=subprocess.PIPE,
+                                   cwd=options.root_dir)
+        return process.communicate()[0].decode('UTF-8').rstrip()
+
+    def run_git_log_cmd(arg):
+        return run_git_cmd('--no-pager', 'log', '-1', '--pretty=format:{}'.format(arg))
+
+    if (git and 'true' in run_git_cmd('rev-parse', '--is-inside-work-tree')):
+        if CurrentBranch is None:
+            CurrentBranch = run_git_cmd('rev-parse', '--abbrev-ref', 'HEAD').rstrip()
+        if CurrentCommit is None:
+            CurrentCommit = run_git_log_cmd('%H')
+
+        json_dict['git'] = {
+            'head': {
+                'id': CurrentCommit,
+                'author_name': run_git_log_cmd('%aN'),
+                'author_email': run_git_log_cmd('%ae'),
+                'committer_name': run_git_log_cmd('%cN'),
+                'committer_email': run_git_log_cmd('%ce'),
+                'message': run_git_log_cmd('%s')
+            },
+            'branch': CurrentBranch,
+            'remotes': [
+                {
+                    'name': line.split()[0],
+                    'url': line.split()[1]
+                }
+                for line in run_git_cmd('remote', '-v').split('\n') if line.endswith('(fetch)')
+            ]
+        }
+    elif CurrentCommit is not None:
+        json_dict['commit_sha'] = CurrentCommit
 
     # Loop through each coverage file collecting details
-    root['source_files'] = []
+    json_dict['source_files'] = []
     for file_path in sorted(covdata):
         # Object with Coveralls file details
         source_file = {}
@@ -63,7 +149,7 @@ def print_coveralls_report(covdata, output_file, options):
         # Generate md5 hash of file contents
         with open(file_path, 'rb') as file_handle:
             hasher = md5()
-            for data in iter(partial(file_handle.read, 8192), b''):
+            for data in iter(functools.partial(file_handle.read, 8192), b''):
                 hasher.update(data)
             file_hash = hasher.hexdigest()
             source_file['source_digest'] = file_hash
@@ -106,8 +192,6 @@ def print_coveralls_report(covdata, output_file, options):
             #     source_file['coverage'].append(b_hits)
 
         # File data has been compiled
-        root['source_files'].append(source_file)
+        json_dict['source_files'].append(source_file)
 
-    # Write to file if specified _(else `stdout`)_
-    with open(output_file, 'w') as coveralls_file:
-        json.dump(root, coveralls_file)
+    _write_coveralls_result(json_dict, output_file, options.coveralls_pretty)
