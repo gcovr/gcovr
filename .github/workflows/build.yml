@@ -64,7 +64,7 @@ jobs:
         make lint PYTHON=python
     - name: Test with pytest
       run: |
-        make test GCC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
+        make test CC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
     - name: Generate documentation
       run: |
         make doc PYTHON=python

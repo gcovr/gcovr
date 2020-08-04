@@ -6,10 +6,10 @@
 set_sensible_default = $(if $(filter undefined default,$(origin $(1))),$(2),$(value $(1)))
 
 PYTHON := $(call set_sensible_default,PYTHON,python3)
-GCC ?= gcc-5
-CC := $(call set_sensible_default,CC,$(GCC))
-CXX := $(call set_sensible_default,CXX,$(subst gcc,g++,$(GCC)))
-GCOV := $(call set_sensible_default,GCOV,$(subst gcc,gcov,$(GCC)))
+# Setting CXX and GCOV depending on CC. Only CC has to be set to a specific version.
+CC := $(call set_sensible_default,CC,gcc-5)
+CXX := $(call set_sensible_default,CXX,$(subst gcc,g++,$(CC)))
+GCOV := $(call set_sensible_default,GCOV,$(subst gcc,gcov,$(CC)))
 QA_CONTAINER ?= gcovr-qa
 TEST_OPTS ?=
 
