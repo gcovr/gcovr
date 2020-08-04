@@ -1,0 +1,77 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        #python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
+        #gcc: [gcc-5, gcc-8]
+        gcc: [gcc-5]
+
+        #include:
+        #  - os: windows-latest
+        #    python-version: 3.5
+        #    gcc: gcc
+  
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install msys with GCC (Windows)
+      uses: msys2/setup-msys2@v2
+      with:
+        install: gcc make
+      if: ${{ matrix.os == 'windows-latest' }}
+    - name: Install GCC (Linux)
+      run: |
+        sudo apt update
+        sudo apt-get install -y make ${{ matrix.gcc }} $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
+        sudo apt-get clean
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        # This path is specific to Ubuntu
+        path: ~/.cache/pip
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          ${{ runner.os }}-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt -r doc/requirements.txt
+        pip install -e .
+    - name: Lint with flake8
+      run: |
+        make lint PYTHON=python
+    - name: Test with pytest
+      run: |
+        make test GCC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
+    - name: Generate documentation
+      run: |
+        make doc PYTHON=python
+    - name: Upload pytest test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: diffs-${{ matrix.os }}-${{ matrix.python-version }}
+        path: gcovr/tests/diff.zip
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}
