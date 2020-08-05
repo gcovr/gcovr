@@ -77,7 +77,7 @@ jobs:
       with:
         name: diffs-${{ matrix.os }}-${{ matrix.python-version }}
         path: gcovr/tests/diff.zip
-      if: ${{ failure() }}
+      if: ${{ always() }}
 
   run-docker:
 
@@ -91,7 +91,7 @@ jobs:
     - name: Upload pytest test results
       uses: actions/upload-artifact@v2
       with:
-        name: diffs-${{ matrix.os }}-${{ matrix.python-version }}-docker
+        name: diffs-docker
         path: gcovr/tests/diff.zip
-      if: ${{ failure() }}
+      if: ${{ always() }}
     
