@@ -21,7 +21,7 @@ jobs:
         #gcc: [gcc-5, gcc-8]
         gcc: [gcc-5]
         #python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.5, 3.6, 3.7, 3.8]
 
         #include:
         #  - os: windows-latest
@@ -67,6 +67,8 @@ jobs:
     - name: Creating coverage report
       run: |
         codecov -X gcov search
+      env: # Or as an environment variable
+        super_secret: ${{ secrets.CODECOV_TOKEN }} 
       if: ${{ ( matrix.os == 'ubuntu-latest' ) && ( matrix.gcc == 'gcc-5' ) && ( matrix.python-version == '3.8' ) }}
     - name: Generate documentation
       run: |
