@@ -48,4 +48,4 @@ clean:
 	rm -f testcase_*
 	rm -f *.gc*
 	rm -f *.o
-	rm -f coverage*.* sonarqube*.* summary_coverage.json
+	rm -f coverage*.* sonarqube*.* summary_coverage.json coveralls.json

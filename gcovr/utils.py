@@ -144,7 +144,7 @@ def calculate_coverage(covered, total, nan_value=0.0):
 
 
 class FilterOption(object):
-    def __init__(self, regex, path_context=None):
+    def __init__(self, regex, path_context=os.getcwd()):
         self.regex = regex
         self.path_context = path_context
 
@@ -163,9 +163,7 @@ class FilterOption(object):
         if os.path.isabs(self.regex):
             return AbsoluteFilter(self.regex)
         else:
-            path_context = (self.path_context if self.path_context is not None
-                            else os.getcwd())
-            return RelativeFilter(path_context, self.regex)
+            return RelativeFilter(self.path_context, self.regex)
 
 
 class NonEmptyFilterOption(FilterOption):

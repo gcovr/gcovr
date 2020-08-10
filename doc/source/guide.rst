@@ -538,7 +538,9 @@ Always use forward slashes ``/`` as path separators, even on Windows:
 If the filter looks like an absolute path,
 it is matched against an absolute path.
 Otherwise, the filter is matched against a relative path,
-where that path is relative to the current directory.
+where that path is relative to the current directory
+or if defined in a configuration file to the directory of the file.
+
 Examples of relative filters:
 
 -   ``--filter subdir/`` matches only that subdirectory
