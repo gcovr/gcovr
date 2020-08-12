@@ -355,7 +355,7 @@ that is easier to read.
 If available, environment variable COVERALLS_REPO_TOKEN will be
 consumed and baked into the JSON output.
 
-If running ain a CI additional variables are used:
+If running in a CI additional variables are used:
 
 - In Travis CI:
 

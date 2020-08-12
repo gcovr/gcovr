@@ -420,7 +420,7 @@ def print_reports(covdata, options, logger):
                 "CSV output skipped - "
                 "consider providing output file with `--csv=OUTPUT`.")))
 
-    if options.coveralls:
+    if options.coveralls or options.coveralls_pretty:
         generators.append((
             [options.coveralls],
             print_coveralls_report,
