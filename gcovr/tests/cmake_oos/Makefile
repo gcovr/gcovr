@@ -12,7 +12,7 @@ all:
 	mkdir -p build
 	cd build && $(CMAKE) .. && make
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube coveralls
 
 coverage.json:
 	cd build && ./gcovrtest
@@ -27,9 +27,12 @@ xml: coverage.json
 html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
 
+coveralls: coverage.json
+	$(GCOVR) -a $<  --coveralls coveralls.json
+
 sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube -o sonarqube.xml
 
 clean:
 	rm -rf build
-	rm -f coverage*.* sonarqube*.*
+	rm -f coverage*.* sonarqube*.* coveralls.json

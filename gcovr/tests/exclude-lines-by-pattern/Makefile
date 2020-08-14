@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube
+run: txt xml html sonarqube coveralls
 
 txt:
 	./testcase
@@ -18,6 +18,10 @@ html:
 sonarqube:
 	./testcase
 	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --sonarqube sonarqube.xml
+
+coveralls:
+	./testcase
+	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --coveralls coveralls.json
 
 clean:
 	rm -f testcase

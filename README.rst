@@ -24,6 +24,7 @@ The ``gcovr`` command can produce different kinds of coverage reports:
 -  ``--json``: JSON report with source files structure and coverage
 -  ``--json-summary``: JSON summary coverage report
 -  ``--csv``: CSV report summarizing the coverage of each file
+-  ``--coveralls``: machine readable JSON reports in Coveralls format
 
 Thus, gcovr can be viewed
 as a command-line alternative to the lcov_ utility, which runs gcov

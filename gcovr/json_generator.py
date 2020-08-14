@@ -57,7 +57,7 @@ def print_json_report(covdata, output_file, options):
         gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
         gcovr_json_root['files'].append(gcovr_json_file)
 
-    _write_json_result(gcovr_json_root, output_file, options.prettyjson)
+    _write_json_result(gcovr_json_root, output_file, options.json_pretty)
 
 
 #
