@@ -99,6 +99,13 @@ generates a text summary of the lines executed:
 .. include:: ../examples/example.txt
     :literal:
 
+The same result can be achieved when explicit :option:`gcovr --txt` option is set.
+For example::
+
+    gcovr -r . --txt
+
+generates the same text summary.
+
 Each line of this output includes a summary for a given source file,
 including the number of lines instrumented, the number of lines
 executed, the percentage of lines executed, and a summary of the
@@ -113,30 +120,6 @@ The ``-r`` option specifies the root directory for the files that are
 being analyzed.  This allows ``gcovr`` to generate a simpler report
 (without absolute path names), and it allows system header files
 to be excluded from the analysis.
-
-The ``--json-summary`` and ``--json-summary-pretty`` options output
-coverage summary in a machine-readable format for additional
-post processing. The format is identical to JSON output
-:option:`gcovr --json` option without detailed ``lines`` information.
-Here is an example of json summary format:
-
-::
-
-    {
-        "gcovr/summary_format_version": 0.1,
-        "percent": 80.0,
-        "total": 10,
-        "covered": 8,
-        "current_working_directory": ".",
-        "files": [
-            {
-                "covered": 8,
-                "file": "main.cpp",
-                "percent": 80.0,
-                "total": 10
-            }
-        ]
-    }
 
 Note that ``gcov`` accumulates statistics by line.  Consequently, it
 works best with a programming style that places only one statement
@@ -163,6 +146,12 @@ branches taken and the branches that were not completely covered:
 .. include:: ../examples/example_branches.txt
     :literal:
 
+The same result can be achieved when explicit :option:`gcovr --txt` option is set.
+For example::
+
+    gcovr -r . --branches --txt
+
+print the same tabular output.
 
 Cobertura XML Output
 ~~~~~~~~~~~~~~~~~~~~
@@ -339,7 +328,33 @@ tabulated text based output, you can use :option:`gcovr --json-summary`
 instead.
 
 Multiple JSON files can be merged into the coverage data
-with sum of lines and branches execution
+with sum of lines and branches execution.
+
+
+.. _json_summary_output:
+
+JSON Summary Output
+~~~~~~~~~~~~~~~~~~~
+
+The ``--json-summary`` options output coverage summary
+in a machine-readable format for additional post processing. 
+The format is identical to JSON output :option:`gcovr --json` option without
+detailed ``lines`` information. The ``--json-summary-pretty`` option generates
+an indented JSON summary output that is easier to read.
+Consider the following command:
+
+.. include:: ../examples/example_json_summary.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an indented JSON summary:
+
+.. include:: ../examples/example_json_summary.json
+    :code: json
+
+
+.. _coveralls_output:
 
 Coveralls JSON Output
 ~~~~~~~~~~~~~~~~~~~~~
@@ -383,6 +398,26 @@ If running in a CI additional variables are used:
 
 The Coveralls JSON format is documented at
 `<https://docs.coveralls.io/api-introduction>`_.
+
+
+.. _csv_output:
+
+CSV Output
+~~~~~~~~~~
+
+The `--csv` option output comma-separated values summarizing the coverage
+of each file. Consider the following command:
+
+.. include:: ../examples/example_csv.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an CSV:
+
+.. include:: ../examples/example_csv.csv
+    :literal:
+
 
 .. _multiple output formats:
 
