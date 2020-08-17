@@ -305,6 +305,9 @@ For example:
 To see all tests, run pytest in ``-v`` verbose mode.
 To see which tests would be run, add the ``--collect-only`` option.
 
+.. versionadded:: NEXT
+   Added test options `--generate-reference`, `--update_reference` and `--skip_clean`
+
 .. _docker tests:
 
 Run tests with Docker

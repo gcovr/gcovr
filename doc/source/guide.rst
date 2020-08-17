@@ -154,6 +154,9 @@ option is set. For example::
 
 print the same tabular output.
 
+.. versionadded:: NEXT
+   Added :option:`--txt<gcovr --txt>`.
+
 Cobertura XML Output
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -359,6 +362,9 @@ This generates an indented JSON summary:
 .. include:: ../examples/example_json_summary.json
     :code: json
 
+.. versionadded:: NEXT
+   Added :option:`--json-summary<gcovr --json-summary>`
+   and :option:`--json-summary-pretty<gcovr --json-summary-pretty>`.
 
 .. _coveralls_output:
 
@@ -405,6 +411,9 @@ If running in a CI additional variables are used:
 The Coveralls JSON format is documented at
 `<https://docs.coveralls.io/api-introduction>`_.
 
+.. versionadded:: NEXT
+   Added :option:`--coveralls<gcovr --coveralls>`
+   and :option:`--coveralls-pretty<gcovr --coveralls-pretty>`.
 
 .. _csv_output:
 
@@ -424,6 +433,8 @@ This generates an CSV:
 .. include:: ../examples/example_csv.csv
     :literal:
 
+.. versionadded:: NEXT
+   Added :option:`--csv<gcovr --csv>`.
 
 .. _multiple output formats:
 
