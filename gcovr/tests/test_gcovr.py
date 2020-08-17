@@ -29,7 +29,7 @@ RE_TXT_WHITESPACE = re.compile(r'[ ]+$', flags=re.MULTILINE)
 RE_XML_ATTRS = re.compile(r'(timestamp)="[^"]*"')
 RE_XML_GCOVR_VERSION = re.compile(r'version="gcovr [^"]+"')
 
-RE_COVERALLSE_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at|(?:service_[a-z_]+)|version)": "[^"]*"')
+RE_COVERALLSE_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at|version)": "[^"]*"')
 RE_COVERALLSE_GIT = re.compile(r'"git": \{(?:"[^"]*": (?:"[^"]*"|\{[^\}]*\}|\[[^\]]*\])(?:, )?)+\}, ')
 
 RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')

@@ -66,13 +66,21 @@ def print_coveralls_report(covdata, output_file, options):
 
     CurrentBranch = None
     CurrentCommit = None
+    CurrentPullRequest = None
     # Consume Travis CI specific environment variables _(if available)_
     # See https://docs.travis-ci.com/user/environment-variables
-    if (os.environ.get('TRAVIS_JOB_ID') is not None):
+    if (os.environ.get('GCOVR_TEST_SUITE') is not None):
+        json_dict['service_name'] = "gcovr-test-suite"
+        json_dict['service_job_id'] = 'id'
+        json_dict['service_number'] = 'number'
+        CurrentPullRequest = 'pr'
+        CurrentCommit = None
+        CurrentBranch = 'branch'
+    elif (os.environ.get('TRAVIS_JOB_ID') is not None):
         json_dict['service_name'] = "travis-ci"
         json_dict['service_job_id'] = os.environ.get('TRAVIS_JOB_ID')
         json_dict['service_number'] = os.environ.get('TRAVIS_BUILD_NUMBER')
-        json_dict['service_pull_request'] = os.environ.get('TRAVIS_PULL_REQUEST')
+        CurrentPullRequest = os.environ.get('TRAVIS_PULL_REQUEST')
         CurrentCommit = os.environ.get('TRAVIS_COMMIT')
         CurrentBranch = os.environ.get('TRAVIS_BRANCH')
     # Consume Appveyor specific environment variables _(if available)_
@@ -81,7 +89,7 @@ def print_coveralls_report(covdata, output_file, options):
         json_dict['service_name'] = "appveyor"
         json_dict['service_job_id'] = os.environ.get('APPVEYOR_JOB_ID')
         json_dict['service_number'] = os.environ.get('APPVEYOR_JOB_NUMBER')
-        json_dict['service_pull_request'] = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER')
+        CurrentPullRequest = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER')
         CurrentCommit = os.environ.get('APPVEYOR_REPO_COMMIT')
         CurrentBranch = os.environ.get('APPVEYOR_REPO_BRANCH')
     # Consume Jenkins specific environment variables _(if available)_
@@ -90,17 +98,13 @@ def print_coveralls_report(covdata, output_file, options):
         json_dict['service_name'] = "jenkins-ci"
         json_dict['service_job_id'] = os.environ.get('JOB_NAME')
         json_dict['service_number'] = os.environ.get('BUILD_ID')
-        json_dict['service_pull_request'] = os.environ.get('CHANGE_ID')
+        CurrentPullRequest = os.environ.get('CHANGE_ID')
         if (os.environ.get('GIT_COMMIT') is not None):
             CurrentCommit = os.environ.get('GIT_COMMIT')
         CurrentBranch = os.environ.get('BRANCH_NAME')
-    elif (os.environ.get('GCOVR_TEST_SUITE') is not None):
-        json_dict['service_name'] = "gcovr-test-suite"
-        json_dict['service_job_id'] = 'id'
-        json_dict['service_number'] = 'number'
-        json_dict['service_pull_request'] = 'pr'
-        CurrentCommit = None
-        CurrentBranch = 'branch'
+
+    if CurrentPullRequest is not None:
+        json_dict['service_pull_request'] = CurrentPullRequest
 
     git = shutil.which('git')
 
