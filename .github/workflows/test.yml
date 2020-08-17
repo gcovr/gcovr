@@ -31,16 +31,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install msys with GCC (Windows)
+      if: ${{ matrix.os == 'windows-latest' }}
       uses: msys2/setup-msys2@v2
       with:
         install: gcc make
-      if: ${{ matrix.os == 'windows-latest' }}
     - name: Install GCC (Linux)
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
         sudo apt update
         sudo apt-get install -y make ${{ matrix.gcc }} $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
         sudo apt-get clean
-      if: ${{ matrix.os == 'ubuntu-latest' }}
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -65,21 +65,21 @@ jobs:
       run: |
         make test CC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
     - name: Creating coverage report
+      if: ${{ ( matrix.os == 'ubuntu-latest' ) && ( matrix.gcc == 'gcc-5' ) && ( matrix.python-version == '3.8' ) }}
       run: |
         codecov -X gcov search
       env: # Or as an environment variable
         super_secret: ${{ secrets.CODECOV_TOKEN }} 
-      if: ${{ ( matrix.os == 'ubuntu-latest' ) && ( matrix.gcc == 'gcc-5' ) && ( matrix.python-version == '3.8' ) }}
     - name: Generate documentation
       run: |
         admin/release_checklist --no-verify-tags --no-verify-docs-next-version 4.2
         make doc PYTHON=python
     - name: Upload pytest test results
+      if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
         name: diffs-${{ matrix.os }}-${{ matrix.python-version }}
         path: gcovr/tests/diff.zip
-      if: ${{ always() }}
 
   run-docker:
 
@@ -91,9 +91,9 @@ jobs:
       run: |
         make docker-qa TEST_OPTS="--archive_differences"
     - name: Upload pytest test results
+      if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
         name: diffs-docker
         path: gcovr/tests/diff.zip
-      if: ${{ always() }}
     

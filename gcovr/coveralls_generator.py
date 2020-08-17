@@ -82,18 +82,18 @@ def print_coveralls_report(covdata, output_file, options):
         json_dict['service_name'] = "travis-ci"
         json_dict['service_job_id'] = os.environ.get('TRAVIS_JOB_ID')
         json_dict['service_number'] = os.environ.get('TRAVIS_BUILD_NUMBER')
+        CurrentCommit = os.environ.get('TRAVIS_COMMIT')
         CurrentPullRequest = os.environ.get('TRAVIS_PULL_REQUEST')
         CurrentBranch = os.environ.get('TRAVIS_BRANCH')
-        CurrentCommit = os.environ.get('TRAVIS_COMMIT')
     # Consume Appveyor specific environment variables _(if available)_
     # See https://www.appveyor.com/docs/environment-variables/
     elif (os.environ.get('APPVEYOR_URL') is not None):
         json_dict['service_name'] = "appveyor"
         json_dict['service_job_id'] = os.environ.get('APPVEYOR_JOB_ID')
         json_dict['service_number'] = os.environ.get('APPVEYOR_JOB_NUMBER')
+        CurrentCommit = os.environ.get('APPVEYOR_REPO_COMMIT')
         CurrentPullRequest = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER')
         CurrentBranch = os.environ.get('APPVEYOR_REPO_BRANCH')
-        CurrentCommit = os.environ.get('APPVEYOR_REPO_COMMIT')
     # Consume Jenkins specific environment variables _(if available)_
     # See https://opensource.triology.de/jenkins/pipeline-syntax/globals
     elif (os.environ.get('JENKINS_URL') is not None):
@@ -112,15 +112,15 @@ def print_coveralls_report(covdata, output_file, options):
         json_dict['service_number'] = os.environ.get('GITHUB_RUN_ID')
         CurrentCommit = os.environ.get('GITHUB_SHA')
         if os.environ.get('GITHUB_HEAD_REF') is not None:
-            CurrentPullRequest = re.sub(r'^refs/pull/(\d+)/merge$', '\1', os.environ.get('GITHUB_HEAD_REF'))
-            CurrentBranch = os.environ.get('GITHUB_HEAD_REF')
+            CurrentPullRequest = re.sub(r'^refs/pull/(\d+)/merge$', r'\1', os.environ.get('GITHUB_HEAD_REF'))
+            CurrentBranch = os.environ.get('GITHUB_REF')
         else:
             CurrentBranch = re.sub(r'^refs/heads/', '', os.environ.get('GITHUB_REF'))
 
     if CurrentPullRequest is not None:
         json_dict['service_pull_request'] = CurrentPullRequest
 
-    git = shutil.which('git')
+    git = shutil.which('git') if os.environ.get('GCOVR_TEST_SUITE_NO_GIT_COMMAND') is None else None
 
     def run_git_cmd(*args):
         process = subprocess.Popen([git] + list(args),

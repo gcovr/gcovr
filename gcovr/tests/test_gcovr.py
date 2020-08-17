@@ -70,8 +70,7 @@ def scrub_html(contents):
 
 
 def scrub_coveralls(contents):
-    if '\n' not in contents:
-        contents += '\n'
+    contents += '\n'
     contents = RE_COVERALLSE_CLEAN_KEYS.sub('"\\1": ""', contents)
     contents = RE_COVERALLSE_GIT.sub('', contents)
     return contents
@@ -229,7 +228,7 @@ OUTPUT_PATTERN = dict(
     json=['coverage*.json'],
     json_summary=['summary_coverage.json'],
     csv=['coverage.csv'],
-    coveralls=['coveralls.json'])
+    coveralls=['coveralls*.json'])
 
 ASSERT_EQUALS = dict(
     xml=assert_xml_equals,

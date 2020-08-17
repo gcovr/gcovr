@@ -432,6 +432,14 @@ If running in a CI additional variables are used:
   - GIT_COMMIT (if available)
   - BRANCH_NAME
 
+- In GitHub Actions:
+
+  - GITHUB_WORKFLOW
+  - GITHUB_RUN_ID
+  - GITHUB_SHA
+  - GITHUB_HEAD_REF (if available)
+  - GITHUB_REF
+
 The Coveralls JSON format is documented at
 `<https://docs.coveralls.io/api-introduction>`_.
 
