@@ -18,6 +18,7 @@ import json
 import datetime
 import functools
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -67,22 +68,23 @@ def print_coveralls_report(covdata, output_file, options):
     CurrentBranch = None
     CurrentCommit = None
     CurrentPullRequest = None
-    # Consume Travis CI specific environment variables _(if available)_
-    # See https://docs.travis-ci.com/user/environment-variables
+    # Stub for own test suite
     if (os.environ.get('GCOVR_TEST_SUITE') is not None):
         json_dict['service_name'] = "gcovr-test-suite"
         json_dict['service_job_id'] = 'id'
         json_dict['service_number'] = 'number'
         CurrentPullRequest = 'pr'
-        CurrentCommit = None
         CurrentBranch = 'branch'
+        CurrentCommit = None
+    # Consume Travis CI specific environment variables _(if available)_
+    # See https://docs.travis-ci.com/user/environment-variables
     elif (os.environ.get('TRAVIS_JOB_ID') is not None):
         json_dict['service_name'] = "travis-ci"
         json_dict['service_job_id'] = os.environ.get('TRAVIS_JOB_ID')
         json_dict['service_number'] = os.environ.get('TRAVIS_BUILD_NUMBER')
         CurrentPullRequest = os.environ.get('TRAVIS_PULL_REQUEST')
-        CurrentCommit = os.environ.get('TRAVIS_COMMIT')
         CurrentBranch = os.environ.get('TRAVIS_BRANCH')
+        CurrentCommit = os.environ.get('TRAVIS_COMMIT')
     # Consume Appveyor specific environment variables _(if available)_
     # See https://www.appveyor.com/docs/environment-variables/
     elif (os.environ.get('APPVEYOR_URL') is not None):
@@ -90,18 +92,30 @@ def print_coveralls_report(covdata, output_file, options):
         json_dict['service_job_id'] = os.environ.get('APPVEYOR_JOB_ID')
         json_dict['service_number'] = os.environ.get('APPVEYOR_JOB_NUMBER')
         CurrentPullRequest = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER')
-        CurrentCommit = os.environ.get('APPVEYOR_REPO_COMMIT')
         CurrentBranch = os.environ.get('APPVEYOR_REPO_BRANCH')
+        CurrentCommit = os.environ.get('APPVEYOR_REPO_COMMIT')
     # Consume Jenkins specific environment variables _(if available)_
     # See https://opensource.triology.de/jenkins/pipeline-syntax/globals
     elif (os.environ.get('JENKINS_URL') is not None):
         json_dict['service_name'] = "jenkins-ci"
         json_dict['service_job_id'] = os.environ.get('JOB_NAME')
         json_dict['service_number'] = os.environ.get('BUILD_ID')
-        CurrentPullRequest = os.environ.get('CHANGE_ID')
         if (os.environ.get('GIT_COMMIT') is not None):
             CurrentCommit = os.environ.get('GIT_COMMIT')
+        CurrentPullRequest = os.environ.get('CHANGE_ID')
         CurrentBranch = os.environ.get('BRANCH_NAME')
+    # Consume GitHup Actions specific environment variables _(if available)_
+    # See https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables
+    elif (os.environ.get('GITHUB_ACTIONS') is not None):
+        json_dict['service_name'] = "github-actions-ci"
+        json_dict['service_job_id'] = os.environ.get('GITHUB_WORKFLOW')
+        json_dict['service_number'] = os.environ.get('GITHUB_RUN_ID')
+        CurrentCommit = os.environ.get('GITHUB_SHA')
+        if os.environ.get('GITHUB_HEAD_REF') is not None:
+            CurrentPullRequest = re.sub(r'^refs/pull/(\d+)/merge$', '\1', os.environ.get('GITHUB_HEAD_REF'))
+            CurrentBranch = os.environ.get('GITHUB_HEAD_REF')
+        else:
+            CurrentBranch = re.sub(r'^refs/heads/', '', os.environ.get('GITHUB_REF'))
 
     if CurrentPullRequest is not None:
         json_dict['service_pull_request'] = CurrentPullRequest
