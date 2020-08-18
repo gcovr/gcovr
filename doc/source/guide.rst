@@ -157,6 +157,7 @@ print the same tabular output.
 .. versionadded:: NEXT
    Added :option:`--txt<gcovr --txt>`.
 
+
 Cobertura XML Output
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -366,6 +367,29 @@ This generates an indented JSON summary:
    Added :option:`--json-summary<gcovr --json-summary>`
    and :option:`--json-summary-pretty<gcovr --json-summary-pretty>`.
 
+
+.. _csv_output:
+
+CSV Output
+~~~~~~~~~~
+
+The :option:`--csv<gcovr --csv>` option output comma-separated values
+summarizing the coverage of each file. Consider the following command:
+
+.. include:: ../examples/example_csv.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an CSV:
+
+.. include:: ../examples/example_csv.csv
+    :literal:
+
+.. versionadded:: NEXT
+   Added :option:`--csv<gcovr --csv>`.
+
+
 .. _coveralls_output:
 
 Coveralls JSON Output
@@ -415,26 +439,6 @@ The Coveralls JSON format is documented at
    Added :option:`--coveralls<gcovr --coveralls>`
    and :option:`--coveralls-pretty<gcovr --coveralls-pretty>`.
 
-.. _csv_output:
-
-CSV Output
-~~~~~~~~~~
-
-The :option:`--csv<gcovr --csv>` option output comma-separated values
-summarizing the coverage of each file. Consider the following command:
-
-.. include:: ../examples/example_csv.sh
-    :code: bash
-    :start-after: #BEGIN gcovr
-    :end-before: #END gcovr
-
-This generates an CSV:
-
-.. include:: ../examples/example_csv.csv
-    :literal:
-
-.. versionadded:: NEXT
-   Added :option:`--csv<gcovr --csv>`.
 
 .. _multiple output formats:
 
