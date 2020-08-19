@@ -1,6 +1,7 @@
 # Ignore output files
 coverage*.txt
 coverage*.json
+summary_coverage*.json
 coverage*.xml
 sonarqube*.xml
 coverage*.csv
