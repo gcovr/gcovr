@@ -284,29 +284,51 @@ To run all tests, use ``make test`` or ``make qa``.
 The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 
-Because the tests are a bit slow, you can limit the tests to a specific
-test file, example project, or output format.
+You can run the tests with additional options by setting TEST_OPTS variable.
+Run all tests after each change is a bit slow, therefore you can limit the tests
+to a specific test file, example project, or output format.
 For example:
 
 .. code:: bash
 
     # run only XML tests
-    python3 -m pytest -k xml
+    make test TEST_OPTS="-k 'xml'"
 
     # run the simple1 tests
-    python3 -m pytest -k simple1
+    make test TEST_OPTS="-k 'simple1'"
 
     # run the simple1 tests only for XML
-    python3 -m pytest -k 'xml and simple1'
-
-    # set filters using the Makefile:
     make test TEST_OPTS="-k 'xml and simple1'"
 
-To see all tests, run pytest in ``-v`` verbose mode.
-To see which tests would be run, add the ``--collect-only`` option.
+To see which tests would be run, add the ``--collect-only`` option:
+
+.. code:: bash
+
+    #see which tests would be run
+    make test TEST_OPTS="--collect-only"
+
+Sometimes during development you need to create reference files for new test
+or update the current reference files. To do this you have to
+add `--generate_reference` or `--update-reference` option to the TEST_OPTS
+variable.
+By default generated output files are automatically removed after test run.
+To skip this process you can add `--skip_clean` option the TEST_OPTS.
+For example:
+
+.. code:: bash
+
+    #run tests and generate references for simple1 example
+    make test TEST_OPTS="-k 'simple1' --generate_reference"
+
+    #run tests and update xml references for simple1 example
+    make test TEST_OPTS="-k 'xml and simple1' --update_reference"
+
+    # run only XML tests and do not remove generated files
+    make test TEST_OPTS="-k 'xml' --skip_clean"
 
 .. versionadded:: NEXT
-   Added test options `--generate-reference`, `--update_reference` and `--skip_clean`
+   Added test options `--generate_reference`, `--update_reference`,
+   `--skip_clean` and changed way to call tests only by ``make test``.
 
 .. _docker tests:
 
