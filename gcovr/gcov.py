@@ -205,7 +205,13 @@ def guess_source_file_name_heuristics(
     if os.path.exists(fname):
         return fname
 
-    # 3. Try using the path to the gcda file as the source directory
+    # 3. Try using the source directory as the source directory
+    fdir = os.path.dirname(source_fname)
+    fname = os.path.join(fdir, gcovname)
+    if os.path.exists(fname):
+        return os.path.normpath(fname)
+
+    # 4. Try using the path to the gcda file as the source directory
     source_fname_dir = os.path.dirname(source_fname)
     fname = os.path.join(source_fname_dir, os.path.basename(gcovname))
     return fname
