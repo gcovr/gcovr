@@ -43,11 +43,10 @@ Internal changes:
  - Support multiple output patterns in integration tests (:issue:`383`)
  - Extend tests to use an unified diff in the assert. Add test options `--generate_reference`,
    `--update_reference` and `--skip_clean`. (:issue:`374`)
- - Set make variable TEST_OPTS as environment variable inside docker. (:issue: `372`)
+ - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)
  - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
  - Extend test framework for CI (:issue:`392`):
 
-   - Extend test option `--update_reference` for all formats.
    - New option `--archive_differences` to save the different files as ZIP.
      Use this ZIP as artifact in AppVeyor.
 
