@@ -284,7 +284,7 @@ To run all tests, use ``make test`` or ``make qa``.
 The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 
-You can run the tests with additional options by setting TEST_OPTS variable.
+You can run the tests with additional options by setting ``TEST_OPTS`` variable.
 Run all tests after each change is a bit slow, therefore you can limit the tests
 to a specific test file, example project, or output format.
 For example:
@@ -309,26 +309,38 @@ To see which tests would be run, add the ``--collect-only`` option:
 
 Sometimes during development you need to create reference files for new test
 or update the current reference files. To do this you have to
-add `--generate_reference` or `--update-reference` option to the TEST_OPTS
-variable.
+add ``--generate_reference`` or ``--update-reference`` option
+to the ``TEST_OPTS`` variable.
 By default generated output files are automatically removed after test run.
-To skip this process you can add `--skip_clean` option the TEST_OPTS.
+To skip this process you can add ``--skip_clean`` option the ``TEST_OPTS``.
 For example:
 
 .. code:: bash
 
-    #run tests and generate references for simple1 example
+    # run tests and generate references for simple1 example
     make test TEST_OPTS="-k 'simple1' --generate_reference"
 
-    #run tests and update xml references for simple1 example
+    # run tests and update xml references for simple1 example
     make test TEST_OPTS="-k 'xml and simple1' --update_reference"
 
     # run only XML tests and do not remove generated files
     make test TEST_OPTS="-k 'xml' --skip_clean"
 
+When the currently generated output reports differ to the reference files
+you can create a ZIP archive named ``diff.zip`` in the tests directory
+by using ``--archive_differences`` option.
+Currently in gcovr it is used by AppVeyor CI to create a ZIP file
+with the differences as an artifact.
+
+.. code:: bash
+
+    # run tests and generate a ZIP archive when there were differences
+    make test TEST_OPTS="--archive_differences"
+
 .. versionadded:: NEXT
    Added test options `--generate_reference`, `--update_reference`,
-   `--skip_clean` and changed way to call tests only by ``make test``.
+   `--skip_clean`, '--archive_differences' and changed way to call tests
+   only by ``make test``.
 
 .. _docker tests:
 
