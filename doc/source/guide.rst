@@ -99,6 +99,13 @@ generates a text summary of the lines executed:
 .. include:: ../examples/example.txt
     :literal:
 
+The same result can be achieved when explicit :option:`--txt<gcovr --txt>`
+option is set. For example::
+
+    gcovr -r . --txt
+
+generates the same text summary.
+
 Each line of this output includes a summary for a given source file,
 including the number of lines instrumented, the number of lines
 executed, the percentage of lines executed, and a summary of the
@@ -109,34 +116,10 @@ freestanding braces, and single-line comments) into a single region.
 As a result, the number of lines listed in the "Missing" list may
 be greater than the difference of the "Lines" and "Exec" columns.
 
-The ``-r`` option specifies the root directory for the files that are
-being analyzed.  This allows ``gcovr`` to generate a simpler report
-(without absolute path names), and it allows system header files
+The :option:`-r/--root<gcovr --root>` option specifies the root directory
+for the files that are being analyzed.  This allows ``gcovr`` to generate
+a simpler report (without absolute path names), and it allows system header files
 to be excluded from the analysis.
-
-The ``--json-summary`` and ``--json-summary-pretty`` options output
-coverage summary in a machine-readable format for additional
-post processing. The format is identical to JSON output
-:option:`gcovr --json` option without detailed ``lines`` information.
-Here is an example of json summary format:
-
-::
-
-    {
-        "gcovr/summary_format_version": 0.1,
-        "percent": 80.0,
-        "total": 10,
-        "covered": 8,
-        "current_working_directory": ".",
-        "files": [
-            {
-                "covered": 8,
-                "file": "main.cpp",
-                "percent": 80.0,
-                "total": 10
-            }
-        ]
-    }
 
 Note that ``gcov`` accumulates statistics by line.  Consequently, it
 works best with a programming style that places only one statement
@@ -150,7 +133,8 @@ on each line.
 Tabular Output of Branch Coverage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``gcovr`` command can also summarize branch coverage using the ``--branches`` option:
+The ``gcovr`` command can also summarize branch coverage using
+the :option:`-b/--branches<gcovr --branches>` option:
 
 .. include:: ../examples/example_branches.sh
     :code: bash
@@ -163,13 +147,24 @@ branches taken and the branches that were not completely covered:
 .. include:: ../examples/example_branches.txt
     :literal:
 
+The same result can be achieved when explicit :option:`--txt<gcovr --txt>`
+option is set. For example::
+
+    gcovr -r . --branches --txt
+
+print the same tabular output.
+
+.. versionadded:: NEXT
+   Added :option:`--txt<gcovr --txt>`.
+
 
 Cobertura XML Output
 ~~~~~~~~~~~~~~~~~~~~
 
 The default output format for ``gcovr`` is to generate a tabular
 summary in plain text.  The ``gcovr`` command can also generate an
-XML output using the ``--xml`` and ``--xml-pretty`` options:
+XML output using the :option:`-x/--xml<gcovr --xml>`
+and :option:`--xml-pretty<gcovr --xml-pretty>` options:
 
 .. include:: ../examples/example_xml.sh
     :code: bash
@@ -189,12 +184,12 @@ continuous integration servers using the
 `Cobertura Plugin <https://wiki.jenkins-ci.org/display/JENKINS/Cobertura+Plugin>`__.
 Gcovr also supports a `Sonarqube XML Output`_
 
-The ``--xml`` option generates a denser XML output, and the ``--xml-pretty``
-option generates an indented XML output that is easier to read.
-Note that the XML output contains more information than the tabular
-summary.  The tabular summary shows the percentage of covered lines,
-while the XML output includes branch statistics and the number of
-times that each line was covered.  Consequently, XML output can be
+The :option:`-x/--xml<gcovr --xml>` option generates a denser XML output, and the
+:option:`--xml-pretty<gcovr --xml-pretty>` option generates an indented
+XML output that is easier to read. Note that the XML output contains more
+information than the tabular summary.  The tabular summary shows the percentage
+of covered lines, while the XML output includes branch statistics and the number
+of times that each line was covered.  Consequently, XML output can be
 used to support performance optimization in the same manner that
 ``gcov`` does.
 
@@ -203,7 +198,7 @@ HTML Output
 ~~~~~~~~~~~
 
 The ``gcovr`` command can also generate a simple
-HTML output using the ``--html`` option:
+HTML output using the :option:`--html<gcovr --html>` option:
 
 .. include:: ../examples/example_html.sh
     :code: bash
@@ -217,15 +212,15 @@ following output:
 .. image:: ../images/screenshot-html.png
     :align: center
 
-The default behavior of the ``--html`` option is to generate HTML for
-a single webpage that summarizes the coverage for all files.  The
-HTML is printed to standard output, but the ``-o`` (``--output``) option
-is used to specify a file that stores the HTML output.
+The default behavior of the :option:`--html<gcovr --html>` option is to generate
+HTML for a single webpage that summarizes the coverage for all files.  The
+HTML is printed to standard output, but the :option:`-o/--output<gcovr --output>`
+option is used to specify a file that stores the HTML output.
 
-The ``--html-details`` option is used to create a separate web page
-for each file.  Each of these web pages includes the contents of
-file with annotations that summarize code coverage.  Consider the following
-command:
+The :option:`--html-details<gcovr --html-details>` option is used to create
+a separate web page for each file.  Each of these web pages includes
+the contents of file with annotations that summarize code coverage.  Consider
+the following command:
 
 .. include:: ../examples/example_html.sh
     :code: bash
@@ -237,26 +232,28 @@ This generates the following HTML page for the file ``example1.cpp``:
 .. image:: ../images/screenshot-html-details.example.cpp.png
     :align: center
 
-Note that the ``--html-details`` option needs a named output,
-e.g. via the the ``-o`` (``--output``) option.
+Note that the :option:`--html-details<gcovr --html-details>` option needs
+a named output, e.g. via the the :option:`-o/--output<gcovr --output>` option.
 For example, if the output is named ``coverage.html``,
 then the web pages generated for each file will have names of the form
 ``coverage.<filename>.html``.
 
-The ``--html-self-contained`` option controls whether assets like CSS styles
-are bundled into the HTML file.
-The ``--html`` report defaults to self-contained mode.
-but ``--html-details`` defaults to ``--no-html-self-contained``
+The :option:`--html-self-contained<gcovr --html-self-contained>` option controls
+whether assets like CSS styles are bundled into the HTML file.
+The :option:`--html<gcovr --html>` report defaults to self-contained mode.
+but :option:`--html-details<gcovr --html-details>` defaults to
+:option:`--no-html-self-contained<gcovr --html-self-contained>`
 in order to avoid problems with the `Content Security Policy <CSP_>`_
 of some servers, especially Jenkins.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
 
 .. versionadded:: NEXT
-   Added ``--html-self-contained`` and ``--no-html-self-contained``.
+   Added :option:`--html-self-contained<gcovr --html-self-contained>`
+   and :option:`--no-html-self-contained<gcovr --html-self-contained>`.
 
 .. versionchanged:: NEXT
-   Default to external CSS file for ``--html-details``.
+   Default to external CSS file for :option:`--html-details<gcovr --html-details>`.
 
 
 .. _sonarqube_xml_output:
@@ -265,7 +262,7 @@ Sonarqube XML Output
 ~~~~~~~~~~~~~~~~~~~~
 
 If you are using Sonarqube, you can get a coverage report
-in a suitable XML format via the :option:`gcovr --sonarqube` option::
+in a suitable XML format via the :option:`--sonarqube<gcovr --sonarqube>` option::
 
     gcovr --sonarqube coverage.xml
 
@@ -278,12 +275,13 @@ JSON Output
 ~~~~~~~~~~~
 
 The ``gcovr`` command can also generate a JSON output using
-the ``--json`` and ``--json-pretty`` options::
+the :option:`--json<gcovr --json>` and :option:`--json-pretty<gcovr --json-pretty>`
+options::
 
     gcovr --json coverage.json
 
-The ``--json-pretty`` option generates an indented JSON output
-that is easier to read.
+The :option:`--json-pretty<gcovr --json-pretty>` option generates an indented
+JSON output that is easier to read.
 
 Structure of file is based on gcov JSON intermediate format
 with additional key names specific to gcovr.
@@ -334,23 +332,76 @@ Each *branch* has the following form:
 intermediate format. This format is documented at
 `<https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html#Invoking-Gcov>`_.
 
-If you just need a summary of the coverage information, similar to the
-tabulated text based output, you can use :option:`gcovr --json-summary`
+If you just need a summary of the coverage information, similar to the tabulated
+text based output, you can use :option:`--json-summary<gcovr --json-summary>`
 instead.
 
 Multiple JSON files can be merged into the coverage data
-with sum of lines and branches execution
+with sum of lines and branches execution.
+
+
+.. _json_summary_output:
+
+JSON Summary Output
+~~~~~~~~~~~~~~~~~~~
+
+The :option:`--json-summary<gcovr --json-summary>` option output coverage summary
+in a machine-readable format for additional post processing. 
+The format is identical to JSON output :option:`--json<gcovr --json>` option
+without detailed ``lines`` information.
+The :option:`--json-summary-pretty<gcovr --json-summary-pretty>` option
+generates an indented JSON summary output that is easier to read.
+Consider the following command:
+
+.. include:: ../examples/example_json_summary.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an indented JSON summary:
+
+.. include:: ../examples/example_json_summary.json
+    :code: json
+
+.. versionadded:: NEXT
+   Added :option:`--json-summary<gcovr --json-summary>`
+   and :option:`--json-summary-pretty<gcovr --json-summary-pretty>`.
+
+
+.. _csv_output:
+
+CSV Output
+~~~~~~~~~~
+
+The :option:`--csv<gcovr --csv>` option output comma-separated values
+summarizing the coverage of each file. Consider the following command:
+
+.. include:: ../examples/example_csv.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an CSV:
+
+.. include:: ../examples/example_csv.csv
+    :literal:
+
+.. versionadded:: NEXT
+   Added :option:`--csv<gcovr --csv>`.
+
+
+.. _coveralls_output:
 
 Coveralls JSON Output
 ~~~~~~~~~~~~~~~~~~~~~
 
 If you are using Coveralls, you can get a coverage report
-in a suitable JSON format via the :option:`gcovr --coveralls` option::
+in a suitable JSON format via the :option:`--coveralls<gcovr --coveralls>` option::
 
     gcovr --coveralls coverage.json
 
-The ``--coveralls-pretty`` option generates an indented JSON output
-that is easier to read.
+The :option:`--coveralls-pretty<gcovr --coveralls-pretty>` option generates
+an indented JSON output that is easier to read.
 
 If available, environment variable COVERALLS_REPO_TOKEN will be
 consumed and baked into the JSON output.
@@ -384,6 +435,11 @@ If running in a CI additional variables are used:
 The Coveralls JSON format is documented at
 `<https://docs.coveralls.io/api-introduction>`_.
 
+.. versionadded:: NEXT
+   Added :option:`--coveralls<gcovr --coveralls>`
+   and :option:`--coveralls-pretty<gcovr --coveralls-pretty>`.
+
+
 .. _multiple output formats:
 
 Multiple Output Formats
@@ -407,14 +463,16 @@ The following report format flags can take an optional output file name:
 - :option:`gcovr --json-summary`
 - :option:`gcovr --coveralls`
 
-Note that --html-details overrides any value of --html if it is present.
+Note that :option:`--html-details<gcovr --html-details>` overrides any value of
+:option:`--html<gcovr --html>` if it is present.
 
 .. _combining_tracefiles:
 
 Combining Tracefiles
 ~~~~~~~~~~~~~~~~~~~~
 
-You can merge coverage data from multiple runs with :option:`gcovr --add-tracefile`.
+You can merge coverage data from multiple runs with
+:option:`-a/--add-tracefile<gcovr --add-tracefile>`.
 
 For each run, generate :ref:`JSON output <json_output>`:
 
@@ -431,8 +489,8 @@ Next, merge the json files and generate the desired report::
     gcovr --add-tracefile run-1.json --add-tracefile run-2.json --html-details coverage.html
 
 You can also use unix style wildcards to merge the json files without
-duplicating :option:`gcovr --add-tracefile`. With this option you have to
-place your pathnames with wildcards in double quotation marks::
+duplicating :option:`-a/--add-tracefile<gcovr --add-tracefile>`. With this option
+you have to place your pathnames with wildcards in double quotation marks::
 
     gcovr --add-tracefile "run-*.json" --html-details coverage.html
 
@@ -441,8 +499,8 @@ The gcovr Command
 
 The ``gcovr`` command recursively searches a directory tree to find
 ``gcov`` coverage files, and generates a text summary of the code
-coverage.  The ``--help`` option generates the following summary of
-the ``gcovr`` command line options:
+coverage.  The :option:`-h/--help<gcovr --help>` option generates the following
+summary of the ``gcovr`` command line options:
 
 .. autoprogram:: gcovr.__main__:create_argument_parser()
     :prog: gcovr
@@ -496,24 +554,28 @@ Examples of relative filters:
     so we ignore any leading directory parts with ``(.+/)?``.
     The ``$`` at the end ensures that the path ends here.
 
-If no :option:`--filter` is provided,
-the :option:`--root` is turned into a default filter.
-Therefore, files outside of the :option:`--root` directory are excluded.
+If no :option:`-f/--filter<gcovr --filter>` is provided,
+the :option:`-r/--root<gcovr --root>` is turned into a default filter.
+Therefore, files outside of the :option:`-r/--root<gcovr --root>`
+directory are excluded.
 
-To be included in a report, the source file must match any :option:`--filter`,
-and must not match any :option:`--exclude` filter.
+To be included in a report, the source file must match any
+:option:`-f/--filter<gcovr --filter>`,
+and must not match any :option:`-e/--exclude<gcovr --exclude>` filter.
 
-The :option:`--gcov-filter` and :option:`--gcov-exclude` filters apply to the ``.gcov`` files created by ``gcov``.
+The :option:`--gcov-filter<gcovr --gcov-filter>`
+and :option:`--gcov-exclude<gcovr --gcov-exclude>` filters apply to the
+``.gcov`` files created by ``gcov``.
 This is useful mostly when running gcov yourself,
-and then invoking gcovr with :option:`-g`/:option:`--use-gcov-files`.
+and then invoking gcovr with :option:`-g/--use-gcov-files<gcovr --use-gcov-files>`.
 But these filters also apply when gcov is launched by gcovr.
 
 Speeding up coverage data search
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :option:`--exclude-directories` filter is used
-while searching for raw coverage data
-(or for existing ``.gcov`` files when :option:`--use-gcov-files` is active).
+The :option:`--exclude-directories<gcovr --exclude-directories>` filter is used
+while searching for raw coverage data (or for existing ``.gcov`` files when
+:option:`-g/--use-gcov-files<gcovr --use-gcov-files>` is active).
 This filter is matched against directory paths, not file paths.
 If a directory matches,
 all its contents (files and subdirectories) will be excluded from the search.
@@ -538,15 +600,15 @@ but will use the coverage data for ``better_code.o`` and ``main.o``.
 
 This can speed up gcovr when you have a complicated build directory structure.
 Consider also using the :option:`search_paths`
-or :option:`--object-directory` arguments
-to specify where gcovr starts searching.
+or :option:`--object-directory<gcovr --object-directory>` arguments to specify
+where gcovr starts searching.
 If you are unsure which directories are being searched,
-run gcovr in :option:`--verbose` mode.
+run gcovr in :option:`-v/--verbose<gcovr --verbose>` mode.
 
 For each found coverage data file gcovr will invoke the ``gcov`` tool.
 This is typically the slowest part,
 and other filters can only be applied *after* this step.
-In some cases, parallel execution with the :option:`-j` option
+In some cases, parallel execution with the :option:`-j<gcovr -j>` option
 might be helpful to speed up processing.
 
 Filters for symlinks
@@ -605,9 +667,9 @@ Example::
     output = build/coverage.html
 
 How the configuration file is found:
-If a :option:`--config` option is provided, that file is used.
-Otherwise, a ``gcovr.cfg`` file in the :option:`--root` directory is used,
-if that file exists.
+If a :option:`--config<gcovr --config>` option is provided, that file is used.
+Otherwise, a ``gcovr.cfg`` file in the :option:`-r/--root<gcovr --root>`
+directory is used, if that file exists.
 
 Each line contains a ``key = value`` pair.
 Space around the ``=`` is optional.
@@ -621,14 +683,14 @@ and are parsed similarly.
 In most cases, the name of a long command line option
 can be used as a config key.
 If not, this is documented in the option's help message.
-For example, :option:`--gcov-executable`
+For example, :option:`--gcov-executable<gcovr --gcov-executable>`
 can be set via the ``gcov-executable`` config key.
-But :option:`--branches` is set via ``txt-branch``.
+But :option:`-b/--branches<gcovr --branches>` is set via ``txt-branch``.
 
 Just like command line options,
 the config keys can be specified multiple times.
 Depending on the option the last one wins or a list will be built.
-For example, :option:`--filter` can be provided multiple times::
+For example, :option:`-f/--filter<gcovr --filter>` can be provided multiple times::
 
     # Only show coverage for files in src/, lib/foo, or for main.cpp files.
     filter = src/
@@ -654,7 +716,7 @@ When their config value is “yes” they are enabled,
 as if the flag had been provided on the command line.
 When their value is “no”, they are explicitly disabled
 by assigning their default value.
-The :option:`-j` flag is special as it takes an optional argument.
+The :option:`-j<gcovr -j>` flag is special as it takes an optional argument.
 In the config file,
 ``gcov-parallel = yes`` would refer to the no-argument form,
 whereas ``gcov-parallel = 4`` would provide an explicit argument.

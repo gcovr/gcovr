@@ -16,10 +16,12 @@ Improvements and new features:
 
  - Handles spaces in ``gcov`` path. (:issue:`385`)
  - Early fail when output cannot be created. (:issue:`346`)
- - Add option :option:`--txt` for text output. (:issue:`387`)
- - Add option :option:`--csv` for CSV output. (:issue:`376`)
+ - Add :option:`--txt` for text output. (:issue:`387`)
+ - Add :option:`--csv` for CSV output. (:issue:`376`)
  - Add :option:`--exclude-lines-by-pattern` to filter out source lines by arbitrary
    regex. (:issue:`356`)
+ - Add :option:`--json-summary` to generate a :ref:`JSON Summary <json_summary_output>` report. (:issue:`366`)
+ - Add :option:`--coveralls` to generate a :ref:`Coveralls <coveralls_output>` compatible JSON report. (:issue:`328`)
  - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
  - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`375`)
  - Changes for HTML output format:
@@ -39,12 +41,12 @@ Documentation:
 Internal changes:
 
  - Support multiple output patterns in integration tests (:issue:`383`)
- - Extend tests to use an unified diff in the assert. Add test options `--generate-reference`,
+ - Extend tests to use an unified diff in the assert. Add test options `--generate_reference`,
    `--update_reference` and `--skip_clean`. (:issue:`374`)
- - Set make variable TEST_OPTS as environment variable inside docker. (:issue: `372`)
+ - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)
+ - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
  - Extend test framework for CI (:issue:`392`):
 
-   - Extend test option `--update_reference` for all formats.
    - New option `--archive_differences` to save the different files as ZIP.
      Use this ZIP as artifact in AppVeyor.
 
@@ -94,7 +96,6 @@ Improvements and new features:
    are equivalent. (:issue:`291`)
  - Override gcov locale properly. (:issue:`334`)
  - Make gcov parser more robust when used with GCC 8. (:issue:`315`)
- - Added --json-summary option to generate json summary report. (:issue:`366`)
 
 Known issues:
 
