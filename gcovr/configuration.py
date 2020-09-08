@@ -469,7 +469,13 @@ GCOVR_CONFIG_OPTION_GROUPS = [
             "Filters decide which files are included in the report. "
             "Any filter must match, and no exclude filter must match. "
             "A filter is a regular expression that matches a path. "
-            "Filter paths use forward slashes, even on Windows.",
+            "Filter paths use forward slashes, even on Windows. "
+            "If the filter looks like an absolute path "
+            "it is matched against an absolute path. "
+            "Otherwise, the filter is matched against a relative path, "
+            "where that path is relative to the current directory "
+            "or if defined in a configuration file to the directory of the file.",
+
     }, {
         "key": "gcov_options",
         "name": "GCOV Options",
@@ -805,6 +811,8 @@ GCOVR_CONFIG_OPTIONS = [
         group="filter_options",
         help="Keep only source files that match this filter. "
              "Can be specified multiple times. "
+             "Relative filters are relative to the current working directory "
+             "or if defined in a configuration file. "
              "If no filters are provided, defaults to --root.",
         action="append",
         type=FilterOption,

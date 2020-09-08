@@ -26,4 +26,4 @@ coveralls:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html coverage.css sonarqube.xml
+	rm -f coverage.txt coverage.xml coverage*.html coverage.css sonarqube.xml coveralls.json
