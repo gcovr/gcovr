@@ -114,6 +114,13 @@ def test_non_existing_directory_csv(capsys):
     helper_test_non_existing_directory_output(capsys, '--csv')
 
 
+def test_no_output_html_details(capsys):
+    c = capture(capsys, ['--html-details'])
+    assert c.out == ''
+    assert 'a named output must be given, if the option --html-details\nis used.' in c.err
+    assert c.exception.code != 0
+
+
 def test_branch_threshold_nan(capsys):
     c = capture(capsys, ['--fail-under-branch', 'nan'])
     assert c.out == ''

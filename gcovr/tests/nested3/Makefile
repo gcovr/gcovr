@@ -26,7 +26,7 @@ xml: coverage.json
 	$(GCOVR) -r subdir -a $< -x -o coverage.xml
 
 html: coverage.json
-	$(GCOVR) -r subdir -a $< --html-details -o coverage.html
+	$(GCOVR) -r subdir -a $< --html-details --html-details-no-syntax-highlighting  -o coverage.html
 
 sonarqube: coverage.json
 	$(GCOVR) -r subdir -a $< --sonarqube sonarqube.xml
