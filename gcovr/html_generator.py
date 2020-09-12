@@ -135,13 +135,13 @@ class PygmentHighlighting:
             self.logger.warn("No syntax highlighting availabel: {}".format(str(e)))
 
     def get_css(self):
-        if self.formatter is None:
+        if self.formatter is None:  # pragma: no cover
             return ''
         return "\n\n/* pygments syntax highlighting */\n" + self.formatter.get_style_defs()
 
     # Set the lexer for the given filename. Return true if a lexer is found
     def highlighter_for_file(self, filename):
-        if self.formatter is None:
+        if self.formatter is None:  # pragma: no cover
             return NullHighlighting.highlighter_for_file(filename)
 
         import pygments
