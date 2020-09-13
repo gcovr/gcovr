@@ -642,11 +642,14 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "html_details_syntax_highlighting", ["--html-details-no-syntax-highlighting"],
+        "html_details_syntax_highlighting", ["--html-details-syntax-highlighting"],
         group="output_options",
-        help="Disable syntax highlighting in HTML details page. "
-             "Default is active syntax highlighting.",
-        action="store_false",
+        help="Use syntax highlighting in HTML details page. "
+             "Enabled by default.",
+        action="store_const",
+        default=True,
+        const=True,
+        const_negate=False,  # autogenerates --no-NAME with action const=False
     ),
     GcovrConfigOption(
         "html_theme", ["--html-theme"],
