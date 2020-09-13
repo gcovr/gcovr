@@ -2,7 +2,7 @@ cmake
 flake8
 jinja2
 lxml
-pygments
+pygments == 2.7.0
 pytest
 pytest-cov
 pyutilib
