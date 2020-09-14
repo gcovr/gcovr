@@ -5,7 +5,7 @@ run: html
 
 html:
 	./testcase
-	$(GCOVR) -d --html-details --html-details-no-syntax-highlighting -o coverage.html
+	$(GCOVR) -d --html-details --no-html-details-syntax-highlighting -o coverage.html
 
 clean:
 	rm -f testcase
