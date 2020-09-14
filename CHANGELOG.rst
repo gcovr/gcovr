@@ -43,9 +43,11 @@ Documentation:
 Internal changes:
 
  - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
+ - Add GitHup actions to test PRs and master branch. (:issue:`404`)
  - Extend test framework for CI:
 
    - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)
+   - Add make variable USE_COVERAGE to extend flags for coverage report in GitHub actions. (:issue:`404`)
    - Extend tests to use an unified diff in the assert. Add test options `--generate_reference`,
      `--update_reference` and `--skip_clean`. (:issue:`374`)
    - Support multiple output patterns in integration tests. (:issue:`383`)
