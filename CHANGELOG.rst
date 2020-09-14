@@ -34,7 +34,7 @@ Improvements and new features:
    - Create details html filename independent from OS. (:issue:`375`)
    - Add :option:`--html-theme` to change the color theme. (:issue:`381`)
    - Add linkable lines in HTML details. (:issue:`401`)
-   - Add syntax highlighting in the details HTML report. This is configured with :option:`--html-details-syntax-highlighting`. (:issue:`402`, :issue:`415`)
+   - Add syntax highlighting in the details HTML report. This can be turned off with :option:`--no-html-details-syntax-highlighting <--html-details-syntax-highlighting>`. (:issue:`402`, :issue:`415`)
 
 Documentation:
 
