@@ -20,7 +20,7 @@ matrix:
   include:
   - python: '3.5'
   - python: '3.7'
-    env: COVERAGE_OPTS='--cov=gcovr --cov-branch' BUILD_DOCS=1
+    env: BUILD_DOCS=1
   - python: pypy3.5
 
 install:

@@ -6,11 +6,15 @@
 set_sensible_default = $(if $(filter undefined default,$(origin $(1))),$(2),$(value $(1)))
 
 PYTHON := $(call set_sensible_default,PYTHON,python3)
+# Setting CXX and GCOV depending on CC. Only CC has to be set to a specific version.
 CC := $(call set_sensible_default,CC,gcc-5)
-CXX := $(call set_sensible_default,CXX,g++-5)
-GCOV := $(call set_sensible_default,GCOV,gcov-5)
+CXX := $(call set_sensible_default,CXX,$(subst gcc,g++,$(CC)))
+GCOV := $(call set_sensible_default,GCOV,$(subst gcc,gcov,$(CC)))
 QA_CONTAINER ?= gcovr-qa
 TEST_OPTS ?=
+ifeq ($(USE_COVERAGE),true)
+override TEST_OPTS += --cov=gcovr --cov-branch
+endif
 
 .PHONY: help setup-dev qa lint test doc docker-qa docker-qa-build
 
@@ -31,10 +35,12 @@ help:
 	@echo "  CC, CXX, GCOV"
 	@echo "             the gcc version to use [current: CC=$(CC) CXX=$(CXX) GCOV=$(GCOV)]"
 	@echo "  TEST_OPTS  additional flags for pytest [current: $(TEST_OPTS)]"
+	@echo "  USE_COVERAGE  if true extend TEST_OPTS with flags for generating coverage data"
 	@echo "  QA_CONTAINER"
 	@echo "             tag for the qa docker container [current: $(QA_CONTAINER)]"
 
 setup-dev:
+	$(PYTHON) -m pip install --upgrade pip pytest coverage codecov
 	$(PYTHON) -m pip install -r requirements.txt -r doc/requirements.txt
 	$(PYTHON) -m pip install -e .
 

@@ -1,0 +1,113 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.fail_ok }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-18.04]
+        #gcc: [gcc-5, gcc-8]
+        gcc: [gcc-5]
+        python-version: [3.5, 3.6, 3.7, 3.8, pypy3]
+        fail_ok: [false]
+
+        include:
+          - os: ubuntu-20.04
+            gcc: gcc-8
+            python-version: 3.8
+            fail_ok: true
+          - os: windows-2019
+            gcc: gcc
+            python-version: 3.5
+            fail_ok: true
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup environment
+      run: |
+        echo "::set-env name=USE_COVERAGE::${{ ( matrix.os == 'ubuntu-18.04' ) && ( matrix.gcc == 'gcc-5' ) && ( matrix.python-version == '3.7' ) }}"
+      shell: bash
+    - name: Install msys with GCC (Windows)
+      if: ${{ startsWith(matrix.os,'windows-') }}
+      uses: msys2/setup-msys2@v2
+      with:
+        install: gcc make
+    - name: Install GCC (Linux)
+      if: ${{ startsWith(matrix.os,'ubuntu-') }}
+      run: |
+        sudo apt update
+        sudo apt-get install -y make ${{ matrix.gcc }} $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
+        sudo apt-get clean
+    - name: Install libxml2 and libxslt dev (pypy3)
+      if: ${{ startsWith(matrix.os,'ubuntu-') && ( matrix.python-version == 'pypy3' ) }}
+      run: |
+        sudo apt-get install -y libxml2-dev libxslt-dev
+        sudo apt-get clean
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        # This path is specific to Ubuntu
+        path: ~/.cache/pip
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'doc/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          ${{ runner.os }}-
+    - name: Install dependencies
+      run: |
+        make setup-dev PYTHON=python
+    - name: Lint with flake8
+      run: |
+        make lint PYTHON=python
+        admin/release_checklist --no-verify-tags --no-verify-docs-next-version 4.2
+    - name: Test with pytest
+      run: |
+        make test CC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
+    - name: Upload pytest test results
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: diffs-${{ matrix.os }}-${{ matrix.python-version }}
+        path: gcovr/tests/diff.zip
+    - name: Creating coverage report
+      if: ${{ env.USE_COVERAGE == 'true' }}
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
+    - name: Generate documentation
+      run: |
+        make doc PYTHON=python
+  
+  run-docker:
+
+    runs-on: ubuntu-18.04
+  
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Docker
+      run: |
+        make docker-qa TEST_OPTS="--archive_differences"
+    - name: Upload pytest test results
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: diffs-docker
+        path: gcovr/tests/diff.zip
+    
