@@ -13,7 +13,7 @@
             "line_total": 10
         }
     ],
-    "gcovr/summary_format_version": 0.2,
+    "gcovr/summary_format_version": "0.2",
     "line_covered": 8,
     "line_percent": 80.0,
     "line_total": 10,
