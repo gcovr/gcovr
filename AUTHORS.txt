@@ -38,6 +38,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     Matthew Stadelman,
     Matthias Schmieder,
     Matthieu Darbois,
+    Matthieu Eyraud,
     Michael Förderer,
     Michał Pszona,
     Mikael Salson,
