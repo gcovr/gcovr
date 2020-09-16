@@ -17,8 +17,8 @@ from .utils import (get_global_stats, Logger, presentable_filename,
 from .coverage import FileCoverage
 
 
-JSON_FORMAT_VERSION = 0.1
-JSON_SUMMARY_FORMAT_VERSION = 0.2
+JSON_FORMAT_VERSION = "0.1"
+JSON_SUMMARY_FORMAT_VERSION = "0.2"
 PRETTY_JSON_INDENT = 4
 
 
