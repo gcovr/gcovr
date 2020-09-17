@@ -31,7 +31,7 @@
             "line_total": 5
         }
     ],
-    "gcovr/summary_format_version": 0.2,
+    "gcovr/summary_format_version": "0.2",
     "line_covered": 13,
     "line_percent": 100.0,
     "line_total": 13,
