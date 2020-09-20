@@ -19,9 +19,21 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.5'
+    - name: Install GCC (Linux)
+      run: |
+        sudo apt update
+        sudo apt-get install -y make ${{ matrix.gcc }} $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
+        sudo apt-get clean
     - name: Install dependencies
       run: |
         make setup-dev PYTHON=python
+    - name: Lint with flake8
+      run: |
+        make lint PYTHON=python
+        admin/release_checklist --no-verify-tags --no-verify-docs-next-version 4.2
+    - name: Test with pytest
+      run: |
+        make test CC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
     - name: Build and publish
       env:
         TWINE_USERNAME: __token__

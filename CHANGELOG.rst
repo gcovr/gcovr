@@ -44,6 +44,7 @@ Internal changes:
 
  - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
  - Add GitHup actions to test PRs and master branch. (:issue:`404`)
+ - Remove Travis CI. (:issue:`419`)
  - Extend test framework for CI:
 
    - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)

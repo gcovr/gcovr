@@ -5,7 +5,7 @@ generate GCC code coverage reports
 
 website_ • documentation_ • bugtracker_ • `GitHub <repo_>`_
 
-|travis-ci-badge| |appveyor-ci-badge| |pypi-badge| |codecov-badge| |gitter-badge|
+|GitHub-Actions-badge| |appveyor-ci-badge| |pypi-badge| |codecov-badge| |gitter-badge|
 
 .. begin abstract
 
@@ -54,9 +54,9 @@ Example HTML details:
 .. _documentation:  http://gcovr.com/guide.html
 .. _repo:       https://github.com/gcovr/gcovr/
 .. _bugtracker: https://github.com/gcovr/gcovr/issues
-.. |travis-ci-badge| image:: https://travis-ci.org/gcovr/gcovr.svg?branch=master
-   :target: https://travis-ci.org/gcovr/gcovr
-   :alt: Travis CI build status
+.. |GitHub-Actions-badge| image:: https://github.com/gcovr/gcovr/workflows/Test/badge.svg?branch=master
+   :target: https://github.com/gcovr/gcovr/workflows/Test
+   :alt: GitHub Actions build status
 .. |appveyor-ci-badge| image:: https://ci.appveyor.com/api/projects/status/6amtekih63rg9f2v/branch/master?svg=true
    :target: https://ci.appveyor.com/project/latk/gcovr-0p8sb/branch/master
    :alt: Appveyor CI build status
