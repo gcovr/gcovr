@@ -167,14 +167,14 @@ def guess_source_file_name(
 
 def guess_source_file_name_via_aliases(gcovname, currdir, data_fname):
     common_dir = commonpath([data_fname, currdir])
-    fname = os.path.realpath(os.path.join(common_dir, gcovname))
+    fname = os.path.abspath(os.path.join(common_dir, gcovname))
     if os.path.exists(fname):
         return fname
 
     initial_fname = fname
 
     data_fname_dir = os.path.dirname(data_fname)
-    fname = os.path.realpath(os.path.join(data_fname_dir, gcovname))
+    fname = os.path.abspath(os.path.join(data_fname_dir, gcovname))
     if os.path.exists(fname):
         return fname
 

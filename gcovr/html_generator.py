@@ -244,7 +244,7 @@ class RootInfo:
         }
 
         display_filename = (
-            os.path.relpath(os.path.realpath(cdata_fname), self.directory)
+            os.path.relpath(os.path.abspath(cdata_fname), self.directory)
             .replace('\\', '/'))
 
         if link_report is not None:

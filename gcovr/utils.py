@@ -78,9 +78,9 @@ def commonpath(files):
         return ''
 
     if len(files) == 1:
-        prefix_path = os.path.dirname(os.path.realpath(files[0]))
+        prefix_path = os.path.dirname(os.path.abspath(files[0]))
     else:
-        split_paths = [os.path.realpath(path).split(os.path.sep)
+        split_paths = [os.path.abspath(path).split(os.path.sep)
                        for path in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
@@ -196,7 +196,7 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path):
-        abspath = os.path.realpath(path)
+        abspath = os.path.abspath(path)
         return super(AbsoluteFilter, self).match(abspath)
 
 
@@ -206,7 +206,7 @@ class RelativeFilter(Filter):
         self.root = root
 
     def match(self, path):
-        abspath = os.path.realpath(path)
+        abspath = os.path.abspath(path)
         relpath = os.path.relpath(abspath, self.root)
         return super(RelativeFilter, self).match(relpath)
 
@@ -225,13 +225,13 @@ class AlwaysMatchFilter(Filter):
 
 class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
-        abspath = os.path.realpath(directory)
+        abspath = os.path.abspath(directory)
         os_independent_dir = abspath.replace(os.path.sep, '/')
         pattern = re.escape(os_independent_dir + '/')
         super(DirectoryPrefixFilter, self).__init__(pattern)
 
     def match(self, path):
-        normpath = os.path.normpath(path)
+        normpath = os.path.abspath(path)
         return super(DirectoryPrefixFilter, self).match(normpath)
 
 
