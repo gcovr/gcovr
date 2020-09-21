@@ -14,7 +14,7 @@ Gcovr User Guide
 The `Gcovr Home Page <http://gcovr.com>`__ is
 `<http://gcovr.com>`__.
 Automated test results are available through
-`GitHub Actions <https://github.com/gcovr/gcovr/actions>`__ and
+`GitHub Actions <https://github.com/gcovr/gcovr/actions?query=branch:master>`__ and
 `Appveyor <https://ci.appveyor.com/project/latk/gcovr-0p8sb/branch/master>`__.
 Gcovr is available under the
 `BSD <http://www.gnu.org/licenses/bsd.html>`__ license.
