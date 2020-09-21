@@ -30,7 +30,7 @@ jobs:
     - name: Lint with flake8
       run: |
         make lint PYTHON=python
-        admin/release_checklist --no-verify-tags --no-verify-docs-next-version 4.2
+        admin/release_checklist 4.2
     - name: Test with pytest
       run: |
         make test CC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
