@@ -46,7 +46,8 @@ from .configuration import (
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
 from .json_generator import (gcovr_json_files_to_coverage)
-from .utils import (get_global_stats, AlwaysMatchFilter,
+from .utils import (get_current_directory, resolve_path_rel_to_abs,
+                    get_global_stats, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__
 from .workers import Workers
@@ -204,7 +205,7 @@ def main(args=None):
         sys.exit(1)
 
     if options.output is not None:
-        options.output = os.path.abspath(options.output)
+        options.output = resolve_path_rel_to_abs(options.output)
 
     if options.objdir is not None:
         if not options.objdir:
@@ -228,7 +229,7 @@ def main(args=None):
                 "\tThe specified directory does not exist.")
             sys.exit(1)
 
-    options.starting_dir = os.path.abspath(os.getcwd())
+    options.starting_dir = get_current_directory()
     if not options.root:
         logger.error(
             "empty --root option.\n"
@@ -236,7 +237,7 @@ def main(args=None):
             "directory of your project.\n"
             "\tThis option cannot be an empty string.")
         sys.exit(1)
-    options.root_dir = os.path.abspath(options.root)
+    options.root_dir = resolve_path_rel_to_abs(options.root)
 
     #
     # Setup filters
@@ -313,7 +314,7 @@ def collect_coverage_from_tracefiles(covdata, options, logger):
             for trace_file in trace_files:
                 datafiles.add(normpath(trace_file))
 
-    options.root_dir = os.path.abspath(options.root)
+    options.root_dir = resolve_path_rel_to_abs(options.root)
     gcovr_json_files_to_coverage(datafiles, covdata, options)
 
 

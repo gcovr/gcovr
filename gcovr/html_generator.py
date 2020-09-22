@@ -13,7 +13,8 @@ import hashlib
 import io
 
 from .version import __version__
-from .utils import commonpath, sort_coverage, calculate_coverage, Logger
+from .utils import (get_current_directory, resolve_path_rel_to_abs, resolve_path_abs_to_rel,
+                    commonpath, sort_coverage, calculate_coverage, Logger)
 
 
 class Lazy:
@@ -106,7 +107,7 @@ class CssRenderer():
     def render(options):
         template = None
         if options.html_css is not None:
-            template = user_templates().get_template(os.path.relpath(options.html_css))
+            template = user_templates().get_template(resolve_path_abs_to_rel(options.html_css))
         else:
             template = templates().get_template('style.css')
         return template.render(
@@ -119,7 +120,7 @@ class NullHighlighting:
     def get_css(self):
         return ''
 
-    @staticmethod
+    @ staticmethod
     def highlighter_for_file(filename):
         return lambda code: [line.rstrip() for line in code.split("\n")]
 
@@ -154,7 +155,7 @@ class PygmentHighlighting:
             return NullHighlighting.highlighter_for_file(filename)
 
 
-@Lazy
+@ Lazy
 def get_formatter(options):
     return PygmentHighlighting(options) if options.html_details_syntax_highlighting else NullHighlighting()
 
@@ -244,7 +245,7 @@ class RootInfo:
         }
 
         display_filename = (
-            os.path.relpath(os.path.realpath(cdata_fname), self.directory)
+            resolve_path_abs_to_rel(resolve_path_rel_to_abs(cdata_fname), self.directory)
             .replace('\\', '/'))
 
         if link_report is not None:
@@ -375,7 +376,7 @@ def print_html_report(covdata, output_file, options):
         lines['class'] = coverage_to_class(lines['coverage'], medium_threshold, high_threshold)
 
         data['source_lines'] = []
-        currdir = os.getcwd()
+        currdir = get_current_directory()
         os.chdir(options.root_dir)
         with io.open(data['filename'], 'r', encoding=options.source_encoding,
                      errors='replace') as source_file:
@@ -447,12 +448,12 @@ def _make_short_sourcename(output_file, filename):
         filename (str): Path from root to source code.
     """
 
-    (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
+    (output_prefix, output_suffix) = os.path.splitext(resolve_path_rel_to_abs(output_file))
     if output_suffix == '':
         output_suffix = '.html'
 
     filename = filename.replace(os.sep, '/')
     sourcename = '.'.join((output_prefix,
-                          os.path.basename(filename),
-                          hashlib.md5(filename.encode('utf-8')).hexdigest())) + output_suffix
+                           os.path.basename(filename),
+                           hashlib.md5(filename.encode('utf-8')).hexdigest())) + output_suffix
     return sourcename

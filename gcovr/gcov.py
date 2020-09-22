@@ -13,7 +13,7 @@ import subprocess
 import sys
 import io
 
-from .utils import search_file, Logger, commonpath
+from .utils import get_current_directory, resolve_path_rel_to_abs, search_file, Logger, commonpath
 from .workers import locked_directory
 from .coverage import FileCoverage
 
@@ -139,7 +139,7 @@ def guess_source_file_name(
         )
     gcovname = segments[-1].strip()
     if currdir is None:
-        currdir = os.getcwd()
+        currdir = get_current_directory()
     if source_fname is None:
         fname = guess_source_file_name_via_aliases(
             gcovname, currdir, data_fname)
@@ -167,14 +167,14 @@ def guess_source_file_name(
 
 def guess_source_file_name_via_aliases(gcovname, currdir, data_fname):
     common_dir = commonpath([data_fname, currdir])
-    fname = os.path.realpath(os.path.join(common_dir, gcovname))
+    fname = resolve_path_rel_to_abs(os.path.join(common_dir, gcovname))
     if os.path.exists(fname):
         return fname
 
     initial_fname = fname
 
     data_fname_dir = os.path.dirname(data_fname)
-    fname = os.path.realpath(os.path.join(data_fname_dir, gcovname))
+    fname = resolve_path_rel_to_abs(os.path.join(data_fname_dir, gcovname))
     if os.path.exists(fname):
         return fname
 
@@ -560,7 +560,7 @@ def process_datafile(filename, covdata, options, toerase, workdir):
 
     logger.verbose_msg("Processing file: {}", filename)
 
-    abs_filename = os.path.abspath(filename)
+    abs_filename = resolve_path_rel_to_abs(filename)
 
     errors = []
 
@@ -616,7 +616,7 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
     else:
         potential_wd = [
             testdir
-            for prefix in [os.path.dirname(abs_filename), os.getcwd()]
+            for prefix in [os.path.dirname(abs_filename), get_current_directory()]
             for testdir in [os.path.join(prefix, objdir)]
             if os.path.isdir(testdir)
         ]

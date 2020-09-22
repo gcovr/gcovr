@@ -11,7 +11,7 @@ import sys
 import functools
 from .gcov import apply_filter_include_exclude
 
-from .utils import (get_global_stats, Logger, presentable_filename,
+from .utils import (resolve_path_rel_to_abs, resolve_path_abs_to_rel, get_global_stats, Logger, presentable_filename,
                     sort_coverage, summarize_file_coverage)
 
 from .coverage import FileCoverage
@@ -67,7 +67,7 @@ def print_json_summary_report(covdata, output_file, options):
 
     json_dict = {}
 
-    json_dict['root'] = os.path.relpath(options.root, output_file)
+    json_dict['root'] = resolve_path_abs_to_rel(options.root, output_file)
     json_dict['gcovr/summary_format_version'] = JSON_SUMMARY_FORMAT_VERSION
     json_dict['files'] = []
 
@@ -130,7 +130,7 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
         coverage = {}
         for gcovr_file in gcovr_json_data['files']:
             file_path = os.path.join(
-                os.path.abspath(options.root),
+                resolve_path_rel_to_abs(options.root),
                 os.path.normpath(gcovr_file['file']))
 
             filtered, excluded = apply_filter_include_exclude(

@@ -16,7 +16,7 @@ from typing import Iterable, Any
 import os
 import re
 
-from .utils import FilterOption
+from .utils import resolve_path_rel_to_abs, FilterOption
 from .html_generator import CssRenderer
 
 
@@ -48,7 +48,7 @@ def check_input_file(value):
         raise ArgumentTypeError(
             "Should be a file that already exists: {value!r}".format(value=value))
 
-    return os.path.abspath(value)
+    return resolve_path_rel_to_abs(value)
 
 
 def check_output_file(value):
@@ -64,7 +64,7 @@ def check_output_file(value):
         except OSError as e:
             raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=value, error=e.strerror))
 
-        value = os.path.abspath(value)
+        value = resolve_path_rel_to_abs(value)
 
     return value
 
@@ -1042,6 +1042,7 @@ class ConfigEntry(object):
         lineno (int, optional):
             Line of the entry in the config file, for error messages.
     """
+
     def __init__(self, key, value, filename=None, lineno=None):
         self.key = key
         self.value = value

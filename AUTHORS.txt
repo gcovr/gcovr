@@ -16,6 +16,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     Cary Converse,
     Cezary Gapiński,
     Christian Taedcke,
+    Dariusz Bywalec,
     Dave George,
     Dom Postorivo,
     goriy,

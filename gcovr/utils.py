@@ -27,18 +27,43 @@ class LoopChecker(object):
         return False
 
 
+def get_current_directory() -> str:
+    """
+    Return current directory normalized to the canonical path eliminating any symbolic links
+    encountered in the path (if they are supported by the operating system)
+    """
+    return os.path.realpath(os.getcwd())
+
+
+def resolve_path_rel_to_abs(path: str) -> str:
+    """
+    Return the canonical path of the specified filepath, eliminating any symbolic links
+    encountered in the path (if they are supported by the operating system).
+    """
+    return os.path.realpath(path)
+
+
+def resolve_path_abs_to_rel(path: str, start: str) -> str:
+    """
+    Return a relative filepath to path either from the current directory or from an optional start directory.
+    The start directory is normalized to the canonical path eliminating any symbolic links
+    encountered in the path (if they are supported by the operating system)
+    """
+    return os.path.relpath(path, os.path.realpath(start))
+
+
 def search_file(predicate, path, exclude_dirs):
     """
     Given a search path, recursively descend to find files that satisfy a
     predicate.
     """
     if path is None or path == ".":
-        path = os.getcwd()
+        path = get_current_directory()
     elif not os.path.exists(path):
         raise IOError("Unknown directory '" + path + "'")
 
     loop_checker = LoopChecker()
-    for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
+    for root, dirs, files in os.walk(resolve_path_rel_to_abs(path), followlinks=True):
         # Check if we've already visited 'root' through the magic of symlinks
         if loop_checker.already_visited(root):
             dirs[:] = []
@@ -47,11 +72,11 @@ def search_file(predicate, path, exclude_dirs):
         dirs[:] = [d for d in dirs
                    if not any(exc.match(os.path.join(root, d))
                               for exc in exclude_dirs)]
-        root = os.path.realpath(root)
+        root = resolve_path_rel_to_abs(root)
 
         for name in files:
             if predicate(name):
-                yield os.path.realpath(os.path.join(root, name))
+                yield resolve_path_rel_to_abs(os.path.join(root, name))
 
 
 def commonpath(files):
@@ -78,9 +103,9 @@ def commonpath(files):
         return ''
 
     if len(files) == 1:
-        prefix_path = os.path.dirname(os.path.realpath(files[0]))
+        prefix_path = os.path.dirname(resolve_path_rel_to_abs(files[0]))
     else:
-        split_paths = [os.path.realpath(path).split(os.path.sep)
+        split_paths = [resolve_path_rel_to_abs(path).split(os.path.sep)
                        for path in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
@@ -101,7 +126,7 @@ def commonpath(files):
 
     # make the path relative and add a trailing slash
     if prefix_path:
-        prefix_path = os.path.join(os.path.relpath(prefix_path), '')
+        prefix_path = os.path.join(resolve_path_abs_to_rel(prefix_path, get_current_directory()), '')
     return prefix_path
 
 
@@ -144,9 +169,9 @@ def calculate_coverage(covered, total, nan_value=0.0):
 
 
 class FilterOption(object):
-    def __init__(self, regex, path_context=os.getcwd()):
+    def __init__(self, regex, path_context=get_current_directory()):
         self.regex = regex
-        self.path_context = path_context
+        self.path_context = resolve_path_rel_to_abs(path_context)
 
     def build_filter(self, logger):
         # Try to detect unintended backslashes and warn.
@@ -178,7 +203,7 @@ FilterOption.NonEmpty = NonEmptyFilterOption
 
 class Filter(object):
     def __init__(self, pattern):
-        cwd = os.getcwd()
+        cwd = get_current_directory()
         # Guessing if file system is case insensitive.
         # The working directory is not the root and accessible in upper and lower case.
         is_fs_case_insensitive = (cwd != os.path.sep) and os.path.exists(cwd.upper()) and os.path.exists(cwd.lower())
@@ -196,7 +221,7 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path):
-        abspath = os.path.realpath(path)
+        abspath = resolve_path_rel_to_abs(path)
         return super(AbsoluteFilter, self).match(abspath)
 
 
@@ -206,8 +231,8 @@ class RelativeFilter(Filter):
         self.root = root
 
     def match(self, path):
-        abspath = os.path.realpath(path)
-        relpath = os.path.relpath(abspath, self.root)
+        abspath = resolve_path_rel_to_abs(path)
+        relpath = resolve_path_abs_to_rel(abspath, self.root)
         return super(RelativeFilter, self).match(relpath)
 
     def __str__(self):
@@ -225,7 +250,7 @@ class AlwaysMatchFilter(Filter):
 
 class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
-        abspath = os.path.realpath(directory)
+        abspath = resolve_path_rel_to_abs(directory)
         os_independent_dir = abspath.replace(os.path.sep, '/')
         pattern = re.escape(os_independent_dir + '/')
         super(DirectoryPrefixFilter, self).__init__(pattern)
@@ -288,15 +313,13 @@ def sort_coverage(covdata, show_branch,
     """
     def num_uncovered_key(key):
         cov = covdata[key]
-        (total, covered, _) = \
-            cov.branch_coverage() if show_branch else cov.line_coverage()
+        (total, covered, _) = cov.branch_coverage() if show_branch else cov.line_coverage()
         uncovered = total - covered
         return uncovered
 
     def percent_uncovered_key(key):
         cov = covdata[key]
-        (total, covered, _) = \
-            cov.branch_coverage() if show_branch else cov.line_coverage()
+        (total, covered, _) = cov.branch_coverage() if show_branch else cov.line_coverage()
         if covered:
             return -1.0 * covered / total
         elif total:
@@ -314,7 +337,7 @@ def sort_coverage(covdata, show_branch,
     return sorted(covdata, key=key_fn)
 
 
-@contextmanager
+@ contextmanager
 def open_binary_for_writing(filename=None):
     """Context manager to open and close a file for binary writing.
 
