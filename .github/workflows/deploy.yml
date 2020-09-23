@@ -27,13 +27,18 @@ jobs:
     - name: Install dependencies
       run: |
         make setup-dev PYTHON=python
+    - name: Run release_checklist
+      run: |
+        admin/release_checklist 4.2
     - name: Lint with flake8
       run: |
         make lint PYTHON=python
-        admin/release_checklist 4.2
     - name: Test with pytest
       run: |
         make test CC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
+    - name: Generate documentation
+      run: |
+        make doc PYTHON=python
     - name: Build and publish
       env:
         TWINE_USERNAME: __token__
