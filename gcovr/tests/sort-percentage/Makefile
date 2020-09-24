@@ -23,6 +23,14 @@ html: coverage.json
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --html-details -o coverage.html
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q *.o*
+	-cmd /C del /F /Q coverage.*
+	-cmd /C del /F /Q sonarqube.*
+else
 	rm -f testcase
 	rm -f *.gc* *.o
 	rm -f coverage*.* sonarqube*.*
+endif

@@ -9,8 +9,10 @@ run: txt xml html sonarqube coveralls
 
 coverage.json:
 	./testcase
+ifneq ($(OS),Windows_NT)
 	# use a relative filter here
 	# if testcase.exe exists (windows) use wrong case to check caseinsensitive filter
+endif
 	$(GCOVR) -e '$(if $(wildcard ./testcase.exe),File1.cpp,file1.cpp)'  --json $@
 
 txt: coverage.json
@@ -29,6 +31,14 @@ coveralls: coverage.json
 	$(GCOVR) -a $< --coveralls coveralls.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -f testcase
 	rm -f *.gc* *.o
 	rm -f coverage*.* sonarqube*.* coveralls.json
+endif

@@ -9,7 +9,10 @@ run: txt xml html sonarqube coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) -f 'main.cpp' --json $@  # use a relative filter here
+ifneq ($(OS),Windows_NT)
+	# use a relative filter here
+endif
+	$(GCOVR) -f 'main.cpp' --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
@@ -27,6 +30,15 @@ coveralls: coverage.json
 	$(GCOVR) -a $< --coveralls coveralls.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q *.o*
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -f testcase
 	rm -f *.gc* *.o
 	rm -f coverage*.* sonarqube*.* coveralls.json
+endif

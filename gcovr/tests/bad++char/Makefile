@@ -27,6 +27,17 @@ json_summary:
 	$(GCOVR) -d --json-summary-pretty -o summary_coverage.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q *.o*
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q summary_coverage.json
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -f testcase
 	rm -f *.gc*
+	rm -f *.o
 	rm -f coverage*.* sonarqube*.* summary_coverage.json coveralls.json
+endif

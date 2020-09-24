@@ -1,7 +1,11 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
 all:
+ifeq ($(OS),Windows_NT)
+	mkdir build
+else
 	mkdir -p build
+endif
 	$(CXX) $(CFLAGS) -c src/file1.cpp -o build/file1.o
 	$(CXX) $(CFLAGS) -c src/main.cpp -o build/main.o
 	$(CXX) $(CFLAGS) build/main.o build/file1.o -o build/testcase
@@ -33,5 +37,13 @@ json_summary:
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -d --json-summary -o summary_coverage.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C rmdir /S /Q build
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q summary_coverage.json
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -f build/*
 	rm -f coverage*.* sonarqube*.* summary_coverage.json coveralls.json
+endif

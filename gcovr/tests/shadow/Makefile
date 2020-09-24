@@ -1,5 +1,10 @@
 all:
+ifeq ($(OS),Windows_NT)
+	mkdir output
+	cd output && $(CXX) -fprofile-arcs -ftest-coverage -fPIC ../main.cpp -o testcase
+else
 	mkdir -p output && cd output && $(CXX) -fprofile-arcs -ftest-coverage -fPIC ../main.cpp -o testcase
+endif
 
 run: txt xml html sonarqube coveralls
 
@@ -23,5 +28,12 @@ coveralls: coverage.json
 	$(GCOVR) --coveralls coveralls.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C rmdir /S /Q output
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -rf output
 	rm -f coverage*.* sonarqube*.* coveralls.json
+endif

@@ -29,6 +29,14 @@ coveralls: coverage-throw.json coverage-excl-throw.json
 	$(GCOVR) --coveralls -a coverage-excl-throw.json -o coveralls-excl-throw.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q coveralls-*.json
+else
 	rm -f testcase
 	rm -f *.gc*
 	rm -f coverage*.* sonarqube*.* coveralls-*.json
+endif

@@ -32,7 +32,17 @@ coveralls: coverage.json
 	$(GCOVR) -r . -a $< --coveralls coveralls.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q /S .\.subdir\testcase*
+	-cmd /C del /F /Q /S .\\*.gc*
+	-cmd /C del /F /Q /S .\\*.o*
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -f ./.subdir/testcase
 	rm -f .*.gc* */*.gc* .*/*/*.gc* .*/*/*/*.gc* .*/*/*/*/*.gc*
 	rm -f .*.o .*/*.o .*/*/*.o .*/*/*/*.o .*/*/*/*/*.o
 	rm -f coverage*.* sonarqube*.* coveralls.json
+endif
+

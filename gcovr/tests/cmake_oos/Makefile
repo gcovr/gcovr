@@ -9,13 +9,22 @@
 CMAKE ?= cmake
 
 all:
+ifeq ($(OS),Windows_NT)
+	-mkdir build
+	cd build && $(CMAKE) -G "MinGW Makefiles" .. && make
+else
 	mkdir -p build
 	cd build && $(CMAKE) .. && make
+endif
 
 run: txt xml html sonarqube coveralls
 
 coverage.json:
+ifeq ($(OS),Windows_NT)
+	cd build && .\gcovrtest
+else
 	cd build && ./gcovrtest
+endif
 	$(GCOVR) --json coverage.json
 
 txt: coverage.json
@@ -34,5 +43,12 @@ sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube -o sonarqube.xml
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q /S build
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -rf build
 	rm -f coverage*.* sonarqube*.* coveralls.json
+endif

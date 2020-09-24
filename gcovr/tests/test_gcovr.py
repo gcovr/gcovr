@@ -275,7 +275,11 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
             if assert_equals is not None:
                 assert_equals(coverage, reference)
             else:
-                diff_out = list(difflib.unified_diff(reference.splitlines(keepends=True), coverage.splitlines(keepends=True), fromfile=reference_file, tofile=coverage_file))
+                diff_out = list(
+                    difflib.unified_diff(
+                        reference.splitlines(keepends=True),
+                        coverage.splitlines(keepends=True),
+                        fromfile=reference_file, tofile=coverage_file))
                 diff_is_empty = len(diff_out) == 0
                 assert diff_is_empty, "".join(diff_out)
         except Exception as e:  # pragma: no cover

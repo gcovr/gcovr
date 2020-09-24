@@ -8,6 +8,13 @@ html:
 	$(GCOVR) -d --html-details --html-high-threshold=75.0 -o coverage.html
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q coverage*.html
+	-cmd /C del /F /Q coverage.css
+else
 	rm -f testcase
 	rm -f *.gc*
 	rm -f coverage*.html coverage.css
+endif

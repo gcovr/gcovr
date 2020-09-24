@@ -15,7 +15,6 @@ all:
 run: coveralls
 
 coveralls: coveralls.stub.json coveralls.travis.json coveralls.appveyor.json coveralls.jenkins.json coveralls.github-actions.json coveralls.github-actions-pr.json
-	# Pass
 
 coverage.json:
 	./testcase
@@ -69,6 +68,13 @@ coveralls.github-actions-pr.json: coverage.json
 	$(GCOVR) --add-tracefile $< --coveralls $@
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q coveralls*.json
+else
 	rm -f testcase
 	rm -f *.gc*
 	rm -f coverage*.* coveralls.*.json
+endif

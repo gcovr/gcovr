@@ -26,6 +26,14 @@ coveralls: coverage.json
 	$(GCOVR) -v -a $< --coveralls coveralls.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube.xml
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -f testcase
 	rm -f *.gc*
 	rm -f coverage*.* sonarqube.xml coveralls.json
+endif

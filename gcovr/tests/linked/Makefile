@@ -33,10 +33,27 @@ coveralls: coverage.json
 	$(GCOVR) -a $< --coveralls coveralls.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q /S ..\\nested\\subdir\\*.gc*
+	-cmd /C del /F /Q /S ..\\nested\\subdir\\*.o*
+	-cmd /C rmdir /S /Q subdir
+	-cmd /C del /F /Q coverage*.*
+	-cmd /C del /F /Q sonarqube*.*
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -Rf subdir
 	rm -f coverage*.* sonarqube*.* coveralls.json
+endif
 
 links:
+ifeq ($(OS),Windows_NT)
+	-mkdir subdir
+	cmd /C mklink /d subdir\B $(shell cd)\..\nested\subdir\B
+	-mkdir subdir\m
+	cmd /C mklink /d subdir\m\n $(shell cd)\..\nested\subdir\A
+	cmd /C mklink /d subdir\A $(shell cd)\subdir\m\n
+	cmd /C mklink /d subdir\loop $(shell cd)\subdir)
+else
 	if ! [ -d "subdir" ]; then\
 	   mkdir subdir;\
 	   cd subdir;\
@@ -49,3 +66,4 @@ links:
 	   ln -s . loop;\
 	   cd ..;\
 	fi
+endif

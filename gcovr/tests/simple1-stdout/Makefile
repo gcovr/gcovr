@@ -29,6 +29,18 @@ coveralls:
 	$(GCOVR) -d --coveralls > coveralls.json
 
 clean:
+ifeq ($(OS),Windows_NT)
+	-cmd /C del /F /Q testcase*
+	-cmd /C del /F /Q *.gc*
+	-cmd /C del /F /Q coverage.txt
+	-cmd /C del /F /Q coverage.xml
+	-cmd /C del /F /Q coverage*.html
+	-cmd /C del /F /Q coverage.json
+	-cmd /C del /F /Q summary_coverage.json
+	-cmd /C del /F /Q coveralls.json
+else
 	rm -f testcase
 	rm -f *.gc*
 	rm -f coverage.txt coverage.xml coverage*.html coverage.json summary_coverage.json coveralls.json
+endif
+
