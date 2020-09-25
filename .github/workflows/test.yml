@@ -14,7 +14,7 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.fail_ok }}
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
@@ -22,17 +22,17 @@ jobs:
         #gcc: [gcc-5, gcc-8]
         gcc: [gcc-5]
         python-version: [3.5, 3.6, 3.7, 3.8, pypy3]
-        fail_ok: [false]
+        experimental: [false]
 
         include:
           - os: ubuntu-20.04
             gcc: gcc-8
             python-version: 3.8
-            fail_ok: true
+            experimental: true
           - os: windows-2019
             gcc: gcc
             python-version: 3.5
-            fail_ok: true
+            experimental: true
 
     steps:
     - uses: actions/checkout@v2
@@ -73,10 +73,12 @@ jobs:
     - name: Install dependencies
       run: |
         make setup-dev PYTHON=python
+    - name: Run release_checklist
+      run: |
+        admin/release_checklist --no-verify-tags --no-verify-docs-next-version 4.2
     - name: Lint with flake8
       run: |
         make lint PYTHON=python
-        admin/release_checklist --no-verify-tags --no-verify-docs-next-version 4.2
     - name: Test with pytest
       run: |
         make test CC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"

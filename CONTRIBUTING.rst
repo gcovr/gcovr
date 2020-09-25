@@ -80,7 +80,7 @@ Please follow this checklist for your pull request:
     But please prevent unnecessary build failures
     and run the tests yourself first.
     If you cannot run the tests locally,
-    you can activate Travis CI or Appveyor for your fork,
+    you can activate GitHub or Appveyor for your fork,
     or run the tests with Docker.
 
     If you add new features, please try to add a test case.
@@ -163,7 +163,7 @@ but will cause spurious test failures.
 
     See ``doc/README.txt`` for details on working with the documentation.
 
--   (Optional) Activate Travis and Appveyor for your forked GitHub repository,
+-   (Optional) Activate GitHub and Appveyor for your forked GitHub repository,
     so that the cross-platform compatibility tests get run
     whenever you push your work to your repository.
     These tests will also be run
@@ -171,8 +171,8 @@ but will cause spurious test failures.
 
 Tip: If you have problems getting everything set up, consider looking at these files:
 
--   for Linux: ``.travis.yml`` and ``admin/Dockerfile.qa``
--   for Windows: ``appveyor.yml``
+-   for Linux: ``.github/workflows/test.yml`` and ``admin/Dockerfile.qa``
+-   for Windows: ``.github/workflows/test.yml`` and ``appveyor.yml``
 
 On **Windows**, you will need to install a GCC toolchain
 as the tests expect a Unix-like environment.
