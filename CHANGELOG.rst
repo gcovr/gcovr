@@ -15,7 +15,7 @@ Breaking changes:
 Improvements and new features:
 
  - Handles spaces in ``gcov`` path. (:issue:`385`)
- - Early fail when output cannot be created. (:issue:`346`)
+ - Early fail when output cannot be created. (:issue:`382`)
  - Add :option:`--txt` for text output. (:issue:`387`)
  - Add :option:`--csv` for CSV output. (:issue:`376`)
  - Add :option:`--exclude-lines-by-pattern` to filter out source lines by arbitrary
@@ -24,11 +24,11 @@ Improvements and new features:
  - Add :option:`--coveralls` to generate a :ref:`Coveralls <coveralls_output>` compatible JSON report. (:issue:`328`)
  - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
  - Enable filter option in add JSON tracefiles mode. (:issue:`373`)
- - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`375`)
+ - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`389`)
  - Changes for HTML output format:
 
-   - Change legend for threshold in html report. (:issue:`369`)
-   - Use HTML title also for report heading. Default value for :option:`--html-title` changed. (:issue:`296`)
+   - Change legend for threshold in html report. (:issue:`371`)
+   - Use HTML title also for report heading. Default value for :option:`--html-title` changed. (:issue:`378`)
    - Add :option:`--html-tab-size` to configure tab size in HTML details. (:issue:`377`)
    - Add option :option:`--html-css` for user defined styling. (:issue:`380`)
    - Create details html filename independent from OS. (:issue:`375`)
@@ -50,7 +50,7 @@ Internal changes:
    - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)
    - Add make variable USE_COVERAGE to extend flags for coverage report in GitHub actions. (:issue:`404`)
    - Extend tests to use an unified diff in the assert. Add test options `--generate_reference`,
-     `--update_reference` and `--skip_clean`. (:issue:`374`)
+     `--update_reference` and `--skip_clean`. (:issue:`379`)
    - Support multiple output patterns in integration tests. (:issue:`383`)
    - New option `--archive_differences` to save the different files as ZIP.
      Use this ZIP as artifact in AppVeyor.  (:issue:`392`)
