@@ -55,7 +55,7 @@ Example HTML details:
 .. _repo:       https://github.com/gcovr/gcovr/
 .. _bugtracker: https://github.com/gcovr/gcovr/issues
 .. |GitHub-Actions-badge| image:: https://github.com/gcovr/gcovr/workflows/Test/badge.svg?branch=master
-   :target: https://github.com/gcovr/gcovr/workflows/Test
+   :target: https://github.com/gcovr/gcovr/actions?query=workflow%3ATest+branch%3Amaster
    :alt: GitHub Actions build status
 .. |appveyor-ci-badge| image:: https://ci.appveyor.com/api/projects/status/6amtekih63rg9f2v/branch/master?svg=true
    :target: https://ci.appveyor.com/project/latk/gcovr-0p8sb/branch/master
