@@ -403,6 +403,9 @@ in a suitable JSON format via the :option:`--coveralls<gcovr --coveralls>` optio
 The :option:`--coveralls-pretty<gcovr --coveralls-pretty>` option generates
 an indented JSON output that is easier to read.
 
+Keep in mind that the output contains the checksums of the source files. If you are
+using different OSes, the line endings shall be the same.
+
 If available, environment variable COVERALLS_REPO_TOKEN will be
 consumed and baked into the JSON output.
 
