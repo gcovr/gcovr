@@ -21,10 +21,9 @@ import os
 import re
 import shutil
 import subprocess
-import sys
 
 from hashlib import md5
-from .utils import presentable_filename
+from .utils import presentable_filename, open_text_for_writing
 
 PRETTY_JSON_INDENT = 4
 
@@ -39,11 +38,8 @@ def _write_coveralls_result(gcovr_json_dict, output_file, pretty):
     else:
         write_json = functools.partial(write_json, sort_keys=True)
 
-    if output_file is None:
-        write_json(gcovr_json_dict, sys.stdout)
-    else:
-        with open(output_file, 'w') as output:
-            write_json(gcovr_json_dict, output)
+    with open_text_for_writing(output_file, 'coveralls.json') as fh:
+        write_json(gcovr_json_dict, fh)
 
 
 def print_coveralls_report(covdata, output_file, options):

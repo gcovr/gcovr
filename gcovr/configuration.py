@@ -39,10 +39,16 @@ def check_percentage(value):
     return x
 
 
-def check_input_file(value):
+def check_input_file(value, basedir=None):
     r"""
     Check that the input file is present. Return the full path.
     """
+    if basedir is None:
+        basedir = os.getcwd()
+
+    if not os.path.isabs(value):
+        value = os.path.join(basedir, value)
+    value = os.path.normpath(value)
 
     if not os.path.isfile(value):
         raise ArgumentTypeError(
@@ -51,22 +57,94 @@ def check_input_file(value):
     return os.path.abspath(value)
 
 
-def check_output_file(value):
-    r"""
-    Check if the output file can be created.
+class OutputOrDefault(object):
+    """An output path that may be empty.
+
+    - ``None``: the option is not set
+    - ``OutputOrDefault(None)``: fall back to some default value
+    - ``OutputOrDefault(path)``: use that path
     """
 
-    if value is not None:
-        try:
-            with open(value, 'w') as _:
-                pass
-            os.unlink(value)
-        except OSError as e:
-            raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=value, error=e.strerror))
+    def __init__(self, value, basedir=None):
+        self.value = value
+        self._check_output_and_make_abspath(os.getcwd() if basedir is None else basedir)
 
-        value = os.path.abspath(value)
+    def __repr__(self):
+        return '{}({!r})'.format(self.__class__.__name__, self.value)
 
-    return value
+    def _check_output_and_make_abspath(self, basedir):
+        r"""
+        Check if the output file can be created.
+        """
+
+        if self.value in (None, '-'):
+            self.abspath = '-'
+            self.is_dir = False
+        else:
+            # Replace / and \ with the os path separator.
+            value = str(self.value).replace('\\', os.sep).replace('/', os.sep)
+            # Save if it is a directory
+            self.is_dir = True if value.endswith(os.sep) else False
+            value = os.path.normpath(value)
+            if self.is_dir:
+                value += os.sep
+
+            if not os.path.isabs(value):
+                value = os.path.join(basedir, value)
+            self.abspath = value
+
+            if self.is_dir:
+                # Now mormalize and add the trailing slash after creating the directory.
+                if not os.path.isdir(value):
+                    try:
+                        os.mkdir(value)
+                    except OSError as e:
+                        raise ArgumentTypeError("Could not create output directory {value!r}: {error}".format(value=self.value, error=e.strerror))
+            else:
+                try:
+                    with open(value, 'w') as _:
+                        pass
+                except OSError as e:
+                    raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=self.value, error=e.strerror))
+                os.unlink(value)
+
+    @classmethod
+    def choose(_cls, choices, default=None):
+        """select the first choice that contains a value
+
+        Example: chooses a truthy value over None:
+        >>> OutputOrDefault.choose([None, OutputOrDefault(42)])
+        OutputOrDefault(42)
+
+        Example: chooses a truthy value over empty value:
+        >>> OutputOrDefault.choose([OutputOrDefault(None), OutputOrDefault('x')])
+        OutputOrDefault('x')
+
+        Example: chooses default when given empty list
+        >>> OutputOrDefault.choose([], default=OutputOrDefault('default'))
+        OutputOrDefault('default')
+
+        Example: chooses default when only given falsey values:
+        >>> OutputOrDefault.choose(
+        ...     [None, OutputOrDefault(None)],
+        ...     default=OutputOrDefault('default'))
+        OutputOrDefault('default')
+
+        Example: throws when given other value
+        >>> OutputOrDefault.choose([True])
+        Traceback (most recent call last):
+          ...
+        TypeError: ...
+        """
+        for choice in choices:
+            if choice is None:
+                continue
+            if not isinstance(choice, OutputOrDefault):
+                raise TypeError(
+                    "expected OutputOrDefault instance, got: {}".format(choice))
+            if choice.value is not None:
+                return choice
+        return default
 
 
 class GcovrConfigOption(object):
@@ -335,11 +413,12 @@ def _get_value_from_config_entry(cfg_entry, option):
 
         value = cfg_entry.value
         args = ()
-        if isinstance(option.type, FilterOption):
+        if option.type is FilterOption:
             args = [os.path.dirname(cfg_entry.filename)]
-        if option.type in [check_input_file, check_output_file] or isinstance(option.type, OutputOrDefault):
-            if not os.path.isabs(value):
-                value = os.path.join(os.path.dirname(cfg_entry.filename), value)
+        elif option.type is check_input_file:
+            value = check_input_file(value, os.path.dirname(cfg_entry.filename))
+        elif option.type is OutputOrDefault:
+            args = [os.path.dirname(cfg_entry.filename)]
 
         try:
             value = option.type(value, *args)
@@ -399,60 +478,6 @@ def merge_options_and_set_defaults(partial_namespaces, all_options=None):
         target.setdefault(option.name, option.default)
 
     return target
-
-
-class OutputOrDefault(object):
-    """An output path that may be empty.
-
-    - ``None``: the option is not set
-    - ``OutputOrDefault(None)``: fall back to some default value
-    - ``OutputOrDefault(path)``: use that path
-    """
-
-    def __init__(self, value):
-        check_output_file(str(value))
-        self.value = value
-
-    def __repr__(self):
-        return '{}({!r})'.format(self.__class__.__name__, self.value)
-
-    @classmethod
-    def choose(_cls, choices, default=None):
-        """select the first choice that contains a value
-
-        Example: chooses a truthy value over None:
-        >>> OutputOrDefault.choose([None, OutputOrDefault(42)])
-        OutputOrDefault(42)
-
-        Example: chooses a truthy value over empty value:
-        >>> OutputOrDefault.choose([OutputOrDefault(None), OutputOrDefault('x')])
-        OutputOrDefault('x')
-
-        Example: chooses default when given empty list
-        >>> OutputOrDefault.choose([], default=OutputOrDefault('default'))
-        OutputOrDefault('default')
-
-        Example: chooses default when only given falsey values:
-        >>> OutputOrDefault.choose(
-        ...     [None, OutputOrDefault(None)],
-        ...     default=OutputOrDefault('default'))
-        OutputOrDefault('default')
-
-        Example: throws when given other value
-        >>> OutputOrDefault.choose([True])
-        Traceback (most recent call last):
-          ...
-        TypeError: ...
-        """
-        for choice in choices:
-            if choice is None:
-                continue
-            if not isinstance(choice, OutputOrDefault):
-                raise TypeError(
-                    "expected OutputOrDefault instance, got: {}".format(choice))
-            if choice.value is not None:
-                return choice
-        return default
 
 
 GCOVR_CONFIG_OPTION_GROUPS = [
@@ -566,8 +591,8 @@ GCOVR_CONFIG_OPTIONS = [
         group="output_options",
         help="Print output to this filename. Defaults to stdout. "
         "Individual output formats can override this.",
+        type=OutputOrDefault,
         default=None,
-        type=check_output_file
     ),
     GcovrConfigOption(
         "show_branch", ["-b", "--branches"], config='txt-branch',

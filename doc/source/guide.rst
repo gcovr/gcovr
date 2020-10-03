@@ -474,6 +474,10 @@ The following report format flags can take an optional output file name:
 - :option:`gcovr --json-summary`
 - :option:`gcovr --coveralls`
 
+If the value given to the output option ends with a path seperator (``/`` or ``\``)
+it is used a directory which is created first and a default filename depending
+on the format is used.
+
 Note that :option:`--html-details<gcovr --html-details>` overrides any value of
 :option:`--html<gcovr --html>` if it is present.
 

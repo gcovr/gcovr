@@ -191,7 +191,7 @@ def main(args=None):
     potential_html_output = (
         (options.html and options.html.value)
         or (options.html_details and options.html_details.value)
-        or options.output)
+        or (options.output and options.output.value))
     if options.html_details and not potential_html_output:
         logger.error(
             "a named output must be given, if the option --html-details\n"
@@ -202,9 +202,6 @@ def main(args=None):
         logger.error(
             "can only disable --html-self-contained when a named output is given.")
         sys.exit(1)
-
-    if options.output is not None:
-        options.output = os.path.abspath(options.output)
 
     if options.objdir is not None:
         if not options.objdir:
@@ -429,22 +426,25 @@ def print_reports(covdata, options, logger):
                 "consider providing output file with `--coveralls=OUTPUT`.")))
 
     reports_were_written = False
-    default_output = OutputOrDefault(options.output)
+    default_output_used = False
+    default_output = OutputOrDefault(None) if options.output is None else options.output
     for output_choices, generator, on_no_output in generators:
         output = OutputOrDefault.choose(output_choices, default=default_output)
-        if output is default_output:
-            default_output = None
+        if output is not None and output is default_output:
+            default_output_used = True
+            if not output.is_dir:
+                default_output = None
         if output is not None:
-            generator(covdata, output.value, options)
+            generator(covdata, output.abspath, options)
             reports_were_written = True
         else:
             on_no_output()
 
     if not reports_were_written:
-        print_text_report(covdata, default_output.value, options)
+        print_text_report(covdata, '-' if default_output is None else default_output.abspath, options)
         default_output = None
 
-    if default_output is not None and default_output.value is not None:
+    if default_output is not None and not default_output_used:
         logger.warn("--output={!r} option was provided but not used.",
                     default_output.value)
 

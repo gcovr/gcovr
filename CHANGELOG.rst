@@ -22,6 +22,7 @@ Improvements and new features:
    regex. (:issue:`356`)
  - Add :option:`--json-summary` to generate a :ref:`JSON Summary <json_summary_output>` report. (:issue:`366`)
  - Add :option:`--coveralls` to generate a :ref:`Coveralls <coveralls_output>` compatible JSON report. (:issue:`328`)
+ - Add support for output directories. If the output ends with a ``/`` or ``\`` it is used as a directory. (:issue:`416`)
  - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
  - Add wildcard pattern to json --add-tracefile option. (:issue:`351`)
  - Enable filter option in add JSON tracefiles mode. (:issue:`373`)
