@@ -1,3 +1,8 @@
+# For Github actions we need to keep the line breaks in the reference
+**/*.cpp -text
+**/*.c   -text
+**/*.h   -text
+
 # Exclude test reference data from GitHub language statistics
 # See also: https://github.com/github/linguist
 # (While linguist-generated might be appropriate here,

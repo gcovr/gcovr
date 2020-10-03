@@ -1,10 +1,9 @@
 CFLAGS=-fprofile-arcs -ftest-coverage
-INSTALL ?= install -p
 
 all: test/a.out
 
 test/a.out: tmp.cpp
-	$(INSTALL) -d $(dir $@)
+	mkdir $(dir $@)
 	$(CXX) $(CFLAGS) -I../lib/ $^ -o $@ -L../lib -ls
 
 clean:

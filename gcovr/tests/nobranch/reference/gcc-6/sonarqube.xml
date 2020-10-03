@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+<file path="main.cpp">
+<lineToCover covered="true" lineNumber="1"/>
+<lineToCover covered="true" lineNumber="2"/>
+</file>
+</coverage>
+

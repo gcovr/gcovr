@@ -354,19 +354,14 @@ First, build the container image:
 
     make docker-qa-build
 
-    # or:
-
-    docker build --tag gcovr-qa --file admin/Dockerfile.qa .
-
 Then, run the container, which executes ``make qa`` within the container:
 
 .. code:: bash
 
     make docker-qa
 
-    # or:
-
-    docker run --rm -v `pwd`:/gcovr gcovr-qa
+You can select the gcc version to use inside the docker by setting the make
+variable CC to gcc-5 (default) or gcc-8
 
 .. _join:
 

@@ -6,11 +6,19 @@
 #   make
 #   gcovrtest
 
-CMAKE ?= cmake
+BASE_OS:=$(shell uname | cut -d'-' -f1)
+ifeq ($(BASE_OS),MSYS_NT)
+  CMAKE_GENERATOR := "MSYS Makefiles"
+else
+  CMAKE_GENERATOR := "Unix Makefiles"
+endif
 
 all:
+	@echo "CC:   ${CC} (origin: $(origin CC))"
+	@echo "CXX:  ${CXX} (origin: $(origin CXX))"
+	@echo "GCOV: ${GCOV} (origin: $(origin GCOV))"
 	mkdir -p build
-	cd build && $(CMAKE) .. && make
+	cd build && cmake -G $(CMAKE_GENERATOR) -DCMAKE_BUILD_TYPE=PROFILE -DCMAKE_TOOLCHAIN_FILE=../Toolchain.cmake .. && make
 
 run: txt xml html sonarqube coveralls
 

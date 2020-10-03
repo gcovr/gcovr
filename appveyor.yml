@@ -12,17 +12,13 @@ environment:
 
   global:
     PATH:  C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin;C:\msys64\usr\bin;$(PATH)
-    CXX:   g++
-    CC:    gcc
+    CXX:   g++-5
+    CC:    gcc-5
     GCOV:  gcov
     MAKE:  mingw32-make
-    CMAKE: cmake -G "MSYS Makefiles"
 
 install:
   - 'set PATH=%PYTHONPATH%;%PYTHONPATH%\Scripts;%PATH%'
-  - 'python --version'
-  - '%CXX% --version'
-  - 'python -m pip install --upgrade pip pytest coverage codecov'
   - '%MAKE% setup-dev PYTHON=python'
 
 build: off

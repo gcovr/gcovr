@@ -1,5 +1,4 @@
 CFLAGS=-fprofile-arcs -ftest-coverage
-INSTALL ?= install -p
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 ifeq ($(BASE_OS),Darwin)
@@ -31,16 +30,26 @@ ifndef DYNLIB_EXT
 endif
 
 all:
-	$(INSTALL) -d obj
+	mkdir obj
 	$(CXX) $(CFLAGS) -c lib/lib.cpp -o obj/libs.o
 	$(CXX) $(CFLAGS) $(SOFLAGS) obj/libs.o -o lib/libs.$(DYNLIB_EXT)
 	$(MAKE) -C testApp
 
 run: txt xml html sonarqube coveralls
 
+ifeq ($(BASE_OS),MSYS_NT)
+ifneq ($(notdir $(SHELL)),sh)
+coverage.json : export PATH := $(subst /,\,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))\lib;${PATH}
+endif
+endif
+
 coverage.json:
 ifeq ($(BASE_OS),MSYS_NT)
+ifeq ($(notdir $(SHELL)),sh)
 	PATH="`pwd`/lib:${PATH}" testApp/test/a.out
+else
+	testApp/test/a.out
+endif
 else
 	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 endif
