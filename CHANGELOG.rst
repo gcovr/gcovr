@@ -47,7 +47,7 @@ Documentation:
 Internal changes:
 
  - Add makefile + dockerfile for simpler testing.
- - Add .gitbugtraq to lingk issue tracker in GUIs. (:issue:`429`)
+ - Add .gitbugtraq to link comments to issue tracker in GUIs. (:issue:`429`)
  - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
  - Add GitHup actions to test PRs and master branch. (:issue:`404`)
  - Remove Travis CI. (:issue:`419`)
