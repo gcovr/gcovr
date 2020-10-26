@@ -23,10 +23,14 @@ Improvements and new features:
  - Add :option:`--json-summary` to generate a :ref:`JSON Summary <json_summary_output>` report. (:issue:`366`)
  - Add :option:`--coveralls` to generate a :ref:`Coveralls <coveralls_output>` compatible JSON report. (:issue:`328`)
  - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
+ - Add wildcard pattern to json --add-tracefile option. (:issue:`351`)
  - Enable filter option in add JSON tracefiles mode. (:issue:`373`)
  - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`389`)
+ - Support relative source location for shadow builds. (:issue:`410`)
+ - Change format version in JSON output from number to string. (:issue:`418`)
  - Changes for HTML output format:
 
+   - Redesign HTML generation. Add :option:`--html-self-contained` to control externeal or internal CSS. (:issue:`367`)
    - Change legend for threshold in html report. (:issue:`371`)
    - Use HTML title also for report heading. Default value for :option:`--html-title` changed. (:issue:`378`)
    - Add :option:`--html-tab-size` to configure tab size in HTML details. (:issue:`377`)
@@ -42,6 +46,8 @@ Documentation:
 
 Internal changes:
 
+ - Add makefile + dockerfile for simpler testing.
+ - Add .gitbugtraq to link comments to issue tracker in GUIs. (:issue:`429`)
  - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
  - Add GitHup actions to test PRs and master branch. (:issue:`404`)
  - Remove Travis CI. (:issue:`419`)
