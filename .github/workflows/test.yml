@@ -38,7 +38,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup environment
       run: |
-        echo "::set-env name=USE_COVERAGE::${{ ( matrix.os == 'ubuntu-18.04' ) && ( matrix.gcc == 'gcc-5' ) && ( matrix.python-version == '3.7' ) }}"
+        echo "USE_COVERAGE=${{ ( matrix.os == 'ubuntu-18.04' ) && ( matrix.gcc == 'gcc-5' ) && ( matrix.python-version == '3.7' ) }}" >> $GITHUB_ENV
       shell: bash
     - name: Install msys with GCC (Windows)
       if: ${{ startsWith(matrix.os,'windows-') }}
