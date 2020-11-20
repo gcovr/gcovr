@@ -90,7 +90,7 @@ def is_non_code(code):
 def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
     logger = Logger(options.verbose)
     with io.open(data_fname, "r", encoding=options.source_encoding,
-                    errors='replace') as INPUT:
+                 errors='replace') as INPUT:
 
         # Find the source file
         firstline = INPUT.readline()
