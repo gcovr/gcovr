@@ -89,44 +89,42 @@ def is_non_code(code):
 #
 def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
     logger = Logger(options.verbose)
-    INPUT = io.open(data_fname, "r", encoding=options.source_encoding,
-                    errors='replace')
+    with io.open(data_fname, "r", encoding=options.source_encoding,
+                 errors='replace') as INPUT:
 
-    # Find the source file
-    firstline = INPUT.readline()
-    fname = guess_source_file_name(
-        firstline, data_fname, source_fname,
-        root_dir=options.root_dir, starting_dir=options.starting_dir,
-        logger=logger, currdir=currdir)
+        # Find the source file
+        firstline = INPUT.readline()
+        fname = guess_source_file_name(
+            firstline, data_fname, source_fname,
+            root_dir=options.root_dir, starting_dir=options.starting_dir,
+            logger=logger, currdir=currdir)
 
-    logger.verbose_msg("Parsing coverage data for file {}", fname)
+        logger.verbose_msg("Parsing coverage data for file {}", fname)
 
-    # Return if the filename does not match the filter
-    # Return if the filename matches the exclude pattern
-    filtered, excluded = apply_filter_include_exclude(
-        fname, options.filter, options.exclude)
+        # Return if the filename does not match the filter
+        # Return if the filename matches the exclude pattern
+        filtered, excluded = apply_filter_include_exclude(
+            fname, options.filter, options.exclude)
 
-    if filtered:
-        logger.verbose_msg("  Filtering coverage data for file {}", fname)
-        return
+        if filtered:
+            logger.verbose_msg("  Filtering coverage data for file {}", fname)
+            return
 
-    if excluded:
-        logger.verbose_msg("  Excluding coverage data for file {}", fname)
-        return
+        if excluded:
+            logger.verbose_msg("  Excluding coverage data for file {}", fname)
+            return
 
-    key = os.path.normpath(fname)
+        key = os.path.normpath(fname)
 
-    parser = GcovParser(key, logger=logger)
-    parser.parse_all_lines(
-        INPUT,
-        exclude_unreachable_branches=options.exclude_unreachable_branches,
-        exclude_throw_branches=options.exclude_throw_branches,
-        ignore_parse_errors=options.gcov_ignore_parse_errors,
-        exclude_lines_by_pattern=options.exclude_lines_by_pattern)
+        parser = GcovParser(key, logger=logger)
+        parser.parse_all_lines(
+            INPUT,
+            exclude_unreachable_branches=options.exclude_unreachable_branches,
+            exclude_throw_branches=options.exclude_throw_branches,
+            ignore_parse_errors=options.gcov_ignore_parse_errors,
+            exclude_lines_by_pattern=options.exclude_lines_by_pattern)
 
-    covdata.setdefault(key, FileCoverage(key)).update(parser.coverage)
-
-    INPUT.close()
+        covdata.setdefault(key, FileCoverage(key)).update(parser.coverage)
 
 
 def guess_source_file_name(
