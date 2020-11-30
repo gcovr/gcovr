@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+<file path="relevant-library/src/yes.cpp">
+<lineToCover covered="true" lineNumber="1"/>
+<lineToCover covered="true" lineNumber="2"/>
+</file>
+<file path="src/main.cpp">
+<lineToCover covered="true" lineNumber="4"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="6"/>
+<lineToCover covered="false" lineNumber="7"/>
+<lineToCover covered="true" lineNumber="10"/>
+</file>
+</coverage>
+

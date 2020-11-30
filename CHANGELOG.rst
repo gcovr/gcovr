@@ -59,7 +59,8 @@ Internal changes:
      `--update_reference` and `--skip_clean`. (:issue:`379`)
    - Support multiple output patterns in integration tests. (:issue:`383`)
    - New option `--archive_differences` to save the different files as ZIP.
-     Use this ZIP as artifact in AppVeyor.  (:issue:`392`)
+     Use this ZIP as artifact in AppVeyor. (:issue:`392`)
+   - Add support for gcc-8 to test suite and docker tests. (:issue:`423`)
 
 4.2 (6 November 2019)
 ---------------------

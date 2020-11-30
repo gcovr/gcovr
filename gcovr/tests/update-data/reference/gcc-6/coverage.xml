@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<!DOCTYPE coverage
+  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage branch-rate="1.0" branches-covered="2" branches-valid="2" complexity="0.0" line-rate="1.0" lines-covered="14" lines-valid="14" timestamp="" version="">
+<sources>
+<source>.</source>
+</sources>
+<packages>
+<package branch-rate="1.0" complexity="0.0" line-rate="1.0" name="">
+<classes>
+<class branch-rate="0.0" complexity="0.0" filename="main.cpp" line-rate="1.0" name="main_cpp">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="3"/>
+<line branch="false" hits="1" number="5"/>
+<line branch="false" hits="1" number="6"/>
+<line branch="false" hits="1" number="7"/>
+</lines>
+</class>
+<class branch-rate="0.0" complexity="0.0" filename="update-data.c" line-rate="1.0" name="update-data_c">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="3"/>
+<line branch="false" hits="1" number="5"/>
+</lines>
+</class>
+<class branch-rate="1.0" complexity="0.0" filename="update-data.h" line-rate="1.0" name="update-data_h">
+<methods/>
+<lines>
+<line branch="false" hits="1" number="7"/>
+<line branch="false" hits="1" number="9"/>
+<line branch="false" hits="1" number="12"/>
+<line branch="false" hits="1" number="14"/>
+<line branch="false" hits="2" number="17"/>
+<line branch="true" condition-coverage="100% (2/2)" hits="2" number="19">
+<conditions>
+<condition coverage="100%" number="0" type="jump"/>
+</conditions>
+</line>
+<line branch="false" hits="1" number="20"/>
+<line branch="false" hits="1" number="23"/>
+</lines>
+</class>
+</classes>
+</package>
+</packages>
+</coverage>
+

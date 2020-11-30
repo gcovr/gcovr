@@ -1,0 +1,2 @@
+lines: 77.8% (7 out of 9)
+branches: 50.0% (2 out of 4)

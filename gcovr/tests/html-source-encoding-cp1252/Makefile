@@ -1,5 +1,5 @@
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC --encoding cp1252 main.cpp -o testcase
+	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -finput-charset=cp1252 main.cpp -o testcase
 
 run: html
 

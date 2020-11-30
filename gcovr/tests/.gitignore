@@ -9,7 +9,7 @@ coveralls*.json
 *.html
 *.css
 # except in reference directories
-!*/reference/*
+!*/reference/**
 # and input stylesheet
 !style.css
 

@@ -22,6 +22,8 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 
 skip_clean = None
 
+REFERENCE_DIR = os.path.join('reference', env['CC'])
+
 RE_DECIMAL = re.compile(r'(\d+\.\d+)')
 
 RE_TXT_WHITESPACE = re.compile(r'[ ]+$', flags=re.MULTILINE)
@@ -100,9 +102,10 @@ def run(cmd, cwd=None):
     return returncode == 0
 
 
-def find_reference_files(output_pattern):
+def find_reference_files(reference_dir, output_pattern):
+    assert os.path.isdir(reference_dir), "Reference directory exists"
     for pattern in output_pattern:
-        for reference in glob.glob("reference/" + pattern):
+        for reference in glob.glob(os.path.join(reference_dir, pattern)):
             coverage = os.path.basename(reference)
             yield coverage, reference
 
@@ -182,7 +185,7 @@ def pytest_generate_tests(metafunc):
                     reason="branch coverage details seem to be platform-dependent"),
                 pytest.mark.xfail(
                     name == 'rounding' and is_windows,
-                    reason="branch coverage seem to be platform-dependent")
+                    reason="branch coverage seem to be platform-dependent"),
             ]
 
             collected_params.append(pytest.param(
@@ -248,15 +251,19 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
     os.chdir(os.path.join(basedir, name))
     assert run(["make", format])
 
+    reference_dir = REFERENCE_DIR
+    if (platform.system() == 'Windows') and os.path.isdir(reference_dir + '-Windows'):
+        reference_dir += '-Windows'
+
     if generate_reference:  # pragma: no cover
         for pattern in output_pattern:
             for generated_file in glob.glob(pattern):
-                reference_file = os.path.join('reference', generated_file)
+                reference_file = os.path.join(reference_dir, generated_file)
                 if os.path.isfile(reference_file):
                     continue
                 else:
                     try:
-                        os.makedirs('reference')
+                        os.makedirs(reference_dir)
                     except FileExistsError:
                         # directory already exists
                         pass
@@ -265,7 +272,7 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
                     shutil.copyfile(generated_file, reference_file)
 
     whole_diff_output = []
-    for coverage_file, reference_file in find_reference_files(output_pattern):
+    for coverage_file, reference_file in find_reference_files(reference_dir, output_pattern):
         with io.open(coverage_file, encoding=encoding) as f:
             coverage = scrub(f.read())
         with io.open(reference_file, encoding=encoding) as f:
@@ -285,7 +292,7 @@ def test_build(compiled, format, available_targets, generate_reference, update_r
             if archive_differences:
                 diffs_zip = os.path.join('..', 'diff.zip')
                 with zipfile.ZipFile(diffs_zip, mode='a') as f:
-                    f.write(coverage_file, os.path.join(name, 'reference', coverage_file).replace(os.path.sep, '/'))
+                    f.write(coverage_file, os.path.join(name, reference_dir, coverage_file).replace(os.path.sep, '/'))
 
     diff_is_empty = len(whole_diff_output) == 0
     assert diff_is_empty, "Diff output:\n" + "".join(whole_diff_output)

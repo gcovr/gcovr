@@ -1,3 +1,15 @@
+
+BASE_OS:=$(shell uname | cut -d'-' -f1)
+ifneq (,$(findstring MINGW,$(BASE_OS)))
+  BASE_OS:=MSYS_NT
+endif
+
+ifeq ($(BASE_OS),MSYS_NT)
+  FAIL_UNDER_LINE := 76.9
+else
+  FAIL_UNDER_LINE := $(if $(filter $(CC),gcc-6 gcc-8),76.9,79.9)
+endif
+
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
@@ -9,7 +21,7 @@ txt:
 	$(GCOVR) --fail-under-line 80.1; test $$? -eq 2
 	$(GCOVR) --fail-under-branch 50.1; test $$? -eq 4
 	$(GCOVR) --fail-under-line 80.1 --fail-under-branch 50.1; test $$? -eq 6
-	$(GCOVR) --fail-under-line 79.9 --fail-under-branch 49.9
+	$(GCOVR) --fail-under-line $(FAIL_UNDER_LINE) --fail-under-branch 49.9
 	# generate actual output
 	$(GCOVR) -d --txt -o coverage.txt
 
