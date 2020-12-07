@@ -225,6 +225,8 @@ class RootInfo:
     def __init__(self, options):
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
+        self.branch_medium_threshold = options.html_branch_medium_threshold
+        self.branch_high_threshold = options.html_branch_high_threshold
         self.details = options.html_details
         self.relative_anchors = options.relative_anchors
 
@@ -248,10 +250,10 @@ class RootInfo:
     def set_coverage(self, covdata: CovData) -> None:
         """Update this RootInfo with a summary of the CovData."""
         stats = SummarizedStats.from_covdata(covdata)
-        self.branches = dict_from_stat(stats.branch, self._coverage_to_class)
-        self.decisions = dict_from_stat(stats.decision, self._coverage_to_class)
-        self.functions = dict_from_stat(stats.function, self._coverage_to_class)
         self.lines = dict_from_stat(stats.line, self._coverage_to_class, 0.0)
+        self.functions = dict_from_stat(stats.function, self._coverage_to_class)
+        self.branches = dict_from_stat(stats.branch, self._branch_coverage_to_class)
+        self.decisions = dict_from_stat(stats.decision, self._coverage_to_class)
 
     def add_file(self, cdata, link_report, cdata_fname):
         stats = SummarizedStats.from_file(cdata)
@@ -263,11 +265,18 @@ class RootInfo:
             "class": self._coverage_to_class(stats.line.percent_or(100.0)),
         }
 
+        functions = {
+            "total": stats.function.total,
+            "exec": stats.function.covered,
+            "coverage": stats.function.percent_or("-"),
+            "class": self._coverage_to_class(stats.function.percent),
+        }
+
         branches = {
             "total": stats.branch.total,
             "exec": stats.branch.covered,
             "coverage": stats.branch.percent_or("-"),
-            "class": self._coverage_to_class(stats.branch.percent),
+            "class": self._branch_coverage_to_class(stats.branch.percent),
         }
 
         decisions = {
@@ -276,12 +285,6 @@ class RootInfo:
             "unchecked": stats.decision.uncheckable,
             "coverage": stats.decision.percent_or("-"),
             "class": self._coverage_to_class(stats.decision.percent),
-        }
-        functions = {
-            "total": stats.function.total,
-            "exec": stats.function.covered,
-            "coverage": stats.function.percent_or("-"),
-            "class": self._coverage_to_class(stats.function.percent),
         }
 
         display_filename = os.path.relpath(
@@ -307,6 +310,9 @@ class RootInfo:
     def _coverage_to_class(self, coverage):
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
+    def _branch_coverage_to_class(self, coverage):
+        return coverage_to_class(coverage, self.branch_medium_threshold, self.branch_high_threshold)
+
 
 #
 # Produce an HTML report
@@ -315,6 +321,8 @@ def print_html_report(covdata: CovData, output_file, options):
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
+    branch_medium_threshold = options.html_branch_medium_threshold
+    branch_high_threshold = options.html_branch_high_threshold
     show_decision = options.show_decision
 
     data = {}
@@ -324,6 +332,8 @@ def print_html_report(covdata: CovData, output_file, options):
     data["SHOW_DECISION"] = show_decision
     data["COVERAGE_MED"] = medium_threshold
     data["COVERAGE_HIGH"] = high_threshold
+    data['BRANCH_COVERAGE_MED'] = branch_medium_threshold
+    data['BRANCH_COVERAGE_HIGH'] = branch_high_threshold
 
     self_contained = options.html_self_contained
     if self_contained is None:
@@ -442,10 +452,10 @@ def print_html_report(covdata: CovData, output_file, options):
         def coverage_class(percent: Optional[float]) -> str:
             return coverage_to_class(percent, medium_threshold, high_threshold)
 
+        data["lines"] = dict_from_stat(cdata.line_coverage(), coverage_class)
         data["functions"] = dict_from_stat(cdata.function_coverage(), coverage_class)
         data["branches"] = dict_from_stat(cdata.branch_coverage(), coverage_class)
         data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
-        data["lines"] = dict_from_stat(cdata.line_coverage(), coverage_class)
 
         data["source_lines"] = []
         currdir = os.getcwd()

@@ -14,6 +14,8 @@
     </tr>
     <tr>
       <th scope="row">Legend:</th>
+    </tr>
+      <th scope="row">Lines:</th>
       <td class="legend">
         <span class="coverage-low">low: &ge; 0%</span>
         {% if COVERAGE_MED != COVERAGE_HIGH %}
@@ -23,6 +25,20 @@
         <span class="coverage-high">high: &ge; {{COVERAGE_HIGH}}%</span>
         {% else %}
         <span class="coverage-high">high: = 100%</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Branches:</th>
+      <td class="legend">
+        <span class="branch-coverage-low">low: &gt;= 0%</span>
+        {% if BRANCH_COVERAGE_MED != BRANCH_COVERAGE_HIGH %}
+        <span class="branch-coverage-medium">medium: &gt;= {{BRANCH_COVERAGE_MED}}%</span>
+        {% endif %}
+        {% if BRANCH_COVERAGE_HIGH < 100 %}
+        <span class="branch-coverage-high">high: &gt;= {{BRANCH_COVERAGE_HIGH}}%</span>
+        {% else %}
+        <span class="branch-coverage-high">high: = 100%</span>
         {% endif %}
       </td>
     </tr>

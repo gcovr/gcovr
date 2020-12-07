@@ -888,6 +888,31 @@ GCOVR_CONFIG_OPTIONS = [
         default=90.0,
     ),
     GcovrConfigOption(
+        "html_branch_medium_threshold", ["--html-branch-medium-threshold"],
+        group="output_options",
+        type=check_percentage,
+        metavar="BRANCH_MEDIUM",
+        help="If the coverage is below BRANCH_MEDIUM, the value is marked "
+             "as low coverage in the HTML report. "
+             "BRANCH_MEDIUM has to be lower than or equal to value of --html-branch-high-threshold "
+             "and greater than 0. "
+             "If BRANCH_MEDIUM is equal to value of --html-branch-high-threshold the report has "
+             "only high and low coverage. Default is {default!s}.",
+        default=75.0,
+    ),
+    GcovrConfigOption(
+        "html_branch_high_threshold", ["--html-branch-high-threshold"],
+        group="output_options",
+        type=check_percentage,
+        metavar="BRANCH_HIGH",
+        help="If the coverage is below BRANCH_HIGH, the value is marked "
+             "as medium coverage in the HTML report. "
+             "BRANCH_HIGH has to be greater than or equal to value of --html-medium-threshold. "
+             "If BRANCH_HIGH is equal to value of --html-medium-threshold the report has "
+             "only high and low coverage. Default is {default!s}.",
+        default=90.0,
+    ),
+    GcovrConfigOption(
         "html_tab_size",
         ["--html-tab-size"],
         group="output_options",

@@ -196,6 +196,19 @@ def main(args=None):
         )
         sys.exit(1)
 
+    if options.html_branch_medium_threshold == 0:
+        logger.error(
+            "value of --html-branch-medium-threshold= should not be zero.")
+        sys.exit(1)
+
+    if options.html_branch_medium_threshold > options.html_branch_high_threshold:
+        logger.error(
+            "value of --html-branch-medium-threshold={} should be\n"
+            "lower than or equal to the value of --html-branch-high-threshold={}.",
+            options.html_branch_medium_threshold, options.html_branch_high_threshold)
+        sys.exit(1)
+
+
     if options.html_tab_size < 1:
         logger.error("value of --html-tab-size= should be greater 0.")
         sys.exit(1)
