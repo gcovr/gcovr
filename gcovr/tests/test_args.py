@@ -1,5 +1,6 @@
 from ..__main__ import main
 from ..version import __version__
+
 import re
 import sys
 
@@ -114,6 +115,41 @@ def test_non_existing_directory_csv(capsys):
     helper_test_non_existing_directory_output(capsys, '--csv')
 
 
+def helper_test_non_existing_directory_2_output(capsys, option='--output'):
+    c = capture(capsys, [option, 'not-existing-dir/subdir/'])
+    assert c.out == ''
+    assert 'Could not create output directory \'not-existing-dir/subdir/\': ' in c.err
+    assert c.exception.code != 0
+
+
+def test_non_existing_directory_2_txt(capsys):
+    helper_test_non_existing_directory_2_output(capsys, '--txt')
+
+
+def test_non_existing_directory_2_xml(capsys):
+    helper_test_non_existing_directory_2_output(capsys, '--xml')
+
+
+def test_non_existing_directory_2_html(capsys):
+    helper_test_non_existing_directory_2_output(capsys, '--html')
+
+
+def test_non_existing_directory_2_html_details(capsys):
+    helper_test_non_existing_directory_2_output(capsys, '--html-details')
+
+
+def test_non_existing_directory_2_sonarqube(capsys):
+    helper_test_non_existing_directory_2_output(capsys, '--sonarqube')
+
+
+def test_non_existing_directory_2_json(capsys):
+    helper_test_non_existing_directory_2_output(capsys, '--json')
+
+
+def test_non_existing_directory_2_csv(capsys):
+    helper_test_non_existing_directory_2_output(capsys, '--csv')
+
+
 def test_no_output_html_details(capsys):
     c = capture(capsys, ['--html-details'])
     assert c.out == ''
@@ -158,7 +194,7 @@ def test_filter_backslashes_are_detected(capsys):
 def test_html_css_not_exists(capsys):
     c = capture(capsys, ['--html-css', '/File/does/not/\texist'])
     assert c.out == ''
-    assert 'Should be a file that already exists: \'/File/does/not/\\texist\'' in c.err
+    assert re.search(r"Should be a file that already exists: '[/\\]+File[/\\]+does[/\\]+not[/\\]+\\texist'", c.err) is not None
     assert c.exception.code != 0
 
 
@@ -220,6 +256,14 @@ def test_html_tab_size_zero(capsys):
 
 def test_multiple_output_formats_to_stdout(capsys):
     c = capture(capsys, ['--xml', '--html', '--sonarqube', '--coveralls'])
+    assert 'HTML output skipped' in c.err
+    assert 'Sonarqube output skipped' in c.err
+    assert 'Coveralls output skipped' in c.err
+    assert c.exception.code == 0
+
+
+def test_multiple_output_formats_to_stdout_1(capsys):
+    c = capture(capsys, ['--xml', '--html', '--sonarqube', '--coveralls', '-o', '-'])
     assert 'HTML output skipped' in c.err
     assert 'Sonarqube output skipped' in c.err
     assert 'Coveralls output skipped' in c.err

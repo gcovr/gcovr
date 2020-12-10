@@ -6,7 +6,6 @@
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
 
-import sys
 from lxml import etree
 
 from .utils import open_binary_for_writing, presentable_filename
@@ -47,11 +46,5 @@ def print_sonarqube_report(covdata, output_file, options):
 
         root.append(fileNode)
 
-    write_contents = etree.tostring(
-        root, encoding='UTF-8', xml_declaration=True)
-
-    if output_file is None:
-        sys.stdout.write(write_contents)
-    else:
-        with open_binary_for_writing(output_file) as fh:
-            fh.write(write_contents)
+    with open_binary_for_writing(output_file, 'sonarqube.xml') as fh:
+        fh.write(etree.tostring(root, encoding='UTF-8', xml_declaration=True))

@@ -7,13 +7,13 @@
 # This software is distributed under the BSD license.
 
 import os
-import sys
 import datetime
 import hashlib
 import io
+from argparse import ArgumentTypeError
 
 from .version import __version__
-from .utils import commonpath, sort_coverage, calculate_coverage, Logger
+from .utils import commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
 
 
 class Lazy:
@@ -281,6 +281,14 @@ def print_html_report(covdata, output_file, options):
     self_contained = options.html_self_contained
     if self_contained is None:
         self_contained = not options.html_details
+    if output_file == '-':
+        if not self_contained:
+            raise ArgumentTypeError("Only self contained reports can be printed to STDOUT")
+        elif options.html_details:
+            raise ArgumentTypeError("Detailed reports can not be printed to STDOUT")
+
+    if output_file.endswith(os.sep):
+        output_file += 'coverage_details.html' if options.html_details else 'coverage.html'
 
     formatter = get_formatter(options)
     css_data += formatter.get_css()
@@ -289,7 +297,7 @@ def print_html_report(covdata, output_file, options):
         data['css'] = css_data
     else:
         css_output = os.path.splitext(output_file)[0] + '.css'
-        with open(css_output, 'w') as f:
+        with open_text_for_writing(css_output) as f:
             f.write(css_data)
 
         if options.relative_anchors:
@@ -343,12 +351,9 @@ def print_html_report(covdata, output_file, options):
 
     html_string = templates().get_template('root_page.html').render(**data)
 
-    if output_file is None:
-        sys.stdout.write(html_string + '\n')
-    else:
-        with io.open(output_file, 'w', encoding=options.html_encoding,
-                     errors='xmlcharrefreplace') as fh:
-            fh.write(html_string + '\n')
+    with open_text_for_writing(output_file, encoding=options.html_encoding,
+                               errors='xmlcharrefreplace') as fh:
+        fh.write(html_string + '\n')
 
     # Return, if no details are requested
     if not options.html_details:
@@ -387,8 +392,8 @@ def print_html_report(covdata, output_file, options):
         os.chdir(currdir)
 
         html_string = templates().get_template('source_page.html').render(**data)
-        with io.open(cdata_sourcefile[f], 'w', encoding=options.html_encoding,
-                     errors='xmlcharrefreplace') as fh:
+        with open_text_for_writing(cdata_sourcefile[f], encoding=options.html_encoding,
+                                   errors='xmlcharrefreplace') as fh:
             fh.write(html_string + '\n')
 
 
@@ -444,6 +449,7 @@ def _make_short_sourcename(output_file, filename):
 
     Args:
         output_file (str): The --output path.
+        defaultdefault_filename_name (str): The -default output name.
         filename (str): Path from root to source code.
     """
 

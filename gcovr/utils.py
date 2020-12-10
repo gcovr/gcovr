@@ -144,9 +144,9 @@ def calculate_coverage(covered, total, nan_value=0.0):
 
 
 class FilterOption(object):
-    def __init__(self, regex, path_context=os.getcwd()):
+    def __init__(self, regex, path_context=None):
         self.regex = regex
-        self.path_context = path_context
+        self.path_context = os.getcwd() if path_context is None else path_context
 
     def build_filter(self, logger):
         # Try to detect unintended backslashes and warn.
@@ -315,14 +315,40 @@ def sort_coverage(covdata, show_branch,
 
 
 @contextmanager
-def open_binary_for_writing(filename=None):
+def open_text_for_writing(filename=None, default_filename=None, **kwargs):
+    """Context manager to open and close a file for text writing.
+
+    Stdout is used if `filename` is None or '-'.
+    """
+    if filename is not None and filename.endswith(os.sep):
+        filename += default_filename
+
+    if filename is not None and filename != '-':
+        fh = open(filename, 'w', **kwargs)
+        close = True
+    else:
+        fh = sys.stdout
+        close = False
+
+    try:
+        yield fh
+    finally:
+        if close:
+            fh.close()
+
+
+@contextmanager
+def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
     """Context manager to open and close a file for binary writing.
 
     Stdout is used if `filename` is None or '-'.
     """
-    if filename and filename != '-':
+    if filename is not None and filename.endswith(os.sep):
+        filename += default_filename
+
+    if filename is not None and filename != '-':
         # files in write binary mode for UTF-8
-        fh = open(filename, 'wb')
+        fh = open(filename, 'wb', **kwargs)
         close = True
     else:
         fh = sys.stdout.buffer

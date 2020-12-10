@@ -7,12 +7,11 @@
 
 import json
 import os
-import sys
 import functools
 from .gcov import apply_filter_include_exclude
 
 from .utils import (get_global_stats, Logger, presentable_filename,
-                    sort_coverage, summarize_file_coverage)
+                    sort_coverage, summarize_file_coverage, open_text_for_writing)
 
 from .coverage import FileCoverage
 
@@ -22,7 +21,7 @@ JSON_SUMMARY_FORMAT_VERSION = "0.2"
 PRETTY_JSON_INDENT = 4
 
 
-def _write_json_result(gcovr_json_dict, output_file, pretty):
+def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
     r"""helper utility to output json format dictionary to a file/STDOUT """
     write_json = json.dump
 
@@ -32,11 +31,8 @@ def _write_json_result(gcovr_json_dict, output_file, pretty):
     else:
         write_json = functools.partial(write_json, sort_keys=True)
 
-    if output_file is None:
-        write_json(gcovr_json_dict, sys.stdout)
-    else:
-        with open(output_file, 'w') as output:
-            write_json(gcovr_json_dict, output)
+    with open_text_for_writing(output_file, default_filename) as fh:
+        write_json(gcovr_json_dict, fh)
 
 
 #
@@ -57,7 +53,7 @@ def print_json_report(covdata, output_file, options):
         gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
         gcovr_json_root['files'].append(gcovr_json_file)
 
-    _write_json_result(gcovr_json_root, output_file, options.json_pretty)
+    _write_json_result(gcovr_json_root, output_file, 'coverage.json', options.json_pretty)
 
 
 #
@@ -67,7 +63,7 @@ def print_json_summary_report(covdata, output_file, options):
 
     json_dict = {}
 
-    json_dict['root'] = os.path.relpath(options.root, output_file)
+    json_dict['root'] = os.path.relpath(options.root, os.getcwd() if output_file == '-' else output_file)
     json_dict['gcovr/summary_format_version'] = JSON_SUMMARY_FORMAT_VERSION
     json_dict['files'] = []
 
@@ -106,7 +102,7 @@ def print_json_summary_report(covdata, output_file, options):
     json_dict['branch_covered'] = branches_covered
     json_dict['branch_percent'] = branches_percent
 
-    _write_json_result(json_dict, output_file, options.json_summary_pretty)
+    _write_json_result(json_dict, output_file, 'summary_coverage.json', options.json_summary_pretty)
 
 
 #
