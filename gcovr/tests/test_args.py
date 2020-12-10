@@ -115,7 +115,7 @@ def test_non_existing_directory_csv(capsys):
     helper_test_non_existing_directory_output(capsys, '--csv')
 
 
-def helper_test_non_existing_directory_2_output(capsys, option='--option'):
+def helper_test_non_existing_directory_2_output(capsys, option='--output'):
     c = capture(capsys, [option, 'not-existing-dir/subdir/'])
     assert c.out == ''
     assert 'Could not create output directory \'not-existing-dir/subdir/\': ' in c.err
