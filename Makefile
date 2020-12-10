@@ -72,7 +72,7 @@ endif
 qa: lint test doc
 
 lint:
-	find ./* -type f -name '*.py' -exec $(PYTHON) -m flake8 --ignore=E501,W503 -- {} +
+	$(PYTHON) -m flake8
 
 test: export GCOVR_TEST_SUITE := 1
 test: export CC := $(CC)

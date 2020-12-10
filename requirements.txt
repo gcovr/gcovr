@@ -1,10 +1,11 @@
 cmake
-flake8
+flake9
 jinja2
 lxml
 pygments == 2.7.0
 pytest
 pytest-cov
+coverage[toml]
 pyutilib
 coverage
 codecov
