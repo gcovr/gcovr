@@ -7,7 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013-2020 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -20,8 +20,8 @@ import time
 
 from lxml import etree
 
-from .version import __version__
-from .utils import open_binary_for_writing, presentable_filename
+from ..version import __version__
+from ..utils import open_binary_for_writing, presentable_filename
 
 
 def print_xml_report(covdata, output_file, options):

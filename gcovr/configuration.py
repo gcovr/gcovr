@@ -7,7 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013-2020 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -24,7 +24,7 @@ import os
 import re
 
 from .utils import FilterOption
-from .html_generator import CssRenderer
+from .generator.html import CssRenderer
 
 
 def check_percentage(value):

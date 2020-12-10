@@ -7,7 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013-2020 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -22,8 +22,8 @@ import hashlib
 import io
 from argparse import ArgumentTypeError
 
-from .version import __version__
-from .utils import commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
+from ..version import __version__
+from ..utils import commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
 
 
 class Lazy:

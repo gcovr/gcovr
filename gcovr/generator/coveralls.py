@@ -7,7 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013-2020 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -27,7 +27,7 @@ import shutil
 import subprocess
 
 from hashlib import md5
-from .utils import presentable_filename, open_text_for_writing
+from ..utils import presentable_filename, open_text_for_writing
 
 PRETTY_JSON_INDENT = 4
 

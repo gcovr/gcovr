@@ -7,7 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013-2020 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -32,21 +32,21 @@ from .configuration import (
     parse_config_file, parse_config_into_dict, OutputOrDefault)
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
-from .json_generator import (gcovr_json_files_to_coverage)
 from .utils import (get_global_stats, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__
 from .workers import Workers
 
 # generators
-from .cobertura_xml_generator import print_xml_report
-from .html_generator import print_html_report
-from .json_generator import print_json_report, print_json_summary_report
-from .txt_generator import print_text_report
-from .csv_generator import print_csv_report
-from .summary_generator import print_summary
-from .sonarqube_generator import print_sonarqube_report
-from .coveralls_generator import print_coveralls_report
+from .generator.json import (gcovr_json_files_to_coverage)
+from .generator.cobertura_xml import print_xml_report
+from .generator.html import print_html_report
+from .generator.json import print_json_report, print_json_summary_report
+from .generator.txt import print_text_report
+from .generator.csv import print_csv_report
+from .generator.summary import print_summary
+from .generator.sonarqube import print_sonarqube_report
+from .generator.coveralls import print_coveralls_report
 
 
 #

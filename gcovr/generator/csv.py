@@ -7,7 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013-2020 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -18,7 +18,7 @@
 
 import csv
 
-from .utils import sort_coverage, summarize_file_coverage, open_text_for_writing
+from ..utils import sort_coverage, summarize_file_coverage, open_text_for_writing
 
 
 def print_csv_report(covdata, output_file, options):
