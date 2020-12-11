@@ -4,6 +4,9 @@
 # setup.cfg or other tool-specific files.
 # https://github.com/carlosperate/awesome-pyproject
 
+[build-system]
+requires = ["setuptools", "wheel"]
+
 [tool.flake8]
 max-line-length = 120
 ignore = 'E501,W503'
@@ -14,10 +17,9 @@ line-length = 120
 include = 'gcovr\/.*(\.py|GET|POST)'
 
 [tool.coverage.report]
-exclude_lines = """
-[#]\\s*pragma: no cover
-
-^\\s*raise AssertionError\b
-^\\s*raise NotImplementedError\b
-^\\s*assert False\b
-"""
+exclude_lines = [
+    "[#]\\s*pragma: no cover",
+    "^\\s*raise AssertionError\b",
+    "^\\s*raise NotImplementedError\b",
+    "^\\s*assert False\b",
+]

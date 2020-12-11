@@ -156,8 +156,7 @@ but will cause spurious test failures.
 
         # or:
 
-        pip install -e .
-        pip install -r requirements.txt
+        pip install -e ".[dev]"
 
     You can then run gcovr as ``gcovr`` or ``python3 -m gcovr``.
 

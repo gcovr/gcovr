@@ -26,6 +26,9 @@ from setuptools import setup
 
 version = run_path('./gcovr/version.py')['__version__']
 
+docs_require = ["sphinx", "sphinx_rtd_theme", "sphinxcontrib-autoprogram(>=0.1.5)"]
+tests_require = ["pytest", "cmake", "flake9", "pytest-cov", "coverage[toml]", "pygments(==2.7.0)", "pyutilib"]
+
 setup(name='gcovr',
       version=version,
       platforms=["any"],
@@ -36,6 +39,11 @@ setup(name='gcovr',
           'lxml',
           'pygments'
       ],
+      extras_require={
+          "docs": docs_require,
+          "tests": tests_require,
+          "dev": docs_require + tests_require,
+      },
       package_data={
           'gcovr': ['templates/*.css', 'templates/*.html'],
       },
