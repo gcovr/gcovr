@@ -1,0 +1,11 @@
+black; implementation_name == "cpython"
+cmake
+flake8
+jinja2
+lxml
+pygments == 2.7.0
+pytest
+pytest-cov
+pyutilib
+coverage
+codecov

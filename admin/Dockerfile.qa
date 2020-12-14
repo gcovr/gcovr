@@ -10,14 +10,14 @@ RUN \
   apt-get clean
 
 WORKDIR /gcovr
-COPY setup.py .
-COPY gcovr/version.py gcovr/
+COPY requirements.txt .
+COPY doc/requirements.txt doc/
 
 ENV PYTHON=python3 CC=$CC CXX=$CXX
 
 RUN \
   $PYTHON -m pip install --no-cache-dir --upgrade pip && \
-  $PYTHON -m pip install --no-cache-dir -e ".[dev]"
+  $PYTHON -m pip install --no-cache-dir -r requirements.txt -r doc/requirements.txt
 
 # Create new user "docker" and set password to "docker"
 RUN addgroup docker

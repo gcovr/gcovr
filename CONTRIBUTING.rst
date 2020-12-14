@@ -93,7 +93,7 @@ Please follow this checklist for your pull request:
 
         # or:
 
-        python3 -m flake8
+        python3 -m flake8 doc gcovr --ignore E501,W503
 
     The command ``make qa`` will run the linter, run the tests,
     and check that the docs can be built.
@@ -156,7 +156,8 @@ but will cause spurious test failures.
 
         # or:
 
-        pip install -e ".[dev]"
+        pip install -e .
+        pip install -r requirements.txt
 
     You can then run gcovr as ``gcovr`` or ``python3 -m gcovr``.
 

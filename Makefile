@@ -69,10 +69,13 @@ endif
 endif
 	$(GCOV) --version
 
-qa: lint test doc
+qa: lint black test doc
 
 lint:
-	$(PYTHON) -m flake8
+	$(PYTHON) -m flake8 doc gcovr
+
+black:
+	$(PYTHON) -m black --diff doc gcovr
 
 test: export GCOVR_TEST_SUITE := 1
 test: export CC := $(CC)

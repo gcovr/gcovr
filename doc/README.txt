@@ -3,7 +3,7 @@ sphinx.
 
 The necessary python packages have to be installed, e.g. with pip:
 
-    pip install -e ".[docs]"
+    pip install -r requirements.txt
 
 The command
 
