@@ -444,7 +444,7 @@ def print_reports(covdata, options, logger):
         print_text_report(covdata, '-' if default_output is None else default_output.abspath, options)
         default_output = None
 
-    if default_output is not None and not default_output_used:
+    if default_output is not None and default_output.value is not None and not default_output_used:
         logger.warn("--output={!r} option was provided but not used.",
                     default_output.value)
 
