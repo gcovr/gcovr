@@ -19,7 +19,8 @@ CXX := $(call set_sensible_default,CXX,$(subst gcc,g++,$(CC)))
 export CXX := $(CXX)
 GCOV := $(call set_sensible_default,GCOV,$(subst gcc,gcov,$(CC)))
 
-QA_CONTAINER ?= gcovr-qa-$(CC)
+USERID  := $(shell id -u $(USER))
+QA_CONTAINER ?= gcovr-qa-$(CC)-uid_$(USERID)
 TEST_OPTS ?=
 ifeq ($(USE_COVERAGE),true)
 override TEST_OPTS += --cov=gcovr --cov-branch
@@ -85,9 +86,12 @@ doc:
 	cd doc && make html O=-W
 
 docker-qa: export TEST_OPTS := $(TEST_OPTS)
+docker-qa: export GCOVR_ISOLATED_TEST := zkQEVaBpXF1i
 
 docker-qa: | docker-qa-build
-	docker run --rm -e TEST_OPTS -v `pwd`:/gcovr $(QA_CONTAINER)
+	docker run --rm -e TEST_OPTS -e GCOVR_ISOLATED_TEST -v `pwd`:/gcovr $(QA_CONTAINER)
 
 docker-qa-build: admin/Dockerfile.qa requirements.txt doc/requirements.txt
-	docker build --tag $(QA_CONTAINER) --build-arg CC=$(CC) --build-arg CXX=$(CXX) --file $< .
+	docker build --tag $(QA_CONTAINER) \
+		--build-arg USERID=$(USERID) \
+		--build-arg CC=$(CC) --build-arg CXX=$(CXX) --file $< .
