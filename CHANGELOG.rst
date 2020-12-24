@@ -28,6 +28,7 @@ Improvements and new features:
  - Enable filter option in add JSON tracefiles mode. (:issue:`373`)
  - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`389`)
  - Support relative source location for shadow builds. (:issue:`410`)
+ - Incorrect path for header now can still generate html-details reports (:issue:`271`)
  - Change format version in JSON output from number to string. (:issue:`418`)
  - Changes for HTML output format:
 
