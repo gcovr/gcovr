@@ -267,6 +267,7 @@ class RootInfo:
 # Produce an HTML report
 #
 def print_html_report(covdata, output_file, options):
+    logger = Logger(options.verbose)
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -382,13 +383,16 @@ def print_html_report(covdata, output_file, options):
         data['source_lines'] = []
         currdir = os.getcwd()
         os.chdir(options.root_dir)
-        with io.open(data['filename'], 'r', encoding=options.source_encoding,
-                     errors='replace') as source_file:
-            lines = formatter.highlighter_for_file(data['filename'])(source_file.read())
-            for ctr, line in enumerate(lines, 1):
-                data['source_lines'].append(
-                    source_row(ctr, line, cdata.lines.get(ctr))
-                )
+        try:
+            with io.open(data['filename'], 'r', encoding=options.source_encoding,
+                         errors='replace') as source_file:
+                lines = formatter.highlighter_for_file(data['filename'])(source_file.read())
+                for ctr, line in enumerate(lines, 1):
+                    data['source_lines'].append(
+                        source_row(ctr, line, cdata.lines.get(ctr))
+                    )
+        except IOError as e:
+            logger.warn('!!! File not found: {filename}, reason={reason}', filename=data['filename'], reason=repr(e))
         os.chdir(currdir)
 
         html_string = templates().get_template('source_page.html').render(**data)
