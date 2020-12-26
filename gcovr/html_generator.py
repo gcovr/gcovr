@@ -392,7 +392,10 @@ def print_html_report(covdata, output_file, options):
                         source_row(ctr, line, cdata.lines.get(ctr))
                     )
         except IOError as e:
-            logger.warn('!!! File not found: {filename}, reason={reason}', filename=data['filename'], reason=repr(e))
+            logger.warn('File {filename} not found: {reason}', filename=data['filename'], reason=repr(e))
+            data['source_lines'].append(
+                source_row(0, '!!! File not found !!!', None)
+            )
         os.chdir(currdir)
 
         html_string = templates().get_template('source_page.html').render(**data)
