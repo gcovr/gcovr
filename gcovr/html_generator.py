@@ -363,6 +363,7 @@ def print_html_report(covdata, output_file, options):
     #
     # Generate an HTML file for every source file
     #
+    error_occurred = False
     for f in keys:
         cdata = covdata[f]
 
@@ -396,12 +397,14 @@ def print_html_report(covdata, output_file, options):
             data['source_lines'].append(
                 source_row(0, '!!! File not found !!!', None)
             )
+            error_occurred = True
         os.chdir(currdir)
 
         html_string = templates().get_template('source_page.html').render(**data)
         with open_text_for_writing(cdata_sourcefile[f], encoding=options.html_encoding,
                                    errors='xmlcharrefreplace') as fh:
             fh.write(html_string + '\n')
+    return error_occurred
 
 
 def source_row(lineno, source, line_cov):
