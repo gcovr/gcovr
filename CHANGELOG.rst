@@ -14,6 +14,7 @@ Breaking changes:
 
 Improvements and new features:
 
+ - Extend :option:`--json` and :option:`--json-summary` reports to use calls and executed branches coverages
  - Handles spaces in ``gcov`` path. (:issue:`385`)
  - Early fail when output cannot be created. (:issue:`382`)
  - Add :option:`--txt` for text output. (:issue:`387`)

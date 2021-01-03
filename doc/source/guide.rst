@@ -312,21 +312,34 @@ Each *line* has the following form:
 
     {
         "branches": [branch]
+        "calls": [call]
         "count": count
         "line_number": line_number
         "gcovr/noncode": gcovr_noncode
     }
 
-*gcovr_noncode*: if True coverage info on this line should be ignored
+*gcovr_noncode*: if true coverage info on this line should be ignored
 
 Each *branch* has the following form:
 ::
 
     {
       "count": count
+      "executed": executed
       "fallthrough": fallthrough
       "throw": throw
     }
+
+*executed*: true when the branch was executed
+
+Each *call* has the following form:
+::
+
+    {
+      "count": count
+    }
+
+*count*: number of execution of this call block
 
 *file*, *line* and *branch* have the structure defined in gcov
 intermediate format. This format is documented at
