@@ -295,7 +295,7 @@ def main(args=None):
         logger.error(
             "Error occurred while printing reports"
         )
-        sys.exit(1)
+        sys.exit(7)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
         fail_under(covdata, options.fail_under_line, options.fail_under_branch)
@@ -442,7 +442,8 @@ def print_reports(covdata, options, logger):
             if not output.is_dir:
                 default_output = None
         if output is not None:
-            generator_error_occurred = generator(covdata, output.abspath, options) or generator_error_occurred
+            if generator(covdata, output.abspath, options):
+                generator_error_occurred = True
             reports_were_written = True
         else:
             on_no_output()
