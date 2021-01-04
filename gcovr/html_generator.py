@@ -267,6 +267,7 @@ class RootInfo:
 # Produce an HTML report
 #
 def print_html_report(covdata, output_file, options):
+    logger = Logger(options.verbose)
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -362,6 +363,7 @@ def print_html_report(covdata, output_file, options):
     #
     # Generate an HTML file for every source file
     #
+    error_occurred = False
     for f in keys:
         cdata = covdata[f]
 
@@ -382,19 +384,28 @@ def print_html_report(covdata, output_file, options):
         data['source_lines'] = []
         currdir = os.getcwd()
         os.chdir(options.root_dir)
-        with io.open(data['filename'], 'r', encoding=options.source_encoding,
-                     errors='replace') as source_file:
-            lines = formatter.highlighter_for_file(data['filename'])(source_file.read())
-            for ctr, line in enumerate(lines, 1):
+        try:
+            with io.open(data['filename'], 'r', encoding=options.source_encoding,
+                         errors='replace') as source_file:
+                lines = formatter.highlighter_for_file(data['filename'])(source_file.read())
+                for ctr, line in enumerate(lines, 1):
+                    data['source_lines'].append(
+                        source_row(ctr, line, cdata.lines.get(ctr))
+                    )
+        except IOError as e:
+            logger.warn('File {filename} not found: {reason}', filename=data['filename'], reason=repr(e))
+            for ctr in range(1, max(cdata.lines.keys())):
                 data['source_lines'].append(
-                    source_row(ctr, line, cdata.lines.get(ctr))
+                    source_row(ctr, '!!! File not found !!!' if ctr == 1 else '', cdata.lines.get(ctr))
                 )
+            error_occurred = True
         os.chdir(currdir)
 
         html_string = templates().get_template('source_page.html').render(**data)
         with open_text_for_writing(cdata_sourcefile[f], encoding=options.html_encoding,
                                    errors='xmlcharrefreplace') as fh:
             fh.write(html_string + '\n')
+    return error_occurred
 
 
 def source_row(lineno, source, line_cov):

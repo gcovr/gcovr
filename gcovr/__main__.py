@@ -290,7 +290,12 @@ def main(args=None):
     logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
 
     # Print reports
-    print_reports(covdata, options, logger)
+    error_occurred = print_reports(covdata, options, logger)
+    if error_occurred:
+        logger.error(
+            "Error occurred while printing reports"
+        )
+        sys.exit(7)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
         fail_under(covdata, options.fail_under_line, options.fail_under_branch)
@@ -425,9 +430,11 @@ def print_reports(covdata, options, logger):
                 "Coveralls output skipped - "
                 "consider providing output file with `--coveralls=OUTPUT`.")))
 
+    generator_error_occurred = False
     reports_were_written = False
     default_output_used = False
     default_output = OutputOrDefault(None) if options.output is None else options.output
+
     for output_choices, generator, on_no_output in generators:
         output = OutputOrDefault.choose(output_choices, default=default_output)
         if output is not None and output is default_output:
@@ -435,7 +442,8 @@ def print_reports(covdata, options, logger):
             if not output.is_dir:
                 default_output = None
         if output is not None:
-            generator(covdata, output.abspath, options)
+            if generator(covdata, output.abspath, options):
+                generator_error_occurred = True
             reports_were_written = True
         else:
             on_no_output()
@@ -450,6 +458,8 @@ def print_reports(covdata, options, logger):
 
     if options.print_summary:
         print_summary(covdata)
+
+    return generator_error_occurred
 
 
 if __name__ == '__main__':
