@@ -1,26 +1,40 @@
-# -*- coding: utf-8 -*-
+# -*- coding:utf-8 -*-
+
+#  ************************** Copyrights and license ***************************
 #
-# Configuration file for the Sphinx documentation builder.
+# This file is part of gcovr 4.2, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/stable
 #
-# This file does only contain a selection of the most common options. For a
-# full list see the documentation:
-# http://www.sphinx-doc.org/en/stable/config
+# _____________________________________________________________________________
+#
+# Copyright (c) 2021 Spacetown <michael.foerderer@gmx.de>
+# Copyright (c) 2018 Christian Taedcke <hacking@taedcke.com>
+# Copyright (c) 2018 Lukas Atkinson <opensource@LukasAtkinson.de>
+# and possibly others.
+# Copyright (c) 2013 Sandia Corporation.
+# This software is distributed under the BSD License.
+# Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+# the U.S. Government retains certain rights in this software.
+# For more information, see the README.rst file.
+#
+# ****************************************************************************
 
 # -- Path setup --------------------------------------------------------------
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
+
+from datetime import datetime
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
 import gcovr.version # noqa
 
 # -- Project information -----------------------------------------------------
 
 project = u'gcovr'
-copyright = u'2018, the gcovr authors'
+copyright = u'{}, the gcovr authors'.format(datetime.today().year)
 author = u'the gcovr authors'
 
 # The short X.Y version

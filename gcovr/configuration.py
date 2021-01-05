@@ -1,14 +1,30 @@
 # -*- coding:utf-8 -*-
 
-# This file is part of gcovr <http://gcovr.com/>.
+#  ************************** Copyrights and license ***************************
 #
-# This module manages processing and validation of the configuration options
-# passed into gcovr.
+# This file is part of gcovr 4.2, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/stable
 #
+# _____________________________________________________________________________
 #
-# Copyright 2013-2019 the gcovr authors
-# Copyright 2013 Sandia Corporation
-# This software is distributed under the BSD license.
+# Copyright (c) 2020-2021 Spacetown <michael.foerderer@gmx.de>
+# Copyright (c) 2019-2020 Cezary Gapinski <cezary.gapinski@gmail.com>
+# Copyright (c) 2018-2020 Lukas Atkinson <opensource@LukasAtkinson.de>
+# Copyright (c) 2020 Noam Lewis <noamlewis@google.com>
+# Copyright (c) 2020 Oleksiy Pikalo <opikalo@gmail.com>
+# Copyright (c) 2020 Zachary J. Fields <zachary_fields@yahoo.com>
+# Copyright (c) 2019 Ma Liangliang <akml@163.com>
+# Copyright (c) 2019 Richard Kjerstadius <kjerstadius@gmail.com>
+# Copyright (c) 2018 Matthew Stadelman <stadelmanma@gmail.com>
+# and possibly others.
+# Copyright (c) 2013 Sandia Corporation.
+# This software is distributed under the BSD License.
+# Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+# the U.S. Government retains certain rights in this software.
+# For more information, see the README.rst file.
+#
+# ****************************************************************************
+
 from argparse import ArgumentTypeError, SUPPRESS
 from locale import getpreferredencoding
 from multiprocessing import cpu_count
