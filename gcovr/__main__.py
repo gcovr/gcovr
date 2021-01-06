@@ -186,28 +186,41 @@ def main(args=None):
         sys.exit(1)
 
     if options.html_medium_threshold == 0:
-        logger.error("value of --html-medium-threshold= should not be zero.")
+        logger.error(
+            "value of --html-medium-threshold= should not be zero.")
         sys.exit(1)
 
     if options.html_medium_threshold > options.html_high_threshold:
         logger.error(
-            f"value of --html-medium-threshold={options.html_medium_threshold} should be\n"
-            f"lower than or equal to the value of --html-high-threshold={options.html_high_threshold}."
-        )
+            "value of --html-medium-threshold={} should be\n"
+            "lower than or equal to the value of --html-high-threshold={}.",
+            options.html_medium_threshold, options.html_high_threshold)
         sys.exit(1)
 
-    if options.html_branch_medium_threshold == 0:
+    if options.html_medium_threshold_branch == 0:
         logger.error(
-            "value of --html-branch-medium-threshold= should not be zero.")
+            "value of --html-medium-threshold-branch= should not be zero.")
         sys.exit(1)
 
-    if options.html_branch_medium_threshold > options.html_branch_high_threshold:
+    if options.html_medium_threshold_branch and options.html_high_threshold_branch:
+        if options.html_medium_threshold_branch > options.html_high_threshold_branch:
+            logger.error(
+                "value of --html-medium-threshold-branch={} should be\n"
+                "lower than or equal to the value of --html-high-threshold-branch={}.",
+                options.html_medium_threshold_branch, options.html_high_threshold_branch)
+            sys.exit(1)
+    if options.html_medium_threshold_branch == 0:
         logger.error(
-            "value of --html-branch-medium-threshold={} should be\n"
-            "lower than or equal to the value of --html-branch-high-threshold={}.",
-            options.html_branch_medium_threshold, options.html_branch_high_threshold)
+            "value of --html-medium-threshold-branch= should not be zero.")
         sys.exit(1)
 
+    if options.html_medium_threshold_line and options.html_high_threshold_line:
+        if options.html_medium_threshold_line > options.html_high_threshold_line:
+            logger.error(
+                "value of --html-medium-threshold-line={} should be\n"
+                "lower than or equal to the value of --html-high-threshold-line={}.",
+                options.html_medium_threshold_line, options.html_high_threshold_line)
+            sys.exit(1)
 
     if options.html_tab_size < 1:
         logger.error("value of --html-tab-size= should be greater 0.")
@@ -317,6 +330,10 @@ def main(args=None):
         covdata = collect_coverage_from_gcov(options)
 
     logger.debug(f"Gathered coveraged data for {len(covdata)} files")
+
+    # debugg
+    for key, val in sorted(options_dict.items()):
+        print(key, val)
 
     # Print reports
     error_occurred = print_reports(covdata, options)

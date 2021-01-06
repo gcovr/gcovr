@@ -225,8 +225,8 @@ class RootInfo:
     def __init__(self, options):
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
-        self.branch_medium_threshold = options.html_branch_medium_threshold
-        self.branch_high_threshold = options.html_branch_high_threshold
+        self.medium_threshold_branch = options.html_medium_threshold_branch
+        self.high_threshold_branch = options.html_high_threshold_branch
         self.details = options.html_details
         self.relative_anchors = options.relative_anchors
 
@@ -321,8 +321,8 @@ def print_html_report(covdata: CovData, output_file, options):
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
-    branch_medium_threshold = options.html_branch_medium_threshold
-    branch_high_threshold = options.html_branch_high_threshold
+    branch_medium_threshold = options.html_medium_threshold_branch
+    branch_high_threshold = options.html_high_threshold_branch
     show_decision = options.show_decision
 
     data = {}
