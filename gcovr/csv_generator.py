@@ -8,7 +8,7 @@
 
 import csv
 
-from .utils import sort_coverage, summarize_file_coverage, open_text_for_writing
+from .utils import sort_coverage, summarize_file_coverage, open_text_for_writing, fixup_percent
 
 
 def print_csv_report(covdata, output_file, options):
@@ -24,5 +24,8 @@ def print_csv_report(covdata, output_file, options):
         writer.writerow(('filename', 'line_total', 'line_covered', 'line_percent',
                         'branch_total', 'branch_covered', 'branch_percent'))
         for key in keys:
-            writer.writerow(summarize_file_coverage(covdata[key],
-                                                    options.root_filter))
+            summary = summarize_file_coverage(covdata[key], options.root_filter)
+            writer.writerow((summary['filename'], summary['line_total'], summary['line_covered'],
+                             fixup_percent(summary['line_percent']),
+                             summary['branch_total'], summary['branch_covered'],
+                             fixup_percent(summary['branch_covered_percent'])))

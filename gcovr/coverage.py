@@ -24,31 +24,67 @@ class BranchCoverage(object):
             Whether this is a fallthrough branch. None if unknown.
         throw (bool, optional):
             Whether this is an exception-handling branch. None if unknown.
+        executed (bool, optional):
+            Whether this is an executed branch. False by default.
     """
 
-    __slots__ = 'count', 'fallthrough', 'throw'
+    __slots__ = 'count', 'fallthrough', 'throw', 'executed'
 
-    def __init__(self, count, fallthrough=None, throw=None):
+    def __init__(self, count, fallthrough=None, throw=None, executed=False):
         # type: (int, Optional[bool], Optional[bool]) -> None
         assert count >= 0
 
         self.count = count
         self.fallthrough = fallthrough
         self.throw = throw
+        self.executed = executed
 
     @property
     def is_covered(self):
         # type: () -> bool
         return self.count > 0
 
+    @property
+    def is_executed(self):
+        return self.executed
+
     def update(self, other):
         # type: (BranchCoverage) -> None
         r"""Merge BranchCoverage information"""
         self.count += other.count
+        if other.is_executed:
+            self.executed = True
         if other.fallthrough is not None:
             self.fallthrough = other.fallthrough
         if other.throw is not None:
             self.throw = other.throw
+
+
+class CallCoverage(object):
+    r"""Represent coverage information about a call.
+
+    Args:
+        count (int):
+            Number of times this call was executed.
+    """
+
+    __slots__ = 'count'
+
+    def __init__(self, count, fallthrough=None, throw=None):
+        # type: (int, Optional[bool], Optional[bool]) -> None
+        assert count >= 0
+
+        self.count = count
+
+    @property
+    def is_executed(self):
+        # type: () -> bool
+        return self.count > 0
+
+    def update(self, other):
+        # type: (CallCoverage) -> None
+        r"""Merge CallCoverage information"""
+        self.count += other.count
 
 
 class LineCoverage(object):
@@ -63,7 +99,7 @@ class LineCoverage(object):
             Whether any coverage info on this line should be ignored.
     """
 
-    __slots__ = 'lineno', 'count', 'noncode', 'branches'
+    __slots__ = 'lineno', 'count', 'noncode', 'branches', 'calls'
 
     def __init__(self, lineno, count=0, noncode=False):
         # type: (int, int, bool) -> None
@@ -74,6 +110,7 @@ class LineCoverage(object):
         self.count = count  # type: int
         self.noncode = noncode
         self.branches = {}  # type: Dict[int, BranchCoverage]
+        self.calls = {}  # type: Dict[int, CallCoverage]
 
     @property
     def is_covered(self):
@@ -98,6 +135,15 @@ class LineCoverage(object):
             self.branches[branch_id] = branch_cov = BranchCoverage(0)
             return branch_cov
 
+    def call(self, call_id):
+        # type: (int) -> CallCoverage
+        r"""Get or create the CallCoverage for that call_id."""
+        try:
+            return self.calls[call_id]
+        except KeyError:
+            self.calls[call_id] = call_cov = CallCoverage(0)
+            return call_cov
+
     def update(self, other):
         # type: (LineCoverage) -> None
         r"""Merge LineCoverage information."""
@@ -106,17 +152,34 @@ class LineCoverage(object):
         self.noncode &= other.noncode
         for branch_id, branch_cov in other.branches.items():
             self.branch(branch_id).update(branch_cov)
+        for call_id, call_cov in other.calls.items():
+            self.call(call_id).update(call_cov)
 
     def branch_coverage(self):
         # type: () -> Tuple[int, int, Optional[float]]
         total = len(self.branches)
         cover = 0
+        executed = 0
         for branch in self.branches.values():
+            if branch.is_executed:
+                executed += 1
             if branch.is_covered:
                 cover += 1
 
-        percent = calculate_coverage(cover, total, nan_value=None)
-        return total, cover, percent
+        covered_percent = calculate_coverage(cover, total, nan_value=None)
+        executed_percent = calculate_coverage(executed, total, nan_value=None)
+        return total, cover, covered_percent, executed, executed_percent
+
+    def call_coverage(self):
+        # type: () -> Tuple[int, int, Optional[float]]
+        total = len(self.calls)
+        executed = 0
+        for call in self.calls.values():
+            if call.is_executed:
+                executed += 1
+
+        percent = calculate_coverage(executed, total, nan_value=None)
+        return total, executed, percent
 
 
 class FileCoverage(object):
@@ -190,13 +253,28 @@ class FileCoverage(object):
         # type: () -> Tuple[int, int, Optional[float]]
         total = 0
         cover = 0
+        executed = 0
         for line in self.lines.values():
-            b_total, b_cover, _ = line.branch_coverage()
+            b_total, b_cover, _, b_executed, _ = line.branch_coverage()
             total += b_total
             cover += b_cover
+            executed += b_executed
 
-        percent = calculate_coverage(cover, total, nan_value=None)
-        return total, cover, percent
+        covered_percent = calculate_coverage(cover, total, nan_value=None)
+        executed_percent = calculate_coverage(executed, total, nan_value=None)
+        return total, cover, covered_percent, executed, executed_percent
+
+    def call_coverage(self):
+        # type: () -> Tuple[int, int, Optional[float]]
+        total = 0
+        executed = 0
+        for line in self.lines.values():
+            c_total, c_executed, _ = line.call_coverage()
+            total += c_total
+            executed += c_executed
+
+        percent = calculate_coverage(executed, total, nan_value=None)
+        return total, executed, percent
 
 
 def _find_consecutive_ranges(items):

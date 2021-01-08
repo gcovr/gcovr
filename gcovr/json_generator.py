@@ -16,8 +16,8 @@ from .utils import (get_global_stats, Logger, presentable_filename,
 from .coverage import FileCoverage
 
 
-JSON_FORMAT_VERSION = "0.1"
-JSON_SUMMARY_FORMAT_VERSION = "0.2"
+JSON_FORMAT_VERSION = "0.2"
+JSON_SUMMARY_FORMAT_VERSION = "0.3"
 PRETTY_JSON_INDENT = 4
 
 
@@ -74,33 +74,39 @@ def print_json_summary_report(covdata, output_file, options):
         by_percent_uncovered=options.sort_percent)
 
     for key in keys:
-        (filename, line_total, line_covered, line_percent,
-         branch_total, branch_covered,
-         branch_percent) = summarize_file_coverage(covdata[key],
-                                                   options.root_filter)
+        file_stats = summarize_file_coverage(covdata[key], options.root_filter)
 
         json_dict['files'].append({
-            'filename': filename,
-            'line_total': line_total,
-            'line_covered': line_covered,
-            'line_percent': line_percent,
-            'branch_total': branch_total,
-            'branch_covered': branch_covered,
-            'branch_percent': branch_percent,
+            'filename': file_stats['filename'],
+            'line_total': file_stats['line_total'],
+            'line_covered': file_stats['line_covered'],
+            'line_percent': file_stats['line_percent'],
+            'branch_total': file_stats['branch_total'],
+            'branch_covered': file_stats['branch_covered'],
+            'branch_covered_percent': file_stats['branch_covered_percent'],
+            'branch_executed': file_stats['branch_executed'],
+            'branch_executed_percent': file_stats['branch_executed_percent'],
+            'call_total': file_stats['call_total'],
+            'call_executed': file_stats['call_executed'],
+            'call_percent': file_stats['call_percent'],
         })
 
-    (lines_total, lines_covered, lines_percent,
-     branches_total, branches_covered,
-     branches_percent) = get_global_stats(covdata)
+    global_stats = get_global_stats(covdata)
 
     # Footer & summary
-    json_dict['line_total'] = lines_total
-    json_dict['line_covered'] = lines_covered
-    json_dict['line_percent'] = lines_percent
+    json_dict['line_total'] = global_stats['lines_total']
+    json_dict['line_covered'] = global_stats['lines_covered']
+    json_dict['line_percent'] = global_stats['lines_percent']
 
-    json_dict['branch_total'] = branches_total
-    json_dict['branch_covered'] = branches_covered
-    json_dict['branch_percent'] = branches_percent
+    json_dict['branch_total'] = global_stats['branches_total']
+    json_dict['branch_covered'] = global_stats['branches_covered']
+    json_dict['branch_covered_percent'] = global_stats['branches_covered_percent']
+    json_dict['branch_executed'] = global_stats['branches_executed']
+    json_dict['branches_executed_percent'] = global_stats['branches_executed_percent']
+
+    json_dict['calls_total'] = global_stats['calls_total']
+    json_dict['calls_executed'] = global_stats['calls_executed']
+    json_dict['calls_percent'] = global_stats['calls_percent']
 
     _write_json_result(json_dict, output_file, 'summary_coverage.json', options.json_summary_pretty)
 
@@ -165,6 +171,7 @@ def _json_from_lines(lines):
 def _json_from_line(line):
     json_line = {}
     json_line['branches'] = _json_from_branches(line.branches)
+    json_line['calls'] = _json_from_calls(line.calls)
     json_line['count'] = line.count
     json_line['line_number'] = line.lineno
     json_line['gcovr/noncode'] = line.noncode
@@ -181,7 +188,19 @@ def _json_from_branch(branch):
     json_branch['count'] = branch.count
     json_branch['fallthrough'] = bool(branch.fallthrough)
     json_branch['throw'] = bool(branch.throw)
+    json_branch['executed'] = bool(branch.executed)
     return json_branch
+
+
+def _json_from_calls(calls):
+    json_calls = [_json_from_call(calls[no]) for no in sorted(calls)]
+    return json_calls
+
+
+def _json_from_call(call):
+    json_call = {}
+    json_call['count'] = call.count
+    return json_call
 
 
 def _lines_from_json(file, json_lines):
@@ -192,6 +211,7 @@ def _line_from_json(line, json_line):
     line.noncode = json_line['gcovr/noncode']
     line.count = json_line['count']
     _branches_from_json(line, json_line['branches'])
+    _calls_from_json(line, json_line['calls'])
 
 
 def _branches_from_json(line, json_branches):
@@ -202,3 +222,12 @@ def _branch_from_json(branch, json_branch):
     branch.fallthrough = json_branch['fallthrough']
     branch.throw = json_branch['throw']
     branch.count = json_branch['count']
+    branch.executed = json_branch['executed']
+
+
+def _calls_from_json(line, json_calls):
+    [_call_from_json(line.call(no), json_call) for no, json_call in enumerate(json_calls, 0)]
+
+
+def _call_from_json(call, json_call):
+    call.count = json_call['count']

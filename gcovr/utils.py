@@ -109,27 +109,32 @@ def commonpath(files):
 # Get global statistics
 #
 def get_global_stats(covdata):
-    lines_total = 0
-    lines_covered = 0
-    branches_total = 0
-    branches_covered = 0
+    stats = {'lines_total': 0, 'lines_covered': 0,
+             'branches_total': 0, 'branches_covered': 0, 'branches_executed': 0,
+             'calls_total': 0, 'calls_executed': 0}
 
     keys = list(covdata.keys())
 
     for key in keys:
         (total, covered, _) = covdata[key].line_coverage()
-        lines_total += total
-        lines_covered += covered
+        stats['lines_total'] += total
+        stats['lines_covered'] += covered
 
-        (total, covered, _) = covdata[key].branch_coverage()
-        branches_total += total
-        branches_covered += covered
+        (total, covered, _, executed, _) = covdata[key].branch_coverage()
+        stats['branches_total'] += total
+        stats['branches_covered'] += covered
+        stats['branches_executed'] += executed
 
-    percent = calculate_coverage(lines_covered, lines_total)
-    percent_branches = calculate_coverage(branches_covered, branches_total)
+        (total, executed, _) = covdata[key].call_coverage()
+        stats['calls_total'] += total
+        stats['calls_executed'] += executed
 
-    return (lines_total, lines_covered, percent,
-            branches_total, branches_covered, percent_branches)
+    stats['lines_percent'] = calculate_coverage(stats['lines_covered'], stats['lines_total'])
+    stats['branches_covered_percent'] = calculate_coverage(stats['branches_covered'], stats['branches_total'])
+    stats['branches_executed_percent'] = calculate_coverage(stats['branches_executed'], stats['branches_total'])
+    stats['calls_percent'] = calculate_coverage(stats['calls_executed'], stats['calls_total'])
+
+    return stats
 
 
 def calculate_coverage(covered, total, nan_value=0.0):
@@ -288,15 +293,23 @@ def sort_coverage(covdata, show_branch,
     """
     def num_uncovered_key(key):
         cov = covdata[key]
-        (total, covered, _) = \
-            cov.branch_coverage() if show_branch else cov.line_coverage()
+        total = 0
+        covered = 0
+        if show_branch:
+            (total, covered, _, _, _) = cov.branch_coverage()
+        else:
+            (total, covered, _) = cov.line_coverage()
         uncovered = total - covered
         return uncovered
 
     def percent_uncovered_key(key):
         cov = covdata[key]
-        (total, covered, _) = \
-            cov.branch_coverage() if show_branch else cov.line_coverage()
+        total = 0
+        covered = 0
+        if show_branch:
+            (total, covered, _, _, _) = cov.branch_coverage()
+        else:
+            (total, covered, _) = cov.line_coverage()
         if covered:
             return -1.0 * covered / total
         elif total:
@@ -380,15 +393,18 @@ def presentable_filename(filename, root_filter):
 
 
 def fixup_percent(percent):
-    # output csv percent values in range [0,1.0]
-    return percent / 100 if percent is not None else None
+    # output percent values in range [0,1.0]
+    return max(min(1.0, percent / 100), 0.0) if percent is not None else None
 
 
 def summarize_file_coverage(coverage, root_filter):
     filename = presentable_filename(
         coverage.filename, root_filter=root_filter)
 
-    branch_total, branch_covered, branch_percent = coverage.branch_coverage()
-    line_total, line_covered, line_percent = coverage.line_coverage()
-    return (filename, line_total, line_covered, fixup_percent(line_percent),
-            branch_total, branch_covered, fixup_percent(branch_percent))
+    summary = dict()
+    summary['filename'] = filename
+    summary['call_total'], summary['call_executed'], summary['call_percent'] = coverage.call_coverage()
+    (summary['branch_total'], summary['branch_covered'], summary['branch_covered_percent'],
+     summary['branch_executed'], summary['branch_executed_percent']) = coverage.branch_coverage()
+    summary['line_total'], summary['line_covered'], summary['line_percent'] = coverage.line_coverage()
+    return summary

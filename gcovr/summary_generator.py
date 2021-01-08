@@ -20,15 +20,13 @@ def print_summary(covdata):
     Output the percentage, covered and total lines and branches.
     '''
 
-    (lines_total, lines_covered, percent,
-     branches_total, branches_covered,
-     percent_branches) = get_global_stats(covdata)
+    stats = get_global_stats(covdata)
 
     lines_out = "lines: %0.1f%% (%s out of %s)\n" % (
-        percent, lines_covered, lines_total
+        stats['lines_percent'], stats['lines_covered'], stats['lines_total']
     )
     branches_out = "branches: %0.1f%% (%s out of %s)\n" % (
-        percent_branches, branches_covered, branches_total
+        stats['branches_covered_percent'], stats['branches_covered'], stats['branches_total']
     )
 
     sys.stdout.write(lines_out)

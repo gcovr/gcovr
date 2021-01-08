@@ -22,7 +22,7 @@ def print_xml_report(covdata, output_file, options):
     lineCovered = 0
 
     for key in covdata.keys():
-        (total, covered, _) = covdata[key].branch_coverage()
+        (total, covered, _, _, _) = covdata[key].branch_coverage()
         branchTotal += total
         branchCovered += covered
 
@@ -109,7 +109,7 @@ def print_xml_report(covdata, output_file, options):
             if not branches:
                 L.set("branch", "false")
             else:
-                b_total, b_hits, coverage = line_cov.branch_coverage()
+                b_total, b_hits, coverage, _, _ = line_cov.branch_coverage()
                 L.set("branch", "true")
                 L.set(
                     "condition-coverage",

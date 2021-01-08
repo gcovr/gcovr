@@ -66,18 +66,16 @@ from .coveralls_generator import print_coveralls_report
 # Exits with status 2 if below threshold
 #
 def fail_under(covdata, threshold_line, threshold_branch):
-    (lines_total, lines_covered, percent,
-        branches_total, branches_covered,
-        percent_branches) = get_global_stats(covdata)
+    stats = get_global_stats(covdata)
 
-    if branches_total == 0:
-        percent_branches = 100.0
+    if stats['branches_total'] == 0:
+        stats['branches_covered_percent'] = 100.0
 
-    if percent < threshold_line and percent_branches < threshold_branch:
+    if stats['lines_percent'] < threshold_line and stats['branches_covered_percent'] < threshold_branch:
         sys.exit(6)
-    if percent < threshold_line:
+    if stats['lines_percent'] < threshold_line:
         sys.exit(2)
-    if percent_branches < threshold_branch:
+    if stats['branches_covered_percent'] < threshold_branch:
         sys.exit(4)
 
 

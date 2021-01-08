@@ -361,6 +361,32 @@ class GcovParser(object):
             return True
 
         if line.startswith('call '):
+            # call tags can look like:
+            #   call    0 returned 100%
+            #   call    1 never executed
+            # where the percentage should usually be a count.
+
+            fields = line.split()  # e.g. "call    0 returned 0%"
+            assert len(fields) >= 4, \
+                "Unclear call tag format: {}".format(line)
+
+            call_index = int(fields[1])
+
+            if fields[2:] == ['never', 'executed']:
+                count = 0
+
+            elif fields[3].endswith('%'):
+                percentage = int(fields[3][:-1])
+                # can't really convert percentage to count,
+                # so normalize to zero/one
+                count = 1 if percentage > 0 else 0
+
+            else:
+                count = int(fields[3])
+
+            call_cov = self.coverage.line(self.lineno).call(call_index)
+            call_cov.count += count
+
             return True
 
         if line.startswith('branch '):
@@ -404,8 +430,10 @@ class GcovParser(object):
 
             branch_index = int(fields[1])
 
+            executed = True
             if fields[2:] == ['never', 'executed']:
                 count = 0
+                executed = False
 
             elif fields[3].endswith('%'):
                 percentage = int(fields[3][:-1])
@@ -424,6 +452,7 @@ class GcovParser(object):
 
             branch_cov = self.coverage.line(self.lineno).branch(branch_index)
             branch_cov.count += count
+            branch_cov.executed = executed
             if is_fallthrough:
                 branch_cov.fallthrough = True
             if is_throw:

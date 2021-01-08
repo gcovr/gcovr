@@ -198,7 +198,7 @@ class RootInfo:
         branch_total = 0
         branch_covered = 0
         for key in covdata.keys():
-            (total, covered, _percent) = covdata[key].branch_coverage()
+            (total, covered, _percent, _, _) = covdata[key].branch_coverage()
             branch_total += total
             branch_covered += covered
         self.branches['exec'] = branch_covered
@@ -222,7 +222,7 @@ class RootInfo:
 
     def add_file(self, cdata, link_report, cdata_fname):
         lines_total, lines_exec, _ = cdata.line_coverage()
-        branches_total, branches_exec, _ = cdata.branch_coverage()
+        branches_total, branches_exec, _, _, _ = cdata.branch_coverage()
 
         line_coverage = calculate_coverage(
             lines_exec, lines_total, nan_value=100.0)
@@ -370,7 +370,7 @@ def print_html_report(covdata, output_file, options):
         branches = dict()
         data['branches'] = branches
 
-        branches['total'], branches['exec'], branches['coverage'] = cdata.branch_coverage()
+        branches['total'], branches['exec'], branches['coverage'], _, _ = cdata.branch_coverage()
         branches['class'] = coverage_to_class(branches['coverage'], medium_threshold, high_threshold)
         branches['coverage'] = '-' if branches['coverage'] is None else branches['coverage']
 

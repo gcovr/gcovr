@@ -44,7 +44,7 @@ def print_text_report(covdata, output_file, options):
                 filename = filename + "\n" + " " * 40
 
             if options.show_branch:
-                total, cover, percent = coverage.branch_coverage()
+                total, cover, percent, _, _ = coverage.branch_coverage()
                 uncovered_lines = coverage.uncovered_branches_str()
             else:
                 total, cover, percent = coverage.line_coverage()
