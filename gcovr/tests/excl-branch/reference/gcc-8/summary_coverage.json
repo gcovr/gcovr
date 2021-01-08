@@ -1,19 +1,29 @@
 {
     "branch_covered": 8,
-    "branch_percent": 80.0,
+    "branch_covered_percent": 80.0,
+    "branch_executed": 10,
     "branch_total": 10,
+    "branches_executed_percent": 100.0,
+    "calls_executed": 3,
+    "calls_percent": 60.0,
+    "calls_total": 5,
     "files": [
         {
             "branch_covered": 8,
-            "branch_percent": 0.8,
+            "branch_covered_percent": 80.0,
+            "branch_executed": 10,
+            "branch_executed_percent": 100.0,
             "branch_total": 10,
+            "call_executed": 3,
+            "call_percent": 60.0,
+            "call_total": 5,
             "filename": "main.cpp",
             "line_covered": 15,
-            "line_percent": 0.882,
+            "line_percent": 88.2,
             "line_total": 17
         }
     ],
-    "gcovr/summary_format_version": "0.2",
+    "gcovr/summary_format_version": "0.3",
     "line_covered": 15,
     "line_percent": 88.2,
     "line_total": 17,

@@ -5,42 +5,49 @@
             "lines": [
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 1
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 2
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 3
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 4
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 5
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 6
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 7
@@ -52,36 +59,42 @@
             "lines": [
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 1
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 2
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 3
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 4
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 5
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 6
@@ -93,48 +106,64 @@
             "lines": [
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 2
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 9
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 2,
                     "gcovr/noncode": false,
                     "line_number": 10
                 },
                 {
                     "branches": [],
+                    "calls": [
+                        {
+                            "count": 1
+                        }
+                    ],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 12
                 },
                 {
                     "branches": [],
+                    "calls": [
+                        {
+                            "count": 1
+                        }
+                    ],
                     "count": 1,
                     "gcovr/noncode": false,
                     "line_number": 15
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 17
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 2,
                     "gcovr/noncode": false,
                     "line_number": 18
                 },
                 {
                     "branches": [],
+                    "calls": [],
                     "count": 0,
                     "gcovr/noncode": true,
                     "line_number": 19
@@ -142,5 +171,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.1"
+    "gcovr/format_version": "0.2"
 }
