@@ -5,7 +5,7 @@ ARG CXX
 
 RUN \
   apt update && \
-  apt-get install -y make $CC $CXX python3 python3-pip && \
+  apt-get install -y make $CC $CXX python3 python3-pip ninja-build && \
   apt-get clean
 
 WORKDIR /gcovr

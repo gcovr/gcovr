@@ -52,6 +52,8 @@ jobs:
         sudo apt update
         sudo apt-get install -y make ${{ matrix.gcc }} $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
         sudo apt-get clean
+    - name: Install ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install libxml2 and libxslt dev (pypy3)
       if: ${{ startsWith(matrix.os,'ubuntu-') && ( matrix.python-version == 'pypy3' ) }}
       run: |
