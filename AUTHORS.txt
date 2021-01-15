@@ -24,6 +24,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     James Reynolds,
     Jeremy Fixemer,
     Jessica Levine,
+    Joachim Kuebart,
     Joel Klinghed,
     John Siirola,
     Jörg Kreuzberger,
