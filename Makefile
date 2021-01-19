@@ -22,7 +22,7 @@ GCOV := $(call set_sensible_default,GCOV,$(subst gcc,gcov,$(CC)))
 QA_CONTAINER ?= gcovr-qa-$(CC)
 TEST_OPTS ?=
 ifeq ($(USE_COVERAGE),true)
-override TEST_OPTS += --cov=gcovr --cov-branch
+override TEST_OPTS += --cov=gcovr --cov-branch --cov-report=xml
 endif
 
 .PHONY: help setup-dev qa lint test doc docker-qa docker-qa-build

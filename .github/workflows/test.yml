@@ -36,7 +36,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup environment
       run: |
-        echo "USE_COVERAGE=${{ ( matrix.os == 'ubuntu-18.04' ) && ( matrix.gcc == 'gcc-5' ) && ( matrix.python-version == '3.7' ) }}" >> $GITHUB_ENV
+        echo "USE_COVERAGE=${{ ( matrix.os == 'ubuntu-18.04' ) && ( matrix.gcc == 'gcc-6' ) && ( matrix.python-version == '3.8' ) }}" >> $GITHUB_ENV
         echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
         echo "CXX=$(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')" >> $GITHUB_ENV
         echo "PYTHON=python" >> $GITHUB_ENV
@@ -93,6 +93,7 @@ jobs:
       if: ${{ env.USE_COVERAGE == 'true' }}
       uses: codecov/codecov-action@v1
       with:
+        files: ./coverage.xml
         fail_ci_if_error: true
     - name: Generate documentation
       run: |
