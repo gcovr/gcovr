@@ -109,6 +109,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Build Docker
+      run: |
+        make docker-qa-build CC=${{ matrix.gcc }}
     - name: Run Docker
       run: |
         make docker-qa TEST_OPTS="--archive_differences" CC=${{ matrix.gcc }}
