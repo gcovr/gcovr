@@ -3,8 +3,7 @@ all:
 	@echo "CC:   ${CC} (origin: $(origin CC))"
 	@echo "CXX:  ${CXX} (origin: $(origin CXX))"
 	@echo "GCOV: ${GCOV} (origin: $(origin GCOV))"
-	mkdir -p build/build
-	cmake -DCMAKE_TOOLCHAIN_FILE=../../Toolchain.cmake -G "Ninja" -S . -B build/build
+	cmake -DCMAKE_TOOLCHAIN_FILE=Toolchain.cmake -G "Ninja" -S . -B build/build
 	cmake --build -- -v
 
 run: txt xml html sonarqube coveralls
