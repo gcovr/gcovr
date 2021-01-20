@@ -49,7 +49,7 @@ help:
 	@echo "             tag for the qa docker container [current: $(QA_CONTAINER)]"
 
 setup-dev:
-	$(PYTHON) -m pip install --upgrade pip pytest coverage codecov
+	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -r requirements.txt -r doc/requirements.txt
 	$(PYTHON) -m pip install -e .
 	$(PYTHON) --version
