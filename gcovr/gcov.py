@@ -220,7 +220,11 @@ def guess_source_file_name_heuristics(
 
     # 5. Try using the path to the gcda file as the source directory, removing the path part from the gcov file
     fname = os.path.join(source_fname_dir, os.path.basename(gcovname))
-    return fname
+    if os.path.exists(fname):
+        return os.path.normpath(fname)
+
+    # return the original path from the gcda file.
+    return gcovname
 
 
 class GcovParser(object):
