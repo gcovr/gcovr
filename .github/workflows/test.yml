@@ -91,10 +91,8 @@ jobs:
         path: gcovr/tests/diff.zip
     - name: Creating coverage report
       if: ${{ env.USE_COVERAGE == 'true' }}
-      uses: codecov/codecov-action@v1
-      with:
-        files: ./coverage.xml
-        fail_ci_if_error: true
+      run: |
+        codecov --flags ${{ matrix.os }} -X gcov search
     - name: Generate documentation
       run: |
         make doc

@@ -22,7 +22,7 @@ GCOV := $(call set_sensible_default,GCOV,$(subst gcc,gcov,$(CC)))
 QA_CONTAINER ?= gcovr-qa-$(CC)
 TEST_OPTS ?=
 ifeq ($(USE_COVERAGE),true)
-override TEST_OPTS += --cov=gcovr --cov-branch --cov-report=xml
+override TEST_OPTS += --cov=gcovr --cov-branch
 endif
 
 .PHONY: help setup-dev qa lint test doc docker-qa docker-qa-build
@@ -49,7 +49,7 @@ help:
 	@echo "             tag for the qa docker container [current: $(QA_CONTAINER)]"
 
 setup-dev:
-	$(PYTHON) -m pip install --upgrade pip pytest coverage codecov
+	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -r requirements.txt -r doc/requirements.txt
 	$(PYTHON) -m pip install -e .
 	$(PYTHON) --version

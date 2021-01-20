@@ -6,3 +6,5 @@ pygments == 2.7.0
 pytest
 pytest-cov
 pyutilib
+coverage
+codecov
