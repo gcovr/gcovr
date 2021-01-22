@@ -83,17 +83,29 @@ grep -qE "^ *$0 --no-verify-tags --no-verify-docs-next-version $target_version\$
     || error ".github/workflows/test.yml: Please update the $0 version"
 
 grep -qE "^ *$0 $target_version\$" .github/workflows/deploy.yml \
-    || error "./github/workflows/deploy.yml: Please update the $0 version"
+    || error ".github/workflows/deploy.yml: Please update the $0 version"
 
 occurrences="$(
   grep -E '\.\. (versionadded|versionchanged|deprecated):: NEXT' \
-       -A 1 doc/source/*.rst)"
+       -A 1 doc/source/*.rst || exit 0)"
 test -z "$occurrences" || {
     maybe_error $verify_docs_next_version \
                 "doc/source/*.rst: please update notes with next version"
     # shellcheck disable=SC2001
     echo "$occurrences" | sed 's/^/INFO: /' >&2
 }
+
+if [ ! -z "${GITHUB_PR_NUMBER:-}" ]; then
+    git fetch --no-tags --prune origin +refs/pull/$GITHUB_PR_NUMBER/head:refs/remotes/origin/pr/$GITHUB_PR_NUMBER
+    git fetch --no-tags origin +refs/heads/$GITHUB_BASE_REF:refs/remotes/origin/$GITHUB_BASE_REF
+    if git log --no-merges origin/pr/$GITHUB_PR_NUMBER ^origin/$GITHUB_BASE_REF --pretty='%s' | grep -qE '^\[no changelog\]$'; then
+        echo "Found mark to skip issue in changelog." >&2
+    else
+       # Marker not found, search the issue in the changelog
+        grep -qF ":issue:\`$GITHUB_PR_NUMBER\`" CHANGELOG.rst \
+           || error ":issue:\`$GITHUB_PR_NUMBER\` not found in CHANGELOG.rst and \"[no changelog]\" missing in commit message on branch."
+    fi
+fi
 
 if git tag | grep -qE "^$target_version\$"; then
     # grandfathering of non-annotated 3.4 tag

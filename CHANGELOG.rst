@@ -31,7 +31,7 @@ Improvements and new features:
  - Incorrect path for header now can still generate html-details reports (:issue:`271`)
  - Change format version in JSON output from number to string. (:issue:`418`)
  - Only remove :option:`--root` path at the start of file paths. (:issue:`452`)
- - fix coverage report for cmake ninja builds with given in-source object-directory
+ - Fix coverage report for cmake ninja builds with given in-source object-directory. (:issue:`453`)
  - Changes for HTML output format:
 
    - Redesign HTML generation. Add :option:`--html-self-contained` to control externeal or internal CSS. (:issue:`367`)
@@ -55,6 +55,8 @@ Internal changes:
  - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
  - Add GitHup actions to test PRs and master branch. (:issue:`404`)
  - Remove Travis CI. (:issue:`419`)
+ - Remove Appveyor CI and udloade coverage report from Windows and Ubuntu from the GitHub actions. (:issue:`455`)
+ - Add check if commit is mentioned in the CHANGELOG.rst. (:issue:`457`)
  - Extend test framework for CI:
 
    - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)
