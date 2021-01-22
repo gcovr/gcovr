@@ -97,6 +97,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         fname = guess_source_file_name(
             firstline, data_fname, source_fname,
             root_dir=options.root_dir, starting_dir=options.starting_dir,
+            obj_dir=None if options.objdir is None else os.path.abspath(options.objdir),
             logger=logger, currdir=currdir)
 
         logger.verbose_msg("Parsing coverage data for file {}", fname)
@@ -128,7 +129,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
 
 
 def guess_source_file_name(
-        line, data_fname, source_fname, root_dir, starting_dir, logger, currdir=None):
+        line, data_fname, source_fname, root_dir, starting_dir, obj_dir, logger, currdir=None):
     segments = line.split(':', 3)
     if len(segments) != 4 or not \
             segments[2].lower().strip().endswith('source'):
@@ -143,7 +144,7 @@ def guess_source_file_name(
             gcovname, currdir, data_fname)
     else:
         fname = guess_source_file_name_heuristics(
-            gcovname, currdir, root_dir, starting_dir, source_fname)
+            gcovname, currdir, root_dir, starting_dir, obj_dir, source_fname)
 
     logger.verbose_msg(
         "Finding source file corresponding to a gcov data file\n"
@@ -182,7 +183,7 @@ def guess_source_file_name_via_aliases(gcovname, currdir, data_fname):
 
 
 def guess_source_file_name_heuristics(
-        gcovname, currdir, root_dir, starting_dir, source_fname):
+        gcovname, currdir, root_dir, starting_dir, obj_dir, source_fname):
 
     # gcov writes filenames with '/' path seperators even if the OS
     # separator is different, so we replace it with the correct separator
@@ -203,15 +204,21 @@ def guess_source_file_name_heuristics(
     if os.path.exists(fname):
         return fname
 
+    # 3. Try using relative path from object dir
+    if obj_dir is not None:
+        fname = os.path.normpath(os.path.join(obj_dir, gcovname))
+        if os.path.exists(fname):
+            return fname
+
     # Get path of gcda file
     source_fname_dir = os.path.dirname(source_fname)
 
-    # 3. Try using the path to the gcda as the source directory
+    # 4. Try using the path to the gcda as the source directory
     fname = os.path.join(source_fname_dir, gcovname)
     if os.path.exists(fname):
         return os.path.normpath(fname)
 
-    # 4. Try using the path to the gcda file as the source directory, removing the path part from the gcov file
+    # 5. Try using the path to the gcda file as the source directory, removing the path part from the gcov file
     fname = os.path.join(source_fname_dir, os.path.basename(gcovname))
     return fname
 
