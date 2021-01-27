@@ -109,7 +109,7 @@ class LineCoverage(object):
         # * (multiple) template instantiations
         # * non explicitly defined destructors, called via base virtual destructor!
         # For that reason we need a dictionary instead of a scalar
-        self.functions = {} # type: Dict[str, FunctionCoverage]
+        self.functions = {}  # type: Dict[str, FunctionCoverage]
 
     @property
     def is_covered(self):

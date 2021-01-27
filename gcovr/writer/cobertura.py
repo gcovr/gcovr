@@ -55,7 +55,7 @@ def print_xml_report(covdata, output_file, options):
     )
     root.set(
         "function-rate", functionTotal == 0 and '0.0'
-                       or str(float(functionCovered) / functionTotal)
+        or str(float(functionCovered) / functionTotal)
     )
     root.set(
         "branch-rate", branchTotal == 0 and '0.0'

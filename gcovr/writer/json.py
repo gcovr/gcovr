@@ -89,7 +89,7 @@ def print_json_summary_report(covdata, output_file, options):
         (filename, line_total, line_covered, line_percent,
          branch_total, branch_covered, branch_percent,
          function_total, function_covered, function_percent) = summarize_file_coverage(covdata[key],
-                                                   options.root_filter)
+                                                                                       options.root_filter)
 
         json_dict['files'].append({
             'filename': filename,
