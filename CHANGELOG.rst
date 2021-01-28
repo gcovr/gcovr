@@ -24,8 +24,8 @@ Improvements and new features:
  - Add :option:`--coveralls` to generate a :ref:`Coveralls <coveralls_output>` compatible JSON report. (:issue:`328`)
  - Add support for output directories. If the output ends with a ``/`` or ``\`` it is used as a directory. (:issue:`416`)
  - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
- - Add wildcard pattern to json --add-tracefile option. (:issue:`351`)
- - Enable filter option in add JSON tracefiles mode. (:issue:`373`)
+ - Add wildcard pattern to json :option:`--add-tracefile`. (:issue:`351`)
+ - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
  - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`389`)
  - Support relative source location for shadow builds. (:issue:`410`)
  - Incorrect path for header now can still generate html-details reports (:issue:`271`)
@@ -52,7 +52,6 @@ Internal changes:
 
  - Add makefile + dockerfile for simpler testing.
  - Add .gitbugtraq to link comments to issue tracker in GUIs. (:issue:`429`)
- - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
  - Add GitHup actions to test PRs and master branch. (:issue:`404`)
  - Remove Travis CI. (:issue:`419`)
  - Remove Appveyor CI and udloade coverage report from Windows and Ubuntu from the GitHub actions. (:issue:`455`)
