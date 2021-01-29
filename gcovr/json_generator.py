@@ -7,13 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2020-2021 Spacetown <michael.foerderer@gmx.de>
-# Copyright (c) 2019-2020 Cezary Gapiński <cezary.gapinski@gmail.com>
-# Copyright (c) 2020 Jugst3r <38359364+Jugst3r@users.noreply.github.com>
-# Copyright (c) 2020 Lukas Atkinson <opensource@LukasAtkinson.de>
-# Copyright (c) 2020 Oleksiy Pikalo <opikalo@gmail.com>
-# Copyright (c) 2020 Zachary J. Fields <zachary_fields@yahoo.com>
-# and possibly others.
+# Copyright (c) 2021 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,

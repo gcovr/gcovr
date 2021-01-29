@@ -7,13 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2021 Spacetown <michael.foerderer@gmx.de>
-# Copyright (c) 2020 Noam Lewis <noamlewis@google.com>
-# Copyright (c) 2018-2019 Lukas Atkinson <opensource@LukasAtkinson.de>
-# Copyright (c) 2019 Philip Clapham <32672400+obiphi@users.noreply.github.com>
-# Copyright (c) 2018 James Reynolds <james.reynolds@cristiesoftware.com>
-# Copyright (c) 2018 Songmin Li <lisongmin9@gmail.com>
-# and possibly others.
+# Copyright (c) 2021 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,

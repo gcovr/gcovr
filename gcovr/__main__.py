@@ -7,23 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2021 Ensky <enskylin@gmail.com>
-# Copyright (c) 2018-2021 Spacetown <michael.foerderer@gmx.de>
-# Copyright (c) 2019-2020 Cezary Gapinski <cezary.gapinski@gmail.com>
-# Copyright (c) 2020 Christian Taedcke <hacking@taedcke.com>
-# Copyright (c) 2018-2020 Lukas Atkinson <opensource@LukasAtkinson.de>
-# Copyright (c) 2020 Noam Lewis <noamlewis@google.com>
-# Copyright (c) 2020 Oleksiy Pikalo <opikalo@gmail.com>
-# Copyright (c) 2020 Zachary J. Fields <zachary_fields@yahoo.com>
-# Copyright (c) 2019 Ma Liangliang <akml@163.com>
-# Copyright (c) 2019 Richard Kjerstadius <kjerstadius@gmail.com>
-# Copyright (c) 2018 James Reynolds <james.reynolds@cristiesoftware.com>
-# Copyright (c) 2018 Joel Klinghed <the_jk@spawned.biz>
-# Copyright (c) 2018 Marek Kurdej <marek@quasardb.net>
-# Copyright (c) 2018 Matthew Stadelman <stadelmanma@gmail.com>
-# Copyright (c) 2018 Songmin Li <lisongmin9@gmail.com>
-# Copyright (c) 2018 mayeut <mayeut@users.noreply.github.com>
-# and possibly others.
+# Copyright (c) 2021 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,

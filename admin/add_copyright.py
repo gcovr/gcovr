@@ -9,8 +9,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2021 Spacetown <michael.foerderer@gmx.de>
-# and possibly others.
+# Copyright (c) 2021 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -32,6 +31,11 @@ HEADER_END = (
 
 
 def getLicenseSection(filename, comment_char="#"):
+    date = subprocess.check_output(
+        ["git", "log", "-1", "--format=format:%ad", "--date=short", "--", filename],
+        universal_newlines=True,
+    )
+    year = date[:4]
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
     yield comment_char + " This file is part of gcovr {}, a parsing and reporting tool for gcov.".format(
@@ -41,9 +45,7 @@ def getLicenseSection(filename, comment_char="#"):
     yield comment_char
     yield comment_char + " _____________________________________________________________________________"
     yield comment_char
-    for name, year in getContributors(filename):
-        yield comment_char + " Copyright (c) " + year + " " + name
-    yield comment_char + " and possibly others."
+    yield comment_char + " Copyright (c) " + year + " the gcovr authors"
     yield comment_char + " Copyright (c) 2013 Sandia Corporation."
     yield comment_char + " This software is distributed under the BSD License."
     yield comment_char + " Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,"
@@ -51,72 +53,6 @@ def getLicenseSection(filename, comment_char="#"):
     yield comment_char + " For more information, see the README.rst file."
     yield comment_char
     yield comment_char + HEADER_END
-
-
-def getContributors(filename, sortBy="end"):
-    yearsOfContributions = dict()
-    emailByName = dict()
-    newMailByOldMail = dict()
-    nameByEmail = dict()
-    newNameByOldName = dict()
-    for line in subprocess.check_output(
-        ["git", "log", "--format=format:%ad|%an|%ae", "--date=short", "--", filename],
-        universal_newlines=True,
-    ).split("\n"):
-        (date, name, email) = line.split("|")
-        year = date[:4]
-        key = "{} <{}>".format(name, email)
-        # User name is unknown, check if it was changed...
-        if key not in yearsOfContributions:
-            # User name is already known --> Get matching email address
-            if name in emailByName:
-                newMailByOldMail[email] = emailByName[name]  # Save changed email address
-                email = newMailByOldMail[email]
-            # Email address is already known --> Get matching user name
-            elif email in nameByEmail:
-                newNameByOldName[name] = nameByEmail[email]  # Save changed user name
-                name = newNameByOldName[name]
-            # User name is already known --> Get matching email address
-            elif email in newMailByOldMail:
-                email = newMailByOldMail[email]
-                name = nameByEmail[email]
-            # User name is already known --> Get matching email address
-            elif name in newNameByOldName:
-                name = newNameByOldName[name]
-                email = emailByName[name]
-            else:
-                # Try to get the user name from the mail address
-                match = REGEX_EMAIL.match(email)
-                if match is not None:
-                    if match.group(1) in emailByName:
-                        name = match.group(1)
-                        email = emailByName[name]
-            # Update the key
-            key = "{} <{}>".format(name, email)
-
-            emailByName[name] = email
-            nameByEmail[email] = name
-        email = emailByName[name]
-        # Add year to list, key is the user name followed by email address
-        if key not in yearsOfContributions:
-            yearsOfContributions[key] = set()
-        yearsOfContributions[key].add(year)
-
-    contributors = set()
-    for (name, years) in yearsOfContributions.items():
-        contributors.add((name, min(years), max(years)))
-
-    # first sort by name
-    contributors = sorted(contributors, key=lambda x: x[0])
-    if sortBy == "start":
-        contributors = sorted(contributors, key=lambda x: x[1], reverse=True)
-    if sortBy == "end":
-        contributors = sorted(contributors, key=lambda x: x[2], reverse=True)
-
-    return list(
-        (x[0], x[1] if x[1] == x[2] else "{}-{}".format(x[1], x[2]))
-        for x in contributors
-    )
 
 
 def addCopyrightToPythonFile(filename, lines):

@@ -7,10 +7,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2021 Spacetown <michael.foerderer@gmx.de>
-# Copyright (c) 2018 Christian Taedcke <hacking@taedcke.com>
-# Copyright (c) 2018 Lukas Atkinson <opensource@LukasAtkinson.de>
-# and possibly others.
+# Copyright (c) 2021 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -18,6 +15,12 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+# Configuration file for the Sphinx documentation builder.
+#
+# This file does only contain a selection of the most common options. For a
+# full list see the documentation:
+# http://www.sphinx-doc.org/en/stable/config
 
 # -- Path setup --------------------------------------------------------------
 # If extensions (or modules to document with autodoc) are in another directory,
