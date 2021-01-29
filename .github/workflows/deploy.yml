@@ -14,10 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup environment
-      run: |
-        echo "GITHUB_PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-      shell: bash
     - name: Run release_checklist
       run: |
         admin/release_checklist 4.2

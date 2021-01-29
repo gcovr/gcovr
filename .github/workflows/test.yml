@@ -11,6 +11,39 @@ on:
 
 jobs:
 
+  changelog-check:
+    runs-on: ubuntu-20.04
+    if: ${{ github.event_name == 'pull_request' }}
+
+    env:
+      PR_BODY: ${{ github.event.pull_request.body }}
+      CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run check
+      run: |
+        if [ ! -z "${{ github.event.pull_request.number }}" ]; then
+          if grep -qE '^\[no changelog\]$' <<<"$PR_BODY"; then
+            echo 'Marker "[no changelog]" found in PR body'
+            if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" != "" ]; then
+              echo "ERROR: $CHANGELOG_ISSUE found in CHANGELOG.rst."
+              exit 1
+            else
+              echo "OK: $CHANGELOG_ISSUE not found in CHANGELOG.rst"
+            fi
+          else
+            echo 'Marker "[no changelog]" not found in PR body'
+            if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" == "" ]; then
+              echo "ERROR: $CHANGELOG_ISSUE not found in CHANGELOG.rst."
+              exit 1
+            else
+              echo "OK: $CHANGELOG_ISSUE found in CHANGELOG.rst"
+            fi
+          fi
+        fi
+        exit 0
+
   release-check:
     runs-on: ubuntu-20.04
 
@@ -26,7 +59,7 @@ jobs:
  
   build:
     runs-on: ${{ matrix.os }}
-    needs: release-check
+    needs: [changelog-check, release-check]
 
     strategy:
       fail-fast: false
@@ -112,7 +145,7 @@ jobs:
   
   run-docker:
     runs-on: ubuntu-18.04
-    needs: release-check
+    needs: [changelog-check, release-check]
 
     strategy:
       fail-fast: false

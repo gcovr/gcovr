@@ -95,18 +95,6 @@ test -z "$occurrences" || {
     echo "$occurrences" | sed 's/^/INFO: /' >&2
 }
 
-if [ ! -z "${GITHUB_PR_NUMBER:-}" ]; then
-    git fetch --no-tags --prune origin +refs/pull/$GITHUB_PR_NUMBER/head:refs/remotes/origin/pr/$GITHUB_PR_NUMBER
-    git fetch --no-tags origin +refs/heads/$GITHUB_BASE_REF:refs/remotes/origin/$GITHUB_BASE_REF
-    if git log --no-merges origin/pr/$GITHUB_PR_NUMBER ^origin/$GITHUB_BASE_REF --pretty='%s' | grep -qE '^\[no changelog\]$'; then
-        echo "Found mark to skip issue in changelog." >&2
-    else
-       # Marker not found, search the issue in the changelog
-        grep -qF ":issue:\`$GITHUB_PR_NUMBER\`" CHANGELOG.rst \
-           || error ":issue:\`$GITHUB_PR_NUMBER\` not found in CHANGELOG.rst and \"[no changelog]\" missing in commit message on branch."
-    fi
-fi
-
 if git tag | grep -qE "^$target_version\$"; then
     # grandfathering of non-annotated 3.4 tag
     [[ "$target_version" = 3.4 ]] \

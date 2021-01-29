@@ -80,7 +80,7 @@ Please follow this checklist for your pull request:
     But please prevent unnecessary build failures
     and run the tests yourself first.
     If you cannot run the tests locally,
-    you can activate GitHub or Appveyor for your fork,
+    you can activate GitHub for your fork,
     or run the tests with Docker.
 
     If you add new features, please try to add a test case.
@@ -113,6 +113,13 @@ Please follow this checklist for your pull request:
     please explain why we need this change and what your PR does.
     If this PR fixes an open issue,
     reference that issue in the pull request description.
+    Add a reference to the issue in the ``CHANGELOG.rst``, if the
+    change should not be visible in the changelog (minor or not of
+    interest), add the following string to a single line in the PR
+    body:
+
+        [no changelog]
+
 
 Once you submit the PR, it will be automatically tested on Windows and Linux,
 and code coverage will be collected.
