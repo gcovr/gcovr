@@ -1,33 +1,20 @@
 # -*- coding:utf-8 -*-
+
+#  ************************** Copyrights and license ***************************
 #
-# A report generator for gcov 3.4
+# This file is part of gcovr 4.2, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/stable
 #
-# This routine generates a format that is similar to the format generated
-# by the Python coverage.py module.  This code is similar to the
-# data processing performed by lcov's geninfo command.  However, we
-# don't worry about parsing the *.gcna files, and backwards compatibility for
-# older versions of gcov is not supported.
+# _____________________________________________________________________________
 #
-# Outstanding issues
-#   - verify that gcov 3.4 or newer is being used
-#   - verify support for symbolic links
+# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013 Sandia Corporation.
+# This software is distributed under the BSD License.
+# Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+# the U.S. Government retains certain rights in this software.
+# For more information, see the README.rst file.
 #
-# For documentation, bug reporting, and updates,
-# see http://gcovr.com/
-#
-#  _________________________________________________________________________
-#
-#  Gcovr: A parsing and reporting tool for gcov
-#  Copyright (c) 2013 Sandia Corporation.
-#  This software is distributed under the BSD License.
-#  Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
-#  the U.S. Government retains certain rights in this software.
-#  For more information, see the README.md file.
-# _________________________________________________________________________
-#
-# $Revision$
-# $Date$
-#
+# ****************************************************************************
 
 import os
 import re
