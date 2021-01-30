@@ -9,7 +9,7 @@
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2021 the gcovr authors
+# Copyright (c) 2013-2021 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -18,6 +18,7 @@
 #
 # ****************************************************************************
 
+import copy
 import os
 import re
 import subprocess
@@ -45,7 +46,7 @@ def getLicenseSection(filename, comment_char="#"):
     yield comment_char
     yield comment_char + " _____________________________________________________________________________"
     yield comment_char
-    yield comment_char + " Copyright (c) " + year + " the gcovr authors"
+    yield comment_char + " Copyright (c) 2013-{} the gcovr authors".format(year)
     yield comment_char + " Copyright (c) 2013 Sandia Corporation."
     yield comment_char + " This software is distributed under the BSD License."
     yield comment_char + " Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,"
@@ -66,7 +67,9 @@ def addCopyrightToPythonFile(filename, lines):
         newLines.append(lines.pop(0))
         newLines.append("")
 
-    # Add encoding
+    # Set the encoding
+    if lines[0].startswith("# -*- coding:"):
+        lines.pop(0)
     newLines.append("# -*- coding:utf-8 -*-")
     newLines.append("")
 
@@ -74,24 +77,27 @@ def addCopyrightToPythonFile(filename, lines):
     for line in getLicenseSection(filename):
         newLines.append(line)
 
-    # Skip header and add rest of file
+    iterLines = iter(lines)
+
+    # skip lines until header end marker
     headerEndReached = False
-    skipEmptyLines = True
-    for line in lines:
-        if not headerEndReached:
-            if len(line) > 0 and line[0] == "#" and line[1:] == HEADER_END:
-                headerEndReached = True
-                continue
+    for line in iterLines:
+        if len(line) > 0 and line == '#' + HEADER_END:
+            headerEndReached = True
+            break
 
-        if headerEndReached:
-            if skipEmptyLines:
-                if len(line) == 0:
-                    continue
-                skipEmptyLines = False
+    if headerEndReached:
+        for line in iterLines:
+            if line != "":
+                # Use one empty line
                 newLines.append("")
-            newLines.append(line)
-
-    if not headerEndReached:
+                newLines.append(line)
+                break
+        # keep all other lines
+        newLines.extend(iterLines)
+    # no header found
+    else:
+        # keep all other lines
         newLines.extend(lines)
 
     return newLines
@@ -112,7 +118,7 @@ def main():
             if handler is not None:
                 with open(fullname) as f:
                     lines = list(line.rstrip() for line in f)
-                newLines = handler(fullname, lines)
+                newLines = handler(fullname, copy.copy(lines))  # use a copy because of the compare in the next line
                 if newLines != lines:
                     print("Modifying {}".format(fullname))
                     with open(fullname, "w") as f:
