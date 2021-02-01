@@ -13,7 +13,6 @@ jobs:
 
   changelog-check:
     runs-on: ubuntu-20.04
-    if: ${{ github.event_name == 'pull_request' }}
 
     env:
       PR_BODY: ${{ github.event.pull_request.body }}
@@ -23,8 +22,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run check
       run: |
-        if [ ! -z "${{ github.event.pull_request.number }}" ]; then
-          if grep -qE '^\[no changelog\]$' <<<"$PR_BODY"; then
+        if [ -z "${{ github.event.pull_request.number }}" ]; then
+          echo 'No PR defined'
+        else
+          if grep -qE '^\[no changelog\]' <<<"$PR_BODY"; then
             echo 'Marker "[no changelog]" found in PR body'
             if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" != "" ]; then
               echo "ERROR: $CHANGELOG_ISSUE found in CHANGELOG.rst."
