@@ -83,11 +83,11 @@ grep -qE "^ *$0 --no-verify-tags --no-verify-docs-next-version $target_version\$
     || error ".github/workflows/test.yml: Please update the $0 version"
 
 grep -qE "^ *$0 $target_version\$" .github/workflows/deploy.yml \
-    || error "./github/workflows/deploy.yml: Please update the $0 version"
+    || error ".github/workflows/deploy.yml: Please update the $0 version"
 
 occurrences="$(
   grep -E '\.\. (versionadded|versionchanged|deprecated):: NEXT' \
-       -A 1 doc/source/*.rst)"
+       -A 1 doc/source/*.rst || exit 0)"
 test -z "$occurrences" || {
     maybe_error $verify_docs_next_version \
                 "doc/source/*.rst: please update notes with next version"

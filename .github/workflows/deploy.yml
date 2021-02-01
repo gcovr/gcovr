@@ -9,9 +9,18 @@ on:
 
 jobs:
 
-  deploy:
+  release-check:
+    runs-on: ubuntu-20.04
 
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run release_checklist
+      run: |
+        admin/release_checklist 4.2
+ 
+  deploy:
     runs-on: ubuntu-18.04
+    needs: release-check
 
     steps:
     - uses: actions/checkout@v2
@@ -27,9 +36,6 @@ jobs:
     - name: Install dependencies
       run: |
         make setup-dev PYTHON=python
-    - name: Run release_checklist
-      run: |
-        admin/release_checklist 4.2
     - name: Lint with flake8
       run: |
         make lint PYTHON=python
