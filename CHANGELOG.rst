@@ -66,6 +66,7 @@ Internal changes:
    - New option `--archive_differences` to save the different files as ZIP.
      Use this ZIP as artifact in AppVeyor. (:issue:`392`)
    - Add support for gcc-8 to test suite and docker tests. (:issue:`423`)
+   - Run as limited user inside docker container and add test with read only directory. (:issue:`445`)
 
 4.2 (6 November 2019)
 ---------------------

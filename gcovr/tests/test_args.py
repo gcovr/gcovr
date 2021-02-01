@@ -19,6 +19,8 @@
 from ..__main__ import main
 from ..version import __version__
 
+import pytest
+import os
 import re
 import sys
 
@@ -98,11 +100,15 @@ def test_invalid_objdir(capsys):
     assert c.exception.code == 1
 
 
-def helper_test_non_existing_directory_output(capsys, option='--output'):
+def helper_test_non_existing_directory_output(capsys, option):
     c = capture(capsys, [option, 'not-existing-dir/file.txt'])
     assert c.out == ''
     assert 'Could not create output file \'not-existing-dir/file.txt\': ' in c.err
     assert c.exception.code != 0
+
+
+def test_non_existing_directory_output(capsys):
+    helper_test_non_existing_directory_output(capsys, '--output')
 
 
 def test_non_existing_directory_txt(capsys):
@@ -133,11 +139,15 @@ def test_non_existing_directory_csv(capsys):
     helper_test_non_existing_directory_output(capsys, '--csv')
 
 
-def helper_test_non_existing_directory_2_output(capsys, option='--output'):
+def helper_test_non_existing_directory_2_output(capsys, option):
     c = capture(capsys, [option, 'not-existing-dir/subdir/'])
     assert c.out == ''
     assert 'Could not create output directory \'not-existing-dir/subdir/\': ' in c.err
     assert c.exception.code != 0
+
+
+def test_non_existing_directory_2_output(capsys):
+    helper_test_non_existing_directory_2_output(capsys, '--output')
 
 
 def test_non_existing_directory_2_txt(capsys):
@@ -166,6 +176,53 @@ def test_non_existing_directory_2_json(capsys):
 
 def test_non_existing_directory_2_csv(capsys):
     helper_test_non_existing_directory_2_output(capsys, '--csv')
+
+
+def helper_test_non_writable_directory_output(capsys, option):  # pragma: no cover
+    c = capture(capsys, [option, '/file.txt'])
+    assert c.out == ''
+    assert 'Could not create output file \'/file.txt\': ' in c.err
+    assert c.exception.code != 0
+
+
+@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+def test_non_writable_directory_output(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, '--output')
+
+
+@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+def test_non_writable_directory_txt(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, '--txt')
+
+
+@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+def test_non_writable_directory_xml(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, '--xml')
+
+
+@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+def test_non_writable_directory_html(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, '--html')
+
+
+@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+def test_non_writable_directory_html_details(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, '--html-details')
+
+
+@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+def test_non_writable_directory_sonarqube(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, '--sonarqube')
+
+
+@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+def test_non_writable_directory_json(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, '--json')
+
+
+@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+def test_non_writable_directory_csv(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, '--csv')
 
 
 def test_no_output_html_details(capsys):
