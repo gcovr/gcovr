@@ -141,8 +141,33 @@ How to set up a development environment
 ---------------------------------------
 
 For working on gcovr, you will need a supported version of Python 3,
-and GCC version 5. Other GCC versions are supported by gcovr,
-but will cause spurious test failures.
+GCC version 5, 6 or 8 (other GCC versions are supported by gcovr,
+but will cause spurious test failures), ``make`` and ``cmake``.
+Please make sure that the tools are in the system ``PATH``.
+On **Windows**, you will need to install a GCC toolchain as the
+tests expect a Unix-like environment. You can use MinGW-W64 or MinGW.
+An easier way is to :ref:`run tests with Docker <docker tests>`,
+on **Windows** a Pro license or the WSL (Windows subsystem for Linux)
+is needed.
+
+-   Check your GCC installation, the binary directory must be added to
+    the PATH environment. If the command gcc-5/g++-5/gcov-5,
+    gcc-6/g++-6/gcov-6 or gcc-8/g++-8/gcov-8 are available everything
+    is OK. For gcc-6 and gcc-8 you should use the option ``CC=...```
+    see :ref:`run and filter tests <run tests>`. If this isn't OK you
+    have to create symlinks for the gcc executables with the following steps.
+    You can check the GCC version with gcc --version. If the output says
+    version 8, you should also be able to run gcc-8 --version. Your Linux
+    distribution should have set all of this up already.
+    If you don't have an alias like gcc-8, perform the following steps to
+    create an alias for gcc, this should also work in the MSYS shell under Windows:
+
+    1. Create a directory somewhere, e.g. in your home directory: mkdir ~/bin
+    2. Create a symlink in that directory which points to GCC:ln -s $(which gcc) ~/bin/gcc-8
+    3. Add this directory to your PATH: export PATH="$HOME/bin:$PATH"
+    4. Re-test gcc-8 --version to ensure everything worked.
+    5. Create additional symlinks for g++ -> g++-8 and gcov -> gcov-8.
+
 
 -   (Optional) Fork the project on GitHub.
 
@@ -170,7 +195,7 @@ but will cause spurious test failures.
 
     See ``doc/README.txt`` for details on working with the documentation.
 
--   (Optional) Activate GitHub and Appveyor for your forked GitHub repository,
+-   (Optional) Activate GitHub for your forked GitHub repository,
     so that the cross-platform compatibility tests get run
     whenever you push your work to your repository.
     These tests will also be run
@@ -179,18 +204,7 @@ but will cause spurious test failures.
 Tip: If you have problems getting everything set up, consider looking at these files:
 
 -   for Linux: ``.github/workflows/test.yml`` and ``admin/Dockerfile.qa``
--   for Windows: ``.github/workflows/test.yml`` and ``appveyor.yml``
-
-On **Windows**, you will need to install a GCC toolchain
-as the tests expect a Unix-like environment.
-You can use MinGW-W64 or MinGW.
-To run the tests,
-please make sure that the ``make`` and ``cmake`` from your MinGW distribution
-are in the system ``PATH``.
-
-If setting up a local toolchain is too complicated,
-you can also run the tests in a Docker container
-(see :ref:`test suite`).
+-   for Windows: ``.github/workflows/test.yml``
 
 .. _project structure:
 
@@ -224,6 +238,8 @@ Test suite
 The QA process (``make qa``) consists of multiple parts:
 
 - linting (``make lint``)
+
+- checking format (``make format``)
 
 - tests (``make test``)
 
@@ -290,6 +306,8 @@ Run and filter tests
 To run all tests, use ``make test`` or ``make qa``.
 The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
+You can select a different GCC version by setting the CC argument.
+Supported versions are ``CC=gcc-5``, ``CC=gcc-6`` and ``CC=gcc-8``.
 
 You can run the tests with additional options by setting ``TEST_OPTS`` variable.
 Run all tests after each change is a bit slow, therefore you can limit the tests
@@ -368,7 +386,7 @@ Then, run the container, which executes ``make qa`` within the container:
     make docker-qa
 
 You can select the gcc version to use inside the docker by setting the make
-variable CC to gcc-5 (default) or gcc-8
+variable CC to gcc-5 (default), gcc-6 or gcc-8
 
 .. _join:
 
