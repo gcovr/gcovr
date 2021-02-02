@@ -12,7 +12,6 @@
 !*.txt
 !*.cfg
 !**/requirements.txt
-!gcovr/version.py
 
 # explicitly allow resources
 !gcovr/templates
