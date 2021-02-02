@@ -69,10 +69,13 @@ endif
 endif
 	$(GCOV) --version
 
-qa: lint test doc
+qa: lint black test doc
 
 lint:
-	find ./* -type f -name '*.py' -exec $(PYTHON) -m flake8 --ignore=E501,W503 -- {} +
+	$(PYTHON) -m flake8 doc gcovr
+
+black:
+	$(PYTHON) -m black --diff doc gcovr
 
 test: export GCOVR_TEST_SUITE := 1
 test: export CC := $(CC)

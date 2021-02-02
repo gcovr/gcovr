@@ -1,3 +1,4 @@
+black; implementation_name == "cpython"
 cmake
 flake8
 jinja2

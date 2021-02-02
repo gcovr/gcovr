@@ -52,10 +52,11 @@ Internal changes:
 
  - Add makefile + dockerfile for simpler testing.
  - Add .gitbugtraq to link comments to issue tracker in GUIs. (:issue:`429`)
- - Add GitHup actions to test PRs and master branch. (:issue:`404`)
+ - Add GitHub actions to test PRs and master branch. (:issue:`404`)
  - Remove Travis CI. (:issue:`419`)
- - Remove Appveyor CI and udloade coverage report from Windows and Ubuntu from the GitHub actions. (:issue:`455`)
+ - Remove Appveyor CI and upload coverage report from Windows and Ubuntu from the GitHub actions. (:issue:`455`)
  - Add check if commit is mentioned in the CHANGELOG.rst. (:issue:`457`)
+ - Move flake8 config to setup.cfg and add black code formatter. (:issue:`444`)
  - Extend test framework for CI:
 
    - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)
