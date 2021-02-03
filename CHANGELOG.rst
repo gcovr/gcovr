@@ -32,6 +32,7 @@ Improvements and new features:
  - Change format version in JSON output from number to string. (:issue:`418`)
  - Only remove :option:`--root` path at the start of file paths. (:issue:`452`)
  - Fix coverage report for cmake ninja builds with given in-source object-directory. (:issue:`453`)
+ - Add issue templates. (:issue:`461`)
  - Changes for HTML output format:
 
    - Redesign HTML generation. Add :option:`--html-self-contained` to control externeal or internal CSS. (:issue:`367`)
