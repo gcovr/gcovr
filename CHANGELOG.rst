@@ -16,6 +16,9 @@ Documentation:
 
 Internal changes:
 
+ - Move generators/writer to sub directory. (:issue:`443`)
+ - Add base class for reader and writers. Move the format specific stuff (CLI options, checks, ...) to the
+   derived class. (:issue:`474`)
  - Clean GCC environment variables in test suite. (:issue:`493`)
  - Fix problems from deployment of release 5.0. (:issue:`494`)
  - Use yaxmldiff for XML diffing in tests. (:issue:`495`)

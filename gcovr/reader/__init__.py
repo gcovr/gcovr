@@ -16,26 +16,28 @@
 #
 # ****************************************************************************
 
-import sys
+from .json import Json
 
-from ..utils import get_global_stats
+READERS = [Json()]
 
 
-def print_summary(covdata):
-    '''Print a small report to the standard output.
-    Output the percentage, covered and total lines and branches.
-    '''
+class Readers:
+    __options_called = False
 
-    (lines_total, lines_covered, percent,
-     branches_total, branches_covered,
-     percent_branches) = get_global_stats(covdata)
+    @classmethod
+    def options(_cls):
+        if not _cls.__options_called:
+            _cls.__options_called = True
+            for r in READERS:
+                for o in r.options():
+                    yield o
 
-    lines_out = "lines: %0.1f%% (%s out of %s)\n" % (
-        percent, lines_covered, lines_total
-    )
-    branches_out = "branches: %0.1f%% (%s out of %s)\n" % (
-        percent_branches, branches_covered, branches_total
-    )
+    @classmethod
+    def check_options(_cls, options, logger):
+        for r in READERS:
+            r.check_options(options, logger)
 
-    sys.stdout.write(lines_out)
-    sys.stdout.write(branches_out)
+    @classmethod
+    def read(_cls, covdata, options, logger):
+        for r in READERS:
+            r.read(covdata, options, logger)

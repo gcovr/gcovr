@@ -16,7 +16,7 @@
 #
 # ****************************************************************************
 
-from .utils import calculate_coverage
+from gcovr.writer.utils import calculate_coverage
 
 # for type annotations:
 if False: from typing import (  # noqa, pylint: disable=all

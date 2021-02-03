@@ -20,11 +20,47 @@ import time
 
 from lxml import etree
 
+from .base import Base
+from .utils import open_binary_for_writing, presentable_filename
 from ..version import __version__
-from ..utils import open_binary_for_writing, presentable_filename
+from ..configuration import GcovrConfigOption
 
 
-def print_xml_report(covdata, output_file, options):
+class Cobertura(Base):
+    def options(self):
+        yield GcovrConfigOption(
+            "cobertura",
+            ["--cobertura", "-x", "--xml"],
+            group="output_options",
+            metavar="OUTPUT",
+            help="Generate a Cobertura XML report. "
+            "OUTPUT is optional and defaults to --output.",
+            nargs="?",
+            type=GcovrConfigOption.OutputOrDefault,
+            default=None,
+            const=GcovrConfigOption.OutputOrDefault(None),
+        )
+        yield GcovrConfigOption(
+            "prettycobertura",
+            ["--cobertura-pretty", "--xml-pretty"],
+            group="output_options",
+            help="Pretty-print the XML report. Implies --xml. Default: {default!s}.",
+            action="store_true",
+        )
+
+    def writers(self, options, logger):
+        if options.cobertura or options.prettycobertura:
+            yield (
+                [options.cobertura],
+                print_report,
+                lambda: logger.warn(
+                    "Cobertura output skipped - "
+                    "consider providing an output file with `--cobertura=OUTPUT`."
+                ),
+            )
+
+
+def print_report(covdata, output_file, options):
     """produce an XML report in the Cobertura format"""
     branchTotal = 0
     branchCovered = 0
@@ -43,34 +79,19 @@ def print_xml_report(covdata, output_file, options):
 
     root = etree.Element("coverage")
     root.set(
-        "line-rate", lineTotal == 0 and '0.0'
-        or str(float(lineCovered) / lineTotal)
+        "line-rate", lineTotal == 0 and "0.0" or str(float(lineCovered) / lineTotal)
     )
     root.set(
-        "branch-rate", branchTotal == 0 and '0.0'
-        or str(float(branchCovered) / branchTotal)
+        "branch-rate",
+        branchTotal == 0 and "0.0" or str(float(branchCovered) / branchTotal),
     )
-    root.set(
-        "lines-covered", str(lineCovered)
-    )
-    root.set(
-        "lines-valid", str(lineTotal)
-    )
-    root.set(
-        "branches-covered", str(branchCovered)
-    )
-    root.set(
-        "branches-valid", str(branchTotal)
-    )
-    root.set(
-        "complexity", "0.0"
-    )
-    root.set(
-        "timestamp", str(int(time.time()))
-    )
-    root.set(
-        "version", "gcovr %s" % (__version__,)
-    )
+    root.set("lines-covered", str(lineCovered))
+    root.set("lines-valid", str(lineTotal))
+    root.set("branches-covered", str(branchCovered))
+    root.set("branches-valid", str(branchTotal))
+    root.set("complexity", "0.0")
+    root.set("timestamp", str(int(time.time())))
+    root.set("version", "gcovr %s" % (__version__,))
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
@@ -85,10 +106,10 @@ def print_xml_report(covdata, output_file, options):
     for f in sorted(covdata):
         data = covdata[f]
         filename = presentable_filename(f, root_filter=options.root_filter)
-        if '/' in filename:
-            directory, fname = filename.rsplit('/', 1)
+        if "/" in filename:
+            directory, fname = filename.rsplit("/", 1)
         else:
-            directory, fname = '', filename
+            directory, fname = "", filename
 
         package = packages.setdefault(
             directory, [etree.Element("package"), {}, 0, 0, 0, 0]
@@ -123,9 +144,9 @@ def print_xml_report(covdata, output_file, options):
                 L.set("branch", "true")
                 L.set(
                     "condition-coverage",
-                    "{}% ({}/{})".format(int(coverage), b_hits, b_total)
+                    "{}% ({}/{})".format(int(coverage), b_hits, b_total),
                 )
-                cond = etree.Element('condition')
+                cond = etree.Element("condition")
                 cond.set("number", "0")
                 cond.set("type", "jump")
                 cond.set("coverage", "{}%".format(int(coverage)))
@@ -137,17 +158,11 @@ def print_xml_report(covdata, output_file, options):
 
             lines.append(L)
 
-        className = fname.replace('.', '_')
+        className = fname.replace(".", "_")
         c.set("name", className)
         c.set("filename", filename)
-        c.set(
-            "line-rate",
-            str(class_hits / (1.0 * class_lines or 1.0))
-        )
-        c.set(
-            "branch-rate",
-            str(class_branch_hits / (1.0 * class_branches or 1.0))
-        )
+        c.set("line-rate", str(class_hits / (1.0 * class_lines or 1.0)))
+        c.set("branch-rate", str(class_branch_hits / (1.0 * class_branches or 1.0)))
         c.set("complexity", "0.0")
 
         package[1][className] = c
@@ -167,22 +182,21 @@ def print_xml_report(covdata, output_file, options):
         classNames.sort()
         for className in classNames:
             classes.append(packageData[1][className])
-        package.set("name", packageName.replace('/', '.'))
-        package.set(
-            "line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0))
-        )
-        package.set(
-            "branch-rate", str(packageData[4] / (1.0 * packageData[5] or 1.0))
-        )
+        package.set("name", packageName.replace("/", "."))
+        package.set("line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0)))
+        package.set("branch-rate", str(packageData[4] / (1.0 * packageData[5] or 1.0)))
         package.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
     etree.SubElement(sources, "source").text = options.root.strip()
 
-    with open_binary_for_writing(output_file, 'coverage.xml') as fh:
+    with open_binary_for_writing(output_file, "coverage.xml") as fh:
         fh.write(
-            etree.tostring(root,
-                           pretty_print=options.prettyxml,
-                           encoding="UTF-8",
-                           xml_declaration=True,
-                           doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))
+            etree.tostring(
+                root,
+                pretty_print=options.prettycobertura,
+                encoding="UTF-8",
+                xml_declaration=True,
+                doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>",
+            )
+        )

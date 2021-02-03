@@ -20,28 +20,197 @@ import os
 import datetime
 import hashlib
 import io
+import sys
+
 from argparse import ArgumentTypeError
 
+from .base import Base
+from .utils import Lazy, calculate_coverage, open_text_for_writing, sort_coverage
 from ..version import __version__
-from ..utils import commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
+from ..utils import commonpath, Logger
+from ..configuration import GcovrConfigOption
 
 
-class Lazy:
-    def __init__(self, fn):
+class Html(Base):
+    def options(self):
+        yield GcovrConfigOption(
+            "html",
+            ["--html"],
+            group="output_options",
+            metavar="OUTPUT",
+            help="Generate a HTML report. "
+            "OUTPUT is optional and defaults to --output.",
+            nargs="?",
+            type=GcovrConfigOption.OutputOrDefault,
+            default=None,
+            const=GcovrConfigOption.OutputOrDefault(None),
+        )
+        yield GcovrConfigOption(
+            "html_details",
+            ["--html-details"],
+            group="output_options",
+            metavar="OUTPUT",
+            help="Add annotated source code reports to the HTML report. "
+            "Implies --html. "
+            "OUTPUT is optional and defaults to --output.",
+            nargs="?",
+            type=GcovrConfigOption.OutputOrDefault,
+            default=None,
+            const=GcovrConfigOption.OutputOrDefault(None),
+        )
+        yield GcovrConfigOption(
+            "html_details_syntax_highlighting",
+            ["--html-details-syntax-highlighting"],
+            group="output_options",
+            help="Use syntax highlighting in HTML details page. " "Enabled by default.",
+            action="store_const",
+            default=True,
+            const=True,
+            const_negate=False,  # autogenerates --no-NAME with action const=False
+        )
+        yield GcovrConfigOption(
+            "html_theme",
+            ["--html-theme"],
+            group="output_options",
+            type=str,
+            choices=CssRenderer.get_themes(),
+            metavar="THEME",
+            help="Override the default color theme for the HTML report. Default is {default!s}.",
+            default=CssRenderer.get_default_theme(),
+        )
+        yield GcovrConfigOption(
+            "html_css",
+            ["--html-css"],
+            group="output_options",
+            type=GcovrConfigOption.check_input_file,
+            metavar="CSS",
+            help="Override the default style sheet for the HTML report.",
+            default=None,
+        )
+        yield GcovrConfigOption(
+            "html_title",
+            ["--html-title"],
+            group="output_options",
+            metavar="TITLE",
+            help="Use TITLE as title for the HTML report. Default is '{default!s}'.",
+            default="GCC Code Coverage Report",
+        )
+        yield GcovrConfigOption(
+            "html_medium_threshold",
+            ["--html-medium-threshold"],
+            group="output_options",
+            type=GcovrConfigOption.check_percentage,
+            metavar="MEDIUM",
+            help="If the coverage is below MEDIUM, the value is marked "
+            "as low coverage in the HTML report. "
+            "MEDIUM has to be lower than or equal to value of --html-high-threshold "
+            "and greater than 0. "
+            "If MEDIUM is equal to value of --html-high-threshold the report has "
+            "only high and low coverage. Default is {default!s}.",
+            default=75.0,
+        )
+        yield GcovrConfigOption(
+            "html_high_threshold",
+            ["--html-high-threshold"],
+            group="output_options",
+            type=GcovrConfigOption.check_percentage,
+            metavar="HIGH",
+            help="If the coverage is below HIGH, the value is marked "
+            "as medium coverage in the HTML report. "
+            "HIGH has to be greater than or equal to value of --html-medium-threshold. "
+            "If HIGH is equal to value of --html-medium-threshold the report has "
+            "only high and low coverage. Default is {default!s}.",
+            default=90.0,
+        )
+        yield GcovrConfigOption(
+            "html_tab_size",
+            ["--html-tab-size"],
+            group="output_options",
+            help="Used spaces for a tab in a source file. Default is {default!s}",
+            type=int,
+            default=4,
+        )
+        yield GcovrConfigOption(
+            "relative_anchors",
+            ["--html-absolute-paths"],
+            group="output_options",
+            help="Use absolute paths to link the --html-details reports. "
+            "Defaults to relative links.",
+            action="store_false",
+        )
+        yield GcovrConfigOption(
+            "html_encoding",
+            ["--html-encoding"],
+            group="output_options",
+            help="Override the declared HTML report encoding. "
+            "Defaults to {default!s}. "
+            "See also --source-encoding.",
+            default="UTF-8",
+        )
+        yield GcovrConfigOption(
+            "html_self_contained",
+            ["--html-self-contained"],
+            group="output_options",
+            help="Control whether the HTML report bundles resources like CSS styles. "
+            "Self-contained reports can be sent via email, "
+            "but conflict with the Content Security Policy of some web servers. "
+            "Defaults to self-contained reports unless --html-details is used.",
+            action="store_const",
+            default=None,
+            const=True,
+            const_negate=False,
+        )
 
-        def load(*args):
-            result = fn(*args)
+    def check_options(self, options, logger):
+        if options.html_title == "":
+            logger.error("an empty --html_title= is not allowed.")
+            sys.exit(1)
 
-            def reuse_value(*args):
-                return result
+        if options.html_medium_threshold == 0:
+            logger.error("value of --html-medium-threshold= should not be zero.")
+            sys.exit(1)
 
-            self.get = reuse_value
-            return result
+        if options.html_medium_threshold > options.html_high_threshold:
+            logger.error(
+                "value of --html-medium-threshold={} should be\n"
+                "lower than or equal to the value of --html-high-threshold={}.",
+                options.html_medium_threshold,
+                options.html_high_threshold,
+            )
+            sys.exit(1)
 
-        self.get = load
+        if options.html_tab_size < 1:
+            logger.error("value of --html-tab-size= should be greater 0.")
+            sys.exit(1)
 
-    def __call__(self, *args):
-        return self.get(*args)
+        potential_html_output = (
+            (options.html and options.html.value)
+            or (options.html_details and options.html_details.value)
+            or (options.output and options.output.value)
+        )
+        if options.html_details and not potential_html_output:
+            logger.error(
+                "a named output must be given, if the option --html-details\n"
+                "is used."
+            )
+            sys.exit(1)
+
+        if options.html_self_contained is False and not potential_html_output:
+            logger.error(
+                "can only disable --html-self-contained when a named output is given."
+            )
+            sys.exit(1)
+
+    def writers(self, options, logger):
+        if options.html or options.html_details:
+            yield (
+                [options.html, options.html_details],
+                print_report,
+                lambda: logger.warn(
+                    "HTML output skipped - "
+                    "consider providing an output file with `--html=OUTPUT`."
+                ),
+            )
 
 
 # Loading Jinja and preparing the environmen is fairly costly.
@@ -50,11 +219,13 @@ class Lazy:
 @Lazy
 def templates():
     from jinja2 import Environment, PackageLoader
+
     return Environment(
-        loader=PackageLoader('gcovr'),
+        loader=PackageLoader("gcovr"),
         autoescape=True,
         trim_blocks=True,
-        lstrip_blocks=True)
+        lstrip_blocks=True,
+    )
 
 
 @Lazy
@@ -76,32 +247,33 @@ def user_templates():
         loader=FunctionLoader(load_user_template),
         autoescape=True,
         trim_blocks=True,
-        lstrip_blocks=True)
+        lstrip_blocks=True,
+    )
 
 
-class CssRenderer():
+class CssRenderer:
 
     Themes = {
-        'green': {
-            'unknown_color': "LightGray",
-            'low_color': "#FF6666",
-            'medium_color': "#F9FD63",
-            'high_color': "#85E485",
-            'covered_color': "#85E485",
-            'uncovered_color': "#FF8C8C",
-            'takenBranch_color': "Green",
-            'notTakenBranch_color': "Red"
+        "green": {
+            "unknown_color": "LightGray",
+            "low_color": "#FF6666",
+            "medium_color": "#F9FD63",
+            "high_color": "#85E485",
+            "covered_color": "#85E485",
+            "uncovered_color": "#FF8C8C",
+            "takenBranch_color": "Green",
+            "notTakenBranch_color": "Red",
         },
-        'blue': {
-            'unknown_color': "LightGray",
-            'low_color': "#FF6666",
-            'medium_color': "#F9FD63",
-            'high_color': "#66B4FF",
-            'covered_color': "#66B4FF",
-            'uncovered_color': "#FF8C8C",
-            'takenBranch_color': "Blue",
-            'notTakenBranch_color': "Red"
-        }
+        "blue": {
+            "unknown_color": "LightGray",
+            "low_color": "#FF6666",
+            "medium_color": "#F9FD63",
+            "high_color": "#66B4FF",
+            "covered_color": "#66B4FF",
+            "uncovered_color": "#FF8C8C",
+            "takenBranch_color": "Blue",
+            "notTakenBranch_color": "Red",
+        },
     }
 
     @staticmethod
@@ -110,7 +282,7 @@ class CssRenderer():
 
     @staticmethod
     def get_default_theme():
-        return 'green'
+        return "green"
 
     @staticmethod
     def render(options):
@@ -118,16 +290,15 @@ class CssRenderer():
         if options.html_css is not None:
             template = user_templates().get_template(os.path.relpath(options.html_css))
         else:
-            template = templates().get_template('style.css')
+            template = templates().get_template("style.css")
         return template.render(
-            CssRenderer.Themes[options.html_theme],
-            tab_size=options.html_tab_size
+            CssRenderer.Themes[options.html_theme], tab_size=options.html_tab_size
         )
 
 
 class NullHighlighting:
     def get_css(self):
-        return ''
+        return ""
 
     @staticmethod
     def highlighter_for_file(filename):
@@ -140,14 +311,17 @@ class PygmentHighlighting:
         self.formatter = None
         try:
             from pygments.formatters.html import HtmlFormatter
+
             self.formatter = HtmlFormatter(nowrap=True)
         except ImportError as e:  # pragma: no cover
             self.logger.warn("No syntax highlighting available: {}".format(str(e)))
 
     def get_css(self):
         if self.formatter is None:  # pragma: no cover
-            return ''
-        return "\n\n/* pygments syntax highlighting */\n" + self.formatter.get_style_defs()
+            return ""
+        return (
+            "\n\n/* pygments syntax highlighting */\n" + self.formatter.get_style_defs()
+        )
 
     # Set the lexer for the given filename. Return true if a lexer is found
     def highlighter_for_file(self, filename):
@@ -157,32 +331,27 @@ class PygmentHighlighting:
         import pygments
         from pygments.lexers import get_lexer_for_filename
         from jinja2 import Markup
+
         try:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)
-            return lambda code: [Markup(line.rstrip()) for line in pygments.highlight(code, lexer, self.formatter).split("\n")]
+            return lambda code: [
+                Markup(line.rstrip())
+                for line in pygments.highlight(code, lexer, self.formatter).split("\n")
+            ]
         except pygments.util.ClassNotFound:  # pragma: no cover
             return NullHighlighting.highlighter_for_file(filename)
 
 
 @Lazy
 def get_formatter(options):
-    return PygmentHighlighting(options) if options.html_details_syntax_highlighting else NullHighlighting()
-
-
-def coverage_to_class(coverage, medium_threshold, high_threshold):
-    if coverage is None:
-        return 'coverage-unknown'
-    if coverage == 0:
-        return 'coverage-none'
-    if coverage < medium_threshold:
-        return 'coverage-low'
-    if coverage < high_threshold:
-        return 'coverage-medium'
-    return 'coverage-high'
+    return (
+        PygmentHighlighting(options)
+        if options.html_details_syntax_highlighting
+        else NullHighlighting()
+    )
 
 
 class RootInfo:
-
     def __init__(self, options):
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
@@ -202,7 +371,7 @@ class RootInfo:
         self.directory = directory
 
     def get_directory(self):
-        return "." if self.directory == '' else self.directory.replace('\\', '/')
+        return "." if self.directory == "" else self.directory.replace("\\", "/")
 
     def calculate_branch_coverage(self, covdata):
         branch_total = 0
@@ -211,11 +380,11 @@ class RootInfo:
             (total, covered, _percent) = covdata[key].branch_coverage()
             branch_total += total
             branch_covered += covered
-        self.branches['exec'] = branch_covered
-        self.branches['total'] = branch_total
+        self.branches["exec"] = branch_covered
+        self.branches["total"] = branch_total
         coverage = calculate_coverage(branch_covered, branch_total, nan_value=None)
-        self.branches['coverage'] = '-' if coverage is None else coverage
-        self.branches['class'] = self._coverage_to_class(coverage)
+        self.branches["coverage"] = "-" if coverage is None else coverage
+        self.branches["class"] = self.coverage_to_class(coverage)
 
     def calculate_line_coverage(self, covdata):
         line_total = 0
@@ -224,59 +393,61 @@ class RootInfo:
             (total, covered, _percent) = covdata[key].line_coverage()
             line_total += total
             line_covered += covered
-        self.lines['exec'] = line_covered
-        self.lines['total'] = line_total
+        self.lines["exec"] = line_covered
+        self.lines["total"] = line_total
         coverage = calculate_coverage(line_covered, line_total)
-        self.lines['coverage'] = coverage
-        self.lines['class'] = self._coverage_to_class(coverage)
+        self.lines["coverage"] = coverage
+        self.lines["class"] = self.coverage_to_class(coverage)
 
     def add_file(self, cdata, link_report, cdata_fname):
         lines_total, lines_exec, _ = cdata.line_coverage()
         branches_total, branches_exec, _ = cdata.branch_coverage()
 
-        line_coverage = calculate_coverage(
-            lines_exec, lines_total, nan_value=100.0)
+        line_coverage = calculate_coverage(lines_exec, lines_total, nan_value=100.0)
         branch_coverage = calculate_coverage(
-            branches_exec, branches_total, nan_value=None)
+            branches_exec, branches_total, nan_value=None
+        )
 
         lines = {
-            'total': lines_total,
-            'exec': lines_exec,
-            'coverage': line_coverage,
-            'class': self._coverage_to_class(line_coverage),
+            "total": lines_total,
+            "exec": lines_exec,
+            "coverage": line_coverage,
+            "class": self.coverage_to_class(line_coverage),
         }
 
         branches = {
-            'total': branches_total,
-            'exec': branches_exec,
-            'coverage': '-' if branch_coverage is None else branch_coverage,
-            'class': self._coverage_to_class(branch_coverage),
+            "total": branches_total,
+            "exec": branches_exec,
+            "coverage": "-" if branch_coverage is None else branch_coverage,
+            "class": self.coverage_to_class(branch_coverage),
         }
 
-        display_filename = (
-            os.path.relpath(os.path.realpath(cdata_fname), self.directory)
-            .replace('\\', '/'))
+        display_filename = os.path.relpath(
+            os.path.realpath(cdata_fname), self.directory
+        ).replace("\\", "/")
 
         if link_report is not None:
             if self.relative_anchors:
                 link_report = os.path.basename(link_report)
 
-        self.files.append(dict(
-            directory=self.directory,
-            filename=display_filename,
-            link=link_report,
-            lines=lines,
-            branches=branches,
-        ))
+        self.files.append(
+            dict(
+                directory=self.directory,
+                filename=display_filename,
+                link=link_report,
+                lines=lines,
+                branches=branches,
+            )
+        )
 
-    def _coverage_to_class(self, coverage):
-        return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
+    def coverage_to_class(self, coverage):
+        return _coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
 
 #
 # Produce an HTML report
 #
-def print_html_report(covdata, output_file, options):
+def print_report(covdata, output_file, options):
     logger = Logger(options.verbose)
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
@@ -284,30 +455,34 @@ def print_html_report(covdata, output_file, options):
 
     data = {}
     root_info = RootInfo(options)
-    data['info'] = root_info
+    data["info"] = root_info
 
-    data['COVERAGE_MED'] = medium_threshold
-    data['COVERAGE_HIGH'] = high_threshold
+    data["COVERAGE_MED"] = medium_threshold
+    data["COVERAGE_HIGH"] = high_threshold
 
     self_contained = options.html_self_contained
     if self_contained is None:
         self_contained = not options.html_details
-    if output_file == '-':
+    if output_file == "-":
         if not self_contained:
-            raise ArgumentTypeError("Only self contained reports can be printed to STDOUT")
+            raise ArgumentTypeError(
+                "Only self contained reports can be printed to STDOUT"
+            )
         elif options.html_details:
             raise ArgumentTypeError("Detailed reports can not be printed to STDOUT")
 
     if output_file.endswith(os.sep):
-        output_file += 'coverage_details.html' if options.html_details else 'coverage.html'
+        output_file += (
+            "coverage_details.html" if options.html_details else "coverage.html"
+        )
 
     formatter = get_formatter(options)
     css_data += formatter.get_css()
 
     if self_contained:
-        data['css'] = css_data
+        data["css"] = css_data
     else:
-        css_output = os.path.splitext(output_file)[0] + '.css'
+        css_output = os.path.splitext(output_file)[0] + ".css"
         with open_text_for_writing(css_output) as f:
             f.write(css_data)
 
@@ -315,7 +490,7 @@ def print_html_report(covdata, output_file, options):
             css_link = os.path.basename(css_output)
         else:
             css_link = css_output
-        data['css_link'] = css_link
+        data["css_link"] = css_link
 
     root_info.calculate_branch_coverage(covdata)
     root_info.calculate_line_coverage(covdata)
@@ -324,35 +499,36 @@ def print_html_report(covdata, output_file, options):
     # source_dirs = set()
     files = []
     dirs = []
-    filtered_fname = ''
+    filtered_fname = ""
     keys = sort_coverage(
-        covdata, show_branch=False,
+        covdata,
+        show_branch=False,
         by_num_uncovered=options.sort_uncovered,
-        by_percent_uncovered=options.sort_percent)
+        by_percent_uncovered=options.sort_percent,
+    )
     cdata_fname = {}
     cdata_sourcefile = {}
     for f in keys:
         cdata = covdata[f]
-        filtered_fname = options.root_filter.sub('', f)
+        filtered_fname = options.root_filter.sub("", f)
         files.append(filtered_fname)
         dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata_fname[f] = filtered_fname
         if options.html_details:
-            cdata_sourcefile[f] = _make_short_sourcename(
-                output_file, filtered_fname)
+            cdata_sourcefile[f] = _make_short_sourcename(output_file, filtered_fname)
         else:
             cdata_sourcefile[f] = None
 
     # Define the common root directory, which may differ from options.root
     # when source files share a common prefix.
-    root_directory = ''
+    root_directory = ""
     if len(files) > 1:
         commondir = commonpath(files)
-        if commondir != '':
+        if commondir != "":
             root_directory = commondir
     else:
         dir_, _file = os.path.split(filtered_fname)
-        if dir_ != '':
+        if dir_ != "":
             root_directory = dir_ + os.sep
 
     root_info.set_directory(root_directory)
@@ -360,11 +536,12 @@ def print_html_report(covdata, output_file, options):
     for f in keys:
         root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
 
-    html_string = templates().get_template('root_page.html').render(**data)
+    html_string = templates().get_template("root_page.html").render(**data)
 
-    with open_text_for_writing(output_file, encoding=options.html_encoding,
-                               errors='xmlcharrefreplace') as fh:
-        fh.write(html_string + '\n')
+    with open_text_for_writing(
+        output_file, encoding=options.html_encoding, errors="xmlcharrefreplace"
+    ) as fh:
+        fh.write(html_string + "\n")
 
     # Return, if no details are requested
     if not options.html_details:
@@ -377,30 +554,46 @@ def print_html_report(covdata, output_file, options):
     for f in keys:
         cdata = covdata[f]
 
-        data['filename'] = cdata_fname[f]
+        data["filename"] = cdata_fname[f]
 
         branches = dict()
-        data['branches'] = branches
+        data["branches"] = branches
 
-        branches['total'], branches['exec'], branches['coverage'] = cdata.branch_coverage()
-        branches['class'] = coverage_to_class(branches['coverage'], medium_threshold, high_threshold)
-        branches['coverage'] = '-' if branches['coverage'] is None else branches['coverage']
+        (
+            branches["total"],
+            branches["exec"],
+            branches["coverage"],
+        ) = cdata.branch_coverage()
+        branches["class"] = _coverage_to_class(
+            branches["coverage"], medium_threshold, high_threshold
+        )
+        branches["coverage"] = (
+            "-" if branches["coverage"] is None else branches["coverage"]
+        )
 
         lines = dict()
-        data['lines'] = lines
-        lines['total'], lines['exec'], lines['coverage'] = cdata.line_coverage()
-        lines['class'] = coverage_to_class(lines['coverage'], medium_threshold, high_threshold)
+        data["lines"] = lines
+        lines["total"], lines["exec"], lines["coverage"] = cdata.line_coverage()
+        lines["class"] = _coverage_to_class(
+            lines["coverage"], medium_threshold, high_threshold
+        )
 
-        data['source_lines'] = []
+        data["source_lines"] = []
         currdir = os.getcwd()
         os.chdir(options.root_dir)
         max_line_from_cdata = max(cdata.lines.keys())
         try:
-            with io.open(data['filename'], 'r', encoding=options.source_encoding,
-                         errors='replace') as source_file:
-                lines = formatter.highlighter_for_file(data['filename'])(source_file.read())
+            with io.open(
+                data["filename"],
+                "r",
+                encoding=options.source_encoding,
+                errors="replace",
+            ) as source_file:
+                lines = formatter.highlighter_for_file(data["filename"])(
+                    source_file.read()
+                )
                 for ctr, line in enumerate(lines, 1):
-                    data['source_lines'].append(
+                    data["source_lines"].append(
                         source_row(ctr, line, cdata.lines.get(ctr))
                     )
                 if ctr < max_line_from_cdata:
@@ -411,38 +604,61 @@ def print_html_report(covdata, output_file, options):
                         cdata_lines=max_line_from_cdata
                     )
         except IOError as e:
-            logger.warn('File {filename} not found: {reason}', filename=data['filename'], reason=repr(e))
-            for ctr in range(1, max_line_from_cdata):
-                data['source_lines'].append(
-                    source_row(ctr, '!!! File not found !!!' if ctr == 1 else '', cdata.lines.get(ctr))
+            logger.warn(
+                "File {filename} not found: {reason}",
+                filename=data["filename"],
+                reason=repr(e),
+            )
+            for ctr in range(1, max(cdata.lines.keys())):
+                data["source_lines"].append(
+                    source_row(
+                        ctr,
+                        "!!! File not found !!!" if ctr == 1 else "",
+                        cdata.lines.get(ctr),
+                    )
                 )
             error_occurred = True
         os.chdir(currdir)
 
-        html_string = templates().get_template('source_page.html').render(**data)
-        with open_text_for_writing(cdata_sourcefile[f], encoding=options.html_encoding,
-                                   errors='xmlcharrefreplace') as fh:
-            fh.write(html_string + '\n')
+        html_string = templates().get_template("source_page.html").render(**data)
+        with open_text_for_writing(
+            cdata_sourcefile[f],
+            encoding=options.html_encoding,
+            errors="xmlcharrefreplace",
+        ) as fh:
+            fh.write(html_string + "\n")
     return error_occurred
+
+
+def _coverage_to_class(coverage, medium_threshold, high_threshold):
+    if coverage is None:
+        return "coverage-unknown"
+    if coverage == 0:
+        return "coverage-none"
+    if coverage < medium_threshold:
+        return "coverage-low"
+    if coverage < high_threshold:
+        return "coverage-medium"
+    return "coverage-high"
 
 
 def source_row(lineno, source, line_cov):
     linebranch = None
-    linecount = ''
-    covclass = ''
+    linecount = ""
+    covclass = ""
     if line_cov:
         if line_cov.is_covered:
-            covclass = 'coveredLine'
+            covclass = "coveredLine"
             linebranch = source_row_branch(line_cov.branches)
             linecount = line_cov.count
         elif line_cov.is_uncovered:
-            covclass = 'uncoveredLine'
+            covclass = "uncoveredLine"
     return {
-        'lineno': lineno,
-        'source': source,
-        'covclass': covclass,
-        'linebranch': linebranch,
-        'linecount': linecount,
+        "lineno": lineno,
+        "source": source,
+        "covclass": covclass,
+        "linebranch": linebranch,
+        "linecount": linecount,
     }
 
 
@@ -459,16 +675,18 @@ def source_row_branch(branches):
         if branch.is_covered:
             taken += 1
         total += 1
-        items.append({
-            'taken': branch.is_covered,
-            'name': branch_id,
-            'count': branch.count,
-        })
+        items.append(
+            {
+                "taken": branch.is_covered,
+                "name": branch_id,
+                "count": branch.count,
+            }
+        )
 
     return {
-        'taken': taken,
-        'total': total,
-        'branches': items,
+        "taken": taken,
+        "total": total,
+        "branches": items,
     }
 
 
@@ -483,11 +701,18 @@ def _make_short_sourcename(output_file, filename):
     """
 
     (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
-    if output_suffix == '':
-        output_suffix = '.html'
+    if output_suffix == "":
+        output_suffix = ".html"
 
-    filename = filename.replace(os.sep, '/')
-    sourcename = '.'.join((output_prefix,
-                          os.path.basename(filename),
-                          hashlib.md5(filename.encode('utf-8')).hexdigest())) + output_suffix
+    filename = filename.replace(os.sep, "/")
+    sourcename = (
+        ".".join(
+            (
+                output_prefix,
+                os.path.basename(filename),
+                hashlib.md5(filename.encode("utf-8")).hexdigest(),
+            )
+        )
+        + output_suffix
+    )
     return sourcename

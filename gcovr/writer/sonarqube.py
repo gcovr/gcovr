@@ -18,10 +18,39 @@
 
 from lxml import etree
 
-from ..utils import open_binary_for_writing, presentable_filename
+from .base import Base
+from .utils import open_binary_for_writing, presentable_filename
+from ..configuration import GcovrConfigOption
 
 
-def print_sonarqube_report(covdata, output_file, options):
+class Sonarqube(Base):
+    def options(self):
+        yield GcovrConfigOption(
+            "sonarqube",
+            ["--sonarqube"],
+            group="output_options",
+            metavar="OUTPUT",
+            help="Generate sonarqube generic coverage report in this file name. "
+            "OUTPUT is optional and defaults to --output.",
+            nargs="?",
+            type=GcovrConfigOption.OutputOrDefault,
+            default=None,
+            const=GcovrConfigOption.OutputOrDefault(None),
+        )
+
+    def writers(self, options, logger):
+        if options.sonarqube:
+            yield (
+                [options.sonarqube],
+                print_report,
+                lambda: logger.warn(
+                    "Sonarqube output skipped - "
+                    "consider providing output file with `--sonarqube=OUTPUT`."
+                ),
+            )
+
+
+def print_report(covdata, output_file, options):
     """produce an XML report in the Sonarqube generic coverage format"""
 
     root = etree.Element("coverage")
@@ -56,5 +85,5 @@ def print_sonarqube_report(covdata, output_file, options):
 
         root.append(fileNode)
 
-    with open_binary_for_writing(output_file, 'sonarqube.xml') as fh:
-        fh.write(etree.tostring(root, encoding='UTF-8', xml_declaration=True))
+    with open_binary_for_writing(output_file, "sonarqube.xml") as fh:
+        fh.write(etree.tostring(root, encoding="UTF-8", xml_declaration=True))

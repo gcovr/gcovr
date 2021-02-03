@@ -330,16 +330,23 @@ def test_html_tab_size_zero(capsys):
 
 
 def test_multiple_output_formats_to_stdout(capsys):
-    c = capture(capsys, ['--xml', '--html', '--sonarqube', '--coveralls'])
+    c = capture(capsys, ['--json', '--txt', '--html', '--csv', '--xml', '--sonarqube', '--coveralls'])
+    print(c.err)
+    assert 'Text output skipped' in c.err
     assert 'HTML output skipped' in c.err
+    assert 'CSV output skipped' in c.err
+    assert 'Cobertura output skipped' in c.err
     assert 'Sonarqube output skipped' in c.err
     assert 'Coveralls output skipped' in c.err
     assert c.exception.code == 0
 
 
 def test_multiple_output_formats_to_stdout_1(capsys):
-    c = capture(capsys, ['--xml', '--html', '--sonarqube', '--coveralls', '-o', '-'])
+    c = capture(capsys, ['--json', '--txt', '--html', '--csv', '--xml', '--sonarqube', '--coveralls', '-o', '-'])
+    assert 'Text output skipped' in c.err
     assert 'HTML output skipped' in c.err
+    assert 'CSV output skipped' in c.err
+    assert 'Cobertura output skipped' in c.err
     assert 'Sonarqube output skipped' in c.err
     assert 'Coveralls output skipped' in c.err
     assert c.exception.code == 0

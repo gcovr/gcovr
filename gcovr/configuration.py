@@ -24,134 +24,6 @@ import os
 import re
 
 from .utils import FilterOption
-from .writer.html import CssRenderer
-
-
-def check_percentage(value):
-    r"""
-    Check that the percentage is within a reasonable range and if so return it.
-    """
-
-    # strip trailing percent sign if present, useful for config files
-    if value.endswith('%'):
-        value = value[:-1]
-
-    try:
-        x = float(value)
-        if not (0.0 <= x <= 100.0):
-            raise ValueError()
-    except ValueError:
-        raise ArgumentTypeError(
-            "{value} not in range [0.0, 100.0]".format(value=value))
-    return x
-
-
-def check_input_file(value, basedir=None):
-    r"""
-    Check that the input file is present. Return the full path.
-    """
-    if basedir is None:
-        basedir = os.getcwd()
-
-    if not os.path.isabs(value):
-        value = os.path.join(basedir, value)
-    value = os.path.normpath(value)
-
-    if not os.path.isfile(value):
-        raise ArgumentTypeError(
-            "Should be a file that already exists: {value!r}".format(value=value))
-
-    return os.path.abspath(value)
-
-
-class OutputOrDefault(object):
-    """An output path that may be empty.
-
-    - ``None``: the option is not set
-    - ``OutputOrDefault(None)``: fall back to some default value
-    - ``OutputOrDefault(path)``: use that path
-    """
-
-    def __init__(self, value, basedir=None):
-        self.value = value
-        self._check_output_and_make_abspath(os.getcwd() if basedir is None else basedir)
-
-    def __repr__(self):
-        return '{}({!r})'.format(self.__class__.__name__, self.value)
-
-    def _check_output_and_make_abspath(self, basedir):
-        r"""
-        Check if the output file can be created.
-        """
-
-        if self.value in (None, '-'):
-            self.abspath = '-'
-            self.is_dir = False
-        else:
-            # Replace / and \ with the os path separator.
-            value = str(self.value).replace('\\', os.sep).replace('/', os.sep)
-            # Save if it is a directory
-            self.is_dir = True if value.endswith(os.sep) else False
-            value = os.path.normpath(value)
-            if self.is_dir:
-                value += os.sep
-
-            if not os.path.isabs(value):
-                value = os.path.join(basedir, value)
-            self.abspath = value
-
-            if self.is_dir:
-                # Now mormalize and add the trailing slash after creating the directory.
-                if not os.path.isdir(value):
-                    try:
-                        os.mkdir(value)
-                    except OSError as e:
-                        raise ArgumentTypeError("Could not create output directory {value!r}: {error}".format(value=self.value, error=e.strerror))
-            else:
-                try:
-                    with open(value, 'w') as _:
-                        pass
-                except OSError as e:
-                    raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=self.value, error=e.strerror))
-                os.unlink(value)
-
-    @classmethod
-    def choose(_cls, choices, default=None):
-        """select the first choice that contains a value
-
-        Example: chooses a truthy value over None:
-        >>> OutputOrDefault.choose([None, OutputOrDefault(42)])
-        OutputOrDefault(42)
-
-        Example: chooses a truthy value over empty value:
-        >>> OutputOrDefault.choose([OutputOrDefault(None), OutputOrDefault('x')])
-        OutputOrDefault('x')
-
-        Example: chooses default when given empty list
-        >>> OutputOrDefault.choose([], default=OutputOrDefault('default'))
-        OutputOrDefault('default')
-
-        Example: chooses default when only given falsey values:
-        >>> OutputOrDefault.choose(
-        ...     [None, OutputOrDefault(None)],
-        ...     default=OutputOrDefault('default'))
-        OutputOrDefault('default')
-
-        Example: throws when given other value
-        >>> OutputOrDefault.choose([True])
-        Traceback (most recent call last):
-          ...
-        TypeError: ...
-        """
-        for choice in choices:
-            if choice is None:
-                continue
-            if not isinstance(choice, OutputOrDefault):
-                raise TypeError(
-                    "expected OutputOrDefault instance, got: {}".format(choice))
-            if choice.value is not None:
-                return choice
-        return default
 
 
 class GcovrConfigOption(object):
@@ -315,9 +187,138 @@ class GcovrConfigOption(object):
             kwargs=', '.join(kwargs),
         )
 
+    @staticmethod
+    def check_percentage(value):
+        r"""
+        Check that the percentage is within a reasonable range and if so return it.
+        """
 
-def argument_parser_setup(parser, default_group):
+        # strip trailing percent sign if present, useful for config files
+        if value.endswith('%'):
+            value = value[:-1]
+
+        try:
+            x = float(value)
+            if not (0.0 <= x <= 100.0):
+                raise ValueError()
+        except ValueError:
+            raise ArgumentTypeError(
+                "{value} not in range [0.0, 100.0]".format(value=value))
+        return x
+
+    @staticmethod
+    def check_input_file(value, basedir=None):
+        r"""
+        Check that the input file is present. Return the full path.
+        """
+        if basedir is None:
+            basedir = os.getcwd()
+
+        if not os.path.isabs(value):
+            value = os.path.join(basedir, value)
+        value = os.path.normpath(value)
+
+        if not os.path.isfile(value):
+            raise ArgumentTypeError(
+                "Should be a file that already exists: {value!r}".format(value=value))
+
+        return os.path.abspath(value)
+
+    class OutputOrDefault(object):
+        """An output path that may be empty.
+
+        - ``None``: the option is not set
+        - ``GcovrConfigOption.OutputOrDefault(None)``: fall back to some default value
+        - ``GcovrConfigOption.OutputOrDefault(path)``: use that path
+        """
+
+        def __init__(self, value, basedir=None):
+            self.value = value
+            self._check_output_and_make_abspath(os.getcwd() if basedir is None else basedir)
+
+        def __repr__(self):
+            return '{}({!r})'.format(self.__class__.__name__, self.value)
+
+        def _check_output_and_make_abspath(self, basedir):
+            r"""
+            Check if the output file can be created.
+            """
+
+            if self.value in (None, '-'):
+                self.abspath = '-'
+                self.is_dir = False
+            else:
+                # Replace / and \ with the os path separator.
+                value = str(self.value).replace('\\', os.sep).replace('/', os.sep)
+                # Save if it is a directory
+                self.is_dir = True if value.endswith(os.sep) else False
+                value = os.path.normpath(value)
+                if self.is_dir:
+                    value += os.sep
+
+                if not os.path.isabs(value):
+                    value = os.path.join(basedir, value)
+                self.abspath = value
+
+                if self.is_dir:
+                    # Now mormalize and add the trailing slash after creating the directory.
+                    if not os.path.isdir(value):
+                        try:
+                            os.mkdir(value)
+                        except OSError as e:
+                            raise ArgumentTypeError("Could not create output directory {value!r}: {error}".format(value=self.value, error=e.strerror))
+                else:
+                    try:
+                        with open(value, 'w') as _:
+                            pass
+                    except OSError as e:
+                        raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=self.value, error=e.strerror))
+                    os.unlink(value)
+
+        @classmethod
+        def choose(_cls, choices, default=None):
+            """select the first choice that contains a value
+
+            Example: chooses a truthy value over None:
+            >>> GcovrConfigOption.OutputOrDefault.choose([None, GcovrConfigOption.OutputOrDefault(42)])
+            OutputOrDefault(42)
+
+            Example: chooses a truthy value over empty value:
+            >>> GcovrConfigOption.OutputOrDefault.choose([GcovrConfigOption.OutputOrDefault(None), GcovrConfigOption.OutputOrDefault('x')])
+            OutputOrDefault('x')
+
+            Example: chooses default when given empty list
+            >>> GcovrConfigOption.OutputOrDefault.choose([], default=GcovrConfigOption.OutputOrDefault('default'))
+            OutputOrDefault('default')
+
+            Example: chooses default when only given falsey values:
+            >>> GcovrConfigOption.OutputOrDefault.choose(
+            ...     [None, GcovrConfigOption.OutputOrDefault(None)],
+            ...     default=GcovrConfigOption.OutputOrDefault('default'))
+            OutputOrDefault('default')
+
+            Example: throws when given other value
+            >>> GcovrConfigOption.OutputOrDefault.choose([True])
+            Traceback (most recent call last):
+            ...
+            TypeError: ...
+            """
+            for choice in choices:
+                if choice is None:
+                    continue
+                if not isinstance(choice, GcovrConfigOption.OutputOrDefault):
+                    raise TypeError(
+                        "expected GcovrConfigOption.OutputOrDefault instance, got: {}".format(choice))
+                if choice.value is not None:
+                    return choice
+            return default
+
+
+def argument_parser_setup(parser, default_group, readers, writers):
     r"""Add all options and groups to the given argparse parser."""
+
+    GCOVR_CONFIG_OPTIONS.extend(readers.options())
+    GCOVR_CONFIG_OPTIONS.extend(writers.options())
 
     # setup option groups
     groups = {}
@@ -422,9 +423,9 @@ def _get_value_from_config_entry(cfg_entry, option):
         args = ()
         if option.type is FilterOption:
             args = [os.path.dirname(cfg_entry.filename)]
-        elif option.type is check_input_file:
-            value = check_input_file(value, os.path.dirname(cfg_entry.filename))
-        elif option.type is OutputOrDefault:
+        elif option.type is GcovrConfigOption.check_input_file:
+            value = GcovrConfigOption.check_input_file(value, os.path.dirname(cfg_entry.filename))
+        elif option.type is GcovrConfigOption.OutputOrDefault:
             args = [os.path.dirname(cfg_entry.filename)]
 
         try:
@@ -544,21 +545,6 @@ GCOVR_CONFIG_OPTIONS = [
         default='.',
     ),
     GcovrConfigOption(
-        "add_tracefile", ["-a", "--add-tracefile"],
-        help="Combine the coverage data from JSON files. "
-             "Coverage files contains source files structure relative "
-             "to root directory. Those structures are combined "
-             "in the output relative to the current root directory. "
-             "Unix style wildcards can be used to add the pathnames "
-             "matching a specified pattern. In this case pattern "
-             "must be set in double quotation marks. "
-             "Option can be specified multiple times. "
-             "When option is used gcov is not run to collect "
-             "the new coverage data.",
-        action="append",
-        default=[],
-    ),
-    GcovrConfigOption(
         'search_paths', config='search-path',
         positional=True, nargs='*',
         help="Search these directories for coverage files. "
@@ -571,7 +557,7 @@ GCOVR_CONFIG_OPTIONS = [
     ),
     GcovrConfigOption(
         "fail_under_line", ["--fail-under-line"],
-        type=check_percentage,
+        type=GcovrConfigOption.check_percentage,
         metavar="MIN",
         help="Exit with a status of 2 "
              "if the total line coverage is less than MIN. "
@@ -580,7 +566,7 @@ GCOVR_CONFIG_OPTIONS = [
     ),
     GcovrConfigOption(
         "fail_under_branch", ["--fail-under-branch"],
-        type=check_percentage,
+        type=GcovrConfigOption.check_percentage,
         metavar="MIN",
         help="Exit with a status of 4 "
              "if the total branch coverage is less than MIN. "
@@ -598,7 +584,7 @@ GCOVR_CONFIG_OPTIONS = [
         group="output_options",
         help="Print output to this filename. Defaults to stdout. "
         "Individual output formats can override this.",
-        type=OutputOrDefault,
+        type=GcovrConfigOption.OutputOrDefault,
         default=None,
     ),
     GcovrConfigOption(
@@ -620,232 +606,6 @@ GCOVR_CONFIG_OPTIONS = [
         group="output_options",
         help="Sort entries by increasing percentage of uncovered lines. "
              "For text and HTML report.",
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "txt", ["--txt"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate a text report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "xml", ["-x", "--xml"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate a Cobertura XML report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "prettyxml", ["--xml-pretty"],
-        group="output_options",
-        help="Pretty-print the XML report. Implies --xml. Default: {default!s}.",
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "html", ["--html"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate a HTML report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "html_details", ["--html-details"],
-        group="output_options",
-        metavar="OUTPUT",
-        help="Add annotated source code reports to the HTML report. "
-             "Implies --html. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "html_details_syntax_highlighting", ["--html-details-syntax-highlighting"],
-        group="output_options",
-        help="Use syntax highlighting in HTML details page. "
-             "Enabled by default.",
-        action="store_const",
-        default=True,
-        const=True,
-        const_negate=False,  # autogenerates --no-NAME with action const=False
-    ),
-    GcovrConfigOption(
-        "html_theme", ["--html-theme"],
-        group="output_options",
-        type=str,
-        choices=CssRenderer.get_themes(),
-        metavar="THEME",
-        help="Override the default color theme for the HTML report. Default is {default!s}.",
-        default=CssRenderer.get_default_theme()
-    ),
-    GcovrConfigOption(
-        "html_css", ["--html-css"],
-        group="output_options",
-        type=check_input_file,
-        metavar="CSS",
-        help="Override the default style sheet for the HTML report.",
-        default=None
-    ),
-    GcovrConfigOption(
-        "html_title", ["--html-title"],
-        group="output_options",
-        metavar="TITLE",
-        help="Use TITLE as title for the HTML report. Default is '{default!s}'.",
-        default="GCC Code Coverage Report",
-    ),
-    GcovrConfigOption(
-        "html_medium_threshold", ["--html-medium-threshold"],
-        group="output_options",
-        type=check_percentage,
-        metavar="MEDIUM",
-        help="If the coverage is below MEDIUM, the value is marked "
-             "as low coverage in the HTML report. "
-             "MEDIUM has to be lower than or equal to value of --html-high-threshold "
-             "and greater than 0. "
-             "If MEDIUM is equal to value of --html-high-threshold the report has "
-             "only high and low coverage. Default is {default!s}.",
-        default=75.0,
-    ),
-    GcovrConfigOption(
-        "html_high_threshold", ["--html-high-threshold"],
-        group="output_options",
-        type=check_percentage,
-        metavar="HIGH",
-        help="If the coverage is below HIGH, the value is marked "
-             "as medium coverage in the HTML report. "
-             "HIGH has to be greater than or equal to value of --html-medium-threshold. "
-             "If HIGH is equal to value of --html-medium-threshold the report has "
-             "only high and low coverage. Default is {default!s}.",
-        default=90.0,
-    ),
-    GcovrConfigOption(
-        'html_tab_size', ['--html-tab-size'],
-        group="output_options",
-        help="Used spaces for a tab in a source file. Default is {default!s}",
-        type=int,
-        default=4,
-    ),
-    GcovrConfigOption(
-        "relative_anchors", ["--html-absolute-paths"],
-        group="output_options",
-        help="Use absolute paths to link the --html-details reports. "
-             "Defaults to relative links.",
-        action="store_false",
-    ),
-    GcovrConfigOption(
-        'html_encoding', ['--html-encoding'],
-        group="output_options",
-        help="Override the declared HTML report encoding. "
-             "Defaults to {default!s}. "
-             "See also --source-encoding.",
-        default='UTF-8',
-    ),
-    GcovrConfigOption(
-        'html_self_contained', ['--html-self-contained'],
-        group="output_options",
-        help="Control whether the HTML report bundles resources like CSS styles. "
-             "Self-contained reports can be sent via email, "
-             "but conflict with the Content Security Policy of some web servers. "
-             "Defaults to self-contained reports unless --html-details is used.",
-        action='store_const',
-        default=None,
-        const=True,
-        const_negate=False,
-    ),
-    GcovrConfigOption(
-        "print_summary", ["-s", "--print-summary"],
-        group="output_options",
-        help="Print a small report to stdout "
-             "with line & branch percentage coverage. "
-             "This is in addition to other reports. "
-             "Default: {default!s}.",
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "sonarqube", ["--sonarqube"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate sonarqube generic coverage report in this file name. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "json", ["--json"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate a JSON report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "json_pretty", ["--json-pretty"],
-        group="output_options",
-        help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "json_summary", ["--json-summary"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate a JSON summary report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "json_summary_pretty", ["--json-summary-pretty"],
-        group="output_options",
-        help="Pretty-print the JSON SUMMARY report. Implies --json-summary. Default: {default!s}.",
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "csv", ["--csv"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate a CSV summary report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "coveralls", ["--coveralls"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate Coveralls API coverage report in this file name. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "coveralls_pretty", ["--coveralls-pretty"],
-        group="output_options",
-        help="Pretty-print the coveralls report. Implies --coveralls. Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(

@@ -89,8 +89,10 @@ def addCopyrightToPythonFile(filename, lines):
     if headerEndReached:
         for line in iterLines:
             if line != "":
-                # Use one empty line
+                # Use one empty line or two for classes
                 newLines.append("")
+                if line.startswith("class"):
+                    newLines.append("")
                 newLines.append(line)
                 break
         # keep all other lines
