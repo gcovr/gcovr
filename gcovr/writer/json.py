@@ -27,7 +27,7 @@ from ..utils import (get_global_stats, Logger, presentable_filename,
 from ..coverage import FileCoverage
 
 
-JSON_FORMAT_VERSION = "0.1"
+JSON_FORMAT_VERSION = "0.2"
 JSON_SUMMARY_FORMAT_VERSION = "0.2"
 PRETTY_JSON_INDENT = 4
 
@@ -132,7 +132,8 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
         with open(filename, 'r') as json_file:
             gcovr_json_data = json.load(json_file)
 
-        assert gcovr_json_data['gcovr/format_version'] == JSON_FORMAT_VERSION
+        version = str(gcovr_json_data['gcovr/format_version'])
+        assert version == JSON_FORMAT_VERSION, "Wrong format version, got {} expected {}.".format(version, JSON_FORMAT_VERSION)
 
         coverage = {}
         for gcovr_file in gcovr_json_data['files']:
