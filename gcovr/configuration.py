@@ -24,7 +24,7 @@ import os
 import re
 
 from .utils import FilterOption
-from .html_generator import CssRenderer
+from .writer.html import CssRenderer
 
 
 def check_percentage(value):

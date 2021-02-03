@@ -22,8 +22,8 @@ import hashlib
 import io
 from argparse import ArgumentTypeError
 
-from .version import __version__
-from .utils import commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
+from ..version import __version__
+from ..utils import commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
 
 
 class Lazy:

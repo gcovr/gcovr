@@ -19,12 +19,12 @@
 import json
 import os
 import functools
-from .gcov import apply_filter_include_exclude
+from ..gcov import apply_filter_include_exclude
 
-from .utils import (get_global_stats, Logger, presentable_filename,
-                    sort_coverage, summarize_file_coverage, open_text_for_writing)
+from ..utils import (get_global_stats, Logger, presentable_filename,
+                     sort_coverage, summarize_file_coverage, open_text_for_writing)
 
-from .coverage import FileCoverage
+from ..coverage import FileCoverage
 
 
 JSON_FORMAT_VERSION = "0.1"

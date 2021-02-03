@@ -27,7 +27,7 @@ import shutil
 import subprocess
 
 from hashlib import md5
-from .utils import presentable_filename, open_text_for_writing
+from ..utils import presentable_filename, open_text_for_writing
 
 PRETTY_JSON_INDENT = 4
 

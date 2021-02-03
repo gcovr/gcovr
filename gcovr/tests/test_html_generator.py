@@ -19,7 +19,7 @@
 import os
 import pytest
 import sys
-from ..html_generator import _make_short_sourcename
+from ..writer.html import _make_short_sourcename
 
 CurrentDrive = os.getcwd()[0:1]
 

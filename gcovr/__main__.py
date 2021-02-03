@@ -32,21 +32,21 @@ from .configuration import (
     parse_config_file, parse_config_into_dict, OutputOrDefault)
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
-from .json_generator import (gcovr_json_files_to_coverage)
 from .utils import (get_global_stats, AlwaysMatchFilter,
                     DirectoryPrefixFilter, Logger)
 from .version import __version__
 from .workers import Workers
 
 # generators
-from .cobertura_xml_generator import print_xml_report
-from .html_generator import print_html_report
-from .json_generator import print_json_report, print_json_summary_report
-from .txt_generator import print_text_report
-from .csv_generator import print_csv_report
-from .summary_generator import print_summary
-from .sonarqube_generator import print_sonarqube_report
-from .coveralls_generator import print_coveralls_report
+from .writer.json import (gcovr_json_files_to_coverage)
+from .writer.cobertura import print_xml_report
+from .writer.html import print_html_report
+from .writer.json import print_json_report, print_json_summary_report
+from .writer.txt import print_text_report
+from .writer.csv import print_csv_report
+from .writer.summary import print_summary
+from .writer.sonarqube import print_sonarqube_report
+from .writer.coveralls import print_coveralls_report
 
 
 #

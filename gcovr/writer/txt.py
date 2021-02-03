@@ -16,7 +16,7 @@
 #
 # ****************************************************************************
 
-from .utils import calculate_coverage, sort_coverage, presentable_filename, open_text_for_writing
+from ..utils import calculate_coverage, sort_coverage, presentable_filename, open_text_for_writing
 
 
 def print_text_report(covdata, output_file, options):

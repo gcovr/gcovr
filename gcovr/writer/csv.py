@@ -18,7 +18,7 @@
 
 import csv
 
-from .utils import sort_coverage, summarize_file_coverage, open_text_for_writing
+from ..utils import sort_coverage, summarize_file_coverage, open_text_for_writing
 
 
 def print_csv_report(covdata, output_file, options):
