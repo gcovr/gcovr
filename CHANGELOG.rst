@@ -29,7 +29,7 @@ Improvements and new features:
  - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`389`)
  - Support relative source location for shadow builds. (:issue:`410`)
  - Incorrect path for header now can still generate html-details reports (:issue:`271`)
- - Change format version in JSON output from number to string. (:issue:`418`)
+ - Change format version in JSON output from number to string and update it to "0.2".  (:issue:`418`, :issue:`463`)
  - Only remove :option:`--root` path at the start of file paths. (:issue:`452`)
  - Fix coverage report for cmake ninja builds with given in-source object-directory. (:issue:`453`)
  - Add issue templates. (:issue:`461`)
