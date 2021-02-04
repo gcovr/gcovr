@@ -142,7 +142,8 @@ How to set up a development environment
 
 For working on gcovr, you will need a supported version of Python 3,
 GCC version 5, 6 or 8 (other GCC versions are supported by gcovr,
-but will cause spurious test failures), ``make`` and ``cmake``.
+but will cause spurious test failures), ``make``, ``cmake`` and
+``ninja``.
 Please make sure that the tools are in the system ``PATH``.
 On **Windows**, you will need to install a GCC toolchain as the
 tests expect a Unix-like environment. You can use MinGW-W64 or MinGW.
