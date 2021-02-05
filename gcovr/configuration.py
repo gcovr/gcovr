@@ -828,6 +828,16 @@ GCOVR_CONFIG_OPTIONS = [
         const_negate=False,  # autogenerates --no-NAME with action const=False
     ),
     GcovrConfigOption(
+        "html_cascaded_directories",
+        ["--html-cascaded-directories"],
+        group="output_options",
+        help="Output subdirectories with directory hierarchy. Enabled by default.",
+        action="store_const",
+        default=False,
+        const=True,
+        const_negate=False,  # autogenerates --no-NAME with action const=False
+    ),
+    GcovrConfigOption(
         "html_theme",
         ["--html-theme"],
         group="output_options",

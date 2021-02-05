@@ -217,6 +217,7 @@ class RootInfo:
         self.high_threshold = options.html_high_threshold
         self.details = options.html_details
         self.relative_anchors = options.relative_anchors
+        self.root_filter = options.root_filter
 
         self.version = __version__
         self.head = options.html_title
@@ -228,12 +229,74 @@ class RootInfo:
         self.functions = dict()
         self.lines = dict()
         self.files = []
+        self.subdirectories = dict()
 
     def set_directory(self, directory):
         self.directory = directory
 
     def get_directory(self):
         return "." if self.directory == "" else self.directory.replace("\\", "/")
+
+    def directory_key(self, filename, read_only = False):
+        key = os.path.dirname(filename.replace('\\', '/'))
+        if self.root_filter.search(key+"/"):
+            if not read_only:
+                if key not in self.subdirectories:
+                    self.subdirectories[key] = {
+                        "branch_exec": 0,
+                        "branch_total": 0,
+                        "branch_percent": 0.0,
+                        "lines_exec": 0,
+                        "lines_total": 0,
+                        "lines_percent": 0.0,
+                        "lines_uncovered": 0,
+                        "children": set()
+                    }
+                self.subdirectories[key]['children'].add(filename)
+        else:
+            key = None
+        return key
+
+    def subdirectory_root(self):
+        key = next(iter(self.subdirectories))
+        while True:
+            next_key = self.directory_key(key, read_only=True)
+            if not next_key:
+                return key
+            else:
+                key = next_key
+
+    def collapse_subdirectories(self):
+        collapse_dirs = set()
+        root_key = self.subdirectory_root()
+        directory_read_only = True
+        for key, value in self.subdirectories.items():
+            if len(value["children"]) == 1 and not key == root_key:
+                while True:
+                    parent_key = self.directory_key(key, read_only=True)
+                    if parent_key not in collapse_dirs or parent_key == root_key:
+                        break
+                if parent_key:
+                    self.subdirectories[parent_key]["children"].remove(key)
+                    self.subdirectories[parent_key]["children"].add(value["children"].pop())
+                    collapse_dirs.add(key)
+        for key in collapse_dirs:
+            del self.subdirectories[key]
+
+    def add_directory_branch_coverage(self, filename, total, covered):
+        key = self.directory_key(filename)
+        if key:
+            self.subdirectories[key]["branch_exec"] += covered
+            self.subdirectories[key]["branch_total"] += total
+            self.add_directory_branch_coverage(key, total, covered)
+
+    def add_directory_line_coverage(self, filename, total, covered):
+        key = self.directory_key(filename)
+        if key:
+            self.subdirectories[key]["lines_exec"] += covered
+            self.subdirectories[key]["lines_total"] += total
+            self.subdirectories[key]["lines_uncovered"] += total - covered
+            self.add_directory_line_coverage(key, total, covered)
 
     def calculate_branch_coverage(self, covdata: CovData):
         branch_total = 0
@@ -242,6 +305,7 @@ class RootInfo:
             (total, covered, _percent) = covdata[key].branch_coverage().to_tuple
             branch_total += total
             branch_covered += covered
+            self.add_directory_branch_coverage(key, total, covered)
         self.branches["exec"] = branch_covered
         self.branches["total"] = branch_total
         coverage = calculate_coverage(branch_covered, branch_total, nan_value=None)
@@ -286,11 +350,36 @@ class RootInfo:
             (total, covered, _percent) = covdata[key].line_coverage().to_tuple
             line_total += total
             line_covered += covered
+            self.add_directory_line_coverage(key, total, covered)
         self.lines["exec"] = line_covered
         self.lines["total"] = line_total
         coverage = calculate_coverage(line_covered, line_total)
         self.lines["coverage"] = coverage
         self.lines["class"] = self._coverage_to_class(coverage)
+
+    def calculate_directory_coverage(self):
+        for key, value in self.subdirectories.items():
+            covered = value["branch_exec"]
+            total = value["branch_total"]
+            coverage = calculate_coverage(covered, total, nan_value=None)
+            self.subdirectories[key]["branch_percent"] = coverage
+            self.subdirectories[key]["branch_class"] = self._coverage_to_class(coverage)
+
+            covered = value["lines_exec"]
+            total = value["lines_total"]
+            coverage = calculate_coverage(covered, total, nan_value=None)
+            self.subdirectories[key]["lines_percent"] = coverage
+            self.subdirectories[key]["lines_class"] = self._coverage_to_class(coverage)
+
+    def write_subdirectories(self, outputfile):
+        import json
+        class SetEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, set):
+                   return list(obj)
+                return json.JSONEncoder.default(self, obj)
+        with open_text_for_writing(outputfile) as f:
+            json.dump(self.subdirectories, f, indent=2, cls=SetEncoder, sort_keys=True)
 
     def add_file(self, cdata, link_report, cdata_fname):
         lines_total, lines_exec, _ = cdata.line_coverage().to_tuple
@@ -373,17 +462,14 @@ class RootInfo:
 #
 def print_html_report(covdata: CovData, output_file, options):
     css_data = CssRenderer.render(options)
-    medium_threshold = options.html_medium_threshold
-    high_threshold = options.html_high_threshold
-    show_decision = options.show_decision
 
     data = {}
     root_info = RootInfo(options)
     data["info"] = root_info
 
-    data["SHOW_DECISION"] = show_decision
-    data["COVERAGE_MED"] = medium_threshold
-    data["COVERAGE_HIGH"] = high_threshold
+    data["SHOW_DECISION"] = root_info.show_decision
+    data["COVERAGE_MED"] = root_info.medium_threshold
+    data["COVERAGE_HIGH"] = root_info.high_threshold
 
     self_contained = options.html_self_contained
     if self_contained is None:
@@ -417,28 +503,22 @@ def print_html_report(covdata: CovData, output_file, options):
             css_link = css_output
         data["css_link"] = css_link
 
+    # These steps also add information about subdirectory hierarchy
     root_info.calculate_branch_coverage(covdata)
     root_info.calculate_decision_coverage(covdata)
     root_info.calculate_function_coverage(covdata)
     root_info.calculate_line_coverage(covdata)
+    root_info.collapse_subdirectories()
 
     # Generate the coverage output (on a per-package basis)
     # source_dirs = set()
     files = []
-    dirs = []
     filtered_fname = ""
-    keys = sort_coverage(
-        covdata,
-        show_branch=False,
-        by_num_uncovered=options.sort_uncovered,
-        by_percent_uncovered=options.sort_percent,
-    )
     cdata_fname = {}
     cdata_sourcefile = {}
-    for f in keys:
+    for f in list(covdata.keys()) + list(root_info.subdirectories.keys()):
         filtered_fname = options.root_filter.sub("", f)
         files.append(filtered_fname)
-        dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata_fname[f] = filtered_fname
         if options.html_details:
             cdata_sourcefile[f] = _make_short_sourcename(output_file, filtered_fname)
@@ -458,8 +538,13 @@ def print_html_report(covdata: CovData, output_file, options):
             root_directory = dir_ + os.sep
 
     root_info.set_directory(root_directory)
+    root_info.calculate_directory_coverage()
 
-    for f in keys:
+    sorted_keys = sort_coverage(
+        covdata, show_branch=False,
+        by_num_uncovered=options.sort_uncovered,
+        by_percent_uncovered=options.sort_percent)
+    for f in sorted_keys:
         root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
 
     if options.html_details:
@@ -468,24 +553,39 @@ def print_html_report(covdata: CovData, output_file, options):
             output_suffix = ".html"
         functions_fname = f"{output_prefix}.functions{output_suffix}"
         data["FUNCTIONS_FNAME"] = os.path.basename(functions_fname)
-    html_string = templates().get_template("root_page.html").render(**data)
-    with open_text_for_writing(
-        output_file, encoding=options.html_encoding, errors="xmlcharrefreplace"
-    ) as fh:
-        fh.write(html_string + "\n")
+
+    if options.html_cascaded_directories:
+        write_directory_pages(output_file, covdata, cdata_fname, cdata_sourcefile, options, root_info, data)
+    else:
+        write_root_page(output_file, options, data)
 
     # Return, if no details are requested
     if not options.html_details:
         return
 
-    #
-    # Generate an HTML file for every source file
-    #
+    write_source_pages(covdata, cdata_fname, cdata_sourcefile, options, root_info, data)
+
+
+#
+# Generate the HTML file as a flat list for all rows.
+#
+def write_root_page(output_file, options, data):
+    html_string = templates().get_template("root_page.html").render(**data)
+    with open_text_for_writing(output_file, encoding=options.html_encoding,
+                               errors="xmlcharrefreplace") as fh:
+        fh.write(html_string + "\n")
+
+
+#
+# Generate an HTML file for every source file
+#
+def write_source_pages(covdata, cdata_fname, cdata_sourcefile, options, root_info, data):
+    logger = Logger(options.verbose)
+    formatter = get_formatter(options)
+
     error_occurred = False
     all_functions = dict()
-    for f in keys:
-        cdata = covdata[f]
-
+    for f, cdata in covdata.items():
         data["filename"] = cdata_fname[f]
 
         # Only use demangled names (containing a brace)
@@ -510,7 +610,9 @@ def print_html_report(covdata: CovData, output_file, options):
             functions["coverage"],
         ) = cdata.function_coverage().to_tuple
         functions["class"] = coverage_to_class(
-            functions["coverage"], medium_threshold, high_threshold
+            functions["coverage"],
+            root_info.medium_threshold,
+            root_info.high_threshold
         )
         functions["coverage"] = (
             "-" if functions["coverage"] is None else functions["coverage"]
@@ -524,7 +626,9 @@ def print_html_report(covdata: CovData, output_file, options):
             branches["coverage"],
         ) = cdata.branch_coverage().to_tuple
         branches["class"] = coverage_to_class(
-            branches["coverage"], medium_threshold, high_threshold
+            branches["coverage"],
+            root_info.medium_threshold,
+            root_info.high_threshold
         )
         branches["coverage"] = (
             "-" if branches["coverage"] is None else branches["coverage"]
@@ -539,7 +643,9 @@ def print_html_report(covdata: CovData, output_file, options):
             decisions["coverage"],
         ) = cdata.decision_coverage().to_tuple
         decisions["class"] = coverage_to_class(
-            decisions["coverage"], medium_threshold, high_threshold
+            decisions["coverage"],
+            root_info.medium_threshold,
+            root_info.high_threshold
         )
         decisions["coverage"] = (
             "-" if decisions["coverage"] is None else decisions["coverage"]
@@ -553,7 +659,9 @@ def print_html_report(covdata: CovData, output_file, options):
             lines["coverage"],
         ) = cdata.line_coverage().to_tuple
         lines["class"] = coverage_to_class(
-            lines["coverage"], medium_threshold, high_threshold
+            lines["coverage"],
+            root_info.medium_threshold,
+            root_info.high_threshold
         )
 
         data["source_lines"] = []
@@ -608,6 +716,69 @@ def print_html_report(covdata: CovData, output_file, options):
 
     return error_occurred
 
+def row_sort_keys(options):
+    row_sort_key = []
+    if options.sort_uncovered:
+        row_sort_key.append('lines_uncovered')
+    if options.sort_percent:
+        row_sort_key.append('lines_percent')
+    if not row_sort_key:
+        row_sort_key.append('filename')
+    return ",".join(row_sort_key)
+
+#
+# Generate an HTML file for every subdirectory in the hierarchy.
+#
+def write_directory_pages(output_file, covdata, cdata_fname, cdata_sourcefile, options, root_info, data):
+    data['row_sort_key'] = row_sort_keys(options)
+    root_key = root_info.subdirectory_root()
+    for f, value in root_info.subdirectories.items():
+        data['filename'] = options.root_filter.sub('', f)
+        data['subdirectory'] = value
+        data['date'] = root_info.date
+        data['rows'] = []
+        for child in value['children']:
+            link = os.path.basename(cdata_sourcefile[child])
+            if child in root_info.subdirectories:
+                child_data = root_info.subdirectories[child]
+                data['rows'].append(dict(
+                    filename=cdata_fname[child],
+                    link=link,
+                    branch_exec=child_data['branch_exec'],
+                    branch_total=child_data['branch_total'],
+                    branch_percent=child_data['branch_percent'],
+                    branch_class=child_data['branch_class'],
+                    lines_exec=child_data['lines_exec'],
+                    lines_total=child_data['lines_total'],
+                    lines_uncovered=child_data['lines_uncovered'],
+                    lines_percent=child_data['lines_percent'],
+                    lines_class=child_data['lines_class']))
+            else:
+                branch_total, branch_exec, branch_percent = covdata[child].branch_coverage()
+                branch_class = root_info._coverage_to_class(branch_percent)
+                lines_total, lines_exec, lines_percent = covdata[child].line_coverage()
+                lines_class = root_info._coverage_to_class(lines_percent)
+                data['rows'].append(dict(
+                    filename=cdata_fname[child],
+                    link=link,
+                    branch_total=branch_total,
+                    branch_exec=branch_exec,
+                    branch_percent=branch_percent,
+                    branch_class=branch_class,
+                    lines_exec=lines_exec,
+                    lines_total=lines_total,
+                    lines_uncovered=lines_total-lines_exec,
+                    lines_percent=lines_percent,
+                    lines_class=lines_class))
+        if options.sort_percent:
+            for row in data['rows']:
+                if not row["lines_percent"]:
+                    row["lines_percent"] = 0.0
+        html_string = templates().get_template('directory_page.html').render(**data)
+        filename = output_file if f == root_key else cdata_sourcefile[f]
+        with open_text_for_writing(filename, encoding=options.html_encoding,
+                                   errors='xmlcharrefreplace') as fh:
+            fh.write(html_string + '\n')
 
 def source_row(lineno, source, line_cov):
     linebranch = None
