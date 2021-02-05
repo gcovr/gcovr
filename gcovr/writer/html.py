@@ -142,7 +142,7 @@ class PygmentHighlighting:
             from pygments.formatters.html import HtmlFormatter
             self.formatter = HtmlFormatter(nowrap=True)
         except ImportError as e:  # pragma: no cover
-            self.logger.warn("No syntax highlighting availabel: {}".format(str(e)))
+            self.logger.warn("No syntax highlighting available: {}".format(str(e)))
 
     def get_css(self):
         if self.formatter is None:  # pragma: no cover
