@@ -8,8 +8,9 @@ coverage*.csv
 coveralls*.json
 *.html
 *.css
-# except in reference directories
+# except in reference and data directories
 !*/reference/**
+!*/data/**
 # and input stylesheet
 !style.css
 
