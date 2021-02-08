@@ -33,6 +33,7 @@ Improvements and new features:
  - Only remove :option:`--root` path at the start of file paths. (:issue:`452`)
  - Fix coverage report for cmake ninja builds with given in-source object-directory. (:issue:`453`)
  - Add issue templates. (:issue:`461`)
+ - Add :option:`--exclude-function-lines` to exclude the line of the function definition in the coverage report. (:issue:`430`)  
  - Changes for HTML output format:
 
    - Redesign HTML generation. Add :option:`--html-self-contained` to control externeal or internal CSS. (:issue:`367`)

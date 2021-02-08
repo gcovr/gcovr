@@ -917,6 +917,13 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "exclude_function_lines", ['--exclude-function-lines'],
+        group="gcov_options",
+        help="Exclude coverage from lines defining a function "
+             "Default: {default!s}.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "exclude_throw_branches", ["--exclude-throw-branches"],
         group="gcov_options",
         help="For branch coverage, exclude branches "
