@@ -74,7 +74,7 @@ endif
 endif
 	$(GCOV) --version
 
-qa: doc #lint check-format test doc
+qa: doc lint check-format test doc
 
 lint:
 	$(PYTHON) -m flake8 doc gcovr

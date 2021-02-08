@@ -82,6 +82,9 @@ Please follow this checklist for your pull request:
     If you cannot run the tests locally,
     you can activate GitHub for your fork,
     or run the tests with Docker.
+    If there are differences the updated files will be
+    available for download from the CI system (one ZIP
+    for each test environment).
 
     If you add new features, please try to add a test case.
 
@@ -163,10 +166,10 @@ is needed.
     If you don't have an alias like gcc-8, perform the following steps to
     create an alias for gcc, this should also work in the MSYS shell under Windows:
 
-    1. Create a directory somewhere, e.g. in your home directory: mkdir ~/bin
-    2. Create a symlink in that directory which points to GCC:ln -s $(which gcc) ~/bin/gcc-8
-    3. Add this directory to your PATH: export PATH="$HOME/bin:$PATH"
-    4. Re-test gcc-8 --version to ensure everything worked.
+    1. Create a directory somewhere, e.g. in your home directory: ``mkdir ~/bin``
+    2. Create a symlink in that directory which points to GCC: ``ln -s $(which gcc) ~/bin/gcc-8``
+    3. Add this directory to your PATH: ``export PATH="$HOME/bin:$PATH"``
+    4. Re-test ``gcc-8 --version`` to ensure everything worked.
     5. Create additional symlinks for g++ -> g++-8 and gcov -> gcov-8.
 
 
@@ -196,11 +199,11 @@ is needed.
 
     See ``doc/README.txt`` for details on working with the documentation.
 
--   (Optional) Activate GitHub for your forked GitHub repository,
+-   (Optional) Activate GitHub Actions for your forked repository,
     so that the cross-platform compatibility tests get run
     whenever you push your work to your repository.
-    These tests will also be run
-    when you open a pull request to the main gcovr repository.
+    These tests will also be run when you open a pull request to the
+    main gcovr repository.
 
 Tip: If you have problems getting everything set up, consider looking at these files:
 
@@ -240,7 +243,7 @@ The QA process (``make qa``) consists of multiple parts:
 
 - linting (``make lint``)
 
-- checking format (``make format``)
+- checking format (``make check-format``)
 
 - tests (``make test``)
 
@@ -355,7 +358,7 @@ For example:
 When the currently generated output reports differ to the reference files
 you can create a ZIP archive named ``diff.zip`` in the tests directory
 by using ``--archive_differences`` option.
-Currently in gcovr it is used by AppVeyor CI to create a ZIP file
+Currently in gcovr it is used by GitHub CI to create a ZIP file
 with the differences as an artifact.
 
 .. code:: bash
