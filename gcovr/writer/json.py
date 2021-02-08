@@ -163,6 +163,7 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
                 continue
 
             file_coverage = FileCoverage(file_path)
+            _functions_from_json(file_coverage, gcovr_file['functions'])
             _lines_from_json(file_coverage, gcovr_file['lines'])
             coverage[file_path] = file_coverage
 
@@ -212,10 +213,19 @@ def _json_from_functions(functions):
 def _json_from_function(function):
     json_function = {}
     if function:
-        json_function['line'] = function.lineno
+        json_function['lineno'] = function.lineno
         json_function['name'] = function.name
         json_function['execution_count'] = function.count
     return json_function
+
+
+def _functions_from_json(file, json_functions):
+    [_function_from_json(file.function(json_function['name']), json_function) for json_function in json_functions]
+
+
+def _function_from_json(function, json_function):
+    function.count = json_function['execution_count']
+    function.lineno = json_function['lineno']
 
 
 def _lines_from_json(file, json_lines):
