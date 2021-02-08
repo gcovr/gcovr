@@ -8,7 +8,7 @@ Next Release
 
 Breaking changes:
 
- - Dropped support for Python 2.
+ - Dropped support for Python 2 and Python 3.5.
    From now on, gcovr will only support Python versions
    that enjoy upstream support.
 
