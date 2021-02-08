@@ -133,7 +133,8 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
             exclude_unreachable_branches=options.exclude_unreachable_branches,
             exclude_throw_branches=options.exclude_throw_branches,
             ignore_parse_errors=options.gcov_ignore_parse_errors,
-            exclude_lines_by_pattern=options.exclude_lines_by_pattern)
+            exclude_lines_by_pattern=options.exclude_lines_by_pattern,
+            exclude_function_lines=options.exclude_function_lines)
 
         covdata.setdefault(key, FileCoverage(key)).update(parser.coverage)
 
@@ -247,10 +248,11 @@ class GcovParser(object):
         self.unrecognized_lines = []
         self.deferred_exceptions = []
         self.last_was_specialization_section_marker = False
+        self.last_was_function_marker = False
 
     def parse_all_lines(
         self, lines, exclude_unreachable_branches, exclude_throw_branches,
-        ignore_parse_errors, exclude_lines_by_pattern
+        ignore_parse_errors, exclude_lines_by_pattern, exclude_function_lines
     ):
         exclude_lines_by_pattern_regex = (re.compile(exclude_lines_by_pattern)
                                           if exclude_lines_by_pattern
@@ -259,7 +261,7 @@ class GcovParser(object):
             try:
                 self.parse_line(
                     line, exclude_unreachable_branches, exclude_throw_branches,
-                    exclude_lines_by_pattern_regex)
+                    exclude_lines_by_pattern_regex, exclude_function_lines)
             except Exception as ex:
                 self.unrecognized_lines.append(line)
                 self.deferred_exceptions.append(ex)
@@ -269,7 +271,7 @@ class GcovParser(object):
 
     def parse_line(
         self, line, exclude_unreachable_branches, exclude_throw_branches,
-        exclude_lines_by_pattern_regex
+        exclude_lines_by_pattern_regex, exclude_function_lines
     ):
         # If this is a tag line, we stay on the same line number
         # and can return immediately after processing it.
@@ -300,7 +302,7 @@ class GcovParser(object):
             if exclude_lines_by_pattern_regex.match(code):
                 self.excluding.append(False)
 
-        is_code_statement = self.parse_code_line(status, code)
+        is_code_statement = self.parse_code_line(status, code, exclude_function_lines)
 
         if not is_code_statement:
             self.unrecognized_lines.append(line)
@@ -315,31 +317,43 @@ class GcovParser(object):
         if self.excluding and not self.excluding[-1]:
             self.excluding.pop()
 
-    def parse_code_line(self, status, code):
+    def parse_code_line(self, status, code, exclude_function_lines):
         firstchar = status[0]
+
+        last_was_function_marker = self.last_was_function_marker
+        self.last_was_function_marker = False
+
+        noncode = False
+        count = None
 
         if firstchar == '-' or (self.excluding and firstchar in "#=0123456789"):
             # remember certain non-executed lines
             if self.excluding or is_non_code(code):
-                self.coverage.line(self.lineno).noncode = True
-            return True
-
+                noncode = True
         # "#": uncovered
         # "=": uncovered, but only reachable through exceptions
-        if firstchar in "#=":
+        elif firstchar in "#=":
             if self.excluding or is_non_code(code):
-                self.coverage.line(self.lineno).noncode = True
+                noncode = True
             else:
-                self.coverage.line(self.lineno)  # sets count to 0 if not present before
-            return True
-
-        if firstchar in "0123456789":
+                count = 0
+        elif firstchar in "0123456789":
             # GCOV 8 marks partial coverage
             # with a trailing "*" after the execution count.
-            self.coverage.line(self.lineno).count += int(status.rstrip('*'))
-            return True
+            count = int(status.rstrip('*'))
+        else:
+            return False
 
-        return False
+        if exclude_function_lines and last_was_function_marker:
+            noncode = True
+
+        if noncode:
+            self.coverage.line(self.lineno).noncode = True
+        elif count is not None:
+            # self.coverage.line(self.lineno)  # sets count to 0 if not present before
+            self.coverage.line(self.lineno).count += count
+
+        return True
 
     def parse_tag_line(
         self, line, exclude_unreachable_branches, exclude_throw_branches
@@ -375,6 +389,7 @@ class GcovParser(object):
             return True
 
         if line.startswith('function '):
+            self.last_was_function_marker = True
             return True
 
         if line.startswith('call '):
