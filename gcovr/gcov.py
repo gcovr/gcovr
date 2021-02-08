@@ -408,7 +408,7 @@ class GcovParser(object):
 
             # special names for construction/destruction of static objects will be ignored
             # "__tcf_0", "__static...", "_GLOBAL..."
-            if function_name.startswith("__") or function_name.startswith("_GLOBAL__sub_I__"):
+            if function_name.startswith("__") or function_name.startswith("_GLOBAL__sub_I_"):
                 self.logger.verbose_msg(
                     "Ignoring Symbol {func_name} in line {line} "
                     "in file {file_name}", func_name=fields[1],
