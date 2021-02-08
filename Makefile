@@ -11,9 +11,14 @@ set_sensible_default = $(if $(filter undefined default,$(origin $(1))),$(2),$(va
 
 PYTHON := $(call set_sensible_default,PYTHON,python3)
 
+override AVAILABLE_CC := gcc-5 gcc-6 gcc-8
+
 # Setting CXX and GCOV depending on CC. Only CC has to be set to a specific version.
 # If using GitHub actions on Windows, gcc-8 is set but gcc is used, so we override it.
 CC := $(call set_sensible_default,CC,gcc-5)
+ifeq ($(filter $(CC),$(AVAILABLE_CC)),)
+$(error Unsupported version of GCC used. CC must be one of: $(AVAILABLE_CC))
+endif
 export CC := $(CC)
 CXX := $(call set_sensible_default,CXX,$(subst gcc,g++,$(CC)))
 export CXX := $(CXX)
@@ -54,7 +59,7 @@ setup-dev:
 	$(PYTHON) -m pip install -r requirements.txt -r doc/requirements.txt
 	$(PYTHON) -m pip install -e .
 	$(PYTHON) --version
-ifeq ($(subst true,True,$(CI)),True)
+ifeq ($(CI),true)
 ifeq ($(shell which $(CC) 2>/dev/null),)
 	cd $(dir $(shell which gcc 2>/dev/null)) && cp -f gcc.exe $(CC).exe
 endif
@@ -69,12 +74,12 @@ endif
 endif
 	$(GCOV) --version
 
-qa: lint black test doc
+qa: doc lint check-format test doc
 
 lint:
 	$(PYTHON) -m flake8 doc gcovr
 
-black:
+check-format:
 	$(PYTHON) -m black --diff doc gcovr
 
 test: export GCOVR_TEST_SUITE := 1
