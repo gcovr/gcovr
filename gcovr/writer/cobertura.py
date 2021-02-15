@@ -41,7 +41,7 @@ class Cobertura(Base):
             const=GcovrConfigOption.OutputOrDefault(None),
         )
         yield GcovrConfigOption(
-            "prettycobertura",
+            "cobertura_pretty",
             ["--cobertura-pretty", "--xml-pretty"],
             group="output_options",
             help="Pretty-print the XML report. Implies --xml. Default: {default!s}.",
@@ -49,7 +49,7 @@ class Cobertura(Base):
         )
 
     def writers(self, options, logger):
-        if options.cobertura or options.prettycobertura:
+        if options.cobertura or options.cobertura_pretty:
             yield (
                 [options.cobertura],
                 print_report,
@@ -194,7 +194,7 @@ def print_report(covdata, output_file, options):
         fh.write(
             etree.tostring(
                 root,
-                pretty_print=options.prettycobertura,
+                pretty_print=options.cobertura_pretty,
                 encoding="UTF-8",
                 xml_declaration=True,
                 doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>",

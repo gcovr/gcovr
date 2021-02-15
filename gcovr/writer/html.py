@@ -130,7 +130,7 @@ class Html(Base):
             default=4,
         )
         yield GcovrConfigOption(
-            "relative_anchors",
+            "html_relative_anchors",
             ["--html-absolute-paths"],
             group="output_options",
             help="Use absolute paths to link the --html-details reports. "
@@ -350,7 +350,7 @@ class RootInfo:
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
         self.details = options.html_details
-        self.relative_anchors = options.relative_anchors
+        self.relative_anchors = options.html_relative_anchors
 
         self.version = __version__
         self.head = options.html_title
@@ -480,7 +480,7 @@ def print_report(covdata, output_file, options):
         with open_text_for_writing(css_output) as f:
             f.write(css_data)
 
-        if options.relative_anchors:
+        if options.html_relative_anchors:
             css_link = os.path.basename(css_output)
         else:
             css_link = css_output
