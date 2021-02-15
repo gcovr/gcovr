@@ -43,6 +43,14 @@ from .writer import Writers
 from .writer.utils import get_global_stats
 
 
+EXITCODE_OK = 0
+EXITCODE_CLI_ERROR = 1
+EXITCODE_FAIL_LINES = 2
+EXITCODE_FAIL_BRANCH = 4
+EXITCODE_FAIL_LINES_AND_BRANCH = 6
+EXITCODE_WRITER_ERROR = 7
+
+
 #
 # Exits with status 2 if below threshold
 #
@@ -63,11 +71,11 @@ def fail_under(covdata, threshold_line, threshold_branch, logger):
         branch_nok = True
         logger.error("failed minimum branch coverage (got {}%, minimum {}%)", percent_branches, threshold_branch)
     if line_nok and branch_nok:
-        sys.exit(6)
+        sys.exit(EXITCODE_FAIL_LINES_AND_BRANCH)
     if line_nok:
-        sys.exit(2)
+        sys.exit(EXITCODE_FAIL_LINES)
     if branch_nok:
-        sys.exit(4)
+        sys.exit(EXITCODE_FAIL_BRANCH)
 
 
 def create_argument_parser():
@@ -153,42 +161,54 @@ def main(args=None):
             "\n"
             "{copyright}",
             version=__version__, copyright=COPYRIGHT)
-        sys.exit(0)
+        sys.exit(EXITCODE_OK)
 
-    Readers.check_options(options, logger)
-    Writers.check_options(options, logger)
+    try:
+        Readers.check_options(options, logger)
+        Writers.check_options(options, logger)
 
-    if options.objdir is not None:
-        if not options.objdir:
-            logger.error(
-                "empty --object-directory option.\n"
-                "\tThis option specifies the path to the object file "
+        if options.objdir is not None:
+            if not options.objdir:
+                raise RuntimeError(
+                    "empty --object-directory option.\n"
+                    "\tThis option specifies the path to the object file "
+                    "directory of your project.\n"
+                    "\tThis option cannot be an empty string.")
+            tmp = options.objdir.replace('/', os.sep).replace('\\', os.sep)
+            while os.sep + os.sep in tmp:
+                tmp = tmp.replace(os.sep + os.sep, os.sep)
+            if normpath(options.objdir) != tmp:
+                logger.warn(
+                    "relative referencing in --object-directory.\n"
+                    "\tthis could cause strange errors when gcovr attempts to\n"
+                    "\tidentify the original gcc working directory.")
+            if not os.path.exists(normpath(options.objdir)):
+                raise RuntimeError(
+                    "Bad --object-directory option.\n"
+                    "\tThe specified directory does not exist.")
+
+        options.starting_dir = os.path.abspath(os.getcwd())
+        if not options.root:
+            raise RuntimeError(
+                "empty --root option.\n"
+                "\tRoot specifies the path to the root "
                 "directory of your project.\n"
                 "\tThis option cannot be an empty string.")
-            sys.exit(1)
-        tmp = options.objdir.replace('/', os.sep).replace('\\', os.sep)
-        while os.sep + os.sep in tmp:
-            tmp = tmp.replace(os.sep + os.sep, os.sep)
-        if normpath(options.objdir) != tmp:
-            logger.warn(
-                "relative referencing in --object-directory.\n"
-                "\tthis could cause strange errors when gcovr attempts to\n"
-                "\tidentify the original gcc working directory.")
-        if not os.path.exists(normpath(options.objdir)):
-            logger.error(
-                "Bad --object-directory option.\n"
-                "\tThe specified directory does not exist.")
-            sys.exit(1)
+        options.root_dir = os.path.abspath(options.root)
 
-    options.starting_dir = os.path.abspath(os.getcwd())
-    if not options.root:
-        logger.error(
-            "empty --root option.\n"
-            "\tRoot specifies the path to the root "
-            "directory of your project.\n"
-            "\tThis option cannot be an empty string.")
-        sys.exit(1)
-    options.root_dir = os.path.abspath(options.root)
+        if options.exclude_lines_by_pattern:
+            try:
+                re.compile(options.exclude_lines_by_pattern)
+            except re.error as e:
+                raise RuntimeError(
+                    "--exclude-lines-by-pattern: "
+                    "Invalid regular expression: {}, error: {}".format(
+                        repr(options.exclude_lines_by_pattern), e
+                    )
+                ) from None
+    except RuntimeError as e:
+        logger.error(str(e))
+        sys.exit(EXITCODE_CLI_ERROR)
 
     #
     # Setup filters
@@ -226,16 +246,6 @@ def main(args=None):
         for f in filters:
             logger.verbose_msg('- {}', f)
 
-    if options.exclude_lines_by_pattern:
-        try:
-            re.compile(options.exclude_lines_by_pattern)
-        except re.error as e:
-            logger.error(
-                "--exclude-lines-by-pattern: "
-                "Invalid regular expression: {}, error: {}",
-                repr(options.exclude_lines_by_pattern), e)
-            sys.exit(1)
-
     covdata = dict()
     Readers.read(covdata, options, logger)
     if not len(covdata.keys()):
@@ -244,7 +254,11 @@ def main(args=None):
     logger.verbose_msg("Gathered coveraged data for {} files", len(covdata))
 
     # Print reports
-    Writers.write(covdata, options, logger)
+    try:
+        Writers.write(covdata, options, logger)
+    except RuntimeError as e:
+        logger.error(str(e))
+        sys.exit(EXITCODE_WRITER_ERROR)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
         fail_under(covdata, options.fail_under_line, options.fail_under_branch, logger)

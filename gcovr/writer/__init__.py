@@ -16,8 +16,6 @@
 #
 # ****************************************************************************
 
-import sys
-
 from ..configuration import GcovrConfigOption
 from .json import Json
 from .cobertura import Cobertura
@@ -94,5 +92,4 @@ class Writers:
             print_summary_report(covdata)
 
         if writer_error_occurred:
-            logger.error("Error occurred while printing reports")
-            sys.exit(7)
+            raise RuntimeError("Error occurred while printing reports")

@@ -18,7 +18,6 @@
 
 import json
 import os
-import sys
 
 from glob import glob
 
@@ -48,25 +47,28 @@ class Json(Base):
             default=[],
         )
 
-    def read(self, covdata, options, logger):
-        r"""merge a coverage from multiple reports in the format
-        partially compatible with gcov JSON output"""
-
+    def check_options(self, options, logger):
         if len(options.add_tracefile):
             filenames = set()
             for trace_files_regex in options.add_tracefile:
                 trace_files = glob(trace_files_regex, recursive=True)
                 if not trace_files:
-                    logger.error(
+                    raise RuntimeError(
                         "Bad --add-tracefile option.\n"
-                        "\tThe specified file does not exist."
+                        "\tThe specified file [{}] does not exist.".format(trace_files_regex)
                     )
-                    sys.exit(1)
                 else:
                     for trace_file in trace_files:
                         filenames.add(os.path.normpath(trace_file))
 
-            for filename in filenames:
+            options.add_tracefile = filenames
+
+    def read(self, covdata, options, logger):
+        r"""merge a coverage from multiple reports in the format
+        partially compatible with gcov JSON output"""
+
+        if len(options.add_tracefile):
+            for filename in options.add_tracefile:
                 gcovr_json_data = {}
                 logger.verbose_msg("Processing JSON file: {}", filename)
 

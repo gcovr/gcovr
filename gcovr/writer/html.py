@@ -20,7 +20,6 @@ import os
 import datetime
 import hashlib
 import io
-import sys
 
 from argparse import ArgumentTypeError
 
@@ -163,25 +162,22 @@ class Html(Base):
 
     def check_options(self, options, logger):
         if options.html_title == "":
-            logger.error("an empty --html_title= is not allowed.")
-            sys.exit(1)
+            raise RuntimeError("an empty --html_title= is not allowed.")
 
         if options.html_medium_threshold == 0:
-            logger.error("value of --html-medium-threshold= should not be zero.")
-            sys.exit(1)
+            raise RuntimeError("value of --html-medium-threshold= should not be zero.")
 
         if options.html_medium_threshold > options.html_high_threshold:
-            logger.error(
+            raise RuntimeError(
                 "value of --html-medium-threshold={} should be\n"
-                "lower than or equal to the value of --html-high-threshold={}.",
-                options.html_medium_threshold,
-                options.html_high_threshold,
+                "lower than or equal to the value of --html-high-threshold={}.".format(
+                    options.html_medium_threshold,
+                    options.html_high_threshold
+                )
             )
-            sys.exit(1)
 
         if options.html_tab_size < 1:
-            logger.error("value of --html-tab-size= should be greater 0.")
-            sys.exit(1)
+            raise RuntimeError("value of --html-tab-size= should be greater 0.")
 
         potential_html_output = (
             (options.html and options.html.value)
@@ -189,17 +185,15 @@ class Html(Base):
             or (options.output and options.output.value)
         )
         if options.html_details and not potential_html_output:
-            logger.error(
+            raise RuntimeError(
                 "a named output must be given, if the option --html-details\n"
                 "is used."
             )
-            sys.exit(1)
 
         if options.html_self_contained is False and not potential_html_output:
-            logger.error(
+            raise RuntimeError(
                 "can only disable --html-self-contained when a named output is given."
             )
-            sys.exit(1)
 
     def writers(self, options, logger):
         if options.html or options.html_details:

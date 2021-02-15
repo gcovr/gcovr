@@ -539,7 +539,7 @@ class GcovParser(object):
         for ex in self.deferred_exceptions:
             raise ex
 
-        sys.exit(1)
+        sys.exit(1)  # TBD: Change exit code because 1 is used for CLI errors
 
 
 def process_datafile(filename, covdata, options, toerase, workdir):
