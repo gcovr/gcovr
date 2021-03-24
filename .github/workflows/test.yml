@@ -75,7 +75,7 @@ jobs:
       shell: bash
     - name: Run release_checklist
       run: |
-        admin/release_checklist --no-verify-tags --no-verify-docs-next-version 4.2
+        admin/release_checklist --no-verify-tags --no-verify-docs-next-version 5.0
 
   build:
     runs-on: ${{ matrix.os }}

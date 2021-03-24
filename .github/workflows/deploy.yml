@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run release_checklist
       run: |
-        admin/release_checklist 4.2
+        admin/release_checklist 5.0
  
   deploy:
     runs-on: ubuntu-18.04
