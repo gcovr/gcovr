@@ -222,7 +222,7 @@ class RelativeFilter(Filter):
         # If so, the relative filter cannot match.
         if sys.platform == 'win32':
             path_drive, _ = os.path.splitdrive(abspath)
-            root_drive, _ = os.path.splitdrive(self.root)
+            root_drive, _ = os.path.splitdrive(os.path.realpath(self.root))
             if path_drive != root_drive:
                 return None
 
