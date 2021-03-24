@@ -59,6 +59,7 @@ Internal changes:
  - Remove Appveyor CI and upload coverage report from Windows and Ubuntu from the GitHub actions. (:issue:`455`)
  - Add check if commit is mentioned in the CHANGELOG.rst. (:issue:`457`)
  - Move flake8 config to setup.cfg and add black code formatter. (:issue:`444`)
+ - Fix filter/exclude relative path issue in Windows. (:issue:`320`, :issue:`479`) 
  - Extend test framework for CI:
 
    - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)
