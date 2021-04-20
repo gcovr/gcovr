@@ -394,6 +394,7 @@ def print_html_report(covdata, output_file, options):
         data['source_lines'] = []
         currdir = os.getcwd()
         os.chdir(options.root_dir)
+        max_line_from_cdata = max(cdata.lines.keys())
         try:
             with io.open(data['filename'], 'r', encoding=options.source_encoding,
                          errors='replace') as source_file:
@@ -402,9 +403,16 @@ def print_html_report(covdata, output_file, options):
                     data['source_lines'].append(
                         source_row(ctr, line, cdata.lines.get(ctr))
                     )
+                if ctr < max_line_from_cdata:
+                    logger.warn(
+                        'File {filename} has {file_lines} line(s) but coverage data has {cdata_lines} line(s).',
+                        filename=data['filename'],
+                        file_lines=ctr,
+                        cdata_lines=max_line_from_cdata
+                    )
         except IOError as e:
             logger.warn('File {filename} not found: {reason}', filename=data['filename'], reason=repr(e))
-            for ctr in range(1, max(cdata.lines.keys())):
+            for ctr in range(1, max_line_from_cdata):
                 data['source_lines'].append(
                     source_row(ctr, '!!! File not found !!!' if ctr == 1 else '', cdata.lines.get(ctr))
                 )
