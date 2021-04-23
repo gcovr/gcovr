@@ -11,7 +11,7 @@ set_sensible_default = $(if $(filter undefined default,$(origin $(1))),$(2),$(va
 
 PYTHON := $(call set_sensible_default,PYTHON,python3)
 
-override AVAILABLE_CC := gcc-5 gcc-6 gcc-8
+override AVAILABLE_CC := gcc-5 gcc-6 gcc-8 clang-10
 
 # Setting CXX and GCOV depending on CC. Only CC has to be set to a specific version.
 # If using GitHub actions on Windows, gcc-8 is set but gcc is used, so we override it.
@@ -20,9 +20,9 @@ ifeq ($(filter $(CC),$(AVAILABLE_CC)),)
 $(error Unsupported version of GCC used. CC must be one of: $(AVAILABLE_CC))
 endif
 export CC := $(CC)
-CXX := $(call set_sensible_default,CXX,$(subst gcc,g++,$(CC)))
+CXX := $(call set_sensible_default,CXX,$(subst clang,clang++,$(subst gcc,g++,$(CC))))
 export CXX := $(CXX)
-GCOV := $(call set_sensible_default,GCOV,$(subst gcc,gcov,$(CC)))
+GCOV := $(call set_sensible_default,GCOV,$(patsubst clang%,llvm-cov% gcov,$(subst gcc,gcov,$(CC))))
 
 USERID  := $(shell id -u $(USER))
 QA_CONTAINER ?= gcovr-qa-$(CC)-uid_$(USERID)
@@ -90,6 +90,10 @@ test: export CXXFLAGS := --this_flag_does_not_exist # Env removed in text_gcovr.
 test: export GCOV := $(GCOV)
 
 test:
+ifneq ($(wildcard /Users/Shared/Informatik/GitHub/gcovr/gcovr/tests/linked/subdir/loop),)
+	# Remove directory because test is not running if it exists
+	rm -Rf /Users/Shared/Informatik/GitHub/gcovr/gcovr/tests/linked/subdir/loop
+endif
 	$(PYTHON) -m pytest -v --doctest-modules $(TEST_OPTS) -- gcovr doc/examples
 
 doc:
