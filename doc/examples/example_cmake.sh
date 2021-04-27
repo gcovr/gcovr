@@ -26,7 +26,7 @@ exec >&2  # redirect output to STDERR
 
 #BEGIN cmake_build
 cd $BLD_DIR
-cmake $SRC_DIR
+cmake -DCMAKE_BUILD_TYPE=PROFILE $SRC_DIR
 make VERBOSE=1
 #END cmake_build
 )

@@ -1,0 +1,21 @@
+{
+    "branch_covered": 0,
+    "branch_percent": 0.0,
+    "branch_total": 0,
+    "files": [
+        {
+            "branch_covered": 0,
+            "branch_percent": null,
+            "branch_total": 0,
+            "filename": "main.cpp",
+            "line_covered": 23,
+            "line_percent": 0.605,
+            "line_total": 38
+        }
+    ],
+    "gcovr/summary_format_version": "0.2",
+    "line_covered": 23,
+    "line_percent": 60.5,
+    "line_total": 38,
+    "root": ".."
+}

@@ -7,7 +7,7 @@ endif
 ifeq ($(BASE_OS),MSYS_NT)
   FAIL_UNDER_LINE := 76.9
 else
-  FAIL_UNDER_LINE := $(if $(filter $(CC),gcc-6 gcc-8),76.9,79.9)
+  FAIL_UNDER_LINE := $(if $(filter $(CC),clang-10),72.7,$(if $(filter $(CC),gcc-8),77,80))
 endif
 
 all:

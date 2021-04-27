@@ -1,0 +1,1 @@
+{"run_at": "2021-04-24 07:18:33 UTC", "service_job_id": "id", "service_name": "gcovr-test-suite", "service_number": "number", "service_pull_request": "pr", "source_files": [{"coverage": [1, 1], "name": "main.cpp", "source_digest": "e3e6a5d78e81ea389bb54b2bd6c04e7d"}]}

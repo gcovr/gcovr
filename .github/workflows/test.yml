@@ -176,7 +176,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gcc: [gcc-5, gcc-6, gcc-8]
+        gcc: [gcc-5, gcc-6, gcc-8, clang-10]
 
     steps:
     - uses: actions/checkout@v2

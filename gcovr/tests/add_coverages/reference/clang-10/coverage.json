@@ -1,0 +1,92 @@
+{
+    "files": [
+        {
+            "file": "bar.cpp",
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 1
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 3
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 4
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 5
+                }
+            ]
+        },
+        {
+            "file": "foo.cpp",
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 1
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 3
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 4
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 5
+                }
+            ]
+        },
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 2,
+                    "gcovr/noncode": false,
+                    "line_number": 10
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 12
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/noncode": false,
+                    "line_number": 15
+                },
+                {
+                    "branches": [],
+                    "count": 2,
+                    "gcovr/noncode": false,
+                    "line_number": 18
+                }
+            ]
+        }
+    ],
+    "gcovr/format_version": "0.2"
+}
