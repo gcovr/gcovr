@@ -26,6 +26,10 @@ RUN echo "docker:docker" | chpasswd
 
 USER docker:docker
 
+# Select language-agnostic "C" locale.
+# Unicode is necessary for some tools like "black" to work.
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+
 CMD ( echo docker | sudo -S -p "Running pip with sudo" $PYTHON -m pip install -e . ) && \
   ( echo docker | sudo -S -p "Running chmod with sudo" chown -R docker:docker /gcovr ) && \
   make qa
