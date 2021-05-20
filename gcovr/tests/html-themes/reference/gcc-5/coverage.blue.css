@@ -191,6 +191,7 @@ meter::-webkit-meter-bar {
     /* Outer background for Webkit */
     background: none;
     background-color: whitesmoke;
+    height: 12px;
 }
 
 meter::-webkit-meter-optimum-value,
