@@ -176,7 +176,7 @@ meter {
     width: 30vw;
     min-width: 4em;
     max-width: 15em;
-    height: 12px;
+    height: 0.75em;
     padding: 0;
     vertical-align: baseline;
     margin-top: 3px;
@@ -191,7 +191,8 @@ meter::-webkit-meter-bar {
     /* Outer background for Webkit */
     background: none;
     background-color: whitesmoke;
-    height: 12px;
+    height: 0.75em;
+    border-radius: 0px;
 }
 
 meter::-webkit-meter-optimum-value,
