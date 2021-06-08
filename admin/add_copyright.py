@@ -4,7 +4,7 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 4.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 5.0, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________

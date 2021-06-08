@@ -153,7 +153,7 @@ option is set. For example::
 
 print the same tabular output.
 
-.. versionadded:: NEXT
+.. versionadded:: 5.0
    Added :option:`--txt<gcovr --txt>`.
 
 
@@ -247,11 +247,11 @@ of some servers, especially Jenkins.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
 
-.. versionadded:: NEXT
+.. versionadded:: 5.0
    Added :option:`--html-self-contained<gcovr --html-self-contained>`
    and :option:`--no-html-self-contained<gcovr --html-self-contained>`.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 5.0
    Default to external CSS file for :option:`--html-details<gcovr --html-details>`.
 
 
@@ -362,7 +362,7 @@ This generates an indented JSON summary:
 .. include:: ../examples/example_json_summary.json
     :code: json
 
-.. versionadded:: NEXT
+.. versionadded:: 5.0
    Added :option:`--json-summary<gcovr --json-summary>`
    and :option:`--json-summary-pretty<gcovr --json-summary-pretty>`.
 
@@ -385,7 +385,7 @@ This generates an CSV:
 .. include:: ../examples/example_csv.csv
     :literal:
 
-.. versionadded:: NEXT
+.. versionadded:: 5.0
    Added :option:`--csv<gcovr --csv>`.
 
 
@@ -445,7 +445,7 @@ If running in a CI additional variables are used:
 The Coveralls JSON format is documented at
 `<https://docs.coveralls.io/api-introduction>`_.
 
-.. versionadded:: NEXT
+.. versionadded:: 5.0
    Added :option:`--coveralls<gcovr --coveralls>`
    and :option:`--coveralls-pretty<gcovr --coveralls-pretty>`.
 

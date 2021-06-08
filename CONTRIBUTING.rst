@@ -366,7 +366,7 @@ with the differences as an artifact.
     # run tests and generate a ZIP archive when there were differences
     make test TEST_OPTS="--archive_differences"
 
-.. versionadded:: NEXT
+.. versionadded:: 5.0
    Added test options `--generate_reference`, `--update_reference`,
    `--skip_clean`, '--archive_differences' and changed way to call tests
    only by ``make test``.
