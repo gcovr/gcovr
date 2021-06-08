@@ -180,12 +180,11 @@ table.coverage td.coverage-high
 /* Common */
 meter {
     -moz-appearance: none;
-    -webkit-appearance: none;
 
     width: 30vw;
     min-width: 4em;
     max-width: 15em;
-    height: 12px;
+    height: 0.75em;
     padding: 0;
     vertical-align: baseline;
     margin-top: 3px;
@@ -200,6 +199,8 @@ meter::-webkit-meter-bar {
     /* Outer background for Webkit */
     background: none;
     background-color: whitesmoke;
+    height: 0.75em;
+    border-radius: 0px;
 }
 
 meter::-webkit-meter-optimum-value,
@@ -437,11 +438,11 @@ footer
 }
 
 /* pygments syntax highlighting */
-pre { line-height: 125%; margin: 0; }
-td.linenos pre { color: #000000; background-color: #f0f0f0; padding: 0 5px 0 5px; }
-span.linenos { color: #000000; background-color: #f0f0f0; padding: 0 5px 0 5px; }
-td.linenos pre.special { color: #000000; background-color: #ffffc0; padding: 0 5px 0 5px; }
-span.linenos.special { color: #000000; background-color: #ffffc0; padding: 0 5px 0 5px; }
+pre { line-height: 125%; }
+td.linenos pre { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
+td.linenos pre.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 .hll { background-color: #ffffcc }
 .c { color: #408080; font-style: italic } /* Comment */
 .err { border: 1px solid #FF0000 } /* Error */
@@ -527,7 +528,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding: 0 5px
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2020-09-29 20:31:29</td>
+      <td>2021-06-08 19:32:47</td>
     </tr>
     <tr>
       <th scope="row">Legend:</th>
