@@ -4,7 +4,7 @@
 .. program::  gcovr
 
 5.0 (11 June 2021)
-------------
+------------------
 
 Breaking changes:
 
