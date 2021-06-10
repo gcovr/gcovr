@@ -1,16 +1,21 @@
 # This workflows will upload a Python Package using Twine when a release is created
 # For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
 
-name: Upload Python Package
+name: Deploy
 
 on:
   release:
     types: [created]
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
 
   release-check:
     runs-on: ubuntu-20.04
+
+    continue-on-error: ${{ github.event_name != 'release' }}
 
     steps:
     - uses: actions/checkout@v2
@@ -22,17 +27,23 @@ jobs:
     runs-on: ubuntu-18.04
     needs: release-check
 
+    env:
+      PYTHON_VERSION: "3.8"
+      CC: "gcc-8"
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.5'
-    - name: Install GCC (Linux)
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install GCC
       run: |
         sudo apt update
-        sudo apt-get install -y make ${{ matrix.gcc }} $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
+        sudo apt-get install -y make $CC $(echo $CC | sed -e 's/gcc/g\+\+/')
         sudo apt-get clean
+    - name: Install ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install dependencies
       run: |
         make setup-dev PYTHON=python
@@ -41,14 +52,17 @@ jobs:
         make lint PYTHON=python
     - name: Test with pytest
       run: |
-        make test CC=${{ matrix.gcc }} PYTHON=python TEST_OPTS="--archive_differences"
+        make test CC=$CC PYTHON=python
     - name: Generate documentation
       run: |
         make doc PYTHON=python
-    - name: Build and publish
+    - name: Build
+      run: |
+        python setup.py sdist bdist_wheel
+    - name: Publish
+      if: ${{ github.event_name == 'release' }}
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        python setup.py sdist bdist_wheel
         twine upload dist/*
