@@ -59,8 +59,14 @@ jobs:
     - name: Build
       run: |
         python setup.py sdist bdist_wheel
+    - name: Upload distribution
+      if: ${{ success() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/**
     - name: Publish
-      if: ${{ github.event_name == 'release' }}
+      if: ${{ success() && (github.event_name == 'release') }}
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
