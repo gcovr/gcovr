@@ -10,3 +10,4 @@ pyutilib
 coverage
 codecov
 wheel
+twine

@@ -4,8 +4,6 @@
 name: Deploy
 
 on:
-  release:
-    types: [created]
   push:
   pull_request:
     types: [opened, synchronize, reopened, edited]
@@ -15,7 +13,7 @@ jobs:
   release-check:
     runs-on: ubuntu-20.04
 
-    continue-on-error: ${{ github.event_name != 'release' }}
+    continue-on-error: ${{ startsWith(github.event.ref,'refs/heads/') }}
 
     steps:
     - uses: actions/checkout@v2
@@ -59,6 +57,7 @@ jobs:
     - name: Build
       run: |
         python setup.py sdist bdist_wheel
+        twine check dist/*
     - name: Upload distribution
       if: ${{ success() }}
       uses: actions/upload-artifact@v2
@@ -66,7 +65,7 @@ jobs:
         name: dist
         path: dist/**
     - name: Publish
-      if: ${{ success() && (github.event_name == 'release') }}
+      if: ${{ success() && startsWith(github.event.ref,'refs/tags/') }}
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}

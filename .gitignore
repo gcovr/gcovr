@@ -18,6 +18,9 @@ lib64
 # Installer logs
 pip-log.txt
 
+# wheel
+gcovr-*/
+
 # Translations
 *.mo
 
