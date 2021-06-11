@@ -101,9 +101,6 @@ if git tag | grep -qE "^$target_version\$"; then
         || [[ "$(git cat-file -t "$target_version")" = tag ]] \
         || maybe_error $verify_tags \
                        "Please use annotated tags (git tag -a) for releases"
-else
-    maybe_error $verify_tags \
-                "Please publish the release $target_version in GitHub"
 fi
 
 if [[ "$ok" = yes ]]; then
