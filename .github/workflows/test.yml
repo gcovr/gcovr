@@ -106,7 +106,6 @@ jobs:
       run: |
         echo "USE_COVERAGE=${{ ( ( matrix.os == 'windows-2019' ) && ( matrix.python-version == '3.7' ) ) || ( ( matrix.os == 'ubuntu-18.04' ) && ( matrix.gcc == 'gcc-6' ) && ( matrix.python-version == '3.8' ) ) }}" >> $GITHUB_ENV
         echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
-        echo "CXX=$(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')" >> $GITHUB_ENV
         echo "PYTHON=python" >> $GITHUB_ENV
       shell: bash
     - name: Install msys with GCC (Windows)

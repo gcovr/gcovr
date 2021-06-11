@@ -103,7 +103,7 @@ if git tag | grep -qE "^$target_version\$"; then
                        "Please use annotated tags (git tag -a) for releases"
 else
     maybe_error $verify_tags \
-                "Please tag this release: git tag -a $target_version"
+                "Please publish the release $target_version in GitHub"
 fi
 
 if [[ "$ok" = yes ]]; then
