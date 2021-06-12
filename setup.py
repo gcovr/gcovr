@@ -49,7 +49,7 @@ setup(
     name="gcovr",
     version=version,
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     platforms=["any"],
     python_requires=">=3.6",
     packages=find_packages(include=["gcovr*"], exclude=["gcovr.tests"]),
