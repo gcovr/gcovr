@@ -22,26 +22,44 @@ Script to generate the installer for gcovr.
 
 from runpy import run_path
 from setuptools import setup, find_packages
+from os import path
+import re
 
 
-version = run_path('./gcovr/version.py')['__version__']
+version = run_path("./gcovr/version.py")["__version__"]
+# read the contents of your README file
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, "README.rst"), encoding="utf-8") as f:
+    long_description = f.read()
 
-setup(name='gcovr',
-      version=version,
-      platforms=["any"],
-      python_requires='>=3.6',
-      packages=find_packages(include=['gcovr*'], exclude=['gcovr.tests']),
-      install_requires=[
-          'jinja2',
-          'lxml',
-          'pygments'
-      ],
-      package_data={
-          'gcovr': ['templates/*.css', 'templates/*.html'],
-      },
-      entry_points={
-          'console_scripts': [
-              'gcovr=gcovr.__main__:main',
-          ],
-      },
-      )
+long_description = re.sub(
+    r"^\.\. image:: \./",
+    r".. image:: https://raw.githubusercontent.com/gcovr/gcovr/{}/".format(version),
+    long_description,
+    flags=re.MULTILINE
+)
+long_description = re.sub(
+    r":option:`(.*?)<gcovr.*?>`",
+    r"``\1``",
+    long_description,
+    flags=re.MULTILINE
+)
+
+setup(
+    name="gcovr",
+    version=version,
+    long_description=long_description,
+    long_description_content_type="text/x-rst",
+    platforms=["any"],
+    python_requires=">=3.6",
+    packages=find_packages(include=["gcovr*"], exclude=["gcovr.tests"]),
+    install_requires=["jinja2", "lxml", "pygments"],
+    package_data={
+        "gcovr": ["templates/*.css", "templates/*.html"],
+    },
+    entry_points={
+        "console_scripts": [
+            "gcovr=gcovr.__main__:main",
+        ],
+    },
+)

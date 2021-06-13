@@ -14,7 +14,8 @@ Documentation:
 
 Internal changes:
 
- - Clean GCC environment variables in test suite (:issue:`493`)
+ - Clean GCC environment variables in test suite. (:issue:`493`)
+ - Fix problems from deployment of release 5.0. (:issue:`494`)
 
 5.0 (11 June 2021)
 ------------------
