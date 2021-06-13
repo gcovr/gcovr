@@ -44,11 +44,12 @@ for var in [
     "OBJC_INCLUDE_PATH",
     "CFLAGS",
     "CXXFLAGS",
-    "LDFLAGS",
-    "LANG"
+    "LDFLAGS"
 ]:
     if var in env:
         env.pop(var)
+# Override language for input files
+env["LANG"] = "C.UTF-8"
 
 basedir = os.path.split(os.path.abspath(__file__))[0]
 
