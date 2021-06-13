@@ -3,6 +3,19 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+Next Release
+------------
+
+Breaking changes:
+
+Improvements and new features:
+
+Documentation:
+
+Internal changes:
+
+ - Clean GCC environment variables in test suite (:issue:`493`)
+
 5.0 (11 June 2021)
 ------------------
 

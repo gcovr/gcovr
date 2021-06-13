@@ -84,7 +84,9 @@ check-format:
 
 test: export GCOVR_TEST_SUITE := 1
 test: export CC := $(CC)
+test: export CFLAGS := --this_flag_does_not_exist # Env removed in text_gcovr.py
 test: export CXX := $(CXX)
+test: export CXXFLAGS := --this_flag_does_not_exist # Env removed in text_gcovr.py
 test: export GCOV := $(GCOV)
 
 test:
