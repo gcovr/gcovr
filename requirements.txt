@@ -6,8 +6,8 @@ lxml
 pygments == 2.7.4
 pytest
 pytest-cov
-pyutilib
 coverage
 codecov
 wheel
 twine
+yaxmldiff

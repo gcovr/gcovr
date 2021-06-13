@@ -29,8 +29,7 @@ import sys
 import difflib
 import zipfile
 
-from pyutilib.misc.pyyaml_util import compare_repn as compare_xml
-from pyutilib.misc.xmltodict import parse as parse_xml
+from yaxmldiff import compare_xml
 
 python_interpreter = sys.executable.replace(
     "\\", "/"
@@ -127,9 +126,11 @@ def findtests(basedir):
 
 
 def assert_xml_equals(coverage, reference):
-    coverage_repn = parse_xml(coverage)
-    reference_repn = parse_xml(reference)
-    compare_xml(reference_repn, coverage_repn, tolerance=1e-4, exact=True)
+    diff = compare_xml(coverage, reference)
+    if diff is None:
+        return
+
+    raise AssertionError(f"XML documents differed (-actual +reference):\n{diff}")
 
 
 def run(cmd, cwd=None):
@@ -296,7 +297,6 @@ SCRUBBERS = dict(
     csv=scrub_csv,
     coveralls=scrub_coveralls,
 )
-
 
 OUTPUT_PATTERN = dict(
     txt=["coverage.txt"],
