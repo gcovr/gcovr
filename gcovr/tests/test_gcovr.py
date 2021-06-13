@@ -196,7 +196,7 @@ def pytest_generate_tests(metafunc):
         # check that the "run" target lists no unknown formats
         target_run = targets.get("run", set())
         unknown_formats = target_run.difference(KNOWN_FORMATS)
-        if unknown_formats:
+        if unknown_formats:  # pragma: no cover
             raise ValueError(
                 "{}/Makefile target 'run' references unknown format {}".format(
                     name, unknown_formats
@@ -205,7 +205,7 @@ def pytest_generate_tests(metafunc):
 
         # check that all "run" targets are actually available
         unresolved_prereqs = target_run.difference(targets)
-        if unresolved_prereqs:
+        if unresolved_prereqs:  # pragma: no cover
             raise ValueError(
                 "{}/Makefile target 'run' has unresolved prerequisite {}".format(
                     name, unresolved_prereqs
@@ -216,7 +216,7 @@ def pytest_generate_tests(metafunc):
         unreferenced_formats = (
             set(KNOWN_FORMATS).intersection(targets).difference(target_run)
         )
-        if unreferenced_formats:
+        if unreferenced_formats:  # pragma: no cover
             raise ValueError(
                 "{}/Makefile target 'run' doesn't reference available target {}".format(
                     name, unreferenced_formats
@@ -393,7 +393,7 @@ def test_build(
     assert diff_is_empty, "Diff output:\n" + "".join(whole_diff_output)
 
     # some tests require additional cleanup after each test
-    if "clean-each" in available_targets:
+    if "clean-each" in available_targets:  # pragma: no cover
         assert run(["make", "clean-each"])
 
     os.chdir(basedir)
