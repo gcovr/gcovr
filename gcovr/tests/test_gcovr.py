@@ -54,7 +54,7 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 
 skip_clean = None
 
-REFERENCE_DIR = os.path.join("reference", env["CC"].replace("clang-10", "gcc-8"))
+REFERENCE_DIR = os.path.join("reference", env["CC"])
 
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
