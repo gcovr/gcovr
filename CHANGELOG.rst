@@ -51,7 +51,7 @@ Improvements and new features:
  - Add :option:`--exclude-function-lines` to exclude the line of the function definition in the coverage report. (:issue:`430`)
  - Changes for HTML output format:
 
-   - Redesign HTML generation. Add :option:`--html-self-contained` to control externeal or internal CSS. (:issue:`367`)
+   - Redesign HTML generation. Add :option:`--html-self-contained` to control external or internal CSS. (:issue:`367`)
    - Change legend for threshold in html report. (:issue:`371`)
    - Use HTML title also for report heading. Default value for :option:`--html-title` changed. (:issue:`378`)
    - Add :option:`--html-tab-size` to configure tab size in HTML details. (:issue:`377`)
