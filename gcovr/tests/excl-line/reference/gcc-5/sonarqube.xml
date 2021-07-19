@@ -1,13 +1,2 @@
-<?xml version="1.0" ?>
-<coverage version="1">
-<file path="main.cpp">
-<lineToCover covered="true" lineNumber="4"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="5"/>
-<lineToCover covered="false" lineNumber="6"/>
-<lineToCover covered="true" lineNumber="20"/>
-<lineToCover covered="true" lineNumber="21"/>
-<lineToCover covered="true" lineNumber="23"/>
-<lineToCover branchesToCover="4" covered="true" coveredBranches="2" lineNumber="24"/>
-</file>
-</coverage>
-
+<?xml version='1.0' encoding='UTF-8'?>
+<coverage version="1"><file path="main.cpp"><functionToCover functionName="foo(int)" lineNumber="4" covered="true"/><functionToCover functionName="main" lineNumber="20" covered="true"/><lineToCover lineNumber="4" covered="true"/><lineToCover lineNumber="5" covered="true" branchesToCover="2" coveredBranches="1"/><lineToCover lineNumber="6" covered="false"/><lineToCover lineNumber="20" covered="true"/><lineToCover lineNumber="21" covered="true"/><lineToCover lineNumber="23" covered="true"/><lineToCover lineNumber="24" covered="true" branchesToCover="4" coveredBranches="2"/></file></coverage>

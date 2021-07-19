@@ -403,8 +403,8 @@ class GcovParser(object):
                 "Unclear function tag format (count {}): {}".format(len(fields), line)
 
             # We take all fields excepting the first and the last 7
-            function_name = ' '.join(fields[1:len(fields) - 7])
-            function_call_count = int(fields[len(fields) - 6])
+            function_name = ' '.join(fields[1:-7])
+            function_call_count = int(fields[-6])
 
             # special names for construction/destruction of static objects will be ignored
             # "__tcf_0", "__static...", "_GLOBAL..."

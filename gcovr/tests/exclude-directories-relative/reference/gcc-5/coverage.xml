@@ -1,36 +1,3 @@
-<?xml version="1.0" ?>
-<!DOCTYPE coverage
-  SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage branch-rate="0.5" branches-covered="3" branches-valid="6" complexity="0.0" line-rate="0.875" lines-covered="7" lines-valid="8" timestamp="1530002533" version="gcovr 4.0">
-<sources>
-<source>.</source>
-</sources>
-<packages>
-<package branch-rate="0.5" complexity="0.0" line-rate="0.875" name="b">
-<classes>
-<class branch-rate="0.5" complexity="0.0" filename="b/main.cpp" line-rate="0.875" name="main_cpp">
-<methods/>
-<lines>
-<line branch="false" hits="1" number="5"/>
-<line branch="true" condition-coverage="50% (1/2)" hits="1" number="6">
-<conditions>
-<condition coverage="50%" number="0" type="jump"/>
-</conditions>
-</line>
-<line branch="false" hits="0" number="7"/>
-<line branch="false" hits="1" number="9"/>
-<line branch="false" hits="1" number="14"/>
-<line branch="false" hits="1" number="15"/>
-<line branch="false" hits="1" number="17"/>
-<line branch="true" condition-coverage="50% (2/4)" hits="3" number="18">
-<conditions>
-<condition coverage="50%" number="0" type="jump"/>
-</conditions>
-</line>
-</lines>
-</class>
-</classes>
-</package>
-</packages>
-</coverage>
-
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.875" function-rate="1.0" branch-rate="0.5" lines-covered="7" lines-valid="8" functions-covered="2" functions-valid="2" branches-covered="3" branches-valid="6" complexity="0.0" timestamp="1626723142" version="gcovr 5.0"><sources><source>.</source></sources><packages><package name="b" line-rate="0.875" function-rate="1.0" branch-rate="0.5" complexity="0.0"><classes><class name="main_cpp" filename="b/main.cpp" line-rate="0.875" branch-rate="0.5" complexity="0.0"><methods/><lines><line number="5" hits="1" branch="false"/><line number="6" hits="1" branch="true" condition-coverage="50% (1/2)"><conditions><condition number="0" type="jump" coverage="50%"/></conditions></line><line number="7" hits="0" branch="false"/><line number="9" hits="1" branch="false"/><line number="14" hits="1" branch="false"/><line number="15" hits="1" branch="false"/><line number="17" hits="1" branch="false"/><line number="18" hits="3" branch="true" condition-coverage="50% (2/4)"><conditions><condition number="0" type="jump" coverage="50%"/></conditions></line></lines></class></classes></package></packages></coverage>
