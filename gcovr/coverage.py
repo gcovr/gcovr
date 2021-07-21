@@ -91,11 +91,14 @@ class LineCoverage(object):
             How often this line was executed at least partially.
         noncode (bool, optional):
             Whether any coverage info on this line should be ignored.
+        excluded (bool, optional):
+            Whether this line is excluded by a marker.
     """
 
-    __slots__ = 'lineno', 'count', 'noncode', 'branches', 'functions'
 
-    def __init__(self, lineno, count=0, noncode=False):
+    __slots__ = 'lineno', 'count', 'noncode', 'excluded', 'branches', 'functions'
+
+    def __init__(self, lineno, count=0, noncode=False, excluded=False):
         # type: (int, int, bool) -> None
         assert lineno > 0
         assert count >= 0
@@ -103,6 +106,7 @@ class LineCoverage(object):
         self.lineno = lineno  # type: int
         self.count = count  # type: int
         self.noncode = noncode
+        self.excluded = excluded
         self.branches = {}  # type: Dict[int, BranchCoverage]
 
         # There can be only one (user) function per line but:
@@ -110,6 +114,11 @@ class LineCoverage(object):
         # * non explicitly defined destructors, called via base virtual destructor!
         # For that reason we need a dictionary instead of a scalar
         self.functions = {}  # type: Dict[str, FunctionCoverage]
+
+    @property
+    def is_excluded(self):
+        # type: () -> bool
+        return self.excluded
 
     @property
     def is_covered(self):
@@ -140,7 +149,7 @@ class LineCoverage(object):
         assert self.lineno == other.lineno
         self.count += other.count
         self.noncode &= other.noncode
-
+        self.excluded &= other.excluded
         for other_function in other.functions.values():
             self.add_function(other_function)
         for branch_id, branch_cov in other.branches.items():
@@ -197,7 +206,7 @@ class FileCoverage(object):
         r"""Merge FileCoverage information."""
         assert self.filename == other.filename
         for lineno, line_cov in other.lines.items():
-            self.line(lineno, noncode=True).update(line_cov)
+            self.line(lineno, noncode=True, excluded=True).update(line_cov)
         for fct_name, fct_cov in other.functions.items():
             self.function(fct_name).update(fct_cov)
 
