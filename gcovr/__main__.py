@@ -52,7 +52,7 @@ from .writer.coveralls import print_coveralls_report
 #
 # Exits with status 2 if below threshold
 #
-def fail_under(covdata, threshold_line, threshold_branch):
+def fail_under(covdata, threshold_line, threshold_branch, logger):
     (lines_total, lines_covered, percent,
         branches_total, branches_covered,
         percent_branches) = get_global_stats(covdata)
@@ -61,10 +61,25 @@ def fail_under(covdata, threshold_line, threshold_branch):
         percent_branches = 100.0
 
     if percent < threshold_line and percent_branches < threshold_branch:
+        logger.error(
+            "Failed, not enough line coverage (got: {}, expected min: {})",
+            percent,
+            threshold_line
+        )
         sys.exit(6)
     if percent < threshold_line:
+        logger.error(
+            "Failed, not enough line coverage (got: {}, expected min: {})",
+            percent,
+            threshold_line
+        )
         sys.exit(2)
     if percent_branches < threshold_branch:
+        logger.error(
+            "Failed, not enough branch coverage (got: {}, expected min: {})",
+            percent,
+            threshold_branch
+        )
         sys.exit(4)
 
 
@@ -285,7 +300,7 @@ def main(args=None):
         sys.exit(7)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
-        fail_under(covdata, options.fail_under_line, options.fail_under_branch)
+        fail_under(covdata, options.fail_under_line, options.fail_under_branch, logger)
 
 
 def collect_coverage_from_tracefiles(covdata, options, logger):
