@@ -18,10 +18,16 @@ run: txt xml html sonarqube json json_summary coveralls
 txt:
 	./testcase
 	# a couple of tests about failure thresholds
-	$(GCOVR) --fail-under-line 80.1; test $$? -eq 2
-	$(GCOVR) --fail-under-branch 50.1; test $$? -eq 4
-	$(GCOVR) --fail-under-line 80.1 --fail-under-branch 50.1; test $$? -eq 6
-	$(GCOVR) --fail-under-line $(FAIL_UNDER_LINE) --fail-under-branch 49.9
+	$(GCOVR) --fail-under-line 80.1 2>fail_under.stderr; test $$? -eq 2 || ( cat fail_under.stderr & exit 1 )
+	grep -F "failed minimum line coverage" fail_under.stderr
+	$(GCOVR) --fail-under-branch 50.1 2>fail_under.stderr; test $$? -eq 4 || ( cat fail_under.stderr & exit 1 )
+	grep -F "failed minimum branch coverage" fail_under.stderr
+	$(GCOVR) --fail-under-line 80.1 --fail-under-branch 50.1 2>fail_under.stderr; test $$? -eq 6 || ( cat fail_under.stderr & exit 1 )
+	grep -F "failed minimum line coverage" fail_under.stderr
+	grep -F "failed minimum branch coverage" fail_under.stderr
+	$(GCOVR) --fail-under-line $(FAIL_UNDER_LINE) --fail-under-branch 49.9 2>fail_under.stderr; test $$? -eq 0 || ( cat fail_under.stderr & exit 1 )
+	grep -F "failed minimum line coverage" fail_under.stderr; test $$? -eq 1
+	grep -F "failed minimum branch coverage" fail_under.stderr; test $$? -eq 1
 	# generate actual output
 	$(GCOVR) -d --txt -o coverage.txt
 
@@ -56,5 +62,6 @@ coveralls:
 
 clean:
 	rm -f testcase
+	rm -f fail_under.stderr
 	rm -f *.gc*
 	rm -f coverage.txt coverage.xml coverage*.html coverage*.css sonarqube.xml coverage.json summary_coverage.json coveralls.json
