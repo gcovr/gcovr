@@ -12,7 +12,7 @@ Improvements and new features:
 
 Documentation:
 
- - Add error to STDOUT --fail-under-line or --fail-under-branch. (:issue:`502`)
+ - Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
 
 Internal changes:
 
