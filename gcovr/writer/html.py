@@ -374,9 +374,21 @@ def print_html_report(covdata, output_file, options):
     # Generate an HTML file for every source file
     #
     error_occurred = False
+    repo_root = os.popen('git rev-parse --show-toplevel').read().strip()
     for f in keys:
-        cdata = covdata[f]
+        file_path = ''
+        filename = os.path.basename(cdata_fname[f])
+        for root, dirs, files in os.walk(repo_root):
+            for file in files:
+                if file.endswith(filename):
+                    file_path = os.path.join(root,file)
+                    break
 
+            if file_path:
+                break
+        if not file_path:
+            continue
+        cdata = covdata[f]
         data['filename'] = cdata_fname[f]
 
         branches = dict()
