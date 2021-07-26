@@ -12,6 +12,8 @@ Improvements and new features:
 
 Documentation:
 
+ - Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
+
 Internal changes:
 
  - Clean GCC environment variables in test suite. (:issue:`493`)
