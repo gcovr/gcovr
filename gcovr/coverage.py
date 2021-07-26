@@ -95,7 +95,6 @@ class LineCoverage(object):
             Whether this line is excluded by a marker.
     """
 
-
     __slots__ = 'lineno', 'count', 'noncode', 'excluded', 'branches', 'functions'
 
     def __init__(self, lineno, count=0, noncode=False, excluded=False):
