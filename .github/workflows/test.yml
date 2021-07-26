@@ -159,7 +159,7 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v2
       with:
-        name: diffs-${{ matrix.os }}-${{ matrix.python-version }}
+        name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
         path: gcovr/tests/diff.zip
     - name: Creating coverage report
       if: ${{ env.USE_COVERAGE == 'true' }}
