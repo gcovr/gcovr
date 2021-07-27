@@ -333,7 +333,7 @@ def test_build(
     assert run(["make", format])
 
     reference_dir = REFERENCE_DIR
-    if (platform.system() == "Windows") and os.path.isdir(reference_dir + "-Windows"):
+    if (platform.system() == "Windows") and os.path.isdir(reference_dir + "-Windows"):  # pragma: no cover
         reference_dir += "-Windows"
 
     if generate_reference:  # pragma: no cover
