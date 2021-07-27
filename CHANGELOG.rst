@@ -18,6 +18,7 @@ Improvements and new features:
 - Add "Goto function" in html details. (:issue:`515`)
 - Fix "root" path in JSON summary report. (:issue:`548`)
 - Solve problems with file name limitations and document the used options of ``gcov``. (:issue:`528`)
+- Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
 
 Documentation:
 
