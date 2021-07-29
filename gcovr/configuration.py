@@ -909,6 +909,13 @@ GCOVR_CONFIG_OPTIONS = [
         default=os.environ.get('GCOV', 'gcov'),
     ),
     GcovrConfigOption(
+        "exclude_internal_functions", ["--include-internal-functions"],
+        group="gcov_options",
+        help="Include function coverage of compiler internal functions "
+             "(starting with '__' or '_GLOBAL__sub_I_').",
+        action="store_false"
+    ),
+    GcovrConfigOption(
         "exclude_unreachable_branches", ["--exclude-unreachable-branches"],
         group="gcov_options",
         help="Exclude branch coverage from lines without useful source code "
