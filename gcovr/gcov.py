@@ -134,7 +134,9 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
             exclude_throw_branches=options.exclude_throw_branches,
             ignore_parse_errors=options.gcov_ignore_parse_errors,
             exclude_lines_by_pattern=options.exclude_lines_by_pattern,
-            exclude_function_lines=options.exclude_function_lines)
+            exclude_function_lines=options.exclude_function_lines,
+            exclude_internal_functions=options.exclude_internal_functions,
+        )
 
         covdata.setdefault(key, FileCoverage(key)).update(parser.coverage)
 
@@ -251,8 +253,14 @@ class GcovParser(object):
         self.last_was_function_marker = False
 
     def parse_all_lines(
-        self, lines, exclude_unreachable_branches, exclude_throw_branches,
-        ignore_parse_errors, exclude_lines_by_pattern, exclude_function_lines
+        self,
+        lines,
+        exclude_unreachable_branches,
+        exclude_throw_branches,
+        ignore_parse_errors,
+        exclude_lines_by_pattern,
+        exclude_function_lines,
+        exclude_internal_functions,
     ):
         exclude_lines_by_pattern_regex = (re.compile(exclude_lines_by_pattern)
                                           if exclude_lines_by_pattern
@@ -260,8 +268,13 @@ class GcovParser(object):
         for line in lines:
             try:
                 self.parse_line(
-                    line, exclude_unreachable_branches, exclude_throw_branches,
-                    exclude_lines_by_pattern_regex, exclude_function_lines)
+                    line,
+                    exclude_unreachable_branches,
+                    exclude_throw_branches,
+                    exclude_lines_by_pattern_regex,
+                    exclude_function_lines,
+                    exclude_internal_functions
+                )
             except Exception as ex:
                 self.unrecognized_lines.append(line)
                 self.deferred_exceptions.append(ex)
@@ -270,14 +283,22 @@ class GcovParser(object):
         self.check_unrecognized_lines(ignore_parse_errors=ignore_parse_errors)
 
     def parse_line(
-        self, line, exclude_unreachable_branches, exclude_throw_branches,
-        exclude_lines_by_pattern_regex, exclude_function_lines
+        self,
+        line,
+        exclude_unreachable_branches,
+        exclude_throw_branches,
+        exclude_lines_by_pattern_regex,
+        exclude_function_lines,
+        exclude_internal_functions
     ):
         # If this is a tag line, we stay on the same line number
         # and can return immediately after processing it.
         # A tag line cannot hold exclusion markers.
         if self.parse_tag_line(
-            line, exclude_unreachable_branches, exclude_throw_branches
+            line,
+            exclude_unreachable_branches,
+            exclude_throw_branches,
+            exclude_internal_functions
         ):
             return
 
@@ -356,7 +377,11 @@ class GcovParser(object):
         return True
 
     def parse_tag_line(
-        self, line, exclude_unreachable_branches, exclude_throw_branches
+        self,
+        line,
+        exclude_unreachable_branches,
+        exclude_throw_branches,
+        exclude_internal_functions
     ):
         # Start or end a template/macro specialization section
         if line.startswith('-----'):
@@ -390,6 +415,43 @@ class GcovParser(object):
 
         if line.startswith('function '):
             self.last_was_function_marker = True
+            # function tags look like:
+            #   function X called 0 returned 0% blocks executed 0%
+            #   function X Y called 0 returned 0% blocks executed 0%
+            #   function X Y Z called 0 returned 0% blocks executed 0%
+            #   function X Y Z ... called 0 returned 0% blocks executed 0%
+            # where the percentage should usually be a count.
+            # we could also use a regex: "^function\s+(.+)\s+called\s+(\d+)\s+"
+
+            fields = line.split()  # e.g. "function X Y Z called 0 returned 0% blocks executed 0%"
+            assert len(fields) >= 9, \
+                "Unclear function tag format (count {}): {}".format(len(fields), line)
+
+            # We take all fields excepting the first and the last 7
+            function_name = ' '.join(fields[1:-7])
+            function_call_count = int(fields[-6])
+
+            # special names for construction/destruction of static objects will be ignored
+            # "__tcf_0", "__static...", "_GLOBAL..."
+            if (
+                exclude_internal_functions
+                and (
+                    function_name.startswith("__")
+                    or function_name.startswith("_GLOBAL__sub_I_")
+                )
+            ):
+                self.logger.verbose_msg(
+                    "Ignoring Symbol {func_name} in line {line} "
+                    "in file {file_name}", func_name=fields[1],
+                    line=self.lineno, file_name=self.fname)
+                return True
+
+            # modern GCOV versions can demangle the C++ names
+            function_cov = self.coverage.function(function_name)
+            # function tag appears before the "source code line". Add always 1
+            function_cov.lineno = self.lineno + 1
+            function_cov.count += function_call_count
+
             return True
 
         if line.startswith('call '):
@@ -666,6 +728,7 @@ def run_gcov_and_process_files(
     # (other than within quotes), it probably includes extra arguments.
     cmd = shlex.split(options.gcov_cmd) + [
         abs_filename,
+        "--demangled-names",
         "--branch-counts", "--branch-probabilities", "--preserve-paths",
         '--object-directory', os.path.dirname(abs_filename),
     ]

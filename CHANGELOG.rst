@@ -10,6 +10,8 @@ Breaking changes:
 
 Improvements and new features:
 
+- Add function coverage metric (:issue:`362`)
+
 Documentation:
 
  - Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)

@@ -1,24 +1,2 @@
-<?xml version="1.0" ?>
-<coverage version="1">
-<file path="main.cpp">
-<lineToCover covered="true" lineNumber="3"/>
-<lineToCover covered="true" lineNumber="5"/>
-<lineToCover covered="true" lineNumber="6"/>
-<lineToCover covered="true" lineNumber="7"/>
-</file>
-<file path="update-data.c">
-<lineToCover covered="true" lineNumber="3"/>
-<lineToCover covered="true" lineNumber="5"/>
-</file>
-<file path="update-data.h">
-<lineToCover covered="true" lineNumber="7"/>
-<lineToCover covered="true" lineNumber="9"/>
-<lineToCover covered="true" lineNumber="12"/>
-<lineToCover covered="true" lineNumber="14"/>
-<lineToCover covered="true" lineNumber="17"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="2" lineNumber="19"/>
-<lineToCover covered="true" lineNumber="20"/>
-<lineToCover covered="true" lineNumber="23"/>
-</file>
-</coverage>
-
+<?xml version='1.0' encoding='UTF-8'?>
+<coverage version="1"><file path="main.cpp"><functionToCover functionName="main" lineNumber="3" covered="true"/><lineToCover lineNumber="3" covered="true"/><lineToCover lineNumber="5" covered="true"/><lineToCover lineNumber="6" covered="true"/><lineToCover lineNumber="7" covered="true"/></file><file path="update-data.c"><functionToCover functionName="update_data" lineNumber="3" covered="true"/><lineToCover lineNumber="3" covered="true"/><lineToCover lineNumber="5" covered="true"/></file><file path="update-data.h"><functionToCover functionName="called_from_both" lineNumber="17" covered="true"/><functionToCover functionName="called_from_main" lineNumber="7" covered="true"/><functionToCover functionName="called_from_update_data" lineNumber="12" covered="true"/><lineToCover lineNumber="7" covered="true"/><lineToCover lineNumber="9" covered="true"/><lineToCover lineNumber="12" covered="true"/><lineToCover lineNumber="14" covered="true"/><lineToCover lineNumber="17" covered="true"/><lineToCover lineNumber="19" covered="true" branchesToCover="2" coveredBranches="2"/><lineToCover lineNumber="20" covered="true"/><lineToCover lineNumber="23" covered="true"/></file></coverage>

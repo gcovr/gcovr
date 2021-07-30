@@ -32,7 +32,8 @@ def print_csv_report(covdata, output_file, options):
 
         writer = csv.writer(fh)
         writer.writerow(('filename', 'line_total', 'line_covered', 'line_percent',
-                        'branch_total', 'branch_covered', 'branch_percent'))
+                        'branch_total', 'branch_covered', 'branch_percent',
+                         'function_total', 'function_covered', 'function_percent'))
         for key in keys:
             writer.writerow(summarize_file_coverage(covdata[key],
                                                     options.root_filter))

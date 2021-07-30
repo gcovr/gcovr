@@ -360,8 +360,8 @@ def test_html_injection_via_json(capsys, tmp_path):
     jsondata = {
         'gcovr/format_version': "0.2",
         'files': [
-            {'file': script, 'lines': []},
-            {'file': 'other', 'lines': []},
+            {'file': script, 'functions': [], 'lines': []},
+            {'file': 'other', 'functions': [], 'lines': []},
         ],
     }
 

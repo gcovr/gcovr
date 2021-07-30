@@ -2,6 +2,13 @@
     "files": [
         {
             "file": "bar.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 1,
+                    "name": "bar()"
+                }
+            ],
             "lines": [
                 {
                     "branches": [],
@@ -49,6 +56,13 @@
         },
         {
             "file": "foo.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 1,
+                    "name": "foo()"
+                }
+            ],
             "lines": [
                 {
                     "branches": [],
@@ -90,6 +104,13 @@
         },
         {
             "file": "main.cpp",
+            "functions": [
+                {
+                    "execution_count": 2,
+                    "lineno": 10,
+                    "name": "main"
+                }
+            ],
             "lines": [
                 {
                     "branches": [],

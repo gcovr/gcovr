@@ -195,6 +195,7 @@ class RootInfo:
         self.encoding = options.html_encoding
         self.directory = None
         self.branches = dict()
+        self.functions = dict()
         self.lines = dict()
         self.files = []
 
@@ -217,6 +218,19 @@ class RootInfo:
         self.branches['coverage'] = '-' if coverage is None else coverage
         self.branches['class'] = self._coverage_to_class(coverage)
 
+    def calculate_function_coverage(self, covdata):
+        function_total = 0
+        function_covered = 0
+        for key in covdata.keys():
+            (total, covered, _percent) = covdata[key].function_coverage()
+            function_total += total
+            function_covered += covered
+        self.functions['exec'] = function_covered
+        self.functions['total'] = function_total
+        coverage = calculate_coverage(function_covered, function_total, nan_value=None)
+        self.functions['coverage'] = '-' if coverage is None else coverage
+        self.functions['class'] = self._coverage_to_class(coverage)
+
     def calculate_line_coverage(self, covdata):
         line_total = 0
         line_covered = 0
@@ -233,11 +247,14 @@ class RootInfo:
     def add_file(self, cdata, link_report, cdata_fname):
         lines_total, lines_exec, _ = cdata.line_coverage()
         branches_total, branches_exec, _ = cdata.branch_coverage()
+        functions_total, functions_exec, _ = cdata.function_coverage()
 
         line_coverage = calculate_coverage(
             lines_exec, lines_total, nan_value=100.0)
         branch_coverage = calculate_coverage(
             branches_exec, branches_total, nan_value=None)
+        function_coverage = calculate_coverage(
+            functions_exec, functions_total, nan_value=None)
 
         lines = {
             'total': lines_total,
@@ -251,6 +268,13 @@ class RootInfo:
             'exec': branches_exec,
             'coverage': '-' if branch_coverage is None else branch_coverage,
             'class': self._coverage_to_class(branch_coverage),
+        }
+
+        functions = {
+            'total': functions_total,
+            'exec': functions_exec,
+            'coverage': '-' if function_coverage is None else function_coverage,
+            'class': self._coverage_to_class(function_coverage),
         }
 
         display_filename = (
@@ -267,6 +291,7 @@ class RootInfo:
             link=link_report,
             lines=lines,
             branches=branches,
+            functions=functions,
         ))
 
     def _coverage_to_class(self, coverage):
@@ -318,6 +343,7 @@ def print_html_report(covdata, output_file, options):
         data['css_link'] = css_link
 
     root_info.calculate_branch_coverage(covdata)
+    root_info.calculate_function_coverage(covdata)
     root_info.calculate_line_coverage(covdata)
 
     # Generate the coverage output (on a per-package basis)
@@ -378,6 +404,13 @@ def print_html_report(covdata, output_file, options):
         cdata = covdata[f]
 
         data['filename'] = cdata_fname[f]
+
+        functions = dict()
+        data['functions'] = functions
+
+        functions['total'], functions['exec'], functions['coverage'] = cdata.function_coverage()
+        functions['class'] = coverage_to_class(functions['coverage'], medium_threshold, high_threshold)
+        functions['coverage'] = '-' if functions['coverage'] is None else functions['coverage']
 
         branches = dict()
         data['branches'] = branches

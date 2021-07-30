@@ -28,7 +28,7 @@ from ..coverage import FileCoverage
 
 
 JSON_FORMAT_VERSION = "0.2"
-JSON_SUMMARY_FORMAT_VERSION = "0.2"
+JSON_SUMMARY_FORMAT_VERSION = "0.3"
 PRETTY_JSON_INDENT = 4
 
 
@@ -62,6 +62,7 @@ def print_json_report(covdata, output_file, options):
         gcovr_json_file['file'] = presentable_filename(covdata[no].filename,
                                                        root_filter=options.root_filter)
         gcovr_json_file['lines'] = _json_from_lines(covdata[no].lines)
+        gcovr_json_file['functions'] = _json_from_functions(covdata[no].functions)
         gcovr_json_root['files'].append(gcovr_json_file)
 
     _write_json_result(gcovr_json_root, output_file, 'coverage.json', options.json_pretty)
@@ -86,9 +87,9 @@ def print_json_summary_report(covdata, output_file, options):
 
     for key in keys:
         (filename, line_total, line_covered, line_percent,
-         branch_total, branch_covered,
-         branch_percent) = summarize_file_coverage(covdata[key],
-                                                   options.root_filter)
+         branch_total, branch_covered, branch_percent,
+         function_total, function_covered, function_percent) = summarize_file_coverage(covdata[key],
+                                                                                       options.root_filter)
 
         json_dict['files'].append({
             'filename': filename,
@@ -98,16 +99,23 @@ def print_json_summary_report(covdata, output_file, options):
             'branch_total': branch_total,
             'branch_covered': branch_covered,
             'branch_percent': branch_percent,
+            'function_total': function_total,
+            'function_covered': function_covered,
+            'function_percent': function_percent,
         })
 
     (lines_total, lines_covered, lines_percent,
-     branches_total, branches_covered,
-     branches_percent) = get_global_stats(covdata)
+     functions_total, functions_covered, percent_functions,
+     branches_total, branches_covered, branches_percent) = get_global_stats(covdata)
 
     # Footer & summary
     json_dict['line_total'] = lines_total
     json_dict['line_covered'] = lines_covered
     json_dict['line_percent'] = lines_percent
+
+    json_dict['function_total'] = functions_total
+    json_dict['function_covered'] = functions_covered
+    json_dict['function_percent'] = percent_functions
 
     json_dict['branch_total'] = branches_total
     json_dict['branch_covered'] = branches_covered
@@ -155,6 +163,7 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
                 continue
 
             file_coverage = FileCoverage(file_path)
+            _functions_from_json(file_coverage, gcovr_file['functions'])
             _lines_from_json(file_coverage, gcovr_file['lines'])
             coverage[file_path] = file_coverage
 
@@ -194,6 +203,29 @@ def _json_from_branch(branch):
     json_branch['fallthrough'] = bool(branch.fallthrough)
     json_branch['throw'] = bool(branch.throw)
     return json_branch
+
+
+def _json_from_functions(functions):
+    json_functions = [_json_from_function(functions[name]) for name in sorted(functions)]
+    return json_functions
+
+
+def _json_from_function(function):
+    json_function = {}
+    if function:
+        json_function['lineno'] = function.lineno
+        json_function['name'] = function.name
+        json_function['execution_count'] = function.count
+    return json_function
+
+
+def _functions_from_json(file, json_functions):
+    [_function_from_json(file.function(json_function['name']), json_function) for json_function in json_functions]
+
+
+def _function_from_json(function, json_function):
+    function.count = json_function['execution_count']
+    function.lineno = json_function['lineno']
 
 
 def _lines_from_json(file, json_lines):

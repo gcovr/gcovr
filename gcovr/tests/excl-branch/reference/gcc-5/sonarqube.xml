@@ -1,24 +1,2 @@
-<?xml version="1.0" ?>
-<coverage version="1">
-<file path="main.cpp">
-<lineToCover covered="true" lineNumber="7"/>
-<lineToCover covered="true" lineNumber="8"/>
-<lineToCover covered="true" lineNumber="9"/>
-<lineToCover covered="true" lineNumber="10"/>
-<lineToCover covered="true" lineNumber="16"/>
-<lineToCover branchesToCover="4" covered="true" coveredBranches="4" lineNumber="17"/>
-<lineToCover covered="true" lineNumber="18"/>
-<lineToCover covered="true" lineNumber="20"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="21"/>
-<lineToCover covered="false" lineNumber="22"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="23"/>
-<lineToCover covered="false" lineNumber="24"/>
-<lineToCover covered="true" lineNumber="35"/>
-<lineToCover covered="true" lineNumber="46"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="2" lineNumber="47"/>
-<lineToCover covered="true" lineNumber="48"/>
-<lineToCover covered="true" lineNumber="61"/>
-<lineToCover covered="true" lineNumber="62"/>
-</file>
-</coverage>
-
+<?xml version='1.0' encoding='UTF-8'?>
+<coverage version="1"><file path="main.cpp"><functionToCover functionName="Bar::Bar()" lineNumber="7" covered="true"/><functionToCover functionName="Bar::~Bar()" lineNumber="9" covered="true"/><functionToCover functionName="bar(int)" lineNumber="38" covered="false"/><functionToCover functionName="foo(int)" lineNumber="16" covered="true"/><functionToCover functionName="main" lineNumber="46" covered="true"/><lineToCover lineNumber="7" covered="true"/><lineToCover lineNumber="8" covered="true"/><lineToCover lineNumber="9" covered="true"/><lineToCover lineNumber="10" covered="true"/><lineToCover lineNumber="16" covered="true"/><lineToCover lineNumber="17" covered="true" branchesToCover="4" coveredBranches="4"/><lineToCover lineNumber="18" covered="true"/><lineToCover lineNumber="20" covered="true"/><lineToCover lineNumber="21" covered="true" branchesToCover="2" coveredBranches="1"/><lineToCover lineNumber="22" covered="false"/><lineToCover lineNumber="23" covered="true" branchesToCover="2" coveredBranches="1"/><lineToCover lineNumber="24" covered="false"/><lineToCover lineNumber="35" covered="true"/><lineToCover lineNumber="46" covered="true"/><lineToCover lineNumber="47" covered="true" branchesToCover="2" coveredBranches="2"/><lineToCover lineNumber="48" covered="true"/><lineToCover lineNumber="61" covered="true"/><lineToCover lineNumber="62" covered="true"/></file></coverage>

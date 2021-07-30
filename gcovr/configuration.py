@@ -770,7 +770,7 @@ GCOVR_CONFIG_OPTIONS = [
         "print_summary", ["-s", "--print-summary"],
         group="output_options",
         help="Print a small report to stdout "
-             "with line & branch percentage coverage. "
+             "with line & function & branch percentage coverage. "
              "This is in addition to other reports. "
              "Default: {default!s}.",
         action="store_true",
@@ -907,6 +907,13 @@ GCOVR_CONFIG_OPTIONS = [
              "Defaults to the GCOV environment variable, "
              "or 'gcov': '{default!s}'.",
         default=os.environ.get('GCOV', 'gcov'),
+    ),
+    GcovrConfigOption(
+        "exclude_internal_functions", ["--include-internal-functions"],
+        group="gcov_options",
+        help="Include function coverage of compiler internal functions "
+             "(starting with '__' or '_GLOBAL__sub_I_').",
+        action="store_false"
     ),
     GcovrConfigOption(
         "exclude_unreachable_branches", ["--exclude-unreachable-branches"],
