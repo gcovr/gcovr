@@ -90,9 +90,9 @@ test: export CXXFLAGS := --this_flag_does_not_exist # Env removed in text_gcovr.
 test: export GCOV := $(GCOV)
 
 test:
-ifneq ($(wildcard /Users/Shared/Informatik/GitHub/gcovr/gcovr/tests/linked/subdir/loop),)
+ifneq ($(wildcard $(dir $(word 1,$(abspath $(MAKEFILE_LIST))))gcovr/gcovr/tests/linked/subdir/loop),)
 	# Remove directory because test is not running if it exists
-	rm -Rf /Users/Shared/Informatik/GitHub/gcovr/gcovr/tests/linked/subdir/loop
+	rm -Rf $(dir $(word 1,$(abspath $(MAKEFILE_LIST))))gcovr/gcovr/tests/linked/subdir/loop
 endif
 	$(PYTHON) -m pytest -v --doctest-modules $(TEST_OPTS) -- gcovr doc/examples
 
