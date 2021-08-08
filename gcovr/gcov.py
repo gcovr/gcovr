@@ -29,12 +29,16 @@ from .coverage import FileCoverage
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(r"[Cc](annot|ould not) open (source|graph|output) file")
+unknown_cla_re = re.compile(r"Unknown command line argument")
 
 exclude_line_flag = "_EXCL_"
 exclude_line_pattern = re.compile(r'([GL]COVR?)_EXCL_(START|STOP)')
 
 c_style_comment_pattern = re.compile(r'/\*.*?\*/')
 cpp_style_comment_pattern = re.compile(r'//.*?$')
+
+gcov_cmd = None
+gcov_options = None
 
 
 def find_existing_gcov_files(search_path, logger, exclude_dirs):
@@ -726,10 +730,18 @@ def run_gcov_and_process_files(
         abs_filename, covdata, options, logger, error, toerase, chdir, tempdir):
     # If the first element of cmd - the executable name - has embedded spaces
     # (other than within quotes), it probably includes extra arguments.
-    cmd = shlex.split(options.gcov_cmd) + [
-        abs_filename,
-        "--demangled-names",
-        "--branch-counts", "--branch-probabilities", "--preserve-paths",
+    global gcov_cmd
+    global gcov_options
+    if gcov_cmd is None:
+        gcov_cmd = shlex.split(options.gcov_cmd)
+        gcov_options = [
+            "--branch-counts",
+            "--branch-probabilities",
+            "--preserve-paths"
+        ]
+        if "llvm-cov" not in gcov_cmd[0]:
+            gcov_options.append("--demangled-names")
+    cmd = gcov_cmd + [abs_filename] + gcov_options + [
         '--object-directory', os.path.dirname(abs_filename),
     ]
 
@@ -750,6 +762,7 @@ def run_gcov_and_process_files(
             stderr=subprocess.PIPE).communicate()
         out = out.decode('utf-8')
         err = err.decode('utf-8')
+        print(out)
 
         # find the files that gcov created
         active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
@@ -760,7 +773,10 @@ def run_gcov_and_process_files(
             chdir=chdir,
             tempdir=tempdir)
 
-    if source_re.search(err):
+    if unknown_cla_re.search(err):
+        # gcov tossed errors: throw exception
+        raise RuntimeError("Error in gcov command line: {}".format(err))
+    elif source_re.search(err):
         # gcov tossed errors: try the next potential_wd
         error(err)
         done = False
