@@ -125,12 +125,12 @@ def findtests(basedir):
         yield f
 
 
-def assert_xml_equals(coverage, reference):
-    diff = compare_xml(coverage, reference)
+def assert_xml_equals(reference, coverage):
+    diff = compare_xml(reference, coverage)
     if diff is None:
         return
 
-    raise AssertionError(f"XML documents differed (-actual +reference):\n{diff}")
+    raise AssertionError(f"XML documents differed (-reference, +actual):\n{diff}")
 
 
 def run(cmd, cwd=None):
@@ -363,7 +363,7 @@ def test_build(
 
         try:
             if assert_equals is not None:
-                assert_equals(coverage, reference)
+                assert_equals(reference, coverage)
             else:
                 diff_out = list(
                     difflib.unified_diff(
