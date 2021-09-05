@@ -37,9 +37,6 @@ exclude_line_pattern = re.compile(r'([GL]COVR?)_EXCL_(START|STOP)')
 c_style_comment_pattern = re.compile(r'/\*.*?\*/')
 cpp_style_comment_pattern = re.compile(r'//.*?$')
 
-gcov_cmd = None
-gcov_options = None
-
 
 def find_existing_gcov_files(search_path, logger, exclude_dirs):
     """Find .gcov files under the given search path.
@@ -608,6 +605,73 @@ class GcovParser(object):
         sys.exit(1)
 
 
+class gcovr_executer:
+    gcov_cmd = None
+    gcov_options = None
+
+    def __init__(self, options):
+        # If the first element of cmd - the executable name - has embedded spaces
+        # (other than within quotes), it probably includes extra arguments.
+        if gcovr_executer.gcov_cmd is None:
+            gcovr_executer.gcov_cmd = shlex.split(options.gcov_cmd)
+            gcovr_executer.gcov_options = [
+                "--branch-counts",
+                "--branch-probabilities",
+                "--preserve-paths"
+            ]
+            if "llvm-cov" not in gcovr_executer.gcov_cmd[0]:
+                gcovr_executer.gcov_options.append("--demangled-names")
+
+    def exec(self, abs_filename, covdata, options, logger, error, toerase, chdir, tempdir):
+        cmd = self.gcov_cmd + [abs_filename] + self.gcov_options + [
+            '--object-directory', os.path.dirname(abs_filename),
+        ]
+        # NB: Currently, we will only parse English output
+        env = dict(os.environ)
+        env['LC_ALL'] = 'en_US'
+        env['LANGUAGE'] = 'en_US'
+
+        logger.verbose_msg(
+            "Running gcov: '{cmd}' in '{cwd}'",
+            cmd=' '.join(cmd),
+            cwd=chdir)
+
+        with locked_directory(chdir):
+            out, err = subprocess.Popen(
+                cmd, env=env, cwd=chdir,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE).communicate()
+            out = out.decode('utf-8')
+            err = err.decode('utf-8')
+
+            # find the files that gcov created
+            active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
+                out,
+                gcov_filter=options.gcov_filter,
+                gcov_exclude=options.gcov_exclude,
+                logger=logger,
+                chdir=chdir,
+                tempdir=tempdir)
+
+        if unknown_cla_re.search(err):
+            # gcov tossed errors: throw exception
+            raise RuntimeError("Error in gcov command line: {}".format(err))
+        elif source_re.search(err):
+            # gcov tossed errors: try the next potential_wd
+            error(err)
+            done = False
+        else:
+            # Process *.gcov files
+            for fname in active_gcov_files:
+                process_gcov_data(fname, covdata, abs_filename, options)
+            done = True
+
+        if not options.keep:
+            toerase.update(all_gcov_files)
+
+        return done
+
+
 def process_datafile(filename, covdata, options, toerase, workdir):
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
@@ -728,68 +792,8 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
 
 def run_gcov_and_process_files(
         abs_filename, covdata, options, logger, error, toerase, chdir, tempdir):
-    # If the first element of cmd - the executable name - has embedded spaces
-    # (other than within quotes), it probably includes extra arguments.
-    global gcov_cmd
-    global gcov_options
-    if gcov_cmd is None:
-        gcov_cmd = shlex.split(options.gcov_cmd)
-        gcov_options = [
-            "--branch-counts",
-            "--branch-probabilities",
-            "--preserve-paths"
-        ]
-        if "llvm-cov" not in gcov_cmd[0]:
-            gcov_options.append("--demangled-names")
-    cmd = gcov_cmd + [abs_filename] + gcov_options + [
-        '--object-directory', os.path.dirname(abs_filename),
-    ]
-
-    # NB: Currently, we will only parse English output
-    env = dict(os.environ)
-    env['LC_ALL'] = 'en_US'
-    env['LANGUAGE'] = 'en_US'
-
-    logger.verbose_msg(
-        "Running gcov: '{cmd}' in '{cwd}'",
-        cmd=' '.join(cmd),
-        cwd=chdir)
-
-    with locked_directory(chdir):
-        out, err = subprocess.Popen(
-            cmd, env=env, cwd=chdir,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE).communicate()
-        out = out.decode('utf-8')
-        err = err.decode('utf-8')
-        print(out)
-
-        # find the files that gcov created
-        active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
-            out,
-            gcov_filter=options.gcov_filter,
-            gcov_exclude=options.gcov_exclude,
-            logger=logger,
-            chdir=chdir,
-            tempdir=tempdir)
-
-    if unknown_cla_re.search(err):
-        # gcov tossed errors: throw exception
-        raise RuntimeError("Error in gcov command line: {}".format(err))
-    elif source_re.search(err):
-        # gcov tossed errors: try the next potential_wd
-        error(err)
-        done = False
-    else:
-        # Process *.gcov files
-        for fname in active_gcov_files:
-            process_gcov_data(fname, covdata, abs_filename, options)
-        done = True
-
-    if not options.keep:
-        toerase.update(all_gcov_files)
-
-    return done
+    executer = gcovr_executer(options)
+    return executer.exec(abs_filename, covdata, options, logger, error, toerase, chdir, tempdir)
 
 
 def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger, chdir, tempdir):
