@@ -2,7 +2,7 @@
 void use_number_of_branches( int number );
 
 int main() {
-    for ( int x; x < 999; ++x ) {
+    for ( int x = 0; x < 999; ++x ) {
         use_number_of_branches( x );
     }
     return 0;

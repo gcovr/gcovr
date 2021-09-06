@@ -2,6 +2,13 @@
     "files": [
         {
             "file": "bar.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 1,
+                    "name": "_Z3barv"
+                }
+            ],
             "lines": [
                 {
                     "branches": [],
@@ -31,6 +38,13 @@
         },
         {
             "file": "foo.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 1,
+                    "name": "_Z3foov"
+                }
+            ],
             "lines": [
                 {
                     "branches": [],
@@ -60,6 +74,13 @@
         },
         {
             "file": "main.cpp",
+            "functions": [
+                {
+                    "execution_count": 2,
+                    "lineno": 10,
+                    "name": "main"
+                }
+            ],
             "lines": [
                 {
                     "branches": [],
