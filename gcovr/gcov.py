@@ -622,7 +622,7 @@ class gcovr_executer:
             if "llvm-cov" not in gcovr_executer.gcov_cmd[0]:
                 gcovr_executer.gcov_options.append("--demangled-names")
 
-    def exec(self, abs_filename, covdata, options, logger, error, toerase, chdir, tempdir):
+    def exec_and_process_files(self, abs_filename, covdata, options, logger, error, toerase, chdir, tempdir):
         cmd = self.gcov_cmd + [abs_filename] + self.gcov_options + [
             '--object-directory', os.path.dirname(abs_filename),
         ]
@@ -746,8 +746,9 @@ def process_datafile(filename, covdata, options, toerase, workdir):
     if workdir is not None:
         potential_wd = [workdir] + potential_wd
 
+    executer = gcovr_executer(options)
     for wd in potential_wd:
-        done = run_gcov_and_process_files(
+        done = executer.exec_and_process_files(
             abs_filename, covdata,
             options=options, logger=logger, toerase=toerase,
             error=errors.append, chdir=wd, tempdir=workdir)
@@ -788,12 +789,6 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
           "was run using --object-directory=%s\n" % objdir)
 
     return []
-
-
-def run_gcov_and_process_files(
-        abs_filename, covdata, options, logger, error, toerase, chdir, tempdir):
-    executer = gcovr_executer(options)
-    return executer.exec(abs_filename, covdata, options, logger, error, toerase, chdir, tempdir)
 
 
 def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger, chdir, tempdir):
