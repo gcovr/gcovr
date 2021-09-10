@@ -21,7 +21,7 @@ import pytest
 import time
 from threading import Event
 
-from ..gcov import GcovParser
+from ..gcov_parser import ParserFlags, parse_coverage
 from ..utils import Logger
 from ..workers import Workers
 
@@ -167,7 +167,7 @@ call    4 never executed
 ------------------
     #####:   52:foo() ? bar():
         -:   53:  baz();  // above line tests that sections can be terminated
-    #####:   53:qux();
+    #####:   54:qux();
 """
 
 # This example is taken from the GCC 8 Gcov documentation:
@@ -267,7 +267,7 @@ GCOV_8_SOURCES = dict(
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     gcov_8_example='33',
     gcov_8_exclude_throw='33',
-    nautilus_example='51,53',
+    nautilus_example='51-52,54',
     gcov_8_example_2='33')
 
 GCOV_8_EXPECTED_UNCOVERED_BRANCHES = dict(
@@ -293,29 +293,23 @@ def test_gcov_8(capsys, sourcename):
     """
 
     source = GCOV_8_SOURCES[sourcename]
-    lines = source.splitlines()[1:]
+    lines = source.splitlines()
     expected_uncovered_lines = \
         GCOV_8_EXPECTED_UNCOVERED_LINES[sourcename]
     expected_uncovered_branches = \
         GCOV_8_EXPECTED_UNCOVERED_BRANCHES[sourcename]
-    exclude_throw_branches = \
-        GCOV_8_EXCLUDE_THROW_BRANCHES.get(sourcename, False)
 
-    parser = GcovParser("tmp.cpp", Logger())
-    parser.parse_all_lines(
-        lines,
-        exclude_unreachable_branches=False,
-        exclude_throw_branches=exclude_throw_branches,
-        ignore_parse_errors=False,
+    flags = ParserFlags.NONE
+    if GCOV_8_EXCLUDE_THROW_BRANCHES.get(sourcename, False):
+        flags |= ParserFlags.EXCLUDE_THROW_BRANCHES
+
+    coverage = parse_coverage(
+        filename="tmp.cpp",
+        lines=lines,
+        logger=Logger(),
         exclude_lines_by_pattern=None,
-        exclude_function_lines=False,
-        exclude_internal_functions=False,
+        flags=flags,
     )
-
-    covdata = {
-        parser.fname: parser.coverage,
-    }
-    coverage = covdata['tmp.cpp']
 
     uncovered_lines = coverage.uncovered_lines_str()
     uncovered_branches = coverage.uncovered_branches_str()
@@ -338,34 +332,29 @@ def test_unknown_tags(capsys, ignore_errors):
     source = r"bananas 7 times 3"
     lines = source.splitlines()
 
-    parser = GcovParser("foo.c", Logger())
+    flags = ParserFlags.NONE
+    if ignore_errors:
+        flags |= ParserFlags.IGNORE_PARSE_ERRORS
 
     def run_the_parser():
-        parser.parse_all_lines(
-            lines,
-            exclude_unreachable_branches=False,
-            exclude_throw_branches=False,
-            ignore_parse_errors=ignore_errors,
+        return parse_coverage(
+            filename="foo.c",
+            lines=lines,
+            logger=Logger(),
             exclude_lines_by_pattern=None,
-            exclude_function_lines=False,
-            exclude_internal_functions=False,
+            flags=flags,
         )
 
     if ignore_errors:
-        run_the_parser()
+        coverage = run_the_parser()
+
+        uncovered_lines = coverage.uncovered_lines_str()
+        uncovered_branches = coverage.uncovered_branches_str()
+        assert uncovered_lines == ''
+        assert uncovered_branches == ''
     else:
-        with pytest.raises(SystemExit):
-            run_the_parser()
-
-    covdata = {
-        parser.fname: parser.coverage,
-    }
-    coverage = covdata['foo.c']
-
-    uncovered_lines = coverage.uncovered_lines_str()
-    uncovered_branches = coverage.uncovered_branches_str()
-    assert uncovered_lines == ''
-    assert uncovered_branches == ''
+        with pytest.raises(Exception):
+            coverage = run_the_parser()
 
     out, err = capsys.readouterr()
     assert out == ''
@@ -383,16 +372,13 @@ def test_pathologic_codeline(capsys):
     source = r": 7:haha"
     lines = source.splitlines()
 
-    parser = GcovParser("foo.c", Logger())
-    with pytest.raises(IndexError):
-        parser.parse_all_lines(
-            lines,
-            exclude_unreachable_branches=False,
-            exclude_throw_branches=False,
-            ignore_parse_errors=False,
+    with pytest.raises(ValueError):
+        parse_coverage(
+            filename="foo.c",
+            lines=lines,
+            logger=Logger(),
             exclude_lines_by_pattern=None,
-            exclude_function_lines=False,
-            exclude_internal_functions=False,
+            flags=ParserFlags.NONE,
         )
 
     out, err = capsys.readouterr()
@@ -402,7 +388,7 @@ def test_pathologic_codeline(capsys):
         '(WARNING) Unrecognized GCOV output',
         ': 7:haha',
         'Exception during parsing',
-        'IndexError',
+        'ValueError',
         '(ERROR) Exiting',
         'run gcovr with --gcov-ignore-parse-errors')
 
@@ -416,7 +402,7 @@ def check_and_raise(number, mutable, exc_raised, queue_full):
 
 
 @pytest.mark.parametrize('threads', [1, 2, 4, 8])
-def test_pathologic_threads(capsys, threads):
+def test_pathologic_threads(threads):
     mutable = []
     queue_full = Event()
     exc_raised = Event()

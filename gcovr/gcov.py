@@ -20,12 +20,12 @@ import os
 import re
 import shlex
 import subprocess
-import sys
 import io
 
 from .utils import search_file, Logger, commonpath
 from .workers import locked_directory
 from .coverage import FileCoverage
+from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(r"[Cc](annot|ould not) open (source|graph|output) file")
@@ -100,57 +100,61 @@ def is_non_code(code):
 #
 def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
     logger = Logger(options.verbose)
+
     with io.open(data_fname, "r", encoding=options.source_encoding,
                  errors='replace') as INPUT:
+        lines = INPUT.readlines()
 
-        # Find the source file
-        firstline = INPUT.readline()
-        fname = guess_source_file_name(
-            firstline, data_fname, source_fname,
-            root_dir=options.root_dir, starting_dir=options.starting_dir,
-            obj_dir=None if options.objdir is None else os.path.abspath(options.objdir),
-            logger=logger, currdir=currdir)
+    # Find the source file
+    # TODO: instead of heuristics, use "working directory" if available
+    metadata = parse_metadata(lines)
+    fname = guess_source_file_name(
+        metadata['source'].strip(), data_fname, source_fname,
+        root_dir=options.root_dir, starting_dir=options.starting_dir,
+        obj_dir=None if options.objdir is None else os.path.abspath(options.objdir),
+        logger=logger, currdir=currdir)
 
-        logger.verbose_msg("Parsing coverage data for file {}", fname)
+    logger.verbose_msg("Parsing coverage data for file {}", fname)
 
-        # Return if the filename does not match the filter
-        # Return if the filename matches the exclude pattern
-        filtered, excluded = apply_filter_include_exclude(
-            fname, options.filter, options.exclude)
+    # Return if the filename does not match the filter
+    # Return if the filename matches the exclude pattern
+    filtered, excluded = apply_filter_include_exclude(
+        fname, options.filter, options.exclude)
 
-        if filtered:
-            logger.verbose_msg("  Filtering coverage data for file {}", fname)
-            return
+    if filtered:
+        logger.verbose_msg("  Filtering coverage data for file {}", fname)
+        return
 
-        if excluded:
-            logger.verbose_msg("  Excluding coverage data for file {}", fname)
-            return
+    if excluded:
+        logger.verbose_msg("  Excluding coverage data for file {}", fname)
+        return
 
-        key = os.path.normpath(fname)
+    key = os.path.normpath(fname)
 
-        parser = GcovParser(key, logger=logger)
-        parser.parse_all_lines(
-            INPUT,
-            exclude_unreachable_branches=options.exclude_unreachable_branches,
-            exclude_throw_branches=options.exclude_throw_branches,
-            ignore_parse_errors=options.gcov_ignore_parse_errors,
-            exclude_lines_by_pattern=options.exclude_lines_by_pattern,
-            exclude_function_lines=options.exclude_function_lines,
-            exclude_internal_functions=options.exclude_internal_functions,
-        )
+    parser_flags = ParserFlags.NONE
+    if options.gcov_ignore_parse_errors:
+        parser_flags |= ParserFlags.IGNORE_PARSE_ERRORS
+    if options.exclude_function_lines:
+        parser_flags |= ParserFlags.EXCLUDE_FUNCTION_LINES
+    if options.exclude_internal_functions:
+        parser_flags |= ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS
+    if options.exclude_unreachable_branches:
+        parser_flags |= ParserFlags.EXCLUDE_UNREACHABLE_BRANCHES
+    if options.exclude_throw_branches:
+        parser_flags |= ParserFlags.EXCLUDE_THROW_BRANCHES
 
-        covdata.setdefault(key, FileCoverage(key)).update(parser.coverage)
+    coverage = parse_coverage(
+        lines=lines,
+        filename=key,
+        logger=logger,
+        exclude_lines_by_pattern=options.exclude_lines_by_pattern,
+        flags=parser_flags,
+    )
+    covdata.setdefault(key, FileCoverage(key)).update(coverage)
 
 
 def guess_source_file_name(
-        line, data_fname, source_fname, root_dir, starting_dir, obj_dir, logger, currdir=None):
-    segments = line.split(':', 3)
-    if len(segments) != 4 or not \
-            segments[2].lower().strip().endswith('source'):
-        raise RuntimeError(
-            'Fatal error parsing gcov file %s, line 1: \n\t"%s"' % (data_fname, line.rstrip())
-        )
-    gcovname = segments[-1].strip()
+        gcovname, data_fname, source_fname, root_dir, starting_dir, obj_dir, logger, currdir=None):
     if currdir is None:
         currdir = os.getcwd()
     if source_fname is None:
@@ -164,13 +168,12 @@ def guess_source_file_name(
         "Finding source file corresponding to a gcov data file\n"
         '  currdir      {currdir}\n'
         '  gcov_fname   {data_fname}\n'
-        '               {segments}\n'
         '  source_fname {source_fname}\n'
         '  root         {root_dir}\n'
         # '  common_dir   {common_dir}\n'
         # '  subdir       {subdir}\n'
         '  fname        {fname}',
-        currdir=currdir, data_fname=data_fname, segments=segments,
+        currdir=currdir, data_fname=data_fname,
         source_fname=source_fname, root_dir=root_dir,
         # common_dir=common_dir, subdir=subdir,
         fname=fname)
@@ -235,374 +238,6 @@ def guess_source_file_name_heuristics(
     # 5. Try using the path to the gcda file as the source directory, removing the path part from the gcov file
     fname = os.path.join(source_fname_dir, os.path.basename(gcovname))
     return fname
-
-
-class GcovParser(object):
-    def __init__(self, fname, logger):
-        self.logger = logger
-        self.excluding = []
-        self.coverage = FileCoverage(fname)
-        # self.first_record = True
-        self.fname = fname
-        self.lineno = 0
-        self.last_code_line = ""
-        self.last_code_lineno = 0
-        self.last_code_line_excluded = False
-        self.unrecognized_lines = []
-        self.deferred_exceptions = []
-        self.last_was_specialization_section_marker = False
-        self.last_was_function_marker = False
-
-    def parse_all_lines(
-        self,
-        lines,
-        exclude_unreachable_branches,
-        exclude_throw_branches,
-        ignore_parse_errors,
-        exclude_lines_by_pattern,
-        exclude_function_lines,
-        exclude_internal_functions,
-    ):
-        exclude_lines_by_pattern_regex = (re.compile(exclude_lines_by_pattern)
-                                          if exclude_lines_by_pattern
-                                          else None)
-        for line in lines:
-            try:
-                self.parse_line(
-                    line,
-                    exclude_unreachable_branches,
-                    exclude_throw_branches,
-                    exclude_lines_by_pattern_regex,
-                    exclude_function_lines,
-                    exclude_internal_functions
-                )
-            except Exception as ex:
-                self.unrecognized_lines.append(line)
-                self.deferred_exceptions.append(ex)
-
-        self.check_unclosed_exclusions()
-        self.check_unrecognized_lines(ignore_parse_errors=ignore_parse_errors)
-
-    def parse_line(
-        self,
-        line,
-        exclude_unreachable_branches,
-        exclude_throw_branches,
-        exclude_lines_by_pattern_regex,
-        exclude_function_lines,
-        exclude_internal_functions
-    ):
-        # If this is a tag line, we stay on the same line number
-        # and can return immediately after processing it.
-        # A tag line cannot hold exclusion markers.
-        if self.parse_tag_line(
-            line,
-            exclude_unreachable_branches,
-            exclude_throw_branches,
-            exclude_internal_functions
-        ):
-            return
-
-        # If this isn't a tag line, this is metadata or source code.
-        # e.g.  "  -:  0:Data:foo.gcda" (metadata)
-        # or    "  3:  7:  c += 1"      (source code)
-
-        segments = line.split(":", 2)
-        if len(segments) > 1:
-            try:
-                self.lineno = int(segments[1].strip())
-            except ValueError:
-                pass  # keep previous line number!
-
-        status = segments[0].strip()
-        code = segments[2] if 2 < len(segments) else ""
-
-        if exclude_line_flag in line:
-            for header, flag in exclude_line_pattern.findall(line):
-                self.parse_exclusion_marker(header, flag)
-        if exclude_lines_by_pattern_regex:
-            if exclude_lines_by_pattern_regex.match(code):
-                self.excluding.append(False)
-
-        is_code_statement = self.parse_code_line(status, code, exclude_function_lines)
-
-        if not is_code_statement:
-            self.unrecognized_lines.append(line)
-
-        # save the code line to use it later with branches
-        if is_code_statement:
-            self.last_code_line = "".join(segments[2:])
-            self.last_code_lineno = self.lineno
-            self.last_code_line_excluded = bool(self.excluding)
-
-        # clear the excluding flag for single-line excludes
-        if self.excluding and not self.excluding[-1]:
-            self.excluding.pop()
-
-    def parse_code_line(self, status, code, exclude_function_lines):
-        firstchar = status[0]
-
-        last_was_function_marker = self.last_was_function_marker
-        self.last_was_function_marker = False
-
-        noncode = False
-        count = None
-
-        if firstchar == '-' or (self.excluding and firstchar in "#=0123456789"):
-            # remember certain non-executed lines
-            if self.excluding or is_non_code(code):
-                noncode = True
-        # "#": uncovered
-        # "=": uncovered, but only reachable through exceptions
-        elif firstchar in "#=":
-            if self.excluding or is_non_code(code):
-                noncode = True
-            else:
-                count = 0
-        elif firstchar in "0123456789":
-            # GCOV 8 marks partial coverage
-            # with a trailing "*" after the execution count.
-            count = int(status.rstrip('*'))
-        else:
-            return False
-
-        if exclude_function_lines and last_was_function_marker:
-            noncode = True
-
-        if noncode:
-            self.coverage.line(self.lineno).noncode = True
-        elif count is not None:
-            # self.coverage.line(self.lineno)  # sets count to 0 if not present before
-            self.coverage.line(self.lineno).count += count
-
-        return True
-
-    def parse_tag_line(
-        self,
-        line,
-        exclude_unreachable_branches,
-        exclude_throw_branches,
-        exclude_internal_functions
-    ):
-        # Start or end a template/macro specialization section
-        if line.startswith('-----'):
-            self.last_was_specialization_section_marker = True
-            return True
-
-        last_was_marker = self.last_was_specialization_section_marker
-        self.last_was_specialization_section_marker = False
-
-        # A specialization section marker is either followed by a section or
-        # ends it. If it starts a section, the next line contains a function
-        # name, followed by a colon. A function name cannot be parsed reliably,
-        # so we assume it is a function, and try to disprove this assumption by
-        # comparing with other kinds of lines.
-        if last_was_marker:
-            # 1. a function must end with a colon
-            is_function = line.endswith(':')
-
-            # 2. a function cannot start with space
-            if is_function:
-                is_function = not line.startswith(' ')
-
-            # 3. a function cannot start with a tag
-            if is_function:
-                tags = 'function call branch'.split()
-                is_function = not any(
-                    line.startswith(tag + ' ') for tag in tags)
-
-            # If this line turned out to be a function, discard it.
-            return True
-
-        if line.startswith('function '):
-            self.last_was_function_marker = True
-            # function tags look like:
-            #   function X called 0 returned 0% blocks executed 0%
-            #   function X Y called 0 returned 0% blocks executed 0%
-            #   function X Y Z called 0 returned 0% blocks executed 0%
-            #   function X Y Z ... called 0 returned 0% blocks executed 0%
-            # where the percentage should usually be a count.
-            # we could also use a regex: "^function\s+(.+)\s+called\s+(\d+)\s+"
-
-            fields = line.split()  # e.g. "function X Y Z called 0 returned 0% blocks executed 0%"
-            assert len(fields) >= 9, \
-                "Unclear function tag format (count {}): {}".format(len(fields), line)
-
-            # We take all fields excepting the first and the last 7
-            function_name = ' '.join(fields[1:-7])
-            function_call_count = int(fields[-6])
-
-            # special names for construction/destruction of static objects will be ignored
-            # "__tcf_0", "__static...", "_GLOBAL..."
-            if (
-                exclude_internal_functions
-                and (
-                    function_name.startswith("__")
-                    or function_name.startswith("_GLOBAL__sub_I_")
-                )
-            ):
-                self.logger.verbose_msg(
-                    "Ignoring Symbol {func_name} in line {line} "
-                    "in file {file_name}", func_name=fields[1],
-                    line=self.lineno, file_name=self.fname)
-                return True
-
-            # modern GCOV versions can demangle the C++ names
-            function_cov = self.coverage.function(function_name)
-            # function tag appears before the "source code line". Add always 1
-            function_cov.lineno = self.lineno + 1
-            function_cov.count += function_call_count
-
-            return True
-
-        if line.startswith('call '):
-            return True
-
-        if line.startswith('branch '):
-
-            exclude_reason = None
-
-            if self.lineno != self.last_code_lineno:
-                # apply no exclusions if this doesn't look like a code line.
-                pass
-
-            elif self.last_code_line_excluded:
-                exclude_reason = "marked with exclude pattern"
-
-            elif exclude_unreachable_branches:
-                code = self.last_code_line
-                code = re.sub(cpp_style_comment_pattern, '', code)
-                code = re.sub(c_style_comment_pattern, '', code)
-                code = code.strip()
-                code_nospace = code.replace(' ', '')
-                if code_nospace in ['', '{', '}', '{}']:
-                    exclude_reason = "detected as compiler-generated code"
-
-            if exclude_reason is not None:
-                self.logger.verbose_msg(
-                    "Excluding unreachable branch on line {line} "
-                    "in file {fname}: {reason}",
-                    line=self.lineno, fname=self.fname,
-                    reason=exclude_reason)
-                return True
-
-            # branch tags can look like:
-            #   branch  1 never executed
-            #   branch  2 taken 12%
-            #   branch  3 taken 12% (fallthrough)
-            #   branch  3 taken 12% (throw)
-            # where the percentage should usually be a count.
-
-            fields = line.split()  # e.g. "branch  0 taken 0% (fallthrough)"
-            assert len(fields) >= 4, \
-                "Unclear branch tag format: {}".format(line)
-
-            branch_index = int(fields[1])
-
-            if fields[2:] == ['never', 'executed']:
-                count = 0
-
-            elif fields[3].endswith('%'):
-                percentage = int(fields[3][:-1])
-                # can't really convert percentage to count,
-                # so normalize to zero/one
-                count = 1 if percentage > 0 else 0
-
-            else:
-                count = int(fields[3])
-
-            is_fallthrough = fields[-1] == '(fallthrough)'
-            is_throw = fields[-1] == '(throw)'
-
-            if exclude_throw_branches and is_throw:
-                return True
-
-            branch_cov = self.coverage.line(self.lineno).branch(branch_index)
-            branch_cov.count += count
-            if is_fallthrough:
-                branch_cov.fallthrough = True
-            if is_throw:
-                branch_cov.throw = True
-
-            return True
-
-        return False
-
-    def parse_exclusion_marker(self, header, flag):
-        """Process the exclusion marker
-
-        - START markers are added to the exclusion_stack
-        - STOP markers remove a marker from the exclusion_stack
-
-        header: exclusion marker name, e.g. "LCOV" or "GCOVR"
-        flag: exclusion marker action, one of "START", "STOP"
-        """
-        if flag == 'START':
-            self.excluding.append((header, self.lineno))
-            return
-
-        if flag == 'STOP':
-            if not self.excluding:
-                self.logger.warn(
-                    "mismatched coverage exclusion flags.\n"
-                    "\t{header}_EXCL_STOP found on line {lineno} "
-                    "without corresponding {header}_EXCL_START, "
-                    "when processing {fname}",
-                    header=header, lineno=self.lineno, fname=self.fname)
-                return
-
-            start_header, start_line = self.excluding.pop()
-            if header != start_header:
-                self.logger.warn(
-                    "{start_header}_EXCL_START found on line {start_line} "
-                    "was terminated by {header}_EXCL_STOP "
-                    "on line {lineno}, when processing {fname}",
-                    start_header=start_header, start_line=start_line,
-                    header=header, lineno=self.lineno, fname=self.fname)
-            return
-
-        assert False, "unknown exclusion marker"  # pragma: no cover
-
-    def check_unclosed_exclusions(self):
-        for header, line in self.excluding:
-            self.logger.warn(
-                "The coverage exclusion region start flag {header}_EXCL_START\n"
-                "\ton line {line} did not have corresponding {header}_EXCL_STOP flag\n"
-                "\tin file {fname}.",
-                header=header, line=line, fname=self.fname)
-
-    def check_unrecognized_lines(self, ignore_parse_errors):
-        if not self.unrecognized_lines:
-            return
-
-        self.logger.warn(
-            "Unrecognized GCOV output for {source}\n"
-            "\t  {lines}\n"
-            "\tThis is indicative of a gcov output parse error.\n"
-            "\tPlease report this to the gcovr developers\n"
-            "\tat <https://github.com/gcovr/gcovr/issues>.",
-            source=self.fname,
-            lines="\n\t  ".join(self.unrecognized_lines))
-
-        for ex in self.deferred_exceptions:
-            self.logger.warn(
-                "Exception during parsing:\n"
-                "\t{type}: {msg}",
-                type=type(ex).__name__, msg=ex)
-
-        if ignore_parse_errors:
-            return
-
-        self.logger.error(
-            "Exiting because of parse errors.\n"
-            "\tYou can run gcovr with --gcov-ignore-parse-errors\n"
-            "\tto continue anyway.")
-
-        # if we caught an exception, re-raise it for the traceback
-        for ex in self.deferred_exceptions:
-            raise ex
-
-        sys.exit(1)
 
 
 def process_datafile(filename, covdata, options, toerase, workdir):
