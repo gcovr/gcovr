@@ -54,6 +54,8 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 
 skip_clean = None
 
+IS_CLANG = True if env["CC"].startswith("clang") else False
+
 REFERENCE_DIR = os.path.join("reference", env["CC"])
 
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
@@ -251,6 +253,10 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.xfail(
                     name == "rounding" and is_windows,
                     reason="branch coverage seem to be platform-dependent",
+                ),
+                pytest.mark.xfail(
+                    name == "html-source-encoding-cp1252" and IS_CLANG,
+                    reason="clang doesnt understand -finput-charset=...",
                 ),
             ]
 
