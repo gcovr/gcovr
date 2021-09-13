@@ -37,15 +37,17 @@ clean:
 	rm -f coverage*.* sonarqube*.* coveralls.json
 
 links:
-	if ! [ -d "subdir" ]; then\
-	   mkdir subdir;\
-	   cd subdir;\
-	   ln -s ../../nested/subdir/B .;\
-	   mkdir -p m;\
-	   cd m;\
-	   ln -s ../../../nested/subdir/A n;\
-	   cd ..;\
-	   ln -s m/n A;\
-	   ln -s . loop;\
-	   cd ..;\
+	if [ -d "subdir" ]; then\
+		rm -Rf subdir;\
 	fi
+	mkdir subdir;\
+	cd subdir;\
+	ln -s ../../nested/subdir/B .;\
+	mkdir -p m;\
+	cd m;\
+	ln -s ../../../nested/subdir/A n;\
+	cd ..;\
+	ln -s m/n A;\
+	ln -s . loop;\
+	cd ..;
+	find ../nested -name '*.o' -or -name '*.gc*' -delete || exit 0
