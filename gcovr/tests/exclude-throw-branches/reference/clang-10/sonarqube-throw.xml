@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+<file path="main.cpp">
+<lineToCover covered="true" lineNumber="3"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="2" lineNumber="4"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="5"/>
+<lineToCover covered="true" lineNumber="7"/>
+<lineToCover covered="true" lineNumber="16"/>
+<lineToCover covered="true" lineNumber="17"/>
+<lineToCover covered="true" lineNumber="21"/>
+<lineToCover covered="true" lineNumber="22"/>
+<lineToCover covered="true" lineNumber="24"/>
+<lineToCover covered="true" lineNumber="25"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="28"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="0" lineNumber="29"/>
+<lineToCover covered="true" lineNumber="30"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="33"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="36"/>
+<lineToCover covered="false" lineNumber="37"/>
+<lineToCover covered="false" lineNumber="38"/>
+<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="41"/>
+<lineToCover covered="true" lineNumber="43"/>
+<lineToCover covered="true" lineNumber="47"/>
+<lineToCover covered="true" lineNumber="48"/>
+</file>
+</coverage>
+

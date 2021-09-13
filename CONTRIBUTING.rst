@@ -156,8 +156,9 @@ is needed.
 
 -   Check your GCC installation, the binary directory must be added to
     the PATH environment. If the command gcc-5/g++-5/gcov-5,
-    gcc-6/g++-6/gcov-6 or gcc-8/g++-8/gcov-8 are available everything
-    is OK. For gcc-6 and gcc-8 you should use the option ``CC=...```
+    gcc-6/g++-6/gcov-6, gcc-8/g++-8/gcov-8 or clang-10/clang++-10/llvm-cov
+    are available everything is OK.
+    For gcc-6 and gcc-8 you should use the option ``CC=...```
     see :ref:`run and filter tests <run tests>`. If this isn't OK you
     have to create symlinks for the gcc executables with the following steps.
     You can check the GCC version with gcc --version. If the output says
@@ -254,7 +255,7 @@ The QA process (``make qa``) consists of multiple parts:
 - documentation build (``make doc``)
 
 The tests are in the ``gcovr/tests`` directory.
-You can run the tests with ``make test`` or ``python3 -m pytest gcovr``.
+You can run the tests with ``make test`` or ``python3 -m pytest -- gcovr doc/examples``.
 
 There are unit tests for some parts of gcovr,
 and a comprehensive corpus of example projects
@@ -311,7 +312,7 @@ To run all tests, use ``make test`` or ``make qa``.
 The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC argument.
-Supported versions are ``CC=gcc-5``, ``CC=gcc-6`` and ``CC=gcc-8``.
+Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8`` and ``clang-10``.
 
 You can run the tests with additional options by setting ``TEST_OPTS`` variable.
 Run all tests after each change is a bit slow, therefore you can limit the tests
@@ -390,7 +391,7 @@ Then, run the container, which executes ``make qa`` within the container:
     make docker-qa
 
 You can select the gcc version to use inside the docker by setting the make
-variable CC to gcc-5 (default), gcc-6 or gcc-8
+variable CC to gcc-5 (default), gcc-6, gcc-8 or clang-10
 
 .. _join:
 

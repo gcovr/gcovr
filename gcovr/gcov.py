@@ -29,6 +29,7 @@ from .coverage import FileCoverage
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(r"[Cc](annot|ould not) open (source|graph|output) file")
+unknown_cla_re = re.compile(r"Unknown command line argument")
 
 exclude_line_flag = "_EXCL_"
 exclude_line_pattern = re.compile(r'([GL]COVR?)_EXCL_(START|STOP)')
@@ -726,10 +727,15 @@ def run_gcov_and_process_files(
         abs_filename, covdata, options, logger, error, toerase, chdir, tempdir):
     # If the first element of cmd - the executable name - has embedded spaces
     # (other than within quotes), it probably includes extra arguments.
-    cmd = shlex.split(options.gcov_cmd) + [
-        abs_filename,
-        "--demangled-names",
-        "--branch-counts", "--branch-probabilities", "--preserve-paths",
+    gcov_cmd = shlex.split(options.gcov_cmd)
+    gcov_options = [
+        "--branch-counts",
+        "--branch-probabilities",
+        "--preserve-paths"
+    ]
+    if "llvm-cov" not in gcov_cmd[0]:
+        gcov_options.append("--demangled-names")
+    cmd = gcov_cmd + [abs_filename] + gcov_options + [
         '--object-directory', os.path.dirname(abs_filename),
     ]
 
@@ -760,7 +766,10 @@ def run_gcov_and_process_files(
             chdir=chdir,
             tempdir=tempdir)
 
-    if source_re.search(err):
+    if unknown_cla_re.search(err):
+        # gcov tossed errors: throw exception
+        raise RuntimeError("Error in gcov command line: {}".format(err))
+    elif source_re.search(err):
         # gcov tossed errors: try the next potential_wd
         error(err)
         done = False

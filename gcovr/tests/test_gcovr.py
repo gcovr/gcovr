@@ -54,6 +54,8 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 
 skip_clean = None
 
+IS_CLANG = True if env["CC"].startswith("clang") else False
+
 REFERENCE_DIR = os.path.join("reference", env["CC"])
 
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
@@ -252,6 +254,10 @@ def pytest_generate_tests(metafunc):
                     name == "rounding" and is_windows,
                     reason="branch coverage seem to be platform-dependent",
                 ),
+                pytest.mark.xfail(
+                    name == "html-source-encoding-cp1252" and IS_CLANG,
+                    reason="clang doesnt understand -finput-charset=...",
+                ),
             ]
 
             collected_params.append(
@@ -333,7 +339,7 @@ def test_build(
     assert run(["make", format])
 
     reference_dir = REFERENCE_DIR
-    if (platform.system() == "Windows") and os.path.isdir(reference_dir + "-Windows"):
+    if (platform.system() == "Windows") and os.path.isdir(reference_dir + "-Windows"):  # pragma: no cover
         reference_dir += "-Windows"
 
     if generate_reference:  # pragma: no cover

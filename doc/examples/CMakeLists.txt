@@ -3,8 +3,9 @@ project("GCOVR Example"
         LANGUAGES CXX)
 
 #BEGIN cmakecmds
-add_compile_options("--coverage")
+# This flags are used if cmake is called with -DCMAKE_BUILD_TYPE=PROFILE
+set(CMAKE_C_FLAGS_PROFILE --coverage)
+set(CMAKE_CXX_FLAGS_PROFILE --coverage)
 
 add_executable(program example.cpp)
-target_link_libraries(program gcov)
 #END cmakecmds
