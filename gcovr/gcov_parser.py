@@ -857,6 +857,7 @@ class _ExclusionRangeWarnings:
        on line 5 did not have corresponding GCOVR_EXCL_STOP flag
        in file example.cpp.
     """
+
     def __init__(self, logger: Logger, filename: str) -> None:
         self.logger = logger
         self.filename = filename
