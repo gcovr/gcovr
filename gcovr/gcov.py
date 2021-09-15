@@ -87,14 +87,6 @@ def find_datafiles(search_path, logger, exclude_dirs):
     return gcda_files + gcno_files
 
 
-noncode_mapper = dict.fromkeys(ord(i) for i in '}{')
-
-
-def is_non_code(code):
-    code = code.strip().translate(noncode_mapper)
-    return len(code) == 0 or code.startswith("//") or code == 'else'
-
-
 #
 # Process a single gcov datafile
 #
@@ -103,13 +95,13 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
 
     with io.open(data_fname, "r", encoding=options.source_encoding,
                  errors='replace') as INPUT:
-        lines = INPUT.readlines()
+        lines = INPUT.read().splitlines()
 
     # Find the source file
     # TODO: instead of heuristics, use "working directory" if available
     metadata = parse_metadata(lines)
     fname = guess_source_file_name(
-        metadata['source'].strip(), data_fname, source_fname,
+        metadata['Source'].strip(), data_fname, source_fname,
         root_dir=options.root_dir, starting_dir=options.starting_dir,
         obj_dir=None if options.objdir is None else os.path.abspath(options.objdir),
         logger=logger, currdir=currdir)
@@ -144,7 +136,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         parser_flags |= ParserFlags.EXCLUDE_THROW_BRANCHES
 
     coverage = parse_coverage(
-        lines=lines,
+        lines,
         filename=key,
         logger=logger,
         exclude_lines_by_pattern=options.exclude_lines_by_pattern,

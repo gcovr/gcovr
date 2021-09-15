@@ -18,14 +18,19 @@
 Handle parsing of the textual ``.gcov`` file format.
 
 Other modules should only use the following items:
-`parse_metadata()`, `parse_coverage()`, `ParserFlags`.
+`parse_metadata()`, `parse_coverage()`, `ParserFlags`, `UnknownLineType`.
 
 The behavior of this parser was informed by the following sources:
 
 * the old GcovParser class
+  <https://github.com/gcovr/gcovr/blob/e0b7afef00123b7b6ce4f487a1c4cc9fc60528bc/gcovr/gcov.py#L239>
 * the *Invoking Gcov* section in the GCC manual (version 11)
-* the ``gcov.c`` source code in GCC (especially for understanding the exact number format)
+  <https://gcc.gnu.org/onlinedocs/gcc-11.1.0/gcc/Invoking-Gcov.html>
+* the ``gcov.c`` source code in GCC
+  (especially for understanding the exact number format)
+  <https://github.com/gcc-mirror/gcc/blob/releases/gcc-11.1.0/gcc/gcov.c>
 """
+# pylint: disable=too-many-lines
 
 
 import enum
@@ -60,7 +65,8 @@ def _line_pattern(pattern: str) -> Pattern[str]:
     A line pattern is a normal regex, except that the following placeholders
     will be replaced by pattern fragments:
 
-    * ``VALUE`` -> matches gcov's ``format_gcov()`` output (percentage or human-readable)
+    * ``VALUE`` -> matches gcov's ``format_gcov()`` output (percentage or
+      human-readable)
     * ``INT`` -> matches an integer
     * the pattern is anchored at the start/end
     * space is replaced by ``[ ]+``
@@ -81,6 +87,7 @@ _RE_CALL_LINE = _line_pattern(r"call (INT) (?:returned (VALUE)|never executed)")
 _RE_UNCONDITIONAL_LINE = _line_pattern(
     r"unconditional (INT) (?:taken (VALUE)|never executed)"
 )
+_RE_SOURCE_LINE = _line_pattern(r"(?: )?(VALUE[*]?|-|[#]{5}|[=]{5}):(?: )?(INT):(.*)")
 _RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5}|[%]{5}): (INT)-block (INT)")
 
 
@@ -93,7 +100,7 @@ class _ExtraInfo(enum.Flag):
     PARTIAL = enum.auto()
 
     def __repr__(self) -> str:
-        return str(self)
+        return str(self).replace("_ExtraInfo.", "")
 
 
 class _SourceLine(NamedTuple):
@@ -147,7 +154,9 @@ class _BranchLine(NamedTuple):
 
 
 class _UnconditionalLine(NamedTuple):
-    """A gcov line with unconditional branch data: ``unconditional BRANCHNO taken HITS``"""
+    """
+    A gcov line with unconditional branch data: ``unconditional BRANCHNO taken HITS``
+    """
 
     branchno: int
     hits: int
@@ -186,6 +195,10 @@ _Line = Union[
 class UnknownLineType(Exception):
     """Used by `parse_line()` to signal that no known line type matched."""
 
+    def __init__(self, line: str) -> None:
+        super().__init__(line)
+        self.line = line
+
 
 def parse_metadata(lines: List[str]) -> Dict[str, str]:
     r"""
@@ -196,12 +209,10 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
     ...   -: 0:Foo:bar
     ...   -: 0:Key:123
     ... '''.splitlines())
-    {'foo': 'bar', 'key': '123'}
+    {'Foo': 'bar', 'Key': '123'}
     """
-    collected = dict()
+    collected = {}
     for line in lines:
-        # IO.readlines() leaves trailing newlines...
-        line = line.rstrip("\n")
 
         # empty lines shouldn't occur in reality, but are common in testing
         if not line:
@@ -292,8 +303,6 @@ def parse_coverage(
 
     tokenized_lines: List[Tuple[_Line, str]] = []
     for raw_line in lines:
-        # IO.readlines() leaves trailing newlines...
-        raw_line = raw_line.rstrip("\n")
 
         # empty lines shouldn't occur in reality, but are common in testing
         if not raw_line:
@@ -310,8 +319,7 @@ def parse_coverage(
             for line, _ in tokenized_lines
             if isinstance(line, _SourceLine)
         ],
-        filename=filename,
-        logger=logger,
+        warnings=_ExclusionRangeWarnings(logger, filename),
         exclude_lines_by_pattern=exclude_lines_by_pattern,
     )
 
@@ -328,6 +336,7 @@ def parse_coverage(
             )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
+            state = _ParserState(is_recovering=True)
 
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
@@ -344,6 +353,7 @@ class _ParserState(NamedTuple):
     lineno: int = 0
     is_excluded: bool = False
     line_contents: str = ""
+    is_recovering: bool = False
 
 
 def _gather_coverage_from_line(
@@ -354,6 +364,15 @@ def _gather_coverage_from_line(
     line_is_excluded: Callable[[int], bool],
     context: _Context,
 ) -> _ParserState:
+    """
+    Interpret a Line, updating the FileCoverage, and transitioning ParserState.
+
+    The function handles all possible Line variants, and dies otherwise:
+    >>> _gather_coverage_from_line(_ParserState(), "illegal line type",
+    ...     coverage=..., line_is_excluded=..., context=...)
+    Traceback (most recent call last):
+    AssertionError: Unexpected variant: 'illegal line type'
+    """
     # pylint: disable=too-many-return-statements,too-many-branches
     # pylint: disable=no-else-return  # make life easier for type checkers
 
@@ -381,6 +400,9 @@ def _gather_coverage_from_line(
             line_contents=line.source_code,
             is_excluded=is_excluded,
         )
+
+    elif state.is_recovering:
+        return state  # skip until the next _SourceLine
 
     elif isinstance(line, _FunctionLine):
         # Defer handling of the function tag until the next source line.
@@ -427,7 +449,7 @@ def _gather_coverage_from_line(
 
 def _assert_never(never: NoReturn) -> NoReturn:
     """Used for the type checker"""
-    raise AssertionError(f"Unexpected variant: {never:!r}")
+    raise AssertionError(f"Unexpected variant: {never!r}")
 
 
 def _report_lines_with_errors(
@@ -438,6 +460,9 @@ def _report_lines_with_errors(
     if not lines_with_errors:
         return
 
+    lines = [line for line, _ in lines_with_errors]
+    errors = [error for _, error in lines_with_errors]
+
     context.logger.warn(
         "Unrecognized GCOV output for {source}\n"
         "\t  {lines}\n"
@@ -445,10 +470,10 @@ def _report_lines_with_errors(
         "\tPlease report this to the gcovr developers\n"
         "\tat <https://github.com/gcovr/gcovr/issues>.",
         source=context.filename,
-        lines="\n\t  ".join(line for line, _ in lines_with_errors),
+        lines="\n\t  ".join(lines),
     )
 
-    for _, ex in lines_with_errors:
+    for ex in errors:
         context.logger.warn(
             "Exception during parsing:\n\t{type}: {msg}", type=type(ex).__name__, msg=ex
         )
@@ -463,10 +488,7 @@ def _report_lines_with_errors(
     )
 
     # if we caught an exception, re-raise it for the traceback
-    for _, ex in lines_with_errors:
-        raise ex
-
-    raise SystemExit(1)
+    raise errors[0]  # guaranteed to have at least one exception
 
 
 def _line_noncode_and_count(
@@ -568,23 +590,23 @@ def _parse_line(line: str) -> _Line:
 
     Example: can parse code line:
     >>> _parse_line('     -: 13:struct Foo{};')
-    _SourceLine(hits=0, lineno=13, source_code='struct Foo{};', extra_info=_ExtraInfo.NONCODE)
+    _SourceLine(hits=0, lineno=13, source_code='struct Foo{};', extra_info=NONCODE)
     >>> _parse_line('    12: 13:foo += 1;  ')
-    _SourceLine(hits=12, lineno=13, source_code='foo += 1;  ', extra_info=_ExtraInfo.NONE)
+    _SourceLine(hits=12, lineno=13, source_code='foo += 1;  ', extra_info=NONE)
     >>> _parse_line(' #####: 13:foo += 1;')
-    _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=_ExtraInfo.NONE)
+    _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=NONE)
     >>> _parse_line(' =====: 13:foo += 1;')
-    _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=_ExtraInfo.EXCEPTION_ONLY)
+    _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=EXCEPTION_ONLY)
     >>> _parse_line('   12*: 13:cond ? f() : g();')
-    _SourceLine(hits=12, lineno=13, source_code='cond ? f() : g();', extra_info=_ExtraInfo.PARTIAL)
+    _SourceLine(hits=12, lineno=13, source_code='cond ? f() : g();', extra_info=PARTIAL)
     >>> _parse_line(' 1.7k*: 13:foo();')
-    _SourceLine(hits=1700, lineno=13, source_code='foo();', extra_info=_ExtraInfo.PARTIAL)
+    _SourceLine(hits=1700, lineno=13, source_code='foo();', extra_info=PARTIAL)
 
     Example: can parse metadata line:
     >>> _parse_line('  -: 0:Foo:bar baz')
-    _MetadataLine(key='foo', value='bar baz')
+    _MetadataLine(key='Foo', value='bar baz')
     >>> _parse_line('  -: 0:Some key:2')  # coerce numbers
-    _MetadataLine(key='some key', value='2')
+    _MetadataLine(key='Some key', value='2')
 
     Example: can parse branch tags:
     >>> _parse_line('branch 3 taken 15%')
@@ -599,6 +621,9 @@ def _parse_line(line: str) -> _Line:
     _BranchLine(branchno=17, hits=1, annotation='throw')
     >>> _parse_line('branch  0 never executed')
     _BranchLine(branchno=0, hits=0, annotation=None)
+    >>> _parse_line('branch 2 with some unknown format')
+    Traceback (most recent call last):
+    gcovr.gcov_parser.UnknownLineType: branch 2 with some unknown format
 
     Example: can parse call tags:
     >>> _parse_line('call  0 never executed')
@@ -607,14 +632,23 @@ def _parse_line(line: str) -> _Line:
     _CallLine(callno=17, returned=1)
     >>> _parse_line('call  17 returned 9')
     _CallLine(callno=17, returned=9)
+    >>> _parse_line('call 2 with some unknown format')
+    Traceback (most recent call last):
+    gcovr.gcov_parser.UnknownLineType: call 2 with some unknown format
 
     Example: can parse unconditional branches
     >>> _parse_line('unconditional 1 taken 17')
     _UnconditionalLine(branchno=1, hits=17)
+    >>> _parse_line('unconditional with some unknown format')
+    Traceback (most recent call last):
+    gcovr.gcov_parser.UnknownLineType: unconditional with some unknown format
 
     Example: can parse function tags:
     >>> _parse_line('function foo called 2 returned 95% blocks executed 85%')
     _FunctionLine(name='foo', calls=2, returned=1, blocks_covered=1)
+    >>> _parse_line('function foo with some unknown format')
+    Traceback (most recent call last):
+    gcovr.gcov_parser.UnknownLineType: function foo with some unknown format
 
     Example: can parse template specialization markers:
     >>> _parse_line('------------------')
@@ -623,14 +657,24 @@ def _parse_line(line: str) -> _Line:
     Example: can parse template specialization names:
     >>> _parse_line('Foo<bar>::baz():')
     _SpecializationNameLine(name='Foo<bar>::baz()')
+    >>> _parse_line(' foo:')
+    Traceback (most recent call last):
+    gcovr.gcov_parser.UnknownLineType:  foo:
+    >>> _parse_line(':')
+    Traceback (most recent call last):
+    gcovr.gcov_parser.UnknownLineType: :
+
 
     Example: can parse block line:
     >>> _parse_line('     1: 32-block  0')
-    _BlockLine(hits=1, lineno=32, blockno=0, extra_info=_ExtraInfo.NONE)
+    _BlockLine(hits=1, lineno=32, blockno=0, extra_info=NONE)
     >>> _parse_line(' %%%%%: 33-block  1')
-    _BlockLine(hits=0, lineno=33, blockno=1, extra_info=_ExtraInfo.NONE)
+    _BlockLine(hits=0, lineno=33, blockno=1, extra_info=NONE)
     >>> _parse_line(' $$$$$: 33-block  1')
-    _BlockLine(hits=0, lineno=33, blockno=1, extra_info=_ExtraInfo.EXCEPTION_ONLY)
+    _BlockLine(hits=0, lineno=33, blockno=1, extra_info=EXCEPTION_ONLY)
+    >>> _parse_line('     1: 9-block with some unknown format')
+    Traceback (most recent call last):
+    gcovr.gcov_parser.UnknownLineType:      1: 9-block with some unknown format
 
     Example: will reject garbage:
     >>> _parse_line('nonexistent_tag foo bar')
@@ -656,16 +700,14 @@ def _parse_line(line: str) -> _Line:
     # #####: 13:foo += 1;
     # =====: 13:foo += 1;
     #   12*: 13:cond ? bar() : baz();
-    segments = line.split(":", 2)
-    if len(segments) == 3:
-        count_str, lineno, source_code = segments
-        count_str = count_str.strip()
-        lineno = lineno.strip()
+    match = _RE_SOURCE_LINE.fullmatch(line)
+    if match is not None:
+        count_str, lineno, source_code = match.groups()
 
         # METADATA (key, value)
         if count_str == "-" and lineno == "0":
             key, value = source_code.split(":", 1)
-            return _MetadataLine(key.lower(), value)
+            return _MetadataLine(key, value)
 
         if count_str == "-":
             count = 0
@@ -705,6 +747,18 @@ def _parse_line(line: str) -> _Line:
 
             return _BlockLine(count, int(lineno), int(blockno), extra_info)
 
+    # SPECIALIZATION NAME
+    #
+    # Structure: a name starting in the first column, ending with a ":". It is
+    # not safe to make further assumptions about the layout of the (demangled)
+    # identifier. For example, Rust might produce "<X as Y>::foo::h12345".
+    #
+    # This line type is therefore checked LAST! The old parser might have been
+    # more robust because it would only consider specialization names on the
+    # line following a specialization marker.
+    if len(line) > 2 and not line[0].isspace() and line.endswith(":"):
+        return _SpecializationNameLine(line[:-1])
+
     raise UnknownLineType(line)
 
 
@@ -728,8 +782,8 @@ def _parse_tag_line(line: str) -> Optional[_Line]:
     if line.startswith("branch "):
         match = _RE_BRANCH_LINE.match(line)
         if match is not None:
-            branch_id, taken, annotation = match.groups()
-            hits = 0 if taken is None else _int_from_gcov_unit(taken)
+            branch_id, taken_str, annotation = match.groups()
+            hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
             return _BranchLine(int(branch_id), hits, annotation)
 
     # CALL
@@ -777,41 +831,89 @@ def _parse_tag_line(line: str) -> Optional[_Line]:
     if line.startswith("-----"):
         return _SpecializationMarkerLine()
 
-    # SPECIALIZATION NAME
-    #
-    # Structure: a name starting in the first column, ending with a ":".
-    # It is not safe to make further assumptions about the layout of the identifier
-    # since it may be demangled.
-    #
-    # In theory, there is an ambiguity with code lines like "12345: 9:foo:",
-    # i.e. a line that ends with a label or other ":"
-    # *and* is executed extremely often.
-    # To protect against that, we'll check that the name does not start with a digit.
-    #
-    # The old parser was more robust
-    # because it would only consider specialization names
-    # on the line following a specialization marker.
-    if line.endswith(":"):
-        if len(line) > 2 and not line[0].isdigit():
-            return _SpecializationNameLine(line[:-1])
-
     return None
+
+
+class _ExclusionRangeWarnings:
+    r"""
+    Log warnings related to exclusion marker processing.
+
+    Example:
+    >>> source = '''\
+    ...  1: 1: some code
+    ...  1: 2: foo // LCOV_EXCL_STOP
+    ...  1: 3: bar // GCOVR_EXCL_START
+    ...  1: 4: baz // GCOV_EXCL_STOP
+    ...  1: 5: "GCOVR_EXCL_START"
+    ... '''
+    >>> import sys; sys.stderr = sys.stdout  # redirect warnings
+    >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
+    ...     source.splitlines(), filename='example.cpp', logger=Logger(),
+    ...    flags=ParserFlags.NONE, exclude_lines_by_pattern=None)
+    (WARNING) mismatched coverage exclusion flags.
+       LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp
+    (WARNING) GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 4, when processing example.cpp
+    (WARNING) The coverage exclusion region start flag GCOVR_EXCL_START
+       on line 5 did not have corresponding GCOVR_EXCL_STOP flag
+       in file example.cpp.
+    """
+    def __init__(self, logger: Logger, filename: str) -> None:
+        self.logger = logger
+        self.filename = filename
+
+    def mismatched_start_stop(
+        self, start_lineno: int, start: str, stop_lineno: int, stop: str
+    ) -> None:
+        """warn that start/stop region markers don't match"""
+        self.logger.warn(
+            "{start} found on line {start_lineno} "
+            "was terminated by {stop} on line {stop_lineno}, "
+            "when processing {filename}",
+            start=start,
+            start_lineno=start_lineno,
+            stop=stop,
+            stop_lineno=stop_lineno,
+            filename=self.filename,
+        )
+
+    def stop_without_start(self, lineno: int, expected_start: str, stop: str) -> None:
+        """warn that a region was ended without corresponding start marker"""
+        self.logger.warn(
+            "mismatched coverage exclusion flags.\n"
+            "\t{stop} found on line {lineno} without corresponding {start}, "
+            "when processing {filename}",
+            start=expected_start,
+            stop=stop,
+            lineno=lineno,
+            filename=self.filename,
+        )
+
+    def start_without_stop(self, lineno: int, start: str, expected_stop: str) -> None:
+        """warn that a region was started but not closed"""
+        self.logger.warn(
+            "The coverage exclusion region start flag {start}\n"
+            "\ton line {lineno} did not have corresponding {stop} flag\n"
+            "\tin file {filename}.",
+            start=start,
+            stop=expected_stop,
+            lineno=lineno,
+            filename=self.filename,
+        )
 
 
 def _find_excluded_ranges(
     lines: List[Tuple[int, str]],
     *,
-    logger: Logger,
-    filename: str,
-    exclude_lines_by_pattern: Optional[str],
+    warnings: _ExclusionRangeWarnings,
+    exclude_lines_by_pattern: Optional[str] = None,
 ) -> Callable[[int], bool]:
     """
     Scan through all lines to find line ranges covered by exclusion markers.
 
     Example:
-    >>> lines = [(13, '// IGNORE'), (15, '// GCOV_EXCL_START'), (18, '//GCOV_EXCL_STOP')]
+    >>> lines = [(13, '//IGNORE'), (15, '//GCOV_EXCL_START'), (18, '//GCOV_EXCL_STOP')]
     >>> exclude = _find_excluded_ranges(
-    ...     lines, logger=None, filename='test', exclude_lines_by_pattern = '.*IGNORE')
+    ...     lines, warnings=..., exclude_lines_by_pattern = '.*IGNORE')
     >>> [lineno for lineno in range(20) if exclude(lineno)]
     [13, 15, 16, 17]
     """
@@ -835,48 +937,35 @@ def _find_excluded_ranges(
 
                 if flag == "START":
                     exclusion_stack.append((header, lineno))
-                    continue
 
-                if flag == "STOP":
+                elif flag == "STOP":
                     if not exclusion_stack:
-                        logger.warn(
-                            "mismatched coverage exclusion flags.\n"
-                            "\t{header}_EXCL_STOP found on line {lineno} "
-                            "without corresponding {header}_EXCL_START, "
-                            "when processing {fname}",
-                            header=header,
-                            lineno=lineno,
-                            fname=filename,
+                        warnings.stop_without_start(
+                            lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
                         )
                         continue
 
                     start_header, start_lineno = exclusion_stack.pop()
                     if header != start_header:
-                        logger.warn(
-                            "{start_header}_EXCL_START found on line {start_line} "
-                            "was terminated by {header}_EXCL_STOP "
-                            "on line {lineno}, when processing {fname}",
-                            start_header=start_header,
-                            start_line=start_lineno,
-                            header=header,
-                            lineno=lineno,
-                            fname=filename,
+                        warnings.mismatched_start_stop(
+                            start_lineno,
+                            f"{start_header}_EXCL_START",
+                            lineno,
+                            f"{header}_EXCL_STOP",
                         )
 
                     exclude_line_ranges.append((start_lineno, lineno))
+
+                else:  # pragma: no cover
+                    pass
 
         if exclude_lines_by_pattern_regex:
             if exclude_lines_by_pattern_regex.match(code):
                 exclude_line_ranges.append((lineno, lineno + 1))
 
     for header, lineno in exclusion_stack:
-        logger.warn(
-            "The coverage exclusion region start flag {header}_EXCL_START\n"
-            "\ton line {line} did not have corresponding {header}_EXCL_STOP flag\n"
-            "\tin file {fname}.",
-            header=header,
-            line=lineno,
-            fname=filename,
+        warnings.start_without_stop(
+            lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
         )
 
     return _make_is_in_any_range(exclude_line_ranges)
@@ -962,9 +1051,11 @@ def _int_from_gcov_unit(formatted: str) -> int:
     Gcov's number formatting works like this:
 
     * if ``decimal_places >= 0``, format a percentage
-      * the percentage is fudged so that 0% and 100% are only shown when that's the true value
+      * the percentage is fudged so that 0% and 100% are only shown
+        when that's the true value
     * otherwise, format a count
-      * if human readable numbers are enabled, use SI units like ``1.7k`` instead of ``1693``
+      * if human readable numbers are enabled,
+        use SI units like ``1.7k`` instead of ``1693``
 
     Relevant gcov command line flags:
 
