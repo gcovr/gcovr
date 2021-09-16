@@ -11,10 +11,7 @@ set_sensible_default = $(if $(filter undefined default,$(origin $(1))),$(2),$(va
 
 PYTHON := $(call set_sensible_default,PYTHON,python3)
 
-override AVAILABLE_CC := gcc-5 gcc-6 gcc-8 clang-10
-ifeq ($(MAKECMDGOALS),docker-qa)
-override AVAILABLE_CC += all
-endif
+override AVAILABLE_CC := gcc-5 gcc-6 gcc-8 clang-10 all
 
 # Setting CXX and GCOV depending on CC. Only CC has to be set to a specific version.
 # If using GitHub actions on Windows, gcc-8 is set but gcc is used, so we override it.
@@ -35,6 +32,10 @@ TEST_OPTS ?=
 ifeq ($(USE_COVERAGE),true)
 override TEST_OPTS += --cov=gcovr --cov-branch
 endif
+
+RUN_ALL_COMPILERS = \
+	$(foreach cc,$(filter-out all,$(AVAILABLE_CC)),$(MAKE) $@ CC=$(cc); )\
+	echo "Running $@ for compiler versions ($(filter-out all,$(AVAILABLE_CC))) finished"
 
 .PHONY: help setup-dev qa lint test doc docker-qa docker-qa-build
 
@@ -59,6 +60,34 @@ help:
 	@echo "  QA_CONTAINER"
 	@echo "             tag for the qa docker container [current: $(QA_CONTAINER)]"
 
+docker-qa: export TEST_OPTS := $(TEST_OPTS)
+docker-qa: export GCOVR_ISOLATED_TEST := zkQEVaBpXF1i
+
+ifeq ($(CC),all)
+
+setup-dev:
+	$(RUN_ALL_COMPILERS)
+
+qa:
+	$(RUN_ALL_COMPILERS)
+
+lint:
+	$(RUN_ALL_COMPILERS)
+
+check-format:
+	$(RUN_ALL_COMPILERS)
+
+test:
+	$(RUN_ALL_COMPILERS)
+
+doc:
+	$(RUN_ALL_COMPILERS)
+
+docker-qa:
+	$(RUN_ALL_COMPILERS)
+
+else
+
 setup-dev:
 	$(PYTHON) -m pip install --upgrade pip
 	$(PYTHON) -m pip install -r requirements.txt -r doc/requirements.txt
@@ -79,7 +108,7 @@ endif
 endif
 	$(GCOV) --version
 
-qa: doc lint check-format test doc
+qa: doc lint check-format test
 
 lint:
 	$(PYTHON) -m flake8 doc gcovr
@@ -95,20 +124,12 @@ test: export CXXFLAGS := --this_flag_does_not_exist # Env removed in text_gcovr.
 test: export GCOV := $(GCOV)
 
 test:
-	cd gcovr/tests && make clean > /dev/null
+	cd gcovr/tests && make --silent clean
 	$(PYTHON) -m pytest $(TEST_OPTS) -- gcovr doc/examples
 
 doc:
 	cd doc && make html O=-W
 
-docker-qa: export TEST_OPTS := $(TEST_OPTS)
-docker-qa: export GCOVR_ISOLATED_TEST := zkQEVaBpXF1i
-
-ifeq ($(CC),all)
-docker-qa:
-	$(foreach cc,$(filter-out all,$(AVAILABLE_CC)),make $@ CC=$(cc); )\
-	echo "Running docker for compiler versions ($(filter-out all,$(AVAILABLE_CC))) finished"
-else
 docker-qa: | docker-qa-build
 	docker run --rm -e TEST_OPTS -e GCOVR_ISOLATED_TEST -v `pwd`:/gcovr $(QA_CONTAINER)
 
