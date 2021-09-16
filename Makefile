@@ -12,6 +12,9 @@ set_sensible_default = $(if $(filter undefined default,$(origin $(1))),$(2),$(va
 PYTHON := $(call set_sensible_default,PYTHON,python3)
 
 override AVAILABLE_CC := gcc-5 gcc-6 gcc-8 clang-10
+ifeq ($(MAKECMDGOALS),docker-qa)
+override AVAILABLE_CC += all
+endif
 
 # Setting CXX and GCOV depending on CC. Only CC has to be set to a specific version.
 # If using GitHub actions on Windows, gcc-8 is set but gcc is used, so we override it.
@@ -19,10 +22,12 @@ CC := $(call set_sensible_default,CC,gcc-5)
 ifeq ($(filter $(CC),$(AVAILABLE_CC)),)
 $(error Unsupported version of GCC used. CC must be one of: $(AVAILABLE_CC))
 endif
-export CC := $(CC)
 CXX := $(call set_sensible_default,CXX,$(subst clang,clang++,$(subst gcc,g++,$(CC))))
-export CXX := $(CXX)
 GCOV := $(call set_sensible_default,GCOV,$(patsubst clang%,llvm-cov% gcov,$(subst gcc,gcov,$(CC))))
+ifneq ($(CC),all)
+export CC := $(CC)
+export CXX := $(CXX)
+endif
 
 USERID  := $(shell id -u $(USER))
 QA_CONTAINER ?= gcovr-qa-$(CC)-uid_$(USERID)
@@ -90,7 +95,7 @@ test: export CXXFLAGS := --this_flag_does_not_exist # Env removed in text_gcovr.
 test: export GCOV := $(GCOV)
 
 test:
-	cd gcovr/tests && make clean
+	cd gcovr/tests && make clean > /dev/null
 	$(PYTHON) -m pytest $(TEST_OPTS) -- gcovr doc/examples
 
 doc:
@@ -99,6 +104,11 @@ doc:
 docker-qa: export TEST_OPTS := $(TEST_OPTS)
 docker-qa: export GCOVR_ISOLATED_TEST := zkQEVaBpXF1i
 
+ifeq ($(CC),all)
+docker-qa:
+	$(foreach cc,$(filter-out all,$(AVAILABLE_CC)),make $@ CC=$(cc); )\
+	echo "Running docker for compiler versions ($(filter-out all,$(AVAILABLE_CC))) finished"
+else
 docker-qa: | docker-qa-build
 	docker run --rm -e TEST_OPTS -e GCOVR_ISOLATED_TEST -v `pwd`:/gcovr $(QA_CONTAINER)
 
@@ -106,3 +116,4 @@ docker-qa-build: admin/Dockerfile.qa requirements.txt doc/requirements.txt
 	docker build --tag $(QA_CONTAINER) \
 		--build-arg USERID=$(USERID) \
 		--build-arg CC=$(CC) --build-arg CXX=$(CXX) --file $< .
+endif
