@@ -16,6 +16,31 @@
       <th scope="row">Date:</th>
       <td>{{info.date}}</td>
     </tr>
+    {% if function_names %}
+    <tr>
+      <th scope="row">Goto function:</th>
+      <td>
+        <form name="gotoFunctionName">
+          <select name="selection">
+            <option selected="selected" value=""></option>
+        {% for function_name in function_names %}
+            <option value="#{{ function_name.1 }}">{{ function_name.0 }}, line {{ function_name.1 }}</a></option>
+        {% endfor %}
+          </select>
+        </form>
+        <script>
+          function gotoFunctionName () {
+            var menu = document.gotoFunctionName.selection;
+            if (menu.options[menu.selectedIndex].value != "") {
+              document.location.href = menu.options[menu.selectedIndex].value;
+              menu.selectedIndex = 0;
+            }
+          }
+          document.gotoFunctionName.selection.addEventListener('change', gotoFunctionName);
+        </script>
+      </td>
+    </tr>
+    {% endif -%}
   </table>
 </div>
 <div>
@@ -36,7 +61,7 @@
       <th scope="row">Functions:</th>
       <td>{{functions.exec}}</td>
       <td>{{functions.total}}</td>
-      <td class="{{info.functions.class}}">{{functions.coverage}}%</td>
+      <td class="{{functions.class}}">{{functions.coverage}}%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>

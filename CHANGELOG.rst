@@ -15,6 +15,7 @@ Improvements and new features:
 - Don't use a temporary directory for running gcov (:issue:`525`)
 - Fix junctions on windows for Python 3.8 (:issue:`535`)
 - Can create reproducible reports with the :option:`--timestamp` option (:issue:`546`)
+- Add "Goto function" in html details. (:issue:`515`)
 
 Documentation:
 

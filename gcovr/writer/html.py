@@ -357,7 +357,6 @@ def print_html_report(covdata, output_file, options):
     cdata_fname = {}
     cdata_sourcefile = {}
     for f in keys:
-        cdata = covdata[f]
         filtered_fname = options.root_filter.sub('', f)
         files.append(filtered_fname)
         dirs.append(os.path.dirname(filtered_fname) + os.sep)
@@ -403,6 +402,14 @@ def print_html_report(covdata, output_file, options):
         cdata = covdata[f]
 
         data['filename'] = cdata_fname[f]
+
+        # Only use demangled names (containing a brace)
+        data['function_names'] = sorted(
+            [
+                (f, cdata.functions[f].lineno)
+                for f in cdata.functions.keys() if ("(" in f) or (f == "main")
+            ]
+        )
 
         functions = dict()
         data['functions'] = functions
