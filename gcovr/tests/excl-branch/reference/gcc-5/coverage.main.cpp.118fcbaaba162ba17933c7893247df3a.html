@@ -26,9 +26,34 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2021-07-19 19:32:19</td>
+      <td>2021-09-16 19:31:04</td>
     </tr>
-  </table>
+    <tr>
+      <th scope="row">Goto function:</th>
+      <td>
+        <form name="gotoFunctionName">
+          <select name="selection">
+            <option selected="selected" value=""></option>
+            <option value="#7">Bar::Bar(), line 7</a></option>
+            <option value="#9">Bar::~Bar(), line 9</a></option>
+            <option value="#38">bar(int), line 38</a></option>
+            <option value="#16">foo(int), line 16</a></option>
+            <option value="#46">main, line 46</a></option>
+          </select>
+        </form>
+        <script>
+          function gotoFunctionName () {
+            var menu = document.gotoFunctionName.selection;
+            if (menu.options[menu.selectedIndex].value != "") {
+              document.location.href = menu.options[menu.selectedIndex].value;
+              menu.selectedIndex = 0;
+            }
+          }
+          document.gotoFunctionName.selection.addEventListener('change', gotoFunctionName);
+        </script>
+      </td>
+    </tr>
+</table>
 </div>
 <div>
   <table class="coverage">

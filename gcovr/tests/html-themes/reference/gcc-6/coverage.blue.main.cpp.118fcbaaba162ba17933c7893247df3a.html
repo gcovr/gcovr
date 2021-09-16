@@ -26,9 +26,35 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2021-07-19 19:39:17</td>
+      <td>2021-09-16 19:33:22</td>
     </tr>
-  </table>
+    <tr>
+      <th scope="row">Goto function:</th>
+      <td>
+        <form name="gotoFunctionName">
+          <select name="selection">
+            <option selected="selected" value=""></option>
+            <option value="#21">RAII::RAII(bool), line 21</a></option>
+            <option value="#16">RAII::method_that_may_throw() const, line 16</a></option>
+            <option value="#22">RAII::~RAII(), line 22</a></option>
+            <option value="#3">function_that_may_throw(bool), line 3</a></option>
+            <option value="#24">function_with_catchers(int), line 24</a></option>
+            <option value="#49">main, line 49</a></option>
+          </select>
+        </form>
+        <script>
+          function gotoFunctionName () {
+            var menu = document.gotoFunctionName.selection;
+            if (menu.options[menu.selectedIndex].value != "") {
+              document.location.href = menu.options[menu.selectedIndex].value;
+              menu.selectedIndex = 0;
+            }
+          }
+          document.gotoFunctionName.selection.addEventListener('change', gotoFunctionName);
+        </script>
+      </td>
+    </tr>
+</table>
 </div>
 <div>
   <table class="coverage">
