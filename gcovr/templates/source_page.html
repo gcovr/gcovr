@@ -16,31 +16,6 @@
       <th scope="row">Date:</th>
       <td>{{info.date}}</td>
     </tr>
-    {% if function_names %}
-    <tr>
-      <th scope="row">Goto function:</th>
-      <td>
-        <form name="gotoFunctionName">
-          <select name="selection">
-            <option selected="selected" value=""></option>
-        {% for function_name in function_names %}
-            <option value="#{{ function_name.1 }}">{{ function_name.0 }}, line {{ function_name.1 }}</a></option>
-        {% endfor %}
-          </select>
-        </form>
-        <script>
-          function gotoFunctionName () {
-            var menu = document.gotoFunctionName.selection;
-            if (menu.options[menu.selectedIndex].value != "") {
-              document.location.href = menu.options[menu.selectedIndex].value;
-              menu.selectedIndex = 0;
-            }
-          }
-          document.gotoFunctionName.selection.addEventListener('change', gotoFunctionName);
-        </script>
-      </td>
-    </tr>
-    {% endif -%}
   </table>
 </div>
 <div>
@@ -74,6 +49,17 @@
 {% endblock %}
 
 {% block content %}
+{% if function_names %}
+<details class="listOfFunctions">
+  <summary>List of functions</summary>
+  <ul>
+    {% for function_name in function_names %}
+    <li><a href="#{{ function_name.1 }}">{{ function_name.0 }}, line {{ function_name.1 }}</a></li>
+    {% endfor %}
+  </ul>
+</details>  
+<br/>
+{% endif -%}
 <div class="file-source">
   <table>
     <tr>

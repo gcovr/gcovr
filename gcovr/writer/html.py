@@ -404,12 +404,9 @@ def print_html_report(covdata, output_file, options):
         data['filename'] = cdata_fname[f]
 
         # Only use demangled names (containing a brace)
-        data['function_names'] = sorted(
-            [
-                (f, cdata.functions[f].lineno)
-                for f in cdata.functions.keys() if ("(" in f) or (f == "main")
-            ]
-        )
+        data['function_names'] = [
+            (f, cdata.functions[f].lineno) for f in sorted(cdata.functions.keys())
+        ]
 
         functions = dict()
         data['functions'] = functions
