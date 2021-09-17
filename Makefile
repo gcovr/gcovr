@@ -55,6 +55,8 @@ help:
 	@echo "  PYTHON     Python executable to use [current: $(PYTHON)]"
 	@echo "  CC, CXX, GCOV"
 	@echo "             the gcc version to use [current: CC=$(CC) CXX=$(CXX) GCOV=$(GCOV)]"
+	@echo "             Available are $(AVAILABLE_CC),"
+	@echo "             all can only be used for qa and docker-qa."
 	@echo "  TEST_OPTS  additional flags for pytest [current: $(TEST_OPTS)]"
 	@echo "  USE_COVERAGE  if true extend TEST_OPTS with flags for generating coverage data"
 	@echo "  QA_CONTAINER"
@@ -65,22 +67,7 @@ docker-qa: export GCOVR_ISOLATED_TEST := zkQEVaBpXF1i
 
 ifeq ($(CC),all)
 
-setup-dev:
-	$(RUN_ALL_COMPILERS)
-
 qa:
-	$(RUN_ALL_COMPILERS)
-
-lint:
-	$(RUN_ALL_COMPILERS)
-
-check-format:
-	$(RUN_ALL_COMPILERS)
-
-test:
-	$(RUN_ALL_COMPILERS)
-
-doc:
 	$(RUN_ALL_COMPILERS)
 
 docker-qa:
