@@ -87,12 +87,12 @@ jobs:
       matrix:
         os: [ubuntu-20.04, windows-2019]
         gcc: [gcc-8]
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8] # 3.6 is used in Docker
 
         include:
           - os: ubuntu-18.04
             gcc: gcc-5
-            python-version: 3.8
+            python-version: 3.7
           - os: ubuntu-18.04
             gcc: gcc-6
             python-version: 3.8
