@@ -26,30 +26,9 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2021-11-09 20:43:48</td>
+      <td>2021-11-09 20:47:17</td>
     </tr>
-    <tr>
-      <th scope="row">Goto function:</th>
-      <td>
-        <form name="gotoFunctionName">
-          <select name="selection">
-            <option selected="selected" value=""></option>
-            <option value="#46">main, line 46</a></option>
-          </select>
-        </form>
-        <script>
-          function gotoFunctionName () {
-            var menu = document.gotoFunctionName.selection;
-            if (menu.options[menu.selectedIndex].value != "") {
-              document.location.href = menu.options[menu.selectedIndex].value;
-              menu.selectedIndex = 0;
-            }
-          }
-          document.gotoFunctionName.selection.addEventListener('change', gotoFunctionName);
-        </script>
-      </td>
-    </tr>
-</table>
+  </table>
 </div>
 <div>
   <table class="coverage">
@@ -83,6 +62,18 @@
 
     <hr/>
 
+<details class="listOfFunctions">
+  <summary>List of functions</summary>
+  <ul>
+    <li><a href="#38">_Z3bari, line 38</a></li>
+    <li><a href="#16">_Z3fooi, line 16</a></li>
+    <li><a href="#7">_ZN3BarC2Ev, line 7</a></li>
+    <li><a href="#9">_ZN3BarD0Ev, line 9</a></li>
+    <li><a href="#9">_ZN3BarD2Ev, line 9</a></li>
+    <li><a href="#46">main, line 46</a></li>
+  </ul>
+</details>  
+<br/>
 <div class="file-source">
   <table>
     <tr>

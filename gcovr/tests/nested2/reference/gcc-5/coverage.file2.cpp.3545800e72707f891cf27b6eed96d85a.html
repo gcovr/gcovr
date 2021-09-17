@@ -26,31 +26,9 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2021-09-16 19:31:31</td>
+      <td>2021-09-17 19:38:19</td>
     </tr>
-    <tr>
-      <th scope="row">Goto function:</th>
-      <td>
-        <form name="gotoFunctionName">
-          <select name="selection">
-            <option selected="selected" value=""></option>
-            <option value="#1">bar(), line 1</a></option>
-            <option value="#8">bar_(), line 8</a></option>
-          </select>
-        </form>
-        <script>
-          function gotoFunctionName () {
-            var menu = document.gotoFunctionName.selection;
-            if (menu.options[menu.selectedIndex].value != "") {
-              document.location.href = menu.options[menu.selectedIndex].value;
-              menu.selectedIndex = 0;
-            }
-          }
-          document.gotoFunctionName.selection.addEventListener('change', gotoFunctionName);
-        </script>
-      </td>
-    </tr>
-</table>
+  </table>
 </div>
 <div>
   <table class="coverage">
@@ -84,6 +62,14 @@
 
     <hr/>
 
+<details class="listOfFunctions">
+  <summary>List of functions</summary>
+  <ul>
+    <li><a href="#1">bar(), line 1</a></li>
+    <li><a href="#8">bar_(), line 8</a></li>
+  </ul>
+</details>  
+<br/>
 <div class="file-source">
   <table>
     <tr>

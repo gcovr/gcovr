@@ -372,6 +372,12 @@ pre
     margin-bottom: 0;
 }
 
+.listOfFunctions > ul > li > a
+{
+    text-decoration: none;
+    color: inherit;
+}
+
 .source-line
 {
     height : 15px;

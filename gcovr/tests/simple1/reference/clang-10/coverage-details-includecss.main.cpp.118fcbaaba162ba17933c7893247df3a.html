@@ -380,6 +380,12 @@ pre
     margin-bottom: 0;
 }
 
+.listOfFunctions > ul > li > a
+{
+    text-decoration: none;
+    color: inherit;
+}
+
 .source-line
 {
     height : 15px;
@@ -532,30 +538,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2021-11-09 20:44:33</td>
+      <td>2021-11-09 20:48:00</td>
     </tr>
-    <tr>
-      <th scope="row">Goto function:</th>
-      <td>
-        <form name="gotoFunctionName">
-          <select name="selection">
-            <option selected="selected" value=""></option>
-            <option value="#13">main, line 13</a></option>
-          </select>
-        </form>
-        <script>
-          function gotoFunctionName () {
-            var menu = document.gotoFunctionName.selection;
-            if (menu.options[menu.selectedIndex].value != "") {
-              document.location.href = menu.options[menu.selectedIndex].value;
-              menu.selectedIndex = 0;
-            }
-          }
-          document.gotoFunctionName.selection.addEventListener('change', gotoFunctionName);
-        </script>
-      </td>
-    </tr>
-</table>
+  </table>
 </div>
 <div>
   <table class="coverage">
@@ -589,6 +574,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
     <hr/>
 
+<details class="listOfFunctions">
+  <summary>List of functions</summary>
+  <ul>
+    <li><a href="#4">_Z3fooi, line 4</a></li>
+    <li><a href="#13">main, line 13</a></li>
+  </ul>
+</details>  
+<br/>
 <div class="file-source">
   <table>
     <tr>
