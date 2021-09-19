@@ -56,7 +56,7 @@ skip_clean = None
 
 IS_CLANG = True if env["CC"].startswith("clang") else False
 
-REFERENCE_DIR = os.path.join("reference", env["CC"])
+REFERENCE_DIR = os.path.join("reference", env.get("CC_REFERENCE", env["CC"]))
 
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
