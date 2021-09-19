@@ -105,8 +105,7 @@ jobs:
     - name: Setup environment
       run: |
         echo "USE_COVERAGE=${{ ( ( matrix.os == 'windows-2019' ) && ( matrix.python-version == '3.7' ) ) || ( ( matrix.os == 'ubuntu-18.04' ) && ( matrix.gcc == 'gcc-6' ) && ( matrix.python-version == '3.8' ) ) }}" >> $GITHUB_ENV
-        echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
-        echo "PYTHON=python" >> $GITHUB_ENV
+        echo "TEST_OPTS=--archive_differences" >> $GITHUB_ENV
       shell: bash
     - name: Install msys with GCC (Windows)
       if: ${{ startsWith(matrix.os,'windows-') }}
@@ -130,31 +129,22 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Cache pip
-      uses: actions/cache@v2
-      with:
-        # This path is specific to Ubuntu
-        path: ~/.cache/pip
-        # Look to see if there is a cache hit for the corresponding requirements file
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'doc/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-          ${{ runner.os }}-
     - name: Install dependencies
       run: |
-        make setup-dev
+        python3 -m pip install --upgrade pip
+        python3 -m pip install nox codecov
     - name: Lint files
       run: |
-        make lint
+        python3 -m nox --session lint
     - name: Check format of files
       if: ${{ ( matrix.python-version != 'pypy3' ) }}
       # Currently fail of this job is OK.
       continue-on-error: true
       run: |
-        make check-format
+        python -m nox --session black
     - name: Test with pytest
       run: |
-        make test TEST_OPTS="--archive_differences"
+        python -m nox --session "tests_version(${{ matrix.gcc }})"
     - name: Upload pytest test results
       if: ${{ failure() }}
       uses: actions/upload-artifact@v2
@@ -179,13 +169,17 @@ jobs:
         gcc: [gcc-5, gcc-6, gcc-8, clang-10]
 
     steps:
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install nox
     - uses: actions/checkout@v2
     - name: Build Docker
       run: |
-        make docker-qa-build CC=${{ matrix.gcc }}
+        python3 -m nox --session "docker_qa_build_version(${{ matrix.gcc }})"
     - name: Run Docker
       run: |
-        make docker-qa TEST_OPTS="--archive_differences" CC=${{ matrix.gcc }}
+        python3 -m nox --session "docker_qa_run_version(${{ matrix.gcc }})"
     - name: Upload pytest test results
       if: ${{ failure() }}
       uses: actions/upload-artifact@v2
