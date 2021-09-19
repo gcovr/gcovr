@@ -404,10 +404,19 @@ def print_html_report(covdata, output_file, options):
         data['filename'] = cdata_fname[f]
 
         # Only use demangled names (containing a brace)
-        data['function_names'] = [
-            (f, cdata.functions[f].lineno) for f in sorted(cdata.functions.keys())
-        ]
-
+        data['function_list'] = []
+        for name in sorted(cdata.functions.keys()):
+            fcdata = cdata.functions[name]
+            fdata = dict()
+            fdata["name"] = name
+            fdata["line"] = fcdata.lineno
+            fdata["count"] = fcdata.count
+            fdata["class"] = coverage_to_class(
+                0 if fcdata.count >= 0 else high_threshold,
+                medium_threshold,
+                high_threshold
+            )
+            data['function_list'].append(fdata)
         functions = dict()
         data['functions'] = functions
 

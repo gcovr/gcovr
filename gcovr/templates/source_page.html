@@ -49,16 +49,35 @@
 {% endblock %}
 
 {% block content %}
-{% if function_names %}
-<details class="listOfFunctions">
+{% if function_list %}
+<details>
   <summary>List of functions</summary>
-  <ul>
-    {% for function_name in function_names %}
-    <li><a href="#l{{ function_name.1 }}">{{ function_name.0 }}, line {{ function_name.1 }}</a></li>
-    {% endfor %}
-  </ul>
-</details>  
-<br/>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+{% for entry in function_list %}
+    <tr>
+      <td>
+        <a href="#l{{ entry['line'] }}">{{ entry["name"] }}</a>
+      </td>
+      <td>
+        <a href="#l{{ entry['line'] }}">{{ entry["line"] }}</a>
+      </td>
+      <td>
+        <a href="#l{{ entry['line'] }}">
+        {%- if entry["count"] == 0 %} not called
+        {%- else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}
+        {%- endif -%}
+        </a>
+      </td>
+    </tr>
+{% endfor %}
+  </table>
+</details>
+<hr/>
 {% endif -%}
 <div class="file-source">
   <table>
