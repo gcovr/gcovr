@@ -10,8 +10,6 @@ RUN \
   apt-get clean
 
 WORKDIR /gcovr
-COPY requirements.txt .
-COPY doc/requirements.txt doc/
 
 ENV CC=$CC CXX=$CXX GCOVR_ISOLATED_TEST=zkQEVaBpXF1i
 

@@ -45,7 +45,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install nox wheel
+        python -m pip install nox
     - name: Lint with flake8
       run: |
         python -m nox --session lint
@@ -57,8 +57,7 @@ jobs:
         python -m nox --session doc
     - name: Build
       run: |
-        python setup.py sdist bdist_wheel
-        twine check dist/*
+        python -m nox --session build_wheel
     - name: Upload distribution
       if: ${{ success() }}
       uses: actions/upload-artifact@v2
@@ -71,4 +70,4 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        twine upload dist/*
+        python -m nox --session upload_wheel

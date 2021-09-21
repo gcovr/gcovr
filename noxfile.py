@@ -51,13 +51,11 @@ def lint(session):
     else:
         args = DEFAULT_TEST_DIRECTORIES
     session.run("flake8", *args)
-    
+
     if session.posargs:
         session.run("python", "-m", "black", *session.posargs)
     else:
-        session.run(
-            "python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES
-        )
+        session.run("python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES)
         session.run("python", "-m", "black", "--diff", *DEFAULT_TEST_DIRECTORIES)
 
 
@@ -73,7 +71,6 @@ def black(session):
 
 @nox.session
 def doc(session):
-    session.install("-r", "requirements.txt")
     session.install("-r", "doc/requirements.txt")
     session.install("-e", ".")
     session.run("bash", "-c", "cd doc && make html O=-W", external=True)
@@ -97,7 +94,15 @@ def tests_all_versions(session):
 @nox.session
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
 def tests_version(session, version):
-    session.install("-r", "requirements.txt")
+    session.install(
+        "jinja2",
+        "lxml",
+        "pygments == 2.7.4",
+        "pytest",
+        "pytest-cov",
+        "cmake",
+        "yaxmldiff",
+    )
     session.install("-e", ".")
     set_environment(session, version)
     session.run("bash", "-c", "cd gcovr/tests && make --silent clean", external=True)
@@ -108,6 +113,19 @@ def tests_version(session, version):
     if "--" not in args:
         args += ["--", "gcovr", "doc/examples"]
     session.run("python", *args)
+
+
+@nox.session
+def build_wheel(session):
+    session.install("wheel", "twine")
+    session.run("python", "setup.py", "sdist", "bdist_wheel")
+    session.run("twine", "check", "dist/*", external=True)
+
+
+@nox.session
+def upload_wheel(session):
+    session.install("twine")
+    session.run("twine", "upload", "dist/*", external=True)
 
 
 def docker_container_id(version):
