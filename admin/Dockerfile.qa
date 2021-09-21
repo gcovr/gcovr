@@ -14,7 +14,6 @@ WORKDIR /gcovr
 ENV CC=$CC CXX=$CXX GCOVR_ISOLATED_TEST=zkQEVaBpXF1i
 
 RUN \
-  python3 -m pip install --no-cache-dir --upgrade pip && \
   python3 -m pip install --no-cache-dir nox
 
 # Create new user "docker" and set password to "docker"
@@ -30,4 +29,4 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 CMD ( echo docker | sudo -S -p "Running chmod with sudo" chown -R docker:docker /gcovr ) && \
   echo "" && \
-  python3 -m nox
+  python3 -m nox --non-interactive

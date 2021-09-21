@@ -131,20 +131,19 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        python3 -m pip install --upgrade pip
         python3 -m pip install nox codecov
     - name: Lint files
       run: |
-        python3 -m nox --session lint
+        python3 -m nox --non-interactive --session lint
     - name: Check format of files
       if: ${{ ( matrix.python-version != 'pypy3' ) }}
       # Currently fail of this job is OK.
       continue-on-error: true
       run: |
-        python -m nox --session black
+        python -m nox --non-interactive --session black
     - name: Test with pytest
       run: |
-        python -m nox --session "tests_version(${{ matrix.gcc }})"
+        python -m nox --non-interactive --session "tests_version(${{ matrix.gcc }})"
     - name: Upload pytest test results
       if: ${{ failure() }}
       uses: actions/upload-artifact@v2
@@ -171,15 +170,14 @@ jobs:
     steps:
     - name: Install dependencies
       run: |
-        python3 -m pip install --upgrade pip
         python3 -m pip install nox
     - uses: actions/checkout@v2
     - name: Build Docker
       run: |
-        python3 -m nox --session "docker_qa_build_version(${{ matrix.gcc }})"
+        python3 -m nox --non-interactive --session "docker_qa_build_version(${{ matrix.gcc }})"
     - name: Run Docker
       run: |
-        python3 -m nox --session "docker_qa_run_version(${{ matrix.gcc }})"
+        python3 -m nox --non-interactive --session "docker_qa_run_version(${{ matrix.gcc }})"
     - name: Upload pytest test results
       if: ${{ failure() }}
       uses: actions/upload-artifact@v2
