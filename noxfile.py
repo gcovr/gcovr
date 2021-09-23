@@ -67,7 +67,9 @@ def lint(session: "nox.session") -> None:
             )
             session.run("python", "-m", "black", "--diff", *DEFAULT_TEST_DIRECTORIES)
     else:
-        session.log(f"Skip black because of platform {platform.python_implementation()}.")
+        session.log(
+            f"Skip black because of platform {platform.python_implementation()}."
+        )
 
 
 @nox.session

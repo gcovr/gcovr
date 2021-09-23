@@ -28,7 +28,9 @@ from .coverage import FileCoverage
 from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
-source_re = re.compile(r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory)")
+source_re = re.compile(
+    r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory)"
+)
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
 exclude_line_flag = "_EXCL_"
@@ -442,9 +444,7 @@ def run_gcov_and_process_files(
     return done
 
 
-def select_gcov_files_from_stdout(
-    out, gcov_filter, gcov_exclude, logger, chdir
-):
+def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, logger, chdir):
     active_files = []
     all_files = []
 
