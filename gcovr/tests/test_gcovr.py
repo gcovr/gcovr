@@ -247,6 +247,13 @@ def pytest_generate_tests(metafunc):
                     name == "html-source-encoding-cp1252" and IS_CLANG,
                     reason="clang doesnt understand -finput-charset=...",
                 ),
+                pytest.mark.xfail(
+                    name == "gcc-abspath" and (
+                        not env["CC"].startswith("gcc-")
+                        or int(env["CC"].replace("gcc-", "")) < 8
+                    ),
+                    reason="Option -fprofile-abs-path is supported since gcc-8",
+                ),
             ]
 
             collected_params.append(
