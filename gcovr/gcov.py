@@ -28,7 +28,7 @@ from .coverage import FileCoverage
 from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
-source_re = re.compile(r"[Cc](annot|ould not) open (source|graph|output) file")
+source_re = re.compile(r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory)")
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
 exclude_line_flag = "_EXCL_"
@@ -252,7 +252,7 @@ def guess_source_file_name_heuristics(
     return fname
 
 
-def process_datafile(filename, covdata, options, toerase, workdir):
+def process_datafile(filename, covdata, options, toerase):
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
     Params:
@@ -323,10 +323,6 @@ def process_datafile(filename, covdata, options, toerase, workdir):
             potential_wd.append(wd)
             wd = os.path.dirname(wd)
 
-    # Ensure the working directory for this thread is first (if any)
-    if workdir is not None:
-        potential_wd = [workdir] + potential_wd
-
     for wd in potential_wd:
         done = run_gcov_and_process_files(
             abs_filename,
@@ -336,7 +332,6 @@ def process_datafile(filename, covdata, options, toerase, workdir):
             toerase=toerase,
             error=errors.append,
             chdir=wd,
-            tempdir=workdir,
         )
 
         if options.delete:
@@ -382,12 +377,17 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
 
 
 def run_gcov_and_process_files(
-    abs_filename, covdata, options, logger, error, toerase, chdir, tempdir
+    abs_filename, covdata, options, logger, error, toerase, chdir
 ):
     # If the first element of cmd - the executable name - has embedded spaces
     # (other than within quotes), it probably includes extra arguments.
     gcov_cmd = shlex.split(options.gcov_cmd)
-    gcov_options = ["--branch-counts", "--branch-probabilities", "--preserve-paths"]
+    gcov_options = [
+        "--branch-counts",
+        "--branch-probabilities",
+        "--preserve-paths",
+        "--long-file-names",
+    ]
     if "llvm-cov" not in gcov_cmd[0]:
         gcov_options.append("--demangled-names")
     cmd = (
@@ -421,7 +421,6 @@ def run_gcov_and_process_files(
             gcov_exclude=options.gcov_exclude,
             logger=logger,
             chdir=chdir,
-            tempdir=tempdir,
         )
 
     if unknown_cla_re.search(err):
@@ -444,7 +443,7 @@ def run_gcov_and_process_files(
 
 
 def select_gcov_files_from_stdout(
-    out, gcov_filter, gcov_exclude, logger, chdir, tempdir
+    out, gcov_filter, gcov_exclude, logger, chdir
 ):
     active_files = []
     all_files = []
@@ -470,13 +469,7 @@ def select_gcov_files_from_stdout(
             logger.verbose_msg("Excluding gcov file {}", fname)
             continue
 
-        if tempdir and tempdir != chdir:
-            import shutil
-
-            active_files.append(os.path.join(tempdir, fname))
-            shutil.copyfile(full, active_files[-1])
-        else:
-            active_files.append(full)
+        active_files.append(full)
 
     return active_files, all_files
 
@@ -484,7 +477,7 @@ def select_gcov_files_from_stdout(
 #
 #  Process Already existing gcov files
 #
-def process_existing_gcov_file(filename, covdata, options, toerase, workdir):
+def process_existing_gcov_file(filename, covdata, options, toerase):
     logger = Logger(options.verbose)
 
     filtered, excluded = apply_filter_include_exclude(
