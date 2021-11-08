@@ -43,9 +43,12 @@ def find_test_cases():
     for script in glob.glob(datadir + '/*.sh'):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
-        for ext in 'txt xml'.split():
+        for ext in 'txt xml csv json html'.split():
             baseline = '{datadir}/{name}.{ext}'.format(
-                datadir=datadir, name=name, ext=ext)
+                datadir=datadir,
+                name=name,
+                ext=ext,
+            )
             if not os.path.exists(baseline):
                 continue
             else:

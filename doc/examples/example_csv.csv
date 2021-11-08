@@ -1,2 +1,2 @@
-filename,line_total,line_covered,line_percent,branch_total,branch_covered,branch_percent
-example.cpp,7,6,0.857,2,1,0.5
+filename,line_total,line_covered,line_percent,branch_total,branch_covered,branch_percent,function_total,function_covered,function_percent
+example.cpp,7,6,0.857,2,1,0.5,2,2,1.0
