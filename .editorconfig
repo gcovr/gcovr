@@ -8,8 +8,14 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+[Makefile]
+indent_style = tab
+
 [*.py]
 indent_size = 4
+
+[*.json]
+insert_final_newline = false
 
 # for the web templates, use more compact indent
 [gcovr/templates/*]

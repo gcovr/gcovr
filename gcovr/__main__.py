@@ -23,8 +23,6 @@ import io
 
 from argparse import ArgumentParser
 from os.path import normpath
-from tempfile import mkdtemp
-from shutil import rmtree
 from glob import glob
 
 from .configuration import (
@@ -337,7 +335,6 @@ def collect_coverage_from_gcov(covdata, options, logger):
     # Get coverage data
     with Workers(options.gcov_parallel, lambda: {
                  'covdata': dict(),
-                 'workdir': mkdtemp(),
                  'toerase': set(),
                  'options': options}) as pool:
         logger.verbose_msg("Pool started with {} threads", pool.size())
@@ -353,7 +350,6 @@ def collect_coverage_from_gcov(covdata, options, logger):
             else:
                 covdata[fname].update(cov)
         toerase.update(context['toerase'])
-        rmtree(context['workdir'])
     for filepath in toerase:
         if os.path.exists(filepath):
             os.remove(filepath)

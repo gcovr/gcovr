@@ -1,1 +1,1 @@
-{"run_at": "2021-06-14 19:55:38 UTC", "service_job_id": "id", "service_name": "gcovr-test-suite", "service_number": "number", "service_pull_request": "pr", "source_files": [{"coverage": [1, 1], "name": "main.cpp", "source_digest": "e3e6a5d78e81ea389bb54b2bd6c04e7d"}]}
+{"run_at": "2021-11-09 19:45:16 UTC", "service_job_id": "id", "service_name": "gcovr-test-suite", "service_number": "number", "service_pull_request": "pr", "source_files": [{"coverage": [1, 1, null], "name": "main.cpp", "source_digest": "e3e6a5d78e81ea389bb54b2bd6c04e7d"}]}
