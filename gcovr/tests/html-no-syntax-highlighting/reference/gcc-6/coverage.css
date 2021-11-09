@@ -372,7 +372,26 @@ pre
     margin-bottom: 0;
 }
 
-.listOfFunctions > ul > li > a
+.listOfFunctions td, .listOfFunctions th {
+    padding: 0 10px;
+}
+.listOfFunctions th
+{
+    text-align: center;
+    color: white;
+    background-color: SteelBlue;
+}
+.listOfFunctions tr > td {
+    background: aliceblue;
+}
+.listOfFunctions tr:nth-child(even) > td {
+    background: LightSteelBlue
+}
+.listOfFunctions tr:hover > td
+{
+    background-color: #ddd;
+}
+.listOfFunctions tr > td > a
 {
     text-decoration: none;
     color: inherit;
