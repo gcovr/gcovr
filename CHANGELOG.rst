@@ -31,6 +31,7 @@ Documentation:
 Internal changes:
 
  - Add support for clang-10 to docker tests. (:issue:`484`)
+ - Add support for gcc-9 to docker tests. (:issue:`527`)
  - Clean GCC environment variables in test suite. (:issue:`493`)
  - Fix problems from deployment of release 5.0. (:issue:`494`)
  - Use yaxmldiff for XML diffing in tests. (:issue:`495`)
