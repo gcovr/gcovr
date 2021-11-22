@@ -388,8 +388,10 @@ def run_gcov_and_process_files(
         "--branch-counts",
         "--branch-probabilities",
         "--preserve-paths",
-        "--long-file-names" if options.gcov_long_file_names else "",
     ]
+
+    if options.gcov_long_file_names:
+        gcov_options.append("--long-file-names")
 
     if not options.gcov_long_file_names and options.gcov_parallel > 1:
         logger.warn(
