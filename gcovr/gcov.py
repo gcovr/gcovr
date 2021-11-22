@@ -388,8 +388,15 @@ def run_gcov_and_process_files(
         "--branch-counts",
         "--branch-probabilities",
         "--preserve-paths",
-        "--long-file-names",
+        "--long-file-names" if options.gcov_long_file_names else "",
     ]
+
+    if not options.gcov_long_file_names and options.gcov_parallel > 1:
+        logger.warn(
+            "Using --no-gcov-long-file-names together with -j option is likely to "
+            "create issues with concurrent file accesses."
+        )
+
     if "llvm-cov" not in gcov_cmd[0]:
         gcov_options.append("--demangled-names")
     cmd = (
