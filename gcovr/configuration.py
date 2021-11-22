@@ -1016,15 +1016,6 @@ GCOVR_CONFIG_OPTIONS = [
         type=int,
         default=1,
     ),
-    GcovrConfigOption(
-        "gcov_long_file_names", ["--gcov-long-file-names"], config='gcov-long-file-names',
-        group="gcov_options",
-        help="Disable long output file names for included source files.",
-        action="store_const",
-        default=True,
-        const=True,
-        const_negate=False,
-    ),
 ]
 
 

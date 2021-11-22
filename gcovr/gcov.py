@@ -31,6 +31,8 @@ output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory)"
 )
+option_re = re.compile(r"[Uu](?:nrecognized option|nknown command line argument) [`']([\w\-]+)'")
+usage_re = re.compile(r"U(?:SAGE|sage): (.*) \[(?:OPTION\.\.\.|options)\]")
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
 exclude_line_flag = "_EXCL_"
@@ -377,6 +379,23 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
 
     return []
 
+def check_gcov_option(gcov_cmd, env, option):
+    _, err = subprocess.Popen(
+            gcov_cmd + [option], env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        ).communicate()
+
+    err = err.decode("utf-8")
+
+    if option_re.search(err):
+        return False
+
+    if usage_re.search(err) and "LLVM code coverage tool" in err:
+        # llvm-cov recognizes arguments starting with '-h' as help
+        # and prints usage instead of unrecognized command line arguement.
+        return False
+
+    return True
+
 
 def run_gcov_and_process_files(
     abs_filename, covdata, options, logger, error, toerase, chdir
@@ -387,20 +406,25 @@ def run_gcov_and_process_files(
     gcov_options = [
         "--branch-counts",
         "--branch-probabilities",
-        "--preserve-paths",
     ]
-
-    if options.gcov_long_file_names:
-        gcov_options.append("--long-file-names")
-
-    if not options.gcov_long_file_names and options.gcov_parallel > 1:
-        logger.warn(
-            "Using --no-gcov-long-file-names together with -j option is likely to "
-            "create issues with concurrent file accesses."
-        )
 
     if "llvm-cov" not in gcov_cmd[0]:
         gcov_options.append("--demangled-names")
+
+    # NB: Currently, we will only parse English output
+    env = dict(os.environ)
+    env["LC_ALL"] = "C"
+    env["LANGUAGE"] = "en_US"
+
+    if check_gcov_option(gcov_cmd, env, "--hash-filenames"):
+        gcov_options.append("--hash-filenames")
+    elif check_gcov_option(gcov_cmd, env, "--preserve-paths"):
+        gcov_options.append("--preserve-paths")
+    else:
+        logger.warn("Options '--hash-filenames' and '--preserve-paths' are not "
+            "supported by '{gcov_cmd}'. Source files with identical file names "
+            "may result in incorrect coverage.", gcov_cmd=" ".join(gcov_cmd))
+
     cmd = (
         gcov_cmd
         + [abs_filename]
@@ -410,11 +434,6 @@ def run_gcov_and_process_files(
             os.path.dirname(abs_filename),
         ]
     )
-
-    # NB: Currently, we will only parse English output
-    env = dict(os.environ)
-    env["LC_ALL"] = "C"
-    env["LANGUAGE"] = "en_US"
 
     logger.verbose_msg("Running gcov: '{cmd}' in '{cwd}'", cmd=" ".join(cmd), cwd=chdir)
 
