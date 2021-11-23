@@ -379,22 +379,27 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
 
     return []
 
+
 def check_gcov_option(gcov_cmd, env, option):
-    _, err = subprocess.Popen(
-            gcov_cmd + [option], env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        ).communicate()
 
-    err = err.decode("utf-8")
+    for help_option in ["--help", "--help-hidden"]:
+        gcov_process = subprocess.Popen(
+            gcov_cmd + [help_option],
+            env=env, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+            encoding="utf-8"
+        )
+        out, _ = gcov_process.communicate()
 
-    if option_re.search(err):
-        return False
+        if not gcov_process.returncode:
+            # gcov execution was not successful, help argument is not supported.
+            pass
 
-    if usage_re.search(err) and "LLVM code coverage tool" in err:
-        # llvm-cov recognizes arguments starting with '-h' as help
-        # and prints usage instead of unrecognized command line arguement.
-        return False
+        if option in out:
+            return True
 
-    return True
+    return False
 
 
 def run_gcov_and_process_files(
@@ -422,8 +427,8 @@ def run_gcov_and_process_files(
         gcov_options.append("--preserve-paths")
     else:
         logger.warn("Options '--hash-filenames' and '--preserve-paths' are not "
-            "supported by '{gcov_cmd}'. Source files with identical file names "
-            "may result in incorrect coverage.", gcov_cmd=" ".join(gcov_cmd))
+                    "supported by '{gcov_cmd}'. Source files with identical file names "
+                    "may result in incorrect coverage.", gcov_cmd=" ".join(gcov_cmd))
 
     cmd = (
         gcov_cmd
