@@ -157,6 +157,9 @@ def calculate_coverage(covered, total, nan_value=0.0):
         # If we get 100.0% and not all branches are covered use 99.9%
         if (coverage == 100.0) and (covered != total):
             coverage = 99.9
+        # If we get 0.0% and covered branches aren't 0
+        elif (coverage == 0.0) and (covered != 0):
+            coverage = 0.1
 
     return coverage
 

@@ -13,6 +13,7 @@ Improvements and new features:
 - Add function coverage metric (:issue:`362`)
 - Deactivate localization of gcov by setting LC_ALL=C instead of LC_ALL=en_US (:issue:`513`)
 - Don't use a temporary directory for running gcov (:issue:`525`)
+- Only output 0.0% if really 0.0% (:issue:`531`)
 
 Documentation:
 
