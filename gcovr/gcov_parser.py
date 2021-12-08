@@ -52,7 +52,7 @@ from .coverage import FileCoverage
 from .utils import Logger
 
 _EXCLUDE_LINE_FLAG = "_EXCL_"
-_EXCLUDE_LINE_PATTERN = re.compile(r"([GL]COVR?)_EXCL_(START|STOP)")
+_EXCLUDE_LINE_PATTERN = re.compile(r"([GL]COVR?)_EXCL_(LINE|START|STOP)")
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -847,19 +847,21 @@ class _ExclusionRangeWarnings:
     ...  1: 1: some code
     ...  1: 2: foo // LCOV_EXCL_STOP
     ...  1: 3: bar // GCOVR_EXCL_START
-    ...  1: 4: baz // GCOV_EXCL_STOP
-    ...  1: 5: "GCOVR_EXCL_START"
+    ...  1: 4: bar // GCOVR_EXCL_LINE
+    ...  1: 5: baz // GCOV_EXCL_STOP
+    ...  1: 6: "GCOVR_EXCL_START"
     ... '''
     >>> import sys; sys.stderr = sys.stdout  # redirect warnings
     >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
     ...     source.splitlines(), filename='example.cpp', logger=Logger(),
     ...    flags=ParserFlags.NONE, exclude_lines_by_pattern=None)
     (WARNING) mismatched coverage exclusion flags.
-       LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp
-    (WARNING) GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 4, when processing example.cpp
+              LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp.
+    (WARNING) GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.
+    (WARNING) GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 5, when processing example.cpp.
     (WARNING) The coverage exclusion region start flag GCOVR_EXCL_START
-       on line 5 did not have corresponding GCOVR_EXCL_STOP flag
-       in file example.cpp.
+              on line 6 did not have corresponding GCOVR_EXCL_STOP flag
+              in file example.cpp.
     """
 
     def __init__(self, logger: Logger, filename: str) -> None:
@@ -873,7 +875,7 @@ class _ExclusionRangeWarnings:
         self.logger.warn(
             "{start} found on line {start_lineno} "
             "was terminated by {stop} on line {stop_lineno}, "
-            "when processing {filename}",
+            "when processing {filename}.",
             start=start,
             start_lineno=start_lineno,
             stop=stop,
@@ -885,8 +887,8 @@ class _ExclusionRangeWarnings:
         """warn that a region was ended without corresponding start marker"""
         self.logger.warn(
             "mismatched coverage exclusion flags.\n"
-            "\t{stop} found on line {lineno} without corresponding {start}, "
-            "when processing {filename}",
+            "          {stop} found on line {lineno} without corresponding {start}, "
+            "when processing {filename}.",
             start=expected_start,
             stop=stop,
             lineno=lineno,
@@ -897,11 +899,22 @@ class _ExclusionRangeWarnings:
         """warn that a region was started but not closed"""
         self.logger.warn(
             "The coverage exclusion region start flag {start}\n"
-            "\ton line {lineno} did not have corresponding {stop} flag\n"
-            "\tin file {filename}.",
+            "          on line {lineno} did not have corresponding {stop} flag\n"
+            "          in file {filename}.",
             start=start,
             stop=expected_stop,
             lineno=lineno,
+            filename=self.filename,
+        )
+
+    def line_after_start(self, lineno: int, start: str, start_lineno: str) -> None:
+        """warn that a region was started but an excluded line was found"""
+        self.logger.warn(
+            "{start} found on line {lineno} in excluded region started on line {start_lineno}, "
+            "when processing {filename}.",
+            start=start,
+            lineno=lineno,
+            start_lineno=start_lineno,
             filename=self.filename,
         )
 
@@ -916,11 +929,11 @@ def _find_excluded_ranges(
     Scan through all lines to find line ranges covered by exclusion markers.
 
     Example:
-    >>> lines = [(13, '//IGNORE'), (15, '//GCOV_EXCL_START'), (18, '//GCOV_EXCL_STOP')]
+    >>> lines = [(11, '//GCOV_EXCL_LINE'), (13, '//IGNORE'), (15, '//GCOV_EXCL_START'), (18, '//GCOV_EXCL_STOP')]
     >>> exclude = _find_excluded_ranges(
     ...     lines, warnings=..., exclude_lines_by_pattern = '.*IGNORE')
     >>> [lineno for lineno in range(20) if exclude(lineno)]
-    [13, 15, 16, 17]
+    [11, 13, 15, 16, 17]
     """
     exclude_lines_by_pattern_regex = None
     if exclude_lines_by_pattern:
@@ -939,6 +952,14 @@ def _find_excluded_ranges(
             # START flags are added to the exlusion stack
             # STOP flags remove a marker from the exclusion stack
             for header, flag in _EXCLUDE_LINE_PATTERN.findall(code):
+
+                if flag == "LINE":
+                    if exclusion_stack:
+                        warnings.line_after_start(
+                            lineno, f"{header}_EXCL_LINE", exclusion_stack[-1][1]
+                        )
+                    else:
+                        exclude_line_ranges.append((lineno, lineno + 1))
 
                 if flag == "START":
                     exclusion_stack.append((header, lineno))

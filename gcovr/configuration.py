@@ -967,9 +967,7 @@ GCOVR_CONFIG_OPTIONS = [
     ),
     GcovrConfigOption(
         "exclude_lines_by_pattern", ["--exclude-lines-by-pattern"],
-        group="gcov_options",
         help="Exclude lines that match this regex.",
-        default='.*[GL]COVR?_EXCL_LINE.*',
         type=str
     ),
     GcovrConfigOption(
