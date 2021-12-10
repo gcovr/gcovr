@@ -536,6 +536,13 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "use_canonical_paths", ["--use-canonical-paths"],
+        help="Turns all paths into their canonical forms and resolves symbolic links. Paths residing on network drives "
+             "mapped to local disks will be changed to the path using the local disk. This affects also paths given as "
+             "arguments.\nNOTE: This flag will be ignored when running Python versions lower than 3.8!",
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "root", ["-r", "--root"],
         help="The root directory of your source files. "
              "Defaults to '{default!s}', the current directory. "

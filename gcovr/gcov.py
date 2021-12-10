@@ -110,6 +110,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         starting_dir=options.starting_dir,
         obj_dir=None if options.objdir is None else os.path.abspath(options.objdir),
         logger=logger,
+        use_canonical_paths=options.use_canonical_paths,
         currdir=currdir,
     )
 
@@ -161,6 +162,7 @@ def guess_source_file_name(
     starting_dir,
     obj_dir,
     logger,
+    use_canonical_paths,
     currdir=None,
 ):
     if currdir is None:
@@ -171,6 +173,9 @@ def guess_source_file_name(
         fname = guess_source_file_name_heuristics(
             gcovname, currdir, root_dir, starting_dir, obj_dir, source_fname
         )
+
+    if use_canonical_paths:
+        fname = os.path.realpath(fname)
 
     logger.verbose_msg(
         "Finding source file corresponding to a gcov data file\n"
