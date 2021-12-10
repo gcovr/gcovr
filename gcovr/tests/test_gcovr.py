@@ -231,19 +231,7 @@ def pytest_generate_tests(metafunc):
             if format not in targets:
                 continue
 
-            needs_symlinks = any(
-                [
-                    name == "linked" and format == "html",
-                    name == "filter-relative-lib",
-                    name == "filter-relative-lib-from-unfiltered-tracefile",
-                ]
-            )
-
             marks = [
-                pytest.mark.xfail(
-                    needs_symlinks and is_windows,
-                    reason="have yet to figure out symlinks on Windows",
-                ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
                     and format == "html"
