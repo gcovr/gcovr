@@ -189,7 +189,7 @@ class FilterOption(object):
         self.regex = regex
         self.path_context = os.getcwd() if path_context is None else path_context
 
-    def build_filter(self, logger):
+    def build_filter(self, logger, use_canonical_paths):
         # Try to detect unintended backslashes and warn.
         # Later, the regex engine may or may not raise a syntax error.
         # An unintended backslash is a literal backslash r"\\",
@@ -205,6 +205,12 @@ class FilterOption(object):
         if not isabs and (sys.platform == "win32"):
             # Starts with a drive letter
             isabs = re.match(r"^[A-Za-z]:/", self.regex)
+
+        if use_canonical_paths:
+            canonical_path = os.path.realpath(self.regex)
+            if canonical_path != self.regex:
+                logger.msg(f"Filter {self.regex} has been normalized to {canonical_path}.")
+                self.regex = canonical_path
 
         if isabs:
             return AbsoluteFilter(self.regex)

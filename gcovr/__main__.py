@@ -152,6 +152,10 @@ def main(args=None):
 
     logger = Logger(options.verbose)
 
+    if sys.version_info < (3, 8) and options.use_canonical_paths:
+        logger.warn("--use_canonical_paths will be ignored due to incompatible Python version.")
+        options.use_canonical_paths = None
+
     if cli_options.version:
         logger.msg(
             "gcovr {version}\n"
@@ -218,8 +222,19 @@ def main(args=None):
                 "Bad --object-directory option.\n"
                 "\tThe specified directory does not exist.")
             sys.exit(1)
+        if options.use_canonical_paths:
+            canonical_objdir = os.path.realpath(options.objdir)
+            if canonical_objdir != options.objdir:
+                options.objdir = canonical_objdir
+                logger.msg(f"--object-directory has been normalized to {options.objdir}.")
 
     options.starting_dir = os.path.abspath(os.getcwd())
+    if options.use_canonical_paths:
+        canonical_starting_dir = os.path.realpath(options.starting_dir)
+        if canonical_starting_dir != options.starting_dir:
+            options.starting_dir = canonical_starting_dir
+            logger.msg(f"starting_dir has been normalized to {options.starting_dir}.")
+
     if not options.root:
         logger.error(
             "empty --root option.\n"
@@ -228,6 +243,15 @@ def main(args=None):
             "\tThis option cannot be an empty string.")
         sys.exit(1)
     options.root_dir = os.path.abspath(options.root)
+    if options.use_canonical_paths:
+        canonical_root = os.path.realpath(options.root)
+        if canonical_root != options.root:
+            options.root = canonical_root
+            logger.msg(f"--root has been normalized to {options.root}.")
+        canonical_rootdir = os.path.realpath(options.root_dir)
+        if canonical_rootdir != options.root_dir:
+            options.root_dir = canonical_rootdir
+            logger.msg(f"root_dir has been normalized to {options.root_dir}.")
 
     #
     # Setup filters
@@ -239,16 +263,16 @@ def main(args=None):
 
     if options.exclude_dirs is not None:
         options.exclude_dirs = [
-            f.build_filter(logger) for f in options.exclude_dirs]
+            f.build_filter(logger, options.use_canonical_paths) for f in options.exclude_dirs]
 
-    options.exclude = [f.build_filter(logger) for f in options.exclude]
-    options.filter = [f.build_filter(logger) for f in options.filter]
+    options.exclude = [f.build_filter(logger, options.use_canonical_paths) for f in options.exclude]
+    options.filter = [f.build_filter(logger, options.use_canonical_paths) for f in options.filter]
     if not options.filter:
         options.filter = [DirectoryPrefixFilter(options.root_dir)]
 
     options.gcov_exclude = [
-        f.build_filter(logger) for f in options.gcov_exclude]
-    options.gcov_filter = [f.build_filter(logger) for f in options.gcov_filter]
+        f.build_filter(logger, options.use_canonical_paths) for f in options.gcov_exclude]
+    options.gcov_filter = [f.build_filter(logger, options.use_canonical_paths) for f in options.gcov_filter]
     if not options.gcov_filter:
         options.gcov_filter = [AlwaysMatchFilter()]
 
@@ -328,6 +352,13 @@ def collect_coverage_from_gcov(covdata, options, logger):
 
         if options.objdir is not None:
             options.search_paths.append(options.objdir)
+
+    if options.use_canonical_paths:
+        normalized_search_paths = [os.path.realpath(search_path) for search_path in options.search_paths]
+        for normalized_search_path, search_path in zip(normalized_search_paths, options.search_paths):
+            if normalized_search_path != search_path:
+                logger.msg(f"search_path {search_path} normalized to {normalized_search_path}.")
+        options.search_paths = normalized_search_paths
 
     for search_path in options.search_paths:
         datafiles.update(find_files(search_path, logger, options.exclude_dirs))
