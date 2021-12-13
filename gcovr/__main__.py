@@ -156,16 +156,16 @@ def main(args=None):
         logger.error("--use_canonical_paths can't be set due to incompatible Python version.")
         sys.exit(1)
 
-    if options.use_canonical_path:
-      def canonical_path(path: str, option: str) -> str:
-        canonical = os.path.realpath(path)
-        if canonical != path:
-          logger.msg(f"{option} has been normalized to {canonical}")
-        return canonical
+    if options.use_canonical_paths:
+        def canonical_path(path: str, option: str) -> str:
+            canonical = os.path.realpath(path)
+            if canonical != path:
+                logger.msg(f"{option} has been normalized to {canonical}")
+            return canonical
     else:
-      def canonical_path(path: str, option: str) -> str:
-        return path
-        
+        def canonical_path(path: str, option: str) -> str:
+            return path
+
     if cli_options.version:
         logger.msg(
             "gcovr {version}\n"
@@ -350,7 +350,10 @@ def collect_coverage_from_gcov(covdata, options, logger):
 
         normalized_search_paths = []
         for search_path in options.search_paths:
-            normalized_search_paths.push(canonical_path(search_path, "search path"))
+            normalized_search_path = os.path.realpath(search_path)
+            if normalized_search_path != search_path:
+                logger.msg(f"search_path {search_path} normalized to {normalized_search_path}.")
+            normalized_search_paths.append(normalized_search_path)
         options.search_paths = normalized_search_paths
 
     for search_path in options.search_paths:
