@@ -353,11 +353,12 @@ def collect_coverage_from_gcov(covdata, options, logger):
         if options.objdir is not None:
             options.search_paths.append(options.objdir)
 
-    if options.use_canonical_paths:
-        normalized_search_paths = [os.path.realpath(search_path) for search_path in options.search_paths]
-        for normalized_search_path, search_path in zip(normalized_search_paths, options.search_paths):
+        normalized_search_paths = []
+        for search_path in options.search_paths:
+            normalized_search_path = os.path.realpath(search_path)
             if normalized_search_path != search_path:
                 logger.msg(f"search_path {search_path} normalized to {normalized_search_path}.")
+            normalized_search_paths.push(normalized_search_path)
         options.search_paths = normalized_search_paths
 
     for search_path in options.search_paths:
