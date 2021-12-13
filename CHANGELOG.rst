@@ -27,6 +27,7 @@ Internal changes:
  - Change test and reference for XML diff to be the same as for the unified diff. (:issue:`509`)
  - New parser for ``.gcov`` file format, should be more robust. (:issue:`512`)
  - Add option to run all comiler versions at once. (:issue:`514`)
+ - Fix globing of reference data in tests. (:issue:`533`)
 
 5.0 (11 June 2021)
 ------------------

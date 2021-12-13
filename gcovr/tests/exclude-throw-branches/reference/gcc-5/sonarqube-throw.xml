@@ -1,27 +1,2 @@
-<?xml version="1.0" ?>
-<coverage version="1">
-<file path="main.cpp">
-<lineToCover covered="true" lineNumber="3"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="2" lineNumber="4"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="5"/>
-<lineToCover covered="true" lineNumber="7"/>
-<lineToCover covered="true" lineNumber="16"/>
-<lineToCover covered="true" lineNumber="17"/>
-<lineToCover covered="true" lineNumber="21"/>
-<lineToCover covered="true" lineNumber="22"/>
-<lineToCover covered="true" lineNumber="24"/>
-<lineToCover covered="true" lineNumber="25"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="28"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="0" lineNumber="29"/>
-<lineToCover covered="true" lineNumber="30"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="33"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="36"/>
-<lineToCover covered="false" lineNumber="37"/>
-<lineToCover covered="false" lineNumber="38"/>
-<lineToCover branchesToCover="2" covered="true" coveredBranches="1" lineNumber="41"/>
-<lineToCover covered="true" lineNumber="43"/>
-<lineToCover covered="true" lineNumber="47"/>
-<lineToCover covered="true" lineNumber="48"/>
-</file>
-</coverage>
-
+<?xml version='1.0' encoding='UTF-8'?>
+<coverage version="1"><file path="main.cpp"><functionToCover functionName="RAII::RAII(bool)" lineNumber="21" covered="true"/><functionToCover functionName="RAII::method_that_may_throw() const" lineNumber="16" covered="true"/><functionToCover functionName="RAII::~RAII()" lineNumber="22" covered="true"/><functionToCover functionName="function_that_may_throw(bool)" lineNumber="3" covered="true"/><functionToCover functionName="function_with_catchers(int)" lineNumber="24" covered="true"/><functionToCover functionName="main" lineNumber="47" covered="true"/><lineToCover lineNumber="3" covered="true"/><lineToCover lineNumber="4" covered="true" branchesToCover="2" coveredBranches="2"/><lineToCover lineNumber="5" covered="true" branchesToCover="4" coveredBranches="2"/><lineToCover lineNumber="7" covered="true"/><lineToCover lineNumber="16" covered="true"/><lineToCover lineNumber="17" covered="true"/><lineToCover lineNumber="21" covered="true"/><lineToCover lineNumber="22" covered="true"/><lineToCover lineNumber="24" covered="true"/><lineToCover lineNumber="25" covered="true"/><lineToCover lineNumber="28" covered="true" branchesToCover="2" coveredBranches="1"/><lineToCover lineNumber="29" covered="true" branchesToCover="2" coveredBranches="0"/><lineToCover lineNumber="30" covered="true"/><lineToCover lineNumber="33" covered="true" branchesToCover="6" coveredBranches="3"/><lineToCover lineNumber="36" covered="true" branchesToCover="2" coveredBranches="1"/><lineToCover lineNumber="37" covered="false"/><lineToCover lineNumber="38" covered="false"/><lineToCover lineNumber="41" covered="true" branchesToCover="2" coveredBranches="1"/><lineToCover lineNumber="43" covered="true"/><lineToCover lineNumber="47" covered="true"/><lineToCover lineNumber="48" covered="true"/></file></coverage>
