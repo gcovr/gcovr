@@ -153,9 +153,19 @@ def main(args=None):
     logger = Logger(options.verbose)
 
     if sys.version_info < (3, 8) and options.use_canonical_paths:
-        logger.warn("--use_canonical_paths will be ignored due to incompatible Python version.")
-        options.use_canonical_paths = None
+        logger.error("--use_canonical_paths can't be set due to incompatible Python version.")
+        sys.exit(1)
 
+    if options.use_canonical_path:
+      def canonical_path(path: str, option: str) -> str:
+        canonical = os.path.realpath(path)
+        if canonical != path:
+          logger.msg(f"{option} has been normalized to {canonical}")
+        return canonical
+    else:
+      def canonical_path(path: str, option: str) -> str:
+        return path
+        
     if cli_options.version:
         logger.msg(
             "gcovr {version}\n"
@@ -222,18 +232,10 @@ def main(args=None):
                 "Bad --object-directory option.\n"
                 "\tThe specified directory does not exist.")
             sys.exit(1)
-        if options.use_canonical_paths:
-            canonical_objdir = os.path.realpath(options.objdir)
-            if canonical_objdir != options.objdir:
-                options.objdir = canonical_objdir
-                logger.msg(f"--object-directory has been normalized to {options.objdir}.")
+        options.objdir = canonical_path(options.objdir, "--object-directory")
 
     options.starting_dir = os.path.abspath(os.getcwd())
-    if options.use_canonical_paths:
-        canonical_starting_dir = os.path.realpath(options.starting_dir)
-        if canonical_starting_dir != options.starting_dir:
-            options.starting_dir = canonical_starting_dir
-            logger.msg(f"starting_dir has been normalized to {options.starting_dir}.")
+    options.starting_dir = canonical_path(options.starting_dir, "starting dir")
 
     if not options.root:
         logger.error(
@@ -243,15 +245,8 @@ def main(args=None):
             "\tThis option cannot be an empty string.")
         sys.exit(1)
     options.root_dir = os.path.abspath(options.root)
-    if options.use_canonical_paths:
-        canonical_root = os.path.realpath(options.root)
-        if canonical_root != options.root:
-            options.root = canonical_root
-            logger.msg(f"--root has been normalized to {options.root}.")
-        canonical_rootdir = os.path.realpath(options.root_dir)
-        if canonical_rootdir != options.root_dir:
-            options.root_dir = canonical_rootdir
-            logger.msg(f"root_dir has been normalized to {options.root_dir}.")
+    options.root = canonical_path(options.root, "--root")
+    options.root_dir = canonical_path(options.root_dir, "root dir")
 
     #
     # Setup filters
@@ -355,10 +350,7 @@ def collect_coverage_from_gcov(covdata, options, logger):
 
         normalized_search_paths = []
         for search_path in options.search_paths:
-            normalized_search_path = os.path.realpath(search_path)
-            if normalized_search_path != search_path:
-                logger.msg(f"search_path {search_path} normalized to {normalized_search_path}.")
-            normalized_search_paths.push(normalized_search_path)
+            normalized_search_paths.push(canonical_path(search_path, "search path"))
         options.search_paths = normalized_search_paths
 
     for search_path in options.search_paths:

@@ -179,11 +179,6 @@ class FilterOption(object):
             logger.warn("did you mean: {}", suggestion)
 
         if os.path.isabs(self.regex):
-            if use_canonical_paths:
-                canonical_path = os.path.realpath(self.regex)
-                if canonical_path != self.regex:
-                    logger.msg(f"Filter {self.regex} has been normalized to {canonical_path}.")
-                    self.regex = canonical_path
             return AbsoluteFilter(self.regex)
         else:
             return RelativeFilter(self.path_context, self.regex)
