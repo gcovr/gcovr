@@ -160,7 +160,7 @@ def main(args=None):
         def canonical_path(path: str, option: str) -> str:
             canonical = os.path.realpath(path)
             if canonical != path:
-                logger.msg(f"{option} has been normalized to {canonical}")
+                logger.verbose_msg(f"{option} has been normalized to '{canonical}'")
             return canonical
     else:
         def canonical_path(path: str, option: str) -> str:
