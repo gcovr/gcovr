@@ -1,0 +1,4 @@
+sphinx
+sphinx_rtd_theme
+sphinxcontrib-autoprogram == 0.1.5 ; python_version == "3.6"
+sphinxcontrib-autoprogram >= 0.1.5 ; python_version >= "3.7"

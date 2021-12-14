@@ -243,7 +243,10 @@ The QA process (``python3 -m nox``) consists of multiple parts:
 - documentation build (``python3 -m nox --session doc``)
 
 The tests are in the ``gcovr/tests`` directory.
-You can run the tests with ``python3 -m nox --session tests_version($CC)``.
+You can run the tests with ``python3 -m nox --session tests``
+for the default GCC version (used from environment ``CC``iv availabele, else gcc-5.
+You can also select the gcc version if you run the tests with e.g.
+``python3 -m nox --session tests_compiler(gcc-8)``.
 
 There are unit tests for some parts of gcovr,
 and a comprehensive corpus of example projects
@@ -305,54 +308,47 @@ and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
 Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8`` and ``clang-10``.
 
-You can run the tests with additional options by setting the environment variable
-``TEST_OPTS``. Run all tests after each change is a bit slow, therefore you can
+You can run the tests with additional options by adding ``--`` and then the options
+to the test invocation. Run all tests after each change is a bit slow, therefore you can
 limit the tests to a specific test file, example project, or output format.
 For example:
 
 .. code:: bash
 
     # run only XML tests
-    export TEST_OPTS="-k 'xml'"
-    python3 -m nox --session tests
+    python3 -m nox --session tests -- -k 'xml'
 
     # run the simple1 tests
-    export TEST_OPTS="-k 'simple1'"
-    python3 -m nox --session tests
+    python3 -m nox --session tests -- -k 'simple1'
 
     # run the simple1 tests only for XML
-    export TEST_OPTS="-k 'xml and simple1'"
-    python3 -m nox --session tests
+    python3 -m nox --session tests -- -k 'xml and simple1'
 
 To see which tests would be run, add the ``--collect-only`` option:
 
 .. code:: bash
 
     #see which tests would be run
-    export TEST_OPTS="--collect-only"
-    python3 -m nox --session tests
+    python3 -m nox --session tests -- --collect-only
 
 Sometimes during development you need to create reference files for new test
 or update the current reference files. To do this you have to
 add ``--generate_reference`` or ``--update-reference`` option
-to the ``TEST_OPTS`` variable.
+to the test invocation.
 By default generated output files are automatically removed after test run.
-To skip this process you can add ``--skip_clean`` option the ``TEST_OPTS``.
+To skip this process you can add ``--skip_clean`` option the test invocation.
 For example:
 
 .. code:: bash
 
     # run tests and generate references for simple1 example
-    export TEST_OPTS="-k 'simple1' --generate_reference"
-    python3 -m nox --session tests
+    python3 -m nox --session tests -- -k 'simple1' --generate_reference
 
     # run tests and update xml references for simple1 example
-    export TEST_OPTS="-k 'xml and simple1' --update_reference"
-    python3 -m nox --session tests
+    python3 -m nox --session tests -- -k 'xml and simple1' --update_reference
 
     # run only XML tests and do not remove generated files
-    export TEST_OPTS="-k 'xml' --skip_clean"
-    python3 -m nox --session tests
+    python3 -m nox --session tests -- -k 'xml' --skip_clean
 
 When the currently generated output reports differ to the reference files
 you can create a ZIP archive named ``diff.zip`` in the tests directory
@@ -363,8 +359,7 @@ with the differences as an artifact.
 .. code:: bash
 
     # run tests and generate a ZIP archive when there were differences
-    export TEST_OPTS="--archive_differences"
-    python3 -m nox --session tests
+    python3 -m nox --session tests -- --archive_differences
 
 .. versionchanged:: NEXT
     Change how to start test from ``make test`` to ``python3 -m nox --session test``

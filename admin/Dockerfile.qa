@@ -27,6 +27,6 @@ USER docker:docker
 # Unicode is necessary for some tools like "black" to work.
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
-CMD ( echo docker | sudo -S -p "Running chmod with sudo" chown -R docker:docker /gcovr ) && \
-  echo "" && \
-  python3 -m nox --non-interactive
+CMD ( echo docker | sudo -S -p "Running chmod with sudo..." chown -R docker:docker /gcovr/gcovr ) && \
+  echo "\ndone\nStarting test..." && \
+  python3 -m nox --envdir /tmp/envs --non-interactive

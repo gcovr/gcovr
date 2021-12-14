@@ -20,7 +20,7 @@ jobs:
     - name: Run release_checklist
       run: |
         admin/release_checklist 5.0
- 
+
   deploy:
     runs-on: ubuntu-18.04
     needs: release-check
@@ -47,16 +47,16 @@ jobs:
         python -m pip install nox
     - name: Lint with flake8
       run: |
-        python -m nox --non-interactive --session lint
+        nox --non-interactive --session lint
     - name: Test with pytest
       run: |
-        python -m nox --non-interactive --session "tests_version($CC)"
+        nox --non-interactive --session "tests_compiler($CC)"
     - name: Generate documentation
       run: |
-        python -m nox --non-interactive --session doc
+        nox --non-interactive --session doc
     - name: Build
       run: |
-        python -m nox --non-interactive --session build_wheel
+        nox --non-interactive --session build_wheel
     - name: Upload distribution
       if: ${{ success() }}
       uses: actions/upload-artifact@v2
