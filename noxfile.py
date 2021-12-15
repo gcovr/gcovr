@@ -2,6 +2,7 @@ import os
 import platform
 import shutil
 import shlex
+import sys
 import nox
 
 GCC_VERSIONS = ["gcc-5", "gcc-6", "gcc-8", "clang-10"]
@@ -235,7 +236,11 @@ def docker_qa_run_all_compiler(session: nox.Session) -> None:
 def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
     """Run the docker container for a specific GCC version."""
     set_environment(session, version, False)
-    session.env["NOX_POSARGS"] = shlex.join(session.posargs)
+    if sys.version_info >= (3, 8):
+        session.env["NOX_POSARGS"] = shlex.join(session.posargs)
+    else:
+        # Code for join taken from Python 3.9
+        session.env["NOX_POSARGS"] = ' '.join(shlex.quote(arg) for arg in session.posargs)
     session.run(
         "docker",
         "run",
