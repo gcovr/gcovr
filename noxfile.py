@@ -1,3 +1,4 @@
+import glob
 import os
 import platform
 import shutil
@@ -157,9 +158,22 @@ def tests_compiler(session: nox.Session, version: str) -> None:
 @nox.session
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
-    session.install("wheel", "twine")
+    session.install("wheel")
     session.run("python", "setup.py", "sdist", "bdist_wheel")
-    session.run("twine", "check", "dist/*", external=True)
+    dist_cache = f"{session.cache_dir}/dist"
+    if os.path.isdir(dist_cache):
+        shutil.rmtree(dist_cache)
+    shutil.copytree("dist", dist_cache)
+    session.notify("check_wheel")
+
+
+@nox.session(reuse_venv=False)
+def check_wheel(session: nox.Session) -> None:
+    """Check the wheel, should not be used directly."""
+    session.install("wheel", "twine")
+    session.chdir(f"{session.cache_dir}/dist")
+    session.run("twine", "check", "*", external=True)
+    session.install(glob.glob("*.whl")[0])
 
 
 @nox.session
