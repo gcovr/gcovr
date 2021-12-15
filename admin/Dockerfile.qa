@@ -11,7 +11,7 @@ RUN \
 
 WORKDIR /gcovr
 
-ENV CC=$CC CXX=$CXX GCOVR_ISOLATED_TEST=zkQEVaBpXF1i
+ENV CC=$CC CXX=$CXX GCOVR_ISOLATED_TEST=zkQEVaBpXF1i NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
 
 RUN \
   python3 -m pip install --no-cache-dir nox
@@ -29,4 +29,4 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 CMD ( echo docker | sudo -S -p "Running chmod with sudo..." chown -R docker:docker /gcovr/gcovr ) && \
   echo "\ndone\nStarting test..." && \
-  python3 -m nox --envdir /tmp/envs --non-interactive
+  python3 -m nox --envdir $NOX_ENV_DIR --non-interactive

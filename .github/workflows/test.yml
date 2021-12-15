@@ -128,18 +128,21 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        # This path is specific to Ubuntu
+        path: ~/.cache/pip
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
         python3 -m pip install nox codecov
     - name: Lint files
       run: |
         nox --non-interactive --session lint
-    - name: Check format of files
-      if: ${{ ( matrix.python-version != 'pypy3' ) }}
-      # Currently fail of this job is OK.
-      continue-on-error: true
-      run: |
-        nox --non-interactive --session black
     - name: Test with pytest
       run: |
         nox --non-interactive --session "tests_compiler(${{ matrix.gcc }})" -- --archive_differences

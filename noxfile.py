@@ -17,7 +17,7 @@ BLACK_CONFORM_FILES = [
 nox.options.sessions = ["qa"]
 
 
-def set_environment(session: nox.session, cc: str, check: bool = True) -> None:
+def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
     if check and (shutil.which(cc) is None):
         session.env["CC_REFERENCE"] = cc
         cc = "gcc"
@@ -38,7 +38,7 @@ def set_environment(session: nox.session, cc: str, check: bool = True) -> None:
 
 
 @nox.session(python=False)
-def qa(session: nox.session) -> None:
+def qa(session: nox.Session) -> None:
     """Run the quality tests."""
     session_id = "lint"
     session.log(f"Notify session {session_id}")
@@ -52,7 +52,7 @@ def qa(session: nox.session) -> None:
 
 
 @nox.session
-def lint(session: nox.session) -> None:
+def lint(session: nox.Session) -> None:
     """Run the lint (flake8 and black)."""
     session.install("flake8")
     # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
@@ -66,12 +66,10 @@ def lint(session: nox.session) -> None:
 
     if platform.python_implementation() == "CPython":
         if session.posargs:
-            session.run("python", "-m", "black", *session.posargs)
-        else:
             session.run(
                 "python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES
             )
-            session.run("python", "-m", "black", "--diff", *DEFAULT_TEST_DIRECTORIES)
+        session.run("python", "-m", "black", "--diff", *args)
     else:
         session.log(
             f"Skip black because of platform {platform.python_implementation()}."
@@ -79,18 +77,20 @@ def lint(session: nox.session) -> None:
 
 
 @nox.session
-def black(session: nox.session) -> None:
+def black(session: nox.Session) -> None:
     """Run black, a code formatter and format checker."""
     session.install("black")
     if session.posargs:
-        args = session.posargs
+        session.run("python", "-m", "black", *session.posargs)
     else:
-        raise RuntimeError("Please add the files to format as argument.")
-    session.run("python", "-m", "black", *args)
+        session.run(
+            "python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES
+        )
+        session.run("python", "-m", "black", "--diff", *DEFAULT_TEST_DIRECTORIES)
 
 
 @nox.session
-def doc(session: nox.session) -> None:
+def doc(session: nox.Session) -> None:
     """Generate the documentation."""
     session.install("-r", "doc/requirements.txt")
     session.install("-e", ".")
@@ -99,7 +99,7 @@ def doc(session: nox.session) -> None:
 
 
 @nox.session(python=False)
-def tests(session: nox.session) -> None:
+def tests(session: nox.Session) -> None:
     """Run the tests with the default GCC version."""
     session_id = f"tests_compiler({GCC_VERSION2USE})"
     session.log(f"Notify session {session_id}")
@@ -107,7 +107,7 @@ def tests(session: nox.session) -> None:
 
 
 @nox.session(python=False)
-def tests_all_compiler(session: nox.session) -> None:
+def tests_all_compiler(session: nox.Session) -> None:
     """Run the tests with all GCC versions."""
     for version in GCC_VERSIONS:
         session_id = f"tests_compiler({version})"
@@ -117,7 +117,7 @@ def tests_all_compiler(session: nox.session) -> None:
 
 @nox.session
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
-def tests_compiler(session: nox.session, version: str) -> None:
+def tests_compiler(session: nox.Session, version: str) -> None:
     """Run the test with a specifiv GCC version."""
     session.install(
         "jinja2",
@@ -154,7 +154,7 @@ def tests_compiler(session: nox.session, version: str) -> None:
 
 
 @nox.session
-def build_wheel(session: nox.session) -> None:
+def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("wheel", "twine")
     session.run("python", "setup.py", "sdist", "bdist_wheel")
@@ -162,7 +162,7 @@ def build_wheel(session: nox.session) -> None:
 
 
 @nox.session
-def upload_wheel(session: nox.session) -> None:
+def upload_wheel(session: nox.Session) -> None:
     """Upload the wheel."""
     session.install("twine")
     session.run("twine", "upload", "dist/*", external=True)
@@ -174,7 +174,7 @@ def docker_container_id(version: str) -> str:
 
 
 @nox.session(python=False)
-def docker_qa_build(session: nox.session) -> None:
+def docker_qa_build(session: nox.Session) -> None:
     """Build the docker container for the default GCC version."""
     session_id = f"docker_qa_build_compiler({GCC_VERSION2USE})"
     session.log(f"Notify session {session_id}")
@@ -182,7 +182,7 @@ def docker_qa_build(session: nox.session) -> None:
 
 
 @nox.session(python=False)
-def docker_qa_build_all_compiler(session: nox.session) -> None:
+def docker_qa_build_all_compiler(session: nox.Session) -> None:
     """Build the docker containers vor all GCC versions."""
     for version in GCC_VERSIONS:
         session_id = f"docker_qa_build_compiler({version})"
@@ -192,7 +192,7 @@ def docker_qa_build_all_compiler(session: nox.session) -> None:
 
 @nox.session(python=False)
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
-def docker_qa_build_compiler(session: nox.session, version: str) -> None:
+def docker_qa_build_compiler(session: nox.Session, version: str) -> None:
     """Build the docker container for a specific GCC version."""
     set_environment(session, version, False)
     session.run(
@@ -214,7 +214,7 @@ def docker_qa_build_compiler(session: nox.session, version: str) -> None:
 
 
 @nox.session(python=False)
-def docker_qa_run(session: nox.session) -> None:
+def docker_qa_run(session: nox.Session) -> None:
     """Run the docker container for the default GCC version."""
     session_id = f"docker_qa_run_compiler({GCC_VERSION2USE})"
     session.log(f"Notify session {session_id}")
@@ -222,7 +222,7 @@ def docker_qa_run(session: nox.session) -> None:
 
 
 @nox.session(python=False)
-def docker_qa_run_all_compiler(session: nox.session) -> None:
+def docker_qa_run_all_compiler(session: nox.Session) -> None:
     """Run the docker container for the all GCC versions."""
     for version in GCC_VERSIONS:
         session_id = f"docker_qa_run_compiler({version})"
@@ -232,10 +232,10 @@ def docker_qa_run_all_compiler(session: nox.session) -> None:
 
 @nox.session(python=False)
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
-def docker_qa_run_compiler(session: nox.session, version: str) -> None:
+def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
     """Run the docker container for a specific GCC version."""
     set_environment(session, version, False)
-    session.env["NOX_POSARGS"] = " ".join([repr(a) for a in session.posargs])
+    session.env["NOX_POSARGS"] = shlex.join(session.posargs)
     session.run(
         "docker",
         "run",
@@ -252,7 +252,7 @@ def docker_qa_run_compiler(session: nox.session, version: str) -> None:
 
 
 @nox.session(python=False)
-def docker_qa(session: nox.session) -> None:
+def docker_qa(session: nox.Session) -> None:
     """Build and run the docker container for the default GCC version."""
     session_id = f"docker_qa_compiler({GCC_VERSION2USE})"
     session.log(f"Notify session {session_id}")
@@ -260,7 +260,7 @@ def docker_qa(session: nox.session) -> None:
 
 
 @nox.session(python=False)
-def docker_qa_all_compiler(session: nox.session) -> None:
+def docker_qa_all_compiler(session: nox.Session) -> None:
     """Build and run the docker container for the all GCC versions."""
     for version in GCC_VERSIONS:
         session_id = f"docker_qa_compiler({version})"
@@ -270,7 +270,7 @@ def docker_qa_all_compiler(session: nox.session) -> None:
 
 @nox.session(python=False)
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
-def docker_qa_compiler(session: nox.session, version: str) -> None:
+def docker_qa_compiler(session: nox.Session, version: str) -> None:
     """Build and run the docker container for a specific GCC version."""
     session_id = "docker_qa_build_compiler({})".format(version)
     session.log(f"Notify session {session_id}")

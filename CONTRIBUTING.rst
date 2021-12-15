@@ -244,7 +244,7 @@ The QA process (``python3 -m nox``) consists of multiple parts:
 
 The tests are in the ``gcovr/tests`` directory.
 You can run the tests with ``python3 -m nox --session tests``
-for the default GCC version (used from environment ``CC``iv availabele, else gcc-5.
+for the default GCC version (specified via ``CC`` environment variable, defaults to gcc-5).
 You can also select the gcc version if you run the tests with e.g.
 ``python3 -m nox --session tests_compiler(gcc-8)``.
 

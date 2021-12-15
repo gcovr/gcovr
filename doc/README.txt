@@ -3,13 +3,19 @@ sphinx.
 
 The necessary python packages have to be installed, e.g. with pip:
 
-    pip install nox
+    pip install -r requirements.txt
 
 The command
 
     make html
 
 creates the documentation in the folder build/html.
+
+If you're using nox you can alos call:
+
+    nox -s doc
+
+This will install the reuirements in a virtual environment and run the make process.
 
 When updating for a new gcovr version,
 the screenshots will have to be regenerated.
