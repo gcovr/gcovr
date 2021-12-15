@@ -34,6 +34,8 @@ gcovr-*/
 
 # VS Code
 .vscode
+*.code-workspace
 
 # PyCharm
 .idea
+

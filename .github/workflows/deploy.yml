@@ -20,7 +20,7 @@ jobs:
     - name: Run release_checklist
       run: |
         admin/release_checklist 5.0
- 
+
   deploy:
     runs-on: ubuntu-18.04
     needs: release-check
@@ -35,6 +35,15 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        # This path is specific to Ubuntu
+        path: ~/.cache/pip
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     - name: Install GCC
       run: |
         sudo apt update
@@ -44,20 +53,19 @@ jobs:
       uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install dependencies
       run: |
-        make setup-dev PYTHON=python
+        python -m pip install nox
     - name: Lint with flake8
       run: |
-        make lint PYTHON=python
+        nox --non-interactive --session lint
     - name: Test with pytest
       run: |
-        make test CC=$CC PYTHON=python
+        nox --non-interactive --session "tests_compiler($CC)"
     - name: Generate documentation
       run: |
-        make doc PYTHON=python
+        nox --non-interactive --session doc
     - name: Build
       run: |
-        python setup.py sdist bdist_wheel
-        twine check dist/*
+        nox --non-interactive --session build_wheel
     - name: Upload distribution
       if: ${{ success() }}
       uses: actions/upload-artifact@v2
@@ -70,4 +78,4 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        twine upload dist/*
+        python -m nox --session upload_wheel

@@ -28,6 +28,7 @@ Internal changes:
  - New parser for ``.gcov`` file format, should be more robust. (:issue:`512`)
  - Add option to run all comiler versions at once. (:issue:`514`)
  - Fix globing of reference data in tests. (:issue:`533`)
+ - Replace makefile for starting tests with noxfile.py. (:issue:`516`)
 
 5.0 (11 June 2021)
 ------------------
