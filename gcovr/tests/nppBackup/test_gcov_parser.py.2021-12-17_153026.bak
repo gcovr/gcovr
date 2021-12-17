@@ -423,7 +423,7 @@ def test_exception_during_coverage_processing(capsys):
     with pytest.raises(AssertionError) as ex_info:
         parse_coverage(
             lines,
-            logger=BrokenLogger(python_logger_verbose, verbose=True),
+            logger=BrokenLogger(python_logger, verbose=True),
             filename="test.cpp",
             exclude_lines_by_pattern=None,
             flags=ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS,

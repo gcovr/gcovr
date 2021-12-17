@@ -15,7 +15,7 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
-
+import logging
 import os
 import re
 import sys
@@ -31,7 +31,7 @@ from .configuration import (
 from .gcov import (find_existing_gcov_files, find_datafiles,
                    process_existing_gcov_file, process_datafile)
 from .utils import (get_global_stats, AlwaysMatchFilter,
-                    DirectoryPrefixFilter, Logger)
+                    DirectoryPrefixFilter, Logger, configure_logging)
 from .version import __version__
 from .workers import Workers
 
@@ -150,7 +150,8 @@ def main(args=None):
         [cfg_options, cli_options.__dict__])
     options = Options(**options_dict)
 
-    logger = Logger(options.verbose)
+    python_logger = configure_logging(logging.DEBUG if options.verbose else logging.INFO)
+    logger = Logger(python_logger, options.verbose)
 
     if cli_options.version:
         logger.msg(
@@ -310,7 +311,7 @@ def collect_coverage_from_tracefiles(covdata, options, logger):
                 datafiles.add(normpath(trace_file))
 
     options.root_dir = os.path.abspath(options.root)
-    gcovr_json_files_to_coverage(datafiles, covdata, options)
+    gcovr_json_files_to_coverage(datafiles, covdata, options, logger)
 
 
 def collect_coverage_from_gcov(covdata, options, logger):
@@ -335,6 +336,7 @@ def collect_coverage_from_gcov(covdata, options, logger):
     # Get coverage data
     with Workers(options.gcov_parallel, lambda: {
                  'covdata': dict(),
+                 'logger': logger,
                  'toerase': set(),
                  'options': options}) as pool:
         logger.verbose_msg("Pool started with {} threads", pool.size())
@@ -434,14 +436,14 @@ def print_reports(covdata, options, logger):
             if not output.is_dir:
                 default_output = None
         if output is not None:
-            if generator(covdata, output.abspath, options):
+            if generator(covdata, output.abspath, options, logger):
                 generator_error_occurred = True
             reports_were_written = True
         else:
             on_no_output()
 
     if not reports_were_written:
-        print_text_report(covdata, '-' if default_output is None else default_output.abspath, options)
+        print_text_report(covdata, '-' if default_output is None else default_output.abspath, options, logger)
         default_output = None
 
     if default_output is not None and default_output.value is not None and not default_output_used:
@@ -449,7 +451,7 @@ def print_reports(covdata, options, logger):
                     default_output.value)
 
     if options.print_summary:
-        print_summary(covdata)
+        print_summary(covdata, logger)
 
     return generator_error_occurred
 

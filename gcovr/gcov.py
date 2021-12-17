@@ -22,7 +22,7 @@ import shlex
 import subprocess
 import io
 
-from .utils import search_file, Logger, commonpath
+from .utils import search_file, commonpath
 from .workers import locked_directory
 from .coverage import FileCoverage
 from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
@@ -91,9 +91,7 @@ def find_datafiles(search_path, logger, exclude_dirs):
 #
 # Process a single gcov datafile
 #
-def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
-    logger = Logger(options.verbose)
-
+def process_gcov_data(data_fname, covdata, source_fname, options, logger, currdir=None):
     with io.open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
     ) as INPUT:
@@ -252,7 +250,7 @@ def guess_source_file_name_heuristics(
     return fname
 
 
-def process_datafile(filename, covdata, options, toerase):
+def process_datafile(filename, covdata, options, toerase, logger):
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
     Params:
@@ -296,8 +294,6 @@ def process_datafile(filename, covdata, options, toerase):
     i.e. the object files are in a sibling directory.
     TODO: So far there is no good way to address this case.
     """
-    logger = Logger(options.verbose)
-
     logger.verbose_msg("Processing file: {}", filename)
 
     abs_filename = os.path.abspath(filename)
@@ -433,7 +429,7 @@ def run_gcov_and_process_files(
     else:
         # Process *.gcov files
         for fname in active_gcov_files:
-            process_gcov_data(fname, covdata, abs_filename, options)
+            process_gcov_data(fname, covdata, abs_filename, options, logger)
         done = True
 
     if not options.keep:
@@ -477,9 +473,7 @@ def select_gcov_files_from_stdout(
 #
 #  Process Already existing gcov files
 #
-def process_existing_gcov_file(filename, covdata, options, toerase):
-    logger = Logger(options.verbose)
-
+def process_existing_gcov_file(filename, covdata, options, toerase, logger):
     filtered, excluded = apply_filter_include_exclude(
         filename, options.gcov_filter, options.gcov_exclude
     )
@@ -492,7 +486,7 @@ def process_existing_gcov_file(filename, covdata, options, toerase):
         logger.verbose_msg("Excluding gcov file: {}", filename)
         return
 
-    process_gcov_data(filename, covdata, None, options)
+    process_gcov_data(filename, covdata, None, options, logger)
 
     if not options.keep:
         toerase.add(filename)
