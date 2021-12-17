@@ -17,6 +17,7 @@
 # ****************************************************************************
 
 from argparse import ArgumentTypeError
+import logging
 import os
 import re
 import sys
@@ -290,44 +291,78 @@ class DirectoryPrefixFilter(Filter):
         return super(DirectoryPrefixFilter, self).match(normpath)
 
 
+class MaximumApplicableLogLevelFilter(Filter):
+    """Log messages of the given level and lower are passed to the handler"""
+    def __init__(self, level):
+        self.level = level
+
+    def filter(self, record):
+        return record.levelno <= self.level
+
+
 class Logger(object):
-    def __init__(self, verbose=False):
+    def __init__(self, logger: logging.Logger, verbose=False):
+        self.logger = logger
         self.verbose = verbose
 
     def warn(self, pattern, *args, **kwargs):
-        """Write a formatted warning to STDERR.
+        """Write a formatted warning.
 
         pattern: a str.format pattern
         args, kwargs: str.format arguments
         """
-        pattern = "(WARNING) " + pattern + "\n"
-        sys.stderr.write(pattern.format(*args, **kwargs))
+        pattern = "(WARNING) " + pattern
+        self.logger.warning(pattern.format(*args, **kwargs))
 
     def error(self, pattern, *args, **kwargs):
-        """Write a formatted error to STDERR.
+        """Write a formatted error.
 
         pattern: a str.format pattern
         args, kwargs: str.format parameters
         """
-        pattern = "(ERROR) " + pattern + "\n"
-        sys.stderr.write(pattern.format(*args, **kwargs))
+        pattern = "(ERROR) " + pattern
+        self.logger.error(pattern.format(*args, **kwargs))
 
     def msg(self, pattern, *args, **kwargs):
-        """Write a formatted message to STDOUT.
+        """Write a formatted message.
 
         pattern: a str.format pattern
         args, kwargs: str.format arguments
         """
-        pattern = pattern + "\n"
-        sys.stdout.write(pattern.format(*args, **kwargs))
+        self.logger.info(pattern.format(*args, **kwargs))
 
     def verbose_msg(self, pattern, *args, **kwargs):
-        """Write a formatted message to STDOUT if in verbose mode.
+        """Write a formatted message with low priority.
 
         see: self.msg()
         """
-        if self.verbose:
-            self.msg(pattern, *args, **kwargs)
+        self.logger.debug(pattern.format(*args, **kwargs))
+
+
+def configure_logging(level: int = logging.INFO, name: str = __name__) -> logging.Logger:
+    logger = logging.getLogger(name)
+
+    # stdout configuration
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    info_and_lower = MaximumApplicableLogLevelFilter(logging.INFO)
+    stdout_handler.addFilter(info_and_lower)
+    stdout_handler.setFormatter(logging.Formatter("%(message)s"))
+    stdout_handler.setLevel(level)
+
+    # stderr configuration
+    stderr_handler = logging.StreamHandler(sys.stderr)
+    stderr_handler.setFormatter(logging.Formatter("%(message)s"))
+    stderr_handler.setLevel(logging.WARNING)
+
+    logger.addHandler(stdout_handler)
+    logger.addHandler(stderr_handler)
+
+    sys.excepthook = exception_hook
+    return logger
+
+
+def exception_hook(exc_type, exc_value, exc_traceback) -> None:
+    logging.exception("Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback))
 
 
 def sort_coverage(covdata, show_branch,

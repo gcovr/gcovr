@@ -19,7 +19,7 @@
 from ..utils import calculate_coverage, sort_coverage, presentable_filename, open_text_for_writing
 
 
-def print_text_report(covdata, output_file, options):
+def print_text_report(covdata, output_file, options, logger):
     """produce the classic gcovr text report"""
 
     with open_text_for_writing(output_file, 'coverage.txt') as fh:

@@ -22,7 +22,7 @@ import io
 from argparse import ArgumentTypeError
 
 from ..version import __version__
-from ..utils import realpath, commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
+from ..utils import realpath, commonpath, sort_coverage, calculate_coverage, open_text_for_writing
 
 
 class Lazy:
@@ -144,8 +144,8 @@ class NullHighlighting:
 
 
 class PygmentHighlighting:
-    def __init__(self, options):
-        self.logger = Logger(options.verbose)
+    def __init__(self, logger):
+        self.logger = logger
         self.formatter = None
         try:
             from pygments.formatters.html import HtmlFormatter
@@ -174,8 +174,8 @@ class PygmentHighlighting:
 
 
 @Lazy
-def get_formatter(options):
-    return PygmentHighlighting(options) if options.html_details_syntax_highlighting else NullHighlighting()
+def get_formatter(options, logger):
+    return PygmentHighlighting(logger) if options.html_details_syntax_highlighting else NullHighlighting()
 
 
 def coverage_to_class(coverage, medium_threshold, high_threshold):
@@ -338,8 +338,7 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def print_html_report(covdata, output_file, options):
-    logger = Logger(options.verbose)
+def print_html_report(covdata, output_file, options, logger):
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -365,7 +364,7 @@ def print_html_report(covdata, output_file, options):
     if output_file.endswith(os.sep):
         output_file += 'coverage_details.html' if options.html_details else 'coverage.html'
 
-    formatter = get_formatter(options)
+    formatter = get_formatter(options, logger)
     css_data += formatter.get_css()
 
     if self_contained:
