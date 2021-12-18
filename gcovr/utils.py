@@ -201,7 +201,12 @@ class FilterOption(object):
             logger.warn("your filter : {}", self.regex)
             logger.warn("did you mean: {}", suggestion)
 
-        if os.path.isabs(self.regex):
+        isabs = self.regex.startswith("/")
+        if not isabs and (sys.platform == "win32"):
+            # Starts with a drive letter
+            isabs = re.match(r"^[A-Za-z]:/", self.regex)
+
+        if isabs:
             return AbsoluteFilter(self.regex)
         else:
             return RelativeFilter(self.path_context, self.regex)
