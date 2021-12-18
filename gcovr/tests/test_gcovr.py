@@ -234,6 +234,11 @@ def pytest_generate_tests(metafunc):
 
             marks = [
                 pytest.mark.xfail(
+                    name == "simple1-drive-subst"
+                    and not is_windows,
+                    reason="drive substitution only available on windows",
+                ),
+                pytest.mark.xfail(
                     name == "exclude-throw-branches"
                     and format == "html"
                     and is_windows,
