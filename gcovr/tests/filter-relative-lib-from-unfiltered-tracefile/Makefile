@@ -11,11 +11,7 @@ all: links
 run: txt xml html sonarqube
 
 # the src/ filter is provided by the project/gcovr.cfg configuration file
-ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
 GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
-else
-GCOVR_TEST_OPTIONS = -f '.*/external-library/src'
-endif
 
 coverage_unfiltered.json:
 	cd project; ./testcase

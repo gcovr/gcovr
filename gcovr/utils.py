@@ -37,30 +37,27 @@ class LoopChecker(object):
         return False
 
 
-if sys.platform == "win32":
-    if sys.version_info >= (3, 8):
-        gcov_realpath = os.path.realpath
-    else:
-        # Only used for old python versions. Function can be treated as stable.
-        from nt import _getfinalpathname
+if (sys.platform == "win32") and (sys.version_info < (3, 8)):
+    # Only used for old python versions. Function can be treated as stable.
+    from nt import _getfinalpathname
 
-        DOS_DEVICE_PATH_PREFIX = "\\\\?\\"
-        DOS_DEVICE_PATH_PREFIX_UNC = DOS_DEVICE_PATH_PREFIX + "UNC\\"
+    DOS_DEVICE_PATH_PREFIX = "\\\\?\\"
+    DOS_DEVICE_PATH_PREFIX_UNC = DOS_DEVICE_PATH_PREFIX + "UNC\\"
 
-        def gcov_realpath(path):
-            path = os.path.realpath(path)
-            # If file exist try to resolve the symbolic links
-            if os.path.exists(path):
-                has_prefix = True if path.startswith(DOS_DEVICE_PATH_PREFIX) else False
-                path = _getfinalpathname(path)
-                if not has_prefix and path.startswith(DOS_DEVICE_PATH_PREFIX):
-                    if path.startswith(DOS_DEVICE_PATH_PREFIX_UNC):
-                        path = path[len(DOS_DEVICE_PATH_PREFIX_UNC):]
-                    else:
-                        path = path[len(DOS_DEVICE_PATH_PREFIX):]
-            return path
+    def realpath(path):
+        path = os.path.realpath(path)
+        # If file exist try to resolve the symbolic links
+        if os.path.exists(path):
+            has_prefix = path.startswith(DOS_DEVICE_PATH_PREFIX)
+            path = _getfinalpathname(path)
+            if not has_prefix and path.startswith(DOS_DEVICE_PATH_PREFIX):
+                if path.startswith(DOS_DEVICE_PATH_PREFIX_UNC):
+                    path = path[len(DOS_DEVICE_PATH_PREFIX_UNC):]
+                else:
+                    path = path[len(DOS_DEVICE_PATH_PREFIX):]
+        return path
 else:
-    gcov_realpath = os.path.realpath
+    realpath = os.path.realpath
 
 
 def search_file(predicate, path, exclude_dirs):
@@ -83,11 +80,11 @@ def search_file(predicate, path, exclude_dirs):
         dirs[:] = [d for d in dirs
                    if not any(exc.match(os.path.join(root, d))
                               for exc in exclude_dirs)]
-        root = gcov_realpath(root)
+        root = realpath(root)
 
         for name in files:
             if predicate(name):
-                yield gcov_realpath(os.path.join(root, name))
+                yield realpath(os.path.join(root, name))
 
 
 def commonpath(files):
@@ -114,9 +111,9 @@ def commonpath(files):
         return ''
 
     if len(files) == 1:
-        prefix_path = os.path.dirname(gcov_realpath(files[0]))
+        prefix_path = os.path.dirname(realpath(files[0]))
     else:
-        split_paths = [gcov_realpath(path).split(os.path.sep)
+        split_paths = [realpath(path).split(os.path.sep)
                        for path in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
@@ -240,7 +237,7 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path):
-        abspath = gcov_realpath(path)
+        abspath = realpath(path)
         return super(AbsoluteFilter, self).match(abspath)
 
 
@@ -250,13 +247,13 @@ class RelativeFilter(Filter):
         self.root = root
 
     def match(self, path):
-        abspath = gcov_realpath(path)
+        abspath = realpath(path)
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
         if sys.platform == 'win32':
             path_drive, _ = os.path.splitdrive(abspath)
-            root_drive, _ = os.path.splitdrive(gcov_realpath(self.root))
+            root_drive, _ = os.path.splitdrive(realpath(self.root))
             if path_drive != root_drive:
                 return None
 
