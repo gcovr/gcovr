@@ -235,7 +235,10 @@ def main(args=None):
 
     # The root filter isn't technically a filter,
     # but is used to turn absolute paths into relative paths
-    options.root_filter = re.compile('^' + re.escape(options.root_dir + os.sep))
+    root_dir = options.root_dir
+    if not root_dir.endswith(os.sep):
+        root_dir += os.sep
+    options.root_filter = re.compile('^' + re.escape(root_dir))
 
     if options.exclude_dirs is not None:
         options.exclude_dirs = [

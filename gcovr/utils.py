@@ -280,13 +280,15 @@ class AlwaysMatchFilter(Filter):
 
 class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
-        abspath = os.path.realpath(directory)
+        abspath = realpath(directory)
+        if not abspath.endswith(os.sep):
+            abspath += os.sep
         os_independent_dir = abspath.replace(os.path.sep, '/')
-        pattern = re.escape(os_independent_dir + '/')
+        pattern = re.escape(os_independent_dir)
         super(DirectoryPrefixFilter, self).__init__(pattern)
 
     def match(self, path):
-        normpath = os.path.normpath(path)
+        normpath = os.path.normpath(path).replace(os.sep, "/")
         return super(DirectoryPrefixFilter, self).match(normpath)
 
 
