@@ -7,10 +7,10 @@
 #   gcovrtest
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
-ifeq ($(BASE_OS),MSYS_NT)
-  CMAKE_GENERATOR := "MSYS Makefiles"
-else
+ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
   CMAKE_GENERATOR := "Unix Makefiles"
+else
+  CMAKE_GENERATOR := "MSYS Makefiles"
 endif
 
 all:

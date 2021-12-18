@@ -1,14 +1,11 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
-ifneq (,$(findstring MINGW,$(BASE_OS)))
-	BASE_OS:=MSYS_NT
-endif
-ifeq ($(BASE_OS),MSYS_NT)
+ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
+	GCOVR_TEST_OPTIONS := -f $(shell pwd)/main.cpp
+else
 	# "cygpath -m" is the mixed mode: Windows drive letters but forward slashes
 	GCOVR_TEST_OPTIONS := -f $(shell cygpath -m "$$PWD")/main.cpp
-else
-	GCOVR_TEST_OPTIONS := -f $(shell pwd)/main.cpp
 endif
 
 all:

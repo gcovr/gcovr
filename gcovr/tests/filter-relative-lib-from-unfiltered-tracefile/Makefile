@@ -1,5 +1,7 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
+BASE_OS:=$(shell uname | cut -d'-' -f1)
+
 all: links
 	cd project; $(CXX) $(CFLAGS) -c src/main.cpp -o main.o
 	cd project; $(CXX) $(CFLAGS) -c ignore-this/no.cpp -o no.o
@@ -28,9 +30,21 @@ sonarqube: coverage_unfiltered.json
 	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --sonarqube ../sonarqube.xml
 
 links:
+ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
 	cd project; \
 	   test -d relevant-library || ln -sT ../external-library relevant-library
+else
+	cd project; \
+	   test -d relevant-library || cmd.exe /C "mklink /j relevant-library ..\external-library"
+endif
 
 clean:
-	cd project; rm -f testcase *.gc* *.o; rm -rf relevant-library
+	cd project; rm -f testcase *.gc* *.o;
+ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
+	cd project; rm -rf relevant-library
+else
+	if [ -d "project/relevant-library" ]; then\
+		cmd.exe /C "rmdir /S /Q project\relevant-library";\
+	fi
+endif
 	rm -f coverage*.* sonarqube.xml
