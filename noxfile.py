@@ -174,6 +174,7 @@ def check_wheel(session: nox.Session) -> None:
     session.chdir(f"{session.cache_dir}/dist")
     session.run("twine", "check", "*", external=True)
     session.install(glob.glob("*.whl")[0])
+    session.run("python", "-m", "gcovr", "--help", external=True)
 
 
 @nox.session
