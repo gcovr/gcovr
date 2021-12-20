@@ -17,6 +17,7 @@ BLACK_CONFORM_FILES = [
 
 
 nox.options.sessions = ["qa"]
+nox.options.reuse_venv = True
 
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
