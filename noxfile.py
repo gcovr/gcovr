@@ -6,7 +6,7 @@ import sys
 import nox
 
 GCC_VERSIONS = ["gcc-5", "gcc-6", "gcc-8", "clang-10"]
-GCC_VERSION2USE = os.environ.get("CC", "gcc-5")
+GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
 BLACK_CONFORM_FILES = [
     "noxfile.py",
@@ -16,7 +16,6 @@ BLACK_CONFORM_FILES = [
 
 
 nox.options.sessions = ["qa"]
-
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
     if check and (shutil.which(cc) is None):
@@ -134,6 +133,15 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         coverage_args = ["--cov=gcovr", "--cov-branch"]
     session.install("-e", ".")
     set_environment(session, version)
+    # Use full path to executable
+    for env in ["CC", "CXX", "GCOV"]:
+        value = shlex.split(session.env[env])
+        value[0] = shutil.which(value[0])
+        if sys.version_info >= (3, 8):
+            session.env[env] = shlex.join(value)
+        else:
+            # Code for join taken from Python 3.9
+            session.env[env] = ' '.join(shlex.quote(v) for v in value)
     session.log("Print tool versions")
     session.run("python", "--version")
     session.run(session.env["CC"], "--version", external=True)
