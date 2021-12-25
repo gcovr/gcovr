@@ -133,6 +133,8 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         coverage_args = ["--cov=gcovr", "--cov-branch"]
     session.install("-e", ".")
     set_environment(session, version)
+    session.log("Print tool versions")
+    session.run("python", "--version")
     # Use full path to executable
     for env in ["CC", "CXX", "GCOV"]:
         value = shlex.split(session.env[env])
@@ -142,11 +144,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         else:
             # Code for join taken from Python 3.9
             session.env[env] = ' '.join(shlex.quote(v) for v in value)
-    session.log("Print tool versions")
-    session.run("python", "--version")
-    session.run(session.env["CC"], "--version", external=True)
-    session.run(session.env["CXX"], "--version", external=True)
-    session.run(*shlex.split(session.env["GCOV"]), "--version", external=True)
+        session.run(*value, "--version", external=True)
 
     session.chdir("gcovr/tests")
     session.run("make", "--silent", "clean", external=True)
