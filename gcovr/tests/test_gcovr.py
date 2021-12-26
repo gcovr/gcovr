@@ -54,9 +54,10 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 
 skip_clean = None
 
-IS_CLANG = True if env["CC"].startswith("clang") else False
+CC = os.path.split(env["CC"])[1]
+IS_CLANG = True if CC.startswith("clang") else False
 
-REFERENCE_DIR = os.path.join("reference", env.get("CC_REFERENCE", env["CC"]))
+REFERENCE_DIR = os.path.join("reference", env.get("CC_REFERENCE", CC))
 
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
