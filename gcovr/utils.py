@@ -166,7 +166,7 @@ class FilterOption(object):
         self.regex = regex
         self.path_context = os.getcwd() if path_context is None else path_context
 
-    def build_filter(self, logger):
+    def build_filter(self, logger, use_canonical_paths):
         # Try to detect unintended backslashes and warn.
         # Later, the regex engine may or may not raise a syntax error.
         # An unintended backslash is a literal backslash r"\\",
