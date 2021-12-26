@@ -158,9 +158,10 @@ is needed.
     the PATH environment. If the command gcc-5/g++-5/gcov-5,
     gcc-6/g++-6/gcov-6, gcc-8/g++-8/gcov-8 or clang-10/clang++-10/llvm-cov
     are available everything is OK.
-    For gcc-6 and gcc-8 you should use the option ``CC=...```
+    For gcc-6 and gcc-8 you should use the option ``CC=...``
     see :ref:`run and filter tests <run tests>`. If this isn't OK you
-    have to create symlinks for the gcc executables with the following steps.
+    can set the reference data to use by setting the environment ``CC_REFERENCE=gcc-8``
+    or you have to create symlinks for the gcc executables with the following steps.
     You can check the GCC version with gcc --version. If the output says
     version 8, you should also be able to run gcc-8 --version. Your Linux
     distribution should have set all of this up already.

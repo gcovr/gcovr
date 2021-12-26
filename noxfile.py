@@ -7,7 +7,7 @@ import sys
 import nox
 
 GCC_VERSIONS = ["gcc-5", "gcc-6", "gcc-8", "clang-10"]
-GCC_VERSION2USE = os.environ.get("CC", "gcc-5")
+GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
 BLACK_CONFORM_FILES = [
     "noxfile.py",
@@ -15,29 +15,19 @@ BLACK_CONFORM_FILES = [
     "gcovr/gcov_parser.py",
 ]
 
-
 nox.options.sessions = ["qa"]
 nox.options.reuse_venv = True
-
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
     if check and (shutil.which(cc) is None):
         session.env["CC_REFERENCE"] = cc
         cc = "gcc"
-        cxx = "g++"
-        gcov = "gcov"
-    else:
-        cxx = cc.replace("clang", "clang++").replace("gcc", "g++")
-        if cc.startswith("clang"):
-            gcov = cc.replace("clang", "llvm-cov") + " gcov"
-        else:
-            gcov = cc.replace("gcc", "gcov")
+    cxx = cc.replace("clang", "clang++").replace("gcc", "g++")
     session.env["GCOVR_TEST_SUITE"] = "1"
     session.env["CC"] = cc
     session.env["CFLAGS"] = "--this_flag_does_not_exist"
     session.env["CXX"] = cxx
     session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
-    session.env["GCOV"] = gcov
 
 
 @nox.session(python=False)
@@ -138,9 +128,17 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     set_environment(session, version)
     session.log("Print tool versions")
     session.run("python", "--version")
+    # Use full path to executable
+    session.env["CC"] = shutil.which(session.env["CC"]).replace(os.path.sep, "/")
     session.run(session.env["CC"], "--version", external=True)
+    session.env["CXX"] = shutil.which(session.env["CXX"]).replace(os.path.sep, "/")
     session.run(session.env["CXX"], "--version", external=True)
-    session.run(*shlex.split(session.env["GCOV"]), "--version", external=True)
+    session.env["GCOV"] = shutil.which(
+        session.env["CC"].replace("clang", "llvm-cov").replace("gcc", "gcov")
+    ).replace(os.path.sep, "/")
+    session.run(session.env["GCOV"], "--version", external=True)
+    if "llvm-cov" in session.env["GCOV"]:
+        session.env["GCOV"] += " gcov"
 
     session.chdir("gcovr/tests")
     session.run("make", "--silent", "clean", external=True)
