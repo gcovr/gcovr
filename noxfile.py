@@ -14,6 +14,7 @@ BLACK_CONFORM_FILES = [
     "gcovr/gcov_parser.py",
 ]
 
+CLANG_GCOV_ARGUMENT = " gcov"
 
 nox.options.sessions = ["qa"]
 
@@ -25,8 +26,8 @@ def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
         gcov = "gcov"
     else:
         cxx = cc.replace("clang", "clang++").replace("gcc", "g++")
-        if cc.startswith("clang"):
-            gcov = cc.replace("clang", "llvm-cov") + " gcov"
+        if "clang" in cc:
+            gcov = cc.replace("clang", "llvm-cov") + CLANG_GCOV_ARGUMENT
         else:
             gcov = cc.replace("gcc", "gcov")
     session.env["GCOVR_TEST_SUITE"] = "1"
@@ -136,15 +137,13 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     session.log("Print tool versions")
     session.run("python", "--version")
     # Use full path to executable
-    for env in ["CC", "CXX", "GCOV"]:
-        value = shlex.split(session.env[env])
-        value[0] = shutil.which(value[0])
-        if sys.version_info >= (3, 8):
-            session.env[env] = shlex.join(value)
-        else:
-            # Code for join taken from Python 3.9
-            session.env[env] = ' '.join(shlex.quote(v) for v in value)
-        session.run(*value, "--version", external=True)
+    for env in ["CC", "CXX"]:
+        session.env[env] = shutil.which(session.env[env])
+        session.run(session.env[env], "--version", external=True)
+    if "llvm-cov" in session.env["GCOV"]:
+        gcov = shutil.which(session.env["GCOV"][0:-len(CLANG_GCOV_ARGUMENT)])
+        session.env["GCOV"] = gcov + CLANG_GCOV_ARGUMENT
+        session.run(gcov, CLANG_GCOV_ARGUMENT, "--version", external=True)
 
     session.chdir("gcovr/tests")
     session.run("make", "--silent", "clean", external=True)

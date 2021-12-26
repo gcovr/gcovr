@@ -1,7 +1,4 @@
 
-all: export CC := $(notdir $(subst ',,$(CC)))
-all: export CXX := $(notdir $(subst ',,$(CXX)))
-all: export GCOV := $(notdir $(subst ',,$(GCOV)))
 all:
 	@echo "CC:   ${CC} (origin: $(origin CC))"
 	@echo "CXX:  ${CXX} (origin: $(origin CXX))"
