@@ -1,2 +1,2 @@
-# Declare files that will always have LF line endings on checkout.
+# Declare that the script files will always have LF line endings on checkout. Otherwise using cygwin and WSL to execute these will fail.
 *.sh text eol=lf
