@@ -26,11 +26,11 @@ help:
 %: Makefile $(SCREENSHOTS) outputs
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-images/screenshot-%.png: examples/example-%.html
+images/screenshot-%.png: examples/example_html_details.%.html
 	$(SCREENSHOT_FROM_HTML) $< $@
 
-examples/example-%.html:
-	cd examples; ./example_html.sh
+examples/example_html_details.%.html:
+	cd examples; ./example_html_details.sh
 
 outputs:
 	gcovr -h > examples/gcovr.out

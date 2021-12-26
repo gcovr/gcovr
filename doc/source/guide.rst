@@ -221,7 +221,7 @@ a separate web page for each file.  Each of these web pages includes
 the contents of file with annotations that summarize code coverage.  Consider
 the following command:
 
-.. include:: ../examples/example_html.sh
+.. include:: ../examples/example_html_details.sh
     :code: bash
     :start-after: #BEGIN gcovr html details
     :end-before: #END gcovr html details
@@ -345,7 +345,7 @@ JSON Summary Output
 ~~~~~~~~~~~~~~~~~~~
 
 The :option:`--json-summary<gcovr --json-summary>` option output coverage summary
-in a machine-readable format for additional post processing. 
+in a machine-readable format for additional post processing.
 The format is identical to JSON output :option:`--json<gcovr --json>` option
 without detailed ``lines`` information.
 The :option:`--json-summary-pretty<gcovr --json-summary-pretty>` option

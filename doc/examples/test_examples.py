@@ -43,6 +43,9 @@ def find_test_cases():
     for script in glob.glob(datadir + '/*.sh'):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
+        # Don't run this test because it alters the commited data.
+        if name == "example_html_details":
+            continue
         for ext in 'txt xml csv json html'.split():
             baseline = '{datadir}/{name}.{ext}'.format(
                 datadir=datadir,
