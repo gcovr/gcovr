@@ -30,6 +30,8 @@ Internal changes:
  - Add option to run all comiler versions at once. (:issue:`514`)
  - Fix globing of reference data in tests. (:issue:`533`)
  - Replace makefile for starting tests with noxfile.py. (:issue:`516`)
+ - Activate symlink test for windows. (:issue:`539`)
+ - Add test to install wheel. (:issue:`537`)
  - Ensure that shell files are always checked out with LF linebreaks
 
 5.0 (11 June 2021)

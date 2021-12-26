@@ -6,16 +6,13 @@ ifeq ($(BASE_OS),Darwin)
   CFLAGS     += -fPIC
   SOFLAGS    += -dynamiclib -undefined dynamic_lookup
 endif
-ifneq (,$(findstring MINGW,$(BASE_OS)))
-  BASE_OS:=MSYS_NT
-endif
 ifeq ($(BASE_OS),CYGWIN_NT)
   DYNLIB_EXT = dll
   #DEFINES   += -mno-cygwin
   #SOFLAGS   += -shared -wl,--kill-at
   SOFLAGS    += -shared
 endif
-ifeq ($(BASE_OS),MSYS_NT)
+ifneq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
   DYNLIB_EXT = dll
   SOFLAGS    += -shared
 endif
@@ -37,21 +34,21 @@ all:
 
 run: txt xml html sonarqube coveralls
 
-ifeq ($(BASE_OS),MSYS_NT)
+ifneq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
 ifneq ($(notdir $(SHELL)),sh)
 coverage.json : export PATH := $(subst /,\,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))\lib;${PATH}
 endif
 endif
 
 coverage.json:
-ifeq ($(BASE_OS),MSYS_NT)
+ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
+	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
+else
 ifeq ($(notdir $(SHELL)),sh)
 	PATH="`pwd`/lib:${PATH}" testApp/test/a.out
 else
 	testApp/test/a.out
 endif
-else
-	LD_LIBRARY_PATH=`pwd`/lib testApp/test/a.out
 endif
 	$(GCOVR) --json $@
 
