@@ -30,6 +30,7 @@ Internal changes:
  - Fix globing of reference data in tests. (:issue:`533`)
  - Replace makefile for starting tests with noxfile.py. (:issue:`516`)
  - Activate symlink test for windows. (:issue:`539`)
+ - Add test to install wheel. (:issue:`537`)
  - Add support for full path in environment CC. (:issue:`541`)
 
 5.0 (11 June 2021)

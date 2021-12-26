@@ -1,3 +1,4 @@
+import glob
 import os
 import platform
 import shutil
@@ -17,6 +18,7 @@ BLACK_CONFORM_FILES = [
 CLANG_GCOV_ARGUMENT = " gcov"
 
 nox.options.sessions = ["qa"]
+nox.options.reuse_venv = True
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
     if check and (shutil.which(cc) is None):
@@ -162,9 +164,23 @@ def tests_compiler(session: nox.Session, version: str) -> None:
 @nox.session
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
-    session.install("wheel", "twine")
+    session.install("wheel")
     session.run("python", "setup.py", "sdist", "bdist_wheel")
-    session.run("twine", "check", "dist/*", external=True)
+    dist_cache = f"{session.cache_dir}/dist"
+    if os.path.isdir(dist_cache):
+        shutil.rmtree(dist_cache)
+    shutil.copytree("dist", dist_cache)
+    session.notify("check_wheel")
+
+
+@nox.session(reuse_venv=False)
+def check_wheel(session: nox.Session) -> None:
+    """Check the wheel, should not be used directly."""
+    session.install("wheel", "twine")
+    session.chdir(f"{session.cache_dir}/dist")
+    session.run("twine", "check", "*", external=True)
+    session.install(glob.glob("*.whl")[0])
+    session.run("python", "-m", "gcovr", "--help", external=True)
 
 
 @nox.session
