@@ -13,6 +13,7 @@ Improvements and new features:
 - Add function coverage metric (:issue:`362`)
 - Deactivate localization of gcov by setting LC_ALL=C instead of LC_ALL=en_US (:issue:`513`)
 - Don't use a temporary directory for running gcov (:issue:`525`)
+- Fix junctions on windows for Python 3.8 (:issue:`535`)
 
 Documentation:
 
@@ -32,6 +33,7 @@ Internal changes:
  - Activate symlink test for windows. (:issue:`539`)
  - Add test to install wheel. (:issue:`537`)
  - Add support for full path in environment CC. (:issue:`541`)
+ - Ensure that shell files are always checked out with LF linebreaks. (:issue:`538`)
 
 5.0 (11 June 2021)
 ------------------
