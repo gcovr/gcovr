@@ -23,7 +23,7 @@ import io
 from argparse import ArgumentTypeError
 
 from ..version import __version__
-from ..utils import commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
+from ..utils import realpath, commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
 
 
 class Lazy:
@@ -278,7 +278,7 @@ class RootInfo:
         }
 
         display_filename = (
-            os.path.relpath(os.path.realpath(cdata_fname), self.directory)
+            os.path.relpath(realpath(cdata_fname), self.directory)
             .replace('\\', '/'))
 
         if link_report is not None:
