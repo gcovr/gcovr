@@ -15,8 +15,6 @@ BLACK_CONFORM_FILES = [
     "gcovr/gcov_parser.py",
 ]
 
-CLANG_GCOV_ARGUMENT = " gcov"
-
 nox.options.sessions = ["qa"]
 nox.options.reuse_venv = True
 
@@ -24,20 +22,12 @@ def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
     if check and (shutil.which(cc) is None):
         session.env["CC_REFERENCE"] = cc
         cc = "gcc"
-        cxx = "g++"
-        gcov = "gcov"
-    else:
-        cxx = cc.replace("clang", "clang++").replace("gcc", "g++")
-        if "clang" in cc:
-            gcov = cc.replace("clang", "llvm-cov") + CLANG_GCOV_ARGUMENT
-        else:
-            gcov = cc.replace("gcc", "gcov")
+    cxx = cc.replace("clang", "clang++").replace("gcc", "g++")
     session.env["GCOVR_TEST_SUITE"] = "1"
     session.env["CC"] = cc
     session.env["CFLAGS"] = "--this_flag_does_not_exist"
     session.env["CXX"] = cxx
     session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
-    session.env["GCOV"] = gcov
 
 
 @nox.session(python=False)
@@ -139,13 +129,16 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     session.log("Print tool versions")
     session.run("python", "--version")
     # Use full path to executable
-    for env in ["CC", "CXX"]:
-        session.env[env] = shutil.which(session.env[env])
-        session.run(session.env[env], "--version", external=True)
+    session.env["CC"] = shutil.which(session.env["CC"]).replace(os.path.sep, "/")
+    session.run(session.env["CC"], "--version", external=True)
+    session.env["CXX"] = shutil.which(session.env["CXX"]).replace(os.path.sep, "/")
+    session.run(session.env["CXX"], "--version", external=True)
+    session.env["GCOV"] = shutil.which(
+        session.env["CC"].replace("clang", "llvm-cov").replace("gcc", "gcov")
+    ).replace(os.path.sep, "/")
+    session.run(session.env["GCOV"], "--version", external=True)
     if "llvm-cov" in session.env["GCOV"]:
-        gcov = shutil.which(session.env["GCOV"][0:-len(CLANG_GCOV_ARGUMENT)])
-        session.env["GCOV"] = gcov + CLANG_GCOV_ARGUMENT
-        session.run(gcov, CLANG_GCOV_ARGUMENT, "--version", external=True)
+        session.env["GCOV"] += " gcov"
 
     session.chdir("gcovr/tests")
     session.run("make", "--silent", "clean", external=True)
