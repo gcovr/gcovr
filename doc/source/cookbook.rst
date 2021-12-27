@@ -68,7 +68,7 @@ commands need to be in ``CMakeLists.txt``:
     :end-before: #END cmakecmds
 
 The ``--coverage`` compiler flag is an alternative to
-``fprofile-arcs -ftest-coverage`` for
+``-fprofile-arcs -ftest-coverage`` for
 `recent version of gcc <https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html>`__.
 In versions 3.13 and later of ``cmake``, the
 ``target_link_libraries`` command can be removed and
@@ -89,7 +89,7 @@ and run the program:
     :start-after: #BEGIN cmake_run
     :end-before: #END cmake_run
 
-However, invocation of ``gcovr`` itself has to change. The assorted 
+However, invocation of ``gcovr`` itself has to change. The assorted
 ``.gcno`` and ``.gcda`` files will appear under the ``CMakeFiles``
 directory in ``BLD_DIR``, rather than next to the sources. Since
 ``gcovr`` requires both, the command we need to run is:
