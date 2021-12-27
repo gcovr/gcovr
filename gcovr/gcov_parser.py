@@ -1051,7 +1051,7 @@ def _is_non_code(code: str) -> bool:
 
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.replace(" ", "").strip()
+    code = code.strip()
     return len(code) == 0 or code in ["{", "}", "else"]
 
 
