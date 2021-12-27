@@ -13,6 +13,7 @@ BLACK_CONFORM_FILES = [
     "noxfile.py",
     "gcovr/gcov.py",
     "gcovr/gcov_parser.py",
+    "gcovr/timestamps.py",
 ]
 
 nox.options.sessions = ["qa"]

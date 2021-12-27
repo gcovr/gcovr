@@ -16,8 +16,6 @@
 #
 # ****************************************************************************
 
-import time
-
 from lxml import etree
 
 from ..version import __version__
@@ -83,7 +81,7 @@ def print_xml_report(covdata, output_file, options):
         "complexity", "0.0"
     )
     root.set(
-        "timestamp", str(int(time.time()))
+        "timestamp", str(int(options.timestamp.timestamp()))
     )
     root.set(
         "version", "gcovr %s" % (__version__,)

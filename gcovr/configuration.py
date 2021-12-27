@@ -20,6 +20,7 @@ from argparse import ArgumentTypeError, SUPPRESS
 from locale import getpreferredencoding
 from multiprocessing import cpu_count
 from typing import Iterable, Any
+import datetime
 import os
 import re
 
@@ -62,6 +63,15 @@ def check_input_file(value, basedir=None):
             "Should be a file that already exists: {value!r}".format(value=value))
 
     return os.path.abspath(value)
+
+
+def timestamp(value: str) -> datetime.datetime:
+    from .timestamps import parse_timestamp  # lazy import
+    try:
+        return parse_timestamp(value)
+    except ValueError as ex:
+        (msg,) = ex.args
+        raise ArgumentTypeError(f"{msg}: {value:!r}") from None
 
 
 class OutputOrDefault(object):
@@ -849,6 +859,17 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "timestamp",
+        ["--timestamp"],
+        group="output_options",
+        help="Override current time for reproducible reports. "
+        "Can use `YYYY-MM-DD hh:mm:ss` or epoch notation. "
+        "Used by HTML, Coveralls, and Cobertura reports. "
+        "Default: current time.",
+        type=timestamp,
+        default=datetime.datetime.now(),
+    ),
+    GcovrConfigOption(
         "filter", ["-f", "--filter"],
         group="filter_options",
         help="Keep only source files that match this filter. "
@@ -995,7 +1016,7 @@ GCOVR_CONFIG_OPTIONS = [
         const=cpu_count(),
         type=int,
         default=1,
-    )
+    ),
 ]
 
 
