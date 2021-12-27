@@ -34,6 +34,7 @@ Internal changes:
  - Add test to install wheel. (:issue:`537`)
  - Add support for full path in environment CC. (:issue:`541`)
  - Ensure that shell files are always checked out with LF linebreaks. (:issue:`538`)
+ - Add test for compiler option ``-fprofile-abs-path``. (:issue:`521`)
 
 5.0 (11 June 2021)
 ------------------
