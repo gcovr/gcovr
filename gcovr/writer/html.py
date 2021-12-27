@@ -17,7 +17,6 @@
 # ****************************************************************************
 
 import os
-import datetime
 import hashlib
 import io
 from argparse import ArgumentTypeError
@@ -191,7 +190,7 @@ class RootInfo:
 
         self.version = __version__
         self.head = options.html_title
-        self.date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.date = options.timestamp.isoformat(sep=" ", timespec="seconds")
         self.encoding = options.html_encoding
         self.directory = None
         self.branches = dict()

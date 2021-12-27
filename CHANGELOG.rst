@@ -14,6 +14,7 @@ Improvements and new features:
 - Deactivate localization of gcov by setting LC_ALL=C instead of LC_ALL=en_US (:issue:`513`)
 - Don't use a temporary directory for running gcov (:issue:`525`)
 - Fix junctions on windows for Python 3.8 (:issue:`535`)
+- Can create reproducible reports with the :option:`--timestamp` option (:issue:`546`)
 
 Documentation:
 

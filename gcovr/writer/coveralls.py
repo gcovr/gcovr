@@ -59,7 +59,8 @@ def print_coveralls_report(covdata, output_file, options):
     json_dict = {}
 
     # Capture timestamp
-    json_dict['run_at'] = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp: datetime.datetime = options.timestamp.astimezone(datetime.timezone.utc)
+    json_dict['run_at'] = timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Pull environment variables
     if(os.environ.get('COVERALLS_REPO_TOKEN') is not None):
