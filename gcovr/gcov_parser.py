@@ -1029,20 +1029,30 @@ def _is_non_code(code: str) -> bool:
     Examples:
     >>> _is_non_code('  // some comment!')
     True
+    >>> _is_non_code('  /* some comment! */')
+    True
     >>> _is_non_code('} else {')  # could be easily made detectable
     False
+    >>> _is_non_code('}else{')
+    False
+    >>> _is_non_code('else')
+    True
     >>> _is_non_code('{')
     True
+    >>> _is_non_code('/* some comment */ {')
+    True
     >>> _is_non_code('}')
+    True
+    >>> _is_non_code('} // some code')
     True
     >>> _is_non_code('return {};')
     False
     """
 
-    # This variant is more flexible, but would change JSON reports
-    # code = code.replace("{", "").replace("}", "").strip()
-    code = code.strip().replace("{", "").replace("}", "")
-    return len(code) == 0 or code.startswith("//") or code == "else"
+    code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
+    code = _C_STYLE_COMMENT_PATTERN.sub("", code)
+    code = code.replace(" ", "").strip()
+    return len(code) == 0 or code in ["{", "}", "else"]
 
 
 def _int_from_gcov_unit(formatted: str) -> int:
