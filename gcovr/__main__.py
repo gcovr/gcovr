@@ -312,7 +312,6 @@ def collect_coverage_from_tracefiles(covdata, options, logger):
             for trace_file in trace_files:
                 datafiles.add(normpath(trace_file))
 
-    options.root_dir = os.path.abspath(options.root)
     gcovr_json_files_to_coverage(datafiles, covdata, options)
 
 

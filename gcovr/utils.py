@@ -249,7 +249,7 @@ class AbsoluteFilter(Filter):
 class RelativeFilter(Filter):
     def __init__(self, root, pattern):
         super(RelativeFilter, self).__init__(pattern)
-        self.root = root
+        self.root = realpath(root)
 
     def match(self, path):
         abspath = realpath(path)
@@ -258,7 +258,7 @@ class RelativeFilter(Filter):
         # If so, the relative filter cannot match.
         if sys.platform == 'win32':
             path_drive, _ = os.path.splitdrive(abspath)
-            root_drive, _ = os.path.splitdrive(realpath(self.root))
+            root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:
                 return None
 
