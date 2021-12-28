@@ -163,6 +163,8 @@ print the same tabular output.
    Added :option:`--txt<gcovr --txt>`.
 
 
+.. _cobertura_output:
+
 Cobertura XML Output
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -198,6 +200,8 @@ of times that each line was covered.  Consequently, XML output can be
 used to support performance optimization in the same manner that
 ``gcov`` does.
 
+
+.. _html_output:
 
 HTML Output
 ~~~~~~~~~~~
@@ -783,3 +787,10 @@ a multi-program laboratory managed and operated by Sandia Corporation,
 a wholly owned subsidiary of Lockheed Martin Corporation, for the
 U.S.  Department of Energy's National Nuclear Security Administration
 under contract DE-AC04-94AL85000.
+
+Additional Topics
+-----------------
+
+.. toctree::
+
+   guide-timestamps
