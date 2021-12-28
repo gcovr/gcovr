@@ -381,3 +381,10 @@ def test_exclude_lines_by_pattern(capsys):
     c = capture(capsys, ['--exclude-lines-by-pattern', 'example.**'])
     assert 'Invalid regular expression' in c.err
     assert c.exception.code != 0
+
+
+def test_invalid_timestamp(capsys):
+    c = capture(capsys, ['--timestamp=foo'])
+    assert c.out == ''
+    assert "argument --timestamp: unknown timestamp format: 'foo'" in c.err
+    assert c.exception.code != 0

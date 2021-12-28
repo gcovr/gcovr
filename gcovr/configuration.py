@@ -70,8 +70,7 @@ def timestamp(value: str) -> datetime.datetime:
     try:
         return parse_timestamp(value)
     except ValueError as ex:
-        (msg,) = ex.args
-        raise ArgumentTypeError(f"{msg}: {value:!r}") from None
+        raise ArgumentTypeError(f"{ex}: {value!r}") from None
 
 
 class OutputOrDefault(object):
