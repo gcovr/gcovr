@@ -127,6 +127,8 @@ def _parse_rfc3339(value: str) -> datetime.datetime:
     '2021-12-27T13:05:27'
     >>> _parse_rfc3339("2021-12-27T13:05:27").isoformat()
     '2021-12-27T13:05:27'
+    >>> _parse_rfc3339("2021-12-27t13:05:27").isoformat()
+    '2021-12-27T13:05:27'
     >>> _parse_rfc3339("2021-12-27@13:05:27+12:30")
     Traceback (most recent call last):
       ...
@@ -136,12 +138,15 @@ def _parse_rfc3339(value: str) -> datetime.datetime:
 
     >>> _parse_rfc3339("2021-12-27 13:05:27Z").isoformat()
     '2021-12-27T13:05:27+00:00'
+    >>> _parse_rfc3339("2021-12-27 13:05:27z").isoformat()
+    '2021-12-27T13:05:27+00:00'
     >>> _parse_rfc3339("2021-12-27 13:05:27+12:30").isoformat()
     '2021-12-27T13:05:27+12:30'
     >>> _parse_rfc3339("2021-12-27T13:05:27-07:23").isoformat()
     '2021-12-27T13:05:27-07:23'
 
-    Examples for invalid syntax
+    Examples for invalid syntax:
+
     >>> _parse_rfc3339("2021/12/27 13:05:27")
     Traceback (most recent call last):
       ...
@@ -152,7 +157,17 @@ def _parse_rfc3339(value: str) -> datetime.datetime:
       ...
     ValueError: timezone offset must be 'Z' or +hh:mm
 
+    >>> _parse_rfc3339("test")
+    Traceback (most recent call last):
+      ...
+    ValueError: timestamp must use RFC-3339 ...
     """
+
+    err_must_use_rfc_3339 = "timestamp must use RFC-3339 (YYYY-MM-DD hh:mm:ss) format"
+
+    if len(value) < 19:
+        raise ValueError(err_must_use_rfc_3339)
+
     date_value = value[:10]  # YYYY-MM-DD
     sep = value[10]  # T or space
     time_value = value[11:19]  # hh:mm:ss
@@ -167,9 +182,7 @@ def _parse_rfc3339(value: str) -> datetime.datetime:
             "%Y-%m-%d %H:%M:%S",
         )
     except ValueError:
-        raise ValueError(
-            "timestamp must use RFC-3339 (YYYY-MM-DD hh:mm:ss) format"
-        ) from None
+        raise ValueError(err_must_use_rfc_3339) from None
 
     if not tz_value:
         return naive_timestamp
