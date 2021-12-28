@@ -79,10 +79,7 @@ grep -qE "version=['\"]gcovr $target_version['\"]" doc/examples/example_xml.xml 
     || error "examples: Please regenerate: " \
              "cd doc/examples; ./example_xml.sh > example_xml.xml"
 
-grep -qE "^ *$0 --no-verify-tags --no-verify-docs-next-version $target_version\$" .github/workflows/test.yml \
-    || error ".github/workflows/test.yml: Please update the $0 version"
-
-grep -qE "^ *$0 $target_version\$" .github/workflows/deploy.yml \
+grep -qE "^ *$0 .EXTRA_CHECKLIST_ARGS $target_version\$" .github/workflows/deploy.yml \
     || error ".github/workflows/deploy.yml: Please update the $0 version"
 
 occurrences="$(
