@@ -74,3 +74,7 @@ def test_example(example):
     else:
         assert output == baseline
     os.chdir(startdir)
+
+
+def test_timestamps_example():
+    subprocess.check_call(["sh", "example_timestamps.sh"], cwd=datadir)
