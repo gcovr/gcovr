@@ -64,23 +64,10 @@ jobs:
         fi
         exit 0
 
-  release-check:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup environment
-      run: |
-        echo "GITHUB_PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-      shell: bash
-    - name: Run release_checklist
-      run: |
-        admin/release_checklist --no-verify-tags --no-verify-docs-next-version 5.0
-
   build:
     runs-on: ${{ matrix.os }}
 
-    needs: [milestone-check, changelog-check, release-check]
+    needs: [milestone-check, changelog-check]
 
     strategy:
       fail-fast: false
@@ -162,7 +149,7 @@ jobs:
 
   run-docker:
     runs-on: ubuntu-18.04
-    needs: [milestone-check, changelog-check, release-check]
+    needs: [milestone-check, changelog-check]
 
     strategy:
       fail-fast: false
