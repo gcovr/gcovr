@@ -16,6 +16,7 @@ Improvements and new features:
 - Fix junctions on windows for Python 3.8 (:issue:`535`)
 - Can create reproducible reports with the :option:`--timestamp` option (:issue:`546`)
 - Add "Goto function" in html details. (:issue:`515`)
+- Change the value of the attribute "root" in JSON summary report. (:issue:`548`)
 
 Documentation:
 
