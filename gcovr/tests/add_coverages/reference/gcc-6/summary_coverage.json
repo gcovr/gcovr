@@ -43,9 +43,9 @@
     "function_covered": 3,
     "function_percent": 100.0,
     "function_total": 3,
-    "gcovr/summary_format_version": "0.3",
+    "gcovr/summary_format_version": "0.4",
     "line_covered": 13,
     "line_percent": 100.0,
     "line_total": 13,
-    "root": ".."
+    "root": "."
 }
