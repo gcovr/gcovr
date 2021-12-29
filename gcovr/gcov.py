@@ -31,8 +31,6 @@ output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory)"
 )
-option_re = re.compile(r"[Uu](?:nrecognized option|nknown command line argument) [`']([\w\-]+)'")
-usage_re = re.compile(r"U(?:SAGE|sage): (.*) \[(?:OPTION\.\.\.|options)\]")
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
 exclude_line_flag = "_EXCL_"
@@ -380,74 +378,101 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
     return []
 
 
-def check_gcov_option(gcov_cmd, env, option):
+class gcov:
+    __cmd = None
+    __cmd_split = None
+    __options = []
+    __help_output = None
 
-    for help_option in ["--help", "--help-hidden"]:
-        gcov_process = subprocess.Popen(
-            gcov_cmd + [help_option],
-            env=env, stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True,
-            encoding="utf-8"
-        )
-        out, _ = gcov_process.communicate()
+    def __init__(self, cmd, logger):
+        self.logger = logger
+        if gcov.__cmd is None:
+            gcov.__cmd = cmd
+            # If the first element of cmd - the executable name - has embedded spaces
+            # (other than within quotes), it probably includes extra arguments.
+            gcov.__cmd_split = shlex.split(cmd)
+            gcov.__options = [
+                "--branch-counts",
+                "--branch-probabilities",
+            ]
 
-        if not gcov_process.returncode:
-            # gcov execution was not successful, help argument is not supported.
-            pass
+            if "llvm-cov" not in cmd:
+                gcov.__options.append("--demangled-names")
 
-        if option in out:
+            if self.__check_gcov_option("--hash-filenames"):
+                gcov.__options.append("--hash-filenames")
+            elif self.__check_gcov_option("--preserve-paths"):
+                gcov.__options.append("--preserve-paths")
+            else:
+                self.logger.warn(
+                    "Options '--hash-filenames' and '--preserve-paths' are not "
+                    f"supported by '{cmd}'. Source files with identical file names "
+                    "may result in incorrect coverage."
+                )
+        else:
+            assert gcov.__cmd == cmd, f"Gcov command must not me changed, expected '{gcov.__cmd}', got '{cmd}'"
+
+    def __get_help_output(self):
+        if self.__help_output is None:
+            self.__help_output = ""
+            for help_option in ["--help", "--help-hidden"]:
+                gcov_process = self.run_with_args(
+                    [help_option],
+                    universal_newlines=True,
+                )
+                out, _ = gcov_process.communicate()
+
+                if not gcov_process.returncode:
+                    # gcov execution was successful, help argument is not supported.
+                    self.__help_output += out
+
+        return self.__help_output
+
+    def __check_gcov_option(self, option):
+        if option in self.__get_help_output():
             return True
 
-    return False
+        return False
+
+    def get_options(self):
+        return gcov.__options
+
+    def run_with_args(self, args, **kwargs):
+        # NB: Currently, we will only parse English output
+        env = kwargs.pop("env") if "env" in kwargs else dict(os.environ)
+        env["LC_ALL"] = "C"
+        env["LANGUAGE"] = "en_US"
+
+        if "cwd" not in kwargs:
+            kwargs["cwd"] = "."
+        cmd = gcov.__cmd_split + args
+        self.logger.verbose_msg(f"Running gcov: '{' '.join(cmd)}' in '{kwargs['cwd']}'")
+
+        return subprocess.Popen(
+            cmd,
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            encoding="utf-8",
+            **kwargs
+        )
 
 
 def run_gcov_and_process_files(
     abs_filename, covdata, options, logger, error, toerase, chdir
 ):
-    # If the first element of cmd - the executable name - has embedded spaces
-    # (other than within quotes), it probably includes extra arguments.
-    gcov_cmd = shlex.split(options.gcov_cmd)
-    gcov_options = [
-        "--branch-counts",
-        "--branch-probabilities",
-    ]
-
-    if "llvm-cov" not in gcov_cmd[0]:
-        gcov_options.append("--demangled-names")
-
-    # NB: Currently, we will only parse English output
-    env = dict(os.environ)
-    env["LC_ALL"] = "C"
-    env["LANGUAGE"] = "en_US"
-
-    if check_gcov_option(gcov_cmd, env, "--hash-filenames"):
-        gcov_options.append("--hash-filenames")
-    elif check_gcov_option(gcov_cmd, env, "--preserve-paths"):
-        gcov_options.append("--preserve-paths")
-    else:
-        logger.warn("Options '--hash-filenames' and '--preserve-paths' are not "
-                    "supported by '{gcov_cmd}'. Source files with identical file names "
-                    "may result in incorrect coverage.", gcov_cmd=" ".join(gcov_cmd))
-
-    cmd = (
-        gcov_cmd
-        + [abs_filename]
-        + gcov_options
-        + [
-            "--object-directory",
-            os.path.dirname(abs_filename),
-        ]
-    )
-
-    logger.verbose_msg("Running gcov: '{cmd}' in '{cwd}'", cmd=" ".join(cmd), cwd=chdir)
+    gcov_cmd = gcov(options.gcov_cmd, logger)
 
     with locked_directory(chdir):
-        out, err = subprocess.Popen(
-            cmd, env=env, cwd=chdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        out, err = gcov_cmd.run_with_args(
+            [
+                abs_filename,
+                *gcov_cmd.get_options(),
+                "--object-directory",
+                os.path.dirname(abs_filename),
+            ],
+            cwd=chdir
         ).communicate()
-        out = out.decode("utf-8")
-        err = err.decode("utf-8")
 
         # find the files that gcov created
         active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
