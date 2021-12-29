@@ -37,6 +37,7 @@ Internal changes:
  - Add support for full path in environment CC. (:issue:`541`)
  - Ensure that shell files are always checked out with LF linebreaks. (:issue:`538`)
  - Add test for compiler option ``-fprofile-abs-path``. (:issue:`521`)
+ - Ensure that shell files are always saved with LF linebreaks. (:issue:`547`)
 
 5.0 (11 June 2021)
 ------------------
