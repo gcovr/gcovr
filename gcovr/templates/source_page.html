@@ -36,7 +36,7 @@
       <th scope="row">Functions:</th>
       <td>{{functions.exec}}</td>
       <td>{{functions.total}}</td>
-      <td class="{{info.functions.class}}">{{functions.coverage}}%</td>
+      <td class="{{functions.class}}">{{functions.coverage}}%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
@@ -49,6 +49,36 @@
 {% endblock %}
 
 {% block content %}
+{% if function_list %}
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+{% for entry in function_list %}
+    <tr>
+      <td>
+        <a href="#l{{ entry['line'] }}">{{ entry["name"] }}</a>
+      </td>
+      <td>
+        <a href="#l{{ entry['line'] }}">{{ entry["line"] }}</a>
+      </td>
+      <td>
+        <a href="#l{{ entry['line'] }}">
+        {%- if entry["count"] == 0 %} not called
+        {%- else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}
+        {%- endif -%}
+        </a>
+      </td>
+    </tr>
+{% endfor %}
+  </table>
+</details>
+<hr/>
+{% endif -%}
 <div class="file-source">
   <table>
     <tr>
