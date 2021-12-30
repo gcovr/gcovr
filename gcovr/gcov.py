@@ -381,7 +381,7 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
 class gcov:
     __cmd = None
     __cmd_split = None
-    __options = []
+    __default_options = []
     __help_output = None
 
     def __init__(self, cmd, logger):
@@ -391,18 +391,18 @@ class gcov:
             # If the first element of cmd - the executable name - has embedded spaces
             # (other than within quotes), it probably includes extra arguments.
             gcov.__cmd_split = shlex.split(cmd)
-            gcov.__options = [
+            gcov.__default_options = [
                 "--branch-counts",
                 "--branch-probabilities",
             ]
 
             if "llvm-cov" not in cmd:
-                gcov.__options.append("--demangled-names")
+                gcov.__default_options.append("--demangled-names")
 
             if self.__check_gcov_option("--hash-filenames"):
-                gcov.__options.append("--hash-filenames")
+                gcov.__default_options.append("--hash-filenames")
             elif self.__check_gcov_option("--preserve-paths"):
-                gcov.__options.append("--preserve-paths")
+                gcov.__default_options.append("--preserve-paths")
             else:
                 self.logger.warn(
                     "Options '--hash-filenames' and '--preserve-paths' are not "
@@ -413,8 +413,8 @@ class gcov:
             assert gcov.__cmd == cmd, f"Gcov command must not me changed, expected '{gcov.__cmd}', got '{cmd}'"
 
     def __get_help_output(self):
-        if self.__help_output is None:
-            self.__help_output = ""
+        if gcov.__help_output is None:
+            gcov.__help_output = ""
             for help_option in ["--help", "--help-hidden"]:
                 gcov_process = self.run_with_args(
                     [help_option],
@@ -424,9 +424,12 @@ class gcov:
 
                 if not gcov_process.returncode:
                     # gcov execution was successful, help argument is not supported.
-                    self.__help_output += out
+                    gcov.__help_output += out
+            if gcov.__help_output == "":
+                # gcov tossed errors: throw exception
+                raise RuntimeError("Error in gcov command line, couldn't get help.")
 
-        return self.__help_output
+        return gcov.__help_output
 
     def __check_gcov_option(self, option):
         if option in self.__get_help_output():
@@ -434,8 +437,8 @@ class gcov:
 
         return False
 
-    def get_options(self):
-        return gcov.__options
+    def get_default_options(self):
+        return gcov.__default_options
 
     def run_with_args(self, args, **kwargs):
         # NB: Currently, we will only parse English output
@@ -467,7 +470,7 @@ def run_gcov_and_process_files(
         out, err = gcov_cmd.run_with_args(
             [
                 abs_filename,
-                *gcov_cmd.get_options(),
+                *gcov_cmd.get_default_options(),
                 "--object-directory",
                 os.path.dirname(abs_filename),
             ],
