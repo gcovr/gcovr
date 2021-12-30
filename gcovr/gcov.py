@@ -466,6 +466,9 @@ def run_gcov_and_process_files(
 ):
     gcov_cmd = gcov(options.gcov_cmd, logger)
 
+    # ATTENTION:
+    # This lock is essential for parallel processing because without
+    # this there can be name collisions for the generated output files.
     with locked_directory(chdir):
         out, err = gcov_cmd.run_with_args(
             [
