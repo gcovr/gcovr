@@ -17,6 +17,7 @@ Improvements and new features:
 - Can create reproducible reports with the :option:`--timestamp` option (:issue:`546`)
 - Add "Goto function" in html details. (:issue:`515`)
 - Fix "root" path in JSON summary report. (:issue:`548`)
+- Solve problems with file name limitations and document the used options of ``gcov``. (:issue:`528`)
 
 Documentation:
 

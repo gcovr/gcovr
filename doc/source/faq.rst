@@ -121,3 +121,22 @@ To fix this, upgrade GCC to:
 * any version since 7.
 
 Note that the compiler may ignore ``inline`` functions that are never used.
+
+
+.. _used gcov options:
+
+Which options are used for calling gcov?
+----------------------------------------
+
+The options used for calling ``gcov`` depends on the version of gcov.
+
+Following options are always used:
+
+- ``--branch-counts``
+- ``--branch-probabilities``
+- ``--object-directory``
+
+Following options are only used if available:
+
+- ``--demangled-names``: Not available for LLVM based ``gcov``.
+- ``--hash-filenames``: Available since GCC 7, as fallback the option ``--preserve-paths`` is used.
