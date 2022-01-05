@@ -33,12 +33,6 @@ source_re = re.compile(
 )
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
-exclude_line_flag = "_EXCL_"
-exclude_line_pattern = re.compile(r"([GL]COVR?)_EXCL_(START|STOP)")
-
-c_style_comment_pattern = re.compile(r"/\*.*?\*/")
-cpp_style_comment_pattern = re.compile(r"//.*?$")
-
 
 def find_existing_gcov_files(search_path, logger, exclude_dirs):
     """Find .gcov files under the given search path."""
@@ -144,6 +138,8 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         parser_flags |= ParserFlags.EXCLUDE_UNREACHABLE_BRANCHES
     if options.exclude_throw_branches:
         parser_flags |= ParserFlags.EXCLUDE_THROW_BRANCHES
+    if options.respect_exclusion_markers:
+        parser_flags |= ParserFlags.RESPECT_EXCLUSION_MARKERS
 
     coverage = parse_coverage(
         lines,
