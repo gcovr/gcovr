@@ -132,25 +132,13 @@
           <summary class="linedecisionSummary">{{row.linedecision.taken}}/{{row.linedecision.total}}</summary>
           <div class="linedecisionContents">
             {% for decision in row.linedecision.decisions %}
-            {% if decision.uncheckable == False %}
+            {% if decision.uncheckable %}
+            <div class="uncheckedDecision">? Decision '{{decision.name}}' couldn't be analyzed.</div>
+            {% else %}
             {% if decision.taken %}
-            {% if loop.index0 % 2 == 0 %}
-            <div class="takenDecision">&check; Decision 'true' taken {{decision.count}} times.</div>
+            <div class="takenDecision">&check; Decision '{{decision.name}}' taken {{decision.count}} times.</div>
             {% else %}
-            <div class="takenDecision">&check; Decision 'false' taken {{decision.count}} times.</div>
-            {% endif %}
-            {% else %}
-            {% if loop.index0 % 2 == 0 %}
-            <div class="notTakenDecision">&cross; Decision 'true' not taken.</div>
-            {% else %}
-            <div class="notTakenDecision">&cross; Decision 'false' not taken.</div>
-            {% endif %}
-            {% endif %}
-            {% else %}
-            {% if loop.index0 % 2 == 0 %}
-            <div class="uncheckedDecision">? Decision 'true' couldn't be analyzed.</div>
-            {% else %}
-            <div class="uncheckedDecision">? Decision 'false' couldn't be analyzed.</div>
+            <div class="notTakenDecision">&cross; Decision '{{decision.name}}' not taken.</div>
             {% endif %}
             {% endif%}
             {% endfor %}

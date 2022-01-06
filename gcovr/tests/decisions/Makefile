@@ -3,15 +3,17 @@ all:
 
 run: html json
 
-html: json
+coverage.json:
 	./testcase
+	$(GCOVR) --verbose --decisions --json -o coverage.json
+
+html: coverage.json
 	$(GCOVR) --verbose -a coverage.json --decisions --html-details -o coverage.html
 
-json:
-	./testcase
-	$(GCOVR) --verbose  --decisions --json -o coverage.json
+json: coverage.json
+	# pass
 
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage*.* sonarqube.xml
+	rm -f coverage*.*

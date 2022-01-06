@@ -617,14 +617,14 @@ GCOVR_CONFIG_OPTIONS = [
         default=None,
     ),
     GcovrConfigOption(
-        "show_branch", ["-b", "--branches"], config='txt-branch',
+        "show_branch", ["-b", "--branches"],
         group="output_options",
         help="Report the branch coverage instead of the line coverage. "
              "For text report only.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "show_decision", ["--decisions"], config='txt-decision',
+        "show_decision", ["--decisions"],
         group="output_options",
         help="Report the decision coverage. "
              "For HTML and JSON report.",

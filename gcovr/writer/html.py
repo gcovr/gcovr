@@ -582,7 +582,7 @@ def source_row_decision(decisions):
         items.append({
             'taken': decision.is_covered,
             'uncheckable': decision.is_uncheckable,
-            'name': decision_id,
+            'name': 'true' if (decision_id % 2) == 0 else 'false',
             'count': decision.count,
         })
 

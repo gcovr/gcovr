@@ -7,7 +7,6 @@
 # This software is distributed under the BSD license.
 
 import re
-import io
 
 # for type annotations:
 if False:
@@ -104,16 +103,16 @@ class DecisionParser(object):
             File name of the active source file.
         covdata:
             Reference to the active coverage data.
-        source_encoding:
+        lines:
             The encoding of the source files
         logger:
             The logger to which decision analysis logs should be written to.
     """
 
-    def __init__(self, fname, coverage, source_encoding, logger):
+    def __init__(self, fname, coverage, lines, logger):
         self.fname = fname
         self.coverage = coverage
-        self.source_encoding = source_encoding
+        self.lines = lines
         self.logger = logger
 
         # status variables for decision analysis
@@ -128,14 +127,8 @@ class DecisionParser(object):
     def parse_all_lines(self):
         self.logger.verbose_msg("Starting the decision analysis")
 
-        # load all the lines of the source file
-        with io.open(
-            self.fname, "r", encoding=self.source_encoding, errors="replace"
-        ) as INPUT:
-            self.source_lines = [line.rstrip() for line in INPUT.read().splitlines()]
-
         # start to iterate through the lines
-        for lineno, code in enumerate(self.source_lines, 1):
+        for lineno, code in self.lines:
             exec_count = self.coverage.line(lineno).count
 
             if not self.coverage.line(lineno).noncode:
@@ -185,8 +178,8 @@ class DecisionParser(object):
                             else:
                                 # it's a compplex decision with more than 2 branches. No accurate detection possible
                                 # Set the decision to uncheckable
-                                line_coverage.decision(0).update_uncheckable(True)
-                                line_coverage.decision(1).update_uncheckable(True)
+                                line_coverage.decision(0).uncheckable = True
+                                line_coverage.decision(1).uncheckable = True
                                 self.logger.verbose_msg(
                                     "Uncheckable decision at line {line}", line=lineno
                                 )

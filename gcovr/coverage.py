@@ -101,11 +101,6 @@ class DecisionCoverage(object):
         r"""Increase the counter by the given number"""
         self.count += count
 
-    def update_uncheckable(self, uncheckable):
-        # type: (bool) -> None
-        r"""Set, if the decision is uncheckable"""
-        self.uncheckable = uncheckable
-
 
 class FunctionCoverage(object):
     __slots__ = 'lineno', 'count', 'name'
