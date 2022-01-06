@@ -288,8 +288,8 @@ class DirectoryPrefixFilter(Filter):
         super(DirectoryPrefixFilter, self).__init__(pattern)
 
     def match(self, path):
-        normpath = os.path.normpath(path).replace(os.sep, "/")
-        return super(DirectoryPrefixFilter, self).match(normpath)
+        os_independent_dir = realpath(path).replace(os.sep, "/")
+        return super(DirectoryPrefixFilter, self).match(os_independent_dir)
 
 
 class Logger(object):

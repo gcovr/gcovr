@@ -233,7 +233,7 @@ def pytest_generate_tests(metafunc):
                 continue
 
             marks = [
-                pytest.mark.xfail(
+                pytest.mark.skip(
                     name == "simple1-drive-subst"
                     and not is_windows,
                     reason="drive substitution only available on windows",
@@ -248,11 +248,11 @@ def pytest_generate_tests(metafunc):
                     name == "rounding" and is_windows,
                     reason="branch coverage seem to be platform-dependent",
                 ),
-                pytest.mark.xfail(
+                pytest.mark.skip(
                     name == "html-source-encoding-cp1252" and IS_CLANG,
                     reason="clang doesnt understand -finput-charset=...",
                 ),
-                pytest.mark.xfail(
+                pytest.mark.skip(
                     name == "gcc-abspath" and (
                         not env["CC"].startswith("gcc-")
                         or int(env["CC"].replace("gcc-", "")) < 8

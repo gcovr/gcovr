@@ -575,18 +575,12 @@ def apply_filter_include_exclude(filename, include_filters, exclude_filters):
         excluded (bool): True when filename failed the exclude_filters
     """
 
-    filtered = not any(
-        f.match(filename) or f.match(realpath(filename))
-        for f in include_filters
-    )
+    filtered = not any(f.match(filename) for f in include_filters)
     excluded = False
 
     if filtered:
         return filtered, excluded
 
-    excluded = any(
-        f.match(filename) or f.match(realpath(filename))
-        for f in exclude_filters
-    )
+    excluded = any(f.match(filename) for f in exclude_filters)
 
     return filtered, excluded

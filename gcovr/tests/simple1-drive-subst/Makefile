@@ -25,9 +25,6 @@ xml: subst
 html: subst
 	cd $(GCOVR_TEST_DRIVE)/simple1-drive-subst && ./testcase
 	# these test cases also cover some CSS-linking permutations
-	cd $(GCOVR_TEST_DRIVE)/simple1-drive-subst && $(GCOVR) --html coverage-summary-includecss.html
-	cd $(GCOVR_TEST_DRIVE)/simple1-drive-subst && $(GCOVR) --html coverage-summary-linkcss.html --no-html-self-contained
-	cd $(GCOVR_TEST_DRIVE)/simple1-drive-subst && $(GCOVR) --html-details coverage-details-includecss.html --html-self-contained
 	cd $(GCOVR_TEST_DRIVE)/simple1-drive-subst && $(GCOVR) --html-details coverage-details-linkcss.html
 
 sonarqube: subst

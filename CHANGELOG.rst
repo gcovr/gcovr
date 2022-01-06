@@ -19,6 +19,7 @@ Improvements and new features:
 - Fix "root" path in JSON summary report. (:issue:`548`)
 - Solve problems with file name limitations and document the used options of ``gcov``. (:issue:`528`)
 - Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
+- Add support for windows drive substitutions. (:issue:`549`)
 
 Documentation:
 
