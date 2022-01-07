@@ -19,11 +19,15 @@ gcovr
 
     * :doc:`changelog`
 
+This documentation (https://gcovr.com/)
+describes gcovr |release|.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    installation
+   getting-started
    guide
    manpage
    cookbook

@@ -27,7 +27,7 @@ are the number of seconds since 1 Jan 1970.
 These timestamps are always resolved in the UTC timezone.
 Example usage:
 
-.. include:: ../examples/example_timestamps.sh
+.. include:: ../../examples/example_timestamps.sh
    :code: bash
    :start-after: #BEGIN simple epoch
    :end-before: #END simple epoch
@@ -38,14 +38,14 @@ This is the ``YYYY-MM-DDThh:mm:ss`` format,
 optionally followed by a timezone offset (``+hh:mm``, or ``Z`` for UTC).
 Example usage without a timezone:
 
-.. include:: ../examples/example_timestamps.sh
+.. include:: ../../examples/example_timestamps.sh
    :code: bash
    :start-after: #BEGIN simple RFC 3339
    :end-before: #END simple RFC 3339
 
 Example usages that show equivalent specifications for UTC timestamps:
 
-.. include:: ../examples/example_timestamps.sh
+.. include:: ../../examples/example_timestamps.sh
    :code: bash
    :start-after: #BEGIN RFC 3339 with UTC timezone
    :end-before: #END RFC 3339 with UTC timezone
@@ -67,7 +67,7 @@ it is possible to select a particular timestamp syntax with a prefix.
 
 Examples of prefixes:
 
-.. include:: ../examples/example_timestamps.sh
+.. include:: ../../examples/example_timestamps.sh
    :code: bash
    :start-after: #BEGIN prefixes
    :end-before: #END prefixes
@@ -87,7 +87,7 @@ For the current HEAD commit::
 
 This can be combined into a Bash one-liner like this:
 
-.. include:: ../examples/example_timestamps.sh
+.. include:: ../../examples/example_timestamps.sh
    :code: bash
    :start-after: #BEGIN git commit
    :end-before: #END git commit
