@@ -13,7 +13,7 @@ This User Guide provides the following sections:
 
    output/index
    guide/multiple-outputs
-   guide/combining-tracefiles
+   guide/merging
    guide/filters
    guide/configuration
    guide/exclusion-markers

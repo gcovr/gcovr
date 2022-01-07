@@ -1,7 +1,7 @@
-.. _combining_tracefiles:
+.. _merging_coverage:
 
-Combining Tracefiles
-====================
+Merging Coverage Data
+=====================
 
 You can merge coverage data from multiple runs with
 :option:`-a/--add-tracefile<gcovr --add-tracefile>`.
