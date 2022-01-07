@@ -1,7 +1,7 @@
 .. _guide:
 
-Gcovr User Guide
-================
+User Guide
+==========
 
 The user guide describes the various features of gcovr.
 It assumes you have read the :ref:`getting_started` guide.
