@@ -1,3 +1,5 @@
+.. _cookbook:
+
 Gcovr Cookbook
 ==============
 
