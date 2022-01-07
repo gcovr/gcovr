@@ -3,8 +3,8 @@
 
 .. _manpage:
 
-Gcovr Command Line Reference
-============================
+Command Line Reference
+======================
 
 The ``gcovr`` command recursively searches a directory tree to find
 ``gcov`` coverage files, and generates a text summary of the code
