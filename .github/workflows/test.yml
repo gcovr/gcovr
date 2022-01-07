@@ -69,29 +69,57 @@ jobs:
 
     needs: [milestone-check, changelog-check]
 
+    # Testing strategy
+    # ----------------
+    #
+    # We have different axes of the testing matrix:
+    #
+    # OS: Linux, Windows
+    # Compiler: GCC-5, GCC-6, GCC-8, Clang-10
+    # Python: 3.7 -- 3.10, pypy3
+    #
+    # Instead of testing all combinations, we try to achieve full coverage
+    # across each axis. The main test matrix just represents the Python axis on
+    # Linux. The OS=Windows and Compiler axis are added manually.
+    #
+    # Some cases (Linux with Python 3.7, Clang-10) are handled via the Docker-tests.
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019]
+        os: [ubuntu-20.04]
         gcc: [gcc-8]
-        python-version: [3.7, 3.8] # 3.6 is used in Docker
+        python-version: ['3.8', '3.9', '3.10', 'pypy-3.7'] # 3.7 is used in Docker
 
         include:
+
+          # Test additional compilers with Linux.
+          # Note that Clang-10 is handled via Docker.
           - os: ubuntu-18.04
             gcc: gcc-5
-            python-version: 3.7
+            python-version: '3.8'
           - os: ubuntu-18.04
             gcc: gcc-6
-            python-version: 3.8
-          - os: ubuntu-20.04
+            python-version: '3.8'
+
+          # Test minimum and maximum Python version on Windows.
+          - os: windows-2019
             gcc: gcc-8
-            python-version: pypy3
+            python-version: '3.7'
+          - os: windows-2019
+            gcc: gcc-8
+            python-version: '3.10'
 
     steps:
     - uses: actions/checkout@v2
     - name: Setup environment
       run: |
-        echo "USE_COVERAGE=${{ ( ( matrix.os == 'windows-2019' ) && ( matrix.python-version == '3.7' ) ) || ( ( matrix.os == 'ubuntu-18.04' ) && ( matrix.gcc == 'gcc-6' ) && ( matrix.python-version == '3.8' ) ) }}" >> $GITHUB_ENV
+        # Enable coverage for specific target configurations
+        case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
+          windows-2019/gcc-8/3.7) USE_COVERAGE=true ;;
+          ubuntu-18.04/gcc-6/3.8) USE_COVERAGE=true ;;
+          *)                      USE_COVERAGE=false ;;
+        esac
+        echo USE_COVERAGE=$USE_COVERAGE >> $GITHUB_ENV
       shell: bash
     - name: Install msys with GCC (Windows)
       if: ${{ startsWith(matrix.os,'windows-') }}
