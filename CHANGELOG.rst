@@ -79,7 +79,7 @@ Improvements and new features:
  - Add support for output directories. If the output ends with a ``/`` or ``\`` it is used as a directory. (:issue:`416`)
  - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
  - Add wildcard pattern to json :option:`--add-tracefile`. (:issue:`351`)
- - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
+ - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <merging_coverage>`. (:issue:`373`)
  - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`389`)
  - Support relative source location for shadow builds. (:issue:`410`)
  - Incorrect path for header now can still generate html-details reports (:issue:`271`)
@@ -147,7 +147,7 @@ Improvements and new features:
    (:issue:`167`, :issue:`229`, :issue:`279`, :issue:`281`, :issue:`293`,
    :issue:`300`, :issue:`304`)
  - :ref:`JSON output <json_output>`. (:issue:`301`, :issue:`321`, :issue:`326`)
- - :ref:`Combining tracefiles <combining_tracefiles>`
+ - :ref:`Combining tracefiles <merging_coverage>`
    with :option:`gcovr --add-tracefile`.
    (:issue:`10`, :issue:`326`)
  - :ref:`SonarQube XML Output <sonarqube_xml_output>`. (:issue:`308`)

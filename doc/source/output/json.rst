@@ -18,7 +18,7 @@ text based output, you can use :option:`--json-summary<gcovr --json-summary>`
 instead (see :ref:`json_summary_output`).
 
 Multiple JSON files can be merged into the coverage data
-with sum of lines and branches execution, see :ref:`combining_tracefiles`.
+with sum of lines and branches execution, see :ref:`merging_coverage`.
 
 
 JSON Format Reference
