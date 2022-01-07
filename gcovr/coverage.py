@@ -148,7 +148,7 @@ class LineCoverage(object):
         assert self.lineno == other.lineno
         self.count += other.count
         self.noncode &= other.noncode
-        self.excluded &= other.excluded
+        self.excluded |= other.excluded
         for other_function in other.functions.values():
             self.add_function(other_function)
         for branch_id, branch_cov in other.branches.items():
@@ -205,7 +205,7 @@ class FileCoverage(object):
         r"""Merge FileCoverage information."""
         assert self.filename == other.filename
         for lineno, line_cov in other.lines.items():
-            self.line(lineno, noncode=True, excluded=True).update(line_cov)
+            self.line(lineno, noncode=True, excluded=False).update(line_cov)
         for fct_name, fct_cov in other.functions.items():
             self.function(fct_name).update(fct_cov)
 
