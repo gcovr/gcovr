@@ -8,6 +8,8 @@ Next Release
 
 Breaking changes:
 
+- Dropped support for Python 3.6 (:issue:`550`)
+
 Improvements and new features:
 
 - Add function coverage metric (:issue:`362`)

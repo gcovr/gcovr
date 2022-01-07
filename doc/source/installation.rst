@@ -8,9 +8,9 @@ Installation
 Which environments does ``gcovr`` support?
 
 Python:
-    3.6+.
+    3.7+.
 
-    The automated tests run on CPython (versions 3.6, 3.7, 3.8)
+    The automated tests run on CPython (versions 3.7, 3.8, 3.9, 3.10)
     and a compatible PyPy3.
     Gcovr will only run on Python versions with upstream support.
 
@@ -23,6 +23,7 @@ Python:
     2.7    4.2
     3.4    4.1
     3.5    4.2
+    3.6    5.0
     ====== =====
 
 Operating System:
