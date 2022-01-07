@@ -131,22 +131,10 @@ you have to place your pathnames with wildcards in double quotation marks::
 
     gcovr --add-tracefile "run-*.json" --html-details coverage.html
 
-The gcovr Command
------------------
+Command Line Reference
+----------------------
 
-The ``gcovr`` command recursively searches a directory tree to find
-``gcov`` coverage files, and generates a text summary of the code
-coverage.  The :option:`-h/--help<gcovr --help>` option generates the following
-summary of the ``gcovr`` command line options:
-
-.. autoprogram:: gcovr.__main__:create_argument_parser()
-    :prog: gcovr
-    :groups:
-
-The above `Getting Started`_ guide
-illustrates the use of some command line options.
-`Using Filters`_ is discussed below.
-
+See the :ref:`manpage`.
 
 Using Filters
 -------------
@@ -154,12 +142,12 @@ Using Filters
 Gcovr tries to only report coverage for files within your project,
 not for your libraries. This is influenced by the following options:
 
--   :option:`-r`, :option:`--root`
--   :option:`-f`, :option:`--filter`
--   :option:`-e`, :option:`--exclude`
--   :option:`--gcov-filter`
--   :option:`--gcov-exclude`
--   :option:`--exclude-directories`
+-   :option:`-r <gcovr -r>`, :option:`--root <gcovr --root>`
+-   :option:`-f <gcovr -r>`, :option:`--filter <gcovr --filter>`
+-   :option:`-e <gcovr -e>`, :option:`--exclude <gcovr --exclude>`
+-   :option:`--gcov-filter <gcovr --gcov-filter>`
+-   :option:`--gcov-exclude <gcovr --gcov-exclude>`
+-   :option:`--exclude-directories <gcovr --exclude-directories>`
 -   (the current working directory where gcovr is invoked)
 
 These options take filters.
@@ -238,7 +226,7 @@ this will exclude anything in the ``build/a`` directory
 but will use the coverage data for ``better_code.o`` and ``main.o``.
 
 This can speed up gcovr when you have a complicated build directory structure.
-Consider also using the :option:`search_paths`
+Consider also using the :option:`search_paths <gcovr search_paths>`
 or :option:`--object-directory<gcovr --object-directory>` arguments to specify
 where gcovr starts searching.
 If you are unsure which directories are being searched,
