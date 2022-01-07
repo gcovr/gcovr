@@ -14,6 +14,7 @@
     --high_color: #85E485;
     --covered_color: #85E485;
     --uncovered_color: #FF8C8C;
+    --excluded_color: #53bffd;
     --takenBranch_color: Green;
     --notTakenBranch_color: Red;
 }
@@ -314,6 +315,12 @@ span.uncoveredLine
     background-color: var(--uncovered_color) !important;
 }
 
+td.excludedLine,
+span.excludedLine
+{
+    background-color: var(--excluded_color) !important;
+}
+
 .linebranch, .linecount
 {
     font-family: monospace;
@@ -553,7 +560,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2021-09-21 19:05:21</td>
+      <td>2022-01-06 19:49:34</td>
     </tr>
     <tr>
       <th scope="row">Legend:</th>

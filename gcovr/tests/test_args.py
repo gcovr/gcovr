@@ -358,7 +358,7 @@ def test_html_injection_via_json(capsys, tmp_path):
 
     script = '<script>alert("pwned")</script>'
     jsondata = {
-        'gcovr/format_version': "0.2",
+        'gcovr/format_version': "0.3",
         'files': [
             {'file': script, 'functions': [], 'lines': []},
             {'file': 'other', 'functions': [], 'lines': []},
