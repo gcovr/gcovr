@@ -126,10 +126,9 @@ You should run gcovr from the build directory.
 The ``-r`` option should point to the root of your project.
 This only matters if you have a separate build directory.
 
-For complete documentation, read the `manual <documentation_>`_.
-
-
 .. end quickstart
+
+For complete documentation, read the `manual <documentation_>`_.
 
 Contributing
 ------------
