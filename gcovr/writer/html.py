@@ -524,11 +524,11 @@ def source_row(lineno, source, line_cov):
         if line_cov.is_covered:
             covclass = 'coveredLine'
             linebranch = source_row_branch(line_cov.branches)
-            linedecision = source_row_decision(line_cov.decisions)
+            linedecision = source_row_decision(line_cov.decision)
             linecount = line_cov.count
         elif line_cov.is_uncovered:
             covclass = 'uncoveredLine'
-            linedecision = source_row_decision(line_cov.decisions)
+            linedecision = source_row_decision(line_cov.decision)
     return {
         'lineno': lineno,
         'source': source,
@@ -565,31 +565,43 @@ def source_row_branch(branches):
     }
 
 
-def source_row_decision(decisions):
-    if not decisions:
+def source_row_decision(decision):
+    if decision is None:
         return None
 
-    taken = 0
-    uncheckable = False
-    total = 0
     items = []
 
-    for decision_id in sorted(decisions):
-        decision = decisions[decision_id]
-        if decision.is_covered:
-            taken += 1
-        total += 1
+    if decision.is_uncheckable:
         items.append({
-            'taken': decision.is_covered,
-            'uncheckable': decision.is_uncheckable,
-            'name': 'true' if (decision_id % 2) == 0 else 'false',
-            'count': decision.count,
+            'uncheckable': True,
         })
+    elif decision.is_conditional:
+        items.append({
+            "uncheckable": False,
+            "taken": True if decision.count_true > 0 else False,
+            "count": decision.count_true,
+            "name": "true",
+        })
+        items.append({
+            "uncheckable": False,
+            "taken": True if decision.count_false > 0 else False,
+            "count": decision.count_false,
+            "name": "false",
+        })
+    elif decision.is_switch:
+        items.append({
+            "uncheckable": False,
+            "taken": True if decision.count > 0 else False,
+            "count": decision.count,
+            "name": "true",
+        })
+    else:
+        RuntimeError("Unknown decision type")
 
     return {
-        'taken': taken,
-        'uncheckable': uncheckable,
-        'total': total,
+        'taken': len([i for i in items if i.get("taken", False)]),
+        'uncheckable': len([i for i in items if i["uncheckable"]]),
+        'total': len(items),
         'decisions': items,
     }
 

@@ -280,7 +280,6 @@ def parse_coverage(
     logger: Logger,
     exclude_lines_by_pattern: Optional[str],
     flags: ParserFlags,
-    source_encoding: str,
 ) -> FileCoverage:
     """
     Extract coverage data from a gcov report.
@@ -866,7 +865,7 @@ class _ExclusionRangeWarnings:
     >>> import sys; sys.stderr = sys.stdout  # redirect warnings
     >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
     ...     source.splitlines(), filename='example.cpp', logger=Logger(),
-    ...    flags=ParserFlags.NONE, exclude_lines_by_pattern=None, source_encoding=None)
+    ...    flags=ParserFlags.NONE, exclude_lines_by_pattern=None)
     (WARNING) mismatched coverage exclusion flags.
               LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp.
     (WARNING) GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.

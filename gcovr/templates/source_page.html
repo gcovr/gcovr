@@ -133,14 +133,12 @@
           <div class="linedecisionContents">
             {% for decision in row.linedecision.decisions %}
             {% if decision.uncheckable %}
-            <div class="uncheckedDecision">? Decision '{{decision.name}}' couldn't be analyzed.</div>
-            {% else %}
-            {% if decision.taken %}
+            <div class="uncheckedDecision">? Decision couldn't be analyzed.</div>
+            {% elif decision.taken %}
             <div class="takenDecision">&check; Decision '{{decision.name}}' taken {{decision.count}} times.</div>
             {% else %}
             <div class="notTakenDecision">&cross; Decision '{{decision.name}}' not taken.</div>
             {% endif %}
-            {% endif%}
             {% endfor %}
           </div>
         </details>

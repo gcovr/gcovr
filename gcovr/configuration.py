@@ -617,7 +617,7 @@ GCOVR_CONFIG_OPTIONS = [
         default=None,
     ),
     GcovrConfigOption(
-        "show_branch", ["-b", "--branches"],
+        "show_branch", ["-b", "--branches"], config='txt-branch',
         group="output_options",
         help="Report the branch coverage instead of the line coverage. "
              "For text report only.",

@@ -149,7 +149,6 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         logger=logger,
         exclude_lines_by_pattern=options.exclude_lines_by_pattern,
         flags=parser_flags,
-        source_encoding=options.source_encoding,
     )
     covdata.setdefault(key, FileCoverage(key)).update(coverage)
 

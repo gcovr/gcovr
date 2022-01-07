@@ -8,6 +8,12 @@
 
 import re
 
+from .coverage import (
+    DecisionCoverageUncheckable,
+    DecisionCoverageConditional,
+    DecisionCoverageSwitch,
+)
+
 # for type annotations:
 if False:
     from typing import (  # noqa, pylint: disable=all
@@ -139,12 +145,11 @@ class DecisionParser(object):
                     if self.decision_analysis_open_brackets == 0:
                         # set execution counts for the decision. true is the exec_count.
                         # false is the delta between executed blocks and executions of the decision statement.
-                        self.coverage.line(self.last_decision_line).decision(
-                            0
-                        ).count = exec_count
-                        self.coverage.line(self.last_decision_line).decision(
-                            1
-                        ).count = (self.last_decision_line_exec_count - exec_count)
+                        self.coverage.line(
+                            self.last_decision_line
+                        ).decision = DecisionCoverageConditional(
+                            exec_count, self.last_decision_line_exec_count - exec_count
+                        )
 
                         # disable the current decision analysis
                         self.decision_analysis_active = False
@@ -169,17 +174,14 @@ class DecisionParser(object):
                             if len(line_coverage.branches.items()) == 2:
                                 # if it's a compact decision, we can only use the fallback to analyze
                                 # simple decisions via branch calls
-                                line_coverage.decision(0).update_count(
-                                    line_coverage.branch(0).count
-                                )
-                                line_coverage.decision(1).update_count(
-                                    line_coverage.branch(1).count
+                                line_coverage.decision = DecisionCoverageConditional(
+                                    line_coverage.branch(0).count,
+                                    line_coverage.branch(1).count,
                                 )
                             else:
                                 # it's a compplex decision with more than 2 branches. No accurate detection possible
                                 # Set the decision to uncheckable
-                                line_coverage.decision(0).uncheckable = True
-                                line_coverage.decision(1).uncheckable = True
+                                line_coverage.decision = DecisionCoverageUncheckable()
                                 self.logger.verbose_msg(
                                     "Uncheckable decision at line {line}", line=lineno
                                 )
@@ -207,11 +209,13 @@ class DecisionParser(object):
                     elif get_branch_type(code) == "switch":
                         if "; break;" in code.replace(" ", "").replace(";", "; "):
                             # just use execution counts of case lines
-                            line_coverage.decision(0).count = line_coverage.count
+                            line_coverage.decision = DecisionCoverageSwitch(
+                                line_coverage.count
+                            )
                         else:
                             # use the execution counts of the following line (compatibility with GCC 5)
-                            line_coverage.decision(0).count = self.coverage.line(
-                                lineno + 1
-                            ).count
+                            line_coverage.decision = DecisionCoverageSwitch(
+                                self.coverage.line(lineno + 1).count
+                            )
 
         self.logger.verbose_msg("Decision Analysis finished!")
