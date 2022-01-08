@@ -11,6 +11,7 @@ This User Guide provides the following sections:
 .. toctree::
    :maxdepth: 2
 
+   guide/compiling
    output/index
    guide/multiple-outputs
    guide/merging

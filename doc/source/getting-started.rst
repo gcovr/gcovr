@@ -17,12 +17,12 @@ statistics when deciding if software is ready for a release.
 What to read next
 -----------------
 
-A full example of using gcovr is given in the documentation
-for the :ref:`text_output`.
+The :ref:`guide` explains how to use the features of gcovr.
+In particular:
 
-Specific features of gcovr are explained in the :ref:`guide`.
-The different :ref:`output_formats`
-have their own documentation.
+* :ref:`compiling`
+* :ref:`output_formats`
+* :ref:`filters`
 
 The :ref:`manpage` provides an overview of all options.
 
