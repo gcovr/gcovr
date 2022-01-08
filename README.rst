@@ -170,19 +170,22 @@ This will print a tabular report on the console.
 
 ::
 
-    gcovr -r .
+    gcovr
 
 You can also generate detailed HTML reports:
 
 ::
 
-    gcovr -r . --html --html-details -o coverage.html
+    gcovr --html-details coverage.html
 
 Gcovr will create one HTML report per source file next to the coverage.html summary.
 
 You should run gcovr from the build directory.
 The ``-r`` option should point to the root of your project.
 This only matters if you have a separate build directory.
+For example::
+
+    cd build; gcovr -r ..
 
 .. end quickstart
 

@@ -7,7 +7,7 @@ Gcovr tries to only report coverage for files within your project,
 not for your libraries. This is influenced by the following options:
 
 -   :option:`-r <gcovr -r>`, :option:`--root <gcovr --root>`
--   :option:`-f <gcovr -r>`, :option:`--filter <gcovr --filter>`
+-   :option:`-f <gcovr -f>`, :option:`--filter <gcovr --filter>`
 -   :option:`-e <gcovr -e>`, :option:`--exclude <gcovr --exclude>`
 -   :option:`--gcov-filter <gcovr --gcov-filter>`
 -   :option:`--gcov-exclude <gcovr --gcov-exclude>`
