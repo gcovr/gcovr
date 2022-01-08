@@ -333,6 +333,8 @@ def parse_coverage(
             warnings=_ExclusionRangeWarnings(logger, filename),
             exclude_lines_by_pattern=exclude_lines_by_pattern,
         )
+    else:
+        line_is_excluded = _make_is_in_any_range([])
 
     coverage = FileCoverage(filename)
     state = _ParserState()
