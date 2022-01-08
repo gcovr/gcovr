@@ -62,7 +62,7 @@ if IS_WINDOWS:
     import win32api
     import string
     used_drives = win32api.GetLogicalDriveStrings().split("\0")
-    free_drives = list(set(string.ascii_uppercase.split()) - set(used_drives))
+    free_drives = list(set([c for c in string.ascii_uppercase]) - set(used_drives))
     if len(free_drives) == 0:
         raise RuntimeError("No free drive letter found for test.")
     env["GCOVR_TEST_DRIVE_WINDOWS"] = f"{free_drives[0]}:"
