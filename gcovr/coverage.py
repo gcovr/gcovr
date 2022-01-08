@@ -283,6 +283,7 @@ class LineCoverage(object):
         unchecked = False
         if self.decision is not None:
             if self.decision.is_uncheckable:
+                total = 2
                 unchecked = True
             elif self.decision.is_conditional:
                 total = 2
@@ -291,6 +292,7 @@ class LineCoverage(object):
                 if self.decision.count_false > 0:
                     cover += 1
             elif self.decision.is_switch:
+                total = 1
                 if self.decision.count > 0:
                     cover += 1
             else:
