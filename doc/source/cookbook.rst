@@ -51,7 +51,7 @@ A shell session might look like this:
 
     # run gcovr
     rm -rf coverage; mkdir coverage
-    gcovr --filter src/ --print-summary --html-details -o coverage/index.html
+    gcovr --filter src/ --print-summary --html-details coverage/index.html
 
 .. _oos cmake:
 

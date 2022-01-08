@@ -35,7 +35,7 @@ generates a text summary of the lines executed:
 The same result can be achieved when explicit :option:`--txt<gcovr --txt>`
 option is set. For example::
 
-    gcovr -r . --txt
+    gcovr --txt
 
 generates the same text summary.
 
@@ -48,11 +48,6 @@ combine uncovered lines separated by "non-code" lines (blank,
 freestanding braces, and single-line comments) into a single region.
 As a result, the number of lines listed in the "Missing" list may
 be greater than the difference of the "Lines" and "Exec" columns.
-
-The :option:`-r/--root<gcovr --root>` option specifies the root directory
-for the files that are being analyzed.  This allows ``gcovr`` to generate
-a simpler report (without absolute path names), and it allows system header files
-to be excluded from the analysis.
 
 Note that ``gcov`` accumulates statistics by line.  Consequently, it
 works best with a programming style that places only one statement
@@ -83,6 +78,6 @@ branches taken and the branches that were not completely covered:
 The same result can be achieved when explicit :option:`--txt<gcovr --txt>`
 option is set. For example::
 
-    gcovr -r . --branches --txt
+    gcovr --branches --txt
 
 prints the same tabular output.
