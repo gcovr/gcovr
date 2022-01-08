@@ -91,10 +91,17 @@ def black(session: nox.Session) -> None:
 @nox.session
 def doc(session: nox.Session) -> None:
     """Generate the documentation."""
-    session.install("-r", "doc/requirements.txt")
+    session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
+
+    # Build the Sphinx documentation
     session.chdir("doc")
     session.run("make", "html", "O=-W", external=True)
+    session.chdir("..")
+
+    # Ensure that the README builds fine as a standalone document.
+    readme_html = session.create_tmp() + "/README.html"
+    session.run("rst2html5.py", "--strict", "README.rst", readme_html)
 
 
 @nox.session(python=False)
