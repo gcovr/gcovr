@@ -19,7 +19,7 @@ Improvements and new features:
 - Can create reproducible reports with the :option:`--timestamp` option (:issue:`546`)
 - Add "Goto function" in html details. (:issue:`515`)
 - Fix "root" path in JSON summary report. (:issue:`548`)
-- Solve problems with file name limitations and document the used options of ``gcov``. (:issue:`528`)
+- Solve problems with file name limitations. (:issue:`528`)
 - Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
 - Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
@@ -29,10 +29,12 @@ Improvements and new features:
 - Don't use realpath in data model, only use them for the filter. (:issue:`565`)
 - Fix sanity check in HTML generator. (:issue:`571`)
 - Change file level percent values in JSON summary. (:issue:`570`)
+- Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
 
 Documentation:
 
- - Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
+- Split documentation into smaller pages. (:issue:`552`)
+- Document used options for ``gcov`` (:issue:`528`)
 
 Internal changes:
 
