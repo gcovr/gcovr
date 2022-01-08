@@ -6,6 +6,7 @@
     --high_color: #66B4FF;
     --covered_color: #66B4FF;
     --uncovered_color: #FF8C8C;
+    --excluded_color: #53BFFD;
     --warning_color: orangered;
     --takenBranch_color: Blue;
     --notTakenBranch_color: Red;
@@ -314,6 +315,12 @@ td.uncoveredLine,
 span.uncoveredLine
 {
     background-color: var(--uncovered_color) !important;
+}
+
+td.excludedLine,
+span.excludedLine
+{
+    background-color: var(--excluded_color) !important;
 }
 
 .linebranch, .linedecision, .linecount

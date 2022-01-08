@@ -8,6 +8,8 @@ Next Release
 
 Breaking changes:
 
+- Dropped support for Python 3.6 (:issue:`550`)
+
 Improvements and new features:
 
 - Add function coverage metric (:issue:`362`)
@@ -19,6 +21,7 @@ Improvements and new features:
 - Fix "root" path in JSON summary report. (:issue:`548`)
 - Solve problems with file name limitations and document the used options of ``gcov``. (:issue:`528`)
 - Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
+- Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
 
 Documentation:

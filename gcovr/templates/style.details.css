@@ -16,6 +16,12 @@ span.uncoveredLine
     background-color: var(--uncovered_color) !important;
 }
 
+td.excludedLine,
+span.excludedLine
+{
+    background-color: var(--excluded_color) !important;
+}
+
 .linebranch, .linedecision, .linecount
 {
     font-family: monospace;

@@ -30,3 +30,6 @@ testcase
 
 # Differences
 diff.zip
+
+# MacOS
+.DS_Store

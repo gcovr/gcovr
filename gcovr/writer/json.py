@@ -239,6 +239,7 @@ def _json_from_line(line):
     json_line["count"] = line.count
     json_line["line_number"] = line.lineno
     json_line["gcovr/noncode"] = line.noncode
+    json_line["gcovr/excluded"] = line.excluded
     return json_line
 
 
@@ -309,6 +310,7 @@ def _lines_from_json(file, json_lines):
 
 def _line_from_json(line, json_line):
     line.noncode = json_line["gcovr/noncode"]
+    line.excluded = json_line["gcovr/excluded"]
     line.count = json_line["count"]
     _branches_from_json(line, json_line["branches"])
     if "gcovr/decision" in json_line:
