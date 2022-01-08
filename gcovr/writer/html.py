@@ -88,6 +88,7 @@ class CssRenderer():
             'high_color': "#85E485",
             'covered_color': "#85E485",
             'uncovered_color': "#FF8C8C",
+            'excluded_color': "#53bffd",
             'takenBranch_color': "Green",
             'notTakenBranch_color': "Red"
         },
@@ -98,6 +99,7 @@ class CssRenderer():
             'high_color': "#66B4FF",
             'covered_color': "#66B4FF",
             'uncovered_color': "#FF8C8C",
+            'excluded_color': "#53bffd",
             'takenBranch_color': "Blue",
             'notTakenBranch_color': "Red"
         }
@@ -476,7 +478,9 @@ def source_row(lineno, source, line_cov):
     linecount = ''
     covclass = ''
     if line_cov:
-        if line_cov.is_covered:
+        if line_cov.is_excluded:
+            covclass = 'excludedLine'
+        elif line_cov.is_covered:
             covclass = 'coveredLine'
             linebranch = source_row_branch(line_cov.branches)
             linecount = line_cov.count

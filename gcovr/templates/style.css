@@ -6,6 +6,7 @@
     --high_color: {{high_color}};
     --covered_color: {{covered_color}};
     --uncovered_color: {{uncovered_color}};
+    --excluded_color: {{excluded_color}};
     --takenBranch_color: {{takenBranch_color}};
     --notTakenBranch_color: {{notTakenBranch_color}};
 }
