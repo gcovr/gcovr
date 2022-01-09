@@ -68,51 +68,32 @@
 {% endblock %}
 
 {% block content %}
-{% if info.details %}
-<a href="{{ FUNCTIONS_FNAME }}">List of functions</summary>
-<hr/>
-{% endif -%}
-<table class="file-list">
-  <col/>
-  <colgroup span="3"/>
-  <colgroup span="2"/>
-  <colgroup span="2"/>
-
+<table class="listOfFunctions">
   <tr>
-    <th scope="col">File</th>
-    <th scope="colgroup" colspan=3>Lines</th>
-    <th scope="colgroup" colspan=2>Functions</th>
-    <th scope="colgroup" colspan=2>Branches</th>
-    {% if SHOW_DECISION %}
-    <th scope="colgroup" colspan=2>Decisions</th>
-    {% endif %}
+    <th>Function</th>
+    <th>File</th>
+    <th>Line</th>
+    <th>Call count</th>
   </tr>
-
-  {% for row in info.files %}
-
+{% for entry in all_functions %}
   <tr>
-    <th scope="row">
-      {% if row.link is not none %}
-      <a href="{{row.link}}">{{row.filename}}</a>
-      {% else %}
-      {{row.filename}}
-      {% endif %}
-    </th>
     <td>
-      <meter class="{{row.lines.class}}" min="0" max="100" value="{{row.lines.coverage}}" title="{{row.lines.coverage}}%">{{row.lines.coverage}}</meter>
+      <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["name"] }}</a>
     </td>
-    <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}%</td>
-    <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>
-    <td class="CoverValue function-coverage {{row.functions.class}}">{{row.functions.coverage}}%</td>
-    <td class="CoverValue function-coverage {{row.functions.class}}">{{row.functions.exec}} / {{row.functions.total}}</td>
-    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.coverage}}%</td>
-    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.exec}} / {{row.branches.total}}</td>
-    {% if SHOW_DECISION %}
-    <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.coverage}}%</td>
-    <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.exec}} / {{row.decisions.total}}</td>
-    {% endif %}
+    <td>
+      <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["filename"] }}</a>
+    </td>
+    <td>
+      <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["line"] }}</a>
+    </td>
+    <td>
+      <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">
+      {%- if entry["count"] == 0 %} not called
+      {%- else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}
+      {%- endif -%}
+      </a>
+    </td>
   </tr>
-
-  {% endfor %}
+{% endfor %}
 </table>
 {% endblock %}

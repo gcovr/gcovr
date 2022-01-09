@@ -425,8 +425,13 @@ def print_html_report(covdata, output_file, options):
     for f in keys:
         root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
 
+    if options.html_details:
+        (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
+        if output_suffix == '':
+            output_suffix = '.html'
+        functions_fname = f"{output_prefix}.functions{output_suffix}"
+        data["FUNCTIONS_FNAME"] = os.path.basename(functions_fname)
     html_string = templates().get_template('root_page.html').render(**data)
-
     with open_text_for_writing(output_file, encoding=options.html_encoding,
                                errors='xmlcharrefreplace') as fh:
         fh.write(html_string + '\n')
@@ -439,6 +444,7 @@ def print_html_report(covdata, output_file, options):
     # Generate an HTML file for every source file
     #
     error_occurred = False
+    all_functions = dict()
     for f in keys:
         cdata = covdata[f]
 
@@ -450,14 +456,13 @@ def print_html_report(covdata, output_file, options):
             fcdata = cdata.functions[name]
             fdata = dict()
             fdata["name"] = name
+            fdata["filename"] = cdata_fname[f]
+            fdata["html_filename"] = os.path.basename(cdata_sourcefile[f])
             fdata["line"] = fcdata.lineno
             fdata["count"] = fcdata.count
-            fdata["class"] = coverage_to_class(
-                0 if fcdata.count >= 0 else high_threshold,
-                medium_threshold,
-                high_threshold
-            )
+
             data['function_list'].append(fdata)
+            all_functions[(fdata["name"], fdata["filename"])] = fdata
 
         functions = dict()
         data['functions'] = functions
@@ -514,6 +519,13 @@ def print_html_report(covdata, output_file, options):
         with open_text_for_writing(cdata_sourcefile[f], encoding=options.html_encoding,
                                    errors='xmlcharrefreplace') as fh:
             fh.write(html_string + '\n')
+
+    data["all_functions"] = [all_functions[k] for k in sorted(all_functions)]
+    html_string = templates().get_template('functions_page.html').render(**data)
+    with open_text_for_writing(functions_fname, encoding=options.html_encoding,
+                               errors='xmlcharrefreplace') as fh:
+        fh.write(html_string + '\n')
+
     return error_occurred
 
 
