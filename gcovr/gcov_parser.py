@@ -316,7 +316,7 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
-    if flags.RESPECT_EXCLUSION_MARKERS:
+    if flags & ParserFlags.RESPECT_EXCLUSION_MARKERS:
         line_is_excluded = _find_excluded_ranges(
             lines=[
                 (line.lineno, line.source_code)
@@ -326,6 +326,8 @@ def parse_coverage(
             warnings=_ExclusionRangeWarnings(logger, filename),
             exclude_lines_by_pattern=exclude_lines_by_pattern,
         )
+    else:
+        line_is_excluded = _make_is_in_any_range([])
 
     coverage = FileCoverage(filename)
     state = _ParserState()
@@ -854,7 +856,7 @@ class _ExclusionRangeWarnings:
     >>> import sys; sys.stderr = sys.stdout  # redirect warnings
     >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
     ...     source.splitlines(), filename='example.cpp', logger=Logger(),
-    ...    flags=ParserFlags.NONE, exclude_lines_by_pattern=None)
+    ...    flags=ParserFlags.RESPECT_EXCLUSION_MARKERS, exclude_lines_by_pattern=None)
     (WARNING) mismatched coverage exclusion flags.
               LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp.
     (WARNING) GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.
