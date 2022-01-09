@@ -624,6 +624,13 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "show_decision", ["--decisions"],
+        group="output_options",
+        help="Report the decision coverage. "
+             "For HTML and JSON report.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "sort_uncovered", ["-u", "--sort-uncovered"],
         group="output_options",
         help="Sort entries by increasing number of uncovered lines. "

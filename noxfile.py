@@ -11,6 +11,7 @@ GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
 BLACK_CONFORM_FILES = [
     "noxfile.py",
+    "gcovr/decision_analysis.py",
     "gcovr/gcov.py",
     "gcovr/gcov_parser.py",
     "gcovr/timestamps.py",

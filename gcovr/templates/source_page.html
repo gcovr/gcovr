@@ -16,6 +16,12 @@
       <th scope="row">Date:</th>
       <td>{{info.date}}</td>
     </tr>
+    {% if SHOW_DECISION and decisions.unchecked > 0 %}
+    <tr>
+      <th scrope="row">Warnings:</th>
+      <td class="warning_text">{{decisions.unchecked}} unchecked decisions!</td>
+    </tr>
+    {% endif %}
   </table>
 </div>
 <div>
@@ -44,6 +50,14 @@
       <td>{{branches.total}}</td>
       <td class="{{branches.class}}">{{branches.coverage}}%</td>
     </tr>
+    {% if SHOW_DECISION %}
+    <tr>
+      <th scope="row">Decisions:</th>
+      <td>{{decisions.exec}}</td>
+      <td>{{decisions.total}}</td>
+      <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
+    </tr>
+    {% endif %}
   </table>
 </div>
 {% endblock %}
@@ -84,6 +98,9 @@
     <tr>
       <th align="right">Line</th>
       <th align="right">Branch</th>
+      {% if SHOW_DECISION %}
+      <th align="right">Decision</th>
+      {% endif %}
       <th align="right">Exec</th>
       <th align="left">Source</th>
     </tr>
@@ -108,6 +125,26 @@
         </details>
         {% endif %}
       </td>
+      {% if SHOW_DECISION %}
+      <td class="linedecision">
+        {% if row.linedecision %}
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">{{row.linedecision.taken}}/{{row.linedecision.total}}</summary>
+          <div class="linedecisionContents">
+            {% for decision in row.linedecision.decisions %}
+            {% if decision.uncheckable %}
+            <div class="uncheckedDecision">? Decision couldn't be analyzed.</div>
+            {% elif decision.taken %}
+            <div class="takenDecision">&check; Decision '{{decision.name}}' taken {{decision.count}} times.</div>
+            {% else %}
+            <div class="notTakenDecision">&cross; Decision '{{decision.name}}' not taken.</div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </details>
+        {% endif %}
+      </td>
+      {% endif %}
       <td class="linecount {{row.covclass}}">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
       <td class="src {{row.covclass}}">{{row.source}}</td>
     </tr>

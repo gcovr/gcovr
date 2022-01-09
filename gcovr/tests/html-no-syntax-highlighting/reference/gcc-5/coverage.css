@@ -6,9 +6,14 @@
     --high_color: #85E485;
     --covered_color: #85E485;
     --uncovered_color: #FF8C8C;
-    --excluded_color: #53bffd;
+    --excluded_color: #53BFFD;
+    --warning_color: orangered;
     --takenBranch_color: Green;
     --notTakenBranch_color: Red;
+    --takenDecision_color: Green;
+    --uncheckedDecision_color: DarkOrange;
+    --notTakenDecision_color: Red
+
 }
 
 body
@@ -92,6 +97,11 @@ table.legend td.legend
 {
     color: black;
     font-size: 80%;
+}
+
+table.legend td.warning_text
+{
+    color: var(--warning_color);
 }
 
 table.coverage td,
@@ -313,7 +323,7 @@ span.excludedLine
     background-color: var(--excluded_color) !important;
 }
 
-.linebranch, .linecount
+.linebranch, .linedecision, .linecount
 {
     font-family: monospace;
     border-right: 1px gray solid;
@@ -321,15 +331,15 @@ span.excludedLine
     text-align: right;
 }
 
-.linebranchDetails
+.linebranchDetails, .linedecisionDetails
 {
     position: relative;
 }
-.linebranchSummary
+.linebranchSummary, .linedecisionSummary
 {
     cursor: help;
 }
-.linebranchContents
+.linebranchContents, .linedecisionContents
 {
     font-family: sans-serif;
     font-size: small;
@@ -353,6 +363,21 @@ span.excludedLine
     color: var(--notTakenBranch_color) !important;
 }
 
+.takenDecision
+{
+    color: Green!important;
+}
+
+.notTakenDecision
+{
+    color: Red!important;
+}
+
+.uncheckedDecision
+{
+    color: DarkOrange!important;
+}
+
 .src
 {
     padding-left: 12px;
@@ -366,7 +391,10 @@ span.excludedLine
 }
 
 span.takenBranch,
-span.notTakenBranch
+span.notTakenBranch,
+span.takenDecision,
+span.notTakenDecision,
+span.uncheckedDecision
 {
     font-family: monospace;
     font-weight: bold;

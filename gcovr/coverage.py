@@ -61,6 +61,119 @@ class BranchCoverage(object):
             self.throw = other.throw
 
 
+class DecisionCoverageUncheckable(object):
+    r"""Represent coverage information about a decision.
+
+    Args:
+        count (int):
+            Number of times this decision was made.
+
+    """
+
+    def __init__(self):
+        # type: () -> None
+        pass
+
+    @property
+    def is_uncheckable(self):
+        # type: () -> bool
+        return True
+
+    @property
+    def is_conditional(self):
+        # type: () -> bool
+        return False
+
+    @property
+    def is_switch(self):
+        # type: () -> bool
+        return False
+
+    def update(self, other):
+        # type: (DecisionCoverageUncheckable) -> None
+        r"""Merge DecisionCoverage information"""
+        pass
+
+
+class DecisionCoverageConditional(object):
+    r"""Represent coverage information about a decision.
+
+    Args:
+        count_true (int):
+            Number of times this decision was made.
+
+        count_false (int):
+            Number of times this decision was made.
+
+    """
+
+    __slots__ = 'count_true', 'count_false'
+
+    def __init__(self, count_true, count_false):
+        # type: (int, int) -> None
+        assert count_true >= 0
+        self.count_true = count_true
+        assert count_false >= 0
+        self.count_false = count_false
+
+    @property
+    def is_uncheckable(self):
+        # type: () -> bool
+        return False
+
+    @property
+    def is_conditional(self):
+        # type: () -> bool
+        return True
+
+    @property
+    def is_switch(self):
+        # type: () -> bool
+        return False
+
+    def update(self, other):
+        # type: (DecisionCoverageConditional) -> None
+        r"""Merge DecisionCoverage information"""
+        self.count_true += other.count_true
+        self.count_false += other.count_false
+
+
+class DecisionCoverageSwitch(object):
+    r"""Represent coverage information about a decision.
+
+    Args:
+        count (int):
+            Number of times this decision was made.
+    """
+
+    __slots__ = 'count'
+
+    def __init__(self, count):
+        # type: (int) -> None
+        assert count >= 0
+        self.count = count
+
+    @property
+    def is_uncheckable(self):
+        # type: () -> bool
+        return False
+
+    @property
+    def is_conditional(self):
+        # type: () -> bool
+        return False
+
+    @property
+    def is_switch(self):
+        # type: () -> bool
+        return True
+
+    def update(self, other):
+        # type: (DecisionCoverageSwitch) -> None
+        r"""Merge DecisionCoverage information"""
+        self.count += other.count
+
+
 class FunctionCoverage(object):
     __slots__ = 'lineno', 'count', 'name'
 
@@ -95,7 +208,7 @@ class LineCoverage(object):
             Whether this line is excluded by a marker.
     """
 
-    __slots__ = 'lineno', 'count', 'noncode', 'excluded', 'branches', 'functions'
+    __slots__ = 'lineno', 'count', 'noncode', 'excluded', 'branches', 'decision', 'functions'
 
     def __init__(self, lineno, count=0, noncode=False, excluded=False):
         # type: (int, int, bool) -> None
@@ -107,6 +220,7 @@ class LineCoverage(object):
         self.noncode = noncode
         self.excluded = excluded
         self.branches = {}  # type: Dict[int, BranchCoverage]
+        self.decision = None
 
         # There can be only one (user) function per line but:
         # * (multiple) template instantiations
@@ -154,6 +268,11 @@ class LineCoverage(object):
         for branch_id, branch_cov in other.branches.items():
             self.branch(branch_id).update(branch_cov)
 
+        if self.decision is None:
+            self.decision = other.decision
+        else:
+            self.decision.update(other.decision)
+
     def branch_coverage(self):
         # type: () -> Tuple[int, int, Optional[float]]
         total = len(self.branches)
@@ -164,6 +283,31 @@ class LineCoverage(object):
 
         percent = calculate_coverage(cover, total, nan_value=None)
         return total, cover, percent
+
+    def decision_coverage(self):
+        # type: () -> Tuple[int, int, int, Optional[float]]
+        total = 0
+        cover = 0
+        unchecked = False
+        if self.decision is not None:
+            if self.decision.is_uncheckable:
+                total = 2
+                unchecked = True
+            elif self.decision.is_conditional:
+                total = 2
+                if self.decision.count_true > 0:
+                    cover += 1
+                if self.decision.count_false > 0:
+                    cover += 1
+            elif self.decision.is_switch:
+                total = 1
+                if self.decision.count > 0:
+                    cover += 1
+            else:
+                RuntimeError("Unknown decision type")
+
+        percent = calculate_coverage(cover, total, nan_value=None)
+        return total, cover, unchecked, percent
 
 
 class FileCoverage(object):
@@ -274,6 +418,20 @@ class FileCoverage(object):
 
         percent = calculate_coverage(cover, total, nan_value=None)
         return total, cover, percent
+
+    def decision_coverage(self):
+        # type: () -> Tuple[int, int, Optional[float]]
+        total = 0
+        cover = 0
+        unchecked = 0
+        for line in self.lines.values():
+            d_total, d_cover, d_unchecked, _ = line.decision_coverage()
+            total += d_total
+            cover += d_cover
+            unchecked += d_unchecked
+
+        percent = calculate_coverage(cover, total, nan_value=None)
+        return total, cover, unchecked, percent
 
 
 def _find_consecutive_ranges(items):

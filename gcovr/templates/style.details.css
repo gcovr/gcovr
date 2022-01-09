@@ -22,7 +22,7 @@ span.excludedLine
     background-color: var(--excluded_color) !important;
 }
 
-.linebranch, .linecount
+.linebranch, .linedecision, .linecount
 {
     font-family: monospace;
     border-right: 1px gray solid;
@@ -30,15 +30,15 @@ span.excludedLine
     text-align: right;
 }
 
-.linebranchDetails
+.linebranchDetails, .linedecisionDetails
 {
     position: relative;
 }
-.linebranchSummary
+.linebranchSummary, .linedecisionSummary
 {
     cursor: help;
 }
-.linebranchContents
+.linebranchContents, .linedecisionContents
 {
     font-family: sans-serif;
     font-size: small;
@@ -62,6 +62,21 @@ span.excludedLine
     color: var(--notTakenBranch_color) !important;
 }
 
+.takenDecision
+{
+    color: {{takenDecision_color}}!important;
+}
+
+.notTakenDecision
+{
+    color: {{notTakenDecision_color}}!important;
+}
+
+.uncheckedDecision
+{
+    color: {{uncheckedDecision_color}}!important;
+}
+
 .src
 {
     padding-left: 12px;
@@ -75,7 +90,10 @@ span.excludedLine
 }
 
 span.takenBranch,
-span.notTakenBranch
+span.notTakenBranch,
+span.takenDecision,
+span.notTakenDecision,
+span.uncheckedDecision
 {
     font-family: monospace;
     font-weight: bold;
