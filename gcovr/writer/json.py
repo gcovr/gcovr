@@ -30,7 +30,12 @@ from ..utils import (
     open_text_for_writing,
 )
 
-from ..coverage import FileCoverage
+from ..coverage import (
+    DecisionCoverageUncheckable,
+    DecisionCoverageConditional,
+    DecisionCoverageSwitch,
+    FileCoverage
+)
 
 
 JSON_FORMAT_VERSION = "0.3"
@@ -229,6 +234,8 @@ def _json_from_lines(lines):
 def _json_from_line(line):
     json_line = {}
     json_line["branches"] = _json_from_branches(line.branches)
+    if line.decision is not None:
+        json_line["gcovr/decision"] = _json_from_decision(line.decision)
     json_line["count"] = line.count
     json_line["line_number"] = line.lineno
     json_line["gcovr/noncode"] = line.noncode
@@ -247,6 +254,23 @@ def _json_from_branch(branch):
     json_branch["fallthrough"] = bool(branch.fallthrough)
     json_branch["throw"] = bool(branch.throw)
     return json_branch
+
+
+def _json_from_decision(decision):
+    json_decision = {}
+    if decision.is_uncheckable:
+        json_decision["type"] = "uncheckable"
+    elif decision.is_conditional:
+        json_decision["type"] = "conditional"
+        json_decision["count_true"] = decision.count_true
+        json_decision["count_false"] = decision.count_false
+    elif decision.is_switch:
+        json_decision["type"] = "switch"
+        json_decision["count"] = decision.count
+    else:
+        RuntimeError("Unknown decision type")
+
+    return json_decision
 
 
 def _json_from_functions(functions):
@@ -289,6 +313,8 @@ def _line_from_json(line, json_line):
     line.excluded = json_line["gcovr/excluded"]
     line.count = json_line["count"]
     _branches_from_json(line, json_line["branches"])
+    if "gcovr/decision" in json_line:
+        _decision_from_json(line, json_line["gcovr/decision"])
 
 
 def _branches_from_json(line, json_branches):
@@ -302,3 +328,18 @@ def _branch_from_json(branch, json_branch):
     branch.fallthrough = json_branch["fallthrough"]
     branch.throw = json_branch["throw"]
     branch.count = json_branch["count"]
+
+
+def _decision_from_json(line, json_decision):
+    line.decision = None
+    if json_decision["type"] == "uncheckable":
+        line.decision = DecisionCoverageUncheckable()
+    elif json_decision["type"] == "conditional":
+        line.decision = DecisionCoverageConditional(
+            json_decision["count_true"],
+            json_decision["count_false"]
+        )
+    elif json_decision["type"] == "switch":
+        line.decision = DecisionCoverageSwitch(json_decision["count"])
+    else:
+        RuntimeError("Unknown decision type")

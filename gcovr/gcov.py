@@ -140,6 +140,8 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         parser_flags |= ParserFlags.EXCLUDE_THROW_BRANCHES
     if options.respect_exclusion_markers:
         parser_flags |= ParserFlags.RESPECT_EXCLUSION_MARKERS
+    if options.show_decision:
+        parser_flags |= ParserFlags.PARSE_DECISIONS
 
     coverage = parse_coverage(
         lines,

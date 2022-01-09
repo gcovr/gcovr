@@ -49,6 +49,7 @@ from typing import (
 )
 
 from .coverage import FileCoverage
+from .decision_analysis import DecisionParser
 from .utils import Logger
 
 _EXCLUDE_LINE_FLAG = "_EXCL_"
@@ -259,6 +260,9 @@ class ParserFlags(enum.Flag):
     RESPECT_EXCLUSION_MARKERS = enum.auto()
     """Whether the eclusion markers shall be used."""
 
+    PARSE_DECISIONS = enum.auto()
+    """Whether decision coverage shall be generated."""
+
 
 _LineWithError = Tuple[str, Exception]
 
@@ -316,13 +320,16 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
+    if flags & ParserFlags.RESPECT_EXCLUSION_MARKERS or flags & ParserFlags.PARSE_DECISIONS:
+        src_lines = [
+            (line.lineno, line.source_code)
+            for line, _ in tokenized_lines
+            if isinstance(line, _SourceLine)
+        ]
+
     if flags & ParserFlags.RESPECT_EXCLUSION_MARKERS:
         line_is_excluded = _find_excluded_ranges(
-            lines=[
-                (line.lineno, line.source_code)
-                for line, _ in tokenized_lines
-                if isinstance(line, _SourceLine)
-            ],
+            lines=src_lines,
             warnings=_ExclusionRangeWarnings(logger, filename),
             exclude_lines_by_pattern=exclude_lines_by_pattern,
         )
@@ -348,6 +355,10 @@ def parse_coverage(
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
         _add_coverage_for_function(coverage, state.lineno + 1, function, context)
+
+    if flags & ParserFlags.PARSE_DECISIONS:
+        decision_parser = DecisionParser(filename, coverage, src_lines, logger)
+        decision_parser.parse_all_lines()
 
     _report_lines_with_errors(lines_with_errors, context)
 
