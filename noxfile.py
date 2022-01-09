@@ -103,8 +103,8 @@ def tests(session: nox.Session) -> None:
     session.notify(session_id)
 
 
-@nox.session(python=False)
-def tests_all_compiler(session: nox.Session) -> None:
+@nox.session(python=False, name="tests_compiler(all)")
+def tests_compiler_all(session: nox.Session) -> None:
     """Run the tests with all GCC versions."""
     for version in GCC_VERSIONS:
         session_id = f"tests_compiler({version})"
@@ -200,8 +200,8 @@ def docker_qa_build(session: nox.Session) -> None:
     session.notify(session_id)
 
 
-@nox.session(python=False)
-def docker_qa_build_all_compiler(session: nox.Session) -> None:
+@nox.session(python=False, name="docker_qa_build_compiler(all)")
+def docker_qa_build_compiler_all(session: nox.Session) -> None:
     """Build the docker containers vor all GCC versions."""
     for version in GCC_VERSIONS:
         session_id = f"docker_qa_build_compiler({version})"
@@ -240,8 +240,8 @@ def docker_qa_run(session: nox.Session) -> None:
     session.notify(session_id)
 
 
-@nox.session(python=False)
-def docker_qa_run_all_compiler(session: nox.Session) -> None:
+@nox.session(python=False, name="docker_qa_run_compiler(all)")
+def docker_qa_run_compiler_all(session: nox.Session) -> None:
     """Run the docker container for the all GCC versions."""
     for version in GCC_VERSIONS:
         session_id = f"docker_qa_run_compiler({version})"
@@ -284,8 +284,8 @@ def docker_qa(session: nox.Session) -> None:
     session.notify(session_id)
 
 
-@nox.session(python=False)
-def docker_qa_all_compiler(session: nox.Session) -> None:
+@nox.session(python=False, name="docker_qa_compiler(all)")
+def docker_qa_compiler_all(session: nox.Session) -> None:
     """Build and run the docker container for the all GCC versions."""
     for version in GCC_VERSIONS:
         session_id = f"docker_qa_compiler({version})"
