@@ -23,6 +23,7 @@ Improvements and new features:
 - Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
 - Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
+- Add list of functions to HTML details. (:issue:`554`)
 
 Documentation:
 
