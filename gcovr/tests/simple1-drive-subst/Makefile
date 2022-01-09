@@ -24,7 +24,7 @@ txt:
 	$(call wrapDrive, $(GCOVR) -d --txt -o coverage.txt)
 
 xml:
-	$(call wrapDrive, ./testcase
+	$(call wrapDrive, ./testcase)
 	$(call wrapDrive, $(GCOVR) -d -x -o coverage.xml)
 
 html:
