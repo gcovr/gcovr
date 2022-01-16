@@ -57,7 +57,21 @@ skip_clean = None
 CC = os.path.split(env["CC"])[1]
 IS_CLANG = True if CC.startswith("clang") else False
 
-REFERENCE_DIR = os.path.join("reference", env.get("CC_REFERENCE", CC))
+if "CC_REFERENCE" in env:
+    CC_REFERENCE = env["CC_REFERENCE"]
+else:
+    CC_REFERENCE = CC
+
+REFERENCE_DIRS = list([])
+if "gcc" in CC_REFERENCE:
+    REFERENCE_DIR_VERSION_LIST = ["gcc-5", "gcc-6", "gcc-8"]
+else:
+    REFERENCE_DIR_VERSION_LIST = ["clang-10"]
+for ref in REFERENCE_DIR_VERSION_LIST:
+    REFERENCE_DIRS.append(os.path.join("reference", ref))
+    if ref in CC_REFERENCE:
+        break
+REFERENCE_DIRS.reverse()
 
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
@@ -143,12 +157,23 @@ def run(cmd, cwd=None):
     return returncode == 0
 
 
-def find_reference_files(reference_dir, output_pattern):
-    assert os.path.isdir(reference_dir), "Reference directory exists"
-    for pattern in output_pattern:
-        for reference in glob.glob(os.path.join(reference_dir, pattern)):
-            coverage = os.path.basename(reference)
-            yield coverage, reference
+def find_reference_files(reference_dirs, output_pattern):
+    seen_files = set([])
+    for reference_dir in reference_dirs:
+        for pattern in output_pattern:
+            for dir in REFERENCE_DIRS:
+                if (platform.system() == "Windows") and os.path.isdir(reference_dir + "-Windows"):  # pragma: no cover
+                    for file in glob.glob(os.path.join(f"{dir}-Windows", pattern)):
+                        if os.path.basename(file) not in seen_files:
+                            coverage = os.path.basename(file)
+                            seen_files.add(coverage)
+                            yield coverage, file
+                elif os.path.isdir(dir):
+                    for file in glob.glob(os.path.join(dir, pattern)):
+                        if os.path.basename(file) not in seen_files:
+                            coverage = os.path.basename(file)
+                            seen_files.add(coverage)
+                            yield coverage, file
 
 
 @pytest.fixture(scope="module")
@@ -334,19 +359,15 @@ def test_build(
     os.chdir(os.path.join(basedir, name))
     assert run(["make", format])
 
-    reference_dir = REFERENCE_DIR
-    if (platform.system() == "Windows") and os.path.isdir(reference_dir + "-Windows"):  # pragma: no cover
-        reference_dir += "-Windows"
-
     if generate_reference:  # pragma: no cover
         for pattern in output_pattern:
             for generated_file in glob.glob(pattern):
-                reference_file = os.path.join(reference_dir, generated_file)
+                reference_file = os.path.join(REFERENCE_DIRS[0], generated_file)
                 if os.path.isfile(reference_file):
                     continue
                 else:
                     try:
-                        os.makedirs(reference_dir)
+                        os.makedirs(os.path.dirname(reference_file))
                     except FileExistsError:
                         # directory already exists
                         pass
@@ -356,7 +377,7 @@ def test_build(
 
     whole_diff_output = []
     for coverage_file, reference_file in find_reference_files(
-        reference_dir, output_pattern
+        REFERENCE_DIRS, output_pattern
     ):
         with io.open(coverage_file, encoding=encoding) as f:
             coverage = scrub(f.read())
@@ -380,7 +401,22 @@ def test_build(
         except Exception as e:  # pragma: no cover
             whole_diff_output += "  " + str(e) + "\n"
             if update_reference:
-                shutil.copyfile(coverage_file, reference_file)
+                if CC_REFERENCE in reference_file:
+                    shutil.copyfile(coverage_file, reference_file)
+                else:
+                    reference_dir = os.path.join("reference", CC_REFERENCE)
+                    try:
+                        os.makedirs(reference_dir)
+                    except FileExistsError:
+                        # directory already exists
+                        pass
+                    shutil.copyfile(
+                        coverage_file,
+                        os.path.join(
+                            reference_dir,
+                            os.path.basename(reference_file)
+                        )
+                    )
             if archive_differences:
                 diffs_zip = os.path.join("..", "diff.zip")
                 with zipfile.ZipFile(diffs_zip, mode="a") as f:
