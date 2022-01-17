@@ -313,7 +313,7 @@ def parse_makefile_for_available_targets(path):
     return targets
 
 
-def generate_reference_data(output_pattern):
+def generate_reference_data(output_pattern):  # pragma: no cover
     for pattern in output_pattern:
         for generated_file in glob.glob(pattern):
             reference_file = os.path.join(REFERENCE_DIRS[0], generated_file)
@@ -325,7 +325,7 @@ def generate_reference_data(output_pattern):
                 shutil.copyfile(generated_file, reference_file)
 
 
-def update_reference_data(coverage_file, reference_file):
+def update_reference_data(coverage_file, reference_file):  # pragma: no cover
     if CC_REFERENCE in reference_file:
         reference_dir = os.path.dirname(reference_file)
     else:
@@ -337,7 +337,7 @@ def update_reference_data(coverage_file, reference_file):
     return reference_file
 
 
-def archive_difference_data(name, coverage_file, reference_file):
+def archive_difference_data(name, coverage_file, reference_file):  # pragma: no cover
     diffs_zip = os.path.join("..", "diff.zip")
     with zipfile.ZipFile(diffs_zip, mode="a") as f:
         f.write(
@@ -348,7 +348,7 @@ def archive_difference_data(name, coverage_file, reference_file):
         )
 
 
-def remove_duplicate_data(encoding, scrub, coverage, coverage_file, reference_file):
+def remove_duplicate_data(encoding, scrub, coverage, coverage_file, reference_file):  # pragma: no cover
     reference_dir = os.path.dirname(reference_file)
     # Loop over the other coverage data
     for reference_dir in REFERENCE_DIRS[1:]:
