@@ -161,7 +161,7 @@ def find_reference_files(output_pattern):
     seen_files = set([])
     for reference_dir in REFERENCE_DIRS:
         for reference_dir in (
-            [reference_dir, f"{reference_dir}-Windows"]
+            [f"{reference_dir}-Windows", reference_dir]
             if platform.system() == "Windows"
             else [reference_dir]
         ):
