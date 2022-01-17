@@ -43,7 +43,7 @@ for var in [
     "OBJC_INCLUDE_PATH",
     "CFLAGS",
     "CXXFLAGS",
-    "LDFLAGS"
+    "LDFLAGS",
 ]:
     if var in env:
         env.pop(var)
@@ -157,19 +157,17 @@ def run(cmd, cwd=None):
     return returncode == 0
 
 
-def find_reference_files(reference_dirs, output_pattern):
+def find_reference_files(output_pattern):
     seen_files = set([])
-    for reference_dir in reference_dirs:
-        for pattern in output_pattern:
-            for dir in REFERENCE_DIRS:
-                if (platform.system() == "Windows") and os.path.isdir(reference_dir + "-Windows"):  # pragma: no cover
-                    for file in glob.glob(os.path.join(f"{dir}-Windows", pattern)):
-                        if os.path.basename(file) not in seen_files:
-                            coverage = os.path.basename(file)
-                            seen_files.add(coverage)
-                            yield coverage, file
-                elif os.path.isdir(dir):
-                    for file in glob.glob(os.path.join(dir, pattern)):
+    for reference_dir in REFERENCE_DIRS:
+        for reference_dir in (
+            [reference_dir, f"{reference_dir}-Windows"]
+            if platform.system() == "Windows"
+            else [reference_dir]
+        ):
+            for pattern in output_pattern:
+                if os.path.isdir(reference_dir):
+                    for file in glob.glob(os.path.join(reference_dir, pattern)):
                         if os.path.basename(file) not in seen_files:
                             coverage = os.path.basename(file)
                             seen_files.add(coverage)
@@ -273,7 +271,8 @@ def pytest_generate_tests(metafunc):
                     reason="clang doesnt understand -finput-charset=...",
                 ),
                 pytest.mark.xfail(
-                    name == "gcc-abspath" and (
+                    name == "gcc-abspath"
+                    and (
                         not env["CC"].startswith("gcc-")
                         or int(env["CC"].replace("gcc-", "")) < 8
                     ),
@@ -312,6 +311,54 @@ def parse_makefile_for_available_targets(path):
                 for target in m.group(1).split():
                     targets.setdefault(target, set()).update(deps)
     return targets
+
+
+def generate_reference_data(output_pattern):
+    for pattern in output_pattern:
+        for generated_file in glob.glob(pattern):
+            reference_file = os.path.join(REFERENCE_DIRS[0], generated_file)
+            if os.path.isfile(reference_file):
+                continue
+            else:
+                os.makedirs(REFERENCE_DIRS[0], exist_ok=True)
+                print("copying %s to %s" % (generated_file, reference_file))
+                shutil.copyfile(generated_file, reference_file)
+
+
+def update_reference_data(coverage_file, reference_file):
+    if CC_REFERENCE in reference_file:
+        reference_dir = os.path.dirname(reference_file)
+    else:
+        reference_dir = os.path.join("reference", CC_REFERENCE)
+        os.makedirs(reference_dir, exist_ok=True)
+        reference_file = os.path.join(reference_dir, os.path.basename(reference_file))
+    shutil.copyfile(coverage_file, reference_file)
+
+    return reference_file
+
+
+def archive_difference_data(name, coverage_file, reference_file):
+    diffs_zip = os.path.join("..", "diff.zip")
+    with zipfile.ZipFile(diffs_zip, mode="a") as f:
+        f.write(
+            coverage_file,
+            os.path.join(name, os.path.dirname(reference_file), coverage_file).replace(
+                os.path.sep, "/"
+            ),
+        )
+
+
+def remove_duplicate_data(encoding, scrub, coverage, coverage_file, reference_file):
+    reference_dir = os.path.dirname(reference_file)
+    # Loop over the other coverage data
+    for reference_dir in REFERENCE_DIRS[1:]:
+        other_reference_file = os.path.join(reference_dir, coverage_file)
+        # ... and unlink the current file if it's identical to the other one.
+        if os.path.isfile(other_reference_file):
+            with io.open(other_reference_file, encoding=encoding) as f:
+                if coverage == scrub(f.read()):
+                    os.unlink(reference_file)
+            break
 
 
 SCRUBBERS = dict(
@@ -360,25 +407,10 @@ def test_build(
     assert run(["make", format])
 
     if generate_reference:  # pragma: no cover
-        for pattern in output_pattern:
-            for generated_file in glob.glob(pattern):
-                reference_file = os.path.join(REFERENCE_DIRS[0], generated_file)
-                if os.path.isfile(reference_file):
-                    continue
-                else:
-                    try:
-                        os.makedirs(os.path.dirname(reference_file))
-                    except FileExistsError:
-                        # directory already exists
-                        pass
-
-                    print("copying %s to %s" % (generated_file, reference_file))
-                    shutil.copyfile(generated_file, reference_file)
+        generate_reference_data(output_pattern)
 
     whole_diff_output = []
-    for coverage_file, reference_file in find_reference_files(
-        REFERENCE_DIRS, output_pattern
-    ):
+    for coverage_file, reference_file in find_reference_files(output_pattern):
         with io.open(coverage_file, encoding=encoding) as f:
             coverage = scrub(f.read())
         with io.open(reference_file, encoding=encoding) as f:
@@ -401,31 +433,14 @@ def test_build(
         except Exception as e:  # pragma: no cover
             whole_diff_output += "  " + str(e) + "\n"
             if update_reference:
-                if CC_REFERENCE in reference_file:
-                    shutil.copyfile(coverage_file, reference_file)
-                else:
-                    reference_dir = os.path.join("reference", CC_REFERENCE)
-                    try:
-                        os.makedirs(reference_dir)
-                    except FileExistsError:
-                        # directory already exists
-                        pass
-                    shutil.copyfile(
-                        coverage_file,
-                        os.path.join(
-                            reference_dir,
-                            os.path.basename(reference_file)
-                        )
-                    )
+                reference_file = update_reference_data(coverage_file, reference_file)
             if archive_differences:
-                diffs_zip = os.path.join("..", "diff.zip")
-                with zipfile.ZipFile(diffs_zip, mode="a") as f:
-                    f.write(
-                        coverage_file,
-                        os.path.join(name, reference_dir, coverage_file).replace(
-                            os.path.sep, "/"
-                        ),
-                    )
+                archive_difference_data(name, coverage_file, reference_file)
+
+        if generate_reference or update_reference:
+            remove_duplicate_data(
+                encoding, scrub, coverage, coverage_file, reference_file
+            )
 
     diff_is_empty = len(whole_diff_output) == 0
     assert diff_is_empty, "Diff output:\n" + "".join(whole_diff_output)
