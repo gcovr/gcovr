@@ -235,7 +235,7 @@ The QA process (``python3 -m nox``) consists of multiple parts:
 
 - linting and checking format(``python3 -m nox --session lint``)
 
-- tests (``python3 -m nox --session tests``)
+- tests (``python3 -m nox --session 'run_tests()''``)
 
    - unit tests in ``gcovr/tests``
    - integration tests in ``gcovr/tests``
@@ -244,10 +244,10 @@ The QA process (``python3 -m nox``) consists of multiple parts:
 - documentation build (``python3 -m nox --session doc``)
 
 The tests are in the ``gcovr/tests`` directory.
-You can run the tests with ``python3 -m nox --session tests``
+You can run the tests with ``python3 -m nox --session 'run_tests()''``
 for the default GCC version (specified via ``CC`` environment variable, defaults to gcc-5).
 You can also select the gcc version if you run the tests with e.g.
-``python3 -m nox --session tests_compiler(gcc-8)``.
+``python3 -m nox --session 'run_tests(gcc-8)'``.
 
 There are unit tests for some parts of gcovr,
 and a comprehensive corpus of example projects
@@ -317,20 +317,20 @@ For example:
 .. code:: bash
 
     # run only XML tests
-    python3 -m nox --session tests -- -k 'xml'
+    python3 -m nox --session 'run_tests()' -- -k 'xml'
 
     # run the simple1 tests
-    python3 -m nox --session tests -- -k 'simple1'
+    python3 -m nox --session 'run_tests()' -- -k 'simple1'
 
     # run the simple1 tests only for XML
-    python3 -m nox --session tests -- -k 'xml and simple1'
+    python3 -m nox --session 'run_tests()' -- -k 'xml and simple1'
 
 To see which tests would be run, add the ``--collect-only`` option:
 
 .. code:: bash
 
     #see which tests would be run
-    python3 -m nox --session tests -- --collect-only
+    python3 -m nox --session 'run_tests()' -- --collect-only
 
 Sometimes during development you need to create reference files for new test
 or update the current reference files. To do this you have to
@@ -343,13 +343,13 @@ For example:
 .. code:: bash
 
     # run tests and generate references for simple1 example
-    python3 -m nox --session tests -- -k 'simple1' --generate_reference
+    python3 -m nox --session 'run_tests()' -- -k 'simple1' --generate_reference
 
     # run tests and update xml references for simple1 example
-    python3 -m nox --session tests -- -k 'xml and simple1' --update_reference
+    python3 -m nox --session 'run_tests()' -- -k 'xml and simple1' --update_reference
 
     # run only XML tests and do not remove generated files
-    python3 -m nox --session tests -- -k 'xml' --skip_clean
+    python3 -m nox --session 'run_tests()' -- -k 'xml' --skip_clean
 
 When the currently generated output reports differ to the reference files
 you can create a ZIP archive named ``diff.zip`` in the tests directory
@@ -360,10 +360,10 @@ with the differences as an artifact.
 .. code:: bash
 
     # run tests and generate a ZIP archive when there were differences
-    python3 -m nox --session tests -- --archive_differences
+    python3 -m nox --session 'run_tests()' -- --archive_differences
 
 .. versionchanged:: NEXT
-    Change how to start test from ``make test`` to ``python3 -m nox --session test``
+    Change how to start test from ``make test`` to ``python3 -m nox --session 'run_tests()'``
 
 .. versionadded:: 5.0
    Added test options `--generate_reference`, `--update_reference`,
@@ -380,19 +380,19 @@ First, build the container image:
 
 .. code:: bash
 
-    python3 -m nox --session docker_qa_build
+    python3 -m nox --session 'docker_qa_build()'
 
 Then, run the container, which executes ``python3 -m nox`` within the container:
 
 .. code:: bash
 
-    python3 -m nox --session docker_qa_run
+    python3 -m nox --session 'docker_qa_run()'
 
 Or to build and run the container in one step:
 
 .. code:: bash
 
-    python3 -m nox --session docker_qa
+    python3 -m nox --session 'docker_qa()'
 
 You can select the gcc version to use inside the docker by setting the environment
 variable CC to gcc-5 (default), gcc-6, gcc-8 or clang-10
