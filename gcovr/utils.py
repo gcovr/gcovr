@@ -87,7 +87,7 @@ def search_file(predicate, path, exclude_dirs):
                 yield realpath(os.path.join(root, name))
 
 
-def commonpath(files):
+def commonpath(files, use_canonical_paths):
     r"""Find the common prefix of all files.
 
     This differs from the standard library os.path.commonpath():
@@ -101,6 +101,7 @@ def commonpath(files):
 
     Arguments:
         files (list): the input paths, may be relative or absolute.
+        use_canonical_paths (bool): use canonical paths
 
     Returns: str
         The common prefix directory as a relative path.
@@ -134,7 +135,11 @@ def commonpath(files):
 
     # make the path relative and add a trailing slash
     if prefix_path:
-        prefix_path = os.path.join(os.path.relpath(prefix_path), '')
+        if use_canonical_paths:
+            start = os.path.realpath(os.getcwd())
+        else:
+            start = os.curdir
+        prefix_path = os.path.join(os.path.relpath(prefix_path, start), '')
     return prefix_path
 
 

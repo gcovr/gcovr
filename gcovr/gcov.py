@@ -167,8 +167,12 @@ def guess_source_file_name(
 ):
     if currdir is None:
         currdir = os.getcwd()
+
+    if use_canonical_paths:
+       currdir = os.path.realpath(currdir)
+
     if source_fname is None:
-        fname = guess_source_file_name_via_aliases(gcovname, currdir, data_fname)
+        fname = guess_source_file_name_via_aliases(gcovname, currdir, data_fname, options.use_canonical_paths)
     else:
         fname = guess_source_file_name_heuristics(
             gcovname, currdir, root_dir, starting_dir, obj_dir, source_fname
@@ -197,8 +201,8 @@ def guess_source_file_name(
     return fname
 
 
-def guess_source_file_name_via_aliases(gcovname, currdir, data_fname):
-    common_dir = commonpath([data_fname, currdir])
+def guess_source_file_name_via_aliases(gcovname, currdir, data_fname, use_canonical_paths):
+    common_dir = commonpath([data_fname, currdir], use_canonical_paths)
     fname = realpath(os.path.join(common_dir, gcovname))
     if os.path.exists(fname):
         return fname

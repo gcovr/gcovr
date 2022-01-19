@@ -208,9 +208,13 @@ class RootInfo:
         self.functions = dict()
         self.lines = dict()
         self.files = []
+        self.use_canonical_paths = options.use_canonical_paths
 
     def set_directory(self, directory):
-        self.directory = directory
+        if self.use_canonical_paths:
+            self.directory = os.path.realpath(directory)
+        else:
+            self.directory = directory
 
     def get_directory(self):
         return "." if self.directory == '' else self.directory.replace('\\', '/')
@@ -412,7 +416,7 @@ def print_html_report(covdata, output_file, options):
     # when source files share a common prefix.
     root_directory = ''
     if len(files) > 1:
-        commondir = commonpath(files)
+        commondir = commonpath(files, options.use_canonical_paths)
         if commondir != '':
             root_directory = commondir
     else:
