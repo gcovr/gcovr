@@ -23,28 +23,28 @@ import os
 import re
 import subprocess
 
-import version
+import gcovr.version
 
-REGEX_EMAIL = re.compile(r"\d+\+([^@]+)@users\.noreply\.github\.com")
+DATE = subprocess.check_output(
+    ["git", "log", "-1", "--format=format:%ad", "--date=short"],
+    universal_newlines=True,
+)
+YEAR = DATE[:4]
+VERSION = gcovr.version.__version__
 HEADER_END = (
     " ****************************************************************************"
 )
 
 
 def getLicenseSection(filename, comment_char="#"):
-    date = subprocess.check_output(
-        ["git", "log", "-1", "--format=format:%ad", "--date=short", "--", filename],
-        universal_newlines=True,
-    )
-    year = date[:4]
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
-    yield comment_char + f" This file is part of gcovr {version.__version__}, a parsing and reporting tool for gcov."
+    yield comment_char + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
     yield comment_char + " https://gcovr.com/en/stable"
     yield comment_char
     yield comment_char + " _____________________________________________________________________________"
     yield comment_char
-    yield comment_char + f" Copyright (c) 2013-{year} the gcovr authors"
+    yield comment_char + f" Copyright (c) 2013-{YEAR} the gcovr authors"
     yield comment_char + " Copyright (c) 2013 Sandia Corporation."
     yield comment_char + " This software is distributed under the BSD License."
     yield comment_char + " Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,"
@@ -95,6 +95,7 @@ def addCopyrightToPythonFile(filename, lines):
         newLines.extend(iterLines)
     # no header found
     else:
+        newLines.append("\n")
         # keep all other lines
         newLines.extend(lines)
 
