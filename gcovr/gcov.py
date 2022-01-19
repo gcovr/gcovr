@@ -249,7 +249,7 @@ def guess_source_file_name_heuristics(
     return fname
 
 
-def process_datafile(filename, covdata, options, toerase):
+def process_datafile(filename, covdata, options, toerase, logger):
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
     Params:
@@ -489,7 +489,7 @@ def run_gcov_and_process_files(
     else:
         # Process *.gcov files
         for fname in active_gcov_files:
-            process_gcov_data(fname, covdata, abs_filename, options)
+            process_gcov_data(fname, covdata, abs_filename, options, logger)
         done = True
 
     if not options.keep:
@@ -544,7 +544,7 @@ def process_existing_gcov_file(filename, covdata, options, toerase):
         logger.debug("Excluding gcov file: {}", filename)
         return
 
-    process_gcov_data(filename, covdata, None, options)
+    process_gcov_data(filename, covdata, None, options, logger)
 
     if not options.keep:
         toerase.add(filename)

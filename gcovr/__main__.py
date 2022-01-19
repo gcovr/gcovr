@@ -313,7 +313,7 @@ def collect_coverage_from_tracefiles(covdata, options):
                 datafiles.add(normpath(trace_file))
 
     options.root_dir = os.path.abspath(options.root)
-    gcovr_json_files_to_coverage(datafiles, covdata, options)
+    gcovr_json_files_to_coverage(datafiles, covdata, options, logger)
 
 
 def collect_coverage_from_gcov(covdata, options):
@@ -338,6 +338,7 @@ def collect_coverage_from_gcov(covdata, options):
     # Get coverage data
     with Workers(options.gcov_parallel, lambda: {
                  'covdata': dict(),
+                 'logger': logger,
                  'toerase': set(),
                  'options': options}) as pool:
         logger.debug(f"Pool started with {pool.size()} threads")
@@ -437,14 +438,14 @@ def print_reports(covdata, options):
             if not output.is_dir:
                 default_output = None
         if output is not None:
-            if generator(covdata, output.abspath, options):
+            if generator(covdata, output.abspath, options, logger):
                 generator_error_occurred = True
             reports_were_written = True
         else:
             on_no_output()
 
     if not reports_were_written:
-        print_text_report(covdata, '-' if default_output is None else default_output.abspath, options)
+        print_text_report(covdata, '-' if default_output is None else default_output.abspath, options, logger)
         default_output = None
 
     if default_output is not None and default_output.value is not None and not default_output_used:
