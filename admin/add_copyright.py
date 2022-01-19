@@ -31,6 +31,13 @@ DATE = subprocess.check_output(
 )
 YEAR = DATE[:4]
 VERSION = gcovr.version.__version__
+COPYRIGHT = [
+    f"Copyright (c) 2013-{YEAR} the gcovr authors",
+    "Copyright (c) 2013 Sandia Corporation.",
+    "This software is distributed under the BSD License.",
+    "Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,",
+    "the U.S. Government retains certain rights in this software.",
+]
 HEADER_END = (
     " ****************************************************************************"
 )
@@ -44,11 +51,8 @@ def getLicenseSection(filename, comment_char="#"):
     yield comment_char
     yield comment_char + " _____________________________________________________________________________"
     yield comment_char
-    yield comment_char + f" Copyright (c) 2013-{YEAR} the gcovr authors"
-    yield comment_char + " Copyright (c) 2013 Sandia Corporation."
-    yield comment_char + " This software is distributed under the BSD License."
-    yield comment_char + " Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,"
-    yield comment_char + " the U.S. Government retains certain rights in this software."
+    for line in COPYRIGHT:
+        yield comment_char + " " + line
     yield comment_char + " For more information, see the README.rst file."
     yield comment_char
     yield comment_char + HEADER_END
@@ -117,6 +121,18 @@ def main():
             if handler is not None:
                 with open(fullname) as f:
                     lines = list(line.rstrip() for line in f)
+                if filename == "__main__.py":
+                    copyright_string = ["COPYRIGHT = ("]
+                    for line in COPYRIGHT:
+                        copyright_string.append(f'   "{line}\\n"')
+                    copyright_string.append(")")
+                    copyright_string.append("")
+                    lines = re.sub(
+                        r"COPYRIGHT = \(\n(?:[^\n]+\n)+\)\n",
+                        "\n".join(copyright_string).replace("\\", "\\\\"),
+                        "\n".join(lines),
+                    ).split("\n")
+                    lines = [line.rstrip() for line in lines]
                 newLines = handler(
                     fullname, copy.copy(lines)
                 )  # use a copy because of the compare in the next line
