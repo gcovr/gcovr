@@ -266,7 +266,7 @@ def main(args=None):
     ]:
         logger.debug(f"Filters for {name}: ({len(filters)})")
         for f in filters:
-            logger.debug(f'- {f}')
+            logger.debug(f" - {f}")
 
     if options.exclude_lines_by_pattern:
         try:
