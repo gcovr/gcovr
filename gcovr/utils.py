@@ -23,6 +23,8 @@ import re
 import sys
 from contextlib import contextmanager
 
+logger = logging.getLogger("gcovr")
+
 
 class LoopChecker(object):
     def __init__(self):
@@ -190,7 +192,7 @@ class FilterOption(object):
         self.regex = regex
         self.path_context = os.getcwd() if path_context is None else path_context
 
-    def build_filter(self, logger):
+    def build_filter(self):
         # Try to detect unintended backslashes and warn.
         # Later, the regex engine may or may not raise a syntax error.
         # An unintended backslash is a literal backslash r"\\",
@@ -198,9 +200,9 @@ class FilterOption(object):
         (suggestion, bs_count) = re.subn(
             r'\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])', '/', self.regex)
         if bs_count:
-            logger.warn("filters must use forward slashes as path separators")
-            logger.warn("your filter : {}", self.regex)
-            logger.warn("did you mean: {}", suggestion)
+            logger.warning("filters must use forward slashes as path separators")
+            logger.warning(f"your filter : {self.regex}")
+            logger.warning(f"did you mean: {suggestion}")
 
         isabs = self.regex.startswith("/")
         if not isabs and (sys.platform == "win32"):
@@ -300,48 +302,7 @@ class MaximumApplicableLogLevelFilter(Filter):
         return record.levelno <= self.level
 
 
-class Logger(object):
-    def __init__(self, logger: logging.Logger, verbose=False):
-        self.logger = logger
-        self.verbose = verbose
-
-    def warn(self, pattern, *args, **kwargs):
-        """Write a formatted warning.
-
-        pattern: a str.format pattern
-        args, kwargs: str.format arguments
-        """
-        pattern = "(WARNING) " + pattern
-        self.logger.warning(pattern.format(*args, **kwargs))
-
-    def error(self, pattern, *args, **kwargs):
-        """Write a formatted error.
-
-        pattern: a str.format pattern
-        args, kwargs: str.format parameters
-        """
-        pattern = "(ERROR) " + pattern
-        self.logger.error(pattern.format(*args, **kwargs))
-
-    def msg(self, pattern, *args, **kwargs):
-        """Write a formatted message.
-
-        pattern: a str.format pattern
-        args, kwargs: str.format arguments
-        """
-        self.logger.info(pattern.format(*args, **kwargs))
-
-    def verbose_msg(self, pattern, *args, **kwargs):
-        """Write a formatted message with low priority.
-
-        see: self.msg()
-        """
-        self.logger.debug(pattern.format(*args, **kwargs))
-
-
-def configure_logging(level: int = logging.INFO, name: str = __name__) -> logging.Logger:
-    logger = logging.getLogger(name)
-
+def configure_logging(logger: logging.Logger, level: int = logging.INFO) -> None:
     # stdout configuration
     stdout_handler = logging.StreamHandler(sys.stdout)
     info_and_lower = MaximumApplicableLogLevelFilter(logging.INFO)
@@ -349,16 +310,23 @@ def configure_logging(level: int = logging.INFO, name: str = __name__) -> loggin
     stdout_handler.setFormatter(logging.Formatter("%(message)s"))
     stdout_handler.setLevel(level)
 
-    # stderr configuration
-    stderr_handler = logging.StreamHandler(sys.stderr)
-    stderr_handler.setFormatter(logging.Formatter("%(message)s"))
-    stderr_handler.setLevel(logging.WARNING)
+    # stderr warning configuration
+    stderr_warning_handler = logging.StreamHandler(sys.stderr)
+    warning_and_lower = MaximumApplicableLogLevelFilter(logging.WARNING)
+    stdout_handler.addFilter(warning_and_lower)
+    stderr_warning_handler.setFormatter(logging.Formatter("(WARNING) %(message)s"))
+    stderr_warning_handler.setLevel(logging.WARNING)
+
+    # stderr warning configuration
+    stderr_error_handler = logging.StreamHandler(sys.stderr)
+    stderr_error_handler.setFormatter(logging.Formatter("(ERROR) %(message)s"))
+    stderr_error_handler.setLevel(logging.ERROR)
 
     logger.addHandler(stdout_handler)
-    logger.addHandler(stderr_handler)
+    logger.addHandler(stderr_warning_handler)
+    logger.addHandler(stderr_error_handler)
 
     sys.excepthook = exception_hook
-    return logger
 
 
 def exception_hook(exc_type, exc_value, exc_traceback) -> None:

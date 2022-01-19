@@ -17,16 +17,22 @@
 # ****************************************************************************
 
 # pylint: disable=missing-function-docstring,missing-module-docstring
-
+import logging
 import re
 import time
 import textwrap
 from threading import Event
+from unittest import mock
+
 import pytest
 
 from ..gcov_parser import ParserFlags, parse_coverage, UnknownLineType
-from ..utils import Logger, configure_logging
+from ..utils import configure_logging
 from ..workers import Workers
+
+logger = logging.getLogger("gcovr")
+configure_logging(logger, logging.DEBUG)
+
 
 # This example is taken from the GCC 8 Gcov documentation:
 # <https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html>
@@ -286,9 +292,6 @@ GCOV_8_EXCLUDE_THROW_BRANCHES = dict(
     gcov_8_exclude_throw=True,
 )
 
-python_logger = configure_logging()
-python_logger_verbose = configure_logging(logging.DEBUG)
-
 
 @pytest.mark.parametrize("sourcename", sorted(GCOV_8_SOURCES))
 def test_gcov_8(capsys, sourcename):
@@ -312,7 +315,6 @@ def test_gcov_8(capsys, sourcename):
     coverage = parse_coverage(
         filename="tmp.cpp",
         lines=lines,
-        logger=Logger(python_logger),
         exclude_lines_by_pattern=None,
         flags=flags,
     )
@@ -344,7 +346,6 @@ def test_unknown_tags(capsys, ignore_errors):
         return parse_coverage(
             filename="foo.c",
             lines=lines,
-            logger=Logger(python_logger),
             exclude_lines_by_pattern=None,
             flags=flags,
         )
@@ -380,7 +381,6 @@ def test_pathologic_codeline(capsys):
         parse_coverage(
             filename="foo.c",
             lines=lines,
-            logger=Logger(python_logger),
             exclude_lines_by_pattern=None,
             flags=ParserFlags.NONE,
         )
@@ -416,18 +416,15 @@ def test_exception_during_coverage_processing(capsys):
     )
     lines = source.splitlines()
 
-    class BrokenLogger(Logger):  # pylint: disable=missing-class-docstring
-        def verbose_msg(self, pattern, *args, **kwargs):
-            raise AssertionError("totally broken")
-
-    with pytest.raises(AssertionError) as ex_info:
-        parse_coverage(
-            lines,
-            logger=BrokenLogger(python_logger_verbose, verbose=True),
-            filename="test.cpp",
-            exclude_lines_by_pattern=None,
-            flags=ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS,
-        )
+    with mock.patch('logging.Logger.debug') as logger_mock:
+        logger_mock.side_effect = AssertionError("totally broken")
+        with pytest.raises(AssertionError) as ex_info:
+            parse_coverage(
+                lines,
+                filename="test.cpp",
+                exclude_lines_by_pattern=None,
+                flags=ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS,
+            )
 
     # check that this is our exception
     assert ex_info.value.args[0] == "totally broken"
@@ -462,7 +459,6 @@ def test_trailing_function_tag():
     coverage = parse_coverage(
         source.splitlines(),
         filename="test.cpp",
-        logger=Logger(python_logger),
         flags=ParserFlags.NONE,
         exclude_lines_by_pattern=None,
     )
@@ -509,7 +505,6 @@ def test_branch_exclusion(flags):
 
     coverage = parse_coverage(
         source.splitlines(),
-        logger=Logger(python_logger),
         filename="example.cpp",
         exclude_lines_by_pattern=None,
         flags=flags,
@@ -544,7 +539,6 @@ def test_function_exclusion(flags):
 
     coverage = parse_coverage(
         source.splitlines(),
-        logger=Logger(python_logger),
         filename="example.cpp",
         exclude_lines_by_pattern=None,
         flags=flags,
@@ -577,7 +571,6 @@ def test_noncode_lines():
         coverage = parse_coverage(
             lines,
             flags=flags,
-            logger=Logger(python_logger),
             filename="example.cpp",
             exclude_lines_by_pattern=None,
         )

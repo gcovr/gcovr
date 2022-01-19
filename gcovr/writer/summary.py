@@ -15,12 +15,16 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+import logging
+import sys
 
 from ..utils import get_global_stats
 
+logger = logging.getLogger("gcovr")
 
-def print_summary(covdata, logger):
-    '''Print a small report to the standard output.
+
+def print_summary(covdata, log_summary):
+    '''Print a small report to the standard output or to the logger in addition.
     Output the percentage, covered and total lines and branches.
     '''
 
@@ -38,6 +42,11 @@ def print_summary(covdata, logger):
         percent_branches, branches_covered, branches_total
     )
 
-    logger.msg(lines_out)
-    logger.msg(functions_out)
-    logger.msg(branches_out)
+    if log_summary:
+        logger.info(lines_out)
+        logger.info(functions_out)
+        logger.info(branches_out)
+    else:
+        sys.stdout.write(lines_out + '\n')
+        sys.stdout.write(functions_out + '\n')
+        sys.stdout.write(branches_out + '\n')

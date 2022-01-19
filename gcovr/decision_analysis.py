@@ -5,7 +5,7 @@
 # Copyright 2013-2020 the gcovr authors
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
-
+import logging
 import re
 
 from .coverage import (
@@ -13,6 +13,8 @@ from .coverage import (
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
 )
+
+logger = logging.getLogger("gcovr")
 
 # for type annotations:
 if False:
@@ -131,7 +133,7 @@ class DecisionParser(object):
         self.decision_analysis_open_brackets = 0
 
     def parse_all_lines(self):
-        self.logger.verbose_msg("Starting the decision analysis")
+        logger.debug("Starting the decision analysis")
 
         # start to iterate through the lines
         for lineno, code in self.lines:
@@ -182,7 +184,7 @@ class DecisionParser(object):
                                 # it's a compplex decision with more than 2 branches. No accurate detection possible
                                 # Set the decision to uncheckable
                                 line_coverage.decision = DecisionCoverageUncheckable()
-                                self.logger.verbose_msg(
+                                logger.debug(
                                     "Uncheckable decision at line {line}", line=lineno
                                 )
                         else:
@@ -218,4 +220,4 @@ class DecisionParser(object):
                                 self.coverage.line(lineno + 1).count
                             )
 
-        self.logger.verbose_msg("Decision Analysis finished!")
+        logger.debug("Decision Analysis finished!")

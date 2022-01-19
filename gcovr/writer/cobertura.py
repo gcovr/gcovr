@@ -22,7 +22,7 @@ from ..version import __version__
 from ..utils import open_binary_for_writing, presentable_filename
 
 
-def print_xml_report(covdata, output_file, options, logger):
+def print_xml_report(covdata, output_file, options):
     """produce an XML report in the Cobertura format"""
     functionTotal = 0
     functionCovered = 0
