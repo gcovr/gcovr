@@ -39,14 +39,12 @@ def getLicenseSection(filename, comment_char="#"):
     year = date[:4]
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
-    yield comment_char + " This file is part of gcovr {}, a parsing and reporting tool for gcov.".format(
-        version.__version__
-    )
+    yield comment_char + f" This file is part of gcovr {version.__version__}, a parsing and reporting tool for gcov."
     yield comment_char + " https://gcovr.com/en/stable"
     yield comment_char
     yield comment_char + " _____________________________________________________________________________"
     yield comment_char
-    yield comment_char + " Copyright (c) 2013-{} the gcovr authors".format(year)
+    yield comment_char + f" Copyright (c) 2013-{year} the gcovr authors"
     yield comment_char + " Copyright (c) 2013 Sandia Corporation."
     yield comment_char + " This software is distributed under the BSD License."
     yield comment_char + " Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,"
@@ -82,7 +80,7 @@ def addCopyrightToPythonFile(filename, lines):
     # skip lines until header end marker
     headerEndReached = False
     for line in iterLines:
-        if len(line) > 0 and line == '#' + HEADER_END:
+        if len(line) > 0 and line == "#" + HEADER_END:
             headerEndReached = True
             break
 
@@ -118,7 +116,9 @@ def main():
             if handler is not None:
                 with open(fullname) as f:
                     lines = list(line.rstrip() for line in f)
-                newLines = handler(fullname, copy.copy(lines))  # use a copy because of the compare in the next line
+                newLines = handler(
+                    fullname, copy.copy(lines)
+                )  # use a copy because of the compare in the next line
                 if newLines != lines:
                     print("Modifying {}".format(fullname))
                     with open(fullname, "w") as f:

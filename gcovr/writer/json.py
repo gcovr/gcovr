@@ -34,7 +34,7 @@ from ..coverage import (
     DecisionCoverageUncheckable,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
-    FileCoverage
+    FileCoverage,
 )
 
 
@@ -336,8 +336,7 @@ def _decision_from_json(line, json_decision):
         line.decision = DecisionCoverageUncheckable()
     elif json_decision["type"] == "conditional":
         line.decision = DecisionCoverageConditional(
-            json_decision["count_true"],
-            json_decision["count_false"]
+            json_decision["count_true"], json_decision["count_false"]
         )
     elif json_decision["type"] == "switch":
         line.decision = DecisionCoverageSwitch(json_decision["count"])
