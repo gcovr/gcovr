@@ -79,9 +79,7 @@ def find_datafiles(search_path, exclude_dirs):
         if os.path.splitext(filename)[0] not in known_file_stems
     ]
     logger.debug(
-        "Found {} files (and will process {})",
-        len(files),
-        len(gcda_files) + len(gcno_files),
+        f"Found {len(files)} files (and will process {len(gcda_files) + len(gcno_files)})"
     )
     return gcda_files + gcno_files
 
@@ -170,20 +168,14 @@ def guess_source_file_name(
         )
 
     logger.debug(
-        "Finding source file corresponding to a gcov data file\n"
-        "  currdir      {currdir}\n"
-        "  gcov_fname   {data_fname}\n"
-        "  source_fname {source_fname}\n"
-        "  root         {root_dir}\n"
-        # '  common_dir   {common_dir}\n'
-        # '  subdir       {subdir}\n'
-        "  fname        {fname}",
-        currdir=currdir,
-        data_fname=data_fname,
-        source_fname=source_fname,
-        root_dir=root_dir,
-        # common_dir=common_dir, subdir=subdir,
-        fname=fname,
+        f"Finding source file corresponding to a gcov data file\n"
+        f"  currdir      {currdir}\n"
+        f"  gcov_fname   {data_fname}\n"
+        f"  source_fname {source_fname}\n"
+        f"  root         {root_dir}\n"
+        # f"  common_dir   {common_dir}\n"
+        # f"  subdir       {subdir}\n"
+        f"  fname        {fname}"
     )
 
     return fname
@@ -335,12 +327,11 @@ def process_datafile(filename, covdata, options, toerase, logger):
         if done:
             return
 
+    errors_output = "\n\t".join(errors)
     logger.warning(
-        "GCOV produced the following errors processing {filename}:\n"
-        "\t{errors}\n"
-        "\t(gcovr could not infer a working directory that resolved it.)",
-        filename=filename,
-        errors="\n\t".join(errors),
+        f"GCOV produced the following errors processing {filename}:\n"
+        f"\t{errors_output}\n"
+        f"\t(gcovr could not infer a working directory that resolved it.)"
     )
 
 
