@@ -23,34 +23,36 @@ import os
 import re
 import subprocess
 
-import version
+import gcovr.version
 
-REGEX_EMAIL = re.compile(r"\d+\+([^@]+)@users\.noreply\.github\.com")
+DATE = subprocess.check_output(
+    ["git", "log", "-1", "--format=format:%ad", "--date=short"],
+    universal_newlines=True,
+)
+YEAR = DATE[:4]
+VERSION = gcovr.version.__version__
+COPYRIGHT = [
+    f"Copyright (c) 2013-{YEAR} the gcovr authors",
+    "Copyright (c) 2013 Sandia Corporation.",
+    "This software is distributed under the BSD License.",
+    "Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,",
+    "the U.S. Government retains certain rights in this software.",
+]
 HEADER_END = (
     " ****************************************************************************"
 )
 
 
 def getLicenseSection(filename, comment_char="#"):
-    date = subprocess.check_output(
-        ["git", "log", "-1", "--format=format:%ad", "--date=short", "--", filename],
-        universal_newlines=True,
-    )
-    year = date[:4]
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
-    yield comment_char + " This file is part of gcovr {}, a parsing and reporting tool for gcov.".format(
-        version.__version__
-    )
+    yield comment_char + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
     yield comment_char + " https://gcovr.com/en/stable"
     yield comment_char
     yield comment_char + " _____________________________________________________________________________"
     yield comment_char
-    yield comment_char + " Copyright (c) 2013-{} the gcovr authors".format(year)
-    yield comment_char + " Copyright (c) 2013 Sandia Corporation."
-    yield comment_char + " This software is distributed under the BSD License."
-    yield comment_char + " Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,"
-    yield comment_char + " the U.S. Government retains certain rights in this software."
+    for line in COPYRIGHT:
+        yield comment_char + " " + line
     yield comment_char + " For more information, see the README.rst file."
     yield comment_char
     yield comment_char + HEADER_END
@@ -82,7 +84,7 @@ def addCopyrightToPythonFile(filename, lines):
     # skip lines until header end marker
     headerEndReached = False
     for line in iterLines:
-        if len(line) > 0 and line == '#' + HEADER_END:
+        if len(line) > 0 and line == "#" + HEADER_END:
             headerEndReached = True
             break
 
@@ -97,6 +99,7 @@ def addCopyrightToPythonFile(filename, lines):
         newLines.extend(iterLines)
     # no header found
     else:
+        newLines.append("\n")
         # keep all other lines
         newLines.extend(lines)
 
@@ -118,7 +121,21 @@ def main():
             if handler is not None:
                 with open(fullname) as f:
                     lines = list(line.rstrip() for line in f)
-                newLines = handler(fullname, copy.copy(lines))  # use a copy because of the compare in the next line
+                if filename == "__main__.py":
+                    copyright_string = ["COPYRIGHT = ("]
+                    for line in COPYRIGHT:
+                        copyright_string.append(f'   "{line}\\n"')
+                    copyright_string.append(")")
+                    copyright_string.append("")
+                    lines = re.sub(
+                        r"COPYRIGHT = \(\n(?:[^\n]+\n)+\)\n",
+                        "\n".join(copyright_string).replace("\\", "\\\\"),
+                        "\n".join(lines),
+                    ).split("\n")
+                    lines = [line.rstrip() for line in lines]
+                newLines = handler(
+                    fullname, copy.copy(lines)
+                )  # use a copy because of the compare in the next line
                 if newLines != lines:
                     print("Modifying {}".format(fullname))
                     with open(fullname, "w") as f:

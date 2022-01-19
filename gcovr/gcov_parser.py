@@ -320,7 +320,10 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
-    if flags & ParserFlags.RESPECT_EXCLUSION_MARKERS or flags & ParserFlags.PARSE_DECISIONS:
+    if (
+        flags & ParserFlags.RESPECT_EXCLUSION_MARKERS
+        or flags & ParserFlags.PARSE_DECISIONS
+    ):
         src_lines = [
             (line.lineno, line.source_code)
             for line, _ in tokenized_lines
