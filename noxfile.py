@@ -21,7 +21,6 @@ BLACK_CONFORM_FILES = [
 ]
 
 nox.options.sessions = ["qa"]
-nox.options.reuse_existing_virtualenvs = True
 
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
@@ -170,7 +169,7 @@ def build_wheel(session: nox.Session) -> None:
     session.notify("check_wheel")
 
 
-@nox.session(reuse_venv=False)
+@nox.session
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel, should not be used directly."""
     session.install("wheel", "twine")
