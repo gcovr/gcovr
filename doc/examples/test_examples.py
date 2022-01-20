@@ -44,6 +44,8 @@ def find_test_cases():
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
         for ext in 'txt xml csv json html'.split():
+            if ext == "html" and os.path.split(os.getenv("CC"))[1] not in ["gcc-5", "gcc-8"]:
+                continue
             baseline = '{datadir}/{name}.{ext}'.format(
                 datadir=datadir,
                 name=name,
