@@ -617,12 +617,6 @@ GCOVR_CONFIG_OPTIONS = [
         default=None,
     ),
     GcovrConfigOption(
-        "log_summary", ["--log_summary-uncovered"],
-        group="output_options",
-        help="Instead using stdout only, the summary uses logging as well.",
-        action="store_false",
-    ),
-    GcovrConfigOption(
         "show_branch", ["-b", "--branches"], config='txt-branch',
         group="output_options",
         help="Report the branch coverage instead of the line coverage. "
