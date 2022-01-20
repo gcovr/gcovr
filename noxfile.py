@@ -21,7 +21,6 @@ BLACK_CONFORM_FILES = [
 ]
 
 nox.options.sessions = ["qa"]
-nox.options.reuse_existing_virtualenvs = True
 
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
@@ -50,7 +49,7 @@ def qa(session: nox.Session) -> None:
     session.notify(session_id)
 
 
-@nox.session
+@nox.session(reuse_venv=True)
 def lint(session: nox.Session) -> None:
     """Run the lint (flake8 and black)."""
     session.install("flake8")
@@ -75,7 +74,7 @@ def lint(session: nox.Session) -> None:
         )
 
 
-@nox.session
+@nox.session(reuse_venv=True)
 def black(session: nox.Session) -> None:
     """Run black, a code formatter and format checker."""
     session.install("black")
@@ -86,7 +85,7 @@ def black(session: nox.Session) -> None:
         session.run("python", "-m", "black", "--diff", *DEFAULT_LINT_DIRECTORIES)
 
 
-@nox.session
+@nox.session(reuse_venv=True)
 def doc(session: nox.Session) -> None:
     """Generate the documentation."""
     session.install("-r", "doc/requirements.txt")
@@ -112,7 +111,7 @@ def tests_all_compiler(session: nox.Session) -> None:
         session.notify(session_id)
 
 
-@nox.session
+@nox.session(reuse_venv=True)
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
 def tests_compiler(session: nox.Session, version: str) -> None:
     """Run the test with a specifiv GCC version."""
@@ -158,7 +157,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     session.run("python", *args)
 
 
-@nox.session
+@nox.session(reuse_venv=True)
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("wheel")
@@ -170,7 +169,7 @@ def build_wheel(session: nox.Session) -> None:
     session.notify("check_wheel")
 
 
-@nox.session(reuse_venv=False)
+@nox.session
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel, should not be used directly."""
     session.install("wheel", "twine")
@@ -180,7 +179,7 @@ def check_wheel(session: nox.Session) -> None:
     session.run("python", "-m", "gcovr", "--help", external=True)
 
 
-@nox.session
+@nox.session(reuse_venv=True)
 def upload_wheel(session: nox.Session) -> None:
     """Upload the wheel."""
     session.install("twine")
