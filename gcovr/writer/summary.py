@@ -42,11 +42,6 @@ def print_summary(covdata):
         percent_branches, branches_covered, branches_total
     )
 
-    if log_summary:
-        logger.info(lines_out)
-        logger.info(functions_out)
-        logger.info(branches_out)
-    else:
-        sys.stdout.write(lines_out + '\n')
-        sys.stdout.write(functions_out + '\n')
-        sys.stdout.write(branches_out + '\n')
+    sys.stdout.write(lines_out + '\n')
+    sys.stdout.write(functions_out + '\n')
+    sys.stdout.write(branches_out + '\n')
