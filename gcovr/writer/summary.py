@@ -23,8 +23,8 @@ from ..utils import get_global_stats
 logger = logging.getLogger("gcovr")
 
 
-def print_summary(covdata, log_summary):
-    '''Print a small report to the standard output or to the logger in addition.
+def print_summary(covdata):
+    '''Print a small report to the standard output.
     Output the percentage, covered and total lines and branches.
     '''
 
