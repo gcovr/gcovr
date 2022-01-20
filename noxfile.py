@@ -49,7 +49,7 @@ def qa(session: nox.Session) -> None:
     session.notify(session_id)
 
 
-@nox.session(reuse_venv=True)
+@nox.session
 def lint(session: nox.Session) -> None:
     """Run the lint (flake8 and black)."""
     session.install("flake8")
@@ -74,7 +74,7 @@ def lint(session: nox.Session) -> None:
         )
 
 
-@nox.session(reuse_venv=True)
+@nox.session
 def black(session: nox.Session) -> None:
     """Run black, a code formatter and format checker."""
     session.install("black")
@@ -85,7 +85,7 @@ def black(session: nox.Session) -> None:
         session.run("python", "-m", "black", "--diff", *DEFAULT_LINT_DIRECTORIES)
 
 
-@nox.session(reuse_venv=True)
+@nox.session
 def doc(session: nox.Session) -> None:
     """Generate the documentation."""
     session.install("-r", "doc/requirements.txt")
@@ -111,7 +111,7 @@ def tests_all_compiler(session: nox.Session) -> None:
         session.notify(session_id)
 
 
-@nox.session(reuse_venv=True)
+@nox.session
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
 def tests_compiler(session: nox.Session, version: str) -> None:
     """Run the test with a specifiv GCC version."""
@@ -157,7 +157,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     session.run("python", *args)
 
 
-@nox.session(reuse_venv=True)
+@nox.session
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("wheel")
@@ -179,7 +179,7 @@ def check_wheel(session: nox.Session) -> None:
     session.run("python", "-m", "gcovr", "--help", external=True)
 
 
-@nox.session(reuse_venv=True)
+@nox.session
 def upload_wheel(session: nox.Session) -> None:
     """Upload the wheel."""
     session.install("twine")
