@@ -900,13 +900,9 @@ class _ExclusionRangeWarnings:
 
     def line_after_start(self, lineno: int, start: str, start_lineno: str) -> None:
         """warn that a region was started but an excluded line was found"""
-        self.logger.warn(
-            "{start} found on line {lineno} in excluded region started on line {start_lineno}, "
-            "when processing {filename}.",
-            start=start,
-            lineno=lineno,
-            start_lineno=start_lineno,
-            filename=self.filename,
+        logger.warn(
+            f"{start} found on line {lineno} in excluded region started on line {start_lineno}, "
+            f"when processing {self.filename}."
         )
 
 

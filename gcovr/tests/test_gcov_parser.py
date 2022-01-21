@@ -292,9 +292,6 @@ GCOV_8_EXCLUDE_THROW_BRANCHES = dict(
     gcov_8_exclude_throw=True,
 )
 
-python_logger = configure_logging()
-python_logger_verbose = configure_logging(logging.DEBUG)
-
 
 @pytest.mark.parametrize("sourcename", sorted(GCOV_8_SOURCES))
 def test_gcov_8(capsys, sourcename):

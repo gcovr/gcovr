@@ -146,7 +146,7 @@ class NullHighlighting:
 
 
 class PygmentHighlighting:
-   def __init__(self):
+    def __init__(self):
         self.formatter = None
         try:
             from pygments.formatters.html import HtmlFormatter

@@ -175,8 +175,7 @@ def main(args=None):
     if options.html_medium_threshold > options.html_high_threshold:
         logger.error(
             f"value of --html-medium-threshold={options.html_medium_threshold} should be\n"
-            f"lower than or equal to the value of --html-high-threshold={options.html_high_threshold}."
-            )
+            f"lower than or equal to the value of --html-high-threshold={options.html_high_threshold}.")
         sys.exit(1)
 
     if options.html_tab_size < 1:
@@ -273,8 +272,7 @@ def main(args=None):
         except re.error as e:
             logger.error(
                 "--exclude-lines-by-pattern: "
-                f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
-                )
+                f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}")
             sys.exit(1)
 
     covdata = dict()
