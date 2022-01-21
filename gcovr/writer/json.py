@@ -66,7 +66,7 @@ def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
 #
 # Produce gcovr JSON report
 #
-def print_json_report(covdata, output_file, options, logger):
+def print_json_report(covdata, output_file, options):
     r"""produce an JSON report in the format partially
     compatible with gcov JSON output"""
 
@@ -91,7 +91,7 @@ def print_json_report(covdata, output_file, options, logger):
 #
 # Produce gcovr JSON summary report
 #
-def print_json_summary_report(covdata, output_file, options, logger):
+def print_json_summary_report(covdata, output_file, options):
 
     json_dict = {}
 
@@ -172,7 +172,7 @@ def print_json_summary_report(covdata, output_file, options, logger):
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def gcovr_json_files_to_coverage(filenames, covdata, options, logger):
+def gcovr_json_files_to_coverage(filenames, covdata, options):
     r"""merge a coverage from multiple reports in the format
     partially compatible with gcov JSON output"""
 

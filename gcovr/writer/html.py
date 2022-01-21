@@ -365,7 +365,7 @@ def print_html_report(covdata, output_file, options):
     if output_file.endswith(os.sep):
         output_file += 'coverage_details.html' if options.html_details else 'coverage.html'
 
-    formatter = get_formatter(options, logger)
+    formatter = get_formatter(options)
     css_data += formatter.get_css()
 
     if self_contained:

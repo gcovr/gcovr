@@ -334,7 +334,7 @@ def contains_phrases(string, *phrases):
 
 
 @pytest.mark.parametrize("ignore_errors", [True, False])
-def test_unknown_tags(capsys, ignore_errors):
+def test_unknown_tags(caplog, ignore_errors):
     source = r"bananas 7 times 3"
     lines = source.splitlines()
 
@@ -361,19 +361,22 @@ def test_unknown_tags(capsys, ignore_errors):
         with pytest.raises(Exception):
             coverage = run_the_parser()
 
-    out, err = capsys.readouterr()
-    assert out == ""
+    messages = caplog.record_tuples
+    message0 = messages[0]
+    assert message0[1] == logging.WARNING
     err_phrases = [
-        "(WARNING) Unrecognized GCOV output",
+        "Unrecognized GCOV output",
         "bananas",
         "github.com/gcovr/gcovr",
     ]
+    assert contains_phrases(message0[2], *err_phrases)
     if not ignore_errors:
-        err_phrases.append("(ERROR) Exiting")
-    assert contains_phrases(err, *err_phrases)
+        message2 = messages[2]
+        assert message2[1] == logging.ERROR
+        assert 'Exiting' in message2[2]
 
 
-def test_pathologic_codeline(capsys):
+def test_pathologic_codeline(caplog):
     source = r": 7:haha"
     lines = source.splitlines()
 
@@ -385,20 +388,33 @@ def test_pathologic_codeline(capsys):
             flags=ParserFlags.NONE,
         )
 
-    out, err = capsys.readouterr()
-    assert out == ""
-    assert contains_phrases(
-        err,
-        "(WARNING) Unrecognized GCOV output",
+    messages = caplog.record_tuples
+    message0 = messages[0]
+    assert message0[1] == logging.WARNING
+    warning_phrases1 = [
+        "Unrecognized GCOV output",
         ": 7:haha",
+    ]
+    assert contains_phrases(message0[2], *warning_phrases1)
+
+    message1 = messages[1]
+    assert message1[1] == logging.WARNING
+    warning_phrases2 = [
         "Exception during parsing",
         "UnknownLineType",
-        "(ERROR) Exiting",
+    ]
+    assert contains_phrases(message1[2], *warning_phrases2)
+
+    message2 = messages[2]
+    assert message2[1] == logging.ERROR
+    error_phrases = [
+        "Exiting",
         "run gcovr with --gcov-ignore-parse-errors",
-    )
+    ]
+    assert contains_phrases(message2[2], *error_phrases)
 
 
-def test_exception_during_coverage_processing(capsys):
+def test_exception_during_coverage_processing(caplog):
     """
     This cannot happen during normal processing, but as a defense against
     unexpected changes to the format the ``--gcov-ignore-parse-errors`` option
@@ -429,18 +445,30 @@ def test_exception_during_coverage_processing(capsys):
     # check that this is our exception
     assert ex_info.value.args[0] == "totally broken"
 
-    out, err = capsys.readouterr()
-    assert out == ""
-    assert err != ""
-    assert contains_phrases(
-        err,
-        "(WARNING) Unrecognized GCOV output",
+    messages = caplog.record_tuples
+    message0 = messages[0]
+    assert message0[1] == logging.WARNING
+    warning_phrases1 = [
+        "Unrecognized GCOV output",
         lines[0],
+    ]
+    assert contains_phrases(message0[2], *warning_phrases1)
+
+    message1 = messages[1]
+    assert message1[1] == logging.WARNING
+    warning_phrases2 = [
         "Exception during parsing",
         "AssertionError",
-        "(ERROR) Exiting",
+    ]
+    assert contains_phrases(message1[2], *warning_phrases2)
+
+    message2 = messages[2]
+    assert message2[1] == logging.ERROR
+    error_phrases = [
+        "Exiting",
         "run gcovr with --gcov-ignore-parse-errors",
-    )
+    ]
+    assert contains_phrases(message2[2], *error_phrases)
 
 
 def test_trailing_function_tag():

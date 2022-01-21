@@ -138,6 +138,7 @@ class Options(object):
 
 
 def main(args=None):
+    configure_logging(logger, logging.INFO)
     parser = create_argument_parser()
     cli_options = parser.parse_args(args=args)
 
@@ -153,7 +154,8 @@ def main(args=None):
         [cfg_options, cli_options.__dict__])
     options = Options(**options_dict)
 
-    configure_logging(logger, logging.DEBUG if options.verbose else logging.INFO)
+    if options.verbose:
+        logger.setLevel(logging.DEBUG)
 
     if cli_options.version:
         logger.info(
@@ -310,7 +312,7 @@ def collect_coverage_from_tracefiles(covdata, options):
                 datafiles.add(normpath(trace_file))
 
     options.root_dir = os.path.abspath(options.root)
-    gcovr_json_files_to_coverage(datafiles, covdata, options, logger)
+    gcovr_json_files_to_coverage(datafiles, covdata, options)
 
 
 def collect_coverage_from_gcov(covdata, options):
@@ -335,7 +337,6 @@ def collect_coverage_from_gcov(covdata, options):
     # Get coverage data
     with Workers(options.gcov_parallel, lambda: {
                  'covdata': dict(),
-                 'logger': logger,
                  'toerase': set(),
                  'options': options}) as pool:
         logger.debug(f"Pool started with {pool.size()} threads")
@@ -435,21 +436,21 @@ def print_reports(covdata, options):
             if not output.is_dir:
                 default_output = None
         if output is not None:
-            if generator(covdata, output.abspath, options, logger):
+            if generator(covdata, output.abspath, options):
                 generator_error_occurred = True
             reports_were_written = True
         else:
             on_no_output()
 
     if not reports_were_written:
-        print_text_report(covdata, '-' if default_output is None else default_output.abspath, options, logger)
+        print_text_report(covdata, '-' if default_output is None else default_output.abspath, options)
         default_output = None
 
     if default_output is not None and default_output.value is not None and not default_output_used:
         logger.warning(f"--output={repr(default_output.value)} option was provided but not used.")
 
     if options.print_summary:
-        print_summary(covdata, options.log_summary)
+        print_summary(covdata)
 
     return generator_error_occurred
 

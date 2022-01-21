@@ -19,6 +19,7 @@
 from ..__main__ import main
 from ..version import __version__
 
+import logging
 import pytest
 import os
 import re
@@ -49,6 +50,28 @@ def capture(capsys, args, other_ex=()):
     return CaptureObject(out, err, e)
 
 
+# The LogCaptureObject class holds the capture method result
+class LogCaptureObject:
+    def __init__(self, record_tuples, exception):
+        self.record_tuples = record_tuples
+        self.exception = exception
+
+
+# The capture method calls the main method and captures its output/error
+# streams and exit code
+def log_capture(caplog, args, other_ex=()):
+    e = None
+    try:
+        main(args)
+        # Explicit SystemExit exception in case main() returns normally
+        sys.exit(0)
+    except SystemExit as exception:
+        e = exception
+    except other_ex as exception:
+        e = exception
+    return LogCaptureObject(caplog.record_tuples, e)
+
+
 def test_version(capsys):
     c = capture(capsys, ['--version'])
     assert c.err == ''
@@ -63,10 +86,11 @@ def test_help(capsys):
     assert c.exception.code == 0
 
 
-def test_empty_root(capsys):
-    c = capture(capsys, ['-r', ''])
-    assert c.out == ''
-    assert c.err.startswith('(ERROR) empty --root option.')
+def test_empty_root(caplog):
+    c = log_capture(caplog, ['-r', ''])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith('empty --root option.')
     assert c.exception.code == 1
 
 
@@ -84,19 +108,19 @@ def test_empty_exclude_directories(capsys):
     assert c.exception.code != 0
 
 
-def test_empty_objdir(capsys):
-    c = capture(capsys, ['--object-directory', ''])
-    assert c.out == ''
-    assert c.err.startswith(
-        '(ERROR) empty --object-directory option.')
+def test_empty_objdir(caplog):
+    c = log_capture(caplog, ['--object-directory', ''])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith('empty --object-directory option.')
     assert c.exception.code == 1
 
 
-def test_invalid_objdir(capsys):
-    c = capture(capsys, ['--object-directory', 'not-existing-dir'])
-    assert c.out == ''
-    assert c.err.startswith(
-        '(ERROR) Bad --object-directory option.')
+def test_invalid_objdir(caplog):
+    c = log_capture(caplog, ['--object-directory', 'not-existing-dir'])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith('Bad --object-directory option.')
     assert c.exception.code == 1
 
 
@@ -253,16 +277,21 @@ def test_line_threshold_100_1(capsys):
     assert c.exception.code != 0
 
 
-def test_filter_backslashes_are_detected(capsys):
+def test_filter_backslashes_are_detected(caplog):
     # gcov-exclude all to prevent any coverage data from being found
-    c = capture(
-        capsys,
+    c = log_capture(
+        caplog,
         args=['--filter', r'C:\\foo\moo', '--gcov-exclude', ''],
         other_ex=re.error)
-    assert c.err.startswith(
-        '(WARNING) filters must use forward slashes as path separators\n'
-        '(WARNING) your filter : C:\\\\foo\\moo\n'
-        '(WARNING) did you mean: C:/foo/moo\n')
+    message0 = c.record_tuples[0]
+    assert message0[1] == logging.WARNING
+    assert message0[2].startswith('filters must use forward slashes as path separators\n')
+    message1 = c.record_tuples[1]
+    assert message1[1] == logging.WARNING
+    assert message1[2].startswith('your filter : C:\\\\foo\\moo\n')
+    message2 = c.record_tuples[2]
+    assert message2[1] == logging.WARNING
+    assert message2[2].startswith('did you mean: C:/foo/moo\n')
     assert isinstance(c.exception, re.error) or c.exception.code == 0
 
 

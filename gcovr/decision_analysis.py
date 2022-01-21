@@ -113,15 +113,12 @@ class DecisionParser(object):
             Reference to the active coverage data.
         lines:
             The encoding of the source files
-        logger:
-            The logger to which decision analysis logs should be written to.
     """
 
-    def __init__(self, fname, coverage, lines, logger):
+    def __init__(self, fname, coverage, lines):
         self.fname = fname
         self.coverage = coverage
         self.lines = lines
-        self.logger = logger
 
         # status variables for decision analysis
         self.decision_analysis_active = (
