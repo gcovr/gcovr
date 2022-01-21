@@ -331,7 +331,7 @@ def process_datafile(filename, covdata, options, toerase, logger):
     logger.warning(
         f"GCOV produced the following errors processing {filename}:\n"
         f"\t{errors_output}\n"
-        f"\t(gcovr could not infer a working directory that resolved it.)"
+        "\t(gcovr could not infer a working directory that resolved it.)"
     )
 
 
@@ -507,11 +507,11 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, chdir):
         )
 
         if filtered:
-            logger.debug("Filtering gcov file {}", fname)
+            logger.debug(f"Filtering gcov file {fname}")
             continue
 
         if excluded:
-            logger.debug("Excluding gcov file {}", fname)
+            logger.debug(f"Excluding gcov file {fname}")
             continue
 
         active_files.append(full)
@@ -528,11 +528,11 @@ def process_existing_gcov_file(filename, covdata, options, toerase):
     )
 
     if filtered:
-        logger.debug("This gcov file does not match the filter: {}", filename)
+        logger.debug(f"This gcov file does not match the filter: {filename}")
         return
 
     if excluded:
-        logger.debug("Excluding gcov file: {}", filename)
+        logger.debug(f"Excluding gcov file: {filename}")
         return
 
     process_gcov_data(filename, covdata, None, options, logger)

@@ -185,7 +185,7 @@ class DecisionParser(object):
                                 # Set the decision to uncheckable
                                 line_coverage.decision = DecisionCoverageUncheckable()
                                 logger.debug(
-                                    "Uncheckable decision at line {line}", line=lineno
+                                    f"Uncheckable decision at line {lineno}"
                                 )
                         else:
                             # normal (non-compact) branch, analyze execution of following lines

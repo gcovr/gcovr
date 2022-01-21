@@ -47,7 +47,7 @@ from .writer.sonarqube import print_sonarqube_report
 from .writer.coveralls import print_coveralls_report
 
 
-logger = logging.getLogger('gcovr')
+logger = logging.getLogger("gcovr")
 
 
 #
@@ -157,10 +157,9 @@ def main(args=None):
 
     if cli_options.version:
         logger.info(
-            "gcovr {version}\n"
+            f"gcovr {__version__}\n"
             "\n"
-            "{copyright}",
-            version=__version__, copyright=COPYRIGHT)
+            f"{COPYRIGHT}")
         sys.exit(0)
 
     if options.html_title == '':
@@ -175,9 +174,9 @@ def main(args=None):
 
     if options.html_medium_threshold > options.html_high_threshold:
         logger.error(
-            "value of --html-medium-threshold={} should be\n"
-            "lower than or equal to the value of --html-high-threshold={}.",
-            options.html_medium_threshold, options.html_high_threshold)
+            f"value of --html-medium-threshold={options.html_medium_threshold} should be\n"
+            f"lower than or equal to the value of --html-high-threshold={options.html_high_threshold}."
+            )
         sys.exit(1)
 
     if options.html_tab_size < 1:
@@ -274,8 +273,8 @@ def main(args=None):
         except re.error as e:
             logger.error(
                 "--exclude-lines-by-pattern: "
-                "Invalid regular expression: {}, error: {}",
-                repr(options.exclude_lines_by_pattern), e)
+                f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
+                )
             sys.exit(1)
 
     covdata = dict()

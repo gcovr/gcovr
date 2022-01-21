@@ -496,10 +496,7 @@ def print_html_report(covdata, output_file, options):
                     )
                 if ctr < max_line_from_cdata:
                     logger.warning(
-                        'File {filename} has {file_lines} line(s) but coverage data has {cdata_lines} line(s).',
-                        filename=data['filename'],
-                        file_lines=ctr,
-                        cdata_lines=max_line_from_cdata
+                        f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
                     )
         except IOError as e:
             logger.warning(f'File {data["filename"]} not found: {repr(e)}')

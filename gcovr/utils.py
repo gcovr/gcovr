@@ -293,38 +293,13 @@ class DirectoryPrefixFilter(Filter):
         return super(DirectoryPrefixFilter, self).match(normpath)
 
 
-class MaximumApplicableLogLevelFilter(Filter):
-    """Log messages of the given level and lower are passed to the handler"""
-    def __init__(self, level):
-        self.level = level
-
-    def filter(self, record):
-        return record.levelno <= self.level
-
-
 def configure_logging(logger: logging.Logger, level: int = logging.INFO) -> None:
-    # stdout configuration
-    stdout_handler = logging.StreamHandler(sys.stdout)
-    info_and_lower = MaximumApplicableLogLevelFilter(logging.INFO)
-    stdout_handler.addFilter(info_and_lower)
-    stdout_handler.setFormatter(logging.Formatter("%(message)s"))
-    stdout_handler.setLevel(level)
+    # stderr configuration
+    stderr_handler = logging.StreamHandler(sys.stderr)
+    stderr_handler.setFormatter(logging.Formatter("(%(levelname)s) %(message)s"))
+    stderr_handler.setLevel(level)
 
-    # stderr warning configuration
-    stderr_warning_handler = logging.StreamHandler(sys.stderr)
-    warning_and_lower = MaximumApplicableLogLevelFilter(logging.WARNING)
-    stdout_handler.addFilter(warning_and_lower)
-    stderr_warning_handler.setFormatter(logging.Formatter("(WARNING) %(message)s"))
-    stderr_warning_handler.setLevel(logging.WARNING)
-
-    # stderr warning configuration
-    stderr_error_handler = logging.StreamHandler(sys.stderr)
-    stderr_error_handler.setFormatter(logging.Formatter("(ERROR) %(message)s"))
-    stderr_error_handler.setLevel(logging.ERROR)
-
-    logger.addHandler(stdout_handler)
-    logger.addHandler(stderr_warning_handler)
-    logger.addHandler(stderr_error_handler)
+    logger.addHandler(stderr_handler)
 
     sys.excepthook = exception_hook
 

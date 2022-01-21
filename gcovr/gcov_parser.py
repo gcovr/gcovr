@@ -431,10 +431,7 @@ def _gather_coverage_from_line(
         exclusion_reason = _branch_can_be_excluded(line, state, context.flags)
         if exclusion_reason:
             logger.debug(
-                "Excluding unreachable branch on line {} in file {}: {}",
-                state.lineno,
-                context.filename,
-                exclusion_reason,
+                f"Excluding unreachable branch on line {state.lineno} in file {context.filename}: {exclusion_reason}"
             )
             return state
 
@@ -483,14 +480,14 @@ def _report_lines_with_errors(
     logger.warning(
         f"Unrecognized GCOV output for {context.filename}\n"
         f"\t  {lines_output}\n"
-        f"\tThis is indicative of a gcov output parse error.\n"
-        f"\tPlease report this to the gcovr developers\n"
-        f"\tat <https://github.com/gcovr/gcovr/issues>."
+        "\tThis is indicative of a gcov output parse error.\n"
+        "\tPlease report this to the gcovr developers\n"
+        "\tat <https://github.com/gcovr/gcovr/issues>."
     )
 
     for ex in errors:
         logger.warning(
-            "Exception during parsing:\n\t{type}: {msg}", type=type(ex).__name__, msg=ex
+            f"Exception during parsing:\n\t{type(ex).__name__}: {ex}"
         )
 
     if context.flags & ParserFlags.IGNORE_PARSE_ERRORS:
@@ -587,10 +584,7 @@ def _add_coverage_for_function(
 
     if _function_can_be_excluded(name, context.flags):
         logger.debug(
-            "Ignoring Symbol {func_name} in line {line} in file {file_name}",
-            func_name=name,
-            line=lineno,
-            file_name=context.filename,
+            f"Ignoring Symbol {name} in line {lineno} in file {context.filename}"
         )
         return
 
@@ -883,38 +877,25 @@ class _ExclusionRangeWarnings:
     ) -> None:
         """warn that start/stop region markers don't match"""
         logger.warning(
-            "{start} found on line {start_lineno} "
-            "was terminated by {stop} on line {stop_lineno}, "
-            "when processing {filename}.",
-            start=start,
-            start_lineno=start_lineno,
-            stop=stop,
-            stop_lineno=stop_lineno,
-            filename=self.filename,
+            f"{start} found on line {start_lineno} "
+            f"was terminated by {stop} on line {stop_lineno}, "
+            f"when processing {self.filename}."
         )
 
     def stop_without_start(self, lineno: int, expected_start: str, stop: str) -> None:
         """warn that a region was ended without corresponding start marker"""
         logger.warning(
             "mismatched coverage exclusion flags.\n"
-            "          {stop} found on line {lineno} without corresponding {start}, "
-            "when processing {filename}.",
-            start=expected_start,
-            stop=stop,
-            lineno=lineno,
-            filename=self.filename,
+            f"          {stop} found on line {lineno} without corresponding {expected_start}, "
+            f"when processing {self.filename}."
         )
 
     def start_without_stop(self, lineno: int, start: str, expected_stop: str) -> None:
         """warn that a region was started but not closed"""
         logger.warning(
             "The coverage exclusion region start flag {start}\n"
-            "          on line {lineno} did not have corresponding {stop} flag\n"
-            "          in file {filename}.",
-            start=start,
-            stop=expected_stop,
-            lineno=lineno,
-            filename=self.filename,
+            f"          on line {lineno} did not have corresponding {expected_stop} flag\n"
+            f"          in file {self.filename}."
         )
 
     def line_after_start(self, lineno: int, start: str, start_lineno: str) -> None:
