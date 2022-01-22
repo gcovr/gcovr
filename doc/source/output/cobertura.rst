@@ -3,10 +3,12 @@
 Cobertura XML Output
 ====================
 
+.. program:: gcovr
+
 The default output format for ``gcovr`` is to generate a tabular
-summary in plain text.  The ``gcovr`` command can also generate an
-XML output using the :option:`-x/--xml<gcovr --xml>`
-and :option:`--xml-pretty<gcovr --xml-pretty>` options:
+summary in plain text.  The ``gcovr`` command can also generate a
+Cobertura XML output using the :option:`--cobertura`
+and :option:`--cobertura-pretty` options:
 
 .. include:: ../../examples/example_xml.sh
     :code: bash
@@ -26,11 +28,20 @@ continuous integration servers using the
 `Cobertura Plugin <https://wiki.jenkins-ci.org/display/JENKINS/Cobertura+Plugin>`__.
 Gcovr also supports a :ref:`sonarqube_xml_output`.
 
-The :option:`-x/--xml<gcovr --xml>` option generates a denser XML output, and the
-:option:`--xml-pretty<gcovr --xml-pretty>` option generates an indented
+The :option:`--cobertura` option generates a denser XML output, and the
+:option:`--cobertura-pretty` option generates an indented
 XML output that is easier to read. Note that the XML output contains more
 information than the tabular summary.  The tabular summary shows the percentage
 of covered lines, while the XML output includes branch statistics and the number
 of times that each line was covered.  Consequently, XML output can be
 used to support performance optimization in the same manner that
 ``gcov`` does.
+
+.. versionadded:: NEXT
+
+   The :option:`--cobertura` and :option:`--cobertura-pretty` options
+   were added as an alias for :option:`-x`/\ :option:`--xml`
+   and :option:`--xml-pretty`, respectively.
+   This avoids confusion with other XML output formats
+   like :ref:`sonarqube_xml_output`.
+   The old options remain available for backwards compatibility.

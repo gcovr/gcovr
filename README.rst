@@ -80,7 +80,7 @@ text summaries and XML reports.
 .. |abstract-option-txt| replace:: ``--txt``
 .. |abstract-option-html| replace:: ``--html``
 .. |abstract-option-html-details| replace:: ``--html-details``
-.. |abstract-option-cobertura| replace:: ``-x``, ``--xml``
+.. |abstract-option-cobertura| replace:: ``--cobertura``
 .. |abstract-option-sonarqube| replace:: ``--sonarqube``
 .. |abstract-option-json| replace:: ``--json``
 .. |abstract-option-json-summary| replace:: ``--json-summary``

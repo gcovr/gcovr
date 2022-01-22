@@ -13,7 +13,7 @@ The following report format flags can take an optional output file name:
 
 - :option:`gcovr --csv`
 - :option:`gcovr --txt`
-- :option:`gcovr --xml`
+- :option:`gcovr --cobertura`
 - :option:`gcovr --html`
 - :option:`gcovr --html-details`
 - :option:`gcovr --sonarqube`

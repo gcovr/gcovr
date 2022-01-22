@@ -22,7 +22,7 @@ from ..version import __version__
 from ..utils import open_binary_for_writing, presentable_filename
 
 
-def print_xml_report(covdata, output_file, options):
+def print_cobertura_report(covdata, output_file, options):
     """produce an XML report in the Cobertura format"""
     functionTotal = 0
     functionCovered = 0
@@ -180,7 +180,7 @@ def print_xml_report(covdata, output_file, options):
         fh.write(
             etree.tostring(
                 root,
-                pretty_print=options.prettyxml,
+                pretty_print=options.cobertura_pretty,
                 encoding="UTF-8",
                 xml_declaration=True,
                 doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>",
