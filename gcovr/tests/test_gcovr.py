@@ -348,7 +348,9 @@ def archive_difference_data(name, coverage_file, reference_file):  # pragma: no 
         )
 
 
-def remove_duplicate_data(encoding, scrub, coverage, coverage_file, reference_file):  # pragma: no cover
+def remove_duplicate_data(
+    encoding, scrub, coverage, coverage_file, reference_file
+):  # pragma: no cover
     reference_dir = os.path.dirname(reference_file)
     # Loop over the other coverage data
     for reference_dir in REFERENCE_DIRS[1:]:
