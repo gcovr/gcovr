@@ -157,3 +157,69 @@ For example::
     gcovr --gcov-executable "llvm-cov gcov"
 
 Again, the ``llvm-cov`` name may have to include your compiler version.
+
+
+Working with Multiple Object Files
+----------------------------------
+
+Code coverage instrumentation works on a per object file basis,
+which means you have to re-compile your entire project to collect coverage data.
+
+The C/C++ model has a concept of “compilation units”.
+A large project is typically not compiled in one go,
+but in separate steps.
+The result of compiling a compilation unit is a ``.o`` object file
+with the machine code.
+The object code from multiple compilation units is later linked
+into the final executable or library.
+The previous example only had a single compilation unit,
+so no explicit linking step was necessary.
+
+Because each compilation unit is compiled independently,
+every one has to be instrumented with coverage counters separately.
+A common mistake is to add the compiler flags for coverage
+(e.g. in the CFLAGS or CXXFLAGS variables)
+but then forgetting to force a re-compile.
+Depending on the build system,
+it may be necessary to clear out the old object files
+that weren't compiled with coverage,
+e.g. with a  ``make clean`` command.
+Other build systems use a separate build directory when compiling with coverage
+so that incremental compilation works as expected.
+
+Each object file will have an associated ``.gcno`` and ``.gcda`` file
+in the same directory as the ``.o`` object file.
+For example, consider the following compilation process:
+
+.. code:: bash
+
+   # (1) compile to object code
+   g++ --coverage -c -o a.o a.cpp
+   g++ --coverage -c -o b.o b.cpp
+
+   # (2) link the object files in the program
+   g++ --coverage -o the-program a.o b.o
+
+   # (3) run the program
+   ./the-program
+
+1. Compiling the object code creates the ``a.o`` and ``b.o`` object files,
+   but also corresponding ``a.gcno`` and ``b.gcno`` notes files,
+   one for each compilation unit.
+   The ``-c`` option is used to only compile but to not link the code.
+
+2. Linking the object code produces the final program.
+   This has no effect on coverage processing,
+   except that the ``--coverage`` flag makes sure
+   that a compiler-internal gcov support library is linked.
+
+3. Running the program will increment the in-memory coverage counters.
+   At the end, the counters are written into gcov data files,
+   one for each compilation unit.
+   Here, we would get ``a.gcda`` and ``b.gcda`` files.
+
+If you only want coverage data for certain source files,
+it is sufficient to only compile those compilation units with coverage enabled
+that contain these source files.
+But this can be tricky to do correctly.
+For example, header files are often part of multiple compilation units.
