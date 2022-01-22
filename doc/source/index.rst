@@ -14,7 +14,7 @@ gcovr
 .. |abstract-option-txt| replace:: :option:`--txt`
 .. |abstract-option-html| replace:: :option:`--html`
 .. |abstract-option-html-details| replace:: :option:`--html-details`
-.. |abstract-option-cobertura| replace:: :option:`-x`, :option:`--xml`
+.. |abstract-option-cobertura| replace:: :option:`--cobertura`
 .. |abstract-option-sonarqube| replace:: :option:`--sonarqube`
 .. |abstract-option-json| replace:: :option:`--json`
 .. |abstract-option-json-summary| replace:: :option:`--json-summary`

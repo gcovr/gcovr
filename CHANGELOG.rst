@@ -9,6 +9,7 @@ Next Release
 Breaking changes:
 
 - Dropped support for Python 3.6 (:issue:`550`)
+- Change ``xml`` configuration key to ``cobertura``. (:issue:`552`)
 
 Improvements and new features:
 
@@ -30,6 +31,8 @@ Improvements and new features:
 - Fix sanity check in HTML generator. (:issue:`571`)
 - Change file level percent values in JSON summary. (:issue:`570`)
 - Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
+- Add :option:`--cobertura` as a less ambiguous alias for :option:`--xml`.
+  (:issue:`552`)
 
 Documentation:
 

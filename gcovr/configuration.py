@@ -765,8 +765,8 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "xml",
-        ["-x", "--xml"],
+        "cobertura",
+        ["--cobertura", "-x", "--xml"],
         group="output_options",
         metavar="OUTPUT",
         help=(
@@ -779,10 +779,13 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "prettyxml",
-        ["--xml-pretty"],
+        "cobertura_pretty",
+        ["--cobertura-pretty", "--xml-pretty"],
         group="output_options",
-        help="Pretty-print the XML report. Implies --xml. Default: {default!s}.",
+        help=(
+            "Pretty-print the Cobertura XML report. "
+            "Implies --cobertura. Default: {default!s}."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(

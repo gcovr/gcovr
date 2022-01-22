@@ -37,7 +37,7 @@ from .workers import Workers
 
 # generators
 from .writer.json import (gcovr_json_files_to_coverage)
-from .writer.cobertura import print_xml_report
+from .writer.cobertura import print_cobertura_report
 from .writer.html import print_html_report
 from .writer.json import print_json_report, print_json_summary_report
 from .writer.txt import print_text_report
@@ -365,13 +365,13 @@ def print_reports(covdata, options):
                 "Text output skipped - "
                 "consider providing an output file with `--txt=OUTPUT`.")))
 
-    if options.xml or options.prettyxml:
+    if options.cobertura or options.cobertura_pretty:
         generators.append((
-            [options.xml],
-            print_xml_report,
+            [options.cobertura],
+            print_cobertura_report,
             lambda: logger.warning(
                 "Cobertura output skipped - "
-                "consider providing an output file with `--xml=OUTPUT`.")))
+                "consider providing an output file with `--cobertura=OUTPUT`.")))
 
     if options.html or options.html_details:
         generators.append((
