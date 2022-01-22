@@ -43,7 +43,7 @@ HEADER_END = (
 )
 
 
-def getLicenseSection(filename, comment_char="#"):
+def getLicenseSection(comment_char="#"):
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
     yield comment_char + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
@@ -58,12 +58,12 @@ def getLicenseSection(filename, comment_char="#"):
     yield comment_char + HEADER_END
 
 
-def addCopyrightToPythonFile(filename, lines):
+def addCopyrightHeaderToPythonFile(filename, lines):
     # Empty file should be kept empty
     if len(lines) == 0:
         return lines
 
-    newLines = []
+    newLines = list([])
     # Keep the Shebang
     if lines[0].startswith("#!"):
         newLines.append(lines.pop(0))
@@ -76,7 +76,7 @@ def addCopyrightToPythonFile(filename, lines):
     newLines.append("")
 
     # Add license information
-    for line in getLicenseSection(filename):
+    for line in getLicenseSection():
         newLines.append(line)
 
     iterLines = iter(lines)
@@ -106,36 +106,62 @@ def addCopyrightToPythonFile(filename, lines):
     return newLines
 
 
+def updateCopyrightString(filename, lines):
+    newLines = list([])
+
+    iterLines = iter(lines)
+    copyrightReached = False
+    for line in iterLines:
+        newLines.append(line)
+        if line == "COPYRIGHT = (":
+            copyrightReached = True
+            break
+    if not copyrightReached:
+        raise RuntimeError(f"Start of copyright not found in {filename}.")
+
+    for line in COPYRIGHT:
+        newLines.append(f'   "{line}\\n"')
+
+    copyrightEndReached = False
+    for line in iterLines:
+        if line == ")":
+            newLines.append(line)
+            copyrightEndReached = True
+            break
+    if not copyrightEndReached:
+        raise RuntimeError(f"End of copyright not found in {filename}.")
+
+    for line in iterLines:
+        newLines.append(line)
+
+    return newLines
+
+
 def main():
     for root, dirs, files in os.walk(".", topdown=True):
-        for skip_dir in [".git", "reference"]:
-            if skip_dir in dirs:
-                dirs.remove(skip_dir)
+        for skip_dir in [
+            dir
+            for dir in dirs
+            if dir in [".git", "reference"] or dir.startswith(".nox")
+        ]:
+            dirs.remove(skip_dir)
 
         for filename in files:
-            handler = None
+            handlers = list([])
             fullname = os.path.join(root, filename)
             if filename.endswith(".py"):
-                handler = addCopyrightToPythonFile
+                handlers.append(addCopyrightHeaderToPythonFile)
+            if filename == "__main__.py":
+                handlers.append(updateCopyrightString)
 
-            if handler is not None:
+            if len(handlers) != 0:
                 with open(fullname) as f:
                     lines = list(line.rstrip() for line in f)
-                if filename == "__main__.py":
-                    copyright_string = ["COPYRIGHT = ("]
-                    for line in COPYRIGHT:
-                        copyright_string.append(f'   "{line}\\n"')
-                    copyright_string.append(")")
-                    copyright_string.append("")
-                    lines = re.sub(
-                        r"COPYRIGHT = \(\n(?:[^\n]+\n)+\)\n",
-                        "\n".join(copyright_string).replace("\\", "\\\\"),
-                        "\n".join(lines),
-                    ).split("\n")
-                    lines = [line.rstrip() for line in lines]
-                newLines = handler(
-                    fullname, copy.copy(lines)
-                )  # use a copy because of the compare in the next line
+                newLines = copy.copy(
+                    lines
+                )  # use a copy because of the compare at the end
+                for handler in handlers:
+                    newLines = handler(fullname, newLines)
                 if newLines != lines:
                     print("Modifying {}".format(fullname))
                     with open(fullname, "w") as f:
