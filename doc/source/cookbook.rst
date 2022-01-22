@@ -1,7 +1,18 @@
 .. _cookbook:
 
-Gcovr Cookbook
-==============
+Cookbook
+========
+
+This section contains how-to guides
+on creating code coverage reports for various purposes.
+For an introduction on using gcovr,
+see the :ref:`guide` instead.
+
+Recipes in the cookbook:
+
+.. contents::
+   :local:
+   :depth: 1
 
 .. _c extensions in python:
 
