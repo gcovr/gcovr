@@ -12,14 +12,15 @@ DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
 DEFAULT_LINT_DIRECTORIES = ["admin"] + DEFAULT_TEST_DIRECTORIES
 BLACK_CONFORM_FILES = [
     "admin/add_copyright.py",
-    "noxfile.py",
+    "gcovr/configuration.py",
     "gcovr/decision_analysis.py",
     "gcovr/gcov.py",
     "gcovr/gcov_parser.py",
-    "gcovr/timestamps.py",
     "gcovr/tests/test_gcov_parser.py",
-    "gcovr/writer/json.py",
     "gcovr/tests/test_gcovr.py",
+    "gcovr/timestamps.py",
+    "gcovr/writer/json.py",
+    "noxfile.py",
 ]
 BLACK_PINNED_VERSION = "black==22.1.0"
 
