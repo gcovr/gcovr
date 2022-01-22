@@ -35,7 +35,7 @@ def check_percentage(value):
     """
 
     # strip trailing percent sign if present, useful for config files
-    if value.endswith('%'):
+    if value.endswith("%"):
         value = value[:-1]
 
     try:
@@ -43,8 +43,7 @@ def check_percentage(value):
         if not (0.0 <= x <= 100.0):
             raise ValueError()
     except ValueError:
-        raise ArgumentTypeError(
-            "{value} not in range [0.0, 100.0]".format(value=value))
+        raise ArgumentTypeError(f"{value} not in range [0.0, 100.0]")
     return x
 
 
@@ -60,14 +59,14 @@ def check_input_file(value, basedir=None):
     value = os.path.normpath(value)
 
     if not os.path.isfile(value):
-        raise ArgumentTypeError(
-            "Should be a file that already exists: {value!r}".format(value=value))
+        raise ArgumentTypeError(f"Should be a file that already exists: {value!r}")
 
     return os.path.abspath(value)
 
 
 def timestamp(value: str) -> datetime.datetime:
     from .timestamps import parse_timestamp  # lazy import
+
     try:
         return parse_timestamp(value)
     except ValueError as ex:
@@ -87,19 +86,21 @@ class OutputOrDefault(object):
         self._check_output_and_make_abspath(os.getcwd() if basedir is None else basedir)
 
     def __repr__(self):
-        return '{}({!r})'.format(self.__class__.__name__, self.value)
+        name = self.__class__.__name__
+        value = self.value
+        return f"{name}({value!r})"
 
     def _check_output_and_make_abspath(self, basedir):
         r"""
         Check if the output file can be created.
         """
 
-        if self.value in (None, '-'):
-            self.abspath = '-'
+        if self.value in (None, "-"):
+            self.abspath = "-"
             self.is_dir = False
         else:
             # Replace / and \ with the os path separator.
-            value = str(self.value).replace('\\', os.sep).replace('/', os.sep)
+            value = str(self.value).replace("\\", os.sep).replace("/", os.sep)
             # Save if it is a directory
             self.is_dir = True if value.endswith(os.sep) else False
             value = os.path.normpath(value)
@@ -116,13 +117,17 @@ class OutputOrDefault(object):
                     try:
                         os.mkdir(value)
                     except OSError as e:
-                        raise ArgumentTypeError("Could not create output directory {value!r}: {error}".format(value=self.value, error=e.strerror))
+                        raise ArgumentTypeError(
+                            f"Could not create output directory {self.value!r}: {e.strerror}"
+                        )
             else:
                 try:
-                    with open(value, 'w') as _:
+                    with open(value, "w") as _:
                         pass
                 except OSError as e:
-                    raise ArgumentTypeError("Could not create output file {value!r}: {error}".format(value=self.value, error=e.strerror))
+                    raise ArgumentTypeError(
+                        f"Could not create output file {self.value!r}: {e.strerror}"
+                    )
                 os.unlink(value)
 
     @classmethod
@@ -157,8 +162,7 @@ class OutputOrDefault(object):
             if choice is None:
                 continue
             if not isinstance(choice, OutputOrDefault):
-                raise TypeError(
-                    "expected OutputOrDefault instance, got: {}".format(choice))
+                raise TypeError(f"expected OutputOrDefault instance, got: {choice}")
             if choice.value is not None:
                 return choice
         return default
@@ -233,59 +237,71 @@ class GcovrConfigOption(object):
     """
 
     def __init__(
-        self, name, flags=None,
-        action='store', choices=None, const=None, const_negate=None,
-        config=None, default=None, group=None,
-        help=None, metavar=None, nargs=None, negate=None, positional=False,
-        required=False, type=None,
+        self,
+        name,
+        flags=None,
+        action="store",
+        choices=None,
+        const=None,
+        const_negate=None,
+        config=None,
+        default=None,
+        group=None,
+        help=None,
+        metavar=None,
+        nargs=None,
+        negate=None,
+        positional=False,
+        required=False,
+        type=None,
     ):
         if flags is None:
             flags = []
 
-        assert not (flags and positional), \
-            "option cannot have flags and be positional"
+        assert not (flags and positional), "option cannot have flags and be positional"
 
         if config is None:
             for flag in flags:
-                if not flag.startswith('--'):
+                if not flag.startswith("--"):
                     continue
-                config = flag.lstrip('-')
+                config = flag.lstrip("-")
                 break
         elif config is False:
             config = None
 
         assert config is None or isinstance(config, str)
 
-        assert flags or positional or config, \
-            "option must be named, positional, or config argument."
+        assert (
+            flags or positional or config
+        ), "option must be named, positional, or config argument."
 
         if negate is None and flags and const_negate is not None:
-            negate = ['--no-' + f[2:] for f in flags if f.startswith('--')]
+            negate = ["--no-" + f[2:] for f in flags if f.startswith("--")]
             assert negate, "cannot autogenerate negation"
 
         assert help is not None, "help required"
         if negate:
-            help += ' Negation: {}.'.format(', '.join(negate))
-        if (flags or positional) and config and '--' + config not in flags:
-            help += ' Config key: {config}.'
+            help += " Negation: {}.".format(", ".join(negate))
+        if (flags or positional) and config and "--" + config not in flags:
+            help += " Config key: {config}."
 
         # the store_true and store_false actions have hardcoded boolean
         # constants in their definitions so they need switched to the generic
         # store_const in order for the logic here to work correctly.
-        if action == 'store_true':
+        if action == "store_true":
             assert const is None, "action=store_true and const conflict"
             assert default is None, "action=store_true and default conflict"
-            action = 'store_const'
+            action = "store_const"
             const = True
             default = False
-        elif action == 'store_false':
+        elif action == "store_false":
             assert const is None, "action=store_false and const conflict"
             assert default is None, "action=store_false and default conflict"
-            action = 'store_const'
+            action = "store_const"
             const = False
             default = True
 
-        assert action in ('store', 'store_const', 'append')
+        assert action in ("store", "store_const", "append")
 
         self.name = name
         self.flags = flags
@@ -314,16 +330,15 @@ class GcovrConfigOption(object):
         >>> GcovrConfigOption('foo', ['-f', '--foo'], help="fooify")
         GcovrConfigOption('foo', [-f, --foo], ..., help='fooify', ...)
         """
-        kwargs = [
-            '{k}={v!r}'.format(k=k, v=v)
+        name = self.name
+        flags = ", ".join(self.flags)
+        kwargs = ", ".join(
+            f"{k}={v!r}"
             for k, v in sorted(self.__dict__.items())
-            if k not in ('name', 'flags')]
-
-        return "GcovrConfigOption({name!r}, [{flags}], {kwargs})".format(
-            name=self.name,
-            flags=', '.join(self.flags),
-            kwargs=', '.join(kwargs),
+            if k not in ("name", "flags")
         )
+
+        return f"GcovrConfigOption({name!r}, [{flags}], {kwargs})"
 
 
 def argument_parser_setup(parser, default_group):
@@ -332,8 +347,10 @@ def argument_parser_setup(parser, default_group):
     # setup option groups
     groups = {}
     for group_def in GCOVR_CONFIG_OPTION_GROUPS:
-        group = parser.add_argument_group(group_def["name"],
-                                          description=group_def["description"])
+        group = parser.add_argument_group(
+            group_def["name"],
+            description=group_def["description"],
+        )
         groups[group_def["key"]] = group
 
     # create each option value
@@ -341,20 +358,20 @@ def argument_parser_setup(parser, default_group):
         group = default_group if opt.group is None else groups[opt.group]
 
         kwargs = {
-            'action': opt.action,
-            'const': opt.const,
-            'default': SUPPRESS,  # default will be assigned manually
-            'help': opt.help,
-            'metavar': opt.metavar,
+            "action": opt.action,
+            "const": opt.const,
+            "default": SUPPRESS,  # default will be assigned manually
+            "help": opt.help,
+            "metavar": opt.metavar,
         }
 
         # To avoid store_const problems, optionally set choices, nargs, type:
         if opt.choices is not None:
-            kwargs['choices'] = opt.choices
+            kwargs["choices"] = opt.choices
         if opt.nargs is not None:
-            kwargs['nargs'] = opt.nargs
+            kwargs["nargs"] = opt.nargs
         if opt.type is not None:
-            kwargs['type'] = opt.type
+            kwargs["type"] = opt.type
 
         # We only want to set dest and required for non-positionals.
         if opt.flags:
@@ -364,9 +381,9 @@ def argument_parser_setup(parser, default_group):
 
             # possibly add a negation flag
             if opt.const_negate is not None:
-                kwargs['required'] = False
-                kwargs['help'] = SUPPRESS  # don't show separate help entry
-                kwargs['const'] = opt.const_negate
+                kwargs["required"] = False
+                kwargs["help"] = SUPPRESS  # don't show separate help entry
+                kwargs["const"] = opt.const_negate
                 group.add_argument(*opt.negate, **kwargs)
 
         elif opt.positional:
@@ -398,7 +415,6 @@ def parse_config_into_dict(config_entry_source, all_options=None):
 
 
 def _get_value_from_config_entry(cfg_entry, option):
-
     def get_boolean(silent_error=False):
         try:
             return cfg_entry.value_as_bool
@@ -408,10 +424,10 @@ def _get_value_from_config_entry(cfg_entry, option):
             raise
 
     # special case: store_const expects a boolean
-    if option.action == 'store_const':
+    if option.action == "store_const":
         use_const = get_boolean()
     # special case: nargs=? optionally expects a boolean
-    elif option.nargs == '?':
+    elif option.nargs == "?":
         use_const = get_boolean(silent_error=True)
     else:
         use_const = None  # marker to continue with parsing
@@ -450,19 +466,20 @@ def _get_value_from_config_entry(cfg_entry, option):
         if value not in option.choices:
             raise cfg_entry.error(  # pylint: disable=raising-format-tuple
                 "must be one of ({}) but got {!r}",
-                ', '.join(repr(choice) for choice in option.choices),
-                value)
+                ", ".join(repr(choice) for choice in option.choices),
+                value,
+            )
 
     return value
 
 
 def _assign_value_to_dict(namespace, value, option, is_single_value):
 
-    if option.action in ('store', 'store_const'):
+    if option.action in ("store", "store_const"):
         namespace[option.name] = value
         return
 
-    if option.action == 'append':
+    if option.action == "append":
         append_target = namespace.setdefault(option.name, [])
         if is_single_value:
             append_target.append(value)
@@ -470,8 +487,7 @@ def _assign_value_to_dict(namespace, value, option, is_single_value):
             append_target.extend(value)
         return
 
-    assert False, "unexpected action for {name}: {action!r}".format(
-        name=option.name, action=option.action)
+    assert False, f"unexpected action for {option.name}: {option.action!r}"
 
 
 def merge_options_and_set_defaults(partial_namespaces, all_options=None):
@@ -488,7 +504,8 @@ def merge_options_and_set_defaults(partial_namespaces, all_options=None):
                 continue
 
             _assign_value_to_dict(
-                target, namespace[option.name], option, is_single_value=False)
+                target, namespace[option.name], option, is_single_value=False
+            )
 
     # if no value was provided, set the default.
     for option in all_options:
@@ -501,13 +518,14 @@ GCOVR_CONFIG_OPTION_GROUPS = [
     {
         "key": "output_options",
         "name": "Output Options",
-        "description":
-            "Gcovr prints a text report by default, "
-            "but can switch to XML or HTML.",
-    }, {
+        "description": (
+            "Gcovr prints a text report by default, but can switch to XML or HTML."
+        ),
+    },
+    {
         "key": "filter_options",
         "name": "Filter Options",
-        "description":
+        "description": (
             "Filters decide which files are included in the report. "
             "Any filter must match, and no exclude filter must match. "
             "A filter is a regular expression that matches a path. "
@@ -516,17 +534,19 @@ GCOVR_CONFIG_OPTION_GROUPS = [
             "it is matched against an absolute path. "
             "Otherwise, the filter is matched against a relative path, "
             "where that path is relative to the current directory "
-            "or if defined in a configuration file to the directory of the file.",
-
-    }, {
+            "or if defined in a configuration file to the directory of the file."
+        ),
+    },
+    {
         "key": "gcov_options",
         "name": "GCOV Options",
-        "description":
+        "description": (
             "The 'gcov' tool turns raw coverage files (.gcda and .gcno) "
             "into .gcov files that are then processed by gcovr. "
             "The gcno files are generated by the compiler. "
             "The gcda files are generated when the instrumented program is "
-            "executed.",
+            "executed."
+        ),
     },
 ]
 
@@ -540,487 +560,624 @@ GCOVR_CONFIG_OPTION_GROUPS = [
 
 GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
-        "verbose", ["-v", "--verbose"],
-        help="Print progress messages. "
-             "Please include this output in bug reports.",
+        "verbose",
+        ["-v", "--verbose"],
+        help="Print progress messages. Please include this output in bug reports.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "root", ["-r", "--root"],
-        help="The root directory of your source files. "
-             "Defaults to '{default!s}', the current directory. "
-             "File names are reported relative to this root. "
-             "The --root is the default --filter.",
-        default='.',
+        "root",
+        ["-r", "--root"],
+        help=(
+            "The root directory of your source files. "
+            "Defaults to '{default!s}', the current directory. "
+            "File names are reported relative to this root. "
+            "The --root is the default --filter."
+        ),
+        default=".",
     ),
     GcovrConfigOption(
-        "add_tracefile", ["-a", "--add-tracefile"],
-        help="Combine the coverage data from JSON files. "
-             "Coverage files contains source files structure relative "
-             "to root directory. Those structures are combined "
-             "in the output relative to the current root directory. "
-             "Unix style wildcards can be used to add the pathnames "
-             "matching a specified pattern. In this case pattern "
-             "must be set in double quotation marks. "
-             "Option can be specified multiple times. "
-             "When option is used gcov is not run to collect "
-             "the new coverage data.",
+        "add_tracefile",
+        ["-a", "--add-tracefile"],
+        help=(
+            "Combine the coverage data from JSON files. "
+            "Coverage files contains source files structure relative "
+            "to root directory. Those structures are combined "
+            "in the output relative to the current root directory. "
+            "Unix style wildcards can be used to add the pathnames "
+            "matching a specified pattern. In this case pattern "
+            "must be set in double quotation marks. "
+            "Option can be specified multiple times. "
+            "When option is used gcov is not run to collect "
+            "the new coverage data."
+        ),
         action="append",
         default=[],
     ),
     GcovrConfigOption(
-        'search_paths', config='search-path',
-        positional=True, nargs='*',
-        help="Search these directories for coverage files. "
-             "Defaults to --root and --object-directory.",
+        "search_paths",
+        config="search-path",
+        positional=True,
+        nargs="*",
+        help=(
+            "Search these directories for coverage files. "
+            "Defaults to --root and --object-directory."
+        ),
     ),
     GcovrConfigOption(
-        'config', ['--config'], config=False,
-        help="Load that configuration file. "
-             "Defaults to gcovr.cfg in the --root directory.",
+        "config",
+        ["--config"],
+        config=False,
+        help=(
+            "Load that configuration file. "
+            "Defaults to gcovr.cfg in the --root directory."
+        ),
     ),
     GcovrConfigOption(
-        "respect_exclusion_markers", ["--no-markers"],
-        help="Turn off exclusion markers. Any exclusion markers "
-             "specified in source files will be ignored.",
+        "respect_exclusion_markers",
+        ["--no-markers"],
+        help=(
+            "Turn off exclusion markers. Any exclusion markers "
+            "specified in source files will be ignored."
+        ),
         action="store_false",
     ),
     GcovrConfigOption(
-        "fail_under_line", ["--fail-under-line"],
+        "fail_under_line",
+        ["--fail-under-line"],
         type=check_percentage,
         metavar="MIN",
-        help="Exit with a status of 2 "
-             "if the total line coverage is less than MIN. "
-             "Can be ORed with exit status of '--fail-under-branch' option.",
+        help=(
+            "Exit with a status of 2 "
+            "if the total line coverage is less than MIN. "
+            "Can be ORed with exit status of '--fail-under-branch' option."
+        ),
         default=0.0,
     ),
     GcovrConfigOption(
-        "fail_under_branch", ["--fail-under-branch"],
+        "fail_under_branch",
+        ["--fail-under-branch"],
         type=check_percentage,
         metavar="MIN",
-        help="Exit with a status of 4 "
-             "if the total branch coverage is less than MIN. "
-             "Can be ORed with exit status of '--fail-under-line' option.",
+        help=(
+            "Exit with a status of 4 "
+            "if the total branch coverage is less than MIN. "
+            "Can be ORed with exit status of '--fail-under-line' option."
+        ),
         default=0.0,
     ),
     GcovrConfigOption(
-        'source_encoding', ['--source-encoding'],
-        help="Select the source file encoding. "
-             "Defaults to the system default encoding ({default!s}).",
+        "source_encoding",
+        ["--source-encoding"],
+        help=(
+            "Select the source file encoding. "
+            "Defaults to the system default encoding ({default!s})."
+        ),
         default=getpreferredencoding(),
     ),
     GcovrConfigOption(
-        "output", ["-o", "--output"],
+        "output",
+        ["-o", "--output"],
         group="output_options",
-        help="Print output to this filename. Defaults to stdout. "
-        "Individual output formats can override this.",
+        help=(
+            "Print output to this filename. Defaults to stdout. "
+            "Individual output formats can override this."
+        ),
         type=OutputOrDefault,
         default=None,
     ),
     GcovrConfigOption(
-        "show_branch", ["-b", "--branches"], config='txt-branch',
+        "show_branch",
+        ["-b", "--branches"],
+        config="txt-branch",
         group="output_options",
-        help="Report the branch coverage instead of the line coverage. "
-             "For text report only.",
+        help=(
+            "Report the branch coverage instead of the line coverage. "
+            "For text report only."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
-        "show_decision", ["--decisions"],
+        "show_decision",
+        ["--decisions"],
         group="output_options",
-        help="Report the decision coverage. "
-             "For HTML and JSON report.",
+        help="Report the decision coverage. For HTML and JSON report.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "sort_uncovered", ["-u", "--sort-uncovered"],
+        "sort_uncovered",
+        ["-u", "--sort-uncovered"],
         group="output_options",
-        help="Sort entries by increasing number of uncovered lines. "
-             "For text and HTML report.",
+        help=(
+            "Sort entries by increasing number of uncovered lines. "
+            "For text and HTML report."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
-        "sort_percent", ["-p", "--sort-percentage"],
+        "sort_percent",
+        ["-p", "--sort-percentage"],
         group="output_options",
-        help="Sort entries by increasing percentage of uncovered lines. "
-             "For text and HTML report.",
+        help=(
+            "Sort entries by increasing percentage of uncovered lines. "
+            "For text and HTML report."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
-        "txt", ["--txt"],
+        "txt",
+        ["--txt"],
         group="output_options",
-        metavar='OUTPUT',
-        help="Generate a text report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
+        metavar="OUTPUT",
+        help="Generate a text report. OUTPUT is optional and defaults to --output.",
+        nargs="?",
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "xml", ["-x", "--xml"],
+        "xml",
+        ["-x", "--xml"],
         group="output_options",
-        metavar='OUTPUT',
-        help="Generate a Cobertura XML report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
+        metavar="OUTPUT",
+        help=(
+            "Generate a Cobertura XML report. "
+            "OUTPUT is optional and defaults to --output."
+        ),
+        nargs="?",
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "prettyxml", ["--xml-pretty"],
+        "prettyxml",
+        ["--xml-pretty"],
         group="output_options",
         help="Pretty-print the XML report. Implies --xml. Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "html", ["--html"],
-        group="output_options",
-        metavar='OUTPUT',
-        help="Generate a HTML report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
-        type=OutputOrDefault,
-        default=None,
-        const=OutputOrDefault(None),
-    ),
-    GcovrConfigOption(
-        "html_details", ["--html-details"],
+        "html",
+        ["--html"],
         group="output_options",
         metavar="OUTPUT",
-        help="Add annotated source code reports to the HTML report. "
-             "Implies --html. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
+        help="Generate a HTML report. OUTPUT is optional and defaults to --output.",
+        nargs="?",
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "html_details_syntax_highlighting", ["--html-details-syntax-highlighting"],
+        "html_details",
+        ["--html-details"],
         group="output_options",
-        help="Use syntax highlighting in HTML details page. "
-             "Enabled by default.",
+        metavar="OUTPUT",
+        help=(
+            "Add annotated source code reports to the HTML report. "
+            "Implies --html. "
+            "OUTPUT is optional and defaults to --output."
+        ),
+        nargs="?",
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "html_details_syntax_highlighting",
+        ["--html-details-syntax-highlighting"],
+        group="output_options",
+        help="Use syntax highlighting in HTML details page. Enabled by default.",
         action="store_const",
         default=True,
         const=True,
         const_negate=False,  # autogenerates --no-NAME with action const=False
     ),
     GcovrConfigOption(
-        "html_theme", ["--html-theme"],
+        "html_theme",
+        ["--html-theme"],
         group="output_options",
         type=str,
         choices=CssRenderer.get_themes(),
         metavar="THEME",
-        help="Override the default color theme for the HTML report. Default is {default!s}.",
-        default=CssRenderer.get_default_theme()
+        help=(
+            "Override the default color theme for the HTML report. "
+            "Default is {default!s}."
+        ),
+        default=CssRenderer.get_default_theme(),
     ),
     GcovrConfigOption(
-        "html_css", ["--html-css"],
+        "html_css",
+        ["--html-css"],
         group="output_options",
         type=check_input_file,
         metavar="CSS",
         help="Override the default style sheet for the HTML report.",
-        default=None
+        default=None,
     ),
     GcovrConfigOption(
-        "html_title", ["--html-title"],
+        "html_title",
+        ["--html-title"],
         group="output_options",
         metavar="TITLE",
         help="Use TITLE as title for the HTML report. Default is '{default!s}'.",
         default="GCC Code Coverage Report",
     ),
     GcovrConfigOption(
-        "html_medium_threshold", ["--html-medium-threshold"],
+        "html_medium_threshold",
+        ["--html-medium-threshold"],
         group="output_options",
         type=check_percentage,
         metavar="MEDIUM",
-        help="If the coverage is below MEDIUM, the value is marked "
-             "as low coverage in the HTML report. "
-             "MEDIUM has to be lower than or equal to value of --html-high-threshold "
-             "and greater than 0. "
-             "If MEDIUM is equal to value of --html-high-threshold the report has "
-             "only high and low coverage. Default is {default!s}.",
+        help=(
+            "If the coverage is below MEDIUM, the value is marked "
+            "as low coverage in the HTML report. "
+            "MEDIUM has to be lower than or equal to value of --html-high-threshold "
+            "and greater than 0. "
+            "If MEDIUM is equal to value of --html-high-threshold the report has "
+            "only high and low coverage. Default is {default!s}."
+        ),
         default=75.0,
     ),
     GcovrConfigOption(
-        "html_high_threshold", ["--html-high-threshold"],
+        "html_high_threshold",
+        ["--html-high-threshold"],
         group="output_options",
         type=check_percentage,
         metavar="HIGH",
-        help="If the coverage is below HIGH, the value is marked "
-             "as medium coverage in the HTML report. "
-             "HIGH has to be greater than or equal to value of --html-medium-threshold. "
-             "If HIGH is equal to value of --html-medium-threshold the report has "
-             "only high and low coverage. Default is {default!s}.",
+        help=(
+            "If the coverage is below HIGH, the value is marked "
+            "as medium coverage in the HTML report. "
+            "HIGH has to be greater than or equal to value of --html-medium-threshold. "
+            "If HIGH is equal to value of --html-medium-threshold the report has "
+            "only high and low coverage. Default is {default!s}."
+        ),
         default=90.0,
     ),
     GcovrConfigOption(
-        'html_tab_size', ['--html-tab-size'],
+        "html_tab_size",
+        ["--html-tab-size"],
         group="output_options",
         help="Used spaces for a tab in a source file. Default is {default!s}",
         type=int,
         default=4,
     ),
     GcovrConfigOption(
-        "relative_anchors", ["--html-absolute-paths"],
+        "relative_anchors",
+        ["--html-absolute-paths"],
         group="output_options",
-        help="Use absolute paths to link the --html-details reports. "
-             "Defaults to relative links.",
+        help=(
+            "Use absolute paths to link the --html-details reports. "
+            "Defaults to relative links."
+        ),
         action="store_false",
     ),
     GcovrConfigOption(
-        'html_encoding', ['--html-encoding'],
+        "html_encoding",
+        ["--html-encoding"],
         group="output_options",
-        help="Override the declared HTML report encoding. "
-             "Defaults to {default!s}. "
-             "See also --source-encoding.",
-        default='UTF-8',
+        help=(
+            "Override the declared HTML report encoding. "
+            "Defaults to {default!s}. "
+            "See also --source-encoding."
+        ),
+        default="UTF-8",
     ),
     GcovrConfigOption(
-        'html_self_contained', ['--html-self-contained'],
+        "html_self_contained",
+        ["--html-self-contained"],
         group="output_options",
-        help="Control whether the HTML report bundles resources like CSS styles. "
-             "Self-contained reports can be sent via email, "
-             "but conflict with the Content Security Policy of some web servers. "
-             "Defaults to self-contained reports unless --html-details is used.",
-        action='store_const',
+        help=(
+            "Control whether the HTML report bundles resources like CSS styles. "
+            "Self-contained reports can be sent via email, "
+            "but conflict with the Content Security Policy of some web servers. "
+            "Defaults to self-contained reports unless --html-details is used."
+        ),
+        action="store_const",
         default=None,
         const=True,
         const_negate=False,
     ),
     GcovrConfigOption(
-        "print_summary", ["-s", "--print-summary"],
+        "print_summary",
+        ["-s", "--print-summary"],
         group="output_options",
-        help="Print a small report to stdout "
-             "with line & function & branch percentage coverage. "
-             "This is in addition to other reports. "
-             "Default: {default!s}.",
+        help=(
+            "Print a small report to stdout "
+            "with line & function & branch percentage coverage. "
+            "This is in addition to other reports. "
+            "Default: {default!s}."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
-        "sonarqube", ["--sonarqube"],
+        "sonarqube",
+        ["--sonarqube"],
         group="output_options",
-        metavar='OUTPUT',
-        help="Generate sonarqube generic coverage report in this file name. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
+        metavar="OUTPUT",
+        help=(
+            "Generate sonarqube generic coverage report in this file name. "
+            "OUTPUT is optional and defaults to --output."
+        ),
+        nargs="?",
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "json", ["--json"],
+        "json",
+        ["--json"],
         group="output_options",
-        metavar='OUTPUT',
-        help="Generate a JSON report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
+        metavar="OUTPUT",
+        help="Generate a JSON report. OUTPUT is optional and defaults to --output.",
+        nargs="?",
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "json_pretty", ["--json-pretty"],
+        "json_pretty",
+        ["--json-pretty"],
         group="output_options",
         help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "json_summary", ["--json-summary"],
+        "json_summary",
+        ["--json-summary"],
         group="output_options",
-        metavar='OUTPUT',
-        help="Generate a JSON summary report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
+        metavar="OUTPUT",
+        help=(
+            "Generate a JSON summary report. "
+            "OUTPUT is optional and defaults to --output."
+        ),
+        nargs="?",
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "json_summary_pretty", ["--json-summary-pretty"],
+        "json_summary_pretty",
+        ["--json-summary-pretty"],
         group="output_options",
-        help="Pretty-print the JSON SUMMARY report. Implies --json-summary. Default: {default!s}.",
+        help=(
+            "Pretty-print the JSON SUMMARY report."
+            "Implies --json-summary. Default: {default!s}."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
-        "csv", ["--csv"],
+        "csv",
+        ["--csv"],
         group="output_options",
-        metavar='OUTPUT',
-        help="Generate a CSV summary report. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
+        metavar="OUTPUT",
+        help=(
+            "Generate a CSV summary report. "
+            "OUTPUT is optional and defaults to --output."
+        ),
+        nargs="?",
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "coveralls", ["--coveralls"],
+        "coveralls",
+        ["--coveralls"],
         group="output_options",
-        metavar='OUTPUT',
-        help="Generate Coveralls API coverage report in this file name. "
-             "OUTPUT is optional and defaults to --output.",
-        nargs='?',
+        metavar="OUTPUT",
+        help=(
+            "Generate Coveralls API coverage report in this file name. "
+            "OUTPUT is optional and defaults to --output."
+        ),
+        nargs="?",
         type=OutputOrDefault,
         default=None,
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "coveralls_pretty", ["--coveralls-pretty"],
+        "coveralls_pretty",
+        ["--coveralls-pretty"],
         group="output_options",
-        help="Pretty-print the coveralls report. Implies --coveralls. Default: {default!s}.",
+        help=(
+            "Pretty-print the coveralls report. "
+            "Implies --coveralls. Default: {default!s}."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
         "timestamp",
         ["--timestamp"],
         group="output_options",
-        help="Override current time for reproducible reports. "
-        "Can use `YYYY-MM-DD hh:mm:ss` or epoch notation. "
-        "Used by HTML, Coveralls, and Cobertura reports. "
-        "Default: current time.",
+        help=(
+            "Override current time for reproducible reports. "
+            "Can use `YYYY-MM-DD hh:mm:ss` or epoch notation. "
+            "Used by HTML, Coveralls, and Cobertura reports. "
+            "Default: current time."
+        ),
         type=timestamp,
         default=datetime.datetime.now(),
     ),
     GcovrConfigOption(
-        "filter", ["-f", "--filter"],
+        "filter",
+        ["-f", "--filter"],
         group="filter_options",
-        help="Keep only source files that match this filter. "
-             "Can be specified multiple times. "
-             "Relative filters are relative to the current working directory "
-             "or if defined in a configuration file. "
-             "If no filters are provided, defaults to --root.",
+        help=(
+            "Keep only source files that match this filter. "
+            "Can be specified multiple times. "
+            "Relative filters are relative to the current working directory "
+            "or if defined in a configuration file. "
+            "If no filters are provided, defaults to --root."
+        ),
         action="append",
         type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
-        "exclude", ["-e", "--exclude"],
+        "exclude",
+        ["-e", "--exclude"],
         group="filter_options",
-        help="Exclude source files that match this filter. "
-             "Can be specified multiple times.",
+        help=(
+            "Exclude source files that match this filter. "
+            "Can be specified multiple times."
+        ),
         action="append",
         type=FilterOption.NonEmpty,
         default=[],
     ),
     GcovrConfigOption(
-        "gcov_filter", ["--gcov-filter"],
+        "gcov_filter",
+        ["--gcov-filter"],
         group="filter_options",
-        help="Keep only gcov data files that match this filter. "
-             "Can be specified multiple times.",
+        help=(
+            "Keep only gcov data files that match this filter. "
+            "Can be specified multiple times."
+        ),
         action="append",
         type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
-        "gcov_exclude", ["--gcov-exclude"],
+        "gcov_exclude",
+        ["--gcov-exclude"],
         group="filter_options",
-        help="Exclude gcov data files that match this filter. "
-             "Can be specified multiple times.",
+        help=(
+            "Exclude gcov data files that match this filter. "
+            "Can be specified multiple times."
+        ),
         action="append",
         type=FilterOption,
         default=[],
     ),
     GcovrConfigOption(
-        "exclude_dirs", ["--exclude-directories"],
+        "exclude_dirs",
+        ["--exclude-directories"],
         group="filter_options",
-        help="Exclude directories that match this regex "
-             "while searching raw coverage files. "
-             "Can be specified multiple times.",
+        help=(
+            "Exclude directories that match this regex "
+            "while searching raw coverage files. "
+            "Can be specified multiple times."
+        ),
         action="append",
         type=FilterOption.NonEmpty,
         default=[],
     ),
     GcovrConfigOption(
-        "gcov_cmd", ["--gcov-executable"],
+        "gcov_cmd",
+        ["--gcov-executable"],
         group="gcov_options",
-        help="Use a particular gcov executable. "
-             "Must match the compiler you are using, "
-             "e.g. 'llvm-cov gcov' for Clang. "
-             "Can include additional arguments. "
-             "Defaults to the GCOV environment variable, "
-             "or 'gcov': '{default!s}'.",
-        default=os.environ.get('GCOV', 'gcov'),
+        help=(
+            "Use a particular gcov executable. "
+            "Must match the compiler you are using, "
+            "e.g. 'llvm-cov gcov' for Clang. "
+            "Can include additional arguments. "
+            "Defaults to the GCOV environment variable, "
+            "or 'gcov': '{default!s}'."
+        ),
+        default=os.environ.get("GCOV", "gcov"),
     ),
     GcovrConfigOption(
-        "exclude_internal_functions", ["--include-internal-functions"],
+        "exclude_internal_functions",
+        ["--include-internal-functions"],
         group="gcov_options",
-        help="Include function coverage of compiler internal functions "
-             "(starting with '__' or '_GLOBAL__sub_I_').",
-        action="store_false"
+        help=(
+            "Include function coverage of compiler internal functions "
+            "(starting with '__' or '_GLOBAL__sub_I_')."
+        ),
+        action="store_false",
     ),
     GcovrConfigOption(
-        "exclude_unreachable_branches", ["--exclude-unreachable-branches"],
+        "exclude_unreachable_branches",
+        ["--exclude-unreachable-branches"],
         group="gcov_options",
-        help="Exclude branch coverage from lines without useful source code "
-             "(often, compiler-generated \"dead\" code). "
-             "Default: {default!s}.",
+        help=(
+            "Exclude branch coverage from lines without useful source code "
+            '(often, compiler-generated "dead" code). '
+            "Default: {default!s}."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
-        "exclude_function_lines", ['--exclude-function-lines'],
+        "exclude_function_lines",
+        ["--exclude-function-lines"],
         group="gcov_options",
-        help="Exclude coverage from lines defining a function "
-             "Default: {default!s}.",
+        help="Exclude coverage from lines defining a function Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "exclude_throw_branches", ["--exclude-throw-branches"],
+        "exclude_throw_branches",
+        ["--exclude-throw-branches"],
         group="gcov_options",
-        help="For branch coverage, exclude branches "
-             "that the compiler generates for exception handling. "
-             "This often leads to more \"sensible\" coverage reports. "
-             "Default: {default!s}.",
-        action="store_true"
+        help=(
+            "For branch coverage, exclude branches "
+            "that the compiler generates for exception handling. "
+            'This often leads to more "sensible" coverage reports. '
+            "Default: {default!s}."
+        ),
+        action="store_true",
     ),
     GcovrConfigOption(
-        "exclude_lines_by_pattern", ["--exclude-lines-by-pattern"],
+        "exclude_lines_by_pattern",
+        ["--exclude-lines-by-pattern"],
         help="Exclude lines that match this regex.",
-        type=str
+        type=str,
     ),
     GcovrConfigOption(
-        "gcov_files", ["-g", "--use-gcov-files"],
+        "gcov_files",
+        ["-g", "--use-gcov-files"],
         group="gcov_options",
         help="Use existing gcov files for analysis. Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "gcov_ignore_parse_errors", ['--gcov-ignore-parse-errors'],
+        "gcov_ignore_parse_errors",
+        ["--gcov-ignore-parse-errors"],
         group="gcov_options",
-        help="Skip lines with parse errors in GCOV files "
-             "instead of exiting with an error. "
-             "A report will be shown on stderr. "
-             "Default: {default!s}.",
+        help=(
+            "Skip lines with parse errors in GCOV files "
+            "instead of exiting with an error. "
+            "A report will be shown on stderr. "
+            "Default: {default!s}."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
-        "objdir", ['--object-directory'],
+        "objdir",
+        ["--object-directory"],
         group="gcov_options",
-        help="Override normal working directory detection. "
-             "Gcovr needs to identify the path between gcda files "
-             "and the directory where the compiler was originally run. "
-             "Normally, gcovr can guess correctly. "
-             "This option specifies either "
-             "the path from gcc to the gcda file (i.e. gcc's '-o' option), "
-             "or the path from the gcda file to gcc's working directory.",
+        help=(
+            "Override normal working directory detection. "
+            "Gcovr needs to identify the path between gcda files "
+            "and the directory where the compiler was originally run. "
+            "Normally, gcovr can guess correctly. "
+            "This option specifies either "
+            "the path from gcc to the gcda file (i.e. gcc's '-o' option), "
+            "or the path from the gcda file to gcc's working directory."
+        ),
     ),
     GcovrConfigOption(
-        "keep", ["-k", "--keep"], config='keep-gcov-files',
+        "keep",
+        ["-k", "--keep"],
+        config="keep-gcov-files",
         group="gcov_options",
-        help="Keep gcov files after processing. "
-             "This applies both to files that were generated by gcovr, "
-             "or were supplied via the --use-gcov-files option. "
-             "Default: {default!s}.",
+        help=(
+            "Keep gcov files after processing. "
+            "This applies both to files that were generated by gcovr, "
+            "or were supplied via the --use-gcov-files option. "
+            "Default: {default!s}."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
-        "delete", ["-d", "--delete"], config='delete-gcov-files',
+        "delete",
+        ["-d", "--delete"],
+        config="delete-gcov-files",
         group="gcov_options",
         help="Delete gcda files after processing. Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(
-        "gcov_parallel", ["-j"], config='gcov-parallel',
+        "gcov_parallel",
+        ["-j"],
+        config="gcov-parallel",
         group="gcov_options",
         help="Set the number of threads to use in parallel.",
         nargs="?",
@@ -1037,14 +1194,14 @@ GCOVR_CONFIG_OPTIONS = [
 ]
 
 
-CONFIG_HASH_COMMENT = re.compile(
-    r'(?:^|\s+) [#] .* $', re.X)
-CONFIG_SEMICOLON_COMMENT = re.compile(
-    r'(?:^|\s+) [;] .* $', re.X)
-CONFIG_KV = re.compile(
-    r'^((?=\w)[\w-]+) \s* = \s* (.*) $', re.X)
-CONFIG_POSSIBLE_VARIABLE = re.compile(
-    r'[$][\w{(]')  # "$" followed by word, open brace, or open parenthesis.
+CONFIG_HASH_COMMENT = re.compile(r"(?:^|\s+) [#] .* $", re.X)
+CONFIG_SEMICOLON_COMMENT = re.compile(r"(?:^|\s+) [;] .* $", re.X)
+
+# kebab-case word, separated from value (rest of line) by "=" with optional space
+CONFIG_KV = re.compile(r"^((?=\w)[\w-]+) \s* = \s* (.*) $", re.X)
+
+# "$" followed by word, open brace, or open parenthesis
+CONFIG_POSSIBLE_VARIABLE = re.compile(r"[$][\w{(]")
 
 
 def parse_config_file(open_file, filename, first_lineno=1):
@@ -1081,10 +1238,10 @@ def parse_config_file(open_file, filename, first_lineno=1):
             # pylint: disable=cell-var-from-loop
             message = pattern.format(*args, **kwargs)
             message += "\non this line: " + line
-            return SyntaxError(': '.join([filename, str(lineno), message]))
+            return SyntaxError(": ".join([filename, str(lineno), message]))
 
         # strip (trailing) comments
-        line = CONFIG_HASH_COMMENT.sub('', line)
+        line = CONFIG_HASH_COMMENT.sub("", line)
 
         if CONFIG_SEMICOLON_COMMENT.search(line):
             raise error("semicolon comment ; ... is reserved")
@@ -1100,14 +1257,16 @@ def parse_config_file(open_file, filename, first_lineno=1):
         value = value.strip()
 
         if value.startswith('"'):
-            raise error("leading quote \" is reserved")
+            raise error('leading quote " is reserved')
         if value.startswith("'"):
-            raise error("leading quote \' is reserved")
-        if value.endswith('\\'):
+            raise error("leading quote ' is reserved")
+        if value.endswith("\\"):
             raise error("trailing backslash \\ is reserved")
         if CONFIG_POSSIBLE_VARIABLE.search(value):
-            raise error("variable substitution syntax "
-                        "(${{var}}, $(var), or $var) is reserved")
+            raise error(
+                "variable substitution syntax ({example}) is reserved",
+                example="${var}, $(var), or $var",
+            )
 
         yield ConfigEntry(key, value, filename=filename, lineno=lineno)
 
@@ -1126,6 +1285,7 @@ class ConfigEntry(object):
         lineno (int, optional):
             Line of the entry in the config file, for error messages.
     """
+
     def __init__(self, key, value, filename=None, lineno=None):
         self.key = key
         self.value = value
@@ -1140,11 +1300,11 @@ class ConfigEntry(object):
         ...                   filename="foo.cfg", lineno=17))
         foo.cfg: 17: the-key = value
         """
-        return '{filename}: {lineno}: {key} = {value}'.format(
-            filename=self.filename or '<config>',
-            lineno=self.lineno or '??',
-            key=self.key,
-            value=self.value or "# empty")
+        filename = self.filename or "<config>"
+        lineno = self.lineno or "??"
+        key = self.key
+        value = self.value or "# empty"
+        return f"{filename}: {lineno}: {key} = {value}"
 
     @property
     def value_as_bool(self):
@@ -1162,9 +1322,9 @@ class ConfigEntry(object):
         ValueError: <config>: ??: k: boolean option must be "yes" or "no"
         """
         value = self.value
-        if value == 'yes':
+        if value == "yes":
             return True
-        if value == 'no':
+        if value == "no":
             return False
         raise self.error('boolean option must be "yes" or "no"')
 
@@ -1177,8 +1337,8 @@ class ConfigEntry(object):
         Traceback (most recent call last):
         ValueError: <config>: 3: jobs: expected number but got 'nun'
         """
-        filename = self.filename or '<config>'
-        lineno = str(self.lineno or '??')
+        filename = self.filename or "<config>"
+        lineno = str(self.lineno or "??")
         kwargs.update(key=self.key, value=self.value)
         message = pattern.format(*args, **kwargs)
-        return ValueError(': '.join([filename, lineno, self.key, message]))
+        return ValueError(": ".join([filename, lineno, self.key, message]))
