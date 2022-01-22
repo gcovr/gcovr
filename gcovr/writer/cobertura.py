@@ -48,44 +48,26 @@ def print_xml_report(covdata, output_file, options):
 
     root = etree.Element("coverage")
     root.set(
-        "line-rate", lineTotal == 0 and '0.0'
-        or str(float(lineCovered) / lineTotal)
+        "line-rate",
+        lineTotal == 0 and "0.0" or str(float(lineCovered) / lineTotal),
     )
     root.set(
-        "function-rate", functionTotal == 0 and '0.0'
-        or str(float(functionCovered) / functionTotal)
+        "function-rate",
+        functionTotal == 0 and "0.0" or str(float(functionCovered) / functionTotal),
     )
     root.set(
-        "branch-rate", branchTotal == 0 and '0.0'
-        or str(float(branchCovered) / branchTotal)
+        "branch-rate",
+        branchTotal == 0 and "0.0" or str(float(branchCovered) / branchTotal),
     )
-    root.set(
-        "lines-covered", str(lineCovered)
-    )
-    root.set(
-        "lines-valid", str(lineTotal)
-    )
-    root.set(
-        "functions-covered", str(functionCovered)
-    )
-    root.set(
-        "functions-valid", str(functionTotal)
-    )
-    root.set(
-        "branches-covered", str(branchCovered)
-    )
-    root.set(
-        "branches-valid", str(branchTotal)
-    )
-    root.set(
-        "complexity", "0.0"
-    )
-    root.set(
-        "timestamp", str(int(options.timestamp.timestamp()))
-    )
-    root.set(
-        "version", "gcovr %s" % (__version__,)
-    )
+    root.set("lines-covered", str(lineCovered))
+    root.set("lines-valid", str(lineTotal))
+    root.set("functions-covered", str(functionCovered))
+    root.set("functions-valid", str(functionTotal))
+    root.set("branches-covered", str(branchCovered))
+    root.set("branches-valid", str(branchTotal))
+    root.set("complexity", "0.0")
+    root.set("timestamp", str(int(options.timestamp.timestamp())))
+    root.set("version", f"gcovr {__version__}")
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
@@ -100,10 +82,10 @@ def print_xml_report(covdata, output_file, options):
     for f in sorted(covdata):
         data = covdata[f]
         filename = presentable_filename(f, root_filter=options.root_filter)
-        if '/' in filename:
-            directory, fname = filename.rsplit('/', 1)
+        if "/" in filename:
+            directory, fname = filename.rsplit("/", 1)
         else:
-            directory, fname = '', filename
+            directory, fname = "", filename
 
         package = packages.setdefault(
             directory, [etree.Element("package"), {}, 0, 0, 0, 0, 0, 0]
@@ -136,14 +118,11 @@ def print_xml_report(covdata, output_file, options):
             else:
                 b_total, b_hits, coverage = line_cov.branch_coverage()
                 L.set("branch", "true")
-                L.set(
-                    "condition-coverage",
-                    "{}% ({}/{})".format(int(coverage), b_hits, b_total)
-                )
-                cond = etree.Element('condition')
+                L.set("condition-coverage", f"{int(coverage)}% ({b_hits}/{b_total})")
+                cond = etree.Element("condition")
                 cond.set("number", "0")
                 cond.set("type", "jump")
-                cond.set("coverage", "{}%".format(int(coverage)))
+                cond.set("coverage", f"{int(coverage)}%")
                 class_branch_hits += b_hits
                 class_branches += float(len(branches))
                 conditions = etree.Element("conditions")
@@ -152,17 +131,11 @@ def print_xml_report(covdata, output_file, options):
 
             lines.append(L)
 
-        className = fname.replace('.', '_')
+        className = fname.replace(".", "_")
         c.set("name", className)
         c.set("filename", filename)
-        c.set(
-            "line-rate",
-            str(class_hits / (1.0 * class_lines or 1.0))
-        )
-        c.set(
-            "branch-rate",
-            str(class_branch_hits / (1.0 * class_branches or 1.0))
-        )
+        c.set("line-rate", str(class_hits / (1.0 * class_lines or 1.0)))
+        c.set("branch-rate", str(class_branch_hits / (1.0 * class_branches or 1.0)))
         c.set("complexity", "0.0")
 
         package[1][className] = c
@@ -192,25 +165,24 @@ def print_xml_report(covdata, output_file, options):
         classNames.sort()
         for className in classNames:
             classes.append(packageData[1][className])
-        package.set("name", packageName.replace('/', '.'))
-        package.set(
-            "line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0))
-        )
+        package.set("name", packageName.replace("/", "."))
+        package.set("line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0)))
         package.set(
             "function-rate", str(packageData[6] / (1.0 * packageData[7] or 1.0))
         )
-        package.set(
-            "branch-rate", str(packageData[4] / (1.0 * packageData[5] or 1.0))
-        )
+        package.set("branch-rate", str(packageData[4] / (1.0 * packageData[5] or 1.0)))
         package.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
     etree.SubElement(sources, "source").text = options.root.strip()
 
-    with open_binary_for_writing(output_file, 'coverage.xml') as fh:
+    with open_binary_for_writing(output_file, "coverage.xml") as fh:
         fh.write(
-            etree.tostring(root,
-                           pretty_print=options.prettyxml,
-                           encoding="UTF-8",
-                           xml_declaration=True,
-                           doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>"))
+            etree.tostring(
+                root,
+                pretty_print=options.prettyxml,
+                encoding="UTF-8",
+                xml_declaration=True,
+                doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>",
+            )
+        )

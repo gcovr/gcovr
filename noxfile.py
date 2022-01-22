@@ -19,6 +19,7 @@ BLACK_CONFORM_FILES = [
     "gcovr/tests/test_gcov_parser.py",
     "gcovr/tests/test_gcovr.py",
     "gcovr/timestamps.py",
+    "gcovr/writer/cobertura.py",
     "gcovr/writer/json.py",
     "noxfile.py",
 ]
