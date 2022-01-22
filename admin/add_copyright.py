@@ -20,7 +20,6 @@
 
 import copy
 import os
-import re
 import subprocess
 
 import gcovr.version
