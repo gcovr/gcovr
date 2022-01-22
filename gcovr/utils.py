@@ -16,7 +16,9 @@
 #
 # ****************************************************************************
 
+from __future__ import annotations
 from argparse import ArgumentTypeError
+from typing import Type
 import logging
 import os
 import re
@@ -203,7 +205,9 @@ def calculate_coverage(covered, total, nan_value=0.0):
     return coverage
 
 
-class FilterOption(object):
+class FilterOption:
+    NonEmpty: Type[NonEmptyFilterOption]
+
     def __init__(self, regex, path_context=None):
         self.regex = regex
         self.path_context = os.getcwd() if path_context is None else path_context
