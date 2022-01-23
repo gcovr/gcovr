@@ -62,7 +62,7 @@ def addCopyrightHeaderToPythonFile(filename, lines):
     if len(lines) == 0:
         return lines
 
-    newLines = list([])
+    newLines = []
     # Keep the Shebang
     if lines[0].startswith("#!"):
         newLines.append(lines.pop(0))
@@ -75,8 +75,7 @@ def addCopyrightHeaderToPythonFile(filename, lines):
     newLines.append("")
 
     # Add license information
-    for line in getLicenseSection():
-        newLines.append(line)
+    newLines.extend(getLicenseSection())
 
     iterLines = iter(lines)
 
@@ -106,54 +105,48 @@ def addCopyrightHeaderToPythonFile(filename, lines):
 
 
 def updateCopyrightString(filename, lines):
-    newLines = list([])
+    newLines = []
 
     iterLines = iter(lines)
-    copyrightReached = False
     for line in iterLines:
         newLines.append(line)
         if line == "COPYRIGHT = (":
-            copyrightReached = True
             break
-    if not copyrightReached:
+    else:
         raise RuntimeError(f"Start of copyright not found in {filename}.")
 
     for line in COPYRIGHT:
         newLines.append(f'   "{line}\\n"')
 
-    copyrightEndReached = False
     for line in iterLines:
         if line == ")":
             newLines.append(line)
-            copyrightEndReached = True
             break
-    if not copyrightEndReached:
+    else:
         raise RuntimeError(f"End of copyright not found in {filename}.")
 
-    for line in iterLines:
-        newLines.append(line)
+    newLines.extend(iterLines)
 
     return newLines
 
 
 def main():
     for root, dirs, files in os.walk(".", topdown=True):
-        for skip_dir in [
-            dir
-            for dir in dirs
-            if dir in [".git", "reference"] or dir.startswith(".nox")
-        ]:
-            dirs.remove(skip_dir)
+
+        def skip_dir(dir: str) -> bool:
+            return dir in [".git", "reference"] or dir.startswith(".nox")
+
+        dirs[:] = [dir for dir in dirs if not skip_dir(dir)]
 
         for filename in files:
-            handlers = list([])
+            handlers = []
             fullname = os.path.join(root, filename)
             if filename.endswith(".py"):
                 handlers.append(addCopyrightHeaderToPythonFile)
             if filename == "__main__.py":
                 handlers.append(updateCopyrightString)
 
-            if len(handlers) != 0:
+            if handlers:
                 with open(fullname) as f:
                     lines = list(line.rstrip() for line in f)
                 newLines = copy.copy(
