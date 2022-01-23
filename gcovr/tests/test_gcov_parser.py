@@ -30,8 +30,7 @@ from ..gcov_parser import ParserFlags, parse_coverage, UnknownLineType
 from ..utils import configure_logging
 from ..workers import Workers
 
-logger = logging.getLogger("gcovr")
-configure_logging(logger, logging.DEBUG)
+configure_logging()
 
 
 # This example is taken from the GCC 8 Gcov documentation:
@@ -373,7 +372,7 @@ def test_unknown_tags(caplog, ignore_errors):
     if not ignore_errors:
         message2 = messages[2]
         assert message2[1] == logging.ERROR
-        assert 'Exiting' in message2[2]
+        assert "Exiting" in message2[2]
 
 
 def test_pathologic_codeline(caplog):
@@ -432,7 +431,7 @@ def test_exception_during_coverage_processing(caplog):
     )
     lines = source.splitlines()
 
-    with mock.patch('logging.Logger.debug') as logger_mock:
+    with mock.patch("logging.Logger.debug") as logger_mock:
         logger_mock.side_effect = AssertionError("totally broken")
         with pytest.raises(AssertionError) as ex_info:
             parse_coverage(

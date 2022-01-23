@@ -158,10 +158,7 @@ def main(args=None):
         logger.setLevel(logging.DEBUG)
 
     if cli_options.version:
-        logger.info(
-            f"gcovr {__version__}\n"
-            "\n"
-            f"{COPYRIGHT}")
+        print(f"gcovr {__version__}\n\n{COPYRIGHT}")
         sys.exit(0)
 
     if options.html_title == '':
@@ -390,7 +387,7 @@ def print_reports(covdata, options):
             print_sonarqube_report,
             lambda: logger.warning(
                 "Sonarqube output skipped - "
-                "consider providing output file with `--sonarqube=OUTPUT`.")))
+                "consider providing an output file with `--sonarqube=OUTPUT`.")))
 
     if options.json or options.json_pretty:
         generators.append((
@@ -398,7 +395,7 @@ def print_reports(covdata, options):
             print_json_report,
             lambda: logger.warning(
                 "JSON output skipped - "
-                "consider providing output file with `--json=OUTPUT`.")))
+                "consider providing an output file with `--json=OUTPUT`.")))
 
     if options.json_summary or options.json_summary_pretty:
         generators.append((
@@ -406,7 +403,7 @@ def print_reports(covdata, options):
             print_json_summary_report,
             lambda: logger.warning(
                 "JSON summary output skipped - "
-                "consider providing output file with `--json-summary=OUTPUT`.")))
+                "consider providing an output file with `--json-summary=OUTPUT`.")))
 
     if options.csv:
         generators.append((
@@ -414,7 +411,7 @@ def print_reports(covdata, options):
             print_csv_report,
             lambda: logger.warning(
                 "CSV output skipped - "
-                "consider providing output file with `--csv=OUTPUT`.")))
+                "consider providing an output file with `--csv=OUTPUT`.")))
 
     if options.coveralls or options.coveralls_pretty:
         generators.append((
@@ -422,7 +419,7 @@ def print_reports(covdata, options):
             print_coveralls_report,
             lambda: logger.warning(
                 "Coveralls output skipped - "
-                "consider providing output file with `--coveralls=OUTPUT`.")))
+                "consider providing an output file with `--coveralls=OUTPUT`.")))
 
     generator_error_occurred = False
     reports_were_written = False

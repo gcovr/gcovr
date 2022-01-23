@@ -319,7 +319,10 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
-    if flags & ParserFlags.RESPECT_EXCLUSION_MARKERS or flags & ParserFlags.PARSE_DECISIONS:
+    if (
+        flags & ParserFlags.RESPECT_EXCLUSION_MARKERS
+        or flags & ParserFlags.PARSE_DECISIONS
+    ):
         src_lines = [
             (line.lineno, line.source_code)
             for line, _ in tokenized_lines
@@ -854,15 +857,18 @@ class _ExclusionRangeWarnings:
     ...  1: 5: baz // GCOV_EXCL_STOP
     ...  1: 6: "GCOVR_EXCL_START"
     ... '''
-    >>> import sys; sys.stderr = sys.stdout  # redirect warnings
+    >>> caplog = getfixture('caplog')
+    >>> caplog.clear()
     >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
     ...     source.splitlines(), filename='example.cpp',
     ...    flags=ParserFlags.RESPECT_EXCLUSION_MARKERS, exclude_lines_by_pattern=None)
-    (WARNING) mismatched coverage exclusion flags.
+    >>> for message in caplog.record_tuples:
+    ...     print(f"{message[1]}: {message[2]}")
+    30: mismatched coverage exclusion flags.
               LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp.
-    (WARNING) GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.
-    (WARNING) GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 5, when processing example.cpp.
-    (WARNING) The coverage exclusion region start flag GCOVR_EXCL_START
+    30: GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.
+    30: GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 5, when processing example.cpp.
+    30: The coverage exclusion region start flag {start}
               on line 6 did not have corresponding GCOVR_EXCL_STOP flag
               in file example.cpp.
     """
