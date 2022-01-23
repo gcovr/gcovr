@@ -20,7 +20,6 @@
 
 import copy
 import os
-import re
 import subprocess
 
 import gcovr.version
@@ -43,7 +42,7 @@ HEADER_END = (
 )
 
 
-def getLicenseSection(filename, comment_char="#"):
+def getLicenseSection(comment_char="#"):
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
     yield comment_char + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
@@ -58,7 +57,7 @@ def getLicenseSection(filename, comment_char="#"):
     yield comment_char + HEADER_END
 
 
-def addCopyrightToPythonFile(filename, lines):
+def addCopyrightHeaderToPythonFile(filename, lines):
     # Empty file should be kept empty
     if len(lines) == 0:
         return lines
@@ -76,8 +75,7 @@ def addCopyrightToPythonFile(filename, lines):
     newLines.append("")
 
     # Add license information
-    for line in getLicenseSection(filename):
-        newLines.append(line)
+    newLines.extend(getLicenseSection())
 
     iterLines = iter(lines)
 
@@ -106,36 +104,56 @@ def addCopyrightToPythonFile(filename, lines):
     return newLines
 
 
+def updateCopyrightString(filename, lines):
+    newLines = []
+
+    iterLines = iter(lines)
+    for line in iterLines:
+        newLines.append(line)
+        if line == "COPYRIGHT = (":
+            break
+    else:
+        raise RuntimeError(f"Start of copyright not found in {filename}.")
+
+    for line in COPYRIGHT:
+        newLines.append(f'   "{line}\\n"')
+
+    for line in iterLines:
+        if line == ")":
+            newLines.append(line)
+            break
+    else:
+        raise RuntimeError(f"End of copyright not found in {filename}.")
+
+    newLines.extend(iterLines)
+
+    return newLines
+
+
 def main():
     for root, dirs, files in os.walk(".", topdown=True):
-        for skip_dir in [".git", "reference"]:
-            if skip_dir in dirs:
-                dirs.remove(skip_dir)
+
+        def skip_dir(dir: str) -> bool:
+            return dir in [".git", "reference"] or dir.startswith(".nox")
+
+        dirs[:] = [dir for dir in dirs if not skip_dir(dir)]
 
         for filename in files:
-            handler = None
+            handlers = []
             fullname = os.path.join(root, filename)
             if filename.endswith(".py"):
-                handler = addCopyrightToPythonFile
+                handlers.append(addCopyrightHeaderToPythonFile)
+            if filename == "__main__.py":
+                handlers.append(updateCopyrightString)
 
-            if handler is not None:
+            if handlers:
                 with open(fullname) as f:
                     lines = list(line.rstrip() for line in f)
-                if filename == "__main__.py":
-                    copyright_string = ["COPYRIGHT = ("]
-                    for line in COPYRIGHT:
-                        copyright_string.append(f'   "{line}\\n"')
-                    copyright_string.append(")")
-                    copyright_string.append("")
-                    lines = re.sub(
-                        r"COPYRIGHT = \(\n(?:[^\n]+\n)+\)\n",
-                        "\n".join(copyright_string).replace("\\", "\\\\"),
-                        "\n".join(lines),
-                    ).split("\n")
-                    lines = [line.rstrip() for line in lines]
-                newLines = handler(
-                    fullname, copy.copy(lines)
-                )  # use a copy because of the compare in the next line
+                newLines = copy.copy(
+                    lines
+                )  # use a copy because of the compare at the end
+                for handler in handlers:
+                    newLines = handler(fullname, newLines)
                 if newLines != lines:
                     print("Modifying {}".format(fullname))
                     with open(fullname, "w") as f:
