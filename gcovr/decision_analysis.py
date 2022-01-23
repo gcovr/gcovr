@@ -181,9 +181,7 @@ class DecisionParser(object):
                                 # it's a compplex decision with more than 2 branches. No accurate detection possible
                                 # Set the decision to uncheckable
                                 line_coverage.decision = DecisionCoverageUncheckable()
-                                logger.debug(
-                                    f"Uncheckable decision at line {lineno}"
-                                )
+                                logger.debug(f"Uncheckable decision at line {lineno}")
                         else:
                             # normal (non-compact) branch, analyze execution of following lines
                             self.decision_analysis_active = True

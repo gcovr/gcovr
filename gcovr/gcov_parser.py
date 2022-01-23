@@ -486,9 +486,7 @@ def _report_lines_with_errors(
     )
 
     for ex in errors:
-        logger.warning(
-            f"Exception during parsing:\n\t{type(ex).__name__}: {ex}"
-        )
+        logger.warning(f"Exception during parsing:\n\t{type(ex).__name__}: {ex}")
 
     if context.flags & ParserFlags.IGNORE_PARSE_ERRORS:
         return

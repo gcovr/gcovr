@@ -443,9 +443,7 @@ class gcov:
         )
 
 
-def run_gcov_and_process_files(
-    abs_filename, covdata, options, error, toerase, chdir
-):
+def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, chdir):
     gcov_cmd = gcov(options.gcov_cmd)
 
     # ATTENTION:
