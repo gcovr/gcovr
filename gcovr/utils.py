@@ -293,19 +293,17 @@ class DirectoryPrefixFilter(Filter):
         return super(DirectoryPrefixFilter, self).match(normpath)
 
 
-def configure_logging(logger: logging.Logger, level: int = logging.INFO) -> None:
-    # stderr configuration
-    stderr_handler = logging.StreamHandler(sys.stderr)
-    stderr_handler.setFormatter(logging.Formatter("(%(levelname)s) %(message)s"))
-    stderr_handler.setLevel(level)
+def configure_logging() -> None:
+    logging.basicConfig(
+        format="(%(levelname)s) %(message)s",
+        stream=sys.stderr,
+        level=logging.INFO,
+    )
 
-    logger.addHandler(stderr_handler)
+    def exception_hook(exc_type, exc_value, exc_traceback) -> None:
+        logging.exception("Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback))
 
     sys.excepthook = exception_hook
-
-
-def exception_hook(exc_type, exc_value, exc_traceback) -> None:
-    logging.exception("Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback))
 
 
 def sort_coverage(covdata, show_branch,

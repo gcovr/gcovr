@@ -138,7 +138,7 @@ class Options(object):
 
 
 def main(args=None):
-    configure_logging(logger, logging.INFO)
+    configure_logging()
     parser = create_argument_parser()
     cli_options = parser.parse_args(args=args)
 
