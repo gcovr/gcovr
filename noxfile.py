@@ -15,11 +15,13 @@ BLACK_CONFORM_FILES = [
     "gcovr/gcov.py",
     "gcovr/gcov_parser.py",
     "gcovr/timestamps.py",
+    "gcovr/tests/test_gcov_parser.py",
     "gcovr/writer/json.py",
 ]
 
 nox.options.sessions = ["qa"]
 nox.options.reuse_existing_virtualenvs = True
+
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
     if check and (shutil.which(cc) is None):
@@ -79,9 +81,7 @@ def black(session: nox.Session) -> None:
     if session.posargs:
         session.run("python", "-m", "black", *session.posargs)
     else:
-        session.run(
-            "python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES
-        )
+        session.run("python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES)
         session.run("python", "-m", "black", "--diff", *DEFAULT_TEST_DIRECTORIES)
 
 
@@ -257,7 +257,9 @@ def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
         session.env["NOX_POSARGS"] = shlex.join(session.posargs)
     else:
         # Code for join taken from Python 3.9
-        session.env["NOX_POSARGS"] = ' '.join(shlex.quote(arg) for arg in session.posargs)
+        session.env["NOX_POSARGS"] = " ".join(
+            shlex.quote(arg) for arg in session.posargs
+        )
     session.run(
         "docker",
         "run",
