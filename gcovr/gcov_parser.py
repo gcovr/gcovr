@@ -333,7 +333,7 @@ def parse_coverage(
             lines=src_lines,
             warnings=_ExclusionRangeWarnings(logger, filename),
             exclude_lines_by_pattern=exclude_lines_by_pattern,
-            exclude_pattern_prefix=exclude_pattern_prefix if exclude_pattern_prefix is not None else r"([GL]COVR?)"
+            exclude_pattern_prefix=exclude_pattern_prefix if exclude_pattern_prefix is not None else r"[GL]COVR?"
         )
     else:
         line_is_excluded = _make_is_in_any_range([])
