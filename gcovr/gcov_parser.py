@@ -53,7 +53,7 @@ from .decision_analysis import DecisionParser
 from .utils import Logger
 
 _EXCLUDE_LINE_FLAG = "_EXCL_"
-_EXCLUDE_LINE_PATTERN = re.compile(r"([GL]COVR?)_EXCL_(LINE|START|STOP)")
+_EXCLUDE_LINE_PATTERN = r"_EXCL_(LINE|START|STOP)"
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -279,6 +279,7 @@ def parse_coverage(
     filename: str,
     logger: Logger,
     exclude_lines_by_pattern: Optional[str],
+    exclude_pattern_prefix: Optional[str],
     flags: ParserFlags,
 ) -> FileCoverage:
     """
@@ -332,6 +333,7 @@ def parse_coverage(
             lines=src_lines,
             warnings=_ExclusionRangeWarnings(logger, filename),
             exclude_lines_by_pattern=exclude_lines_by_pattern,
+            exclude_pattern_prefix=exclude_pattern_prefix if exclude_pattern_prefix is not None else r"([GL]COVR?)"
         )
     else:
         line_is_excluded = _make_is_in_any_range([])
@@ -937,6 +939,7 @@ def _find_excluded_ranges(
     *,
     warnings: _ExclusionRangeWarnings,
     exclude_lines_by_pattern: Optional[str] = None,
+    exclude_pattern_prefix: str,
 ) -> Callable[[int], bool]:
     """
     Scan through all lines to find line ranges covered by exclusion markers.
@@ -964,7 +967,8 @@ def _find_excluded_ranges(
             #
             # START flags are added to the exlusion stack
             # STOP flags remove a marker from the exclusion stack
-            for header, flag in _EXCLUDE_LINE_PATTERN.findall(code):
+            excl_line_pattern = re.compile("(" + exclude_pattern_prefix + ")" + _EXCLUDE_LINE_PATTERN)
+            for header, flag in excl_line_pattern.findall(code):
 
                 if flag == "LINE":
                     if exclusion_stack:

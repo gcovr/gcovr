@@ -66,4 +66,5 @@ The following developers contributed to gcovr (ordered alphabetically):
     Will Thompson,
     William Hart,
     Zachary J. Fields,
+    Zachary P. Hensley,
     and possibly others.
