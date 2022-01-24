@@ -295,6 +295,7 @@ def parse_coverage(
         logger: for error reports
         exclude_lines_by_pattern: string with regex syntax to exclude
             individual lines
+        exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers (default present when None is passed)
         flags: various choices for the parser behavior
 
     Returns:

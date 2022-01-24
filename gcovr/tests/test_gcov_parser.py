@@ -311,6 +311,7 @@ def test_gcov_8(capsys, sourcename):
         lines=lines,
         logger=Logger(),
         exclude_lines_by_pattern=None,
+        exclude_pattern_prefix=None,
         flags=flags,
     )
 
@@ -343,6 +344,7 @@ def test_unknown_tags(capsys, ignore_errors):
             lines=lines,
             logger=Logger(),
             exclude_lines_by_pattern=None,
+            exclude_pattern_prefix=None,
             flags=flags,
         )
 
@@ -379,6 +381,7 @@ def test_pathologic_codeline(capsys):
             lines=lines,
             logger=Logger(),
             exclude_lines_by_pattern=None,
+            exclude_pattern_prefix=None,
             flags=ParserFlags.NONE,
         )
 
@@ -423,6 +426,7 @@ def test_exception_during_coverage_processing(capsys):
             logger=BrokenLogger(verbose=True),
             filename="test.cpp",
             exclude_lines_by_pattern=None,
+            exclude_pattern_prefix=None,
             flags=ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS,
         )
 
@@ -462,6 +466,7 @@ def test_trailing_function_tag():
         logger=Logger(),
         flags=ParserFlags.NONE,
         exclude_lines_by_pattern=None,
+        exclude_pattern_prefix=None,
     )
 
     assert coverage.functions.keys() == {"example"}
@@ -509,6 +514,7 @@ def test_branch_exclusion(flags):
         logger=Logger(),
         filename="example.cpp",
         exclude_lines_by_pattern=None,
+        exclude_pattern_prefix=None,
         flags=flags,
     )
 
@@ -544,6 +550,7 @@ def test_function_exclusion(flags):
         logger=Logger(),
         filename="example.cpp",
         exclude_lines_by_pattern=None,
+        exclude_pattern_prefix=None,
         flags=flags,
     )
 
@@ -577,6 +584,7 @@ def test_noncode_lines():
             logger=Logger(),
             filename="example.cpp",
             exclude_lines_by_pattern=None,
+            exclude_pattern_prefix=None,
         )
 
         for line_data in coverage.lines.values():
