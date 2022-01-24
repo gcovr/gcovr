@@ -968,7 +968,9 @@ def _find_excluded_ranges(
             #
             # START flags are added to the exlusion stack
             # STOP flags remove a marker from the exclusion stack
-            excl_line_pattern = re.compile("(" + exclude_pattern_prefix + ")" + _EXCLUDE_LINE_PATTERN)
+            excl_line_pattern = re.compile(
+                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_LINE_PATTERN
+            )
             for header, flag in excl_line_pattern.findall(code):
 
                 if flag == "LINE":
