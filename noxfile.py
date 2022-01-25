@@ -9,7 +9,9 @@ import nox
 GCC_VERSIONS = ["gcc-5", "gcc-6", "gcc-8", "clang-10"]
 GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
+DEFAULT_LINT_DIRECTORIES = ["admin"] + DEFAULT_TEST_DIRECTORIES
 BLACK_CONFORM_FILES = [
+    "admin/add_copyright.py",
     "noxfile.py",
     "gcovr/decision_analysis.py",
     "gcovr/gcov.py",
@@ -20,7 +22,7 @@ BLACK_CONFORM_FILES = [
 ]
 
 nox.options.sessions = ["qa"]
-nox.options.reuse_existing_virtualenvs = True
+
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
     if check and (shutil.which(cc) is None):
@@ -58,11 +60,11 @@ def lint(session: nox.Session) -> None:
     if session.posargs:
         args = session.posargs
     else:
-        args = DEFAULT_TEST_DIRECTORIES
+        args = DEFAULT_LINT_DIRECTORIES
     session.run("flake8", *args)
 
     if platform.python_implementation() == "CPython":
-        if session.posargs:
+        if not session.posargs:
             session.run(
                 "python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES
             )
@@ -80,10 +82,8 @@ def black(session: nox.Session) -> None:
     if session.posargs:
         session.run("python", "-m", "black", *session.posargs)
     else:
-        session.run(
-            "python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES
-        )
-        session.run("python", "-m", "black", "--diff", *DEFAULT_TEST_DIRECTORIES)
+        session.run("python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES)
+        session.run("python", "-m", "black", "--diff", *DEFAULT_LINT_DIRECTORIES)
 
 
 @nox.session
@@ -170,7 +170,7 @@ def build_wheel(session: nox.Session) -> None:
     session.notify("check_wheel")
 
 
-@nox.session(reuse_venv=False)
+@nox.session
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel, should not be used directly."""
     session.install("wheel", "twine")
@@ -258,7 +258,9 @@ def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
         session.env["NOX_POSARGS"] = shlex.join(session.posargs)
     else:
         # Code for join taken from Python 3.9
-        session.env["NOX_POSARGS"] = ' '.join(shlex.quote(arg) for arg in session.posargs)
+        session.env["NOX_POSARGS"] = " ".join(
+            shlex.quote(arg) for arg in session.posargs
+        )
     session.run(
         "docker",
         "run",

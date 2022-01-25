@@ -408,7 +408,9 @@ class gcov:
                     "may result in incorrect coverage."
                 )
         else:
-            assert gcov.__cmd == cmd, f"Gcov command must not me changed, expected '{gcov.__cmd}', got '{cmd}'"
+            assert (
+                gcov.__cmd == cmd
+            ), f"Gcov command must not me changed, expected '{gcov.__cmd}', got '{cmd}'"
 
     def __get_help_output(self):
         if gcov.__help_output is None:
@@ -455,7 +457,7 @@ class gcov:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             encoding="utf-8",
-            **kwargs
+            **kwargs,
         )
 
 
@@ -475,7 +477,7 @@ def run_gcov_and_process_files(
                 "--object-directory",
                 os.path.dirname(abs_filename),
             ],
-            cwd=chdir
+            cwd=chdir,
         ).communicate()
 
         # find the files that gcov created
