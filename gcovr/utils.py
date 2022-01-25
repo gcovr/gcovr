@@ -47,7 +47,7 @@ if (sys.platform == "win32") and (sys.version_info < (3, 8)):
     DOS_DEVICE_PATH_PREFIX = "\\\\?\\"
     DOS_DEVICE_PATH_PREFIX_UNC = DOS_DEVICE_PATH_PREFIX + "UNC\\"
 
-    def realpath(path):
+    def _realpath(path):
         path = os.path.realpath(path)
         # If file exist try to resolve the symbolic links
         if os.path.exists(path):
@@ -60,7 +60,7 @@ if (sys.platform == "win32") and (sys.version_info < (3, 8)):
                     path = path[len(DOS_DEVICE_PATH_PREFIX):]
         return path
 else:
-    realpath = os.path.realpath
+    _realpath = os.path.realpath
 
 
 def search_file(predicate, path, exclude_dirs):
@@ -83,11 +83,11 @@ def search_file(predicate, path, exclude_dirs):
         dirs[:] = [d for d in dirs
                    if not any(exc.match(os.path.join(root, d))
                               for exc in exclude_dirs)]
-        root = realpath(root)
+        root = os.path.abspath(root)
 
         for name in files:
             if predicate(name):
-                yield realpath(os.path.join(root, name))
+                yield os.path.abspath(os.path.join(root, name))
 
 
 def commonpath(files):
@@ -114,9 +114,9 @@ def commonpath(files):
         return ''
 
     if len(files) == 1:
-        prefix_path = os.path.dirname(realpath(files[0]))
+        prefix_path = os.path.dirname(_realpath(files[0]))
     else:
-        split_paths = [realpath(path).split(os.path.sep)
+        split_paths = [_realpath(path).split(os.path.sep)
                        for path in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
@@ -234,8 +234,12 @@ class Filter(object):
         flags = re.IGNORECASE if is_fs_case_insensitive else 0
         self.pattern = re.compile(pattern, flags)
 
+    @classmethod
+    def _os_independent_path(cls, path):
+        return path.replace(os.path.sep, '/')
+
     def match(self, path):
-        os_independent_path = path.replace(os.path.sep, '/')
+        os_independent_path = self._os_independent_path(path)
         return self.pattern.match(os_independent_path)
 
     def __str__(self):
@@ -245,27 +249,27 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path):
-        abspath = realpath(path)
-        return super(AbsoluteFilter, self).match(abspath)
+        realpath = _realpath(path)
+        return super(AbsoluteFilter, self).match(realpath)
 
 
 class RelativeFilter(Filter):
     def __init__(self, root, pattern):
         super(RelativeFilter, self).__init__(pattern)
-        self.root = root
+        self.root = _realpath(root)
 
     def match(self, path):
-        abspath = realpath(path)
+        realpath = _realpath(path)
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
         if sys.platform == 'win32':
-            path_drive, _ = os.path.splitdrive(abspath)
-            root_drive, _ = os.path.splitdrive(realpath(self.root))
+            path_drive, _ = os.path.splitdrive(realpath)
+            root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:
                 return None
 
-        relpath = os.path.relpath(abspath, self.root)
+        relpath = os.path.relpath(realpath, self.root)
         return super(RelativeFilter, self).match(relpath)
 
     def __str__(self):
@@ -283,14 +287,14 @@ class AlwaysMatchFilter(Filter):
 
 class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
-        abspath = os.path.realpath(directory)
-        os_independent_dir = abspath.replace(os.path.sep, '/')
-        pattern = re.escape(os_independent_dir + '/')
+        realpath = _realpath(directory)
+        os_independent_path = self._os_independent_path(realpath)
+        pattern = re.escape(f"{os_independent_path}/")
         super(DirectoryPrefixFilter, self).__init__(pattern)
 
     def match(self, path):
-        normpath = os.path.normpath(path)
-        return super(DirectoryPrefixFilter, self).match(normpath)
+        realpath = os.path.normpath(path)
+        return super(DirectoryPrefixFilter, self).match(realpath)
 
 
 def configure_logging() -> None:
