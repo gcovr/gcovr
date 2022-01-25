@@ -17,6 +17,7 @@ BLACK_CONFORM_FILES = [
     "gcovr/gcov.py",
     "gcovr/gcov_parser.py",
     "gcovr/timestamps.py",
+    "gcovr/tests/test_gcov_parser.py",
     "gcovr/writer/json.py",
 ]
 
