@@ -63,10 +63,9 @@ else:
     CC_REFERENCE = CC
 
 REFERENCE_DIRS = list([])
-if "gcc" in CC_REFERENCE:
-    REFERENCE_DIR_VERSION_LIST = ["gcc-5", "gcc-6", "gcc-8"]
-else:
-    REFERENCE_DIR_VERSION_LIST = ["clang-10"]
+REFERENCE_DIR_VERSION_LIST = (
+    ["gcc-5", "gcc-6", "gcc-8"] if "gcc" in CC_REFERENCE else ["clang-10"]
+)
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
     if ref in CC_REFERENCE:
@@ -439,7 +438,7 @@ def test_build(
             if archive_differences:
                 archive_difference_data(name, coverage_file, reference_file)
 
-        if generate_reference or update_reference:
+        if generate_reference or update_reference:  # pragma: no cover
             remove_duplicate_data(
                 encoding, scrub, coverage, coverage_file, reference_file
             )
