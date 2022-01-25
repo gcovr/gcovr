@@ -53,7 +53,7 @@ from .decision_analysis import DecisionParser
 from .utils import Logger
 
 _EXCLUDE_LINE_FLAG = "_EXCL_"
-_EXCLUDE_LINE_PATTERN = r"_EXCL_(LINE|START|STOP)"
+_EXCLUDE_LINE_PATTERN_POSTFIX = r"_EXCL_(LINE|START|STOP)"
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -969,7 +969,7 @@ def _find_excluded_ranges(
             # START flags are added to the exlusion stack
             # STOP flags remove a marker from the exclusion stack
             excl_line_pattern = re.compile(
-                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_LINE_PATTERN
+                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_LINE_PATTERN_POSTFIX
             )
             for header, flag in excl_line_pattern.findall(code):
 
