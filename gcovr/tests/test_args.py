@@ -287,12 +287,12 @@ def test_filter_backslashes_are_detected(caplog):
     message0 = c.record_tuples[0]
     assert message0[1] == logging.WARNING
     assert message0[2].startswith('filters must use forward slashes as path separators')
-    message1 = c.record_tuples[1]
-    assert message1[1] == logging.WARNING
-    assert message1[2].startswith('your filter : C:\\\\foo\\moo')
-    message2 = c.record_tuples[2]
-    assert message2[1] == logging.WARNING
-    assert message2[2].startswith('did you mean: C:/foo/moo')
+    message = c.record_tuples[1]
+    assert message[1] == logging.WARNING
+    assert message[2].startswith('your filter : C:\\\\foo\\moo')
+    message = c.record_tuples[2]
+    assert message[1] == logging.WARNING
+    assert message[2].startswith('did you mean: C:/foo/moo')
     assert isinstance(c.exception, re.error) or c.exception.code == 0
 
 

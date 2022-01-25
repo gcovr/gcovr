@@ -370,9 +370,9 @@ def test_unknown_tags(caplog, ignore_errors):
     ]
     assert contains_phrases(message0[2], *err_phrases)
     if not ignore_errors:
-        message2 = messages[2]
-        assert message2[1] == logging.ERROR
-        assert "Exiting" in message2[2]
+        message = messages[2]
+        assert message[1] == logging.ERROR
+        assert "Exiting" in message[2]
 
 
 def test_pathologic_codeline(caplog):
@@ -396,21 +396,21 @@ def test_pathologic_codeline(caplog):
     ]
     assert contains_phrases(message0[2], *warning_phrases1)
 
-    message1 = messages[1]
-    assert message1[1] == logging.WARNING
+    message = messages[1]
+    assert message[1] == logging.WARNING
     warning_phrases2 = [
         "Exception during parsing",
         "UnknownLineType",
     ]
-    assert contains_phrases(message1[2], *warning_phrases2)
+    assert contains_phrases(message[2], *warning_phrases2)
 
-    message2 = messages[2]
-    assert message2[1] == logging.ERROR
+    message = messages[2]
+    assert message[1] == logging.ERROR
     error_phrases = [
         "Exiting",
         "run gcovr with --gcov-ignore-parse-errors",
     ]
-    assert contains_phrases(message2[2], *error_phrases)
+    assert contains_phrases(message[2], *error_phrases)
 
 
 def test_exception_during_coverage_processing(caplog):
@@ -453,21 +453,21 @@ def test_exception_during_coverage_processing(caplog):
     ]
     assert contains_phrases(message0[2], *warning_phrases1)
 
-    message1 = messages[1]
-    assert message1[1] == logging.WARNING
+    message = messages[1]
+    assert message[1] == logging.WARNING
     warning_phrases2 = [
         "Exception during parsing",
         "AssertionError",
     ]
-    assert contains_phrases(message1[2], *warning_phrases2)
+    assert contains_phrases(message[2], *warning_phrases2)
 
-    message2 = messages[2]
-    assert message2[1] == logging.ERROR
+    message = messages[2]
+    assert message[1] == logging.ERROR
     error_phrases = [
         "Exiting",
         "run gcovr with --gcov-ignore-parse-errors",
     ]
-    assert contains_phrases(message2[2], *error_phrases)
+    assert contains_phrases(message[2], *error_phrases)
 
 
 def test_trailing_function_tag():
