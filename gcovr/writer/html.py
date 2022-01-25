@@ -15,14 +15,16 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
-
+import logging
 import os
 import hashlib
 import io
 from argparse import ArgumentTypeError
 
 from ..version import __version__
-from ..utils import realpath, commonpath, sort_coverage, calculate_coverage, Logger, open_text_for_writing
+from ..utils import realpath, commonpath, sort_coverage, calculate_coverage, open_text_for_writing
+
+logger = logging.getLogger("gcovr")
 
 
 class Lazy:
@@ -144,14 +146,13 @@ class NullHighlighting:
 
 
 class PygmentHighlighting:
-    def __init__(self, options):
-        self.logger = Logger(options.verbose)
+    def __init__(self):
         self.formatter = None
         try:
             from pygments.formatters.html import HtmlFormatter
             self.formatter = HtmlFormatter(nowrap=True)
         except ImportError as e:  # pragma: no cover
-            self.logger.warn("No syntax highlighting available: {}".format(str(e)))
+            logger.warning(f"No syntax highlighting available: {str(e)}")
 
     def get_css(self):
         if self.formatter is None:  # pragma: no cover
@@ -175,7 +176,7 @@ class PygmentHighlighting:
 
 @Lazy
 def get_formatter(options):
-    return PygmentHighlighting(options) if options.html_details_syntax_highlighting else NullHighlighting()
+    return PygmentHighlighting() if options.html_details_syntax_highlighting else NullHighlighting()
 
 
 def coverage_to_class(coverage, medium_threshold, high_threshold):
@@ -339,7 +340,6 @@ class RootInfo:
 # Produce an HTML report
 #
 def print_html_report(covdata, output_file, options):
-    logger = Logger(options.verbose)
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -500,14 +500,11 @@ def print_html_report(covdata, output_file, options):
                         source_row(ctr, line, cdata.lines.get(ctr))
                     )
                 if ctr < max_line_from_cdata:
-                    logger.warn(
-                        'File {filename} has {file_lines} line(s) but coverage data has {cdata_lines} line(s).',
-                        filename=data['filename'],
-                        file_lines=ctr,
-                        cdata_lines=max_line_from_cdata
+                    logger.warning(
+                        f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
                     )
         except IOError as e:
-            logger.warn('File {filename} not found: {reason}', filename=data['filename'], reason=repr(e))
+            logger.warning(f'File {data["filename"]} not found: {repr(e)}')
             for ctr in range(1, max_line_from_cdata):
                 data['source_lines'].append(
                     source_row(ctr, '!!! File not found !!!' if ctr == 1 else '', cdata.lines.get(ctr))
