@@ -17,16 +17,21 @@
 # ****************************************************************************
 
 # pylint: disable=missing-function-docstring,missing-module-docstring
-
+import logging
 import re
 import time
 import textwrap
 from threading import Event
+from unittest import mock
+
 import pytest
 
 from ..gcov_parser import ParserFlags, parse_coverage, UnknownLineType
-from ..utils import Logger
+from ..utils import configure_logging
 from ..workers import Workers
+
+configure_logging()
+
 
 # This example is taken from the GCC 8 Gcov documentation:
 # <https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html>
@@ -309,7 +314,6 @@ def test_gcov_8(capsys, sourcename):
     coverage = parse_coverage(
         filename="tmp.cpp",
         lines=lines,
-        logger=Logger(),
         exclude_lines_by_pattern=None,
         exclude_pattern_prefix=None,
         flags=flags,
@@ -330,7 +334,7 @@ def contains_phrases(string, *phrases):
 
 
 @pytest.mark.parametrize("ignore_errors", [True, False])
-def test_unknown_tags(capsys, ignore_errors):
+def test_unknown_tags(caplog, ignore_errors):
     source = r"bananas 7 times 3"
     lines = source.splitlines()
 
@@ -342,7 +346,6 @@ def test_unknown_tags(capsys, ignore_errors):
         return parse_coverage(
             filename="foo.c",
             lines=lines,
-            logger=Logger(),
             exclude_lines_by_pattern=None,
             exclude_pattern_prefix=None,
             flags=flags,
@@ -359,19 +362,22 @@ def test_unknown_tags(capsys, ignore_errors):
         with pytest.raises(Exception):
             coverage = run_the_parser()
 
-    out, err = capsys.readouterr()
-    assert out == ""
+    messages = caplog.record_tuples
+    message0 = messages[0]
+    assert message0[1] == logging.WARNING
     err_phrases = [
-        "(WARNING) Unrecognized GCOV output",
+        "Unrecognized GCOV output",
         "bananas",
         "github.com/gcovr/gcovr",
     ]
+    assert contains_phrases(message0[2], *err_phrases)
     if not ignore_errors:
-        err_phrases.append("(ERROR) Exiting")
-    assert contains_phrases(err, *err_phrases)
+        message = messages[2]
+        assert message[1] == logging.ERROR
+        assert "Exiting" in message[2]
 
 
-def test_pathologic_codeline(capsys):
+def test_pathologic_codeline(caplog):
     source = r": 7:haha"
     lines = source.splitlines()
 
@@ -379,26 +385,38 @@ def test_pathologic_codeline(capsys):
         parse_coverage(
             filename="foo.c",
             lines=lines,
-            logger=Logger(),
             exclude_lines_by_pattern=None,
             exclude_pattern_prefix=None,
             flags=ParserFlags.NONE,
         )
 
-    out, err = capsys.readouterr()
-    assert out == ""
-    assert contains_phrases(
-        err,
-        "(WARNING) Unrecognized GCOV output",
+    messages = caplog.record_tuples
+    message0 = messages[0]
+    assert message0[1] == logging.WARNING
+    warning_phrases1 = [
+        "Unrecognized GCOV output",
         ": 7:haha",
+    ]
+    assert contains_phrases(message0[2], *warning_phrases1)
+
+    message = messages[1]
+    assert message[1] == logging.WARNING
+    warning_phrases2 = [
         "Exception during parsing",
         "UnknownLineType",
-        "(ERROR) Exiting",
+    ]
+    assert contains_phrases(message[2], *warning_phrases2)
+
+    message = messages[2]
+    assert message[1] == logging.ERROR
+    error_phrases = [
+        "Exiting",
         "run gcovr with --gcov-ignore-parse-errors",
-    )
+    ]
+    assert contains_phrases(message[2], *error_phrases)
 
 
-def test_exception_during_coverage_processing(capsys):
+def test_exception_during_coverage_processing(caplog):
     """
     This cannot happen during normal processing, but as a defense against
     unexpected changes to the format the ``--gcov-ignore-parse-errors`` option
@@ -416,35 +434,44 @@ def test_exception_during_coverage_processing(capsys):
     )
     lines = source.splitlines()
 
-    class BrokenLogger(Logger):  # pylint: disable=missing-class-docstring
-        def verbose_msg(self, pattern, *args, **kwargs):
-            raise AssertionError("totally broken")
-
-    with pytest.raises(AssertionError) as ex_info:
-        parse_coverage(
-            lines,
-            logger=BrokenLogger(verbose=True),
-            filename="test.cpp",
-            exclude_lines_by_pattern=None,
-            exclude_pattern_prefix=None,
-            flags=ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS,
-        )
+    with mock.patch("logging.Logger.debug") as logger_mock:
+        logger_mock.side_effect = AssertionError("totally broken")
+        with pytest.raises(AssertionError) as ex_info:
+            parse_coverage(
+                lines,
+                filename="test.cpp",
+                exclude_lines_by_pattern=None,
+                exclude_pattern_prefix=None,
+                flags=ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS,
+            )
 
     # check that this is our exception
     assert ex_info.value.args[0] == "totally broken"
 
-    out, err = capsys.readouterr()
-    assert out == ""
-    assert err != ""
-    assert contains_phrases(
-        err,
-        "(WARNING) Unrecognized GCOV output",
+    messages = caplog.record_tuples
+    message0 = messages[0]
+    assert message0[1] == logging.WARNING
+    warning_phrases1 = [
+        "Unrecognized GCOV output",
         lines[0],
+    ]
+    assert contains_phrases(message0[2], *warning_phrases1)
+
+    message = messages[1]
+    assert message[1] == logging.WARNING
+    warning_phrases2 = [
         "Exception during parsing",
         "AssertionError",
-        "(ERROR) Exiting",
+    ]
+    assert contains_phrases(message[2], *warning_phrases2)
+
+    message = messages[2]
+    assert message[1] == logging.ERROR
+    error_phrases = [
+        "Exiting",
         "run gcovr with --gcov-ignore-parse-errors",
-    )
+    ]
+    assert contains_phrases(message[2], *error_phrases)
 
 
 def test_trailing_function_tag():
@@ -463,7 +490,6 @@ def test_trailing_function_tag():
     coverage = parse_coverage(
         source.splitlines(),
         filename="test.cpp",
-        logger=Logger(),
         flags=ParserFlags.NONE,
         exclude_lines_by_pattern=None,
         exclude_pattern_prefix=None,
@@ -511,7 +537,6 @@ def test_branch_exclusion(flags):
 
     coverage = parse_coverage(
         source.splitlines(),
-        logger=Logger(),
         filename="example.cpp",
         exclude_lines_by_pattern=None,
         exclude_pattern_prefix=None,
@@ -547,7 +572,6 @@ def test_function_exclusion(flags):
 
     coverage = parse_coverage(
         source.splitlines(),
-        logger=Logger(),
         filename="example.cpp",
         exclude_lines_by_pattern=None,
         exclude_pattern_prefix=None,
@@ -581,7 +605,6 @@ def test_noncode_lines():
         coverage = parse_coverage(
             lines,
             flags=flags,
-            logger=Logger(),
             filename="example.cpp",
             exclude_lines_by_pattern=None,
             exclude_pattern_prefix=None,

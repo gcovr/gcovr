@@ -24,6 +24,7 @@ Improvements and new features:
 - Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
 - Added :option:`--exclude-pattern-prefix` to allow projects to define custom prefixes used in _EXCL_LINE/START/STOP markers. (:issue:`561`)
+- Replace own logger with python logger module. (:issue:`540`)
 
 Documentation:
 
