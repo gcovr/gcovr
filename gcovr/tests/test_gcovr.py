@@ -57,17 +57,16 @@ skip_clean = None
 CC = os.path.split(env["CC"])[1]
 IS_CLANG = True if CC.startswith("clang") else False
 
-if "CC_REFERENCE" in env:
-    CC_REFERENCE = env["CC_REFERENCE"]
-else:
-    CC_REFERENCE = CC
+CC_REFERENCE = env.get("CC_REFERENCE", CC)
 
-REFERENCE_DIRS = list([])
+REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
     ["gcc-5", "gcc-6", "gcc-8"] if "gcc" in CC_REFERENCE else ["clang-10"]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
+    if platform.system() == "Windows":
+        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-Windows")
     if ref in CC_REFERENCE:
         break
 REFERENCE_DIRS.reverse()
@@ -159,18 +158,13 @@ def run(cmd, cwd=None):
 def find_reference_files(output_pattern):
     seen_files = set([])
     for reference_dir in REFERENCE_DIRS:
-        for reference_dir in (
-            [f"{reference_dir}-Windows", reference_dir]
-            if platform.system() == "Windows"
-            else [reference_dir]
-        ):
-            for pattern in output_pattern:
-                if os.path.isdir(reference_dir):
-                    for file in glob.glob(os.path.join(reference_dir, pattern)):
-                        if os.path.basename(file) not in seen_files:
-                            coverage = os.path.basename(file)
-                            seen_files.add(coverage)
-                            yield coverage, file
+        for pattern in output_pattern:
+            if os.path.isdir(reference_dir):
+                for file in glob.glob(os.path.join(reference_dir, pattern)):
+                    if os.path.basename(file) not in seen_files:
+                        coverage = os.path.basename(file)
+                        seen_files.add(coverage)
+                        yield coverage, file
 
 
 @pytest.fixture(scope="module")
