@@ -38,7 +38,7 @@ class Example(object):
 
 
 def is_compiler(actual: str, *expected: str) -> bool:
-    return os.path.basename(actual) in expected
+    return any(compiler in actual for compiler in expected)
 
 
 def find_test_cases():
