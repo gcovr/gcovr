@@ -1107,6 +1107,6 @@ def _int_from_gcov_unit(formatted: str) -> int:
     units = "kMGTPEZY"
     for exponent, unit in enumerate(units, 1):
         if formatted.endswith(unit):
-            return int(float(formatted[:-1]) * 1000 ** exponent)
+            return int(float(formatted[:-1]) * 1000**exponent)
 
     return int(formatted)
