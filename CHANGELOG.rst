@@ -48,6 +48,7 @@ Internal changes:
  - Add test for compiler option ``-fprofile-abs-path``. (:issue:`521`)
  - Ensure that shell files are always saved with LF linebreaks. (:issue:`547`)
  - Update the test driver to share the reference data between the different compiler versions. (:issue:`556`)
+ - Add flake8-print to check usage of print function. (:issue:`566`)
 
 5.0 (11 June 2021)
 ------------------
