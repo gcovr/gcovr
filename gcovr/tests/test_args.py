@@ -19,6 +19,7 @@
 from ..__main__ import main
 from ..version import __version__
 
+import logging
 import pytest
 import os
 import re
@@ -33,9 +34,9 @@ class CaptureObject:
         self.exception = exception
 
 
-# The capture method calls the main method and captures its output/error
-# streams and exit code
 def capture(capsys, args, other_ex=()):
+    """ The capture method calls the main method and captures its output/error
+    streams and exit code. """
     e = None
     try:
         main(args)
@@ -49,10 +50,32 @@ def capture(capsys, args, other_ex=()):
     return CaptureObject(out, err, e)
 
 
+# The LogCaptureObject class holds the capture method result
+class LogCaptureObject:
+    def __init__(self, record_tuples, exception):
+        self.record_tuples = record_tuples
+        self.exception = exception
+
+
+def log_capture(caplog, args, other_ex=()):
+    """ The capture method calls the main method and captures its output/error
+    streams and exit code. """
+    e = None
+    try:
+        main(args)
+        # Explicit SystemExit exception in case main() returns normally
+        sys.exit(0)
+    except SystemExit as exception:
+        e = exception
+    except other_ex as exception:
+        e = exception
+    return LogCaptureObject(caplog.record_tuples, e)
+
+
 def test_version(capsys):
-    c = capture(capsys, ['--version'])
-    assert c.err == ''
-    assert c.out.startswith('gcovr %s' % __version__)
+    c = capture(capsys, ["--version"])
+    assert c.err == ""
+    assert c.out.startswith(f"gcovr {__version__}")
     assert c.exception.code == 0
 
 
@@ -63,10 +86,11 @@ def test_help(capsys):
     assert c.exception.code == 0
 
 
-def test_empty_root(capsys):
-    c = capture(capsys, ['-r', ''])
-    assert c.out == ''
-    assert c.err.startswith('(ERROR) empty --root option.')
+def test_empty_root(caplog):
+    c = log_capture(caplog, ["-r", ""])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith("empty --root option.")
     assert c.exception.code == 1
 
 
@@ -84,19 +108,19 @@ def test_empty_exclude_directories(capsys):
     assert c.exception.code != 0
 
 
-def test_empty_objdir(capsys):
-    c = capture(capsys, ['--object-directory', ''])
-    assert c.out == ''
-    assert c.err.startswith(
-        '(ERROR) empty --object-directory option.')
+def test_empty_objdir(caplog):
+    c = log_capture(caplog, ["--object-directory", ""])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith("empty --object-directory option.")
     assert c.exception.code == 1
 
 
-def test_invalid_objdir(capsys):
-    c = capture(capsys, ['--object-directory', 'not-existing-dir'])
-    assert c.out == ''
-    assert c.err.startswith(
-        '(ERROR) Bad --object-directory option.')
+def test_invalid_objdir(caplog):
+    c = log_capture(caplog, ["--object-directory", "not-existing-dir"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith("Bad --object-directory option.")
     assert c.exception.code == 1
 
 
@@ -225,10 +249,11 @@ def test_non_writable_directory_csv(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, '--csv')
 
 
-def test_no_output_html_details(capsys):
-    c = capture(capsys, ['--html-details'])
-    assert c.out == ''
-    assert 'a named output must be given, if the option --html-details\nis used.' in c.err
+def test_no_output_html_details(caplog):
+    c = log_capture(caplog, ["--html-details"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "a named output must be given, if the option --html-details\nis used."
     assert c.exception.code != 0
 
 
@@ -253,16 +278,21 @@ def test_line_threshold_100_1(capsys):
     assert c.exception.code != 0
 
 
-def test_filter_backslashes_are_detected(capsys):
+def test_filter_backslashes_are_detected(caplog):
     # gcov-exclude all to prevent any coverage data from being found
-    c = capture(
-        capsys,
+    c = log_capture(
+        caplog,
         args=['--filter', r'C:\\foo\moo', '--gcov-exclude', ''],
         other_ex=re.error)
-    assert c.err.startswith(
-        '(WARNING) filters must use forward slashes as path separators\n'
-        '(WARNING) your filter : C:\\\\foo\\moo\n'
-        '(WARNING) did you mean: C:/foo/moo\n')
+    message0 = c.record_tuples[0]
+    assert message0[1] == logging.WARNING
+    assert message0[2].startswith('filters must use forward slashes as path separators')
+    message = c.record_tuples[1]
+    assert message[1] == logging.WARNING
+    assert message[2].startswith('your filter : C:\\\\foo\\moo')
+    message = c.record_tuples[2]
+    assert message[1] == logging.WARNING
+    assert message[2].startswith('did you mean: C:/foo/moo')
     assert isinstance(c.exception, re.error) or c.exception.code == 0
 
 
@@ -273,17 +303,18 @@ def test_html_css_not_exists(capsys):
     assert c.exception.code != 0
 
 
-def test_html_title_empty_string(capsys):
-    c = capture(capsys, ['--html-title', ''])
-    assert c.out == ''
-    assert 'an empty --html_title= is not allowed.' in c.err
+def test_html_title_empty_string(caplog):
+    c = log_capture(caplog, ["--html-title", ""])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "an empty --html_title= is not allowed."
     assert c.exception.code != 0
 
 
 def test_html_medium_threshold_nan(capsys):
-    c = capture(capsys, ['--html-medium-threshold', 'nan'])
+    c = capture(capsys, ["--html-medium-threshold", "nan"])
     assert c.out == ''
-    assert 'not in range [0.0, 100.0]' in c.err
+    assert "--html-medium-threshold: nan not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
@@ -294,10 +325,11 @@ def test_html_medium_threshold_negative(capsys):
     assert c.exception.code != 0
 
 
-def test_html_medium_threshold_zero(capsys):
-    c = capture(capsys, ['--html-medium-threshold', '0.0'])
-    assert c.out == ''
-    assert 'value of --html-medium-threshold= should not be zero.' in c.err
+def test_html_medium_threshold_zero(caplog):
+    c = log_capture(caplog, ["--html-medium-threshold", "0.0"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "value of --html-medium-threshold= should not be zero."
     assert c.exception.code != 0
 
 
@@ -315,40 +347,55 @@ def test_html_high_threshold_negative(capsys):
     assert c.exception.code != 0
 
 
-def test_html_medium_threshold_gt_html_high_threshold(capsys):
-    c = capture(capsys, ['--html-medium-threshold', '60', '--html-high-threshold', '50'])
-    assert c.out == ''
-    assert 'value of --html-medium-threshold=60.0 should be\nlower than or equal to the value of --html-high-threshold=50.0.' in c.err
+def test_html_medium_threshold_gt_html_high_threshold(caplog):
+    c = log_capture(caplog, ["--html-medium-threshold", "60", "--html-high-threshold", "50"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "value of --html-medium-threshold=60.0 should be\nlower than or equal to the value of --html-high-threshold=50.0."
     assert c.exception.code != 0
 
 
-def test_html_tab_size_zero(capsys):
-    c = capture(capsys, ['--html-tab-size', '0'])
-    assert c.out == ''
-    assert 'value of --html-tab-size= should be greater 0.' in c.err
+def test_html_tab_size_zero(caplog):
+    c = log_capture(caplog, ["--html-tab-size", "0"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "value of --html-tab-size= should be greater 0."
     assert c.exception.code != 0
 
 
-def test_multiple_output_formats_to_stdout(capsys):
-    c = capture(capsys, ['--xml', '--html', '--sonarqube', '--coveralls'])
-    assert 'HTML output skipped' in c.err
-    assert 'Sonarqube output skipped' in c.err
-    assert 'Coveralls output skipped' in c.err
+def test_multiple_output_formats_to_stdout(caplog):
+    c = log_capture(caplog, ["--xml", "--html", "--sonarqube", "--coveralls"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.WARNING
+    assert message[2] == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
+    message = c.record_tuples[1]
+    assert message[1] == logging.WARNING
+    assert message[2] == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
+    message = c.record_tuples[2]
+    assert message[1] == logging.WARNING
+    assert message[2] == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
     assert c.exception.code == 0
 
 
-def test_multiple_output_formats_to_stdout_1(capsys):
-    c = capture(capsys, ['--xml', '--html', '--sonarqube', '--coveralls', '-o', '-'])
-    assert 'HTML output skipped' in c.err
-    assert 'Sonarqube output skipped' in c.err
-    assert 'Coveralls output skipped' in c.err
+def test_multiple_output_formats_to_stdout_1(caplog):
+    c = log_capture(caplog, ["--xml", "--html", "--sonarqube", "--coveralls", "-o", "-"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.WARNING
+    assert message[2] == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
+    message = c.record_tuples[1]
+    assert message[1] == logging.WARNING
+    assert message[2] == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
+    message = c.record_tuples[2]
+    assert message[1] == logging.WARNING
+    assert message[2] == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
     assert c.exception.code == 0
 
 
-def test_no_self_contained_without_file(capsys):
-    c = capture(capsys, ['--no-html-self-contained', '--html'])
-    assert c.out == ''
-    assert 'can only disable --html-self-contained when a named output is given' in c.err
+def test_no_self_contained_without_file(caplog):
+    c = log_capture(caplog, ["--no-html-self-contained", "--html"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "can only disable --html-self-contained when a named output is given."
     assert c.exception.code != 0
 
 
@@ -377,9 +424,11 @@ def test_html_injection_via_json(capsys, tmp_path):
     assert c.exception.code == 0
 
 
-def test_exclude_lines_by_pattern(capsys):
-    c = capture(capsys, ['--exclude-lines-by-pattern', 'example.**'])
-    assert 'Invalid regular expression' in c.err
+def test_exclude_lines_by_pattern(caplog):
+    c = log_capture(caplog, ["--exclude-lines-by-pattern", "example.**"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith("--exclude-lines-by-pattern: Invalid regular expression")
     assert c.exception.code != 0
 
 

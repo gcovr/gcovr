@@ -30,16 +30,16 @@ def print_summary(covdata):
      functions_total, functions_covered, percent_functions,
      branches_total, branches_covered, percent_branches) = get_global_stats(covdata)
 
-    lines_out = "lines: %0.1f%% (%s out of %s)\n" % (
+    lines_out = "lines: %0.1f%% (%s out of %s)" % (
         percent, lines_covered, lines_total
     )
-    functions_out = "functions: %0.1f%% (%s out of %s)\n" % (
+    functions_out = "functions: %0.1f%% (%s out of %s)" % (
         percent_functions, functions_covered, functions_total
     )
-    branches_out = "branches: %0.1f%% (%s out of %s)\n" % (
+    branches_out = "branches: %0.1f%% (%s out of %s)" % (
         percent_branches, branches_covered, branches_total
     )
 
-    sys.stdout.write(lines_out)
-    sys.stdout.write(functions_out)
-    sys.stdout.write(branches_out)
+    sys.stdout.write(lines_out + '\n')
+    sys.stdout.write(functions_out + '\n')
+    sys.stdout.write(branches_out + '\n')

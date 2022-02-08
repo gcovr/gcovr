@@ -17,10 +17,13 @@
 # ****************************************************************************
 
 from argparse import ArgumentTypeError
+import logging
 import os
 import re
 import sys
 from contextlib import contextmanager
+
+logger = logging.getLogger("gcovr")
 
 
 class LoopChecker(object):
@@ -194,7 +197,7 @@ class FilterOption(object):
         self.regex = regex
         self.path_context = os.getcwd() if path_context is None else path_context
 
-    def build_filter(self, logger, use_canonical_paths):
+    def build_filter(self, use_canonical_paths):
         # Try to detect unintended backslashes and warn.
         # Later, the regex engine may or may not raise a syntax error.
         # An unintended backslash is a literal backslash r"\\",
@@ -202,9 +205,9 @@ class FilterOption(object):
         (suggestion, bs_count) = re.subn(
             r'\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])', '/', self.regex)
         if bs_count:
-            logger.warn("filters must use forward slashes as path separators")
-            logger.warn("your filter : {}", self.regex)
-            logger.warn("did you mean: {}", suggestion)
+            logger.warning("filters must use forward slashes as path separators")
+            logger.warning(f"your filter : {self.regex}")
+            logger.warning(f"did you mean: {suggestion}")
 
         isabs = self.regex.startswith("/")
         if not isabs and (sys.platform == "win32"):
@@ -301,44 +304,17 @@ class DirectoryPrefixFilter(Filter):
         return super(DirectoryPrefixFilter, self).match(normpath)
 
 
-class Logger(object):
-    def __init__(self, verbose=False):
-        self.verbose = verbose
+def configure_logging() -> None:
+    logging.basicConfig(
+        format="(%(levelname)s) %(message)s",
+        stream=sys.stderr,
+        level=logging.INFO,
+    )
 
-    def warn(self, pattern, *args, **kwargs):
-        """Write a formatted warning to STDERR.
+    def exception_hook(exc_type, exc_value, exc_traceback) -> None:
+        logging.exception("Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback))
 
-        pattern: a str.format pattern
-        args, kwargs: str.format arguments
-        """
-        pattern = "(WARNING) " + pattern + "\n"
-        sys.stderr.write(pattern.format(*args, **kwargs))
-
-    def error(self, pattern, *args, **kwargs):
-        """Write a formatted error to STDERR.
-
-        pattern: a str.format pattern
-        args, kwargs: str.format parameters
-        """
-        pattern = "(ERROR) " + pattern + "\n"
-        sys.stderr.write(pattern.format(*args, **kwargs))
-
-    def msg(self, pattern, *args, **kwargs):
-        """Write a formatted message to STDOUT.
-
-        pattern: a str.format pattern
-        args, kwargs: str.format arguments
-        """
-        pattern = pattern + "\n"
-        sys.stdout.write(pattern.format(*args, **kwargs))
-
-    def verbose_msg(self, pattern, *args, **kwargs):
-        """Write a formatted message to STDOUT if in verbose mode.
-
-        see: self.msg()
-        """
-        if self.verbose:
-            self.msg(pattern, *args, **kwargs)
+    sys.excepthook = exception_hook
 
 
 def sort_coverage(covdata, show_branch,
