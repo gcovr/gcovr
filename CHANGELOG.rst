@@ -24,6 +24,7 @@ Improvements and new features:
 - Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
 - Replace own logger with python logger module. (:issue:`540`)
+- Fix resolution of relative filters in configuration files. (:issue:`568`)
 
 Documentation:
 
