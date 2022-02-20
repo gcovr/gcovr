@@ -19,6 +19,7 @@ BLACK_CONFORM_FILES = [
     "gcovr/timestamps.py",
     "gcovr/tests/test_gcov_parser.py",
     "gcovr/writer/json.py",
+    "gcovr/tests/test_gcovr.py",
 ]
 BLACK_PINNED_VERSION = "black==22.1.0"
 
