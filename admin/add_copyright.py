@@ -20,6 +20,7 @@
 
 import copy
 import os
+import logging
 import subprocess
 
 import gcovr.version
@@ -155,7 +156,7 @@ def main():
                 for handler in handlers:
                     newLines = handler(fullname, newLines)
                 if newLines != lines:
-                    print("Modifying {}".format(fullname))
+                    logging.info("Modifying {}".format(fullname))
                     with open(fullname, "w") as f:
                         for line in newLines:
                             f.write(line + "\n")
