@@ -868,7 +868,7 @@ class _ExclusionRangeWarnings:
               LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp.
     30: GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.
     30: GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 5, when processing example.cpp.
-    30: The coverage exclusion region start flag {start}
+    30: The coverage exclusion region start flag GCOVR_EXCL_START
               on line 6 did not have corresponding GCOVR_EXCL_STOP flag
               in file example.cpp.
     """
@@ -897,7 +897,7 @@ class _ExclusionRangeWarnings:
     def start_without_stop(self, lineno: int, start: str, expected_stop: str) -> None:
         """warn that a region was started but not closed"""
         logger.warning(
-            "The coverage exclusion region start flag {start}\n"
+            f"The coverage exclusion region start flag {start}\n"
             f"          on line {lineno} did not have corresponding {expected_stop} flag\n"
             f"          in file {self.filename}."
         )
@@ -1107,6 +1107,6 @@ def _int_from_gcov_unit(formatted: str) -> int:
     units = "kMGTPEZY"
     for exponent, unit in enumerate(units, 1):
         if formatted.endswith(unit):
-            return int(float(formatted[:-1]) * 1000 ** exponent)
+            return int(float(formatted[:-1]) * 1000**exponent)
 
     return int(formatted)

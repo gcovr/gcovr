@@ -24,6 +24,7 @@ Improvements and new features:
 - Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
 - Replace own logger with python logger module. (:issue:`540`)
+- Fix resolution of relative filters in configuration files. (:issue:`568`)
 - Add list of functions to HTML details. (:issue:`554`)
 
 Documentation:
@@ -47,6 +48,7 @@ Internal changes:
  - Ensure that shell files are always checked out with LF linebreaks. (:issue:`538`)
  - Add test for compiler option ``-fprofile-abs-path``. (:issue:`521`)
  - Ensure that shell files are always saved with LF linebreaks. (:issue:`547`)
+ - Update the test driver to share the reference data between the different compiler versions. (:issue:`556`)
 
 5.0 (11 June 2021)
 ------------------

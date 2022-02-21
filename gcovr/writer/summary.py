@@ -15,12 +15,10 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
-import logging
+
 import sys
 
 from ..utils import get_global_stats
-
-logger = logging.getLogger("gcovr")
 
 
 def print_summary(covdata):

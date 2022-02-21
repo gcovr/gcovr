@@ -34,9 +34,9 @@ class CaptureObject:
         self.exception = exception
 
 
-# The capture method calls the main method and captures its output/error
-# streams and exit code
 def capture(capsys, args, other_ex=()):
+    """ The capture method calls the main method and captures its output/error
+    streams and exit code. """
     e = None
     try:
         main(args)
@@ -57,9 +57,9 @@ class LogCaptureObject:
         self.exception = exception
 
 
-# The capture method calls the main method and captures its output/error
-# streams and exit code
 def log_capture(caplog, args, other_ex=()):
+    """ The capture method calls the main method and captures its output/error
+    streams and exit code. """
     e = None
     try:
         main(args)
