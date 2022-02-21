@@ -1,1 +1,0 @@
-{"commit_sha": "GITHUB_SHA", "run_at": "2020-08-17 21:07:17 UTC", "service_job_id": "GITHUB_WORKFLOW", "service_name": "github-actions-ci", "service_number": "GITHUB_RUN_ID", "source_files": [{"coverage": [null, 1, 1, null], "name": "main.cpp", "source_digest": "931745ec4387e9df02e2c3590b65f863"}]}

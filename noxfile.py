@@ -19,7 +19,9 @@ BLACK_CONFORM_FILES = [
     "gcovr/timestamps.py",
     "gcovr/tests/test_gcov_parser.py",
     "gcovr/writer/json.py",
+    "gcovr/tests/test_gcovr.py",
 ]
+BLACK_PINNED_VERSION = "black==22.1.0"
 
 nox.options.sessions = ["qa"]
 
@@ -56,7 +58,7 @@ def lint(session: nox.Session) -> None:
     session.install("flake8")
     # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
     if platform.python_implementation() == "CPython":
-        session.install("black")
+        session.install(BLACK_PINNED_VERSION)
     if session.posargs:
         args = session.posargs
     else:
@@ -78,7 +80,7 @@ def lint(session: nox.Session) -> None:
 @nox.session
 def black(session: nox.Session) -> None:
     """Run black, a code formatter and format checker."""
-    session.install("black")
+    session.install(BLACK_PINNED_VERSION)
     if session.posargs:
         session.run("python", "-m", "black", *session.posargs)
     else:
