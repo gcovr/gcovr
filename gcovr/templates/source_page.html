@@ -62,7 +62,7 @@
 </div>
 {% endblock %}
 
-{% block content %}
+{% block navigation %}
 {% if function_list %}
 <details>
   <summary>List of functions</summary>
@@ -91,8 +91,10 @@
 {% endfor %}
   </table>
 </details>
-<hr/>
 {% endif -%}
+{% endblock %}
+
+{% block content %}
 <div class="file-source">
   <table>
     <tr>

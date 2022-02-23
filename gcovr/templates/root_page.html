@@ -67,11 +67,13 @@
 </div>
 {% endblock %}
 
-{% block content %}
+{% block navigation %}
 {% if info.details %}
 <a href="{{ FUNCTIONS_FNAME }}">List of functions</summary>
-<hr/>
 {% endif -%}
+{% endblock %}
+
+{% block content %}
 <table class="file-list">
   <col/>
   <colgroup span="3"/>
