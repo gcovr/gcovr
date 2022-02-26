@@ -1,0 +1,59 @@
+{
+    "run_at": "2022-02-26 22:26:48 UTC",
+    "service_job_id": "id",
+    "service_name": "gcovr-test-suite",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                1,
+                null,
+                null
+            ],
+            "name": "bar.cpp",
+            "source_digest": "6c8be822626a340d042cab141b750b53"
+        },
+        {
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                1,
+                null
+            ],
+            "name": "foo.cpp",
+            "source_digest": "21e2e5b555f203e4d1b839a74d1fad0a"
+        },
+        {
+            "coverage": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                2,
+                null,
+                1,
+                null,
+                null,
+                1,
+                null,
+                null,
+                2,
+                null
+            ],
+            "name": "main.cpp",
+            "source_digest": "a46111f6700bce3e3f3cb3b7edddf887"
+        }
+    ]
+}
