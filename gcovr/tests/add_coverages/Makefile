@@ -1,4 +1,5 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
+export GCOVR_TEST_SUITE_NO_GIT_COMMAND := 1
 
 all:
 	$(CXX) $(CFLAGS) -c foo.cpp -o foo.o
