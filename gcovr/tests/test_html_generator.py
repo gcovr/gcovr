@@ -16,6 +16,7 @@
 #
 # ****************************************************************************
 
+import logging
 import os
 import pytest
 import sys
@@ -41,10 +42,10 @@ def test_windows__make_short_sourcename(outfile, source_filename):
     source_filename = source_filename.replace('C:', CurrentDrive)
 
     result = _make_short_sourcename(outfile, source_filename)
-    print("=" * 100)
-    print(outfile)
-    print(source_filename)
-    print(result)
+    logging.info("=" * 100)
+    logging.info(outfile)
+    logging.info(source_filename)
+    logging.info(result)
     assert ':' not in result or (result.startswith(CurrentDrive) and ':' not in result[2:])
 
     assert len(result) < 256

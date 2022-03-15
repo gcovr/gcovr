@@ -55,7 +55,7 @@ def qa(session: nox.Session) -> None:
 @nox.session
 def lint(session: nox.Session) -> None:
     """Run the lint (flake8 and black)."""
-    session.install("flake8")
+    session.install("flake8", "flake8-print")
     # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
     if platform.python_implementation() == "CPython":
         session.install(BLACK_PINNED_VERSION)
