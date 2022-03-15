@@ -346,10 +346,12 @@ def remove_duplicate_data(
 ):  # pragma: no cover
     reference_dir = os.path.dirname(reference_file)
     # Loop over the other coverage data
-    for reference_dir in REFERENCE_DIRS[1:]:
+    for reference_dir in REFERENCE_DIRS:  # pragma: no cover
         other_reference_file = os.path.join(reference_dir, coverage_file)
         # ... and unlink the current file if it's identical to the other one.
-        if os.path.isfile(other_reference_file):
+        if other_reference_file != reference_file and os.path.isfile(
+            other_reference_file
+        ):  # pragma: no cover
             with io.open(other_reference_file, encoding=encoding) as f:
                 if coverage == scrub(f.read()):
                     os.unlink(reference_file)
