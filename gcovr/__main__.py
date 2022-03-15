@@ -158,7 +158,7 @@ def main(args=None):
         logger.setLevel(logging.DEBUG)
 
     if cli_options.version:
-        print(f"gcovr {__version__}\n\n{COPYRIGHT}")
+        sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
         sys.exit(0)
 
     if options.html_title == '':

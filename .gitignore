@@ -21,6 +21,9 @@ pip-log.txt
 # wheel
 gcovr-*/
 
+# nox
+.nox*/
+
 # Translations
 *.mo
 

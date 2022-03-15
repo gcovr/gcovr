@@ -18,8 +18,8 @@
 
 import glob
 import io
+import logging
 import os
-import os.path
 import platform
 import pytest
 import re
@@ -159,9 +159,9 @@ def assert_xml_equals(reference, coverage):
 
 
 def run(cmd, cwd=None):
-    print("STDOUT - START", str(cmd))
+    sys.stdout.write(f"STDOUT - START {cmd}\n")
     returncode = subprocess.call(cmd, stderr=subprocess.STDOUT, env=env, cwd=cwd)
-    print("STDOUT - END")
+    sys.stdout.write("STDOUT - END\n")
     return returncode == 0
 
 
@@ -326,7 +326,7 @@ def generate_reference_data(output_pattern):  # pragma: no cover
                 continue
             else:
                 os.makedirs(REFERENCE_DIRS[0], exist_ok=True)
-                print("copying %s to %s" % (generated_file, reference_file))
+                logging.info(f"copying {generated_file} to {reference_file}")
                 shutil.copyfile(generated_file, reference_file)
 
 
@@ -358,10 +358,12 @@ def remove_duplicate_data(
 ):  # pragma: no cover
     reference_dir = os.path.dirname(reference_file)
     # Loop over the other coverage data
-    for reference_dir in REFERENCE_DIRS[1:]:
+    for reference_dir in REFERENCE_DIRS:  # pragma: no cover
         other_reference_file = os.path.join(reference_dir, coverage_file)
         # ... and unlink the current file if it's identical to the other one.
-        if os.path.isfile(other_reference_file):
+        if other_reference_file != reference_file and os.path.isfile(
+            other_reference_file
+        ):  # pragma: no cover
             with io.open(other_reference_file, encoding=encoding) as f:
                 if coverage == scrub(f.read()):
                     os.unlink(reference_file)
