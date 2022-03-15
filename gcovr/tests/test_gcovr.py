@@ -271,11 +271,11 @@ def pytest_generate_tests(metafunc):
                     name == "rounding" and IS_WINDOWS,
                     reason="branch coverage seem to be platform-dependent",
                 ),
-                pytest.mark.skipif(
+                pytest.mark.xfail(
                     name == "html-source-encoding-cp1252" and IS_CLANG,
                     reason="clang doesnt understand -finput-charset=...",
                 ),
-                pytest.mark.skipif(
+                pytest.mark.xfail(
                     name == "gcc-abspath"
                     and (
                         not env["CC"].startswith("gcc-")

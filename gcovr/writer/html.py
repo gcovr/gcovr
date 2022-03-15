@@ -22,7 +22,7 @@ import io
 from argparse import ArgumentTypeError
 
 from ..version import __version__
-from ..utils import _realpath, commonpath, sort_coverage, calculate_coverage, open_text_for_writing
+from ..utils import realpath, commonpath, sort_coverage, calculate_coverage, open_text_for_writing
 
 logger = logging.getLogger("gcovr")
 
@@ -315,7 +315,7 @@ class RootInfo:
         }
 
         display_filename = (
-            os.path.relpath(_realpath(cdata_fname), self.directory)
+            os.path.relpath(realpath(cdata_fname), self.directory)
             .replace('\\', '/'))
 
         if link_report is not None:

@@ -47,7 +47,7 @@ if (sys.platform == "win32") and (sys.version_info < (3, 8)):
     DOS_DEVICE_PATH_PREFIX = "\\\\?\\"
     DOS_DEVICE_PATH_PREFIX_UNC = DOS_DEVICE_PATH_PREFIX + "UNC\\"
 
-    def _realpath(path):
+    def realpath(path):
         path = os.path.realpath(path)
         # If file exist try to resolve the symbolic links
         if os.path.exists(path):
@@ -60,7 +60,11 @@ if (sys.platform == "win32") and (sys.version_info < (3, 8)):
                     path = path[len(DOS_DEVICE_PATH_PREFIX):]
         return path
 else:
-    _realpath = os.path.realpath
+    realpath = os.path.realpath
+
+
+def get_os_independent_path(path):
+    return path.replace(os.path.sep, '/')
 
 
 def search_file(predicate, path, exclude_dirs):
@@ -114,9 +118,9 @@ def commonpath(files):
         return ''
 
     if len(files) == 1:
-        prefix_path = os.path.dirname(_realpath(files[0]))
+        prefix_path = os.path.dirname(realpath(files[0]))
     else:
-        split_paths = [_realpath(path).split(os.path.sep)
+        split_paths = [realpath(path).split(os.path.sep)
                        for path in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
@@ -234,12 +238,8 @@ class Filter(object):
         flags = re.IGNORECASE if is_fs_case_insensitive else 0
         self.pattern = re.compile(pattern, flags)
 
-    @classmethod
-    def _os_independent_path(cls, path):
-        return path.replace(os.path.sep, '/')
-
     def match(self, path):
-        os_independent_path = self._os_independent_path(path)
+        os_independent_path = get_os_independent_path(path)
         return self.pattern.match(os_independent_path)
 
     def __str__(self):
@@ -249,27 +249,27 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path):
-        realpath = _realpath(path)
-        return super(AbsoluteFilter, self).match(realpath)
+        path = realpath(path)
+        return super(AbsoluteFilter, self).match(path)
 
 
 class RelativeFilter(Filter):
     def __init__(self, root, pattern):
         super(RelativeFilter, self).__init__(pattern)
-        self.root = _realpath(root)
+        self.root = realpath(root)
 
     def match(self, path):
-        realpath = _realpath(path)
+        path = realpath(path)
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
         if sys.platform == 'win32':
-            path_drive, _ = os.path.splitdrive(realpath)
+            path_drive, _ = os.path.splitdrive(path)
             root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:
                 return None
 
-        relpath = os.path.relpath(realpath, self.root)
+        relpath = os.path.relpath(path, self.root)
         return super(RelativeFilter, self).match(relpath)
 
     def __str__(self):
@@ -287,8 +287,8 @@ class AlwaysMatchFilter(Filter):
 
 class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
-        realpath = _realpath(directory)
-        os_independent_path = self._os_independent_path(realpath)
+        path = realpath(directory)
+        os_independent_path = get_os_independent_path(path)
         pattern = re.escape(f"{os_independent_path}/")
         super(DirectoryPrefixFilter, self).__init__(pattern)
 
