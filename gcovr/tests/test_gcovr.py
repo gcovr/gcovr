@@ -63,9 +63,8 @@ if IS_WINDOWS:
     import string
 
     used_drives = win32api.GetLogicalDriveStrings().split("\0")
-    free_drives = list(set([c for c in string.ascii_uppercase]) - set(used_drives))
-    if len(free_drives) == 0:
-        raise RuntimeError("No free drive letter found for test.")
+    free_drives = list(set(string.ascii_uppercase) - set(used_drives))
+    assert free_drives, "Must have at least one free drive letter"
     env["GCOVR_TEST_DRIVE_WINDOWS"] = f"{free_drives[0]}:"
 
 CC_REFERENCE = env.get("CC_REFERENCE", CC)
