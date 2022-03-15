@@ -25,6 +25,7 @@ Improvements and new features:
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
 - Replace own logger with python logger module. (:issue:`540`)
 - Fix resolution of relative filters in configuration files. (:issue:`568`)
+- Don't use realpath in data model, only use them for the filter. (:issue:`565`)
 
 Documentation:
 

@@ -63,6 +63,10 @@ else:
     realpath = os.path.realpath
 
 
+def get_os_independent_path(path):
+    return path.replace(os.path.sep, '/')
+
+
 def search_file(predicate, path, exclude_dirs):
     """
     Given a search path, recursively descend to find files that satisfy a
@@ -83,11 +87,11 @@ def search_file(predicate, path, exclude_dirs):
         dirs[:] = [d for d in dirs
                    if not any(exc.match(os.path.join(root, d))
                               for exc in exclude_dirs)]
-        root = realpath(root)
+        root = os.path.abspath(root)
 
         for name in files:
             if predicate(name):
-                yield realpath(os.path.join(root, name))
+                yield os.path.abspath(os.path.join(root, name))
 
 
 def commonpath(files):
@@ -235,7 +239,7 @@ class Filter(object):
         self.pattern = re.compile(pattern, flags)
 
     def match(self, path):
-        os_independent_path = path.replace(os.path.sep, '/')
+        os_independent_path = get_os_independent_path(path)
         return self.pattern.match(os_independent_path)
 
     def __str__(self):
@@ -245,27 +249,27 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path):
-        abspath = realpath(path)
-        return super(AbsoluteFilter, self).match(abspath)
+        path = realpath(path)
+        return super(AbsoluteFilter, self).match(path)
 
 
 class RelativeFilter(Filter):
     def __init__(self, root, pattern):
         super(RelativeFilter, self).__init__(pattern)
-        self.root = root
+        self.root = realpath(root)
 
     def match(self, path):
-        abspath = realpath(path)
+        path = realpath(path)
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
         if sys.platform == 'win32':
-            path_drive, _ = os.path.splitdrive(abspath)
-            root_drive, _ = os.path.splitdrive(realpath(self.root))
+            path_drive, _ = os.path.splitdrive(path)
+            root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:
                 return None
 
-        relpath = os.path.relpath(abspath, self.root)
+        relpath = os.path.relpath(path, self.root)
         return super(RelativeFilter, self).match(relpath)
 
     def __str__(self):
@@ -283,14 +287,14 @@ class AlwaysMatchFilter(Filter):
 
 class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
-        abspath = os.path.realpath(directory)
-        os_independent_dir = abspath.replace(os.path.sep, '/')
-        pattern = re.escape(os_independent_dir + '/')
+        path = realpath(directory)
+        os_independent_path = get_os_independent_path(path)
+        pattern = re.escape(f"{os_independent_path}/")
         super(DirectoryPrefixFilter, self).__init__(pattern)
 
     def match(self, path):
-        normpath = os.path.normpath(path)
-        return super(DirectoryPrefixFilter, self).match(normpath)
+        realpath = os.path.normpath(path)
+        return super(DirectoryPrefixFilter, self).match(realpath)
 
 
 def configure_logging() -> None:

@@ -126,6 +126,8 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         "cmake",
         "yaxmldiff",
     )
+    if platform.system() == "Windows":
+        session.install("pywin32")
     coverage_args = []
     if os.environ.get("USE_COVERAGE") == "true":
         session.install("pytest-cov")
