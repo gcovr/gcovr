@@ -180,6 +180,18 @@ def get_global_stats(covdata):
             branches_total, branches_covered, percent_branches)
 
 
+def summarize_file_coverage(coverage, root_filter):
+    filename = presentable_filename(
+        coverage.filename, root_filter=root_filter)
+
+    branch_total, branch_covered, branch_percent = coverage.branch_coverage()
+    line_total, line_covered, line_percent = coverage.line_coverage()
+    function_total, function_covered, function_percent = coverage.function_coverage()
+    return (filename, line_total, line_covered, line_percent,
+            branch_total, branch_covered, branch_percent,
+            function_total, function_covered, function_percent)
+
+
 def calculate_coverage(covered, total, nan_value=0.0):
     coverage = nan_value
     if total != 0:
@@ -412,20 +424,3 @@ def presentable_filename(filename, root_filter):
         normalized = filename
 
     return normalized.replace('\\', '/')
-
-
-def fixup_percent(percent):
-    # output csv percent values in range [0,1.0]
-    return percent / 100 if percent is not None else None
-
-
-def summarize_file_coverage(coverage, root_filter):
-    filename = presentable_filename(
-        coverage.filename, root_filter=root_filter)
-
-    branch_total, branch_covered, branch_percent = coverage.branch_coverage()
-    line_total, line_covered, line_percent = coverage.line_coverage()
-    function_total, function_covered, function_percent = coverage.function_coverage()
-    return (filename, line_total, line_covered, fixup_percent(line_percent),
-            branch_total, branch_covered, fixup_percent(branch_percent),
-            function_total, function_covered, fixup_percent(function_percent))
