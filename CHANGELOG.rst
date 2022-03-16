@@ -26,6 +26,7 @@ Improvements and new features:
 - Replace own logger with python logger module. (:issue:`540`)
 - Fix resolution of relative filters in configuration files. (:issue:`568`)
 - Don't use realpath in data model, only use them for the filter. (:issue:`565`)
+- Fix sanity check in HTML generator. (:issue:`571`)
 
 Documentation:
 
