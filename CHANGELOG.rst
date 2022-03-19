@@ -23,6 +23,7 @@ Improvements and new features:
 - Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
 - Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
+- Added :option:`--exclude-pattern-prefix` to allow projects to define custom prefixes used in _EXCL_LINE/START/STOP markers. (:issue:`561`)
 - Replace own logger with python logger module. (:issue:`540`)
 - Fix resolution of relative filters in configuration files. (:issue:`568`)
 - Don't use realpath in data model, only use them for the filter. (:issue:`565`)

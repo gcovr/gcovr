@@ -144,6 +144,7 @@ def process_gcov_data(data_fname, covdata, source_fname, options, currdir=None):
         lines,
         filename=key,
         exclude_lines_by_pattern=options.exclude_lines_by_pattern,
+        exclude_pattern_prefix=options.exclude_pattern_prefix,
         flags=parser_flags,
     )
     covdata.setdefault(key, FileCoverage(key)).update(coverage)

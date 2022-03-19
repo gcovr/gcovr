@@ -1028,6 +1028,12 @@ GCOVR_CONFIG_OPTIONS = [
         type=int,
         default=1,
     ),
+    GcovrConfigOption(
+        "exclude_pattern_prefix", ["--exclude-pattern-prefix"],
+        help="Define the regex prefix used in markers / line exclusions (i.e _EXCL_START, _EXCL_START, _EXCL_STOP)",
+        type=str,
+        default=r"[GL]COVR?",
+    ),
 ]
 
 
