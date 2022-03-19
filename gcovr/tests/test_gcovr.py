@@ -73,7 +73,9 @@ CC_REFERENCE = env.get("CC_REFERENCE", CC)
 
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
-    ["gcc-5", "gcc-6", "gcc-8", "gcc-9"] if "gcc" in CC_REFERENCE else ["clang-10"]
+    ["gcc-5", "gcc-6", "gcc-8", "gcc-9"]
+    if "gcc" in CC_REFERENCE
+    else ["clang-10", "clang-13"]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
