@@ -23,6 +23,12 @@ Improvements and new features:
 - Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
 - Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
+- Added :option:`--exclude-pattern-prefix` to allow projects to define custom prefixes used in _EXCL_LINE/START/STOP markers. (:issue:`561`)
+- Replace own logger with python logger module. (:issue:`540`)
+- Fix resolution of relative filters in configuration files. (:issue:`568`)
+- Don't use realpath in data model, only use them for the filter. (:issue:`565`)
+- Fix sanity check in HTML generator. (:issue:`571`)
+- Change file level percent values in JSON summary. (:issue:`570`)
 
 Documentation:
 
@@ -46,6 +52,8 @@ Internal changes:
  - Ensure that shell files are always checked out with LF linebreaks. (:issue:`538`)
  - Add test for compiler option ``-fprofile-abs-path``. (:issue:`521`)
  - Ensure that shell files are always saved with LF linebreaks. (:issue:`547`)
+ - Update the test driver to share the reference data between the different compiler versions. (:issue:`556`)
+ - Add flake8-print to check usage of print function. (:issue:`566`)
 
 5.0 (11 June 2021)
 ------------------

@@ -17,6 +17,7 @@
 # ****************************************************************************
 
 from argparse import ArgumentTypeError, SUPPRESS
+from inspect import isclass
 from locale import getpreferredencoding
 from multiprocessing import cpu_count
 from typing import Iterable, Any
@@ -429,7 +430,7 @@ def _get_value_from_config_entry(cfg_entry, option):
 
         value = cfg_entry.value
         args = ()
-        if option.type is FilterOption:
+        if isclass(option.type) and issubclass(option.type, FilterOption):
             args = [os.path.dirname(cfg_entry.filename)]
         elif option.type is check_input_file:
             value = check_input_file(value, os.path.dirname(cfg_entry.filename))
@@ -1026,6 +1027,12 @@ GCOVR_CONFIG_OPTIONS = [
         const=cpu_count(),
         type=int,
         default=1,
+    ),
+    GcovrConfigOption(
+        "exclude_pattern_prefix", ["--exclude-pattern-prefix"],
+        help="Define the regex prefix used in markers / line exclusions (i.e _EXCL_START, _EXCL_START, _EXCL_STOP)",
+        type=str,
+        default=r"[GL]COVR?",
     ),
 ]
 

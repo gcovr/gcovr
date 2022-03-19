@@ -37,6 +37,10 @@ class Example(object):
         return os.path.basename(self.baseline)
 
 
+def is_compiler(actual: str, *expected: str) -> bool:
+    return any(compiler in actual for compiler in expected)
+
+
 def find_test_cases():
     if sys.platform.startswith('win'):
         return
@@ -44,6 +48,8 @@ def find_test_cases():
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
         for ext in 'txt xml csv json html'.split():
+            if ext == "html" and is_compiler(os.getenv("CC"), "gcc-5", "gcc-6"):
+                continue
             baseline = '{datadir}/{name}.{ext}'.format(
                 datadir=datadir,
                 name=name,

@@ -17,13 +17,13 @@
 # ****************************************************************************
 
 import json
+import logging
 import os
 import functools
 from ..gcov import apply_filter_include_exclude
 
 from ..utils import (
     get_global_stats,
-    Logger,
     presentable_filename,
     sort_coverage,
     summarize_file_coverage,
@@ -34,12 +34,14 @@ from ..coverage import (
     DecisionCoverageUncheckable,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
-    FileCoverage
+    FileCoverage,
 )
+
+logger = logging.getLogger("gcovr")
 
 
 JSON_FORMAT_VERSION = "0.3"
-JSON_SUMMARY_FORMAT_VERSION = "0.4"
+JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
 
@@ -174,11 +176,8 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
     r"""merge a coverage from multiple reports in the format
     partially compatible with gcov JSON output"""
 
-    logger = Logger(options.verbose)
-
     for filename in filenames:
-        gcovr_json_data = {}
-        logger.verbose_msg("Processing JSON file: {}", filename)
+        logger.debug(f"Processing JSON file: {filename}")
 
         with open(filename, "r") as json_file:
             gcovr_json_data = json.load(json_file)
@@ -202,12 +201,12 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
 
             # Ignore if the filename does not match the filter
             if filtered:
-                logger.verbose_msg("  Filtering coverage data for file {}", file_path)
+                logger.debug(f"  Filtering coverage data for file {file_path}")
                 continue
 
             # Ignore if the filename matches the exclude pattern
             if excluded:
-                logger.verbose_msg("  Excluding coverage data for file {}", file_path)
+                logger.debug(f"  Excluding coverage data for file {file_path}")
                 continue
 
             file_coverage = FileCoverage(file_path)
@@ -336,8 +335,7 @@ def _decision_from_json(line, json_decision):
         line.decision = DecisionCoverageUncheckable()
     elif json_decision["type"] == "conditional":
         line.decision = DecisionCoverageConditional(
-            json_decision["count_true"],
-            json_decision["count_false"]
+            json_decision["count_true"], json_decision["count_false"]
         )
     elif json_decision["type"] == "switch":
         line.decision = DecisionCoverageSwitch(json_decision["count"])

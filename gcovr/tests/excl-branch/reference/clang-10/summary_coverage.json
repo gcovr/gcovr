@@ -5,21 +5,21 @@
     "files": [
         {
             "branch_covered": 8,
-            "branch_percent": 0.8,
+            "branch_percent": 80.0,
             "branch_total": 10,
             "filename": "main.cpp",
             "function_covered": 4,
-            "function_percent": 0.667,
+            "function_percent": 66.7,
             "function_total": 6,
             "line_covered": 17,
-            "line_percent": 0.895,
+            "line_percent": 89.5,
             "line_total": 19
         }
     ],
     "function_covered": 4,
     "function_percent": 66.7,
     "function_total": 6,
-    "gcovr/summary_format_version": "0.4",
+    "gcovr/summary_format_version": "0.5",
     "line_covered": 17,
     "line_percent": 89.5,
     "line_total": 19,

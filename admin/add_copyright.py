@@ -20,43 +20,45 @@
 
 import copy
 import os
-import re
+import logging
 import subprocess
 
-import version
+import gcovr.version
 
-REGEX_EMAIL = re.compile(r"\d+\+([^@]+)@users\.noreply\.github\.com")
+DATE = subprocess.check_output(
+    ["git", "log", "-1", "--format=format:%ad", "--date=short"],
+    universal_newlines=True,
+)
+YEAR = DATE[:4]
+VERSION = gcovr.version.__version__
+COPYRIGHT = [
+    f"Copyright (c) 2013-{YEAR} the gcovr authors",
+    "Copyright (c) 2013 Sandia Corporation.",
+    "This software is distributed under the BSD License.",
+    "Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,",
+    "the U.S. Government retains certain rights in this software.",
+]
 HEADER_END = (
     " ****************************************************************************"
 )
 
 
-def getLicenseSection(filename, comment_char="#"):
-    date = subprocess.check_output(
-        ["git", "log", "-1", "--format=format:%ad", "--date=short", "--", filename],
-        universal_newlines=True,
-    )
-    year = date[:4]
+def getLicenseSection(comment_char="#"):
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
-    yield comment_char + " This file is part of gcovr {}, a parsing and reporting tool for gcov.".format(
-        version.__version__
-    )
+    yield comment_char + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
     yield comment_char + " https://gcovr.com/en/stable"
     yield comment_char
     yield comment_char + " _____________________________________________________________________________"
     yield comment_char
-    yield comment_char + " Copyright (c) 2013-{} the gcovr authors".format(year)
-    yield comment_char + " Copyright (c) 2013 Sandia Corporation."
-    yield comment_char + " This software is distributed under the BSD License."
-    yield comment_char + " Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,"
-    yield comment_char + " the U.S. Government retains certain rights in this software."
+    for line in COPYRIGHT:
+        yield comment_char + " " + line
     yield comment_char + " For more information, see the README.rst file."
     yield comment_char
     yield comment_char + HEADER_END
 
 
-def addCopyrightToPythonFile(filename, lines):
+def addCopyrightHeaderToPythonFile(filename, lines):
     # Empty file should be kept empty
     if len(lines) == 0:
         return lines
@@ -74,15 +76,14 @@ def addCopyrightToPythonFile(filename, lines):
     newLines.append("")
 
     # Add license information
-    for line in getLicenseSection(filename):
-        newLines.append(line)
+    newLines.extend(getLicenseSection())
 
     iterLines = iter(lines)
 
     # skip lines until header end marker
     headerEndReached = False
     for line in iterLines:
-        if len(line) > 0 and line == '#' + HEADER_END:
+        if len(line) > 0 and line == "#" + HEADER_END:
             headerEndReached = True
             break
 
@@ -97,30 +98,65 @@ def addCopyrightToPythonFile(filename, lines):
         newLines.extend(iterLines)
     # no header found
     else:
+        newLines.append("\n")
         # keep all other lines
         newLines.extend(lines)
 
     return newLines
 
 
+def updateCopyrightString(filename, lines):
+    newLines = []
+
+    iterLines = iter(lines)
+    for line in iterLines:
+        newLines.append(line)
+        if line == "COPYRIGHT = (":
+            break
+    else:
+        raise RuntimeError(f"Start of copyright not found in {filename}.")
+
+    for line in COPYRIGHT:
+        newLines.append(f'   "{line}\\n"')
+
+    for line in iterLines:
+        if line == ")":
+            newLines.append(line)
+            break
+    else:
+        raise RuntimeError(f"End of copyright not found in {filename}.")
+
+    newLines.extend(iterLines)
+
+    return newLines
+
+
 def main():
     for root, dirs, files in os.walk(".", topdown=True):
-        for skip_dir in [".git", "reference"]:
-            if skip_dir in dirs:
-                dirs.remove(skip_dir)
+
+        def skip_dir(dir: str) -> bool:
+            return dir in [".git", "reference"] or dir.startswith(".nox")
+
+        dirs[:] = [dir for dir in dirs if not skip_dir(dir)]
 
         for filename in files:
-            handler = None
+            handlers = []
             fullname = os.path.join(root, filename)
             if filename.endswith(".py"):
-                handler = addCopyrightToPythonFile
+                handlers.append(addCopyrightHeaderToPythonFile)
+            if filename == "__main__.py":
+                handlers.append(updateCopyrightString)
 
-            if handler is not None:
+            if handlers:
                 with open(fullname) as f:
                     lines = list(line.rstrip() for line in f)
-                newLines = handler(fullname, copy.copy(lines))  # use a copy because of the compare in the next line
+                newLines = copy.copy(
+                    lines
+                )  # use a copy because of the compare at the end
+                for handler in handlers:
+                    newLines = handler(fullname, newLines)
                 if newLines != lines:
-                    print("Modifying {}".format(fullname))
+                    logging.info("Modifying {}".format(fullname))
                     with open(fullname, "w") as f:
                         for line in newLines:
                             f.write(line + "\n")

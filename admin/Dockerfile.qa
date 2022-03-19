@@ -40,7 +40,14 @@ RUN \
 
 WORKDIR /gcovr
 
-ENV CC=$CC CXX=$CXX GCOVR_ISOLATED_TEST=zkQEVaBpXF1i NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
+ENV \
+  CC=$CC \
+  CXX=$CXX \
+  GCOVR_ISOLATED_TEST=zkQEVaBpXF1i \
+  NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
+# Separate instruction because of reference to NOX_ENV_DIR
+ENV \
+  XDG_CACHE_HOME=$NOX_ENV_DIR/.cache
 
 # Create new user "docker" and set password to "docker"
 RUN addgroup docker
