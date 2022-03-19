@@ -18,8 +18,8 @@
 
 import glob
 import io
+import logging
 import os
-import os.path
 import platform
 import pytest
 import re
@@ -56,6 +56,18 @@ skip_clean = None
 
 CC = os.path.split(env["CC"])[1]
 IS_CLANG = True if CC.startswith("clang") else False
+
+IS_WINDOWS = platform.system() == "Windows"
+if IS_WINDOWS:
+    import win32api
+    import string
+
+    used_drives = win32api.GetLogicalDriveStrings().split("\0")
+    sys.stdout.write(f"Used drives: {used_drives}")
+    free_drives = list(set(string.ascii_uppercase) - set(used_drives))
+    sys.stdout.write(f"Free drives: {free_drives}")
+    assert free_drives, "Must have at least one free drive letter"
+    env["GCOVR_TEST_DRIVE_WINDOWS"] = f"{free_drives[0]}:"
 
 CC_REFERENCE = env.get("CC_REFERENCE", CC)
 
@@ -149,9 +161,9 @@ def assert_xml_equals(reference, coverage):
 
 
 def run(cmd, cwd=None):
-    print("STDOUT - START", str(cmd))
+    sys.stdout.write(f"STDOUT - START {cmd}\n")
     returncode = subprocess.call(cmd, stderr=subprocess.STDOUT, env=env, cwd=cwd)
-    print("STDOUT - END")
+    sys.stdout.write("STDOUT - END\n")
     return returncode == 0
 
 
@@ -191,8 +203,6 @@ KNOWN_FORMATS = [
 
 def pytest_generate_tests(metafunc):
     """generate a list of all available integration tests."""
-
-    is_windows = platform.system() == "Windows"
 
     global skip_clean
     skip_clean = metafunc.config.getoption("skip_clean")
@@ -249,14 +259,18 @@ def pytest_generate_tests(metafunc):
                 continue
 
             marks = [
+                pytest.mark.skipif(
+                    name == "simple1-drive-subst" and not IS_WINDOWS,
+                    reason="drive substitution only available on windows",
+                ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
                     and format == "html"
-                    and is_windows,
+                    and IS_WINDOWS,
                     reason="branch coverage details seem to be platform-dependent",
                 ),
                 pytest.mark.xfail(
-                    name == "rounding" and is_windows,
+                    name == "rounding" and IS_WINDOWS,
                     reason="branch coverage seem to be platform-dependent",
                 ),
                 pytest.mark.xfail(
@@ -314,7 +328,7 @@ def generate_reference_data(output_pattern):  # pragma: no cover
                 continue
             else:
                 os.makedirs(REFERENCE_DIRS[0], exist_ok=True)
-                print("copying %s to %s" % (generated_file, reference_file))
+                logging.info(f"copying {generated_file} to {reference_file}")
                 shutil.copyfile(generated_file, reference_file)
 
 
@@ -346,10 +360,12 @@ def remove_duplicate_data(
 ):  # pragma: no cover
     reference_dir = os.path.dirname(reference_file)
     # Loop over the other coverage data
-    for reference_dir in REFERENCE_DIRS[1:]:
+    for reference_dir in REFERENCE_DIRS:  # pragma: no cover
         other_reference_file = os.path.join(reference_dir, coverage_file)
         # ... and unlink the current file if it's identical to the other one.
-        if os.path.isfile(other_reference_file):
+        if other_reference_file != reference_file and os.path.isfile(
+            other_reference_file
+        ):  # pragma: no cover
             with io.open(other_reference_file, encoding=encoding) as f:
                 if coverage == scrub(f.read()):
                     os.unlink(reference_file)

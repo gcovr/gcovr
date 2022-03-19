@@ -490,7 +490,7 @@ def print_html_report(covdata, output_file, options):
         data['source_lines'] = []
         currdir = os.getcwd()
         os.chdir(options.root_dir)
-        max_line_from_cdata = max(cdata.lines.keys())
+        max_line_from_cdata = max(cdata.lines.keys(), default=0)
         try:
             with io.open(data['filename'], 'r', encoding=options.source_encoding,
                          errors='replace') as source_file:

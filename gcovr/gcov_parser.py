@@ -55,7 +55,7 @@ from .decision_analysis import DecisionParser
 logger = logging.getLogger("gcovr")
 
 _EXCLUDE_LINE_FLAG = "_EXCL_"
-_EXCLUDE_LINE_PATTERN = re.compile(r"([GL]COVR?)_EXCL_(LINE|START|STOP)")
+_EXCLUDE_LINE_PATTERN_POSTFIX = r"_EXCL_(LINE|START|STOP)"
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -279,6 +279,7 @@ def parse_coverage(
     *,
     filename: str,
     exclude_lines_by_pattern: Optional[str],
+    exclude_pattern_prefix: Optional[str],
     flags: ParserFlags,
 ) -> FileCoverage:
     """
@@ -293,6 +294,7 @@ def parse_coverage(
         filename: for error reports
         exclude_lines_by_pattern: string with regex syntax to exclude
             individual lines
+        exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers.
         flags: various choices for the parser behavior
 
     Returns:
@@ -334,6 +336,7 @@ def parse_coverage(
             lines=src_lines,
             warnings=_ExclusionRangeWarnings(filename),
             exclude_lines_by_pattern=exclude_lines_by_pattern,
+            exclude_pattern_prefix=exclude_pattern_prefix,
         )
     else:
         line_is_excluded = _make_is_in_any_range([])
@@ -861,7 +864,8 @@ class _ExclusionRangeWarnings:
     >>> caplog.clear()
     >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
     ...     source.splitlines(), filename='example.cpp',
-    ...    flags=ParserFlags.RESPECT_EXCLUSION_MARKERS, exclude_lines_by_pattern=None)
+    ...     flags=ParserFlags.RESPECT_EXCLUSION_MARKERS, exclude_lines_by_pattern=None,
+    ...     exclude_pattern_prefix='[GL]COVR?')
     >>> for message in caplog.record_tuples:
     ...     print(f"{message[1]}: {message[2]}")
     30: mismatched coverage exclusion flags.
@@ -915,14 +919,15 @@ def _find_excluded_ranges(
     *,
     warnings: _ExclusionRangeWarnings,
     exclude_lines_by_pattern: Optional[str] = None,
+    exclude_pattern_prefix: str,
 ) -> Callable[[int], bool]:
     """
     Scan through all lines to find line ranges covered by exclusion markers.
 
     Example:
-    >>> lines = [(11, '//GCOV_EXCL_LINE'), (13, '//IGNORE'), (15, '//GCOV_EXCL_START'), (18, '//GCOV_EXCL_STOP')]
+    >>> lines = [(11, '//PREFIX_EXCL_LINE'), (13, '//IGNORE'), (15, '//PREFIX_EXCL_START'), (18, '//PREFIX_EXCL_STOP')]
     >>> exclude = _find_excluded_ranges(
-    ...     lines, warnings=..., exclude_lines_by_pattern = '.*IGNORE')
+    ...     lines, warnings=..., exclude_lines_by_pattern = '.*IGNORE', exclude_pattern_prefix='PREFIX')
     >>> [lineno for lineno in range(20) if exclude(lineno)]
     [11, 13, 15, 16, 17]
     """
@@ -942,7 +947,10 @@ def _find_excluded_ranges(
             #
             # START flags are added to the exlusion stack
             # STOP flags remove a marker from the exclusion stack
-            for header, flag in _EXCLUDE_LINE_PATTERN.findall(code):
+            excl_line_pattern = re.compile(
+                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_LINE_PATTERN_POSTFIX
+            )
+            for header, flag in excl_line_pattern.findall(code):
 
                 if flag == "LINE":
                     if exclusion_stack:

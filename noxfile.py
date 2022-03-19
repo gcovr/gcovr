@@ -55,7 +55,7 @@ def qa(session: nox.Session) -> None:
 @nox.session
 def lint(session: nox.Session) -> None:
     """Run the lint (flake8 and black)."""
-    session.install("flake8")
+    session.install("flake8", "flake8-print")
     # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
     if platform.python_implementation() == "CPython":
         session.install(BLACK_PINNED_VERSION)
@@ -126,6 +126,8 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         "cmake",
         "yaxmldiff",
     )
+    if platform.system() == "Windows":
+        session.install("pywin32")
     coverage_args = []
     if os.environ.get("USE_COVERAGE") == "true":
         session.install("pytest-cov")
