@@ -93,7 +93,7 @@ jobs:
         include:
 
           # Test additional compilers with Linux.
-          # Note that Clang-10 is handled via Docker.
+          # Note that Clang-10 and Clang-13 is handled via Docker.
           - os: ubuntu-18.04
             gcc: gcc-5
             python-version: '3.8'
@@ -185,7 +185,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, clang-10]
+        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, clang-10, clang-13]
 
     steps:
     - name: Install dependencies
