@@ -37,7 +37,6 @@ Documentation:
 Internal changes:
 
  - Add support for clang-10 to docker tests. (:issue:`484`)
- - Add support for gcc-9 to docker tests. (:issue:`527`)
  - Clean GCC environment variables in test suite. (:issue:`493`)
  - Fix problems from deployment of release 5.0. (:issue:`494`)
  - Use yaxmldiff for XML diffing in tests. (:issue:`495`)
@@ -54,6 +53,7 @@ Internal changes:
  - Ensure that shell files are always saved with LF linebreaks. (:issue:`547`)
  - Update the test driver to share the reference data between the different compiler versions. (:issue:`556`)
  - Add flake8-print to check usage of print function. (:issue:`566`)
+ - Add support for gcc-9 and clang-13 to docker tests. (:issue:`527`)
 
 5.0 (11 June 2021)
 ------------------
