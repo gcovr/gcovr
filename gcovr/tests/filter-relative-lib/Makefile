@@ -39,7 +39,7 @@ coveralls: coverage.json
 links:
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
 	cd project; \
-	   test -d relevant-library || ln -sT ../external-library relevant-library
+	   test -d relevant-library || ln -s ../external-library relevant-library
 else
 	cd project; \
 	   test -d relevant-library || cmd.exe /C "mklink /j relevant-library ..\external-library"
