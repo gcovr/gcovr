@@ -80,8 +80,7 @@ REFERENCE_DIR_VERSION_LIST = (
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
-    if platform.system() == "Windows":
-        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-Windows")
+    REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
     if ref in CC_REFERENCE:
         break
 REFERENCE_DIRS.reverse()
@@ -283,6 +282,11 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.xfail(
                     name == "html-source-encoding-cp1252" and IS_MACOS,
                     reason="On MacOS -finput-charset=cp1252 isn't supported",
+                ),
+                pytest.mark.xfail(
+                    name in ["excl-branch", "exclude-throw-branches", "html-themes"]
+                    and IS_MACOS,
+                    reason="On MacOS the constructor is called twice",
                 ),
                 pytest.mark.xfail(
                     name == "gcc-abspath"
