@@ -57,6 +57,7 @@ skip_clean = None
 CC = os.path.split(env["CC"])[1]
 IS_CLANG = True if CC.startswith("clang") else False
 
+IS_MACOS = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
 if IS_WINDOWS:
     import win32api
@@ -278,6 +279,10 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.xfail(
                     name == "html-source-encoding-cp1252" and IS_CLANG,
                     reason="clang doesnt understand -finput-charset=...",
+                ),
+                pytest.mark.xfail(
+                    name == "html-source-encoding-cp1252" and IS_MACOS,
+                    reason="On MacOS -finput-charset=cp1252 isn't supported",
                 ),
                 pytest.mark.xfail(
                     name == "gcc-abspath"
