@@ -123,6 +123,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         "lxml",
         "pygments==2.7.4",
         "pytest",
+        "pytest-timeout",
         "cmake",
         "yaxmldiff",
     )

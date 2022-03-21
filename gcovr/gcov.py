@@ -21,6 +21,7 @@ import re
 import shlex
 import subprocess
 import io
+from threading import Lock
 
 from .utils import search_file, commonpath
 from .workers import locked_directory
@@ -363,12 +364,14 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
 
 
 class gcov:
+    __lock = Lock()
     __cmd = None
     __cmd_split = None
     __default_options = []
     __help_output = None
 
     def __init__(self, cmd):
+        gcov.__lock.acquire()
         if gcov.__cmd is None:
             gcov.__cmd = cmd
             # If the first element of cmd - the executable name - has embedded spaces
@@ -392,7 +395,9 @@ class gcov:
                     f"supported by '{cmd}'. Source files with identical file names "
                     "may result in incorrect coverage."
                 )
+            gcov.__lock.release()
         else:
+            gcov.__lock.release()
             assert (
                 gcov.__cmd == cmd
             ), f"Gcov command must not me changed, expected '{gcov.__cmd}', got '{cmd}'"
@@ -405,7 +410,7 @@ class gcov:
                     [help_option],
                     universal_newlines=True,
                 )
-                out, _ = gcov_process.communicate()
+                out, _ = gcov_process.communicate(timeout=30)
 
                 if not gcov_process.returncode:
                     # gcov execution was successful, help argument is not supported.
