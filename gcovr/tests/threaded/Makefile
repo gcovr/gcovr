@@ -1,5 +1,7 @@
 CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
 
+GCOVR += --verbose
+
 all:
 	$(CXX) $(CFLAGS) -c subdir/A/file1.cpp -o subdir/A/file1.o
 	$(CXX) $(CFLAGS) -c subdir/A/file2.cpp -o subdir/A/file2.o
@@ -13,6 +15,7 @@ all:
 
 run: txt xml html sonarqube coveralls
 
+# Activate verbose mode because of hanging pypy in GitHub actions
 coverage.json:
 	./subdir/testcase
 	$(GCOVR) -j 4 -r subdir --json $@
