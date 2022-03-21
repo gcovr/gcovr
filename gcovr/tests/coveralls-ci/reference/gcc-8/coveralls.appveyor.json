@@ -1,1 +1,0 @@
-{"commit_sha": "APPVEYOR_REPO_COMMIT", "run_at": "2020-08-17 21:07:15 UTC", "service_job_id": "APPVEYOR_JOB_ID", "service_name": "appveyor", "service_number": "APPVEYOR_JOB_NUMBER", "service_pull_request": "123", "source_files": [{"coverage": [null, 1, 1, null], "name": "main.cpp", "source_digest": "931745ec4387e9df02e2c3590b65f863"}]}

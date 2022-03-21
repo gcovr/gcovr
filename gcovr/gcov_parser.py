@@ -34,6 +34,7 @@ The behavior of this parser was informed by the following sources:
 
 
 import enum
+import logging
 import re
 
 from typing import (
@@ -50,10 +51,11 @@ from typing import (
 
 from .coverage import FileCoverage
 from .decision_analysis import DecisionParser
-from .utils import Logger
+
+logger = logging.getLogger("gcovr")
 
 _EXCLUDE_LINE_FLAG = "_EXCL_"
-_EXCLUDE_LINE_PATTERN = re.compile(r"([GL]COVR?)_EXCL_(LINE|START|STOP)")
+_EXCLUDE_LINE_PATTERN_POSTFIX = r"_EXCL_(LINE|START|STOP)"
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -269,7 +271,6 @@ _LineWithError = Tuple[str, Exception]
 
 class _Context(NamedTuple):
     flags: ParserFlags
-    logger: Logger
     filename: str
 
 
@@ -277,8 +278,8 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    logger: Logger,
     exclude_lines_by_pattern: Optional[str],
+    exclude_pattern_prefix: Optional[str],
     flags: ParserFlags,
 ) -> FileCoverage:
     """
@@ -291,9 +292,9 @@ def parse_coverage(
     Arguments:
         lines: the lines of the file to be parsed (excluding newlines)
         filename: for error reports
-        logger: for error reports
         exclude_lines_by_pattern: string with regex syntax to exclude
             individual lines
+        exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers.
         flags: various choices for the parser behavior
 
     Returns:
@@ -304,7 +305,7 @@ def parse_coverage(
         is enabled.
     """
 
-    context = _Context(flags, logger, filename)
+    context = _Context(flags, filename)
 
     lines_with_errors: List[_LineWithError] = []
 
@@ -333,8 +334,9 @@ def parse_coverage(
     if flags & ParserFlags.RESPECT_EXCLUSION_MARKERS:
         line_is_excluded = _find_excluded_ranges(
             lines=src_lines,
-            warnings=_ExclusionRangeWarnings(logger, filename),
+            warnings=_ExclusionRangeWarnings(filename),
             exclude_lines_by_pattern=exclude_lines_by_pattern,
+            exclude_pattern_prefix=exclude_pattern_prefix,
         )
     else:
         line_is_excluded = _make_is_in_any_range([])
@@ -360,7 +362,7 @@ def parse_coverage(
         _add_coverage_for_function(coverage, state.lineno + 1, function, context)
 
     if flags & ParserFlags.PARSE_DECISIONS:
-        decision_parser = DecisionParser(filename, coverage, src_lines, logger)
+        decision_parser = DecisionParser(filename, coverage, src_lines)
         decision_parser.parse_all_lines()
 
     _report_lines_with_errors(lines_with_errors, context)
@@ -434,11 +436,8 @@ def _gather_coverage_from_line(
 
         exclusion_reason = _branch_can_be_excluded(line, state, context.flags)
         if exclusion_reason:
-            context.logger.verbose_msg(
-                "Excluding unreachable branch on line {} in file {}: {}",
-                state.lineno,
-                context.filename,
-                exclusion_reason,
+            logger.debug(
+                f"Excluding unreachable branch on line {state.lineno} in file {context.filename}: {exclusion_reason}"
             )
             return state
 
@@ -483,25 +482,22 @@ def _report_lines_with_errors(
     lines = [line for line, _ in lines_with_errors]
     errors = [error for _, error in lines_with_errors]
 
-    context.logger.warn(
-        "Unrecognized GCOV output for {source}\n"
-        "\t  {lines}\n"
+    lines_output = "\n\t  ".join(lines)
+    logger.warning(
+        f"Unrecognized GCOV output for {context.filename}\n"
+        f"\t  {lines_output}\n"
         "\tThis is indicative of a gcov output parse error.\n"
         "\tPlease report this to the gcovr developers\n"
-        "\tat <https://github.com/gcovr/gcovr/issues>.",
-        source=context.filename,
-        lines="\n\t  ".join(lines),
+        "\tat <https://github.com/gcovr/gcovr/issues>."
     )
 
     for ex in errors:
-        context.logger.warn(
-            "Exception during parsing:\n\t{type}: {msg}", type=type(ex).__name__, msg=ex
-        )
+        logger.warning(f"Exception during parsing:\n\t{type(ex).__name__}: {ex}")
 
     if context.flags & ParserFlags.IGNORE_PARSE_ERRORS:
         return
 
-    context.logger.error(
+    logger.error(
         "Exiting because of parse errors.\n"
         "\tYou can run gcovr with --gcov-ignore-parse-errors\n"
         "\tto continue anyway."
@@ -591,11 +587,8 @@ def _add_coverage_for_function(
     name, calls, _, _ = function
 
     if _function_can_be_excluded(name, context.flags):
-        context.logger.verbose_msg(
-            "Ignoring Symbol {func_name} in line {line} in file {file_name}",
-            func_name=name,
-            line=lineno,
-            file_name=context.filename,
+        logger.debug(
+            f"Ignoring Symbol {name} in line {lineno} in file {context.filename}"
         )
         return
 
@@ -867,71 +860,57 @@ class _ExclusionRangeWarnings:
     ...  1: 5: baz // GCOV_EXCL_STOP
     ...  1: 6: "GCOVR_EXCL_START"
     ... '''
-    >>> import sys; sys.stderr = sys.stdout  # redirect warnings
+    >>> caplog = getfixture('caplog')
+    >>> caplog.clear()
     >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
-    ...     source.splitlines(), filename='example.cpp', logger=Logger(),
-    ...    flags=ParserFlags.RESPECT_EXCLUSION_MARKERS, exclude_lines_by_pattern=None)
-    (WARNING) mismatched coverage exclusion flags.
+    ...     source.splitlines(), filename='example.cpp',
+    ...     flags=ParserFlags.RESPECT_EXCLUSION_MARKERS, exclude_lines_by_pattern=None,
+    ...     exclude_pattern_prefix='[GL]COVR?')
+    >>> for message in caplog.record_tuples:
+    ...     print(f"{message[1]}: {message[2]}")
+    30: mismatched coverage exclusion flags.
               LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp.
-    (WARNING) GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.
-    (WARNING) GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 5, when processing example.cpp.
-    (WARNING) The coverage exclusion region start flag GCOVR_EXCL_START
+    30: GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.
+    30: GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 5, when processing example.cpp.
+    30: The coverage exclusion region start flag GCOVR_EXCL_START
               on line 6 did not have corresponding GCOVR_EXCL_STOP flag
               in file example.cpp.
     """
 
-    def __init__(self, logger: Logger, filename: str) -> None:
-        self.logger = logger
+    def __init__(self, filename: str) -> None:
         self.filename = filename
 
     def mismatched_start_stop(
         self, start_lineno: int, start: str, stop_lineno: int, stop: str
     ) -> None:
         """warn that start/stop region markers don't match"""
-        self.logger.warn(
-            "{start} found on line {start_lineno} "
-            "was terminated by {stop} on line {stop_lineno}, "
-            "when processing {filename}.",
-            start=start,
-            start_lineno=start_lineno,
-            stop=stop,
-            stop_lineno=stop_lineno,
-            filename=self.filename,
+        logger.warning(
+            f"{start} found on line {start_lineno} "
+            f"was terminated by {stop} on line {stop_lineno}, "
+            f"when processing {self.filename}."
         )
 
     def stop_without_start(self, lineno: int, expected_start: str, stop: str) -> None:
         """warn that a region was ended without corresponding start marker"""
-        self.logger.warn(
+        logger.warning(
             "mismatched coverage exclusion flags.\n"
-            "          {stop} found on line {lineno} without corresponding {start}, "
-            "when processing {filename}.",
-            start=expected_start,
-            stop=stop,
-            lineno=lineno,
-            filename=self.filename,
+            f"          {stop} found on line {lineno} without corresponding {expected_start}, "
+            f"when processing {self.filename}."
         )
 
     def start_without_stop(self, lineno: int, start: str, expected_stop: str) -> None:
         """warn that a region was started but not closed"""
-        self.logger.warn(
-            "The coverage exclusion region start flag {start}\n"
-            "          on line {lineno} did not have corresponding {stop} flag\n"
-            "          in file {filename}.",
-            start=start,
-            stop=expected_stop,
-            lineno=lineno,
-            filename=self.filename,
+        logger.warning(
+            f"The coverage exclusion region start flag {start}\n"
+            f"          on line {lineno} did not have corresponding {expected_stop} flag\n"
+            f"          in file {self.filename}."
         )
 
     def line_after_start(self, lineno: int, start: str, start_lineno: str) -> None:
         """warn that a region was started but an excluded line was found"""
-        self.logger.warn(
-            "{start} found on line {lineno} in excluded region started on line {start_lineno}, "
-            "when processing {filename}.",
-            start=start,
-            lineno=lineno,
-            start_lineno=start_lineno,
-            filename=self.filename,
+        logger.warning(
+            f"{start} found on line {lineno} in excluded region started on line {start_lineno}, "
+            f"when processing {self.filename}."
         )
 
 
@@ -940,14 +919,15 @@ def _find_excluded_ranges(
     *,
     warnings: _ExclusionRangeWarnings,
     exclude_lines_by_pattern: Optional[str] = None,
+    exclude_pattern_prefix: str,
 ) -> Callable[[int], bool]:
     """
     Scan through all lines to find line ranges covered by exclusion markers.
 
     Example:
-    >>> lines = [(11, '//GCOV_EXCL_LINE'), (13, '//IGNORE'), (15, '//GCOV_EXCL_START'), (18, '//GCOV_EXCL_STOP')]
+    >>> lines = [(11, '//PREFIX_EXCL_LINE'), (13, '//IGNORE'), (15, '//PREFIX_EXCL_START'), (18, '//PREFIX_EXCL_STOP')]
     >>> exclude = _find_excluded_ranges(
-    ...     lines, warnings=..., exclude_lines_by_pattern = '.*IGNORE')
+    ...     lines, warnings=..., exclude_lines_by_pattern = '.*IGNORE', exclude_pattern_prefix='PREFIX')
     >>> [lineno for lineno in range(20) if exclude(lineno)]
     [11, 13, 15, 16, 17]
     """
@@ -967,7 +947,10 @@ def _find_excluded_ranges(
             #
             # START flags are added to the exlusion stack
             # STOP flags remove a marker from the exclusion stack
-            for header, flag in _EXCLUDE_LINE_PATTERN.findall(code):
+            excl_line_pattern = re.compile(
+                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_LINE_PATTERN_POSTFIX
+            )
+            for header, flag in excl_line_pattern.findall(code):
 
                 if flag == "LINE":
                     if exclusion_stack:
@@ -1132,6 +1115,6 @@ def _int_from_gcov_unit(formatted: str) -> int:
     units = "kMGTPEZY"
     for exponent, unit in enumerate(units, 1):
         if formatted.endswith(unit):
-            return int(float(formatted[:-1]) * 1000 ** exponent)
+            return int(float(formatted[:-1]) * 1000**exponent)
 
     return int(formatted)

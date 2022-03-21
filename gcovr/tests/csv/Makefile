@@ -10,4 +10,4 @@ csv:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	#rm -f coverage*.csv
+	rm -f coverage*.csv

@@ -17,11 +17,13 @@ BLACK_CONFORM_FILES = [
     "gcovr/gcov.py",
     "gcovr/gcov_parser.py",
     "gcovr/timestamps.py",
+    "gcovr/tests/test_gcov_parser.py",
     "gcovr/writer/json.py",
+    "gcovr/tests/test_gcovr.py",
 ]
+BLACK_PINNED_VERSION = "black==22.1.0"
 
 nox.options.sessions = ["qa"]
-nox.options.reuse_existing_virtualenvs = True
 
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
@@ -53,10 +55,10 @@ def qa(session: nox.Session) -> None:
 @nox.session
 def lint(session: nox.Session) -> None:
     """Run the lint (flake8 and black)."""
-    session.install("flake8")
+    session.install("flake8", "flake8-print")
     # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
     if platform.python_implementation() == "CPython":
-        session.install("black")
+        session.install(BLACK_PINNED_VERSION)
     if session.posargs:
         args = session.posargs
     else:
@@ -78,7 +80,7 @@ def lint(session: nox.Session) -> None:
 @nox.session
 def black(session: nox.Session) -> None:
     """Run black, a code formatter and format checker."""
-    session.install("black")
+    session.install(BLACK_PINNED_VERSION)
     if session.posargs:
         session.run("python", "-m", "black", *session.posargs)
     else:
@@ -121,9 +123,12 @@ def run_tests(session: nox.Session, version: str) -> None:
         "lxml",
         "pygments==2.7.4",
         "pytest",
+        "pytest-timeout",
         "cmake",
         "yaxmldiff",
     )
+    if platform.system() == "Windows":
+        session.install("pywin32")
     coverage_args = []
     if os.environ.get("USE_COVERAGE") == "true":
         session.install("pytest-cov")
@@ -170,7 +175,7 @@ def build_wheel(session: nox.Session) -> None:
     session.notify("check_wheel")
 
 
-@nox.session(reuse_venv=False)
+@nox.session
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel, should not be used directly."""
     session.install("wheel", "twine")

@@ -35,5 +35,37 @@ def print_csv_report(covdata, output_file, options):
                         'branch_total', 'branch_covered', 'branch_percent',
                          'function_total', 'function_covered', 'function_percent'))
         for key in keys:
-            writer.writerow(summarize_file_coverage(covdata[key],
-                                                    options.root_filter))
+            (
+                filename,
+                line_total,
+                line_covered,
+                line_percent,
+                branch_total,
+                branch_covered,
+                branch_percent,
+                function_total,
+                function_covered,
+                function_percent,
+            ) = summarize_file_coverage(covdata[key], options.root_filter)
+            line_percent = fixup_percent(line_percent)
+            branch_percent = fixup_percent(branch_percent)
+            function_percent = fixup_percent(function_percent)
+            writer.writerow(
+                [
+                    filename,
+                    line_total,
+                    line_covered,
+                    line_percent,
+                    branch_total,
+                    branch_covered,
+                    branch_percent,
+                    function_total,
+                    function_covered,
+                    function_percent,
+                ]
+            )
+
+
+def fixup_percent(percent):
+    # output csv percent values in range [0,1.0]
+    return percent / 100 if percent is not None else None

@@ -5,7 +5,7 @@
 # Copyright 2013-2020 the gcovr authors
 # Copyright 2013 Sandia Corporation
 # This software is distributed under the BSD license.
-
+import logging
 import re
 
 from .coverage import (
@@ -13,6 +13,8 @@ from .coverage import (
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
 )
+
+logger = logging.getLogger("gcovr")
 
 # for type annotations:
 if False:
@@ -111,15 +113,12 @@ class DecisionParser(object):
             Reference to the active coverage data.
         lines:
             The encoding of the source files
-        logger:
-            The logger to which decision analysis logs should be written to.
     """
 
-    def __init__(self, fname, coverage, lines, logger):
+    def __init__(self, fname, coverage, lines):
         self.fname = fname
         self.coverage = coverage
         self.lines = lines
-        self.logger = logger
 
         # status variables for decision analysis
         self.decision_analysis_active = (
@@ -131,7 +130,7 @@ class DecisionParser(object):
         self.decision_analysis_open_brackets = 0
 
     def parse_all_lines(self):
-        self.logger.verbose_msg("Starting the decision analysis")
+        logger.debug("Starting the decision analysis")
 
         # start to iterate through the lines
         for lineno, code in self.lines:
@@ -182,9 +181,7 @@ class DecisionParser(object):
                                 # it's a compplex decision with more than 2 branches. No accurate detection possible
                                 # Set the decision to uncheckable
                                 line_coverage.decision = DecisionCoverageUncheckable()
-                                self.logger.verbose_msg(
-                                    "Uncheckable decision at line {line}", line=lineno
-                                )
+                                logger.debug(f"Uncheckable decision at line {lineno}")
                         else:
                             # normal (non-compact) branch, analyze execution of following lines
                             self.decision_analysis_active = True
@@ -218,4 +215,4 @@ class DecisionParser(object):
                                 self.coverage.line(lineno + 1).count
                             )
 
-        self.logger.verbose_msg("Decision Analysis finished!")
+        logger.debug("Decision Analysis finished!")
