@@ -18,11 +18,14 @@
 
 import glob
 import os
+import platform
 import pytest
 import subprocess
 import sys
 
 from gcovr.tests.test_gcovr import SCRUBBERS, ASSERT_EQUALS
+
+IS_MACOS = platform.system() == "Darwin"
 
 datadir = os.path.dirname(os.path.abspath(__file__))
 
@@ -61,7 +64,11 @@ def find_test_cases():
                 yield Example(name, script, baseline)
 
 
-@pytest.mark.skipif(not os.path.split(os.getenv("CC"))[1].startswith("gcc"), reason="Only for gcc")
+@pytest.mark.skipif(
+    not os.path.split(os.getenv("CC"))[1].startswith("gcc")
+    or IS_MACOS,
+    reason="Only for gcc"
+)
 @pytest.mark.parametrize('example', find_test_cases(), ids=str)
 def test_example(example):
     cmd = example.script

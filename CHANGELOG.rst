@@ -54,6 +54,7 @@ Internal changes:
  - Update the test driver to share the reference data between the different compiler versions. (:issue:`556`)
  - Add flake8-print to check usage of print function. (:issue:`566`)
  - Add timeout for each single test. (:issue:`572`)
+ - Add support for gcc-9 and clang-13 to docker tests. (:issue:`527`)
  - Rename the nox sessions for using all compiler versions. (:issue:`555`)
 
 5.0 (11 June 2021)
