@@ -6,7 +6,7 @@ import shlex
 import sys
 import nox
 
-GCC_VERSIONS = ["gcc-5", "gcc-6", "gcc-8", "clang-10"]
+GCC_VERSIONS = ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "clang-10", "clang-13"]
 GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
 DEFAULT_LINT_DIRECTORIES = ["admin"] + DEFAULT_TEST_DIRECTORIES
@@ -192,9 +192,17 @@ def upload_wheel(session: nox.Session) -> None:
     session.run("twine", "upload", "dist/*", external=True)
 
 
-def docker_container_id(version: str) -> str:
+def docker_container_os(session: nox.Session) -> str:
+    if session.env["CC"] in ["gcc-5", "gcc-6"]:
+        return "ubuntu:18.04"
+    elif session.env["CC"] == "clang-13":
+        return "ubuntu:22.04"
+    return "ubuntu:20.04"
+
+
+def docker_container_id(session: nox.Session, version: str) -> str:
     """Get the docker container ID."""
-    return f"gcovr-qa-{version}-uid_{os.geteuid()}"
+    return f"gcovr-qa-{docker_container_os(session)}-{version}-uid_{os.geteuid()}"
 
 
 @nox.session(python=False)
@@ -223,7 +231,9 @@ def docker_qa_build_compiler(session: nox.Session, version: str) -> None:
         "docker",
         "build",
         "--tag",
-        docker_container_id(version),
+        docker_container_id(session, version),
+        "--build-arg",
+        f"DOCKER_OS={docker_container_os(session)}",
         "--build-arg",
         f"USERID={os.geteuid()}",
         "--build-arg",
@@ -276,7 +286,7 @@ def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
         "NOX_POSARGS",
         "-v",
         f"{os.getcwd()}:/gcovr",
-        docker_container_id(version),
+        docker_container_id(session, version),
         external=True,
     )
 

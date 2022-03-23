@@ -382,7 +382,7 @@ class gcov:
                 "--branch-probabilities",
             ]
 
-            if "llvm-cov" not in cmd:
+            if self.__check_gcov_option("--demangled-names"):
                 gcov.__default_options.append("--demangled-names")
 
             if self.__check_gcov_option("--hash-filenames"):
