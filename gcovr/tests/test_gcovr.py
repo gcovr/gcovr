@@ -65,7 +65,7 @@ if IS_WINDOWS:
 
     used_drives = win32api.GetLogicalDriveStrings().split("\0")
     sys.stdout.write(f"Used drives: {used_drives}")
-    free_drives = list(set(string.ascii_uppercase) - set(used_drives))
+    free_drives = list(reversed(list(set(string.ascii_uppercase) - set(used_drives))))
     sys.stdout.write(f"Free drives: {free_drives}")
     assert free_drives, "Must have at least one free drive letter"
     env["GCOVR_TEST_DRIVE_WINDOWS"] = f"{free_drives[0]}:"
