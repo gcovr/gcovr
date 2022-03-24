@@ -40,7 +40,7 @@ def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
 
 @nox.session(python=False)
 def qa(session: nox.Session) -> None:
-    """Run the quality tests."""
+    """Run the quality tests for the default GCC version."""
     session_id = f"qa_compiler({GCC_VERSION2USE})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
@@ -49,7 +49,7 @@ def qa(session: nox.Session) -> None:
 @nox.session(python=False)
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
 def qa_compiler(session: nox.Session, version: str) -> None:
-    """Run the quality tests."""
+    """Run the quality tests for a specific GCC version."""
     session_id = "lint"
     session.log(f"Notify session {session_id}")
     session.notify(session_id, [])
