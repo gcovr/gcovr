@@ -20,7 +20,7 @@ The ``gcovr`` command can produce different kinds of coverage reports:
    :header-rows: 1
 
    * - CLI Option
-     - Guide
+     - User Guide
      - Description
 
    * - default, |abstract-option-txt|
@@ -29,11 +29,11 @@ The ``gcovr`` command can produce different kinds of coverage reports:
 
    * - |abstract-option-html|
      - |abstract-guide-html|
-     - HTML summaries
+     - overview of all files
 
    * - |abstract-option-html-details|
      - |abstract-guide-html-details|
-     - HTML report with annotated source files
+     - annotated source files
 
    * - |abstract-option-cobertura|
      - |abstract-guide-cobertura|
@@ -87,15 +87,15 @@ text summaries and XML reports.
 .. |abstract-option-csv| replace:: ``--csv``
 .. |abstract-option-coveralls| replace:: ``--coveralls``
 
-.. |abstract-guide-txt| replace:: `docs <https://gcovr.com/en/stable/output/txt.html>`__
-.. |abstract-guide-html| replace:: `docs <https://gcovr.com/en/stable/output/html.html>`__
-.. |abstract-guide-html-details| replace:: `docs <https://gcovr.com/en/stable/output/html.html>`__
-.. |abstract-guide-cobertura| replace:: `docs <https://gcovr.com/en/stable/output/cobertura.html>`__
-.. |abstract-guide-sonarqube| replace:: `docs <https://gcovr.com/en/stable/output/sonarqube.html>`__
-.. |abstract-guide-json| replace:: `docs <https://gcovr.com/en/stable/output/json.html>`__
-.. |abstract-guide-json-summary| replace:: `docs <https://gcovr.com/en/stable/output/json.html>`__
-.. |abstract-guide-csv| replace:: `docs <https://gcovr.com/en/stable/output/csv.html>`__
-.. |abstract-guide-coveralls| replace:: `docs <https://gcovr.com/en/stable/output/coveralls.html>`__
+.. |abstract-guide-txt| replace:: `Text Output <https://gcovr.com/en/stable/output/txt.html>`__
+.. |abstract-guide-html| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
+.. |abstract-guide-html-details| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
+.. |abstract-guide-cobertura| replace:: `Cobertura XML Output <https://gcovr.com/en/stable/output/cobertura.html>`__
+.. |abstract-guide-sonarqube| replace:: `Sonarqube XML Output <https://gcovr.com/en/stable/output/sonarqube.html>`__
+.. |abstract-guide-json| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
+.. |abstract-guide-json-summary| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
+.. |abstract-guide-csv| replace:: `CSV Output <https://gcovr.com/en/stable/output/csv.html>`__
+.. |abstract-guide-coveralls| replace:: `Coveralls JSON Output <https://gcovr.com/en/stable/output/coveralls.html>`__
 
 
 Example HTML summary:
