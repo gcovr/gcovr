@@ -21,15 +21,15 @@ gcovr
 .. |abstract-option-csv| replace:: :option:`--csv`
 .. |abstract-option-coveralls| replace:: :option:`--coveralls`
 
-.. |abstract-guide-txt| replace:: :ref:`docs <txt_output>`
-.. |abstract-guide-html| replace:: :ref:`docs <html_output>`
-.. |abstract-guide-html-details| replace:: :ref:`docs <html_output>`
-.. |abstract-guide-cobertura| replace:: :ref:`docs <cobertura_output>`
-.. |abstract-guide-sonarqube| replace:: :ref:`docs <sonarqube_xml_output>`
-.. |abstract-guide-json| replace:: :ref:`docs <json_output>`
-.. |abstract-guide-json-summary| replace:: :ref:`docs <json_output>`
-.. |abstract-guide-csv| replace:: :ref:`docs <csv_output>`
-.. |abstract-guide-coveralls| replace:: :ref:`docs <coveralls_output>`
+.. |abstract-guide-txt| replace:: :ref:`txt_output`
+.. |abstract-guide-html| replace:: :ref:`html_output`
+.. |abstract-guide-html-details| replace:: :ref:`html_output`
+.. |abstract-guide-cobertura| replace:: :ref:`cobertura_output`
+.. |abstract-guide-sonarqube| replace:: :ref:`sonarqube_xml_output`
+.. |abstract-guide-json| replace:: :ref:`json_output`
+.. |abstract-guide-json-summary| replace:: :ref:`json_output`
+.. |abstract-guide-csv| replace:: :ref:`csv_output`
+.. |abstract-guide-coveralls| replace:: :ref:`coveralls_output`
 
 .. admonition:: Quick Links
 
