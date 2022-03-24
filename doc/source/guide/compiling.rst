@@ -220,7 +220,8 @@ For example, consider the following compilation process:
    except that the ``--coverage`` flag makes sure
    that a compiler-internal gcov support library is linked.
 
-3. Running the program will increment the in-memory coverage counters.
+3. Running the program will increment the in-memory coverage counters
+   for all executed lines.
    At the end, the counters are written into gcov data files,
    one for each compilation unit.
    Here, we would get ``a.gcda`` and ``b.gcda`` files.

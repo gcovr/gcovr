@@ -61,7 +61,9 @@ def check_input_file(value: str, basedir: str = None) -> str:
     value = os.path.normpath(value)
 
     if not os.path.isfile(value):
-        raise ArgumentTypeError(f"Should be a file that already exists: {value!r}")
+        raise ArgumentTypeError(
+            f"Should be a file that already exists: {value!r}"
+        ) from None
 
     return os.path.abspath(value)
 

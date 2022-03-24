@@ -135,9 +135,6 @@ or a relative path to the real path::
 
     gcovr --filter src/ --filter '\.\./external-library/src/'
 
-.. note::
-    This section discusses symlinks on Unix systems.
-    The behavior under Windows is unclear.
-    If you have more insight,
-    please update this section by submitting a pull request
-    (see our :ref:`contributing guide <contributing>`).
+.. versionadded:: NEXT
+
+   gcovr also supports symlinks/junctions/drive substitutions on Windows.
