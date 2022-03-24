@@ -166,7 +166,7 @@ class PygmentHighlighting:
 
         import pygments
         from pygments.lexers import get_lexer_for_filename
-        from jinja2 import Markup
+        from markupsafe import Markup
         try:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)
             return lambda code: [Markup(line.rstrip()) for line in pygments.highlight(code, lexer, self.formatter).split("\n")]

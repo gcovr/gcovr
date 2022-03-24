@@ -1,5 +1,8 @@
-FROM ubuntu:18.04
+ARG DOCKER_OS
 
+FROM $DOCKER_OS
+
+ARG DOCKER_OS
 ARG USERID
 ARG CC
 ARG CXX
@@ -16,17 +19,24 @@ ARG CXX
 # then use the get-pip script from Python 3.7.
 RUN \
     apt-get update && \
-    apt-get install -y sudo make $CC $CXX python3-setuptools python3.7 ninja-build curl && \
+    apt-get install -y sudo make $CC $CXX python3-setuptools $(if [ "$DOCKER_OS" != "ubuntu:22.04" ]; then echo python3.7; fi) ninja-build curl && \
     apt-get clean
+
+# Install Python 3.7 as the default "python3" executable on older linux distribution
+RUN if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then \
+       update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 10; \
+    fi; \
+    python3 --version
 
 # Install pip manually
 RUN \
     curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python3.7 get-pip.py && \
+    python3 get-pip.py && \
     rm get-pip.py
 
-# Install Python 3.7 as the default "python3" executable
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 10
+# Install nox
+RUN \
+  python3 -m pip install --no-cache-dir nox
 
 WORKDIR /gcovr
 
@@ -38,9 +48,6 @@ ENV \
 # Separate instruction because of reference to NOX_ENV_DIR
 ENV \
   XDG_CACHE_HOME=$NOX_ENV_DIR/.cache
-
-RUN \
-  python3 -m pip install nox
 
 # Create new user "docker" and set password to "docker"
 RUN addgroup docker

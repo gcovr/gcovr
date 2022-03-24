@@ -21,4 +21,5 @@
 !gcovr/tests
 
 # always ignore these files
+**/__pycache__
 **/*.pyc

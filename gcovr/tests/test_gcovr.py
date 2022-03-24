@@ -57,6 +57,7 @@ skip_clean = None
 CC = os.path.split(env["CC"])[1]
 IS_CLANG = True if CC.startswith("clang") else False
 
+IS_MACOS = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
 if IS_WINDOWS:
     import win32api
@@ -64,21 +65,22 @@ if IS_WINDOWS:
 
     used_drives = win32api.GetLogicalDriveStrings().split("\0")
     sys.stdout.write(f"Used drives: {used_drives}")
-    free_drives = list(set(string.ascii_uppercase) - set(used_drives))
+    free_drives = sorted(set(string.ascii_uppercase) - set(used_drives))
     sys.stdout.write(f"Free drives: {free_drives}")
     assert free_drives, "Must have at least one free drive letter"
-    env["GCOVR_TEST_DRIVE_WINDOWS"] = f"{free_drives[0]}:"
+    env["GCOVR_TEST_DRIVE_WINDOWS"] = f"{free_drives[-1]}:"
 
 CC_REFERENCE = env.get("CC_REFERENCE", CC)
 
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
-    ["gcc-5", "gcc-6", "gcc-8"] if "gcc" in CC_REFERENCE else ["clang-10"]
+    ["gcc-5", "gcc-6", "gcc-8", "gcc-9"]
+    if "gcc" in CC_REFERENCE
+    else ["clang-10", "clang-13"]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
-    if platform.system() == "Windows":
-        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-Windows")
+    REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
     if ref in CC_REFERENCE:
         break
 REFERENCE_DIRS.reverse()
@@ -276,6 +278,15 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.xfail(
                     name == "html-source-encoding-cp1252" and IS_CLANG,
                     reason="clang doesnt understand -finput-charset=...",
+                ),
+                pytest.mark.xfail(
+                    name == "html-source-encoding-cp1252" and IS_MACOS,
+                    reason="On MacOS -finput-charset=cp1252 isn't supported",
+                ),
+                pytest.mark.xfail(
+                    name in ["excl-branch", "exclude-throw-branches", "html-themes"]
+                    and IS_MACOS,
+                    reason="On MacOS the constructor is called twice",
                 ),
                 pytest.mark.xfail(
                     name == "gcc-abspath"
