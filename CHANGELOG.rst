@@ -55,6 +55,7 @@ Internal changes:
  - Add flake8-print to check usage of print function. (:issue:`566`)
  - Add timeout for each single test. (:issue:`572`)
  - Add support for gcc-9 and clang-13 to docker tests. (:issue:`527`)
+ - Support jinja2==3.1.0 (:issue:`576`)
 
 5.0 (11 June 2021)
 ------------------
