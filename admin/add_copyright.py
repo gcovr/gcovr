@@ -4,12 +4,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.0, a parsing and reporting tool for gcov.
+# This file is part of gcovr 5.1, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013-2022 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -117,7 +117,7 @@ def updateCopyrightString(filename, lines):
         raise RuntimeError(f"Start of copyright not found in {filename}.")
 
     for line in COPYRIGHT:
-        newLines.append(f'   "{line}\\n"')
+        newLines.append(f'    "{line}\\n"')
 
     for line in iterLines:
         if line == ")":

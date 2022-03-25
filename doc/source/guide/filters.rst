@@ -135,6 +135,6 @@ or a relative path to the real path::
 
     gcovr --filter src/ --filter '\.\./external-library/src/'
 
-.. versionadded:: NEXT
+.. versionadded:: 5.1
 
    gcovr also supports symlinks/junctions/drive substitutions on Windows.

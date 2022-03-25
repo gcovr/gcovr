@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.0, a parsing and reporting tool for gcov.
+# This file is part of gcovr 5.1, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2021 the gcovr authors
+# Copyright (c) 2013-2022 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # This software is distributed under the BSD License.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
@@ -15,6 +15,7 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
 import logging
 import os
 import re
@@ -130,10 +131,11 @@ def create_argument_parser():
 
 
 COPYRIGHT = (
-    "Copyright 2013-2018 the gcovr authors\n"
-    "Copyright 2013 Sandia Corporation\n"
+    "Copyright (c) 2013-2022 the gcovr authors\n"
+    "Copyright (c) 2013 Sandia Corporation.\n"
+    "This software is distributed under the BSD License.\n"
     "Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,\n"
-    "the U.S. Government retains certain rights in this software."
+    "the U.S. Government retains certain rights in this software.\n"
 )
 
 

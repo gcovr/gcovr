@@ -369,7 +369,7 @@ with the differences as an artifact.
     # run tests and generate a ZIP archive when there were differences
     python3 -m nox --session tests -- --archive_differences
 
-.. versionchanged:: NEXT
+.. versionchanged:: 5.1
     Change how to start test from ``make test`` to ``python3 -m nox --session tests``
 
 .. versionadded:: 5.0
