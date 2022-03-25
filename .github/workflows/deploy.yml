@@ -23,7 +23,7 @@ jobs:
         echo EXTRA_CHECKLIST_ARGS="--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
     - name: Run release_checklist
       run: |
-        admin/release_checklist $EXTRA_CHECKLIST_ARGS 5.0
+        admin/release_checklist $EXTRA_CHECKLIST_ARGS 5.1
 
   deploy:
     runs-on: ubuntu-18.04

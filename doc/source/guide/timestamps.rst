@@ -11,7 +11,7 @@ and the :ref:`cobertura_output`.
 This can be achieved via the :option:`--timestamp <gcovr --timestamp>` option.
 This option does not affect the modification times or other filesystem metadata.
 
-.. versionadded:: NEXT
+.. versionadded:: 5.1
 
    The :option:`gcovr --timestamp` option.
 

@@ -37,7 +37,7 @@ of times that each line was covered.  Consequently, XML output can be
 used to support performance optimization in the same manner that
 ``gcov`` does.
 
-.. versionadded:: NEXT
+.. versionadded:: 5.1
 
    The :option:`--cobertura` and :option:`--cobertura-pretty` options
    were added as an alias for :option:`-x`/\ :option:`--xml`
