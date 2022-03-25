@@ -14,7 +14,8 @@ You can exclude parts of your code from coverage metrics.
 Instead of ``GCOVR_*``,
 the markers may also start with ``GCOV_*`` or ``LCOV_*``.
 However, start and stop markers must use the same style.
-The markers are not configurable.
+The prefix is configurable with the option
+:option:`--exclude-pattern-prefix<gcovr --exclude-pattern-prefix>`.
 
 In the excluded regions, *any* coverage is excluded.
 It is not currently possible to exclude only branch coverage in that region.

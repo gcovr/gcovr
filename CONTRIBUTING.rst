@@ -156,10 +156,12 @@ is needed.
 
 -   Check your GCC installation, the binary directory must be added to
     the PATH environment. If the command gcc-5/g++-5/gcov-5,
-    gcc-6/g++-6/gcov-6, gcc-8/g++-8/gcov-8 or clang-10/clang++-10/llvm-cov
+    gcc-6/g++-6/gcov-6, gcc-8/g++-8/gcov-8, gcc-9/g++-9/gcov-9,
+    clang-10/clang++-10/llvm-cov or clang-13/clang++-13/llvm-cov
     are available everything is OK.
-    For gcc-6 and gcc-8 you should use the option ``CC=...``
-    see :ref:`run and filter tests <run tests>`. If this isn't OK you
+    For gcc-6, gcc-8, gcc-9, clang-10 and clang-13 you should use the
+    option ``CC=...`` see :ref:`run and filter tests <run tests>`.
+    If this isn't OK you
     can set the reference data to use by setting the environment ``CC_REFERENCE=gcc-8``
     or you have to create symlinks for the gcc executables with the following steps.
     You can check the GCC version with gcc --version. If the output says
@@ -255,7 +257,8 @@ that are executed as the ``test_gcovr.py`` integration test.
 Each ``gcovr/tests/*`` directory is one such example project.
 
 You can format files with ``python3 -m nox --session black FileToFormat``)
-``
+
+To get a list of all available sessions run ``python3 -m nox -l``.
 
 The next sections discuss
 the :ref:`structure of integration tests <integration tests>`,
@@ -307,7 +310,8 @@ To run all tests, use ``python3 -m nox``.
 The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
-Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8`` and ``clang-10``.
+Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8``, ``CC=gcc-9``,
+``clang-10`` and ``clang-13``.
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
@@ -350,6 +354,9 @@ For example:
 
     # run only XML tests and do not remove generated files
     python3 -m nox --session tests -- -k 'xml' --skip_clean
+
+To update the refernce data for all compiler in one call see
+:ref:`run tests with Docker <docker tests>`.
 
 When the currently generated output reports differ to the reference files
 you can create a ZIP archive named ``diff.zip`` in the tests directory
@@ -395,7 +402,19 @@ Or to build and run the container in one step:
     python3 -m nox --session docker_qa
 
 You can select the gcc version to use inside the docker by setting the environment
-variable CC to gcc-5 (default), gcc-6, gcc-8 or clang-10
+variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, clang-10 or clang-13 or you
+can build and run the container with:
+
+.. code:: bash
+
+    python3 -m nox --session 'docker_qa_compiler(gcc-9)'
+
+You can also use the compiler 'all' to run the tests for all compiler versions.
+This is usefull to update the all reference files:
+
+.. code:: bash
+
+    python3 -m nox --session 'docker_qa_compiler(all)' -- --update_reference
 
 .. _join:
 
