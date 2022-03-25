@@ -3,7 +3,7 @@ gcovr
 
 generate GCC code coverage reports
 
-website_ • documentation_ • bugtracker_ • `GitHub <repo_>`_
+`website and documentation <website_>`__ • bugtracker_ • `GitHub <repo_>`__
 
 |GitHub-Actions-badge| |pypi-badge| |codecov-badge| |gitter-badge|
 
@@ -16,15 +16,48 @@ utility for Python.
 
 The ``gcovr`` command can produce different kinds of coverage reports:
 
--  default or :option:`--txt<gcovr --txt>`: compact human-readable summaries
--  :option:`--html<gcovr --html>`: HTML summaries
--  :option:`--html-details<gcovr --html-details>`: HTML report with annotated source files
--  :option:`-x/--xml<gcovr --xml>`: machine readable XML reports in Cobertura_ format
--  :option:`--sonarqube<gcovr --sonarqube>`: machine readable XML reports in Sonarqube format
--  :option:`--json<gcovr --json>`: JSON report with source files structure and coverage
--  :option:`--json-summary<gcovr --json-summary>`: JSON summary coverage report
--  :option:`--csv<gcovr --csv>`: CSV report summarizing the coverage of each file
--  :option:`--coveralls<gcovr --coveralls>`: machine readable JSON reports in Coveralls_ format
+.. list-table::
+   :header-rows: 1
+
+   * - CLI Option
+     - User Guide
+     - Description
+
+   * - default, |abstract-option-txt|
+     - |abstract-guide-txt|
+     - compact human-readable summaries
+
+   * - |abstract-option-html|
+     - |abstract-guide-html|
+     - overview of all files
+
+   * - |abstract-option-html-details|
+     - |abstract-guide-html-details|
+     - annotated source files
+
+   * - |abstract-option-cobertura|
+     - |abstract-guide-cobertura|
+     - machine readable XML reports in Cobertura_ format
+
+   * - |abstract-option-sonarqube|
+     - |abstract-guide-sonarqube|
+     - machine readable XML reports in Sonarqube format
+
+   * - |abstract-option-json|
+     - |abstract-guide-json|
+     - JSON report with source file structure and coverage
+
+   * - |abstract-option-json-summary|
+     - |abstract-guide-json-summary|
+     - JSON summary coverage report
+
+   * - |abstract-option-csv|
+     - |abstract-guide-csv|
+     - CSV report summarizing the coverage of each file
+
+   * - |abstract-option-coveralls|
+     - |abstract-guide-coveralls|
+     - machine readable JSON report in Coveralls_ format
 
 Thus, gcovr can be viewed
 as a command-line alternative to the lcov_ utility, which runs gcov
@@ -32,13 +65,38 @@ and generates an HTML-formatted report.
 The development of gcovr was motivated by the need for
 text summaries and XML reports.
 
-.. _gcov: http://gcc.gnu.org/onlinedocs/gcc/Gcov.html
-.. _coverage.py: http://nedbatchelder.com/code/coverage/
+.. _gcov: https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
+.. _coverage.py: https://coverage.readthedocs.io/en/stable/
 .. _cobertura: http://cobertura.sourceforge.net/
 .. _lcov: http://ltp.sourceforge.net/coverage/lcov.php
 .. _coveralls: https://coveralls.io/
 
 .. end abstract
+
+.. The above table contains links into the documentation.
+.. Here are the default targets that are used for rendering on GH or on PyPI.
+.. The targets for within the Sphinx docs are given in doc/source/index.rst
+
+.. |abstract-option-txt| replace:: ``--txt``
+.. |abstract-option-html| replace:: ``--html``
+.. |abstract-option-html-details| replace:: ``--html-details``
+.. |abstract-option-cobertura| replace:: ``--cobertura``
+.. |abstract-option-sonarqube| replace:: ``--sonarqube``
+.. |abstract-option-json| replace:: ``--json``
+.. |abstract-option-json-summary| replace:: ``--json-summary``
+.. |abstract-option-csv| replace:: ``--csv``
+.. |abstract-option-coveralls| replace:: ``--coveralls``
+
+.. |abstract-guide-txt| replace:: `Text Output <https://gcovr.com/en/stable/output/txt.html>`__
+.. |abstract-guide-html| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
+.. |abstract-guide-html-details| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
+.. |abstract-guide-cobertura| replace:: `Cobertura XML Output <https://gcovr.com/en/stable/output/cobertura.html>`__
+.. |abstract-guide-sonarqube| replace:: `Sonarqube XML Output <https://gcovr.com/en/stable/output/sonarqube.html>`__
+.. |abstract-guide-json| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
+.. |abstract-guide-json-summary| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
+.. |abstract-guide-csv| replace:: `CSV Output <https://gcovr.com/en/stable/output/csv.html>`__
+.. |abstract-guide-coveralls| replace:: `Coveralls JSON Output <https://gcovr.com/en/stable/output/coveralls.html>`__
+
 
 Example HTML summary:
 
@@ -50,8 +108,8 @@ Example HTML details:
 
 .. begin links
 
-.. _website:        http://gcovr.com/
-.. _documentation:  http://gcovr.com/guide.html
+.. _website:        https://gcovr.com/
+.. _documentation:  website_
 .. _repo:       https://github.com/gcovr/gcovr/
 .. _bugtracker: https://github.com/gcovr/gcovr/issues
 .. |GitHub-Actions-badge| image:: https://github.com/gcovr/gcovr/workflows/Test/badge.svg?branch=master
@@ -112,24 +170,26 @@ This will print a tabular report on the console.
 
 ::
 
-    gcovr -r .
+    gcovr
 
 You can also generate detailed HTML reports:
 
 ::
 
-    gcovr -r . --html --html-details -o coverage.html
+    gcovr --html-details coverage.html
 
 Gcovr will create one HTML report per source file next to the coverage.html summary.
 
 You should run gcovr from the build directory.
 The ``-r`` option should point to the root of your project.
 This only matters if you have a separate build directory.
+For example::
 
-For complete documentation, read the `manual <documentation_>`_.
-
+    cd build; gcovr -r ..
 
 .. end quickstart
+
+For complete documentation, read the `manual <documentation_>`__.
 
 Contributing
 ------------

@@ -247,7 +247,7 @@ The tests are in the ``gcovr/tests`` directory.
 You can run the tests with ``python3 -m nox --session tests``
 for the default GCC version (specified via ``CC`` environment variable, defaults to gcc-5).
 You can also select the gcc version if you run the tests with e.g.
-``python3 -m nox --session tests_compiler(gcc-8)``.
+``python3 -m nox --session 'tests_compiler(gcc-8)'``.
 
 There are unit tests for some parts of gcovr,
 and a comprehensive corpus of example projects
@@ -363,7 +363,7 @@ with the differences as an artifact.
     python3 -m nox --session tests -- --archive_differences
 
 .. versionchanged:: NEXT
-    Change how to start test from ``make test`` to ``python3 -m nox --session test``
+    Change how to start test from ``make test`` to ``python3 -m nox --session tests``
 
 .. versionadded:: 5.0
    Added test options `--generate_reference`, `--update_reference`,

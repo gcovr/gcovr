@@ -9,6 +9,7 @@ Next Release
 Breaking changes:
 
 - Dropped support for Python 3.6 (:issue:`550`)
+- Change ``xml`` configuration key to ``cobertura``. (:issue:`552`)
 
 Improvements and new features:
 
@@ -19,7 +20,7 @@ Improvements and new features:
 - Can create reproducible reports with the :option:`--timestamp` option (:issue:`546`)
 - Add "Goto function" in html details. (:issue:`515`)
 - Fix "root" path in JSON summary report. (:issue:`548`)
-- Solve problems with file name limitations and document the used options of ``gcov``. (:issue:`528`)
+- Solve problems with file name limitations. (:issue:`528`)
 - Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
 - Generate also a Report of Excluded Coverage. (:issue:`503`)
 - Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
@@ -29,11 +30,15 @@ Improvements and new features:
 - Don't use realpath in data model, only use them for the filter. (:issue:`565`)
 - Fix sanity check in HTML generator. (:issue:`571`)
 - Change file level percent values in JSON summary. (:issue:`570`)
+- Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
+- Add :option:`--cobertura` as a less ambiguous alias for :option:`--xml`.
+  (:issue:`552`)
 - Add list of functions to HTML details. (:issue:`554`)
 
 Documentation:
 
- - Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
+- Split documentation into smaller pages. (:issue:`552`)
+- Document used options for ``gcov`` (:issue:`528`)
 
 Internal changes:
 
@@ -57,6 +62,7 @@ Internal changes:
  - Add timeout for each single test. (:issue:`572`)
  - Add support for gcc-9 and clang-13 to docker tests. (:issue:`527`)
  - Support jinja2==3.1.0 (:issue:`576`)
+ - Rename the nox sessions for using all compiler versions. (:issue:`555`)
 
 5.0 (11 June 2021)
 ------------------
@@ -80,7 +86,7 @@ Improvements and new features:
  - Add support for output directories. If the output ends with a ``/`` or ``\`` it is used as a directory. (:issue:`416`)
  - Compare paths case insensitive if file system of working directory is case insensitive. (:issue:`329`)
  - Add wildcard pattern to json :option:`--add-tracefile`. (:issue:`351`)
- - Enable :option:`--filter` and :option:`--exclude` for :ref:`Combining tracefiles <combining_tracefiles>`. (:issue:`373`)
+ - Enable :option:`--filter` and :option:`--exclude` for :ref:`Merging coverage <merging_coverage>`. (:issue:`373`)
  - Only output 100.0% in text and HTML output if really 100.0%, else use 99.9%. (:issue:`389`)
  - Support relative source location for shadow builds. (:issue:`410`)
  - Incorrect path for header now can still generate html-details reports (:issue:`271`)
@@ -148,7 +154,7 @@ Improvements and new features:
    (:issue:`167`, :issue:`229`, :issue:`279`, :issue:`281`, :issue:`293`,
    :issue:`300`, :issue:`304`)
  - :ref:`JSON output <json_output>`. (:issue:`301`, :issue:`321`, :issue:`326`)
- - :ref:`Combining tracefiles <combining_tracefiles>`
+ - :ref:`Merging coverage <merging_coverage>`
    with :option:`gcovr --add-tracefile`.
    (:issue:`10`, :issue:`326`)
  - :ref:`SonarQube XML Output <sonarqube_xml_output>`. (:issue:`308`)
