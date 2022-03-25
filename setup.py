@@ -36,13 +36,10 @@ long_description = re.sub(
     r"^\.\. image:: \./",
     r".. image:: https://raw.githubusercontent.com/gcovr/gcovr/{}/".format(version),
     long_description,
-    flags=re.MULTILINE
+    flags=re.MULTILINE,
 )
 long_description = re.sub(
-    r":option:`(.*?)<gcovr.*?>`",
-    r"``\1``",
-    long_description,
-    flags=re.MULTILINE
+    r":option:`(.*?)<gcovr.*?>`", r"``\1``", long_description, flags=re.MULTILINE
 )
 
 setup(

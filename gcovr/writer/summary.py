@@ -22,24 +22,34 @@ from ..utils import get_global_stats
 
 
 def print_summary(covdata):
-    '''Print a small report to the standard output.
+    """Print a small report to the standard output.
     Output the percentage, covered and total lines and branches.
-    '''
+    """
 
-    (lines_total, lines_covered, percent,
-     functions_total, functions_covered, percent_functions,
-     branches_total, branches_covered, percent_branches) = get_global_stats(covdata)
+    (
+        lines_total,
+        lines_covered,
+        percent,
+        functions_total,
+        functions_covered,
+        percent_functions,
+        branches_total,
+        branches_covered,
+        percent_branches,
+    ) = get_global_stats(covdata)
 
-    lines_out = "lines: %0.1f%% (%s out of %s)" % (
-        percent, lines_covered, lines_total
-    )
+    lines_out = "lines: %0.1f%% (%s out of %s)" % (percent, lines_covered, lines_total)
     functions_out = "functions: %0.1f%% (%s out of %s)" % (
-        percent_functions, functions_covered, functions_total
+        percent_functions,
+        functions_covered,
+        functions_total,
     )
     branches_out = "branches: %0.1f%% (%s out of %s)" % (
-        percent_branches, branches_covered, branches_total
+        percent_branches,
+        branches_covered,
+        branches_total,
     )
 
-    sys.stdout.write(lines_out + '\n')
-    sys.stdout.write(functions_out + '\n')
-    sys.stdout.write(branches_out + '\n')
+    sys.stdout.write(lines_out + "\n")
+    sys.stdout.write(functions_out + "\n")
+    sys.stdout.write(branches_out + "\n")

@@ -25,6 +25,7 @@ class LockedDirectories(object):
     """
     Class that keeps a list of locked directories
     """
+
     def __init__(self):
         self.dirs = set()
         self.cv = Condition()
@@ -76,6 +77,7 @@ def worker(queue, context, pool):
             work(*args, **kwargs)
         except:  # noqa: E722
             import sys
+
             pool.raise_exception(sys.exc_info())
             break
 
@@ -87,12 +89,14 @@ class Workers(object):
     """
 
     def __init__(self, number, context):
-        assert(number >= 1)
+        assert number >= 1
         self.q = Queue()
         self.lock = RLock()
         self.exceptions = []
         self.contexts = [context() for _ in range(0, number)]
-        self.workers = [Thread(target=worker, args=(self.q, c, self)) for c in self.contexts]
+        self.workers = [
+            Thread(target=worker, args=(self.q, c, self)) for c in self.contexts
+        ]
         for w in self.workers:
             w.start()
 
@@ -151,6 +155,7 @@ class Workers(object):
                 w.join(timeout=1)
         for exc_type, exc_obj, exc_trace in self.exceptions:
             import traceback
+
             traceback.print_exception(exc_type, exc_obj, exc_trace)
         if self.exceptions:
             raise self.exceptions[0][1]
