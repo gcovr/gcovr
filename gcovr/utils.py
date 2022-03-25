@@ -57,16 +57,17 @@ if (sys.platform == "win32") and (sys.version_info < (3, 8)):
             path = _getfinalpathname(path)
             if not has_prefix and path.startswith(DOS_DEVICE_PATH_PREFIX):
                 if path.startswith(DOS_DEVICE_PATH_PREFIX_UNC):
-                    path = path[len(DOS_DEVICE_PATH_PREFIX_UNC):]
+                    path = path[len(DOS_DEVICE_PATH_PREFIX_UNC) :]
                 else:
-                    path = path[len(DOS_DEVICE_PATH_PREFIX):]
+                    path = path[len(DOS_DEVICE_PATH_PREFIX) :]
         return path
+
 else:
     realpath = os.path.realpath
 
 
 def get_os_independent_path(path):
-    return path.replace(os.path.sep, '/')
+    return path.replace(os.path.sep, "/")
 
 
 def search_file(predicate, path, exclude_dirs):
@@ -86,9 +87,11 @@ def search_file(predicate, path, exclude_dirs):
             dirs[:] = []
             continue
 
-        dirs[:] = [d for d in dirs
-                   if not any(exc.match(os.path.join(root, d))
-                              for exc in exclude_dirs)]
+        dirs[:] = [
+            d
+            for d in dirs
+            if not any(exc.match(os.path.join(root, d)) for exc in exclude_dirs)
+        ]
         root = os.path.abspath(root)
 
         for name in files:
@@ -117,13 +120,12 @@ def commonpath(files):
         Returns the empty string if no common path exists.
     """
     if not files:
-        return ''
+        return ""
 
     if len(files) == 1:
         prefix_path = os.path.dirname(realpath(files[0]))
     else:
-        split_paths = [realpath(path).split(os.path.sep)
-                       for path in files]
+        split_paths = [realpath(path).split(os.path.sep) for path in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
         #   /a/b/c/d  <- min
@@ -143,7 +145,7 @@ def commonpath(files):
 
     # make the path relative and add a trailing slash
     if prefix_path:
-        prefix_path = os.path.join(os.path.relpath(prefix_path), '')
+        prefix_path = os.path.join(os.path.relpath(prefix_path), "")
     return prefix_path
 
 
@@ -177,21 +179,37 @@ def get_global_stats(covdata):
     percent_functions = calculate_coverage(functions_covered, functions_total)
     percent_branches = calculate_coverage(branches_covered, branches_total)
 
-    return (lines_total, lines_covered, percent,
-            functions_total, functions_covered, percent_functions,
-            branches_total, branches_covered, percent_branches)
+    return (
+        lines_total,
+        lines_covered,
+        percent,
+        functions_total,
+        functions_covered,
+        percent_functions,
+        branches_total,
+        branches_covered,
+        percent_branches,
+    )
 
 
 def summarize_file_coverage(coverage, root_filter):
-    filename = presentable_filename(
-        coverage.filename, root_filter=root_filter)
+    filename = presentable_filename(coverage.filename, root_filter=root_filter)
 
     branch_total, branch_covered, branch_percent = coverage.branch_coverage()
     line_total, line_covered, line_percent = coverage.line_coverage()
     function_total, function_covered, function_percent = coverage.function_coverage()
-    return (filename, line_total, line_covered, line_percent,
-            branch_total, branch_covered, branch_percent,
-            function_total, function_covered, function_percent)
+    return (
+        filename,
+        line_total,
+        line_covered,
+        line_percent,
+        branch_total,
+        branch_covered,
+        branch_percent,
+        function_total,
+        function_covered,
+        function_percent,
+    )
 
 
 def calculate_coverage(covered, total, nan_value=0.0):
@@ -218,7 +236,8 @@ class FilterOption:
         # An unintended backslash is a literal backslash r"\\",
         # or a regex escape that doesn't exist.
         (suggestion, bs_count) = re.subn(
-            r'\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])', '/', self.regex)
+            r"\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])", "/", self.regex
+        )
         if bs_count:
             logger.warning("filters must use forward slashes as path separators")
             logger.warning(f"your filter : {self.regex}")
@@ -250,7 +269,11 @@ class Filter(object):
         cwd = os.getcwd()
         # Guessing if file system is case insensitive.
         # The working directory is not the root and accessible in upper and lower case.
-        is_fs_case_insensitive = (cwd != os.path.sep) and os.path.exists(cwd.upper()) and os.path.exists(cwd.lower())
+        is_fs_case_insensitive = (
+            (cwd != os.path.sep)
+            and os.path.exists(cwd.upper())
+            and os.path.exists(cwd.lower())
+        )
         flags = re.IGNORECASE if is_fs_case_insensitive else 0
         self.pattern = re.compile(pattern, flags)
 
@@ -260,7 +283,8 @@ class Filter(object):
 
     def __str__(self):
         return "{name}({pattern})".format(
-            name=type(self).__name__, pattern=self.pattern.pattern)
+            name=type(self).__name__, pattern=self.pattern.pattern
+        )
 
 
 class AbsoluteFilter(Filter):
@@ -279,7 +303,7 @@ class RelativeFilter(Filter):
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             path_drive, _ = os.path.splitdrive(path)
             root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:
@@ -289,8 +313,7 @@ class RelativeFilter(Filter):
         return super(RelativeFilter, self).match(relpath)
 
     def __str__(self):
-        return "RelativeFilter({} root={})".format(
-            self.pattern.pattern, self.root)
+        return "RelativeFilter({} root={})".format(self.pattern.pattern, self.root)
 
 
 class AlwaysMatchFilter(Filter):
@@ -321,13 +344,16 @@ def configure_logging() -> None:
     )
 
     def exception_hook(exc_type, exc_value, exc_traceback) -> None:
-        logging.exception("Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback))
+        logging.exception(
+            "Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback)
+        )
 
     sys.excepthook = exception_hook
 
 
-def sort_coverage(covdata, show_branch,
-                  by_num_uncovered=False, by_percent_uncovered=False):
+def sort_coverage(
+    covdata, show_branch, by_num_uncovered=False, by_percent_uncovered=False
+):
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
@@ -337,17 +363,20 @@ def sort_coverage(covdata, show_branch,
 
     returns: the sorted keys
     """
+
     def num_uncovered_key(key):
         cov = covdata[key]
-        (total, covered, _) = \
+        (total, covered, _) = (
             cov.branch_coverage() if show_branch else cov.line_coverage()
+        )
         uncovered = total - covered
         return uncovered
 
     def percent_uncovered_key(key):
         cov = covdata[key]
-        (total, covered, _) = \
+        (total, covered, _) = (
             cov.branch_coverage() if show_branch else cov.line_coverage()
+        )
         if covered:
             return -1.0 * covered / total
         elif total:
@@ -374,8 +403,8 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
     if filename is not None and filename.endswith(os.sep):
         filename += default_filename
 
-    if filename is not None and filename != '-':
-        fh = open(filename, 'w', **kwargs)
+    if filename is not None and filename != "-":
+        fh = open(filename, "w", **kwargs)
         close = True
     else:
         fh = sys.stdout
@@ -397,9 +426,9 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
     if filename is not None and filename.endswith(os.sep):
         filename += default_filename
 
-    if filename is not None and filename != '-':
+    if filename is not None and filename != "-":
         # files in write binary mode for UTF-8
-        fh = open(filename, 'wb', **kwargs)
+        fh = open(filename, "wb", **kwargs)
         close = True
     else:
         fh = sys.stdout.buffer
@@ -416,15 +445,15 @@ def presentable_filename(filename, root_filter):
     # type: (str, re.Regex) -> str
     """mangle a filename so that it is suitable for a report"""
 
-    normalized = root_filter.sub('', filename)
+    normalized = root_filter.sub("", filename)
     if filename.endswith(normalized):
         # remove any slashes between the removed prefix and the normalized name
         if filename != normalized:
             while normalized.startswith(os.path.sep):
-                normalized = normalized[len(os.path.sep):]
+                normalized = normalized[len(os.path.sep) :]
     else:
         # Do no truncation if the filter does not start matching
         # at the beginning of the string
         normalized = filename
 
-    return normalized.replace('\\', '/')
+    return normalized.replace("\\", "/")

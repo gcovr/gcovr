@@ -19,9 +19,15 @@
 from .utils import calculate_coverage
 
 # for type annotations:
-if False: from typing import (  # noqa, pylint: disable=all
-    Callable, Dict, Iterable, List, Optional, Tuple,
-)
+if False:
+    from typing import (  # noqa, pylint: disable=all
+        Callable,
+        Dict,
+        Iterable,
+        List,
+        Optional,
+        Tuple,
+    )
 
 
 class BranchCoverage(object):
@@ -36,7 +42,7 @@ class BranchCoverage(object):
             Whether this is an exception-handling branch. None if unknown.
     """
 
-    __slots__ = 'count', 'fallthrough', 'throw'
+    __slots__ = "count", "fallthrough", "throw"
 
     def __init__(self, count, fallthrough=None, throw=None):
         # type: (int, Optional[bool], Optional[bool]) -> None
@@ -107,7 +113,7 @@ class DecisionCoverageConditional(object):
 
     """
 
-    __slots__ = 'count_true', 'count_false'
+    __slots__ = "count_true", "count_false"
 
     def __init__(self, count_true, count_false):
         # type: (int, int) -> None
@@ -146,7 +152,7 @@ class DecisionCoverageSwitch(object):
             Number of times this decision was made.
     """
 
-    __slots__ = 'count'
+    __slots__ = "count"
 
     def __init__(self, count):
         # type: (int) -> None
@@ -175,7 +181,7 @@ class DecisionCoverageSwitch(object):
 
 
 class FunctionCoverage(object):
-    __slots__ = 'lineno', 'count', 'name'
+    __slots__ = "lineno", "count", "name"
 
     def __init__(self, name, call_count=0):
         # type: (int, int) -> None
@@ -208,7 +214,15 @@ class LineCoverage(object):
             Whether this line is excluded by a marker.
     """
 
-    __slots__ = 'lineno', 'count', 'noncode', 'excluded', 'branches', 'decision', 'functions'
+    __slots__ = (
+        "lineno",
+        "count",
+        "noncode",
+        "excluded",
+        "branches",
+        "decision",
+        "functions",
+    )
 
     def __init__(self, lineno, count=0, noncode=False, excluded=False):
         # type: (int, int, bool) -> None
@@ -311,7 +325,7 @@ class LineCoverage(object):
 
 
 class FileCoverage(object):
-    __slots__ = 'filename', 'functions', 'lines'
+    __slots__ = "filename", "functions", "lines"
 
     def __init__(self, filename):
         # type: (str) -> None
@@ -334,13 +348,19 @@ class FileCoverage(object):
         try:
             return self.functions[function_name]
         except KeyError:
-            self.functions[function_name] = function_cov = FunctionCoverage(function_name)
+            self.functions[function_name] = function_cov = FunctionCoverage(
+                function_name
+            )
             return function_cov
 
     def add_function(self, function):
         assert function is not None
         if function.name in self.functions:
-            self.functions[function.name].count += function.count  # Add the calls to destructor via base class (virtual destructor)
+            self.functions[
+                function.name
+            ].count += (
+                function.count
+            )  # Add the calls to destructor via base class (virtual destructor)
         else:
             self.functions[function.name] = function
 
@@ -356,8 +376,8 @@ class FileCoverage(object):
     def uncovered_lines_str(self):
         # type: () -> str
         uncovered_lines = sorted(
-            lineno for lineno, line in self.lines.items()
-            if line.is_uncovered)
+            lineno for lineno, line in self.lines.items() if line.is_uncovered
+        )
 
         if not uncovered_lines:
             return ""
@@ -371,12 +391,14 @@ class FileCoverage(object):
         # provides a counterintuitive listing.
         return ",".join(
             _format_range(first, last)
-            for first, last in _find_consecutive_ranges(uncovered_lines))
+            for first, last in _find_consecutive_ranges(uncovered_lines)
+        )
 
     def uncovered_branches_str(self):
         # type: () -> str
         uncovered_lines = sorted(
-            lineno for lineno, line in self.lines.items()
+            lineno
+            for lineno, line in self.lines.items()
             if not all(branch.is_covered for branch in line.branches.values())
         )
 

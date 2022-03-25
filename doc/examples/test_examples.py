@@ -45,15 +45,15 @@ def is_compiler(actual: str, *expected: str) -> bool:
 
 
 def find_test_cases():
-    if sys.platform.startswith('win'):
+    if sys.platform.startswith("win"):
         return
-    for script in glob.glob(datadir + '/*.sh'):
+    for script in glob.glob(datadir + "/*.sh"):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
-        for ext in 'txt xml csv json html'.split():
+        for ext in "txt xml csv json html".split():
             if ext == "html" and is_compiler(os.getenv("CC"), "gcc-5", "gcc-6"):
                 continue
-            baseline = '{datadir}/{name}.{ext}'.format(
+            baseline = "{datadir}/{name}.{ext}".format(
                 datadir=datadir,
                 name=name,
                 ext=ext,
@@ -65,11 +65,10 @@ def find_test_cases():
 
 
 @pytest.mark.skipif(
-    not os.path.split(os.getenv("CC"))[1].startswith("gcc")
-    or IS_MACOS,
-    reason="Only for gcc"
+    not os.path.split(os.getenv("CC"))[1].startswith("gcc") or IS_MACOS,
+    reason="Only for gcc",
 )
-@pytest.mark.parametrize('example', find_test_cases(), ids=str)
+@pytest.mark.parametrize("example", find_test_cases(), ids=str)
 def test_example(example):
     cmd = example.script
     baseline_file = example.baseline

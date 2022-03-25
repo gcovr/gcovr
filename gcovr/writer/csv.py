@@ -24,16 +24,29 @@ from ..utils import sort_coverage, summarize_file_coverage, open_text_for_writin
 def print_csv_report(covdata, output_file, options):
     """produce gcovr csv report"""
 
-    with open_text_for_writing(output_file, 'coverage.csv') as fh:
+    with open_text_for_writing(output_file, "coverage.csv") as fh:
         keys = sort_coverage(
-            covdata, show_branch=options.show_branch,
+            covdata,
+            show_branch=options.show_branch,
             by_num_uncovered=options.sort_uncovered,
-            by_percent_uncovered=options.sort_percent)
+            by_percent_uncovered=options.sort_percent,
+        )
 
         writer = csv.writer(fh)
-        writer.writerow(('filename', 'line_total', 'line_covered', 'line_percent',
-                        'branch_total', 'branch_covered', 'branch_percent',
-                         'function_total', 'function_covered', 'function_percent'))
+        writer.writerow(
+            (
+                "filename",
+                "line_total",
+                "line_covered",
+                "line_percent",
+                "branch_total",
+                "branch_covered",
+                "branch_percent",
+                "function_total",
+                "function_covered",
+                "function_percent",
+            )
+        )
         for key in keys:
             (
                 filename,

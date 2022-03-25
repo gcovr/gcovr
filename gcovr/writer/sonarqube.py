@@ -67,5 +67,5 @@ def print_sonarqube_report(covdata, output_file, options):
 
         root.append(fileNode)
 
-    with open_binary_for_writing(output_file, 'sonarqube.xml') as fh:
-        fh.write(etree.tostring(root, encoding='UTF-8', xml_declaration=True))
+    with open_binary_for_writing(output_file, "sonarqube.xml") as fh:
+        fh.write(etree.tostring(root, encoding="UTF-8", xml_declaration=True))

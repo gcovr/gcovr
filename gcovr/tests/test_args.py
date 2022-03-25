@@ -35,8 +35,8 @@ class CaptureObject:
 
 
 def capture(capsys, args, other_ex=()):
-    """ The capture method calls the main method and captures its output/error
-    streams and exit code. """
+    """The capture method calls the main method and captures its output/error
+    streams and exit code."""
     e = None
     try:
         main(args)
@@ -58,8 +58,8 @@ class LogCaptureObject:
 
 
 def log_capture(caplog, args, other_ex=()):
-    """ The capture method calls the main method and captures its output/error
-    streams and exit code. """
+    """The capture method calls the main method and captures its output/error
+    streams and exit code."""
     e = None
     try:
         main(args)
@@ -80,9 +80,9 @@ def test_version(capsys):
 
 
 def test_help(capsys):
-    c = capture(capsys, ['-h'])
-    assert c.err == ''
-    assert c.out.startswith('usage: gcovr [options]')
+    c = capture(capsys, ["-h"])
+    assert c.err == ""
+    assert c.out.startswith("usage: gcovr [options]")
     assert c.exception.code == 0
 
 
@@ -95,16 +95,16 @@ def test_empty_root(caplog):
 
 
 def test_empty_exclude(capsys):
-    c = capture(capsys, ['--exclude', ''])
-    assert c.out == ''
-    assert 'filter cannot be empty' in c.err
+    c = capture(capsys, ["--exclude", ""])
+    assert c.out == ""
+    assert "filter cannot be empty" in c.err
     assert c.exception.code != 0
 
 
 def test_empty_exclude_directories(capsys):
-    c = capture(capsys, ['--exclude-directories', ''])
-    assert c.out == ''
-    assert 'filter cannot be empty' in c.err
+    c = capture(capsys, ["--exclude-directories", ""])
+    assert c.out == ""
+    assert "filter cannot be empty" in c.err
     assert c.exception.code != 0
 
 
@@ -125,156 +125,175 @@ def test_invalid_objdir(caplog):
 
 
 def helper_test_non_existing_directory_output(capsys, option):
-    c = capture(capsys, [option, 'not-existing-dir/file.txt'])
-    assert c.out == ''
-    assert 'Could not create output file \'not-existing-dir/file.txt\': ' in c.err
+    c = capture(capsys, [option, "not-existing-dir/file.txt"])
+    assert c.out == ""
+    assert "Could not create output file 'not-existing-dir/file.txt': " in c.err
     assert c.exception.code != 0
 
 
 def test_non_existing_directory_output(capsys):
-    helper_test_non_existing_directory_output(capsys, '--output')
+    helper_test_non_existing_directory_output(capsys, "--output")
 
 
 def test_non_existing_directory_txt(capsys):
-    helper_test_non_existing_directory_output(capsys, '--txt')
+    helper_test_non_existing_directory_output(capsys, "--txt")
 
 
 def test_non_existing_directory_xml(capsys):
-    helper_test_non_existing_directory_output(capsys, '--xml')
+    helper_test_non_existing_directory_output(capsys, "--xml")
 
 
 def test_non_existing_directory_html(capsys):
-    helper_test_non_existing_directory_output(capsys, '--html')
+    helper_test_non_existing_directory_output(capsys, "--html")
 
 
 def test_non_existing_directory_html_details(capsys):
-    helper_test_non_existing_directory_output(capsys, '--html-details')
+    helper_test_non_existing_directory_output(capsys, "--html-details")
 
 
 def test_non_existing_directory_sonarqube(capsys):
-    helper_test_non_existing_directory_output(capsys, '--sonarqube')
+    helper_test_non_existing_directory_output(capsys, "--sonarqube")
 
 
 def test_non_existing_directory_json(capsys):
-    helper_test_non_existing_directory_output(capsys, '--json')
+    helper_test_non_existing_directory_output(capsys, "--json")
 
 
 def test_non_existing_directory_csv(capsys):
-    helper_test_non_existing_directory_output(capsys, '--csv')
+    helper_test_non_existing_directory_output(capsys, "--csv")
 
 
 def helper_test_non_existing_directory_2_output(capsys, option):
-    c = capture(capsys, [option, 'not-existing-dir/subdir/'])
-    assert c.out == ''
-    assert 'Could not create output directory \'not-existing-dir/subdir/\': ' in c.err
+    c = capture(capsys, [option, "not-existing-dir/subdir/"])
+    assert c.out == ""
+    assert "Could not create output directory 'not-existing-dir/subdir/': " in c.err
     assert c.exception.code != 0
 
 
 def test_non_existing_directory_2_output(capsys):
-    helper_test_non_existing_directory_2_output(capsys, '--output')
+    helper_test_non_existing_directory_2_output(capsys, "--output")
 
 
 def test_non_existing_directory_2_txt(capsys):
-    helper_test_non_existing_directory_2_output(capsys, '--txt')
+    helper_test_non_existing_directory_2_output(capsys, "--txt")
 
 
 def test_non_existing_directory_2_xml(capsys):
-    helper_test_non_existing_directory_2_output(capsys, '--xml')
+    helper_test_non_existing_directory_2_output(capsys, "--xml")
 
 
 def test_non_existing_directory_2_html(capsys):
-    helper_test_non_existing_directory_2_output(capsys, '--html')
+    helper_test_non_existing_directory_2_output(capsys, "--html")
 
 
 def test_non_existing_directory_2_html_details(capsys):
-    helper_test_non_existing_directory_2_output(capsys, '--html-details')
+    helper_test_non_existing_directory_2_output(capsys, "--html-details")
 
 
 def test_non_existing_directory_2_sonarqube(capsys):
-    helper_test_non_existing_directory_2_output(capsys, '--sonarqube')
+    helper_test_non_existing_directory_2_output(capsys, "--sonarqube")
 
 
 def test_non_existing_directory_2_json(capsys):
-    helper_test_non_existing_directory_2_output(capsys, '--json')
+    helper_test_non_existing_directory_2_output(capsys, "--json")
 
 
 def test_non_existing_directory_2_csv(capsys):
-    helper_test_non_existing_directory_2_output(capsys, '--csv')
+    helper_test_non_existing_directory_2_output(capsys, "--csv")
 
 
 def helper_test_non_writable_directory_output(capsys, option):  # pragma: no cover
-    c = capture(capsys, [option, '/file.txt'])
-    assert c.out == ''
-    assert 'Could not create output file \'/file.txt\': ' in c.err
+    c = capture(capsys, [option, "/file.txt"])
+    assert c.out == ""
+    assert "Could not create output file '/file.txt': " in c.err
     assert c.exception.code != 0
 
 
-@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+@pytest.mark.skipif(
+    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
+)
 def test_non_writable_directory_output(capsys):  # pragma: no cover
-    helper_test_non_writable_directory_output(capsys, '--output')
+    helper_test_non_writable_directory_output(capsys, "--output")
 
 
-@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+@pytest.mark.skipif(
+    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
+)
 def test_non_writable_directory_txt(capsys):  # pragma: no cover
-    helper_test_non_writable_directory_output(capsys, '--txt')
+    helper_test_non_writable_directory_output(capsys, "--txt")
 
 
-@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+@pytest.mark.skipif(
+    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
+)
 def test_non_writable_directory_xml(capsys):  # pragma: no cover
-    helper_test_non_writable_directory_output(capsys, '--xml')
+    helper_test_non_writable_directory_output(capsys, "--xml")
 
 
-@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+@pytest.mark.skipif(
+    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
+)
 def test_non_writable_directory_html(capsys):  # pragma: no cover
-    helper_test_non_writable_directory_output(capsys, '--html')
+    helper_test_non_writable_directory_output(capsys, "--html")
 
 
-@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+@pytest.mark.skipif(
+    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
+)
 def test_non_writable_directory_html_details(capsys):  # pragma: no cover
-    helper_test_non_writable_directory_output(capsys, '--html-details')
+    helper_test_non_writable_directory_output(capsys, "--html-details")
 
 
-@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+@pytest.mark.skipif(
+    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
+)
 def test_non_writable_directory_sonarqube(capsys):  # pragma: no cover
-    helper_test_non_writable_directory_output(capsys, '--sonarqube')
+    helper_test_non_writable_directory_output(capsys, "--sonarqube")
 
 
-@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+@pytest.mark.skipif(
+    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
+)
 def test_non_writable_directory_json(capsys):  # pragma: no cover
-    helper_test_non_writable_directory_output(capsys, '--json')
+    helper_test_non_writable_directory_output(capsys, "--json")
 
 
-@pytest.mark.skipif(not (os.getenv('GCOVR_ISOLATED_TEST') == 'zkQEVaBpXF1i'), reason="Only for docker")
+@pytest.mark.skipif(
+    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
+)
 def test_non_writable_directory_csv(capsys):  # pragma: no cover
-    helper_test_non_writable_directory_output(capsys, '--csv')
+    helper_test_non_writable_directory_output(capsys, "--csv")
 
 
 def test_no_output_html_details(caplog):
     c = log_capture(caplog, ["--html-details"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "a named output must be given, if the option --html-details\nis used."
+    assert (
+        message[2]
+        == "a named output must be given, if the option --html-details\nis used."
+    )
     assert c.exception.code != 0
 
 
 def test_branch_threshold_nan(capsys):
-    c = capture(capsys, ['--fail-under-branch', 'nan'])
-    assert c.out == ''
-    assert 'not in range [0.0, 100.0]' in c.err
+    c = capture(capsys, ["--fail-under-branch", "nan"])
+    assert c.out == ""
+    assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
 def test_line_threshold_negative(capsys):
-    c = capture(capsys, ['--fail-under-line', '-0.1'])
-    assert c.out == ''
-    assert 'not in range [0.0, 100.0]' in c.err
+    c = capture(capsys, ["--fail-under-line", "-0.1"])
+    assert c.out == ""
+    assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
 def test_line_threshold_100_1(capsys):
-    c = capture(capsys, ['--fail-under-line', '100.1'])
-    assert c.out == ''
-    assert 'not in range [0.0, 100.0]' in c.err
+    c = capture(capsys, ["--fail-under-line", "100.1"])
+    assert c.out == ""
+    assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
@@ -282,24 +301,31 @@ def test_filter_backslashes_are_detected(caplog):
     # gcov-exclude all to prevent any coverage data from being found
     c = log_capture(
         caplog,
-        args=['--filter', r'C:\\foo\moo', '--gcov-exclude', ''],
-        other_ex=re.error)
+        args=["--filter", r"C:\\foo\moo", "--gcov-exclude", ""],
+        other_ex=re.error,
+    )
     message0 = c.record_tuples[0]
     assert message0[1] == logging.WARNING
-    assert message0[2].startswith('filters must use forward slashes as path separators')
+    assert message0[2].startswith("filters must use forward slashes as path separators")
     message = c.record_tuples[1]
     assert message[1] == logging.WARNING
-    assert message[2].startswith('your filter : C:\\\\foo\\moo')
+    assert message[2].startswith("your filter : C:\\\\foo\\moo")
     message = c.record_tuples[2]
     assert message[1] == logging.WARNING
-    assert message[2].startswith('did you mean: C:/foo/moo')
+    assert message[2].startswith("did you mean: C:/foo/moo")
     assert isinstance(c.exception, re.error) or c.exception.code == 0
 
 
 def test_html_css_not_exists(capsys):
-    c = capture(capsys, ['--html-css', '/File/does/not/\texist'])
-    assert c.out == ''
-    assert re.search(r"Should be a file that already exists: '[/\\]+File[/\\]+does[/\\]+not[/\\]+\\texist'", c.err) is not None
+    c = capture(capsys, ["--html-css", "/File/does/not/\texist"])
+    assert c.out == ""
+    assert (
+        re.search(
+            r"Should be a file that already exists: '[/\\]+File[/\\]+does[/\\]+not[/\\]+\\texist'",
+            c.err,
+        )
+        is not None
+    )
     assert c.exception.code != 0
 
 
@@ -313,15 +339,15 @@ def test_html_title_empty_string(caplog):
 
 def test_html_medium_threshold_nan(capsys):
     c = capture(capsys, ["--html-medium-threshold", "nan"])
-    assert c.out == ''
+    assert c.out == ""
     assert "--html-medium-threshold: nan not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
 def test_html_medium_threshold_negative(capsys):
-    c = capture(capsys, ['--html-medium-threshold', '-0.1'])
-    assert c.out == ''
-    assert 'not in range [0.0, 100.0]' in c.err
+    c = capture(capsys, ["--html-medium-threshold", "-0.1"])
+    assert c.out == ""
+    assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
@@ -334,24 +360,29 @@ def test_html_medium_threshold_zero(caplog):
 
 
 def test_html_high_threshold_nan(capsys):
-    c = capture(capsys, ['--html-high-threshold', 'nan'])
-    assert c.out == ''
-    assert 'not in range [0.0, 100.0]' in c.err
+    c = capture(capsys, ["--html-high-threshold", "nan"])
+    assert c.out == ""
+    assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
 def test_html_high_threshold_negative(capsys):
-    c = capture(capsys, ['--html-high-threshold', '-0.1'])
-    assert c.out == ''
-    assert 'not in range [0.0, 100.0]' in c.err
+    c = capture(capsys, ["--html-high-threshold", "-0.1"])
+    assert c.out == ""
+    assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
 def test_html_medium_threshold_gt_html_high_threshold(caplog):
-    c = log_capture(caplog, ["--html-medium-threshold", "60", "--html-high-threshold", "50"])
+    c = log_capture(
+        caplog, ["--html-medium-threshold", "60", "--html-high-threshold", "50"]
+    )
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "value of --html-medium-threshold=60.0 should be\nlower than or equal to the value of --html-high-threshold=50.0."
+    assert (
+        message[2]
+        == "value of --html-medium-threshold=60.0 should be\nlower than or equal to the value of --html-high-threshold=50.0."
+    )
     assert c.exception.code != 0
 
 
@@ -367,27 +398,47 @@ def test_multiple_output_formats_to_stdout(caplog):
     c = log_capture(caplog, ["--xml", "--html", "--sonarqube", "--coveralls"])
     message = c.record_tuples[0]
     assert message[1] == logging.WARNING
-    assert message[2] == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
+    assert (
+        message[2]
+        == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
+    )
     message = c.record_tuples[1]
     assert message[1] == logging.WARNING
-    assert message[2] == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
+    assert (
+        message[2]
+        == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
+    )
     message = c.record_tuples[2]
     assert message[1] == logging.WARNING
-    assert message[2] == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
+    assert (
+        message[2]
+        == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
+    )
     assert c.exception.code == 0
 
 
 def test_multiple_output_formats_to_stdout_1(caplog):
-    c = log_capture(caplog, ["--xml", "--html", "--sonarqube", "--coveralls", "-o", "-"])
+    c = log_capture(
+        caplog, ["--xml", "--html", "--sonarqube", "--coveralls", "-o", "-"]
+    )
     message = c.record_tuples[0]
     assert message[1] == logging.WARNING
-    assert message[2] == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
+    assert (
+        message[2]
+        == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
+    )
     message = c.record_tuples[1]
     assert message[1] == logging.WARNING
-    assert message[2] == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
+    assert (
+        message[2]
+        == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
+    )
     message = c.record_tuples[2]
     assert message[1] == logging.WARNING
-    assert message[2] == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
+    assert (
+        message[2]
+        == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
+    )
     assert c.exception.code == 0
 
 
@@ -395,7 +446,10 @@ def test_no_self_contained_without_file(caplog):
     c = log_capture(caplog, ["--no-html-self-contained", "--html"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "can only disable --html-self-contained when a named output is given."
+    assert (
+        message[2]
+        == "can only disable --html-self-contained when a named output is given."
+    )
     assert c.exception.code != 0
 
 
@@ -405,22 +459,22 @@ def test_html_injection_via_json(capsys, tmp_path):
 
     script = '<script>alert("pwned")</script>'
     jsondata = {
-        'gcovr/format_version': "0.3",
-        'files': [
-            {'file': script, 'functions': [], 'lines': []},
-            {'file': 'other', 'functions': [], 'lines': []},
+        "gcovr/format_version": "0.3",
+        "files": [
+            {"file": script, "functions": [], "lines": []},
+            {"file": "other", "functions": [], "lines": []},
         ],
     }
 
-    tempfile = tmp_path / 'injection.json'
+    tempfile = tmp_path / "injection.json"
 
-    with tempfile.open('w+') as jsonfile:
+    with tempfile.open("w+") as jsonfile:
         json.dump(jsondata, jsonfile)
 
-    c = capture(capsys, ['-a', str(tempfile), '--html'])
+    c = capture(capsys, ["-a", str(tempfile), "--html"])
 
     assert script not in c.out
-    assert str(markupsafe.escape(script)) in c.out, '--- got:\n{}\n---'.format(c.out)
+    assert str(markupsafe.escape(script)) in c.out, "--- got:\n{}\n---".format(c.out)
     assert c.exception.code == 0
 
 
@@ -428,12 +482,14 @@ def test_exclude_lines_by_pattern(caplog):
     c = log_capture(caplog, ["--exclude-lines-by-pattern", "example.**"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2].startswith("--exclude-lines-by-pattern: Invalid regular expression")
+    assert message[2].startswith(
+        "--exclude-lines-by-pattern: Invalid regular expression"
+    )
     assert c.exception.code != 0
 
 
 def test_invalid_timestamp(capsys):
-    c = capture(capsys, ['--timestamp=foo'])
-    assert c.out == ''
+    c = capture(capsys, ["--timestamp=foo"])
+    assert c.out == ""
     assert "argument --timestamp: unknown timestamp format: 'foo'" in c.err
     assert c.exception.code != 0

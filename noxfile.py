@@ -9,20 +9,8 @@ import nox
 GCC_VERSIONS = ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "clang-10", "clang-13"]
 GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
-DEFAULT_LINT_DIRECTORIES = ["admin"] + DEFAULT_TEST_DIRECTORIES
-BLACK_CONFORM_FILES = [
-    "admin/add_copyright.py",
-    "gcovr/configuration.py",
-    "gcovr/decision_analysis.py",
-    "gcovr/gcov.py",
-    "gcovr/gcov_parser.py",
-    "gcovr/tests/test_gcov_parser.py",
-    "gcovr/tests/test_gcovr.py",
-    "gcovr/timestamps.py",
-    "gcovr/writer/cobertura.py",
-    "gcovr/writer/json.py",
-    "noxfile.py",
-]
+DEFAULT_LINT_ARGUMENTS = ["setup.py", "noxfile.py", "admin"] + DEFAULT_TEST_DIRECTORIES
+
 BLACK_PINNED_VERSION = "black==22.1.0"
 
 nox.options.sessions = ["qa"]
@@ -73,14 +61,10 @@ def lint(session: nox.Session) -> None:
     if session.posargs:
         args = session.posargs
     else:
-        args = DEFAULT_LINT_DIRECTORIES
+        args = DEFAULT_LINT_ARGUMENTS
     session.run("flake8", *args)
 
     if platform.python_implementation() == "CPython":
-        if not session.posargs:
-            session.run(
-                "python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES
-            )
         session.run("python", "-m", "black", "--diff", *args)
     else:
         session.log(
@@ -95,8 +79,7 @@ def black(session: nox.Session) -> None:
     if session.posargs:
         session.run("python", "-m", "black", *session.posargs)
     else:
-        session.run("python", "-m", "black", "--diff", "--check", *BLACK_CONFORM_FILES)
-        session.run("python", "-m", "black", "--diff", *DEFAULT_LINT_DIRECTORIES)
+        session.run("python", "-m", "black", "--diff", *DEFAULT_LINT_ARGUMENTS)
 
 
 @nox.session
@@ -177,7 +160,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     if "NOX_POSARGS" in os.environ:
         args += shlex.split(os.environ["NOX_POSARGS"])
     if "--" not in args:
-        args += ["--", "gcovr", "doc/examples"]
+        args += ["--"] + DEFAULT_TEST_DIRECTORIES
     session.run("python", *args)
 
 
