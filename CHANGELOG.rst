@@ -63,6 +63,7 @@ Internal changes:
 - Add support for gcc-9 and clang-13 to docker tests. (:issue:`527`)
 - Support jinja2==3.1.0 (:issue:`576`)
 - Rename the nox sessions for using all compiler versions. (:issue:`555`)
+- Files must be formated with black. (:issue:`579`)
 
 5.0 (11 June 2021)
 ------------------
