@@ -67,6 +67,12 @@
 </div>
 {% endblock %}
 
+{% block navigation %}
+{% if info.details %}
+<a href="{{ FUNCTIONS_FNAME }}">List of functions</summary>
+{% endif -%}
+{% endblock %}
+
 {% block content %}
 <table class="file-list">
   <col/>

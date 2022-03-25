@@ -33,6 +33,7 @@ Improvements and new features:
 - Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
 - Add :option:`--cobertura` as a less ambiguous alias for :option:`--xml`.
   (:issue:`552`)
+- Add list of functions to HTML details. (:issue:`554`)
 
 Documentation:
 

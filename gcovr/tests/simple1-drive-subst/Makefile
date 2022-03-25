@@ -1,8 +1,5 @@
 
 GCOVR_TEST_DRIVE_WINDOWS ?=
-ifeq ($(GCOVR_TEST_DRIVE_WINDOWS),)
-$(error Variable GCOVR_TEST_DRIVE_WINDOWS must be defined.)
-endif
 
 override GCOVR += --verbose
 
@@ -13,38 +10,45 @@ define wrapDrive
 	cmd.exe /C "subst $(GCOVR_TEST_DRIVE_WINDOWS) /d"
 endef
 
-all:
+check-env :
+ifeq ($(GCOVR_TEST_DRIVE_WINDOWS),)
+	$(error Variable GCOVR_TEST_DRIVE_WINDOWS must be defined.)
+else
+	$(info Using drive $(GCOVR_TEST_DRIVE_WINDOWS).)
+endif
+
+all: check-env
 	$(call wrapDrive, $(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase)
 
 run: txt xml html sonarqube json json_summary coveralls
 
-txt:
+txt: check-env
 	$(call wrapDrive, ./testcase)
 	# generate actual output
 	$(call wrapDrive, $(GCOVR) -d --txt -o coverage.txt)
 
-xml:
+xml: check-env
 	$(call wrapDrive, ./testcase)
 	$(call wrapDrive, $(GCOVR) -d -x -o coverage.xml)
 
-html:
+html: check-env
 	$(call wrapDrive, ./testcase)
 	# these test cases also cover some CSS-linking permutations
 	$(call wrapDrive, $(GCOVR) --html-details coverage-details-linkcss.html)
 
-sonarqube:
+sonarqube: check-env
 	$(call wrapDrive, ./testcase)
 	$(call wrapDrive, $(GCOVR) -d --sonarqube sonarqube.xml)
 
-json_summary:
+json_summary: check-env
 	$(call wrapDrive, ./testcase)
 	$(call wrapDrive, $(GCOVR) -d --json-summary-pretty -o summary_coverage.json)
 
-json:
+json: check-env
 	$(call wrapDrive, ./testcase)
 	$(call wrapDrive, $(GCOVR) --json coverage.json)
 
-coveralls:
+coveralls: check-env
 	$(call wrapDrive, ./testcase)
 	$(call wrapDrive, $(GCOVR) -d --coveralls coveralls.json)
 

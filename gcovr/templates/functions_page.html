@@ -1,0 +1,99 @@
+{# -*- engine: jinja -*- #}
+{% extends "base.html" %}
+
+{% block summary %}
+<div>
+  <table class="legend">
+    <tr>
+      <th scope="row">Directory:</th>
+      <td>{{info.get_directory()}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Date:</th>
+      <td>{{info.date}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Legend:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &gt;= 0%</span>
+        {% if COVERAGE_MED != COVERAGE_HIGH %}
+        <span class="coverage-medium">medium: &gt;= {{COVERAGE_MED}}%</span>
+        {% endif %}
+        {% if COVERAGE_HIGH < 100 %}
+        <span class="coverage-high">high: &gt;= {{COVERAGE_HIGH}}%</span>
+        {% else %}
+        <span class="coverage-high">high: = 100%</span>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div>
+  <table class="coverage">
+    <tr>
+      <th></th>
+      <th scope="col">Exec</th>
+      <th scope="col">Total</th>
+      <th scope="col">Coverage</th>
+    </tr>
+    <tr>
+      <th scope="row">Lines:</th>
+      <td>{{info.lines.exec}}</td>
+      <td>{{info.lines.total}}</td>
+      <td class="{{info.lines.class}}">{{info.lines.coverage}}%</td>
+    </tr>
+    <tr>
+      <th scope="row">Functions:</th>
+      <td>{{info.functions.exec}}</td>
+      <td>{{info.functions.total}}</td>
+      <td class="{{info.functions.class}}">{{info.functions.coverage}}%</td>
+    </tr>
+    <tr>
+      <th scope="row">Branches:</th>
+      <td>{{info.branches.exec}}</td>
+      <td>{{info.branches.total}}</td>
+      <td class="{{info.branches.class}}">{{info.branches.coverage}}%</td>
+    </tr>
+    {% if SHOW_DECISION %}
+    <tr>
+      <th scope="row">Decisions:</th>
+      <td>{{info.decisions.exec}}</td>
+      <td>{{info.decisions.total}}</td>
+      <td class="{{info.decisions.class}}">{{info.decisions.coverage}}%</td>
+    </tr>
+  {% endif %}
+  </table>
+</div>
+{% endblock %}
+
+{% block content %}
+<table class="listOfFunctions">
+  <tr>
+    <th>Function</th>
+    <th>File</th>
+    <th>Line</th>
+    <th>Call count</th>
+  </tr>
+{% for entry in all_functions %}
+  <tr>
+    <td>
+      <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["name"] }}</a>
+    </td>
+    <td>
+      <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["filename"] }}</a>
+    </td>
+    <td>
+      <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["line"] }}</a>
+    </td>
+    <td>
+      <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">
+      {%- if entry["count"] == 0 %} not called
+      {%- else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}
+      {%- endif -%}
+      </a>
+    </td>
+  </tr>
+{% endfor %}
+</table>
+{% endblock %}
