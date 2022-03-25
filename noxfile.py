@@ -259,7 +259,7 @@ def docker_qa_build_compiler(session: nox.Session, version: str) -> None:
 @nox.session(python=False)
 def docker_qa_run(session: nox.Session) -> None:
     """Run the docker container for the default GCC version."""
-    session_id = f"docker_qa_run_({GCC_VERSION2USE})"
+    session_id = f"docker_qa_run_compiler({GCC_VERSION2USE})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
@@ -268,7 +268,7 @@ def docker_qa_run(session: nox.Session) -> None:
 def docker_qa_run_compiler_all(session: nox.Session) -> None:
     """Run the docker container for the all GCC versions."""
     for version in GCC_VERSIONS:
-        session_id = f"docker_qa_run_({version})"
+        session_id = f"docker_qa_run_compiler({version})"
         session.log(f"Notify session {session_id}")
         session.notify(session_id)
 
