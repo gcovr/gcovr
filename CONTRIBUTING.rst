@@ -257,7 +257,8 @@ that are executed as the ``test_gcovr.py`` integration test.
 Each ``gcovr/tests/*`` directory is one such example project.
 
 You can format files with ``python3 -m nox --session black FileToFormat``)
-``
+
+To get a list of all available sessions run ``python3 -m nox -l``.
 
 The next sections discuss
 the :ref:`structure of integration tests <integration tests>`,
@@ -354,6 +355,9 @@ For example:
     # run only XML tests and do not remove generated files
     python3 -m nox --session tests -- -k 'xml' --skip_clean
 
+To update the refernce data for all compiler in one call see
+:ref:`run tests with Docker <docker tests>`.
+
 When the currently generated output reports differ to the reference files
 you can create a ZIP archive named ``diff.zip`` in the tests directory
 by using ``--archive_differences`` option.
@@ -404,6 +408,13 @@ can build and run the container with:
 .. code:: bash
 
     python3 -m nox --session 'docker_qa_compiler(gcc-9)'
+
+You can also use the compiler 'all' to run the tests for all compiler versions.
+This is usefull to update the all reference files:
+
+.. code:: bash
+
+    python3 -m nox --session 'docker_qa_compiler(all)' -- --update_reference
 
 .. _join:
 
