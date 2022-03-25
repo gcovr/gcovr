@@ -61,6 +61,7 @@ Internal changes:
  - Add timeout for each single test. (:issue:`572`)
  - Add support for gcc-9 and clang-13 to docker tests. (:issue:`527`)
  - Support jinja2==3.1.0 (:issue:`576`)
+ - Rename the nox sessions for using all compiler versions. (:issue:`555`)
 
 5.0 (11 June 2021)
 ------------------
