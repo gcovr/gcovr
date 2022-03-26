@@ -21,7 +21,9 @@
 import copy
 import os
 import logging
+import re
 import subprocess
+from typing import List
 
 import gcovr.version
 
@@ -43,7 +45,7 @@ HEADER_END = (
 )
 
 
-def getLicenseSection(comment_char="#"):
+def getLicenseSection(comment_char: str = "#"):
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
     yield comment_char + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
@@ -58,7 +60,7 @@ def getLicenseSection(comment_char="#"):
     yield comment_char + HEADER_END
 
 
-def addCopyrightHeaderToPythonFile(filename, lines):
+def addCopyrightHeaderToPythonFile(filename: str, lines: List[str]):
     # Empty file should be kept empty
     if len(lines) == 0:
         return lines
@@ -92,6 +94,9 @@ def addCopyrightHeaderToPythonFile(filename, lines):
             if line != "":
                 # Use one empty line
                 newLines.append("")
+                # except for classes or functions, there we need two.
+                if line.startswith("class") or line.startswith("def"):
+                    newLines.append("")
                 newLines.append(line)
                 break
         # keep all other lines
@@ -105,7 +110,7 @@ def addCopyrightHeaderToPythonFile(filename, lines):
     return newLines
 
 
-def updateCopyrightString(filename, lines):
+def updateCopyrightString(filename: str, lines: List[str]):
     newLines = []
 
     iterLines = iter(lines)
@@ -114,7 +119,7 @@ def updateCopyrightString(filename, lines):
         if line == "COPYRIGHT = (":
             break
     else:
-        raise RuntimeError(f"Start of copyright not found in {filename}.")
+        raise RuntimeError(f"Start of copyright not found in {filename!r}.")
 
     for line in COPYRIGHT:
         newLines.append(f'    "{line}\\n"')
@@ -124,9 +129,26 @@ def updateCopyrightString(filename, lines):
             newLines.append(line)
             break
     else:
-        raise RuntimeError(f"End of copyright not found in {filename}.")
+        raise RuntimeError(f"End of copyright not found in {filename!r}.")
 
     newLines.extend(iterLines)
+
+    return newLines
+
+
+def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
+    newLines = []
+
+    callReleaseChecklist = "admin/release_checklist"
+    callFound = False
+    iterLines = iter(lines)
+    for line in iterLines:
+        if callReleaseChecklist in line:
+            line = re.sub(r"\d+\.\d+$", VERSION, line)
+            callFound = True
+        newLines.append(line)
+    if not callFound:
+        raise RuntimeError(f"Call of {callReleaseChecklist!r} not found in {filename!r}.")
 
     return newLines
 
@@ -146,6 +168,8 @@ def main():
                 handlers.append(addCopyrightHeaderToPythonFile)
             if filename == "__main__.py":
                 handlers.append(updateCopyrightString)
+            if filename == "deploy.yml":
+                handlers.append(updateCallOfReleaseChecklist)
 
             if handlers:
                 with open(fullname) as f:
