@@ -9,61 +9,79 @@
 Breaking changes:
 
 - Dropped support for Python 3.6 (:issue:`550`)
-- Change ``xml`` configuration key to ``cobertura``. (:issue:`552`)
+- Changed ``xml`` configuration key to ``cobertura`` (:issue:`552`)
+- JSON summary output: all percentages are now reported from 0 to 100
+  (:issue:`570`)
 
-Improvements and new features:
+New features and notable changes:
 
-- Add function coverage metric (:issue:`362`)
-- Deactivate localization of gcov by setting LC_ALL=C instead of LC_ALL=en_US (:issue:`513`)
-- Don't use a temporary directory for running gcov (:issue:`525`)
-- Fix junctions on windows for Python 3.8 (:issue:`535`)
-- Can create reproducible reports with the :option:`--timestamp` option (:issue:`546`)
-- Add "Goto function" in html details. (:issue:`515`)
-- Fix "root" path in JSON summary report. (:issue:`548`)
-- Solve problems with file name limitations. (:issue:`528`)
-- Add :option:`--no-markers` to ignore exclusion markers in code. (:issue:`361`)
-- Generate also a Report of Excluded Coverage. (:issue:`503`)
-- Added :option:`--decisions` to add decision coverage to HTML and JSON output. (:issue:`350`)
-- Added :option:`--exclude-pattern-prefix` to allow projects to define custom prefixes used in _EXCL_LINE/START/STOP markers. (:issue:`561`)
-- Replace own logger with python logger module. (:issue:`540`)
-- Fix resolution of relative filters in configuration files. (:issue:`568`)
-- Don't use realpath in data model, only use them for the filter. (:issue:`565`)
-- Fix sanity check in HTML generator. (:issue:`571`)
-- Change file level percent values in JSON summary. (:issue:`570`)
-- Add error to STDERR for --fail-under-line or --fail-under-branch. (:issue:`502`)
-- Add :option:`--cobertura` as a less ambiguous alias for :option:`--xml`.
+- Report function coverage (:issue:`362`, :issue:`515`, :issue:`554`)
+- Consistent support for symlinks across operating systems
+
+  - Support for Windows junctions (:issue:`535`)
+  - Symlinks are only resolved for evaluating filters (:issue:`565`)
+
+- Show error message on STDERR
+  when :option:`--fail-under-line` or :option:`--fail-under-branch` fails
+  (:issue:`502`)
+- Can report decision coverage with :option:`--decisions` option
+  (reasonably formatted C/C++ source files only, HTML and JSON output)
+  (:issue:`350`)
+- Can create reproducible reports with the :option:`--timestamp` option
+  (:issue:`546`)
+- Can ignore exclusion markers in code with :option:`--no-markers` option
+  (:issue:`361`)
+- Can customize line exclusion marker (LINE/START/STOP) patterns
+  with :option:`--exclude-pattern-prefix` option
+  (:issue:`561`)
+- Can use :option:`--cobertura` as a less ambiguous alias for :option:`--xml`.
   (:issue:`552`)
-- Add list of functions to HTML details. (:issue:`554`)
+
+Bug fixes and small improvements:
+
+- Gcov is invoked without localization by setting LC_ALL=C (:issue:`513`)
+- Gcov is invoked without temporary directories (:issue:`525`)
+- Gcov: solved problems with file name limitations. (:issue:`528`)
+- Fixed "root" path in JSON summary report. (:issue:`548`)
+- Correctly resolve relative filters in configuration files. (:issue:`568`)
+- HTML output: indicate lines with excluded coverage (:issue:`503`)
+- HTML output: fixed sanity check to support empty files (:issue:`571`)
+- HTML output: support ``jinja2 >= 3.1`` (:issue:`576`)
 
 Documentation:
 
-- Split documentation into smaller pages. (:issue:`552`)
+- Split documentation into smaller pages (:issue:`552`)
 - Document used options for ``gcov`` (:issue:`528`)
 
 Internal changes:
 
-- Add support for clang-10 to docker tests. (:issue:`484`)
-- Clean GCC environment variables in test suite. (:issue:`493`)
-- Fix problems from deployment of release 5.0. (:issue:`494`)
-- Use yaxmldiff for XML diffing in tests. (:issue:`495`)
-- Change test and reference for XML diff to be the same as for the unified diff. (:issue:`509`)
+- Replaced own logger with Python's logging module. (:issue:`540`)
 - New parser for ``.gcov`` file format, should be more robust. (:issue:`512`)
-- Add option to run all comiler versions at once. (:issue:`514`)
-- Fix globing of reference data in tests. (:issue:`533`)
-- Replace makefile for starting tests with noxfile.py. (:issue:`516`)
-- Activate symlink test for windows. (:issue:`539`)
-- Add test to install wheel. (:issue:`537`)
-- Add support for full path in environment CC. (:issue:`541`)
-- Ensure that shell files are always checked out with LF linebreaks. (:issue:`538`)
-- Add test for compiler option ``-fprofile-abs-path``. (:issue:`521`)
-- Ensure that shell files are always saved with LF linebreaks. (:issue:`547`)
-- Update the test driver to share the reference data between the different compiler versions. (:issue:`556`)
-- Add flake8-print to check usage of print function. (:issue:`566`)
-- Add timeout for each single test. (:issue:`572`)
-- Add support for gcc-9 and clang-13 to docker tests. (:issue:`527`)
-- Support jinja2==3.1.0 (:issue:`576`)
-- Rename the nox sessions for using all compiler versions. (:issue:`555`)
-- Files must be formated with black. (:issue:`579`)
+- New tests
+
+  - more compilers:
+    clang-10 (:issue:`484`),
+    clang-13 (:issue:`527`),
+    gcc-9 (:issue:`527`)
+  - ``-fprofile-abs-path`` compiler option (:issue:`521`)
+  - enabled symlink tests for Windows (:issue:`539`)
+
+- Improvements to the test suite
+
+  - Use Nox instead of Makefiles to manage QA checks (:issue:`516`, :issue:`555`)
+  - Can run tests for all compiler versions in one go (:issue:`514`)
+  - More linter checks (:issue:`566`)
+    and code style enforcement with black (:issue:`579`)
+  - Better XML diffing with yaxmldiff (:issue:`495`, :issue:`509`)
+  - Share test reference data between compiler versions where possible
+    (:issue:`556`)
+  - Better environment variable handling (:issue:`493`, :issue:`541`)
+  - Fixed glob patterns for collecting reference files (:issue:`533`)
+  - Add timeout for each single test. (:issue:`572`)
+
+- Improvements and fixes to the release process (:issue:`494`, :issue:`537`)
+- Normalize shell scripts to Unix line endings (:issue:`538`, :issue:`547`)
+
 
 5.0 (11 June 2021)
 ------------------
