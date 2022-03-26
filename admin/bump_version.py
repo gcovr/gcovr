@@ -141,8 +141,7 @@ def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
 
     callReleaseChecklist = "admin/release_checklist"
     callFound = False
-    iterLines = iter(lines)
-    for line in iterLines:
+    for line in lines:
         if callReleaseChecklist in line:
             line = re.sub(r"\d+\.\d+$", VERSION, line)
             callFound = True
