@@ -17,6 +17,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: fetch all tags  # need annotated tags for release checklist
+      run: |
+        git fetch --force --tags --depth=1
     - name: For a dry run, don't verify tags and documentation
       if: ${{ ! startsWith(github.event.ref, 'refs/tags/') }}
       run: |
