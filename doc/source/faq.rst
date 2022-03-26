@@ -93,7 +93,7 @@ With the :option:`gcovr --exclude-throw-branches` option,
 exception-only branches will be ignored.
 These are typically arcs from a function call into an exception handler.
 
-With the :option`gcovr --decisions` option,
+With the :option:`gcovr --decisions` option,
 gcovr parses the source code to extract a ISO 26262 compliant metric
 for decision coverage. This metric can be interpreted as the branch coverage
 on C/C++-Level.

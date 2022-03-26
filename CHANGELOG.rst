@@ -19,7 +19,8 @@ New features and notable changes:
 - Consistent support for symlinks across operating systems
 
   - Support for Windows junctions (:issue:`535`)
-  - Symlinks are only resolved for evaluating filters (:issue:`565`)
+  - Symlinks are only resolved for :ref:`evaluating filters <filters>`
+    (:issue:`565`)
 
 - Show error message on STDERR
   when :option:`--fail-under-line` or :option:`--fail-under-branch` fails
@@ -29,11 +30,12 @@ New features and notable changes:
   (:issue:`350`)
 - Can create reproducible reports with the :option:`--timestamp` option
   (:issue:`546`)
-- Can ignore exclusion markers in code with :option:`--no-markers` option
-  (:issue:`361`)
-- Can customize line exclusion marker (LINE/START/STOP) patterns
-  with :option:`--exclude-pattern-prefix` option
-  (:issue:`561`)
+- Improvements to :ref:`Exclusion markers` (LINE/START/STOP)
+
+  - Can ignore markers in code with :option:`--no-markers` option (:issue:`361`)
+  - Can customize patterns with :option:`--exclude-pattern-prefix` option
+    (:issue:`561`)
+
 - Can use :option:`--cobertura` as a less ambiguous alias for :option:`--xml`.
   (:issue:`552`)
 
