@@ -23,6 +23,7 @@ import os
 import logging
 import re
 import subprocess
+import time
 from typing import List
 
 import gcovr.version
@@ -152,6 +153,37 @@ def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
     return newLines
 
 
+def updateChangelog(filename: str, lines: List[str]):
+    newLines = []
+
+    nextLine = None
+    for line in lines:
+        if line == "Next Release":
+            line = f"{VERSION} ({time.strftime('%d %B %Y')})"
+            nextLine = "-" * len(line)
+        elif nextLine:
+            line = nextLine
+            nextLine = None
+        newLines.append(line)
+
+    return newLines
+
+
+def updatDocumentation(filename: str, lines: List[str]):
+    newLines = []
+
+    for line in lines:
+        if "NEXT" in line:
+            line = re.sub(
+                r"(\.\. (?:versionadded|versionchanged|deprecated):: )NEXT",
+                r"\g<1>" + VERSION,
+                line
+            )
+        newLines.append(line)
+
+    return newLines
+
+
 def main():
     for root, dirs, files in os.walk(".", topdown=True):
 
@@ -169,6 +201,10 @@ def main():
                 handlers.append(updateCopyrightString)
             if filename == "deploy.yml":
                 handlers.append(updateCallOfReleaseChecklist)
+            if filename == "CHANGELOG.rst":
+                handlers.append(updateChangelog)
+            if filename.endswith(".rst"):
+                handlers.append(updatDocumentation)
 
             if handlers:
                 with open(fullname) as f:
