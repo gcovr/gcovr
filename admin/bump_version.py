@@ -156,6 +156,15 @@ def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
 def updateChangelog(filename: str, lines: List[str]):
     newLines = []
 
+    # We need to also change the line after "Next Release"
+    # because the minus must have the same length than the
+    # headline to have valid RST.
+    # We change:
+    #    Next Release
+    #    ------------
+    # to:
+    #    x.y (Day Month Year)
+    #    --------------------
     nextLine = None
     for line in lines:
         if line == "Next Release":
