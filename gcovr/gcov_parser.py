@@ -210,16 +210,16 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
     Collect the header/metadata lines from a gcov file.
 
     Example:
-    >>> parse_metadata('''\
+    >>> parse_metadata('''
     ...   -: 0:Foo:bar
     ...   -: 0:Key:123
     ... '''.splitlines())
     Traceback (most recent call last):
        ...
-    RuntimeError: Missing key 'Source' in metadata. GCOV data was:
+    RuntimeError: Missing key 'Source' in metadata. GCOV data was >>
       -: 0:Foo:bar
-      -: 0:Key:123
-    >>> parse_metadata('''\
+      -: 0:Key:123<< End of GCOV data
+    >>> parse_metadata('''
     ...   -: 0:Source:file
     ...   -: 0:Foo:bar
     ...   -: 0:Key:123
