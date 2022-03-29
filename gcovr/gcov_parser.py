@@ -243,7 +243,7 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
 
     if "Source" not in collected:
         data = "\n".join(lines)
-        raise RuntimeError(f"Missing key 'Source' in metadata. GCOV data was:\n{data}")
+        raise RuntimeError(f"Missing key 'Source' in metadata. GCOV data was >>{data}<< End of GCOV data")
 
     return collected
 
