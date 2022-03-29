@@ -493,14 +493,15 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
             for fname in active_gcov_files:
                 process_gcov_data(fname, covdata, abs_filename, options)
             done = True
-    except Exception as e:
-        raise RuntimeError(
+    except Exception:
+        logger.error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
             f"Stdout of gcov was >>{out}<< End of stdout\n"
             f"Stderr of gcov was >>{err}<< End of stderr\n"
             f"Current processed gcov file was {fname!r}.\n"
             "Use option --verbose to get extended informations."
         )
+        raise
 
     if not options.keep:
         toerase.update(all_gcov_files)
