@@ -148,7 +148,9 @@ def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
             callFound = True
         newLines.append(line)
     if not callFound:
-        raise RuntimeError(f"Call of {callReleaseChecklist!r} not found in {filename!r}.")
+        raise RuntimeError(
+            f"Call of {callReleaseChecklist!r} not found in {filename!r}."
+        )
 
     return newLines
 
@@ -186,7 +188,7 @@ def updatDocumentation(filename: str, lines: List[str]):
             line = re.sub(
                 r"(\.\. (?:versionadded|versionchanged|deprecated):: )NEXT",
                 r"\g<1>" + VERSION,
-                line
+                line,
             )
         newLines.append(line)
 
