@@ -453,42 +453,55 @@ class gcov:
 
 
 def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, chdir):
-    gcov_cmd = gcov(options.gcov_cmd)
+    fname = None
+    out = None
+    err = None
+    try:
+        gcov_cmd = gcov(options.gcov_cmd)
 
-    # ATTENTION:
-    # This lock is essential for parallel processing because without
-    # this there can be name collisions for the generated output files.
-    with locked_directory(chdir):
-        out, err = gcov_cmd.run_with_args(
-            [
-                abs_filename,
-                *gcov_cmd.get_default_options(),
-                "--object-directory",
-                os.path.dirname(abs_filename),
-            ],
-            cwd=chdir,
-        ).communicate()
+        # ATTENTION:
+        # This lock is essential for parallel processing because without
+        # this there can be name collisions for the generated output files.
+        with locked_directory(chdir):
+            out, err = gcov_cmd.run_with_args(
+                [
+                    abs_filename,
+                    *gcov_cmd.get_default_options(),
+                    "--object-directory",
+                    os.path.dirname(abs_filename),
+                ],
+                cwd=chdir,
+            ).communicate()
 
-        # find the files that gcov created
-        active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
-            out,
-            gcov_filter=options.gcov_filter,
-            gcov_exclude=options.gcov_exclude,
-            chdir=chdir,
+            # find the files that gcov created
+            active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
+                out,
+                gcov_filter=options.gcov_filter,
+                gcov_exclude=options.gcov_exclude,
+                chdir=chdir,
+            )
+
+        if unknown_cla_re.search(err):
+            # gcov tossed errors: throw exception
+            raise RuntimeError("Error in gcov command line: {}".format(err))
+        elif source_re.search(err):
+            # gcov tossed errors: try the next potential_wd
+            error(err)
+            done = False
+        else:
+            # Process *.gcov files
+            for fname in active_gcov_files:
+                process_gcov_data(fname, covdata, abs_filename, options)
+            done = True
+    except Exception:
+        logger.error(
+            f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
+            f"Stdout of gcov was >>{out}<< End of stdout\n"
+            f"Stderr of gcov was >>{err}<< End of stderr\n"
+            f"Current processed gcov file was {fname!r}.\n"
+            "Use option --verbose to get extended informations."
         )
-
-    if unknown_cla_re.search(err):
-        # gcov tossed errors: throw exception
-        raise RuntimeError("Error in gcov command line: {}".format(err))
-    elif source_re.search(err):
-        # gcov tossed errors: try the next potential_wd
-        error(err)
-        done = False
-    else:
-        # Process *.gcov files
-        for fname in active_gcov_files:
-            process_gcov_data(fname, covdata, abs_filename, options)
-        done = True
+        raise
 
     if not options.keep:
         toerase.update(all_gcov_files)

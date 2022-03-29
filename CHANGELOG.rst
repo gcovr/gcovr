@@ -10,6 +10,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Log additional infop on gcov parsing errors (:issue:`589`)
+
 Bug fixes and small improvements:
 
 Documentation:
