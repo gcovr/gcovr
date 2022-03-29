@@ -10,12 +10,13 @@ Breaking changes:
 
 New features and notable changes:
 
-- Log additional infop on gcov parsing errors (:issue:`589`)
+- Log additional infop on gcov parsing errors. (:issue:`589`)
 
 Bug fixes and small improvements:
 
 - Remove function coverage from sonarcube report. (:issue:`591`)
 - Fix parallel processing of gcov data. (:issue:`592`)
+- Fix black session to fail on format errors. (:issue:`594`)
 - Check resuired metadata keys. (:issue:`593`)
 
 Documentation:

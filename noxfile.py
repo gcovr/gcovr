@@ -83,7 +83,7 @@ def lint(session: nox.Session) -> None:
     session.run("flake8", *args)
 
     if platform.python_implementation() == "CPython":
-        session.run("python", "-m", "black", "--diff", *args)
+        session.run("python", "-m", "black", "--diff", "--check", *args)
     else:
         session.log(
             f"Skip black because of platform {platform.python_implementation()}."
@@ -97,7 +97,9 @@ def black(session: nox.Session) -> None:
     if session.posargs:
         session.run("python", "-m", "black", *session.posargs)
     else:
-        session.run("python", "-m", "black", "--diff", *DEFAULT_LINT_ARGUMENTS)
+        session.run(
+            "python", "-m", "black", "--diff", "--check", *DEFAULT_LINT_ARGUMENTS
+        )
 
 
 @nox.session
