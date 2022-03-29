@@ -14,6 +14,8 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Remove function coverage from sonarcube report (:issue:`591`)
+
 Documentation:
 
 Internal changes:
