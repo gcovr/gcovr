@@ -481,18 +481,18 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
                 chdir=chdir,
             )
 
-        if unknown_cla_re.search(err):
-            # gcov tossed errors: throw exception
-            raise RuntimeError("Error in gcov command line: {}".format(err))
-        elif source_re.search(err):
-            # gcov tossed errors: try the next potential_wd
-            error(err)
-            done = False
-        else:
-            # Process *.gcov files
-            for fname in active_gcov_files:
-                process_gcov_data(fname, covdata, abs_filename, options)
-            done = True
+            if unknown_cla_re.search(err):
+                # gcov tossed errors: throw exception
+                raise RuntimeError("Error in gcov command line: {}".format(err))
+            elif source_re.search(err):
+                # gcov tossed errors: try the next potential_wd
+                error(err)
+                done = False
+            else:
+                # Process *.gcov files
+                for fname in active_gcov_files:
+                    process_gcov_data(fname, covdata, abs_filename, options)
+                done = True
     except Exception:
         logger.error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
