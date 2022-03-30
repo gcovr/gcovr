@@ -162,10 +162,11 @@ is needed.
     -  gcc-8/g++-8/gcov-8
     -  gcc-9/g++-9/gcov-9
     -  gcc-10/g++-10/gcov-10
+    -  gcc-11/g++-11/gcov-11
     -  clang-10/clang++-10/llvm-cov
     -  clang-13/clang++-13/llvm-cov
     are available everything is OK.
-    For gcc-6, gcc-8, gcc-9, gcc-10, clang-10 and clang-13 you should use the
+    For gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10 and clang-13 you should use the
     option ``CC=...`` see :ref:`run and filter tests <run tests>`.
     If this isn't OK you
     can set the reference data to use by setting the environment ``CC_REFERENCE=gcc-8``
@@ -321,7 +322,7 @@ The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
 Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8``, ``CC=gcc-9``,
-``gcc-10``, ``clang-10`` and ``clang-13``.
+``gcc-10``, ``gcc-11``, ``clang-10`` and ``clang-13``.
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
@@ -412,7 +413,7 @@ Or to build and run the container in one step:
     python3 -m nox --session docker_qa
 
 You can select the gcc version to use inside the docker by setting the environment
-variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, clang-10 or clang-13
+variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10 or clang-13
 or you can build and run the container with:
 
 .. code:: bash

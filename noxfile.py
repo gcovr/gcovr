@@ -30,6 +30,7 @@ GCC_VERSIONS = [
     "gcc-8",
     "gcc-9",
     "gcc-10",
+    "gcc-11",
     "clang-10",
     "clang-13",
 ]
