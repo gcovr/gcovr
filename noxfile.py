@@ -24,7 +24,15 @@ import shlex
 import sys
 import nox
 
-GCC_VERSIONS = ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "clang-10", "clang-13"]
+GCC_VERSIONS = [
+    "gcc-5",
+    "gcc-6",
+    "gcc-8",
+    "gcc-9",
+    "gcc-10",
+    "clang-10",
+    "clang-13",
+]
 GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
 DEFAULT_LINT_ARGUMENTS = ["setup.py", "noxfile.py", "admin"] + DEFAULT_TEST_DIRECTORIES
@@ -214,9 +222,9 @@ def upload_wheel(session: nox.Session) -> None:
 def docker_container_os(session: nox.Session) -> str:
     if session.env["CC"] in ["gcc-5", "gcc-6"]:
         return "ubuntu:18.04"
-    elif session.env["CC"] == "clang-13":
-        return "ubuntu:22.04"
-    return "ubuntu:20.04"
+    elif session.env["CC"] is ["gcc-9", "clang-10"]:
+        return "ubuntu:20.04"
+    return "ubuntu:22.04"
 
 
 def docker_container_id(session: nox.Session, version: str) -> str:
