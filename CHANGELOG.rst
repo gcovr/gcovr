@@ -16,13 +16,14 @@ Bug fixes and small improvements:
 
 - Remove function coverage from sonarcube report. (:issue:`591`)
 - Fix parallel processing of gcov data. (:issue:`592`)
-- Fix black session to fail on format errors. (:issue:`594`)
 - Better diagnostics when dealing with corrupted input files. (:issue:`593`)
 
 Documentation:
 
 Internal changes:
 
+- Fix black check to fail on format errors. (:issue:`594`)
+- Change session black with no arguments to format all files. (:issue:`595`)
 
 5.1 (26 March 2022)
 -------------------

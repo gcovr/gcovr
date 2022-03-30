@@ -97,9 +97,7 @@ def black(session: nox.Session) -> None:
     if session.posargs:
         session.run("python", "-m", "black", *session.posargs)
     else:
-        session.run(
-            "python", "-m", "black", "--diff", "--check", *DEFAULT_LINT_ARGUMENTS
-        )
+        session.run("python", "-m", "black", *DEFAULT_LINT_ARGUMENTS)
 
 
 @nox.session
