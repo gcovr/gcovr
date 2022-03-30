@@ -226,6 +226,12 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
     ...   -: 0:Key:123
     ... '''.splitlines())
     {'Source': 'file', 'Foo': 'bar', 'Key': '123'}
+    >>> parse_metadata('''
+    ...   -: 0:Source:file
+    ...   -: 0:Foo:bar
+    ...   -: 0:Key
+    ... '''.splitlines())
+    {'Source': 'file', 'Foo': 'bar', 'Key': None}
     """
     collected = {}
     for line in lines:
@@ -738,8 +744,12 @@ def _parse_line(line: str) -> _Line:
 
         # METADATA (key, value)
         if count_str == "-" and lineno == "0":
-            key, value = source_code.split(":", 1)
-            return _MetadataLine(key, value)
+            if ":" in source_code:
+                key, value = source_code.split(":", 1)
+                return _MetadataLine(key, value)
+            else:
+                # Add a syntethic metadata with no value
+                return _MetadataLine(source_code, None)
 
         if count_str == "-":
             count = 0
