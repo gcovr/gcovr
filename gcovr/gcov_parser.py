@@ -214,7 +214,17 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
     ...   -: 0:Foo:bar
     ...   -: 0:Key:123
     ... '''.splitlines())
-    {'Foo': 'bar', 'Key': '123'}
+    Traceback (most recent call last):
+       ...
+    RuntimeError: Missing key 'Source' in metadata. GCOV data was >>
+      -: 0:Foo:bar
+      -: 0:Key:123<< End of GCOV data
+    >>> parse_metadata('''
+    ...   -: 0:Source:file
+    ...   -: 0:Foo:bar
+    ...   -: 0:Key:123
+    ... '''.splitlines())
+    {'Source': 'file', 'Foo': 'bar', 'Key': '123'}
     """
     collected = {}
     for line in lines:
@@ -230,6 +240,12 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
             collected[key] = value
         else:
             break  # stop at the first line that is not metadata
+
+    if "Source" not in collected:
+        data = "\n".join(lines)
+        raise RuntimeError(
+            f"Missing key 'Source' in metadata. GCOV data was >>{data}<< End of GCOV data"
+        )
 
     return collected
 
