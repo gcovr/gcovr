@@ -17,6 +17,7 @@ Bug fixes and small improvements:
 - Remove function coverage from sonarcube report. (:issue:`591`)
 - Fix parallel processing of gcov data. (:issue:`592`)
 - Better diagnostics when dealing with corrupted input files. (:issue:`593`)
+- Accept metadata lines without values (introduced in gcc-11). (:issue:`601`)
 
 Documentation:
 
