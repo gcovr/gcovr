@@ -395,7 +395,9 @@ def test_html_tab_size_zero(caplog):
 
 
 def test_multiple_output_formats_to_stdout(caplog):
-    c = log_capture(caplog, ["--xml", "--html", "--sonarqube", "--coveralls"])
+    c = log_capture(
+        caplog, ["--xml", "--html", "--sonarqube", "--coveralls", "--root", "gcovr"]
+    )
     message = c.record_tuples[0]
     assert message[1] == logging.WARNING
     assert (
@@ -419,7 +421,8 @@ def test_multiple_output_formats_to_stdout(caplog):
 
 def test_multiple_output_formats_to_stdout_1(caplog):
     c = log_capture(
-        caplog, ["--xml", "--html", "--sonarqube", "--coveralls", "-o", "-"]
+        caplog,
+        ["--xml", "--html", "--sonarqube", "--coveralls", "-o", "-", "--root", "gcovr"],
     )
     message = c.record_tuples[0]
     assert message[1] == logging.WARNING
