@@ -80,7 +80,8 @@ REFERENCE_DIR_VERSION_LIST = (
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
-    REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
+    if platform.system() != "Linux":
+        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
     if ref in CC_REFERENCE:
         break
 REFERENCE_DIRS.reverse()

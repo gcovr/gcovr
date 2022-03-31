@@ -5,7 +5,7 @@ run: html
 
 html:
 	./subfolder/subfolder/testcase
-	$(GCOVR) -d --html-details -o coverage.html; test $$? -eq 7
+	$(GCOVR) -d --html-details -o coverage.html
 
 clean:
 	make -C subfolder clean
