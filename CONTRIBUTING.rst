@@ -157,6 +157,7 @@ is needed.
 -   Check your GCC installation, the binary directory must be added to
     the PATH environment. If on of the following command groups are
     everything is OK.
+
     -  gcc-5/g++-5/gcov-5
     -  gcc-6/g++-6/gcov-6
     -  gcc-8/g++-8/gcov-8
@@ -165,6 +166,7 @@ is needed.
     -  gcc-11/g++-11/gcov-11
     -  clang-10/clang++-10/llvm-cov
     -  clang-13/clang++-13/llvm-cov
+
     are available everything is OK.
     For gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10 and clang-13 you should use the
     option ``CC=...`` see :ref:`run and filter tests <run tests>`.
