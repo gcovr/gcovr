@@ -21,21 +21,21 @@ import json
 import logging
 import os
 import functools
+from typing import Any, Dict
 
 from ..gcov import apply_filter_include_exclude
 from ..utils import (
     presentable_filename,
     sort_coverage,
-    summarize_file_coverage,
     open_text_for_writing,
 )
 from ..coverage import (
-    DecisionCoverageUncheckable,
+    CovData,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
+    DecisionCoverageUncheckable,
     FileCoverage,
-    CovData,
-    get_global_stats,
+    SummarizedStats,
 )
 from ..merging import merge_covdata
 
@@ -113,62 +113,39 @@ def print_json_summary_report(covdata, output_file, options):
     )
 
     for key in keys:
-        (
-            filename,
-            line_total,
-            line_covered,
-            line_percent,
-            branch_total,
-            branch_covered,
-            branch_percent,
-            function_total,
-            function_covered,
-            function_percent,
-        ) = summarize_file_coverage(covdata[key], options.root_filter)
+        filename = presentable_filename(covdata[key].filename, options.root_filter)
 
         json_dict["files"].append(
             {
                 "filename": filename,
-                "line_total": line_total,
-                "line_covered": line_covered,
-                "line_percent": line_percent,
-                "branch_total": branch_total,
-                "branch_covered": branch_covered,
-                "branch_percent": branch_percent,
-                "function_total": function_total,
-                "function_covered": function_covered,
-                "function_percent": function_percent,
+                **_summary_from_stats(SummarizedStats.from_file(covdata[key]), None),
             }
         )
 
-    (
-        lines_total,
-        lines_covered,
-        lines_percent,
-        functions_total,
-        functions_covered,
-        percent_functions,
-        branches_total,
-        branches_covered,
-        branches_percent,
-    ) = get_global_stats(covdata)
-
     # Footer & summary
-    json_dict["line_total"] = lines_total
-    json_dict["line_covered"] = lines_covered
-    json_dict["line_percent"] = lines_percent
-
-    json_dict["function_total"] = functions_total
-    json_dict["function_covered"] = functions_covered
-    json_dict["function_percent"] = percent_functions
-
-    json_dict["branch_total"] = branches_total
-    json_dict["branch_covered"] = branches_covered
-    json_dict["branch_percent"] = branches_percent
+    json_dict.update(_summary_from_stats(SummarizedStats.from_covdata(covdata), 0.0))
 
     _write_json_result(
         json_dict, output_file, "summary_coverage.json", options.json_summary_pretty
     )
+
+
+def _summary_from_stats(stats: SummarizedStats, default) -> Dict[str, Any]:
+    json_dict: Dict[str, Any] = dict()
+
+    json_dict["line_total"] = stats.line.total
+    json_dict["line_covered"] = stats.line.covered
+    json_dict["line_percent"] = stats.line.percent_or(default)
+
+    json_dict["function_total"] = stats.function.total
+    json_dict["function_covered"] = stats.function.covered
+    json_dict["function_percent"] = stats.function.percent_or(default)
+
+    json_dict["branch_total"] = stats.branch.total
+    json_dict["branch_covered"] = stats.branch.covered
+    json_dict["branch_percent"] = stats.branch.percent_or(default)
+
+    return json_dict
 
 
 #
