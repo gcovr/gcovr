@@ -41,9 +41,9 @@ class BranchCoverage:
         count (int):
             Number of times this branch was followed.
         fallthrough (bool, optional):
-            Whether this is a fallthrough branch. None if unknown.
+            Whether this is a fallthrough branch. False if unknown.
         throw (bool, optional):
-            Whether this is an exception-handling branch. None if unknown.
+            Whether this is an exception-handling branch. False if unknown.
     """
 
     __slots__ = "count", "fallthrough", "throw"
@@ -51,8 +51,8 @@ class BranchCoverage:
     def __init__(
         self,
         count: int,
-        fallthrough: Optional[bool] = None,
-        throw: Optional[bool] = None,
+        fallthrough: bool = False,
+        throw: bool = False,
     ) -> None:
         assert count >= 0
 
@@ -63,14 +63,6 @@ class BranchCoverage:
     @property
     def is_covered(self) -> bool:
         return self.count > 0
-
-    def update(self, other: BranchCoverage) -> None:
-        r"""Merge BranchCoverage information"""
-        self.count += other.count
-        if other.fallthrough is not None:
-            self.fallthrough = other.fallthrough
-        if other.throw is not None:
-            self.throw = other.throw
 
 
 class DecisionCoverageUncheckable:
@@ -90,10 +82,6 @@ class DecisionCoverageUncheckable:
     @property
     def is_switch(self) -> bool:
         return False
-
-    def update(self, other: DecisionCoverageUncheckable) -> None:
-        r"""Merge DecisionCoverage information"""
-        pass
 
 
 class DecisionCoverageConditional:
@@ -128,11 +116,6 @@ class DecisionCoverageConditional:
     def is_switch(self) -> bool:
         return False
 
-    def update(self, other: DecisionCoverageConditional) -> None:
-        r"""Merge DecisionCoverage information"""
-        self.count_true += other.count_true
-        self.count_false += other.count_false
-
 
 class DecisionCoverageSwitch:
     r"""Represent coverage information about a decision.
@@ -160,15 +143,11 @@ class DecisionCoverageSwitch:
     def is_switch(self) -> bool:
         return True
 
-    def update(self, other: DecisionCoverageSwitch) -> None:
-        r"""Merge DecisionCoverage information"""
-        self.count += other.count
-
 
 DecisionCoverage = Union[
-    DecisionCoverageUncheckable,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
+    DecisionCoverageUncheckable,
 ]
 
 
@@ -180,14 +159,6 @@ class FunctionCoverage:
         self.count = call_count
         self.lineno = 0
         self.name = name
-
-    def update(self, other: FunctionCoverage) -> None:
-        r"""Merge FunctionCoverage information"""
-        self.count += other.count
-        if self.lineno == 0:
-            self.lineno = other.lineno
-        else:
-            assert self.lineno == other.lineno
 
 
 class LineCoverage:
@@ -251,21 +222,6 @@ class LineCoverage:
             self.branches[branch_id] = branch_cov = BranchCoverage(0)
             return branch_cov
 
-    def update(self, other: LineCoverage) -> None:
-        r"""Merge LineCoverage information."""
-        assert self.lineno == other.lineno
-        self.count += other.count
-        self.noncode &= other.noncode
-        self.excluded |= other.excluded
-
-        for branch_id, branch_cov in other.branches.items():
-            self.branch(branch_id).update(branch_cov)
-
-        if self.decision is None:
-            self.decision = other.decision
-        else:
-            self.decision.update(other.decision)
-
     def branch_coverage(self) -> Tuple[int, int, Optional[float]]:
         total = len(self.branches)
         cover = 0
@@ -326,14 +282,6 @@ class FileCoverage:
                 function_name
             )
             return function_cov
-
-    def update(self, other: FileCoverage) -> None:
-        r"""Merge FileCoverage information."""
-        assert self.filename == other.filename
-        for lineno, line_cov in other.lines.items():
-            self.line(lineno, noncode=True, excluded=False).update(line_cov)
-        for fct_name, fct_cov in other.functions.items():
-            self.function(fct_name).update(fct_cov)
 
     def uncovered_lines_str(self) -> str:
         uncovered_lines = sorted(

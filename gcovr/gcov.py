@@ -9,6 +9,7 @@
 #
 # Copyright (c) 2013-2022 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
+
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
 #
@@ -24,11 +25,14 @@ import shlex
 import subprocess
 import io
 from threading import Lock
+from typing import Optional
 
 from .utils import search_file, commonpath
 from .workers import locked_directory
 from .coverage import FileCoverage
 from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
+from .coverage import CovData
+from .merging import merge_file
 
 logger = logging.getLogger("gcovr")
 
@@ -90,7 +94,13 @@ def find_datafiles(search_path, exclude_dirs):
 #
 # Process a single gcov datafile
 #
-def process_gcov_data(data_fname, covdata, gcda_fname, options, currdir=None):
+def process_gcov_data(
+    data_fname: str,
+    covdata: CovData,
+    gcda_fname: Optional[str],
+    options,
+    currdir=None,
+) -> None:
     with io.open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
     ) as INPUT:
@@ -153,7 +163,7 @@ def process_gcov_data(data_fname, covdata, gcda_fname, options, currdir=None):
         exclude_pattern_prefix=options.exclude_pattern_prefix,
         flags=parser_flags,
     )
-    covdata.setdefault(key, FileCoverage(key)).update(coverage)
+    covdata[key] = merge_file(covdata.get(key, FileCoverage(key)), coverage)
 
 
 def guess_source_file_name(
