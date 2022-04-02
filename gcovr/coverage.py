@@ -216,12 +216,6 @@ class LineCoverage:
         self.branches: Dict[int, BranchCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
 
-        # There can be only one (user) function per line but:
-        # * (multiple) template instantiations
-        # * non explicitly defined destructors, called via base virtual destructor!
-        # For that reason we need a dictionary instead of a scalar
-        self.functions: Dict[str, FunctionCoverage] = {}
-
     @property
     def is_excluded(self) -> bool:
         return self.excluded
@@ -252,8 +246,7 @@ class LineCoverage:
         self.count += other.count
         self.noncode &= other.noncode
         self.excluded |= other.excluded
-        for other_function in other.functions.values():
-            self.add_function(other_function)
+
         for branch_id, branch_cov in other.branches.items():
             self.branch(branch_id).update(branch_cov)
 
@@ -322,17 +315,6 @@ class FileCoverage:
                 function_name
             )
             return function_cov
-
-    def add_function(self, function: FunctionCoverage) -> None:
-        assert function is not None
-        if function.name in self.functions:
-            self.functions[
-                function.name
-            ].count += (
-                function.count
-            )  # Add the calls to destructor via base class (virtual destructor)
-        else:
-            self.functions[function.name] = function
 
     def update(self, other: FileCoverage) -> None:
         r"""Merge FileCoverage information."""
