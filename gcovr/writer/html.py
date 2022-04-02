@@ -22,6 +22,7 @@ import os
 import hashlib
 import io
 from argparse import ArgumentTypeError
+from typing import Callable, Optional, Union
 
 from ..version import __version__
 from ..utils import (
@@ -30,7 +31,7 @@ from ..utils import (
     sort_coverage,
     open_text_for_writing,
 )
-from ..coverage import CovData, calculate_coverage
+from ..coverage import CovData, CoverageStat, DecisionCoverageStat, SummarizedStats
 
 logger = logging.getLogger("gcovr")
 
@@ -235,113 +236,43 @@ class RootInfo:
     def get_directory(self):
         return "." if self.directory == "" else self.directory.replace("\\", "/")
 
-    def calculate_branch_coverage(self, covdata: CovData):
-        branch_total = 0
-        branch_covered = 0
-        for key in covdata.keys():
-            (total, covered, _percent) = covdata[key].branch_coverage().to_tuple
-            branch_total += total
-            branch_covered += covered
-        self.branches["exec"] = branch_covered
-        self.branches["total"] = branch_total
-        coverage = calculate_coverage(branch_covered, branch_total, nan_value=None)
-        self.branches["coverage"] = "-" if coverage is None else coverage
-        self.branches["class"] = self._coverage_to_class(coverage)
-
-    def calculate_decision_coverage(self, covdata: CovData):
-        decision_total = 0
-        decision_covered = 0
-        decision_unchecked = 0
-        for key in covdata.keys():
-            (total, covered, unchecked, _percent) = (
-                covdata[key].decision_coverage().to_tuple
-            )
-            decision_total += total
-            decision_covered += covered
-            decision_unchecked += unchecked
-        self.decisions["exec"] = decision_covered
-        self.decisions["unchecked"] = decision_unchecked
-        self.decisions["total"] = decision_total
-        coverage = calculate_coverage(decision_covered, decision_total, nan_value=None)
-        self.decisions["coverage"] = "-" if coverage is None else coverage
-        self.decisions["class"] = self._coverage_to_class(coverage)
-
-    def calculate_function_coverage(self, covdata: CovData):
-        function_total = 0
-        function_covered = 0
-        for key in covdata.keys():
-            (total, covered, _percent) = covdata[key].function_coverage().to_tuple
-            function_total += total
-            function_covered += covered
-        self.functions["exec"] = function_covered
-        self.functions["total"] = function_total
-        coverage = calculate_coverage(function_covered, function_total, nan_value=None)
-        self.functions["coverage"] = "-" if coverage is None else coverage
-        self.functions["class"] = self._coverage_to_class(coverage)
-
-    def calculate_line_coverage(self, covdata: CovData):
-        line_total = 0
-        line_covered = 0
-        for key in covdata.keys():
-            (total, covered, _percent) = covdata[key].line_coverage().to_tuple
-            line_total += total
-            line_covered += covered
-        self.lines["exec"] = line_covered
-        self.lines["total"] = line_total
-        coverage = calculate_coverage(line_covered, line_total)
-        self.lines["coverage"] = coverage
-        self.lines["class"] = self._coverage_to_class(coverage)
+    def set_coverage(self, covdata: CovData) -> None:
+        """Update this RootInfo with a summary of the CovData."""
+        stats = SummarizedStats.from_covdata(covdata)
+        self.branches = dict_from_stat(stats.branch, self._coverage_to_class)
+        self.decisions = dict_from_stat(stats.decision, self._coverage_to_class)
+        self.functions = dict_from_stat(stats.function, self._coverage_to_class)
+        self.lines = dict_from_stat(stats.line, self._coverage_to_class, 0.0)
 
     def add_file(self, cdata, link_report, cdata_fname):
-        lines_total, lines_exec, _ = cdata.line_coverage().to_tuple
-        branches_total, branches_exec, _ = cdata.branch_coverage().to_tuple
-        (
-            decisions_total,
-            decisions_exec,
-            decisions_unchecked,
-            _,
-        ) = cdata.decision_coverage().to_tuple
-        functions_total, functions_exec, _ = cdata.function_coverage().to_tuple
-
-        line_coverage = calculate_coverage(lines_exec, lines_total, nan_value=100.0)
-        branch_coverage = calculate_coverage(
-            branches_exec, branches_total, nan_value=None
-        )
-        decision_coverage = calculate_coverage(
-            decisions_exec, decisions_total, nan_value=None
-        )
-        function_coverage = calculate_coverage(
-            functions_exec, functions_total, nan_value=None
-        )
+        stats = SummarizedStats.from_file(cdata)
 
         lines = {
-            "total": lines_total,
-            "exec": lines_exec,
-            "coverage": line_coverage,
-            "class": self._coverage_to_class(line_coverage),
+            "total": stats.line.total,
+            "exec": stats.line.covered,
+            "coverage": stats.line.percent_or(100.0),
+            "class": self._coverage_to_class(stats.line.percent_or(100.0)),
         }
 
         branches = {
-            "total": branches_total,
-            "exec": branches_exec,
-            "coverage": "-" if branch_coverage is None else branch_coverage,
-            "class": self._coverage_to_class(branch_coverage),
+            "total": stats.branch.total,
+            "exec": stats.branch.covered,
+            "coverage": stats.branch.percent_or("-"),
+            "class": self._coverage_to_class(stats.branch.percent),
         }
 
         decisions = {
-            "total": decisions_total,
-            "exec": decisions_exec,
-            "unchecked": decisions_unchecked,
-            "coverage": "-"
-            if decision_coverage is None
-            else round(decision_coverage, 1),
-            "class": self._coverage_to_class(decision_coverage),
+            "total": stats.decision.total,
+            "exec": stats.decision.covered,
+            "unchecked": stats.decision.uncheckable,
+            "coverage": stats.decision.percent_or("-"),
+            "class": self._coverage_to_class(stats.decision.percent),
         }
         functions = {
-            "total": functions_total,
-            "exec": functions_exec,
-            "coverage": "-" if function_coverage is None else function_coverage,
-            "class": self._coverage_to_class(function_coverage),
+            "total": stats.function.total,
+            "exec": stats.function.covered,
+            "coverage": stats.function.percent_or("-"),
+            "class": self._coverage_to_class(stats.function.percent),
         }
 
         display_filename = os.path.relpath(
@@ -417,10 +348,7 @@ def print_html_report(covdata: CovData, output_file, options):
             css_link = css_output
         data["css_link"] = css_link
 
-    root_info.calculate_branch_coverage(covdata)
-    root_info.calculate_decision_coverage(covdata)
-    root_info.calculate_function_coverage(covdata)
-    root_info.calculate_line_coverage(covdata)
+    root_info.set_coverage(covdata)
 
     # Generate the coverage output (on a per-package basis)
     # source_dirs = set()
@@ -502,59 +430,13 @@ def print_html_report(covdata: CovData, output_file, options):
             data["function_list"].append(fdata)
             all_functions[(fdata["name"], fdata["filename"])] = fdata
 
-        functions = dict()
-        data["functions"] = functions
-        (
-            functions["total"],
-            functions["exec"],
-            functions["coverage"],
-        ) = cdata.function_coverage().to_tuple
-        functions["class"] = coverage_to_class(
-            functions["coverage"], medium_threshold, high_threshold
-        )
-        functions["coverage"] = (
-            "-" if functions["coverage"] is None else functions["coverage"]
-        )
+        def coverage_class(percent: Optional[float]) -> str:
+            return coverage_to_class(percent, medium_threshold, high_threshold)
 
-        branches = dict()
-        data["branches"] = branches
-        (
-            branches["total"],
-            branches["exec"],
-            branches["coverage"],
-        ) = cdata.branch_coverage().to_tuple
-        branches["class"] = coverage_to_class(
-            branches["coverage"], medium_threshold, high_threshold
-        )
-        branches["coverage"] = (
-            "-" if branches["coverage"] is None else branches["coverage"]
-        )
-
-        decisions = dict()
-        data["decisions"] = decisions
-        (
-            decisions["total"],
-            decisions["exec"],
-            decisions["unchecked"],
-            decisions["coverage"],
-        ) = cdata.decision_coverage().to_tuple
-        decisions["class"] = coverage_to_class(
-            decisions["coverage"], medium_threshold, high_threshold
-        )
-        decisions["coverage"] = (
-            "-" if decisions["coverage"] is None else decisions["coverage"]
-        )
-
-        lines = dict()
-        data["lines"] = lines
-        (
-            lines["total"],
-            lines["exec"],
-            lines["coverage"],
-        ) = cdata.line_coverage().to_tuple
-        lines["class"] = coverage_to_class(
-            lines["coverage"], medium_threshold, high_threshold
-        )
+        data["functions"] = dict_from_stat(cdata.function_coverage(), coverage_class)
+        data["branches"] = dict_from_stat(cdata.branch_coverage(), coverage_class)
+        data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
+        data["lines"] = dict_from_stat(cdata.line_coverage(), coverage_class)
 
         data["source_lines"] = []
         currdir = os.getcwd()
@@ -607,6 +489,25 @@ def print_html_report(covdata: CovData, output_file, options):
         fh.write(html_string + "\n")
 
     return error_occurred
+
+
+def dict_from_stat(
+    stat: Union[CoverageStat, DecisionCoverageStat],
+    coverage_class: Callable[[Optional[float]], str],
+    default: float = None,
+) -> dict:
+    coverage_default = "-" if default is None else default
+    data = {
+        "total": stat.total,
+        "exec": stat.covered,
+        "coverage": stat.percent_or(coverage_default),
+        "class": coverage_class(stat.percent_or(default)),
+    }
+
+    if isinstance(stat, DecisionCoverageStat):
+        data["unchecked"] = stat.uncheckable
+
+    return data
 
 
 def source_row(lineno, source, line_cov):
