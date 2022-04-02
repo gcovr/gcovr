@@ -49,6 +49,7 @@ from .utils import (
 from .version import __version__
 from .workers import Workers
 from .coverage import CovData, get_global_stats
+from .merging import merge_covdata
 
 # generators
 from .writer.json import gcovr_json_files_to_coverage
@@ -302,11 +303,11 @@ def main(args=None):
             )
             sys.exit(1)
 
-    covdata: CovData = dict()
+    covdata: CovData
     if options.add_tracefile:
-        collect_coverage_from_tracefiles(covdata, options)
+        covdata = collect_coverage_from_tracefiles(options)
     else:
-        collect_coverage_from_gcov(covdata, options)
+        covdata = collect_coverage_from_gcov(options)
 
     logger.debug(f"Gathered coveraged data for {len(covdata)} files")
 
@@ -320,7 +321,7 @@ def main(args=None):
         fail_under(covdata, options.fail_under_line, options.fail_under_branch)
 
 
-def collect_coverage_from_tracefiles(covdata: CovData, options):
+def collect_coverage_from_tracefiles(options) -> CovData:
     datafiles = set()
 
     for trace_files_regex in options.add_tracefile:
@@ -335,10 +336,10 @@ def collect_coverage_from_tracefiles(covdata: CovData, options):
                 datafiles.add(normpath(trace_file))
 
     options.root_dir = os.path.abspath(options.root)
-    gcovr_json_files_to_coverage(datafiles, covdata, options)
+    return gcovr_json_files_to_coverage(datafiles, options)
 
 
-def collect_coverage_from_gcov(covdata: CovData, options):
+def collect_coverage_from_gcov(options) -> CovData:
     datafiles = set()
 
     find_files = find_datafiles
@@ -368,16 +369,16 @@ def collect_coverage_from_gcov(covdata: CovData, options):
         contexts = pool.wait()
 
     toerase = set()
+    covdata = dict()
     for context in contexts:
-        for fname, cov in context["covdata"].items():
-            if fname not in covdata:
-                covdata[fname] = cov
-            else:
-                covdata[fname].update(cov)
+        covdata = merge_covdata(covdata, context["covdata"])
         toerase.update(context["toerase"])
+
     for filepath in toerase:
         if os.path.exists(filepath):
             os.remove(filepath)
+
+    return covdata
 
 
 def print_reports(covdata: CovData, options):

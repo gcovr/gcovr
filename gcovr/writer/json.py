@@ -37,6 +37,7 @@ from ..coverage import (
     CovData,
     get_global_stats,
 )
+from ..merging import merge_covdata
 
 logger = logging.getLogger("gcovr")
 
@@ -173,10 +174,11 @@ def print_json_summary_report(covdata, output_file, options):
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def gcovr_json_files_to_coverage(filenames, covdata, options):
+def gcovr_json_files_to_coverage(filenames, options) -> CovData:
     r"""merge a coverage from multiple reports in the format
     partially compatible with gcov JSON output"""
 
+    covdata: CovData = dict()
     for filename in filenames:
         logger.debug(f"Processing JSON file: {filename}")
 
@@ -190,7 +192,6 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
             version, JSON_FORMAT_VERSION
         )
 
-        coverage = {}
         for gcovr_file in gcovr_json_data["files"]:
             file_path = os.path.join(
                 os.path.abspath(options.root), os.path.normpath(gcovr_file["file"])
@@ -213,17 +214,10 @@ def gcovr_json_files_to_coverage(filenames, covdata, options):
             file_coverage = FileCoverage(file_path)
             _functions_from_json(file_coverage, gcovr_file["functions"])
             _lines_from_json(file_coverage, gcovr_file["lines"])
-            coverage[file_path] = file_coverage
 
-        _split_coverage_results(covdata, coverage)
+            covdata = merge_covdata(covdata, {file_path: file_coverage})
 
-
-def _split_coverage_results(covdata, coverages):
-    for coverage in coverages.values():
-        if coverage.filename not in covdata:
-            covdata[coverage.filename] = FileCoverage(coverage.filename)
-
-        covdata[coverage.filename].update(coverage)
+    return covdata
 
 
 def _json_from_lines(lines):
@@ -251,8 +245,8 @@ def _json_from_branches(branches):
 def _json_from_branch(branch):
     json_branch = {}
     json_branch["count"] = branch.count
-    json_branch["fallthrough"] = bool(branch.fallthrough)
-    json_branch["throw"] = bool(branch.throw)
+    json_branch["fallthrough"] = branch.fallthrough
+    json_branch["throw"] = branch.throw
     return json_branch
 
 
