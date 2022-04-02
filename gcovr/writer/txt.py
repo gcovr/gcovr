@@ -22,26 +22,30 @@ from ..utils import (
     presentable_filename,
     open_text_for_writing,
 )
-from ..coverage import CovData, calculate_coverage
+from ..coverage import CovData, CoverageStat, FileCoverage
 
 
 def print_text_report(covdata: CovData, output_file, options):
     """produce the classic gcovr text report"""
 
     with open_text_for_writing(output_file, "coverage.txt") as fh:
-        total_lines = 0
-        total_covered = 0
-
         # Header
         fh.write("-" * 78 + "\n")
         fh.write(" " * 27 + "GCC Code Coverage Report\n")
         fh.write("Directory: " + options.root + "\n")
 
         fh.write("-" * 78 + "\n")
-        a = options.show_branch and "Branches" or "Lines"
-        b = options.show_branch and "Taken" or "Exec"
-        c = "Missing"
-        fh.write("File".ljust(40) + a.rjust(8) + b.rjust(8) + "  Cover   " + c + "\n")
+        title_total = "Branches" if options.show_branch else "Lines"
+        title_covered = "Taken" if options.show_branch else "Exec"
+        title_missing = "Missing"
+        fh.write(
+            "File".ljust(40)
+            + title_total.rjust(8)
+            + title_covered.rjust(8)
+            + "  Cover   "
+            + title_missing
+            + "\n"
+        )
         fh.write("-" * 78 + "\n")
 
         # Data
@@ -52,48 +56,51 @@ def print_text_report(covdata: CovData, output_file, options):
             by_percent_uncovered=options.sort_percent,
         )
 
-        def _summarize_file_coverage(coverage):
-            filename = presentable_filename(
-                coverage.filename, root_filter=options.root_filter
-            )
-            filename = filename.ljust(40)
-            if len(filename) > 40:
-                filename = filename + "\n" + " " * 40
-
-            if options.show_branch:
-                total, cover, percent = coverage.branch_coverage().to_tuple
-                uncovered_lines = coverage.uncovered_branches_str()
-            else:
-                total, cover, percent = coverage.line_coverage().to_tuple
-                uncovered_lines = coverage.uncovered_lines_str()
-            percent = "--" if percent is None else str(int(percent))
-            return (
-                total,
-                cover,
-                filename
-                + str(total).rjust(8)
-                + str(cover).rjust(8)
-                + percent.rjust(6)
-                + "%   "
-                + uncovered_lines,
-            )
-
+        total_stat = CoverageStat.new_empty()
         for key in keys:
-            (t, n, txt) = _summarize_file_coverage(covdata[key])
-            total_lines += t
-            total_covered += n
+            (stat, txt) = _summarize_file_coverage(covdata[key], options)
+            total_stat += stat
             fh.write(txt + "\n")
 
         # Footer & summary
         fh.write("-" * 78 + "\n")
-        percent = calculate_coverage(total_covered, total_lines, nan_value=None)
-        percent = "--" if percent is None else str(int(percent))
-        fh.write(
-            "TOTAL".ljust(40)
-            + str(total_lines).rjust(8)
-            + str(total_covered).rjust(8)
-            + str(percent).rjust(6)
-            + "%"
-            + "\n"
-        )
+        fh.write(_format_line("TOTAL", total_stat, "") + "\n")
         fh.write("-" * 78 + "\n")
+
+
+def _summarize_file_coverage(coverage: FileCoverage, options):
+    filename = presentable_filename(coverage.filename, root_filter=options.root_filter)
+
+    if options.show_branch:
+        stat = coverage.branch_coverage()
+        uncovered_lines = coverage.uncovered_branches_str()
+    else:
+        stat = coverage.line_coverage()
+        uncovered_lines = coverage.uncovered_lines_str()
+
+    return stat, _format_line(filename, stat, uncovered_lines)
+
+
+def _format_line(name: str, stat: CoverageStat, uncovered_lines: str) -> str:
+    raw_percent = stat.percent
+    if raw_percent is None:
+        percent = "--"
+    else:
+        percent = str(int(raw_percent))
+
+    name = name.ljust(40)
+    if len(name) > 40:
+        name = name + "\n" + " " * 40
+
+    line = (
+        name
+        + str(stat.total).rjust(8)
+        + str(stat.covered).rjust(8)
+        + percent.rjust(6)
+        + "%"
+    )
+
+    if uncovered_lines:
+        line += "   " + uncovered_lines
+
+    return line
