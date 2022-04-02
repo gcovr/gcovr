@@ -26,7 +26,7 @@ import re
 import sys
 from contextlib import contextmanager
 
-from .coverage import CovData, CoverageStat, SummarizedStats, FileCoverage
+from .coverage import CovData, CoverageStat
 
 logger = logging.getLogger("gcovr")
 
@@ -150,18 +150,6 @@ def commonpath(files):
     if prefix_path:
         prefix_path = os.path.join(os.path.relpath(prefix_path), "")
     return prefix_path
-
-
-def summarize_file_coverage(coverage: FileCoverage, root_filter):
-    filename = presentable_filename(coverage.filename, root_filter=root_filter)
-
-    stats = SummarizedStats.from_file(coverage)
-    return (
-        filename,
-        *stats.line.to_tuple,
-        *stats.branch.to_tuple,
-        *stats.function.to_tuple,
-    )
 
 
 class FilterOption:

@@ -420,19 +420,6 @@ class SummarizedStats:
             decision=filecov.decision_coverage(),
         )
 
-    @property
-    def to_global_stats(
-        self,
-    ) -> Tuple[
-        int, int, Optional[float], int, int, Optional[float], int, int, Optional[float]
-    ]:
-        """for migration only"""
-        return (
-            *self.line.to_tuple,
-            *self.function.to_tuple,
-            *self.branch.to_tuple,
-        )
-
     def __iadd__(self, other: SummarizedStats) -> SummarizedStats:
         self.line += other.line
         self.branch += other.branch
@@ -490,11 +477,6 @@ class CoverageStat:
         ratio = self.covered / self.total
         return min(99.9, round(ratio * 100.0, 1))
 
-    @property
-    def to_tuple(self) -> Tuple[int, int, Optional[float]]:
-        """for migration only: (total, covered, percent)"""
-        return self.total, self.covered, self.percent
-
     def __iadd__(self, other: CoverageStat) -> CoverageStat:
         self.covered += other.covered
         self.total += other.total
@@ -524,27 +506,8 @@ class DecisionCoverageStat:
     def percent_or(self, default: _T) -> Union[float, _T]:
         return self.to_coverage_stat.percent_or(default)
 
-    @property
-    def to_tuple(self) -> Tuple[int, int, int, Optional[float]]:
-        """for migration only: (total, covered, uncheckable, percent)"""
-        return self.total, self.covered, self.uncheckable, self.percent
-
     def __iadd__(self, other: DecisionCoverageStat) -> DecisionCoverageStat:
         self.covered += other.covered
         self.uncheckable += other.uncheckable
         self.total += other.total
         return self
-
-
-def get_global_stats(covdata: CovData):
-    """Get global statistics"""
-
-    return SummarizedStats.from_covdata(covdata).to_global_stats
-
-
-def calculate_coverage(
-    covered: int,
-    total: int,
-    nan_value: _T = 0.0,
-) -> Union[float, _T]:
-    return CoverageStat(covered=covered, total=total).percent_or(nan_value)
