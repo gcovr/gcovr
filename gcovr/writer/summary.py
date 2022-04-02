@@ -19,10 +19,10 @@
 
 import sys
 
-from ..utils import get_global_stats
+from ..coverage import CovData, get_global_stats
 
 
-def print_summary(covdata):
+def print_summary(covdata: CovData):
     """Print a small report to the standard output.
     Output the percentage, covered and total lines and branches.
     """

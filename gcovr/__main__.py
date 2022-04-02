@@ -26,6 +26,7 @@ import io
 from argparse import ArgumentParser
 from os.path import normpath
 from glob import glob
+from typing import Callable, List, Optional, Tuple
 
 from .configuration import (
     argument_parser_setup,
@@ -41,13 +42,13 @@ from .gcov import (
     process_datafile,
 )
 from .utils import (
-    get_global_stats,
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
     configure_logging,
 )
 from .version import __version__
 from .workers import Workers
+from .coverage import CovData, get_global_stats
 
 # generators
 from .writer.json import gcovr_json_files_to_coverage
@@ -67,7 +68,7 @@ logger = logging.getLogger("gcovr")
 #
 # Exits with status 2 if below threshold
 #
-def fail_under(covdata, threshold_line, threshold_branch):
+def fail_under(covdata: CovData, threshold_line, threshold_branch):
     (
         lines_total,
         lines_covered,
@@ -301,7 +302,7 @@ def main(args=None):
             )
             sys.exit(1)
 
-    covdata = dict()
+    covdata: CovData = dict()
     if options.add_tracefile:
         collect_coverage_from_tracefiles(covdata, options)
     else:
@@ -319,7 +320,7 @@ def main(args=None):
         fail_under(covdata, options.fail_under_line, options.fail_under_branch)
 
 
-def collect_coverage_from_tracefiles(covdata, options):
+def collect_coverage_from_tracefiles(covdata: CovData, options):
     datafiles = set()
 
     for trace_files_regex in options.add_tracefile:
@@ -337,7 +338,7 @@ def collect_coverage_from_tracefiles(covdata, options):
     gcovr_json_files_to_coverage(datafiles, covdata, options)
 
 
-def collect_coverage_from_gcov(covdata, options):
+def collect_coverage_from_gcov(covdata: CovData, options):
     datafiles = set()
 
     find_files = find_datafiles
@@ -379,8 +380,13 @@ def collect_coverage_from_gcov(covdata, options):
             os.remove(filepath)
 
 
-def print_reports(covdata, options):
-    generators = []
+def print_reports(covdata: CovData, options):
+    Generator = Tuple[
+        List[Optional[OutputOrDefault]],
+        Callable[[CovData, str, Options], None],
+        Callable[[], None],
+    ]
+    generators: List[Generator] = []
 
     if options.txt:
         generators.append(

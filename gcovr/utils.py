@@ -19,12 +19,14 @@
 
 from __future__ import annotations
 from argparse import ArgumentTypeError
-from typing import Type
+from typing import List, Type
 import logging
 import os
 import re
 import sys
 from contextlib import contextmanager
+
+from .coverage import CovData
 
 logger = logging.getLogger("gcovr")
 
@@ -150,49 +152,6 @@ def commonpath(files):
     return prefix_path
 
 
-#
-# Get global statistics
-#
-def get_global_stats(covdata):
-    lines_total = 0
-    lines_covered = 0
-    functions_total = 0
-    functions_covered = 0
-    branches_total = 0
-    branches_covered = 0
-
-    keys = list(covdata.keys())
-
-    for key in keys:
-        (total, covered, _) = covdata[key].line_coverage()
-        lines_total += total
-        lines_covered += covered
-
-        (total, covered, _) = covdata[key].function_coverage()
-        functions_total += total
-        functions_covered += covered
-
-        (total, covered, _) = covdata[key].branch_coverage()
-        branches_total += total
-        branches_covered += covered
-
-    percent = calculate_coverage(lines_covered, lines_total)
-    percent_functions = calculate_coverage(functions_covered, functions_total)
-    percent_branches = calculate_coverage(branches_covered, branches_total)
-
-    return (
-        lines_total,
-        lines_covered,
-        percent,
-        functions_total,
-        functions_covered,
-        percent_functions,
-        branches_total,
-        branches_covered,
-        percent_branches,
-    )
-
-
 def summarize_file_coverage(coverage, root_filter):
     filename = presentable_filename(coverage.filename, root_filter=root_filter)
 
@@ -211,17 +170,6 @@ def summarize_file_coverage(coverage, root_filter):
         function_covered,
         function_percent,
     )
-
-
-def calculate_coverage(covered, total, nan_value=0.0):
-    coverage = nan_value
-    if total != 0:
-        coverage = round(100.0 * covered / total, 1)
-        # If we get 100.0% and not all branches are covered use 99.9%
-        if (coverage == 100.0) and (covered != total):
-            coverage = 99.9
-
-    return coverage
 
 
 class FilterOption:
@@ -353,8 +301,11 @@ def configure_logging() -> None:
 
 
 def sort_coverage(
-    covdata, show_branch, by_num_uncovered=False, by_percent_uncovered=False
-):
+    covdata: CovData,
+    show_branch: bool,
+    by_num_uncovered: bool = False,
+    by_percent_uncovered: bool = False,
+) -> List[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
@@ -365,7 +316,7 @@ def sort_coverage(
     returns: the sorted keys
     """
 
-    def num_uncovered_key(key):
+    def num_uncovered_key(key: str) -> int:
         cov = covdata[key]
         (total, covered, _) = (
             cov.branch_coverage() if show_branch else cov.line_coverage()
@@ -373,7 +324,7 @@ def sort_coverage(
         uncovered = total - covered
         return uncovered
 
-    def percent_uncovered_key(key):
+    def percent_uncovered_key(key: str) -> float:
         cov = covdata[key]
         (total, covered, _) = (
             cov.branch_coverage() if show_branch else cov.line_coverage()

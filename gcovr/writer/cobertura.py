@@ -21,9 +21,10 @@ from lxml import etree
 
 from ..version import __version__
 from ..utils import open_binary_for_writing, presentable_filename
+from ..coverage import CovData
 
 
-def print_cobertura_report(covdata, output_file, options):
+def print_cobertura_report(covdata: CovData, output_file, options):
     """produce an XML report in the Cobertura format"""
     functionTotal = 0
     functionCovered = 0
