@@ -344,6 +344,7 @@ class FileCoverage:
         stat = CoverageStat.new_empty()
 
         for line in self.lines.values():
+            # FIXME: should only count if line.is_covered or line.is_uncovered
             stat += line.branch_coverage()
 
         return stat
@@ -352,6 +353,7 @@ class FileCoverage:
         stat = DecisionCoverageStat.new_empty()
 
         for line in self.lines.values():
+            # FIXME: should only count if line.is_covered or line.is_uncovered
             stat += line.decision_coverage()
 
         return stat

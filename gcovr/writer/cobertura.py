@@ -17,56 +17,31 @@
 #
 # ****************************************************************************
 
-from lxml import etree
+from __future__ import annotations
+from dataclasses import dataclass
+from typing import Dict
+from lxml import etree  # type: ignore
 
 from ..version import __version__
 from ..utils import open_binary_for_writing, presentable_filename
-from ..coverage import CovData
+from ..coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
 
 
 def print_cobertura_report(covdata: CovData, output_file, options):
     """produce an XML report in the Cobertura format"""
-    functionTotal = 0
-    functionCovered = 0
-    branchTotal = 0
-    branchCovered = 0
-    lineTotal = 0
-    lineCovered = 0
 
-    for key in covdata.keys():
-        (total, covered, _) = covdata[key].function_coverage().to_tuple
-        functionTotal += total
-        functionCovered += covered
-
-    for key in covdata.keys():
-        (total, covered, _) = covdata[key].branch_coverage().to_tuple
-        branchTotal += total
-        branchCovered += covered
-
-    for key in covdata.keys():
-        (total, covered, _) = covdata[key].line_coverage().to_tuple
-        lineTotal += total
-        lineCovered += covered
+    stats = SummarizedStats.from_covdata(covdata)
 
     root = etree.Element("coverage")
-    root.set(
-        "line-rate",
-        lineTotal == 0 and "0.0" or str(float(lineCovered) / lineTotal),
-    )
-    root.set(
-        "function-rate",
-        functionTotal == 0 and "0.0" or str(float(functionCovered) / functionTotal),
-    )
-    root.set(
-        "branch-rate",
-        branchTotal == 0 and "0.0" or str(float(branchCovered) / branchTotal),
-    )
-    root.set("lines-covered", str(lineCovered))
-    root.set("lines-valid", str(lineTotal))
-    root.set("functions-covered", str(functionCovered))
-    root.set("functions-valid", str(functionTotal))
-    root.set("branches-covered", str(branchCovered))
-    root.set("branches-valid", str(branchTotal))
+    root.set("line-rate", _rate(stats.line))
+    root.set("function-rate", _rate(stats.function))
+    root.set("branch-rate", _rate(stats.branch))
+    root.set("lines-covered", str(stats.line.covered))
+    root.set("lines-valid", str(stats.line.total))
+    root.set("functions-covered", str(stats.function.covered))
+    root.set("functions-valid", str(stats.function.total))
+    root.set("branches-covered", str(stats.branch.covered))
+    root.set("branches-valid", str(stats.branch.total))
     root.set("complexity", "0.0")
     root.set("timestamp", str(int(options.timestamp.timestamp())))
     root.set("version", f"gcovr {__version__}")
@@ -79,7 +54,7 @@ def print_cobertura_report(covdata: CovData, output_file, options):
     # Generate the coverage output (on a per-package basis)
     # packageXml = doc.createElement("packages")
     packageXml = etree.SubElement(root, "packages")
-    packages = {}
+    packages: Dict[str, PackageData] = {}
 
     for f in sorted(covdata):
         data = covdata[f]
@@ -90,7 +65,13 @@ def print_cobertura_report(covdata: CovData, output_file, options):
             directory, fname = "", filename
 
         package = packages.setdefault(
-            directory, [etree.Element("package"), {}, 0, 0, 0, 0, 0, 0]
+            directory,
+            PackageData(
+                {},
+                CoverageStat.new_empty(),
+                CoverageStat.new_empty(),
+                CoverageStat.new_empty(),
+            ),
         )
         c = etree.Element("class")
         # The Cobertura DTD requires a methods section, which isn't
@@ -98,82 +79,44 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         etree.SubElement(c, "methods")
         lines = etree.SubElement(c, "lines")
 
-        class_lines = 0
-        class_hits = 0
-        class_branches = 0
-        class_branch_hits = 0
+        # TODO should use FileCoverage.branch_coverage() calculation
+        class_branch = CoverageStat(0, 0)
         for lineno in sorted(data.lines):
             line_cov = data.lines[lineno]
-            if line_cov.is_covered or line_cov.is_uncovered:
-                class_lines += 1
-            else:
+            if not (line_cov.is_covered or line_cov.is_uncovered):
                 continue
-            if line_cov.is_covered:
-                class_hits += 1
-            hits = line_cov.count
-            L = etree.Element("line")
-            L.set("number", str(lineno))
-            L.set("hits", str(hits))
-            branches = line_cov.branches
-            if not branches:
-                L.set("branch", "false")
-            else:
-                b_total, b_hits, coverage = line_cov.branch_coverage().to_tuple
-                assert coverage is not None  # we know this because len(branches) > 0
-                L.set("branch", "true")
-                L.set("condition-coverage", f"{int(coverage)}% ({b_hits}/{b_total})")
-                cond = etree.Element("condition")
-                cond.set("number", "0")
-                cond.set("type", "jump")
-                cond.set("coverage", f"{int(coverage)}%")
-                class_branch_hits += b_hits
-                class_branches += len(branches)
-                conditions = etree.Element("conditions")
-                conditions.append(cond)
-                L.append(conditions)
 
-            lines.append(L)
+            b = line_cov.branch_coverage()
+            if b.total:
+                class_branch += b
+
+            lines.append(_line_element(line_cov))
+
+        stats = SummarizedStats.from_file(data)
 
         className = fname.replace(".", "_")
         c.set("name", className)
         c.set("filename", filename)
-        c.set("line-rate", str(class_hits / (1.0 * class_lines or 1.0)))
-        c.set("branch-rate", str(class_branch_hits / (1.0 * class_branches or 1.0)))
+        c.set("line-rate", _rate(stats.line))
+        c.set("branch-rate", _rate(class_branch))
         c.set("complexity", "0.0")
 
-        package[1][className] = c
-        package[2] += class_hits
-        package[3] += class_lines
-        package[4] += class_branch_hits
-        package[5] += class_branches
+        package.classess_xml[className] = c
+        package.line += stats.line
+        package.branch += class_branch
+        package.function = stats.function  # FIXME this must use "+=" operator
 
-        class_functions = 0
-        class_function_hits = 0
-        for function_name in data.functions:
-            class_functions += 1
-            if data.functions[function_name].count > 0:
-                class_function_hits += 1
-
-        package[6] = class_function_hits
-        package[7] = class_functions
-
-    keys = list(packages.keys())
-    keys.sort()
-    for packageName in keys:
+    for packageName in sorted(packages):
         packageData = packages[packageName]
-        package = packageData[0]
+        package = etree.Element("package")
         packageXml.append(package)
         classes = etree.SubElement(package, "classes")
-        classNames = list(packageData[1].keys())
-        classNames.sort()
-        for className in classNames:
-            classes.append(packageData[1][className])
+        for className in sorted(packageData.classess_xml):
+            classes.append(packageData.classess_xml[className])
         package.set("name", packageName.replace("/", "."))
-        package.set("line-rate", str(packageData[2] / (1.0 * packageData[3] or 1.0)))
-        package.set(
-            "function-rate", str(packageData[6] / (1.0 * packageData[7] or 1.0))
-        )
-        package.set("branch-rate", str(packageData[4] / (1.0 * packageData[5] or 1.0)))
+        package.set("line-rate", _rate(packageData.line))
+        package.set("function-rate", _rate(packageData.function))
+        package.set("branch-rate", _rate(packageData.branch))
         package.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
@@ -189,3 +132,58 @@ def print_cobertura_report(covdata: CovData, output_file, options):
                 doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>",
             )
         )
+
+
+@dataclass
+class PackageData:
+    classess_xml: Dict[str, etree.Element]
+    line: CoverageStat
+    branch: CoverageStat
+    function: CoverageStat
+
+
+def _rate(stat: CoverageStat) -> str:
+    """format a CoverageStat as a string in range 0.0 to 1.0 inclusive"""
+    total = stat.total
+    covered = stat.covered
+    if not total:
+        return "0.0"
+    return str(covered / total)
+
+
+def _line_element(line: LineCoverage) -> etree.Element:
+    branch = line.branch_coverage()
+
+    elem = etree.Element("line")
+    elem.set("number", str(line.lineno))
+    elem.set("hits", str(line.count))
+
+    if not branch.total:
+        elem.set("branch", "false")
+    else:
+        assert branch.percent is not None
+        elem.set("branch", "true")
+        elem.set(
+            "condition-coverage",
+            f"{int(branch.percent)}% ({branch.covered}/{branch.total})",
+        )
+        elem.append(_conditions_element(branch))
+
+    return elem
+
+
+def _conditions_element(branch: CoverageStat) -> etree.Element:
+    elem = etree.Element("conditions")
+    elem.append(_condition_element(branch))
+    return elem
+
+
+def _condition_element(branch: CoverageStat) -> etree.Element:
+    coverage = branch.percent
+    assert coverage is not None
+
+    elem = etree.Element("condition")
+    elem.set("number", "0")
+    elem.set("type", "jump")
+    elem.set("coverage", f"{int(coverage)}%")
+    return elem
