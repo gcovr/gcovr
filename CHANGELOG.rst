@@ -6,6 +6,13 @@
 Next Release
 ------------
 
+Known bugs:
+
+- Cobertura XML output: package-level function coverage statistics are incorrect.
+  (:issue:`600`)
+- Aggregated branch coverage does not properly respect excluded/noncode lines.
+  (:issue:`600`)
+
 Breaking changes:
 
 New features and notable changes:
@@ -20,6 +27,7 @@ Bug fixes and small improvements:
 - Accept metadata lines without values (introduced in gcc-11). (:issue:`601`)
 - Properly close <a> element in detailed HTML report. (:issue:`602`)
 - Use `≥` sign instead of `>=` in HTML legend. (:issue:`603`)
+- Using :option:`--add-tracefile` will now correctly merge branch coverage. (:issue:`600`)
 
 Documentation:
 
@@ -28,6 +36,7 @@ Internal changes:
 - Fix black check to fail on format errors. (:issue:`594`)
 - Change session black with no arguments to format all files. (:issue:`595`)
 - Add gcc-10 and gcc-11 to the test suite. (:issue:`597`)
+- Improved internal coverage data model to simplify processing. (:issue:`600`)
 
 5.1 (26 March 2022)
 -------------------
