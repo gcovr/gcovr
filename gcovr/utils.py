@@ -442,8 +442,7 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
             fh.close()
 
 
-def presentable_filename(filename, root_filter):
-    # type: (str, re.Regex) -> str
+def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
     """mangle a filename so that it is suitable for a report"""
 
     normalized = root_filter.sub("", filename)

@@ -17,21 +17,13 @@
 #
 # ****************************************************************************
 
+from __future__ import annotations
+from typing import Dict, Iterable, Optional, Tuple, Union
+
 from .utils import calculate_coverage
 
-# for type annotations:
-if False:
-    from typing import (  # noqa, pylint: disable=all
-        Callable,
-        Dict,
-        Iterable,
-        List,
-        Optional,
-        Tuple,
-    )
 
-
-class BranchCoverage(object):
+class BranchCoverage:
     r"""Represent coverage information about a branch.
 
     Args:
@@ -45,8 +37,12 @@ class BranchCoverage(object):
 
     __slots__ = "count", "fallthrough", "throw"
 
-    def __init__(self, count, fallthrough=None, throw=None):
-        # type: (int, Optional[bool], Optional[bool]) -> None
+    def __init__(
+        self,
+        count: int,
+        fallthrough: Optional[bool] = None,
+        throw: Optional[bool] = None,
+    ) -> None:
         assert count >= 0
 
         self.count = count
@@ -54,12 +50,10 @@ class BranchCoverage(object):
         self.throw = throw
 
     @property
-    def is_covered(self):
-        # type: () -> bool
+    def is_covered(self) -> bool:
         return self.count > 0
 
-    def update(self, other):
-        # type: (BranchCoverage) -> None
+    def update(self, other: BranchCoverage) -> None:
         r"""Merge BranchCoverage information"""
         self.count += other.count
         if other.fallthrough is not None:
@@ -68,41 +62,30 @@ class BranchCoverage(object):
             self.throw = other.throw
 
 
-class DecisionCoverageUncheckable(object):
-    r"""Represent coverage information about a decision.
+class DecisionCoverageUncheckable:
+    r"""Represent coverage information about a decision."""
 
-    Args:
-        count (int):
-            Number of times this decision was made.
-
-    """
-
-    def __init__(self):
-        # type: () -> None
+    def __init__(self) -> None:
         pass
 
     @property
-    def is_uncheckable(self):
-        # type: () -> bool
+    def is_uncheckable(self) -> bool:
         return True
 
     @property
-    def is_conditional(self):
-        # type: () -> bool
+    def is_conditional(self) -> bool:
         return False
 
     @property
-    def is_switch(self):
-        # type: () -> bool
+    def is_switch(self) -> bool:
         return False
 
-    def update(self, other):
-        # type: (DecisionCoverageUncheckable) -> None
+    def update(self, other: DecisionCoverageUncheckable) -> None:
         r"""Merge DecisionCoverage information"""
         pass
 
 
-class DecisionCoverageConditional(object):
+class DecisionCoverageConditional:
     r"""Represent coverage information about a decision.
 
     Args:
@@ -116,36 +99,31 @@ class DecisionCoverageConditional(object):
 
     __slots__ = "count_true", "count_false"
 
-    def __init__(self, count_true, count_false):
-        # type: (int, int) -> None
+    def __init__(self, count_true: int, count_false: int) -> None:
         assert count_true >= 0
         self.count_true = count_true
         assert count_false >= 0
         self.count_false = count_false
 
     @property
-    def is_uncheckable(self):
-        # type: () -> bool
+    def is_uncheckable(self) -> bool:
         return False
 
     @property
-    def is_conditional(self):
-        # type: () -> bool
+    def is_conditional(self) -> bool:
         return True
 
     @property
-    def is_switch(self):
-        # type: () -> bool
+    def is_switch(self) -> bool:
         return False
 
-    def update(self, other):
-        # type: (DecisionCoverageConditional) -> None
+    def update(self, other: DecisionCoverageConditional) -> None:
         r"""Merge DecisionCoverage information"""
         self.count_true += other.count_true
         self.count_false += other.count_false
 
 
-class DecisionCoverageSwitch(object):
+class DecisionCoverageSwitch:
     r"""Represent coverage information about a decision.
 
     Args:
@@ -155,44 +133,44 @@ class DecisionCoverageSwitch(object):
 
     __slots__ = "count"
 
-    def __init__(self, count):
-        # type: (int) -> None
+    def __init__(self, count: int) -> None:
         assert count >= 0
         self.count = count
 
     @property
-    def is_uncheckable(self):
-        # type: () -> bool
+    def is_uncheckable(self) -> bool:
         return False
 
     @property
-    def is_conditional(self):
-        # type: () -> bool
+    def is_conditional(self) -> bool:
         return False
 
     @property
-    def is_switch(self):
-        # type: () -> bool
+    def is_switch(self) -> bool:
         return True
 
-    def update(self, other):
-        # type: (DecisionCoverageSwitch) -> None
+    def update(self, other: DecisionCoverageSwitch) -> None:
         r"""Merge DecisionCoverage information"""
         self.count += other.count
 
 
-class FunctionCoverage(object):
+DecisionCoverage = Union[
+    DecisionCoverageUncheckable,
+    DecisionCoverageConditional,
+    DecisionCoverageSwitch,
+]
+
+
+class FunctionCoverage:
     __slots__ = "lineno", "count", "name"
 
-    def __init__(self, name, call_count=0):
-        # type: (int, int) -> None
+    def __init__(self, name: str, call_count: int = 0) -> None:
         assert call_count >= 0
         self.count = call_count
         self.lineno = 0
         self.name = name
 
-    def update(self, other):
-        # type: (FunctionCoverage) -> None
+    def update(self, other: FunctionCoverage) -> None:
         r"""Merge FunctionCoverage information"""
         self.count += other.count
         if self.lineno == 0:
@@ -201,7 +179,7 @@ class FunctionCoverage(object):
             assert self.lineno == other.lineno
 
 
-class LineCoverage(object):
+class LineCoverage:
     r"""Represent coverage information about a line.
 
     Args:
@@ -225,45 +203,42 @@ class LineCoverage(object):
         "functions",
     )
 
-    def __init__(self, lineno, count=0, noncode=False, excluded=False):
-        # type: (int, int, bool) -> None
+    def __init__(
+        self, lineno: int, count: int = 0, noncode: bool = False, excluded: bool = False
+    ) -> None:
         assert lineno > 0
         assert count >= 0
 
-        self.lineno = lineno  # type: int
-        self.count = count  # type: int
-        self.noncode = noncode
-        self.excluded = excluded
-        self.branches = {}  # type: Dict[int, BranchCoverage]
-        self.decision = None
+        self.lineno: int = lineno
+        self.count: int = count
+        self.noncode: bool = noncode
+        self.excluded: bool = excluded
+        self.branches: Dict[int, BranchCoverage] = {}
+        self.decision: Optional[DecisionCoverage] = None
 
         # There can be only one (user) function per line but:
         # * (multiple) template instantiations
         # * non explicitly defined destructors, called via base virtual destructor!
         # For that reason we need a dictionary instead of a scalar
-        self.functions = {}  # type: Dict[str, FunctionCoverage]
+        self.functions: Dict[str, FunctionCoverage] = {}
 
     @property
-    def is_excluded(self):
-        # type: () -> bool
+    def is_excluded(self) -> bool:
         return self.excluded
 
     @property
-    def is_covered(self):
-        # type: () -> bool
+    def is_covered(self) -> bool:
         if self.noncode:
             return False
         return self.count > 0
 
     @property
-    def is_uncovered(self):
-        # type: () -> bool
+    def is_uncovered(self) -> bool:
         if self.noncode:
             return False
         return self.count == 0
 
-    def branch(self, branch_id):
-        # type: (int) -> BranchCoverage
+    def branch(self, branch_id: int) -> BranchCoverage:
         r"""Get or create the BranchCoverage for that branch_id."""
         try:
             return self.branches[branch_id]
@@ -271,8 +246,7 @@ class LineCoverage(object):
             self.branches[branch_id] = branch_cov = BranchCoverage(0)
             return branch_cov
 
-    def update(self, other):
-        # type: (LineCoverage) -> None
+    def update(self, other: LineCoverage) -> None:
         r"""Merge LineCoverage information."""
         assert self.lineno == other.lineno
         self.count += other.count
@@ -288,8 +262,7 @@ class LineCoverage(object):
         else:
             self.decision.update(other.decision)
 
-    def branch_coverage(self):
-        # type: () -> Tuple[int, int, Optional[float]]
+    def branch_coverage(self) -> Tuple[int, int, Optional[float]]:
         total = len(self.branches)
         cover = 0
         for branch in self.branches.values():
@@ -299,8 +272,7 @@ class LineCoverage(object):
         percent = calculate_coverage(cover, total, nan_value=None)
         return total, cover, percent
 
-    def decision_coverage(self):
-        # type: () -> Tuple[int, int, int, Optional[float]]
+    def decision_coverage(self) -> Tuple[int, int, int, Optional[float]]:
         total = 0
         cover = 0
         unchecked = False
@@ -325,17 +297,15 @@ class LineCoverage(object):
         return total, cover, unchecked, percent
 
 
-class FileCoverage(object):
+class FileCoverage:
     __slots__ = "filename", "functions", "lines"
 
-    def __init__(self, filename):
-        # type: (str) -> None
+    def __init__(self, filename: str) -> None:
         self.filename = filename
-        self.functions = {}  # type: Dict[str, FunctionCoverage]
-        self.lines = {}  # type: Dict[int, LineCoverage]
+        self.functions: Dict[str, FunctionCoverage] = {}
+        self.lines: Dict[int, LineCoverage] = {}
 
-    def line(self, lineno, **defaults):
-        # type: (int) -> LineCoverage
+    def line(self, lineno: int, **defaults) -> LineCoverage:
         r"""Get or create the LineCoverage for that lineno."""
         try:
             return self.lines[lineno]
@@ -343,8 +313,7 @@ class FileCoverage(object):
             self.lines[lineno] = line_cov = LineCoverage(lineno, **defaults)
             return line_cov
 
-    def function(self, function_name):
-        # type: (str) -> FunctionCoverage
+    def function(self, function_name: str) -> FunctionCoverage:
         r"""Get or create the FunctionCoverage for that function."""
         try:
             return self.functions[function_name]
@@ -354,7 +323,7 @@ class FileCoverage(object):
             )
             return function_cov
 
-    def add_function(self, function):
+    def add_function(self, function: FunctionCoverage) -> None:
         assert function is not None
         if function.name in self.functions:
             self.functions[
@@ -365,8 +334,7 @@ class FileCoverage(object):
         else:
             self.functions[function.name] = function
 
-    def update(self, other):
-        # type: (FileCoverage) -> None
+    def update(self, other: FileCoverage) -> None:
         r"""Merge FileCoverage information."""
         assert self.filename == other.filename
         for lineno, line_cov in other.lines.items():
@@ -374,8 +342,7 @@ class FileCoverage(object):
         for fct_name, fct_cov in other.functions.items():
             self.function(fct_name).update(fct_cov)
 
-    def uncovered_lines_str(self):
-        # type: () -> str
+    def uncovered_lines_str(self) -> str:
         uncovered_lines = sorted(
             lineno for lineno, line in self.lines.items() if line.is_uncovered
         )
@@ -395,8 +362,7 @@ class FileCoverage(object):
             for first, last in _find_consecutive_ranges(uncovered_lines)
         )
 
-    def uncovered_branches_str(self):
-        # type: () -> str
+    def uncovered_branches_str(self) -> str:
         uncovered_lines = sorted(
             lineno
             for lineno, line in self.lines.items()
@@ -406,8 +372,7 @@ class FileCoverage(object):
         # Don't do any aggregation on branch results
         return ",".join(str(x) for x in uncovered_lines)
 
-    def function_coverage(self):
-        # type: () -> Tuple[int, int, Optional[float]]
+    def function_coverage(self) -> Tuple[int, int, Optional[float]]:
         total = len(self.functions.values())
         cover = 0
         for function in self.functions.values():
@@ -417,8 +382,7 @@ class FileCoverage(object):
 
         return total, cover, percent
 
-    def line_coverage(self):
-        # type: () -> Tuple[int, int, Optional[float]]
+    def line_coverage(self) -> Tuple[int, int, Optional[float]]:
         total = 0
         cover = 0
         for line in self.lines.values():
@@ -430,8 +394,7 @@ class FileCoverage(object):
         percent = calculate_coverage(cover, total, nan_value=None)
         return total, cover, percent
 
-    def branch_coverage(self):
-        # type: () -> Tuple[int, int, Optional[float]]
+    def branch_coverage(self) -> Tuple[int, int, Optional[float]]:
         total = 0
         cover = 0
         for line in self.lines.values():
@@ -442,8 +405,7 @@ class FileCoverage(object):
         percent = calculate_coverage(cover, total, nan_value=None)
         return total, cover, percent
 
-    def decision_coverage(self):
-        # type: () -> Tuple[int, int, Optional[float]]
+    def decision_coverage(self) -> Tuple[int, int, int, Optional[float]]:
         total = 0
         cover = 0
         unchecked = 0
@@ -457,7 +419,7 @@ class FileCoverage(object):
         return total, cover, unchecked, percent
 
 
-def _find_consecutive_ranges(items):
+def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[Tuple[int, int]]:
     first = last = None
     for item in items:
         if last is None:
@@ -468,14 +430,16 @@ def _find_consecutive_ranges(items):
             last = item
             continue
 
+        assert first is not None
         yield first, last
         first = last = item
 
     if last is not None:
+        assert first is not None
         yield first, last
 
 
-def _format_range(first, last):
+def _format_range(first: int, last: int) -> str:
     if first == last:
         return str(first)
     return "{first}-{last}".format(first=first, last=last)
