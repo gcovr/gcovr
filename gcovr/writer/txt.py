@@ -61,10 +61,10 @@ def print_text_report(covdata: CovData, output_file, options):
                 filename = filename + "\n" + " " * 40
 
             if options.show_branch:
-                total, cover, percent = coverage.branch_coverage()
+                total, cover, percent = coverage.branch_coverage().to_tuple
                 uncovered_lines = coverage.uncovered_branches_str()
             else:
-                total, cover, percent = coverage.line_coverage()
+                total, cover, percent = coverage.line_coverage().to_tuple
                 uncovered_lines = coverage.uncovered_lines_str()
             percent = "--" if percent is None else str(int(percent))
             return (

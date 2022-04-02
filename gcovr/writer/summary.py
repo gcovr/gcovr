@@ -19,7 +19,7 @@
 
 import sys
 
-from ..coverage import CovData, get_global_stats
+from ..coverage import CovData, CoverageStat, SummarizedStats
 
 
 def print_summary(covdata: CovData):
@@ -27,30 +27,15 @@ def print_summary(covdata: CovData):
     Output the percentage, covered and total lines and branches.
     """
 
-    (
-        lines_total,
-        lines_covered,
-        percent,
-        functions_total,
-        functions_covered,
-        percent_functions,
-        branches_total,
-        branches_covered,
-        percent_branches,
-    ) = get_global_stats(covdata)
+    def print_stat(name: str, stat: CoverageStat):
+        percent = stat.percent_or(0.0)
+        covered = stat.covered
+        total = stat.total
+        sys.stdout.write(f"{name}: {percent:0.1f}% ({covered} out of {total})\n")
 
-    lines_out = "lines: %0.1f%% (%s out of %s)" % (percent, lines_covered, lines_total)
-    functions_out = "functions: %0.1f%% (%s out of %s)" % (
-        percent_functions,
-        functions_covered,
-        functions_total,
-    )
-    branches_out = "branches: %0.1f%% (%s out of %s)" % (
-        percent_branches,
-        branches_covered,
-        branches_total,
-    )
+    stats = SummarizedStats.from_covdata(covdata)
 
-    sys.stdout.write(lines_out + "\n")
-    sys.stdout.write(functions_out + "\n")
-    sys.stdout.write(branches_out + "\n")
+    print_stat("lines", stats.line)
+    print_stat("functions", stats.function)
+    print_stat("branches", stats.branch)
+    sys.stdout.flush()

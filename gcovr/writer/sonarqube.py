@@ -50,9 +50,9 @@ def print_sonarqube_report(covdata: CovData, output_file, options):
 
             branches = line_cov.branches
             if branches:
-                b_total, b_hits, coverage = line_cov.branch_coverage()
-                L.set("branchesToCover", str(b_total))
-                L.set("coveredBranches", str(b_hits))
+                b = line_cov.branch_coverage()
+                L.set("branchesToCover", str(b.total))
+                L.set("coveredBranches", str(b.covered))
 
             fileNode.append(L)
 

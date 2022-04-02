@@ -26,10 +26,17 @@ also not on the gcovr.utils module.
 
 The data model should contain the exact same information
 as the JSON input/output format.
+
+The types ending with ``*Coverage``
+contain per-project/-line/-decision/-branch coverage.
+
+The types ``SummarizedStats``, ``CoverageStat``, and ``DecisionCoverageStat``
+report aggregated metrics/percentages.
 """
 
 from __future__ import annotations
 from typing import Dict, Iterable, Optional, Tuple, TypeVar, Union
+from dataclasses import dataclass
 
 _T = TypeVar("_T")
 
@@ -125,7 +132,7 @@ class DecisionCoverageSwitch:
             Number of times this decision was made.
     """
 
-    __slots__ = "count"
+    __slots__ = ("count",)
 
     def __init__(self, count: int) -> None:
         assert count >= 0
@@ -222,39 +229,37 @@ class LineCoverage:
             self.branches[branch_id] = branch_cov = BranchCoverage(0)
             return branch_cov
 
-    def branch_coverage(self) -> Tuple[int, int, Optional[float]]:
+    def branch_coverage(self) -> CoverageStat:
         total = len(self.branches)
-        cover = 0
+        covered = 0
         for branch in self.branches.values():
             if branch.is_covered:
-                cover += 1
+                covered += 1
 
-        percent = calculate_coverage(cover, total, nan_value=None)
-        return total, cover, percent
+        return CoverageStat(covered=covered, total=total)
 
-    def decision_coverage(self) -> Tuple[int, int, int, Optional[float]]:
-        total = 0
-        cover = 0
-        unchecked = False
-        if self.decision is not None:
-            if self.decision.is_uncheckable:
-                total = 2
-                unchecked = True
-            elif self.decision.is_conditional:
-                total = 2
-                if self.decision.count_true > 0:
-                    cover += 1
-                if self.decision.count_false > 0:
-                    cover += 1
-            elif self.decision.is_switch:
-                total = 1
-                if self.decision.count > 0:
-                    cover += 1
-            else:
-                RuntimeError("Unknown decision type")
+    def decision_coverage(self) -> DecisionCoverageStat:
+        if self.decision is None:
+            return DecisionCoverageStat(0, 0, 0)
 
-        percent = calculate_coverage(cover, total, nan_value=None)
-        return total, cover, unchecked, percent
+        if isinstance(self.decision, DecisionCoverageUncheckable):
+            return DecisionCoverageStat(0, 1, 2)  # TODO should it be uncheckable=2?
+
+        if isinstance(self.decision, DecisionCoverageConditional):
+            covered = 0
+            if self.decision.count_true > 0:
+                covered += 1
+            if self.decision.count_false > 0:
+                covered += 1
+            return DecisionCoverageStat(covered, 0, 2)
+
+        if isinstance(self.decision, DecisionCoverageSwitch):
+            covered = 0
+            if self.decision.count > 0:
+                covered += 1
+            return DecisionCoverageStat(covered, 0, 1)
+
+        raise RuntimeError(f"Unknown decision type: {self.decision!r}")
 
 
 class FileCoverage:
@@ -313,51 +318,43 @@ class FileCoverage:
         # Don't do any aggregation on branch results
         return ",".join(str(x) for x in uncovered_lines)
 
-    def function_coverage(self) -> Tuple[int, int, Optional[float]]:
+    def function_coverage(self) -> CoverageStat:
         total = len(self.functions.values())
-        cover = 0
+        covered = 0
+
         for function in self.functions.values():
-            cover += 1 if function.count > 0 else 0
+            if function.count > 0:
+                covered += 1
 
-        percent = calculate_coverage(cover, total, nan_value=None)
+        return CoverageStat(covered, total)
 
-        return total, cover, percent
-
-    def line_coverage(self) -> Tuple[int, int, Optional[float]]:
+    def line_coverage(self) -> CoverageStat:
         total = 0
-        cover = 0
+        covered = 0
+
         for line in self.lines.values():
             if line.is_covered or line.is_uncovered:
                 total += 1
             if line.is_covered:
-                cover += 1
+                covered += 1
 
-        percent = calculate_coverage(cover, total, nan_value=None)
-        return total, cover, percent
+        return CoverageStat(covered, total)
 
-    def branch_coverage(self) -> Tuple[int, int, Optional[float]]:
-        total = 0
-        cover = 0
+    def branch_coverage(self) -> CoverageStat:
+        stat = CoverageStat.new_empty()
+
         for line in self.lines.values():
-            b_total, b_cover, _ = line.branch_coverage()
-            total += b_total
-            cover += b_cover
+            stat += line.branch_coverage()
 
-        percent = calculate_coverage(cover, total, nan_value=None)
-        return total, cover, percent
+        return stat
 
-    def decision_coverage(self) -> Tuple[int, int, int, Optional[float]]:
-        total = 0
-        cover = 0
-        unchecked = 0
+    def decision_coverage(self) -> DecisionCoverageStat:
+        stat = DecisionCoverageStat.new_empty()
+
         for line in self.lines.values():
-            d_total, d_cover, d_unchecked, _ = line.decision_coverage()
-            total += d_total
-            cover += d_cover
-            unchecked += d_unchecked
+            stat += line.decision_coverage()
 
-        percent = calculate_coverage(cover, total, nan_value=None)
-        return total, cover, unchecked, percent
+        return stat
 
 
 CovData = Dict[str, FileCoverage]
@@ -389,45 +386,158 @@ def _format_range(first: int, last: int) -> str:
     return "{first}-{last}".format(first=first, last=last)
 
 
+@dataclass
+class SummarizedStats:
+    line: CoverageStat
+    branch: CoverageStat
+    function: CoverageStat
+    decision: DecisionCoverageStat
+
+    @staticmethod
+    def new_empty() -> SummarizedStats:
+        return SummarizedStats(
+            line=CoverageStat.new_empty(),
+            branch=CoverageStat.new_empty(),
+            function=CoverageStat.new_empty(),
+            decision=DecisionCoverageStat.new_empty(),
+        )
+
+    @staticmethod
+    def from_covdata(covdata: CovData) -> SummarizedStats:
+        stats = SummarizedStats.new_empty()
+        for filecov in covdata.values():
+            stats += SummarizedStats.from_file(filecov)
+        return stats
+
+    @staticmethod
+    def from_file(filecov: FileCoverage) -> SummarizedStats:
+        return SummarizedStats(
+            line=filecov.line_coverage(),
+            branch=filecov.branch_coverage(),
+            function=filecov.function_coverage(),
+            decision=filecov.decision_coverage(),
+        )
+
+    @property
+    def to_global_stats(
+        self,
+    ) -> Tuple[
+        int, int, Optional[float], int, int, Optional[float], int, int, Optional[float]
+    ]:
+        """for migration only"""
+        return (
+            *self.line.to_tuple,
+            *self.function.to_tuple,
+            *self.branch.to_tuple,
+        )
+
+    def __iadd__(self, other: SummarizedStats) -> SummarizedStats:
+        self.line += other.line
+        self.branch += other.branch
+        self.function += other.function
+        self.decision += other.decision
+        return self
+
+
+@dataclass
+class CoverageStat:
+    """A single coverage metric, e.g. the line coverage percentage of a file."""
+
+    covered: int
+    """How many elements were covered."""
+
+    total: int
+    """How many elements there were in total."""
+
+    @staticmethod
+    def new_empty() -> CoverageStat:
+        return CoverageStat(0, 0)
+
+    @property
+    def percent(self) -> Optional[float]:
+        """Percentage of covered elements, equivalent to ``self.percent_or(None)``"""
+        return self.percent_or(None)
+
+    def percent_or(self, default: _T) -> Union[float, _T]:
+        """
+        Percentage of covered elements.
+
+        Coverage is truncated to one decimal:
+        >>> CoverageStat(1234, 10000).percent_or("default")
+        12.3
+
+        Coverage is capped at 99.9% unless everything is covered:
+        >>> CoverageStat(9999, 10000).percent_or("default")
+        99.9
+        >>> CoverageStat(10000, 10000).percent_or("default")
+        100.0
+
+        If there are no elements, percentage is NaN and the default will be returned:
+        >>> CoverageStat(0, 0).percent_or("default")
+        'default'
+        """
+        if not self.total:
+            return default
+
+        # Return 100% only if covered == total.
+        if self.covered == self.total:
+            return 100.0
+
+        # There is at least one uncovered item.
+        # Round to 1 decimal and clamp to max 99.9%.
+        ratio = self.covered / self.total
+        return min(99.9, round(ratio * 100.0, 1))
+
+    @property
+    def to_tuple(self) -> Tuple[int, int, Optional[float]]:
+        """for migration only: (total, covered, percent)"""
+        return self.total, self.covered, self.percent
+
+    def __iadd__(self, other: CoverageStat) -> CoverageStat:
+        self.covered += other.covered
+        self.total += other.total
+        return self
+
+
+@dataclass
+class DecisionCoverageStat:
+    """A CoverageStat for decision coverage (accounts for Uncheckable cases)."""
+
+    covered: int
+    uncheckable: int
+    total: int
+
+    @classmethod
+    def new_empty(cls) -> DecisionCoverageStat:
+        return cls(0, 0, 0)
+
+    @property
+    def to_coverage_stat(self) -> CoverageStat:
+        return CoverageStat(covered=self.covered, total=self.total)
+
+    @property
+    def percent(self) -> Optional[float]:
+        return self.to_coverage_stat.percent
+
+    def percent_or(self, default: _T) -> Union[float, _T]:
+        return self.to_coverage_stat.percent_or(default)
+
+    @property
+    def to_tuple(self) -> Tuple[int, int, int, Optional[float]]:
+        """for migration only: (total, covered, uncheckable, percent)"""
+        return self.total, self.covered, self.uncheckable, self.percent
+
+    def __iadd__(self, other: DecisionCoverageStat) -> DecisionCoverageStat:
+        self.covered += other.covered
+        self.uncheckable += other.uncheckable
+        self.total += other.total
+        return self
+
+
 def get_global_stats(covdata: CovData):
     """Get global statistics"""
-    lines_total = 0
-    lines_covered = 0
-    functions_total = 0
-    functions_covered = 0
-    branches_total = 0
-    branches_covered = 0
 
-    keys = list(covdata.keys())
-
-    for key in keys:
-        (total, covered, _) = covdata[key].line_coverage()
-        lines_total += total
-        lines_covered += covered
-
-        (total, covered, _) = covdata[key].function_coverage()
-        functions_total += total
-        functions_covered += covered
-
-        (total, covered, _) = covdata[key].branch_coverage()
-        branches_total += total
-        branches_covered += covered
-
-    percent = calculate_coverage(lines_covered, lines_total)
-    percent_functions = calculate_coverage(functions_covered, functions_total)
-    percent_branches = calculate_coverage(branches_covered, branches_total)
-
-    return (
-        lines_total,
-        lines_covered,
-        percent,
-        functions_total,
-        functions_covered,
-        percent_functions,
-        branches_total,
-        branches_covered,
-        percent_branches,
-    )
+    return SummarizedStats.from_covdata(covdata).to_global_stats
 
 
 def calculate_coverage(
@@ -435,11 +545,4 @@ def calculate_coverage(
     total: int,
     nan_value: _T = 0.0,
 ) -> Union[float, _T]:
-    coverage = nan_value
-    if total != 0:
-        coverage = round(100.0 * covered / total, 1)
-        # If we get 100.0% and not all branches are covered use 99.9%
-        if (coverage == 100.0) and (covered != total):
-            coverage = 99.9
-
-    return coverage
+    return CoverageStat(covered=covered, total=total).percent_or(nan_value)

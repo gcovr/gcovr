@@ -34,17 +34,17 @@ def print_cobertura_report(covdata: CovData, output_file, options):
     lineCovered = 0
 
     for key in covdata.keys():
-        (total, covered, _) = covdata[key].function_coverage()
+        (total, covered, _) = covdata[key].function_coverage().to_tuple
         functionTotal += total
         functionCovered += covered
 
     for key in covdata.keys():
-        (total, covered, _) = covdata[key].branch_coverage()
+        (total, covered, _) = covdata[key].branch_coverage().to_tuple
         branchTotal += total
         branchCovered += covered
 
     for key in covdata.keys():
-        (total, covered, _) = covdata[key].line_coverage()
+        (total, covered, _) = covdata[key].line_coverage().to_tuple
         lineTotal += total
         lineCovered += covered
 
@@ -118,7 +118,8 @@ def print_cobertura_report(covdata: CovData, output_file, options):
             if not branches:
                 L.set("branch", "false")
             else:
-                b_total, b_hits, coverage = line_cov.branch_coverage()
+                b_total, b_hits, coverage = line_cov.branch_coverage().to_tuple
+                assert coverage is not None  # we know this because len(branches) > 0
                 L.set("branch", "true")
                 L.set("condition-coverage", f"{int(coverage)}% ({b_hits}/{b_total})")
                 cond = etree.Element("condition")
@@ -126,7 +127,7 @@ def print_cobertura_report(covdata: CovData, output_file, options):
                 cond.set("type", "jump")
                 cond.set("coverage", f"{int(coverage)}%")
                 class_branch_hits += b_hits
-                class_branches += float(len(branches))
+                class_branches += len(branches)
                 conditions = etree.Element("conditions")
                 conditions.append(cond)
                 L.append(conditions)

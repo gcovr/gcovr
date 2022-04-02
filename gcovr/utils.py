@@ -26,7 +26,7 @@ import re
 import sys
 from contextlib import contextmanager
 
-from .coverage import CovData
+from .coverage import CovData, CoverageStat, SummarizedStats, FileCoverage
 
 logger = logging.getLogger("gcovr")
 
@@ -152,23 +152,15 @@ def commonpath(files):
     return prefix_path
 
 
-def summarize_file_coverage(coverage, root_filter):
+def summarize_file_coverage(coverage: FileCoverage, root_filter):
     filename = presentable_filename(coverage.filename, root_filter=root_filter)
 
-    branch_total, branch_covered, branch_percent = coverage.branch_coverage()
-    line_total, line_covered, line_percent = coverage.line_coverage()
-    function_total, function_covered, function_percent = coverage.function_coverage()
+    stats = SummarizedStats.from_file(coverage)
     return (
         filename,
-        line_total,
-        line_covered,
-        line_percent,
-        branch_total,
-        branch_covered,
-        branch_percent,
-        function_total,
-        function_covered,
-        function_percent,
+        *stats.line.to_tuple,
+        *stats.branch.to_tuple,
+        *stats.function.to_tuple,
     )
 
 
@@ -214,7 +206,7 @@ FilterOption.NonEmpty = NonEmptyFilterOption
 
 
 class Filter(object):
-    def __init__(self, pattern):
+    def __init__(self, pattern: str):
         cwd = os.getcwd()
         # Guessing if file system is case insensitive.
         # The working directory is not the root and accessible in upper and lower case.
@@ -226,7 +218,7 @@ class Filter(object):
         flags = re.IGNORECASE if is_fs_case_insensitive else 0
         self.pattern = re.compile(pattern, flags)
 
-    def match(self, path):
+    def match(self, path: str):
         os_independent_path = get_os_independent_path(path)
         return self.pattern.match(os_independent_path)
 
@@ -237,17 +229,17 @@ class Filter(object):
 
 
 class AbsoluteFilter(Filter):
-    def match(self, path):
+    def match(self, path: str):
         path = realpath(path)
-        return super(AbsoluteFilter, self).match(path)
+        return super().match(path)
 
 
 class RelativeFilter(Filter):
-    def __init__(self, root, pattern):
-        super(RelativeFilter, self).__init__(pattern)
+    def __init__(self, root: str, pattern: str):
+        super().__init__(pattern)
         self.root = realpath(root)
 
-    def match(self, path):
+    def match(self, path: str):
         path = realpath(path)
 
         # On Windows, a relative path can never cross drive boundaries.
@@ -259,7 +251,7 @@ class RelativeFilter(Filter):
                 return None
 
         relpath = os.path.relpath(path, self.root)
-        return super(RelativeFilter, self).match(relpath)
+        return super().match(relpath)
 
     def __str__(self):
         return "RelativeFilter({} root={})".format(self.pattern.pattern, self.root)
@@ -267,7 +259,7 @@ class RelativeFilter(Filter):
 
 class AlwaysMatchFilter(Filter):
     def __init__(self):
-        super(AlwaysMatchFilter, self).__init__("")
+        super().__init__("")
 
     def match(self, path):
         return True
@@ -278,11 +270,11 @@ class DirectoryPrefixFilter(Filter):
         path = realpath(directory)
         os_independent_path = get_os_independent_path(path)
         pattern = re.escape(f"{os_independent_path}/")
-        super(DirectoryPrefixFilter, self).__init__(pattern)
+        super().__init__(pattern)
 
-    def match(self, path):
+    def match(self, path: str):
         realpath = os.path.normpath(path)
-        return super(DirectoryPrefixFilter, self).match(realpath)
+        return super().match(realpath)
 
 
 def configure_logging() -> None:
@@ -316,19 +308,22 @@ def sort_coverage(
     returns: the sorted keys
     """
 
-    def num_uncovered_key(key: str) -> int:
+    def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
-        (total, covered, _) = (
-            cov.branch_coverage() if show_branch else cov.line_coverage()
-        )
-        uncovered = total - covered
+        if show_branch:
+            return cov.branch_coverage()
+        return cov.line_coverage()
+
+    def num_uncovered_key(key: str) -> int:
+        stat = coverage_stat(key)
+        uncovered = stat.total - stat.covered
         return uncovered
 
     def percent_uncovered_key(key: str) -> float:
-        cov = covdata[key]
-        (total, covered, _) = (
-            cov.branch_coverage() if show_branch else cov.line_coverage()
-        )
+        stat = coverage_stat(key)
+        covered = stat.covered
+        total = stat.total
+
         if covered:
             return -1.0 * covered / total
         elif total:
