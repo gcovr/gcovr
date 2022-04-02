@@ -48,7 +48,7 @@ from .utils import (
 )
 from .version import __version__
 from .workers import Workers
-from .coverage import CovData, get_global_stats
+from .coverage import CovData, SummarizedStats
 from .merging import merge_covdata
 
 # generators
@@ -70,20 +70,14 @@ logger = logging.getLogger("gcovr")
 # Exits with status 2 if below threshold
 #
 def fail_under(covdata: CovData, threshold_line, threshold_branch):
-    (
-        lines_total,
-        lines_covered,
-        percent_lines,
-        functions_total,
-        functions_covered,
-        percent_functions,
-        branches_total,
-        branches_covered,
-        percent_branches,
-    ) = get_global_stats(covdata)
+    stats = SummarizedStats.from_covdata(covdata)
 
-    if branches_total == 0:
-        percent_branches = 100.0
+    # If there are no lines, mark as uncovered
+    # (indicates no data at all, likely an error).
+    percent_lines = stats.line.percent_or(0.0)
+
+    # Allow data with no branches.
+    percent_branches = stats.branch.percent_or(100.0)
 
     line_nok = False
     branch_nok = False

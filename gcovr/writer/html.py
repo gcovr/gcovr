@@ -235,11 +235,11 @@ class RootInfo:
     def get_directory(self):
         return "." if self.directory == "" else self.directory.replace("\\", "/")
 
-    def calculate_branch_coverage(self, covdata):
+    def calculate_branch_coverage(self, covdata: CovData):
         branch_total = 0
         branch_covered = 0
         for key in covdata.keys():
-            (total, covered, _percent) = covdata[key].branch_coverage()
+            (total, covered, _percent) = covdata[key].branch_coverage().to_tuple
             branch_total += total
             branch_covered += covered
         self.branches["exec"] = branch_covered
@@ -248,12 +248,14 @@ class RootInfo:
         self.branches["coverage"] = "-" if coverage is None else coverage
         self.branches["class"] = self._coverage_to_class(coverage)
 
-    def calculate_decision_coverage(self, covdata):
+    def calculate_decision_coverage(self, covdata: CovData):
         decision_total = 0
         decision_covered = 0
         decision_unchecked = 0
         for key in covdata.keys():
-            (total, covered, unchecked, _percent) = covdata[key].decision_coverage()
+            (total, covered, unchecked, _percent) = (
+                covdata[key].decision_coverage().to_tuple
+            )
             decision_total += total
             decision_covered += covered
             decision_unchecked += unchecked
@@ -264,11 +266,11 @@ class RootInfo:
         self.decisions["coverage"] = "-" if coverage is None else coverage
         self.decisions["class"] = self._coverage_to_class(coverage)
 
-    def calculate_function_coverage(self, covdata):
+    def calculate_function_coverage(self, covdata: CovData):
         function_total = 0
         function_covered = 0
         for key in covdata.keys():
-            (total, covered, _percent) = covdata[key].function_coverage()
+            (total, covered, _percent) = covdata[key].function_coverage().to_tuple
             function_total += total
             function_covered += covered
         self.functions["exec"] = function_covered
@@ -277,11 +279,11 @@ class RootInfo:
         self.functions["coverage"] = "-" if coverage is None else coverage
         self.functions["class"] = self._coverage_to_class(coverage)
 
-    def calculate_line_coverage(self, covdata):
+    def calculate_line_coverage(self, covdata: CovData):
         line_total = 0
         line_covered = 0
         for key in covdata.keys():
-            (total, covered, _percent) = covdata[key].line_coverage()
+            (total, covered, _percent) = covdata[key].line_coverage().to_tuple
             line_total += total
             line_covered += covered
         self.lines["exec"] = line_covered
@@ -291,15 +293,15 @@ class RootInfo:
         self.lines["class"] = self._coverage_to_class(coverage)
 
     def add_file(self, cdata, link_report, cdata_fname):
-        lines_total, lines_exec, _ = cdata.line_coverage()
-        branches_total, branches_exec, _ = cdata.branch_coverage()
+        lines_total, lines_exec, _ = cdata.line_coverage().to_tuple
+        branches_total, branches_exec, _ = cdata.branch_coverage().to_tuple
         (
             decisions_total,
             decisions_exec,
             decisions_unchecked,
             _,
-        ) = cdata.decision_coverage()
-        functions_total, functions_exec, _ = cdata.function_coverage()
+        ) = cdata.decision_coverage().to_tuple
+        functions_total, functions_exec, _ = cdata.function_coverage().to_tuple
 
         line_coverage = calculate_coverage(lines_exec, lines_total, nan_value=100.0)
         branch_coverage = calculate_coverage(
@@ -506,7 +508,7 @@ def print_html_report(covdata: CovData, output_file, options):
             functions["total"],
             functions["exec"],
             functions["coverage"],
-        ) = cdata.function_coverage()
+        ) = cdata.function_coverage().to_tuple
         functions["class"] = coverage_to_class(
             functions["coverage"], medium_threshold, high_threshold
         )
@@ -520,7 +522,7 @@ def print_html_report(covdata: CovData, output_file, options):
             branches["total"],
             branches["exec"],
             branches["coverage"],
-        ) = cdata.branch_coverage()
+        ) = cdata.branch_coverage().to_tuple
         branches["class"] = coverage_to_class(
             branches["coverage"], medium_threshold, high_threshold
         )
@@ -535,7 +537,7 @@ def print_html_report(covdata: CovData, output_file, options):
             decisions["exec"],
             decisions["unchecked"],
             decisions["coverage"],
-        ) = cdata.decision_coverage()
+        ) = cdata.decision_coverage().to_tuple
         decisions["class"] = coverage_to_class(
             decisions["coverage"], medium_threshold, high_threshold
         )
@@ -545,7 +547,11 @@ def print_html_report(covdata: CovData, output_file, options):
 
         lines = dict()
         data["lines"] = lines
-        lines["total"], lines["exec"], lines["coverage"] = cdata.line_coverage()
+        (
+            lines["total"],
+            lines["exec"],
+            lines["coverage"],
+        ) = cdata.line_coverage().to_tuple
         lines["class"] = coverage_to_class(
             lines["coverage"], medium_threshold, high_threshold
         )

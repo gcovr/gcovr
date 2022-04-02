@@ -18,9 +18,10 @@
 # ****************************************************************************
 
 import csv
+from typing import Tuple, Optional
 
-from ..utils import sort_coverage, summarize_file_coverage, open_text_for_writing
-from ..coverage import CovData
+from ..utils import sort_coverage, presentable_filename, open_text_for_writing
+from ..coverage import CovData, CoverageStat, SummarizedStats
 
 
 def print_csv_report(covdata: CovData, output_file, options):
@@ -50,37 +51,21 @@ def print_csv_report(covdata: CovData, output_file, options):
             )
         )
         for key in keys:
-            (
-                filename,
-                line_total,
-                line_covered,
-                line_percent,
-                branch_total,
-                branch_covered,
-                branch_percent,
-                function_total,
-                function_covered,
-                function_percent,
-            ) = summarize_file_coverage(covdata[key], options.root_filter)
-            line_percent = fixup_percent(line_percent)
-            branch_percent = fixup_percent(branch_percent)
-            function_percent = fixup_percent(function_percent)
+            filename = presentable_filename(covdata[key].filename, options.root_filter)
+            stats = SummarizedStats.from_file(covdata[key])
             writer.writerow(
                 [
                     filename,
-                    line_total,
-                    line_covered,
-                    line_percent,
-                    branch_total,
-                    branch_covered,
-                    branch_percent,
-                    function_total,
-                    function_covered,
-                    function_percent,
+                    *_stat_tuple(stats.line),
+                    *_stat_tuple(stats.branch),
+                    *_stat_tuple(stats.function),
                 ]
             )
 
 
-def fixup_percent(percent):
-    # output csv percent values in range [0,1.0]
-    return percent / 100 if percent is not None else None
+def _stat_tuple(stat: CoverageStat) -> Tuple[int, int, Optional[float]]:
+    """creates tuple (total, covered, ratio) with ratio in range 0..1 incl"""
+    percent = stat.percent
+    if percent is not None:
+        percent = percent / 100.0
+    return stat.total, stat.covered, percent
