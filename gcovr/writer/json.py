@@ -21,21 +21,21 @@ import json
 import logging
 import os
 import functools
-from ..gcov import apply_filter_include_exclude
 
+from ..gcov import apply_filter_include_exclude
 from ..utils import (
-    get_global_stats,
     presentable_filename,
     sort_coverage,
     summarize_file_coverage,
     open_text_for_writing,
 )
-
 from ..coverage import (
     DecisionCoverageUncheckable,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
     FileCoverage,
+    CovData,
+    get_global_stats,
 )
 
 logger = logging.getLogger("gcovr")
@@ -67,7 +67,7 @@ def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
 #
 # Produce gcovr JSON report
 #
-def print_json_report(covdata, output_file, options):
+def print_json_report(covdata: CovData, output_file, options):
     r"""produce an JSON report in the format partially
     compatible with gcov JSON output"""
 

@@ -28,9 +28,9 @@ from ..utils import (
     realpath,
     commonpath,
     sort_coverage,
-    calculate_coverage,
     open_text_for_writing,
 )
+from ..coverage import CovData, calculate_coverage
 
 logger = logging.getLogger("gcovr")
 
@@ -369,7 +369,7 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def print_html_report(covdata, output_file, options):
+def print_html_report(covdata: CovData, output_file, options):
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold

@@ -20,9 +20,10 @@
 import csv
 
 from ..utils import sort_coverage, summarize_file_coverage, open_text_for_writing
+from ..coverage import CovData
 
 
-def print_csv_report(covdata, output_file, options):
+def print_csv_report(covdata: CovData, output_file, options):
     """produce gcovr csv report"""
 
     with open_text_for_writing(output_file, "coverage.csv") as fh:

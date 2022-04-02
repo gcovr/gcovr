@@ -17,10 +17,21 @@
 #
 # ****************************************************************************
 
-from __future__ import annotations
-from typing import Dict, Iterable, Optional, Tuple, Union
+"""
+The gcovr coverage data model.
 
-from .utils import calculate_coverage
+This module represents the core data structures
+and should not have dependencies on any other gcovr module,
+also not on the gcovr.utils module.
+
+The data model should contain the exact same information
+as the JSON input/output format.
+"""
+
+from __future__ import annotations
+from typing import Dict, Iterable, Optional, Tuple, TypeVar, Union
+
+_T = TypeVar("_T")
 
 
 class BranchCoverage:
@@ -401,6 +412,9 @@ class FileCoverage:
         return total, cover, unchecked, percent
 
 
+CovData = Dict[str, FileCoverage]
+
+
 def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[Tuple[int, int]]:
     first = last = None
     for item in items:
@@ -425,3 +439,59 @@ def _format_range(first: int, last: int) -> str:
     if first == last:
         return str(first)
     return "{first}-{last}".format(first=first, last=last)
+
+
+def get_global_stats(covdata: CovData):
+    """Get global statistics"""
+    lines_total = 0
+    lines_covered = 0
+    functions_total = 0
+    functions_covered = 0
+    branches_total = 0
+    branches_covered = 0
+
+    keys = list(covdata.keys())
+
+    for key in keys:
+        (total, covered, _) = covdata[key].line_coverage()
+        lines_total += total
+        lines_covered += covered
+
+        (total, covered, _) = covdata[key].function_coverage()
+        functions_total += total
+        functions_covered += covered
+
+        (total, covered, _) = covdata[key].branch_coverage()
+        branches_total += total
+        branches_covered += covered
+
+    percent = calculate_coverage(lines_covered, lines_total)
+    percent_functions = calculate_coverage(functions_covered, functions_total)
+    percent_branches = calculate_coverage(branches_covered, branches_total)
+
+    return (
+        lines_total,
+        lines_covered,
+        percent,
+        functions_total,
+        functions_covered,
+        percent_functions,
+        branches_total,
+        branches_covered,
+        percent_branches,
+    )
+
+
+def calculate_coverage(
+    covered: int,
+    total: int,
+    nan_value: _T = 0.0,
+) -> Union[float, _T]:
+    coverage = nan_value
+    if total != 0:
+        coverage = round(100.0 * covered / total, 1)
+        # If we get 100.0% and not all branches are covered use 99.9%
+        if (coverage == 100.0) and (covered != total):
+            coverage = 99.9
+
+    return coverage
