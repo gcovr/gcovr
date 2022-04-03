@@ -75,13 +75,14 @@ CC_REFERENCE = env.get("CC_REFERENCE", CC)
 
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
-    ["gcc-5", "gcc-6", "gcc-8", "gcc-9"]
+    ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "gcc-10", "gcc-11"]
     if "gcc" in CC_REFERENCE
     else ["clang-10", "clang-13"]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
-    REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
+    if platform.system() != "Linux":
+        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
     if ref in CC_REFERENCE:
         break
 REFERENCE_DIRS.reverse()

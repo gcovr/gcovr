@@ -24,6 +24,7 @@ Internal changes:
 
 - Fix black check to fail on format errors. (:issue:`594`)
 - Change session black with no arguments to format all files. (:issue:`595`)
+- Add gcc-10 and gcc-11 to the test suite. (:issue:`597`)
 
 5.1 (26 March 2022)
 -------------------
