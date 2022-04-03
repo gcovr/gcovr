@@ -122,7 +122,7 @@ class _MetadataLine(NamedTuple):
     """A gcov line with metadata: ``-: 0:KEY:VALUE``"""
 
     key: str
-    value: str
+    value: Optional[str]
 
 
 class _BlockLine(NamedTuple):
@@ -220,12 +220,14 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
     RuntimeError: Missing key 'Source' in metadata. GCOV data was >>
       -: 0:Foo:bar
       -: 0:Key:123<< End of GCOV data
+    >>> parse_metadata('-: 0:Source: file \n -: 0:Foo: bar \n -: 0:Key: 123 '.splitlines())
+    {'Source': 'file', 'Foo': 'bar', 'Key': '123'}
     >>> parse_metadata('''
     ...   -: 0:Source:file
     ...   -: 0:Foo:bar
-    ...   -: 0:Key:123
+    ...   -: 0:Key
     ... '''.splitlines())
-    {'Source': 'file', 'Foo': 'bar', 'Key': '123'}
+    {'Source': 'file', 'Foo': 'bar', 'Key': None}
     """
     collected = {}
     for line in lines:
@@ -738,8 +740,12 @@ def _parse_line(line: str) -> _Line:
 
         # METADATA (key, value)
         if count_str == "-" and lineno == "0":
-            key, value = source_code.split(":", 1)
-            return _MetadataLine(key, value)
+            if ":" in source_code:
+                key, value = source_code.split(":", 1)
+                return _MetadataLine(key, value.strip())
+            else:
+                # Add a syntethic metadata with no value
+                return _MetadataLine(source_code, None)
 
         if count_str == "-":
             count = 0
