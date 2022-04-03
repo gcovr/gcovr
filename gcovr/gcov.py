@@ -99,8 +99,11 @@ def process_gcov_data(data_fname, covdata, gcda_fname, options, currdir=None):
     # Find the source file
     # TODO: instead of heuristics, use "working directory" if available
     metadata = parse_metadata(lines)
+    source = metadata.get("Source")
+    if source is None:
+        raise RuntimeError("Unexpected value 'None' for metadata 'Source'.")
     fname = guess_source_file_name(
-        metadata["Source"].strip(),
+        source,
         data_fname,
         gcda_fname,
         root_dir=options.root_dir,

@@ -122,7 +122,7 @@ class _MetadataLine(NamedTuple):
     """A gcov line with metadata: ``-: 0:KEY:VALUE``"""
 
     key: str
-    value: str
+    value: Optional[str]
 
 
 class _BlockLine(NamedTuple):
@@ -746,7 +746,7 @@ def _parse_line(line: str) -> _Line:
         if count_str == "-" and lineno == "0":
             if ":" in source_code:
                 key, value = source_code.split(":", 1)
-                return _MetadataLine(key, value)
+                return _MetadataLine(key, value.strip())
             else:
                 # Add a syntethic metadata with no value
                 return _MetadataLine(source_code, None)
