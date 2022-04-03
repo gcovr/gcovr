@@ -203,13 +203,12 @@ License
 
 .. begin license
 
-Copyright 2013-2021 the gcovr authors
-
-Copyright 2013 Sandia Corporation.
+Copyright (c) 2013-2022 the gcovr authors
+Copyright (c) 2013 Sandia Corporation.
 Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 the U.S. Government retains certain rights in this software.
 
-Gcovr is available under the 3-clause BSD License.
+This software is distributed under the 3-clause BSD License.
 See LICENSE.txt for full details.
 See AUTHORS.txt for the full list of contributors.
 
