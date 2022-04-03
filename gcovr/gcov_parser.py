@@ -220,11 +220,7 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
     RuntimeError: Missing key 'Source' in metadata. GCOV data was >>
       -: 0:Foo:bar
       -: 0:Key:123<< End of GCOV data
-    >>> parse_metadata('''
-    ...   -: 0:Source:file
-    ...   -: 0:Foo:bar
-    ...   -: 0:Key:123
-    ... '''.splitlines())
+    >>> parse_metadata('-: 0:Source: file \n -: 0:Foo: bar \n -: 0:Key: 123 '.splitlines())
     {'Source': 'file', 'Foo': 'bar', 'Key': '123'}
     >>> parse_metadata('''
     ...   -: 0:Source:file
