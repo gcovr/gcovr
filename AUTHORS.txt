@@ -16,6 +16,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     Cezary Gapiński,
     Christian Taedcke,
     Dave George,
+    Davide Pesavento,
     Dom Postorivo,
     ebmmy,
     Elektrobit Automotive GmbH,
