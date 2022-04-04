@@ -35,7 +35,7 @@ report aggregated metrics/percentages.
 """
 
 from __future__ import annotations
-from typing import Dict, Iterable, Optional, Tuple, TypeVar, Union
+from typing import Dict, Optional, TypeVar, Union
 from dataclasses import dataclass
 
 _T = TypeVar("_T")
@@ -187,6 +187,10 @@ class LineCoverage:
             return False
         return self.count == 0
 
+    @property
+    def has_uncovered_branch(self) -> bool:
+        return not all(branch.is_covered for branch in self.branches.values())
+
     def branch(self, branch_id: int) -> BranchCoverage:
         r"""Get or create the BranchCoverage for that branch_id."""
         try:
@@ -254,36 +258,6 @@ class FileCoverage:
             )
             return function_cov
 
-    def uncovered_lines_str(self) -> str:
-        uncovered_lines = sorted(
-            lineno for lineno, line in self.lines.items() if line.is_uncovered
-        )
-
-        if not uncovered_lines:
-            return ""
-
-        # Walk through the uncovered lines in sorted order.
-        # Find blocks of consecutive uncovered lines, and return
-        # a string with that information.
-        #
-        # Should we include noncode lines in the range of lines
-        # to be covered???  This simplifies the ranges summary, but it
-        # provides a counterintuitive listing.
-        return ",".join(
-            _format_range(first, last)
-            for first, last in _find_consecutive_ranges(uncovered_lines)
-        )
-
-    def uncovered_branches_str(self) -> str:
-        uncovered_lines = sorted(
-            lineno
-            for lineno, line in self.lines.items()
-            if not all(branch.is_covered for branch in line.branches.values())
-        )
-
-        # Don't do any aggregation on branch results
-        return ",".join(str(x) for x in uncovered_lines)
-
     def function_coverage(self) -> CoverageStat:
         total = len(self.functions.values())
         covered = 0
@@ -326,32 +300,6 @@ class FileCoverage:
 
 
 CovData = Dict[str, FileCoverage]
-
-
-def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[Tuple[int, int]]:
-    first = last = None
-    for item in items:
-        if last is None:
-            first = last = item
-            continue
-
-        if item == (last + 1):
-            last = item
-            continue
-
-        assert first is not None
-        yield first, last
-        first = last = item
-
-    if last is not None:
-        assert first is not None
-        yield first, last
-
-
-def _format_range(first: int, last: int) -> str:
-    if first == last:
-        return str(first)
-    return "{first}-{last}".format(first=first, last=last)
 
 
 @dataclass
