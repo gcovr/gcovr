@@ -68,7 +68,8 @@ def _merge_dict(
     >>> _merge_dict(dict(a=2, b=3), dict(b=1, c=5), lambda a, b: a + b)
     {'a': 2, 'b': 4, 'c': 5}
     """
-    # ensure that "left" is the larger dict
+    # Ensure that "left" is the larger dict,
+    # so that fewer items have to be checked for merging.
     if len(left) < len(right):
         left, right = right, left
 
@@ -77,6 +78,13 @@ def _merge_dict(
             left[key] = merge_item(left[key], right_item)
         else:
             left[key] = right_item
+
+    # At this point, "left" contains all merged items.
+    # The caller should access neither the "left" nor "right" objects.
+    # While we can't prevent use of the "left" object since we want to return it,
+    # we can clear the contents of the "right" object.
+    right.clear()
+
     return left
 
 
@@ -149,8 +157,8 @@ def merge_branch(left: BranchCoverage, right: BranchCoverage) -> BranchCoverage:
     """
 
     left.count += right.count
-    left.fallthrough = left.fallthrough or right.fallthrough
-    left.throw = left.throw or right.throw
+    left.fallthrough |= right.fallthrough
+    left.throw |= right.throw
 
     return left
 
@@ -173,6 +181,11 @@ def merge_decision(
     If there is a conflict between different types, Uncheckable will be returned.
     """
 
+    # The DecisionCoverage classes have long names, so abbreviate them here:
+    Conditional = DecisionCoverageConditional
+    Switch = DecisionCoverageSwitch
+    Uncheckable = DecisionCoverageUncheckable
+
     # If decision coverage is not know for one side, return the other.
     if left is None:
         return right
@@ -180,23 +193,21 @@ def merge_decision(
         return left
 
     # If any decision is Uncheckable, the result is Uncheckable.
-    if isinstance(left, DecisionCoverageUncheckable):
+    if isinstance(left, Uncheckable):
         return left
-    if isinstance(right, DecisionCoverageUncheckable):
+    if isinstance(right, Uncheckable):
         return right
 
     # Merge Conditional decisions.
-    Conditional = DecisionCoverageConditional
     if isinstance(left, Conditional) and isinstance(right, Conditional):
         left.count_true += right.count_true
         left.count_false += right.count_false
         return left
 
     # Merge Switch decisions.
-    Switch = DecisionCoverageSwitch
     if isinstance(left, Switch) and isinstance(right, Switch):
         left.count += right.count
         return left
 
     # If the decisions have conflicting types, the result is Uncheckable.
-    return DecisionCoverageUncheckable()
+    return Uncheckable()
