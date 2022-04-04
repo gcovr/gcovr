@@ -19,6 +19,7 @@ Bug fixes and small improvements:
 - Better diagnostics when dealing with corrupted input files. (:issue:`593`)
 - Accept metadata lines without values (introduced in gcc-11). (:issue:`601`)
 - Properly close <a> element in detailed HTML report. (:issue:`602`)
+- Use `≥` sign instead of `>=` in HTML legend. (:issue:`603`)
 
 Documentation:
 
