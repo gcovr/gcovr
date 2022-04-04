@@ -18,6 +18,7 @@ Bug fixes and small improvements:
 - Fix parallel processing of gcov data. (:issue:`592`)
 - Better diagnostics when dealing with corrupted input files. (:issue:`593`)
 - Accept metadata lines without values (introduced in gcc-11). (:issue:`601`)
+- Properly close <a> element in detailed HTML report. (:issue:`602`)
 
 Documentation:
 
