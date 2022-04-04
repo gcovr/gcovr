@@ -101,7 +101,7 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         c.set("branch-rate", _rate(class_branch))
         c.set("complexity", "0.0")
 
-        package.classess_xml[className] = c
+        package.classes_xml[className] = c
         package.line += stats.line
         package.branch += class_branch
         package.function = stats.function  # FIXME this must use "+=" operator
@@ -111,8 +111,8 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         package = etree.Element("package")
         packageXml.append(package)
         classes = etree.SubElement(package, "classes")
-        for className in sorted(packageData.classess_xml):
-            classes.append(packageData.classess_xml[className])
+        for className in sorted(packageData.classes_xml):
+            classes.append(packageData.classes_xml[className])
         package.set("name", packageName.replace("/", "."))
         package.set("line-rate", _rate(packageData.line))
         package.set("function-rate", _rate(packageData.function))
@@ -136,7 +136,7 @@ def print_cobertura_report(covdata: CovData, output_file, options):
 
 @dataclass
 class PackageData:
-    classess_xml: Dict[str, etree.Element]
+    classes_xml: Dict[str, etree.Element]
     line: CoverageStat
     branch: CoverageStat
     function: CoverageStat
