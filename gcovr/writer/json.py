@@ -31,6 +31,7 @@ from ..utils import (
 )
 from ..coverage import (
     CovData,
+    DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
@@ -227,19 +228,19 @@ def _json_from_branch(branch):
     return json_branch
 
 
-def _json_from_decision(decision):
+def _json_from_decision(decision: DecisionCoverage) -> dict:
     json_decision = {}
-    if decision.is_uncheckable:
+    if isinstance(decision, DecisionCoverageUncheckable):
         json_decision["type"] = "uncheckable"
-    elif decision.is_conditional:
+    elif isinstance(decision, DecisionCoverageConditional):
         json_decision["type"] = "conditional"
         json_decision["count_true"] = decision.count_true
         json_decision["count_false"] = decision.count_false
-    elif decision.is_switch:
+    elif isinstance(decision, DecisionCoverageSwitch):
         json_decision["type"] = "switch"
         json_decision["count"] = decision.count
     else:
-        RuntimeError("Unknown decision type")
+        raise RuntimeError("Unknown decision type: {decision!r}")
 
     return json_decision
 

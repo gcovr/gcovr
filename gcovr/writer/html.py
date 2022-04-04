@@ -31,7 +31,16 @@ from ..utils import (
     sort_coverage,
     open_text_for_writing,
 )
-from ..coverage import CovData, CoverageStat, DecisionCoverageStat, SummarizedStats
+from ..coverage import (
+    CovData,
+    CoverageStat,
+    DecisionCoverage,
+    DecisionCoverageConditional,
+    DecisionCoverageStat,
+    DecisionCoverageSwitch,
+    DecisionCoverageUncheckable,
+    SummarizedStats,
+)
 
 logger = logging.getLogger("gcovr")
 
@@ -564,23 +573,23 @@ def source_row_branch(branches):
     }
 
 
-def source_row_decision(decision):
+def source_row_decision(decision: DecisionCoverage) -> Optional[dict]:
     if decision is None:
         return None
 
     items = []
 
-    if decision.is_uncheckable:
+    if isinstance(decision, DecisionCoverageUncheckable):
         items.append(
             {
                 "uncheckable": True,
             }
         )
-    elif decision.is_conditional:
+    elif isinstance(decision, DecisionCoverageConditional):
         items.append(
             {
                 "uncheckable": False,
-                "taken": True if decision.count_true > 0 else False,
+                "taken": decision.count_true > 0,
                 "count": decision.count_true,
                 "name": "true",
             }
@@ -588,22 +597,22 @@ def source_row_decision(decision):
         items.append(
             {
                 "uncheckable": False,
-                "taken": True if decision.count_false > 0 else False,
+                "taken": decision.count_false > 0,
                 "count": decision.count_false,
                 "name": "false",
             }
         )
-    elif decision.is_switch:
+    elif isinstance(decision, DecisionCoverageSwitch):
         items.append(
             {
                 "uncheckable": False,
-                "taken": True if decision.count > 0 else False,
+                "taken": decision.count > 0,
                 "count": decision.count,
                 "name": "true",
             }
         )
     else:
-        RuntimeError("Unknown decision type")
+        raise RuntimeError(f"Unknown decision type {decision!r}")
 
     return {
         "taken": len([i for i in items if i.get("taken", False)]),
