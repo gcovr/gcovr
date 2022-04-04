@@ -24,29 +24,40 @@ from ..utils import (
 )
 from ..coverage import CovData, CoverageStat, FileCoverage
 
+# Widths of the various columns
+COL_FILE_WIDTH = 40
+COL_TOTAL_COUNT_WIDTH = 8
+COL_COVERED_COUNT_WIDTH = 8
+COL_PERCENTAGE_WIDTH = 7  # including "%" percentage sign
+MISSING_SEPARATOR = "   "
+LINE_WIDTH = 78
+
 
 def print_text_report(covdata: CovData, output_file, options):
     """produce the classic gcovr text report"""
 
     with open_text_for_writing(output_file, "coverage.txt") as fh:
         # Header
-        fh.write("-" * 78 + "\n")
-        fh.write(" " * 27 + "GCC Code Coverage Report\n")
+        fh.write("-" * LINE_WIDTH + "\n")
+        fh.write("GCC Code Coverage Report".center(LINE_WIDTH).rstrip() + "\n")
+        # fh.write(" " * 27 + "GCC Code Coverage Report\n")
         fh.write("Directory: " + options.root + "\n")
 
-        fh.write("-" * 78 + "\n")
+        fh.write("-" * LINE_WIDTH + "\n")
         title_total = "Branches" if options.show_branch else "Lines"
         title_covered = "Taken" if options.show_branch else "Exec"
+        title_percentage = "Cover"
         title_missing = "Missing"
         fh.write(
-            "File".ljust(40)
-            + title_total.rjust(8)
-            + title_covered.rjust(8)
-            + "  Cover   "
+            "File".ljust(COL_FILE_WIDTH)
+            + title_total.rjust(COL_TOTAL_COUNT_WIDTH)
+            + title_covered.rjust(COL_COVERED_COUNT_WIDTH)
+            + title_percentage.rjust(COL_PERCENTAGE_WIDTH)
+            + MISSING_SEPARATOR
             + title_missing
             + "\n"
         )
-        fh.write("-" * 78 + "\n")
+        fh.write("-" * LINE_WIDTH + "\n")
 
         # Data
         keys = sort_coverage(
@@ -63,9 +74,9 @@ def print_text_report(covdata: CovData, output_file, options):
             fh.write(txt + "\n")
 
         # Footer & summary
-        fh.write("-" * 78 + "\n")
+        fh.write("-" * LINE_WIDTH + "\n")
         fh.write(_format_line("TOTAL", total_stat, "") + "\n")
-        fh.write("-" * 78 + "\n")
+        fh.write("-" * LINE_WIDTH + "\n")
 
 
 def _summarize_file_coverage(coverage: FileCoverage, options):
@@ -88,19 +99,19 @@ def _format_line(name: str, stat: CoverageStat, uncovered_lines: str) -> str:
     else:
         percent = str(int(raw_percent))
 
-    name = name.ljust(40)
+    name = name.ljust(COL_FILE_WIDTH)
     if len(name) > 40:
-        name = name + "\n" + " " * 40
+        name = name + "\n" + " " * COL_FILE_WIDTH
 
     line = (
         name
-        + str(stat.total).rjust(8)
-        + str(stat.covered).rjust(8)
-        + percent.rjust(6)
+        + str(stat.total).rjust(COL_TOTAL_COUNT_WIDTH)
+        + str(stat.covered).rjust(COL_COVERED_COUNT_WIDTH)
+        + percent.rjust(COL_PERCENTAGE_WIDTH - 1)
         + "%"
     )
 
     if uncovered_lines:
-        line += "   " + uncovered_lines
+        line += MISSING_SEPARATOR + uncovered_lines
 
     return line
