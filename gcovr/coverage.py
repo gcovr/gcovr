@@ -75,20 +75,10 @@ class BranchCoverage:
 class DecisionCoverageUncheckable:
     r"""Represent coverage information about a decision."""
 
+    __slots__ = ()
+
     def __init__(self) -> None:
         pass
-
-    @property
-    def is_uncheckable(self) -> bool:
-        return True
-
-    @property
-    def is_conditional(self) -> bool:
-        return False
-
-    @property
-    def is_switch(self) -> bool:
-        return False
 
 
 class DecisionCoverageConditional:
@@ -111,18 +101,6 @@ class DecisionCoverageConditional:
         assert count_false >= 0
         self.count_false = count_false
 
-    @property
-    def is_uncheckable(self) -> bool:
-        return False
-
-    @property
-    def is_conditional(self) -> bool:
-        return True
-
-    @property
-    def is_switch(self) -> bool:
-        return False
-
 
 class DecisionCoverageSwitch:
     r"""Represent coverage information about a decision.
@@ -137,18 +115,6 @@ class DecisionCoverageSwitch:
     def __init__(self, count: int) -> None:
         assert count >= 0
         self.count = count
-
-    @property
-    def is_uncheckable(self) -> bool:
-        return False
-
-    @property
-    def is_conditional(self) -> bool:
-        return False
-
-    @property
-    def is_switch(self) -> bool:
-        return True
 
 
 DecisionCoverage = Union[
