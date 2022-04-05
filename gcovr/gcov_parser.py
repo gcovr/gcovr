@@ -52,8 +52,15 @@ from typing import (
     NoReturn,
 )
 
-from .coverage import FileCoverage
+from .coverage import BranchCoverage, FileCoverage, FunctionCoverage
 from .decision_analysis import DecisionParser
+from .merging import (
+    MergeOptions,
+    get_or_create_line_coverage,
+    insert_branch_coverage,
+    insert_function_coverage,
+)
+
 
 logger = logging.getLogger("gcovr")
 
@@ -429,10 +436,12 @@ def _gather_coverage_from_line(
             is_function=bool(state.deferred_functions),
         )
 
+        # FIXME this can't yet use the merge() functions
+        # due to inconsistency in handling of the noncode flag
         if noncode:
-            coverage.line(lineno).noncode = True
-        elif count is not None:
-            coverage.line(lineno).count += count
+            get_or_create_line_coverage(coverage, lineno).noncode = True
+        if count is not None:
+            get_or_create_line_coverage(coverage, lineno).count += count
 
         # handle deferred functions
         for function in state.deferred_functions:
@@ -462,12 +471,16 @@ def _gather_coverage_from_line(
             )
             return state
 
-        branch_cov = coverage.line(state.lineno).branch(branchno)
-        branch_cov.count += count
-        if annotation == "fallthrough":
-            branch_cov.fallthrough = True
-        if annotation == "throw":
-            branch_cov.throw = True
+        line_cov = coverage.lines[state.lineno]  # must already exist
+        insert_branch_coverage(
+            line_cov,
+            branchno,
+            BranchCoverage(
+                count=count,
+                fallthrough=(annotation == "fallthrough"),
+                throw=(annotation == "throw"),
+            ),
+        )
 
         return state
 
@@ -613,9 +626,11 @@ def _add_coverage_for_function(
         )
         return
 
-    function_cov = coverage.function(name)
-    function_cov.lineno = lineno
-    function_cov.count += calls
+    insert_function_coverage(
+        coverage,
+        FunctionCoverage(name, lineno=lineno, call_count=calls),
+        MergeOptions(ignore_function_lineno=True),
+    )
 
 
 def _parse_line(line: str) -> _Line:

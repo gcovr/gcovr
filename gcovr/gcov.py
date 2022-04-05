@@ -29,10 +29,9 @@ from typing import Optional
 
 from .utils import search_file, commonpath
 from .workers import locked_directory
-from .coverage import FileCoverage
 from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
 from .coverage import CovData
-from .merging import merge_file
+from .merging import insert_file_coverage
 
 logger = logging.getLogger("gcovr")
 
@@ -163,7 +162,7 @@ def process_gcov_data(
         exclude_pattern_prefix=options.exclude_pattern_prefix,
         flags=parser_flags,
     )
-    covdata[key] = merge_file(covdata.get(key, FileCoverage(key)), coverage)
+    insert_file_coverage(covdata, coverage)
 
 
 def guess_source_file_name(

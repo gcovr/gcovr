@@ -127,10 +127,10 @@ DecisionCoverage = Union[
 class FunctionCoverage:
     __slots__ = "lineno", "count", "name"
 
-    def __init__(self, name: str, call_count: int = 0) -> None:
+    def __init__(self, name: str, *, lineno: int = 0, call_count: int = 0) -> None:
         assert call_count >= 0
         self.count = call_count
-        self.lineno = 0
+        self.lineno = lineno
         self.name = name
 
 
@@ -191,14 +191,6 @@ class LineCoverage:
     def has_uncovered_branch(self) -> bool:
         return not all(branch.is_covered for branch in self.branches.values())
 
-    def branch(self, branch_id: int) -> BranchCoverage:
-        r"""Get or create the BranchCoverage for that branch_id."""
-        try:
-            return self.branches[branch_id]
-        except KeyError:
-            self.branches[branch_id] = branch_cov = BranchCoverage(0)
-            return branch_cov
-
     def branch_coverage(self) -> CoverageStat:
         total = len(self.branches)
         covered = 0
@@ -239,24 +231,6 @@ class FileCoverage:
         self.filename = filename
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
-
-    def line(self, lineno: int, **defaults) -> LineCoverage:
-        r"""Get or create the LineCoverage for that lineno."""
-        try:
-            return self.lines[lineno]
-        except KeyError:
-            self.lines[lineno] = line_cov = LineCoverage(lineno, **defaults)
-            return line_cov
-
-    def function(self, function_name: str) -> FunctionCoverage:
-        r"""Get or create the FunctionCoverage for that function."""
-        try:
-            return self.functions[function_name]
-        except KeyError:
-            self.functions[function_name] = function_cov = FunctionCoverage(
-                function_name
-            )
-            return function_cov
 
     def function_coverage(self) -> CoverageStat:
         total = len(self.functions.values())

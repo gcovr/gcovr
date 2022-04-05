@@ -24,13 +24,13 @@ from typing import (
     Tuple,
 )
 
-
 from .coverage import (
     DecisionCoverageUncheckable,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
     FileCoverage,
 )
+from .merging import get_or_create_line_coverage
 
 logger = logging.getLogger("gcovr")
 
@@ -136,7 +136,8 @@ class DecisionParser:
         logger.debug("Decision Analysis finished!")
 
     def parse_one_line(self, lineno: int, code: str) -> None:
-        line_coverage = self.coverage.line(lineno)
+        # FIXME this always creates a line, even if it doesn't exist
+        line_coverage = get_or_create_line_coverage(self.coverage, lineno)
 
         if line_coverage.noncode:
             return
@@ -158,8 +159,8 @@ class DecisionParser:
                     # if it's a compact decision, we can only use the fallback to analyze
                     # simple decisions via branch calls
                     line_coverage.decision = DecisionCoverageConditional(
-                        line_coverage.branch(0).count,
-                        line_coverage.branch(1).count,
+                        line_coverage.branches[0].count,
+                        line_coverage.branches[1].count,
                     )
                 else:
                     # it's a compplex decision with more than 2 branches. No accurate detection possible
@@ -177,8 +178,9 @@ class DecisionParser:
                 line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
             else:
                 # use the execution counts of the following line (compatibility with GCC 5)
+                # FIXME this INSERTS a line even if it doesn't already exist
                 line_coverage.decision = DecisionCoverageSwitch(
-                    self.coverage.line(lineno + 1).count
+                    get_or_create_line_coverage(self.coverage, lineno + 1).count
                 )
 
     def start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
@@ -194,8 +196,11 @@ class DecisionParser:
         self.decision_analysis_open_brackets -= prepped_code.count(")")
 
     def continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
-        exec_count = self.coverage.line(lineno).count
-        last_decision_line_cov = self.coverage.line(self.last_decision_line)
+        # FIXME this inserts TWO lines, even if they don't already exist
+        exec_count = get_or_create_line_coverage(self.coverage, lineno).count
+        last_decision_line_cov = get_or_create_line_coverage(
+            self.coverage, self.last_decision_line
+        )
 
         # check, if the branch statement was finished in the last line
         if self.decision_analysis_open_brackets == 0:

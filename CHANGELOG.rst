@@ -12,6 +12,7 @@ Known bugs:
   (:issue:`600`)
 - Aggregated branch coverage does not properly respect excluded/noncode lines.
   (:issue:`600`)
+- Decision coverage analysis can resurrect excluded coverage. (:issue:`600`)
 
 Breaking changes:
 
