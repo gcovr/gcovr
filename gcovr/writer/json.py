@@ -30,15 +30,23 @@ from ..utils import (
     open_text_for_writing,
 )
 from ..coverage import (
+    BranchCoverage,
     CovData,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
     FileCoverage,
+    FunctionCoverage,
+    LineCoverage,
     SummarizedStats,
 )
-from ..merging import merge_covdata
+from ..merging import (
+    get_or_create_line_coverage,
+    insert_branch_coverage,
+    insert_file_coverage,
+    insert_function_coverage,
+)
 
 logger = logging.getLogger("gcovr")
 
@@ -193,7 +201,7 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
             _functions_from_json(file_coverage, gcovr_file["functions"])
             _lines_from_json(file_coverage, gcovr_file["lines"])
 
-            covdata = merge_covdata(covdata, {file_path: file_coverage})
+            insert_file_coverage(covdata, file_coverage)
 
     return covdata
 
@@ -261,11 +269,12 @@ def _json_from_function(function):
     return json_function
 
 
-def _functions_from_json(file, json_functions):
-    [
-        _function_from_json(file.function(json_function["name"]), json_function)
-        for json_function in json_functions
-    ]
+def _functions_from_json(file: FileCoverage, json_functions):
+    for json_function in json_functions:
+        function_cov = insert_function_coverage(
+            file, FunctionCoverage(json_function["name"])
+        )
+        _function_from_json(function_cov, json_function)
 
 
 def _function_from_json(function, json_function):
@@ -273,11 +282,10 @@ def _function_from_json(function, json_function):
     function.lineno = json_function["lineno"]
 
 
-def _lines_from_json(file, json_lines):
-    [
-        _line_from_json(file.line(json_line["line_number"]), json_line)
-        for json_line in json_lines
-    ]
+def _lines_from_json(file: FileCoverage, json_lines):
+    for json_line in json_lines:
+        line_cov = get_or_create_line_coverage(file, json_line["line_number"])
+        _line_from_json(line_cov, json_line)
 
 
 def _line_from_json(line, json_line):
@@ -289,11 +297,10 @@ def _line_from_json(line, json_line):
         _decision_from_json(line, json_line["gcovr/decision"])
 
 
-def _branches_from_json(line, json_branches):
-    [
-        _branch_from_json(line.branch(no), json_branch)
-        for no, json_branch in enumerate(json_branches, 0)
-    ]
+def _branches_from_json(line: LineCoverage, json_branches):
+    for no, json_branch in enumerate(json_branches, 0):
+        branch_cov = insert_branch_coverage(line, no, BranchCoverage(0))
+        _branch_from_json(branch_cov, json_branch)
 
 
 def _branch_from_json(branch, json_branch):
