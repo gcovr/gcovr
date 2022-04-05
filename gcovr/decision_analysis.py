@@ -19,25 +19,20 @@
 
 import logging
 import re
+from typing import (
+    List,
+    Tuple,
+)
+
 
 from .coverage import (
     DecisionCoverageUncheckable,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
+    FileCoverage,
 )
 
 logger = logging.getLogger("gcovr")
-
-# for type annotations:
-if False:
-    from typing import (  # noqa, pylint: disable=all
-        Callable,
-        Dict,
-        Iterable,
-        List,
-        Optional,
-        Tuple,
-    )
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -46,12 +41,12 @@ _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
 # helper functions
 
 
-def prep_decision_string(code):
+def _prep_decision_string(code: str) -> str:
     r"""Prepare the input to analyze, if it's a branch statement.
     Remove comments, remove whitespace, add leading space to seperate branch-keywords
     from possible collisions with variable names.
 
-    >>> prep_decision_string('a++; if (a > 5) { // check for something ')
+    >>> _prep_decision_string('a++; if (a > 5) { // check for something ')
     ' a++; if (a > 5) {'
     """
 
@@ -61,10 +56,10 @@ def prep_decision_string(code):
     return " " + code.strip()
 
 
-def is_a_branch_statement(code):
+def _is_a_branch_statement(code: str) -> bool:
     r"""Checks, if the given line of code is a branch statement"""
     return any(
-        s in prep_decision_string(code)
+        s in _prep_decision_string(code)
         for s in (
             " if(",
             ";if(",
@@ -78,153 +73,145 @@ def is_a_branch_statement(code):
     )
 
 
-def is_a_oneline_branch(code):
+def _is_a_oneline_branch(code: str) -> bool:
     r"""Checks, if the given line of code is a branch and branch statement and code block is in one line
 
-    >>> is_a_oneline_branch('if(a>5){a = 0;}')
+    >>> _is_a_oneline_branch('if(a>5){a = 0;}')
     True
     """
-    return re.match(r"^[^;]+{(?:.*;)*.*}$", prep_decision_string(code)) is not None
+    return re.match(r"^[^;]+{(?:.*;)*.*}$", _prep_decision_string(code)) is not None
 
 
-def is_a_loop(code):
+def _is_a_loop(code: str) -> bool:
     r"""Checks, if the given line of code is a loop-statement (while,do-while,if)
 
-    >>> is_a_loop('while(5 < a) {')
+    >>> _is_a_loop('while(5 < a) {')
     True
     """
-    compare_string = prep_decision_string(code)
-    if any(
+    compare_string = _prep_decision_string(code)
+    return any(
         s in compare_string
         for s in (" while(", " while (", "}while(", " for ", " for(")
-    ):
-        return True
+    )
 
 
-def get_branch_type(code):
-    r"""Returns the type of the branch statement used in the given line of code
+def _is_a_switch(code: str) -> bool:
+    r"""Check if the given line relates to a switch-case label (case,default)
 
-    >>> get_branch_type('case 5:')
-    'switch'
+    >>> _is_a_switch('case 5:')
+    True
     """
-    compare_string = prep_decision_string(code)
-    if any(s in compare_string for s in (" if(", " if (")):
-        return "if"
-    elif any(s in compare_string for s in (" case ", " default:")):
-        return "switch"
-    return ""
+    compare_string = _prep_decision_string(code)
+    return any(s in compare_string for s in (" case ", " default:"))
 
 
-class DecisionParser(object):
+class DecisionParser:
     r"""Parses the decisions of a source file.
 
     Args:
-        fname:
-            File name of the active source file.
         covdata:
             Reference to the active coverage data.
         lines:
             The encoding of the source files
     """
 
-    def __init__(self, fname, coverage, lines):
-        self.fname = fname
-        self.coverage = coverage
-        self.lines = lines
+    def __init__(self, coverage: FileCoverage, lines: List[Tuple[int, str]]):
+        self.coverage: FileCoverage = coverage
+        self.lines: List[Tuple[int, str]] = lines
 
         # status variables for decision analysis
-        self.decision_analysis_active = (
+        self.decision_analysis_active: bool = (
             False  # set to True, once we're in the process of analyzing a branch
         )
-        self.last_decision_line = 0
-        self.last_decision_line_exec_count = 0
-        self.last_decision_type = "if"  # can be: "if" or "switch"
-        self.decision_analysis_open_brackets = 0
+        self.last_decision_line: int = 0
+        self.decision_analysis_open_brackets: int = 0
 
     def parse_all_lines(self):
         logger.debug("Starting the decision analysis")
 
         # start to iterate through the lines
         for lineno, code in self.lines:
-            exec_count = self.coverage.line(lineno).count
-
-            if not self.coverage.line(lineno).noncode:
-                line_coverage = self.coverage.line(lineno)
-                # check, if a analysis for a classic if-/else if-branch is active
-                if self.decision_analysis_active:
-                    # check, if the branch statement was finished in the last line
-                    if self.decision_analysis_open_brackets == 0:
-                        # set execution counts for the decision. true is the exec_count.
-                        # false is the delta between executed blocks and executions of the decision statement.
-                        self.coverage.line(
-                            self.last_decision_line
-                        ).decision = DecisionCoverageConditional(
-                            exec_count, self.last_decision_line_exec_count - exec_count
-                        )
-
-                        # disable the current decision analysis
-                        self.decision_analysis_active = False
-                        self.decision_analysis_open_brackets = 0
-
-                    else:
-                        # count amount of open/closed brackets to track, when we can start checking if the block is executed
-                        self.decision_analysis_open_brackets += prep_decision_string(
-                            code
-                        ).count("(")
-                        self.decision_analysis_open_brackets -= prep_decision_string(
-                            code
-                        ).count(")")
-
-                # if no decision analysis is active, check the active line of code for a branch_statement or a loop
-                if not self.decision_analysis_active and (
-                    is_a_branch_statement(code) or is_a_loop(code)
-                ):
-                    # check if a branch exists (prevent misdetection caused by inaccurante parsing)
-                    if len(line_coverage.branches.items()) > 0:
-                        if is_a_loop(code) or is_a_oneline_branch(code):
-                            if len(line_coverage.branches.items()) == 2:
-                                # if it's a compact decision, we can only use the fallback to analyze
-                                # simple decisions via branch calls
-                                line_coverage.decision = DecisionCoverageConditional(
-                                    line_coverage.branch(0).count,
-                                    line_coverage.branch(1).count,
-                                )
-                            else:
-                                # it's a compplex decision with more than 2 branches. No accurate detection possible
-                                # Set the decision to uncheckable
-                                line_coverage.decision = DecisionCoverageUncheckable()
-                                logger.debug(f"Uncheckable decision at line {lineno}")
-                        else:
-                            # normal (non-compact) branch, analyze execution of following lines
-                            self.decision_analysis_active = True
-                            self.last_decision_line = lineno
-                            self.last_decision_line_exec_count = line_coverage.count
-                            self.last_decision_type = get_branch_type(code)
-                            # count brackets to make sure we're outside of the decision expression
-                            self.decision_analysis_open_brackets += (
-                                "("
-                                + prep_decision_string(code)
-                                .split(" if(")[-1]
-                                .split(" if (")[-1]
-                            ).count("(")
-                            self.decision_analysis_open_brackets -= (
-                                "("
-                                + prep_decision_string(code)
-                                .split(" if(")[-1]
-                                .split(" if (")[-1]
-                            ).count(")")
-
-                    # check if it's a case statement (measured at every line of a case, so a branch definition isn't given)
-                    elif get_branch_type(code) == "switch":
-                        if "; break;" in code.replace(" ", "").replace(";", "; "):
-                            # just use execution counts of case lines
-                            line_coverage.decision = DecisionCoverageSwitch(
-                                line_coverage.count
-                            )
-                        else:
-                            # use the execution counts of the following line (compatibility with GCC 5)
-                            line_coverage.decision = DecisionCoverageSwitch(
-                                self.coverage.line(lineno + 1).count
-                            )
+            self.parse_one_line(lineno, code)
 
         logger.debug("Decision Analysis finished!")
+
+    def parse_one_line(self, lineno: int, code: str) -> None:
+        line_coverage = self.coverage.line(lineno)
+
+        if line_coverage.noncode:
+            return
+
+        # check, if a analysis for a classic if-/else if-branch is active
+        if self.decision_analysis_active:
+            self.continue_multiline_decision_analysis(lineno, code)
+
+        # if no decision analysis is active, check the active line of code for a branch_statement or a loop
+        if self.decision_analysis_active:
+            return
+        if not (_is_a_branch_statement(code) or _is_a_loop(code)):
+            return
+
+        # check if a branch exists (prevent misdetection caused by inaccurante parsing)
+        if len(line_coverage.branches.items()) > 0:
+            if _is_a_loop(code) or _is_a_oneline_branch(code):
+                if len(line_coverage.branches.items()) == 2:
+                    # if it's a compact decision, we can only use the fallback to analyze
+                    # simple decisions via branch calls
+                    line_coverage.decision = DecisionCoverageConditional(
+                        line_coverage.branch(0).count,
+                        line_coverage.branch(1).count,
+                    )
+                else:
+                    # it's a compplex decision with more than 2 branches. No accurate detection possible
+                    # Set the decision to uncheckable
+                    line_coverage.decision = DecisionCoverageUncheckable()
+                    logger.debug(f"Uncheckable decision at line {lineno}")
+            else:
+                self.start_multiline_decision_analysis(lineno, code)
+                return
+
+        # check if it's a case statement (measured at every line of a case, so a branch definition isn't given)
+        elif _is_a_switch(code):
+            if "; break;" in code.replace(" ", "").replace(";", "; "):
+                # just use execution counts of case lines
+                line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
+            else:
+                # use the execution counts of the following line (compatibility with GCC 5)
+                line_coverage.decision = DecisionCoverageSwitch(
+                    self.coverage.line(lineno + 1).count
+                )
+
+    def start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
+        # normal (non-compact) branch, analyze execution of following lines
+        self.decision_analysis_active = True
+        self.last_decision_line = lineno
+
+        # count brackets to make sure we're outside of the decision expression
+        prepped_code = (
+            "(" + _prep_decision_string(code).split(" if(")[-1].split(" if (")[-1]
+        )
+        self.decision_analysis_open_brackets += prepped_code.count("(")
+        self.decision_analysis_open_brackets -= prepped_code.count(")")
+
+    def continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
+        exec_count = self.coverage.line(lineno).count
+        last_decision_line_cov = self.coverage.line(self.last_decision_line)
+
+        # check, if the branch statement was finished in the last line
+        if self.decision_analysis_open_brackets == 0:
+            # set execution counts for the decision. true is the exec_count.
+            # false is the delta between executed blocks and executions of the decision statement.
+            last_decision_line_cov.decision = DecisionCoverageConditional(
+                exec_count,
+                last_decision_line_cov.count - exec_count,
+            )
+
+            # disable the current decision analysis
+            self.decision_analysis_active = False
+            self.decision_analysis_open_brackets = 0
+            return
+
+        # count amount of open/closed brackets to track, when we can start checking if the block is executed
+        prepped_code = _prep_decision_string(code)
+        self.decision_analysis_open_brackets += prepped_code.count("(")
+        self.decision_analysis_open_brackets -= prepped_code.count(")")

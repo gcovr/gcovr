@@ -383,7 +383,7 @@ def parse_coverage(
         _add_coverage_for_function(coverage, state.lineno + 1, function, context)
 
     if flags & ParserFlags.PARSE_DECISIONS:
-        decision_parser = DecisionParser(filename, coverage, src_lines)
+        decision_parser = DecisionParser(coverage, src_lines)
         decision_parser.parse_all_lines()
 
     _report_lines_with_errors(lines_with_errors, context)
