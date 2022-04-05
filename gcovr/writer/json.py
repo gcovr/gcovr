@@ -21,7 +21,8 @@ import json
 import logging
 import os
 import functools
-from typing import Any, Dict
+import re
+from typing import Any, Dict, Optional
 
 from ..gcov import apply_filter_include_exclude
 from ..utils import (
@@ -42,10 +43,11 @@ from ..coverage import (
     SummarizedStats,
 )
 from ..merging import (
-    get_or_create_line_coverage,
     insert_branch_coverage,
+    insert_decision_coverage,
     insert_file_coverage,
     insert_function_coverage,
+    insert_line_coverage,
 )
 
 logger = logging.getLogger("gcovr")
@@ -74,35 +76,22 @@ def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
         write_json(gcovr_json_dict, fh)
 
 
-#
-# Produce gcovr JSON report
-#
 def print_json_report(covdata: CovData, output_file, options):
     r"""produce an JSON report in the format partially
     compatible with gcov JSON output"""
 
-    gcovr_json_root = {}
-    gcovr_json_root["gcovr/format_version"] = JSON_FORMAT_VERSION
-    gcovr_json_root["files"] = []
-
-    for no in sorted(covdata):
-        gcovr_json_file = {}
-        gcovr_json_file["file"] = presentable_filename(
-            covdata[no].filename, root_filter=options.root_filter
-        )
-        gcovr_json_file["lines"] = _json_from_lines(covdata[no].lines)
-        gcovr_json_file["functions"] = _json_from_functions(covdata[no].functions)
-        gcovr_json_root["files"].append(gcovr_json_file)
+    gcovr_json_root = {
+        "gcovr/format_version": JSON_FORMAT_VERSION,
+        "files": _json_from_files(covdata, options.root_filter),
+    }
 
     _write_json_result(
         gcovr_json_root, output_file, "coverage.json", options.json_pretty
     )
 
 
-#
-# Produce gcovr JSON summary report
-#
 def print_json_summary_report(covdata, output_file, options):
+    """Produce gcovr JSON summary report"""
 
     json_dict = {}
 
@@ -198,126 +187,137 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
                 continue
 
             file_coverage = FileCoverage(file_path)
-            _functions_from_json(file_coverage, gcovr_file["functions"])
-            _lines_from_json(file_coverage, gcovr_file["lines"])
+            for json_function in gcovr_file["functions"]:
+                insert_function_coverage(
+                    file_coverage, _function_from_json(json_function)
+                )
+            for json_line in gcovr_file["lines"]:
+                insert_line_coverage(file_coverage, _line_from_json(json_line))
 
             insert_file_coverage(covdata, file_coverage)
 
     return covdata
 
 
-def _json_from_lines(lines):
-    json_lines = [_json_from_line(lines[no]) for no in sorted(lines)]
-    return json_lines
+def _json_from_files(files: CovData, root_filter: re.Pattern) -> list:
+    return [_json_from_file(files[key], root_filter) for key in sorted(files)]
 
 
-def _json_from_line(line):
-    json_line = {}
-    json_line["branches"] = _json_from_branches(line.branches)
+def _json_from_file(file: FileCoverage, root_filter: re.Pattern) -> dict:
+    return {
+        "file": presentable_filename(file.filename, root_filter),
+        "lines": _json_from_lines(file.lines),
+        "functions": _json_from_functions(file.functions),
+    }
+
+
+def _json_from_lines(lines: Dict[int, LineCoverage]) -> list:
+    return [_json_from_line(lines[no]) for no in sorted(lines)]
+
+
+def _json_from_line(line: LineCoverage) -> dict:
+    json_line = {
+        "line_number": line.lineno,
+        "count": line.count,
+        "branches": _json_from_branches(line.branches),
+        "gcovr/noncode": line.noncode,
+        "gcovr/excluded": line.excluded,
+    }
     if line.decision is not None:
         json_line["gcovr/decision"] = _json_from_decision(line.decision)
-    json_line["count"] = line.count
-    json_line["line_number"] = line.lineno
-    json_line["gcovr/noncode"] = line.noncode
-    json_line["gcovr/excluded"] = line.excluded
     return json_line
 
 
-def _json_from_branches(branches):
-    json_branches = [_json_from_branch(branches[no]) for no in sorted(branches)]
-    return json_branches
+def _json_from_branches(branches: Dict[int, BranchCoverage]) -> list:
+    return [_json_from_branch(branches[no]) for no in sorted(branches)]
 
 
-def _json_from_branch(branch):
-    json_branch = {}
-    json_branch["count"] = branch.count
-    json_branch["fallthrough"] = branch.fallthrough
-    json_branch["throw"] = branch.throw
-    return json_branch
+def _json_from_branch(branch: BranchCoverage) -> dict:
+    return {
+        "count": branch.count,
+        "fallthrough": branch.fallthrough,
+        "throw": branch.throw,
+    }
 
 
 def _json_from_decision(decision: DecisionCoverage) -> dict:
-    json_decision = {}
     if isinstance(decision, DecisionCoverageUncheckable):
-        json_decision["type"] = "uncheckable"
-    elif isinstance(decision, DecisionCoverageConditional):
-        json_decision["type"] = "conditional"
-        json_decision["count_true"] = decision.count_true
-        json_decision["count_false"] = decision.count_false
-    elif isinstance(decision, DecisionCoverageSwitch):
-        json_decision["type"] = "switch"
-        json_decision["count"] = decision.count
-    else:
-        raise RuntimeError("Unknown decision type: {decision!r}")
+        return {"type": "uncheckable"}
 
-    return json_decision
+    if isinstance(decision, DecisionCoverageConditional):
+        return {
+            "type": "conditional",
+            "count_true": decision.count_true,
+            "count_false": decision.count_false,
+        }
 
+    if isinstance(decision, DecisionCoverageSwitch):
+        return {
+            "type": "switch",
+            "count": decision.count,
+        }
 
-def _json_from_functions(functions):
-    json_functions = [
-        _json_from_function(functions[name]) for name in sorted(functions)
-    ]
-    return json_functions
+    raise RuntimeError("Unknown decision type: {decision!r}")
 
 
-def _json_from_function(function):
-    json_function = {}
-    if function:
-        json_function["lineno"] = function.lineno
-        json_function["name"] = function.name
-        json_function["execution_count"] = function.count
-    return json_function
+def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
+    return [_json_from_function(functions[name]) for name in sorted(functions)]
 
 
-def _functions_from_json(file: FileCoverage, json_functions):
-    for json_function in json_functions:
-        function_cov = insert_function_coverage(
-            file, FunctionCoverage(json_function["name"])
-        )
-        _function_from_json(function_cov, json_function)
+def _json_from_function(function: FunctionCoverage) -> dict:
+    return {
+        "name": function.name,
+        "lineno": function.lineno,
+        "execution_count": function.count,
+    }
 
 
-def _function_from_json(function, json_function):
-    function.count = json_function["execution_count"]
-    function.lineno = json_function["lineno"]
+def _function_from_json(json_function: dict) -> FunctionCoverage:
+    return FunctionCoverage(
+        name=json_function["name"],
+        lineno=json_function["lineno"],
+        call_count=json_function["execution_count"],
+    )
 
 
-def _lines_from_json(file: FileCoverage, json_lines):
-    for json_line in json_lines:
-        line_cov = get_or_create_line_coverage(file, json_line["line_number"])
-        _line_from_json(line_cov, json_line)
+def _line_from_json(json_line: dict) -> LineCoverage:
+    line = LineCoverage(
+        json_line["line_number"],
+        count=json_line["count"],
+        noncode=json_line["gcovr/noncode"],
+        excluded=json_line["gcovr/excluded"],
+    )
+
+    for branchno, json_branch in enumerate(json_line["branches"]):
+        insert_branch_coverage(line, branchno, _branch_from_json(json_branch))
+
+    insert_decision_coverage(line, _decision_from_json(json_line.get("gcovr/decision")))
+
+    return line
 
 
-def _line_from_json(line, json_line):
-    line.noncode = json_line["gcovr/noncode"]
-    line.excluded = json_line["gcovr/excluded"]
-    line.count = json_line["count"]
-    _branches_from_json(line, json_line["branches"])
-    if "gcovr/decision" in json_line:
-        _decision_from_json(line, json_line["gcovr/decision"])
+def _branch_from_json(json_branch: dict) -> BranchCoverage:
+    return BranchCoverage(
+        count=json_branch["count"],
+        fallthrough=json_branch["fallthrough"],
+        throw=json_branch["throw"],
+    )
 
 
-def _branches_from_json(line: LineCoverage, json_branches):
-    for no, json_branch in enumerate(json_branches, 0):
-        branch_cov = insert_branch_coverage(line, no, BranchCoverage(0))
-        _branch_from_json(branch_cov, json_branch)
+def _decision_from_json(json_decision: Optional[dict]) -> Optional[DecisionCoverage]:
+    if json_decision is None:
+        return None
 
+    decision_type = json_decision["type"]
 
-def _branch_from_json(branch, json_branch):
-    branch.fallthrough = json_branch["fallthrough"]
-    branch.throw = json_branch["throw"]
-    branch.count = json_branch["count"]
+    if decision_type == "uncheckable":
+        return DecisionCoverageUncheckable()
 
-
-def _decision_from_json(line, json_decision):
-    line.decision = None
-    if json_decision["type"] == "uncheckable":
-        line.decision = DecisionCoverageUncheckable()
-    elif json_decision["type"] == "conditional":
-        line.decision = DecisionCoverageConditional(
+    if decision_type == "conditional":
+        return DecisionCoverageConditional(
             json_decision["count_true"], json_decision["count_false"]
         )
-    elif json_decision["type"] == "switch":
-        line.decision = DecisionCoverageSwitch(json_decision["count"])
-    else:
-        RuntimeError("Unknown decision type")
+    if decision_type == "switch":
+        return DecisionCoverageSwitch(json_decision["count"])
+
+    raise RuntimeError(f"Unknown decision type: {decision_type!r}")
