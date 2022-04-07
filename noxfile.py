@@ -231,7 +231,7 @@ def docker_container_os(session: nox.Session) -> str:
 
 def docker_container_id(session: nox.Session, version: str) -> str:
     """Get the docker container ID."""
-    return f"gcovr-qa-{docker_container_os(session)}-{version}-uid_{os.geteuid()}"
+    return f"gcovr-qa-{docker_container_os(session).replace(':', '_')}-{version}-uid_{os.geteuid()}"
 
 
 @nox.session(python=False)
