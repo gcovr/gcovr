@@ -8,8 +8,6 @@ Next Release
 
 Known bugs:
 
-- Cobertura XML output: package-level function coverage statistics are incorrect.
-  (:issue:`600`)
 - Aggregated branch coverage does not properly respect excluded/noncode lines.
   (:issue:`600`)
 - Decision coverage analysis can resurrect excluded coverage. (:issue:`600`)
@@ -29,6 +27,7 @@ Bug fixes and small improvements:
 - Properly close <a> element in detailed HTML report. (:issue:`602`)
 - Use `≥` sign instead of `>=` in HTML legend. (:issue:`603`)
 - Using :option:`--add-tracefile` will now correctly merge branch coverage. (:issue:`600`)
+- Fix package-level function coverage statistics. (:issue:`605`)
 
 Documentation:
 

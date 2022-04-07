@@ -104,7 +104,7 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         package.classes_xml[className] = c
         package.line += stats.line
         package.branch += class_branch
-        package.function = stats.function  # FIXME this must use "+=" operator
+        package.function += stats.function
 
     for packageName in sorted(packages):
         packageData = packages[packageName]
