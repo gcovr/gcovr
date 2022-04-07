@@ -224,14 +224,14 @@ def upload_wheel(session: nox.Session) -> None:
 def docker_container_os(session: nox.Session) -> str:
     if session.env["CC"] in ["gcc-5", "gcc-6"]:
         return "ubuntu:18.04"
-    elif session.env["CC"] in ["gcc-9", "clang-10"]:
+    elif session.env["CC"] in ["gcc-8", "gcc-9", "clang-10"]:
         return "ubuntu:20.04"
     return "ubuntu:22.04"
 
 
 def docker_container_id(session: nox.Session, version: str) -> str:
     """Get the docker container ID."""
-    return f"gcovr-qa-{docker_container_os(session)}-{version}-uid_{os.geteuid()}"
+    return f"gcovr-qa-{docker_container_os(session).replace(':', '_')}-{version}-uid_{os.geteuid()}"
 
 
 @nox.session(python=False)
