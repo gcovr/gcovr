@@ -224,7 +224,7 @@ def upload_wheel(session: nox.Session) -> None:
 def docker_container_os(session: nox.Session) -> str:
     if session.env["CC"] in ["gcc-5", "gcc-6"]:
         return "ubuntu:18.04"
-    elif session.env["CC"] in ["gcc-9", "clang-10"]:
+    elif session.env["CC"] in ["gcc-8", "gcc-9", "clang-10"]:
         return "ubuntu:20.04"
     return "ubuntu:22.04"
 
