@@ -11,13 +11,13 @@ coverage.json:
 	./testcase
 	# use a relative filter here
 	# if testcase.exe exists (windows) use wrong case to check caseinsensitive filter
-	$(GCOVR) -e '$(if $(wildcard ./testcase.exe),File1.cpp,file1.cpp)'  --json $@
+	$(GCOVR) -e '$(if $(wildcard ./testcase.exe),File1.cpp,file1.cpp)'  --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
 
 xml: coverage.json
-	$(GCOVR) -a $< -x -o coverage.xml
+	$(GCOVR) -a $< --cobertura-pretty --cobertura coverage.xml
 
 html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
@@ -26,7 +26,7 @@ sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
 coveralls: coverage.json
-	$(GCOVR) -a $< --coveralls coveralls.json
+	$(GCOVR) -a $< --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f testcase

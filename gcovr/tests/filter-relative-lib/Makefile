@@ -19,13 +19,13 @@ endif
 
 coverage.json:
 	cd project; ./testcase
-	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) --json $(abspath $@)
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) --json-pretty --json $(abspath $@)
 
 txt: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json -o ../coverage.txt
 
 xml: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json -x -o ../coverage.xml
+	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --cobertura-pretty --cobertura ../coverage.xml
 
 html: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --html-details -o ../coverage.html
@@ -34,7 +34,7 @@ sonarqube: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --sonarqube ../sonarqube.xml
 
 coveralls: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --coveralls ../coveralls.json
+	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --coveralls-pretty --coveralls ../coveralls.json
 
 links:
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)

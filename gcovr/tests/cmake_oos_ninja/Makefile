@@ -10,19 +10,19 @@ run: txt xml html sonarqube coveralls
 
 coverage.json:
 	cd build/build && ./gcovrtest
-	$(GCOVR) --json coverage.json --object-directory=build/build
+	$(GCOVR) --json-pretty --json coverage.json --object-directory=build/build
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
 
 xml: coverage.json
-	$(GCOVR) -a $< -x -o coverage.xml
+	$(GCOVR) -a $< --cobertura-pretty --cobertura coverage.xml
 
 html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
 
 coveralls: coverage.json
-	$(GCOVR) -a $<  --coveralls coveralls.json
+	$(GCOVR) -a $<  --coveralls-pretty --coveralls coveralls.json
 
 sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube -o sonarqube.xml

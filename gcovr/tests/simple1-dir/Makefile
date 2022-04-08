@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-GCOVR := $(GCOVR) --txt --xml --sonarqube --json --json-summary-pretty --coveralls --csv -o .\\output/
+GCOVR := $(GCOVR) --txt --cobertura --sonarqube --json --json-summary --coveralls --csv -o .\\output/
 
 
 run: txt xml html sonarqube json json_summary coveralls csv
@@ -18,7 +18,7 @@ xml:
 
 html:
 	./testcase
-	$(GCOVR) --html 
+	$(GCOVR) --html
 	$(GCOVR) -d --html-details
 	mv -f ./output/*.html ./output/*.css ./
 
@@ -31,7 +31,7 @@ json:
 	./testcase
 	$(GCOVR) -d
 	cp -f ./output/coverage.json ./coverage.json
-	
+
 json_summary:
 	./testcase
 	$(GCOVR) -d
@@ -50,5 +50,5 @@ csv:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.* coverage_details*.* sonarqube.xml summary_coverage.json coveralls.json
+	rm -f coverage.* coverage_details*.* cobertura.xml sonarqube.xml summary_coverage.json coveralls.json
 	rm -rf output

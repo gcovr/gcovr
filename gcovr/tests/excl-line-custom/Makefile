@@ -8,13 +8,13 @@ run: txt xml html sonarqube coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) -d $(MARKER_OPT) --json $@
+	$(GCOVR) -d $(MARKER_OPT) --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -d $(MARKER_OPT) -a $< -o coverage.txt
 
 xml: coverage.json
-	$(GCOVR) -d $(MARKER_OPT) -a $< -x -o coverage.xml
+	$(GCOVR) -d $(MARKER_OPT) -a $< --cobertura-pretty --cobertura coverage.xml
 
 html: coverage.json
 	$(GCOVR) -d $(MARKER_OPT) -a $< --html-details -o coverage.html
@@ -23,7 +23,7 @@ sonarqube: coverage.json
 	$(GCOVR) -d $(MARKER_OPT) -a $< --sonarqube sonarqube.xml
 
 coveralls: coverage.json
-	$(GCOVR) -d $(MARKER_OPT) -a $< --coveralls coveralls.json
+	$(GCOVR) -d $(MARKER_OPT) -a $< --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f testcase

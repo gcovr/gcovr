@@ -7,13 +7,13 @@ run: txt xml html sonarqube coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --json $@
+	$(GCOVR) --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
 
 xml: coverage.json
-	$(GCOVR) -a $< -x -o coverage.xml
+	$(GCOVR) -a $< --cobertura-pretty --cobertura coverage.xml
 
 html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
@@ -22,7 +22,7 @@ sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
 coveralls: coverage.json
-	$(GCOVR) -a $< --coveralls coveralls.json
+	$(GCOVR) -a $< --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f testcase

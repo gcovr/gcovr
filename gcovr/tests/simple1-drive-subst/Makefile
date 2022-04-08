@@ -29,7 +29,7 @@ txt: check-env
 
 xml: check-env
 	$(call wrapDrive, ./testcase)
-	$(call wrapDrive, $(GCOVR) -d -x -o coverage.xml)
+	$(call wrapDrive, $(GCOVR) -d --cobertura-pretty --cobertura coverage.xml)
 
 html: check-env
 	$(call wrapDrive, ./testcase)
@@ -46,11 +46,11 @@ json_summary: check-env
 
 json: check-env
 	$(call wrapDrive, ./testcase)
-	$(call wrapDrive, $(GCOVR) --json coverage.json)
+	$(call wrapDrive, $(GCOVR) --json-pretty --json coverage.json)
 
 coveralls: check-env
 	$(call wrapDrive, ./testcase)
-	$(call wrapDrive, $(GCOVR) -d --coveralls coveralls.json)
+	$(call wrapDrive, $(GCOVR) -d --coveralls-pretty --coveralls coveralls.json)
 
 clean:
 	rm -f testcase

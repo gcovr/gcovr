@@ -9,13 +9,13 @@ run: txt xml html sonarqube coveralls
 
 coverage.json:
 	./subdir/B/testcase
-	$(GCOVR) -r subdir --json $@
+	$(GCOVR) -r subdir --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt
 
 xml: coverage.json
-	$(GCOVR) -r subdir -a $< -x -o coverage.xml
+	$(GCOVR) -r subdir -a $< --cobertura-pretty --cobertura coverage.xml
 
 html: coverage.json
 	$(GCOVR) -r subdir -a $< --html-details --html-theme blue -o coverage.html
@@ -24,7 +24,7 @@ sonarqube: coverage.json
 	$(GCOVR) -r subdir -a $< --sonarqube sonarqube.xml
 
 coveralls:coverage.json
-	$(GCOVR) -r subdir -a $< --coveralls coveralls.json
+	$(GCOVR) -r subdir -a $< --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f ./subdir/B/testcase subdir/lib.a

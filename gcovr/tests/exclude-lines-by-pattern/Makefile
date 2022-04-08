@@ -9,7 +9,7 @@ txt:
 
 xml:
 	./testcase
-	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' -x -o coverage.xml
+	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --cobertura-pretty --cobertura coverage.xml
 
 html:
 	./testcase
@@ -21,7 +21,7 @@ sonarqube:
 
 coveralls:
 	./testcase
-	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --coveralls coveralls.json
+	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f testcase

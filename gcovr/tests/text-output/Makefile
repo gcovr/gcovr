@@ -6,7 +6,7 @@ run: txt xml
 txt xml:
 	./testcase
 	# Create both, text and xml in one call
-	$(GCOVR) -d --txt coverage.txt --xml coverage.xml
+	$(GCOVR) -d --txt coverage.txt --cobertura-pretty --cobertura coverage.xml
 
 clean:
 	rm -f testcase

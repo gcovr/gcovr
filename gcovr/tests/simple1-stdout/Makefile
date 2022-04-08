@@ -18,7 +18,7 @@ html:
 
 json:
 	./testcase
-	$(GCOVR) --json > coverage.json
+	$(GCOVR) --json-pretty --json > coverage.json
 
 json_summary:
 	./testcase
@@ -26,7 +26,7 @@ json_summary:
 
 coveralls:
 	./testcase
-	$(GCOVR) -d --coveralls > coveralls.json
+	$(GCOVR) -d --coveralls-pretty --coveralls > coveralls.json
 
 clean:
 	rm -f testcase

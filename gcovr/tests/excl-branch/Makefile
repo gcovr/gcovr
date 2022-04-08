@@ -5,13 +5,13 @@ run: txt xml html sonarqube json_summary coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --exclude-unreachable-branches --json $@
+	$(GCOVR) --exclude-unreachable-branches --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -b -o coverage.txt
 
 xml: coverage.json
-	$(GCOVR) -a $< -b -x -o coverage.xml
+	$(GCOVR) -a $< -b --cobertura-pretty --cobertura coverage.xml
 
 html: coverage.json
 	$(GCOVR) -a $< -b --html-details -o coverage.html
@@ -20,7 +20,7 @@ sonarqube: coverage.json
 	$(GCOVR) -a $< -b --sonarqube sonarqube.xml
 
 coveralls: coverage.json
-	$(GCOVR) -a $< -b --coveralls coveralls.json
+	$(GCOVR) -a $< -b --coveralls-pretty --coveralls coveralls.json
 
 json_summary:
 	./testcase

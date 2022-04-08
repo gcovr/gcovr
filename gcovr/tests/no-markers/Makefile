@@ -12,7 +12,7 @@ txt:
 
 xml:
 	./testcase $(TESTCASE_ARGS)
-	$(GCOVR) -d $(MARKER_OPT) -x -o coverage.xml
+	$(GCOVR) -d $(MARKER_OPT) --cobertura-pretty --cobertura coverage.xml
 
 html:
 	./testcase $(TESTCASE_ARGS)
@@ -24,7 +24,7 @@ sonarqube:
 
 json:
 	./testcase $(TESTCASE_ARGS)
-	$(GCOVR) -d $(MARKER_OPT) --json-pretty -o coverage.json
+	$(GCOVR) -d $(MARKER_OPT) --json-pretty --json -o coverage.json
 
 clean:
 	rm -f testcase

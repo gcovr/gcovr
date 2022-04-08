@@ -14,7 +14,7 @@ GCOVR_TEST_OPTIONS = --sort-percentage
 
 coverage.json:
 	./testcase
-	$(GCOVR) --json $@
+	$(GCOVR) --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< -o coverage.txt

@@ -16,7 +16,7 @@ coverage.json:
 	./subdir/B/testcase
 	make -C subdir/A coverage
 	$(GCOV) --branch-counts --branch-probabilities --preserve-paths subdir/B/main.o
-	$(GCOVR) -r subdir -g -k -o $@ --json -- .
+	$(GCOVR) -r subdir -g -k -o $@ --json-pretty --json -- .
 
 txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt .
@@ -31,7 +31,7 @@ sonarqube: coverage.json
 	$(GCOVR) -r subdir -a $< --sonarqube sonarqube.xml .
 
 coveralls:coverage.json
-	$(GCOVR) -r subdir -a $< --coveralls coveralls.json .
+	$(GCOVR) -r subdir -a $< --coveralls-pretty --coveralls coveralls.json .
 
 clean:
 	rm -f ./subdir/B/testcase subdir/lib.a
