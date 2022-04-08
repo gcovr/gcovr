@@ -27,7 +27,7 @@ Bug fixes and small improvements:
 - Properly close <a> element in detailed HTML report. (:issue:`602`)
 - Use `≥` sign instead of `>=` in HTML legend. (:issue:`603`)
 - Using :option:`--add-tracefile` will now correctly merge branch coverage. (:issue:`600`)
-- Fix package-level function coverage statistics. (:issue:`605`)
+- Fix package-level function coverage statistics in Cobertura XML reports. (:issue:`605`)
 
 Documentation:
 
