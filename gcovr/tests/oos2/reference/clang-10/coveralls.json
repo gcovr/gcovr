@@ -1,1 +1,44 @@
-{"run_at": "2021-11-09 19:45:19 UTC", "service_job_id": "id", "service_name": "gcovr-test-suite", "service_number": "number", "service_pull_request": "pr", "source_files": [{"coverage": [null, 1, null, 1, null], "name": "file1.cpp", "source_digest": "c0c40a304aa484837f88262f6239aa83"}, {"coverage": [null, null, null, null, 1, 1, 0, null, 1, null, 1, null, null, 1, 1, null, 1, null], "name": "main.cpp", "source_digest": "aa3e0bff9ee1c3840efb1be8065bab01"}]}
+{
+    "run_at": "2022-04-08 21:31:57 UTC",
+    "service_job_id": "id",
+    "service_name": "gcovr-test-suite",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "coverage": [
+                null,
+                1,
+                null,
+                1,
+                null
+            ],
+            "name": "file1.cpp",
+            "source_digest": "c0c40a304aa484837f88262f6239aa83"
+        },
+        {
+            "coverage": [
+                null,
+                null,
+                null,
+                null,
+                1,
+                1,
+                0,
+                null,
+                1,
+                null,
+                1,
+                null,
+                null,
+                1,
+                1,
+                null,
+                1,
+                null
+            ],
+            "name": "main.cpp",
+            "source_digest": "aa3e0bff9ee1c3840efb1be8065bab01"
+        }
+    ]
+}

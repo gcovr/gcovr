@@ -1,3 +1,36 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.8888888888888888" function-rate="1.0" branch-rate="0.5" lines-covered="8" lines-valid="9" functions-covered="3" functions-valid="3" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1626723373" version="gcovr 5.0"><sources><source>.</source></sources><packages><package name="src" line-rate="0.8888888888888888" function-rate="1.0" branch-rate="0.5" complexity="0.0"><classes><class name="file1_cpp" filename="src/file1.cpp" line-rate="1.0" branch-rate="0.0" complexity="0.0"><methods/><lines><line number="2" hits="1" branch="false"/><line number="4" hits="1" branch="false"/></lines></class><class name="main_cpp" filename="src/main.cpp" line-rate="0.8571428571428571" branch-rate="0.5" complexity="0.0"><methods/><lines><line number="5" hits="1" branch="false"/><line number="6" hits="1" branch="true" condition-coverage="50% (1/2)"><conditions><condition number="0" type="jump" coverage="50%"/></conditions></line><line number="7" hits="0" branch="false"/><line number="9" hits="1" branch="false"/><line number="14" hits="1" branch="false"/><line number="15" hits="1" branch="false"/><line number="17" hits="1" branch="false"/></lines></class></classes></package></packages></coverage>
+<coverage line-rate="0.8888888888888888" function-rate="1.0" branch-rate="0.5" lines-covered="8" lines-valid="9" functions-covered="3" functions-valid="3" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1649529978" version="gcovr 5.1">
+  <sources>
+    <source>.</source>
+  </sources>
+  <packages>
+    <package name="src" line-rate="0.8888888888888888" function-rate="1.0" branch-rate="0.5" complexity="0.0">
+      <classes>
+        <class name="file1_cpp" filename="src/file1.cpp" line-rate="1.0" branch-rate="0.0" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="2" hits="1" branch="false"/>
+            <line number="4" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="main_cpp" filename="src/main.cpp" line-rate="0.8571428571428571" branch-rate="0.5" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="5" hits="1" branch="false"/>
+            <line number="6" hits="1" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="7" hits="0" branch="false"/>
+            <line number="9" hits="1" branch="false"/>
+            <line number="14" hits="1" branch="false"/>
+            <line number="15" hits="1" branch="false"/>
+            <line number="17" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

@@ -1,1 +1,39 @@
-{"run_at": "2021-06-14 19:55:45 UTC", "service_job_id": "id", "service_name": "gcovr-test-suite", "service_number": "number", "service_pull_request": "pr", "source_files": [{"coverage": [null, null, 1, null, 1, 1, null, 0, 1], "name": "lib/lib.cpp", "source_digest": "0dfb42f49de5dc2c69bd0b6fe14cf6f9"}, {"coverage": [null, null, 1, null, 1, 0, null, 1, 1], "name": "testApp/tmp.cpp", "source_digest": "5b95d34208d47db7f81051ea4503dfb4"}]}
+{
+    "run_at": "2022-04-08 21:32:03 UTC",
+    "service_job_id": "id",
+    "service_name": "gcovr-test-suite",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "coverage": [
+                null,
+                null,
+                1,
+                null,
+                1,
+                1,
+                null,
+                0,
+                1
+            ],
+            "name": "lib/lib.cpp",
+            "source_digest": "0dfb42f49de5dc2c69bd0b6fe14cf6f9"
+        },
+        {
+            "coverage": [
+                null,
+                null,
+                1,
+                null,
+                1,
+                0,
+                null,
+                1,
+                1
+            ],
+            "name": "testApp/tmp.cpp",
+            "source_digest": "5b95d34208d47db7f81051ea4503dfb4"
+        }
+    ]
+}
