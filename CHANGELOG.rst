@@ -37,6 +37,7 @@ Internal changes:
 - Change session black with no arguments to format all files. (:issue:`595`)
 - Add gcc-10 and gcc-11 to the test suite. (:issue:`597`)
 - Improved internal coverage data model to simplify processing. (:issue:`600`)
+- Use pretty print for cobertura and coveralls in test suite. (:issue:`606`)
 
 5.1 (26 March 2022)
 -------------------
