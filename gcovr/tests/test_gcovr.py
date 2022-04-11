@@ -101,7 +101,7 @@ RE_COVERALLS_GIT = re.compile(
     r'"git": \{(?:"[^"]*": (?:"[^"]*"|\{[^\}]*\}|\[[^\]]*\])(?:, )?)+\}, '
 )
 RE_COVERALLS_GIT_PRETTY = re.compile(
-    r'\s+"git": \{[\n\s]+"branch": "branch",\n\s+"head": \{\n(?:\s+"[^"]+":.+\n)+\s+\},\n\s+"remotes": \[\n(?:[^\]]+\n)+\s+\]\n\s+\},'
+    r'"git": \{\s+"branch": "branch",\s+"head": \{(?:\s+"[^"]+":.+\n)+\s+\},\s+"remotes": \[[^\]]+\]\s+\},'
 )
 
 RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')
