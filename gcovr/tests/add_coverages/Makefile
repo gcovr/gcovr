@@ -16,9 +16,9 @@ run: txt xml html sonarqube json json_summary coveralls
 # so that "-o" is used.
 coverage_foo.json:
 	./testcase_foo
-	$(GCOVR) -d --json-pretty --json -o $@
+	$(GCOVR) -d --json-pretty -o $@
 
-# Just use --json-pretty --json and pass the output filename directly.
+# Just use --json-pretty and --json and pass the output filename directly.
 coverage_bar.json:
 	./testcase_bar
 	$(GCOVR) -d --json-pretty --json $@
