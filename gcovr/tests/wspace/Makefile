@@ -10,8 +10,8 @@ txt:
 # generate multiple output formats together
 xml html sonarqube coveralls:
 	cd 'src code'; ./testcase
-	$(GCOVR) -r 'src code' -d -x -o coverage.xml \
-		--html-details coverage.html --sonarqube sonarqube.xml --coveralls coveralls.json
+	$(GCOVR) -r 'src code' -d --cobertura-pretty --cobertura coverage.xml \
+		--html-details coverage.html --sonarqube sonarqube.xml --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f */testcase

@@ -31,7 +31,7 @@ txt:
 
 xml:
 	./testcase
-	$(GCOVR) -d -x -o coverage.xml
+	$(GCOVR) -d --cobertura-pretty --cobertura coverage.xml
 
 html:
 	./testcase
@@ -52,11 +52,11 @@ json_summary:
 
 json:
 	./testcase
-	$(GCOVR) --json coverage.json
+	$(GCOVR) --json-pretty --json coverage.json
 
 coveralls:
 	./testcase
-	$(GCOVR) -d --coveralls coveralls.json
+	$(GCOVR) -d --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f testcase

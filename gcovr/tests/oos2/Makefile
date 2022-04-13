@@ -12,13 +12,13 @@ GCOVR_TEST_OPTIONS = -r ../src .
 
 coverage.json:
 	build/testcase
-	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) --json $(abspath $@)
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) --json-pretty --json $(abspath $@)
 
 txt: coverage.json
 	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json -o ../coverage.txt
 
 xml: coverage.json
-	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json -x -o ../coverage.xml
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --cobertura-pretty --cobertura ../coverage.xml
 
 html: coverage.json
 	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --html-details -o ../coverage.html
@@ -27,7 +27,7 @@ sonarqube: coverage.json
 	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --sonarqube ../sonarqube.xml
 
 coveralls: coverage.json
-	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --coveralls ../coveralls.json
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --coveralls-pretty --coveralls ../coveralls.json
 
 clean:
 	rm -f build/*

@@ -11,23 +11,23 @@ all:
 
 run: txt xml html sonarqube json json_summary coveralls
 
-# Enable JSON output via the --json-pretty mode.
+# Enable JSON output via the --json-pretty --json mode.
 # However, this option cannot take a filename directly
 # so that "-o" is used.
 coverage_foo.json:
 	./testcase_foo
 	$(GCOVR) -d --json-pretty -o $@
 
-# Just use --json and pass the output filename directly.
+# Just use --json-pretty and --json and pass the output filename directly.
 coverage_bar.json:
 	./testcase_bar
-	$(GCOVR) -d --json $@
+	$(GCOVR) -d --json-pretty --json $@
 
 txt: coverage_foo.json coverage_bar.json
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json -o coverage.txt
 
 xml: coverage_foo.json coverage_bar.json
-	$(GCOVR) -a coverage_foo.json -a coverage_bar.json -x -o coverage.xml
+	$(GCOVR) -a coverage_foo.json -a coverage_bar.json --cobertura-pretty --cobertura coverage.xml
 
 html: coverage_foo.json coverage_bar.json
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json --html-details -o coverage.html
@@ -35,7 +35,7 @@ html: coverage_foo.json coverage_bar.json
 sonarqube: coverage_foo.json coverage_bar.json
 	$(GCOVR) -a coverage_foo.json -a coverage_bar.json --sonarqube sonarqube.xml
 
-# Use both --json and --json-pretty here
+# Use both --json-pretty --json here
 json: coverage_foo.json coverage_bar.json
 	$(GCOVR) -a 'coverage_*.json' --json-pretty --json coverage.json
 

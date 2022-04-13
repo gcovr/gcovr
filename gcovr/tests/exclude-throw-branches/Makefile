@@ -5,8 +5,8 @@ run: txt xml html sonarqube coveralls
 
 coverage-throw.json coverage-excl-throw.json:
 	./testcase
-	$(GCOVR) --json coverage-throw.json
-	$(GCOVR) --json coverage-excl-throw.json --exclude-throw-branches
+	$(GCOVR) --json-pretty --json coverage-throw.json
+	$(GCOVR) --json-pretty --json coverage-excl-throw.json --exclude-throw-branches
 
 txt: coverage-throw.json coverage-excl-throw.json
 	$(GCOVR) -a coverage-throw.json -o coverage-throw.txt
@@ -25,8 +25,8 @@ sonarqube: coverage-throw.json coverage-excl-throw.json
 	$(GCOVR) --sonarqube -a coverage-excl-throw.json -o sonarqube-excl-throw.xml
 
 coveralls: coverage-throw.json coverage-excl-throw.json
-	$(GCOVR) --coveralls -a coverage-throw.json -o coveralls-throw.json
-	$(GCOVR) --coveralls -a coverage-excl-throw.json -o coveralls-excl-throw.json
+	$(GCOVR) --coveralls-pretty --coveralls -a coverage-throw.json -o coveralls-throw.json
+	$(GCOVR) --coveralls-pretty --coveralls -a coverage-excl-throw.json -o coveralls-excl-throw.json
 
 clean:
 	rm -f testcase

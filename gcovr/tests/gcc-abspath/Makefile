@@ -6,7 +6,7 @@ run: json
 json:
 	cd subfolder&& ./testcase
 	mv -f --target-directory . subfolder/*.gc??
-	$(GCOVR) -d --json coverage.json
+	$(GCOVR) -d --json-pretty --json coverage.json
 
 clean:
 	cd subfolder&& make clean

@@ -1,1 +1,127 @@
-{"run_at": "2021-11-09 20:20:23 UTC", "service_job_id": "id", "service_name": "gcovr-test-suite", "service_number": "number", "service_pull_request": "pr", "source_files": [{"coverage": [1, null, 1, 0, null, 1, null, 1], "name": ".subdir/A/C/D/file6.cpp", "source_digest": "51c81752202f160b25ffc07fb9134018"}, {"coverage": [1, null, 1, 0, null, 1, null, 1], "name": ".subdir/A/C/file5.cpp", "source_digest": "994904d7cb6f33c4235bc1f132c029f9"}, {"coverage": [1, null, 1, 0, null, 1, null, 1], "name": ".subdir/A/file1.cpp", "source_digest": "cf6b72cbb3c9c004a97684f1495332fd"}, {"coverage": [1, null, 1, 1, 1, null, null, 0, null, 0, 0, null], "name": ".subdir/A/file2.cpp", "source_digest": "44683de2597fa27a9410e0f65f71fde0"}, {"coverage": [1, null, 1, 1, 1, null, null, 0, null, 0, 0, null], "name": ".subdir/A/file3.cpp", "source_digest": "faa7f08331f519d599f7b6a4906f288b"}, {"coverage": [1, null, 1, 1, null, 0, null, 1], "name": ".subdir/A/file4.cpp", "source_digest": "7451828cfb58f0fefc6e5fbf44d9a6f4"}, {"coverage": [null, null, null, null, null, null, null, null, null, null, 1, 1, 1, 1, 1, 1, 1, null, 1, null], "name": ".subdir/B/main.cpp", "source_digest": "2cc1701c4db988ac38d43f536aaed46e"}]}
+{
+    "run_at": "2022-04-08 21:31:00 UTC",
+    "service_job_id": "id",
+    "service_name": "gcovr-test-suite",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "coverage": [
+                1,
+                null,
+                1,
+                0,
+                null,
+                1,
+                null,
+                1
+            ],
+            "name": ".subdir/A/C/D/file6.cpp",
+            "source_digest": "51c81752202f160b25ffc07fb9134018"
+        },
+        {
+            "coverage": [
+                1,
+                null,
+                1,
+                0,
+                null,
+                1,
+                null,
+                1
+            ],
+            "name": ".subdir/A/C/file5.cpp",
+            "source_digest": "994904d7cb6f33c4235bc1f132c029f9"
+        },
+        {
+            "coverage": [
+                1,
+                null,
+                1,
+                0,
+                null,
+                1,
+                null,
+                1
+            ],
+            "name": ".subdir/A/file1.cpp",
+            "source_digest": "cf6b72cbb3c9c004a97684f1495332fd"
+        },
+        {
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                1,
+                null,
+                null,
+                0,
+                null,
+                0,
+                0,
+                null
+            ],
+            "name": ".subdir/A/file2.cpp",
+            "source_digest": "44683de2597fa27a9410e0f65f71fde0"
+        },
+        {
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                1,
+                null,
+                null,
+                0,
+                null,
+                0,
+                0,
+                null
+            ],
+            "name": ".subdir/A/file3.cpp",
+            "source_digest": "faa7f08331f519d599f7b6a4906f288b"
+        },
+        {
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                null,
+                0,
+                null,
+                1
+            ],
+            "name": ".subdir/A/file4.cpp",
+            "source_digest": "7451828cfb58f0fefc6e5fbf44d9a6f4"
+        },
+        {
+            "coverage": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                null,
+                1,
+                null
+            ],
+            "name": ".subdir/B/main.cpp",
+            "source_digest": "2cc1701c4db988ac38d43f536aaed46e"
+        }
+    ]
+}

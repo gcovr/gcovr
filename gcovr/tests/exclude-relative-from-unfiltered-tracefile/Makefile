@@ -11,13 +11,13 @@ run: txt xml html sonarqube
 
 coverage_unfiltered.json:
 	./testcase
-	$(GCOVR) --json $@
+	$(GCOVR) --json-pretty --json $@
 
 txt: coverage_unfiltered.json
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< -o coverage.txt
 
 xml: coverage_unfiltered.json
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< -x -o coverage.xml
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --cobertura-pretty --cobertura coverage.xml
 
 html: coverage_unfiltered.json
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --html-details -o coverage.html

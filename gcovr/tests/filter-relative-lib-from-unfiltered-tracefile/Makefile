@@ -15,13 +15,13 @@ GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
 
 coverage_unfiltered.json:
 	cd project; ./testcase
-	cd project; $(GCOVR) --config gcovr_empty.cfg --json $(abspath $@)
+	cd project; $(GCOVR) --config gcovr_empty.cfg --json-pretty --json $(abspath $@)
 
 txt: coverage_unfiltered.json
 	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< -o ../coverage.txt
 
 xml: coverage_unfiltered.json
-	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< -x -o ../coverage.xml
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --cobertura-pretty --cobertura ../coverage.xml
 
 html: coverage_unfiltered.json
 	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --html-details -o ../coverage.html

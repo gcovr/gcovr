@@ -94,11 +94,14 @@ RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
 RE_XML_ATTRS = re.compile(r'(timestamp)="[^"]*"')
 RE_XML_GCOVR_VERSION = re.compile(r'version="gcovr [^"]+"')
 
-RE_COVERALLSE_CLEAN_KEYS = re.compile(
+RE_COVERALLS_CLEAN_KEYS = re.compile(
     r'"(commit_sha|repo_token|run_at|version)": "[^"]*"'
 )
-RE_COVERALLSE_GIT = re.compile(
+RE_COVERALLS_GIT = re.compile(
     r'"git": \{(?:"[^"]*": (?:"[^"]*"|\{[^\}]*\}|\[[^\]]*\])(?:, )?)+\}, '
+)
+RE_COVERALLS_GIT_PRETTY = re.compile(
+    r'\s+"git": \{\s+"branch": "branch",\s+"head": \{(?:\s+"[^"]+":.+\n)+\s+\},\s+"remotes": \[[^\]]+\]\s+\},'
 )
 
 RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')
@@ -140,8 +143,9 @@ def scrub_html(contents):
 
 def scrub_coveralls(contents):
     contents += "\n"
-    contents = RE_COVERALLSE_CLEAN_KEYS.sub('"\\1": ""', contents)
-    contents = RE_COVERALLSE_GIT.sub("", contents)
+    contents = RE_COVERALLS_CLEAN_KEYS.sub('"\\1": ""', contents)
+    contents = RE_COVERALLS_GIT_PRETTY.sub("", contents)
+    contents = RE_COVERALLS_GIT.sub("", contents)
     return contents
 
 

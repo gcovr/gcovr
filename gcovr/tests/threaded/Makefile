@@ -18,13 +18,13 @@ run: txt xml html sonarqube coveralls
 # Activate verbose mode because of hanging pypy in GitHub actions
 coverage.json:
 	./subdir/testcase
-	$(GCOVR) -j 4 -r subdir --json $@
+	$(GCOVR) -j 4 -r subdir --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -r subdir -o coverage.txt
 
 xml: coverage.json
-	$(GCOVR) -a $< -r subdir -x -o coverage.xml
+	$(GCOVR) -a $< -r subdir --cobertura-pretty --cobertura coverage.xml
 
 html: coverage.json
 	$(GCOVR) -a $< -r subdir --html-details -o coverage.html
@@ -33,7 +33,7 @@ sonarqube: coverage.json
 	$(GCOVR) -a $< -r subdir --sonarqube sonarqube.xml
 
 coveralls:coverage.json
-	$(GCOVR) -a $< -r subdir --coveralls coveralls.json
+	$(GCOVR) -a $< -r subdir --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -f ./subdir/testcase
