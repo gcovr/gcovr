@@ -494,6 +494,12 @@ def _get_value_from_config_entry(
         except (ValueError, ArgumentTypeError) as err:
             raise cfg_entry.error(str(err))
 
+    elif option.config == "add-tracefile":  # Special case for patterns
+        assert (
+            cfg_entry.filename is not None
+        ), "conversion function must derive base directory from filename"
+        basedir = os.path.dirname(cfg_entry.filename)
+        value = os.path.join(basedir, cfg_entry.value)
     else:
         value = cfg_entry.value
 
