@@ -87,12 +87,11 @@ def test_help(capsys):
     assert c.exception.code == 0
 
 
-def test_empty_root(caplog):
-    c = log_capture(caplog, ["-r", ""])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith("empty --root option.")
-    assert c.exception.code == 1
+def test_empty_root(capsys):
+    c = capture(capsys, ["-r", ""])
+    assert c.out == ""
+    assert "argument -r/--root: Should not be set to an empty string." in c.err
+    assert c.exception.code != 0
 
 
 def test_empty_exclude(capsys):
@@ -109,12 +108,11 @@ def test_empty_exclude_directories(capsys):
     assert c.exception.code != 0
 
 
-def test_empty_objdir(caplog):
-    c = log_capture(caplog, ["--object-directory", ""])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith("empty --object-directory option.")
-    assert c.exception.code == 1
+def test_empty_objdir(capsys):
+    c = capture(capsys, ["--object-directory", ""])
+    assert c.out == ""
+    assert "argument --object-directory: Should not be set to an empty string." in c.err
+    assert c.exception.code != 0
 
 
 def test_invalid_objdir(caplog):

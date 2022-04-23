@@ -73,6 +73,9 @@ def relative_path(value: str, basedir: str = None) -> str:
     r"""
     Make a absolute path if value is a relative path.
     """
+    if not value:
+        raise ArgumentTypeError("Should not be set to an empty string.") from None
+
     if basedir is None:
         basedir = os.getcwd()
 
@@ -1225,7 +1228,7 @@ GCOVR_CONFIG_OPTIONS = [
             "the path from gcc to the gcda file (i.e. gcc's '-o' option), "
             "or the path from the gcda file to gcc's working directory."
         ),
-        type=relative_path
+        type=relative_path,
     ),
     GcovrConfigOption(
         "keep",
