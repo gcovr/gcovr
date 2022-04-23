@@ -69,6 +69,19 @@ def check_input_file(value: str, basedir: str = None) -> str:
     return os.path.abspath(value)
 
 
+def relative_path(value: str, basedir: str = None) -> str:
+    r"""
+    Make a absolute path if value is a relative path.
+    """
+    if basedir is None:
+        basedir = os.getcwd()
+
+    if not os.path.isabs(value):
+        value = os.path.join(basedir, value)
+    value = os.path.normpath(value)
+    return os.path.relpath(value, os.getcwd())
+
+
 def timestamp(value: str) -> datetime.datetime:
     from .timestamps import parse_timestamp  # lazy import
 
@@ -511,6 +524,9 @@ def _get_converter_function(
     if option_type is check_input_file:
         return lambda value: check_input_file(value, basedir)
 
+    if option_type is relative_path:
+        return lambda value: relative_path(value, basedir)
+
     if option_type is OutputOrDefault:
         return lambda value: OutputOrDefault(value, basedir)
 
@@ -626,6 +642,7 @@ GCOVR_CONFIG_OPTIONS = [
             "The --root is the default --filter."
         ),
         default=".",
+        type=relative_path,
     ),
     GcovrConfigOption(
         "add_tracefile",
@@ -654,6 +671,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Search these directories for coverage files. "
             "Defaults to --root and --object-directory."
         ),
+        type=relative_path,
     ),
     GcovrConfigOption(
         "config",
@@ -663,6 +681,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Load that configuration file. "
             "Defaults to gcovr.cfg in the --root directory."
         ),
+        type=relative_path,
     ),
     GcovrConfigOption(
         "respect_exclusion_markers",
@@ -1206,6 +1225,7 @@ GCOVR_CONFIG_OPTIONS = [
             "the path from gcc to the gcda file (i.e. gcc's '-o' option), "
             "or the path from the gcda file to gcc's working directory."
         ),
+        type=relative_path
     ),
     GcovrConfigOption(
         "keep",
