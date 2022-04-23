@@ -226,14 +226,6 @@ def main(args=None):
             sys.exit(1)
 
     options.starting_dir = os.path.abspath(os.getcwd())
-    if not options.root:
-        logger.error(
-            "empty --root option.\n"
-            "\tRoot specifies the path to the root "
-            "directory of your project.\n"
-            "\tThis option cannot be an empty string."
-        )
-        sys.exit(1)
     options.root_dir = os.path.abspath(options.root)
 
     #
