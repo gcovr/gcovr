@@ -120,7 +120,7 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         package.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
-    etree.SubElement(sources, "source").text = options.root.strip()
+    etree.SubElement(sources, "source").text = options.root.strip().replace("\\", "/")
 
     with open_binary_for_writing(output_file, "coverage.xml") as fh:
         fh.write(
