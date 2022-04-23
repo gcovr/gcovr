@@ -28,6 +28,7 @@ Bug fixes and small improvements:
 - Fix package-level function coverage statistics in Cobertura XML reports. (:issue:`605`)
 - Respect excluded/noncode lines for aggregated branchcoverage. (:issue:`611`)
 - Fix list options in configuration file (search-path). (:issue:`612`)
+- always treat relative paths in config files as relative to the directory of the file. (:issue:`615`)
 
 Documentation:
 
