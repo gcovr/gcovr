@@ -164,20 +164,6 @@
                     "branches": [],
                     "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 1
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 2
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
                     "gcovr/noncode": true,
                     "line_number": 3
                 },
@@ -1811,17 +1797,6 @@
                 {
                     "branches": [],
                     "count": 0,
-                    "gcovr/decision": {
-                        "count": 0,
-                        "type": "switch"
-                    },
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 189
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 190
@@ -1831,32 +1806,7 @@
                     "count": 0,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
-                    "line_number": 191
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/decision": {
-                        "count": 0,
-                        "type": "switch"
-                    },
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 192
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
                     "line_number": 193
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 194
                 },
                 {
                     "branches": [],
@@ -1926,38 +1876,9 @@
                 {
                     "branches": [],
                     "count": 0,
-                    "gcovr/decision": {
-                        "count": 0,
-                        "type": "switch"
-                    },
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 202
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 203
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 204
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/decision": {
-                        "count": 1,
-                        "type": "switch"
-                    },
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 205
                 },
                 {
                     "branches": [],
@@ -1971,32 +1892,7 @@
                     "count": 0,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
-                    "line_number": 207
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/decision": {
-                        "count": 0,
-                        "type": "switch"
-                    },
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 208
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
                     "line_number": 209
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 210
                 },
                 {
                     "branches": [],
@@ -2066,38 +1962,9 @@
                 {
                     "branches": [],
                     "count": 0,
-                    "gcovr/decision": {
-                        "count": 0,
-                        "type": "switch"
-                    },
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 218
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 219
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 220
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/decision": {
-                        "count": 0,
-                        "type": "switch"
-                    },
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 221
                 },
                 {
                     "branches": [],
@@ -2108,35 +1975,10 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 223
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/decision": {
-                        "count": 1,
-                        "type": "switch"
-                    },
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 224
-                },
-                {
-                    "branches": [],
                     "count": 1,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 225
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 226
                 },
                 {
                     "branches": [],
