@@ -8,8 +8,6 @@ Next Release
 
 Known bugs:
 
-- Decision coverage analysis can resurrect excluded coverage. (:issue:`600`)
-
 Breaking changes:
 
 New features and notable changes:
@@ -28,6 +26,7 @@ Bug fixes and small improvements:
 - Fix package-level function coverage statistics in Cobertura XML reports. (:issue:`605`)
 - Respect excluded/noncode lines for aggregated branchcoverage. (:issue:`611`)
 - Fix list options in configuration file (search-path). (:issue:`612`)
+- Fix adding none existing lines by decision analysis to data model. (:issue:`617`)
 
 Documentation:
 
