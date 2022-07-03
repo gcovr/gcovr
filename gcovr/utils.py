@@ -261,8 +261,8 @@ class DirectoryPrefixFilter(Filter):
         super().__init__(pattern)
 
     def match(self, path: str):
-        realpath = os.path.normpath(path)
-        return super().match(realpath)
+        path = realpath(path)
+        return super().match(path)
 
 
 def configure_logging() -> None:
