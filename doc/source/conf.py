@@ -191,4 +191,4 @@ todo_include_todos = True
 # -- Options for extlinks extension ------------------------------------------
 
 # see http://www.sphinx-doc.org/en/master/ext/extlinks.html
-extlinks = {"issue": ("https://github.com/gcovr/gcovr/issues/%s", "#")}
+extlinks = {"issue": ("https://github.com/gcovr/gcovr/issues/%s", "#%s")}
