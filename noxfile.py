@@ -298,13 +298,21 @@ def docker_qa_run_compiler_all(session: nox.Session) -> None:
 def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
     """Run the docker container for a specific GCC version."""
     set_environment(session, version, False)
-    if sys.version_info >= (3, 8):
-        session.env["NOX_POSARGS"] = shlex.join(session.posargs)
-    else:
-        # Code for join taken from Python 3.9
-        session.env["NOX_POSARGS"] = " ".join(
-            shlex.quote(arg) for arg in session.posargs
-        )
+
+    def shell_join(args):
+        if sys.version_info >= (3, 8):
+            return shlex.join(args)
+        else:
+            # Code for join taken from Python 3.9
+            return " ".join(shlex.quote(arg) for arg in args)
+
+    session.env["NOX_POSARGS"] = shell_join(session.posargs)
+    nox_options = []
+    if session._runner.global_config.no_install:
+        nox_options.append("--no-install")
+    if session._runner.global_config.reuse_existing_virtualenvs:
+        nox_options.append("--reuse-existing-virtualenvs")
+    session.env["NOX_OPTIONS"] = shell_join(nox_options)
     session.run(
         "docker",
         "run",
@@ -313,6 +321,8 @@ def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
         "CC",
         "-e",
         "NOX_POSARGS",
+        "-e",
+        "NOX_OPTIONS",
         "-v",
         f"{os.getcwd()}:/gcovr",
         docker_container_id(session, version),

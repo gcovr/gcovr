@@ -14,7 +14,7 @@ Breaking changes:
 
 New features and notable changes:
 
-- Log additional infop on gcov parsing errors. (:issue:`589`)
+- Log additional info on gcov parsing errors. (:issue:`589`)
 
 Bug fixes and small improvements:
 
@@ -38,6 +38,7 @@ Internal changes:
 - Add gcc-10 and gcc-11 to the test suite. (:issue:`597`)
 - Improved internal coverage data model to simplify processing. (:issue:`600`)
 - Use pretty print for cobertura and coveralls in test suite. (:issue:`606`)
+- Forward nox options `--reuse-existing-virtualenvs` and `--no-install` to call inside docker. (:issue:`616`)
 
 5.1 (26 March 2022)
 -------------------
