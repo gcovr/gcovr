@@ -209,7 +209,7 @@ class DecisionParser:
             # false is the delta between executed blocks and executions of the decision statement.
             last_decision_line_cov.decision = DecisionCoverageConditional(
                 exec_count,
-                last_decision_line_cov.count - exec_count,
+                max(last_decision_line_cov.count - exec_count, 0),
             )
 
             # disable the current decision analysis
