@@ -156,11 +156,12 @@ class DecisionParser:
         if len(line_coverage.branches.items()) > 0:
             if _is_a_loop(code) or _is_a_oneline_branch(code):
                 if len(line_coverage.branches.items()) == 2:
+                    keys = list(line_coverage.branches.keys())
                     # if it's a compact decision, we can only use the fallback to analyze
                     # simple decisions via branch calls
                     line_coverage.decision = DecisionCoverageConditional(
-                        line_coverage.branches[0].count,
-                        line_coverage.branches[1].count,
+                        line_coverage.branches[keys[0]].count,
+                        line_coverage.branches[keys[1]].count
                     )
                 else:
                     # it's a compplex decision with more than 2 branches. No accurate detection possible
