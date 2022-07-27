@@ -136,9 +136,8 @@ class DecisionParser:
         logger.debug("Decision Analysis finished!")
 
     def parse_one_line(self, lineno: int, code: str) -> None:
-        if lineno not in self.coverage.lines:
-            return
-        line_coverage = self.coverage.lines[lineno]
+        # FIXME this always creates a line, even if it doesn't exist
+        line_coverage = get_or_create_line_coverage(self.coverage, lineno)
 
         if line_coverage.noncode:
             return
