@@ -136,7 +136,7 @@ class DecisionParser:
         logger.debug("Decision Analysis finished!")
 
     def parse_one_line(self, lineno: int, code: str) -> None:
-        if (not lineno in self.coverage.lines):
+        if lineno not in self.coverage.lines:
             return
         line_coverage = self.coverage.lines[lineno]
 
@@ -162,7 +162,7 @@ class DecisionParser:
                     # simple decisions via branch calls
                     line_coverage.decision = DecisionCoverageConditional(
                         line_coverage.branches[keys[0]].count,
-                        line_coverage.branches[keys[1]].count
+                        line_coverage.branches[keys[1]].count,
                     )
                 else:
                     # it's a compplex decision with more than 2 branches. No accurate detection possible
