@@ -156,7 +156,7 @@ class DecisionParser:
         if len(line_coverage.branches.items()) > 0:
             if _is_a_loop(code) or _is_a_oneline_branch(code):
                 if len(line_coverage.branches.items()) == 2:
-                    keys = list(line_coverage.branches.keys())
+                    keys = sorted(line_coverage.branches)
                     # if it's a compact decision, we can only use the fallback to analyze
                     # simple decisions via branch calls
                     line_coverage.decision = DecisionCoverageConditional(
@@ -207,10 +207,17 @@ class DecisionParser:
         if self.decision_analysis_open_brackets == 0:
             # set execution counts for the decision. true is the exec_count.
             # false is the delta between executed blocks and executions of the decision statement.
-            last_decision_line_cov.decision = DecisionCoverageConditional(
-                exec_count,
-                max(last_decision_line_cov.count - exec_count, 0),
-            )
+            delta_count = last_decision_line_cov.count - exec_count
+            if delta_count >= 0:
+                last_decision_line_cov.decision = DecisionCoverageConditional(
+                    exec_count,
+                    delta_count,
+                )
+            else:
+                last_decision_line_cov.decision = DecisionCoverageUncheckable()
+                logger.debug(
+                    f"Uncheckable decision at line {lineno}. (Delta = {delta_count})"
+                )
 
             # disable the current decision analysis
             self.decision_analysis_active = False
