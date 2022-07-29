@@ -1,5 +1,5 @@
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -O0 main.cpp -o testcase
+	$(CXX) -std=c++11 -fprofile-arcs -ftest-coverage -O0 main.cpp -o testcase
 
 run: html json
 
