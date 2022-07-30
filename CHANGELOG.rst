@@ -28,6 +28,7 @@ Bug fixes and small improvements:
 - Fix package-level function coverage statistics in Cobertura XML reports. (:issue:`605`)
 - Respect excluded/noncode lines for aggregated branchcoverage. (:issue:`611`)
 - Fix list options in configuration file (search-path). (:issue:`612`)
+- Fix assert and key error in --decisions flag. (:issue:`642`)
 
 Documentation:
 
