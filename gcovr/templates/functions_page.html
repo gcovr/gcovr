@@ -16,11 +16,11 @@
       <th scope="row">Legend:</th>
       <td class="legend">
         <span class="coverage-low">low: &ge; 0%</span>
-        {% if COVERAGE_MED != COVERAGE_HIGH %}
-        <span class="coverage-medium">medium: &ge; {{COVERAGE_MED}}%</span>
+        {% if LINE_COVERAGE_MED != LINE_COVERAGE_HIGH %}
+        <span class="coverage-medium">medium: &ge; {{LINE_COVERAGE_MED}}%</span>
         {% endif %}
-        {% if COVERAGE_HIGH < 100 %}
-        <span class="coverage-high">high: &ge; {{COVERAGE_HIGH}}%</span>
+        {% if LINE_COVERAGE_HIGH < 100 %}
+        <span class="coverage-high">high: &ge; {{LINE_COVERAGE_HIGH}}%</span>
         {% else %}
         <span class="coverage-high">high: = 100%</span>
         {% endif %}

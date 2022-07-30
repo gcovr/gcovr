@@ -888,54 +888,58 @@ GCOVR_CONFIG_OPTIONS = [
         default=90.0,
     ),
     GcovrConfigOption(
-        "html_medium_threshold_branch", ["--html-medium-threshold-branch"],
+        "html_medium_threshold_branch",
+        ["--html-medium-threshold-branch"],
         group="output_options",
         metavar="MEDIUM_BRANCH",
         type=check_percentage,
         help="If the coverage is below MEDIUM_BRANCH, the value is marked "
-             "as low coverage in the HTML report. "
-             "MEDIUM_BRANCH has to be lower than or equal to value of --html-high-threshold-branch "
-             "and greater than 0. "
-             "If MEDIUM_BRANCH is equal to value of --html-medium-threshold-branch the report has "
-             "only high and low coverage. Default is MEDIUM.",
+        "as low coverage in the HTML report. "
+        "MEDIUM_BRANCH has to be lower than or equal to value of --html-high-threshold-branch "
+        "and greater than 0. "
+        "If MEDIUM_BRANCH is equal to value of --html-medium-threshold-branch the report has "
+        "only high and low coverage. Default is taken from --html-medium-threshold.",
         default=None,
     ),
     GcovrConfigOption(
-        "html_high_threshold_branch", ["--html-high-threshold-branch"],
+        "html_high_threshold_branch",
+        ["--html-high-threshold-branch"],
         group="output_options",
         type=check_percentage,
         metavar="HIGH_BRANCH",
         help="If the coverage is below HIGH_BRANCH, the value is marked "
-             "as medium coverage in the HTML report. "
-             "HIGH_BRANCH has to be greater than or equal to value of --html-medium-threshold-branch. "
-             "If HIGH_BRANCH is equal to value of --html-medium-threshold the report has "
-             "only high and low coverage. Default is HIGH.",
+        "as medium coverage in the HTML report. "
+        "HIGH_BRANCH has to be greater than or equal to value of --html-medium-threshold-branch. "
+        "If HIGH_BRANCH is equal to value of --html-medium-threshold-branch the report has "
+        "only high and low coverage. Default is taken from --html-high-threshold.",
         default=None,
     ),
-        GcovrConfigOption(
-        "html_medium_threshold_line", ["--html-medium-threshold-line"],
+    GcovrConfigOption(
+        "html_medium_threshold_line",
+        ["--html-medium-threshold-line"],
         group="output_options",
         metavar="MEDIUM_LINE",
         type=check_percentage,
         help="If the coverage is below MEDIUM_LINE, the value is marked "
-             "as low coverage in the HTML report. "
-             "MEDIUM_LINE has to be lower than or equal to value of --html-high-threshold-line "
-             "and greater than 0. "
-             "If MEDIUM_LINE is equal to value of --html-medium-threshold-line the report has "
-             "only high and low coverage. Default is MEDIUM.",
+        "as low coverage in the HTML report. "
+        "MEDIUM_LINE has to be lower than or equal to value of --html-high-threshold-line "
+        "and greater than 0. "
+        "If MEDIUM_LINE is equal to value of --html-medium-threshold-line the report has "
+        "only high and low coverage. Default is taken from --html-medium-threshold.",
         default=None,
     ),
     GcovrConfigOption(
-        "html_high_threshold_line", ["--html-high-threshold-line"],
+        "html_high_threshold_line",
+        ["--html-high-threshold-line"],
         group="output_options",
         type=check_percentage,
         metavar="HIGH_LINE",
         help="If the coverage is below HIGH_LINE, the value is marked "
-             "as medium coverage in the HTML report. "
-             "HIGH_LINE has to be greater than or equal to value of --html-medium-threshold-line. "
-             "If HIGH_LINE is equal to value of --html-medium-threshold-line the report has "
-             "only high and low coverage. Default is HIGH.",
-        default=90.0,
+        "as medium coverage in the HTML report. "
+        "HIGH_LINE has to be greater than or equal to value of --html-medium-threshold-line. "
+        "If HIGH_LINE is equal to value of --html-medium-threshold-line the report has "
+        "only high and low coverage. Default is taken from --html-high-threshold.",
+        default=None,
     ),
     GcovrConfigOption(
         "html_tab_size",
