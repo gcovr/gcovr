@@ -66,7 +66,7 @@ logger = logging.getLogger("gcovr")
 
 _EXCLUDE_FLAG = "_EXCL_"
 _EXCLUDE_LINE_PATTERN_POSTFIX = r"_EXCL_(LINE|START|STOP)"
-_EXCLUDE_BRANCHE_PATTERN_POSTFIX = r"_EXCL_BR_(LINE|START|STOP)"
+_EXCLUDE_BRANCH_PATTERN_POSTFIX = r"_EXCL_BR_(LINE|START|STOP)"
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -364,7 +364,7 @@ def parse_coverage(
         ]
 
     if flags & ParserFlags.RESPECT_EXCLUSION_MARKERS:
-        line_is_excluded, branche_is_excluded = _find_excluded_ranges(
+        [line_is_excluded, branch_is_excluded] = _find_excluded_ranges(
             lines=src_lines,
             warnings=_ExclusionRangeWarnings(filename),
             exclude_lines_by_pattern=exclude_lines_by_pattern,
@@ -373,7 +373,7 @@ def parse_coverage(
         )
     else:
         line_is_excluded = _make_is_in_any_range([])
-        branche_is_excluded = _make_is_in_any_range([])
+        branch_is_excluded = _make_is_in_any_range([])
 
     coverage = FileCoverage(filename)
     state = _ParserState()
@@ -384,7 +384,7 @@ def parse_coverage(
                 line,
                 coverage=coverage,
                 line_is_excluded=line_is_excluded,
-                branche_is_excluded=branche_is_excluded,
+                branch_is_excluded=branch_is_excluded,
                 context=context,
             )
         except Exception as ex:  # pylint: disable=broad-except
@@ -419,7 +419,7 @@ def _gather_coverage_from_line(
     *,
     coverage: FileCoverage,
     line_is_excluded: Callable[[int], bool],
-    branche_is_excluded: Callable[[int], bool],
+    branch_is_excluded: Callable[[int], bool],
     context: _Context,
 ) -> _ParserState:
     """
@@ -427,7 +427,7 @@ def _gather_coverage_from_line(
 
     The function handles all possible Line variants, and dies otherwise:
     >>> _gather_coverage_from_line(_ParserState(), "illegal line type",
-    ...     coverage=..., line_is_excluded=..., branche_is_excluded=..., context=...)
+    ...     coverage=..., line_is_excluded=..., branch_is_excluded=..., context=...)
     Traceback (most recent call last):
     AssertionError: Unexpected variant: 'illegal line type'
     """
@@ -480,18 +480,18 @@ def _gather_coverage_from_line(
             return state
 
         line_cov = coverage.lines[state.lineno]  # must already exist
-        is_excluded = branche_is_excluded(state.lineno)
+        is_excluded = branch_is_excluded(state.lineno)
 
-        # if not is_excluded:
-        insert_branch_coverage(
-            line_cov,
-            branchno,
-            BranchCoverage(
-                count=count,
-                fallthrough=(annotation == "fallthrough"),
-                throw=(annotation == "throw"),
-            ),
-        )
+        if not is_excluded:
+            insert_branch_coverage(
+                line_cov,
+                branchno,
+                BranchCoverage(
+                    count=count,
+                    fallthrough=(annotation == "fallthrough"),
+                    throw=(annotation == "throw"),
+                ),
+            )
 
         return state
 
@@ -976,15 +976,18 @@ def _find_excluded_ranges(
     exclude_pattern_prefix: str,
 ) -> Callable[[int], bool]:
     """
-    Scan through all lines to find line ranges covered by exclusion markers.
+    Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
 
     Example:
-    >>> lines = [(11, '//PREFIX_EXCL_LINE'), (13, '//IGNORE'), (15, '//PREFIX_EXCL_START'), (18, '//PREFIX_EXCL_STOP')]
-    >>> exclude = _find_excluded_ranges(
-    ...     lines, warnings=..., exclude_lines_by_pattern = '.*IGNORE',
-    ...     exclude_branches_by_pattern = '.*IGNORE', exclude_pattern_prefix='PREFIX')
-    >>> [lineno for lineno in range(20) if exclude(lineno)]
+    >>> lines = [(11, '//PREFIX_EXCL_LINE'), (13, '//IGNORE_LINE'), (15, '//PREFIX_EXCL_START'), (18, '//PREFIX_EXCL_STOP'),
+    ...     (21, '//PREFIX_EXCL_BR_LINE'), (23, '//IGNORE_BR'), (25, '//PREFIX_EXCL_BR_START'), (28, '//PREFIX_EXCL_BR_STOP')]
+    >>> [exclude_line, exclude_branch] = _find_excluded_ranges(
+    ...     lines, warnings=..., exclude_lines_by_pattern = '.*IGNORE_LINE',
+    ...     exclude_branches_by_pattern = '.*IGNORE_BR', exclude_pattern_prefix='PREFIX')
+    >>> [lineno for lineno in range(30) if exclude_line(lineno)]
     [11, 13, 15, 16, 17]
+    >>> [lineno for lineno in range(30) if exclude_branch(lineno)]
+    [21, 23, 25, 26, 27]
     """
     exclude_lines_by_pattern_regex = None
     if exclude_lines_by_pattern:
@@ -994,12 +997,12 @@ def _find_excluded_ranges(
     if exclude_branches_by_pattern:
         exclude_branches_by_pattern_regex = re.compile(exclude_branches_by_pattern)
 
-    # possibly overlapping half-open ranges of lines that are excluded
+    # possibly overlapping half-open ranges that are excluded
     exclude_line_ranges: List[Tuple[int, int]] = []
-    exclude_branche_ranges: List[Tuple[int, int]] = []
+    exclude_branch_ranges: List[Tuple[int, int]] = []
 
     exclusion_stack_line = []
-    exclusion_stack_branche = []
+    exclusion_stack_branch = []
     for lineno, code in lines:
         if _EXCLUDE_FLAG in code:
             # process the exclusion marker
@@ -1050,30 +1053,30 @@ def _find_excluded_ranges(
 
             # branche exclusion
 
-            excl_branche_pattern = re.compile(
-                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_BRANCHE_PATTERN_POSTFIX
+            excl_branch_pattern = re.compile(
+                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_BRANCH_PATTERN_POSTFIX
             )
-            for header, flag in excl_branche_pattern.findall(code):
+            for header, flag in excl_branch_pattern.findall(code):
 
                 if flag == "LINE":
-                    if exclusion_stack_branche:
-                        warnings.branche_after_start(
-                            lineno, f"{header}_EXCL_LINE", exclusion_stack_branche[-1][1]
+                    if exclusion_stack_branch:
+                        warnings.branch_after_start(
+                            lineno, f"{header}_EXCL_LINE", exclusion_stack_branch[-1][1]
                         )
                     else:
-                        exclude_branche_ranges.append((lineno, lineno + 1))
+                        exclude_branch_ranges.append((lineno, lineno + 1))
 
                 if flag == "START":
-                    exclusion_stack_branche.append((header, lineno))
+                    exclusion_stack_branch.append((header, lineno))
 
                 elif flag == "STOP":
-                    if not exclusion_stack_branche:
+                    if not exclusion_stack_branch:
                         warnings.stop_without_start(
                             lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
                         )
                         continue
 
-                    start_header, start_lineno = exclusion_stack_branche.pop()
+                    start_header, start_lineno = exclusion_stack_branch.pop()
                     if header != start_header:
                         warnings.mismatched_start_stop(
                             start_lineno,
@@ -1082,7 +1085,7 @@ def _find_excluded_ranges(
                             f"{header}_EXCL_STOP",
                         )
 
-                    exclude_branche_ranges.append((start_lineno, lineno))
+                    exclude_branch_ranges.append((start_lineno, lineno))
 
                 else:  # pragma: no cover
                     pass
@@ -1093,19 +1096,19 @@ def _find_excluded_ranges(
 
         if exclude_branches_by_pattern_regex:
             if exclude_branches_by_pattern_regex.match(code):
-                exclude_branche_ranges.append((lineno, lineno + 1))
+                exclude_branch_ranges.append((lineno, lineno + 1))
 
     for header, lineno in exclusion_stack_line:
         warnings.start_without_stop(
             lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
         )
 
-    for header, lineno in exclusion_stack_branche:
+    for header, lineno in exclusion_stack_branch:
         warnings.start_without_stop(
             lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
         )
 
-    return _make_is_in_any_range(exclude_line_ranges), _make_is_in_any_range(exclude_branche_ranges)
+    return [_make_is_in_any_range(exclude_line_ranges), _make_is_in_any_range(exclude_branch_ranges)]
 
 
 def _make_is_in_any_range(ranges: List[Tuple[int, int]]) -> Callable[[int], bool]:
