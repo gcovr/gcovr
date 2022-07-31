@@ -1,4 +1,4 @@
-Test for --exclude-unreachable-branches option
+This test case was inspired by ticket #3942:
 
-The test attempts to test both GCOV/LCOV exclusion markers
-and auto-detection of compiler-generated code.
+   https://software.sandia.gov/trac/fast/ticket/3942
+
