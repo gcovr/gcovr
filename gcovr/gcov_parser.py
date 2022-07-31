@@ -1108,7 +1108,10 @@ def _find_excluded_ranges(
             lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
         )
 
-    return [_make_is_in_any_range(exclude_line_ranges), _make_is_in_any_range(exclude_branch_ranges)]
+    return [
+        _make_is_in_any_range(exclude_line_ranges),
+        _make_is_in_any_range(exclude_branch_ranges),
+    ]
 
 
 def _make_is_in_any_range(ranges: List[Tuple[int, int]]) -> Callable[[int], bool]:
