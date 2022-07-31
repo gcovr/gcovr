@@ -1062,25 +1062,21 @@ def _find_excluded_ranges(
     exclusion_stack_line = []
     exclusion_stack_branch = []
 
-    excl_line_pattern = re.compile(
-        "("
-        + exclude_pattern_prefix
-        + ")"
-        + _EXCLUDE_FLAG
-        + _EXCLUDE_LINE_WORD
-        + _EXCLUDE_PATTERN_POSTFIX
-    )
-    excl_branch_pattern = re.compile(
-        "("
-        + exclude_pattern_prefix
-        + ")"
-        + _EXCLUDE_FLAG
-        + _EXCLUDE_BRANCH_WORD
-        + _EXCLUDE_PATTERN_POSTFIX
-    )
+    excl_line_pattern = None
+    excl_branch_pattern = None
     for lineno, code in lines:
         # line marker exclusion
         if _EXCLUDE_FLAG in code:
+            if excl_line_pattern is None:
+                excl_line_pattern = re.compile(
+                    "("
+                    + exclude_pattern_prefix
+                    + ")"
+                    + _EXCLUDE_FLAG
+                    + _EXCLUDE_LINE_WORD
+                    + _EXCLUDE_PATTERN_POSTFIX
+                )
+
             for header, flag in excl_line_pattern.findall(code):
                 _process_exclusion_marker(
                     lineno,
@@ -1098,6 +1094,15 @@ def _find_excluded_ranges(
 
         # branch marker exclusion
         if _EXCLUDE_FLAG in code:
+            if excl_branch_pattern is None:
+                excl_branch_pattern = re.compile(
+                    "("
+                    + exclude_pattern_prefix
+                    + ")"
+                    + _EXCLUDE_FLAG
+                    + _EXCLUDE_BRANCH_WORD
+                    + _EXCLUDE_PATTERN_POSTFIX
+                )
             for header, flag in excl_branch_pattern.findall(code):
                 _process_exclusion_marker(
                     lineno,
@@ -1115,12 +1120,16 @@ def _find_excluded_ranges(
 
     for header, lineno in exclusion_stack_line:
         warnings.start_without_stop(
-            lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
+            lineno,
+            f"{header}" + _EXCLUDE_FLAG + _EXCLUDE_LINE_WORD + "START",
+            f"{header}" + _EXCLUDE_FLAG + _EXCLUDE_LINE_WORD + "STOP",
         )
 
     for header, lineno in exclusion_stack_branch:
         warnings.start_without_stop(
-            lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
+            lineno,
+            f"{header}" + _EXCLUDE_FLAG + _EXCLUDE_BRANCH_WORD + "START",
+            f"{header}" + _EXCLUDE_FLAG + _EXCLUDE_BRANCH_WORD + "STOP",
         )
 
     return (
