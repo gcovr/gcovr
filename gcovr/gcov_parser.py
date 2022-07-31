@@ -973,7 +973,7 @@ def _find_excluded_ranges(
     exclude_lines_by_pattern: Optional[str] = None,
     exclude_branches_by_pattern: Optional[str] = None,
     exclude_pattern_prefix: str,
-) -> Tuple(Callable[[int], bool]):
+) -> Tuple[Callable[[int], bool]]:
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
 
@@ -1058,7 +1058,9 @@ def _find_excluded_ranges(
                 if flag == "LINE":
                     if exclusion_stack_branch:
                         warnings.line_after_start(
-                            lineno, f"{header}_EXCL_BR_LINE", exclusion_stack_branch[-1][1]
+                            lineno,
+                            f"{header}_EXCL_BR_LINE",
+                            exclusion_stack_branch[-1][1],
                         )
                     else:
                         exclude_branch_ranges.append((lineno, lineno + 1))
