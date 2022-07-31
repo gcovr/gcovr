@@ -15,6 +15,7 @@ Breaking changes:
 New features and notable changes:
 
 - Log additional info on gcov parsing errors. (:issue:`589`)
+- Additional options to configure the thresholds for lines and branches in HTML separate. (:issue:`645`)
 
 Bug fixes and small improvements:
 
