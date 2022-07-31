@@ -65,8 +65,9 @@ from .merging import (
 logger = logging.getLogger("gcovr")
 
 _EXCLUDE_FLAG = "_EXCL_"
-_EXCLUDE_LINE_PATTERN_POSTFIX = r"_EXCL_(LINE|START|STOP)"
-_EXCLUDE_BRANCH_PATTERN_POSTFIX = r"_EXCL_BR_(LINE|START|STOP)"
+_EXCLUDE_LINE_WORD = ""
+_EXCLUDE_BRANCH_WORD = "BR_"
+_EXCLUDE_PATTERN_POSTFIX = "(LINE|START|STOP)"
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -966,6 +967,80 @@ class _ExclusionRangeWarnings:
         )
 
 
+def _process_exclusion_marker(
+    code: str,
+    lineno: int,
+    exlcude_prefix: str,
+    exclude_word: str,
+    exclude_postfix: str,
+    exclude_by_pattern_regex: Pattern[str],
+    warnings: _ExclusionRangeWarnings,
+    exclude_ranges: List[Tuple[int, int]],
+    exclusion_stack: List[Tuple[int, int]],
+) -> Tuple[List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """
+    Process the exclusion marker.
+
+    Header is a marker name like LCOV or GCOVR.
+
+    START flags are added to the exlusion stack
+    STOP flags remove a marker from the exclusion stack
+    """
+
+    if _EXCLUDE_FLAG in code:
+
+        # marker exclusion
+        excl_pattern = re.compile(
+            "(" + exlcude_prefix + ")" + _EXCLUDE_FLAG + exclude_word + exclude_postfix
+        )
+        for header, flag in excl_pattern.findall(code):
+
+            if flag == "LINE":
+                if exclusion_stack:
+                    warnings.line_after_start(
+                        lineno,
+                        f"{header}" + _EXCLUDE_FLAG + exclude_word + "LINE",
+                        exclusion_stack[-1][1],
+                    )
+                else:
+                    exclude_ranges.append((lineno, lineno + 1))
+
+            if flag == "START":
+                exclusion_stack.append((header, lineno))
+
+            elif flag == "STOP":
+                if not exclusion_stack:
+                    warnings.stop_without_start(
+                        lineno,
+                        f"{header}" + _EXCLUDE_FLAG + exclude_word + "START",
+                        f"{header}" + _EXCLUDE_FLAG + exclude_word + "STOP",
+                    )
+                    continue
+
+                start_header, start_lineno = exclusion_stack.pop()
+                if header != start_header:
+                    warnings.mismatched_start_stop(
+                        start_lineno,
+                        f"{start_header}" + _EXCLUDE_FLAG + exclude_word + "START",
+                        lineno,
+                        f"{header}" + _EXCLUDE_FLAG + exclude_word + "STOP",
+                    )
+
+                exclude_ranges.append((start_lineno, lineno))
+
+            else:  # pragma: no cover
+                pass
+
+    if exclude_by_pattern_regex:
+        if exclude_by_pattern_regex.match(code):
+            exclude_ranges.append((lineno, lineno + 1))
+
+    return (
+        exclude_ranges,
+        exclusion_stack,
+    )
+
+
 def _find_excluded_ranges(
     lines: List[Tuple[int, str]],
     *,
@@ -1003,99 +1078,29 @@ def _find_excluded_ranges(
     exclusion_stack_line = []
     exclusion_stack_branch = []
     for lineno, code in lines:
-        if _EXCLUDE_FLAG in code:
-            # process the exclusion marker
-            #
-            # header is a marker name like LCOV or GCOVR
-            #
-            # START flags are added to the exlusion stack
-            # STOP flags remove a marker from the exclusion stack
+        exclude_line_ranges, exclusion_stack_line = _process_exclusion_marker(
+            code,
+            lineno,
+            exclude_pattern_prefix,
+            _EXCLUDE_LINE_WORD,
+            _EXCLUDE_PATTERN_POSTFIX,
+            exclude_lines_by_pattern_regex,
+            warnings,
+            exclude_line_ranges,
+            exclusion_stack_line,
+        )
 
-            # line exclusion
-            excl_line_pattern = re.compile(
-                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_LINE_PATTERN_POSTFIX
-            )
-            for header, flag in excl_line_pattern.findall(code):
-
-                if flag == "LINE":
-                    if exclusion_stack_line:
-                        warnings.line_after_start(
-                            lineno, f"{header}_EXCL_LINE", exclusion_stack_line[-1][1]
-                        )
-                    else:
-                        exclude_line_ranges.append((lineno, lineno + 1))
-
-                if flag == "START":
-                    exclusion_stack_line.append((header, lineno))
-
-                elif flag == "STOP":
-                    if not exclusion_stack_line:
-                        warnings.stop_without_start(
-                            lineno, f"{header}_EXCL_START", f"{header}_EXCL_STOP"
-                        )
-                        continue
-
-                    start_header, start_lineno = exclusion_stack_line.pop()
-                    if header != start_header:
-                        warnings.mismatched_start_stop(
-                            start_lineno,
-                            f"{start_header}_EXCL_START",
-                            lineno,
-                            f"{header}_EXCL_STOP",
-                        )
-
-                    exclude_line_ranges.append((start_lineno, lineno))
-
-                else:  # pragma: no cover
-                    pass
-
-            # branche exclusion
-            excl_branch_pattern = re.compile(
-                "(" + exclude_pattern_prefix + ")" + _EXCLUDE_BRANCH_PATTERN_POSTFIX
-            )
-            for header, flag in excl_branch_pattern.findall(code):
-
-                if flag == "LINE":
-                    if exclusion_stack_branch:
-                        warnings.line_after_start(
-                            lineno,
-                            f"{header}_EXCL_BR_LINE",
-                            exclusion_stack_branch[-1][1],
-                        )
-                    else:
-                        exclude_branch_ranges.append((lineno, lineno + 1))
-
-                if flag == "START":
-                    exclusion_stack_branch.append((header, lineno))
-
-                elif flag == "STOP":
-                    if not exclusion_stack_branch:
-                        warnings.stop_without_start(
-                            lineno, f"{header}_EXCL_BR_START", f"{header}_EXCL_BR_STOP"
-                        )
-                        continue
-
-                    start_header, start_lineno = exclusion_stack_branch.pop()
-                    if header != start_header:
-                        warnings.mismatched_start_stop(
-                            start_lineno,
-                            f"{start_header}_EXCL_BR_START",
-                            lineno,
-                            f"{header}_EXCL_BR_STOP",
-                        )
-
-                    exclude_branch_ranges.append((start_lineno, lineno))
-
-                else:  # pragma: no cover
-                    pass
-
-        if exclude_lines_by_pattern_regex:
-            if exclude_lines_by_pattern_regex.match(code):
-                exclude_line_ranges.append((lineno, lineno + 1))
-
-        if exclude_branches_by_pattern_regex:
-            if exclude_branches_by_pattern_regex.match(code):
-                exclude_branch_ranges.append((lineno, lineno + 1))
+        exclude_branch_ranges, exclusion_stack_branch = _process_exclusion_marker(
+            code,
+            lineno,
+            exclude_pattern_prefix,
+            _EXCLUDE_BRANCH_WORD,
+            _EXCLUDE_PATTERN_POSTFIX,
+            exclude_branches_by_pattern_regex,
+            warnings,
+            exclude_branch_ranges,
+            exclusion_stack_branch,
+        )
 
     for header, lineno in exclusion_stack_line:
         warnings.start_without_stop(
