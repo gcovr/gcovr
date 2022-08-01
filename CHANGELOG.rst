@@ -15,6 +15,7 @@ Breaking changes:
 New features and notable changes:
 
 - Log additional info on gcov parsing errors. (:issue:`589`)
+- Add support for branch exclude markers. (:issue:`644`)
 
 Bug fixes and small improvements:
 

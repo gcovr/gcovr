@@ -316,6 +316,7 @@ def test_gcov_8(capsys, sourcename):
         filename="tmp.cpp",
         lines=lines,
         exclude_lines_by_pattern=None,
+        exclude_branches_by_pattern=None,
         exclude_pattern_prefix=None,
         flags=flags,
     )
@@ -352,6 +353,7 @@ def test_unknown_tags(caplog, ignore_errors):
             filename="foo.c",
             lines=lines,
             exclude_lines_by_pattern=None,
+            exclude_branches_by_pattern=None,
             exclude_pattern_prefix=None,
             flags=flags,
         )
@@ -395,6 +397,7 @@ def test_pathologic_codeline(caplog):
             filename="foo.c",
             lines=lines,
             exclude_lines_by_pattern=None,
+            exclude_branches_by_pattern=None,
             exclude_pattern_prefix=None,
             flags=ParserFlags.NONE,
         )
@@ -450,6 +453,7 @@ def test_exception_during_coverage_processing(caplog):
                 lines,
                 filename="test.cpp",
                 exclude_lines_by_pattern=None,
+                exclude_branches_by_pattern=None,
                 exclude_pattern_prefix=None,
                 flags=ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS,
             )
@@ -501,6 +505,7 @@ def test_trailing_function_tag():
         filename="test.cpp",
         flags=ParserFlags.NONE,
         exclude_lines_by_pattern=None,
+        exclude_branches_by_pattern=None,
         exclude_pattern_prefix=None,
     )
 
@@ -548,6 +553,7 @@ def test_branch_exclusion(flags):
         source.splitlines(),
         filename="example.cpp",
         exclude_lines_by_pattern=None,
+        exclude_branches_by_pattern=None,
         exclude_pattern_prefix=None,
         flags=flags,
     )
@@ -583,6 +589,7 @@ def test_function_exclusion(flags):
         source.splitlines(),
         filename="example.cpp",
         exclude_lines_by_pattern=None,
+        exclude_branches_by_pattern=None,
         exclude_pattern_prefix=None,
         flags=flags,
     )
@@ -616,6 +623,7 @@ def test_noncode_lines():
             flags=flags,
             filename="example.cpp",
             exclude_lines_by_pattern=None,
+            exclude_branches_by_pattern=None,
             exclude_pattern_prefix=None,
         )
 
