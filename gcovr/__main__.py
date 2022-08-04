@@ -297,6 +297,16 @@ def main(args=None):
             )
             sys.exit(1)
 
+    if options.exclude_branches_by_pattern:
+        try:
+            re.compile(options.exclude_branches_by_pattern)
+        except re.error as e:
+            logger.error(
+                "--exclude-branches-by-pattern: "
+                f"Invalid regular expression: {repr(options.exclude_branches_by_pattern)}, error: {e}"
+            )
+            sys.exit(1)
+
     covdata: CovData
     if options.add_tracefile:
         covdata = collect_coverage_from_tracefiles(options)

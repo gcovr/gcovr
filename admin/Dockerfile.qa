@@ -62,4 +62,4 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 CMD ( echo docker | sudo -S -p "Running chmod with sudo..." chown -R docker:docker /gcovr/gcovr ) && \
   echo "\ndone\nStarting test..." && \
-  python3 -m nox --envdir $NOX_ENV_DIR --non-interactive
+  python3 -m nox --envdir $NOX_ENV_DIR --non-interactive $NOX_OPTIONS --

@@ -12,7 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
-- Log additional infop on gcov parsing errors. (:issue:`589`)
+- Log additional info on gcov parsing errors. (:issue:`589`)
+- Add support for branch exclude markers. (:issue:`644`)
 
 Bug fixes and small improvements:
 
@@ -26,6 +27,7 @@ Bug fixes and small improvements:
 - Fix package-level function coverage statistics in Cobertura XML reports. (:issue:`605`)
 - Respect excluded/noncode lines for aggregated branchcoverage. (:issue:`611`)
 - Fix list options in configuration file (search-path). (:issue:`612`)
+- Fix assert and key error in --decisions flag. (:issue:`642`)
 - Fix adding none existing lines by decision analysis to data model. (:issue:`617`)
 
 Documentation:
@@ -37,6 +39,7 @@ Internal changes:
 - Add gcc-10 and gcc-11 to the test suite. (:issue:`597`)
 - Improved internal coverage data model to simplify processing. (:issue:`600`)
 - Use pretty print for cobertura and coveralls in test suite. (:issue:`606`)
+- Forward nox options `--reuse-existing-virtualenvs` and `--no-install` to call inside docker. (:issue:`616`)
 
 5.1 (26 March 2022)
 -------------------

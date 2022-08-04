@@ -1175,6 +1175,12 @@ GCOVR_CONFIG_OPTIONS = [
         type=str,
     ),
     GcovrConfigOption(
+        "exclude_branches_by_pattern",
+        ["--exclude-branches-by-pattern"],
+        help="Exclude branches that match this regex.",
+        type=str,
+    ),
+    GcovrConfigOption(
         "gcov_files",
         ["-g", "--use-gcov-files"],
         group="gcov_options",
