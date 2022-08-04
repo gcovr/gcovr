@@ -492,6 +492,16 @@ def test_exclude_lines_by_pattern(caplog):
     assert c.exception.code != 0
 
 
+def test_exclude_branches_by_pattern(caplog):
+    c = log_capture(caplog, ["--exclude-branches-by-pattern", "example.**"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith(
+        "--exclude-branches-by-pattern: Invalid regular expression"
+    )
+    assert c.exception.code != 0
+
+
 def test_invalid_timestamp(capsys):
     c = capture(capsys, ["--timestamp=foo"])
     assert c.out == ""

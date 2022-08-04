@@ -159,6 +159,7 @@ def process_gcov_data(
         lines,
         filename=key,
         exclude_lines_by_pattern=options.exclude_lines_by_pattern,
+        exclude_branches_by_pattern=options.exclude_branches_by_pattern,
         exclude_pattern_prefix=options.exclude_pattern_prefix,
         flags=parser_flags,
     )
