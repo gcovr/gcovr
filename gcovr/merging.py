@@ -190,13 +190,6 @@ def insert_line_coverage(
     return _insert_coverage_item(target.lines, line.lineno, line, merge_line, options)
 
 
-def get_line_coverage(target: FileCoverage, lineno: int) -> LineCoverage:
-    """Get the LineCoverage object for that line if available."""
-    if lineno in target.lines:
-        return target.lines[lineno]
-    return None
-
-
 # FIXME: use of this function is almost always a bug
 def get_or_create_line_coverage(target: FileCoverage, lineno: int) -> LineCoverage:
     """Get the LineCoverage object for that line, or insert a new one if necessary.

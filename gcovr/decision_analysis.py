@@ -30,7 +30,6 @@ from .coverage import (
     DecisionCoverageSwitch,
     FileCoverage,
 )
-from .merging import get_line_coverage
 
 logger = logging.getLogger("gcovr")
 
@@ -136,7 +135,7 @@ class DecisionParser:
         logger.debug("Decision Analysis finished!")
 
     def parse_one_line(self, lineno: int, code: str) -> None:
-        line_coverage = get_line_coverage(self.coverage, lineno)
+        line_coverage = self.coverage.get(lineno)
 
         if line_coverage is None or line_coverage.noncode:
             return
@@ -177,7 +176,7 @@ class DecisionParser:
                 line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
             else:
                 # use the execution counts of the following line (compatibility with GCC 5)
-                line_coverage_next_line = get_line_coverage(self.coverage, lineno + 1)
+                line_coverage_next_line = self.coverage.get(lineno + 1)
                 if line_coverage_next_line is not None:
                     line_coverage.decision = DecisionCoverageSwitch(
                         line_coverage_next_line.count
@@ -196,11 +195,9 @@ class DecisionParser:
         self.decision_analysis_open_brackets -= prepped_code.count(")")
 
     def continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
-        line_coverage = get_line_coverage(self.coverage, lineno)
+        line_coverage = self.coverage.get(lineno)
         exec_count = 0 if line_coverage is None else line_coverage.count
-        last_decision_line_cov = get_line_coverage(
-            self.coverage, self.last_decision_line
-        )
+        last_decision_line_cov = self.coverage.get(self.last_decision_line)
 
         # check, if the branch statement was finished in the last line
         if self.decision_analysis_open_brackets == 0:
