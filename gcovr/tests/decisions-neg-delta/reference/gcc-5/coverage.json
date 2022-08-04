@@ -19,29 +19,8 @@
                     "branches": [],
                     "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 1
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
                     "gcovr/noncode": true,
                     "line_number": 2
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 3
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 4
                 },
                 {
                     "branches": [],
@@ -137,13 +116,6 @@
                     "branches": [],
                     "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 12
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
                     "gcovr/noncode": true,
                     "line_number": 13
                 },
@@ -153,13 +125,6 @@
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 14
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 15
                 },
                 {
                     "branches": [
