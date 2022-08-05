@@ -43,7 +43,7 @@ def print_text_report(covdata: CovData, output_file, options):
         fh.write("-" * LINE_WIDTH + "\n")
         fh.write("GCC Code Coverage Report".center(LINE_WIDTH).rstrip() + "\n")
         # fh.write(" " * 27 + "GCC Code Coverage Report\n")
-        fh.write("Directory: " + options.root + "\n")
+        fh.write("Directory: " + options.root.replace("\\", "/") + "\n")
 
         fh.write("-" * LINE_WIDTH + "\n")
         title_total = "Branches" if options.show_branch else "Lines"

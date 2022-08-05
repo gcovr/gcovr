@@ -69,6 +69,10 @@ In the config file,
 ``gcov-parallel = yes`` would refer to the no-argument form,
 whereas ``gcov-parallel = 4`` would provide an explicit argument.
 
+If the option is a path and is not absolute the path is used relative to
+the config file. For the option :option:`gcovr --add-tracefile` the
+directory of the config file is always prepended.
+
 Some config file syntax is explicitly reserved for future extensions:
 Semicolon comments, INI-style sections, multi-line values, quoted values,
 variable substitutions, alternative key–value separators, …

@@ -22,19 +22,19 @@ coverage.json:
 	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) --json-pretty --json $(abspath $@)
 
 txt: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json -o ../coverage.txt
+	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg -o ../coverage.txt
 
 xml: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --cobertura-pretty --cobertura ../coverage.xml
+	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --cobertura-pretty --cobertura ../coverage.xml
 
 html: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --html-details -o ../coverage.html
+	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --html-details -o ../coverage.html
 
 sonarqube: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --sonarqube ../sonarqube.xml
+	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --sonarqube ../sonarqube.xml
 
 coveralls: coverage.json
-	cd project; $(GCOVR) --config gcovr_empty.cfg -a ../coverage.json --coveralls-pretty --coveralls ../coveralls.json
+	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --coveralls-pretty --coveralls ../coveralls.json
 
 links:
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)

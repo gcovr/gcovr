@@ -30,6 +30,7 @@ Bug fixes and small improvements:
 - Fix list options in configuration file (search-path). (:issue:`612`)
 - Fix assert and key error in --decisions flag. (:issue:`642`)
 - Fix adding none existing lines by decision analysis to data model. (:issue:`617`)
+- Always treat relative paths in config files as relative to the directory of the file. (:issue:`615`)
 
 Documentation:
 
