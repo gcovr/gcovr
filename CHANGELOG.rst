@@ -8,8 +8,6 @@ Next Release
 
 Known bugs:
 
-- Decision coverage analysis can resurrect excluded coverage. (:issue:`600`)
-
 Breaking changes:
 
 New features and notable changes:
@@ -31,6 +29,7 @@ Bug fixes and small improvements:
 - Respect excluded/noncode lines for aggregated branchcoverage. (:issue:`611`)
 - Fix list options in configuration file (search-path). (:issue:`612`)
 - Fix assert and key error in --decisions flag. (:issue:`642`)
+- Fix adding none existing lines by decision analysis to data model. (:issue:`617`)
 
 Documentation:
 
