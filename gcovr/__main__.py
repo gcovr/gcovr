@@ -185,16 +185,44 @@ def main(args=None):
         logger.error("an empty --html_title= is not allowed.")
         sys.exit(1)
 
-    if options.html_medium_threshold == 0:
-        logger.error("value of --html-medium-threshold= should not be zero.")
-        sys.exit(1)
+    for postfix in ["", "line", "branch"]:
+        key_medium = "html_medium_threshold"
+        key_high = "html_high_threshold"
+        if postfix:
+            key_medium += f"_{postfix}"
+            key_high += f"_{postfix}"
+        option_medium = f"--{key_medium.replace('_', '-')}"
+        option_high = f"--{key_high.replace('_', '-')}"
 
-    if options.html_medium_threshold > options.html_high_threshold:
-        logger.error(
-            f"value of --html-medium-threshold={options.html_medium_threshold} should be\n"
-            f"lower than or equal to the value of --html-high-threshold={options.html_high_threshold}."
-        )
-        sys.exit(1)
+        if getattr(options, key_medium) == 0:
+            logger.error(f"value of {option_medium}= should not be zero.")
+            sys.exit(1)
+
+        # Inherit the defaults from the global covarage values if not set
+        if postfix:
+            if getattr(options, key_medium) is None:
+                setattr(
+                    options,
+                    key_medium,
+                    options.html_medium_threshold,
+                )
+                # To get the correct option in the error message below.
+                option_medium = "--html-medium-threshold"
+            if getattr(options, key_high) is None:
+                setattr(
+                    options,
+                    key_high,
+                    options.html_high_threshold,
+                )
+                # To get the correct option in the error message below.
+                option_medium = "--html-hight-threshold"
+
+        if getattr(options, key_medium) > getattr(options, key_high):
+            logger.error(
+                f"value of {option_medium}={getattr(options, key_medium)} should be\n"
+                f"lower than or equal to the value of {option_high}={getattr(options, key_high)}."
+            )
+            sys.exit(1)
 
     if options.html_tab_size < 1:
         logger.error("value of --html-tab-size= should be greater 0.")

@@ -159,7 +159,8 @@ table.legend span.coverage-high
 }
 
 table.legend span.coverage-unknown,
-table.coverage td.coverage-unknown
+table.coverage td.coverage-unknown,
+table.file-list td.coverage-unknow
 {
     background-color: var(--unknown_color) !important;
 }
@@ -167,24 +168,26 @@ table.coverage td.coverage-unknown
 table.legend span.coverage-none,
 table.legend span.coverage-low,
 table.coverage td.coverage-none,
-table.coverage td.coverage-low
+table.coverage td.coverage-low,
+table.file-list td.coverage-none,
+table.file-list td.coverage-low
 {
     background-color: var(--low_color) !important;
 }
 
 table.legend span.coverage-medium,
-table.coverage td.coverage-medium
+table.coverage td.coverage-medium,
+table.file-list td.coverage-medium
 {
     background-color: var(--medium_color) !important;
 }
 
 table.legend span.coverage-high,
-table.coverage td.coverage-high
+table.coverage td.coverage-high,
+table.file-list td.coverage-high
 {
     background-color: var(--high_color) !important;
 }
-
-
 /*** End of Summary formats ***/
 /*** Meter formats ***/
 
@@ -589,10 +592,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-04-04 19:08:44</td>
+      <td>2022-07-30 21:54:50</td>
     </tr>
     <tr>
-      <th scope="row">Legend:</th>
+      <th scope="row">Coverage:</th>
       <td class="legend">
         <span class="coverage-low">low: &ge; 0%</span>
         <span class="coverage-medium">medium: &ge; 75.0%</span>

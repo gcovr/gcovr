@@ -64,6 +64,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     Songmin Li,
     Steven Myint,
     Sylvestre Ledru,
+    Thibault Gasc,
     Tilo Wiedera,
     trapzero,
     Will Thompson,
