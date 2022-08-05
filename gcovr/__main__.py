@@ -215,7 +215,7 @@ def main(args=None):
                     options.html_high_threshold,
                 )
                 # To get the correct option in the error message below.
-                option_medium = "--html-hight-threshold"
+                option_medium = "--html-high-threshold"
 
         if getattr(options, key_medium) > getattr(options, key_high):
             logger.error(
