@@ -13,7 +13,7 @@
       <td>{{info.date}}</td>
     </tr>
     <tr>
-      <th scope="row">Legend:</th>
+      <th scope="row">Coverage:</th>
       <td class="legend">
         <span class="coverage-low">low: &ge; 0%</span>
         {% if COVERAGE_MED != COVERAGE_HIGH %}
@@ -26,6 +26,38 @@
         {% endif %}
       </td>
     </tr>
+    {% if (COVERAGE_MED != LINE_COVERAGE_MED) or (COVERAGE_HIGH != LINE_COVERAGE_HIGH) %}
+    <tr>
+      <th scope="row">Lines:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        {% if LINE_COVERAGE_MED != LINE_COVERAGE_HIGH %}
+        <span class="coverage-medium">medium: &ge; {{LINE_COVERAGE_MED}}%</span>
+        {% endif %}
+        {% if LINE_COVERAGE_HIGH < 100 %}
+        <span class="coverage-high">high: &ge; {{LINE_COVERAGE_HIGH}}%</span>
+        {% else %}
+        <span class="coverage-high">high: = 100%</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% if (COVERAGE_MED != BRANCH_COVERAGE_MED) or (COVERAGE_HIGH != BRANCH_COVERAGE_HIGH) %}
+    <tr>
+      <th scope="row">Branches:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        {% if BRANCH_COVERAGE_MED != BRANCH_COVERAGE_HIGH %}
+        <span class="coverage-medium">medium: &ge; {{BRANCH_COVERAGE_MED}}%</span>
+        {% endif %}
+        {% if BRANCH_COVERAGE_HIGH < 100 %}
+        <span class="coverage-high">high: &ge; {{BRANCH_COVERAGE_HIGH}}%</span>
+        {% else %}
+        <span class="coverage-high">high: = 100%</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endif %}
   </table>
 </div>
 

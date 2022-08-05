@@ -916,6 +916,60 @@ GCOVR_CONFIG_OPTIONS = [
         default=90.0,
     ),
     GcovrConfigOption(
+        "html_medium_threshold_branch",
+        ["--html-medium-threshold-branch"],
+        group="output_options",
+        metavar="MEDIUM_BRANCH",
+        type=check_percentage,
+        help="If the coverage is below MEDIUM_BRANCH, the value is marked "
+        "as low coverage in the HTML report. "
+        "MEDIUM_BRANCH has to be lower than or equal to value of --html-high-threshold-branch "
+        "and greater than 0. "
+        "If MEDIUM_BRANCH is equal to value of --html-medium-threshold-branch the report has "
+        "only high and low coverage. Default is taken from --html-medium-threshold.",
+        default=None,
+    ),
+    GcovrConfigOption(
+        "html_high_threshold_branch",
+        ["--html-high-threshold-branch"],
+        group="output_options",
+        type=check_percentage,
+        metavar="HIGH_BRANCH",
+        help="If the coverage is below HIGH_BRANCH, the value is marked "
+        "as medium coverage in the HTML report. "
+        "HIGH_BRANCH has to be greater than or equal to value of --html-medium-threshold-branch. "
+        "If HIGH_BRANCH is equal to value of --html-medium-threshold-branch the report has "
+        "only high and low coverage. Default is taken from --html-high-threshold.",
+        default=None,
+    ),
+    GcovrConfigOption(
+        "html_medium_threshold_line",
+        ["--html-medium-threshold-line"],
+        group="output_options",
+        metavar="MEDIUM_LINE",
+        type=check_percentage,
+        help="If the coverage is below MEDIUM_LINE, the value is marked "
+        "as low coverage in the HTML report. "
+        "MEDIUM_LINE has to be lower than or equal to value of --html-high-threshold-line "
+        "and greater than 0. "
+        "If MEDIUM_LINE is equal to value of --html-medium-threshold-line the report has "
+        "only high and low coverage. Default is taken from --html-medium-threshold.",
+        default=None,
+    ),
+    GcovrConfigOption(
+        "html_high_threshold_line",
+        ["--html-high-threshold-line"],
+        group="output_options",
+        type=check_percentage,
+        metavar="HIGH_LINE",
+        help="If the coverage is below HIGH_LINE, the value is marked "
+        "as medium coverage in the HTML report. "
+        "HIGH_LINE has to be greater than or equal to value of --html-medium-threshold-line. "
+        "If HIGH_LINE is equal to value of --html-medium-threshold-line the report has "
+        "only high and low coverage. Default is taken from --html-high-threshold.",
+        default=None,
+    ),
+    GcovrConfigOption(
         "html_tab_size",
         ["--html-tab-size"],
         group="output_options",
@@ -1200,6 +1254,12 @@ GCOVR_CONFIG_OPTIONS = [
         "exclude_lines_by_pattern",
         ["--exclude-lines-by-pattern"],
         help="Exclude lines that match this regex.",
+        type=str,
+    ),
+    GcovrConfigOption(
+        "exclude_branches_by_pattern",
+        ["--exclude-branches-by-pattern"],
+        help="Exclude branches that match this regex.",
         type=str,
     ),
     GcovrConfigOption(

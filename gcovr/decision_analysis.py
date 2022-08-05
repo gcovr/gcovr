@@ -30,7 +30,6 @@ from .coverage import (
     DecisionCoverageSwitch,
     FileCoverage,
 )
-from .merging import get_or_create_line_coverage
 
 logger = logging.getLogger("gcovr")
 
@@ -136,10 +135,9 @@ class DecisionParser:
         logger.debug("Decision Analysis finished!")
 
     def parse_one_line(self, lineno: int, code: str) -> None:
-        # FIXME this always creates a line, even if it doesn't exist
-        line_coverage = get_or_create_line_coverage(self.coverage, lineno)
+        line_coverage = self.coverage.lines.get(lineno)
 
-        if line_coverage.noncode:
+        if line_coverage is None or line_coverage.noncode:
             return
 
         # check, if a analysis for a classic if-/else if-branch is active
@@ -156,11 +154,12 @@ class DecisionParser:
         if len(line_coverage.branches.items()) > 0:
             if _is_a_loop(code) or _is_a_oneline_branch(code):
                 if len(line_coverage.branches.items()) == 2:
+                    keys = sorted(line_coverage.branches)
                     # if it's a compact decision, we can only use the fallback to analyze
                     # simple decisions via branch calls
                     line_coverage.decision = DecisionCoverageConditional(
-                        line_coverage.branches[0].count,
-                        line_coverage.branches[1].count,
+                        line_coverage.branches[keys[0]].count,
+                        line_coverage.branches[keys[1]].count,
                     )
                 else:
                     # it's a compplex decision with more than 2 branches. No accurate detection possible
@@ -178,10 +177,11 @@ class DecisionParser:
                 line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
             else:
                 # use the execution counts of the following line (compatibility with GCC 5)
-                # FIXME this INSERTS a line even if it doesn't already exist
-                line_coverage.decision = DecisionCoverageSwitch(
-                    get_or_create_line_coverage(self.coverage, lineno + 1).count
-                )
+                line_coverage_next_line = self.coverage.lines.get(lineno + 1)
+                if line_coverage_next_line is not None:
+                    line_coverage.decision = DecisionCoverageSwitch(
+                        line_coverage_next_line.count
+                    )
 
     def start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
         # normal (non-compact) branch, analyze execution of following lines
@@ -196,20 +196,25 @@ class DecisionParser:
         self.decision_analysis_open_brackets -= prepped_code.count(")")
 
     def continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
-        # FIXME this inserts TWO lines, even if they don't already exist
-        exec_count = get_or_create_line_coverage(self.coverage, lineno).count
-        last_decision_line_cov = get_or_create_line_coverage(
-            self.coverage, self.last_decision_line
-        )
+        line_coverage = self.coverage.lines.get(lineno)
+        exec_count = 0 if line_coverage is None else line_coverage.count
+        last_decision_line_cov = self.coverage.lines.get(self.last_decision_line)
 
         # check, if the branch statement was finished in the last line
         if self.decision_analysis_open_brackets == 0:
             # set execution counts for the decision. true is the exec_count.
             # false is the delta between executed blocks and executions of the decision statement.
-            last_decision_line_cov.decision = DecisionCoverageConditional(
-                exec_count,
-                last_decision_line_cov.count - exec_count,
-            )
+            delta_count = last_decision_line_cov.count - exec_count
+            if delta_count >= 0:
+                last_decision_line_cov.decision = DecisionCoverageConditional(
+                    exec_count,
+                    delta_count,
+                )
+            else:
+                last_decision_line_cov.decision = DecisionCoverageUncheckable()
+                logger.debug(
+                    f"Uncheckable decision at line {lineno}. (Delta = {delta_count})"
+                )
 
             # disable the current decision analysis
             self.decision_analysis_active = False
