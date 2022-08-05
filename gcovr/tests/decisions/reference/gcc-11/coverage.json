@@ -164,20 +164,6 @@
                     "branches": [],
                     "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 1
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 2
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
                     "gcovr/noncode": true,
                     "line_number": 3
                 },
@@ -1829,13 +1815,6 @@
                 {
                     "branches": [],
                     "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 191
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/decision": {
                         "count": 0,
                         "type": "switch"
@@ -1850,13 +1829,6 @@
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 193
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 194
                 },
                 {
                     "branches": [],
@@ -1943,13 +1915,6 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 204
-                },
-                {
-                    "branches": [],
                     "count": 1,
                     "gcovr/decision": {
                         "count": 1,
@@ -1969,13 +1934,6 @@
                 {
                     "branches": [],
                     "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 207
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/decision": {
                         "count": 0,
                         "type": "switch"
@@ -1990,13 +1948,6 @@
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 209
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 210
                 },
                 {
                     "branches": [],
@@ -2084,13 +2035,6 @@
                 {
                     "branches": [],
                     "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 220
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/decision": {
                         "count": 0,
                         "type": "switch"
@@ -2105,13 +2049,6 @@
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 222
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 223
                 },
                 {
                     "branches": [],
@@ -2130,13 +2067,6 @@
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 225
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 226
                 },
                 {
                     "branches": [],
@@ -2889,13 +2819,6 @@
                     "gcovr/excluded": false,
                     "gcovr/noncode": true,
                     "line_number": 308
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/excluded": false,
-                    "gcovr/noncode": false,
-                    "line_number": 309
                 },
                 {
                     "branches": [],

@@ -30,7 +30,6 @@ from .coverage import (
     DecisionCoverageSwitch,
     FileCoverage,
 )
-from .merging import get_or_create_line_coverage
 
 logger = logging.getLogger("gcovr")
 
@@ -136,10 +135,9 @@ class DecisionParser:
         logger.debug("Decision Analysis finished!")
 
     def parse_one_line(self, lineno: int, code: str) -> None:
-        # FIXME this always creates a line, even if it doesn't exist
-        line_coverage = get_or_create_line_coverage(self.coverage, lineno)
+        line_coverage = self.coverage.lines.get(lineno)
 
-        if line_coverage.noncode:
+        if line_coverage is None or line_coverage.noncode:
             return
 
         # check, if a analysis for a classic if-/else if-branch is active
@@ -179,10 +177,11 @@ class DecisionParser:
                 line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
             else:
                 # use the execution counts of the following line (compatibility with GCC 5)
-                # FIXME this INSERTS a line even if it doesn't already exist
-                line_coverage.decision = DecisionCoverageSwitch(
-                    get_or_create_line_coverage(self.coverage, lineno + 1).count
-                )
+                line_coverage_next_line = self.coverage.lines.get(lineno + 1)
+                if line_coverage_next_line is not None:
+                    line_coverage.decision = DecisionCoverageSwitch(
+                        line_coverage_next_line.count
+                    )
 
     def start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
         # normal (non-compact) branch, analyze execution of following lines
@@ -197,11 +196,9 @@ class DecisionParser:
         self.decision_analysis_open_brackets -= prepped_code.count(")")
 
     def continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
-        # FIXME this inserts TWO lines, even if they don't already exist
-        exec_count = get_or_create_line_coverage(self.coverage, lineno).count
-        last_decision_line_cov = get_or_create_line_coverage(
-            self.coverage, self.last_decision_line
-        )
+        line_coverage = self.coverage.lines.get(lineno)
+        exec_count = 0 if line_coverage is None else line_coverage.count
+        last_decision_line_cov = self.coverage.lines.get(self.last_decision_line)
 
         # check, if the branch statement was finished in the last line
         if self.decision_analysis_open_brackets == 0:
