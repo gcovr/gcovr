@@ -274,8 +274,8 @@ the :ref:`structure of integration tests <integration tests>`,
 how to :ref:`run and filter tests <run tests>`,
 and how to :ref:`run tests with Docker <docker tests>`.
 
-.. versionchanged:: NEXT
-   If black is called without arguments, all files aare reformatted
+.. versionchanged:: 5.2
+   If black is called without arguments, all files are reformated
    instead of checked. To check the format use the session lint.
 
 .. _integration tests:
