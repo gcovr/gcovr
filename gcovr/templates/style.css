@@ -1,19 +1,28 @@
 :root {
     font-family: sans-serif;
-    --unknown_color: {{unknown_color}};
-    --low_color: {{low_color}};
-    --medium_color: {{medium_color}};
-    --high_color: {{high_color}};
-    --covered_color: {{covered_color}};
-    --uncovered_color: {{uncovered_color}};
-    --excluded_color: {{excluded_color}};
-    --warning_color: {{warning_color}};
-    --takenBranch_color: {{takenBranch_color}};
-    --notTakenBranch_color: {{notTakenBranch_color}};
-    --takenDecision_color: {{takenDecision_color}};
-    --uncheckedDecision_color: {{uncheckedDecision_color}};
-    --notTakenDecision_color: {{notTakenDecision_color}}
+    --tab_size: {{tab_size}};
+}
 
+.theme-green, .theme-blue {
+    --unknown_color: lightgray;
+    --low_color: #FF6666;
+    --medium_color: #F9FD63;
+    --high_color: #85E485;
+    --covered_color: #85E485;
+    --uncovered_color: #FF8C8C;
+    --excluded_color: #53BFFD;
+    --warning_color: orangered;
+    --takenBranch_color: green;
+    --notTakenBranch_color: red;
+    --takenDecision_color: green;
+    --uncheckedDecision_color: darkorange;
+    --notTakenDecision_color: red;
+}
+
+.theme-blue {
+    --high_color: #66B4FF;
+    --covered_color: #66B4Ff;
+    --takenBranch_color: blue;
 }
 
 body

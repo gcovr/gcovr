@@ -102,56 +102,29 @@ def user_templates():
 
 class CssRenderer:
 
-    Themes = {
-        "green": {
-            "unknown_color": "LightGray",
-            "low_color": "#FF6666",
-            "medium_color": "#F9FD63",
-            "high_color": "#85E485",
-            "covered_color": "#85E485",
-            "uncovered_color": "#FF8C8C",
-            "excluded_color": "#53BFFD",
-            "warning_color": "orangered",
-            "takenBranch_color": "Green",
-            "notTakenBranch_color": "Red",
-            "takenDecision_color": "Green",
-            "uncheckedDecision_color": "DarkOrange",
-            "notTakenDecision_color": "Red",
-        },
-        "blue": {
-            "unknown_color": "LightGray",
-            "low_color": "#FF6666",
-            "medium_color": "#F9FD63",
-            "high_color": "#66B4FF",
-            "covered_color": "#66B4FF",
-            "uncovered_color": "#FF8C8C",
-            "excluded_color": "#53BFFD",
-            "warning_color": "orangered",
-            "takenBranch_color": "Blue",
-            "notTakenBranch_color": "Red",
-            "takenDecision_color": "Green",
-            "uncheckedDecision_color": "DarkOrange",
-            "notTakenDecision_color": "Red",
-        },
-    }
+    THEMES = ["green", "blue"]
 
     @staticmethod
     def get_themes():
-        return list(CssRenderer.Themes.keys())
+        return CssRenderer.THEMES
 
     @staticmethod
     def get_default_theme():
-        return "green"
+        return CssRenderer.THEMES[0]
+
+    @staticmethod
+    def load_css_template(options):
+        if options.html_css is not None:
+            template_path = os.path.relpath(options.html_css)
+            return user_templates().get_template(template_path)
+
+        return templates().get_template("style.css")
 
     @staticmethod
     def render(options):
-        template = None
-        if options.html_css is not None:
-            template = user_templates().get_template(os.path.relpath(options.html_css))
-        else:
-            template = templates().get_template("style.css")
+        template = CssRenderer.load_css_template(options)
         return template.render(
-            CssRenderer.Themes[options.html_theme], tab_size=options.html_tab_size
+            tab_size=options.html_tab_size,
         )
 
 
@@ -379,6 +352,8 @@ def print_html_report(covdata: CovData, output_file, options):
         else:
             css_link = css_output
         data["css_link"] = css_link
+
+    data["theme"] = options.html_theme
 
     root_info.set_coverage(covdata)
 

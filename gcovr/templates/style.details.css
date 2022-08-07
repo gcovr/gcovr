@@ -64,17 +64,17 @@ span.excludedLine
 
 .takenDecision
 {
-    color: {{takenDecision_color}}!important;
+    color: var(--takenDecision_color) !important;
 }
 
 .notTakenDecision
 {
-    color: {{notTakenDecision_color}}!important;
+    color: var(--notTakenDecision_color) !important;
 }
 
 .uncheckedDecision
 {
-    color: {{uncheckedDecision_color}}!important;
+    color: var(--uncheckedDecision_color) !important;
 }
 
 .src
