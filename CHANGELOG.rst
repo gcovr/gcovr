@@ -12,6 +12,7 @@ Breaking changes:
 
 New features and notable changes:
 
+- Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
 - Print a warning if root directory contains symlinks. (:issue:`652`)
 
 Bug fixes and small improvements:
