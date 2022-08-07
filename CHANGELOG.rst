@@ -3,6 +3,23 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+Next Release
+------------
+
+Known bugs:
+
+Breaking changes:
+
+New features and notable changes:
+
+- Print a warning if root directory contains symlinks. (:issue:`652`)
+
+Bug fixes and small improvements:
+
+Documentation:
+
+Internal changes:
+
 5.2 (06 August 2022)
 --------------------
 

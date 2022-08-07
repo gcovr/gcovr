@@ -255,6 +255,11 @@ def main(args=None):
 
     options.starting_dir = os.path.abspath(os.getcwd())
     options.root_dir = os.path.abspath(options.root)
+    if options.root_dir != os.path.realpath(options.root_dir):
+        logger.warning(
+            "It seems, that your root contains a symlink. This may result in problems. "
+            "See issue https://github.com/gcovr/gcovr/issues/635."
+        )
 
     #
     # Setup filters
