@@ -15,6 +15,8 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Do not ignore returncode of `gcov`. (:issue:`653`)
+
 Documentation:
 
 Internal changes:

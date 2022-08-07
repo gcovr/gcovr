@@ -483,7 +483,7 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
         # This lock is essential for parallel processing because without
         # this there can be name collisions for the generated output files.
         with locked_directory(chdir):
-            out, err = gcov_cmd.run_with_args(
+            gcov_process = gcov_cmd.run_with_args(
                 [
                     abs_filename,
                     *gcov_cmd.get_default_options(),
@@ -491,7 +491,14 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
                     os.path.dirname(abs_filename),
                 ],
                 cwd=chdir,
-            ).communicate()
+            )
+            out, err = gcov_process.communicate()
+            if gcov_process.returncode < 0:
+                raise RuntimeError(
+                    f"GCOV returncode was {gcov_process.returncode} (exited by signal)."
+                )
+            elif gcov_process.returncode != 0:
+                raise RuntimeError(f"GCOV returncode was {gcov_process.returncode}.")
 
             # find the files that gcov created
             active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
@@ -503,7 +510,7 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
 
             if unknown_cla_re.search(err):
                 # gcov tossed errors: throw exception
-                raise RuntimeError("Error in gcov command line: {}".format(err))
+                raise RuntimeError(f"Error in gcov command line: {err}")
             elif source_re.search(err):
                 # gcov tossed errors: try the next potential_wd
                 error(err)
