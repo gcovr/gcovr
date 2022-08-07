@@ -88,7 +88,7 @@ def _line_pattern(pattern: str) -> Pattern[str]:
     """
     pattern = pattern.replace(" ", r"[ ]+")
     pattern = pattern.replace("INT", r"[0-9]+")
-    pattern = pattern.replace("VALUE", r"[0-9.]+[%kMGTPEZY]?")
+    pattern = pattern.replace("VALUE", r"(?:NAN %|[0-9.]+[%kMGTPEZY]?)")
     return re.compile("^" + pattern + "$")
 
 
@@ -1256,8 +1256,8 @@ def _int_from_gcov_unit(formatted: str) -> int:
     Examples:
     >>> _int_from_gcov_unit('123')
     123
-    >>> [_int_from_gcov_unit(value) for value in ('17.2%', '0%')]
-    [1, 0]
+    >>> [_int_from_gcov_unit(value) for value in ('NAN %', '17.2%', '0%')]
+    [0, 1, 0]
     >>> [_int_from_gcov_unit(value) for value in ('1.7k', '0.5G')]
     [1700, 500000000]
     """

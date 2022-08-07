@@ -3,6 +3,22 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+Next Release
+------------
+
+Known bugs:
+
+Breaking changes:
+
+New features and notable changes:
+- Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
+
+Bug fixes and small improvements:
+
+Documentation:
+
+Internal changes:
+
 5.2 (06 August 2022)
 --------------------
 
