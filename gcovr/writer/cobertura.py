@@ -24,7 +24,7 @@ from lxml import etree  # type: ignore
 
 from ..version import __version__
 from ..utils import open_binary_for_writing, presentable_filename
-from ..coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
+from ..coverage import CovData, CoverageStat, FileCoverage, FunctionCoverage, LineCoverage, SummarizedStats
 
 
 def print_cobertura_report(covdata: CovData, output_file, options):
@@ -74,14 +74,52 @@ def print_cobertura_report(covdata: CovData, output_file, options):
             ),
         )
         c = etree.Element("class")
-        # The Cobertura DTD requires a methods section, which isn't
-        # trivial to get from gcov (so we will leave it blank)
-        etree.SubElement(c, "methods")
-        lines = etree.SubElement(c, "lines")
 
+        sorted_lines = sorted(data.lines)
+        iter_reversed_sorted_lines = iter(reversed(sorted_lines))
+        methods = []
+        for function in sorted(data.functions, key=lambda f: data.functions[f].lineno, reverse=True):
+            function_cov = data.functions[function]
+            elem = _method_element(function_cov)
+            methods.append(elem)
+
+            lines = etree.Element("lines")
+            elem.append(lines)
+            function_branch = CoverageStat(0, 0)
+            function_linenos = []
+            for lineno in iter_reversed_sorted_lines:
+                if lineno >= function_cov.lineno:
+                    function_linenos.insert(0, lineno)
+                else:
+                    break
+            # Dummy file to get line coverage for function
+            dummy_file_coverage = FileCoverage("dummy")
+            for lineno in function_linenos:
+                line_cov = data.lines[lineno]
+                dummy_file_coverage.lines[lineno] = line_cov
+                if not (line_cov.is_covered or line_cov.is_uncovered):
+                    continue
+
+                b = line_cov.branch_coverage()
+                if b.total:
+                    function_branch += b
+                lines.append(_line_element(line_cov))
+
+            stats = SummarizedStats.from_file(dummy_file_coverage)
+
+            elem.set("line-rate", _rate(stats.line))
+            elem.set("branch-rate", _rate(function_branch))
+            elem.set("complexity", "0.0")
+
+
+        elem = etree.SubElement(c, "methods")
+        for method in reversed(methods):
+            elem.append(method)
+
+        lines = etree.SubElement(c, "lines")
         # TODO should use FileCoverage.branch_coverage() calculation
         class_branch = CoverageStat(0, 0)
-        for lineno in sorted(data.lines):
+        for lineno in sorted_lines:
             line_cov = data.lines[lineno]
             if not (line_cov.is_covered or line_cov.is_uncovered):
                 continue
@@ -149,6 +187,19 @@ def _rate(stat: CoverageStat) -> str:
     if not total:
         return "0.0"
     return str(covered / total)
+
+
+def _method_element(function: FunctionCoverage) -> etree.Element:
+    elem = etree.Element("method")
+    function_name = function.name
+    function_signature = "-"
+    if "(" in function_name:
+        function_name, function_signature = function_name.split("(", maxsplit=1)
+        function_signature = f"({function_signature}"
+    elem.set("name", function_name)
+    elem.set("signature", function_signature)
+
+    return elem
 
 
 def _line_element(line: LineCoverage) -> etree.Element:
