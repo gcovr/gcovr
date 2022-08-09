@@ -24,7 +24,14 @@ from lxml import etree  # type: ignore
 
 from ..version import __version__
 from ..utils import open_binary_for_writing, presentable_filename
-from ..coverage import CovData, CoverageStat, FileCoverage, FunctionCoverage, LineCoverage, SummarizedStats
+from ..coverage import (
+    CovData,
+    CoverageStat,
+    FileCoverage,
+    FunctionCoverage,
+    LineCoverage,
+    SummarizedStats,
+)
 
 
 def print_cobertura_report(covdata: CovData, output_file, options):
@@ -78,7 +85,9 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         sorted_lines = sorted(data.lines)
         iter_reversed_sorted_lines = iter(reversed(sorted_lines))
         methods = []
-        for function in sorted(data.functions, key=lambda f: data.functions[f].lineno, reverse=True):
+        for function in sorted(
+            data.functions, key=lambda f: data.functions[f].lineno, reverse=True
+        ):
             function_cov = data.functions[function]
             elem = _method_element(function_cov)
             methods.append(elem)
@@ -110,7 +119,6 @@ def print_cobertura_report(covdata: CovData, output_file, options):
             elem.set("line-rate", _rate(stats.line))
             elem.set("branch-rate", _rate(function_branch))
             elem.set("complexity", "0.0")
-
 
         elem = etree.SubElement(c, "methods")
         for method in reversed(methods):
