@@ -1082,6 +1082,15 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "json_base",
+        ["--json-base"],
+        group="output_options",
+        metavar="PATH",
+        help="Prepend the given path to all file paths in JSON report.",
+        type=str,
+        default=None,
+    ),
+    GcovrConfigOption(
         "csv",
         ["--csv"],
         group="output_options",
