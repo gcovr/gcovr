@@ -66,7 +66,7 @@ def set_filename_function(options):
 
         def _get_filename(filename: str):
             filename = presentable_filename(filename, options.root_filter)
-            return os.path.join(options.json_base, filename)
+            return "/".join([options.json_base, filename])
 
     else:
 
