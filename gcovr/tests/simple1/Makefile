@@ -48,11 +48,11 @@ sonarqube:
 
 json_summary:
 	./testcase
-	$(GCOVR) -d --json-summary-pretty -o summary_coverage.json
+	$(GCOVR) -d --json-base test\\dir --json-summary-pretty -o summary_coverage.json
 
 json:
 	./testcase
-	$(GCOVR) --json-pretty --json coverage.json
+	$(GCOVR) --json-base test\\dir --json-pretty --json coverage.json
 
 coveralls:
 	./testcase
