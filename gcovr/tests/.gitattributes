@@ -7,8 +7,5 @@
 # See also: https://github.com/github/linguist
 # (While linguist-generated might be appropriate here,
 # that attribute would also suppress diffs on GH. Can't have that!)
-*/reference/*/coverage*.html linguist-detectable=false
-*/reference/*/coverage*.css  linguist-detectable=false
-*/reference/*/coverage*.xml  linguist-detectable=false
-*/reference/*/coverage*.txt  linguist-detectable=false
-**/Makefile                  linguist-detectable=false
+*/reference/**/*.* linguist-detectable=false
+**/Makefile        linguist-detectable=false
