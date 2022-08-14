@@ -204,8 +204,7 @@ def print_coveralls_report(covdata: CovData, output_file, options):
             list_index = len(source_file["coverage"]) + 1
             source_file["coverage"].extend(None for i in range(list_index, line))
 
-            # Skip blank lines _(neither covered or uncovered)_
-            if not line_details.is_covered and not line_details.is_uncovered:
+            if not line_details.is_reportable:
                 source_file["coverage"].append(None)
                 continue
 

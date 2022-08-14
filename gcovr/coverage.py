@@ -137,6 +137,14 @@ class FunctionCoverage:
 class LineCoverage:
     r"""Represent coverage information about a line.
 
+    Each line is either *noncode* or *coverable*.
+
+    A *coverable* line is either *excluded* or *reportable*.
+
+    A *reportable* line is either *covered* or *uncovered*.
+
+    The default state of a line is *coverable*/*reportable*/*uncovered*.
+
     Args:
         lineno (int):
             The line number.
@@ -172,20 +180,24 @@ class LineCoverage:
         self.decision: Optional[DecisionCoverage] = None
 
     @property
+    def is_coverable(self) -> bool:
+        return not self.noncode
+
+    @property
     def is_excluded(self) -> bool:
         return self.excluded
 
     @property
+    def is_reportable(self) -> bool:
+        return self.is_coverable and not self.excluded
+
+    @property
     def is_covered(self) -> bool:
-        if self.noncode:
-            return False
-        return self.count > 0
+        return self.is_reportable and self.count > 0
 
     @property
     def is_uncovered(self) -> bool:
-        if self.noncode:
-            return False
-        return self.count == 0
+        return self.is_reportable and self.count == 0
 
     @property
     def has_uncovered_branch(self) -> bool:
@@ -247,10 +259,10 @@ class FileCoverage:
         covered = 0
 
         for line in self.lines.values():
-            if line.is_covered or line.is_uncovered:
+            if line.is_reportable:
                 total += 1
-            if line.is_covered:
-                covered += 1
+                if line.is_covered:
+                    covered += 1
 
         return CoverageStat(covered, total)
 
@@ -258,7 +270,7 @@ class FileCoverage:
         stat = CoverageStat.new_empty()
 
         for line in self.lines.values():
-            if line.is_covered or line.is_uncovered:
+            if line.is_reportable:
                 stat += line.branch_coverage()
 
         return stat
@@ -267,7 +279,7 @@ class FileCoverage:
         stat = DecisionCoverageStat.new_empty()
 
         for line in self.lines.values():
-            if line.is_covered or line.is_uncovered:
+            if line.is_reportable:
                 stat += line.decision_coverage()
 
         return stat

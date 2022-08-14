@@ -40,6 +40,7 @@ from ..coverage import (
     DecisionCoverageStat,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
+    LineCoverage,
     SummarizedStats,
 )
 
@@ -530,7 +531,7 @@ def dict_from_stat(
     return data
 
 
-def source_row(lineno, source, line_cov):
+def source_row(lineno: int, source: str, line_cov: Optional[LineCoverage]) -> dict:
     linebranch = None
     linedecision = None
     linecount = ""
@@ -584,7 +585,7 @@ def source_row_branch(branches):
     }
 
 
-def source_row_decision(decision: DecisionCoverage) -> Optional[dict]:
+def source_row_decision(decision: Optional[DecisionCoverage]) -> Optional[dict]:
     if decision is None:
         return None
 
