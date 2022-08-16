@@ -52,13 +52,13 @@ from typing import (
     NoReturn,
 )
 
-from .coverage import BranchCoverage, FileCoverage, FunctionCoverage
+from .coverage import BranchCoverage, FileCoverage, FunctionCoverage, LineCoverage
 from .decision_analysis import DecisionParser
 from .merging import (
     MergeOptions,
-    get_or_create_line_coverage,
     insert_branch_coverage,
     insert_function_coverage,
+    insert_line_coverage,
 )
 
 
@@ -438,19 +438,17 @@ def _gather_coverage_from_line(
     if isinstance(line, _SourceLine):
         lineno = line.lineno
         is_excluded = line_is_excluded(lineno)
-        noncode, count = _line_noncode_and_count(
+
+        linecov = _make_line_coverage_and_exclusions(
             line,
+            lineno=lineno,
             flags=context.flags,
             is_excluded=is_excluded,
             is_function=bool(state.deferred_functions),
         )
 
-        # FIXME this can't yet use the merge() functions
-        # due to inconsistency in handling of the noncode flag
-        if noncode:
-            get_or_create_line_coverage(coverage, lineno).noncode = True
-        if count is not None:
-            get_or_create_line_coverage(coverage, lineno).count += count
+        if linecov is not None:
+            insert_line_coverage(coverage, linecov)
 
         # handle deferred functions
         for function in state.deferred_functions:
@@ -552,33 +550,36 @@ def _report_lines_with_errors(
     raise errors[0]  # guaranteed to have at least one exception
 
 
-def _line_noncode_and_count(
-    line: _SourceLine, *, flags: ParserFlags, is_excluded: bool, is_function: bool
-) -> Tuple[bool, Optional[int]]:
+def _make_line_coverage_and_exclusions(
+    line: _SourceLine,
+    *,
+    lineno: int,
+    flags: ParserFlags,
+    is_excluded: bool,
+    is_function: bool,
+) -> Optional[LineCoverage]:
     """
-    Some reports like JSON are sensitive to which lines are excluded,
-    so keep this convoluted logic for now.
-
-    The count field is only meaningful if not(noncode).
+    Register LineCoverage data for this line,
+    taking into account any exclusions and noncode status.
     """
 
     raw_count, _, source_code, extra_info = line
 
     if flags & ParserFlags.EXCLUDE_FUNCTION_LINES and is_function:
-        return True, None
-
-    if is_excluded:
-        return True, None
+        return LineCoverage(lineno, noncode=True)
 
     if extra_info & _ExtraInfo.NONCODE:
         if _is_non_code(source_code):
-            return True, None
-        return False, None  # completely ignore this line
+            return LineCoverage(lineno, noncode=True)
+        return None  # completely ignore this line
 
     if raw_count == 0 and _is_non_code(source_code):
-        return True, None
+        return LineCoverage(lineno, noncode=True)
 
-    return False, raw_count
+    if is_excluded:
+        return LineCoverage(lineno, excluded=True)
+
+    return LineCoverage(lineno, count=raw_count)
 
 
 def _function_can_be_excluded(name: str, flags: ParserFlags) -> bool:
