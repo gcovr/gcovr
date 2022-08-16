@@ -44,21 +44,23 @@ jobs:
         if [ -z "${{ github.event.pull_request.number }}" ]; then
           echo 'No PR defined'
         else
+          CHANGELOG_RST=doc/source/changelog.rst
+          CHANGELOG_NEW_DIR=doc/source/changelog.new
           if grep -qE '^\[no changelog\]' <<<"$PR_BODY"; then
             echo 'Marker "[no changelog]" found in PR body'
-            if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" != "" ]; then
-              echo "ERROR: $CHANGELOG_ISSUE found in CHANGELOG.rst."
+            if [ "$(grep -F "$CHANGELOG_ISSUE" ${CHANGELOG_RST} ${CHANGELOG_NEW_DIR}/*.rst)" != "" ]; then
+              echo "ERROR: $CHANGELOG_ISSUE found in ${CHANGELOG_RST} or ${CHANGELOG_NEW_DIR}/*.rst."
               exit 1
             else
-              echo "OK: $CHANGELOG_ISSUE not found in CHANGELOG.rst"
+              echo "OK: $CHANGELOG_ISSUE not found in ${CHANGELOG_RST} and ${CHANGELOG_NEW_DIR}/*.rst"
             fi
           else
             echo 'Marker "[no changelog]" not found in PR body'
-            if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" == "" ]; then
-              echo "ERROR: $CHANGELOG_ISSUE not found in CHANGELOG.rst."
+            if [ "$(grep -F "$CHANGELOG_ISSUE" ${CHANGELOG_RST} ${CHANGELOG_NEW_DIR}/*.rst)" == "" ]; then
+              echo "ERROR: $CHANGELOG_ISSUE not found in ${CHANGELOG_RST} and ${CHANGELOG_NEW_DIR}/*.rst."
               exit 1
             else
-              echo "OK: $CHANGELOG_ISSUE found in CHANGELOG.rst"
+              echo "OK: $CHANGELOG_ISSUE found in ${CHANGELOG_RST} or ${CHANGELOG_NEW_DIR}/*.rst"
             fi
           fi
         fi

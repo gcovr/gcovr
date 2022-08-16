@@ -116,10 +116,10 @@ Please follow this checklist for your pull request:
     please explain why we need this change and what your PR does.
     If this PR fixes an open issue,
     reference that issue in the pull request description.
-    Add a reference to the issue in the ``CHANGELOG.rst``, if the
-    change should not be visible in the changelog (minor or not of
-    interest), add the following string to a single line in the PR
-    body:
+    Add a RST file with the changelog snippet to the directory
+    ``doc/source/changelog.new``, if the change should not be visible
+    in the changelog (minor or not of interest), add the following
+    string to a single line in the PR body:
 
         [no changelog]
 

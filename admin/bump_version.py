@@ -4,7 +4,7 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 5.3, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
@@ -175,6 +175,9 @@ def updateChangelog(filename: str, lines: List[str]):
         if line == "Next Release":
             line = f"{VERSION} ({time.strftime('%d %B %Y')})"
             nextLine = "-" * len(line)
+        elif line == ".. toctree::":
+            newLines.append("..")
+            line = "  toctree::"
         elif nextLine:
             line = nextLine
             nextLine = None
@@ -264,7 +267,7 @@ def main():
                 handlers.append(updateCopyrightString)
             if filename == "deploy.yml":
                 handlers.append(updateCallOfReleaseChecklist)
-            if filename == "CHANGELOG.rst":
+            if filename == "changelog.rst":
                 handlers.append(updateChangelog)
             if filename == "README.rst":
                 handlers.append(updateReadme)

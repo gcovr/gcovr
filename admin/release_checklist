@@ -72,8 +72,8 @@ fi
 grep -qE "^__version__ = ['\"]$target_version['\"]\$" gcovr/version.py \
     || error "gcovr/version.py: Please update with this version"
 
-grep -qE "^$target_version \\(.+\\)\$" CHANGELOG.rst \
-    || error "CHANGELOG.rst: Please update with this version"
+grep -qE "^$target_version \\(.+\\)\$" doc/source/changelog.rst \
+    || error "doc/source/changelog.rst: Please update with this version"
 
 grep -qE "version=['\"]gcovr $target_version['\"]" doc/examples/example_xml.xml \
     || error "examples: Please regenerate: " \
