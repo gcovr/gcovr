@@ -53,13 +53,23 @@ Each **line** has the following form:
 ::
 
     {
-        "branches": [branch]
-        "count": count
-        "line_number": line_number
-        "gcovr/noncode": gcovr_noncode
+        "branches": [branch],
+        "count": count,
+        "line_number": line_number,
+        "gcovr/noncode": gcovr_noncode,
+        "gcovr/excluded": gcovr_excluded
     }
 
-*gcovr_noncode*: if True coverage info on this line should be ignored
+*gcovr_noncode*: true if there is no coverage data for this line,
+or if coverage was ignored by heuristics.
+May be absent if false.
+
+*gcovr_excluded*: true if coverage data for this line was explicitly excluded,
+in particular with :ref:`exclusion markers`.
+May be absent if false.
+
+.. versionchanged:: NEXT
+   The ``gcovr/noncode`` and ``gcovr/excluded`` markers can be absent if false.
 
 Each **branch** has the following form:
 ::
