@@ -117,7 +117,17 @@ Please follow this checklist for your pull request:
     If this PR fixes an open issue,
     reference that issue in the pull request description.
     Add a RST file with the changelog snippet to the directory
-    ``doc/source/changelog.new``, if the change should not be visible
+    ``doc/source/changelog.new``, e.g. Remove_bottleneck.rst:
+
+    .. code-block:: restructuredtext
+
+        Remove bottleneck
+        ==================
+
+        - Replace bottleneck ``CHANGELOG.rst`` with a single file for each PR (:issue:`657`)
+
+    The heading must be there to make Sphynx happy.
+    If the change should not be visible
     in the changelog (minor or not of interest), add the following
     string to a single line in the PR body:
 
