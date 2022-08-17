@@ -181,6 +181,38 @@ def main(args=None):
         sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
         sys.exit(0)
 
+    if hasattr(options, "bundle_app") and options.bundle_app:
+        from pkg_resources import resource_filename
+        import platform
+        import subprocess
+
+        main_py = resource_filename(__name__, "pyinstaller/main.py")
+        if platform.system() == "Windows":
+            executable = "gcovr.exe"
+        else:
+            executable = "gcovr"
+        pyinstaller_command = [
+            "pyinstaller",
+            "--collect-all",
+            "gcovr",
+            "--distpath",
+            ".",
+            "--workpath",
+            "./pyinstaller_build",
+            "--specpath",
+            "./pyinstaller",
+            "--onefile",
+            "-n",
+            executable,
+        ]
+        # This option contains the positional arguments, let's use them. :-)
+        if options.search_paths:
+            pyinstaller_command += options.search_paths
+        pyinstaller_command.append(main_py)
+        logger.debug("Running command: %s", str(pyinstaller_command))
+        p = subprocess.run(pyinstaller_command)
+        exit(8 if p.returncode else 0)
+
     if options.html_title == "":
         logger.error("an empty --html_title= is not allowed.")
         sys.exit(1)

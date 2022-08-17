@@ -221,6 +221,18 @@ def upload_wheel(session: nox.Session) -> None:
     session.run("twine", "upload", "dist/*", external=True)
 
 
+@nox.session
+def bundle_app(session: nox.Session) -> None:
+    """Bundle a standalone executable."""
+    session.install(
+        "pyinstaller",
+        "jinja2",
+        "lxml",
+        "pygments==2.7.4",
+    )
+    session.run("python", "-m", "gcovr", "--bundle-app", *session.posargs)
+
+
 def docker_container_os(session: nox.Session) -> str:
     if session.env["CC"] in ["gcc-5", "gcc-6"]:
         return "ubuntu:18.04"
