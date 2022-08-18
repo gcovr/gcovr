@@ -146,7 +146,7 @@ def tests_compiler_all(session: nox.Session) -> None:
 @nox.session
 @nox.parametrize("version", [nox.param(v, id=v) for v in GCC_VERSIONS])
 def tests_compiler(session: nox.Session, version: str) -> None:
-    """Run the test with a specifiv GCC version."""
+    """Run the test with a specific GCC version."""
     session.install(
         "jinja2",
         "lxml",
@@ -193,7 +193,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
 
 
 @nox.session
-def build_wheel(session: nox.Session) -> None:
+def build_wheel(session: nox.Session, skip_check: bool = False) -> None:
     """Build a wheel."""
     session.install("wheel")
     session.run("python", "setup.py", "sdist", "bdist_wheel")
@@ -201,12 +201,13 @@ def build_wheel(session: nox.Session) -> None:
     if os.path.isdir(dist_cache):
         shutil.rmtree(dist_cache)
     shutil.copytree("dist", dist_cache)
-    session.notify("check_wheel")
+    if not skip_check:
+        session.notify("check_wheel")
 
 
 @nox.session
 def check_wheel(session: nox.Session) -> None:
-    """Check the wheel, should not be used directly."""
+    """Check the wheel and do a smoke test, should not be used directly."""
     session.install("wheel", "twine")
     session.chdir(f"{session.cache_dir}/dist")
     session.run("twine", "check", "*", external=True)
@@ -224,13 +225,26 @@ def upload_wheel(session: nox.Session) -> None:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    session.install(
-        "pyinstaller",
-        "jinja2",
-        "lxml",
-        "pygments==2.7.4",
-    )
-    session.run("python", "-m", "gcovr", "--bundle-app", *session.posargs)
+    build_wheel(session, True)
+    session.notify("install_wheel_and_bundle_app")
+    session.notify("check_bundled_app")
+
+
+@nox.session
+def install_wheel_and_bundle_app(session: nox.Session) -> None:
+    """Install the wheel and bundle a app, should not be used directly."""
+    session.install("wheel", "pyinstaller")
+    session.chdir(f"{session.cache_dir}/dist")
+    session.install(glob.glob("*.whl")[0])
+    session.chdir("..")
+    session.run("python", "-m", "gcovr", "--verbose", "--bundle-app", *session.posargs)
+
+
+@nox.session
+def check_bundled_app(session: nox.Session) -> None:
+    """Run a smoke test with the bundled app, should not be used directly."""
+    session.chdir(session.cache_dir)
+    session.run("bash", "-c", "./gcovr --help", external=True)
 
 
 def docker_container_os(session: nox.Session) -> str:
