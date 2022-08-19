@@ -155,11 +155,9 @@ class LineCoverage:
     __slots__ = (
         "lineno",
         "count",
-        "noncode",
         "excluded",
         "branches",
         "decision",
-        "functions",
     )
 
     def __init__(self, lineno: int, count: int = 0, excluded: bool = False) -> None:
