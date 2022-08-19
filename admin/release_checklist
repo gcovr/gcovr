@@ -8,9 +8,9 @@ printerr() {
     echo "$@" >&2
 }
 
-verify_tags=yes
-verify_docs_next_version=yes
-verify_change_fragments=yes
+verify_tags=error
+verify_docs_next_version=error
+verify_change_fragments=error
 target_version=
 usage="usage: $0 [OPTIONS] TARGET_REVISION
 
@@ -23,15 +23,15 @@ Options:
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
         --no-verify-tags)
-            verify_tags=no
+            verify_tags=notice
             shift
             ;;
         --no-verify-docs-next-version)
-            verify_docs_next_version=no
+            verify_docs_next_version=notice
             shift
             ;;
         --no-verify-change-fragments)
-            verify_change_fragments=no
+            verify_change_fragments=notice
             shift
             ;;
         -*)
@@ -55,53 +55,56 @@ fi
 ok=yes
 
 maybe_error() {
-    local iserr="$1"
+    local influence="$1"
     shift
-    if [[ "$iserr" = yes ]]; then
+    if [[ "$influence" = "error" ]]; then
         ok=no
-        printerr "ERROR:" "$@"
-    else
-        # ok stays unchanged
-        printerr "WARNING:" "$@"
+    #else
+    #    ok stays unchanged
     fi
+    printerr "::$influence" "$@"
 }
 
-error() {
-    maybe_error yes "$@"
+log_error() {
+    maybe_error error "::" "$@"
 }
 
 if ! [[ -d .git ]]; then
-    error "Please run this script from the repository root"
+    log_error ":: Please run this script from the repository root"
     exit 1
 fi
 
 grep -qE "^__version__ = ['\"]$target_version['\"]\$" gcovr/version.py \
-    || error "gcovr/version.py: Please update with this version"
+    || log_error "gcovr/version.py:: Please update with this version"
 
 grep -qE "^$target_version \\(.+\\)\$" doc/source/changelog.rst \
-    || error "doc/source/changelog.rst: Please update with this version"
+    || log_error "doc/source/changelog.rst:: Please update with this version"
+
 change_fragments="$(ls -1 doc/source/changes/*.rst 2>/dev/null || exit 0)"
 test -z "$change_fragments" || {
-    maybe_error $verify_change_fragments \
-                "doc/source/changes/*.rst: Please add to doc/source/changelog.rst"
-    echo "$change_fragments" | sed 's/^/INFO: /' >&2
+    while IFS= read -r line; do
+        maybe_error $verify_change_fragments \
+            "file=$line :: Move fragment to doc/source/changelog.rst"
+    done <<< "$change_fragments"
 }
 
 grep -qE "version=['\"]gcovr $target_version['\"]" doc/examples/example_xml.xml \
-    || error "examples: Please regenerate: " \
+    || log_error ":: Please regenerate the examples: " \
              "cd doc/examples; ./example_xml.sh > example_xml.xml"
 
 grep -qE "^ *.*$(basename $0) .EXTRA_CHECKLIST_ARGS $target_version\$" .github/workflows/deploy.yml \
-    || error ".github/workflows/deploy.yml: Please update the $0 version"
+    || log_error ".github/workflows/deploy.yml:: Please update the $0 version"
 
 occurrences="$(
   grep -E '\.\. (versionadded|versionchanged|deprecated):: NEXT' \
-       -A 1 doc/source/*.rst doc/source/*/*.rst *.rst || exit 0)"
+       doc/source/*.rst doc/source/*/*.rst *.rst || exit 0)"
 test -z "$occurrences" || {
     maybe_error $verify_docs_next_version \
-                "doc/source/*.rst: Please update notes with next version"
-    # shellcheck disable=SC2001
-    echo "$occurrences" | sed 's/^/INFO: /' >&2
+                ":: Please update notes with next version"
+    while IFS= read -r line; do
+        maybe_error $verify_change_fragments \
+            "file=$line :: Please update with next version"
+    done <<< "$occurrences"
 }
 
 if git tag | grep -qE "^$target_version\$"; then
@@ -109,12 +112,12 @@ if git tag | grep -qE "^$target_version\$"; then
     [[ "$target_version" = 3.4 ]] \
         || [[ "$(git cat-file -t "$target_version")" = tag ]] \
         || maybe_error $verify_tags \
-                       "Please use annotated tags (git tag -a) for releases"
+                       ":: Please use annotated tags (git tag -a) for releases"
 fi
 
 if [[ "$ok" = yes ]]; then
     echo "SUCCESS: release may proceed"
 else
-    echo "FAILURE: please fix the above problems"
+    echo "::error ::Please fix the above problems"
     exit 1
 fi
