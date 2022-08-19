@@ -52,7 +52,7 @@ from ..merging import (
 logger = logging.getLogger("gcovr")
 
 
-JSON_FORMAT_VERSION = "0.3"
+JSON_FORMAT_VERSION = "0.4"
 JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
