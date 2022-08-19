@@ -373,8 +373,8 @@ def parse_coverage(
             exclude_pattern_prefix=exclude_pattern_prefix,
         )
     else:
-        line_is_excluded = _make_is_in_any_range([])
-        branch_is_excluded = _make_is_in_any_range([])
+        line_is_excluded = _make_is_in_any_range_inclusive([])
+        branch_is_excluded = _make_is_in_any_range_inclusive([])
 
     coverage = FileCoverage(filename)
     state = _ParserState()
@@ -969,7 +969,7 @@ class _ExclusionRangeWarnings:
             f"          in file {self.filename}."
         )
 
-    def line_after_start(self, lineno: int, start: str, start_lineno: str) -> None:
+    def line_after_start(self, lineno: int, start: str, start_lineno: int) -> None:
         """warn that a region was started but an excluded line was found"""
         logger.warning(
             f"{start} found on line {lineno} in excluded region started on line {start_lineno}, "
@@ -984,7 +984,7 @@ def _process_exclusion_marker(
     exclude_word: str,
     warnings: _ExclusionRangeWarnings,
     exclude_ranges: List[Tuple[int, int]],
-    exclusion_stack: List[Tuple[int, int]],
+    exclusion_stack: List[Tuple[str, int]],
 ) -> None:
     """
     Process the exclusion marker.
@@ -1003,7 +1003,7 @@ def _process_exclusion_marker(
                 exclusion_stack[-1][1],
             )
         else:
-            exclude_ranges.append((lineno, lineno + 1))
+            exclude_ranges.append((lineno, lineno))
 
     if flag == "START":
         exclusion_stack.append((header, lineno))
@@ -1038,7 +1038,7 @@ def _find_excluded_ranges(
     exclude_lines_by_custom_pattern: Optional[str] = None,
     exclude_branches_by_custom_pattern: Optional[str] = None,
     exclude_pattern_prefix: str,
-) -> Tuple[Callable[[int], bool]]:
+) -> Tuple[Callable[[int], bool], Callable[[int], bool]]:
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
 
@@ -1049,9 +1049,27 @@ def _find_excluded_ranges(
     ...     lines, warnings=..., exclude_lines_by_custom_pattern = '.*IGNORE_LINE',
     ...     exclude_branches_by_custom_pattern = '.*IGNORE_BR', exclude_pattern_prefix='PREFIX')
     >>> [lineno for lineno in range(30) if exclude_line(lineno)]
-    [11, 13, 15, 16, 17]
+    [11, 13, 15, 16, 17, 18]
     >>> [lineno for lineno in range(30) if exclude_branch(lineno)]
-    [21, 23, 25, 26, 27]
+    [21, 23, 25, 26, 27, 28]
+
+    The stop marker line is inclusive:
+    >>> exclude_line, _ = _find_excluded_ranges(
+    ...     [(3, '// PREFIX_EXCL_START'),
+    ...      (6, '// PREFIX_EXCL_STOP')],
+    ...     warnings=...,
+    ...     exclude_pattern_prefix='PREFIX')
+    >>> for lineno in range(1, 10):
+    ...     print(f"{lineno}: {'excluded' if exclude_line(lineno) else 'code'}")
+    1: code
+    2: code
+    3: excluded
+    4: excluded
+    5: excluded
+    6: excluded
+    7: code
+    8: code
+    9: code
     """
     exclude_lines_by_custom_pattern_regex = None
     if exclude_lines_by_custom_pattern:
@@ -1100,7 +1118,7 @@ def _find_excluded_ranges(
 
         if exclude_lines_by_custom_pattern_regex:
             if exclude_lines_by_custom_pattern_regex.match(code):
-                exclude_line_ranges.append((lineno, lineno + 1))
+                exclude_line_ranges.append((lineno, lineno))
 
         # branch marker exclusion
         if _EXCLUDE_FLAG in code:
@@ -1126,7 +1144,7 @@ def _find_excluded_ranges(
 
         if exclude_branches_by_custom_pattern_regex:
             if exclude_branches_by_custom_pattern_regex.match(code):
-                exclude_branch_ranges.append((lineno, lineno + 1))
+                exclude_branch_ranges.append((lineno, lineno))
 
     for header, lineno in exclusion_stack_line:
         warnings.start_without_stop(
@@ -1143,26 +1161,28 @@ def _find_excluded_ranges(
         )
 
     return (
-        _make_is_in_any_range(exclude_line_ranges),
-        _make_is_in_any_range(exclude_branch_ranges),
+        _make_is_in_any_range_inclusive(exclude_line_ranges),
+        _make_is_in_any_range_inclusive(exclude_branch_ranges),
     )
 
 
-def _make_is_in_any_range(ranges: List[Tuple[int, int]]) -> Callable[[int], bool]:
+def _make_is_in_any_range_inclusive(
+    ranges: List[Tuple[int, int]],
+) -> Callable[[int], bool]:
     """
-    Create a function to check whether an input is in any range.
+    Create a function to check whether an input is in any range (inclusive).
 
     This function should provide reasonable performance
     if queries are mostly made in ascending order.
 
     Example:
-    >>> select = _make_is_in_any_range([(3,4), (5,7)])
+    >>> select = _make_is_in_any_range_inclusive([(3,3), (5,7)])
     >>> select(0)
     False
     >>> select(6)
     True
     >>> [x for x in range(10) if select(x)]
-    [3, 5, 6]
+    [3, 5, 6, 7]
     """
 
     # values are likely queried in ascending order,
@@ -1188,7 +1208,7 @@ def _make_is_in_any_range(ranges: List[Tuple[int, int]]) -> Callable[[int], bool
             if value < start:
                 break
 
-            if start <= value < end:
+            if start <= value <= end:
                 return True
         else:
             hint_index = len(ranges)
