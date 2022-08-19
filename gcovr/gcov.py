@@ -421,13 +421,13 @@ class gcov:
             gcov.__lock.release()
             assert (
                 gcov.__cmd == cmd
-            ), f"Gcov command must not me changed, expected '{gcov.__cmd}', got '{cmd}'"
+            ), f"Gcov command must not be changed, expected '{gcov.__cmd}', got '{cmd}'"
 
     def __get_help_output(self):
         if gcov.__help_output is None:
             gcov.__help_output = ""
             for help_option in ["--help", "--help-hidden"]:
-                gcov_process = self.run_with_args(
+                gcov_process = self.__get_gcov_process(
                     [help_option],
                     universal_newlines=True,
                 )
@@ -451,7 +451,7 @@ class gcov:
     def get_default_options(self):
         return gcov.__default_options
 
-    def run_with_args(self, args, **kwargs):
+    def __get_gcov_process(self, args, **kwargs):
         # NB: Currently, we will only parse English output
         env = kwargs.pop("env") if "env" in kwargs else dict(os.environ)
         env["LC_ALL"] = "C"
@@ -471,6 +471,29 @@ class gcov:
             **kwargs,
         )
 
+    def run_with_args(self, args, **kwargs):
+        """Run the gcov program
+
+        >>> gcov("bash").run_with_args(["-c", "exit 1"])
+        Traceback (most recent call last):
+        ...
+        RuntimeError: GCOV returncode was 1.
+        >>> gcov("bash").run_with_args(["-c", "kill $$"])
+        Traceback (most recent call last):
+        ...
+        RuntimeError: GCOV returncode was -15 (exited by signal).
+        """
+        gcov_process = self.__get_gcov_process(args, **kwargs)
+        out, err = gcov_process.communicate()
+        if gcov_process.returncode < 0:
+            raise RuntimeError(
+                f"GCOV returncode was {gcov_process.returncode} (exited by signal)."
+            )
+        elif gcov_process.returncode != 0:
+            raise RuntimeError(f"GCOV returncode was {gcov_process.returncode}.")
+
+        return (out, err)
+
 
 def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, chdir):
     fname = None
@@ -483,7 +506,7 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
         # This lock is essential for parallel processing because without
         # this there can be name collisions for the generated output files.
         with locked_directory(chdir):
-            gcov_process = gcov_cmd.run_with_args(
+            out, err = gcov_cmd.run_with_args(
                 [
                     abs_filename,
                     *gcov_cmd.get_default_options(),
@@ -492,13 +515,6 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
                 ],
                 cwd=chdir,
             )
-            out, err = gcov_process.communicate()
-            if gcov_process.returncode < 0:
-                raise RuntimeError(
-                    f"GCOV returncode was {gcov_process.returncode} (exited by signal)."
-                )
-            elif gcov_process.returncode != 0:
-                raise RuntimeError(f"GCOV returncode was {gcov_process.returncode}.")
 
             # find the files that gcov created
             active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
