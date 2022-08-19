@@ -117,12 +117,22 @@ Please follow this checklist for your pull request:
     If this PR fixes an open issue,
     reference that issue in the pull request description.
     Add a RST file with the changelog snippet to the directory
-    ``doc/source/changelog.new``, e.g. Remove_bottleneck.rst:
+    ``doc/source/changes``. As prefix for the filename and heading inside
+    use one of:
+
+    - ``removal.``: Signifying a deprecation or removal of public API.
+    - ``feature.``, Signifying a new feature.
+    - ``bugfix.``: Signifying a bug fix.
+    - ``doc.``: Signifying a documentation improvement.
+    - ``misc.``: Any other change which is worth to document.
 
     .. code-block:: restructuredtext
 
-        Remove bottleneck
-        ==================
+        ..
+            feature.Remove_bottleneck.rst:
+
+        Remove bottleneck ``CHANGELOG.rst``
+        -----------------------------------
 
         - Replace bottleneck ``CHANGELOG.rst`` with a single file for each PR (:issue:`657`)
 

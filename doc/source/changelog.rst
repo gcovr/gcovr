@@ -9,10 +9,12 @@ Change Log
 Next Release
 ------------
 
+Changes not added below yet:
+
 .. toctree::
     :glob:
 
-    changelog.new/*
+    changes/*
 
 Known bugs:
 
