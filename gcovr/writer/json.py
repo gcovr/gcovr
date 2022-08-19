@@ -57,26 +57,6 @@ JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
 
-get_filename = None
-
-
-def set_filename_function(options):
-    if options.json_base:
-        options.json_base = os.path.normpath(options.json_base).replace("\\", "/")
-
-        def _get_filename(filename: str):
-            filename = presentable_filename(filename, options.root_filter)
-            return "/".join([options.json_base, filename])
-
-    else:
-
-        def _get_filename(filename: str):
-            return presentable_filename(filename, options.root_filter)
-
-    global get_filename
-    get_filename = _get_filename
-
-
 def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
     r"""helper utility to output json format dictionary to a file/STDOUT"""
     write_json = json.dump
@@ -99,11 +79,9 @@ def print_json_report(covdata: CovData, output_file, options):
     r"""produce an JSON report in the format partially
     compatible with gcov JSON output"""
 
-    set_filename_function(options)
-
     gcovr_json_root = {
         "gcovr/format_version": JSON_FORMAT_VERSION,
-        "files": _json_from_files(covdata),
+        "files": _json_from_files(covdata, options),
     }
 
     _write_json_result(
@@ -113,8 +91,6 @@ def print_json_report(covdata: CovData, output_file, options):
 
 def print_json_summary_report(covdata, output_file, options):
     """Produce gcovr JSON summary report"""
-
-    set_filename_function(options)
 
     json_dict = {}
 
@@ -134,7 +110,9 @@ def print_json_summary_report(covdata, output_file, options):
     )
 
     for key in keys:
-        filename = get_filename(covdata[key].filename)
+        filename = presentable_filename(covdata[key].filename, options.root_filter)
+        if options.json_base:
+            filename = "/".join([options.json_base, filename])
 
         json_dict["files"].append(
             {
@@ -222,13 +200,16 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
     return covdata
 
 
-def _json_from_files(files: CovData) -> list:
-    return [_json_from_file(files[key]) for key in sorted(files)]
+def _json_from_files(files: CovData, options) -> list:
+    return [_json_from_file(files[key], options) for key in sorted(files)]
 
 
-def _json_from_file(file: FileCoverage) -> dict:
+def _json_from_file(file: FileCoverage, options) -> dict:
+    filename = presentable_filename(file.filename, options.root_filter)
+    if options.json_base:
+        filename = "/".join([options.json_base, filename])
     return {
-        "file": get_filename(file.filename),
+        "file": filename,
         "lines": _json_from_lines(file.lines),
         "functions": _json_from_functions(file.functions),
     }
