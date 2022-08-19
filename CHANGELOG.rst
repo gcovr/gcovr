@@ -10,16 +10,26 @@ Known bugs:
 
 Breaking changes:
 
+- Remove "noncode" entries in JSON reports. (:issue:`663`)
+
 New features and notable changes:
+
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
 
 Bug fixes and small improvements:
+
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
+- Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
+- Fix handling for nonexistent source code for HTML-details and Coveralls reports (:issue:`663`)
+- :ref:`Exclusion marker regions <exclusion markers>` now contain the STOP marker line (:issue:`663`)
 
 Documentation:
 
+- Add detailed reference for the JSON output format. (:issue:`663`)
+
 Internal changes:
+
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
 
 5.2 (06 August 2022)
