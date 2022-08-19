@@ -473,6 +473,7 @@ def print_html_report(covdata: CovData, output_file, options):
                 lines = formatter.highlighter_for_file(data["filename"])(
                     source_file.read()
                 )
+                ctr = 0
                 for ctr, line in enumerate(lines, 1):
                     data["source_lines"].append(
                         source_row(ctr, line, cdata.lines.get(ctr))
@@ -483,7 +484,7 @@ def print_html_report(covdata: CovData, output_file, options):
                     )
         except IOError as e:
             logger.warning(f'File {data["filename"]} not found: {repr(e)}')
-            for ctr in range(1, max_line_from_cdata):
+            for ctr in range(1, max_line_from_cdata + 1):
                 data["source_lines"].append(
                     source_row(
                         ctr,
