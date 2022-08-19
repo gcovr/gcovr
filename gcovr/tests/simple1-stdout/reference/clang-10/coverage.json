@@ -17,18 +17,6 @@
             "lines": [
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 2
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 3
-                },
-                {
-                    "branches": [],
                     "count": 1,
                     "line_number": 4
                 },
@@ -60,26 +48,8 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 9
-                },
-                {
-                    "branches": [],
                     "count": 1,
                     "line_number": 10
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 11
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 12
                 },
                 {
                     "branches": [],
@@ -114,29 +84,11 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 23
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 24
-                },
-                {
-                    "branches": [],
                     "count": 1,
                     "line_number": 25
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 26
                 }
             ]
         }
     ],
-    "gcovr/format_version": "0.3"
+    "gcovr/format_version": "0.4"
 }

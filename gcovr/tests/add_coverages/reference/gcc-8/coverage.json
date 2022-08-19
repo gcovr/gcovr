@@ -17,12 +17,6 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 2
-                },
-                {
-                    "branches": [],
                     "count": 1,
                     "line_number": 3
                 },
@@ -35,18 +29,6 @@
                     "branches": [],
                     "count": 1,
                     "line_number": 5
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 6
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 7
                 }
             ]
         },
@@ -67,12 +49,6 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 2
-                },
-                {
-                    "branches": [],
                     "count": 1,
                     "line_number": 3
                 },
@@ -85,12 +61,6 @@
                     "branches": [],
                     "count": 1,
                     "line_number": 5
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 6
                 }
             ]
         },
@@ -104,18 +74,6 @@
                 }
             ],
             "lines": [
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 2
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 9
-                },
                 {
                     "branches": [],
                     "count": 2,
@@ -133,23 +91,11 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 17
-                },
-                {
-                    "branches": [],
                     "count": 2,
                     "line_number": 18
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 19
                 }
             ]
         }
     ],
-    "gcovr/format_version": "0.3"
+    "gcovr/format_version": "0.4"
 }

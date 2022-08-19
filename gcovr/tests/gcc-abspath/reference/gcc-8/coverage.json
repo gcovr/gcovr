@@ -12,12 +12,6 @@
             "lines": [
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 2
-                },
-                {
-                    "branches": [],
                     "count": 1,
                     "line_number": 3
                 },
@@ -30,15 +24,9 @@
                     "branches": [],
                     "count": 1,
                     "line_number": 5
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 6
                 }
             ]
         }
     ],
-    "gcovr/format_version": "0.3"
+    "gcovr/format_version": "0.4"
 }
