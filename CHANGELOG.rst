@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
+- New :option:`--bundle-app` to generate a portable application with pyinstaller. (:issue:`661`)
+
 
 Bug fixes and small improvements:
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
