@@ -137,9 +137,7 @@ class FunctionCoverage:
 class LineCoverage:
     r"""Represent coverage information about a line.
 
-    Each line is either *noncode* or *coverable*.
-
-    A *coverable* line is either *excluded* or *reportable*.
+    Each line is either *excluded* or *reportable*.
 
     A *reportable* line is either *covered* or *uncovered*.
 
@@ -150,8 +148,6 @@ class LineCoverage:
             The line number.
         count (int):
             How often this line was executed at least partially.
-        noncode (bool, optional):
-            Whether any coverage info on this line should be ignored.
         excluded (bool, optional):
             Whether this line is excluded by a marker.
     """
@@ -166,22 +162,15 @@ class LineCoverage:
         "functions",
     )
 
-    def __init__(
-        self, lineno: int, count: int = 0, noncode: bool = False, excluded: bool = False
-    ) -> None:
+    def __init__(self, lineno: int, count: int = 0, excluded: bool = False) -> None:
         assert lineno > 0
         assert count >= 0
 
         self.lineno: int = lineno
         self.count: int = count
-        self.noncode: bool = noncode
         self.excluded: bool = excluded
         self.branches: Dict[int, BranchCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
-
-    @property
-    def is_coverable(self) -> bool:
-        return not self.noncode
 
     @property
     def is_excluded(self) -> bool:
@@ -189,7 +178,7 @@ class LineCoverage:
 
     @property
     def is_reportable(self) -> bool:
-        return self.is_coverable and not self.excluded
+        return not self.excluded
 
     @property
     def is_covered(self) -> bool:

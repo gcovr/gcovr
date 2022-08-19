@@ -478,9 +478,10 @@ def _gather_coverage_from_line(
             )
             return state
 
-        line_cov = coverage.lines[state.lineno]  # must already exist
+        # line_cov won't exist if it was considered noncode
+        line_cov = coverage.lines.get(state.lineno)
 
-        if not branch_is_excluded(state.lineno):
+        if line_cov and not branch_is_excluded(state.lineno):
             insert_branch_coverage(
                 line_cov,
                 branchno,
@@ -566,15 +567,13 @@ def _make_line_coverage_and_exclusions(
     raw_count, _, source_code, extra_info = line
 
     if flags & ParserFlags.EXCLUDE_FUNCTION_LINES and is_function:
-        return LineCoverage(lineno, noncode=True)
+        return None
 
     if extra_info & _ExtraInfo.NONCODE:
-        if _is_non_code(source_code):
-            return LineCoverage(lineno, noncode=True)
-        return None  # completely ignore this line
+        return None
 
     if raw_count == 0 and _is_non_code(source_code):
-        return LineCoverage(lineno, noncode=True)
+        return None
 
     if is_excluded:
         return LineCoverage(lineno, excluded=True)

@@ -137,7 +137,7 @@ class DecisionParser:
     def parse_one_line(self, lineno: int, code: str) -> None:
         line_coverage = self.coverage.lines.get(lineno)
 
-        if line_coverage is None or line_coverage.noncode:
+        if line_coverage is None:
             return
 
         # check, if a analysis for a classic if-/else if-branch is active

@@ -607,10 +607,7 @@ def test_noncode_lines():
 
         -: 42: // no code
 
-    But gcovr has a differing concept of "noncode"
-    that sometimes removes lines entirely,
-    sometimes adds a line with "noncode" status,
-    and sometimes shows an uncovered line.
+    But gcovr can also exclude additional lines as noncode.
     """
 
     def get_line_status(
@@ -628,13 +625,9 @@ def test_noncode_lines():
         )
 
         for line_data in coverage.lines.values():
-            if line_data.noncode:
-                status = "noncode"
-            else:
-                status = "normal"
-            return f"{status}:{line_data.count}"
+            return f"normal:{line_data.count}"
 
-        return "excluded"
+        return "noncode"
 
     # First, handling of function lines
 
@@ -656,21 +649,21 @@ def test_noncode_lines():
         ],
         flags=ParserFlags.EXCLUDE_FUNCTION_LINES,
     )
-    assert status == "noncode:0"
+    assert status == "noncode"
 
     # Next, handling of noncode lines
 
     # Gcov says noncode but it looks like code: throw line away
-    assert get_line_status(["-: 32:this looks like code"]) == "excluded"
+    assert get_line_status(["-: 32:this looks like code"]) == "noncode"
 
-    # Gcov says noncode and it doesn't look like code: keep with noncode status
-    assert get_line_status(["-: 32:}"]) == "noncode:0"
+    # Gcov says noncode and it doesn't look like code: discard
+    assert get_line_status(["-: 32:}"]) == "noncode"
 
     # Uncovered line with code: keep
     assert get_line_status(["#####: 32:looks like code"]) == "normal:0"
 
-    # Uncovered code that doesn't look like code: keep with noncode status
-    assert get_line_status(["#####: 32:}"]) == "noncode:0"
+    # Uncovered code that doesn't look like code: discard
+    assert get_line_status(["#####: 32:}"]) == "noncode"
 
 
 def check_and_raise(number, mutable, exc_raised, queue_full):

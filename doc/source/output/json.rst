@@ -88,7 +88,6 @@ Each **line** entry contains coverage data for one line::
         "branches": [branch],
         "count": count,
         "line_number": line_number,
-        "gcovr/noncode": noncode,
         "gcovr/excluded": excluded
         "gcovr/decision": decision
     }
@@ -102,11 +101,6 @@ count: int
 line_number: int
   The 1-based line number to which this entry relates.
 
-gcovr/noncode: boolean
-  True if there is no coverage data for this line,
-  or if coverage was ignored by heuristics.
-  May be absent if false.
-
 gcovr/excluded: boolean
   True if coverage data for this line was explicitly excluded,
   in particular with :ref:`exclusion markers`.
@@ -117,17 +111,22 @@ gcovr/decision: object
   Absent if there is no decision to report.
   Requires that :option:`--decisions <gcovr --decisions>` coverage analysis was enabled.
 
-A noncode line entry might be absent entirely.
+If there is no line entry for a source code line,
+it either means that the compiler did not generate any code for that line,
+or that gcovr ignored this coverage data due to heuristics.
 
 The line entry should be interpreted as follows:
 
-* if ``gcovr/noncode`` is true, it should be ignored as the line does not contain any data.
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
 
 .. versionchanged:: NEXT
-   The ``gcovr/noncode`` and ``gcovr/excluded`` markers can be absent if false.
+   The ``gcovr/excluded`` field can be absent if false.
+
+.. versionchanged:: NEXT
+   The ``gcovr/noncode`` field was removed.
+   Instead of generating noncode entries, the entire line is skipped.
 
 .. _json_format_branch:
 

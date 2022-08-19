@@ -225,8 +225,6 @@ def _json_from_line(line: LineCoverage) -> dict:
         "count": line.count,
         "branches": _json_from_branches(line.branches),
     }
-    if line.noncode:
-        json_line["gcovr/noncode"] = True
     if line.excluded:
         json_line["gcovr/excluded"] = True
     if line.decision is not None:
@@ -290,7 +288,6 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     line = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
-        noncode=json_line.get("gcovr/noncode", False),
         excluded=json_line.get("gcovr/excluded", False),
     )
 
