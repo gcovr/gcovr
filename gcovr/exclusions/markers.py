@@ -18,21 +18,14 @@
 # ****************************************************************************
 
 """
-Handle exclusion markers and any other source code level filtering mechanisms.
-
-The different mechanisms are exposed as separate passes/functions
-that remove unwanted aspects from the coverage data.
-Alternatively, they full suite of exclusion rules can be invoked
-via ``apply_all_exclusions()``, which is configured via the usual options object.
+Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
 """
 
-from dataclasses import dataclass
-from typing import List, Optional, Callable, Tuple, Iterable
+from typing import List, Optional, Tuple, Callable, Iterable
 import logging
 import re
 
-from .coverage import FileCoverage
-
+from ..coverage import FileCoverage
 
 logger = logging.getLogger("gcovr")
 
@@ -41,66 +34,7 @@ _EXCLUDE_LINE_WORD = ""
 _EXCLUDE_BRANCH_WORD = "BR_"
 _EXCLUDE_PATTERN_POSTFIX = "(LINE|START|STOP)"
 
-_C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
-_CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
-
 ExclusionPredicate = Callable[[int], bool]
-
-
-@dataclass
-class ExclusionOptions:
-    """
-    Options used by exclusion processing.
-
-    The defaults are just for testing purposes.
-    Otherwise, this class acts more like an interface,
-    describing some options in "gcovr.configuration".
-    """
-
-    respect_exclusion_markers: bool = True
-    exclude_lines_by_pattern: Optional[str] = None
-    exclude_branches_by_pattern: Optional[str] = None
-    exclude_pattern_prefix: str = "PREFIX"
-    exclude_throw_branches: bool = False
-    exclude_unreachable_branches: bool = False
-    exclude_function_lines: bool = False
-    exclude_internal_functions: bool = False
-
-
-def apply_all_exclusions(
-    filecov: FileCoverage,
-    *,
-    lines: List[str],
-    options: ExclusionOptions,
-) -> None:
-    """
-    Apply all available exclusion mechanisms, if they are enabled by the options.
-
-    Modifies the FileCoverage in place.
-    """
-
-    remove_noncode_lines(filecov, lines=lines)
-
-    if options.respect_exclusion_markers:
-        apply_exclusion_markers(
-            filecov,
-            lines=lines,
-            exclude_lines_by_pattern=options.exclude_lines_by_pattern,
-            exclude_branches_by_pattern=options.exclude_branches_by_pattern,
-            exclude_pattern_prefix=options.exclude_pattern_prefix,
-        )
-
-    if options.exclude_throw_branches:
-        remove_throw_branches(filecov)
-
-    if options.exclude_unreachable_branches:
-        remove_unreachable_branches(filecov, lines=lines)
-
-    if options.exclude_function_lines:
-        remove_function_lines(filecov)
-
-    if options.exclude_internal_functions:
-        remove_internal_functions(filecov)
 
 
 def apply_exclusion_markers(
@@ -146,130 +80,6 @@ def apply_exclusion_markers(
 
         elif branch_is_excluded(linecov.lineno):
             linecov.branches = {}
-
-
-def remove_internal_functions(filecov: FileCoverage):
-    """Remove compiler-generated functions, e.g. for static initialization."""
-
-    # iterate over shallow copy
-    for function in list(filecov.functions.values()):
-        if _function_can_be_excluded(function.name):
-            logger.debug(
-                "Ignoring symbol %s in line %d in file %s",
-                function.name,
-                function.lineno,
-                filecov.filename,
-            )
-
-            filecov.functions.pop(function.name)
-
-
-def _function_can_be_excluded(name: str) -> bool:
-    """special names for construction/destruction of static objects will be ignored"""
-    return name.startswith("__") or name.startswith("_GLOBAL__sub_I_")
-
-
-def remove_function_lines(filecov: FileCoverage) -> None:
-    """Remove coverage for lines that contain a function definition."""
-    # iterate over a shallow copy
-    known_function_lines = set(
-        function.lineno for function in filecov.functions.values()
-    )
-    for linecov in list(filecov.lines.values()):
-        if linecov.lineno in known_function_lines:
-            filecov.lines.pop(linecov.lineno)
-
-
-def remove_throw_branches(filecov: FileCoverage) -> None:
-    """Remove branches annotated as "throw"."""
-    for linecov in filecov.lines.values():
-        # iterate over shallow copy
-        for branch_id, branch in list(linecov.branches.items()):
-            if not branch.throw:
-                continue
-
-            logger.debug(
-                "Excluding unreachable branch on line %d file %s: detected as exception-only code",
-                linecov.lineno,
-                filecov.filename,
-            )
-            linecov.branches.pop(branch_id)
-
-
-def remove_unreachable_branches(filecov: FileCoverage, *, lines: List[str]) -> None:
-    """Remove branches on lines that look like they don't contain useful code."""
-    for linecov in filecov.lines.values():
-        if not linecov.branches:
-            continue
-
-        if _line_can_contain_branches(lines[linecov.lineno - 1]):
-            continue
-
-        logger.debug(
-            "Excluding unreachable branch on line %d file %s: detected as compiler-generated code",
-            linecov.lineno,
-            filecov.filename,
-        )
-
-        linecov.branches = {}
-
-
-def remove_noncode_lines(filecov: FileCoverage, *, lines: List[str]) -> None:
-    """Remove lines that look like non-code."""
-    # iterate over a shallow copy
-    for linecov in list(filecov.lines.values()):
-        source_code = lines[linecov.lineno - 1]
-        if linecov.count == 0 and _is_non_code(source_code):
-            filecov.lines.pop(linecov.lineno)
-
-
-def _line_can_contain_branches(code: str) -> bool:
-    """
-    False if the line looks empty except for braces.
-
-    >>> _line_can_contain_branches('} // end something')
-    False
-    >>> _line_can_contain_branches('foo();')
-    True
-    """
-
-    code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
-    code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip().replace(" ", "")
-    return code not in ["", "{", "}", "{}"]
-
-
-def _is_non_code(code: str) -> bool:
-    """
-    Check for patterns that indicate that this line doesn't contain useful code.
-
-    Examples:
-    >>> _is_non_code('  // some comment!')
-    True
-    >>> _is_non_code('  /* some comment! */')
-    True
-    >>> _is_non_code('} else {')  # could be easily made detectable
-    False
-    >>> _is_non_code('}else{')
-    False
-    >>> _is_non_code('else')
-    True
-    >>> _is_non_code('{')
-    True
-    >>> _is_non_code('/* some comment */ {')
-    True
-    >>> _is_non_code('}')
-    True
-    >>> _is_non_code('} // some code')
-    True
-    >>> _is_non_code('return {};')
-    False
-    """
-
-    code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
-    code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip()
-    return len(code) == 0 or code in ["{", "}", "else"]
 
 
 class _ExclusionRangeWarnings:
