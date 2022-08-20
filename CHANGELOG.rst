@@ -11,16 +11,19 @@ Known bugs:
 Breaking changes:
 
 New features and notable changes:
+
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
-- New :option:`--bundle-app` to generate a portable application with pyinstaller. (:issue:`661`)
+- New nox session `bundle_app` to generate a portable application with pyinstaller. (:issue:`661`)
 
 
 Bug fixes and small improvements:
+
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 
 Documentation:
 
 Internal changes:
+
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
 
 5.2 (06 August 2022)

@@ -53,7 +53,7 @@ setup(
     packages=find_packages(include=["gcovr*"], exclude=["gcovr.tests"]),
     install_requires=["jinja2", "lxml", "pygments"],
     package_data={
-        "gcovr": ["pyinstaller/main.py", "templates/*.css", "templates/*.html"],
+        "gcovr": ["templates/*.css", "templates/*.html"],
     },
     entry_points={
         "console_scripts": [

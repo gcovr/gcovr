@@ -23,6 +23,7 @@ import platform
 import shutil
 import shlex
 import sys
+import textwrap
 import nox
 
 GCC_VERSIONS = [
@@ -193,7 +194,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
 
 
 @nox.session
-def build_wheel(session: nox.Session, skip_check: bool = False) -> None:
+def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("wheel")
     session.run("python", "setup.py", "sdist", "bdist_wheel")
@@ -201,8 +202,7 @@ def build_wheel(session: nox.Session, skip_check: bool = False) -> None:
     if os.path.isdir(dist_cache):
         shutil.rmtree(dist_cache)
     shutil.copytree("dist", dist_cache)
-    if not skip_check:
-        session.notify("check_wheel")
+    session.notify("check_wheel")
 
 
 @nox.session
@@ -225,25 +225,57 @@ def upload_wheel(session: nox.Session) -> None:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    build_wheel(session, True)
-    session.notify("install_wheel_and_bundle_app")
+    session.install(
+        "jinja2",
+        "lxml",
+        "pygments",
+        "pyinstaller",
+    )
+    session.install("-e", ".")
+    if not os.path.exists("build"):
+        os.mkdir("build")
+    session.chdir("build")
+    main_py = "main.py"
+    with open(main_py, "w") as FH:
+        FH.write(
+            textwrap.dedent(
+                """\
+                import sys
+                import runpy
+
+                if __name__ == "__main__":
+                    runpy.run_module("gcovr", run_name="__main__", alter_sys=True)
+                    sys.exit(0)
+                """
+            )
+        )
+    if platform.system() == "Windows":
+        executable = "gcovr.exe"
+    else:
+        executable = "gcovr"
+    session.run(
+        "pyinstaller",
+        "--distpath",
+        ".",
+        "--workpath",
+        "./pyinstaller",
+        "--specpath",
+        "./pyinstaller",
+        "--collect-all",
+        "gcovr",
+        "--onefile",
+        "-n",
+        executable,
+        *session.posargs,
+        main_py,
+    )
     session.notify("check_bundled_app")
-
-
-@nox.session
-def install_wheel_and_bundle_app(session: nox.Session) -> None:
-    """Install the wheel and bundle a app, should not be used directly."""
-    session.install("wheel", "pyinstaller")
-    session.chdir(f"{session.cache_dir}/dist")
-    session.install(glob.glob("*.whl")[0])
-    session.chdir("..")
-    session.run("python", "-m", "gcovr", "--verbose", "--bundle-app", *session.posargs)
 
 
 @nox.session
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
-    session.chdir(session.cache_dir)
+    session.chdir("build")
     session.run("bash", "-c", "./gcovr --help", external=True)
 
 
