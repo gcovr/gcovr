@@ -21,7 +21,6 @@ import json
 import logging
 import os
 import functools
-import re
 from typing import Any, Dict, Optional
 
 from ..gcov import apply_filter_include_exclude
@@ -82,7 +81,7 @@ def print_json_report(covdata: CovData, output_file, options):
 
     gcovr_json_root = {
         "gcovr/format_version": JSON_FORMAT_VERSION,
-        "files": _json_from_files(covdata, options.root_filter),
+        "files": _json_from_files(covdata, options),
     }
 
     _write_json_result(
@@ -112,6 +111,8 @@ def print_json_summary_report(covdata, output_file, options):
 
     for key in keys:
         filename = presentable_filename(covdata[key].filename, options.root_filter)
+        if options.json_base:
+            filename = "/".join([options.json_base, filename])
 
         json_dict["files"].append(
             {
@@ -199,13 +200,16 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
     return covdata
 
 
-def _json_from_files(files: CovData, root_filter: re.Pattern) -> list:
-    return [_json_from_file(files[key], root_filter) for key in sorted(files)]
+def _json_from_files(files: CovData, options) -> list:
+    return [_json_from_file(files[key], options) for key in sorted(files)]
 
 
-def _json_from_file(file: FileCoverage, root_filter: re.Pattern) -> dict:
+def _json_from_file(file: FileCoverage, options) -> dict:
+    filename = presentable_filename(file.filename, options.root_filter)
+    if options.json_base:
+        filename = "/".join([options.json_base, filename])
     return {
-        "file": presentable_filename(file.filename, root_filter),
+        "file": filename,
         "lines": _json_from_lines(file.lines),
         "functions": _json_from_functions(file.functions),
     }

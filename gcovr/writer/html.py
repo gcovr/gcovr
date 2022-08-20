@@ -26,6 +26,7 @@ from typing import Callable, Optional, Union
 
 from ..version import __version__
 from ..utils import (
+    force_unix_separator,
     realpath,
     commonpath,
     sort_coverage,
@@ -220,7 +221,7 @@ class RootInfo:
         self.directory = directory
 
     def get_directory(self):
-        return "." if self.directory == "" else self.directory.replace("\\", "/")
+        return "." if self.directory == "" else force_unix_separator(self.directory)
 
     def set_coverage(self, covdata: CovData) -> None:
         """Update this RootInfo with a summary of the CovData."""
@@ -262,9 +263,9 @@ class RootInfo:
             "class": self._coverage_to_class(stats.decision.percent),
         }
 
-        display_filename = os.path.relpath(
-            realpath(cdata_fname), self.directory
-        ).replace("\\", "/")
+        display_filename = force_unix_separator(
+            os.path.relpath(realpath(cdata_fname), self.directory)
+        )
 
         if link_report is not None:
             if self.relative_anchors:

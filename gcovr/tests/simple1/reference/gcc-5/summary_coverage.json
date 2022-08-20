@@ -7,7 +7,7 @@
             "branch_covered": 4,
             "branch_percent": 50.0,
             "branch_total": 8,
-            "filename": "main.cpp",
+            "filename": "test/dir/main.cpp",
             "function_covered": 2,
             "function_percent": 100.0,
             "function_total": 2,
