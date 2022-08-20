@@ -28,7 +28,7 @@ import datetime
 import os
 import re
 
-from .utils import FilterOption
+from .utils import FilterOption, force_unix_separator
 from .writer.html import CssRenderer
 
 
@@ -1080,6 +1080,15 @@ GCOVR_CONFIG_OPTIONS = [
             "Implies --json-summary. Default: {default!s}."
         ),
         action="store_true",
+    ),
+    GcovrConfigOption(
+        "json_base",
+        ["--json-base"],
+        group="output_options",
+        metavar="PATH",
+        help="Prepend the given path to all file paths in JSON report.",
+        type=lambda p: force_unix_separator(os.path.normpath(p)),
+        default=None,
     ),
     GcovrConfigOption(
         "csv",

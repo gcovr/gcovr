@@ -20,6 +20,7 @@
 from typing import Iterable, Tuple
 
 from ..utils import (
+    force_unix_separator,
     sort_coverage,
     presentable_filename,
     open_text_for_writing,
@@ -43,7 +44,7 @@ def print_text_report(covdata: CovData, output_file, options):
         fh.write("-" * LINE_WIDTH + "\n")
         fh.write("GCC Code Coverage Report".center(LINE_WIDTH).rstrip() + "\n")
         # fh.write(" " * 27 + "GCC Code Coverage Report\n")
-        fh.write("Directory: " + options.root.replace("\\", "/") + "\n")
+        fh.write("Directory: " + force_unix_separator(options.root) + "\n")
 
         fh.write("-" * LINE_WIDTH + "\n")
         title_total = "Branches" if options.show_branch else "Lines"

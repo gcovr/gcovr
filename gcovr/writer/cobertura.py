@@ -23,7 +23,7 @@ from typing import Dict
 from lxml import etree  # type: ignore
 
 from ..version import __version__
-from ..utils import open_binary_for_writing, presentable_filename
+from ..utils import force_unix_separator, open_binary_for_writing, presentable_filename
 from ..coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
 
 
@@ -120,7 +120,9 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         package.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
-    etree.SubElement(sources, "source").text = options.root.strip().replace("\\", "/")
+    etree.SubElement(sources, "source").text = force_unix_separator(
+        options.root.strip()
+    )
 
     with open_binary_for_writing(output_file, "coverage.xml") as fh:
         fh.write(

@@ -376,6 +376,10 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
             fh.close()
 
 
+def force_unix_separator(path: str) -> str:
+    return path.replace("\\", "/")
+
+
 def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
     """mangle a filename so that it is suitable for a report"""
 
@@ -390,4 +394,4 @@ def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
         # at the beginning of the string
         normalized = filename
 
-    return normalized.replace("\\", "/")
+    return force_unix_separator(normalized)

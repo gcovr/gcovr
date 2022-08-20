@@ -32,8 +32,10 @@ import zipfile
 
 from yaxmldiff import compare_xml
 
-python_interpreter = sys.executable.replace(
-    "\\", "/"
+from gcovr.utils import force_unix_separator
+
+python_interpreter = force_unix_separator(
+    sys.executable
 )  # use forward slash on windows as well
 env = os.environ
 env["GCOVR"] = python_interpreter + " -m gcovr"
@@ -118,8 +120,7 @@ def scrub_txt(contents):
 def scrub_csv(contents):
     contents = contents.replace("\r", "")
     contents = contents.replace("\n\n", "\n")
-    # Replace windows file separator for html reports generated in Windows
-    contents = contents.replace("\\", "/")
+    contents = force_unix_separator(contents)
     return contents
 
 
@@ -136,8 +137,7 @@ def scrub_html(contents):
     contents = RE_HTML_FOOTER_VERSION.sub("\\1 4.x\\2", contents)
     contents = RE_HTML_HEADER_DATE.sub("\\1>0000-00-00 00:00:00<\\2", contents)
     contents = contents.replace("\r", "")
-    # Replace windows file separator for html reports generated in Windows
-    contents = contents.replace("\\", "/")
+    contents = force_unix_separator(contents)
     return contents
 
 

@@ -1,3 +1,7 @@
+
+.. program is needed to resolve option links
+.. program::  gcovr
+
 .. _merging_coverage:
 
 Merging Coverage Data
@@ -25,3 +29,10 @@ duplicating :option:`-a/--add-tracefile<gcovr --add-tracefile>`. With this optio
 you have to place your pathnames with wildcards in double quotation marks::
 
     gcovr --add-tracefile "run-*.json" --html-details coverage.html
+
+If you want to merge coverage reports generated in different `--root` directories you
+can use the :option:`--json-base` to get the same root directory for all reports.
+
+.. versionadded:: NEXT
+
+   The :option:`gcovr --json-base` option.

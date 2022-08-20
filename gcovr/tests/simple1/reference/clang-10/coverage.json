@@ -1,7 +1,7 @@
 {
     "files": [
         {
-            "file": "main.cpp",
+            "file": "test/dir/main.cpp",
             "functions": [
                 {
                     "execution_count": 1,
