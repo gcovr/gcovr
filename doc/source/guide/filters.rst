@@ -142,7 +142,7 @@ or a relative path to the real path::
    gcovr also supports symlinks/junctions/drive substitutions on Windows.
 
 More examples for filters
---------------------
+-------------------------
 
 Excluding files inside build directory via --exclude with absolute path (Unix only):
 
