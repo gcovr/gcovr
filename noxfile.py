@@ -232,8 +232,7 @@ def bundle_app(session: nox.Session) -> None:
         "pyinstaller",
     )
     session.install("-e", ".")
-    if not os.path.exists("build"):
-        os.mkdir("build")
+    os.makedirs("build", exists_ok=True)
     session.chdir("build")
     main_py = "main.py"
     with open(main_py, "w") as FH:
