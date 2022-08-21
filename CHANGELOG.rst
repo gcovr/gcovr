@@ -14,7 +14,7 @@ New features and notable changes:
 
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
-- New nox session `bundle_app` to generate a portable application with pyinstaller. (:issue:`661`)
+- New nox session to generate a portable application with pyinstaller, see :ref:`standalone application`. (:issue:`661`)
 
 
 Bug fixes and small improvements:
