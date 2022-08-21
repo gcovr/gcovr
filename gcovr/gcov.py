@@ -405,6 +405,9 @@ class GcovProgram:
         with GcovProgram.LockContext(GcovProgram.__lock):
             if GcovProgram.__cmd is None:
                 GcovProgram.__cmd = cmd
+                # If the first element of cmd - the executable name - has embedded spaces
+                # (other than within quotes), it probably includes extra arguments.
+                GcovProgram.__cmd_split = shlex.split(GcovProgram.__cmd)
             else:
                 assert (
                     GcovProgram.__cmd == cmd
@@ -412,10 +415,7 @@ class GcovProgram:
 
     def identify_and_cache_capabilities(self):
         with GcovProgram.LockContext(GcovProgram.__lock):
-            if GcovProgram.__cmd_split is None:
-                # If the first element of cmd - the executable name - has embedded spaces
-                # (other than within quotes), it probably includes extra arguments.
-                GcovProgram.__cmd_split = shlex.split(GcovProgram.__cmd)
+            if not GcovProgram.__default_options:
                 GcovProgram.__default_options = [
                     "--branch-counts",
                     "--branch-probabilities",
