@@ -58,6 +58,14 @@
       <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
     </tr>
     {% endif %}
+    {% if SHOW_CALL %}
+    <tr>
+      <th scope="row">Calls:</th>
+      <td>{{calls.exec}}</td>
+      <td>{{calls.total}}</td>
+      <td class="{{calls.class}}">{{calls.coverage}}%</td>
+    </tr>
+    {% endif %}
   </table>
 </div>
 {% endblock %}
@@ -103,6 +111,9 @@
       {% if SHOW_DECISION %}
       <th align="right">Decision</th>
       {% endif %}
+      {% if SHOW_CALL %}
+      <th align="right">Call</th>
+      {% endif %}
       <th align="right">Exec</th>
       <th align="left">Source</th>
     </tr>
@@ -147,6 +158,25 @@
         {% endif %}
       </td>
       {% endif %}
+      {% if SHOW_CALL %}
+      <td class="linecall">
+        {% if row.linecall %}
+          <details class="linebranchDetails">
+          <summary class="linebranchSummary">{{row.linecall.taken}}/{{row.linecall.total}}</summary>
+          <div class="linebranchContents">
+            {% for branch in row.linecall.branches %}
+            {% if branch.taken %}
+            <div class="takenBranch">&check; Call {{branch.name}} called.</div>
+            {% else %}
+            <div class="notTakenBranch">&cross; Call {{branch.name}} not called.</div>
+            {% endif%}
+            {% endfor %}
+          </div>
+         </details>
+        {% endif %}
+      </td>
+      {% endif %}
+
       <td class="linecount {{row.covclass}}">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
       <td class="src {{row.covclass}}">{{row.source}}</td>
     </tr>

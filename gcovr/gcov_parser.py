@@ -52,13 +52,14 @@ from typing import (
     NoReturn,
 )
 
-from .coverage import BranchCoverage, FileCoverage, FunctionCoverage
+from .coverage import BranchCoverage, FileCoverage, FunctionCoverage, CallCoverage
 from .decision_analysis import DecisionParser
 from .merging import (
     MergeOptions,
     get_or_create_line_coverage,
     insert_branch_coverage,
     insert_function_coverage,
+    insert_call_coverage,
 )
 
 
@@ -504,7 +505,21 @@ def _gather_coverage_from_line(
         return state
 
     # ignore unused line types, such as specialization sections
-    elif isinstance(line, (_CallLine, _UnconditionalLine, _BlockLine)):
+    elif isinstance(line, _CallLine):
+        callno, returned = line
+        line_cov = coverage.lines[state.lineno]  # must already exist
+
+        insert_call_coverage(
+            line_cov,
+            callno,
+            CallCoverage(
+                covered = (returned > 0),
+            ),
+        )
+
+        return state
+
+    elif isinstance(line, (_UnconditionalLine, _BlockLine)):
         return state
 
     else:

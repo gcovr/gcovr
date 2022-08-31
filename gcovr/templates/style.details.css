@@ -22,13 +22,14 @@ span.excludedLine
     background-color: var(--excluded_color) !important;
 }
 
-.linebranch, .linedecision, .linecount
+.linebranch, .linedecision, .linecall, .linecount
 {
     font-family: monospace;
     border-right: 1px gray solid;
     background-color: lightgray;
     text-align: right;
 }
+
 
 .linebranchDetails, .linedecisionDetails
 {
