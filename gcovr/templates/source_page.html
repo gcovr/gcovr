@@ -161,14 +161,14 @@
       {% if SHOW_CALL %}
       <td class="linecall">
         {% if row.linecall %}
-          <details class="linebranchDetails">
-          <summary class="linebranchSummary">{{row.linecall.taken}}/{{row.linecall.total}}</summary>
-          <div class="linebranchContents">
-            {% for branch in row.linecall.branches %}
-            {% if branch.taken %}
-            <div class="takenBranch">&check; Call {{branch.name}} called.</div>
+          <details class="linecallDetails">
+          <summary class="linecallSummary">{{row.linecall.invoked}}/{{row.linecall.total}}</summary>
+          <div class="linecallContents">
+            {% for call in row.linecall.calls %}
+            {% if call.invoked %}
+            <div class="takenBranch">&check; Call {{call.name}} invoked.</div>
             {% else %}
-            <div class="notTakenBranch">&cross; Call {{branch.name}} not called.</div>
+            <div class="notTakenBranch">&cross; Call {{call.name}} not invoked.</div>
             {% endif%}
             {% endfor %}
           </div>

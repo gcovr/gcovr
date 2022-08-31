@@ -17,6 +17,8 @@
     --takenDecision_color: green;
     --uncheckedDecision_color: darkorange;
     --notTakenDecision_color: red;
+    --invokedCall_color: green;
+    --notInvokedCall_color: red;
 }
 
 .theme-blue {

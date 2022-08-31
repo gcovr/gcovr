@@ -599,31 +599,33 @@ def source_row_branch(branches):
         "branches": items,
     }
 
+
 def source_row_call(calls):
     if not calls:
         return None
 
-    taken = 0
+    invoked = 0
     total = 0
     items = []
 
     for call_id in sorted(calls):
         call = calls[call_id]
         if call.is_covered:
-            taken += 1
+            invoked += 1
         total += 1
         items.append(
             {
-                "taken": call.is_covered,
+                "invoked": call.is_covered,
                 "name": call_id,
             }
         )
 
     return {
-        "taken": taken,
+        "invoked": invoked,
         "total": total,
-        "branches": items,
+        "calls": items,
     }
+
 
 def source_row_decision(decision: DecisionCoverage) -> Optional[dict]:
     if decision is None:
