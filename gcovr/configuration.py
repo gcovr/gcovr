@@ -767,7 +767,7 @@ GCOVR_CONFIG_OPTIONS = [
         "show_calls",
         ["--calls"],
         group="output_options",
-        help="Report the calls coverage. For HTML and JSON report.",
+        help="Report the calls coverage. For HTML report.",
         action="store_true",
     ),
     GcovrConfigOption(
