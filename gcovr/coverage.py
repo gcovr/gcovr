@@ -76,8 +76,8 @@ class CallCoverage:
     r"""Represent coverage information about a call.
 
     Args:
-        count (int):
-            Number of times this call was called ....
+        covered (bool):
+            Whether the call was performed.
     """
 
     __slots__ = "covered"
