@@ -250,9 +250,17 @@ class RootInfo:
                         "lines_total": 0,
                         "lines_percent": 0.0,
                         "lines_uncovered": 0,
+                        "decision_exec": 0,
+                        "decision_total": 0,
+                        "decision_percent": 0,
+                        "decision_uncovered": 0,
+                        "function_exec": 0,
+                        "function_total": 0,
+                        "function_percent": 0,
+                        "function_uncovered": 0,
                         "children": set()
                     }
-                self.subdirectories[key]['children'].add(filename)
+                self.subdirectories[key]["children"].add(filename)
         else:
             key = None
         return key
@@ -298,6 +306,22 @@ class RootInfo:
             self.subdirectories[key]["lines_uncovered"] += total - covered
             self.add_directory_line_coverage(key, total, covered)
 
+    def add_directory_decision_coverage(self, filename, total, covered):
+        key = self.directory_key(filename)
+        if key:
+            self.subdirectories[key]["decision_exec"] += covered
+            self.subdirectories[key]["decision_total"] += total
+            self.subdirectories[key]["decision_uncovered"] += total - covered
+            self.add_directory_decision_coverage(key, total, covered)
+
+    def add_directory_function_coverage(self, filename, total, covered):
+        key = self.directory_key(filename)
+        if key:
+            self.subdirectories[key]["function_exec"] += covered
+            self.subdirectories[key]["function_total"] += total
+            self.subdirectories[key]["function_uncovered"] += total - covered
+            self.add_directory_function_coverage(key, total, covered)
+
     def calculate_branch_coverage(self, covdata: CovData):
         branch_total = 0
         branch_covered = 0
@@ -323,6 +347,7 @@ class RootInfo:
             decision_total += total
             decision_covered += covered
             decision_unchecked += unchecked
+            self.add_directory_decision_coverage(key, total, covered)
         self.decisions["exec"] = decision_covered
         self.decisions["unchecked"] = decision_unchecked
         self.decisions["total"] = decision_total
@@ -337,6 +362,7 @@ class RootInfo:
             (total, covered, _percent) = covdata[key].function_coverage().to_tuple
             function_total += total
             function_covered += covered
+            add_directory_function_coverage(key, total, covered)
         self.functions["exec"] = function_covered
         self.functions["total"] = function_total
         coverage = calculate_coverage(function_covered, function_total, nan_value=None)
@@ -370,6 +396,18 @@ class RootInfo:
             coverage = calculate_coverage(covered, total, nan_value=None)
             self.subdirectories[key]["lines_percent"] = coverage
             self.subdirectories[key]["lines_class"] = self._coverage_to_class(coverage)
+
+            covered = value["decision_exec"]
+            total = value["decision_total"]
+            coverage = calculate_coverage(covered, total, nan_value=None)
+            self.subdirectories[key]["decision_percent"] = coverage
+            self.subdirectories[key]["decision_class"] = self._coverage_to_class(coverage)
+
+            covered = value["function_exec"]
+            total = value["function_total"]
+            coverage = calculate_coverage(covered, total, nan_value=None)
+            self.subdirectories[key]["function_percent"] = coverage
+            self.subdirectories[key]["function_class"] = self._coverage_to_class(coverage)
 
     def write_subdirectories(self, outputfile):
         import json
@@ -752,7 +790,18 @@ def write_directory_pages(output_file, covdata, cdata_fname, cdata_sourcefile, o
                     lines_total=child_data['lines_total'],
                     lines_uncovered=child_data['lines_uncovered'],
                     lines_percent=child_data['lines_percent'],
-                    lines_class=child_data['lines_class']))
+                    lines_class=child_data['lines_class'],
+                    decision_exec=child_data['decision_exec'],
+                    decision_total=child_data['decision_total'],
+                    decision_uncovered=child_data['decision_uncovered'],
+                    decision_percent=child_data['decision_percent'],
+                    decision_class=child_data['decision_class'],
+                    function_exec=child_data['function_exec'],
+                    function_total=child_data['function_total'],
+                    function_uncovered=child_data['function_uncovered'],
+                    function_percent=child_data['function_percent'],
+                    function_class=child_data['function_class'],
+                    ))
             else:
                 branch_total, branch_exec, branch_percent = covdata[child].branch_coverage()
                 branch_class = root_info._coverage_to_class(branch_percent)
@@ -769,7 +818,18 @@ def write_directory_pages(output_file, covdata, cdata_fname, cdata_sourcefile, o
                     lines_total=lines_total,
                     lines_uncovered=lines_total-lines_exec,
                     lines_percent=lines_percent,
-                    lines_class=lines_class))
+                    lines_class=lines_class,
+                    decision_exec=decision_exec,
+                    decision_total=decision_total,
+                    decision_uncovered=decision_total-decision_exec,
+                    decision_percent=decision_percent,
+                    decision_class=decision_class,
+                    function_exec=function_exec,
+                    function_total=function_total,
+                    function_uncovered=function_total-function_exec,
+                    function_percent=function_percent,
+                    function_class=function_class
+                    ))
         if options.sort_percent:
             for row in data['rows']:
                 if not row["lines_percent"]:
