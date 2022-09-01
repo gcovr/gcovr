@@ -513,7 +513,7 @@ def _gather_coverage_from_line(
             line_cov,
             callno,
             CallCoverage(
-                covered = (returned > 0),
+                covered=(returned > 0),
             ),
         )
 

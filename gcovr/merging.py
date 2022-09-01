@@ -287,6 +287,7 @@ def insert_branch_coverage(
         target.branches, branch_id, branch, merge_branch, options
     )
 
+
 def merge_branch(
     left: BranchCoverage,
     right: BranchCoverage,
