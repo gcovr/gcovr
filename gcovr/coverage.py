@@ -177,7 +177,7 @@ class LineCoverage:
         "branches",
         "decision",
         "functions",
-        "calls"
+        "calls",
     )
 
     def __init__(
@@ -327,7 +327,7 @@ class SummarizedStats:
             branch=CoverageStat.new_empty(),
             function=CoverageStat.new_empty(),
             decision=DecisionCoverageStat.new_empty(),
-            call=CoverageStat.new_empty()
+            call=CoverageStat.new_empty(),
         )
 
     @staticmethod

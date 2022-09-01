@@ -313,9 +313,7 @@ def insert_call_coverage(
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> CallCoverage:
     """Insert BranchCoverage into LineCoverage."""
-    return _insert_coverage_item(
-        target.calls, call_id, call, merge_call, options
-    )
+    return _insert_coverage_item(target.calls, call_id, call, merge_call, options)
 
 
 def merge_call(
