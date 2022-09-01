@@ -15,7 +15,6 @@ New features and notable changes:
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
 - New :option:`--calls` to report call coverage: function calls invoked/total (:issue:`666`)
 
-- Report function coverage (:issue:`362`, :issue:`515`, :issue:`554`)
 Bug fixes and small improvements:
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 
