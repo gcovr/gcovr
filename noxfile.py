@@ -23,7 +23,6 @@ import platform
 import shutil
 import shlex
 import sys
-import textwrap
 import nox
 
 GCC_VERSIONS = [
@@ -194,7 +193,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
 
 
 @nox.session
-def build_wheel(session: nox.Session) -> None:
+def build_wheel(session: nox.Session, do_check: bool = True) -> None:
     """Build a wheel."""
     session.install("wheel")
     session.run("python", "setup.py", "sdist", "bdist_wheel")
@@ -202,7 +201,8 @@ def build_wheel(session: nox.Session) -> None:
     if os.path.isdir(dist_cache):
         shutil.rmtree(dist_cache)
     shutil.copytree("dist", dist_cache)
-    session.notify("check_wheel")
+    if do_check:
+        session.notify("check_wheel")
 
 
 @nox.session
@@ -213,6 +213,7 @@ def check_wheel(session: nox.Session) -> None:
     session.run("twine", "check", "*", external=True)
     session.install(glob.glob("*.whl")[0])
     session.run("python", "-m", "gcovr", "--help", external=True)
+    session.run("gcovr", "--help", external=True)
 
 
 @nox.session
@@ -225,33 +226,17 @@ def upload_wheel(session: nox.Session) -> None:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    session.install(
-        "jinja2",
-        "lxml",
-        "pygments",
-        "pyinstaller",
-    )
-    session.install("-e", ".")
-    os.makedirs("build", exist_ok=True)
-    session.chdir("build")
-    main_py = "main.py"
-    with open(main_py, "w") as FH:
-        FH.write(
-            textwrap.dedent(
-                """\
-                import sys
-                import runpy
-
-                if __name__ == "__main__":
-                    runpy.run_module("gcovr", run_name="__main__", alter_sys=True)
-                    sys.exit(0)
-                """
-            )
-        )
+    org_dir = os.getcwd()
+    build_wheel(session, do_check=False)
+    check_wheel(session)
+    session.install("pyinstaller")
+    session.chdir(f"{org_dir}/build")
     if platform.system() == "Windows":
         executable = "gcovr.exe"
+        entry_point = os.path.join(session.bin, "gcovr.exe")
     else:
         executable = "gcovr"
+        entry_point = os.path.join(session.bin, "gcovr")
     session.run(
         "pyinstaller",
         "--distpath",
@@ -266,7 +251,7 @@ def bundle_app(session: nox.Session) -> None:
         "-n",
         executable,
         *session.posargs,
-        main_py,
+        entry_point,
     )
     session.notify("check_bundled_app")
 
