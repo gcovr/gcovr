@@ -193,7 +193,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
 
 
 @nox.session
-def build_wheel(session: nox.Session, do_check: bool = True) -> None:
+def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("wheel")
     session.run("python", "setup.py", "sdist", "bdist_wheel")
@@ -201,8 +201,6 @@ def build_wheel(session: nox.Session, do_check: bool = True) -> None:
     if os.path.isdir(dist_cache):
         shutil.rmtree(dist_cache)
     shutil.copytree("dist", dist_cache)
-    if do_check:
-        session.notify("check_wheel")
 
 
 @nox.session
@@ -226,17 +224,14 @@ def upload_wheel(session: nox.Session) -> None:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    org_dir = os.getcwd()
-    build_wheel(session, do_check=False)
-    check_wheel(session)
     session.install("pyinstaller")
-    session.chdir(f"{org_dir}/build")
+    session.install("-e", ".")
+    os.makedirs("build", exist_ok=True)
+    session.chdir("build")
     if platform.system() == "Windows":
         executable = "gcovr.exe"
-        entry_point = os.path.join(session.bin, "gcovr.exe")
     else:
         executable = "gcovr"
-        entry_point = os.path.join(session.bin, "gcovr")
     session.run(
         "pyinstaller",
         "--distpath",
@@ -245,13 +240,13 @@ def bundle_app(session: nox.Session) -> None:
         "./pyinstaller",
         "--specpath",
         "./pyinstaller",
+        "--onefile",
         "--collect-all",
         "gcovr",
-        "--onefile",
         "-n",
         executable,
         *session.posargs,
-        entry_point,
+        "../scripts/pyinstaller_entrypoint.py",
     )
     session.notify("check_bundled_app")
 
