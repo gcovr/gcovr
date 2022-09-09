@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="1.0" function-rate="1.0" branch-rate="0.0" lines-covered="2" lines-valid="2" functions-covered="1" functions-valid="1" branches-covered="0" branches-valid="0" complexity="0.0" timestamp="1630940080" version="gcovr 5.0">
+<coverage line-rate="1.0" branch-rate="0.0" lines-covered="2" lines-valid="2" branches-covered="0" branches-valid="0" complexity="0.0" timestamp="1662755122" version="gcovr 5.2">
   <sources>
     <source>.</source>
   </sources>
   <packages>
-    <package name="" line-rate="1.0" function-rate="1.0" branch-rate="0.0" complexity="0.0">
+    <package name="" line-rate="1.0" branch-rate="0.0" complexity="0.0">
       <classes>
         <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.0" complexity="0.0">
           <methods/>
