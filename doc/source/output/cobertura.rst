@@ -10,14 +10,14 @@ summary in plain text.  The ``gcovr`` command can also generate a
 Cobertura XML output using the :option:`--cobertura`
 and :option:`--cobertura-pretty` options:
 
-.. include:: ../../examples/example_xml.sh
+.. include:: ../../examples/example_cobertura.sh
     :code: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 This generates an XML summary of the lines executed:
 
-.. include:: ../../examples/example_xml.xml
+.. include:: ../../examples/example_cobertura.xml
     :code: xml
 
 This XML format is in the
