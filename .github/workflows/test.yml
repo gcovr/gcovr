@@ -135,6 +135,11 @@ jobs:
         sudo apt update
         sudo apt-get install -y make ${{ matrix.gcc }} $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
         sudo apt-get clean
+    - name: Install libxml2
+      if: ${{ startsWith(matrix.os,'ubuntu-') }}
+      run: |
+        sudo apt-get install -y libxml2-utils
+        sudo apt-get clean
     - name: Install ninja
       uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install libxml2 and libxslt dev (pypy3)
