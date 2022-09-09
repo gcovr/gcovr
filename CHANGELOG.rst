@@ -10,16 +10,22 @@ Known bugs:
 
 Breaking changes:
 
+- Remove not allowed attributes ``function-rate``, ``functions-covered`` and ``functions-valid``
+  from cobertura report. (:issue:`671`)
+
 New features and notable changes:
+
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
 
 Bug fixes and small improvements:
+
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 
 Documentation:
 
 Internal changes:
+
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
 
 5.2 (06 August 2022)
