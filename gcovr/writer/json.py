@@ -39,6 +39,7 @@ from ..coverage import (
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
+    CallCoverage,
     SummarizedStats,
 )
 from ..merging import (
@@ -47,6 +48,7 @@ from ..merging import (
     insert_file_coverage,
     insert_function_coverage,
     insert_line_coverage,
+    insert_call_coverage,
 )
 
 logger = logging.getLogger("gcovr")
@@ -229,6 +231,9 @@ def _json_from_line(line: LineCoverage) -> dict:
     }
     if line.decision is not None:
         json_line["gcovr/decision"] = _json_from_decision(line.decision)
+    if len(line.calls) > 0:
+        json_line["gcovr/calls"] = _json_from_calls(line.calls)
+
     return json_line
 
 
@@ -262,6 +267,17 @@ def _json_from_decision(decision: DecisionCoverage) -> dict:
         }
 
     raise RuntimeError("Unknown decision type: {decision!r}")
+
+
+def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
+    return [_json_from_call(calls[no]) for no in sorted(calls)]
+
+
+def _json_from_call(call: CallCoverage) -> dict:
+    print('call')
+    return {
+            "covered": call.covered
+    }
 
 
 def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:

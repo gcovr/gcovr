@@ -296,6 +296,9 @@ class ParserFlags(enum.Flag):
     PARSE_DECISIONS = enum.auto()
     """Whether decision coverage shall be generated."""
 
+    PARSE_CALLS = enum.auto()
+    """Whether call coverage shall be generated."""
+
 
 _LineWithError = Tuple[str, Exception]
 
@@ -509,13 +512,15 @@ def _gather_coverage_from_line(
         callno, returned = line
         line_cov = coverage.lines[state.lineno]  # must already exist
 
-        insert_call_coverage(
-            line_cov,
-            callno,
-            CallCoverage(
-                covered=(returned > 0),
-            ),
-        )
+
+        if context.flags & ParserFlags.PARSE_CALLS:
+            insert_call_coverage(
+                line_cov,
+                callno,
+                CallCoverage(
+                    covered=(returned > 0),
+                ),
+            )
 
         return state
 
