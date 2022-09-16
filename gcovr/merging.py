@@ -234,6 +234,7 @@ def merge_line(
     left.excluded |= right.excluded
     left.branches = _merge_dict(left.branches, right.branches, merge_branch, options)
     left.decision = merge_decision(left.decision, right.decision, options)
+    left.calls = _merge_dict(left.calls, right.calls, merge_call, options)
 
     return left
 
