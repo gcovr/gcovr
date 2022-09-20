@@ -80,13 +80,15 @@ class CallCoverage:
             Whether the call was performed.
     """
 
-    __slots__ = "covered"
+    __slots__ = "covered", "callno"
 
     def __init__(
         self,
+        callno: int,
         covered: bool,
     ) -> None:
         self.covered = covered
+        self.callno = callno
 
     @property
     def is_covered(self) -> bool:

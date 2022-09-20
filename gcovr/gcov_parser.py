@@ -516,8 +516,8 @@ def _gather_coverage_from_line(
         if context.flags & ParserFlags.PARSE_CALLS:
             insert_call_coverage(
                 line_cov,
-                callno,
                 CallCoverage(
+                    callno=callno,
                     covered=(returned > 0),
                 ),
             )

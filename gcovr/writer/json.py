@@ -54,7 +54,7 @@ from ..merging import (
 logger = logging.getLogger("gcovr")
 
 
-JSON_FORMAT_VERSION = "0.3"
+JSON_FORMAT_VERSION = "0.4"
 JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
@@ -275,7 +275,8 @@ def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
 
 def _json_from_call(call: CallCoverage) -> dict:
     return {
-            "covered": call.covered
+            "covered": call.covered,
+            "callno": call.callno
     }
 
 
@@ -313,8 +314,8 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     insert_decision_coverage(line, _decision_from_json(json_line.get("gcovr/decision")))
 
     if "gcovr/calls" in json_line:
-        for callno, json_call in enumerate(json_line["gcovr/calls"]):
-            insert_call_coverage(line, callno, _call_from_json(json_call))
+        for json_call in json_line["gcovr/calls"]:
+            insert_call_coverage(line, _call_from_json(json_call))
 
     return line
 
@@ -329,7 +330,8 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
 
 def _call_from_json(json_call: dict) -> CallCoverage:
     return CallCoverage(
-        covered=json_call["covered"]
+        covered=json_call["covered"],
+        callno=json_call["callno"]
     )
 
 

@@ -309,12 +309,11 @@ def merge_branch(
 
 def insert_call_coverage(
     target: LineCoverage,
-    call_id: int,
     call: CallCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> CallCoverage:
     """Insert BranchCoverage into LineCoverage."""
-    return _insert_coverage_item(target.calls, call_id, call, merge_call, options)
+    return _insert_coverage_item(target.calls, call.callno, call, merge_call, options)
 
 
 def merge_call(
@@ -328,6 +327,7 @@ def merge_call(
     Do not use 'left' or 'right' objects afterwards!
     """
     left.covered |= right.covered
+    left.callno = right.callno
     return left
 
 
