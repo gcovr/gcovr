@@ -326,8 +326,8 @@ def merge_call(
 
     Do not use 'left' or 'right' objects afterwards!
     """
+    assert left.callno == right.callno
     left.covered |= right.covered
-    left.callno = right.callno
     return left
 
 
