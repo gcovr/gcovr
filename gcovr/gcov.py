@@ -486,11 +486,16 @@ class GcovProgram:
     def run_with_args(self, args, **kwargs):
         """Run the gcov program
 
-        >>> GcovProgram("bash").run_with_args(["-c", "exit 1"])
+        >>> GcovProgram("python3").run_with_args(["-c", "import sys; sys.exit(1);"])
         Traceback (most recent call last):
         ...
         RuntimeError: GCOV returncode was 1.
-        >>> GcovProgram("bash").run_with_args(["-c", "kill $$"])
+        >>> GcovProgram("python3").run_with_args(
+        ...     [
+        ...         "-c",
+        ...         "import os, signal; os.kill(os.getpid(), signal.SIGTERM)"
+        ...     ]
+        ... )
         Traceback (most recent call last):
         ...
         RuntimeError: GCOV returncode was -15 (exited by signal).
