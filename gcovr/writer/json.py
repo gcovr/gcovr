@@ -275,8 +275,8 @@ def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
 
 def _json_from_call(call: CallCoverage) -> dict:
     return {
-            "covered": call.covered,
-            "callno": call.callno
+        "covered": call.covered,
+        "callno": call.callno
     }
 
 

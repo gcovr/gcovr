@@ -512,7 +512,6 @@ def _gather_coverage_from_line(
         callno, returned = line
         line_cov = coverage.lines[state.lineno]  # must already exist
 
-
         if context.flags & ParserFlags.PARSE_CALLS:
             insert_call_coverage(
                 line_cov,
