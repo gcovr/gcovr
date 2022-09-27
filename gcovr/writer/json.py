@@ -274,10 +274,7 @@ def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
 
 
 def _json_from_call(call: CallCoverage) -> dict:
-    return {
-        "covered": call.covered,
-        "callno": call.callno
-    }
+    return {"covered": call.covered, "callno": call.callno}
 
 
 def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
@@ -329,10 +326,7 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
 
 
 def _call_from_json(json_call: dict) -> CallCoverage:
-    return CallCoverage(
-        covered=json_call["covered"],
-        callno=json_call["callno"]
-    )
+    return CallCoverage(covered=json_call["covered"], callno=json_call["callno"])
 
 
 def _decision_from_json(json_decision: Optional[dict]) -> Optional[DecisionCoverage]:
