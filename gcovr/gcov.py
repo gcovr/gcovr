@@ -486,19 +486,35 @@ class GcovProgram:
     def run_with_args(self, args, **kwargs):
         """Run the gcov program
 
-        >>> GcovProgram("python3").run_with_args(["-c", "import sys; sys.exit(1);"])
+        >>> import platform
+        >>> if platform.system() == "Windows":
+        ...     print("kill not working on Windows")  # doctest: +SKIP
+        ... else:
+        ...     GcovProgram("bash").run_with_args(["-c", "exit 1"])
         Traceback (most recent call last):
         ...
         RuntimeError: GCOV returncode was 1.
-        >>> GcovProgram("python3").run_with_args(
-        ...     [
-        ...         "-c",
-        ...         "import os, signal; os.kill(os.getpid(), signal.SIGTERM)"
-        ...     ]
-        ... )
+        >>> if platform.system() == "Windows":
+        ...     GcovProgram("bash").run_with_args(["-c", "exit 1"])
+        ... else:
+        ...     print("kill not working on Windows")  # doctest: +SKIP
+        Traceback (most recent call last):
+        ...
+        RuntimeError: GCOV returncode was 4294967295.
+        >>> if platform.system() == "Windows":
+        ...     print("kill not working on Windows")  # doctest: +SKIP
+        ... else:
+        ...     GcovProgram("bash").run_with_args(["-c", "kill $$"])
         Traceback (most recent call last):
         ...
         RuntimeError: GCOV returncode was -15 (exited by signal).
+        >>> if platform.system() == "Windows":
+        ...     GcovProgram("bash").run_with_args(["-c", "kill $$"])
+        ... else:
+        ...     print("kill not working on Windows")  # doctest: +SKIP
+        Traceback (most recent call last):
+        ...
+        RuntimeError: GCOV returncode was 15.
         """
         gcov_process = self.__get_gcov_process(args, **kwargs)
         out, err = gcov_process.communicate()

@@ -269,7 +269,7 @@ def pytest_generate_tests(metafunc):
             marks = [
                 pytest.mark.skipif(
                     name == "simple1-drive-subst" and not IS_WINDOWS,
-                    reason="drive substitution only available on windows",
+                    reason="drive substitution only available on Windows",
                 ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
