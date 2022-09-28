@@ -38,4 +38,5 @@ def print_summary(covdata: CovData):
     print_stat("lines", stats.line)
     print_stat("functions", stats.function)
     print_stat("branches", stats.branch)
+    print_stat("calls", stats.call)
     sys.stdout.flush()

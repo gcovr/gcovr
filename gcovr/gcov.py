@@ -153,6 +153,8 @@ def process_gcov_data(
         parser_flags |= ParserFlags.RESPECT_EXCLUSION_MARKERS
     if options.show_decision:
         parser_flags |= ParserFlags.PARSE_DECISIONS
+    if options.show_calls:
+        parser_flags |= ParserFlags.PARSE_CALLS
 
     coverage = parse_coverage(
         lines,

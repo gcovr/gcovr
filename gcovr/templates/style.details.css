@@ -22,7 +22,7 @@ span.excludedLine
     background-color: var(--excluded_color) !important;
 }
 
-.linebranch, .linedecision, .linecount
+.linebranch, .linedecision, .linecall, .linecount
 {
     font-family: monospace;
     border-right: 1px gray solid;
@@ -30,15 +30,16 @@ span.excludedLine
     text-align: right;
 }
 
-.linebranchDetails, .linedecisionDetails
+
+.linebranchDetails, .linedecisionDetails, .linecallDetails
 {
     position: relative;
 }
-.linebranchSummary, .linedecisionSummary
+.linebranchSummary, .linedecisionSummary, .linecallSummary
 {
     cursor: help;
 }
-.linebranchContents, .linedecisionContents
+.linebranchContents, .linedecisionContents, .linecallContents
 {
     font-family: sans-serif;
     font-size: small;
@@ -75,6 +76,16 @@ span.excludedLine
 .uncheckedDecision
 {
     color: var(--uncheckedDecision_color) !important;
+}
+
+.invokedCall
+{
+    color: var(--invokedCall_color) !important;
+}
+
+.notInvokedCall
+{
+    color: var(--notInvokedCall_color) !important;
 }
 
 .src
