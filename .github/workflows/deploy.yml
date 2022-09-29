@@ -70,6 +70,9 @@ jobs:
     - name: Generate documentation
       run: |
         nox --non-interactive --session doc
+    - name: Test bundle of app
+      run: |
+        nox --non-interactive --session bundle_app
     - name: Build
       run: |
         nox --non-interactive --session build_wheel

@@ -11,11 +11,14 @@ Known bugs:
 Breaking changes:
 
 New features and notable changes:
+
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
 - New :option:`--calls` to report call coverage: function calls invoked/total (:issue:`666`)
+- New nox session to generate a portable application with pyinstaller, see :ref:`standalone application`. (:issue:`661`)
 
 Bug fixes and small improvements:
+
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 
 - Do not ignore returncode of `gcov`. (:issue:`653`)
@@ -23,6 +26,7 @@ Bug fixes and small improvements:
 Documentation:
 
 Internal changes:
+
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
 
 5.2 (06 August 2022)

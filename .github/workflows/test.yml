@@ -137,11 +137,6 @@ jobs:
         sudo apt-get clean
     - name: Install ninja
       uses: seanmiddleditch/gha-setup-ninja@master
-    - name: Install libxml2 and libxslt dev (pypy3)
-      if: ${{ startsWith(matrix.os,'ubuntu-') && ( matrix.python-version == 'pypy3' ) }}
-      run: |
-        sudo apt-get install -y libxml2-dev libxslt-dev
-        sudo apt-get clean
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -174,6 +169,10 @@ jobs:
       if: ${{ env.USE_COVERAGE == 'true' }}
       run: |
         codecov --flags ${{ matrix.os }} -X gcov search
+    - name: Test bundle of app
+      run: |
+        nox --non-interactive --session bundle_app
+      if: ${{ ! startsWith(matrix.python-version,'pypy') }}
     - name: Generate documentation
       run: |
         make doc
