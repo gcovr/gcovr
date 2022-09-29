@@ -72,6 +72,29 @@ class BranchCoverage:
         return self.count > 0
 
 
+class CallCoverage:
+    r"""Represent coverage information about a call.
+
+    Args:
+        covered (bool):
+            Whether the call was performed.
+    """
+
+    __slots__ = "covered", "callno"
+
+    def __init__(
+        self,
+        callno: int,
+        covered: bool,
+    ) -> None:
+        self.covered = covered
+        self.callno = callno
+
+    @property
+    def is_covered(self) -> bool:
+        return self.covered
+
+
 class DecisionCoverageUncheckable:
     r"""Represent coverage information about a decision."""
 
@@ -156,6 +179,7 @@ class LineCoverage:
         "branches",
         "decision",
         "functions",
+        "calls",
     )
 
     def __init__(
@@ -170,6 +194,7 @@ class LineCoverage:
         self.excluded: bool = excluded
         self.branches: Dict[int, BranchCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
+        self.calls: Dict[int, CallCoverage] = {}
 
     @property
     def is_excluded(self) -> bool:
@@ -272,6 +297,19 @@ class FileCoverage:
 
         return stat
 
+    def call_coverage(self) -> CoverageStat:
+        covered = 0
+        total = 0
+
+        for line in self.lines.values():
+            if len(line.calls) > 0:
+                for call in line.calls.values():
+                    total += 1
+                    if call.is_covered:
+                        covered += 1
+
+        return CoverageStat(covered, total)
+
 
 CovData = Dict[str, FileCoverage]
 
@@ -282,6 +320,7 @@ class SummarizedStats:
     branch: CoverageStat
     function: CoverageStat
     decision: DecisionCoverageStat
+    call: CoverageStat
 
     @staticmethod
     def new_empty() -> SummarizedStats:
@@ -290,6 +329,7 @@ class SummarizedStats:
             branch=CoverageStat.new_empty(),
             function=CoverageStat.new_empty(),
             decision=DecisionCoverageStat.new_empty(),
+            call=CoverageStat.new_empty(),
         )
 
     @staticmethod
@@ -306,6 +346,7 @@ class SummarizedStats:
             branch=filecov.branch_coverage(),
             function=filecov.function_coverage(),
             decision=filecov.decision_coverage(),
+            call=filecov.call_coverage(),
         )
 
     def __iadd__(self, other: SummarizedStats) -> SummarizedStats:
@@ -313,6 +354,7 @@ class SummarizedStats:
         self.branch += other.branch
         self.function += other.function
         self.decision += other.decision
+        self.call += other.call
         return self
 
 

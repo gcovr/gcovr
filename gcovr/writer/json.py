@@ -21,7 +21,6 @@ import json
 import logging
 import os
 import functools
-import re
 from typing import Any, Dict, Optional
 
 from ..gcov import apply_filter_include_exclude
@@ -40,6 +39,7 @@ from ..coverage import (
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
+    CallCoverage,
     SummarizedStats,
 )
 from ..merging import (
@@ -48,12 +48,13 @@ from ..merging import (
     insert_file_coverage,
     insert_function_coverage,
     insert_line_coverage,
+    insert_call_coverage,
 )
 
 logger = logging.getLogger("gcovr")
 
 
-JSON_FORMAT_VERSION = "0.3"
+JSON_FORMAT_VERSION = "0.4"
 JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
@@ -82,7 +83,7 @@ def print_json_report(covdata: CovData, output_file, options):
 
     gcovr_json_root = {
         "gcovr/format_version": JSON_FORMAT_VERSION,
-        "files": _json_from_files(covdata, options.root_filter),
+        "files": _json_from_files(covdata, options),
     }
 
     _write_json_result(
@@ -112,6 +113,8 @@ def print_json_summary_report(covdata, output_file, options):
 
     for key in keys:
         filename = presentable_filename(covdata[key].filename, options.root_filter)
+        if options.json_base:
+            filename = "/".join([options.json_base, filename])
 
         json_dict["files"].append(
             {
@@ -199,13 +202,16 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
     return covdata
 
 
-def _json_from_files(files: CovData, root_filter: re.Pattern) -> list:
-    return [_json_from_file(files[key], root_filter) for key in sorted(files)]
+def _json_from_files(files: CovData, options) -> list:
+    return [_json_from_file(files[key], options) for key in sorted(files)]
 
 
-def _json_from_file(file: FileCoverage, root_filter: re.Pattern) -> dict:
+def _json_from_file(file: FileCoverage, options) -> dict:
+    filename = presentable_filename(file.filename, options.root_filter)
+    if options.json_base:
+        filename = "/".join([options.json_base, filename])
     return {
-        "file": presentable_filename(file.filename, root_filter),
+        "file": filename,
         "lines": _json_from_lines(file.lines),
         "functions": _json_from_functions(file.functions),
     }
@@ -225,6 +231,9 @@ def _json_from_line(line: LineCoverage) -> dict:
     }
     if line.decision is not None:
         json_line["gcovr/decision"] = _json_from_decision(line.decision)
+    if len(line.calls) > 0:
+        json_line["gcovr/calls"] = _json_from_calls(line.calls)
+
     return json_line
 
 
@@ -260,6 +269,14 @@ def _json_from_decision(decision: DecisionCoverage) -> dict:
     raise RuntimeError("Unknown decision type: {decision!r}")
 
 
+def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
+    return [_json_from_call(calls[no]) for no in sorted(calls)]
+
+
+def _json_from_call(call: CallCoverage) -> dict:
+    return {"covered": call.covered, "callno": call.callno}
+
+
 def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
     return [_json_from_function(functions[name]) for name in sorted(functions)]
 
@@ -293,6 +310,10 @@ def _line_from_json(json_line: dict) -> LineCoverage:
 
     insert_decision_coverage(line, _decision_from_json(json_line.get("gcovr/decision")))
 
+    if "gcovr/calls" in json_line:
+        for json_call in json_line["gcovr/calls"]:
+            insert_call_coverage(line, _call_from_json(json_call))
+
     return line
 
 
@@ -302,6 +323,10 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
     )
+
+
+def _call_from_json(json_call: dict) -> CallCoverage:
+    return CallCoverage(covered=json_call["covered"], callno=json_call["callno"])
 
 
 def _decision_from_json(json_decision: Optional[dict]) -> Optional[DecisionCoverage]:

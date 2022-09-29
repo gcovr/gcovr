@@ -1,19 +1,30 @@
 :root {
     font-family: sans-serif;
-    --unknown_color: LightGray;
+    --tab_size: 4;
+}
+
+.theme-green, .theme-blue {
+    --unknown_color: lightgray;
     --low_color: #FF6666;
     --medium_color: #F9FD63;
-    --high_color: #66B4FF;
-    --covered_color: #66B4FF;
+    --high_color: #85E485;
+    --covered_color: #85E485;
     --uncovered_color: #FF8C8C;
     --excluded_color: #53BFFD;
     --warning_color: orangered;
-    --takenBranch_color: Blue;
-    --notTakenBranch_color: Red;
-    --takenDecision_color: Green;
-    --uncheckedDecision_color: DarkOrange;
-    --notTakenDecision_color: Red
+    --takenBranch_color: green;
+    --notTakenBranch_color: red;
+    --takenDecision_color: green;
+    --uncheckedDecision_color: darkorange;
+    --notTakenDecision_color: red;
+    --invokedCall_color: green;
+    --notInvokedCall_color: red;
+}
 
+.theme-blue {
+    --high_color: #66B4FF;
+    --covered_color: #66B4Ff;
+    --takenBranch_color: blue;
 }
 
 body
@@ -326,7 +337,7 @@ span.excludedLine
     background-color: var(--excluded_color) !important;
 }
 
-.linebranch, .linedecision, .linecount
+.linebranch, .linedecision, .linecall, .linecount
 {
     font-family: monospace;
     border-right: 1px gray solid;
@@ -334,15 +345,16 @@ span.excludedLine
     text-align: right;
 }
 
-.linebranchDetails, .linedecisionDetails
+
+.linebranchDetails, .linedecisionDetails, .linecallDetails
 {
     position: relative;
 }
-.linebranchSummary, .linedecisionSummary
+.linebranchSummary, .linedecisionSummary, .linecallSummary
 {
     cursor: help;
 }
-.linebranchContents, .linedecisionContents
+.linebranchContents, .linedecisionContents, .linecallContents
 {
     font-family: sans-serif;
     font-size: small;
@@ -368,17 +380,27 @@ span.excludedLine
 
 .takenDecision
 {
-    color: Green!important;
+    color: var(--takenDecision_color) !important;
 }
 
 .notTakenDecision
 {
-    color: Red!important;
+    color: var(--notTakenDecision_color) !important;
 }
 
 .uncheckedDecision
 {
-    color: DarkOrange!important;
+    color: var(--uncheckedDecision_color) !important;
+}
+
+.invokedCall
+{
+    color: var(--invokedCall_color) !important;
+}
+
+.notInvokedCall
+{
+    color: var(--notInvokedCall_color) !important;
 }
 
 .src

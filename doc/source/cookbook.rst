@@ -111,3 +111,14 @@ directory in ``BLD_DIR``, rather than next to the sources. Since
     :code: bash
     :start-after: #BEGIN cmake_gcovr
     :end-before: #END cmake_gcovr
+
+.. _standalone application:
+
+How to create a standalone application
+--------------------------------------
+
+To create a standalone application you need to install the test suite
+(see :ref:`test suite`). In this test suite you can build a standalone
+executable with the command ``python3 -m nox --session build_app``.
+The command creates the application ``build/gcovr`` and calls the
+executable whith each format to check if it's working correct.

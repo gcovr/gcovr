@@ -14,6 +14,8 @@ not for your libraries. This is influenced by the following options:
 -   :option:`--exclude-directories <gcovr --exclude-directories>`
 -   (the current working directory where gcovr is invoked)
 
+NOTE: Filters can also be specified in the gcovr configuration file: :ref:`configuration`
+
 These options take filters.
 A filter is a regular expression that matches a file path.
 Because filters are regexes,
@@ -138,3 +140,14 @@ or a relative path to the real path::
 .. versionadded:: 5.1
 
    gcovr also supports symlinks/junctions/drive substitutions on Windows.
+
+More examples for filters
+-------------------------
+
+Excluding files inside build directory via --exclude with absolute path (Unix only):
+
+``-e '/.*/build/'``
+
+Excluding files inside build directory via --filter with relative path:
+
+``--filter '\.\./'``

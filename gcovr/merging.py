@@ -60,6 +60,7 @@ from .coverage import (
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
+    CallCoverage,
 )
 
 
@@ -233,6 +234,7 @@ def merge_line(
     left.excluded |= right.excluded
     left.branches = _merge_dict(left.branches, right.branches, merge_branch, options)
     left.decision = merge_decision(left.decision, right.decision, options)
+    left.calls = _merge_dict(left.calls, right.calls, merge_call, options)
 
     return left
 
@@ -302,6 +304,30 @@ def merge_branch(
     left.fallthrough |= right.fallthrough
     left.throw |= right.throw
 
+    return left
+
+
+def insert_call_coverage(
+    target: LineCoverage,
+    call: CallCoverage,
+    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+) -> CallCoverage:
+    """Insert BranchCoverage into LineCoverage."""
+    return _insert_coverage_item(target.calls, call.callno, call, merge_call, options)
+
+
+def merge_call(
+    left: CallCoverage,
+    right: CallCoverage,
+    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+) -> BranchCoverage:
+    """
+    Merge CallCoverage information.
+
+    Do not use 'left' or 'right' objects afterwards!
+    """
+    assert left.callno == right.callno
+    left.covered |= right.covered
     return left
 
 

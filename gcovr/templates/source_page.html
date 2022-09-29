@@ -58,6 +58,14 @@
       <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
     </tr>
     {% endif %}
+    {% if SHOW_CALL %}
+    <tr>
+      <th scope="row">Calls:</th>
+      <td>{{calls.exec}}</td>
+      <td>{{calls.total}}</td>
+      <td class="{{calls.class}}">{{calls.coverage}}%</td>
+    </tr>
+    {% endif %}
   </table>
 </div>
 {% endblock %}
@@ -103,6 +111,9 @@
       {% if SHOW_DECISION %}
       <th align="right">Decision</th>
       {% endif %}
+      {% if SHOW_CALL %}
+      <th align="right">Call</th>
+      {% endif %}
       <th align="right">Exec</th>
       <th align="left">Source</th>
     </tr>
@@ -144,6 +155,24 @@
             {% endfor %}
           </div>
         </details>
+        {% endif %}
+      </td>
+      {% endif %}
+      {% if SHOW_CALL %}
+      <td class="linecall">
+        {% if row.linecall %}
+          <details class="linecallDetails">
+          <summary class="linecallSummary">{{row.linecall.invoked}}/{{row.linecall.total}}</summary>
+          <div class="linecallContents">
+            {% for call in row.linecall.calls %}
+            {% if call.invoked %}
+            <div class="takenBranch">&check; Call {{call.name}} invoked.</div>
+            {% else %}
+            <div class="notTakenBranch">&cross; Call {{call.name}} not invoked.</div>
+            {% endif%}
+            {% endfor %}
+          </div>
+         </details>
         {% endif %}
       </td>
       {% endif %}

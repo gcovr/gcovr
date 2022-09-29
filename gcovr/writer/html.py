@@ -26,6 +26,7 @@ from typing import Callable, Optional, Union
 
 from ..version import __version__
 from ..utils import (
+    force_unix_separator,
     realpath,
     commonpath,
     sort_coverage,
@@ -102,56 +103,29 @@ def user_templates():
 
 class CssRenderer:
 
-    Themes = {
-        "green": {
-            "unknown_color": "LightGray",
-            "low_color": "#FF6666",
-            "medium_color": "#F9FD63",
-            "high_color": "#85E485",
-            "covered_color": "#85E485",
-            "uncovered_color": "#FF8C8C",
-            "excluded_color": "#53BFFD",
-            "warning_color": "orangered",
-            "takenBranch_color": "Green",
-            "notTakenBranch_color": "Red",
-            "takenDecision_color": "Green",
-            "uncheckedDecision_color": "DarkOrange",
-            "notTakenDecision_color": "Red",
-        },
-        "blue": {
-            "unknown_color": "LightGray",
-            "low_color": "#FF6666",
-            "medium_color": "#F9FD63",
-            "high_color": "#66B4FF",
-            "covered_color": "#66B4FF",
-            "uncovered_color": "#FF8C8C",
-            "excluded_color": "#53BFFD",
-            "warning_color": "orangered",
-            "takenBranch_color": "Blue",
-            "notTakenBranch_color": "Red",
-            "takenDecision_color": "Green",
-            "uncheckedDecision_color": "DarkOrange",
-            "notTakenDecision_color": "Red",
-        },
-    }
+    THEMES = ["green", "blue"]
 
     @staticmethod
     def get_themes():
-        return list(CssRenderer.Themes.keys())
+        return CssRenderer.THEMES
 
     @staticmethod
     def get_default_theme():
-        return "green"
+        return CssRenderer.THEMES[0]
+
+    @staticmethod
+    def load_css_template(options):
+        if options.html_css is not None:
+            template_path = os.path.relpath(options.html_css)
+            return user_templates().get_template(template_path)
+
+        return templates().get_template("style.css")
 
     @staticmethod
     def render(options):
-        template = None
-        if options.html_css is not None:
-            template = user_templates().get_template(os.path.relpath(options.html_css))
-        else:
-            template = templates().get_template("style.css")
+        template = CssRenderer.load_css_template(options)
         return template.render(
-            CssRenderer.Themes[options.html_theme], tab_size=options.html_tab_size
+            tab_size=options.html_tab_size,
         )
 
 
@@ -239,6 +213,7 @@ class RootInfo:
         self.directory = None
         self.branches = dict()
         self.decisions = dict()
+        self.calls = dict()
         self.functions = dict()
         self.lines = dict()
         self.files = []
@@ -247,7 +222,7 @@ class RootInfo:
         self.directory = directory
 
     def get_directory(self):
-        return "." if self.directory == "" else self.directory.replace("\\", "/")
+        return "." if self.directory == "" else force_unix_separator(self.directory)
 
     def set_coverage(self, covdata: CovData) -> None:
         """Update this RootInfo with a summary of the CovData."""
@@ -256,6 +231,7 @@ class RootInfo:
         self.functions = dict_from_stat(stats.function, self._coverage_to_class)
         self.branches = dict_from_stat(stats.branch, self._branch_coverage_to_class)
         self.decisions = dict_from_stat(stats.decision, self._coverage_to_class)
+        self.calls = dict_from_stat(stats.call, self._coverage_to_class)
 
     def add_file(self, cdata, link_report, cdata_fname):
         stats = SummarizedStats.from_file(cdata)
@@ -289,9 +265,16 @@ class RootInfo:
             "class": self._coverage_to_class(stats.decision.percent),
         }
 
-        display_filename = os.path.relpath(
-            realpath(cdata_fname), self.directory
-        ).replace("\\", "/")
+        calls = {
+            "total": stats.call.total,
+            "exec": stats.call.covered,
+            "coverage": stats.call.percent_or("-"),
+            "class": self._coverage_to_class(stats.call.percent),
+        }
+
+        display_filename = force_unix_separator(
+            os.path.relpath(realpath(cdata_fname), self.directory)
+        )
 
         if link_report is not None:
             if self.relative_anchors:
@@ -305,6 +288,7 @@ class RootInfo:
                 lines=lines,
                 branches=branches,
                 decisions=decisions,
+                calls=calls,
                 functions=functions,
             )
         )
@@ -335,12 +319,14 @@ def print_html_report(covdata: CovData, output_file, options):
     medium_threshold_branch = options.html_medium_threshold_branch
     high_threshold_branch = options.html_high_threshold_branch
     show_decision = options.show_decision
+    show_calls = options.show_calls
 
     data = {}
     root_info = RootInfo(options)
     data["info"] = root_info
 
     data["SHOW_DECISION"] = show_decision
+    data["SHOW_CALL"] = show_calls
     data["COVERAGE_MED"] = medium_threshold
     data["COVERAGE_HIGH"] = high_threshold
     data["LINE_COVERAGE_MED"] = medium_threshold_line
@@ -379,6 +365,8 @@ def print_html_report(covdata: CovData, output_file, options):
         else:
             css_link = css_output
         data["css_link"] = css_link
+
+    data["theme"] = options.html_theme
 
     root_info.set_coverage(covdata)
 
@@ -481,6 +469,7 @@ def print_html_report(covdata: CovData, output_file, options):
             cdata.branch_coverage(), branch_coverage_class
         )
         data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
+        data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
 
         data["source_lines"] = []
         currdir = os.getcwd()
@@ -557,6 +546,7 @@ def dict_from_stat(
 def source_row(lineno, source, line_cov):
     linebranch = None
     linedecision = None
+    linecall = None
     linecount = ""
     covclass = ""
     if line_cov:
@@ -570,12 +560,14 @@ def source_row(lineno, source, line_cov):
         elif line_cov.is_uncovered:
             covclass = "uncoveredLine"
             linedecision = source_row_decision(line_cov.decision)
+        linecall = source_row_call(line_cov.calls)
     return {
         "lineno": lineno,
         "source": source,
         "covclass": covclass,
         "linebranch": linebranch,
         "linedecision": linedecision,
+        "linecall": linecall,
         "linecount": linecount,
     }
 
@@ -605,6 +597,33 @@ def source_row_branch(branches):
         "taken": taken,
         "total": total,
         "branches": items,
+    }
+
+
+def source_row_call(calls):
+    if not calls:
+        return None
+
+    invoked = 0
+    total = 0
+    items = []
+
+    for call_id in sorted(calls):
+        call = calls[call_id]
+        if call.is_covered:
+            invoked += 1
+        total += 1
+        items.append(
+            {
+                "invoked": call.is_covered,
+                "name": call_id,
+            }
+        )
+
+    return {
+        "invoked": invoked,
+        "total": total,
+        "calls": items,
     }
 
 
