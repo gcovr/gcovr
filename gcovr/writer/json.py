@@ -39,6 +39,7 @@ from ..coverage import (
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
+    CallCoverage,
     SummarizedStats,
 )
 from ..merging import (
@@ -47,12 +48,13 @@ from ..merging import (
     insert_file_coverage,
     insert_function_coverage,
     insert_line_coverage,
+    insert_call_coverage,
 )
 
 logger = logging.getLogger("gcovr")
 
 
-JSON_FORMAT_VERSION = "0.3"
+JSON_FORMAT_VERSION = "0.4"
 JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
@@ -229,6 +231,9 @@ def _json_from_line(line: LineCoverage) -> dict:
     }
     if line.decision is not None:
         json_line["gcovr/decision"] = _json_from_decision(line.decision)
+    if len(line.calls) > 0:
+        json_line["gcovr/calls"] = _json_from_calls(line.calls)
+
     return json_line
 
 
@@ -264,6 +269,14 @@ def _json_from_decision(decision: DecisionCoverage) -> dict:
     raise RuntimeError("Unknown decision type: {decision!r}")
 
 
+def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
+    return [_json_from_call(calls[no]) for no in sorted(calls)]
+
+
+def _json_from_call(call: CallCoverage) -> dict:
+    return {"covered": call.covered, "callno": call.callno}
+
+
 def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
     return [_json_from_function(functions[name]) for name in sorted(functions)]
 
@@ -297,6 +310,10 @@ def _line_from_json(json_line: dict) -> LineCoverage:
 
     insert_decision_coverage(line, _decision_from_json(json_line.get("gcovr/decision")))
 
+    if "gcovr/calls" in json_line:
+        for json_call in json_line["gcovr/calls"]:
+            insert_call_coverage(line, _call_from_json(json_call))
+
     return line
 
 
@@ -306,6 +323,10 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
     )
+
+
+def _call_from_json(json_call: dict) -> CallCoverage:
+    return CallCoverage(covered=json_call["covered"], callno=json_call["callno"])
 
 
 def _decision_from_json(json_decision: Optional[dict]) -> Optional[DecisionCoverage]:

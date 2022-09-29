@@ -94,7 +94,15 @@
       <td>{{info.decisions.total}}</td>
       <td class="{{info.decisions.class}}">{{info.decisions.coverage}}%</td>
     </tr>
-  {% endif %}
+    {% endif %}
+    {% if SHOW_CALL %}
+    <tr>
+      <th scope="row">Calls:</th>
+      <td>{{info.calls.exec}}</td>
+      <td>{{info.calls.total}}</td>
+      <td class="{{info.calls.class}}">{{info.calls.coverage}}%</td>
+    </tr>
+    {% endif %}
   </table>
 </div>
 {% endblock %}
@@ -111,6 +119,12 @@
   <colgroup span="3"/>
   <colgroup span="2"/>
   <colgroup span="2"/>
+  {% if SHOW_DECISION %}
+  <colgroup span="2"/>
+  {% endif %}
+  {% if SHOW_CALL %}
+  <colgroup span="2"/>
+  {% endif %}
 
   <tr>
     <th scope="col">File</th>
@@ -119,6 +133,9 @@
     <th scope="colgroup" colspan=2>Branches</th>
     {% if SHOW_DECISION %}
     <th scope="colgroup" colspan=2>Decisions</th>
+    {% endif %}
+    {% if SHOW_CALL %}
+    <th scope="colgroup" colspan=2>Calls</th>
     {% endif %}
   </tr>
 
@@ -144,6 +161,10 @@
     {% if SHOW_DECISION %}
     <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.coverage}}%</td>
     <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.exec}} / {{row.decisions.total}}</td>
+    {% endif %}
+    {% if SHOW_CALL %}
+    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.calls.coverage}}%</td>
+    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.calls.exec}} / {{row.calls.total}}</td>
     {% endif %}
   </tr>
 

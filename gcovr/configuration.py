@@ -764,6 +764,13 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "show_calls",
+        ["--calls"],
+        group="output_options",
+        help="Report the calls coverage. For HTML report.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "sort_uncovered",
         ["-u", "--sort-uncovered"],
         group="output_options",

@@ -25,6 +25,8 @@
     --takenDecision_color: green;
     --uncheckedDecision_color: darkorange;
     --notTakenDecision_color: red;
+    --invokedCall_color: green;
+    --notInvokedCall_color: red;
 }
 
 .theme-blue {
@@ -343,7 +345,7 @@ span.excludedLine
     background-color: var(--excluded_color) !important;
 }
 
-.linebranch, .linedecision, .linecount
+.linebranch, .linedecision, .linecall, .linecount
 {
     font-family: monospace;
     border-right: 1px gray solid;
@@ -351,15 +353,16 @@ span.excludedLine
     text-align: right;
 }
 
-.linebranchDetails, .linedecisionDetails
+
+.linebranchDetails, .linedecisionDetails, .linecallDetails
 {
     position: relative;
 }
-.linebranchSummary, .linedecisionSummary
+.linebranchSummary, .linedecisionSummary, .linecallSummary
 {
     cursor: help;
 }
-.linebranchContents, .linedecisionContents
+.linebranchContents, .linedecisionContents, .linecallContents
 {
     font-family: sans-serif;
     font-size: small;
@@ -396,6 +399,16 @@ span.excludedLine
 .uncheckedDecision
 {
     color: var(--uncheckedDecision_color) !important;
+}
+
+.invokedCall
+{
+    color: var(--invokedCall_color) !important;
+}
+
+.notInvokedCall
+{
+    color: var(--notInvokedCall_color) !important;
 }
 
 .src
@@ -601,7 +614,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-08-07 16:07:58</td>
+      <td>2022-09-06 16:12:34</td>
     </tr>
     <tr>
       <th scope="row">Coverage:</th>
