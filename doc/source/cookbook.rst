@@ -120,4 +120,5 @@ How to create a standalone application
 To create a standalone application you need to install the test suite
 (see :ref:`test suite`). In this test suite you can build a standalone
 executable with the command ``python3 -m nox --session build_app``.
-The command creates the application ``build/gcovr``
+The command creates the application ``build/gcovr`` and calls the
+executable whith each format to check if it's working correct.

@@ -261,6 +261,9 @@ def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
     session.chdir("build")
     session.run("bash", "-c", "./gcovr --help", external=True)
+    session.log("Run HTML all transformations to check if all the modules are packed")
+    for format in ["txt", "html", "cobertura", "sonarqube", "csv", "coveralls"]:
+        session.run("bash", "-c", f"./gcovr --{format} out.{format}", external=True)
 
 
 def docker_container_os(session: nox.Session) -> str:
