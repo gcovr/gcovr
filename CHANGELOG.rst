@@ -10,6 +10,9 @@ Known bugs:
 
 Breaking changes:
 
+- Remove not allowed attributes ``function-rate``, ``functions-covered`` and ``functions-valid``
+  from cobertura report. (:issue:`671`)
+
 New features and notable changes:
 
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)

@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.7435897435897436" function-rate="0.7777777777777778" branch-rate="0.5" lines-covered="29" lines-valid="39" functions-covered="7" functions-valid="9" branches-covered="6" branches-valid="12" complexity="0.0" timestamp="1649529323" version="gcovr 5.1">
+<coverage line-rate="0.7435897435897436" branch-rate="0.5" lines-covered="29" lines-valid="39" branches-covered="6" branches-valid="12" complexity="0.0" timestamp="1662754731" version="gcovr 5.2">
   <sources>
     <source>.</source>
   </sources>
   <packages>
-    <package name=".subdir.A" line-rate="0.6363636363636364" function-rate="0.6666666666666666" branch-rate="0.5" complexity="0.0">
+    <package name=".subdir.A" line-rate="0.6363636363636364" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file1_cpp" filename=".subdir/A/file1.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>
@@ -59,7 +59,7 @@
         </class>
       </classes>
     </package>
-    <package name=".subdir.A.C" line-rate="0.75" function-rate="1.0" branch-rate="0.5" complexity="0.0">
+    <package name=".subdir.A.C" line-rate="0.75" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file5_cpp" filename=".subdir/A/C/file5.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>
@@ -76,7 +76,7 @@
         </class>
       </classes>
     </package>
-    <package name=".subdir.A.C.D" line-rate="0.75" function-rate="1.0" branch-rate="0.5" complexity="0.0">
+    <package name=".subdir.A.C.D" line-rate="0.75" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file6_cpp" filename=".subdir/A/C/D/file6.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>
@@ -93,7 +93,7 @@
         </class>
       </classes>
     </package>
-    <package name=".subdir.B" line-rate="1.0" function-rate="1.0" branch-rate="0.5" complexity="0.0">
+    <package name=".subdir.B" line-rate="1.0" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="main_cpp" filename=".subdir/B/main.cpp" line-rate="1.0" branch-rate="0.5" complexity="0.0">
           <methods/>

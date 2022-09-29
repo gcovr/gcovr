@@ -75,9 +75,9 @@ grep -qE "^__version__ = ['\"]$target_version['\"]\$" gcovr/version.py \
 grep -qE "^$target_version \\(.+\\)\$" CHANGELOG.rst \
     || error "CHANGELOG.rst: Please update with this version"
 
-grep -qE "version=['\"]gcovr $target_version['\"]" doc/examples/example_xml.xml \
+grep -qE "version=['\"]gcovr $target_version['\"]" doc/examples/example_cobertura.xml \
     || error "examples: Please regenerate: " \
-             "cd doc/examples; ./example_xml.sh > example_xml.xml"
+             "cd doc/examples; ./example_cobertura.sh > example_cobertura.xml"
 
 grep -qE "^ *.*$(basename $0) .EXTRA_CHECKLIST_ARGS $target_version\$" .github/workflows/deploy.yml \
     || error ".github/workflows/deploy.yml: Please update the $0 version"

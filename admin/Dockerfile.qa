@@ -19,7 +19,15 @@ ARG CXX
 # then use the get-pip script from Python 3.7.
 RUN \
     apt-get update && \
-    apt-get install -y sudo make $CC $CXX python3-setuptools $(if [ "$DOCKER_OS" != "ubuntu:22.04" ]; then echo python3.7; fi) ninja-build curl && \
+    apt-get install -y sudo \
+                       make \
+                       $CC \
+                       $CXX \
+                       python3-setuptools \
+                       $(if [ "$DOCKER_OS" != "ubuntu:22.04" ]; then echo python3.7; fi) \
+                       ninja-build \
+                       curl \
+                       libxml2-utils && \
     apt-get clean
 
 # Install Python 3.7 as the default "python3" executable on older linux distribution

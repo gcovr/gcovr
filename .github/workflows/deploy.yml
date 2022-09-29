@@ -56,6 +56,10 @@ jobs:
         sudo apt update
         sudo apt-get install -y make $CC $(echo $CC | sed -e 's/gcc/g\+\+/')
         sudo apt-get clean
+    - name: Install libxml2
+      run: |
+        sudo apt-get install -y libxml2-utils
+        sudo apt-get clean
     - name: Install ninja
       uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install dependencies
