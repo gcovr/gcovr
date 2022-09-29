@@ -19,6 +19,7 @@ New features and notable changes:
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
 - New :option:`--calls` to report call coverage: function calls invoked/total (:issue:`666`)
 - New nox session to generate a portable application with pyinstaller, see :ref:`standalone application`. (:issue:`661`)
+- Print a warning if root directory contains symlinks. (:issue:`652`)
 
 Bug fixes and small improvements:
 

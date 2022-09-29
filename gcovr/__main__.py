@@ -255,6 +255,16 @@ def main(args=None):
 
     options.starting_dir = os.path.abspath(os.getcwd())
     options.root_dir = os.path.abspath(options.root)
+    root_dir_realpath = os.path.realpath(options.root_dir)
+    if options.root_dir != root_dir_realpath and not options.filter:
+        logger.warning(
+            "Your project --root directory seems to contain a symlink. "
+            "This will EXCLUDE source files in your root directory! "
+            "To fix this, you may have to add a --filter option:\n"
+            "    --filter='%s'\n"
+            "For details, see https://github.com/gcovr/gcovr/issues/635",
+            re.escape(root_dir_realpath),
+        )
 
     #
     # Setup filters
