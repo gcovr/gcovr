@@ -37,7 +37,12 @@ GCC_VERSIONS = [
 ]
 GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
-DEFAULT_LINT_ARGUMENTS = ["setup.py", "noxfile.py", "admin"] + DEFAULT_TEST_DIRECTORIES
+DEFAULT_LINT_ARGUMENTS = [
+    "setup.py",
+    "noxfile.py",
+    "scripts",
+    "admin",
+] + DEFAULT_TEST_DIRECTORIES
 
 BLACK_PINNED_VERSION = "black==22.3.0"
 
