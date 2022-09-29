@@ -18,6 +18,8 @@ New features and notable changes:
 Bug fixes and small improvements:
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 
+- Do not ignore returncode of `gcov`. (:issue:`653`)
+
 Documentation:
 
 Internal changes:
