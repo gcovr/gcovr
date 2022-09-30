@@ -18,17 +18,19 @@ ARG CXX
 # Solution: install python3-setuptools (includes Python 3.6),
 # then use the get-pip script from Python 3.7.
 RUN \
-    apt-get update && \
-    apt-get install -y sudo \
-                       make \
-                       $CC \
-                       $CXX \
-                       python3-setuptools \
-                       $(if [ "$DOCKER_OS" != "ubuntu:22.04" ]; then echo python3.7; fi) \
-                       ninja-build \
-                       curl \
-                       libxml2-utils && \
-    apt-get clean
+    export DEBIAN_FRONTEND=noninteractive&& apt-get update \
+    && apt-get install -y sudo \
+                          make \
+                          $CC \
+                          $CXX \
+                          python3-setuptools \
+                          $(if [ "$DOCKER_OS" != "ubuntu:22.04" ]; then echo python3.7; fi) \
+                          ninja-build \
+                          curl \
+                          libxml2-utils \
+                          git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python 3.7 as the default "python3" executable on older linux distribution
 RUN if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then \
