@@ -9,7 +9,7 @@ gcovr --cobertura-pretty
 #END gcovr
 
 if [[ "$OSTYPE" != "msys" ]]; then
-xmllint --valid --noout example_cobertura.xml || exit 1
+xmllint --noout --nowarning --dtdvalid $PWD/../../gcovr/tests/cobertura.coverage-04.dtd example_cobertura.xml || exit 1
 fi
 
 rm -f program *.gc*
