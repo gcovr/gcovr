@@ -57,6 +57,8 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 
 skip_clean = None
 
+GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
+
 CC = os.path.split(env["CC"])[1]
 IS_CLANG = True if CC.startswith("clang") else False
 
@@ -270,6 +272,10 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.skipif(
                     name == "simple1-drive-subst" and not IS_WINDOWS,
                     reason="drive substitution only available on Windows",
+                ),
+                pytest.mark.skipif(
+                    name == "cmake_gtest" and not GCOVR_ISOLATED_TEST,
+                    reason="only available in docker",
                 ),
                 pytest.mark.skipif(
                     name == "symlink-root"
