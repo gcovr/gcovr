@@ -27,6 +27,9 @@ import re
 import sys
 
 
+GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
+
+
 # The CaptureObject class holds the capture method result
 class CaptureObject:
     def __init__(self, out, err, exception):
@@ -208,58 +211,42 @@ def helper_test_non_writable_directory_output(capsys, option):  # pragma: no cov
     assert c.exception.code != 0
 
 
-@pytest.mark.skipif(
-    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
-)
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_output(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--output")
 
 
-@pytest.mark.skipif(
-    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
-)
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_txt(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--txt")
 
 
-@pytest.mark.skipif(
-    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
-)
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_xml(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--xml")
 
 
-@pytest.mark.skipif(
-    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
-)
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_html(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--html")
 
 
-@pytest.mark.skipif(
-    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
-)
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_html_details(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--html-details")
 
 
-@pytest.mark.skipif(
-    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
-)
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_sonarqube(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--sonarqube")
 
 
-@pytest.mark.skipif(
-    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
-)
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_json(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--json")
 
 
-@pytest.mark.skipif(
-    not (os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"), reason="Only for docker"
-)
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_csv(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--csv")
 
