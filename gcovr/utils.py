@@ -26,7 +26,7 @@ import re
 import sys
 from contextlib import contextmanager
 
-from .coverage import CovData, CoverageStat
+from .coverage import CovData, CoverageStat, SEPARATOR
 
 logger = logging.getLogger("gcovr")
 
@@ -70,7 +70,7 @@ else:
 
 
 def get_os_independent_path(path):
-    return path.replace(os.path.sep, "/")
+    return path.replace(os.path.sep, SEPARATOR)
 
 
 def search_file(predicate, path, exclude_dirs):
@@ -165,14 +165,14 @@ class FilterOption:
         # An unintended backslash is a literal backslash r"\\",
         # or a regex escape that doesn't exist.
         (suggestion, bs_count) = re.subn(
-            r"\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])", "/", self.regex
+            r"\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])", SEPARATOR, self.regex
         )
         if bs_count:
             logger.warning("filters must use forward slashes as path separators")
             logger.warning(f"your filter : {self.regex}")
             logger.warning(f"did you mean: {suggestion}")
 
-        isabs = self.regex.startswith("/")
+        isabs = self.regex.startswith(SEPARATOR)
         if not isabs and (sys.platform == "win32"):
             # Starts with a drive letter
             isabs = re.match(r"^[A-Za-z]:/", self.regex)
@@ -257,7 +257,7 @@ class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
         path = realpath(directory)
         os_independent_path = get_os_independent_path(path)
-        pattern = re.escape(f"{os_independent_path}/")
+        pattern = re.escape(f"{os_independent_path}{SEPARATOR}")
         super().__init__(pattern)
 
     def match(self, path: str):
@@ -388,7 +388,7 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
 
 
 def force_unix_separator(path: str) -> str:
-    return path.replace("\\", "/")
+    return path.replace("\\", SEPARATOR)
 
 
 def presentable_filename(filename: str, root_filter: re.Pattern) -> str:

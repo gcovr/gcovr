@@ -35,8 +35,13 @@ report aggregated metrics/percentages.
 """
 
 from __future__ import annotations
-from typing import Dict, Optional, TypeVar, Union
+from collections import OrderedDict
+import os
+import re
+from typing import Dict, Final, List, Iterable, Optional, TypeVar, Union
 from dataclasses import dataclass
+
+SEPARATOR: Final[str] = "/"
 
 _T = TypeVar("_T")
 
@@ -250,12 +255,13 @@ class LineCoverage:
 
 
 class FileCoverage:
-    __slots__ = "filename", "functions", "lines"
+    __slots__ = "filename", "functions", "lines", "parent_key"
 
     def __init__(self, filename: str) -> None:
-        self.filename = filename
+        self.filename: str = filename
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
+        self.parent_key: str = ""
 
     def function_coverage(self) -> CoverageStat:
         total = len(self.functions.values())
@@ -312,6 +318,112 @@ class FileCoverage:
 
 
 CovData = Dict[str, FileCoverage]
+
+
+@dataclass
+class DirectoryCoverage:
+    filename: str
+    stats: SummarizedStats
+    children: List[Union[DirectoryCoverage, FileCoverage]]
+    parent_key: str
+
+    @classmethod
+    def new_empty(cls) -> DirectoryCoverage:
+        return cls("", SummarizedStats.new_empty(), list(), "")
+
+    @staticmethod
+    def add_directory_coverage(
+        subdirs: CovData_subdirectories,
+        filename: str,
+        filecov: FileCoverage,
+        root_filter: re.Pattern,
+        newchild: Optional[DirectoryCoverage] = None,
+    ) -> None:
+        key = DirectoryCoverage.directory_key(filename, root_filter)
+        if key:
+            if key not in subdirs:
+                subdirs[key] = DirectoryCoverage.new_empty()
+                subdirs[key].filename = key
+                subdirs[key].parent_key = DirectoryCoverage.directory_key(
+                    key, root_filter
+                )
+
+            if newchild:
+                if newchild not in subdirs[key].children:
+                    subdirs[key].children.append(newchild)
+            else:
+                filecov.parent_key = key
+                subdirs[key].children.append(filecov)
+
+            subdirs[key].stats += SummarizedStats.from_file(filecov)
+            DirectoryCoverage.add_directory_coverage(
+                subdirs, key, filecov, root_filter, subdirs[key]
+            )
+
+    @staticmethod
+    def collapse_subdirectories(
+        subdirs: CovData_subdirectories, root_filter: re.Pattern
+    ) -> None:
+        collapse_dirs = set()
+        root_key = DirectoryCoverage.directory_root(subdirs, root_filter)
+        for key, value in subdirs.items():
+            if (
+                isinstance(value, DirectoryCoverage)
+                and len(value.children) == 1
+                and not key == root_key
+            ):
+                while True:
+                    parent_key = DirectoryCoverage.directory_key(key, root_filter)
+                    if parent_key not in collapse_dirs or parent_key == root_key:
+                        break
+                if parent_key:
+                    newchildren = [
+                        child
+                        for child in subdirs[parent_key].children
+                        if child != value
+                    ]
+                    orphan = value.children[0]
+                    orphan.parent_key = parent_key
+                    newchildren.append(orphan)
+                    subdirs[parent_key].children = newchildren
+
+                    collapse_dirs.add(key)
+        for key in collapse_dirs:
+            del subdirs[key]
+
+    @staticmethod
+    def from_covdata(
+        covdata: CovData, sorted_keys: Iterable, root_filter: re.Pattern
+    ) -> CovData_subdirectories:
+        subdirs = OrderedDict()
+        for key in sorted_keys:
+            filecov = covdata[key]
+            DirectoryCoverage.add_directory_coverage(
+                subdirs, filecov.filename, filecov, root_filter
+            )
+        return subdirs
+
+    @staticmethod
+    def directory_key(filename: str, root_filter: re.Pattern):
+        key = os.path.dirname(filename.replace("\\", "/"))
+        if root_filter.search(key + "/") and key != filename:
+            return key
+        return None
+
+    @staticmethod
+    def directory_root(subdirs: CovData_subdirectories, root_filter: re.Pattern) -> str:
+        if not subdirs:
+            return SEPARATOR
+        key = next(iter(subdirs))
+        while True:
+            next_key = DirectoryCoverage.directory_key(key, root_filter)
+            if not next_key:
+                return key
+            else:
+                key = next_key
+
+
+CovData_subdirectories = Dict[str, DirectoryCoverage]
 
 
 @dataclass
@@ -377,6 +489,11 @@ class CoverageStat:
         """Percentage of covered elements, equivalent to ``self.percent_or(None)``"""
         return self.percent_or(None)
 
+    @property
+    def uncovered(self) -> int:
+        """Number of lines not covered."""
+        return self.total - self.covered
+
     def percent_or(self, default: _T) -> Union[float, _T]:
         """
         Percentage of covered elements.
@@ -428,6 +545,11 @@ class DecisionCoverageStat:
     @property
     def to_coverage_stat(self) -> CoverageStat:
         return CoverageStat(covered=self.covered, total=self.total)
+
+    @property
+    def uncovered(self) -> int:
+        """Number of lines not covered."""
+        return self.total - self.covered
 
     @property
     def percent(self) -> Optional[float]:

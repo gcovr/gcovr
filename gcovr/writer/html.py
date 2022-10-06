@@ -22,7 +22,7 @@ import os
 import hashlib
 import io
 from argparse import ArgumentTypeError
-from typing import Callable, Optional, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 from ..version import __version__
 from ..utils import (
@@ -40,6 +40,8 @@ from ..coverage import (
     DecisionCoverageStat,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
+    DirectoryCoverage,
+    FileCoverage,
     SummarizedStats,
 )
 
@@ -183,7 +185,7 @@ def get_formatter(options):
     )
 
 
-def coverage_to_class(coverage, medium_threshold, high_threshold):
+def coverage_to_class(coverage, medium_threshold, high_threshold) -> str:
     if coverage is None:
         return "coverage-unknown"
     if coverage == 0:
@@ -196,7 +198,7 @@ def coverage_to_class(coverage, medium_threshold, high_threshold):
 
 
 class RootInfo:
-    def __init__(self, options):
+    def __init__(self, options) -> None:
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
         self.medium_threshold_line = options.html_medium_threshold_line
@@ -217,11 +219,12 @@ class RootInfo:
         self.functions = dict()
         self.lines = dict()
         self.files = []
+        self.subdirs = dict()
 
-    def set_directory(self, directory):
+    def set_directory(self, directory) -> None:
         self.directory = directory
 
-    def get_directory(self):
+    def get_directory(self) -> str:
         return "." if self.directory == "" else force_unix_separator(self.directory)
 
     def set_coverage(self, covdata: CovData) -> None:
@@ -233,12 +236,22 @@ class RootInfo:
         self.decisions = dict_from_stat(stats.decision, self._coverage_to_class)
         self.calls = dict_from_stat(stats.call, self._coverage_to_class)
 
-    def add_file(self, cdata, link_report, cdata_fname):
-        stats = SummarizedStats.from_file(cdata)
+    def clear_files(self) -> None:
+        self.files = []
+
+    def add_file(
+        self, cdata: Union[DirectoryCoverage, FileCoverage], link_report, cdata_fname
+    ) -> None:
+        stats = (
+            cdata.stats
+            if isinstance(cdata, DirectoryCoverage)
+            else SummarizedStats.from_file(cdata)
+        )
 
         lines = {
             "total": stats.line.total,
             "exec": stats.line.covered,
+            "uncovered": stats.line.uncovered,
             "coverage": stats.line.percent_or(100.0),
             "class": self._line_coverage_to_class(stats.line.percent_or(100.0)),
         }
@@ -246,6 +259,7 @@ class RootInfo:
         functions = {
             "total": stats.function.total,
             "exec": stats.function.covered,
+            "uncovered": stats.function.uncovered,
             "coverage": stats.function.percent_or("-"),
             "class": self._coverage_to_class(stats.function.percent),
         }
@@ -253,6 +267,7 @@ class RootInfo:
         branches = {
             "total": stats.branch.total,
             "exec": stats.branch.covered,
+            "uncovered": stats.branch.uncovered,
             "coverage": stats.branch.percent_or("-"),
             "class": self._branch_coverage_to_class(stats.branch.percent),
         }
@@ -260,6 +275,7 @@ class RootInfo:
         decisions = {
             "total": stats.decision.total,
             "exec": stats.decision.covered,
+            "uncovered": stats.decision.uncovered,
             "unchecked": stats.decision.uncheckable,
             "coverage": stats.decision.percent_or("-"),
             "class": self._coverage_to_class(stats.decision.percent),
@@ -268,6 +284,7 @@ class RootInfo:
         calls = {
             "total": stats.call.total,
             "exec": stats.call.covered,
+            "uncovered": stats.call.uncovered,
             "coverage": stats.call.percent_or("-"),
             "class": self._coverage_to_class(stats.call.percent),
         }
@@ -293,15 +310,15 @@ class RootInfo:
             )
         )
 
-    def _coverage_to_class(self, coverage):
+    def _coverage_to_class(self, coverage) -> str:
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
-    def _line_coverage_to_class(self, coverage):
+    def _line_coverage_to_class(self, coverage) -> str:
         return coverage_to_class(
             coverage, self.medium_threshold_line, self.high_threshold_line
         )
 
-    def _branch_coverage_to_class(self, coverage):
+    def _branch_coverage_to_class(self, coverage) -> str:
         return coverage_to_class(
             coverage, self.medium_threshold_branch, self.high_threshold_branch
         )
@@ -310,7 +327,7 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def print_html_report(covdata: CovData, output_file, options):
+def print_html_report(covdata: CovData, output_file: str, options: "Options") -> bool:
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -367,34 +384,47 @@ def print_html_report(covdata: CovData, output_file, options):
         data["css_link"] = css_link
 
     data["theme"] = options.html_theme
+    data["row_sort_key"], data["row_sort_reverse"] = row_sort_keys(options)
 
     root_info.set_coverage(covdata)
 
     # Generate the coverage output (on a per-package basis)
     # source_dirs = set()
     files = []
-    dirs = []
     filtered_fname = ""
-    keys = sort_coverage(
+    sorted_keys = sort_coverage(
         covdata,
         show_branch=False,
         filename_uses_relative_pathname=True,
         by_num_uncovered=options.sort_uncovered,
         by_percent_uncovered=options.sort_percent,
     )
+
+    if options.html_cascaded_directories:
+        root_info.subdirs = DirectoryCoverage.from_covdata(
+            covdata, sorted_keys, options.root_filter
+        )
+        DirectoryCoverage.collapse_subdirectories(
+            root_info.subdirs, options.root_filter
+        )
+
     cdata_fname = {}
     cdata_sourcefile = {}
-    for f in keys:
+    for f in list(covdata.keys()) + list(root_info.subdirs.keys()):
         filtered_fname = options.root_filter.sub("", f)
         files.append(filtered_fname)
-        dirs.append(os.path.dirname(filtered_fname) + os.sep)
         cdata_fname[f] = filtered_fname
         if options.html_details:
-            cdata_sourcefile[f] = _make_short_sourcename(output_file, filtered_fname)
+            if os.path.normpath(f) == os.path.normpath(options.root_dir):
+                cdata_sourcefile[f] = output_file
+            else:
+                cdata_sourcefile[f] = _make_short_sourcename(
+                    output_file, filtered_fname
+                )
         else:
             cdata_sourcefile[f] = None
 
-    # Define the common root directory, which may differ from options.root
+    # Define the common root directory, which may differ from options.root_dir
     # when source files share a common prefix.
     root_directory = ""
     if len(files) > 1:
@@ -408,34 +438,79 @@ def print_html_report(covdata: CovData, output_file, options):
 
     root_info.set_directory(root_directory)
 
-    for f in keys:
-        root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
+    (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
+    if output_suffix == "":
+        output_suffix = ".html"
+    functions_output_file = f"{output_prefix}.functions{output_suffix}"
+    data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
 
+    if options.html_cascaded_directories:
+        write_directory_pages(
+            output_file,
+            covdata,
+            cdata_fname,
+            cdata_sourcefile,
+            options,
+            root_info,
+            data,
+        )
+    else:
+        for f, cdata in covdata.items():
+            root_info.add_file(cdata, cdata_sourcefile[f], cdata_fname[f])
+        write_root_page(output_file, options, data)
+
+    error_occured = False
     if options.html_details:
-        (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
-        if output_suffix == "":
-            output_suffix = ".html"
-        functions_fname = f"{output_prefix}.functions{output_suffix}"
-        data["FUNCTIONS_FNAME"] = os.path.basename(functions_fname)
-    html_string = templates().get_template("root_page.html").render(**data)
+        error_occured = write_source_pages(
+            output_file,
+            functions_output_file,
+            covdata,
+            cdata_fname,
+            cdata_sourcefile,
+            options,
+            root_info,
+            data,
+        )
+    return error_occured
+
+
+def write_root_page(output_file: str, options: "Options", data: Dict[str, Any]) -> None:
+    #
+    # Generate the root HTML file that contains the high level report
+    #
+    html_string = templates().get_template("directory_page.html").render(**data)
     with open_text_for_writing(
         output_file, encoding=options.html_encoding, errors="xmlcharrefreplace"
     ) as fh:
         fh.write(html_string + "\n")
 
-    # Return, if no details are requested
-    if not options.html_details:
-        return
 
+def write_source_pages(
+    output_file: str,
+    functions_output_file: str,
+    covdata: CovData,
+    cdata_fname: Dict[str, str],
+    cdata_sourcefile: Dict[str, str],
+    options: "Options",
+    root_info: RootInfo,
+    data: Dict[str, Any],
+) -> bool:
     #
     # Generate an HTML file for every source file
     #
+    medium_threshold = options.html_medium_threshold
+    high_threshold = options.html_high_threshold
+    medium_threshold_line = options.html_medium_threshold_line
+    high_threshold_line = options.html_high_threshold_line
+    medium_threshold_branch = options.html_medium_threshold_branch
+    high_threshold_branch = options.html_high_threshold_branch
+    formatter = get_formatter(options)
     error_occurred = False
-    all_functions = dict()
-    for f in keys:
-        cdata = covdata[f]
 
+    all_functions = dict()
+    for f, cdata in covdata.items():
         data["filename"] = cdata_fname[f]
+        root_info.add_file(cdata, cdata_sourcefile[f], cdata_fname[f])
 
         # Only use demangled names (containing a brace)
         data["function_list"] = []
@@ -471,6 +546,13 @@ def print_html_report(covdata: CovData, output_file, options):
         )
         data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
         data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
+
+        parent_directory_key = cdata.parent_key
+        if parent_directory_key:
+            data["parent_link"] = os.path.basename(
+                cdata_sourcefile[parent_directory_key]
+            )
+            data["parent_directory"] = cdata_fname[parent_directory_key]
 
         data["source_lines"] = []
         currdir = os.getcwd()
@@ -518,22 +600,93 @@ def print_html_report(covdata: CovData, output_file, options):
     data["all_functions"] = [all_functions[k] for k in sorted(all_functions)]
     html_string = templates().get_template("functions_page.html").render(**data)
     with open_text_for_writing(
-        functions_fname, encoding=options.html_encoding, errors="xmlcharrefreplace"
+        functions_output_file,
+        encoding=options.html_encoding,
+        errors="xmlcharrefreplace",
     ) as fh:
         fh.write(html_string + "\n")
 
     return error_occurred
 
 
+def row_sort_keys(options: "Options") -> Tuple[str, bool]:
+    row_sort_key = []
+    reverse_sort = False
+    if options.sort_uncovered:
+        row_sort_key.append("lines.uncovered")
+        reverse_sort = False
+    if options.sort_percent:
+        row_sort_key.append("lines.coverage")
+        reverse_sort = True
+    if not row_sort_key:
+        row_sort_key.append("filename")
+    return ",".join(row_sort_key), reverse_sort
+
+
+def write_directory_pages(
+    output_file: str,
+    covdata: CovData,
+    cdata_fname: Dict[str, str],
+    cdata_sourcefile: Dict[str, str],
+    options: "Options",
+    root_info: RootInfo,
+    data: Dict[str, Any],
+) -> None:
+    root_key = DirectoryCoverage.directory_root(root_info.subdirs, options.root_filter)
+
+    for f, value in root_info.subdirs.items():
+        data["directory"] = commonpath(cdata_fname[f])
+
+        data["date"] = root_info.date
+
+        parent_directory_key = value.parent_key
+        if parent_directory_key:
+            data["parent_link"] = os.path.basename(
+                cdata_sourcefile[parent_directory_key]
+            )
+            data["parent_directory"] = cdata_fname[parent_directory_key]
+        else:
+            data["parent_link"] = None
+            data["parent_directory"] = None
+
+        root_info.clear_files()
+        for child in value.children:
+            if child.filename in covdata:
+                item = covdata[child.filename]
+            elif child.filename in root_info.subdirs:
+                item = root_info.subdirs[child.filename]
+            root_info.add_file(
+                item, cdata_sourcefile[child.filename], cdata_fname[child.filename]
+            )
+
+        html_string = templates().get_template("directory_page.html").render(**data)
+        filename = None
+        if f == root_key:
+            filename = output_file
+        elif f in cdata_sourcefile:
+            filename = cdata_sourcefile[f]
+        else:
+            logger.warning(
+                f"There's a subdirectory {f} that there's no source files within it"
+            )
+
+        if filename:
+            with open_text_for_writing(
+                filename, encoding=options.html_encoding, errors="xmlcharrefreplace"
+            ) as fh:
+                fh.write(html_string + "\n")
+
+
 def dict_from_stat(
     stat: Union[CoverageStat, DecisionCoverageStat],
     coverage_class: Callable[[Optional[float]], str],
     default: float = None,
-) -> dict:
+) -> Dict[str, Any]:
     coverage_default = "-" if default is None else default
     data = {
         "total": stat.total,
         "exec": stat.covered,
+        "uncovered": stat.uncovered,
         "coverage": stat.percent_or(coverage_default),
         "class": coverage_class(stat.percent_or(default)),
     }
@@ -544,7 +697,7 @@ def dict_from_stat(
     return data
 
 
-def source_row(lineno, source, line_cov):
+def source_row(lineno, source, line_cov) -> Dict[str, Any]:
     linebranch = None
     linedecision = None
     linecall = None
@@ -573,7 +726,7 @@ def source_row(lineno, source, line_cov):
     }
 
 
-def source_row_branch(branches):
+def source_row_branch(branches) -> Dict[str, Any]:
     if not branches:
         return None
 
@@ -601,7 +754,7 @@ def source_row_branch(branches):
     }
 
 
-def source_row_call(calls):
+def source_row_call(calls) -> Dict[str, Any]:
     if not calls:
         return None
 
@@ -628,7 +781,7 @@ def source_row_call(calls):
     }
 
 
-def source_row_decision(decision: DecisionCoverage) -> Optional[dict]:
+def source_row_decision(decision: DecisionCoverage) -> Optional[Dict[str, Any]]:
     if decision is None:
         return None
 
@@ -677,8 +830,7 @@ def source_row_decision(decision: DecisionCoverage) -> Optional[dict]:
     }
 
 
-def _make_short_sourcename(output_file, filename):
-    # type: (str, str) -> str
+def _make_short_sourcename(output_file: str, filename: str) -> str:
     r"""Make a short-ish file path for --html-detail output.
 
     Args:
