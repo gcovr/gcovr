@@ -89,6 +89,11 @@
                     "name": "_Z16checkSmallerTruei"
                 },
                 {
+                    "execution_count": 2,
+                    "lineno": 342,
+                    "name": "_Z16verify_issue_679b"
+                },
+                {
                     "execution_count": 1,
                     "lineno": 124,
                     "name": "_Z17checkComplexFalsei"
@@ -155,7 +160,7 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 342,
+                    "lineno": 349,
                     "name": "main"
                 }
             ],
@@ -2977,28 +2982,58 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 2,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 342
                 },
                 {
-                    "branches": [],
-                    "count": 0,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 2,
+                    "gcovr/decision": {
+                        "type": "uncheckable"
+                    },
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 343
                 },
                 {
-                    "branches": [],
-                    "count": 1,
+                    "branches": [
+                        {
+                            "count": 10,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 11,
+                    "gcovr/decision": {
+                        "count_false": 1,
+                        "count_true": 10,
+                        "type": "conditional"
+                    },
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 344
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 10,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 345
@@ -3012,7 +3047,7 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 2,
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,
                     "line_number": 347
@@ -3033,16 +3068,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 350
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 351
                 },
                 {
@@ -3061,16 +3096,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 354
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 355
                 },
                 {
@@ -3082,16 +3117,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 357
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 358
                 },
                 {
@@ -3103,16 +3138,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 360
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 361
                 },
                 {
@@ -3152,16 +3187,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 367
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 368
                 },
                 {
@@ -3201,16 +3236,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 374
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 375
                 },
                 {
@@ -3222,16 +3257,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 377
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 378
                 },
                 {
@@ -3243,16 +3278,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 380
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 381
                 },
                 {
@@ -3271,16 +3306,16 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": false,
+                    "gcovr/noncode": true,
                     "line_number": 384
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/excluded": false,
-                    "gcovr/noncode": true,
+                    "gcovr/noncode": false,
                     "line_number": 385
                 },
                 {
@@ -3306,10 +3341,80 @@
                 },
                 {
                     "branches": [],
+                    "count": 1,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": false,
+                    "line_number": 389
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": false,
+                    "line_number": 390
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": false,
+                    "line_number": 391
+                },
+                {
+                    "branches": [],
                     "count": 0,
                     "gcovr/excluded": false,
                     "gcovr/noncode": true,
-                    "line_number": 389
+                    "line_number": 392
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": false,
+                    "line_number": 393
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": true,
+                    "line_number": 394
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": false,
+                    "line_number": 395
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": false,
+                    "line_number": 396
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": true,
+                    "line_number": 397
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": false,
+                    "line_number": 398
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/excluded": false,
+                    "gcovr/noncode": true,
+                    "line_number": 399
                 }
             ]
         }

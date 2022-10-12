@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-04-26 20:42:26</td>
+      <td>2022-10-13 19:33:37</td>
     </tr>
     <tr>
       <th scrope="row">Warnings:</th>
@@ -45,27 +45,27 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>139</td>
-      <td>163</td>
-      <td class="coverage-medium">85.3%</td>
+      <td>145</td>
+      <td>169</td>
+      <td class="coverage-medium">85.8%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
-      <td>31</td>
-      <td>31</td>
+      <td>32</td>
+      <td>32</td>
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>41</td>
-      <td>83</td>
-      <td class="coverage-low">49.4%</td>
+      <td>45</td>
+      <td>87</td>
+      <td class="coverage-low">51.7%</td>
     </tr>
     <tr>
       <th scope="row">Decisions:</th>
-      <td>27</td>
-      <td>53</td>
-      <td class="coverage-low">50.9%</td>
+      <td>31</td>
+      <td>57</td>
+      <td class="coverage-low">54.4%</td>
     </tr>
   </table>
 </div>
@@ -415,13 +415,24 @@
     </tr>
     <tr>
       <td>
-        <a href="#l342">main</a>
+        <a href="#l349">main</a>
+      </td>
+      <td>
+        <a href="#l349">349</a>
+      </td>
+      <td>
+        <a href="#l349"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l342">verify_issue_679(bool)</a>
       </td>
       <td>
         <a href="#l342">342</a>
       </td>
       <td>
-        <a href="#l342"> called 1 time</a>
+        <a href="#l342"> called 2 times</a>
       </td>
     </tr>
   </table>
@@ -4272,28 +4283,56 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span></td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine"><span class="kt">void</span> <span class="nf">verify_issue_679</span><span class="p">(</span><span class="k">const</span> <span class="kt">bool</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l343" href="#l343">343</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">2/2</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 1 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 1 times.</div>
+          </div>
+        </details>
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">  <span class="k">if</span> <span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l344" href="#l344">344</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 10 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">2/2</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 10 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 1 times.</div>
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkBiggerTrue</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
+      <td class="src coveredLine">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4302,8 +4341,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkBiggerFalse</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4312,8 +4351,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkBiggerBoth</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src ">  <span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4322,8 +4361,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkBiggerBoth</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine"><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4343,7 +4382,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkSmallerTrue</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
+      <td class="src coveredLine"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4352,8 +4391,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkSmallerFalse</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4362,8 +4401,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkBiggerTrue</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4373,7 +4412,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkEqualTrue</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkBiggerFalse</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4383,7 +4422,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkEqualFalse</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkBiggerBoth</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4392,8 +4431,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkBiggerBoth</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4402,8 +4441,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkNotEqualTrue</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -4413,7 +4452,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkNotEqualFalse</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkSmallerTrue</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4422,8 +4461,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkSmallerFalse</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4432,8 +4471,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkComplexTrue</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -4443,11 +4482,21 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkComplexFalse</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkEqualTrue</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l360" href="#l360">360</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkEqualFalse</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l361" href="#l361">361</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -4457,23 +4506,13 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l361" href="#l361">361</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkElseIf1</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
-    </tr>
-
-    <tr class="source-line">
       <td class="lineno"><a id="l362" href="#l362">362</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkElseIf2</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkNotEqualTrue</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4483,7 +4522,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkElseIf3</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkNotEqualFalse</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4503,7 +4542,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkSwitch1</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkComplexTrue</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4513,21 +4552,11 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkSwitch2</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkComplexFalse</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l367" href="#l367">367</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkSwitch3</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l368" href="#l368">368</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -4537,13 +4566,23 @@
     </tr>
 
     <tr class="source-line">
+      <td class="lineno"><a id="l368" href="#l368">368</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkElseIf1</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
       <td class="lineno"><a id="l369" href="#l369">369</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkCompactBranch1True</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkElseIf2</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4553,7 +4592,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkCompactBranch1False</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkElseIf3</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4573,7 +4612,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkCompactBranch2True</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkSwitch1</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4583,7 +4622,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkCompactBranch2False</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkSwitch2</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4592,8 +4631,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkSwitch3</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4602,8 +4641,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkTernary1True</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -4613,7 +4652,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkTernary1False</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkCompactBranch1True</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4622,8 +4661,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkCompactBranch1False</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4632,8 +4671,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkTernary2True</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -4643,7 +4682,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkTernary2False</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkCompactBranch2True</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4652,8 +4691,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkCompactBranch2False</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4662,8 +4701,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkForLoop</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -4673,7 +4712,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkComplexForLoop</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkTernary1True</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4683,21 +4722,11 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkWhileLoop</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkTernary1False</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l384" href="#l384">384</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkDoWhileLoop</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l385" href="#l385">385</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -4707,13 +4736,23 @@
     </tr>
 
     <tr class="source-line">
+      <td class="lineno"><a id="l385" href="#l385">385</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkTernary2True</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
       <td class="lineno"><a id="l386" href="#l386">386</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="n">checkInterpreter</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span></td>
+      <td class="src coveredLine">   <span class="n">checkTernary2False</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4733,11 +4772,111 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span></td>
+      <td class="src coveredLine">   <span class="n">checkForLoop</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l389" href="#l389">389</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkComplexForLoop</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l390" href="#l390">390</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkWhileLoop</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l391" href="#l391">391</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkDoWhileLoop</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l392" href="#l392">392</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l393" href="#l393">393</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">checkInterpreter</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l394" href="#l394">394</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l395" href="#l395">395</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">verify_issue_679</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l396" href="#l396">396</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="n">verify_issue_679</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l397" href="#l397">397</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l398" href="#l398">398</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l399" href="#l399">399</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -4747,7 +4886,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l390" href="#l390">390</a></td>
+      <td class="lineno"><a id="l400" href="#l400">400</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -4762,7 +4901,7 @@
     </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.2)</a>
     </footer>
   </body>
 </html>
