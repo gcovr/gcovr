@@ -168,7 +168,6 @@ class DecisionParser:
                     logger.debug(f"Uncheckable decision at line {lineno}")
             else:
                 self.start_multiline_decision_analysis(lineno, code)
-                return
 
         # check if it's a case statement (measured at every line of a case, so a branch definition isn't given)
         elif _is_a_switch(code):
@@ -219,9 +218,8 @@ class DecisionParser:
             # disable the current decision analysis
             self.decision_analysis_active = False
             self.decision_analysis_open_brackets = 0
-            return
-
-        # count amount of open/closed brackets to track, when we can start checking if the block is executed
-        prepped_code = _prep_decision_string(code)
-        self.decision_analysis_open_brackets += prepped_code.count("(")
-        self.decision_analysis_open_brackets -= prepped_code.count(")")
+        else:
+            # count amount of open/closed brackets to track, when we can start checking if the block is executed
+            prepped_code = _prep_decision_string(code)
+            self.decision_analysis_open_brackets += prepped_code.count("(")
+            self.decision_analysis_open_brackets -= prepped_code.count(")")
