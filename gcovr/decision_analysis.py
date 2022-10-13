@@ -35,6 +35,7 @@ logger = logging.getLogger("gcovr")
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
+_WHITESPACE_PATTERN = re.compile(r"\s+")
 
 
 # helper functions
@@ -45,14 +46,15 @@ def _prep_decision_string(code: str) -> str:
     Remove comments, remove whitespace, add leading space to seperate branch-keywords
     from possible collisions with variable names.
 
-    >>> _prep_decision_string('a++; if (a > 5) { // check for something ')
-    ' a++; if (a > 5) {'
+    >>> _prep_decision_string('   a++  ;  if  (a > 5)  { // check for something ')
+    ' a++ ; if (a > 5) {'
     """
 
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
+    code = _WHITESPACE_PATTERN.sub(" ", code)
 
-    return " " + code.strip()
+    return " " + code.lstrip().strip()
 
 
 def _get_delta_braces(code):
@@ -82,8 +84,33 @@ def _is_a_oneline_branch(code: str) -> bool:
 
     >>> _is_a_oneline_branch('if(a>5){a = 0;}')
     True
+    >>> _is_a_oneline_branch('if(a>5){')
+    False
     """
     return re.match(r"^[^;]+{(?:.*;)*.*}$", _prep_decision_string(code)) is not None
+
+
+def _is_a_closed_branch(code: str) -> bool:
+    r"""Checks, if the given line of code is a branch which is closed on the same line
+
+    >>> _is_a_closed_branch('if(a>5){a = 0;}')
+    False
+    >>> _is_a_closed_branch('if(a>5){ // A comment')
+    True
+    >>> _is_a_closed_branch('   while (a>5){ // A comment')
+    True
+    >>> _is_a_closed_branch('   while (a>5)')
+    True
+    >>> _is_a_closed_branch('   while (a>5')
+    False
+    """
+    prepped_code = _prep_decision_string(code)
+    if (
+        _is_a_branch_statement(prepped_code) or _is_a_loop(prepped_code)
+    ) and not _is_a_oneline_branch(prepped_code):
+        return _get_delta_braces(prepped_code) == 0
+
+    return False
 
 
 def _is_a_loop(code: str) -> bool:
@@ -157,7 +184,14 @@ class DecisionParser:
 
         # check if a branch exists (prevent misdetection caused by inaccurante parsing)
         if len(line_coverage.branches.items()) > 0:
-            if _is_a_loop(code) or _is_a_oneline_branch(code):
+            if (
+                _is_a_loop(code)
+                or _is_a_oneline_branch(code)
+                or (
+                    _is_a_closed_branch(code)
+                    and (len(line_coverage.branches.items()) == 2)
+                )
+            ):
                 if len(line_coverage.branches.items()) == 2:
                     keys = sorted(line_coverage.branches)
                     # if it's a compact decision, we can only use the fallback to analyze
