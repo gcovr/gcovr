@@ -44,7 +44,9 @@
                     ],
                     "count": 1,
                     "gcovr/decision": {
-                        "type": "uncheckable"
+                        "count_false": 0,
+                        "count_true": 1,
+                        "type": "conditional"
                     },
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,

@@ -3002,7 +3002,9 @@
                     ],
                     "count": 2,
                     "gcovr/decision": {
-                        "type": "uncheckable"
+                        "count_false": 1,
+                        "count_true": 1,
+                        "type": "conditional"
                     },
                     "gcovr/excluded": false,
                     "gcovr/noncode": false,

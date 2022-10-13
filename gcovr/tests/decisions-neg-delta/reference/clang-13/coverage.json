@@ -44,8 +44,8 @@
                     ],
                     "count": 1,
                     "gcovr/decision": {
-                        "count_false": 0,
-                        "count_true": 1,
+                        "count_false": 1,
+                        "count_true": 0,
                         "type": "conditional"
                     },
                     "gcovr/excluded": false,
