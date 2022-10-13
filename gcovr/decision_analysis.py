@@ -55,6 +55,11 @@ def _prep_decision_string(code: str) -> str:
     return " " + code.strip()
 
 
+def _get_delta_braces(code):
+    prepped_code = _prep_decision_string(code)
+    return prepped_code.count("(") - prepped_code.count(")")
+
+
 def _is_a_branch_statement(code: str) -> bool:
     r"""Checks, if the given line of code is a branch statement"""
     return any(
@@ -188,11 +193,7 @@ class DecisionParser:
         self.last_decision_line = lineno
 
         # count brackets to make sure we're outside of the decision expression
-        prepped_code = (
-            "(" + _prep_decision_string(code).split(" if(")[-1].split(" if (")[-1]
-        )
-        self.decision_analysis_open_brackets += prepped_code.count("(")
-        self.decision_analysis_open_brackets -= prepped_code.count(")")
+        self.decision_analysis_open_brackets += _get_delta_braces(code)
 
     def continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
         line_coverage = self.coverage.lines.get(lineno)
@@ -220,6 +221,4 @@ class DecisionParser:
             self.decision_analysis_open_brackets = 0
         else:
             # count amount of open/closed brackets to track, when we can start checking if the block is executed
-            prepped_code = _prep_decision_string(code)
-            self.decision_analysis_open_brackets += prepped_code.count("(")
-            self.decision_analysis_open_brackets -= prepped_code.count(")")
+            self.decision_analysis_open_brackets += _get_delta_braces(code)
