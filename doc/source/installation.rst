@@ -34,4 +34,4 @@ Operating System:
 Compiler:
     GCC and Clang.
 
-    The automated tests run on GCC 5, 6, and 8.
+    The automated tests run on GCC 5, 6, 8, 9, 10, 11 and clang 10 and 13.
