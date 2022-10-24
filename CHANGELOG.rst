@@ -24,7 +24,6 @@ New features and notable changes:
 Bug fixes and small improvements:
 
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
-
 - Do not ignore returncode of `gcov`. (:issue:`653`)
 
 Documentation:
@@ -33,6 +32,7 @@ Internal changes:
 
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
 - Change and extend ``cmake`` tests. (:issue:`676`)
+- Detect the verion of the ``gcc``. (:issue:`686`)
 
 5.2 (06 August 2022)
 --------------------
