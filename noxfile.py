@@ -22,20 +22,21 @@ import os
 import platform
 import shutil
 import shlex
+import subprocess
 import sys
 import nox
 
+
 GCC_VERSIONS = [
-    "gcc-5",
-    "gcc-6",
-    "gcc-8",
-    "gcc-9",
-    "gcc-10",
     "gcc-11",
-    "clang-10",
+    "gcc-10",
+    "gcc-9",
+    "gcc-8",
+    "gcc-6",
+    "gcc-5",
     "clang-13",
+    "clang-10",
 ]
-GCC_VERSION2USE = os.path.split(os.environ.get("CC", "gcc-5"))[1]
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
 DEFAULT_LINT_ARGUMENTS = [
     "setup.py",
@@ -47,6 +48,43 @@ DEFAULT_LINT_ARGUMENTS = [
 BLACK_PINNED_VERSION = "black==22.3.0"
 
 nox.options.sessions = ["qa"]
+
+
+def get_gcc_version_to_use():
+    CC = os.environ.get("CC")
+    if CC is None:
+        for gcc in reversed([gcc for gcc in GCC_VERSIONS]):
+            gcc = shutil.which(gcc)
+            if gcc is not None:
+                CC = os.path.split(gcc)[1]
+                break
+        else:
+            CC = shutil.which("gcc")
+            if CC is None:
+                raise RuntimeError(
+                    f"No valid compiler found, searched for gcc, {', '.join(GCC_VERSIONS)}."
+                )
+
+            # gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
+            # Copyright (C) 2019 Free Software Foundation, Inc.
+            # This is free software; see the source for copying conditions.  There is NO
+            # warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+            output = subprocess.check_output([CC, "--version"]).decode().split("\n")
+            if output[0].startswith("gcc"):
+                version = output[0].split(" ")[-1]
+                major_version = version.split(".")[0]
+                CC = f"gcc-{major_version}"
+            elif " clang version " in output[0]:
+                version = output[0].split(" clang version ")[1]
+                major_version = version.split(".")[0]
+                CC = f"clang-{major_version}"
+
+            if CC not in GCC_VERSIONS:
+                raise RuntimeError(
+                    f"Could not detect a valid compiler {CC} from ({', '.join(GCC_VERSIONS)}) from: >>{output}<<"
+                )
+
+    return CC
 
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
@@ -64,7 +102,7 @@ def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
 @nox.session(python=False)
 def qa(session: nox.Session) -> None:
     """Run the quality tests for the default GCC version."""
-    session_id = f"qa_compiler({GCC_VERSION2USE})"
+    session_id = f"qa_compiler({get_gcc_version_to_use()})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
@@ -134,7 +172,7 @@ def doc(session: nox.Session) -> None:
 @nox.session(python=False)
 def tests(session: nox.Session) -> None:
     """Run the tests with the default GCC version."""
-    session_id = f"tests_compiler({GCC_VERSION2USE})"
+    session_id = f"tests_compiler({get_gcc_version_to_use()})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
@@ -282,7 +320,7 @@ def docker_container_id(session: nox.Session, version: str) -> str:
 @nox.session(python=False)
 def docker_qa_build(session: nox.Session) -> None:
     """Build the docker container for the default GCC version."""
-    session_id = f"docker_qa_build({GCC_VERSION2USE})"
+    session_id = f"docker_qa_build({GCC_VERSIONS[0]})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
@@ -324,7 +362,7 @@ def docker_qa_build_compiler(session: nox.Session, version: str) -> None:
 @nox.session(python=False)
 def docker_qa_run(session: nox.Session) -> None:
     """Run the docker container for the default GCC version."""
-    session_id = f"docker_qa_run_compiler({GCC_VERSION2USE})"
+    session_id = f"docker_qa_run_compiler({GCC_VERSIONS[0]})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
@@ -378,7 +416,7 @@ def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
 @nox.session(python=False)
 def docker_qa(session: nox.Session) -> None:
     """Build and run the docker container for the default GCC version."""
-    session_id = f"docker_qa_compiler({GCC_VERSION2USE})"
+    session_id = f"docker_qa_compiler({GCC_VERSIONS[0]})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
