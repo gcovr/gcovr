@@ -20,6 +20,7 @@
 import glob
 import os
 import platform
+import re
 import shutil
 import shlex
 import subprocess
@@ -51,40 +52,44 @@ nox.options.sessions = ["qa"]
 
 
 def get_gcc_version_to_use():
-    CC = os.environ.get("CC")
-    if CC is None:
-        for gcc in reversed([gcc for gcc in GCC_VERSIONS]):
-            gcc = shutil.which(gcc)
-            if gcc is not None:
-                CC = os.path.split(gcc)[1]
-                break
-        else:
-            CC = shutil.which("gcc")
-            if CC is None:
-                raise RuntimeError(
-                    f"No valid compiler found, searched for gcc, {', '.join(GCC_VERSIONS)}."
-                )
+    # If the user explicitly set CC variable, use that directly without checks.
+    cc = os.environ.get("CC")
+    if cc:
+        return os.path.split(cc)[1]
 
-            # gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
-            # Copyright (C) 2019 Free Software Foundation, Inc.
-            # This is free software; see the source for copying conditions.  There is NO
-            # warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-            output = subprocess.check_output([CC, "--version"]).decode().split("\n")
-            if output[0].startswith("gcc"):
-                version = output[0].split(" ")[-1]
-                major_version = version.split(".")[0]
-                CC = f"gcc-{major_version}"
-            elif " clang version " in output[0]:
-                version = output[0].split(" clang version ")[1]
-                major_version = version.split(".")[0]
-                CC = f"clang-{major_version}"
+    # Find the first insalled compiler version we suport
+    for cc in GCC_VERSIONS:
+        if shutil.which(cc):
+            return cc
 
-            if CC not in GCC_VERSIONS:
-                raise RuntimeError(
-                    f"Could not detect a valid compiler {CC} from ({', '.join(GCC_VERSIONS)}) from: >>{output}<<"
-                )
+    for cc in ["gcc", "clang"]:
+        output = subprocess.check_output([cc, "--version"]).decode()
+        # Ignore error code since we want to find a valid executable
 
-    return CC
+        # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
+        #    gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
+        #    Copyright (C) 2019 Free Software Foundation, Inc.
+        #    This is free software; see the source for copying conditions.  There is NO
+        #    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+        search_gcc_version = re.search(r"^gcc\b.* ([0-9]+)\.\S+$", output, re.M)
+
+        # look for a line "WHATEVER clang version VERSION.WHATEVER" in output like:
+        #    Apple clang version 13.1.6 (clang-1316.0.21.2.5)
+        #    Target: arm64-apple-darwin21.5.0
+        #    Thread model: posix
+        #    InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+        search_clang_version = re.search(r"\bclang version ([0-9]+)\.", output, re.M)
+
+        if search_gcc_version:
+            major_version = search_gcc_version.group(1)
+            return f"gcc-{major_version}"
+        elif search_clang_version:
+            major_version = search_clang_version.group(1)
+            return f"clang-{major_version}"
+
+    raise RuntimeError(
+        "Could not detect a valid compiler, you can defin one by setting the environment CC"
+    )
 
 
 def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
