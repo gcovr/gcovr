@@ -144,8 +144,8 @@ How to set up a development environment
 ---------------------------------------
 
 For working on gcovr, you will need a supported version of Python 3,
-GCC version 5, 6 or 8 (other GCC versions are supported by gcovr,
-but will cause spurious test failures) or clang version 10, ``make``,
+GCC version 5, 6, 8, 9, 10 or 11 (other GCC versions are supported by gcovr,
+but will cause spurious test failures) or clang version 10 or 13, ``make``,
 ``cmake`` and ``ninja``.
 Please make sure that the tools are in the system ``PATH``.
 On **Windows**, you will need to install a GCC toolchain as the
@@ -168,11 +168,12 @@ is needed.
     -  clang-13/clang++-13/llvm-cov
 
     are available everything is OK.
-    For gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10 and clang-13 you should use the
-    option ``CC=...`` see :ref:`run and filter tests <run tests>`.
-    If this isn't OK you
-    can set the reference data to use by setting the environment ``CC_REFERENCE=gcc-8``
-    or you have to create symlinks for the gcc executables with the following steps.
+    The test suite uses the newest GCC found in the PATH. To use another one you
+    need to set the environment ``CC=...`` see
+    :ref:`run and filter tests <run tests>`.
+    If you only have ``gcc`` in your path the version is detected to select the
+    correct reference.
+    You can also create symlinks for the gcc executables with the following steps.
     You can check the GCC version with gcc --version. If the output says
     version 8, you should also be able to run gcc-8 --version. Your Linux
     distribution should have set all of this up already.

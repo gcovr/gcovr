@@ -33,6 +33,7 @@ Internal changes:
 
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
 - Change and extend ``cmake`` tests. (:issue:`676`)
+- Detect ``gcc`` version for running tests. (:issue:`686`)
 
 5.2 (06 August 2022)
 --------------------

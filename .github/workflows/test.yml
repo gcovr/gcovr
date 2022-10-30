@@ -11,7 +11,7 @@ on:
 jobs:
 
   milestone-check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     continue-on-error: true
 
@@ -19,7 +19,7 @@ jobs:
       PR_MILESTONE: "${{ github.event.pull_request.milestone.number }}"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Check if PR is assigned to a milestone
       if: ${{ github.event_name == 'pull_request' }}
       run: |
@@ -30,14 +30,14 @@ jobs:
         exit 0
 
   changelog-check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     env:
       PR_BODY: "${{ github.event.pull_request.body }}"
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Check if PR is mentioned in changelog
       if: ${{ always() }}
       run: |
@@ -93,15 +93,12 @@ jobs:
         include:
 
           # Test additional compilers with Linux.
-          # Note that Clang-10 and Clang-13 is handled via Docker.
-          - os: ubuntu-18.04
-            gcc: gcc-5
-            python-version: '3.8'
-          - os: ubuntu-18.04
-            gcc: gcc-6
-            python-version: '3.8'
+          # Note that gcc-5, gcc-6, clang-10 and clang-13 is handled via Docker.
           - os: ubuntu-20.04
             gcc: gcc-9
+            python-version: '3.9'
+          - os: ubuntu-22.04
+            gcc: gcc-11
             python-version: '3.10'
 
           # Test minimum and maximum Python version on Windows.
@@ -113,16 +110,16 @@ jobs:
             python-version: '3.10'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup environment
       run: |
         # Enable coverage for specific target configurations
         case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
           windows-2019/gcc-8/3.7) USE_COVERAGE=true ;;
-          ubuntu-18.04/gcc-6/3.8) USE_COVERAGE=true ;;
+          ubuntu-20.04/gcc-9/3.9) USE_COVERAGE=true ;;
           *)                      USE_COVERAGE=false ;;
         esac
-        echo USE_COVERAGE=$USE_COVERAGE >> $GITHUB_ENV
+        echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
       shell: bash
     - name: Install msys with GCC (Windows)
       if: ${{ startsWith(matrix.os,'windows-') }}
@@ -143,11 +140,11 @@ jobs:
     - name: Install ninja
       uses: seanmiddleditch/gha-setup-ninja@master
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Cache pip
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         # This path is specific to Ubuntu
         path: ~/.cache/pip
@@ -166,7 +163,7 @@ jobs:
         nox --non-interactive --session "tests_compiler(${{ matrix.gcc }})" -- --archive_differences
     - name: Upload pytest test results
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
         path: gcovr/tests/diff.zip
@@ -183,7 +180,7 @@ jobs:
         make doc
 
   run-docker:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     needs: [milestone-check, changelog-check]
 
     strategy:
@@ -195,7 +192,7 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install nox
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build Docker
       run: |
         python3 -m nox --non-interactive --session "docker_qa_build_compiler(${{ matrix.gcc }})"
@@ -204,7 +201,7 @@ jobs:
         python3 -m nox --non-interactive --session "docker_qa_run_compiler(${{ matrix.gcc }})"
     - name: Upload pytest test results
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: diffs-docker-${{ matrix.gcc }}
         path: gcovr/tests/diff.zip
