@@ -378,6 +378,7 @@ def print_html_report(covdata: CovData, output_file, options):
     keys = sort_coverage(
         covdata,
         show_branch=False,
+        filename_uses_relative_pathname=True,
         by_num_uncovered=options.sort_uncovered,
         by_percent_uncovered=options.sort_percent,
     )

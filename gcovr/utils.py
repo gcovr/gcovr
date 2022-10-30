@@ -283,6 +283,7 @@ def configure_logging() -> None:
 def sort_coverage(
     covdata: CovData,
     show_branch: bool,
+    filename_uses_relative_pathname: bool = False,
     by_num_uncovered: bool = False,
     by_percent_uncovered: bool = False,
 ) -> List[str]:
@@ -290,11 +291,14 @@ def sort_coverage(
 
     covdata (dict): the coverage dictionary
     show_branch (bool): select branch coverage (True) or line coverage (False)
+    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
+        relative path, but not for other formats.
     by_num_uncovered, by_percent_uncovered (bool):
         select the sort mode. By default, sort alphabetically.
 
     returns: the sorted keys
     """
+    basedir = commonpath(list(covdata.keys()))
 
     def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
@@ -319,12 +323,19 @@ def sort_coverage(
         else:
             return 1e6
 
+    def filename(key: str) -> str:
+        return (
+            force_unix_separator(os.path.relpath(realpath(key), basedir))
+            if filename_uses_relative_pathname
+            else key
+        )
+
     if by_num_uncovered:
         key_fn = num_uncovered_key
     elif by_percent_uncovered:
         key_fn = percent_uncovered_key
     else:
-        key_fn = None  # default key, sort alphabetically
+        key_fn = filename  # by default, we sort by filename alphabetically
 
     return sorted(covdata, key=key_fn)
 

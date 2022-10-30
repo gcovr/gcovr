@@ -307,6 +307,14 @@ def pytest_generate_tests(metafunc):
                     reason="On MacOS the constructor is called twice",
                 ),
                 pytest.mark.xfail(
+                    name in ["decisions-neg-delta"] and IS_MACOS,
+                    reason="On MacOS there is no branch for std::vector",
+                ),
+                pytest.mark.xfail(
+                    name in ["excl-line-branch"] and IS_MACOS,
+                    reason="On MacOS there are different number of branches generated",
+                ),
+                pytest.mark.xfail(
                     name == "gcc-abspath"
                     and (
                         not env["CC"].startswith("gcc-")

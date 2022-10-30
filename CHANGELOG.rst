@@ -25,6 +25,7 @@ Bug fixes and small improvements:
 
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 - Do not ignore returncode of `gcov`. (:issue:`653`)
+- Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
 
 Documentation:
@@ -33,6 +34,7 @@ Internal changes:
 
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
 - Change and extend ``cmake`` tests. (:issue:`676`)
+- Detect ``gcc`` version for running tests. (:issue:`686`)
 
 5.2 (06 August 2022)
 --------------------

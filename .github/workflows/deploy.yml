@@ -16,20 +16,20 @@ jobs:
     continue-on-error: ${{ startsWith(github.event.ref,'refs/heads/') }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: fetch all tags  # need annotated tags for release checklist
       run: |
         git fetch --force --tags --depth=1
     - name: For a dry run, don't verify tags and documentation
       if: ${{ ! startsWith(github.event.ref, 'refs/tags/') }}
       run: |
-        echo EXTRA_CHECKLIST_ARGS="--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
+        echo "EXTRA_CHECKLIST_ARGS=--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
     - name: Run release_checklist
       run: |
         admin/release_checklist $EXTRA_CHECKLIST_ARGS 5.2
 
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: release-check
 
     env:
@@ -37,13 +37,13 @@ jobs:
       CC: "gcc-8"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ env.PYTHON_VERSION }}
     - name: Cache pip
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         # This path is specific to Ubuntu
         path: ~/.cache/pip
@@ -82,7 +82,7 @@ jobs:
         nox --non-interactive --session build_wheel
     - name: Upload distribution
       if: ${{ success() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: dist
         path: dist/**
