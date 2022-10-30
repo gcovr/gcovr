@@ -23,7 +23,7 @@ jobs:
     - name: For a dry run, don't verify tags and documentation
       if: ${{ ! startsWith(github.event.ref, 'refs/tags/') }}
       run: |
-        echo EXTRA_CHECKLIST_ARGS="--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
+        echo "EXTRA_CHECKLIST_ARGS=--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
     - name: Run release_checklist
       run: |
         admin/release_checklist $EXTRA_CHECKLIST_ARGS 5.2

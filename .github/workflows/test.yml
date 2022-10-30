@@ -119,7 +119,7 @@ jobs:
           ubuntu-20.04/gcc-9/3.9) USE_COVERAGE=true ;;
           *)                      USE_COVERAGE=false ;;
         esac
-        echo USE_COVERAGE=$USE_COVERAGE >> $GITHUB_ENV
+        echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
       shell: bash
     - name: Install msys with GCC (Windows)
       if: ${{ startsWith(matrix.os,'windows-') }}
