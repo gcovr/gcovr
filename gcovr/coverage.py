@@ -38,10 +38,10 @@ from __future__ import annotations
 from collections import OrderedDict
 import os
 import re
-from typing import Dict, Final, List, Iterable, Optional, TypeVar, Union
+from typing import Dict, List, Iterable, Optional, TypeVar, Union
 from dataclasses import dataclass
 
-SEPARATOR: Final[str] = "/"
+GCOVR_PATH_SEPARATOR: str = "/"
 
 _T = TypeVar("_T")
 
@@ -334,12 +334,12 @@ class DirectoryCoverage:
     @staticmethod
     def add_directory_coverage(
         subdirs: CovData_subdirectories,
-        filename: str,
+        location: str,
         filecov: FileCoverage,
         root_filter: re.Pattern,
         newchild: Optional[DirectoryCoverage] = None,
     ) -> None:
-        key = DirectoryCoverage.directory_key(filename, root_filter)
+        key = DirectoryCoverage.directory_key(location, root_filter)
         if key:
             if key not in subdirs:
                 subdirs[key] = DirectoryCoverage.new_empty()
@@ -405,15 +405,15 @@ class DirectoryCoverage:
 
     @staticmethod
     def directory_key(filename: str, root_filter: re.Pattern):
-        key = os.path.dirname(filename.replace("\\", "/"))
-        if root_filter.search(key + "/") and key != filename:
+        key = os.path.dirname(filename.replace("\\", GCOVR_PATH_SEPARATOR))
+        if root_filter.search(key + GCOVR_PATH_SEPARATOR) and key != filename:
             return key
         return None
 
     @staticmethod
     def directory_root(subdirs: CovData_subdirectories, root_filter: re.Pattern) -> str:
         if not subdirs:
-            return SEPARATOR
+            return GCOVR_PATH_SEPARATOR
         key = next(iter(subdirs))
         while True:
             next_key = DirectoryCoverage.directory_key(key, root_filter)
@@ -485,14 +485,14 @@ class CoverageStat:
         return CoverageStat(0, 0)
 
     @property
-    def percent(self) -> Optional[float]:
-        """Percentage of covered elements, equivalent to ``self.percent_or(None)``"""
-        return self.percent_or(None)
-
-    @property
     def uncovered(self) -> int:
         """Number of lines not covered."""
         return self.total - self.covered
+
+    @property
+    def percent(self) -> Optional[float]:
+        """Percentage of covered elements, equivalent to ``self.percent_or(None)``"""
+        return self.percent_or(None)
 
     def percent_or(self, default: _T) -> Union[float, _T]:
         """
