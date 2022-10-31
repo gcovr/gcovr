@@ -322,7 +322,7 @@ CovData = Dict[str, FileCoverage]
 
 @dataclass
 class DirectoryCoverage:
-    filename: str
+    dirname: str
     stats: SummarizedStats
     children: List[Union[DirectoryCoverage, FileCoverage]]
     parent_key: str
@@ -331,33 +331,41 @@ class DirectoryCoverage:
     def new_empty(cls) -> DirectoryCoverage:
         return cls("", SummarizedStats.new_empty(), list(), "")
 
+    @property
+    def filename(self) -> str:
+        """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage"""
+        return self.dirname
+
     @staticmethod
     def add_directory_coverage(
         subdirs: CovData_subdirectories,
-        location: str,
-        filecov: FileCoverage,
         root_filter: re.Pattern,
-        newchild: Optional[DirectoryCoverage] = None,
+        filecov: FileCoverage,
+        dircov: Optional[DirectoryCoverage] = None,
     ) -> None:
-        key = DirectoryCoverage.directory_key(location, root_filter)
+        if dircov is None:
+            key = DirectoryCoverage.directory_key(filecov.filename, root_filter)
+            filecov.parent_key = key
+        else:
+            key = DirectoryCoverage.directory_key(dircov.dirname, root_filter)
+            dircov.parent_key = key
+
         if key:
             if key not in subdirs:
-                subdirs[key] = DirectoryCoverage.new_empty()
-                subdirs[key].filename = key
-                subdirs[key].parent_key = DirectoryCoverage.directory_key(
-                    key, root_filter
-                )
+                subdir = DirectoryCoverage.new_empty()
+                subdir.dirname = key
+                subdir.parent_key = DirectoryCoverage.directory_key(key, root_filter)
+                subdirs[key] = subdir
 
-            if newchild:
-                if newchild not in subdirs[key].children:
-                    subdirs[key].children.append(newchild)
-            else:
-                filecov.parent_key = key
+            if dircov is None:
                 subdirs[key].children.append(filecov)
+            else:
+                if dircov not in subdirs[key].children:
+                    subdirs[key].children.append(dircov)
 
             subdirs[key].stats += SummarizedStats.from_file(filecov)
             DirectoryCoverage.add_directory_coverage(
-                subdirs, key, filecov, root_filter, subdirs[key]
+                subdirs, root_filter, filecov, subdirs[key]
             )
 
     @staticmethod
@@ -398,9 +406,7 @@ class DirectoryCoverage:
         subdirs = OrderedDict()
         for key in sorted_keys:
             filecov = covdata[key]
-            DirectoryCoverage.add_directory_coverage(
-                subdirs, filecov.filename, filecov, root_filter
-            )
+            DirectoryCoverage.add_directory_coverage(subdirs, root_filter, filecov)
         return subdirs
 
     @staticmethod
