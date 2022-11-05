@@ -29,15 +29,25 @@ import nox
 
 
 GCC_VERSIONS = [
-    "gcc-11",
-    "gcc-10",
-    "gcc-9",
-    "gcc-8",
-    "gcc-6",
     "gcc-5",
-    "clang-13",
+    "gcc-6",
+    "gcc-8",
+    "gcc-9",
+    "gcc-10",
+    "gcc-11",
     "clang-10",
+    "clang-13",
 ]
+
+GCC_VERSIONS_NEWEST_FIRST = [
+    "-".join(cc)
+    for cc in sorted(
+        [(*cc.split("-"),) for cc in GCC_VERSIONS],
+        key=lambda cc: (cc[0], int(cc[1])),
+        reverse=True,
+    )
+]
+
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
 DEFAULT_LINT_ARGUMENTS = [
     "setup.py",
@@ -58,7 +68,7 @@ def get_gcc_version_to_use():
         return os.path.split(cc)[1]
 
     # Find the first insalled compiler version we suport
-    for cc in GCC_VERSIONS:
+    for cc in GCC_VERSIONS_NEWEST_FIRST:
         if shutil.which(cc):
             return cc
 
