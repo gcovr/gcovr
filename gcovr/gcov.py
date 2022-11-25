@@ -23,6 +23,7 @@ import re
 import shlex
 import subprocess
 import io
+import pathlib
 from threading import Lock
 from typing import Optional
 
@@ -184,6 +185,7 @@ def guess_source_file_name(
         fname = guess_source_file_name_heuristics(
             gcovname, data_fname, currdir, root_dir, starting_dir, obj_dir, gcda_fname
         )
+    fname = str(pathlib.Path(fname).resolve())  # resolves case insensitively of windows paths
 
     logger.debug(
         f"Finding source file corresponding to a gcov data file\n"

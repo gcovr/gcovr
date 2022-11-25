@@ -26,6 +26,7 @@ Bug fixes and small improvements:
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 - Do not ignore returncode of `gcov`. (:issue:`653`)
 - Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
+- Fix: Headers containing definitions appear once with all lower-case and once correct case characters in the results under Windows. (:issue:`329`)
 
 Documentation:
 
