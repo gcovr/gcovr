@@ -38,7 +38,7 @@ from __future__ import annotations
 from collections import OrderedDict
 import os
 import re
-from typing import Dict, List, Iterable, Optional, TypeVar, Union
+from typing import Dict, Iterable, Optional, TypeVar, Union
 from dataclasses import dataclass
 
 GCOVR_PATH_SEPARATOR: str = "/"
@@ -324,12 +324,12 @@ CovData = Dict[str, FileCoverage]
 class DirectoryCoverage:
     dirname: str
     stats: SummarizedStats
-    children: List[Union[DirectoryCoverage, FileCoverage]]
+    children: Dict[str, Union[DirectoryCoverage, FileCoverage]]
     parent_key: str
 
     @classmethod
     def new_empty(cls) -> DirectoryCoverage:
-        return cls("", SummarizedStats.new_empty(), list(), "")
+        return cls("", SummarizedStats.new_empty(), dict(), "")
 
     @property
     def filename(self) -> str:
@@ -358,20 +358,32 @@ class DirectoryCoverage:
                 subdirs[key] = subdir
 
             if dircov is None:
-                subdirs[key].children.append(filecov)
+                subdirs[key].children[filecov.filename] = filecov
             else:
-                if dircov not in subdirs[key].children:
-                    subdirs[key].children.append(dircov)
+                subdirs[key].children[dircov.filename] = dircov
 
             subdirs[key].stats += SummarizedStats.from_file(filecov)
             DirectoryCoverage.add_directory_coverage(
                 subdirs, root_filter, filecov, subdirs[key]
             )
 
+    def line_coverage(self) -> CoverageStat:
+        return self.stats.line
+
     @staticmethod
     def collapse_subdirectories(
         subdirs: CovData_subdirectories, root_filter: re.Pattern
     ) -> None:
+        r"""Loop over all the directories and look for items that have only one child.
+
+        For each occurence, move the orphan up to the parent such that the directory
+        appears as a single entry in the parent directory with other items at that level.
+
+        Args:
+            subdirs: The dictionary of all subdirectories
+            root_filter: Information about the filter used with the root directory
+        """
+
         collapse_dirs = set()
         root_key = DirectoryCoverage.directory_root(subdirs, root_filter)
         for key, value in subdirs.items():
@@ -384,18 +396,20 @@ class DirectoryCoverage:
                     parent_key = DirectoryCoverage.directory_key(key, root_filter)
                     if parent_key not in collapse_dirs or parent_key == root_key:
                         break
+
                 if parent_key:
-                    newchildren = [
-                        child
-                        for child in subdirs[parent_key].children
+                    newchildren = {
+                        k: child
+                        for k, child in subdirs[parent_key].children.items()
                         if child != value
-                    ]
-                    orphan = value.children[0]
+                    }
+                    orphan_key = next(iter(value.children))
+                    orphan = value.children[orphan_key]
                     orphan.parent_key = parent_key
-                    newchildren.append(orphan)
+                    newchildren[orphan_key] = orphan
+
                     subdirs[parent_key].children = newchildren
 
-                    collapse_dirs.add(key)
         for key in collapse_dirs:
             del subdirs[key]
 

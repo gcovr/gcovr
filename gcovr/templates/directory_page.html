@@ -139,7 +139,7 @@
     {% endif %}
   </tr>
 
-  {% for row in info.files | sort(attribute=row_sort_key, reverse=row_sort_reverse) %}
+  {% for row in info.files %}
 
   <tr>
     <th scope="row">

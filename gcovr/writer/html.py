@@ -22,7 +22,7 @@ import os
 import hashlib
 import io
 from argparse import ArgumentTypeError
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, Union
 
 from ..version import __version__
 from ..utils import (
@@ -251,7 +251,6 @@ class RootInfo:
         lines = {
             "total": stats.line.total,
             "exec": stats.line.covered,
-            "uncovered": stats.line.uncovered,
             "coverage": stats.line.percent_or(100.0),
             "class": self._line_coverage_to_class(stats.line.percent_or(100.0)),
         }
@@ -259,7 +258,6 @@ class RootInfo:
         functions = {
             "total": stats.function.total,
             "exec": stats.function.covered,
-            "uncovered": stats.function.uncovered,
             "coverage": stats.function.percent_or("-"),
             "class": self._coverage_to_class(stats.function.percent),
         }
@@ -267,7 +265,6 @@ class RootInfo:
         branches = {
             "total": stats.branch.total,
             "exec": stats.branch.covered,
-            "uncovered": stats.branch.uncovered,
             "coverage": stats.branch.percent_or("-"),
             "class": self._branch_coverage_to_class(stats.branch.percent),
         }
@@ -275,7 +272,6 @@ class RootInfo:
         decisions = {
             "total": stats.decision.total,
             "exec": stats.decision.covered,
-            "uncovered": stats.decision.uncovered,
             "unchecked": stats.decision.uncheckable,
             "coverage": stats.decision.percent_or("-"),
             "class": self._coverage_to_class(stats.decision.percent),
@@ -284,7 +280,6 @@ class RootInfo:
         calls = {
             "total": stats.call.total,
             "exec": stats.call.covered,
-            "uncovered": stats.call.uncovered,
             "coverage": stats.call.percent_or("-"),
             "class": self._coverage_to_class(stats.call.percent),
         }
@@ -384,7 +379,6 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
         data["css_link"] = css_link
 
     data["theme"] = options.html_theme
-    data["row_sort_key"], data["row_sort_reverse"] = row_sort_keys(options)
 
     root_info.set_coverage(covdata)
 
@@ -410,7 +404,7 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
 
     cdata_fname = {}
     cdata_sourcefile = {}
-    for f in list(covdata.keys()) + list(root_info.subdirs.keys()):
+    for f in sorted_keys + list(root_info.subdirs.keys()):
         filtered_fname = options.root_filter.sub("", f)
         files.append(filtered_fname)
         cdata_fname[f] = filtered_fname
@@ -455,8 +449,8 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
             data,
         )
     else:
-        for f, cdata in covdata.items():
-            root_info.add_file(cdata, cdata_sourcefile[f], cdata_fname[f])
+        for f in sorted_keys:
+            root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
         write_root_page(output_file, options, data)
 
     error_occured = False
@@ -609,20 +603,6 @@ def write_source_pages(
     return error_occurred
 
 
-def row_sort_keys(options: "Options") -> Tuple[str, bool]:
-    row_sort_key = []
-    reverse_sort = False
-    if options.sort_uncovered:
-        row_sort_key.append("lines.uncovered")
-        reverse_sort = False
-    if options.sort_percent:
-        row_sort_key.append("lines.coverage")
-        reverse_sort = True
-    if not row_sort_key:
-        row_sort_key.append("filename")
-    return ",".join(row_sort_key), reverse_sort
-
-
 def write_directory_pages(
     output_file: str,
     covdata: CovData,
@@ -634,12 +614,12 @@ def write_directory_pages(
 ) -> None:
     root_key = DirectoryCoverage.directory_root(root_info.subdirs, options.root_filter)
 
-    for f, value in root_info.subdirs.items():
+    for f, directory in root_info.subdirs.items():
         data["directory"] = commonpath(cdata_fname[f])
 
         data["date"] = root_info.date
 
-        parent_directory_key = value.parent_key
+        parent_directory_key = directory.parent_key
         if parent_directory_key:
             data["parent_link"] = os.path.basename(
                 cdata_sourcefile[parent_directory_key]
@@ -649,14 +629,20 @@ def write_directory_pages(
             data["parent_link"] = None
             data["parent_directory"] = None
 
+        sorted_files = sort_coverage(
+            directory.children,
+            show_branch=False,
+            filename_uses_relative_pathname=True,
+            by_num_uncovered=options.sort_uncovered,
+            by_percent_uncovered=options.sort_percent,
+        )
+
         root_info.clear_files()
-        for child in value.children:
-            if child.filename in covdata:
-                item = covdata[child.filename]
-            elif child.filename in root_info.subdirs:
-                item = root_info.subdirs[child.filename]
+        for key in sorted_files:
+            fname = directory.children[key].filename
+
             root_info.add_file(
-                item, cdata_sourcefile[child.filename], cdata_fname[child.filename]
+                directory.children[key], cdata_sourcefile[fname], cdata_fname[fname]
             )
 
         html_string = templates().get_template("directory_page.html").render(**data)
@@ -686,7 +672,6 @@ def dict_from_stat(
     data = {
         "total": stat.total,
         "exec": stat.covered,
-        "uncovered": stat.uncovered,
         "coverage": stat.percent_or(coverage_default),
         "class": coverage_class(stat.percent_or(default)),
     }
