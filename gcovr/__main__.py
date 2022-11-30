@@ -116,7 +116,6 @@ def create_argument_parser():
     )
     options.add_argument(
         "--version",
-        config=False,
         help="Print the version number, then exit.",
         action="store_true",
         dest="version",
