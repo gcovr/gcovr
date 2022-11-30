@@ -116,6 +116,7 @@ def create_argument_parser():
     )
     options.add_argument(
         "--version",
+        config=False,
         help="Print the version number, then exit.",
         action="store_true",
         dest="version",
@@ -162,6 +163,10 @@ def main(args=None):
     parser = create_argument_parser()
     cli_options = parser.parse_args(args=args)
 
+    if cli_options.version:
+        sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
+        sys.exit(0)
+
     # load the config
     cfg_name = find_config_name(cli_options)
     cfg_options = {}
@@ -176,10 +181,6 @@ def main(args=None):
 
     if options.verbose:
         logger.setLevel(logging.DEBUG)
-
-    if cli_options.version:
-        sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
-        sys.exit(0)
 
     if options.html_title == "":
         logger.error("an empty --html_title= is not allowed.")
