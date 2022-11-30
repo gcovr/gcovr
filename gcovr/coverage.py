@@ -368,7 +368,12 @@ class DirectoryCoverage:
             )
 
     def line_coverage(self) -> CoverageStat:
+        """A simple wrapper function necessary for sort_coverage()."""
         return self.stats.line
+
+    def branch_coverage(self) -> CoverageStat:
+        """A simple wrapper function necessary for sort_coverage()."""
+        return self.stats.branch
 
     @staticmethod
     def collapse_subdirectories(
