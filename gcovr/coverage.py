@@ -343,6 +343,18 @@ class DirectoryCoverage:
         filecov: FileCoverage,
         dircov: Optional[DirectoryCoverage] = None,
     ) -> None:
+        r"""Add a file coverage item to the directory structure and accumulate stats.
+
+        This recursive function will accumulate statistics such that every directory
+        above it will know the statistics associated with all files deep within a
+        directory structure.
+
+        Args:
+            subdirs: The top level data structure for all subdirectories. (can start as empty)
+            root_filter: Information about the filter used with the root directory
+            filecov: The new file and its statistics
+            dircov: For recursive use only, the directory this item was added to.
+        """
         if dircov is None:
             key = DirectoryCoverage.directory_key(filecov.filename, root_filter)
             filecov.parent_key = key
@@ -388,7 +400,6 @@ class DirectoryCoverage:
             subdirs: The dictionary of all subdirectories
             root_filter: Information about the filter used with the root directory
         """
-
         collapse_dirs = set()
         root_key = DirectoryCoverage.directory_root(subdirs, root_filter)
         for key, value in subdirs.items():
@@ -414,6 +425,7 @@ class DirectoryCoverage:
                     newchildren[orphan_key] = orphan
 
                     subdirs[parent_key].children = newchildren
+                    collapse_dirs.add(key)
 
         for key in collapse_dirs:
             del subdirs[key]
@@ -430,6 +442,7 @@ class DirectoryCoverage:
 
     @staticmethod
     def directory_key(filename: str, root_filter: re.Pattern):
+        filename = filename.replace("\\", GCOVR_PATH_SEPARATOR)
         key = os.path.dirname(filename.replace("\\", GCOVR_PATH_SEPARATOR))
         if root_filter.search(key + GCOVR_PATH_SEPARATOR) and key != filename:
             return key
@@ -510,11 +523,6 @@ class CoverageStat:
         return CoverageStat(0, 0)
 
     @property
-    def uncovered(self) -> int:
-        """Number of lines not covered."""
-        return self.total - self.covered
-
-    @property
     def percent(self) -> Optional[float]:
         """Percentage of covered elements, equivalent to ``self.percent_or(None)``"""
         return self.percent_or(None)
@@ -570,11 +578,6 @@ class DecisionCoverageStat:
     @property
     def to_coverage_stat(self) -> CoverageStat:
         return CoverageStat(covered=self.covered, total=self.total)
-
-    @property
-    def uncovered(self) -> int:
-        """Number of lines not covered."""
-        return self.total - self.covered
 
     @property
     def percent(self) -> Optional[float]:
