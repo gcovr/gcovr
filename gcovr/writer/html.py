@@ -621,8 +621,10 @@ def write_directory_pages(
 
         parent_directory_key = directory.parent_key
         if parent_directory_key:
-            data["parent_link"] = os.path.basename(
-                cdata_sourcefile[parent_directory_key]
+            data["parent_link"] = (
+                os.path.basename(cdata_sourcefile[parent_directory_key])
+                if options.html_details
+                else None
             )
             data["parent_directory"] = cdata_fname[parent_directory_key]
         else:
