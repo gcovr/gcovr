@@ -26,6 +26,7 @@ Bug fixes and small improvements:
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 - Do not ignore returncode of `gcov`. (:issue:`653`)
 - Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
+- Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
 
 Documentation:
 
