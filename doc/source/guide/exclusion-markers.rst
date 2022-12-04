@@ -30,6 +30,3 @@ The excluded region not includes the line with the stop marker::
     code
 
 In the excluded regions, *any* coverage is excluded.
-It is not currently possible to exclude only branch coverage in that region.
-In particular, lcov's EXCL_BR markers are not supported
-(see issue :issue:`121`).
