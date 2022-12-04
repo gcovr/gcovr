@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.6744186046511628" function-rate="0.7" branch-rate="0.42857142857142855" lines-covered="29" lines-valid="43" functions-covered="7" functions-valid="10" branches-covered="6" branches-valid="14" complexity="0.0" timestamp="1649529366" version="gcovr 5.1">
+<coverage line-rate="0.6744186046511628" branch-rate="0.42857142857142855" lines-covered="29" lines-valid="43" branches-covered="6" branches-valid="14" complexity="0.0" timestamp="1662754740" version="gcovr 5.2">
   <sources>
     <source>subdir</source>
   </sources>
   <packages>
-    <package name="A" line-rate="0.5384615384615384" function-rate="0.5714285714285714" branch-rate="0.3333333333333333" complexity="0.0">
+    <package name="A" line-rate="0.5384615384615384" branch-rate="0.3333333333333333" complexity="0.0">
       <classes>
         <class name="file1_cpp" filename="A/file1.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>
@@ -72,7 +72,7 @@
         </class>
       </classes>
     </package>
-    <package name="A.C" line-rate="0.75" function-rate="1.0" branch-rate="0.5" complexity="0.0">
+    <package name="A.C" line-rate="0.75" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file5_cpp" filename="A/C/file5.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>
@@ -89,7 +89,7 @@
         </class>
       </classes>
     </package>
-    <package name="A.C.D" line-rate="0.75" function-rate="1.0" branch-rate="0.5" complexity="0.0">
+    <package name="A.C.D" line-rate="0.75" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file6_cpp" filename="A/C/D/file6.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>
@@ -106,7 +106,7 @@
         </class>
       </classes>
     </package>
-    <package name="B" line-rate="1.0" function-rate="1.0" branch-rate="0.5" complexity="0.0">
+    <package name="B" line-rate="1.0" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="main_cpp" filename="B/main.cpp" line-rate="1.0" branch-rate="0.5" complexity="0.0">
           <methods/>

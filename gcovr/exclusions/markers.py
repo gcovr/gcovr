@@ -228,13 +228,13 @@ def _find_excluded_ranges(
     ...     exclude_branches_by_custom_pattern='.*IGNORE_BR',
     ...     exclude_pattern_prefix='PREFIX')
     >>> [lineno for lineno in range(30) if exclude_line(lineno)]
-    [11, 13, 15, 16, 17, 18]
+    [11, 13, 15, 16, 17]
     >>> [lineno for lineno in range(30) if exclude_branch(lineno)]
-    [21, 23, 25, 26, 27, 28]
+    [21, 23, 25, 26, 27]
 
-    The stop marker line is inclusive:
+    The stop marker line is NOT inclusive:
     >>> exclude_line, _ = _find_excluded_ranges(
-    ...     _lines_from_sparse([(3, '// PREFIX_EXCL_START'), (6, '// PREFIX_EXCL_STOP')]),
+    ...     _lines_from_sparse([(3, '// PREFIX_EXCL_START'), (7, '// PREFIX_EXCL_STOP')]),
     ...     warnings=...,
     ...     exclude_pattern_prefix='PREFIX')
     >>> for lineno in range(1, 10):

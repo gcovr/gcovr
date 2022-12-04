@@ -10,16 +10,24 @@ Known bugs:
 
 Breaking changes:
 
+- Remove not allowed attributes ``function-rate``, ``functions-covered`` and ``functions-valid``
+  from cobertura report. (:issue:`671`)
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 
 New features and notable changes:
 
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
+- New :option:`--calls` to report call coverage: function calls invoked/total (:issue:`666`)
+- New nox session to generate a portable application with pyinstaller, see :ref:`standalone application`. (:issue:`661`)
+- Print a warning if root directory contains symlinks. (:issue:`652`)
 
 Bug fixes and small improvements:
 
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
+- Do not ignore returncode of `gcov`. (:issue:`653`)
+- Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
+- Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
 - Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
 - Fix handling for nonexistent source code for HTML-details and Coveralls reports (:issue:`663`)
 - :ref:`Exclusion marker regions <exclusion markers>` now contain the STOP marker line (:issue:`663`)
@@ -31,6 +39,8 @@ Documentation:
 Internal changes:
 
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
+- Change and extend ``cmake`` tests. (:issue:`676`)
+- Detect ``gcc`` version for running tests. (:issue:`686`)
 
 5.2 (06 August 2022)
 --------------------

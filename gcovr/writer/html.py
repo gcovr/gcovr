@@ -41,6 +41,7 @@ from ..coverage import (
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
     LineCoverage,
+    CallCoverage,
     SummarizedStats,
 )
 
@@ -214,6 +215,7 @@ class RootInfo:
         self.directory = None
         self.branches = dict()
         self.decisions = dict()
+        self.calls = dict()
         self.functions = dict()
         self.lines = dict()
         self.files = []
@@ -231,6 +233,7 @@ class RootInfo:
         self.functions = dict_from_stat(stats.function, self._coverage_to_class)
         self.branches = dict_from_stat(stats.branch, self._branch_coverage_to_class)
         self.decisions = dict_from_stat(stats.decision, self._coverage_to_class)
+        self.calls = dict_from_stat(stats.call, self._coverage_to_class)
 
     def add_file(self, cdata, link_report, cdata_fname):
         stats = SummarizedStats.from_file(cdata)
@@ -264,6 +267,13 @@ class RootInfo:
             "class": self._coverage_to_class(stats.decision.percent),
         }
 
+        calls = {
+            "total": stats.call.total,
+            "exec": stats.call.covered,
+            "coverage": stats.call.percent_or("-"),
+            "class": self._coverage_to_class(stats.call.percent),
+        }
+
         display_filename = force_unix_separator(
             os.path.relpath(realpath(cdata_fname), self.directory)
         )
@@ -280,6 +290,7 @@ class RootInfo:
                 lines=lines,
                 branches=branches,
                 decisions=decisions,
+                calls=calls,
                 functions=functions,
             )
         )
@@ -309,6 +320,7 @@ def print_html_report(covdata: CovData, output_file, options):
     high_threshold_line = options.html_high_threshold_line
     medium_threshold_branch = options.html_medium_threshold_branch
     high_threshold_branch = options.html_high_threshold_branch
+    exclude_calls = options.exclude_calls
     show_decision = options.show_decision
 
     data = {}
@@ -316,6 +328,7 @@ def print_html_report(covdata: CovData, output_file, options):
     data["info"] = root_info
 
     data["SHOW_DECISION"] = show_decision
+    data["EXCLUDE_CALLS"] = exclude_calls
     data["COVERAGE_MED"] = medium_threshold
     data["COVERAGE_HIGH"] = high_threshold
     data["LINE_COVERAGE_MED"] = medium_threshold_line
@@ -367,6 +380,7 @@ def print_html_report(covdata: CovData, output_file, options):
     keys = sort_coverage(
         covdata,
         show_branch=False,
+        filename_uses_relative_pathname=True,
         by_num_uncovered=options.sort_uncovered,
         by_percent_uncovered=options.sort_percent,
     )
@@ -458,6 +472,7 @@ def print_html_report(covdata: CovData, output_file, options):
             cdata.branch_coverage(), branch_coverage_class
         )
         data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
+        data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
 
         data["source_lines"] = []
         currdir = os.getcwd()
@@ -537,6 +552,7 @@ def dict_from_stat(
 def source_row(lineno: int, source: str, line_cov: Optional[LineCoverage]) -> dict:
     linebranch = None
     linedecision = None
+    linecall = None
     linecount = ""
     covclass = ""
     if line_cov:
@@ -550,12 +566,14 @@ def source_row(lineno: int, source: str, line_cov: Optional[LineCoverage]) -> di
         elif line_cov.is_uncovered:
             covclass = "uncoveredLine"
             linedecision = source_row_decision(line_cov.decision)
+        linecall = source_row_call(line_cov.calls)
     return {
         "lineno": lineno,
         "source": source,
         "covclass": covclass,
         "linebranch": linebranch,
         "linedecision": linedecision,
+        "linecall": linecall,
         "linecount": linecount,
     }
 
@@ -585,6 +603,33 @@ def source_row_branch(branches):
         "taken": taken,
         "total": total,
         "branches": items,
+    }
+
+
+def source_row_call(calls: Optional[CallCoverage]):
+    if not calls:
+        return None
+
+    invoked = 0
+    total = 0
+    items = []
+
+    for call_id in sorted(calls):
+        call = calls[call_id]
+        if call.is_covered:
+            invoked += 1
+        total += 1
+        items.append(
+            {
+                "invoked": call.is_covered,
+                "name": call_id,
+            }
+        )
+
+    return {
+        "invoked": invoked,
+        "total": total,
+        "calls": items,
     }
 
 

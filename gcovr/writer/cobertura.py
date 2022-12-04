@@ -34,12 +34,9 @@ def print_cobertura_report(covdata: CovData, output_file, options):
 
     root = etree.Element("coverage")
     root.set("line-rate", _rate(stats.line))
-    root.set("function-rate", _rate(stats.function))
     root.set("branch-rate", _rate(stats.branch))
     root.set("lines-covered", str(stats.line.covered))
     root.set("lines-valid", str(stats.line.total))
-    root.set("functions-covered", str(stats.function.covered))
-    root.set("functions-valid", str(stats.function.total))
     root.set("branches-covered", str(stats.branch.covered))
     root.set("branches-valid", str(stats.branch.total))
     root.set("complexity", "0.0")
@@ -48,11 +45,9 @@ def print_cobertura_report(covdata: CovData, output_file, options):
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.
-    # sources = doc.createElement("sources")
     sources = etree.SubElement(root, "sources")
 
     # Generate the coverage output (on a per-package basis)
-    # packageXml = doc.createElement("packages")
     packageXml = etree.SubElement(root, "packages")
     packages: Dict[str, PackageData] = {}
 
@@ -68,7 +63,6 @@ def print_cobertura_report(covdata: CovData, output_file, options):
             directory,
             PackageData(
                 {},
-                CoverageStat.new_empty(),
                 CoverageStat.new_empty(),
                 CoverageStat.new_empty(),
             ),
@@ -104,7 +98,6 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         package.classes_xml[className] = c
         package.line += stats.line
         package.branch += class_branch
-        package.function += stats.function
 
     for packageName in sorted(packages):
         packageData = packages[packageName]
@@ -115,7 +108,6 @@ def print_cobertura_report(covdata: CovData, output_file, options):
             classes.append(packageData.classes_xml[className])
         package.set("name", packageName.replace("/", "."))
         package.set("line-rate", _rate(packageData.line))
-        package.set("function-rate", _rate(packageData.function))
         package.set("branch-rate", _rate(packageData.branch))
         package.set("complexity", "0.0")
 
@@ -141,7 +133,6 @@ class PackageData:
     classes_xml: Dict[str, etree.Element]
     line: CoverageStat
     branch: CoverageStat
-    function: CoverageStat
 
 
 def _rate(stat: CoverageStat) -> str:

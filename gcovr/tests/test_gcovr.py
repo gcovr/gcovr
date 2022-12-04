@@ -57,6 +57,8 @@ basedir = os.path.split(os.path.abspath(__file__))[0]
 
 skip_clean = None
 
+GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
+
 CC = os.path.split(env["CC"])[1]
 IS_CLANG = True if CC.startswith("clang") else False
 
@@ -269,7 +271,17 @@ def pytest_generate_tests(metafunc):
             marks = [
                 pytest.mark.skipif(
                     name == "simple1-drive-subst" and not IS_WINDOWS,
-                    reason="drive substitution only available on windows",
+                    reason="drive substitution only available on Windows",
+                ),
+                pytest.mark.skipif(
+                    name == "cmake_gtest" and not GCOVR_ISOLATED_TEST,
+                    reason="only available in docker",
+                ),
+                pytest.mark.skipif(
+                    name == "symlink-root"
+                    and IS_WINDOWS
+                    and (sys.version_info < (3, 8)),
+                    reason="os.path.realpath resolves symlinks on windows starting with 3.8",
                 ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
@@ -293,6 +305,14 @@ def pytest_generate_tests(metafunc):
                     name in ["excl-branch", "exclude-throw-branches", "html-themes"]
                     and IS_MACOS,
                     reason="On MacOS the constructor is called twice",
+                ),
+                pytest.mark.xfail(
+                    name in ["decisions-neg-delta"] and IS_MACOS,
+                    reason="On MacOS there is no branch for std::vector",
+                ),
+                pytest.mark.xfail(
+                    name in ["excl-line-branch"] and IS_MACOS,
+                    reason="On MacOS there are different number of branches generated",
                 ),
                 pytest.mark.xfail(
                     name == "gcc-abspath"

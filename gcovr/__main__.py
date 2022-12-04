@@ -162,6 +162,10 @@ def main(args=None):
     parser = create_argument_parser()
     cli_options = parser.parse_args(args=args)
 
+    if cli_options.version:
+        sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
+        sys.exit(0)
+
     # load the config
     cfg_name = find_config_name(cli_options)
     cfg_options = {}
@@ -176,10 +180,6 @@ def main(args=None):
 
     if options.verbose:
         logger.setLevel(logging.DEBUG)
-
-    if cli_options.version:
-        sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
-        sys.exit(0)
 
     if options.html_title == "":
         logger.error("an empty --html_title= is not allowed.")
@@ -255,6 +255,16 @@ def main(args=None):
 
     options.starting_dir = os.path.abspath(os.getcwd())
     options.root_dir = os.path.abspath(options.root)
+    root_dir_realpath = os.path.realpath(options.root_dir)
+    if options.root_dir != root_dir_realpath and not options.filter:
+        logger.warning(
+            "Your project --root directory seems to contain a symlink. "
+            "This will EXCLUDE source files in your root directory! "
+            "To fix this, you may have to add a --filter option:\n"
+            "    --filter='%s'\n"
+            "For details, see https://github.com/gcovr/gcovr/issues/635",
+            re.escape(root_dir_realpath),
+        )
 
     #
     # Setup filters

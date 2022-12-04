@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="1664822910" version="gcovr 5.2">
+  <sources>
+    <source>.</source>
+  </sources>
+  <packages>
+    <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+      <classes>
+        <class name="code_cpp" filename="source/code.cpp" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="3" hits="3" branch="false"/>
+            <line number="4" hits="3" branch="true" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="100%"/>
+              </conditions>
+            </line>
+            <line number="5" hits="2" branch="false"/>
+            <line number="7" hits="1" branch="false"/>
+            <line number="9" hits="3" branch="false"/>
+            <line number="12" hits="2" branch="false"/>
+            <line number="13" hits="2" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="14" hits="2" branch="false"/>
+            <line number="16" hits="0" branch="false"/>
+            <line number="18" hits="2" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

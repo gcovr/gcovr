@@ -18,7 +18,7 @@ all:
 	@echo "CXX:  ${CXX} (origin: $(origin CXX))"
 	@echo "GCOV: ${GCOV} (origin: $(origin GCOV))"
 	mkdir -p build
-	cd build && cmake -G $(CMAKE_GENERATOR) -DCMAKE_BUILD_TYPE=PROFILE -DCMAKE_TOOLCHAIN_FILE=../Toolchain.cmake .. && make
+	cd build && cmake -G $(CMAKE_GENERATOR) -DCMAKE_BUILD_TYPE=PROFILE .. && make
 
 run: txt xml html sonarqube coveralls
 

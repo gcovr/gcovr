@@ -55,6 +55,7 @@ class ExclusionOptions:
     exclude_unreachable_branches: bool = False
     exclude_function_lines: bool = False
     exclude_internal_functions: bool = False
+    exclude_calls: bool = True
 
 
 def apply_all_exclusions(
@@ -91,6 +92,17 @@ def apply_all_exclusions(
 
     if options.exclude_internal_functions:
         remove_internal_functions(filecov)
+
+    if options.exclude_calls:
+        remove_calls(filecov)
+
+
+def remove_calls(filecov: FileCoverage):
+    """Remove the information about calls."""
+
+    # Clear the calls of each line.
+    for line in filecov.lines.values():
+        line.calls.clear()
 
 
 def remove_internal_functions(filecov: FileCoverage):
