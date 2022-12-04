@@ -17,13 +17,15 @@ However, start and stop markers must use the same style.
 The prefix is configurable with the option
 :option:`--exclude-pattern-prefix<gcovr --exclude-pattern-prefix>`.
 
-The excluded region includes the line with the stop marker::
+The excluded region not includes the line with the stop marker::
 
     code
     code
     excluded       // GCOVR_EXCL_START
+    still excluded
     ...
-    still excluded // GCOVR_EXCL_STOP
+    still excluded
+    NOT excluded // GCOVR_EXCL_STOP
     code
     code
 

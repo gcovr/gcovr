@@ -173,7 +173,7 @@ def _process_exclusion_marker(
         if exclusion_stack:
             warnings.line_after_start(
                 lineno,
-                f"{header}" + _EXCLUDE_FLAG + exclude_word + "LINE",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}LINE",
                 exclusion_stack[-1][1],
             )
         else:
@@ -186,20 +186,20 @@ def _process_exclusion_marker(
         if not exclusion_stack:
             warnings.stop_without_start(
                 lineno,
-                f"{header}" + _EXCLUDE_FLAG + exclude_word + "START",
-                f"{header}" + _EXCLUDE_FLAG + exclude_word + "STOP",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}START",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}STOP",
             )
         else:
             start_header, start_lineno = exclusion_stack.pop()
             if header != start_header:
                 warnings.mismatched_start_stop(
                     start_lineno,
-                    f"{start_header}" + _EXCLUDE_FLAG + exclude_word + "START",
+                    f"{start_header}{_EXCLUDE_FLAG}{exclude_word}START",
                     lineno,
-                    f"{header}" + _EXCLUDE_FLAG + exclude_word + "STOP",
+                    f"{header}{_EXCLUDE_FLAG}{exclude_word}STOP",
                 )
 
-            exclude_ranges.append((start_lineno, lineno))
+            exclude_ranges.append((start_lineno, lineno - 1))
 
     else:  # pragma: no cover
         pass
@@ -259,12 +259,7 @@ def _find_excluded_ranges(
             custom_pattern_regex = re.compile(custom_pattern)
 
         excl_pattern = re.compile(
-            "("
-            + exclude_pattern_prefix
-            + ")"
-            + _EXCLUDE_FLAG
-            + exclude_word
-            + _EXCLUDE_PATTERN_POSTFIX
+            f"({exclude_pattern_prefix}){_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIX}"
         )
 
         # possibly overlapping inclusive (closed) ranges that describe exclusions regions
@@ -291,8 +286,8 @@ def _find_excluded_ranges(
         for header, lineno in exclusion_stack:
             warnings.start_without_stop(
                 lineno,
-                f"{header}" + _EXCLUDE_FLAG + exclude_word + "START",
-                f"{header}" + _EXCLUDE_FLAG + exclude_word + "STOP",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}START",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}STOP",
             )
 
         return _make_is_in_any_range_inclusive(exclude_ranges)

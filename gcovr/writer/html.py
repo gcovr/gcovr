@@ -484,6 +484,8 @@ def print_html_report(covdata: CovData, output_file, options):
                     )
         except IOError as e:
             logger.warning(f'File {data["filename"]} not found: {repr(e)}')
+            # Python ranges are exclusive. We want to iterate over all lines, including
+            # that last line. Thus, we have to add a +1 to include that line.
             for ctr in range(1, max_line_from_cdata + 1):
                 data["source_lines"].append(
                     source_row(
