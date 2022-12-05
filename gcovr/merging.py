@@ -192,27 +192,6 @@ def insert_line_coverage(
     return _insert_coverage_item(target.lines, line.lineno, line, merge_line, options)
 
 
-# FIXME: use of this function is almost always a bug
-def get_or_create_line_coverage(target: FileCoverage, lineno: int) -> LineCoverage:
-    """Get the LineCoverage object for that line, or insert a new one if necessary.
-
-    Use of this function is almost always a bug,
-    but it's needed for migration.
-
-    The function is almost equivalent to::
-
-        insert_line_coverage(target, LineCoverage(lineno))
-
-    except that this function is guaranteed to not affect the ``noncode`` status
-    if any is present.
-    """
-    try:
-        return target.lines[lineno]
-    except KeyError:
-        target.lines[lineno] = new_line = LineCoverage(lineno)
-        return new_line
-
-
 def merge_line(
     left: LineCoverage,
     right: LineCoverage,
@@ -228,9 +207,6 @@ def merge_line(
     assert left.lineno == right.lineno
 
     left.count += right.count
-    # FIXME LineCoverage(lineno) is not the neutral element
-    # because the default is "noncode=False", which can flip the other argument to "&"
-    left.noncode &= right.noncode
     left.excluded |= right.excluded
     left.branches = _merge_dict(left.branches, right.branches, merge_branch, options)
     left.decision = merge_decision(left.decision, right.decision, options)

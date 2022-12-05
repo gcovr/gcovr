@@ -58,7 +58,7 @@
       <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
     </tr>
     {% endif %}
-    {% if SHOW_CALL %}
+    {% if not EXCLUDE_CALLS %}
     <tr>
       <th scope="row">Calls:</th>
       <td>{{calls.exec}}</td>
@@ -111,7 +111,7 @@
       {% if SHOW_DECISION %}
       <th align="right">Decision</th>
       {% endif %}
-      {% if SHOW_CALL %}
+      {% if not EXCLUDE_CALLS %}
       <th align="right">Call</th>
       {% endif %}
       <th align="right">Exec</th>
@@ -158,7 +158,7 @@
         {% endif %}
       </td>
       {% endif %}
-      {% if SHOW_CALL %}
+      {% if not EXCLUDE_CALLS %}
       <td class="linecall">
         {% if row.linecall %}
           <details class="linecallDetails">

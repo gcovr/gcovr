@@ -10,7 +10,7 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 13,
+                    "lineno": 20,
                     "name": "main"
                 }
             ],
@@ -24,7 +24,7 @@
                     "branches": [
                         {
                             "count": 0,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
@@ -43,49 +43,24 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
+                    "gcovr/excluded": true,
                     "line_number": 8
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 10
+                    "line_number": 20
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 13
+                    "line_number": 21
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 14
-                },
-                {
-                    "branches": [
-                        {
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
-                    "count": 1,
-                    "line_number": 18
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "line_number": 19
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 25
+                    "line_number": 23
                 }
             ]
         }
