@@ -1,25 +1,4 @@
 {
-    "git": {
-        "branch": "branch",
-        "head": {
-            "author_email": "michael.foerderer@gmx.de",
-            "author_name": "Michael F\u00f6rderer",
-            "committer_email": "noreply@github.com",
-            "committer_name": "GitHub",
-            "id": "c83215a72f6ca434df6b483627efe76d6d53145e",
-            "message": "Detect compiler version from gcc output if not specified. (#686)"
-        },
-        "remotes": [
-            {
-                "name": "origin",
-                "url": "https://github.com/Spacetown/gcovr.git"
-            },
-            {
-                "name": "upstream",
-                "url": "https://github.com/gcovr/gcovr.git"
-            }
-        ]
-    },
     "run_at": "2022-11-04 14:28:10 UTC",
     "service_job_id": "id",
     "service_name": "gcovr-test-suite",

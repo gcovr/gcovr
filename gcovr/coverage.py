@@ -181,7 +181,6 @@ class LineCoverage:
         "excluded",
         "branches",
         "decision",
-        "functions",
         "calls",
     )
 
