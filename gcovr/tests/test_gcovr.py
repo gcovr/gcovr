@@ -136,7 +136,7 @@ def scrub_xml(contents):
 
 def scrub_html(contents):
     contents = RE_HTML_ATTRS.sub('\\1=""', contents)
-    contents = RE_HTML_FOOTER_VERSION.sub("\\1 4.x\\2", contents)
+    contents = RE_HTML_FOOTER_VERSION.sub("\\1 5.x\\2", contents)
     contents = RE_HTML_HEADER_DATE.sub("\\1>0000-00-00 00:00:00<\\2", contents)
     contents = contents.replace("\r", "")
     contents = force_unix_separator(contents)
@@ -369,14 +369,15 @@ def generate_reference_data(output_pattern):  # pragma: no cover
                 shutil.copyfile(generated_file, reference_file)
 
 
-def update_reference_data(coverage_file, reference_file):  # pragma: no cover
+def update_reference_data(reference_file, content):  # pragma: no cover
     if CC_REFERENCE in reference_file:
         reference_dir = os.path.dirname(reference_file)
     else:
         reference_dir = os.path.join("reference", CC_REFERENCE)
         os.makedirs(reference_dir, exist_ok=True)
         reference_file = os.path.join(reference_dir, os.path.basename(reference_file))
-    shutil.copyfile(coverage_file, reference_file)
+    with open(reference_file, "w") as out:
+        out.write(content)
 
     return reference_file
 
@@ -481,7 +482,7 @@ def test_build(
         except Exception as e:  # pragma: no cover
             whole_diff_output += "  " + str(e) + "\n"
             if update_reference:
-                reference_file = update_reference_data(coverage_file, reference_file)
+                reference_file = update_reference_data(reference_file, coverage)
             if archive_differences:
                 archive_difference_data(name, coverage_file, reference_file)
 
