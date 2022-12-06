@@ -41,8 +41,6 @@ import re
 from typing import Dict, Iterable, Optional, TypeVar, Union
 from dataclasses import dataclass
 
-GCOVR_PATH_SEPARATOR: str = "/"
-
 _T = TypeVar("_T")
 
 
@@ -442,16 +440,16 @@ class DirectoryCoverage:
 
     @staticmethod
     def directory_key(filename: str, root_filter: re.Pattern):
-        filename = filename.replace("\\", GCOVR_PATH_SEPARATOR)
-        key = os.path.dirname(filename.replace("\\", GCOVR_PATH_SEPARATOR))
-        if root_filter.search(key + GCOVR_PATH_SEPARATOR) and key != filename:
+        filename = filename.replace("\\", os.sep)
+        key = os.path.dirname(filename.replace("\\", os.sep))
+        if root_filter.search(key + os.sep) and key != filename:
             return key
         return None
 
     @staticmethod
     def directory_root(subdirs: CovData_subdirectories, root_filter: re.Pattern) -> str:
         if not subdirs:
-            return GCOVR_PATH_SEPARATOR
+            return os.sep
         key = next(iter(subdirs))
         while True:
             next_key = DirectoryCoverage.directory_key(key, root_filter)

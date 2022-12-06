@@ -32,8 +32,12 @@ import re
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 
 
+def fix_filename(filename: str) -> str:
+    return filename.replace("\\", os.sep).replace("/", os.sep)
+
+
 def compile_filter(root_dir: str) -> re.Pattern:
-    return re.compile("^" + re.escape(root_dir) + os.sep)
+    return re.compile("^" + re.escape(fix_filename(root_dir) + os.sep))
 
 
 @pytest.mark.parametrize(
@@ -53,6 +57,8 @@ def test_directory_key(test_input, root_dir, expected, capsys) -> None:
     r"""Tests the directory_key() function. Tests posix and Windows path cases."""
     root_filter = compile_filter(root_dir)
     key = DirectoryCoverage.directory_key(test_input, root_filter)
+    if expected:
+        expected = fix_filename(expected)
     assert key == expected
 
     out, err = capsys.readouterr()
@@ -104,7 +110,7 @@ def test_directory_add_file() -> None:
     r"""Tests the addition of files and their aggregation of statistics."""
     subdirs = dict()
 
-    root_dir = "/foo/bar"
+    root_dir = fix_filename("/foo/bar")
     add_file_to_directory(subdirs, "/foo/bar/main.cpp", root_dir, 20, 50)
     assert len(subdirs) == 1
     add_file_to_directory(subdirs, "/foo/bar/helper.cpp", root_dir, 10, 50)
@@ -122,14 +128,14 @@ def test_directory_add_file() -> None:
 def test_directory_root() -> None:
     r"""Tests the root_directory() function for DirectoryCoverage."""
     subdirs = dict()
-    root_dir = "/foo/bar"
+    root_dir = fix_filename("/foo/bar")
     root_filter = compile_filter(root_dir)
 
-    assert DirectoryCoverage.directory_root(subdirs, root_filter) == "/"
+    assert DirectoryCoverage.directory_root(subdirs, root_filter) == os.sep
 
     add_file_to_directory(subdirs, "/foo/bar/main.cpp", root_dir, 20, 50)
     add_file_to_directory(subdirs, "/foo/bar/A/B/C/D/E.cpp", root_dir, 10, 50)
-    assert DirectoryCoverage.directory_root(subdirs, root_filter) == "/foo/bar"
+    assert DirectoryCoverage.directory_root(subdirs, root_filter) == root_dir
 
 
 def test_directory_collapse() -> None:
@@ -145,7 +151,7 @@ def test_directory_collapse() -> None:
     DirectoryCoverage.collapse_subdirectories(subdirs, root_filter)
     assert len(subdirs) == 1
 
-    dircov = subdirs[root_dir]
+    dircov = subdirs[fix_filename(root_dir)]
 
     assert len(dircov.children) == 2
     linecov = dircov.line_coverage()
