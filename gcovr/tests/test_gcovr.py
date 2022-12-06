@@ -18,7 +18,6 @@
 # ****************************************************************************
 
 import glob
-import io
 import logging
 import os
 import platform
@@ -120,8 +119,6 @@ def scrub_txt(contents):
 
 
 def scrub_csv(contents):
-    contents = contents.replace("\r", "")
-    contents = contents.replace("\n\n", "\n")
     contents = force_unix_separator(contents)
     return contents
 
@@ -130,21 +127,18 @@ def scrub_xml(contents):
     contents = RE_DECIMAL.sub(lambda m: str(round(float(m.group(1)), 5)), contents)
     contents = RE_XML_ATTRS.sub(r'\1=""', contents)
     contents = RE_XML_GCOVR_VERSION.sub('version=""', contents)
-    contents = contents.replace("\r", "")
     return contents
 
 
 def scrub_html(contents):
     contents = RE_HTML_ATTRS.sub('\\1=""', contents)
-    contents = RE_HTML_FOOTER_VERSION.sub("\\1 4.x\\2", contents)
+    contents = RE_HTML_FOOTER_VERSION.sub("\\1 5.x\\2", contents)
     contents = RE_HTML_HEADER_DATE.sub("\\1>0000-00-00 00:00:00<\\2", contents)
-    contents = contents.replace("\r", "")
     contents = force_unix_separator(contents)
     return contents
 
 
 def scrub_coveralls(contents):
-    contents += "\n"
     contents = RE_COVERALLS_CLEAN_KEYS.sub('"\\1": ""', contents)
     contents = RE_COVERALLS_GIT_PRETTY.sub("", contents)
     contents = RE_COVERALLS_GIT.sub("", contents)
@@ -369,14 +363,15 @@ def generate_reference_data(output_pattern):  # pragma: no cover
                 shutil.copyfile(generated_file, reference_file)
 
 
-def update_reference_data(coverage_file, reference_file):  # pragma: no cover
+def update_reference_data(reference_file, content):  # pragma: no cover
     if CC_REFERENCE in reference_file:
         reference_dir = os.path.dirname(reference_file)
     else:
         reference_dir = os.path.join("reference", CC_REFERENCE)
         os.makedirs(reference_dir, exist_ok=True)
         reference_file = os.path.join(reference_dir, os.path.basename(reference_file))
-    shutil.copyfile(coverage_file, reference_file)
+    with open(reference_file, "w") as out:
+        out.write(content)
 
     return reference_file
 
@@ -403,7 +398,7 @@ def remove_duplicate_data(
         if other_reference_file != reference_file and os.path.isfile(
             other_reference_file
         ):  # pragma: no cover
-            with io.open(other_reference_file, encoding=encoding) as f:
+            with open(other_reference_file, encoding=encoding) as f:
                 if coverage == scrub(f.read()):
                     os.unlink(reference_file)
             break
@@ -459,9 +454,9 @@ def test_build(
 
     whole_diff_output = []
     for coverage_file, reference_file in find_reference_files(output_pattern):
-        with io.open(coverage_file, encoding=encoding) as f:
+        with open(coverage_file, encoding=encoding) as f:
             coverage = scrub(f.read())
-        with io.open(reference_file, encoding=encoding) as f:
+        with open(reference_file, encoding=encoding) as f:
             reference = scrub(f.read())
 
         try:
@@ -481,7 +476,7 @@ def test_build(
         except Exception as e:  # pragma: no cover
             whole_diff_output += "  " + str(e) + "\n"
             if update_reference:
-                reference_file = update_reference_data(coverage_file, reference_file)
+                reference_file = update_reference_data(reference_file, coverage)
             if archive_differences:
                 archive_difference_data(name, coverage_file, reference_file)
 

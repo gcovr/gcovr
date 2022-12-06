@@ -33,6 +33,7 @@ jobs:
     needs: release-check
 
     env:
+      FORCE_COLOR: "1"
       PYTHON_VERSION: "3.8"
       CC: "gcc-8"
 

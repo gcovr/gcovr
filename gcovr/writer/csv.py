@@ -27,7 +27,7 @@ from ..coverage import CovData, CoverageStat, SummarizedStats
 def print_csv_report(covdata: CovData, output_file, options):
     """produce gcovr csv report"""
 
-    with open_text_for_writing(output_file, "coverage.csv") as fh:
+    with open_text_for_writing(output_file, "coverage.csv", newline="") as fh:
         keys = sort_coverage(
             covdata,
             show_branch=options.show_branch,
