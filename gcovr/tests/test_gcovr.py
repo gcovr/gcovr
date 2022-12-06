@@ -390,7 +390,6 @@ def archive_difference_data(name, coverage_file, reference_file):  # pragma: no 
 def remove_duplicate_data(
     encoding, scrub, coverage, coverage_file, reference_file
 ):  # pragma: no cover
-    reference_dir = os.path.dirname(reference_file)
     # Loop over the other coverage data
     for reference_dir in REFERENCE_DIRS:  # pragma: no cover
         other_reference_file = os.path.join(reference_dir, coverage_file)
@@ -402,6 +401,12 @@ def remove_duplicate_data(
                 if coverage == scrub(f.read()):
                     os.unlink(reference_file)
             break
+        # Check if folder is empty
+        if (
+            os.path.exists(reference_dir)
+            and len(glob.glob(os.path.join(reference_dir, "*"))) == 0
+        ):
+            os.rmdir(reference_dir)
 
 
 SCRUBBERS = dict(
@@ -456,8 +461,15 @@ def test_build(
     for coverage_file, reference_file in find_reference_files(output_pattern):
         with open(coverage_file, encoding=encoding) as f:
             coverage = scrub(f.read())
-        with open(reference_file, encoding=encoding) as f:
-            reference = scrub(f.read())
+
+        # Overwrite the file created above with the scrubbed content
+        if generate_reference:  # pragma: no cover
+            with open(reference_file, "w") as f:
+                f.write(coverage)
+            reference = coverage
+        else:
+            with open(reference_file, encoding=encoding) as f:
+                reference = scrub(f.read())
 
         try:
             if assert_equals is not None:
