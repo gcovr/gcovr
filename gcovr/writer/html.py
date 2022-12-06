@@ -689,7 +689,9 @@ def dict_from_stat(
     return data
 
 
-def source_row(lineno: int, source: str, line_cov: Optional[LineCoverage]) -> Dict[str, Any]:
+def source_row(
+    lineno: int, source: str, line_cov: Optional[LineCoverage]
+) -> Dict[str, Any]:
     linebranch = None
     linedecision = None
     linecall = None
@@ -773,7 +775,9 @@ def source_row_call(calls: Optional[CallCoverage]) -> Dict[str, Any]:
     }
 
 
-def source_row_decision(decision: Optional[DecisionCoverage]) -> Optional[Dict[str, Any]]:
+def source_row_decision(
+    decision: Optional[DecisionCoverage],
+) -> Optional[Dict[str, Any]]:
     if decision is None:
         return None
 

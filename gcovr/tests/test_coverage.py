@@ -100,7 +100,6 @@ def add_file_to_directory(
         newfile.lines[line + 1] = LineCoverage(
             line + 1,
             count=(True if line < cov_lines else False),
-            noncode=False,
             excluded=False,
         )
     DirectoryCoverage.add_directory_coverage(subdirs, root_filter, newfile)
