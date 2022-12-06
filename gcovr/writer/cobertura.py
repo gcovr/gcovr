@@ -77,7 +77,7 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         class_branch = CoverageStat(0, 0)
         for lineno in sorted(data.lines):
             line_cov = data.lines[lineno]
-            if not (line_cov.is_covered or line_cov.is_uncovered):
+            if not line_cov.is_reportable:
                 continue
 
             b = line_cov.branch_coverage()

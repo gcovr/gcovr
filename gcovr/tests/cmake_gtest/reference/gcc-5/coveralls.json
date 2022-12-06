@@ -1,25 +1,4 @@
 {
-    "git": {
-        "branch": "branch",
-        "head": {
-            "author_email": "michael.foerderer@gmx.de",
-            "author_name": "Spacetown",
-            "committer_email": "michael.foerderer@gmx.de",
-            "committer_name": "Spacetown",
-            "id": "b08df745e052459809bf61e1994f04381b8803eb",
-            "message": "Refactor existing tests to use -DCMAKE_BUILD_TYPE=PROFILE and resuse files."
-        },
-        "remotes": [
-            {
-                "name": "origin",
-                "url": "https://github.com/Spacetown/gcovr.git"
-            },
-            {
-                "name": "upstream",
-                "url": "https://github.com/gcovr/gcovr.git"
-            }
-        ]
-    },
     "run_at": "2022-09-30 21:07:38 UTC",
     "service_job_id": "id",
     "service_name": "gcovr-test-suite",

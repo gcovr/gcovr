@@ -28,9 +28,12 @@ from typing import Optional
 
 from .utils import search_file, commonpath
 from .workers import locked_directory
-from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
+from .gcov_parser import parse_metadata, parse_coverage
 from .coverage import CovData
 from .merging import insert_file_coverage
+from .exclusions import apply_all_exclusions
+from .decision_analysis import DecisionParser
+
 
 logger = logging.getLogger("gcovr")
 
@@ -138,32 +141,18 @@ def process_gcov_data(
 
     key = os.path.normpath(fname)
 
-    parser_flags = ParserFlags.NONE
-    if options.gcov_ignore_parse_errors:
-        parser_flags |= ParserFlags.IGNORE_PARSE_ERRORS
-    if options.exclude_function_lines:
-        parser_flags |= ParserFlags.EXCLUDE_FUNCTION_LINES
-    if options.exclude_internal_functions:
-        parser_flags |= ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS
-    if options.exclude_unreachable_branches:
-        parser_flags |= ParserFlags.EXCLUDE_UNREACHABLE_BRANCHES
-    if options.exclude_throw_branches:
-        parser_flags |= ParserFlags.EXCLUDE_THROW_BRANCHES
-    if options.respect_exclusion_markers:
-        parser_flags |= ParserFlags.RESPECT_EXCLUSION_MARKERS
-    if options.show_decision:
-        parser_flags |= ParserFlags.PARSE_DECISIONS
-    if options.show_calls:
-        parser_flags |= ParserFlags.PARSE_CALLS
-
-    coverage = parse_coverage(
+    coverage, source_lines = parse_coverage(
         lines,
         filename=key,
-        exclude_lines_by_pattern=options.exclude_lines_by_pattern,
-        exclude_branches_by_pattern=options.exclude_branches_by_pattern,
-        exclude_pattern_prefix=options.exclude_pattern_prefix,
-        flags=parser_flags,
+        ignore_parse_errors=options.gcov_ignore_parse_errors,
     )
+
+    apply_all_exclusions(coverage, lines=source_lines, options=options)
+
+    if options.show_decision:
+        decision_parser = DecisionParser(coverage, source_lines)
+        decision_parser.parse_all_lines()
+
     insert_file_coverage(covdata, coverage)
 
 

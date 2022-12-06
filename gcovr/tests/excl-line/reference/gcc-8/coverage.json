@@ -1,0 +1,69 @@
+{
+    "files": [
+        {
+            "file": "main.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 4,
+                    "name": "foo(int)"
+                },
+                {
+                    "execution_count": 1,
+                    "lineno": 20,
+                    "name": "main"
+                }
+            ],
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 4
+                },
+                {
+                    "branches": [
+                        {
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "line_number": 5
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "line_number": 6
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/excluded": true,
+                    "line_number": 8
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 20
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 21
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 23
+                }
+            ]
+        }
+    ],
+    "gcovr/format_version": "0.4"
+}

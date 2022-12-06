@@ -33,6 +33,7 @@ from ..utils import (
     open_text_for_writing,
 )
 from ..coverage import (
+    CallCoverage,
     CovData,
     CoverageStat,
     DecisionCoverage,
@@ -42,6 +43,7 @@ from ..coverage import (
     DecisionCoverageUncheckable,
     DirectoryCoverage,
     FileCoverage,
+    LineCoverage,
     SummarizedStats,
 )
 
@@ -330,15 +332,15 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
     high_threshold_line = options.html_high_threshold_line
     medium_threshold_branch = options.html_medium_threshold_branch
     high_threshold_branch = options.html_high_threshold_branch
+    exclude_calls = options.exclude_calls
     show_decision = options.show_decision
-    show_calls = options.show_calls
 
     data = {}
     root_info = RootInfo(options)
     data["info"] = root_info
 
     data["SHOW_DECISION"] = show_decision
-    data["SHOW_CALL"] = show_calls
+    data["EXCLUDE_CALLS"] = exclude_calls
     data["COVERAGE_MED"] = medium_threshold
     data["COVERAGE_HIGH"] = high_threshold
     data["LINE_COVERAGE_MED"] = medium_threshold_line
@@ -562,6 +564,7 @@ def write_source_pages(
                 lines = formatter.highlighter_for_file(data["filename"])(
                     source_file.read()
                 )
+                ctr = 0
                 for ctr, line in enumerate(lines, 1):
                     data["source_lines"].append(
                         source_row(ctr, line, cdata.lines.get(ctr))
@@ -572,7 +575,9 @@ def write_source_pages(
                     )
         except IOError as e:
             logger.warning(f'File {data["filename"]} not found: {repr(e)}')
-            for ctr in range(1, max_line_from_cdata):
+            # Python ranges are exclusive. We want to iterate over all lines, including
+            # that last line. Thus, we have to add a +1 to include that line.
+            for ctr in range(1, max_line_from_cdata + 1):
                 data["source_lines"].append(
                     source_row(
                         ctr,
@@ -684,7 +689,7 @@ def dict_from_stat(
     return data
 
 
-def source_row(lineno, source, line_cov) -> Dict[str, Any]:
+def source_row(lineno: int, source: str, line_cov: Optional[LineCoverage]) -> Dict[str, Any]:
     linebranch = None
     linedecision = None
     linecall = None
@@ -741,7 +746,7 @@ def source_row_branch(branches) -> Dict[str, Any]:
     }
 
 
-def source_row_call(calls) -> Dict[str, Any]:
+def source_row_call(calls: Optional[CallCoverage]) -> Dict[str, Any]:
     if not calls:
         return None
 
@@ -768,7 +773,7 @@ def source_row_call(calls) -> Dict[str, Any]:
     }
 
 
-def source_row_decision(decision: DecisionCoverage) -> Optional[Dict[str, Any]]:
+def source_row_decision(decision: Optional[DecisionCoverage]) -> Optional[Dict[str, Any]]:
     if decision is None:
         return None
 
