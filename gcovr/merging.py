@@ -70,6 +70,7 @@ class MergeOptions:
     merge_function_use_line_zero: bool = None
     merge_function_use_line_min: bool = None
     merge_function_use_line_max: bool = None
+    separate_function: bool = None
 
 
 DEFAULT_MERGE_OPTIONS = MergeOptions()
@@ -85,6 +86,10 @@ FUNCTION_MAX_LINE_MERGE_OPTIONS = MergeOptions(
     ignore_function_lineno=True,
     merge_function_use_line_max=True,
 )
+SEPARATE_FUNCTION_MERGE_OPTIONS = MergeOptions(
+    ignore_function_lineno=True,
+    separate_function=True,
+)
 
 
 def get_merge_mode_from_options(options):
@@ -96,6 +101,8 @@ def get_merge_mode_from_options(options):
         return FUNCTION_MIN_LINE_MERGE_OPTIONS
     elif options.merge_mode_functions == "merge-use-line-max":
         return FUNCTION_MAX_LINE_MERGE_OPTIONS
+    elif options.merge_mode_functions == "separate":
+        return SEPARATE_FUNCTION_MERGE_OPTIONS
     else:
         raise RuntimeError("Sanity check: Unknown merge mode.")
 
@@ -272,20 +279,32 @@ def merge_function(
       - ``options.merge_function_use_line_zero``
       - ``options.merge_function_use_line_min``
       - ``options.merge_function_use_line_max``
+      - ``options.separate_function``
     """
     assert left.name == right.name
     if not options.ignore_function_lineno:
-        assert left.lineno == right.lineno
+        assert left.count.keys() == right.count.keys()
 
-    left.count += right.count
+    for right_lineno in right.count.keys():
+        if right_lineno in left.count:
+            lineno = right_lineno
+        elif options.separate_function:
+            lineno = right_lineno
+            if lineno not in left.count:
+                left.count[lineno] = 0
+        else:
+            if options.merge_function_use_line_zero:
+                lineno = 0
+            elif options.merge_function_use_line_min:
+                lineno = min(*left.count.keys(), right_lineno)
+            elif options.merge_function_use_line_max:
+                lineno = max(*left.count.keys(), right_lineno)
+            # Set the sum at the desired line and clear all other data
+            count = sum(left.count.values())
+            left.count.clear()
+            left.count[lineno] = count
 
-    if options.merge_function_use_line_zero:
-        if left.lineno != right.lineno:
-            left.lineno = 0
-    elif options.merge_function_use_line_min:
-        left.lineno = min(left.lineno, right.lineno)
-    elif options.merge_function_use_line_max:
-        left.lineno = max(left.lineno, right.lineno)
+        left.count[lineno] += right.count[right_lineno]
 
     return left
 

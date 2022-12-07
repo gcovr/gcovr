@@ -153,9 +153,7 @@ def process_gcov_data(
         decision_parser = DecisionParser(coverage, source_lines)
         decision_parser.parse_all_lines()
 
-    insert_file_coverage(
-        covdata, coverage, get_merge_mode_from_options(options)
-        )
+    insert_file_coverage(covdata, coverage, get_merge_mode_from_options(options))
 
 
 def guess_source_file_name(

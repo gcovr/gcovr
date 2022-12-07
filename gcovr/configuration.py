@@ -1263,6 +1263,7 @@ GCOVR_CONFIG_OPTIONS = [
             "merge-use-line-0",
             "merge-use-line-min",
             "merge-use-line-max",
+            "separate",
         ],
         default="strict",
         help=(

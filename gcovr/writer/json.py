@@ -280,15 +280,20 @@ def _json_from_call(call: CallCoverage) -> dict:
 
 
 def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
-    return [_json_from_function(functions[name]) for name in sorted(functions)]
+    return [
+        f for name in sorted(functions) for f in _json_from_function(functions[name])
+    ]
 
 
-def _json_from_function(function: FunctionCoverage) -> dict:
-    return {
-        "name": function.name,
-        "lineno": function.lineno,
-        "execution_count": function.count,
-    }
+def _json_from_function(function: FunctionCoverage) -> list:
+    return [
+        {
+            "name": function.name,
+            "lineno": lineno,
+            "execution_count": count,
+        }
+        for lineno, count in function.count.items()
+    ]
 
 
 def _function_from_json(json_function: dict) -> FunctionCoverage:

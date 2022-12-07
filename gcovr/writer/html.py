@@ -443,15 +443,16 @@ def print_html_report(covdata: CovData, output_file, options):
         data["function_list"] = []
         for name in sorted(cdata.functions.keys()):
             fcdata = cdata.functions[name]
-            fdata = dict()
-            fdata["name"] = name
-            fdata["filename"] = cdata_fname[f]
-            fdata["html_filename"] = os.path.basename(cdata_sourcefile[f])
-            fdata["line"] = fcdata.lineno
-            fdata["count"] = fcdata.count
+            for lineno in sorted(fcdata.count.keys()):
+                fdata = dict()
+                fdata["name"] = name
+                fdata["filename"] = cdata_fname[f]
+                fdata["html_filename"] = os.path.basename(cdata_sourcefile[f])
+                fdata["line"] = lineno
+                fdata["count"] = fcdata.count[lineno]
 
-            data["function_list"].append(fdata)
-            all_functions[(fdata["name"], fdata["filename"])] = fdata
+                data["function_list"].append(fdata)
+                all_functions[(fdata["name"], fdata["filename"], fdata["line"])] = fdata
 
         def coverage_class(percent: Optional[float]) -> str:
             return coverage_to_class(percent, medium_threshold, high_threshold)

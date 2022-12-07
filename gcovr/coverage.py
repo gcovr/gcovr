@@ -148,12 +148,25 @@ DecisionCoverage = Union[
 
 
 class FunctionCoverage:
-    __slots__ = "lineno", "count", "name"
+    r"""Represent coverage information about a function.
+
+    The counter is stored as dictionary with the line as key to be able
+    to merge function coverage in different ways
+
+    Args:
+        lineno (int):
+            The line number.
+        count (int):
+            How often this line was executed at least partially.
+        excluded (bool, optional):
+            Whether this line is excluded by a marker.
+    """
+
+    __slots__ = "count", "name"
 
     def __init__(self, name: str, *, lineno: int = 0, call_count: int = 0) -> None:
         assert call_count >= 0
-        self.count = call_count
-        self.lineno = lineno
+        self.count: Dict[int, int] = {lineno: call_count}
         self.name = name
 
 
@@ -257,12 +270,12 @@ class FileCoverage:
         self.lines: Dict[int, LineCoverage] = {}
 
     def function_coverage(self) -> CoverageStat:
-        total = len(self.functions.values())
+        total = 0
         covered = 0
 
         for function in self.functions.values():
-            if function.count > 0:
-                covered += 1
+            total += len(function.count)
+            covered = len([c for c in function.count.values() if c > 0])
 
         return CoverageStat(covered, total)
 
