@@ -60,7 +60,7 @@ from .coverage import (
     LineCoverage,
 )
 from .merging import (
-    MergeOptions,
+    FUNCTION_MAX_LINE_MERGE_OPTIONS,
     insert_branch_coverage,
     insert_function_coverage,
     insert_line_coverage,
@@ -322,7 +322,7 @@ def parse_coverage(
         insert_function_coverage(
             coverage,
             FunctionCoverage(name, lineno=state.lineno + 1, call_count=calls),
-            MergeOptions(ignore_function_lineno=True),
+            FUNCTION_MAX_LINE_MERGE_OPTIONS,
         )
 
     _report_lines_with_errors(
@@ -385,7 +385,7 @@ def _gather_coverage_from_line(
             insert_function_coverage(
                 coverage,
                 FunctionCoverage(name, lineno=lineno, call_count=count),
-                MergeOptions(ignore_function_lineno=True),
+                FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
         return _ParserState(

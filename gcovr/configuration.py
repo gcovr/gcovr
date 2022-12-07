@@ -1255,6 +1255,22 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "merge_mode_functions",
+        ["--merge-mode-functions"],
+        group="gcov_options",
+        choices=[
+            "strict",
+            "merge-use-line-0",
+            "merge-use-line-min",
+            "merge-use-line-max",
+        ],
+        default="strict",
+        help=(
+            "The merge mode for functions coverage from different gcov files for same sourcefile."
+            "Default: {default!s}."
+        ),
+    ),
+    GcovrConfigOption(
         "exclude_throw_branches",
         ["--exclude-throw-branches"],
         group="gcov_options",

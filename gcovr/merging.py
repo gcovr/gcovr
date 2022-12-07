@@ -67,9 +67,37 @@ from .coverage import (
 @dataclass
 class MergeOptions:
     ignore_function_lineno: bool = False
+    merge_function_use_line_zero: bool = None
+    merge_function_use_line_min: bool = None
+    merge_function_use_line_max: bool = None
 
 
 DEFAULT_MERGE_OPTIONS = MergeOptions()
+FUNCTION_LINE_ZERO_MERGE_OPTIONS = MergeOptions(
+    ignore_function_lineno=True,
+    merge_function_use_line_zero=True,
+)
+FUNCTION_MIN_LINE_MERGE_OPTIONS = MergeOptions(
+    ignore_function_lineno=True,
+    merge_function_use_line_min=True,
+)
+FUNCTION_MAX_LINE_MERGE_OPTIONS = MergeOptions(
+    ignore_function_lineno=True,
+    merge_function_use_line_max=True,
+)
+
+
+def get_merge_mode_from_options(options):
+    if options.merge_mode_functions == "strict":
+        return DEFAULT_MERGE_OPTIONS
+    elif options.merge_mode_functions == "merge-use-line-0":
+        return FUNCTION_LINE_ZERO_MERGE_OPTIONS
+    elif options.merge_mode_functions == "merge-use-line-min":
+        return FUNCTION_MIN_LINE_MERGE_OPTIONS
+    elif options.merge_mode_functions == "merge-use-line-max":
+        return FUNCTION_MAX_LINE_MERGE_OPTIONS
+    else:
+        raise RuntimeError("Sanity check: Unknown merge mode.")
 
 
 _Key = TypeVar("_Key", int, str)
@@ -240,6 +268,10 @@ def merge_function(
 
     If ``options.ignore_function_lineno`` is set,
     the two function coverage objects can have differing line numbers.
+    With following flags the merge mode can be defined:
+      - ``options.merge_function_use_line_zero``
+      - ``options.merge_function_use_line_min``
+      - ``options.merge_function_use_line_max``
     """
     assert left.name == right.name
     if not options.ignore_function_lineno:
@@ -247,7 +279,12 @@ def merge_function(
 
     left.count += right.count
 
-    if options.ignore_function_lineno:
+    if options.merge_function_use_line_zero:
+        if left.lineno != right.lineno:
+            left.lineno = 0
+    elif options.merge_function_use_line_min:
+        left.lineno = min(left.lineno, right.lineno)
+    elif options.merge_function_use_line_max:
         left.lineno = max(left.lineno, right.lineno)
 
     return left

@@ -43,6 +43,7 @@ from ..coverage import (
     SummarizedStats,
 )
 from ..merging import (
+    get_merge_mode_from_options,
     insert_branch_coverage,
     insert_decision_coverage,
     insert_file_coverage,
@@ -190,14 +191,15 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
                 continue
 
             file_coverage = FileCoverage(file_path)
+            merge_options = get_merge_mode_from_options(options)
             for json_function in gcovr_file["functions"]:
                 insert_function_coverage(
-                    file_coverage, _function_from_json(json_function)
+                    file_coverage, _function_from_json(json_function), merge_options
                 )
             for json_line in gcovr_file["lines"]:
                 insert_line_coverage(file_coverage, _line_from_json(json_line))
 
-            insert_file_coverage(covdata, file_coverage)
+            insert_file_coverage(covdata, file_coverage, merge_options)
 
     return covdata
 
