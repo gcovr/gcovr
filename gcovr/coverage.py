@@ -439,8 +439,8 @@ class DirectoryCoverage:
 
     @staticmethod
     def directory_key(filename: str, root_filter: re.Pattern):
-        filename = filename.replace("\\", os.sep)
-        key = os.path.dirname(filename.replace("\\", os.sep))
+        filename = filename.replace("\\", os.sep).replace("/", os.sep)
+        key = os.path.dirname(filename.replace("\\", os.sep).replace("/", os.sep))
         if root_filter.search(key + os.sep) and key != filename:
             return key
         return None
