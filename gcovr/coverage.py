@@ -275,7 +275,7 @@ class FileCoverage:
 
         for function in self.functions.values():
             total += len(function.count)
-            covered = len([c for c in function.count.values() if c > 0])
+            covered += len([c for c in function.count.values() if c > 0])
 
         return CoverageStat(covered, total)
 
