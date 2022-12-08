@@ -9,6 +9,7 @@ run: txt xml html sonarqube coveralls
 coverage.json:
 	cd build1 ; ./testcase
 	cd build2 ; ./testcase
+	$(GCOVR) --json-pretty --json coverage.json ; test $$? -eq 1
 	$(GCOVR) --verbose --merge-mode-functions=merge-use-line-0 --json-pretty --json coverage.json
 
 txt: coverage.json
