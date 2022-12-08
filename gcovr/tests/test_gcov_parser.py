@@ -27,7 +27,7 @@ from unittest import mock
 
 import pytest
 
-from ..gcov_parser import parse_coverage, UnknownLineType
+from ..gcov_parser import NegativeCounter, parse_coverage, UnknownLineType
 from ..utils import configure_logging
 from ..workers import Workers
 from ..exclusions import ExclusionOptions, apply_all_exclusions
@@ -313,6 +313,7 @@ def test_gcov_8(capsys, sourcename):
         filename="tmp.cpp",
         lines=lines,
         ignore_parse_errors=False,
+        ignore_negative_counters=False,
     )
 
     apply_all_exclusions(
@@ -351,6 +352,7 @@ def test_unknown_tags(caplog, ignore_errors):
             filename="foo.c",
             lines=lines,
             ignore_parse_errors=ignore_errors,
+            ignore_negative_counters=False,
         )
         return coverage
 
@@ -393,6 +395,7 @@ def test_pathologic_codeline(caplog):
             filename="foo.c",
             lines=lines,
             ignore_parse_errors=False,
+            ignore_negative_counters=False,
         )
 
     messages = caplog.record_tuples
@@ -446,6 +449,7 @@ def test_exception_during_coverage_processing(caplog):
                 lines,
                 filename="test.cpp",
                 ignore_parse_errors=False,
+                ignore_negative_counters=False,
             )
 
     # check that this is our exception
@@ -494,6 +498,7 @@ def test_trailing_function_tag():
         source.splitlines(),
         filename="test.cpp",
         ignore_parse_errors=False,
+        ignore_negative_counters=False,
     )
 
     assert coverage.functions.keys() == {"example"}
@@ -540,6 +545,7 @@ def test_branch_exclusion(flags):
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=False,
+        ignore_negative_counters=False,
     )
 
     apply_all_exclusions(
@@ -556,6 +562,68 @@ def test_branch_exclusion(flags):
     }
 
     assert covered_branches == expected_covered_branches
+
+
+def test_negativ_branch_count():
+    """
+    A exception shall be raised.
+    """
+
+    source = textwrap.dedent(
+        """\
+          1: 1: normal line
+        branch 1 taken 80%
+          1: 2: } // line without apparent code
+        branch 2 taken -11234
+          1: 3: exception-only code
+        branch 3 taken 60% (throw)
+        """
+    )
+
+    try:
+        parse_coverage(
+            source.splitlines(),
+            filename="example.cpp",
+            ignore_parse_errors=False,
+            ignore_negative_counters=False,
+        )
+    except Exception as e:
+        assert isinstance(e, NegativeCounter)
+    else:
+        assert False, "Here we should never come"
+
+
+def test_negativ_branch_count_ignored():
+    """
+    A exception shall be raised.
+    """
+
+    source = textwrap.dedent(
+        """\
+          1: 1: normal line
+        branch 1 taken 80%
+          1: 2: } // line without apparent code
+        branch 2 taken -11234
+          1: 3: exception-only code
+        branch 3 taken 60% (throw)
+        """
+    )
+
+    coverage, lines = parse_coverage(
+        source.splitlines(),
+        filename="example.cpp",
+        ignore_parse_errors=False,
+        ignore_negative_counters=True,
+    )
+
+    covered_branches = {
+        branch
+        for line in coverage.lines.values()
+        for branch in line.branches.keys()
+        if line.branches[branch].is_covered
+    }
+
+    assert covered_branches == {1, 3}
 
 
 @pytest.mark.parametrize("flags", ["none", "exclude_internal_functions"])
@@ -580,6 +648,7 @@ def test_function_exclusion(flags):
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=False,
+        ignore_negative_counters=False,
     )
 
     apply_all_exclusions(
@@ -615,6 +684,7 @@ def test_noncode_lines():
             lines,
             filename="example.cpp",
             ignore_parse_errors=False,
+            ignore_negative_counters=False,
         )
 
         options = ExclusionOptions(exclude_function_lines=exclude_function_lines)

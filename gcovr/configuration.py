@@ -1298,6 +1298,17 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "gcov_ignore_negative_counters",
+        ["--gcov-ignore-negative-counters"],
+        group="gcov_options",
+        help=(
+            "Ignore negative counters in gcov files which can occur "
+            "by a bug in gcov tool, ee https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. "
+            "Default: {default!s}."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "objdir",
         ["--object-directory"],
         group="gcov_options",

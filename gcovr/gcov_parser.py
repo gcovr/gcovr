@@ -86,7 +86,7 @@ def _line_pattern(pattern: str) -> Pattern[str]:
     """
     pattern = pattern.replace(" ", r"[ ]+")
     pattern = pattern.replace("INT", r"[0-9]+")
-    pattern = pattern.replace("VALUE", r"(?:NAN %|[0-9.]+[%kMGTPEZY]?)")
+    pattern = pattern.replace("VALUE", r"(?:NAN %|-?[0-9.]+[%kMGTPEZY]?)")
     return re.compile("^" + pattern + "$")
 
 
@@ -213,6 +213,18 @@ class UnknownLineType(Exception):
         self.line = line
 
 
+class NegativeCounter(Exception):
+    """Used by `_gather_coverage_from_line()` to signal that a negative count value was found."""
+
+    def __init__(self, branchno: int, count: int) -> None:
+        super().__init__(
+            f"Got negative value {count} for branch {branchno} in gcov output "
+            "bug in gcov tool, see which can occur by a "
+            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option "
+            "--gcov-ignore-negative-counters to ignore this error."
+        )
+
+
 def parse_metadata(lines: List[str]) -> Dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
@@ -268,6 +280,7 @@ def parse_coverage(
     *,
     filename: str,
     ignore_parse_errors: bool,
+    ignore_negative_counters: bool,
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
@@ -310,6 +323,7 @@ def parse_coverage(
                 state,
                 line,
                 coverage=coverage,
+                ignore_negative_counters=ignore_negative_counters,
             )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
@@ -358,12 +372,13 @@ def _gather_coverage_from_line(
     line: _Line,
     *,
     coverage: FileCoverage,
+    ignore_negative_counters: bool,
 ) -> _ParserState:
     """
     Interpret a Line, updating the FileCoverage, and transitioning ParserState.
 
     The function handles all possible Line variants, and dies otherwise:
-    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=...)
+    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=..., ignore_negative_counters=...)
     Traceback (most recent call last):
     AssertionError: Unexpected variant: 'illegal line type'
     """
@@ -403,6 +418,12 @@ def _gather_coverage_from_line(
 
     elif isinstance(line, _BranchLine):
         branchno, count, annotation = line
+        if count < 0:
+            if ignore_negative_counters:
+                logger.warning(f"Ignoring negative counter {count}.")
+                count = 0
+            else:
+                raise NegativeCounter(branchno, count)
 
         # line_cov won't exist if it was considered noncode
         line_cov = coverage.lines.get(state.lineno)
@@ -529,6 +550,8 @@ def _parse_line(line: str) -> _Line:
     _BranchLine(branchno=3, hits=0, annotation=None)
     >>> _parse_line('branch 3 taken 123')
     _BranchLine(branchno=3, hits=123, annotation=None)
+    >>> _parse_line('branch 3 taken -1')
+    _BranchLine(branchno=3, hits=-1, annotation=None)
     >>> _parse_line('branch 7 taken 3% (fallthrough)')
     _BranchLine(branchno=7, hits=1, annotation='fallthrough')
     >>> _parse_line('branch 17 taken 99% (throw)')
@@ -783,6 +806,8 @@ def _int_from_gcov_unit(formatted: str) -> int:
     Examples:
     >>> _int_from_gcov_unit('123')
     123
+    >>> _int_from_gcov_unit('-1.2k')
+    -1200
     >>> [_int_from_gcov_unit(value) for value in ('NAN %', '17.2%', '0%')]
     [0, 1, 0]
     >>> [_int_from_gcov_unit(value) for value in ('1.7k', '0.5G')]

@@ -145,6 +145,7 @@ def process_gcov_data(
         lines,
         filename=key,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
+        ignore_negative_counters=options.gcov_ignore_negative_counters,
     )
 
     apply_all_exclusions(coverage, lines=source_lines, options=options)
