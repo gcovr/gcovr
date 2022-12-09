@@ -580,17 +580,13 @@ def test_negativ_branch_count():
         """
     )
 
-    try:
+    with pytest.raises(NegativeCounter):
         parse_coverage(
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=False,
             ignore_negative_counters=False,
         )
-    except Exception as e:
-        assert isinstance(e, NegativeCounter)
-    else:
-        assert False, "Here we should never come"
 
 
 def test_negativ_branch_count_ignored():
