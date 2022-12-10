@@ -1289,24 +1289,22 @@ GCOVR_CONFIG_OPTIONS = [
         "gcov_ignore_parse_errors",
         ["--gcov-ignore-parse-errors"],
         group="gcov_options",
+        choices=[
+            "all",
+            "negative_hits.warn",
+            "negative_hits.warn_once_per_file",
+        ],
+        nargs="?",
+        const="all",
+        default=None,
         help=(
             "Skip lines with parse errors in GCOV files "
             "instead of exiting with an error. "
             "A report will be shown on stderr. "
             "Default: {default!s}."
         ),
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "gcov_ignore_negative_counters",
-        ["--gcov-ignore-negative-counters"],
-        group="gcov_options",
-        help=(
-            "Ignore negative counters in gcov files which can occur "
-            "by a bug in gcov tool, ee https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. "
-            "Default: {default!s}."
-        ),
-        action="store_true",
+        type=str,
+        action="append",
     ),
     GcovrConfigOption(
         "objdir",

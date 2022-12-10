@@ -41,6 +41,7 @@ import logging
 import re
 
 from typing import (
+    Any,
     Dict,
     Iterable,
     List,
@@ -213,15 +214,16 @@ class UnknownLineType(Exception):
         self.line = line
 
 
-class NegativeCounter(Exception):
+class NegativeHits(Exception):
     """Used by `_gather_coverage_from_line()` to signal that a negative count value was found."""
 
-    def __init__(self, branchno: int, count: int) -> None:
+    def __init__(self, line: str) -> None:
         super().__init__(
-            f"Got negative value {count} for branch {branchno} in gcov output "
-            "bug in gcov tool, see which can occur by a "
+            f"Got negative hit value in gcov line {line!r} caused by a "
+            "bug in gcov tool, see "
             "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option "
-            "--gcov-ignore-negative-counters to ignore this error."
+            "--gcov-ignore-parse-errors with a value of negative_hits.warn, "
+            "or negative_hits.warn_one."
         )
 
 
@@ -279,8 +281,7 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    ignore_parse_errors: bool,
-    ignore_negative_counters: bool,
+    ignore_parse_errors: str,
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
@@ -292,18 +293,18 @@ def parse_coverage(
     Arguments:
         lines: the lines of the file to be parsed (excluding newlines)
         filename: for error reports
-        ignore_parse_errors: whether errors should be converted to warnings
+        ignore_parse_errors: which errors should be converted to warnings
 
     Returns:
         tuple of the coverage data and the source code lines
 
     Raises:
-        Any exceptions during parsing, unless ignore_parse_errors is enabled.
+        Any exceptions during parsing, unless ignore_parse_errors is set.
     """
 
     lines_with_errors: List[_LineWithError] = []
-
     tokenized_lines: List[Tuple[_Line, str]] = []
+    persistent_states: Dict[str, Any] = {}
     for raw_line in lines:
 
         # empty lines shouldn't occur in reality, but are common in testing
@@ -311,9 +312,22 @@ def parse_coverage(
             continue
 
         try:
-            tokenized_lines.append((_parse_line(raw_line), raw_line))
+            tokenized_lines.append(
+                (
+                    _parse_line(raw_line, ignore_parse_errors, persistent_states),
+                    raw_line,
+                )
+            )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
+
+    if (
+        "negative_hits.warn_once_per_file" in persistent_states
+        and persistent_states["negative_hits.warn_once_per_file"] > 1
+    ):
+        logger.warning(
+            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} issues overall."
+        )
 
     coverage = FileCoverage(filename)
     state = _ParserState()
@@ -323,7 +337,6 @@ def parse_coverage(
                 state,
                 line,
                 coverage=coverage,
-                ignore_negative_counters=ignore_negative_counters,
             )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
@@ -372,13 +385,12 @@ def _gather_coverage_from_line(
     line: _Line,
     *,
     coverage: FileCoverage,
-    ignore_negative_counters: bool,
 ) -> _ParserState:
     """
     Interpret a Line, updating the FileCoverage, and transitioning ParserState.
 
     The function handles all possible Line variants, and dies otherwise:
-    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=..., ignore_negative_counters=...)
+    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=...)
     Traceback (most recent call last):
     AssertionError: Unexpected variant: 'illegal line type'
     """
@@ -395,11 +407,11 @@ def _gather_coverage_from_line(
 
         # handle deferred functions
         for function in state.deferred_functions:
-            name, count, _, _ = function
+            name, hits, _, _ = function
 
             insert_function_coverage(
                 coverage,
-                FunctionCoverage(name, lineno=lineno, call_count=count),
+                FunctionCoverage(name, lineno=lineno, call_count=hits),
                 MergeOptions(ignore_function_lineno=True),
             )
 
@@ -417,13 +429,7 @@ def _gather_coverage_from_line(
         return state._replace(deferred_functions=[*state.deferred_functions, line])
 
     elif isinstance(line, _BranchLine):
-        branchno, count, annotation = line
-        if count < 0:
-            if ignore_negative_counters:
-                logger.warning(f"Ignoring negative counter {count}.")
-                count = 0
-            else:
-                raise NegativeCounter(branchno, count)
+        branchno, hits, annotation = line
 
         # line_cov won't exist if it was considered noncode
         line_cov = coverage.lines.get(state.lineno)
@@ -433,7 +439,7 @@ def _gather_coverage_from_line(
                 line_cov,
                 branchno,
                 BranchCoverage(
-                    count=count,
+                    count=hits,
                     fallthrough=(annotation == "fallthrough"),
                     throw=(annotation == "throw"),
                 ),
@@ -480,7 +486,7 @@ def _report_lines_with_errors(
     lines_with_errors: List[_LineWithError],
     *,
     filename: str,
-    ignore_parse_errors: bool,
+    ignore_parse_errors: set,
 ) -> None:
     """Log warnings and potentially re-throw exceptions"""
 
@@ -502,7 +508,7 @@ def _report_lines_with_errors(
     for ex in errors:
         logger.warning(f"Exception during parsing:\n\t{type(ex).__name__}: {ex}")
 
-    if ignore_parse_errors:
+    if ignore_parse_errors is not None and "all" in ignore_parse_errors:
         return
 
     logger.error(
@@ -515,7 +521,9 @@ def _report_lines_with_errors(
     raise errors[0]  # guaranteed to have at least one exception
 
 
-def _parse_line(line: str) -> _Line:
+def _parse_line(
+    line: str, ignore_parse_errors: set = (), persistent_states: dict = {}
+) -> _Line:
     """
     Categorize/parse individual lines without further processing.
 
@@ -550,8 +558,8 @@ def _parse_line(line: str) -> _Line:
     _BranchLine(branchno=3, hits=0, annotation=None)
     >>> _parse_line('branch 3 taken 123')
     _BranchLine(branchno=3, hits=123, annotation=None)
-    >>> _parse_line('branch 3 taken -1')
-    _BranchLine(branchno=3, hits=-1, annotation=None)
+    >>> _parse_line('branch 3 taken -1', ("negative_hits.warn",))
+    _BranchLine(branchno=3, hits=0, annotation=None)
     >>> _parse_line('branch 7 taken 3% (fallthrough)')
     _BranchLine(branchno=7, hits=1, annotation='fallthrough')
     >>> _parse_line('branch 17 taken 99% (throw)')
@@ -619,7 +627,7 @@ def _parse_line(line: str) -> _Line:
     """
     # pylint: disable=too-many-branches
 
-    tag = _parse_tag_line(line)
+    tag = _parse_tag_line(line, ignore_parse_errors, persistent_states)
     if tag is not None:
         return tag
 
@@ -709,7 +717,9 @@ def _parse_line(line: str) -> _Line:
     raise UnknownLineType(line)
 
 
-def _parse_tag_line(line: str) -> Optional[_Line]:
+def _parse_tag_line(
+    line: str, ignore_parse_errors: set = (), persistent_states: dict = {}
+) -> Optional[_Line]:
     """A tag line is any gcov line that starts in the first column."""
     # pylint: disable=too-many-return-statements
 
@@ -731,6 +741,19 @@ def _parse_tag_line(line: str) -> Optional[_Line]:
         if match is not None:
             branch_id, taken_str, annotation = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
+            if hits < 0:
+                if ignore_parse_errors is not None and (
+                    "negative_hits.warn" in ignore_parse_errors
+                    or "negative_hits.warn_once_per_file" in ignore_parse_errors
+                ):
+                    if "negative_hits.warn_once_per_file" not in persistent_states:
+                        persistent_states["negative_hits.warn_once_per_file"] = 0
+                        logger.warning(f"Ignoring negative hits in line {line!r}.")
+                    persistent_states["negative_hits.warn_once_per_file"] += 1
+                else:
+                    raise NegativeHits(line)
+                hits = 0
+
             return _BranchLine(int(branch_id), hits, annotation)
 
     # CALL

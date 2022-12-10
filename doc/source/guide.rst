@@ -12,6 +12,7 @@ This User Guide provides the following sections:
    :maxdepth: 2
 
    guide/compiling
+   guide/gcov_parser
    output/index
    guide/multiple-outputs
    guide/merging
