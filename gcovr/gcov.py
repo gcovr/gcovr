@@ -561,6 +561,15 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
                 for fname in active_gcov_files:
                     process_gcov_data(fname, covdata, abs_filename, options)
                 done = True
+
+            if options.keep:
+                basename = os.path.basename(abs_filename)
+                for file in all_gcov_files:
+                    dir, filename = os.path.split(file)
+                    os.replace(file, os.path.join(dir, f"{basename}.{filename}"))
+            else:
+                toerase.update(all_gcov_files)
+
     except Exception:
         logger.error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
@@ -570,9 +579,6 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
             "Use option --verbose to get extended informations."
         )
         raise
-
-    if not options.keep:
-        toerase.update(all_gcov_files)
 
     return done
 
