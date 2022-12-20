@@ -26,7 +26,7 @@ import io
 from threading import Lock
 from typing import Optional
 
-from .utils import search_file, commonpath
+from .utils import search_file, commonpath, is_fs_case_insensitive, resolvePathCaseStyle
 from .workers import locked_directory
 from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
 from .coverage import CovData
@@ -98,6 +98,7 @@ def process_gcov_data(
     gcda_fname: Optional[str],
     options,
     currdir=None,
+    fs_case_insensitive=is_fs_case_insensitive()
 ) -> None:
     with io.open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
@@ -118,6 +119,7 @@ def process_gcov_data(
         starting_dir=options.starting_dir,
         obj_dir=None if options.objdir is None else os.path.abspath(options.objdir),
         currdir=currdir,
+        fs_case_insensitive=fs_case_insensitive
     )
 
     logger.debug(f"Parsing coverage data for file {fname}")
@@ -175,6 +177,7 @@ def guess_source_file_name(
     starting_dir,
     obj_dir,
     currdir=None,
+    fs_case_insensitive=is_fs_case_insensitive()
 ):
     if currdir is None:
         currdir = os.getcwd()
@@ -184,7 +187,9 @@ def guess_source_file_name(
         fname = guess_source_file_name_heuristics(
             gcovname, data_fname, currdir, root_dir, starting_dir, obj_dir, gcda_fname
         )
-    fname = os.path.realpath(fname)  # resolves case insensitivity of windows paths
+
+    if fs_case_insensitive:
+        fname = resolvePathCaseStyle(fname)
 
     logger.debug(
         f"Finding source file corresponding to a gcov data file\n"
@@ -570,8 +575,9 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
                 done = False
             else:
                 # Process *.gcov files
+                fs_case_insensitive = is_fs_case_insensitive()
                 for fname in active_gcov_files:
-                    process_gcov_data(fname, covdata, abs_filename, options)
+                    process_gcov_data(fname, covdata, abs_filename, options, fs_case_insensitive=fs_case_insensitive)
                 done = True
     except Exception:
         logger.error(

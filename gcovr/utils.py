@@ -69,6 +69,29 @@ else:
     realpath = os.path.realpath
 
 
+def is_fs_case_insensitive():
+    cwd = os.getcwd()
+    # Guessing if file system is case insensitive.
+    # The working directory is not the root and accessible in upper and lower case.
+    return (
+        (cwd != os.path.sep)
+        and os.path.exists(cwd.upper())
+        and os.path.exists(cwd.lower())
+    )
+
+
+def resolvePathCaseStyle(path):
+    if (os.path.dirname(path) == path):
+        return path
+
+    if os.path.islink(path):
+        matchedFileName = [f for f in os.listdir(os.path.dirname(path)) if f.casefold() == os.path.basename(path).casefold()][0]
+    else:
+        matchedFileName = os.path.basename(os.path.realpath(path))
+
+    return os.path.join(resolvePathCaseStyle(os.path.dirname(path)), matchedFileName)
+
+
 def get_os_independent_path(path):
     return path.replace(os.path.sep, "/")
 
@@ -195,15 +218,7 @@ FilterOption.NonEmpty = NonEmptyFilterOption
 
 class Filter(object):
     def __init__(self, pattern: str):
-        cwd = os.getcwd()
-        # Guessing if file system is case insensitive.
-        # The working directory is not the root and accessible in upper and lower case.
-        is_fs_case_insensitive = (
-            (cwd != os.path.sep)
-            and os.path.exists(cwd.upper())
-            and os.path.exists(cwd.lower())
-        )
-        flags = re.IGNORECASE if is_fs_case_insensitive else 0
+        flags = re.IGNORECASE if is_fs_case_insensitive() else 0
         self.pattern = re.compile(pattern, flags)
 
     def match(self, path: str):
