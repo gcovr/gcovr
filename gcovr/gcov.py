@@ -19,6 +19,7 @@
 
 import logging
 import os
+import platform
 import re
 import shlex
 import subprocess
@@ -93,12 +94,7 @@ def find_datafiles(search_path, exclude_dirs):
 # Process a single gcov datafile
 #
 def process_gcov_data(
-    data_fname: str,
-    covdata: CovData,
-    gcda_fname: Optional[str],
-    options,
-    currdir=None,
-    fs_case_insensitive=is_fs_case_insensitive()
+    data_fname: str, covdata: CovData, gcda_fname: Optional[str], options, currdir=None
 ) -> None:
     with io.open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
@@ -119,7 +115,6 @@ def process_gcov_data(
         starting_dir=options.starting_dir,
         obj_dir=None if options.objdir is None else os.path.abspath(options.objdir),
         currdir=currdir,
-        fs_case_insensitive=fs_case_insensitive
     )
 
     logger.debug(f"Parsing coverage data for file {fname}")
@@ -170,14 +165,7 @@ def process_gcov_data(
 
 
 def guess_source_file_name(
-    gcovname,
-    data_fname,
-    gcda_fname,
-    root_dir,
-    starting_dir,
-    obj_dir,
-    currdir=None,
-    fs_case_insensitive=is_fs_case_insensitive()
+    gcovname, data_fname, gcda_fname, root_dir, starting_dir, obj_dir, currdir=None
 ):
     if currdir is None:
         currdir = os.getcwd()
@@ -188,7 +176,7 @@ def guess_source_file_name(
             gcovname, data_fname, currdir, root_dir, starting_dir, obj_dir, gcda_fname
         )
 
-    if fs_case_insensitive:
+    if is_fs_case_insensitive():
         fname = resolvePathCaseStyle(fname)
 
     logger.debug(
@@ -319,6 +307,8 @@ def process_datafile(filename, covdata, options, toerase):
     logger.debug(f"Processing file: {filename}")
 
     abs_filename = os.path.abspath(filename)
+    if platform.system() == "Windows":
+        abs_filename = abs_filename.replace("\\", "/")  # gcov requires posix style path
 
     errors = []
 
@@ -575,9 +565,8 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
                 done = False
             else:
                 # Process *.gcov files
-                fs_case_insensitive = is_fs_case_insensitive()
                 for fname in active_gcov_files:
-                    process_gcov_data(fname, covdata, abs_filename, options, fs_case_insensitive=fs_case_insensitive)
+                    process_gcov_data(fname, covdata, abs_filename, options)
                 done = True
     except Exception:
         logger.error(

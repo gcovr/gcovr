@@ -22,6 +22,7 @@ from argparse import ArgumentTypeError
 from typing import List, Type
 import logging
 import os
+import functools
 import re
 import sys
 from contextlib import contextmanager
@@ -69,27 +70,40 @@ else:
     realpath = os.path.realpath
 
 
+@functools.lru_cache(maxsize=1)
 def is_fs_case_insensitive():
     cwd = os.getcwd()
     # Guessing if file system is case insensitive.
     # The working directory is not the root and accessible in upper and lower case.
-    return (
+    ret = (
         (cwd != os.path.sep)
         and os.path.exists(cwd.upper())
         and os.path.exists(cwd.lower())
     )
+    if ret:
+        logger.info("File system is case insensitive.")
+    return ret
 
 
-def resolvePathCaseStyle(path):
-    if (os.path.dirname(path) == path):
+@functools.lru_cache(maxsize=None)
+def resolvePathCaseStyle(path: str):
+    rest, cur = os.path.split(path)
+    # e.g path = ".." happens if original path is like "../dir/subdir/file.cpp"
+    if not rest:
+        return cur
+    if not cur:  # e.g path = "C:/"
+        return os.path.realpath(rest)  # resolves the case of c:/
+
+    curL = cur.lower()
+    matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
+    assert len(matchedFileName) < 2, "Seems that we have a case sensitive filesystem"
+
+    # e.g path = "../.." would split into ".." and ".." but cannot find .. in dir ..
+    if len(matchedFileName) == 0:
         return path
-
-    if os.path.islink(path):
-        matchedFileName = [f for f in os.listdir(os.path.dirname(path)) if f.casefold() == os.path.basename(path).casefold()][0]
-    else:
-        matchedFileName = os.path.basename(os.path.realpath(path))
-
-    return os.path.join(resolvePathCaseStyle(os.path.dirname(path)), matchedFileName)
+    return os.path.join(
+        resolvePathCaseStyle(os.path.dirname(path)), matchedFileName[0]
+    ).replace("\\", "/")
 
 
 def get_os_independent_path(path):
