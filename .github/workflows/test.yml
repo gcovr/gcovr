@@ -69,6 +69,9 @@ jobs:
 
     needs: [milestone-check, changelog-check]
 
+    env:
+      FORCE_COLOR: "1"
+
     # Testing strategy
     # ----------------
     #
@@ -126,19 +129,26 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         install: gcc make
-    - name: Install GCC (Linux)
+    - name: Install ninja (Windows)
+      if: ${{ startsWith(matrix.os,'windows-') }}
+      run: |
+        choco install ninja
+    - name: Install build commands and GCC (Linux)
       if: ${{ startsWith(matrix.os,'ubuntu-') }}
       run: |
         sudo apt update
-        sudo apt-get install -y make ${{ matrix.gcc }} $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
+        sudo apt-get install -y \
+          make \
+          ninja-build \
+          ${{ matrix.gcc }} \
+          $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
         sudo apt-get clean
     - name: Install libxml2
       if: ${{ startsWith(matrix.os,'ubuntu-') }}
       run: |
-        sudo apt-get install -y libxml2-utils
+        sudo apt-get install -y \
+          libxml2-utils
         sudo apt-get clean
-    - name: Install ninja
-      uses: seanmiddleditch/gha-setup-ninja@master
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:

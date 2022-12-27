@@ -415,6 +415,7 @@ def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
         "docker",
         "run",
         "--rm",
+        "-t",
         "-e",
         "CC",
         "-e",

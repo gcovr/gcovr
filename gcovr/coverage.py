@@ -160,13 +160,17 @@ class FunctionCoverage:
 class LineCoverage:
     r"""Represent coverage information about a line.
 
+    Each line is either *excluded* or *reportable*.
+
+    A *reportable* line is either *covered* or *uncovered*.
+
+    The default state of a line is *coverable*/*reportable*/*uncovered*.
+
     Args:
         lineno (int):
             The line number.
         count (int):
             How often this line was executed at least partially.
-        noncode (bool, optional):
-            Whether any coverage info on this line should be ignored.
         excluded (bool, optional):
             Whether this line is excluded by a marker.
     """
@@ -174,23 +178,18 @@ class LineCoverage:
     __slots__ = (
         "lineno",
         "count",
-        "noncode",
         "excluded",
         "branches",
         "decision",
-        "functions",
         "calls",
     )
 
-    def __init__(
-        self, lineno: int, count: int = 0, noncode: bool = False, excluded: bool = False
-    ) -> None:
+    def __init__(self, lineno: int, count: int = 0, excluded: bool = False) -> None:
         assert lineno > 0
         assert count >= 0
 
         self.lineno: int = lineno
         self.count: int = count
-        self.noncode: bool = noncode
         self.excluded: bool = excluded
         self.branches: Dict[int, BranchCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
@@ -201,16 +200,16 @@ class LineCoverage:
         return self.excluded
 
     @property
+    def is_reportable(self) -> bool:
+        return not self.excluded
+
+    @property
     def is_covered(self) -> bool:
-        if self.noncode:
-            return False
-        return self.count > 0
+        return self.is_reportable and self.count > 0
 
     @property
     def is_uncovered(self) -> bool:
-        if self.noncode:
-            return False
-        return self.count == 0
+        return self.is_reportable and self.count == 0
 
     @property
     def has_uncovered_branch(self) -> bool:
@@ -272,10 +271,10 @@ class FileCoverage:
         covered = 0
 
         for line in self.lines.values():
-            if line.is_covered or line.is_uncovered:
+            if line.is_reportable:
                 total += 1
-            if line.is_covered:
-                covered += 1
+                if line.is_covered:
+                    covered += 1
 
         return CoverageStat(covered, total)
 
@@ -283,7 +282,7 @@ class FileCoverage:
         stat = CoverageStat.new_empty()
 
         for line in self.lines.values():
-            if line.is_covered or line.is_uncovered:
+            if line.is_reportable:
                 stat += line.branch_coverage()
 
         return stat
@@ -292,7 +291,7 @@ class FileCoverage:
         stat = DecisionCoverageStat.new_empty()
 
         for line in self.lines.values():
-            if line.is_covered or line.is_uncovered:
+            if line.is_reportable:
                 stat += line.decision_coverage()
 
         return stat

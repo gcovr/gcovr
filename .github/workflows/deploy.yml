@@ -33,6 +33,7 @@ jobs:
     needs: release-check
 
     env:
+      FORCE_COLOR: "1"
       PYTHON_VERSION: "3.8"
       CC: "gcc-8"
 
@@ -51,17 +52,19 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    - name: Install GCC
+    - name: Install build commands and GCC
       run: |
         sudo apt update
-        sudo apt-get install -y make $CC $(echo $CC | sed -e 's/gcc/g\+\+/')
+        sudo apt-get install -y \
+          make \
+          ninja-build \
+          $CC \
+          $(echo $CC | sed -e 's/gcc/g\+\+/')
         sudo apt-get clean
     - name: Install libxml2
       run: |
         sudo apt-get install -y libxml2-utils
         sudo apt-get clean
-    - name: Install ninja
-      uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install dependencies
       run: |
         python -m pip install nox

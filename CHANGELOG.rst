@@ -12,6 +12,7 @@ Breaking changes:
 
 - Remove not allowed attributes ``function-rate``, ``functions-covered`` and ``functions-valid``
   from cobertura report. (:issue:`671`)
+- Remove "noncode" entries in JSON reports. (:issue:`663`)
 
 New features and notable changes:
 
@@ -26,15 +27,23 @@ Bug fixes and small improvements:
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
 - Do not ignore returncode of `gcov`. (:issue:`653`)
 - Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
-- Fix: Headers containing definitions appear once with all lower-case and once correct case characters in the results under Windows. (:issue:`329`)
+- Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
+- Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
+- Fix handling for nonexistent source code for HTML-details and Coveralls reports (:issue:`663`)
+- :ref:`Exclusion marker regions <exclusion markers>` now contain the STOP marker line (:issue:`663`)
+- Fix: Headers containing definitions appear once with all lower-case and once correct case characters in the results under Windows. (:issue:`694`)
 
 Documentation:
+
+- Add detailed reference for the JSON output format. (:issue:`663`)
 
 Internal changes:
 
 - Select the :option:`--html-theme` using CSS classes. (:issue:`650`)
 - Change and extend ``cmake`` tests. (:issue:`676`)
 - Detect ``gcc`` version for running tests. (:issue:`686`)
+- Use scrubbed data for ``--update_reference`` option. (:issue:`698`)
+- Install ninja with package manager instead of GitHub action. (:issue:`699`)
 
 5.2 (06 August 2022)
 --------------------

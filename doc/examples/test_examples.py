@@ -79,7 +79,7 @@ def test_example(example):
 
     startdir = os.getcwd()
     os.chdir(datadir)
-    output = scrub(subprocess.check_output(cmd).decode())
+    output = scrub(subprocess.check_output(cmd).decode().replace("\r\n", "\n"))
     with open(baseline_file) as f:
         baseline = scrub(f.read())
     if assert_equals is not None:

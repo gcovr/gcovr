@@ -21,7 +21,7 @@
 Handle parsing of the textual ``.gcov`` file format.
 
 Other modules should only use the following items:
-`parse_metadata()`, `parse_coverage()`, `ParserFlags`, `UnknownLineType`.
+`parse_metadata()`, `parse_coverage()`, `UnknownLineType`.
 
 The behavior of this parser was informed by the following sources:
 
@@ -41,37 +41,34 @@ import logging
 import re
 
 from typing import (
-    List,
     Dict,
+    Iterable,
+    List,
     NamedTuple,
-    Optional,
-    Union,
-    Tuple,
-    Callable,
-    Pattern,
     NoReturn,
+    Optional,
+    Pattern,
+    Tuple,
+    Union,
 )
 
-from .coverage import BranchCoverage, FileCoverage, FunctionCoverage, CallCoverage
-from .decision_analysis import DecisionParser
+from .coverage import (
+    BranchCoverage,
+    FileCoverage,
+    FunctionCoverage,
+    CallCoverage,
+    LineCoverage,
+)
 from .merging import (
     MergeOptions,
-    get_or_create_line_coverage,
     insert_branch_coverage,
     insert_function_coverage,
+    insert_line_coverage,
     insert_call_coverage,
 )
 
 
 logger = logging.getLogger("gcovr")
-
-_EXCLUDE_FLAG = "_EXCL_"
-_EXCLUDE_LINE_WORD = ""
-_EXCLUDE_BRANCH_WORD = "BR_"
-_EXCLUDE_PATTERN_POSTFIX = "(LINE|START|STOP)"
-
-_C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
-_CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
 
 
 def _line_pattern(pattern: str) -> Pattern[str]:
@@ -216,7 +213,7 @@ class UnknownLineType(Exception):
         self.line = line
 
 
-def parse_metadata(lines: List[str]) -> Dict[str, str]:
+def parse_metadata(lines: List[str]) -> Dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
 
@@ -263,60 +260,15 @@ def parse_metadata(lines: List[str]) -> Dict[str, str]:
     return collected
 
 
-class ParserFlags(enum.Flag):
-    """
-    Flags/toggles that control `parse_coverage()`.
-
-    Multiple values can be combined with binary-or::
-
-        ParserFlags.IGNORE_PASS_ERRORS | ParserFlags.EXCLUDE_THROW_BRANCHES
-    """
-
-    NONE = 0
-    """Default behavior."""
-
-    IGNORE_PARSE_ERRORS = enum.auto()
-    """Whether parse errors shall be converted to warnings."""
-
-    EXCLUDE_FUNCTION_LINES = enum.auto()
-    """Whether coverage shall be ignored on lines that introduce a function."""
-
-    EXCLUDE_INTERNAL_FUNCTIONS = enum.auto()
-    """Whether function coverage for reserved names is ignored."""
-
-    EXCLUDE_UNREACHABLE_BRANCHES = enum.auto()
-    """Whether branch coverage shall be ignored on lines without useful code."""
-
-    EXCLUDE_THROW_BRANCHES = enum.auto()
-    """Whether coverage for exception-only branches shall be ignored."""
-
-    RESPECT_EXCLUSION_MARKERS = enum.auto()
-    """Whether the eclusion markers shall be used."""
-
-    PARSE_DECISIONS = enum.auto()
-    """Whether decision coverage shall be generated."""
-
-    PARSE_CALLS = enum.auto()
-    """Whether call coverage shall be generated."""
-
-
 _LineWithError = Tuple[str, Exception]
-
-
-class _Context(NamedTuple):
-    flags: ParserFlags
-    filename: str
 
 
 def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    exclude_lines_by_pattern: Optional[str],
-    exclude_branches_by_pattern: Optional[str],
-    exclude_pattern_prefix: Optional[str],
-    flags: ParserFlags,
-) -> FileCoverage:
+    ignore_parse_errors: bool,
+) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
 
@@ -327,22 +279,14 @@ def parse_coverage(
     Arguments:
         lines: the lines of the file to be parsed (excluding newlines)
         filename: for error reports
-        exclude_lines_by_pattern: string with regex syntax to exclude
-            individual lines
-        exclude_branches_by_pattern: string with regex syntax to exclude
-            individual branches
-        exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers.
-        flags: various choices for the parser behavior
+        ignore_parse_errors: whether errors should be converted to warnings
 
     Returns:
-        the coverage data
+        tuple of the coverage data and the source code lines
 
     Raises:
-        Any exceptions during parsing, unless `ParserFlags.IGNORE_PARSE_ERRORS`
-        is enabled.
+        Any exceptions during parsing, unless ignore_parse_errors is enabled.
     """
-
-    context = _Context(flags, filename)
 
     lines_with_errors: List[_LineWithError] = []
 
@@ -358,28 +302,6 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
-    if (
-        flags & ParserFlags.RESPECT_EXCLUSION_MARKERS
-        or flags & ParserFlags.PARSE_DECISIONS
-    ):
-        src_lines = [
-            (line.lineno, line.source_code)
-            for line, _ in tokenized_lines
-            if isinstance(line, _SourceLine)
-        ]
-
-    if flags & ParserFlags.RESPECT_EXCLUSION_MARKERS:
-        line_is_excluded, branch_is_excluded = _find_excluded_ranges(
-            lines=src_lines,
-            warnings=_ExclusionRangeWarnings(filename),
-            exclude_lines_by_custom_pattern=exclude_lines_by_pattern,
-            exclude_branches_by_custom_pattern=exclude_branches_by_pattern,
-            exclude_pattern_prefix=exclude_pattern_prefix,
-        )
-    else:
-        line_is_excluded = _make_is_in_any_range([])
-        branch_is_excluded = _make_is_in_any_range([])
-
     coverage = FileCoverage(filename)
     state = _ParserState()
     for line, raw_line in tokenized_lines:
@@ -388,9 +310,6 @@ def parse_coverage(
                 state,
                 line,
                 coverage=coverage,
-                line_is_excluded=line_is_excluded,
-                branch_is_excluded=branch_is_excluded,
-                context=context,
             )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
@@ -399,21 +318,37 @@ def parse_coverage(
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
-        _add_coverage_for_function(coverage, state.lineno + 1, function, context)
+        name, calls, _, _ = function
+        insert_function_coverage(
+            coverage,
+            FunctionCoverage(name, lineno=state.lineno + 1, call_count=calls),
+            MergeOptions(ignore_function_lineno=True),
+        )
 
-    if flags & ParserFlags.PARSE_DECISIONS:
-        decision_parser = DecisionParser(coverage, src_lines)
-        decision_parser.parse_all_lines()
+    _report_lines_with_errors(
+        lines_with_errors,
+        filename=filename,
+        ignore_parse_errors=ignore_parse_errors,
+    )
 
-    _report_lines_with_errors(lines_with_errors, context)
+    src_lines = _reconstruct_source_code(line for line, _ in tokenized_lines)
 
-    return coverage
+    return coverage, src_lines
+
+
+def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
+    source_token_lines = [line for line in tokens if isinstance(line, _SourceLine)]
+
+    src_lines = [""] * max((line.lineno for line in source_token_lines), default=0)
+    for line in source_token_lines:
+        src_lines[line.lineno - 1] = line.source_code
+
+    return src_lines
 
 
 class _ParserState(NamedTuple):
     deferred_functions: List[_FunctionLine] = []
     lineno: int = 0
-    is_excluded: bool = False
     line_contents: str = ""
     is_recovering: bool = False
 
@@ -423,16 +358,12 @@ def _gather_coverage_from_line(
     line: _Line,
     *,
     coverage: FileCoverage,
-    line_is_excluded: Callable[[int], bool],
-    branch_is_excluded: Callable[[int], bool],
-    context: _Context,
 ) -> _ParserState:
     """
     Interpret a Line, updating the FileCoverage, and transitioning ParserState.
 
     The function handles all possible Line variants, and dies otherwise:
-    >>> _gather_coverage_from_line(_ParserState(), "illegal line type",
-    ...     coverage=..., line_is_excluded=..., branch_is_excluded=..., context=...)
+    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=...)
     Traceback (most recent call last):
     AssertionError: Unexpected variant: 'illegal line type'
     """
@@ -440,30 +371,26 @@ def _gather_coverage_from_line(
     # pylint: disable=no-else-return  # make life easier for type checkers
 
     if isinstance(line, _SourceLine):
-        lineno = line.lineno
-        is_excluded = line_is_excluded(lineno)
-        noncode, count = _line_noncode_and_count(
-            line,
-            flags=context.flags,
-            is_excluded=is_excluded,
-            is_function=bool(state.deferred_functions),
-        )
+        raw_count, lineno, _, extra_info = line
 
-        # FIXME this can't yet use the merge() functions
-        # due to inconsistency in handling of the noncode flag
-        if noncode:
-            get_or_create_line_coverage(coverage, lineno).noncode = True
-        if count is not None:
-            get_or_create_line_coverage(coverage, lineno).count += count
+        is_noncode = extra_info & _ExtraInfo.NONCODE
+
+        if not is_noncode:
+            insert_line_coverage(coverage, LineCoverage(lineno, count=raw_count))
 
         # handle deferred functions
         for function in state.deferred_functions:
-            _add_coverage_for_function(coverage, line.lineno, function, context)
+            name, count, _, _ = function
+
+            insert_function_coverage(
+                coverage,
+                FunctionCoverage(name, lineno=lineno, call_count=count),
+                MergeOptions(ignore_function_lineno=True),
+            )
 
         return _ParserState(
             lineno=line.lineno,
             line_contents=line.source_code,
-            is_excluded=is_excluded,
         )
 
     elif state.is_recovering:
@@ -477,16 +404,10 @@ def _gather_coverage_from_line(
     elif isinstance(line, _BranchLine):
         branchno, count, annotation = line
 
-        exclusion_reason = _branch_can_be_excluded(line, state, context.flags)
-        if exclusion_reason:
-            logger.debug(
-                f"Excluding unreachable branch on line {state.lineno} in file {context.filename}: {exclusion_reason}"
-            )
-            return state
+        # line_cov won't exist if it was considered noncode
+        line_cov = coverage.lines.get(state.lineno)
 
-        line_cov = coverage.lines[state.lineno]  # must already exist
-
-        if not branch_is_excluded(state.lineno):
+        if line_cov:
             insert_branch_coverage(
                 line_cov,
                 branchno,
@@ -512,14 +433,13 @@ def _gather_coverage_from_line(
         callno, returned = line
         line_cov = coverage.lines[state.lineno]  # must already exist
 
-        if context.flags & ParserFlags.PARSE_CALLS:
-            insert_call_coverage(
-                line_cov,
-                CallCoverage(
-                    callno=callno,
-                    covered=(returned > 0),
-                ),
-            )
+        insert_call_coverage(
+            line_cov,
+            CallCoverage(
+                callno=callno,
+                covered=(returned > 0),
+            ),
+        )
 
         return state
 
@@ -536,7 +456,10 @@ def _assert_never(never: NoReturn) -> NoReturn:
 
 
 def _report_lines_with_errors(
-    lines_with_errors: List[_LineWithError], context: _Context
+    lines_with_errors: List[_LineWithError],
+    *,
+    filename: str,
+    ignore_parse_errors: bool,
 ) -> None:
     """Log warnings and potentially re-throw exceptions"""
 
@@ -548,7 +471,7 @@ def _report_lines_with_errors(
 
     lines_output = "\n\t  ".join(lines)
     logger.warning(
-        f"Unrecognized GCOV output for {context.filename}\n"
+        f"Unrecognized GCOV output for {filename}\n"
         f"\t  {lines_output}\n"
         "\tThis is indicative of a gcov output parse error.\n"
         "\tPlease report this to the gcovr developers\n"
@@ -558,7 +481,7 @@ def _report_lines_with_errors(
     for ex in errors:
         logger.warning(f"Exception during parsing:\n\t{type(ex).__name__}: {ex}")
 
-    if context.flags & ParserFlags.IGNORE_PARSE_ERRORS:
+    if ignore_parse_errors:
         return
 
     logger.error(
@@ -569,98 +492,6 @@ def _report_lines_with_errors(
 
     # if we caught an exception, re-raise it for the traceback
     raise errors[0]  # guaranteed to have at least one exception
-
-
-def _line_noncode_and_count(
-    line: _SourceLine, *, flags: ParserFlags, is_excluded: bool, is_function: bool
-) -> Tuple[bool, Optional[int]]:
-    """
-    Some reports like JSON are sensitive to which lines are excluded,
-    so keep this convoluted logic for now.
-
-    The count field is only meaningful if not(noncode).
-    """
-
-    raw_count, _, source_code, extra_info = line
-
-    if flags & ParserFlags.EXCLUDE_FUNCTION_LINES and is_function:
-        return True, None
-
-    if is_excluded:
-        return True, None
-
-    if extra_info & _ExtraInfo.NONCODE:
-        if _is_non_code(source_code):
-            return True, None
-        return False, None  # completely ignore this line
-
-    if raw_count == 0 and _is_non_code(source_code):
-        return True, None
-
-    return False, raw_count
-
-
-def _function_can_be_excluded(name: str, flags: ParserFlags) -> bool:
-    # special names for construction/destruction of static objects will be ignored
-    if flags & ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS:
-        if name.startswith("__") or name.startswith("_GLOBAL__sub_I_"):
-            return True
-
-    return False
-
-
-def _branch_can_be_excluded(
-    branch: _BranchLine, state: _ParserState, flags: ParserFlags
-) -> Optional[str]:
-    if state.is_excluded:
-        return "marked with exclude pattern"
-
-    if flags & ParserFlags.EXCLUDE_UNREACHABLE_BRANCHES:
-        if not _line_can_contain_branches(state.line_contents):
-            return "detected as compiler-generated code"
-
-    if flags & ParserFlags.EXCLUDE_THROW_BRANCHES:
-        if branch.annotation == "throw":
-            return "detected as exception-only code"
-
-    return None
-
-
-def _line_can_contain_branches(code: str) -> bool:
-    """
-    False if the line looks empty except for braces.
-
-    >>> _line_can_contain_branches('} // end something')
-    False
-    >>> _line_can_contain_branches('foo();')
-    True
-    """
-
-    code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
-    code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip().replace(" ", "")
-    return code not in ["", "{", "}", "{}"]
-
-
-def _add_coverage_for_function(
-    coverage: FileCoverage,
-    lineno: int,
-    function: _FunctionLine,
-    context: _Context,
-) -> None:
-    name, calls, _, _ = function
-
-    if _function_can_be_excluded(name, context.flags):
-        logger.debug(
-            f"Ignoring Symbol {name} in line {lineno} in file {context.filename}"
-        )
-        return
-
-    insert_function_coverage(
-        coverage,
-        FunctionCoverage(name, lineno=lineno, call_count=calls),
-        MergeOptions(ignore_function_lineno=True),
-    )
 
 
 def _parse_line(line: str) -> _Line:
@@ -925,329 +756,6 @@ def _parse_tag_line(line: str) -> Optional[_Line]:
         return _SpecializationMarkerLine()
 
     return None
-
-
-class _ExclusionRangeWarnings:
-    r"""
-    Log warnings related to exclusion marker processing.
-
-    Example:
-    >>> source = '''\
-    ...  1: 1: some code
-    ...  1: 2: foo // LCOV_EXCL_STOP
-    ...  1: 3: bar // GCOVR_EXCL_START
-    ...  1: 4: bar // GCOVR_EXCL_LINE
-    ...  1: 5: baz // GCOV_EXCL_STOP
-    ...  1: 6: "GCOVR_EXCL_START"
-    ... '''
-    >>> caplog = getfixture('caplog')
-    >>> caplog.clear()
-    >>> _ = parse_coverage(  # doctest: +NORMALIZE_WHITESPACE
-    ...     source.splitlines(), filename='example.cpp',
-    ...     flags=ParserFlags.RESPECT_EXCLUSION_MARKERS,
-    ...     exclude_lines_by_pattern=None,
-    ...     exclude_branches_by_pattern=None,
-    ...     exclude_pattern_prefix='[GL]COVR?')
-    >>> for message in caplog.record_tuples:
-    ...     print(f"{message[1]}: {message[2]}")
-    30: mismatched coverage exclusion flags.
-              LCOV_EXCL_STOP found on line 2 without corresponding LCOV_EXCL_START, when processing example.cpp.
-    30: GCOVR_EXCL_LINE found on line 4 in excluded region started on line 3, when processing example.cpp.
-    30: GCOVR_EXCL_START found on line 3 was terminated by GCOV_EXCL_STOP on line 5, when processing example.cpp.
-    30: The coverage exclusion region start flag GCOVR_EXCL_START
-              on line 6 did not have corresponding GCOVR_EXCL_STOP flag
-              in file example.cpp.
-    """
-
-    def __init__(self, filename: str) -> None:
-        self.filename = filename
-
-    def mismatched_start_stop(
-        self, start_lineno: int, start: str, stop_lineno: int, stop: str
-    ) -> None:
-        """warn that start/stop region markers don't match"""
-        logger.warning(
-            f"{start} found on line {start_lineno} "
-            f"was terminated by {stop} on line {stop_lineno}, "
-            f"when processing {self.filename}."
-        )
-
-    def stop_without_start(self, lineno: int, expected_start: str, stop: str) -> None:
-        """warn that a region was ended without corresponding start marker"""
-        logger.warning(
-            "mismatched coverage exclusion flags.\n"
-            f"          {stop} found on line {lineno} without corresponding {expected_start}, "
-            f"when processing {self.filename}."
-        )
-
-    def start_without_stop(self, lineno: int, start: str, expected_stop: str) -> None:
-        """warn that a region was started but not closed"""
-        logger.warning(
-            f"The coverage exclusion region start flag {start}\n"
-            f"          on line {lineno} did not have corresponding {expected_stop} flag\n"
-            f"          in file {self.filename}."
-        )
-
-    def line_after_start(self, lineno: int, start: str, start_lineno: str) -> None:
-        """warn that a region was started but an excluded line was found"""
-        logger.warning(
-            f"{start} found on line {lineno} in excluded region started on line {start_lineno}, "
-            f"when processing {self.filename}."
-        )
-
-
-def _process_exclusion_marker(
-    lineno: int,
-    flag: str,
-    header: str,
-    exclude_word: str,
-    warnings: _ExclusionRangeWarnings,
-    exclude_ranges: List[Tuple[int, int]],
-    exclusion_stack: List[Tuple[int, int]],
-) -> None:
-    """
-    Process the exclusion marker.
-
-    Header is a marker name like LCOV or GCOVR.
-
-    START flags are added to the exlusion stack
-    STOP flags remove a marker from the exclusion stack
-    """
-
-    if flag == "LINE":
-        if exclusion_stack:
-            warnings.line_after_start(
-                lineno,
-                f"{header}" + _EXCLUDE_FLAG + exclude_word + "LINE",
-                exclusion_stack[-1][1],
-            )
-        else:
-            exclude_ranges.append((lineno, lineno + 1))
-
-    if flag == "START":
-        exclusion_stack.append((header, lineno))
-
-    elif flag == "STOP":
-        if not exclusion_stack:
-            warnings.stop_without_start(
-                lineno,
-                f"{header}" + _EXCLUDE_FLAG + exclude_word + "START",
-                f"{header}" + _EXCLUDE_FLAG + exclude_word + "STOP",
-            )
-        else:
-            start_header, start_lineno = exclusion_stack.pop()
-            if header != start_header:
-                warnings.mismatched_start_stop(
-                    start_lineno,
-                    f"{start_header}" + _EXCLUDE_FLAG + exclude_word + "START",
-                    lineno,
-                    f"{header}" + _EXCLUDE_FLAG + exclude_word + "STOP",
-                )
-
-            exclude_ranges.append((start_lineno, lineno))
-
-    else:  # pragma: no cover
-        pass
-
-
-def _find_excluded_ranges(
-    lines: List[Tuple[int, str]],
-    *,
-    warnings: _ExclusionRangeWarnings,
-    exclude_lines_by_custom_pattern: Optional[str] = None,
-    exclude_branches_by_custom_pattern: Optional[str] = None,
-    exclude_pattern_prefix: str,
-) -> Tuple[Callable[[int], bool]]:
-    """
-    Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
-
-    Example:
-    >>> lines = [(11, '//PREFIX_EXCL_LINE'), (13, '//IGNORE_LINE'), (15, '//PREFIX_EXCL_START'), (18, '//PREFIX_EXCL_STOP'),
-    ...     (21, '//PREFIX_EXCL_BR_LINE'), (23, '//IGNORE_BR'), (25, '//PREFIX_EXCL_BR_START'), (28, '//PREFIX_EXCL_BR_STOP')]
-    >>> exclude_line, exclude_branch = _find_excluded_ranges(
-    ...     lines, warnings=..., exclude_lines_by_custom_pattern = '.*IGNORE_LINE',
-    ...     exclude_branches_by_custom_pattern = '.*IGNORE_BR', exclude_pattern_prefix='PREFIX')
-    >>> [lineno for lineno in range(30) if exclude_line(lineno)]
-    [11, 13, 15, 16, 17]
-    >>> [lineno for lineno in range(30) if exclude_branch(lineno)]
-    [21, 23, 25, 26, 27]
-    """
-    exclude_lines_by_custom_pattern_regex = None
-    if exclude_lines_by_custom_pattern:
-        exclude_lines_by_custom_pattern_regex = re.compile(
-            exclude_lines_by_custom_pattern
-        )
-
-    exclude_branches_by_custom_pattern_regex = None
-    if exclude_branches_by_custom_pattern:
-        exclude_branches_by_custom_pattern_regex = re.compile(
-            exclude_branches_by_custom_pattern
-        )
-
-    # possibly overlapping half-open ranges that are excluded
-    exclude_line_ranges: List[Tuple[int, int]] = []
-    exclude_branch_ranges: List[Tuple[int, int]] = []
-
-    exclusion_stack_line = []
-    exclusion_stack_branch = []
-
-    excl_line_pattern = None
-    excl_branch_pattern = None
-    for lineno, code in lines:
-        # line marker exclusion
-        if _EXCLUDE_FLAG in code:
-            if excl_line_pattern is None:
-                excl_line_pattern = re.compile(
-                    "("
-                    + exclude_pattern_prefix
-                    + ")"
-                    + _EXCLUDE_FLAG
-                    + _EXCLUDE_LINE_WORD
-                    + _EXCLUDE_PATTERN_POSTFIX
-                )
-
-            for header, flag in excl_line_pattern.findall(code):
-                _process_exclusion_marker(
-                    lineno,
-                    flag,
-                    header,
-                    _EXCLUDE_LINE_WORD,
-                    warnings,
-                    exclude_line_ranges,
-                    exclusion_stack_line,
-                )
-
-        if exclude_lines_by_custom_pattern_regex:
-            if exclude_lines_by_custom_pattern_regex.match(code):
-                exclude_line_ranges.append((lineno, lineno + 1))
-
-        # branch marker exclusion
-        if _EXCLUDE_FLAG in code:
-            if excl_branch_pattern is None:
-                excl_branch_pattern = re.compile(
-                    "("
-                    + exclude_pattern_prefix
-                    + ")"
-                    + _EXCLUDE_FLAG
-                    + _EXCLUDE_BRANCH_WORD
-                    + _EXCLUDE_PATTERN_POSTFIX
-                )
-            for header, flag in excl_branch_pattern.findall(code):
-                _process_exclusion_marker(
-                    lineno,
-                    flag,
-                    header,
-                    _EXCLUDE_BRANCH_WORD,
-                    warnings,
-                    exclude_branch_ranges,
-                    exclusion_stack_branch,
-                )
-
-        if exclude_branches_by_custom_pattern_regex:
-            if exclude_branches_by_custom_pattern_regex.match(code):
-                exclude_branch_ranges.append((lineno, lineno + 1))
-
-    for header, lineno in exclusion_stack_line:
-        warnings.start_without_stop(
-            lineno,
-            f"{header}" + _EXCLUDE_FLAG + _EXCLUDE_LINE_WORD + "START",
-            f"{header}" + _EXCLUDE_FLAG + _EXCLUDE_LINE_WORD + "STOP",
-        )
-
-    for header, lineno in exclusion_stack_branch:
-        warnings.start_without_stop(
-            lineno,
-            f"{header}" + _EXCLUDE_FLAG + _EXCLUDE_BRANCH_WORD + "START",
-            f"{header}" + _EXCLUDE_FLAG + _EXCLUDE_BRANCH_WORD + "STOP",
-        )
-
-    return (
-        _make_is_in_any_range(exclude_line_ranges),
-        _make_is_in_any_range(exclude_branch_ranges),
-    )
-
-
-def _make_is_in_any_range(ranges: List[Tuple[int, int]]) -> Callable[[int], bool]:
-    """
-    Create a function to check whether an input is in any range.
-
-    This function should provide reasonable performance
-    if queries are mostly made in ascending order.
-
-    Example:
-    >>> select = _make_is_in_any_range([(3,4), (5,7)])
-    >>> select(0)
-    False
-    >>> select(6)
-    True
-    >>> [x for x in range(10) if select(x)]
-    [3, 5, 6]
-    """
-
-    # values are likely queried in ascending order,
-    # allowing the search to start with the first possible range
-    ranges = sorted(ranges)
-    hint_value = 0
-    hint_index = 0
-
-    def is_in_any_range(value: int) -> bool:
-        nonlocal hint_value, hint_index
-
-        # if the heuristic failed, restart search from the beginning
-        if value < hint_value:
-            hint_index = 0
-
-        hint_value = value
-
-        for i in range(hint_index, len(ranges)):
-            start, end = ranges[i]
-            hint_index = i
-
-            # stop as soon as a too-large range is seen
-            if value < start:
-                break
-
-            if start <= value < end:
-                return True
-        else:
-            hint_index = len(ranges)
-
-        return False
-
-    return is_in_any_range
-
-
-def _is_non_code(code: str) -> bool:
-    """
-    Check for patterns that indicate that this line doesn't contain useful code.
-
-    Examples:
-    >>> _is_non_code('  // some comment!')
-    True
-    >>> _is_non_code('  /* some comment! */')
-    True
-    >>> _is_non_code('} else {')  # could be easily made detectable
-    False
-    >>> _is_non_code('}else{')
-    False
-    >>> _is_non_code('else')
-    True
-    >>> _is_non_code('{')
-    True
-    >>> _is_non_code('/* some comment */ {')
-    True
-    >>> _is_non_code('}')
-    True
-    >>> _is_non_code('} // some code')
-    True
-    >>> _is_non_code('return {};')
-    False
-    """
-
-    code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
-    code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip()
-    return len(code) == 0 or code in ["{", "}", "else"]
 
 
 def _int_from_gcov_unit(formatted: str) -> int:

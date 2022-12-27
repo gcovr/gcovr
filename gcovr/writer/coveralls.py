@@ -27,9 +27,10 @@ import re
 import shutil
 import subprocess
 from hashlib import md5
+from typing import Any, Dict
 
 from ..utils import presentable_filename, open_text_for_writing
-from ..coverage import CovData
+from ..coverage import CovData, FileCoverage
 
 PRETTY_JSON_INDENT = 4
 
@@ -172,57 +173,68 @@ def print_coveralls_report(covdata: CovData, output_file, options):
     # Loop through each coverage file collecting details
     json_dict["source_files"] = []
     for file_path in sorted(covdata):
-        # Object with Coveralls file details
-        source_file = {}
-
-        # Generate md5 hash of file contents
-        with open(file_path, "rb") as file_handle:
-            hasher = md5()
-            for data in iter(functools.partial(file_handle.read, 8192), b""):
-                hasher.update(data)
-            file_hash = hasher.hexdigest()
-            source_file["source_digest"] = file_hash
-
-        # Extract FileCoverage object
-        coverage_details = covdata[file_path]
-
-        # Isolate relative file path
-        relative_file_path = presentable_filename(
-            file_path, root_filter=options.root_filter
-        )
-        source_file["name"] = relative_file_path
-
-        # Initialize coverage array and load with line coverage data
-        source_file["coverage"] = []
-        # source_file['branches'] = []
-        for line in sorted(coverage_details.lines):
-            # Extract LineCoverage object
-            line_details = coverage_details.lines[line]
-
-            # Comment lines are not collected in `covdata`, but must
-            # be reported to coveralls (fill missing lines)
-            list_index = len(source_file["coverage"]) + 1
-            source_file["coverage"].extend(None for i in range(list_index, line))
-
-            # Skip blank lines _(neither covered or uncovered)_
-            if not line_details.is_covered and not line_details.is_uncovered:
-                source_file["coverage"].append(None)
-                continue
-
-            # Record line counts at corresponding list index
-            source_file["coverage"].append(line_details.count)
-
-            # Record branch information (INCOMPLETE/OMITTED)
-            # branch_details = line_details.branches
-            # if branch_details:
-            #     b_total, b_hits, coverage = line_details.branch_coverage()
-            #     source_file['coverage'].append(line)
-            #     # TODO: Add block information to `covdata` object
-            #     source_file['coverage'].append(0)
-            #     source_file['coverage'].append(b_total)
-            #     source_file['coverage'].append(b_hits)
 
         # File data has been compiled
-        json_dict["source_files"].append(source_file)
+        json_dict["source_files"].append(_make_source_file(covdata[file_path], options))
 
     _write_coveralls_result(json_dict, output_file, options.coveralls_pretty)
+
+
+def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]:
+    # Object with Coveralls file details
+    source_file = {}
+
+    # Generate md5 hash of file contents
+    with open(coverage_details.filename, "rb") as file_handle:
+        contents = file_handle.read()
+
+    hasher = md5()
+    hasher.update(contents)
+    source_file["source_digest"] = hasher.hexdigest()
+
+    total_line_count = len(contents.splitlines())
+
+    # Isolate relative file path
+    relative_file_path = presentable_filename(
+        coverage_details.filename,
+        root_filter=options.root_filter,
+    )
+    source_file["name"] = relative_file_path
+
+    # Initialize coverage array and load with line coverage data
+    source_file["coverage"] = []
+    # source_file['branches'] = []
+    for line in sorted(coverage_details.lines):
+        # Extract LineCoverage object
+        line_details = coverage_details.lines[line]
+
+        # Comment lines are not collected in `covdata`, but must
+        # be reported to coveralls (fill missing lines)
+        _extend_with_none(source_file["coverage"], line - 1)
+
+        if not line_details.is_reportable:
+            source_file["coverage"].append(None)
+            continue
+
+        # Record line counts at corresponding list index
+        source_file["coverage"].append(line_details.count)
+
+        # Record branch information (INCOMPLETE/OMITTED)
+        # branch_details = line_details.branches
+        # if branch_details:
+        #     b_total, b_hits, coverage = line_details.branch_coverage()
+        #     source_file['coverage'].append(line)
+        #     # TODO: Add block information to `covdata` object
+        #     source_file['coverage'].append(0)
+        #     source_file['coverage'].append(b_total)
+        #     source_file['coverage'].append(b_hits)
+
+    # add trailing empty lines
+    _extend_with_none(source_file["coverage"], total_line_count)
+
+    return source_file
+
+
+def _extend_with_none(target: list, wanted_len: int) -> None:
+    current_len = len(target)
+    target.extend(None for _ in range(current_len, wanted_len))

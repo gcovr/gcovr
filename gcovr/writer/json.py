@@ -226,9 +226,9 @@ def _json_from_line(line: LineCoverage) -> dict:
         "line_number": line.lineno,
         "count": line.count,
         "branches": _json_from_branches(line.branches),
-        "gcovr/noncode": line.noncode,
-        "gcovr/excluded": line.excluded,
     }
+    if line.excluded:
+        json_line["gcovr/excluded"] = True
     if line.decision is not None:
         json_line["gcovr/decision"] = _json_from_decision(line.decision)
     if len(line.calls) > 0:
@@ -301,8 +301,7 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     line = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
-        noncode=json_line["gcovr/noncode"],
-        excluded=json_line["gcovr/excluded"],
+        excluded=json_line.get("gcovr/excluded", False),
     )
 
     for branchno, json_branch in enumerate(json_line["branches"]):
