@@ -154,20 +154,20 @@ class FunctionCoverage:
     to merge function coverage in different ways
 
     Args:
+        name (str):
+            The name (signature) of the functions.
         lineno (int):
             The line number.
-        count (int):
-            How often this line was executed at least partially.
-        excluded (bool, optional):
+        call_count (int):
             Whether this line is excluded by a marker.
     """
 
-    __slots__ = "count", "name"
+    __slots__ = "name", "count"
 
     def __init__(self, name: str, *, lineno: int = 0, call_count: int = 0) -> None:
         assert call_count >= 0
-        self.count: Dict[int, int] = {lineno: call_count}
         self.name = name
+        self.count: Dict[int, int] = {lineno: call_count}
 
 
 class LineCoverage:
