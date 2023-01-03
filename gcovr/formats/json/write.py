@@ -184,6 +184,7 @@ def _json_from_branches(branches: Dict[int, BranchCoverage]) -> list:
 
 def _json_from_branch(branch: BranchCoverage) -> dict:
     return {
+        "blockno": branch.blockno,
         "count": branch.count,
         "fallthrough": branch.fallthrough,
         "throw": branch.throw,

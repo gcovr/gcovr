@@ -154,6 +154,7 @@ def _line_from_json(json_line: dict) -> LineCoverage:
 
 def _branch_from_json(json_branch: dict) -> BranchCoverage:
     return BranchCoverage(
+        blockno=json_branch["blockno"],
         count=json_branch["count"],
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],

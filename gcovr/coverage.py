@@ -110,6 +110,8 @@ class BranchCoverage:
     r"""Represent coverage information about a branch.
 
     Args:
+        blockno (int):
+            The block number.
         count (int):
             Number of times this branch was followed.
         fallthrough (bool, optional):
@@ -118,16 +120,18 @@ class BranchCoverage:
             Whether this is an exception-handling branch. False if unknown.
     """
 
-    __slots__ = "count", "fallthrough", "throw"
+    __slots__ = "blockno", "count", "fallthrough", "throw"
 
     def __init__(
         self,
+        blockno: int,
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
     ) -> None:
         assert count >= 0
 
+        self.blockno = blockno
         self.count = count
         self.fallthrough = fallthrough
         self.throw = throw
@@ -270,7 +274,9 @@ class LineCoverage:
         "calls",
     )
 
-    def __init__(self, lineno: int, count: int, excluded: bool = False, md5: str = None) -> None:
+    def __init__(
+        self, lineno: int, count: int, excluded: bool = False, md5: str = None
+    ) -> None:
         assert lineno > 0
         assert count >= 0
 

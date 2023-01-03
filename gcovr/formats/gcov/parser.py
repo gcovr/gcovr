@@ -377,6 +377,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
 class _ParserState(NamedTuple):
     deferred_functions: List[_FunctionLine] = []
     lineno: int = 0
+    blockno: int = None
     line_contents: str = ""
     is_recovering: bool = False
 
@@ -406,7 +407,11 @@ def _gather_coverage_from_line(
         if not is_noncode:
             insert_line_coverage(
                 coverage,
-                LineCoverage(lineno, count=raw_count, md5=hashlib.md5(source_code.encode("utf-8")).hexdigest())
+                LineCoverage(
+                    lineno,
+                    count=raw_count,
+                    md5=hashlib.md5(source_code.encode("utf-8")).hexdigest(),
+                ),
             )
 
         # handle deferred functions
@@ -422,6 +427,7 @@ def _gather_coverage_from_line(
         return _ParserState(
             lineno=line.lineno,
             line_contents=line.source_code,
+            blockno=state.blockno,
         )
 
     elif state.is_recovering:
@@ -443,6 +449,7 @@ def _gather_coverage_from_line(
                 line_cov,
                 branchno,
                 BranchCoverage(
+                    blockno=state.blockno,
                     count=hits,
                     fallthrough=(annotation == "fallthrough"),
                     throw=(annotation == "throw"),
@@ -474,7 +481,11 @@ def _gather_coverage_from_line(
 
         return state
 
-    elif isinstance(line, (_UnconditionalLine, _BlockLine)):
+    elif isinstance(line, _BlockLine):
+        _, _, blockno, _ = line
+        return state._replace(blockno=blockno)
+
+    elif isinstance(line, (_UnconditionalLine,)):
         return state
 
     else:
