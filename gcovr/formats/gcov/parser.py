@@ -37,6 +37,7 @@ The behavior of this parser was informed by the following sources:
 
 
 import enum
+import hashlib
 import logging
 import re
 
@@ -398,12 +399,15 @@ def _gather_coverage_from_line(
     # pylint: disable=no-else-return  # make life easier for type checkers
 
     if isinstance(line, _SourceLine):
-        raw_count, lineno, _, extra_info = line
+        raw_count, lineno, source_code, extra_info = line
 
         is_noncode = extra_info & _ExtraInfo.NONCODE
 
         if not is_noncode:
-            insert_line_coverage(coverage, LineCoverage(lineno, count=raw_count))
+            insert_line_coverage(
+                coverage,
+                LineCoverage(lineno, count=raw_count, md5=hashlib.md5(source_code.encode("utf-8")).hexdigest())
+            )
 
         # handle deferred functions
         for function in state.deferred_functions:

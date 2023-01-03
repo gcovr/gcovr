@@ -256,24 +256,28 @@ class LineCoverage:
             How often this line was executed at least partially.
         excluded (bool, optional):
             Whether this line is excluded by a marker.
+        md5 (str):
+            The md5 checksum of the source code line.
     """
 
     __slots__ = (
         "lineno",
         "count",
         "excluded",
+        "md5",
         "branches",
         "decision",
         "calls",
     )
 
-    def __init__(self, lineno: int, count: int, excluded: bool = False) -> None:
+    def __init__(self, lineno: int, count: int, excluded: bool = False, md5: str = None) -> None:
         assert lineno > 0
         assert count >= 0
 
         self.lineno: int = lineno
         self.count: int = count
         self.excluded: bool = excluded
+        self.md5: str = md5
         self.branches: Dict[int, BranchCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
         self.calls: Dict[int, CallCoverage] = {}
