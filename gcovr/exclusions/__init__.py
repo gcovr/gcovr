@@ -55,7 +55,7 @@ class ExclusionOptions:
     exclude_unreachable_branches: bool = False
     exclude_function_lines: bool = False
     exclude_internal_functions: bool = False
-    exclude_noncode_lines: bool = True
+    exclude_noncode_lines: bool = False
     exclude_calls: bool = True
 
 
