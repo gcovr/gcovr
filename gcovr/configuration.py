@@ -1270,6 +1270,7 @@ GCOVR_CONFIG_OPTIONS = [
             "The merge mode for functions coverage from different gcov files for same sourcefile."
             "Default: {default!s}."
         ),
+    ),
     GcovrConfigOption(
         "exclude_noncode_lines",
         ["--no-exclude-noncode-lines"],
