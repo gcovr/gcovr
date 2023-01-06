@@ -229,9 +229,7 @@ def main(args=None):
         sys.exit(1)
 
     if options.html_details and options.html_nested:
-        logger.error(
-            "--html-details and --html-nested can not be used together."
-        )
+        logger.error("--html-details and --html-nested can not be used together.")
         sys.exit(1)
 
     potential_html_output = (

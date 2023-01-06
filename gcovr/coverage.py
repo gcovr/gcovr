@@ -46,8 +46,6 @@ from .utils import commonpath, realpath, force_unix_separator
 _T = TypeVar("_T")
 
 
-
-
 def sort_coverage(
     covdata: CovData,
     show_branch: bool,

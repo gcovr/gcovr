@@ -196,7 +196,7 @@ def test_non_existing_directory_2_html_details(capsys):
     helper_test_non_existing_directory_2_output(capsys, "--html-details")
 
 
-def test_non_existing_directory_2_html_details(capsys):
+def test_non_existing_directory_2_html_nested(capsys):
     helper_test_non_existing_directory_2_output(capsys, "--html-nested")
 
 

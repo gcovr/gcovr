@@ -43,16 +43,6 @@ a separate web page for each file and directory. Each of these web pages include
 the contents of file with annotations that summarize code coverage. Consider
 the following command:
 
-.. include:: ../../examples/example_html.sh
-    :code: bash
-    :start-after: #BEGIN gcovr html nested
-    :end-before: #END gcovr html nested
-
-This generates the following HTML page for the file ``example1.cpp``:
-
-.. image:: ../../images/screenshot-html-details.details.cpp.png
-    :align: center
-
 Note that the :option:`--html-details<gcovr --html-details>` and
 :option:`--html-details<gcovr --html-details>` options need
 a named output, e.g. via the the :option:`-o/--output<gcovr --output>` option.
