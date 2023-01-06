@@ -22,6 +22,7 @@ New features and notable changes:
 - New nox session to generate a portable application with pyinstaller, see :ref:`standalone application`. (:issue:`661`)
 - Print a warning if root directory contains symlinks. (:issue:`652`)
 - New :option:`--no-exclude-noncode-lines` to not exclude noncode lines. (:issue:`704`)
+- Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
 
 Bug fixes and small improvements:
 
