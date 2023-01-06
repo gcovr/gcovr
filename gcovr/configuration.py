@@ -1251,7 +1251,7 @@ GCOVR_CONFIG_OPTIONS = [
         "exclude_function_lines",
         ["--exclude-function-lines"],
         group="gcov_options",
-        help="Exclude coverage from lines defining a function Default: {default!s}.",
+        help="Exclude coverage from lines defining a function. Default: {default!s}.",
         action="store_true",
     ),
     GcovrConfigOption(
@@ -1270,6 +1270,12 @@ GCOVR_CONFIG_OPTIONS = [
             "The merge mode for functions coverage from different gcov files for same sourcefile."
             "Default: {default!s}."
         ),
+    GcovrConfigOption(
+        "exclude_noncode_lines",
+        ["--no-exclude-noncode-lines"],
+        group="gcov_options",
+        help="Exclude coverage from lines which seem to be non-code. Default: {default!s}.",
+        action="store_false",
     ),
     GcovrConfigOption(
         "exclude_throw_branches",

@@ -329,7 +329,6 @@ def process_datafile(filename, covdata, options, toerase):
             abs_filename,
             covdata,
             options=options,
-            toerase=toerase,
             error=errors.append,
             chdir=wd,
         )
@@ -519,7 +518,7 @@ class GcovProgram:
         return (out, err)
 
 
-def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, chdir):
+def run_gcov_and_process_files(abs_filename, covdata, options, error, chdir):
     fname = None
     out = None
     err = None
@@ -561,6 +560,21 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
                 for fname in active_gcov_files:
                     process_gcov_data(fname, covdata, abs_filename, options)
                 done = True
+
+            if options.keep and done:
+                basename = os.path.basename(abs_filename)
+                for file in active_gcov_files:
+                    dir, filename = os.path.split(file)
+                    os.replace(file, os.path.join(dir, f"{basename}.{filename}"))
+
+            for filepath in (
+                all_gcov_files - active_gcov_files
+                if options.keep and done
+                else all_gcov_files
+            ):
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+
     except Exception:
         logger.error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
@@ -571,15 +585,12 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
         )
         raise
 
-    if not options.keep:
-        toerase.update(all_gcov_files)
-
     return done
 
 
 def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, chdir):
-    active_files = []
-    all_files = []
+    active_files = set([])
+    all_files = set([])
 
     for line in out.splitlines():
         found = output_re.search(line.strip())
@@ -588,7 +599,7 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, chdir):
 
         fname = found.group(1)
         full = os.path.join(chdir, fname)
-        all_files.append(full)
+        all_files.add(full)
 
         filtered, excluded = apply_filter_include_exclude(
             fname, gcov_filter, gcov_exclude
@@ -602,7 +613,7 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, chdir):
             logger.debug(f"Excluding gcov file {fname}")
             continue
 
-        active_files.append(full)
+        active_files.add(full)
 
     return active_files, all_files
 

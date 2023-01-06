@@ -55,6 +55,7 @@ class ExclusionOptions:
     exclude_unreachable_branches: bool = False
     exclude_function_lines: bool = False
     exclude_internal_functions: bool = False
+    exclude_noncode_lines: bool = True
     exclude_calls: bool = True
 
 
@@ -70,7 +71,8 @@ def apply_all_exclusions(
     Modifies the FileCoverage in place.
     """
 
-    remove_noncode_lines(filecov, lines=lines)
+    if options.exclude_noncode_lines:
+        remove_noncode_lines(filecov, lines=lines)
 
     if options.respect_exclusion_markers:
         apply_exclusion_markers(
