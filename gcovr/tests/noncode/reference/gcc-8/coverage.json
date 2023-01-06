@@ -1,0 +1,63 @@
+{
+    "files": [
+        {
+            "file": "main.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 4,
+                    "name": "main"
+                }
+            ],
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 4
+                },
+                {
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        }
+                    ],
+                    "count": 1,
+                    "line_number": 6
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 7
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "line_number": 9
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "line_number": 12
+                }
+            ]
+        }
+    ],
+    "gcovr/format_version": "0.4"
+}
