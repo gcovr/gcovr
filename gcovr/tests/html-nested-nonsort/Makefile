@@ -18,7 +18,7 @@ coverage.json:
 	$(GCOVR) -r subdir --json-pretty --json $@
 
 html: coverage.json
-	$(GCOVR) -r subdir -a $< --html-cascaded-directories --html-details --sort-percentage -o coverage.html
+	$(GCOVR) -r subdir -a $< --html-nested ./
 
 clean:
 	rm -rf ./subdir

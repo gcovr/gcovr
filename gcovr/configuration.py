@@ -843,7 +843,7 @@ GCOVR_CONFIG_OPTIONS = [
         metavar="OUTPUT",
         help=(
             "Add annotated source code reports to the HTML report. "
-            "Implies --html. "
+            "Implies --html, can not be used together with --html-nested. "
             "OUTPUT is optional and defaults to --output."
         ),
         nargs="?",
@@ -852,22 +852,29 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "html_details_syntax_highlighting",
-        ["--html-details-syntax-highlighting"],
+        "html_nested",
+        ["--html-nested"],
         group="output_options",
-        help="Use syntax highlighting in HTML details page. Enabled by default.",
-        action="store_const",
-        default=True,
-        const=True,
-        const_negate=False,  # autogenerates --no-NAME with action const=False
+        metavar="OUTPUT",
+        help=(
+            "Add annotated source code reports to the HTML report. "
+            "A page is created for each directory that summarize subdirectories "
+            "with aggregated statistics. "
+            "Implies --html, can not be used together with --html-details. "
+            "OUTPUT is optional and defaults to --output."
+        ),
+        nargs="?",
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "html_cascaded_directories",
-        ["--html-cascaded-directories"],
+        "html_syntax_highlighting",
+        ["--html-syntax-highlighting", "--html-details-syntax-highlighting"],
         group="output_options",
-        help="Output subdirectories with directory hierarchy. Enabled by default.",
+        help="Use syntax highlighting in HTML source page. Enabled by default.",
         action="store_const",
-        default=False,
+        default=True,
         const=True,
         const_negate=False,  # autogenerates --no-NAME with action const=False
     ),

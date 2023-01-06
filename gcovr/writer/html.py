@@ -182,7 +182,7 @@ class PygmentHighlighting:
 def get_formatter(options):
     return (
         PygmentHighlighting()
-        if options.html_details_syntax_highlighting
+        if options.html_syntax_highlighting
         else NullHighlighting()
     )
 
@@ -207,7 +207,7 @@ class RootInfo:
         self.high_threshold_line = options.html_high_threshold_line
         self.medium_threshold_branch = options.html_medium_threshold_branch
         self.high_threshold_branch = options.html_high_threshold_branch
-        self.details = options.html_details
+        self.link_function_list = options.html_details or options.html_nested
         self.relative_anchors = options.relative_anchors
 
         self.version = __version__
@@ -350,19 +350,22 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
 
     self_contained = options.html_self_contained
     if self_contained is None:
-        self_contained = not options.html_details
+        self_contained = not (options.html_details or options.html_nested)
     if output_file == "-":
         if not self_contained:
             raise ArgumentTypeError(
                 "Only self contained reports can be printed to STDOUT"
             )
-        elif options.html_details:
+        elif options.html_details or options.html_nested:
             raise ArgumentTypeError("Detailed reports can not be printed to STDOUT")
 
     if output_file.endswith(os.sep):
-        output_file += (
-            "coverage_details.html" if options.html_details else "coverage.html"
-        )
+        if options.html_nested:
+            output_file += "coverage_nested.html"
+        elif options.html_details:
+            output_file += "coverage_details.html"
+        else:
+            output_file += "coverage.html"
 
     formatter = get_formatter(options)
     css_data += formatter.get_css()
@@ -396,7 +399,7 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
         by_percent_uncovered=options.sort_percent,
     )
 
-    if options.html_cascaded_directories:
+    if options.html_nested:
         root_info.subdirs = DirectoryCoverage.from_covdata(
             covdata, sorted_keys, options.root_filter
         )
@@ -410,7 +413,7 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
         filtered_fname = options.root_filter.sub("", f)
         files.append(filtered_fname)
         cdata_fname[f] = filtered_fname
-        if options.html_details:
+        if options.html_details or options.html_nested:
             if os.path.normpath(f) == os.path.normpath(options.root_dir):
                 cdata_sourcefile[f] = output_file
             else:
@@ -440,7 +443,7 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
     functions_output_file = f"{output_prefix}.functions{output_suffix}"
     data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
 
-    if options.html_cascaded_directories:
+    if options.html_nested:
         write_directory_pages(
             output_file,
             covdata,
@@ -456,7 +459,7 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
         write_root_page(output_file, options, data)
 
     error_occured = False
-    if options.html_details:
+    if options.html_details or options.html_nested:
         error_occured = write_source_pages(
             output_file,
             functions_output_file,
@@ -628,8 +631,6 @@ def write_directory_pages(
         if parent_directory_key:
             data["parent_link"] = (
                 os.path.basename(cdata_sourcefile[parent_directory_key])
-                if options.html_details
-                else None
             )
             data["parent_directory"] = cdata_fname[parent_directory_key]
         else:
