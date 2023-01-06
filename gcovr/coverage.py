@@ -38,10 +38,74 @@ from __future__ import annotations
 from collections import OrderedDict
 import os
 import re
-from typing import Dict, Iterable, Optional, TypeVar, Union
+from typing import List, Dict, Iterable, Optional, TypeVar, Union
 from dataclasses import dataclass
 
+from .utils import commonpath, realpath, force_unix_separator
+
 _T = TypeVar("_T")
+
+
+
+
+def sort_coverage(
+    covdata: CovData,
+    show_branch: bool,
+    filename_uses_relative_pathname: bool = False,
+    by_num_uncovered: bool = False,
+    by_percent_uncovered: bool = False,
+) -> List[str]:
+    """Sort a coverage dict.
+
+    covdata (dict): the coverage dictionary
+    show_branch (bool): select branch coverage (True) or line coverage (False)
+    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
+        relative path, but not for other formats.
+    by_num_uncovered, by_percent_uncovered (bool):
+        select the sort mode. By default, sort alphabetically.
+
+    returns: the sorted keys
+    """
+    basedir = commonpath(list(covdata.keys()))
+
+    def coverage_stat(key: str) -> CoverageStat:
+        cov = covdata[key]
+        if show_branch:
+            return cov.branch_coverage()
+        return cov.line_coverage()
+
+    def num_uncovered_key(key: str) -> int:
+        stat = coverage_stat(key)
+        uncovered = stat.total - stat.covered
+        return uncovered
+
+    def percent_uncovered_key(key: str) -> float:
+        stat = coverage_stat(key)
+        covered = stat.covered
+        total = stat.total
+
+        if covered:
+            return -1.0 * covered / total
+        elif total:
+            return total
+        else:
+            return 1e6
+
+    def filename(key: str) -> str:
+        return (
+            force_unix_separator(os.path.relpath(realpath(key), basedir))
+            if filename_uses_relative_pathname
+            else key
+        )
+
+    if by_num_uncovered:
+        key_fn = num_uncovered_key
+    elif by_percent_uncovered:
+        key_fn = percent_uncovered_key
+    else:
+        key_fn = filename  # by default, we sort by filename alphabetically
+
+    return sorted(covdata, key=key_fn)
 
 
 class BranchCoverage:
@@ -440,7 +504,7 @@ class DirectoryCoverage:
     @staticmethod
     def directory_key(filename: str, root_filter: re.Pattern):
         filename = filename.replace("\\", os.sep).replace("/", os.sep)
-        key = os.path.dirname(filename.replace("\\", os.sep).replace("/", os.sep))
+        key = os.path.dirname(filename)
         if root_filter.search(key + os.sep) and key != filename:
             return key
         return None

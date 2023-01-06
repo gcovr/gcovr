@@ -29,7 +29,6 @@ from ..utils import (
     force_unix_separator,
     realpath,
     commonpath,
-    sort_coverage,
     open_text_for_writing,
 )
 from ..coverage import (
@@ -45,6 +44,7 @@ from ..coverage import (
     FileCoverage,
     LineCoverage,
     SummarizedStats,
+    sort_coverage,
 )
 
 logger = logging.getLogger("gcovr")

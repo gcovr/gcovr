@@ -26,7 +26,6 @@ from typing import Any, Dict, Optional
 from ..gcov import apply_filter_include_exclude
 from ..utils import (
     presentable_filename,
-    sort_coverage,
     open_text_for_writing,
 )
 from ..coverage import (
@@ -41,6 +40,7 @@ from ..coverage import (
     LineCoverage,
     CallCoverage,
     SummarizedStats,
+    sort_coverage,
 )
 from ..merging import (
     insert_branch_coverage,
