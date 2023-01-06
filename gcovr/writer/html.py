@@ -437,11 +437,12 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
 
     root_info.set_directory(root_directory)
 
-    (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
-    if output_suffix == "":
-        output_suffix = ".html"
-    functions_output_file = f"{output_prefix}.functions{output_suffix}"
-    data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
+    if options.html_details or options.html_nested:
+        (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
+        if output_suffix == "":
+            output_suffix = ".html"
+        functions_output_file = f"{output_prefix}.functions{output_suffix}"
+        data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
 
     if options.html_nested:
         write_directory_pages(
@@ -457,20 +458,19 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
         for f in sorted_keys:
             root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
         write_root_page(output_file, options, data)
+        if not options.html_details:
+            return False
 
-    error_occured = False
-    if options.html_details or options.html_nested:
-        error_occured = write_source_pages(
-            output_file,
-            functions_output_file,
-            covdata,
-            cdata_fname,
-            cdata_sourcefile,
-            options,
-            root_info,
-            data,
-        )
-    return error_occured
+    return write_source_pages(
+        output_file,
+        functions_output_file,
+        covdata,
+        cdata_fname,
+        cdata_sourcefile,
+        options,
+        root_info,
+        data,
+    )
 
 
 def write_root_page(output_file: str, options: "Options", data: Dict[str, Any]) -> None:
