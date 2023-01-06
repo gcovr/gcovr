@@ -324,7 +324,7 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def print_html_report(covdata: CovData, output_file: str, options: "Options") -> bool:
+def print_html_report(covdata: CovData, output_file: str, options) -> bool:
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -447,7 +447,6 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
     if options.html_nested:
         write_directory_pages(
             output_file,
-            covdata,
             cdata_fname,
             cdata_sourcefile,
             options,
@@ -462,7 +461,6 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
             return False
 
     return write_source_pages(
-        output_file,
         functions_output_file,
         covdata,
         cdata_fname,
@@ -473,7 +471,7 @@ def print_html_report(covdata: CovData, output_file: str, options: "Options") ->
     )
 
 
-def write_root_page(output_file: str, options: "Options", data: Dict[str, Any]) -> None:
+def write_root_page(output_file: str, options, data: Dict[str, Any]) -> None:
     #
     # Generate the root HTML file that contains the high level report
     #
@@ -485,12 +483,11 @@ def write_root_page(output_file: str, options: "Options", data: Dict[str, Any]) 
 
 
 def write_source_pages(
-    output_file: str,
     functions_output_file: str,
     covdata: CovData,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, str],
-    options: "Options",
+    options,
     root_info: RootInfo,
     data: Dict[str, Any],
 ) -> bool:
@@ -613,10 +610,9 @@ def write_source_pages(
 
 def write_directory_pages(
     output_file: str,
-    covdata: CovData,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, str],
-    options: "Options",
+    options,
     root_info: RootInfo,
     data: Dict[str, Any],
 ) -> None:
