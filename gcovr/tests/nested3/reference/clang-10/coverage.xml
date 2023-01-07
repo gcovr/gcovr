@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.6944444444444444" branch-rate="0.4" lines-covered="25" lines-valid="36" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="1662755117" version="gcovr 5.2">
+<coverage line-rate="0.67568" branch-rate="0.4" lines-covered="25" lines-valid="37" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="" version="">
   <sources>
     <source>subdir</source>
   </sources>
   <packages>
-    <package name="A" line-rate="0.5714285714285714" branch-rate="0.3333333333333333" complexity="0.0">
+    <package name="A" line-rate="0.54545" branch-rate="0.33333" complexity="0.0">
       <classes>
         <class name="file1_cpp" filename="A/file1.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>
@@ -30,7 +30,7 @@
             <line number="11" hits="0" branch="false"/>
           </lines>
         </class>
-        <class name="file3_cpp" filename="A/file3.cpp" line-rate="0.42857142857142855" branch-rate="0.0" complexity="0.0">
+        <class name="file3_cpp" filename="A/file3.cpp" line-rate="0.375" branch-rate="0.0" complexity="0.0">
           <methods/>
           <lines>
             <line number="3" hits="1" branch="false"/>
@@ -44,6 +44,7 @@
             </line>
             <line number="12" hits="0" branch="false"/>
             <line number="14" hits="0" branch="false"/>
+            <line number="15" hits="0" branch="false"/>
           </lines>
         </class>
         <class name="file4_cpp" filename="A/file4.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
