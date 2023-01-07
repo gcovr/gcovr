@@ -153,6 +153,10 @@ def test_non_existing_directory_html_details(capsys):
     helper_test_non_existing_directory_output(capsys, "--html-details")
 
 
+def test_non_existing_directory_html_nested(capsys):
+    helper_test_non_existing_directory_output(capsys, "--html-nested")
+
+
 def test_non_existing_directory_sonarqube(capsys):
     helper_test_non_existing_directory_output(capsys, "--sonarqube")
 
@@ -190,6 +194,10 @@ def test_non_existing_directory_2_html(capsys):
 
 def test_non_existing_directory_2_html_details(capsys):
     helper_test_non_existing_directory_2_output(capsys, "--html-details")
+
+
+def test_non_existing_directory_2_html_nested(capsys):
+    helper_test_non_existing_directory_2_output(capsys, "--html-nested")
 
 
 def test_non_existing_directory_2_sonarqube(capsys):
@@ -237,6 +245,11 @@ def test_non_writable_directory_html_details(capsys):  # pragma: no cover
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
+def test_non_writable_directory_html_nested(capsys):  # pragma: no cover
+    helper_test_non_writable_directory_output(capsys, "--html-nested")
+
+
+@pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_sonarqube(capsys):  # pragma: no cover
     helper_test_non_writable_directory_output(capsys, "--sonarqube")
 
@@ -258,6 +271,17 @@ def test_no_output_html_details(caplog):
     assert (
         message[2]
         == "a named output must be given, if the option --html-details\nis used."
+    )
+    assert c.exception.code != 0
+
+
+def test_no_output_html_nested(caplog):
+    c = log_capture(caplog, ["--html-nested"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert (
+        message[2]
+        == "a named output must be given, if the option --html-nested\nis used."
     )
     assert c.exception.code != 0
 

@@ -22,4 +22,8 @@ gcovr --html
 gcovr --html-details example_html.details.html
 #END gcovr html details
 
+#BEGIN gcovr html nested
+gcovr --html-nested example_html.nested.html
+#END gcovr html nested
+
 rm -f program *.gc*
