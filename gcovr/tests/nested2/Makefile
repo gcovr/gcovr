@@ -9,7 +9,7 @@ run: txt xml html sonarqube coveralls
 
 coverage.json:
 	./subdir/B/testcase
-	$(GCOVR) -r subdir --json-pretty --json $@
+	$(GCOVR) --keep -r subdir --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt

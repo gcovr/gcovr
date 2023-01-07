@@ -843,7 +843,7 @@ GCOVR_CONFIG_OPTIONS = [
         metavar="OUTPUT",
         help=(
             "Add annotated source code reports to the HTML report. "
-            "Implies --html. "
+            "Implies --html, can not be used together with --html-nested. "
             "OUTPUT is optional and defaults to --output."
         ),
         nargs="?",
@@ -852,10 +852,27 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
-        "html_details_syntax_highlighting",
-        ["--html-details-syntax-highlighting"],
+        "html_nested",
+        ["--html-nested"],
         group="output_options",
-        help="Use syntax highlighting in HTML details page. Enabled by default.",
+        metavar="OUTPUT",
+        help=(
+            "Add annotated source code reports to the HTML report. "
+            "A page is created for each directory that summarize subdirectories "
+            "with aggregated statistics. "
+            "Implies --html, can not be used together with --html-details. "
+            "OUTPUT is optional and defaults to --output."
+        ),
+        nargs="?",
+        type=OutputOrDefault,
+        default=None,
+        const=OutputOrDefault(None),
+    ),
+    GcovrConfigOption(
+        "html_syntax_highlighting",
+        ["--html-syntax-highlighting", "--html-details-syntax-highlighting"],
+        group="output_options",
+        help="Use syntax highlighting in HTML source page. Enabled by default.",
         action="store_const",
         default=True,
         const=True,
@@ -1251,8 +1268,15 @@ GCOVR_CONFIG_OPTIONS = [
         "exclude_function_lines",
         ["--exclude-function-lines"],
         group="gcov_options",
-        help="Exclude coverage from lines defining a function Default: {default!s}.",
+        help="Exclude coverage from lines defining a function. Default: {default!s}.",
         action="store_true",
+    ),
+    GcovrConfigOption(
+        "exclude_noncode_lines",
+        ["--no-exclude-noncode-lines"],
+        group="gcov_options",
+        help="Exclude coverage from lines which seem to be non-code. Default: {default!s}.",
+        action="store_false",
     ),
     GcovrConfigOption(
         "exclude_throw_branches",

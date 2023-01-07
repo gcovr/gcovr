@@ -19,14 +19,12 @@
 
 from __future__ import annotations
 from argparse import ArgumentTypeError
-from typing import List, Type
+from typing import Type
 import logging
 import os
 import re
 import sys
 from contextlib import contextmanager
-
-from .coverage import CovData, CoverageStat
 
 logger = logging.getLogger("gcovr")
 
@@ -278,66 +276,6 @@ def configure_logging() -> None:
         )
 
     sys.excepthook = exception_hook
-
-
-def sort_coverage(
-    covdata: CovData,
-    show_branch: bool,
-    filename_uses_relative_pathname: bool = False,
-    by_num_uncovered: bool = False,
-    by_percent_uncovered: bool = False,
-) -> List[str]:
-    """Sort a coverage dict.
-
-    covdata (dict): the coverage dictionary
-    show_branch (bool): select branch coverage (True) or line coverage (False)
-    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
-        relative path, but not for other formats.
-    by_num_uncovered, by_percent_uncovered (bool):
-        select the sort mode. By default, sort alphabetically.
-
-    returns: the sorted keys
-    """
-    basedir = commonpath(list(covdata.keys()))
-
-    def coverage_stat(key: str) -> CoverageStat:
-        cov = covdata[key]
-        if show_branch:
-            return cov.branch_coverage()
-        return cov.line_coverage()
-
-    def num_uncovered_key(key: str) -> int:
-        stat = coverage_stat(key)
-        uncovered = stat.total - stat.covered
-        return uncovered
-
-    def percent_uncovered_key(key: str) -> float:
-        stat = coverage_stat(key)
-        covered = stat.covered
-        total = stat.total
-
-        if covered:
-            return -1.0 * covered / total
-        elif total:
-            return total
-        else:
-            return 1e6
-
-    def filename(key: str) -> str:
-        return (
-            force_unix_separator(os.path.relpath(realpath(key), basedir))
-            if filename_uses_relative_pathname
-            else key
-        )
-
-    if by_num_uncovered:
-        key_fn = num_uncovered_key
-    elif by_percent_uncovered:
-        key_fn = percent_uncovered_key
-    else:
-        key_fn = filename  # by default, we sort by filename alphabetically
-
-    return sorted(covdata, key=key_fn)
 
 
 @contextmanager
