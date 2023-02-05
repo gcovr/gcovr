@@ -1333,13 +1333,22 @@ GCOVR_CONFIG_OPTIONS = [
         "gcov_ignore_parse_errors",
         ["--gcov-ignore-parse-errors"],
         group="gcov_options",
+        choices=[
+            "all",
+            "negative_hits.warn",
+            "negative_hits.warn_once_per_file",
+        ],
+        nargs="?",
+        const="all",
+        default=None,
         help=(
             "Skip lines with parse errors in GCOV files "
             "instead of exiting with an error. "
             "A report will be shown on stderr. "
             "Default: {default!s}."
         ),
-        action="store_true",
+        type=str,
+        action="append",
     ),
     GcovrConfigOption(
         "objdir",
