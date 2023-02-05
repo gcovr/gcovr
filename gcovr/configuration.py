@@ -1274,6 +1274,7 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "merge_mode_functions",
         ["--merge-mode-functions"],
+        metavar="MERGE_MODE",
         group="gcov_options",
         choices=[
             "strict",

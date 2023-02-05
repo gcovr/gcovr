@@ -49,6 +49,7 @@ which may not be the same as the input value.
 """
 
 from dataclasses import dataclass
+import logging
 from typing import Callable, Optional, TypeVar, Dict
 from .coverage import (
     BranchCoverage,
@@ -62,6 +63,9 @@ from .coverage import (
     LineCoverage,
     CallCoverage,
 )
+
+
+logger = logging.getLogger("gcovr")
 
 
 @dataclass
@@ -283,28 +287,38 @@ def merge_function(
     """
     assert left.name == right.name
     if not options.ignore_function_lineno:
-        assert left.count.keys() == right.count.keys()
+        if left.count.keys() != right.count.keys():
+            lines = sorted(set([*left.count.keys(), *right.count.keys()]))
+            raise AssertionError(
+                f"Got function {right.name} on multiple lines: {', '.join([str(l) for l in lines])}.\n"
+                "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
+                "\tThe available values for MERGE_MODE are described in the documentation."
+            )
 
-    for right_lineno in right.count.keys():
-        if right_lineno in left.count:
-            lineno = right_lineno
-        elif options.separate_function:
-            lineno = right_lineno
-            if lineno not in left.count:
-                left.count[lineno] = 0
-        else:
-            if options.merge_function_use_line_zero:
-                lineno = 0
-            elif options.merge_function_use_line_min:
-                lineno = min(*left.count.keys(), right_lineno)
-            elif options.merge_function_use_line_max:
-                lineno = max(*left.count.keys(), right_lineno)
-            # Set the sum at the desired line and clear all other data
-            count = sum(left.count.values())
-            left.count.clear()
-            left.count[lineno] = count
+    # keep distinct counts for each line number
+    if options.separate_function:
+        for lineno, count in right.count.items():
+            try:
+                left.count[lineno] += count
+            except KeyError:
+                left.count[lineno] = count
+        return left
 
-        left.count[lineno] += right.count[right_lineno]
+    right_lineno = list(right.count.keys())[0]
+    # merge all counts into an entry for a single line number
+    if right_lineno in left.count:
+        lineno = right_lineno
+    elif options.merge_function_use_line_zero:
+        lineno = 0
+    elif options.merge_function_use_line_min:
+        lineno = min(*left.count.keys(), *right.count.keys())
+    elif options.merge_function_use_line_max:
+        lineno = max(*left.count.keys(), *right.count.keys())
+    else:
+        assert False, "Unknown merge mode"
+
+    # Overwrite data with the sum at the desired line
+    left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
 
     return left
 
