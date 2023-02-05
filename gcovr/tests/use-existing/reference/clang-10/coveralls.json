@@ -1,5 +1,5 @@
 {
-    "run_at": "2022-04-08 21:32:24 UTC",
+    "run_at": "",
     "service_job_id": "id",
     "service_name": "gcovr-test-suite",
     "service_number": "number",
@@ -29,7 +29,7 @@
                 null,
                 null,
                 null,
-                null,
+                0,
                 null,
                 1,
                 null

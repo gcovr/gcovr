@@ -95,7 +95,7 @@ _RE_FUNCTION_LINE = _line_pattern(
     r"function (.*?) called (INT) returned (VALUE) blocks executed (VALUE)"
 )
 _RE_BRANCH_LINE = _line_pattern(
-    r"branch (INT) (?:taken (VALUE)(?: \((\w+)\))?|never executed)"
+    r"branch (INT) (?:taken (VALUE)|never executed)(?: \((\w+)\))?"
 )
 _RE_CALL_LINE = _line_pattern(r"call (INT) (?:returned (VALUE)|never executed)")
 _RE_UNCONDITIONAL_LINE = _line_pattern(
@@ -566,6 +566,8 @@ def _parse_line(
     _BranchLine(branchno=17, hits=1, annotation='throw')
     >>> _parse_line('branch  0 never executed')
     _BranchLine(branchno=0, hits=0, annotation=None)
+    >>> _parse_line('branch  0 never executed (fallthrough)')
+    _BranchLine(branchno=0, hits=0, annotation='fallthrough')
     >>> _parse_line('branch 2 with some unknown format')
     Traceback (most recent call last):
     gcovr.gcov_parser.UnknownLineType: branch 2 with some unknown format

@@ -666,6 +666,7 @@ def test_noncode_lines():
         lines: list,
         *,
         exclude_function_lines: bool = False,
+        exclude_noncode_lines: bool = False,
     ):
         coverage, source = parse_coverage(
             lines,
@@ -673,7 +674,10 @@ def test_noncode_lines():
             ignore_parse_errors=None,
         )
 
-        options = ExclusionOptions(exclude_function_lines=exclude_function_lines)
+        options = ExclusionOptions(
+            exclude_function_lines=exclude_function_lines,
+            exclude_noncode_lines=exclude_noncode_lines,
+        )
         apply_all_exclusions(coverage, lines=source, options=options)
 
         for line_data in coverage.lines.values():
@@ -715,7 +719,7 @@ def test_noncode_lines():
     assert get_line_status(["#####: 32:looks like code"]) == "normal:0"
 
     # Uncovered code that doesn't look like code: discard
-    assert get_line_status(["#####: 32:}"]) == "noncode"
+    assert get_line_status(["#####: 32:}"], exclude_noncode_lines=True) == "noncode"
 
 
 def check_and_raise(number, mutable, exc_raised, queue_full):
