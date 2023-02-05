@@ -14,6 +14,7 @@ Breaking changes:
   from cobertura report. (:issue:`671`)
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 - New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
+- Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
 
 New features and notable changes:
 
@@ -25,7 +26,6 @@ New features and notable changes:
 - Print a warning if root directory contains symlinks. (:issue:`652`)
 - Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
 - Allow annotations for never executed branches. (:issue:`711`)
-- Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
 
 Bug fixes and small improvements:
 
