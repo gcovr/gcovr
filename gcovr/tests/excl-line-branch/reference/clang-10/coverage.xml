@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.8947368421052632" branch-rate="0.8" lines-covered="17" lines-valid="19" branches-covered="8" branches-valid="10" complexity="0.0" timestamp="1662755106" version="gcovr 5.2">
+<coverage line-rate="0.77273" branch-rate="0.8" lines-covered="17" lines-valid="22" branches-covered="8" branches-valid="10" complexity="0.0" timestamp="" version="">
   <sources>
     <source>.</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.8947368421052632" branch-rate="0.8" complexity="0.0">
+    <package name="" line-rate="0.77273" branch-rate="0.8" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="0.8947368421052632" branch-rate="0.8" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="0.77273" branch-rate="0.8" complexity="0.0">
           <methods/>
           <lines>
             <line number="7" hits="1" branch="false"/>
@@ -36,6 +36,7 @@
             <line number="24" hits="0" branch="false"/>
             <line number="35" hits="1" branch="false"/>
             <line number="36" hits="5" branch="false"/>
+            <line number="43" hits="0" branch="false"/>
             <line number="46" hits="1" branch="false"/>
             <line number="47" hits="6" branch="true" condition-coverage="100% (2/2)">
               <conditions>
@@ -44,7 +45,9 @@
             </line>
             <line number="48" hits="5" branch="false"/>
             <line number="49" hits="5" branch="false"/>
+            <line number="59" hits="0" branch="false"/>
             <line number="61" hits="1" branch="false"/>
+            <line number="62" hits="0" branch="false"/>
           </lines>
         </class>
       </classes>

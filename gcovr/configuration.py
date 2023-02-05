@@ -1273,10 +1273,12 @@ GCOVR_CONFIG_OPTIONS = [
     ),
     GcovrConfigOption(
         "exclude_noncode_lines",
-        ["--no-exclude-noncode-lines"],
+        ["--exclude-noncode-lines"],
+        config="exclude-noncode-lines",
         group="gcov_options",
         help="Exclude coverage from lines which seem to be non-code. Default: {default!s}.",
-        action="store_false",
+        action="store_true",
+        const_negate=False,
     ),
     GcovrConfigOption(
         "exclude_throw_branches",
