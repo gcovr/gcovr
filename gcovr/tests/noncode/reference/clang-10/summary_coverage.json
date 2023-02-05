@@ -1,19 +1,19 @@
 {
     "branch_covered": 2,
-    "branch_percent": 33.3,
-    "branch_total": 6,
+    "branch_percent": 50.0,
+    "branch_total": 4,
     "files": [
         {
             "branch_covered": 2,
-            "branch_percent": 33.3,
-            "branch_total": 6,
+            "branch_percent": 50.0,
+            "branch_total": 4,
             "filename": "main.cpp",
             "function_covered": 1,
             "function_percent": 100.0,
             "function_total": 1,
             "line_covered": 3,
-            "line_percent": 50.0,
-            "line_total": 6
+            "line_percent": 100.0,
+            "line_total": 3
         }
     ],
     "function_covered": 1,
@@ -21,7 +21,7 @@
     "function_total": 1,
     "gcovr/summary_format_version": "0.5",
     "line_covered": 3,
-    "line_percent": 50.0,
-    "line_total": 6,
+    "line_percent": 100.0,
+    "line_total": 3,
     "root": "."
 }

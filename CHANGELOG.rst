@@ -13,16 +13,18 @@ Breaking changes:
 - Remove not allowed attributes ``function-rate``, ``functions-covered`` and ``functions-valid``
   from cobertura report. (:issue:`671`)
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
+- New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
 
 New features and notable changes:
 
+- New :option:`--html-nested` for reports that summarize subdirectories with aggregated statistics per directory. (:issue:`687`)
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
 - New :option:`--calls` to report call coverage: function calls invoked/total (:issue:`666`)
 - New nox session to generate a portable application with pyinstaller, see :ref:`standalone application`. (:issue:`661`)
 - Print a warning if root directory contains symlinks. (:issue:`652`)
-- New :option:`--no-exclude-noncode-lines` to not exclude noncode lines. (:issue:`704`)
 - Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
+- Allow annotations for never executed branches. (:issue:`711`)
 - Add function merge mode for same function defined in different lines. (:issue:`700`)
 
 Bug fixes and small improvements:

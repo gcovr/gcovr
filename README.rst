@@ -80,6 +80,7 @@ text summaries and XML reports.
 .. |abstract-option-txt| replace:: ``--txt``
 .. |abstract-option-html| replace:: ``--html``
 .. |abstract-option-html-details| replace:: ``--html-details``
+.. |abstract-option-html-nested| replace:: ``--html-nested``
 .. |abstract-option-cobertura| replace:: ``--cobertura``
 .. |abstract-option-sonarqube| replace:: ``--sonarqube``
 .. |abstract-option-json| replace:: ``--json``
@@ -172,13 +173,16 @@ This will print a tabular report on the console.
 
     gcovr
 
-You can also generate detailed HTML reports:
+You can also generate detailed or nested HTML reports:
 
 ::
 
     gcovr --html-details coverage.html
+    gcovr --html-nested coverage.html
 
-Gcovr will create one HTML report per source file next to the coverage.html summary.
+Gcovr will create one HTML report per source file and for
+``--html-nested`` also per directory next to the coverage.html
+summary.
 
 You should run gcovr from the build directory.
 The ``-r`` option should point to the root of your project.
