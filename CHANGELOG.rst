@@ -24,6 +24,7 @@ New features and notable changes:
 - Print a warning if root directory contains symlinks. (:issue:`652`)
 - New :option:`--no-exclude-noncode-lines` to not exclude noncode lines. (:issue:`704`)
 - Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
+- Allow annotations for never executed branches. (:issue:`711`)
 
 Bug fixes and small improvements:
 
