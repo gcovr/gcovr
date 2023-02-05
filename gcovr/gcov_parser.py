@@ -412,7 +412,7 @@ def _gather_coverage_from_line(
             insert_function_coverage(
                 coverage,
                 FunctionCoverage(name, lineno=lineno, call_count=count),
-                MergeOptions(ignore_function_lineno=True),
+                FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
         return _ParserState(
