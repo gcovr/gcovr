@@ -36,7 +36,6 @@ Bug fixes and small improvements:
 - Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
 - Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
 - Fix handling for nonexistent source code for HTML-details and Coveralls reports (:issue:`663`)
-- :ref:`Exclusion marker regions <exclusion markers>` now contain the STOP marker line (:issue:`663`)
 
 Documentation:
 
