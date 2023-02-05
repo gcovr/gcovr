@@ -1272,6 +1272,24 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "merge_mode_functions",
+        ["--merge-mode-functions"],
+        metavar="MERGE_MODE",
+        group="gcov_options",
+        choices=[
+            "strict",
+            "merge-use-line-0",
+            "merge-use-line-min",
+            "merge-use-line-max",
+            "separate",
+        ],
+        default="strict",
+        help=(
+            "The merge mode for functions coverage from different gcov files for same sourcefile."
+            "Default: {default!s}."
+        ),
+    ),
+    GcovrConfigOption(
         "exclude_noncode_lines",
         ["--exclude-noncode-lines"],
         config="exclude-noncode-lines",

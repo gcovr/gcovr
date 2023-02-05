@@ -498,9 +498,9 @@ def test_trailing_function_tag():
 
     assert coverage.functions.keys() == {"example"}
     fcov = coverage.functions["example"]
-    assert fcov.lineno == 3  # previous lineno + 1
+    assert list(fcov.count.keys()) == [3]  # previous lineno + 1
     assert fcov.name == "example"
-    assert fcov.count == 17  # number of calls
+    assert fcov.count[3] == 17  # number of calls
 
 
 @pytest.mark.parametrize(

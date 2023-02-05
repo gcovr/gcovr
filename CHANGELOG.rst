@@ -26,6 +26,7 @@ New features and notable changes:
 - Print a warning if root directory contains symlinks. (:issue:`652`)
 - Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
 - Allow annotations for never executed branches. (:issue:`711`)
+- Add function merge mode for same function defined in different lines. (:issue:`700`)
 
 Bug fixes and small improvements:
 
@@ -35,7 +36,6 @@ Bug fixes and small improvements:
 - Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
 - Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
 - Fix handling for nonexistent source code for HTML-details and Coveralls reports (:issue:`663`)
-- :ref:`Exclusion marker regions <exclusion markers>` now contain the STOP marker line (:issue:`663`)
 
 Documentation:
 

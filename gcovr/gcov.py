@@ -30,7 +30,7 @@ from .utils import search_file, commonpath
 from .workers import locked_directory
 from .gcov_parser import parse_metadata, parse_coverage
 from .coverage import CovData
-from .merging import insert_file_coverage
+from .merging import get_merge_mode_from_options, insert_file_coverage
 from .exclusions import apply_all_exclusions
 from .decision_analysis import DecisionParser
 
@@ -153,7 +153,7 @@ def process_gcov_data(
         decision_parser = DecisionParser(coverage, source_lines)
         decision_parser.parse_all_lines()
 
-    insert_file_coverage(covdata, coverage)
+    insert_file_coverage(covdata, coverage, get_merge_mode_from_options(options))
 
 
 def guess_source_file_name(
