@@ -29,10 +29,10 @@ is ignored if the output is not recognized.
 Negative hit counts
 ___________________
 
-A bug in gcov can produce negative hit values (see `gcov comment`) which are not accepted by default.
+A bug in gcov can produce negative hit values (see `gcov comment`_) which are not accepted by default.
 This behavior can be changed by using the value ``--gcov-ignore-parse-errors=negative_hits.warn`` or
 ``--gcov-ignore-parse-errors=negative_hits.warn_once_per_file``. The first form warns on every line
 with a negative value the second one only once per processed file and adds a summary with the overall
 issues in the file.
 
-.. _gcov comment https://github.com/gcovr/gcovr/issues/583#issuecomment-1340762818:
+.. _gcov comment: https://github.com/gcovr/gcovr/issues/583#issuecomment-1340762818
