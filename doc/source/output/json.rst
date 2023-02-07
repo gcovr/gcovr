@@ -88,7 +88,7 @@ Each **line** entry contains coverage data for one line::
         "branches": [branch],
         "count": count,
         "line_number": line_number,
-        "gcovr/excluded": excluded
+        "gcovr/excluded": excluded,
         "gcovr/decision": decision
     }
 
@@ -212,6 +212,7 @@ Each **function** entry describes a line in the source file::
       "name": name,
       "lineno": lineno,
       "execution_count": count,
+      "gcovr/excluded": excluded
     }
 
 name: string
@@ -224,6 +225,16 @@ lineno: int
 
 execution_count: int
   How often this function was called.
+
+gcovr/excluded: boolean
+  True if coverage data for this function was explicitly excluded,
+  in particular with :ref:`exclusion markers`.
+  May be absent if false.
+
+* if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
+
+.. versionadded:: NEXT
+   New ``gcovr/excluded`` field.
 
 .. _json_summary_output:
 

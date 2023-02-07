@@ -345,7 +345,7 @@ class FileCoverage:
         covered = 0
 
         for function in self.functions.values():
-            for lineno, excluded in function.excluded:
+            for lineno, excluded in function.excluded.items():
                 if not excluded:
                     total += 1
                     if function.count[lineno] > 0:
