@@ -300,7 +300,7 @@ def _function_from_json(json_function: dict) -> FunctionCoverage:
     return FunctionCoverage(
         name=json_function["name"],
         lineno=json_function["lineno"],
-        call_count=json_function["execution_count"],
+        count=json_function["execution_count"],
     )
 
 

@@ -223,16 +223,16 @@ class FunctionCoverage:
             The name (signature) of the functions.
         lineno (int):
             The line number.
-        call_count (int):
-            Whether this line is excluded by a marker.
+        count (int):
+            How often this function was executed.
     """
 
     __slots__ = "name", "count"
 
-    def __init__(self, name: str, *, lineno: int = 0, call_count: int = 0) -> None:
-        assert call_count >= 0
+    def __init__(self, name: str, *, lineno: int = 0, count: int = 0) -> None:
+        assert count >= 0
         self.name = name
-        self.count: Dict[int, int] = {lineno: call_count}
+        self.count: Dict[int, int] = {lineno: count}
 
 
 class LineCoverage:
