@@ -30,7 +30,7 @@
                     "branches": [
                         {
                             "count": 0,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
@@ -52,6 +52,11 @@
                     "count": 0,
                     "gcovr/excluded": true,
                     "line_number": 8
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 17
                 },
                 {
                     "branches": [],
@@ -85,32 +90,6 @@
                     "branches": [],
                     "count": 1,
                     "line_number": 29
-                },
-                {
-                    "branches": [
-                        {
-                            "count": 1,
-                            "fallthrough": true,
-                            "throw": false
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "count": 1,
-                            "fallthrough": true,
-                            "throw": false
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
-                    "count": 3,
-                    "line_number": 30
                 }
             ]
         }
