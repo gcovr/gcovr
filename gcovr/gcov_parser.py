@@ -180,11 +180,11 @@ class _FunctionLine(NamedTuple):
     """
     A gcov line with function coverage data for the next line.
 
-    ``function NAME called CALLS returned RETURNED blocks executed BLOCKS``
+    ``function NAME called COUNT returned RETURNED blocks executed BLOCKS``
     """
 
     name: str
-    calls: int
+    count: int
     returned: int
     blocks_covered: int
 
@@ -345,10 +345,10 @@ def parse_coverage(
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
-        name, calls, _, _ = function
+        name, count, _, _ = function
         insert_function_coverage(
             coverage,
-            FunctionCoverage(name, lineno=state.lineno + 1, call_count=calls),
+            FunctionCoverage(name, lineno=state.lineno + 1, count=count),
             FUNCTION_MAX_LINE_MERGE_OPTIONS,
         )
 
@@ -411,7 +411,7 @@ def _gather_coverage_from_line(
 
             insert_function_coverage(
                 coverage,
-                FunctionCoverage(name, lineno=lineno, call_count=count),
+                FunctionCoverage(name, lineno=lineno, count=count),
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
@@ -592,7 +592,7 @@ def _parse_line(
 
     Example: can parse function tags:
     >>> _parse_line('function foo called 2 returned 95% blocks executed 85%')
-    _FunctionLine(name='foo', calls=2, returned=1, blocks_covered=1)
+    _FunctionLine(name='foo', count=2, returned=1, blocks_covered=1)
     >>> _parse_line('function foo with some unknown format')
     Traceback (most recent call last):
     gcovr.gcov_parser.UnknownLineType: function foo with some unknown format
@@ -789,10 +789,10 @@ def _parse_tag_line(
     if line.startswith("function "):
         match = _RE_FUNCTION_LINE.match(line)
         if match is not None:
-            name, calls, returns, blocks = match.groups()
+            name, count, returns, blocks = match.groups()
             return _FunctionLine(
                 name,
-                _int_from_gcov_unit(calls),
+                _int_from_gcov_unit(count),
                 _int_from_gcov_unit(returns),
                 _int_from_gcov_unit(blocks),
             )

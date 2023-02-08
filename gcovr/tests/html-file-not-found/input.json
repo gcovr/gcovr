@@ -13,17 +13,15 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/excluded": false,
                     "line_number": 2
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/excluded": false,
                     "line_number": 3
                 }
             ]
         }
     ],
-    "gcovr/format_version": "0.4"
+    "gcovr/format_version": "0.5"
 }

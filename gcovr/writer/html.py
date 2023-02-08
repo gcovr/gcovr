@@ -519,6 +519,7 @@ def write_source_pages(
                 fdata["html_filename"] = os.path.basename(cdata_sourcefile[f])
                 fdata["line"] = lineno
                 fdata["count"] = fcdata.count[lineno]
+                fdata["excluded"] = fcdata.excluded[lineno]
 
                 data["function_list"].append(fdata)
                 all_functions[(fdata["name"], fdata["filename"], fdata["line"])] = fdata

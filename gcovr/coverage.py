@@ -223,16 +223,21 @@ class FunctionCoverage:
             The name (signature) of the functions.
         lineno (int):
             The line number.
-        call_count (int):
+        count (int):
+            How often this function was executed.
+        excluded (bool, optional):
             Whether this line is excluded by a marker.
     """
 
-    __slots__ = "name", "count"
+    __slots__ = "name", "count", "excluded"
 
-    def __init__(self, name: str, *, lineno: int = 0, call_count: int = 0) -> None:
-        assert call_count >= 0
+    def __init__(
+        self, name: str, *, lineno: int, count: int, excluded: bool = False
+    ) -> None:
+        assert count >= 0
         self.name = name
-        self.count: Dict[int, int] = {lineno: call_count}
+        self.count: Dict[int, int] = {lineno: count}
+        self.excluded: Dict[int, bool] = {lineno: excluded}
 
 
 class LineCoverage:
@@ -262,7 +267,7 @@ class LineCoverage:
         "calls",
     )
 
-    def __init__(self, lineno: int, count: int = 0, excluded: bool = False) -> None:
+    def __init__(self, lineno: int, count: int, excluded: bool = False) -> None:
         assert lineno > 0
         assert count >= 0
 
@@ -340,8 +345,11 @@ class FileCoverage:
         covered = 0
 
         for function in self.functions.values():
-            total += len(function.count)
-            covered += len([c for c in function.count.values() if c > 0])
+            for lineno, excluded in function.excluded.items():
+                if not excluded:
+                    total += 1
+                    if function.count[lineno] > 0:
+                        covered += 1
 
         return CoverageStat(covered, total)
 

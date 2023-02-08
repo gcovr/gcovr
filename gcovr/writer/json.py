@@ -55,7 +55,7 @@ from ..merging import (
 logger = logging.getLogger("gcovr")
 
 
-JSON_FORMAT_VERSION = "0.4"
+JSON_FORMAT_VERSION = "0.5"
 JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
@@ -286,21 +286,27 @@ def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
 
 
 def _json_from_function(function: FunctionCoverage) -> list:
-    return [
-        {
+    json_functions = []
+    for lineno, count in function.count.items():
+        json_function = {
             "name": function.name,
             "lineno": lineno,
             "execution_count": count,
         }
-        for lineno, count in function.count.items()
-    ]
+        if function.excluded[lineno]:
+            json_function["gcovr/excluded"] = True
+
+        json_functions.append(json_function)
+
+    return json_functions
 
 
 def _function_from_json(json_function: dict) -> FunctionCoverage:
     return FunctionCoverage(
         name=json_function["name"],
         lineno=json_function["lineno"],
-        call_count=json_function["execution_count"],
+        count=json_function["execution_count"],
+        excluded=json_function.get("gcovr/excluded", False),
     )
 
 

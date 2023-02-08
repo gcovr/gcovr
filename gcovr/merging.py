@@ -302,6 +302,11 @@ def merge_function(
                 left.count[lineno] += count
             except KeyError:
                 left.count[lineno] = count
+        for lineno, excluded in right.excluded.items():
+            try:
+                left.excluded[lineno] += excluded
+            except KeyError:
+                left.excluded[lineno] = excluded
         return left
 
     right_lineno = list(right.count.keys())[0]
@@ -319,6 +324,9 @@ def merge_function(
 
     # Overwrite data with the sum at the desired line
     left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
+    left.excluded = {
+        lineno: any(left.excluded.values()) or any(right.excluded.values())
+    }
 
     return left
 
