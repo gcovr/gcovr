@@ -19,13 +19,13 @@ following output:
     :align: center
 
 The default behavior of the :option:`--html<gcovr --html>` option is to generate
-HTML for a single webpage that summarizes the coverage for all files.  The
+HTML for a single webpage that summarizes the coverage for all files. The
 HTML is printed to standard output, but the :option:`-o/--output<gcovr --output>`
 option is used to specify a file that stores the HTML output.
 
 The :option:`--html-details<gcovr --html-details>` option is used to create
-a separate web page for each file.  Each of these web pages includes
-the contents of file with annotations that summarize code coverage.  Consider
+a separate web page for each file. Each of these web pages includes
+the contents of file with annotations that summarize code coverage. Consider
 the following command:
 
 .. include:: ../../examples/example_html.sh
@@ -38,7 +38,13 @@ This generates the following HTML page for the file ``example1.cpp``:
 .. image:: ../../images/screenshot-html-details.example.cpp.png
     :align: center
 
-Note that the :option:`--html-details<gcovr --html-details>` option needs
+The :option:`--html-nested<gcovr --html-nested>` option is used to create
+a separate web page for each file and directory. Each of these web pages includes
+the contents of file with annotations that summarize code coverage. Consider
+the following command:
+
+Note that the :option:`--html-details<gcovr --html-details>` and
+:option:`--html-details<gcovr --html-details>` options need
 a named output, e.g. via the the :option:`-o/--output<gcovr --output>` option.
 For example, if the output is named ``coverage.html``,
 then the web pages generated for each file will have names of the form
@@ -47,12 +53,17 @@ then the web pages generated for each file will have names of the form
 The :option:`--html-self-contained<gcovr --html-self-contained>` option controls
 whether assets like CSS styles are bundled into the HTML file.
 The :option:`--html<gcovr --html>` report defaults to self-contained mode.
-but :option:`--html-details<gcovr --html-details>` defaults to
+but :option:`--html-details<gcovr --html-details>` and
+:option:`--html-nested<gcovr --html-nested>` default to
 :option:`--no-html-self-contained<gcovr --html-self-contained>`
 in order to avoid problems with the `Content Security Policy <CSP_>`_
 of some servers, especially Jenkins.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+
+.. versionadded:: NEXT
+   Added :option:`--html-nested<gcovr --html-nested>`
+   and :option:`--html-syntax-highlighting<gcovr --html-syntax-highlighting>`.
 
 .. versionadded:: 5.0
    Added :option:`--html-self-contained<gcovr --html-self-contained>`

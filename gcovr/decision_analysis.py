@@ -19,10 +19,7 @@
 
 import logging
 import re
-from typing import (
-    List,
-    Tuple,
-)
+from typing import List
 
 from .coverage import (
     DecisionCoverageUncheckable,
@@ -146,9 +143,9 @@ class DecisionParser:
             The encoding of the source files
     """
 
-    def __init__(self, coverage: FileCoverage, lines: List[Tuple[int, str]]):
+    def __init__(self, coverage: FileCoverage, lines: List[str]):
         self.coverage: FileCoverage = coverage
-        self.lines: List[Tuple[int, str]] = lines
+        self.lines: List[str] = lines
 
         # status variables for decision analysis
         self.decision_analysis_active: bool = (
@@ -161,7 +158,7 @@ class DecisionParser:
         logger.debug("Starting the decision analysis")
 
         # start to iterate through the lines
-        for lineno, code in self.lines:
+        for lineno, code in enumerate(self.lines, 1):
             self.parse_one_line(lineno, code)
 
         logger.debug("Decision Analysis finished!")
@@ -169,7 +166,7 @@ class DecisionParser:
     def parse_one_line(self, lineno: int, code: str) -> None:
         line_coverage = self.coverage.lines.get(lineno)
 
-        if line_coverage is None or line_coverage.noncode:
+        if line_coverage is None:
             return
 
         # check, if a analysis for a classic if-/else if-branch is active

@@ -28,9 +28,12 @@ from typing import Optional
 
 from .utils import search_file, commonpath
 from .workers import locked_directory
-from .gcov_parser import parse_metadata, parse_coverage, ParserFlags
+from .gcov_parser import parse_metadata, parse_coverage
 from .coverage import CovData
-from .merging import insert_file_coverage
+from .merging import get_merge_mode_from_options, insert_file_coverage
+from .exclusions import apply_all_exclusions
+from .decision_analysis import DecisionParser
+
 
 logger = logging.getLogger("gcovr")
 
@@ -138,33 +141,19 @@ def process_gcov_data(
 
     key = os.path.normpath(fname)
 
-    parser_flags = ParserFlags.NONE
-    if options.gcov_ignore_parse_errors:
-        parser_flags |= ParserFlags.IGNORE_PARSE_ERRORS
-    if options.exclude_function_lines:
-        parser_flags |= ParserFlags.EXCLUDE_FUNCTION_LINES
-    if options.exclude_internal_functions:
-        parser_flags |= ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS
-    if options.exclude_unreachable_branches:
-        parser_flags |= ParserFlags.EXCLUDE_UNREACHABLE_BRANCHES
-    if options.exclude_throw_branches:
-        parser_flags |= ParserFlags.EXCLUDE_THROW_BRANCHES
-    if options.respect_exclusion_markers:
-        parser_flags |= ParserFlags.RESPECT_EXCLUSION_MARKERS
-    if options.show_decision:
-        parser_flags |= ParserFlags.PARSE_DECISIONS
-    if options.show_calls:
-        parser_flags |= ParserFlags.PARSE_CALLS
-
-    coverage = parse_coverage(
+    coverage, source_lines = parse_coverage(
         lines,
         filename=key,
-        exclude_lines_by_pattern=options.exclude_lines_by_pattern,
-        exclude_branches_by_pattern=options.exclude_branches_by_pattern,
-        exclude_pattern_prefix=options.exclude_pattern_prefix,
-        flags=parser_flags,
+        ignore_parse_errors=options.gcov_ignore_parse_errors,
     )
-    insert_file_coverage(covdata, coverage)
+
+    apply_all_exclusions(coverage, lines=source_lines, options=options)
+
+    if options.show_decision:
+        decision_parser = DecisionParser(coverage, source_lines)
+        decision_parser.parse_all_lines()
+
+    insert_file_coverage(covdata, coverage, get_merge_mode_from_options(options))
 
 
 def guess_source_file_name(
@@ -340,7 +329,6 @@ def process_datafile(filename, covdata, options, toerase):
             abs_filename,
             covdata,
             options=options,
-            toerase=toerase,
             error=errors.append,
             chdir=wd,
         )
@@ -530,7 +518,7 @@ class GcovProgram:
         return (out, err)
 
 
-def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, chdir):
+def run_gcov_and_process_files(abs_filename, covdata, options, error, chdir):
     fname = None
     out = None
     err = None
@@ -572,6 +560,21 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
                 for fname in active_gcov_files:
                     process_gcov_data(fname, covdata, abs_filename, options)
                 done = True
+
+            if options.keep and done:
+                basename = os.path.basename(abs_filename)
+                for file in active_gcov_files:
+                    dir, filename = os.path.split(file)
+                    os.replace(file, os.path.join(dir, f"{basename}.{filename}"))
+
+            for filepath in (
+                all_gcov_files - active_gcov_files
+                if options.keep and done
+                else all_gcov_files
+            ):
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+
     except Exception:
         logger.error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
@@ -582,15 +585,12 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, toerase, c
         )
         raise
 
-    if not options.keep:
-        toerase.update(all_gcov_files)
-
     return done
 
 
 def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, chdir):
-    active_files = []
-    all_files = []
+    active_files = set([])
+    all_files = set([])
 
     for line in out.splitlines():
         found = output_re.search(line.strip())
@@ -599,7 +599,7 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, chdir):
 
         fname = found.group(1)
         full = os.path.join(chdir, fname)
-        all_files.append(full)
+        all_files.add(full)
 
         filtered, excluded = apply_filter_include_exclude(
             fname, gcov_filter, gcov_exclude
@@ -613,7 +613,7 @@ def select_gcov_files_from_stdout(out, gcov_filter, gcov_exclude, chdir):
             logger.debug(f"Excluding gcov file {fname}")
             continue
 
-        active_files.append(full)
+        active_files.add(full)
 
     return active_files, all_files
 

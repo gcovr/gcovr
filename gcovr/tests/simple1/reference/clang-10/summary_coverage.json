@@ -12,8 +12,8 @@
             "function_percent": 100.0,
             "function_total": 2,
             "line_covered": 8,
-            "line_percent": 80.0,
-            "line_total": 10
+            "line_percent": 72.7,
+            "line_total": 11
         }
     ],
     "function_covered": 2,
@@ -21,7 +21,7 @@
     "function_total": 2,
     "gcovr/summary_format_version": "0.5",
     "line_covered": 8,
-    "line_percent": 80.0,
-    "line_total": 10,
+    "line_percent": 72.7,
+    "line_total": 11,
     "root": "."
 }

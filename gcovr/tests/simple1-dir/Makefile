@@ -30,7 +30,7 @@ sonarqube:
 json:
 	./testcase
 	$(GCOVR) -d
-	cp -f ./output/coverage.json ./coverage.json
+	mv -f ./output/coverage.json ./coverage.json
 
 json_summary:
 	./testcase

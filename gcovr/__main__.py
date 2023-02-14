@@ -162,6 +162,10 @@ def main(args=None):
     parser = create_argument_parser()
     cli_options = parser.parse_args(args=args)
 
+    if cli_options.version:
+        sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
+        sys.exit(0)
+
     # load the config
     cfg_name = find_config_name(cli_options)
     cfg_options = {}
@@ -176,10 +180,6 @@ def main(args=None):
 
     if options.verbose:
         logger.setLevel(logging.DEBUG)
-
-    if cli_options.version:
-        sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
-        sys.exit(0)
 
     if options.html_title == "":
         logger.error("an empty --html_title= is not allowed.")
@@ -228,14 +228,25 @@ def main(args=None):
         logger.error("value of --html-tab-size= should be greater 0.")
         sys.exit(1)
 
+    if options.html_details and options.html_nested:
+        logger.error("--html-details and --html-nested can not be used together.")
+        sys.exit(1)
+
     potential_html_output = (
         (options.html and options.html.value)
         or (options.html_details and options.html_details.value)
+        or (options.html_nested and options.html_nested.value)
         or (options.output and options.output.value)
     )
     if options.html_details and not potential_html_output:
         logger.error(
             "a named output must be given, if the option --html-details\n" "is used."
+        )
+        sys.exit(1)
+
+    if options.html_nested and not potential_html_output:
+        logger.error(
+            "a named output must be given, if the option --html-nested\n" "is used."
         )
         sys.exit(1)
 
@@ -430,10 +441,10 @@ def print_reports(covdata: CovData, options):
             )
         )
 
-    if options.html or options.html_details:
+    if options.html or options.html_details or options.html_nested:
         generators.append(
             (
-                [options.html, options.html_details],
+                [options.html, options.html_details, options.html_nested],
                 print_html_report,
                 lambda: logger.warning(
                     "HTML output skipped - "

@@ -1,25 +1,4 @@
 {
-    "git": {
-        "branch": "branch",
-        "head": {
-            "author_email": "blabla51480@gmail.com",
-            "author_name": "Blabla51",
-            "committer_email": "blabla51480@gmail.com",
-            "committer_name": "Blabla51",
-            "id": "b05d4b2a16a94d53a601b610a69cb9b2b175abe1",
-            "message": "Fixed tests, updated readme, added new branch exclusion test"
-        },
-        "remotes": [
-            {
-                "name": "origin",
-                "url": "https://github.com/Blabla51/gcovr.git"
-            },
-            {
-                "name": "upstream",
-                "url": "https://github.com/gcovr/gcovr.git"
-            }
-        ]
-    },
     "run_at": "2022-07-31 01:01:27 UTC",
     "service_job_id": "id",
     "service_name": "gcovr-test-suite",

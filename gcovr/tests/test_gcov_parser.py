@@ -27,9 +27,10 @@ from unittest import mock
 
 import pytest
 
-from ..gcov_parser import ParserFlags, parse_coverage, UnknownLineType
+from ..gcov_parser import NegativeHits, parse_coverage, UnknownLineType
 from ..utils import configure_logging
 from ..workers import Workers
+from ..exclusions import ExclusionOptions, apply_all_exclusions
 
 configure_logging()
 
@@ -308,17 +309,18 @@ def test_gcov_8(capsys, sourcename):
     expected_uncovered_lines = GCOV_8_EXPECTED_UNCOVERED_LINES[sourcename]
     expected_uncovered_branches = GCOV_8_EXPECTED_UNCOVERED_BRANCHES[sourcename]
 
-    flags = ParserFlags.NONE
-    if GCOV_8_EXCLUDE_THROW_BRANCHES.get(sourcename, False):
-        flags |= ParserFlags.EXCLUDE_THROW_BRANCHES
-
-    coverage = parse_coverage(
+    coverage, lines = parse_coverage(
         filename="tmp.cpp",
         lines=lines,
-        exclude_lines_by_pattern=None,
-        exclude_branches_by_pattern=None,
-        exclude_pattern_prefix=None,
-        flags=flags,
+        ignore_parse_errors=None,
+    )
+
+    apply_all_exclusions(
+        coverage,
+        lines=lines,
+        options=ExclusionOptions(
+            exclude_throw_branches=GCOV_8_EXCLUDE_THROW_BRANCHES.get(sourcename, False),
+        ),
     )
 
     uncovered_lines = [
@@ -344,19 +346,13 @@ def test_unknown_tags(caplog, ignore_errors):
     source = r"bananas 7 times 3"
     lines = source.splitlines()
 
-    flags = ParserFlags.NONE
-    if ignore_errors:
-        flags |= ParserFlags.IGNORE_PARSE_ERRORS
-
     def run_the_parser():
-        return parse_coverage(
+        coverage, _ = parse_coverage(
             filename="foo.c",
             lines=lines,
-            exclude_lines_by_pattern=None,
-            exclude_branches_by_pattern=None,
-            exclude_pattern_prefix=None,
-            flags=flags,
+            ignore_parse_errors=["all"] if ignore_errors else None,
         )
+        return coverage
 
     if ignore_errors:
         coverage = run_the_parser()
@@ -396,10 +392,7 @@ def test_pathologic_codeline(caplog):
         parse_coverage(
             filename="foo.c",
             lines=lines,
-            exclude_lines_by_pattern=None,
-            exclude_branches_by_pattern=None,
-            exclude_pattern_prefix=None,
-            flags=ParserFlags.NONE,
+            ignore_parse_errors=None,
         )
 
     messages = caplog.record_tuples
@@ -433,7 +426,7 @@ def test_exception_during_coverage_processing(caplog):
     This cannot happen during normal processing, but as a defense against
     unexpected changes to the format the ``--gcov-ignore-parse-errors`` option
     will try to catch as many errors as possible. In order to inject a testable
-    fault, a misconfigured logger will be injected.
+    fault, merging of coverage data will be mocked.
     """
 
     source = textwrap.dedent(
@@ -446,16 +439,13 @@ def test_exception_during_coverage_processing(caplog):
     )
     lines = source.splitlines()
 
-    with mock.patch("logging.Logger.debug") as logger_mock:
-        logger_mock.side_effect = AssertionError("totally broken")
+    with mock.patch("gcovr.gcov_parser.insert_function_coverage") as m:
+        m.side_effect = AssertionError("totally broken")
         with pytest.raises(AssertionError) as ex_info:
             parse_coverage(
                 lines,
                 filename="test.cpp",
-                exclude_lines_by_pattern=None,
-                exclude_branches_by_pattern=None,
-                exclude_pattern_prefix=None,
-                flags=ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS,
+                ignore_parse_errors=None,
             )
 
     # check that this is our exception
@@ -500,29 +490,26 @@ def test_trailing_function_tag():
     """
     )
 
-    coverage = parse_coverage(
+    coverage, _ = parse_coverage(
         source.splitlines(),
         filename="test.cpp",
-        flags=ParserFlags.NONE,
-        exclude_lines_by_pattern=None,
-        exclude_branches_by_pattern=None,
-        exclude_pattern_prefix=None,
+        ignore_parse_errors=None,
     )
 
     assert coverage.functions.keys() == {"example"}
     fcov = coverage.functions["example"]
-    assert fcov.lineno == 3  # previous lineno + 1
+    assert list(fcov.count.keys()) == [3]  # previous lineno + 1
     assert fcov.name == "example"
-    assert fcov.count == 17  # number of calls
+    assert fcov.count[3] == 17  # number of calls
 
 
 @pytest.mark.parametrize(
     "flags",
     [
-        ParserFlags.NONE,
-        ParserFlags.EXCLUDE_UNREACHABLE_BRANCHES,
-        ParserFlags.EXCLUDE_THROW_BRANCHES,
-        ParserFlags.EXCLUDE_UNREACHABLE_BRANCHES | ParserFlags.EXCLUDE_THROW_BRANCHES,
+        "none",
+        "exclude_unreachable_branches",
+        "exclude_throw_branches",
+        "exclude_unreachable_branches,exclude_throw_branches",
     ],
 )
 def test_branch_exclusion(flags):
@@ -544,18 +531,24 @@ def test_branch_exclusion(flags):
     )
 
     expected_covered_branches = {1, 2, 3, 4}
-    if flags & ParserFlags.EXCLUDE_THROW_BRANCHES:
+    if "exclude_throw_branches" in flags:
         expected_covered_branches -= {3, 4}
-    if flags & ParserFlags.EXCLUDE_UNREACHABLE_BRANCHES:
+    if "exclude_unreachable_branches" in flags:
         expected_covered_branches -= {2, 4}
 
-    coverage = parse_coverage(
+    coverage, lines = parse_coverage(
         source.splitlines(),
         filename="example.cpp",
-        exclude_lines_by_pattern=None,
-        exclude_branches_by_pattern=None,
-        exclude_pattern_prefix=None,
-        flags=flags,
+        ignore_parse_errors=None,
+    )
+
+    apply_all_exclusions(
+        coverage,
+        lines=lines,
+        options=ExclusionOptions(
+            exclude_throw_branches=("exclude_throw_branches" in flags),
+            exclude_unreachable_branches=("exclude_unreachable_branches" in flags),
+        ),
     )
 
     covered_branches = {
@@ -565,9 +558,63 @@ def test_branch_exclusion(flags):
     assert covered_branches == expected_covered_branches
 
 
-@pytest.mark.parametrize(
-    "flags", [ParserFlags.NONE, ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS]
-)
+def test_negativ_branch_count():
+    """
+    A exception shall be raised.
+    """
+
+    source = textwrap.dedent(
+        """\
+          1: 1: normal line
+        branch 1 taken 80%
+          1: 2: } // line without apparent code
+        branch 2 taken -11234
+          1: 3: exception-only code
+        branch 3 taken 60% (throw)
+        """
+    )
+
+    with pytest.raises(NegativeHits):
+        parse_coverage(
+            source.splitlines(),
+            filename="example.cpp",
+            ignore_parse_errors=None,
+        )
+
+
+def test_negativ_branch_count_ignored():
+    """
+    A exception shall be raised.
+    """
+
+    source = textwrap.dedent(
+        """\
+          1: 1: normal line
+        branch 1 taken 80%
+          1: 2: } // line without apparent code
+        branch 2 taken -11234
+          1: 3: exception-only code
+        branch 3 taken 60% (throw)
+        """
+    )
+
+    coverage, lines = parse_coverage(
+        source.splitlines(),
+        filename="example.cpp",
+        ignore_parse_errors=["negative_hits.warn"],
+    )
+
+    covered_branches = {
+        branch
+        for line in coverage.lines.values()
+        for branch in line.branches.keys()
+        if line.branches[branch].is_covered
+    }
+
+    assert covered_branches == {1, 3}
+
+
+@pytest.mark.parametrize("flags", ["none", "exclude_internal_functions"])
 def test_function_exclusion(flags):
     """
     Compiler-generated function names can be excluded.
@@ -580,18 +627,23 @@ def test_function_exclusion(flags):
         """
     )
 
-    if flags & ParserFlags.EXCLUDE_INTERNAL_FUNCTIONS:
+    if "exclude_internal_functions" in flags:
         expected_functions = []
     else:
         expected_functions = ["__foo"]
 
-    coverage = parse_coverage(
+    coverage, lines = parse_coverage(
         source.splitlines(),
         filename="example.cpp",
-        exclude_lines_by_pattern=None,
-        exclude_branches_by_pattern=None,
-        exclude_pattern_prefix=None,
-        flags=flags,
+        ignore_parse_errors=None,
+    )
+
+    apply_all_exclusions(
+        coverage,
+        lines=lines,
+        options=ExclusionOptions(
+            exclude_internal_functions=("exclude_internal_functions" in flags),
+        ),
     )
 
     functions = list(coverage.functions.keys())
@@ -607,34 +659,31 @@ def test_noncode_lines():
 
         -: 42: // no code
 
-    But gcovr has a differing concept of "noncode"
-    that sometimes removes lines entirely,
-    sometimes adds a line with "noncode" status,
-    and sometimes shows an uncovered line.
+    But gcovr can also exclude additional lines as noncode.
     """
 
     def get_line_status(
         lines: list,
         *,
-        flags: ParserFlags = ParserFlags.NONE,
+        exclude_function_lines: bool = False,
+        exclude_noncode_lines: bool = False,
     ):
-        coverage = parse_coverage(
+        coverage, source = parse_coverage(
             lines,
-            flags=flags,
             filename="example.cpp",
-            exclude_lines_by_pattern=None,
-            exclude_branches_by_pattern=None,
-            exclude_pattern_prefix=None,
+            ignore_parse_errors=None,
         )
 
-        for line_data in coverage.lines.values():
-            if line_data.noncode:
-                status = "noncode"
-            else:
-                status = "normal"
-            return f"{status}:{line_data.count}"
+        options = ExclusionOptions(
+            exclude_function_lines=exclude_function_lines,
+            exclude_noncode_lines=exclude_noncode_lines,
+        )
+        apply_all_exclusions(coverage, lines=source, options=options)
 
-        return "excluded"
+        for line_data in coverage.lines.values():
+            return f"normal:{line_data.count}"
+
+        return "noncode"
 
     # First, handling of function lines
 
@@ -654,23 +703,23 @@ def test_noncode_lines():
             "function foo called 3 returned 99% blocks executed 70%",
             "3: 32:void foo(){}",
         ],
-        flags=ParserFlags.EXCLUDE_FUNCTION_LINES,
+        exclude_function_lines=True,
     )
-    assert status == "noncode:0"
+    assert status == "noncode"
 
     # Next, handling of noncode lines
 
     # Gcov says noncode but it looks like code: throw line away
-    assert get_line_status(["-: 32:this looks like code"]) == "excluded"
+    assert get_line_status(["-: 32:this looks like code"]) == "noncode"
 
-    # Gcov says noncode and it doesn't look like code: keep with noncode status
-    assert get_line_status(["-: 32:}"]) == "noncode:0"
+    # Gcov says noncode and it doesn't look like code: discard
+    assert get_line_status(["-: 32:}"]) == "noncode"
 
     # Uncovered line with code: keep
     assert get_line_status(["#####: 32:looks like code"]) == "normal:0"
 
-    # Uncovered code that doesn't look like code: keep with noncode status
-    assert get_line_status(["#####: 32:}"]) == "noncode:0"
+    # Uncovered code that doesn't look like code: discard
+    assert get_line_status(["#####: 32:}"], exclude_noncode_lines=True) == "noncode"
 
 
 def check_and_raise(number, mutable, exc_raised, queue_full):

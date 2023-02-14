@@ -26,7 +26,6 @@ from typing import Any, Dict, Optional
 from ..gcov import apply_filter_include_exclude
 from ..utils import (
     presentable_filename,
-    sort_coverage,
     open_text_for_writing,
 )
 from ..coverage import (
@@ -41,8 +40,10 @@ from ..coverage import (
     LineCoverage,
     CallCoverage,
     SummarizedStats,
+    sort_coverage,
 )
 from ..merging import (
+    get_merge_mode_from_options,
     insert_branch_coverage,
     insert_decision_coverage,
     insert_file_coverage,
@@ -54,7 +55,7 @@ from ..merging import (
 logger = logging.getLogger("gcovr")
 
 
-JSON_FORMAT_VERSION = "0.4"
+JSON_FORMAT_VERSION = "0.5"
 JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
@@ -190,14 +191,15 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
                 continue
 
             file_coverage = FileCoverage(file_path)
+            merge_options = get_merge_mode_from_options(options)
             for json_function in gcovr_file["functions"]:
                 insert_function_coverage(
-                    file_coverage, _function_from_json(json_function)
+                    file_coverage, _function_from_json(json_function), merge_options
                 )
             for json_line in gcovr_file["lines"]:
                 insert_line_coverage(file_coverage, _line_from_json(json_line))
 
-            insert_file_coverage(covdata, file_coverage)
+            insert_file_coverage(covdata, file_coverage, merge_options)
 
     return covdata
 
@@ -226,9 +228,9 @@ def _json_from_line(line: LineCoverage) -> dict:
         "line_number": line.lineno,
         "count": line.count,
         "branches": _json_from_branches(line.branches),
-        "gcovr/noncode": line.noncode,
-        "gcovr/excluded": line.excluded,
     }
+    if line.excluded:
+        json_line["gcovr/excluded"] = True
     if line.decision is not None:
         json_line["gcovr/decision"] = _json_from_decision(line.decision)
     if len(line.calls) > 0:
@@ -278,22 +280,33 @@ def _json_from_call(call: CallCoverage) -> dict:
 
 
 def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
-    return [_json_from_function(functions[name]) for name in sorted(functions)]
+    return [
+        f for name in sorted(functions) for f in _json_from_function(functions[name])
+    ]
 
 
-def _json_from_function(function: FunctionCoverage) -> dict:
-    return {
-        "name": function.name,
-        "lineno": function.lineno,
-        "execution_count": function.count,
-    }
+def _json_from_function(function: FunctionCoverage) -> list:
+    json_functions = []
+    for lineno, count in function.count.items():
+        json_function = {
+            "name": function.name,
+            "lineno": lineno,
+            "execution_count": count,
+        }
+        if function.excluded[lineno]:
+            json_function["gcovr/excluded"] = True
+
+        json_functions.append(json_function)
+
+    return json_functions
 
 
 def _function_from_json(json_function: dict) -> FunctionCoverage:
     return FunctionCoverage(
         name=json_function["name"],
         lineno=json_function["lineno"],
-        call_count=json_function["execution_count"],
+        count=json_function["execution_count"],
+        excluded=json_function.get("gcovr/excluded", False),
     )
 
 
@@ -301,8 +314,7 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     line = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
-        noncode=json_line["gcovr/noncode"],
-        excluded=json_line["gcovr/excluded"],
+        excluded=json_line.get("gcovr/excluded", False),
     )
 
     for branchno, json_branch in enumerate(json_line["branches"]):
