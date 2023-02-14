@@ -80,8 +80,7 @@ def is_fs_case_insensitive():
         and os.path.exists(cwd.upper())
         and os.path.exists(cwd.lower())
     )
-    if ret:
-        logger.info("File system is case insensitive.")
+        logger.debug(f"File system is case {'in' if ret else ''}sensitive.")
     return ret
 
 
@@ -94,16 +93,14 @@ def resolvePathCaseStyle(path: str):
     if not cur:  # e.g path = "C:/"
         return os.path.realpath(rest)  # resolves the case of c:/
 
-    curL = cur.lower()
-    matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
+    matchedFileName = glob.glob(cur, root_dir=rest)
     assert len(matchedFileName) < 2, "Seems that we have a case sensitive filesystem"
 
-    # e.g path = "../.." would split into ".." and ".." but cannot find .. in dir ..
-    if len(matchedFileName) == 0:
-        return path
-    return os.path.join(
-        resolvePathCaseStyle(os.path.dirname(path)), matchedFileName[0]
-    ).replace("\\", "/")
+    if len(matchedFileName) == 1:
+        path = os.path.join(
+            resolvePathCaseStyle(cur), matchedFileName[0]
+        )
+    return path.replace("\\", "/")
 
 
 def get_os_independent_path(path):
