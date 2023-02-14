@@ -19,7 +19,6 @@
 
 import logging
 import os
-import platform
 import re
 import shlex
 import subprocess
@@ -295,7 +294,9 @@ def process_datafile(filename, covdata, options, toerase):
     """
     logger.debug(f"Processing file: {filename}")
 
-    abs_filename = os.path.abspath(filename).replace(os.path.sep, "/")  # gcov requires posix style path
+    abs_filename = os.path.abspath(filename).replace(
+        os.path.sep, "/"
+    )  # gcov requires posix style path
 
     errors = []
 

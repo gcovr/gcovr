@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 from argparse import ArgumentTypeError
+import glob
 from typing import Type
 import logging
 import os
@@ -78,7 +79,8 @@ def is_fs_case_insensitive():
         and os.path.exists(cwd.upper())
         and os.path.exists(cwd.lower())
     )
-        logger.debug(f"File system is case {'in' if ret else ''}sensitive.")
+    logger.debug(f"File system is case {'in' if ret else ''}sensitive.")
+
     return ret
 
 
@@ -95,9 +97,7 @@ def resolvePathCaseStyle(path: str):
     assert len(matchedFileName) < 2, "Seems that we have a case sensitive filesystem"
 
     if len(matchedFileName) == 1:
-        path = os.path.join(
-            resolvePathCaseStyle(cur), matchedFileName[0]
-        )
+        path = os.path.join(resolvePathCaseStyle(cur), matchedFileName[0])
     return path.replace("\\", "/")
 
 
