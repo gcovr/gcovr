@@ -35,8 +35,8 @@ Bug fixes and small improvements:
 - Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
 - Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
 - Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
-- Fix handling for nonexistent source code for HTML-details and Coveralls reports (:issue:`663`)
-- Exclude functions with :ref:`Exclusion markers` (:issue:`713`)
+- Fix handling for nonexistent source code for HTML-details and Coveralls reports. (:issue:`663`)
+- Exclude functions with :ref:`Exclusion markers`. (:issue:`713`)
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
 - Fix: Headers containing definitions appear once with all lower-case and once correct case characters in the results under Windows. (:issue:`694`)
 
