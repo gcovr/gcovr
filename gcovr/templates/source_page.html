@@ -90,9 +90,12 @@
       </td>
       <td>
         <a href="#l{{ entry['line'] }}">
-        {%- if entry["count"] == 0 %} not called
-        {%- else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}
-        {%- endif -%}
+          {%- if entry["excluded"] %} excluded
+          {%- else %}
+          {%-  if entry["count"] == 0 %} not called
+          {%-  else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}
+          {%-  endif -%}
+          {%- endif -%}
         </a>
       </td>
     </tr>

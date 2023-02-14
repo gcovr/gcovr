@@ -55,6 +55,7 @@ class ExclusionOptions:
     exclude_unreachable_branches: bool = False
     exclude_function_lines: bool = False
     exclude_internal_functions: bool = False
+    exclude_noncode_lines: bool = False
     exclude_calls: bool = True
 
 
@@ -70,7 +71,8 @@ def apply_all_exclusions(
     Modifies the FileCoverage in place.
     """
 
-    remove_noncode_lines(filecov, lines=lines)
+    if options.exclude_noncode_lines:
+        remove_noncode_lines(filecov, lines=lines)
 
     if options.respect_exclusion_markers:
         apply_exclusion_markers(
@@ -112,9 +114,9 @@ def remove_internal_functions(filecov: FileCoverage):
     for function in list(filecov.functions.values()):
         if _function_can_be_excluded(function.name):
             logger.debug(
-                "Ignoring symbol %s in line %d in file %s",
+                "Ignoring symbol %s in line %s in file %s",
                 function.name,
-                function.lineno,
+                ", ".join([str(line) for line in sorted(function.count.keys())]),
                 filecov.filename,
             )
 
@@ -130,7 +132,9 @@ def remove_function_lines(filecov: FileCoverage) -> None:
     """Remove coverage for lines that contain a function definition."""
     # iterate over a shallow copy
     known_function_lines = set(
-        function.lineno for function in filecov.functions.values()
+        line
+        for function in filecov.functions.values()
+        for line in function.count.keys()
     )
     for linecov in list(filecov.lines.values()):
         if linecov.lineno in known_function_lines:

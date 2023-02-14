@@ -81,6 +81,12 @@ def apply_exclusion_markers(
         elif branch_is_excluded(linecov.lineno):
             linecov.branches = {}
 
+    for functioncov in filecov.functions.values():
+        for lineno in functioncov.excluded.keys():
+            if line_is_excluded(lineno):
+                functioncov.count[lineno] = 0
+                functioncov.excluded[lineno] = True
+
 
 class _ExclusionRangeWarnings:
     r"""

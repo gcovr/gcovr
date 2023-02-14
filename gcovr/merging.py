@@ -49,6 +49,7 @@ which may not be the same as the input value.
 """
 
 from dataclasses import dataclass
+import logging
 from typing import Callable, Optional, TypeVar, Dict
 from .coverage import (
     BranchCoverage,
@@ -64,12 +65,50 @@ from .coverage import (
 )
 
 
+logger = logging.getLogger("gcovr")
+
+
 @dataclass
 class MergeOptions:
     ignore_function_lineno: bool = False
+    merge_function_use_line_zero: bool = None
+    merge_function_use_line_min: bool = None
+    merge_function_use_line_max: bool = None
+    separate_function: bool = None
 
 
 DEFAULT_MERGE_OPTIONS = MergeOptions()
+FUNCTION_LINE_ZERO_MERGE_OPTIONS = MergeOptions(
+    ignore_function_lineno=True,
+    merge_function_use_line_zero=True,
+)
+FUNCTION_MIN_LINE_MERGE_OPTIONS = MergeOptions(
+    ignore_function_lineno=True,
+    merge_function_use_line_min=True,
+)
+FUNCTION_MAX_LINE_MERGE_OPTIONS = MergeOptions(
+    ignore_function_lineno=True,
+    merge_function_use_line_max=True,
+)
+SEPARATE_FUNCTION_MERGE_OPTIONS = MergeOptions(
+    ignore_function_lineno=True,
+    separate_function=True,
+)
+
+
+def get_merge_mode_from_options(options):
+    if options.merge_mode_functions == "strict":
+        return DEFAULT_MERGE_OPTIONS
+    elif options.merge_mode_functions == "merge-use-line-0":
+        return FUNCTION_LINE_ZERO_MERGE_OPTIONS
+    elif options.merge_mode_functions == "merge-use-line-min":
+        return FUNCTION_MIN_LINE_MERGE_OPTIONS
+    elif options.merge_mode_functions == "merge-use-line-max":
+        return FUNCTION_MAX_LINE_MERGE_OPTIONS
+    elif options.merge_mode_functions == "separate":
+        return SEPARATE_FUNCTION_MERGE_OPTIONS
+    else:
+        raise RuntimeError("Sanity check: Unknown merge mode.")
 
 
 _Key = TypeVar("_Key", int, str)
@@ -240,15 +279,54 @@ def merge_function(
 
     If ``options.ignore_function_lineno`` is set,
     the two function coverage objects can have differing line numbers.
+    With following flags the merge mode can be defined:
+      - ``options.merge_function_use_line_zero``
+      - ``options.merge_function_use_line_min``
+      - ``options.merge_function_use_line_max``
+      - ``options.separate_function``
     """
     assert left.name == right.name
     if not options.ignore_function_lineno:
-        assert left.lineno == right.lineno
+        if left.count.keys() != right.count.keys():
+            lines = sorted(set([*left.count.keys(), *right.count.keys()]))
+            raise AssertionError(
+                f"Got function {right.name} on multiple lines: {', '.join([str(l) for l in lines])}.\n"
+                "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
+                "\tThe available values for MERGE_MODE are described in the documentation."
+            )
 
-    left.count += right.count
+    # keep distinct counts for each line number
+    if options.separate_function:
+        for lineno, count in right.count.items():
+            try:
+                left.count[lineno] += count
+            except KeyError:
+                left.count[lineno] = count
+        for lineno, excluded in right.excluded.items():
+            try:
+                left.excluded[lineno] += excluded
+            except KeyError:
+                left.excluded[lineno] = excluded
+        return left
 
-    if options.ignore_function_lineno:
-        left.lineno = max(left.lineno, right.lineno)
+    right_lineno = list(right.count.keys())[0]
+    # merge all counts into an entry for a single line number
+    if right_lineno in left.count:
+        lineno = right_lineno
+    elif options.merge_function_use_line_zero:
+        lineno = 0
+    elif options.merge_function_use_line_min:
+        lineno = min(*left.count.keys(), *right.count.keys())
+    elif options.merge_function_use_line_max:
+        lineno = max(*left.count.keys(), *right.count.keys())
+    else:
+        assert False, "Unknown merge mode"
+
+    # Overwrite data with the sum at the desired line
+    left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
+    left.excluded = {
+        lineno: any(left.excluded.values()) or any(right.excluded.values())
+    }
 
     return left
 

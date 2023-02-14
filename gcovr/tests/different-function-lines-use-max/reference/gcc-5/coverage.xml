@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.875" branch-rate="0.5" lines-covered="7" lines-valid="8" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="" version="">
+  <sources>
+    <source>.</source>
+  </sources>
+  <packages>
+    <package name="" line-rate="0.875" branch-rate="0.5" complexity="0.0">
+      <classes>
+        <class name="func_h" filename="func.h" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="3" hits="1" branch="false"/>
+            <line number="5" hits="1" branch="false"/>
+            <line number="7" hits="2" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="8" hits="0" branch="false"/>
+            <line number="10" hits="2" branch="false"/>
+          </lines>
+        </class>
+        <class name="main_c" filename="main.c" line-rate="1.0" branch-rate="0.0" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="5" hits="2" branch="false"/>
+            <line number="6" hits="2" branch="false"/>
+            <line number="8" hits="2" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

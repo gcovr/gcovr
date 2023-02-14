@@ -4,13 +4,19 @@
             "file": "main.cpp",
             "functions": [
                 {
+                    "execution_count": 0,
+                    "gcovr/excluded": true,
+                    "lineno": 20,
+                    "name": "bar()"
+                },
+                {
                     "execution_count": 1,
                     "lineno": 4,
                     "name": "foo(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 20,
+                    "lineno": 25,
                     "name": "main"
                 }
             ],
@@ -49,18 +55,36 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
+                    "gcovr/excluded": true,
                     "line_number": 20
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 0,
+                    "gcovr/excluded": true,
                     "line_number": 21
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 23
+                    "line_number": 25
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 26
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/excluded": true,
+                    "line_number": 27
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 29
                 },
                 {
                     "branches": [
@@ -86,10 +110,10 @@
                         }
                     ],
                     "count": 3,
-                    "line_number": 24
+                    "line_number": 30
                 }
             ]
         }
     ],
-    "gcovr/format_version": "0.4"
+    "gcovr/format_version": "0.5"
 }

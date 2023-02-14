@@ -41,6 +41,7 @@ import logging
 import re
 
 from typing import (
+    Any,
     Dict,
     Iterable,
     List,
@@ -60,7 +61,7 @@ from .coverage import (
     LineCoverage,
 )
 from .merging import (
-    MergeOptions,
+    FUNCTION_MAX_LINE_MERGE_OPTIONS,
     insert_branch_coverage,
     insert_function_coverage,
     insert_line_coverage,
@@ -86,7 +87,7 @@ def _line_pattern(pattern: str) -> Pattern[str]:
     """
     pattern = pattern.replace(" ", r"[ ]+")
     pattern = pattern.replace("INT", r"[0-9]+")
-    pattern = pattern.replace("VALUE", r"(?:NAN %|[0-9.]+[%kMGTPEZY]?)")
+    pattern = pattern.replace("VALUE", r"(?:NAN %|-?[0-9.]+[%kMGTPEZY]?)")
     return re.compile("^" + pattern + "$")
 
 
@@ -94,7 +95,7 @@ _RE_FUNCTION_LINE = _line_pattern(
     r"function (.*?) called (INT) returned (VALUE) blocks executed (VALUE)"
 )
 _RE_BRANCH_LINE = _line_pattern(
-    r"branch (INT) (?:taken (VALUE)(?: \((\w+)\))?|never executed)"
+    r"branch (INT) (?:taken (VALUE)|never executed)(?: \((\w+)\))?"
 )
 _RE_CALL_LINE = _line_pattern(r"call (INT) (?:returned (VALUE)|never executed)")
 _RE_UNCONDITIONAL_LINE = _line_pattern(
@@ -179,11 +180,11 @@ class _FunctionLine(NamedTuple):
     """
     A gcov line with function coverage data for the next line.
 
-    ``function NAME called CALLS returned RETURNED blocks executed BLOCKS``
+    ``function NAME called COUNT returned RETURNED blocks executed BLOCKS``
     """
 
     name: str
-    calls: int
+    count: int
     returned: int
     blocks_covered: int
 
@@ -211,6 +212,19 @@ class UnknownLineType(Exception):
     def __init__(self, line: str) -> None:
         super().__init__(line)
         self.line = line
+
+
+class NegativeHits(Exception):
+    """Used by `_gather_coverage_from_line()` to signal that a negative count value was found."""
+
+    def __init__(self, line: str) -> None:
+        super().__init__(
+            f"Got negative hit value in gcov line {line!r} caused by a "
+            "bug in gcov tool, see "
+            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option "
+            "--gcov-ignore-parse-errors with a value of negative_hits.warn, "
+            "or negative_hits.warn_one."
+        )
 
 
 def parse_metadata(lines: List[str]) -> Dict[str, Optional[str]]:
@@ -267,7 +281,7 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    ignore_parse_errors: bool,
+    ignore_parse_errors: str,
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
@@ -279,18 +293,18 @@ def parse_coverage(
     Arguments:
         lines: the lines of the file to be parsed (excluding newlines)
         filename: for error reports
-        ignore_parse_errors: whether errors should be converted to warnings
+        ignore_parse_errors: which errors should be converted to warnings
 
     Returns:
         tuple of the coverage data and the source code lines
 
     Raises:
-        Any exceptions during parsing, unless ignore_parse_errors is enabled.
+        Any exceptions during parsing, unless ignore_parse_errors is set.
     """
 
     lines_with_errors: List[_LineWithError] = []
-
     tokenized_lines: List[Tuple[_Line, str]] = []
+    persistent_states: Dict[str, Any] = {}
     for raw_line in lines:
 
         # empty lines shouldn't occur in reality, but are common in testing
@@ -298,9 +312,22 @@ def parse_coverage(
             continue
 
         try:
-            tokenized_lines.append((_parse_line(raw_line), raw_line))
+            tokenized_lines.append(
+                (
+                    _parse_line(raw_line, ignore_parse_errors, persistent_states),
+                    raw_line,
+                )
+            )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
+
+    if (
+        "negative_hits.warn_once_per_file" in persistent_states
+        and persistent_states["negative_hits.warn_once_per_file"] > 1
+    ):
+        logger.warning(
+            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} issues overall."
+        )
 
     coverage = FileCoverage(filename)
     state = _ParserState()
@@ -318,11 +345,11 @@ def parse_coverage(
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
-        name, calls, _, _ = function
+        name, count, _, _ = function
         insert_function_coverage(
             coverage,
-            FunctionCoverage(name, lineno=state.lineno + 1, call_count=calls),
-            MergeOptions(ignore_function_lineno=True),
+            FunctionCoverage(name, lineno=state.lineno + 1, count=count),
+            FUNCTION_MAX_LINE_MERGE_OPTIONS,
         )
 
     _report_lines_with_errors(
@@ -384,8 +411,8 @@ def _gather_coverage_from_line(
 
             insert_function_coverage(
                 coverage,
-                FunctionCoverage(name, lineno=lineno, call_count=count),
-                MergeOptions(ignore_function_lineno=True),
+                FunctionCoverage(name, lineno=lineno, count=count),
+                FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
         return _ParserState(
@@ -402,7 +429,7 @@ def _gather_coverage_from_line(
         return state._replace(deferred_functions=[*state.deferred_functions, line])
 
     elif isinstance(line, _BranchLine):
-        branchno, count, annotation = line
+        branchno, hits, annotation = line
 
         # line_cov won't exist if it was considered noncode
         line_cov = coverage.lines.get(state.lineno)
@@ -412,7 +439,7 @@ def _gather_coverage_from_line(
                 line_cov,
                 branchno,
                 BranchCoverage(
-                    count=count,
+                    count=hits,
                     fallthrough=(annotation == "fallthrough"),
                     throw=(annotation == "throw"),
                 ),
@@ -459,7 +486,7 @@ def _report_lines_with_errors(
     lines_with_errors: List[_LineWithError],
     *,
     filename: str,
-    ignore_parse_errors: bool,
+    ignore_parse_errors: set,
 ) -> None:
     """Log warnings and potentially re-throw exceptions"""
 
@@ -481,7 +508,7 @@ def _report_lines_with_errors(
     for ex in errors:
         logger.warning(f"Exception during parsing:\n\t{type(ex).__name__}: {ex}")
 
-    if ignore_parse_errors:
+    if ignore_parse_errors is not None and "all" in ignore_parse_errors:
         return
 
     logger.error(
@@ -494,7 +521,9 @@ def _report_lines_with_errors(
     raise errors[0]  # guaranteed to have at least one exception
 
 
-def _parse_line(line: str) -> _Line:
+def _parse_line(
+    line: str, ignore_parse_errors: set = (), persistent_states: dict = {}
+) -> _Line:
     """
     Categorize/parse individual lines without further processing.
 
@@ -529,12 +558,16 @@ def _parse_line(line: str) -> _Line:
     _BranchLine(branchno=3, hits=0, annotation=None)
     >>> _parse_line('branch 3 taken 123')
     _BranchLine(branchno=3, hits=123, annotation=None)
+    >>> _parse_line('branch 3 taken -1', ("negative_hits.warn",))
+    _BranchLine(branchno=3, hits=0, annotation=None)
     >>> _parse_line('branch 7 taken 3% (fallthrough)')
     _BranchLine(branchno=7, hits=1, annotation='fallthrough')
     >>> _parse_line('branch 17 taken 99% (throw)')
     _BranchLine(branchno=17, hits=1, annotation='throw')
     >>> _parse_line('branch  0 never executed')
     _BranchLine(branchno=0, hits=0, annotation=None)
+    >>> _parse_line('branch  0 never executed (fallthrough)')
+    _BranchLine(branchno=0, hits=0, annotation='fallthrough')
     >>> _parse_line('branch 2 with some unknown format')
     Traceback (most recent call last):
     gcovr.gcov_parser.UnknownLineType: branch 2 with some unknown format
@@ -559,7 +592,7 @@ def _parse_line(line: str) -> _Line:
 
     Example: can parse function tags:
     >>> _parse_line('function foo called 2 returned 95% blocks executed 85%')
-    _FunctionLine(name='foo', calls=2, returned=1, blocks_covered=1)
+    _FunctionLine(name='foo', count=2, returned=1, blocks_covered=1)
     >>> _parse_line('function foo with some unknown format')
     Traceback (most recent call last):
     gcovr.gcov_parser.UnknownLineType: function foo with some unknown format
@@ -596,7 +629,7 @@ def _parse_line(line: str) -> _Line:
     """
     # pylint: disable=too-many-branches
 
-    tag = _parse_tag_line(line)
+    tag = _parse_tag_line(line, ignore_parse_errors, persistent_states)
     if tag is not None:
         return tag
 
@@ -686,7 +719,9 @@ def _parse_line(line: str) -> _Line:
     raise UnknownLineType(line)
 
 
-def _parse_tag_line(line: str) -> Optional[_Line]:
+def _parse_tag_line(
+    line: str, ignore_parse_errors: set = (), persistent_states: dict = {}
+) -> Optional[_Line]:
     """A tag line is any gcov line that starts in the first column."""
     # pylint: disable=too-many-return-statements
 
@@ -708,6 +743,19 @@ def _parse_tag_line(line: str) -> Optional[_Line]:
         if match is not None:
             branch_id, taken_str, annotation = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
+            if hits < 0:
+                if ignore_parse_errors is not None and (
+                    "negative_hits.warn" in ignore_parse_errors
+                    or "negative_hits.warn_once_per_file" in ignore_parse_errors
+                ):
+                    if "negative_hits.warn_once_per_file" not in persistent_states:
+                        persistent_states["negative_hits.warn_once_per_file"] = 0
+                        logger.warning(f"Ignoring negative hits in line {line!r}.")
+                    persistent_states["negative_hits.warn_once_per_file"] += 1
+                else:
+                    raise NegativeHits(line)
+                hits = 0
+
             return _BranchLine(int(branch_id), hits, annotation)
 
     # CALL
@@ -741,10 +789,10 @@ def _parse_tag_line(line: str) -> Optional[_Line]:
     if line.startswith("function "):
         match = _RE_FUNCTION_LINE.match(line)
         if match is not None:
-            name, calls, returns, blocks = match.groups()
+            name, count, returns, blocks = match.groups()
             return _FunctionLine(
                 name,
-                _int_from_gcov_unit(calls),
+                _int_from_gcov_unit(count),
                 _int_from_gcov_unit(returns),
                 _int_from_gcov_unit(blocks),
             )
@@ -783,6 +831,8 @@ def _int_from_gcov_unit(formatted: str) -> int:
     Examples:
     >>> _int_from_gcov_unit('123')
     123
+    >>> _int_from_gcov_unit('-1.2k')
+    -1200
     >>> [_int_from_gcov_unit(value) for value in ('NAN %', '17.2%', '0%')]
     [0, 1, 0]
     >>> [_int_from_gcov_unit(value) for value in ('1.7k', '0.5G')]

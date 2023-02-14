@@ -1,0 +1,42 @@
+{
+    "run_at": "",
+    "service_job_id": "id",
+    "service_name": "gcovr-test-suite",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "coverage": [
+                null,
+                null,
+                1,
+                null,
+                1,
+                null,
+                2,
+                0,
+                null,
+                2,
+                null,
+                null
+            ],
+            "name": "func.h",
+            "source_digest": "038c9fe6d002775301b38c63c7aa5e6c"
+        },
+        {
+            "coverage": [
+                null,
+                null,
+                null,
+                null,
+                2,
+                2,
+                null,
+                2,
+                null
+            ],
+            "name": "main.c",
+            "source_digest": "5e9dc757e8533396ceb462a0d827e003"
+        }
+    ]
+}
