@@ -339,6 +339,13 @@ bool checkInterpreter(int a)
    return false;
 }
 
+void verify_issue_679(const bool b) {
+  if (b) {
+    for (int i = 0; i < 10; i++) {
+    }
+  }
+}
+
 int main(int argc, char *argv[])
 {
    checkBiggerTrue(6);
@@ -384,6 +391,9 @@ int main(int argc, char *argv[])
    checkDoWhileLoop(5);
 
    checkInterpreter(2);
+
+   verify_issue_679(false);
+   verify_issue_679(true);
 
    return 0;
 }
