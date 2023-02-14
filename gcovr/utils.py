@@ -85,7 +85,7 @@ def is_fs_case_insensitive():
 
 
 @functools.lru_cache(maxsize=None)
-def resolvePathCaseStyle(path: str):
+def fix_case_of_path(path: str):
     rest, cur = os.path.split(path)
     # e.g path = ".." happens if original path is like "../dir/subdir/file.cpp"
     if not rest:
@@ -97,7 +97,7 @@ def resolvePathCaseStyle(path: str):
     assert len(matchedFileName) < 2, "Seems that we have a case sensitive filesystem"
 
     if len(matchedFileName) == 1:
-        path = os.path.join(resolvePathCaseStyle(cur), matchedFileName[0])
+        path = os.path.join(fix_case_of_path(cur), matchedFileName[0])
     return path.replace("\\", "/")
 
 

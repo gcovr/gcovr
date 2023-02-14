@@ -26,7 +26,7 @@ import io
 from threading import Lock
 from typing import Optional
 
-from .utils import search_file, commonpath, is_fs_case_insensitive, resolvePathCaseStyle
+from .utils import search_file, commonpath, is_fs_case_insensitive, fix_case_of_path
 from .workers import locked_directory
 from .gcov_parser import parse_metadata, parse_coverage
 from .coverage import CovData
@@ -165,7 +165,7 @@ def guess_source_file_name(
         )
 
     if is_fs_case_insensitive():
-        fname = resolvePathCaseStyle(fname)
+        fname = fix_case_of_path(fname)
 
     logger.debug(
         f"Finding source file corresponding to a gcov data file\n"
