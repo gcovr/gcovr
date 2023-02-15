@@ -89,6 +89,11 @@
                     "name": "_Z16checkSmallerTruei"
                 },
                 {
+                    "execution_count": 2,
+                    "lineno": 342,
+                    "name": "_Z16verify_issue_679b"
+                },
+                {
                     "execution_count": 1,
                     "lineno": 124,
                     "name": "_Z17checkComplexFalsei"
@@ -155,7 +160,7 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 342,
+                    "lineno": 349,
                     "name": "main"
                 }
             ],
@@ -1486,17 +1491,54 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 2,
                     "line_number": 342
                 },
                 {
-                    "branches": [],
-                    "count": 1,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 2,
+                    "gcovr/decision": {
+                        "count_false": 1,
+                        "count_true": 1,
+                        "type": "conditional"
+                    },
+                    "line_number": 343
+                },
+                {
+                    "branches": [
+                        {
+                            "count": 10,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 11,
+                    "gcovr/decision": {
+                        "count_false": 1,
+                        "count_true": 10,
+                        "type": "conditional"
+                    },
                     "line_number": 344
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 10,
                     "line_number": 345
                 },
                 {
@@ -1506,7 +1548,7 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 2,
                     "line_number": 347
                 },
                 {
@@ -1517,7 +1559,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 350
+                    "line_number": 351
                 },
                 {
                     "branches": [],
@@ -1532,7 +1574,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 355
+                    "line_number": 354
                 },
                 {
                     "branches": [],
@@ -1542,7 +1584,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 358
+                    "line_number": 357
                 },
                 {
                     "branches": [],
@@ -1552,7 +1594,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 361
+                    "line_number": 360
                 },
                 {
                     "branches": [],
@@ -1577,7 +1619,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 367
+                    "line_number": 368
                 },
                 {
                     "branches": [],
@@ -1602,7 +1644,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 375
+                    "line_number": 374
                 },
                 {
                     "branches": [],
@@ -1612,7 +1654,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 378
+                    "line_number": 377
                 },
                 {
                     "branches": [],
@@ -1622,7 +1664,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 381
+                    "line_number": 380
                 },
                 {
                     "branches": [],
@@ -1637,7 +1679,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 384
+                    "line_number": 385
                 },
                 {
                     "branches": [],
@@ -1648,6 +1690,41 @@
                     "branches": [],
                     "count": 1,
                     "line_number": 388
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 389
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 390
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 391
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 393
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 395
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 396
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 398
                 }
             ]
         }
