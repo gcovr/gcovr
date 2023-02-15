@@ -38,6 +38,7 @@ Bug fixes and small improvements:
 - Fix handling for nonexistent source code for HTML-details and Coveralls reports. (:issue:`663`)
 - Exclude functions with :ref:`Exclusion markers`. (:issue:`713`)
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
+- Add Python 3.11 to test matrix. (:issue:`717`)
 - Fix: Headers containing definitions appear once with all lower-case and once correct case characters in the results under Windows. (:issue:`694`)
 
 Documentation:
