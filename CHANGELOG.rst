@@ -39,7 +39,7 @@ Bug fixes and small improvements:
 - Exclude functions with :ref:`Exclusion markers`. (:issue:`713`)
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
 - Add Python 3.11 to test matrix. (:issue:`717`)
-- Fix: Headers containing definitions appear once with all lower-case and once correct case characters in the results under Windows. (:issue:`694`)
+- Fix casing of files if filesystem is case insensitive. (:issue:`694`)
 
 Documentation:
 
