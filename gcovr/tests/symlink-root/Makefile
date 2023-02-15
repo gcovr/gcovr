@@ -9,9 +9,7 @@ run: txt
 
 txt:
 	cd symlink; ./testcase
-	cd symlink; $(GCOVR) --txt ../coverage.txt --root $${PWD} > out.log 2>&1
-	cd symlink; cat out.log
-	cd symlink; grep -F "Your project --root directory seems to contain a symlink." out.log
+	cd symlink; $(GCOVR) --txt ../coverage.txt --root $${PWD}
 
 clean:
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
