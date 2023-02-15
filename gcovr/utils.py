@@ -19,7 +19,6 @@
 
 from __future__ import annotations
 from argparse import ArgumentTypeError
-import glob
 from typing import Type
 import logging
 import os
@@ -93,11 +92,13 @@ def fix_case_of_path(path: str):
     if not cur:  # e.g path = "C:/"
         return os.path.realpath(rest)  # resolves the case of c:/
 
-    matchedFileName = glob.glob(cur, root_dir=rest)
+    curL = cur.lower()
+    matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
     assert len(matchedFileName) < 2, "Seems that we have a case sensitive filesystem"
 
     if len(matchedFileName) == 1:
-        path = os.path.join(fix_case_of_path(cur), matchedFileName[0])
+        path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
+
     return path.replace("\\", "/")
 
 
