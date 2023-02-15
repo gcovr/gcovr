@@ -38,6 +38,7 @@ Bug fixes and small improvements:
 - Fix handling for nonexistent source code for HTML-details and Coveralls reports (:issue:`663`)
 - Exclude functions with :ref:`Exclusion markers` (:issue:`713`)
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
+- Add Python 3.11 to test matrix. (:issue:`717`)
 - Apply ``realpath()`` to the path provided to ``DirectoryPrefixFilter``. (:issue:`712`)
 
 Documentation:

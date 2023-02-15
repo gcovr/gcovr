@@ -91,7 +91,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         gcc: [gcc-8]
-        python-version: ['3.8', '3.9', '3.10', 'pypy-3.7'] # 3.7 is used in Docker
+        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.7'] # 3.7 is used in Docker
 
         include:
 
@@ -102,7 +102,7 @@ jobs:
             python-version: '3.9'
           - os: ubuntu-22.04
             gcc: gcc-11
-            python-version: '3.10'
+            python-version: '3.11'
 
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
@@ -110,7 +110,7 @@ jobs:
             python-version: '3.7'
           - os: windows-2019
             gcc: gcc-8
-            python-version: '3.10'
+            python-version: '3.11'
 
     steps:
     - uses: actions/checkout@v3
