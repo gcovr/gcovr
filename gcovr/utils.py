@@ -22,6 +22,7 @@ from argparse import ArgumentTypeError
 from typing import Type
 import logging
 import os
+import functools
 import re
 import sys
 from contextlib import contextmanager
@@ -65,6 +66,40 @@ if (sys.platform == "win32") and (sys.version_info < (3, 8)):
 
 else:
     realpath = os.path.realpath
+
+
+@functools.lru_cache(maxsize=1)
+def is_fs_case_insensitive():
+    cwd = os.getcwd()
+    # Guessing if file system is case insensitive.
+    # The working directory is not the root and accessible in upper and lower case.
+    ret = (
+        (cwd != os.path.sep)
+        and os.path.exists(cwd.upper())
+        and os.path.exists(cwd.lower())
+    )
+    logger.debug(f"File system is case {'in' if ret else ''}sensitive.")
+
+    return ret
+
+
+@functools.lru_cache(maxsize=None)
+def fix_case_of_path(path: str):
+    rest, cur = os.path.split(path)
+    # e.g path = ".." happens if original path is like "../dir/subdir/file.cpp"
+    if not rest:
+        return cur
+    if not cur:  # e.g path = "C:/"
+        return os.path.realpath(rest)  # resolves the case of c:/
+
+    curL = cur.lower()
+    matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
+    assert len(matchedFileName) < 2, "Seems that we have a case sensitive filesystem"
+
+    if len(matchedFileName) == 1:
+        path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
+
+    return path.replace("\\", "/")
 
 
 def get_os_independent_path(path):
@@ -193,15 +228,7 @@ FilterOption.NonEmpty = NonEmptyFilterOption
 
 class Filter(object):
     def __init__(self, pattern: str):
-        cwd = os.getcwd()
-        # Guessing if file system is case insensitive.
-        # The working directory is not the root and accessible in upper and lower case.
-        is_fs_case_insensitive = (
-            (cwd != os.path.sep)
-            and os.path.exists(cwd.upper())
-            and os.path.exists(cwd.lower())
-        )
-        flags = re.IGNORECASE if is_fs_case_insensitive else 0
+        flags = re.IGNORECASE if is_fs_case_insensitive() else 0
         self.pattern = re.compile(pattern, flags)
 
     def match(self, path: str):

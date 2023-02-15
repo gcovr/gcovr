@@ -1,0 +1,94 @@
+{
+    "files": [
+        {
+            "file": "src/main.cpp",
+            "functions": [
+                {
+                    "execution_count": 2,
+                    "lineno": 4,
+                    "name": "main"
+                }
+            ],
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 2,
+                    "line_number": 4
+                },
+                {
+                    "branches": [
+                        {
+                            "count": 2,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        },
+                        {
+                            "count": 2,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        }
+                    ],
+                    "count": 2,
+                    "line_number": 6
+                },
+                {
+                    "branches": [],
+                    "count": 2,
+                    "line_number": 7
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "line_number": 9
+                },
+                {
+                    "branches": [
+                        {
+                            "count": 2,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 2,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 6,
+                    "line_number": 12
+                }
+            ]
+        }
+    ],
+    "gcovr/format_version": "0.5"
+}

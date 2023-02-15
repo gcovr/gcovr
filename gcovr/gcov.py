@@ -26,7 +26,7 @@ import io
 from threading import Lock
 from typing import Optional
 
-from .utils import search_file, commonpath
+from .utils import search_file, commonpath, is_fs_case_insensitive, fix_case_of_path
 from .workers import locked_directory
 from .gcov_parser import parse_metadata, parse_coverage
 from .coverage import CovData
@@ -96,11 +96,7 @@ def find_datafiles(search_path, exclude_dirs):
 # Process a single gcov datafile
 #
 def process_gcov_data(
-    data_fname: str,
-    covdata: CovData,
-    gcda_fname: Optional[str],
-    options,
-    currdir=None,
+    data_fname: str, covdata: CovData, gcda_fname: Optional[str], options, currdir=None
 ) -> None:
     with io.open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
@@ -157,13 +153,7 @@ def process_gcov_data(
 
 
 def guess_source_file_name(
-    gcovname,
-    data_fname,
-    gcda_fname,
-    root_dir,
-    starting_dir,
-    obj_dir,
-    currdir=None,
+    gcovname, data_fname, gcda_fname, root_dir, starting_dir, obj_dir, currdir=None
 ):
     if currdir is None:
         currdir = os.getcwd()
@@ -173,6 +163,9 @@ def guess_source_file_name(
         fname = guess_source_file_name_heuristics(
             gcovname, data_fname, currdir, root_dir, starting_dir, obj_dir, gcda_fname
         )
+
+    if is_fs_case_insensitive():
+        fname = fix_case_of_path(fname)
 
     logger.debug(
         f"Finding source file corresponding to a gcov data file\n"
@@ -301,7 +294,9 @@ def process_datafile(filename, covdata, options, toerase):
     """
     logger.debug(f"Processing file: {filename}")
 
-    abs_filename = os.path.abspath(filename)
+    abs_filename = os.path.abspath(filename).replace(
+        os.path.sep, "/"
+    )  # gcov requires posix style path
 
     errors = []
 
