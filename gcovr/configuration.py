@@ -1330,6 +1330,26 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "gcov_ignore_errors",
+        ["--gcov-ignore-errors"],
+        group="gcov_options",
+        choices=[
+            "all",
+            "no_working_dir_found",
+        ],
+        nargs="?",
+        const="all",
+        default=None,
+        help=(
+            "Ignore errors from invoking GCOV command "
+            "instead of exiting with an error. "
+            "A report will be shown on stderr. "
+            "Default: {default!s}."
+        ),
+        type=str,
+        action="append",
+    ),
+    GcovrConfigOption(
         "gcov_ignore_parse_errors",
         ["--gcov-ignore-parse-errors"],
         group="gcov_options",

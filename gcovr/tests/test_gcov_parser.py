@@ -350,7 +350,7 @@ def test_unknown_tags(caplog, ignore_errors):
         coverage, _ = parse_coverage(
             filename="foo.c",
             lines=lines,
-            ignore_parse_errors=["all"] if ignore_errors else None,
+            ignore_parse_errors=set(["all"]) if ignore_errors else None,
         )
         return coverage
 
@@ -601,7 +601,7 @@ def test_negativ_branch_count_ignored():
     coverage, lines = parse_coverage(
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=["negative_hits.warn"],
+        ignore_parse_errors=set(["negative_hits.warn"]),
     )
 
     covered_branches = {
