@@ -15,6 +15,7 @@ Breaking changes:
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 - New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
 - Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
+- New :option:`--gcov-ignore-errors` to ignore gcov errors. Old behavior was to print a warning and continue. (:issue:`718`)
 
 New features and notable changes:
 
