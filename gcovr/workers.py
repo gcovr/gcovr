@@ -56,9 +56,14 @@ def locked_directory(dir_):
     """
     Context for doing something in a locked directory
     """
-    locked_directory.global_object.run_in(dir_)
-    yield
-    locked_directory.global_object.done(dir_)
+    try:
+        locked_directory.global_object.run_in(dir_)
+        yield
+        locked_directory.global_object.done(dir_)
+    except Exception:
+        # unlock the directory and reraise the exception.
+        locked_directory.global_object.done(dir_)
+        raise
 
 
 locked_directory.global_object = LockedDirectories()
