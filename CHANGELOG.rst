@@ -15,6 +15,7 @@ Breaking changes:
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 - New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
 - Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
+- The default filename for :option:`--cobertura` is changed from coverage.xml to cobertura.xml (:issue:`721`)
 
 New features and notable changes:
 
@@ -53,6 +54,7 @@ Internal changes:
 - Detect ``gcc`` version for running tests. (:issue:`686`)
 - Use scrubbed data for ``--update_reference`` option. (:issue:`698`)
 - Install ninja with package manager instead of GitHub action. (:issue:`699`)
+- Rename the reference files coverage.xml to cobertura.xml and the test from xml to cobertura (:issue:`721`)
 
 5.2 (06 August 2022)
 --------------------

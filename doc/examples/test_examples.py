@@ -51,7 +51,7 @@ def find_test_cases():
     for script in glob.glob(datadir + "/*.sh"):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
-        for ext in "txt xml csv json html".split():
+        for ext in "txt cobertura csv json html".split():
             if ext == "html" and is_compiler(os.getenv("CC"), "gcc-5", "gcc-6"):
                 continue
             baseline = "{datadir}/{name}.{ext}".format(
