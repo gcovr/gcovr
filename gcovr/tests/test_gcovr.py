@@ -194,14 +194,16 @@ def compiled(request, name):
 
 
 KNOWN_FORMATS = [
+    # Own formats
     "txt",
-    "xml",
     "html",
-    "sonarqube",
     "json",
     "json_summary",
     "csv",
+    # Other formats
+    "cobertura",
     "coveralls",
+    "sonarqube",
 ]
 
 
@@ -414,28 +416,32 @@ def remove_duplicate_data(
 
 
 SCRUBBERS = dict(
+    # Own formats
     txt=scrub_txt,
-    xml=scrub_xml,
     html=scrub_html,
-    sonarqube=scrub_xml,
     json=lambda x: x,
     json_summary=lambda x: x,
     csv=scrub_csv,
+    # Other formats
+    cobertura=scrub_xml,
     coveralls=scrub_coveralls,
+    sonarqube=scrub_xml,
 )
 
 OUTPUT_PATTERN = dict(
+    # Own formats
     txt=["coverage*.txt"],
-    xml=["coverage*.xml"],
     html=["coverage*.html", "coverage*.css"],
-    sonarqube=["sonarqube*.xml"],
     json=["coverage*.json"],
     json_summary=["summary_coverage*.json"],
     csv=["coverage*.csv"],
+    # Other formats
+    cobertura=["cobertura*.xml"],
     coveralls=["coveralls*.json"],
+    sonarqube=["sonarqube*.xml"],
 )
 
-ASSERT_EQUALS = dict(xml=assert_xml_equals, sonarqube=assert_xml_equals)
+ASSERT_EQUALS = dict(cobertura=assert_xml_equals, sonarqube=assert_xml_equals)
 
 
 def test_build(

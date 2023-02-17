@@ -8,7 +8,7 @@ all: links
 	cd project; $(CXX) $(CFLAGS) -c relevant-library/src/yes.cpp -o yes.o
 	cd project; $(CXX) $(CFLAGS) main.o no.o yes.o -o testcase
 
-run: txt xml html sonarqube
+run: txt cobertura html sonarqube
 
 # the src/ filter is provided by the project/gcovr.cfg configuration file
 GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
@@ -20,8 +20,8 @@ coverage_unfiltered.json:
 txt: coverage_unfiltered.json
 	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< -o ../coverage.txt
 
-xml: coverage_unfiltered.json
-	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --cobertura-pretty --cobertura ../coverage.xml
+cobertura: coverage_unfiltered.json
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --cobertura-pretty --cobertura ../cobertura.xml
 
 html: coverage_unfiltered.json
 	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --html-details -o ../coverage.html

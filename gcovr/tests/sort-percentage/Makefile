@@ -25,4 +25,4 @@ html: coverage.json
 clean:
 	rm -f testcase
 	rm -f *.gc* *.o
-	rm -f coverage*.* sonarqube*.*
+	rm -f coverage*.* cobertura*.* sonarqube*.*
