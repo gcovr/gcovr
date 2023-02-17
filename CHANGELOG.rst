@@ -40,6 +40,7 @@ Bug fixes and small improvements:
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
 - Add Python 3.11 to test matrix. (:issue:`717`)
 - Fix casing of files if filesystem is case insensitive. (:issue:`694`)
+- Fix deadlock if :option:`-j` is used and there are errors from ``gcov`` execution. (:issue:`719`)
 
 Documentation:
 
