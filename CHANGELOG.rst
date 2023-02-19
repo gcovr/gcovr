@@ -15,7 +15,10 @@ Breaking changes:
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 - New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
 - Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
-- New :option:`--gcov-ignore-errors` to ignore gcov errors. Old behavior was to print a warning and continue. (:issue:`718`)
+- Handling of ``gcov`` errors:
+
+  - Do not ignore return code of ``gcov``. (:issue:`653`)
+  - New :option:`--gcov-ignore-errors` to ignore ``gcov`` errors. Old behavior was to print a warning and continue. (:issue:`718`)
 
 New features and notable changes:
 
@@ -32,7 +35,6 @@ New features and notable changes:
 Bug fixes and small improvements:
 
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
-- Do not ignore returncode of `gcov`. (:issue:`653`)
 - Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
 - Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
 - Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
