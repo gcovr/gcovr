@@ -32,6 +32,7 @@ New features and notable changes:
 - Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
 - Allow annotations for never executed branches. (:issue:`711`)
 - Add function merge mode for same function defined in different lines. (:issue:`700`)
+- Update link to gcovr documentation in HTML report to point to the documentation of the used version. (:issue:`723`)
 
 Bug fixes and small improvements:
 
