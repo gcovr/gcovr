@@ -1,7 +1,7 @@
 all:
 	mkdir -p output && cd output && $(CXX) -fprofile-arcs -ftest-coverage -fPIC ../main.cpp -o testcase
 
-run: txt xml html sonarqube coveralls json
+run: txt cobertura html sonarqube coveralls json
 
 coverage.json:
 	./output/testcase
@@ -12,8 +12,8 @@ json: coverage.json
 txt: coverage.json
 	$(GCOVR) -o coverage.txt
 
-xml: coverage.json
-	$(GCOVR) --cobertura-pretty --cobertura coverage.xml
+cobertura: coverage.json
+	$(GCOVR) --cobertura-pretty --cobertura cobertura.xml
 
 html: coverage.json
 	$(GCOVR) --html-details -o coverage.html
@@ -26,4 +26,4 @@ coveralls: coverage.json
 
 clean:
 	rm -rf output
-	rm -f coverage*.* sonarqube*.* coveralls.json
+	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json

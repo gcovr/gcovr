@@ -15,6 +15,7 @@ Breaking changes:
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 - New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
 - Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
+- The default filename for :option:`--cobertura` is changed from coverage.xml to cobertura.xml (:issue:`721`)
 - Handling of ``gcov`` errors:
 
   - Do not ignore return code of ``gcov``. (:issue:`653`)
@@ -43,6 +44,7 @@ Bug fixes and small improvements:
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
 - Add Python 3.11 to test matrix. (:issue:`717`)
 - Fix casing of files if filesystem is case insensitive. (:issue:`694`)
+- Fix deadlock if :option:`-j` is used and there are errors from ``gcov`` execution. (:issue:`719`)
 
 Documentation:
 
@@ -55,6 +57,7 @@ Internal changes:
 - Detect ``gcc`` version for running tests. (:issue:`686`)
 - Use scrubbed data for ``--update_reference`` option. (:issue:`698`)
 - Install ninja with package manager instead of GitHub action. (:issue:`699`)
+- Rename the reference files coverage.xml to cobertura.xml and the test from xml to cobertura (:issue:`721`)
 
 5.2 (06 August 2022)
 --------------------

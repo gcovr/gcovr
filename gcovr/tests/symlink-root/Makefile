@@ -21,7 +21,7 @@ else
 		cmd.exe /C "rmdir /S /Q symlink";\
 	fi
 endif
-	rm -f root/*.gc* root/coverage*.* root/sonarqube*.* root/coveralls.json root/out.log
+	rm -f root/*.gc* root/coverage*.* root/cobertura*.* sonarqube*.* root/coveralls.json root/out.log
 
 links:
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)

@@ -20,21 +20,21 @@ endif
 all: check-env
 	$(call wrapDrive, $(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase)
 
-run: txt xml html sonarqube json json_summary coveralls
+run: txt cobertura html sonarqube json json_summary coveralls
 
 txt: check-env
 	$(call wrapDrive, ./testcase)
 	# generate actual output
 	$(call wrapDrive, $(GCOVR) -d --txt -o coverage.txt)
 
-xml: check-env
+cobertura: check-env
 	$(call wrapDrive, ./testcase)
-	$(call wrapDrive, $(GCOVR) -d --cobertura-pretty --cobertura coverage.xml)
+	$(call wrapDrive, $(GCOVR) -d --cobertura-pretty --cobertura cobertura.xml)
 
 html: check-env
 	$(call wrapDrive, ./testcase)
 	# these test cases also cover some CSS-linking permutations
-	$(call wrapDrive, $(GCOVR) --html-details coverage-details-linkcss.html)
+	$(call wrapDrive, $(GCOVR) -d --html-details coverage-details-linkcss.html)
 
 sonarqube: check-env
 	$(call wrapDrive, ./testcase)
@@ -46,7 +46,7 @@ json_summary: check-env
 
 json: check-env
 	$(call wrapDrive, ./testcase)
-	$(call wrapDrive, $(GCOVR) --json-pretty --json coverage.json)
+	$(call wrapDrive, $(GCOVR) -d --json-pretty --json coverage.json)
 
 coveralls: check-env
 	$(call wrapDrive, ./testcase)
@@ -56,4 +56,4 @@ clean:
 	rm -f testcase
 	rm -f fail_under.stderr
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html coverage*.css sonarqube.xml coverage.json summary_coverage.json coveralls.json
+	rm -f coverage.txt coverage*.html coverage*.css cobertura.xml sonarqube.xml coverage.json summary_coverage.json coveralls.json

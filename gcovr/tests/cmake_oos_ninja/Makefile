@@ -7,7 +7,7 @@ all:
 	cmake -G "Ninja" -DCMAKE_BUILD_TYPE=PROFILE -S . -B build
 	cmake --build build -- -v
 
-run: txt xml html sonarqube coveralls
+run: txt cobertura html sonarqube coveralls
 
 coverage.json:
 	cd build && ./gcovrtest
@@ -16,8 +16,8 @@ coverage.json:
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
 
-xml: coverage.json
-	$(GCOVR) -a $< --cobertura-pretty --cobertura coverage.xml
+cobertura: coverage.json
+	$(GCOVR) -a $< --cobertura-pretty --cobertura cobertura.xml
 
 html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
@@ -30,4 +30,4 @@ sonarqube: coverage.json
 
 clean:
 	rm -rf build main.cpp
-	rm -f coverage*.* sonarqube*.* coveralls.json
+	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json

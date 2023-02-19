@@ -2,7 +2,7 @@
 coverage*.txt
 coverage*.json
 summary_coverage*.json
-coverage*.xml
+cobertura*.xml
 sonarqube*.xml
 coverage*.csv
 coveralls*.json

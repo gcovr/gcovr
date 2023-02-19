@@ -11,7 +11,7 @@ endif
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt xml html sonarqube json json_summary coveralls
+run: txt cobertura html sonarqube json json_summary coveralls
 
 txt:
 	./testcase
@@ -29,9 +29,9 @@ txt:
 	# generate actual output
 	$(GCOVR) -d --txt -o coverage.txt
 
-xml:
+cobertura:
 	./testcase
-	$(GCOVR) -d --cobertura-pretty --cobertura coverage.xml
+	$(GCOVR) -d --cobertura-pretty --cobertura cobertura.xml
 
 html:
 	./testcase
@@ -39,7 +39,7 @@ html:
 	$(GCOVR) --html coverage-summary-includecss.html
 	$(GCOVR) --html coverage-summary-linkcss.html --no-html-self-contained
 	$(GCOVR) --html-details coverage-details-includecss.html --html-self-contained
-	$(GCOVR) --html-details coverage-details-linkcss.html
+	$(GCOVR) -d --html-details coverage-details-linkcss.html
 
 sonarqube:
 	./testcase
@@ -52,7 +52,7 @@ json_summary:
 
 json:
 	./testcase
-	$(GCOVR) --json-base test\\dir --json-pretty --json coverage.json
+	$(GCOVR) -d --json-base test\\dir --json-pretty --json coverage.json
 
 coveralls:
 	./testcase
@@ -62,4 +62,4 @@ clean:
 	rm -f testcase
 	rm -f fail_under.stderr
 	rm -f *.gc*
-	rm -f coverage.txt coverage.xml coverage*.html coverage*.css sonarqube.xml coverage.json summary_coverage.json coveralls.json
+	rm -f coverage.txt coverage*.html coverage*.css cobertura.xml sonarqube.xml coverage.json summary_coverage.json coveralls.json

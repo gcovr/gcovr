@@ -4,7 +4,7 @@ all:
 	cat test.cpp | $(CXX) -fprofile-arcs -ftest-coverage -fPIC -x c++ -c - -o test.o
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC code.o test.o -o testcase
 
-run: txt xml html sonarqube coveralls
+run: txt cobertura html sonarqube coveralls
 
 coverage.json:
 	./testcase
@@ -13,8 +13,8 @@ coverage.json:
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
 
-xml: coverage.json
-	$(GCOVR) -a $< --cobertura-pretty --cobertura coverage.xml
+cobertura: coverage.json
+	$(GCOVR) -a $< --cobertura-pretty --cobertura cobertura.xml
 
 html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
@@ -27,4 +27,4 @@ sonarqube: coverage.json
 
 clean:
 	rm -rf build
-	rm -f coverage*.* sonarqube*.* coveralls.json
+	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json
