@@ -8,7 +8,7 @@ run: txt cobertura html sonarqube coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --keep --verbose --json-pretty --json coverage.json
+	$(GCOVR) --keep --verbose --gcov-ignore-errors no_working_dir_found --json-pretty --json coverage.json
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt

@@ -281,7 +281,7 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    ignore_parse_errors: str,
+    ignore_parse_errors: set(),
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
