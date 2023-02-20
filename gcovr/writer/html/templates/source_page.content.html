@@ -1,0 +1,78 @@
+{# -*- engine: jinja -*- #}
+<div class="file-source">
+  <table>
+    <tr>
+      <th align="right">Line</th>
+      <th align="right">Branch</th>
+      {% if SHOW_DECISION %}
+      <th align="right">Decision</th>
+      {% endif %}
+      {% if not EXCLUDE_CALLS %}
+      <th align="right">Call</th>
+      {% endif %}
+      <th align="right">Exec</th>
+      <th align="left">Source</th>
+    </tr>
+    {% for row in source_lines %}
+    <tr class="source-line">
+      <td class="lineno"><a id="l{{row.lineno}}" href="#l{{row.lineno}}">{{row.lineno}}</a></td>
+      <td class="linebranch">
+        {% if row.linebranch %}
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
+        <div class="linebranchContents">
+          {% for branch in row.linebranch.branches %}
+          {% if branch.taken %}
+          <div class="takenBranch">&check; Branch {{branch.name}} taken {{branch.count}} times.</div>
+          {% else %}
+          <div class="notTakenBranch">&cross; Branch {{branch.name}} not taken.</div>
+          {% endif%}
+          {% endfor %}
+        </div>
+        </details>
+        {% endif %}
+      </td>
+      {% if SHOW_DECISION %}
+      <td class="linedecision">
+        {% if row.linedecision %}
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">{{row.linedecision.taken}}/{{row.linedecision.total}}</summary>
+          <div class="linedecisionContents">
+            {% for decision in row.linedecision.decisions %}
+            {% if decision.uncheckable %}
+            <div class="uncheckedDecision">? Decision couldn't be analyzed.</div>
+            {% elif decision.taken %}
+            <div class="takenDecision">&check; Decision '{{decision.name}}' taken {{decision.count}} times.</div>
+            {% else %}
+            <div class="notTakenDecision">&cross; Decision '{{decision.name}}' not taken.</div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </details>
+        {% endif %}
+      </td>
+      {% endif %}
+      {% if not EXCLUDE_CALLS %}
+      <td class="linecall">
+        {% if row.linecall %}
+          <details class="linecallDetails">
+          <summary class="linecallSummary">{{row.linecall.invoked}}/{{row.linecall.total}}</summary>
+          <div class="linecallContents">
+            {% for call in row.linecall.calls %}
+            {% if call.invoked %}
+            <div class="takenBranch">&check; Call {{call.name}} invoked.</div>
+            {% else %}
+            <div class="notTakenBranch">&cross; Call {{call.name}} not invoked.</div>
+            {% endif%}
+            {% endfor %}
+          </div>
+         </details>
+        {% endif %}
+      </td>
+      {% endif %}
+      <td class="linecount {{row.covclass}}">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
+      <td class="src {{row.covclass}}">{{row.source}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
