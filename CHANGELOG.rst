@@ -21,6 +21,8 @@ Breaking changes:
   - Do not ignore return code of ``gcov``. (:issue:`653`)
   - New :option:`--gcov-ignore-errors` to ignore ``gcov`` errors. Old behavior was to print a warning and continue. (:issue:`718`)
 
+- Revert changes from :issue:`623` and add documentation entry :ref:`support keil uvision format`. (:issue:`727`)
+
 New features and notable changes:
 
 - New :option:`--html-nested` for reports that summarize subdirectories with aggregated statistics per directory. (:issue:`687`)
