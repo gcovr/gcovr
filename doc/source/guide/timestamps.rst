@@ -5,11 +5,14 @@ Reproducible Timestamps
 
 In some cases, it may be desirable to list a specific timestamp in the report.
 Timestamps are shown in
-the :ref:`html_output`,
-:ref:`coveralls_output`,
-and the :ref:`cobertura_output`.
-This can be achieved via the :option:`--timestamp <gcovr --timestamp>` option.
+the :ref:`html_output`, :ref:`coveralls_output`, and the :ref:`cobertura_output`.
+This can be achieved via the :option:`--timestamp <gcovr --timestamp>` option
+or via :ref:`Using SOURCE_DATE_EPOCH` environment variable.
 This option does not affect the modification times or other filesystem metadata.
+
+.. versionadded:: NEXT
+
+   Respect environment variable `SOURCE_DATE_EPOCH`_ for default of :option:`gcovr --timestamp`.
 
 .. versionadded:: 5.1
 
@@ -112,3 +115,27 @@ The supported settings are:
   ``--date=iso8601-strict``,
   ``--date=iso-strict-local``,
   ``--date=iso8601-strict-local``
+
+.. _Using SOURCE_DATE_EPOCH:
+
+Using SOURCE_DATE_EPOCH
+-----------------------
+
+The Reproducible Builds project defines the ``SOURCE_DATE_EPOCH`` variable.
+Gcovr will use this variable as a default timestamp
+if no explicit :option:`--timestamp <gcovr --timestamp>` is set.
+
+The contents of this variable *must* be an UTC epoch, without any prefix.
+No other format is supported.
+Example usage:
+
+.. include:: ../../examples/example_timestamps.sh
+   :code: bash
+   :start-after: #BEGIN source date epoch
+   :end-before: #END source date epoch
+
+For more information on setting and using this variable,
+see the `Reproducible Builds documentation on SOURCE_DATE_EPOCH
+<SOURCE_DATE_EPOCH_>`_.
+
+.. _SOURCE_DATE_EPOCH: https://reproducible-builds.org/docs/source-date-epoch/

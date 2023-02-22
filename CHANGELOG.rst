@@ -35,6 +35,7 @@ New features and notable changes:
 - Allow annotations for never executed branches. (:issue:`711`)
 - Add function merge mode for same function defined in different lines. (:issue:`700`)
 - Update link to gcovr documentation in HTML report to point to the documentation of the used version. (:issue:`723`)
+- Add environment `SOURCE_DATE_EPOCH <https://reproducible-builds.org/docs/source-date-epoch>`_ to set default for :option:`--timestamp`. (:issue:`729`)
 
 Bug fixes and small improvements:
 
