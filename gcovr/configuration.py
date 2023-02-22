@@ -22,6 +22,7 @@ from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 from multiprocessing import cpu_count
+import time
 from typing import Iterable, Any, List, Optional, Union, Callable, TextIO, Dict
 from dataclasses import dataclass
 import datetime
@@ -1160,10 +1161,13 @@ GCOVR_CONFIG_OPTIONS = [
             "Override current time for reproducible reports. "
             "Can use `YYYY-MM-DD hh:mm:ss` or epoch notation. "
             "Used by HTML, Coveralls, and Cobertura reports. "
-            "Default: current time."
+            "Default: Environment variable SOURCE_DATE_EPOCH "
+            "(see https://reproducible-builds.org/docs/source-date-epoch) or current time."
         ),
         type=timestamp,
-        default=datetime.datetime.now(),
+        default=datetime.datetime.fromtimestamp(
+            int(os.environ.get("SOURCE_DATE_EPOCH", time.time()))
+        ),
     ),
     GcovrConfigOption(
         "filter",
