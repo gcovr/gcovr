@@ -101,26 +101,30 @@ def source_date_epoch() -> Optional[datetime.datetime]:
     """
     Load time from SOURCE_DATE_EPOCH, if it exists.
     See: <https://reproducible-builds.org/docs/source-date-epoch/>
+
     Examples:
     >>> monkeypatch = getfixture("monkeypatch")
     >>> caplog = getfixture("caplog")
+
     Example: can be empty
     >>> with monkeypatch.context() as mp:
     ...   mp.delenv("SOURCE_DATE_EPOCH", raising=False)
     ...   print(source_date_epoch())
     None
+
     Example: can contain timestamp
     >>> with monkeypatch.context() as mp:
     ...   mp.setenv("SOURCE_DATE_EPOCH", "1677067226")
     ...   print(source_date_epoch())
-    2023-02-22 12:00:26
+    2023-02-22 12:00:26+00:00
+
     Example: can contain invalid timestamp
     >>> with monkeypatch.context() as mp:
     ...   mp.setenv("SOURCE_DATE_EPOCH", "not a timestamp")
     ...   print(source_date_epoch())
     None
     >>> for m in caplog.messages: print(m)
-    ignoring invalid environment variable SOURCE_DATE_EPOCH='not a timestamp'
+    Ignoring invalid environment variable SOURCE_DATE_EPOCH='not a timestamp'
     """
 
     ts = os.environ.get("SOURCE_DATE_EPOCH")
