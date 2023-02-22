@@ -6,9 +6,7 @@ set -euo pipefail  # "use strict"
 # this function wraps gcovr to force a specific timestamp.
 # This can be ignored by end users and isn't really part of the example.
 gcovr() {
-    export SOURCE_DATE_EPOCH=3666
-    python3 -m gcovr "$@"
-    unset SOURCE_DATE_EPOCH
+    python3 -m gcovr --timestamp="2021-11-08 21:12:28" "$@"
 }
 
 

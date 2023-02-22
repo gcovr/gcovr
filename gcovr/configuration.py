@@ -21,6 +21,7 @@ from __future__ import annotations
 from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
+import logging
 from multiprocessing import cpu_count
 import time
 from typing import Iterable, Any, List, Optional, Union, Callable, TextIO, Dict
@@ -31,6 +32,8 @@ import re
 
 from .utils import FilterOption, force_unix_separator
 from .writer.html import CssRenderer
+
+logger = logging.getLogger("gcovr")
 
 
 def check_percentage(value: str) -> float:
@@ -93,6 +96,46 @@ def timestamp(value: str) -> datetime.datetime:
         return parse_timestamp(value)
     except ValueError as ex:
         raise ArgumentTypeError(f"{ex}: {value!r}") from None
+
+
+def source_date_epoch() -> Optional[datetime.datetime]:
+    """
+    Load time from SOURCE_DATE_EPOCH, if it exists.
+    See: <https://reproducible-builds.org/docs/source-date-epoch/>
+    Examples:
+    >>> monkeypatch = getfixture("monkeypatch")
+    >>> caplog = getfixture("caplog")
+    Example: can be empty
+    >>> with monkeypatch.context() as mp:
+    ...   mp.delenv("SOURCE_DATE_EPOCH", raising=False)
+    ...   print(source_date_epoch())
+    None
+    Example: can contain timestamp
+    >>> with monkeypatch.context() as mp:
+    ...   mp.setenv("SOURCE_DATE_EPOCH", "1677067226")
+    ...   print(source_date_epoch())
+    2023-02-22 12:00:26
+    Example: can contain invalid timestamp
+    >>> with monkeypatch.context() as mp:
+    ...   mp.setenv("SOURCE_DATE_EPOCH", "not a timestamp")
+    ...   print(source_date_epoch())
+    None
+    >>> for m in caplog.messages: print(m)
+    ignoring invalid environment variable SOURCE_DATE_EPOCH='not a timestamp'
+    """
+
+    ts = os.environ.get("SOURCE_DATE_EPOCH")
+
+    if ts:
+        try:
+            return datetime.datetime.fromtimestamp(int(ts), datetime.timezone.utc)
+        except Exception:
+            logger.warning(
+                "Ignoring invalid environment variable SOURCE_DATE_EPOCH=%r",
+                ts,
+            )
+
+    return None
 
 
 class OutputOrDefault:
@@ -1166,9 +1209,8 @@ GCOVR_CONFIG_OPTIONS = [
             "or current time."
         ),
         type=timestamp,
-        default=datetime.datetime.fromtimestamp(
-            int(os.environ.get("SOURCE_DATE_EPOCH", time.time()))
-        ),
+        default=source_date_epoch()
+        or datetime.datetime.fromtimestamp(time.time(), datetime.timezone.utc),
     ),
     GcovrConfigOption(
         "filter",
