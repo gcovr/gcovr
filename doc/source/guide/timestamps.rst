@@ -5,15 +5,22 @@ Reproducible Timestamps
 
 In some cases, it may be desirable to list a specific timestamp in the report.
 Timestamps are shown in
-the :ref:`html_output`,
-:ref:`coveralls_output`,
-and the :ref:`cobertura_output`.
+the :ref:`html_output`, :ref:`coveralls_output`, and the :ref:`cobertura_output`.
 This can be achieved via the :option:`--timestamp <gcovr --timestamp>` option.
 This option does not affect the modification times or other filesystem metadata.
+The default for the variable is taken from the environment variable
+`SOURCE_DATE_EPOCH`_ converted to a human readable time or to the current time is
+the environment variable isn't defined.
+
+.. versionadded:: NEXT
+
+   Respect environment variable `SOURCE_DATE_EPOCH`_ for default of :option:`gcovr --timestamp`.
 
 .. versionadded:: 5.1
 
    The :option:`gcovr --timestamp` option.
+
+.. _SOURCE_DATE_EPOCH: https://reproducible-builds.org/docs/source-date-epoch
 
 
 Timestamp Syntax

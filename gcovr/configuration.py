@@ -1162,7 +1162,8 @@ GCOVR_CONFIG_OPTIONS = [
             "Can use `YYYY-MM-DD hh:mm:ss` or epoch notation. "
             "Used by HTML, Coveralls, and Cobertura reports. "
             "Default: Environment variable SOURCE_DATE_EPOCH "
-            "(see https://reproducible-builds.org/docs/source-date-epoch) or current time."
+            "(see https://reproducible-builds.org/docs/source-date-epoch) "
+            "or current time."
         ),
         type=timestamp,
         default=datetime.datetime.fromtimestamp(
