@@ -23,7 +23,6 @@ from inspect import isclass
 from locale import getpreferredencoding
 import logging
 from multiprocessing import cpu_count
-import time
 from typing import Iterable, Any, List, Optional, Union, Callable, TextIO, Dict
 from dataclasses import dataclass
 import datetime
@@ -1209,8 +1208,7 @@ GCOVR_CONFIG_OPTIONS = [
             "or current time."
         ),
         type=timestamp,
-        default=source_date_epoch()
-        or datetime.datetime.fromtimestamp(time.time(), datetime.timezone.utc),
+        default=source_date_epoch() or datetime.datetime.now(),
     ),
     GcovrConfigOption(
         "filter",
