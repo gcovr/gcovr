@@ -61,6 +61,7 @@ Internal changes:
 - Use scrubbed data for ``--update_reference`` option. (:issue:`698`)
 - Install ninja with package manager instead of GitHub action. (:issue:`699`)
 - Rename the reference files coverage.xml to cobertura.xml and the test from xml to cobertura (:issue:`721`)
+- Add support for ``clang-14`` in our test suite. (:issue:`731`)
 
 5.2 (06 August 2022)
 --------------------
