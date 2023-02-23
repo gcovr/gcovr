@@ -303,6 +303,10 @@ def pytest_generate_tests(metafunc):
                     reason="On MacOS the constructor is called twice",
                 ),
                 pytest.mark.xfail(
+                    name == "noncode" and IS_MACOS,
+                    reason="On MacOS the there are other branches",
+                ),
+                pytest.mark.xfail(
                     name in ["decisions-neg-delta"] and IS_MACOS,
                     reason="On MacOS there is no branch for std::vector",
                 ),
