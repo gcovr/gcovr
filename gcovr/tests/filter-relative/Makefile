@@ -5,7 +5,7 @@ all:
 	$(CXX) $(CFLAGS) -c main.cpp -o main.o
 	$(CXX) $(CFLAGS) main.o file1.o -o testcase
 
-run: txt xml html sonarqube coveralls
+run: txt cobertura html sonarqube coveralls
 
 coverage.json:
 	./testcase
@@ -14,8 +14,8 @@ coverage.json:
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
 
-xml: coverage.json
-	$(GCOVR) -a $< --cobertura-pretty --cobertura coverage.xml
+cobertura: coverage.json
+	$(GCOVR) -a $< --cobertura-pretty --cobertura cobertura.xml
 
 html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
@@ -29,4 +29,4 @@ coveralls: coverage.json
 clean:
 	rm -f testcase
 	rm -f *.gc* *.o
-	rm -f coverage*.* sonarqube*.* coveralls.json
+	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json

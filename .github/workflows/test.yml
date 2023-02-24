@@ -196,7 +196,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10, clang-13]
+        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10, clang-13, clang-14]
 
     steps:
     - name: Install dependencies
@@ -209,9 +209,3 @@ jobs:
     - name: Run Docker
       run: |
         python3 -m nox --non-interactive --session "docker_qa_run_compiler(${{ matrix.gcc }})"
-    - name: Upload pytest test results
-      if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: diffs-docker-${{ matrix.gcc }}
-        path: gcovr/tests/diff.zip

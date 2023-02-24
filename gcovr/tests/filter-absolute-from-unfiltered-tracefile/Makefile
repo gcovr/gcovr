@@ -13,7 +13,7 @@ all:
 	$(CXX) $(CFLAGS) -c main.cpp -o main.o
 	$(CXX) $(CFLAGS) main.o file1.o -o testcase
 
-run: txt xml html sonarqube
+run: txt cobertura html sonarqube
 
 coverage_unfiltered.json:
 	./testcase
@@ -22,8 +22,8 @@ coverage_unfiltered.json:
 txt: coverage_unfiltered.json
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< -o coverage.txt
 
-xml: coverage_unfiltered.json
-	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --cobertura-pretty --cobertura coverage.xml
+cobertura: coverage_unfiltered.json
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --cobertura-pretty --cobertura cobertura.xml
 
 html: coverage_unfiltered.json
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --html-details -o coverage.html
@@ -34,4 +34,4 @@ sonarqube: coverage_unfiltered.json
 clean:
 	rm -f testcase
 	rm -f *.gc* *.o
-	rm -f coverage*.* sonarqube*.*
+	rm -f coverage*.* cobertura*.* sonarqube*.*

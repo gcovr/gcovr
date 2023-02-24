@@ -6,6 +6,10 @@ set -x  # trace all commands
 gcovr --timestamp 1640606727
 #END simple epoch
 
+#BEGIN source date epoch
+SOURCE_DATE_EPOCH=1640606727 gcovr
+#END source date epoch
+
 #BEGIN simple RFC 3339
 gcovr --timestamp '2021-12-27 13:05:27'
 #END simple RFC 3339

@@ -3,7 +3,7 @@ all:
 	$(CC) -fprofile-arcs -ftest-coverage -fPIC -c update-data.c -o update-data.o
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -o testcase main.o update-data.o
 
-run: txt xml html sonarqube coveralls
+run: txt cobertura html sonarqube coveralls
 
 coverage.json:
 	./testcase
@@ -12,8 +12,8 @@ coverage.json:
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
 
-xml: coverage.json
-	$(GCOVR) -a $< --cobertura-pretty --cobertura coverage.xml
+cobertura: coverage.json
+	$(GCOVR) -a $< --cobertura-pretty --cobertura cobertura.xml
 
 html: coverage.json
 	$(GCOVR) -a $< --html-details -o coverage.html
@@ -28,4 +28,4 @@ clean:
 	rm -f testcase
 	rm -f *.gc*
 	rm -f *.o
-	rm -f coverage*.* sonarqube.xml coveralls.json
+	rm -f coverage*.* cobertura.xml sonarqube.xml coveralls.json

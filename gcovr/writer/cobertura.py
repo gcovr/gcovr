@@ -116,7 +116,7 @@ def print_cobertura_report(covdata: CovData, output_file, options):
         options.root.strip()
     )
 
-    with open_binary_for_writing(output_file, "coverage.xml") as fh:
+    with open_binary_for_writing(output_file, "cobertura.xml") as fh:
         fh.write(
             etree.tostring(
                 root,

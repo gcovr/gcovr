@@ -21,6 +21,7 @@ from __future__ import annotations
 from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
+import logging
 from multiprocessing import cpu_count
 from typing import Iterable, Any, List, Optional, Union, Callable, TextIO, Dict
 from dataclasses import dataclass
@@ -30,6 +31,8 @@ import re
 
 from .utils import FilterOption, force_unix_separator
 from .writer.html import CssRenderer
+
+logger = logging.getLogger("gcovr")
 
 
 def check_percentage(value: str) -> float:
@@ -92,6 +95,50 @@ def timestamp(value: str) -> datetime.datetime:
         return parse_timestamp(value)
     except ValueError as ex:
         raise ArgumentTypeError(f"{ex}: {value!r}") from None
+
+
+def source_date_epoch() -> Optional[datetime.datetime]:
+    """
+    Load time from SOURCE_DATE_EPOCH, if it exists.
+    See: <https://reproducible-builds.org/docs/source-date-epoch/>
+
+    Examples:
+    >>> monkeypatch = getfixture("monkeypatch")
+    >>> caplog = getfixture("caplog")
+
+    Example: can be empty
+    >>> with monkeypatch.context() as mp:
+    ...   mp.delenv("SOURCE_DATE_EPOCH", raising=False)
+    ...   print(source_date_epoch())
+    None
+
+    Example: can contain timestamp
+    >>> with monkeypatch.context() as mp:
+    ...   mp.setenv("SOURCE_DATE_EPOCH", "1677067226")
+    ...   print(source_date_epoch())
+    2023-02-22 12:00:26+00:00
+
+    Example: can contain invalid timestamp
+    >>> with monkeypatch.context() as mp:
+    ...   mp.setenv("SOURCE_DATE_EPOCH", "not a timestamp")
+    ...   print(source_date_epoch())
+    None
+    >>> for m in caplog.messages: print(m)
+    Ignoring invalid environment variable SOURCE_DATE_EPOCH='not a timestamp'
+    """
+
+    ts = os.environ.get("SOURCE_DATE_EPOCH")
+
+    if ts:
+        try:
+            return datetime.datetime.fromtimestamp(int(ts), datetime.timezone.utc)
+        except Exception:
+            logger.warning(
+                "Ignoring invalid environment variable SOURCE_DATE_EPOCH=%r",
+                ts,
+            )
+
+    return None
 
 
 class OutputOrDefault:
@@ -1160,10 +1207,12 @@ GCOVR_CONFIG_OPTIONS = [
             "Override current time for reproducible reports. "
             "Can use `YYYY-MM-DD hh:mm:ss` or epoch notation. "
             "Used by HTML, Coveralls, and Cobertura reports. "
-            "Default: current time."
+            "Default: Environment variable SOURCE_DATE_EPOCH "
+            "(see https://reproducible-builds.org/docs/source-date-epoch) "
+            "or current time."
         ),
         type=timestamp,
-        default=datetime.datetime.now(),
+        default=source_date_epoch() or datetime.datetime.now(),
     ),
     GcovrConfigOption(
         "filter",
@@ -1328,6 +1377,26 @@ GCOVR_CONFIG_OPTIONS = [
         group="gcov_options",
         help="Use existing gcov files for analysis. Default: {default!s}.",
         action="store_true",
+    ),
+    GcovrConfigOption(
+        "gcov_ignore_errors",
+        ["--gcov-ignore-errors"],
+        group="gcov_options",
+        choices=[
+            "all",
+            "no_working_dir_found",
+        ],
+        nargs="?",
+        const="all",
+        default=None,
+        help=(
+            "Ignore errors from invoking GCOV command "
+            "instead of exiting with an error. "
+            "A report will be shown on stderr. "
+            "Default: {default!s}."
+        ),
+        type=str,
+        action="append",
     ),
     GcovrConfigOption(
         "gcov_ignore_parse_errors",

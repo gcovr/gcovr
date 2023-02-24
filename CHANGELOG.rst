@@ -15,6 +15,13 @@ Breaking changes:
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 - New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
 - Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
+- The default filename for :option:`--cobertura` is changed from coverage.xml to cobertura.xml (:issue:`721`)
+- Handling of ``gcov`` errors:
+
+  - Do not ignore return code of ``gcov``. (:issue:`653`)
+  - New :option:`--gcov-ignore-errors` to ignore ``gcov`` errors. Old behavior was to print a warning and continue. (:issue:`718`)
+
+- Revert changes from :issue:`623` and add documentation entry :ref:`support keil uvision format`. (:issue:`727`)
 
 New features and notable changes:
 
@@ -27,11 +34,12 @@ New features and notable changes:
 - Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
 - Allow annotations for never executed branches. (:issue:`711`)
 - Add function merge mode for same function defined in different lines. (:issue:`700`)
+- Update link to gcovr documentation in HTML report to point to the documentation of the used version. (:issue:`723`)
+- Add environment `SOURCE_DATE_EPOCH <https://reproducible-builds.org/docs/source-date-epoch>`_ to set default for :option:`--timestamp`. (:issue:`729`)
 
 Bug fixes and small improvements:
 
 - Fix :option:`--html-tab-size` feature. (:issue:`650`)
-- Do not ignore returncode of `gcov`. (:issue:`653`)
 - Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
 - Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
 - Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
@@ -40,6 +48,7 @@ Bug fixes and small improvements:
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
 - Add Python 3.11 to test matrix. (:issue:`717`)
 - Fix casing of files if filesystem is case insensitive. (:issue:`694`)
+- Fix deadlock if :option:`-j` is used and there are errors from ``gcov`` execution. (:issue:`719`)
 - Do not use ``realpath`` for ``DirectoryPrefixFilter`` to support symlinks in root directory. (:issue:`712`)
 
 Documentation:
@@ -53,6 +62,8 @@ Internal changes:
 - Detect ``gcc`` version for running tests. (:issue:`686`)
 - Use scrubbed data for ``--update_reference`` option. (:issue:`698`)
 - Install ninja with package manager instead of GitHub action. (:issue:`699`)
+- Rename the reference files coverage.xml to cobertura.xml and the test from xml to cobertura (:issue:`721`)
+- Add support for ``clang-14`` in our test suite and improve startup performance of docker image. (:issue:`731`)
 
 5.2 (06 August 2022)
 --------------------

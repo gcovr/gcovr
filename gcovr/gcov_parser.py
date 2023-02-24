@@ -101,8 +101,8 @@ _RE_CALL_LINE = _line_pattern(r"call (INT) (?:returned (VALUE)|never executed)")
 _RE_UNCONDITIONAL_LINE = _line_pattern(
     r"unconditional (INT) (?:taken (VALUE)|never executed)"
 )
-_RE_SOURCE_LINE = _line_pattern(r"(?: )?(VALUE[*]?|-|[#]{5,}|[=]{5,}):(?: )?(INT):(.*)")
-_RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5,}|[%]{5,}): (INT)-block (INT)")
+_RE_SOURCE_LINE = _line_pattern(r"(?: )?(VALUE[*]?|-|[#]{5}|[=]{5}):(?: )?(INT):(.*)")
+_RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5}|[%]{5}): (INT)-block (INT)")
 
 
 class _ExtraInfo(enum.Flag):
@@ -281,7 +281,7 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    ignore_parse_errors: str,
+    ignore_parse_errors: set(),
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
@@ -541,10 +541,6 @@ def _parse_line(
     >>> _parse_line(' 1.7k*: 13:foo();')
     _SourceLine(hits=1700, lineno=13, source_code='foo();', extra_info=PARTIAL)
 
-    Example: can parse code line with overly long uncovered marker:
-    >>> _parse_line('######: 13:foo += 1;')
-    _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=NONE)
-
     Example: can parse metadata line:
     >>> _parse_line('  -: 0:Foo:bar baz')
     _MetadataLine(key='Foo', value='bar baz')
@@ -633,13 +629,6 @@ def _parse_line(
     if tag is not None:
         return tag
 
-    def _is_marker(count_str: str, marker_char: str) -> bool:
-        """Recognize markers for uncovered items like ``#####``."""
-        # The GCC gcov marker is exactly 5 chars long,
-        # but some tools generate longer markers
-        # (see <https://github.com/gcovr/gcovr/issues/621>).
-        return len(count_str) >= 5 and all(c == marker_char for c in count_str)
-
     # Handle lines that are like source lines.
     # But this could also include metadata lines and block-coverage lines.
 
@@ -669,10 +658,10 @@ def _parse_line(
         if count_str == "-":
             count = 0
             extra_info = _ExtraInfo.NONCODE
-        elif _is_marker(count_str, "#"):
+        elif count_str == "#####":
             count = 0
             extra_info = _ExtraInfo.NONE
-        elif _is_marker(count_str, "="):
+        elif count_str == "=====":
             count = 0
             extra_info = _ExtraInfo.EXCEPTION_ONLY
         elif count_str.endswith("*"):
@@ -692,10 +681,10 @@ def _parse_line(
         if match is not None:
             count_str, lineno, blockno = match.groups()
 
-            if _is_marker(count_str, "%"):
+            if count_str == "%%%%%":
                 count = 0
                 extra_info = _ExtraInfo.NONE
-            elif _is_marker(count_str, "$"):
+            elif count_str == "$$$$$":
                 count = 0
                 extra_info = _ExtraInfo.EXCEPTION_ONLY
             else:

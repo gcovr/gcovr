@@ -4,17 +4,17 @@ all:
 GCOVR := $(GCOVR) --txt --cobertura --sonarqube --json --json-summary --coveralls --csv -o .\\output/
 
 
-run: txt xml html sonarqube json json_summary coveralls csv
+run: txt cobertura html sonarqube json json_summary coveralls csv
 
 txt:
 	./testcase
 	$(GCOVR) -d
 	mv -f ./output/coverage.txt ./coverage.txt
 
-xml:
+cobertura:
 	./testcase
 	$(GCOVR) -d
-	mv -f ./output/coverage.xml ./coverage.xml
+	mv -f ./output/cobertura.xml ./cobertura.xml
 
 html:
 	./testcase

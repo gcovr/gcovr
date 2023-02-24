@@ -336,11 +336,19 @@ def process_datafile(filename, covdata, options, toerase):
             return
 
     errors_output = "\n\t".join(errors)
-    logger.warning(
+    errors_output = (
         f"GCOV produced the following errors processing {filename}:\n"
         f"\t{errors_output}\n"
-        "\t(gcovr could not infer a working directory that resolved it.)"
+        "\t(gcovr could not infer a working directory that resolved it.)\n"
+        "To ignore this error use option --gcov-ignore-errors=no_working_dir_found."
     )
+    logger.error(errors_output)
+
+    # Check if error shall be ignored
+    if options.gcov_ignore_errors is None or not any(
+        [v in options.gcov_ignore_errors for v in ["all", "no_working_dir_found"]]
+    ):
+        raise RuntimeError(errors_output)
 
 
 def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
