@@ -37,6 +37,7 @@ GCC_VERSIONS = [
     "gcc-11",
     "clang-10",
     "clang-13",
+    "clang-14",
 ]
 
 GCC_VERSIONS_NEWEST_FIRST = [

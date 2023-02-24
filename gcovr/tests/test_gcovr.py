@@ -80,7 +80,7 @@ REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
     ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "gcc-10", "gcc-11"]
     if "gcc" in CC_REFERENCE
-    else ["clang-10", "clang-13"]
+    else ["clang-10", "clang-13", "clang-14"]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
@@ -301,6 +301,10 @@ def pytest_generate_tests(metafunc):
                     name in ["excl-branch", "exclude-throw-branches", "html-themes"]
                     and IS_MACOS,
                     reason="On MacOS the constructor is called twice",
+                ),
+                pytest.mark.xfail(
+                    name == "noncode" and IS_MACOS,
+                    reason="On MacOS the there are other branches",
                 ),
                 pytest.mark.xfail(
                     name in ["decisions-neg-delta"] and IS_MACOS,
