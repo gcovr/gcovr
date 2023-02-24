@@ -209,9 +209,3 @@ jobs:
     - name: Run Docker
       run: |
         python3 -m nox --non-interactive --session "docker_qa_run_compiler(${{ matrix.gcc }})"
-    - name: Upload pytest test results
-      if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: diffs-docker-${{ matrix.gcc }}
-        path: gcovr/tests/diff.zip
