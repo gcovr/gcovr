@@ -81,7 +81,7 @@ def test_example(example):
     output = scrub(subprocess.check_output(cmd).decode().replace("\r\n", "\n"))
     with open(baseline_file) as f:
         baseline = scrub(f.read())
-    assert_equals(baseline_file, baseline, None, output)
+    assert_equals(baseline_file, baseline, "<STDOUT>", output, encoding="utf8")
     os.chdir(startdir)
 
 

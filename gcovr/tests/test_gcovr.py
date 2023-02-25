@@ -18,7 +18,6 @@
 # ****************************************************************************
 
 import glob
-from io import StringIO
 import logging
 import os
 import platform
@@ -158,12 +157,14 @@ def findtests(basedir):
         yield f
 
 
-def assert_equals(reference_file, reference, test_file, test):
+def assert_equals(reference_file, reference, test_file, test, encoding):
     _, extension = os.path.splitext(reference_file)
     if extension in [".html", ".xml"]:
         if extension == ".html":
-            reference = etree.fromstring(reference.encode(), etree.HTMLParser())
-            test = etree.fromstring(test.encode(), etree.HTMLParser())
+            reference = etree.fromstring(
+                reference.encode(), etree.HTMLParser(encoding=encoding)
+            )
+            test = etree.fromstring(test.encode(), etree.HTMLParser(encoding=encoding))
         else:
             reference = etree.fromstring(reference.encode())
             test = etree.fromstring(test.encode())
@@ -472,6 +473,7 @@ OUTPUT_PATTERN = dict(
     sonarqube=["sonarqube*.xml"],
 )
 
+
 def test_build(
     compiled,
     format,
@@ -514,6 +516,7 @@ def test_build(
                 reference_scrubbed,
                 test_file,
                 test_scrubbed,
+                encoding,
             )
         except AssertionError as e:  # pragma: no cover
             whole_diff_output += str(e) + "\n"
