@@ -243,9 +243,6 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     args = ["-m", "pytest"]
     args += coverage_args
     args += session.posargs
-    # For docker tests
-    if "NOX_POSARGS" in os.environ:
-        args += shlex.split(os.environ["NOX_POSARGS"])
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
     session.run("python", *args)
@@ -405,13 +402,11 @@ def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
             # Code for join taken from Python 3.9
             return " ".join(shlex.quote(arg) for arg in args)
 
-    session.env["NOX_POSARGS"] = shell_join(session.posargs)
-    nox_options = []
+    nox_options = session.posargs
     if session._runner.global_config.no_install:
-        nox_options.append("--no-install")
+        nox_options.insert(0, "--no-install")
     if session._runner.global_config.reuse_existing_virtualenvs:
-        nox_options.append("--reuse-existing-virtualenvs")
-    session.env["NOX_OPTIONS"] = shell_join(nox_options)
+        nox_options.insert(0, "--reuse-existing-virtualenvs")
     session.run(
         "docker",
         "run",
@@ -419,13 +414,10 @@ def docker_qa_run_compiler(session: nox.Session, version: str) -> None:
         "-t",
         "-e",
         "CC",
-        "-e",
-        "NOX_POSARGS",
-        "-e",
-        "NOX_OPTIONS",
         "-v",
         f"{os.getcwd()}:/gcovr",
         docker_container_id(session, version),
+        *nox_options,
         external=True,
     )
 
