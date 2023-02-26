@@ -150,9 +150,7 @@ def findtests(basedir):
     for f in sorted(os.listdir(basedir)):
         if not os.path.isdir(os.path.join(basedir, f)):
             continue
-        if f.startswith("."):
-            continue
-        if "pycache" in f:
+        if not os.path.isfile(os.path.join(basedir, f, "Makefile")):  # pragma: no cover
             continue
         yield f
 
@@ -173,7 +171,9 @@ def assert_equals(reference_file, reference, test_file, test, encoding):
         if diff_out is None:
             return
 
-        diff_out = f"-- {reference_file}\n++ {test_file}\n{diff_out}"
+        diff_out = (
+            f"-- {reference_file}\n++ {test_file}\n{diff_out}"  # pragma: no cover
+        )
     else:
         diff_out = list(
             difflib.unified_diff(
@@ -187,9 +187,9 @@ def assert_equals(reference_file, reference, test_file, test, encoding):
         diff_is_empty = len(diff_out) == 0
         if diff_is_empty:
             return
-        diff_out = "".join(diff_out)
+        diff_out = "".join(diff_out)  # pragma: no cover
 
-    raise AssertionError(diff_out)
+    raise AssertionError(diff_out)  # pragma: no cover
 
 
 def run(cmd, cwd=None):
