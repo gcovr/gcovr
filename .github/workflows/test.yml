@@ -206,6 +206,9 @@ jobs:
     - name: Build Docker
       run: |
         python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
-    - name: Run Docker
+    - name: Run session lint in container
       run: |
-        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})"
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session lint
+    - name: Run session test in container
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
