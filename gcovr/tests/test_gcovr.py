@@ -30,6 +30,7 @@ import difflib
 import zipfile
 
 from yaxmldiff import compare_xml
+from lxml import etree
 
 from gcovr.utils import force_unix_separator
 
@@ -149,19 +150,46 @@ def findtests(basedir):
     for f in sorted(os.listdir(basedir)):
         if not os.path.isdir(os.path.join(basedir, f)):
             continue
-        if f.startswith("."):
-            continue
-        if "pycache" in f:
+        if not os.path.isfile(os.path.join(basedir, f, "Makefile")):  # pragma: no cover
             continue
         yield f
 
 
-def assert_xml_equals(reference, coverage):
-    diff = compare_xml(reference, coverage)
-    if diff is None:
-        return
+def assert_equals(reference_file, reference, test_file, test, encoding):
+    _, extension = os.path.splitext(reference_file)
+    if extension in [".html", ".xml"]:
+        if extension == ".html":
+            reference = etree.fromstring(
+                reference.encode(), etree.HTMLParser(encoding=encoding)
+            )
+            test = etree.fromstring(test.encode(), etree.HTMLParser(encoding=encoding))
+        else:
+            reference = etree.fromstring(reference.encode())
+            test = etree.fromstring(test.encode())
 
-    raise AssertionError(f"XML documents differed (-reference, +actual):\n{diff}")
+        diff_out = compare_xml(reference, test)
+        if diff_out is None:
+            return
+
+        diff_out = (
+            f"-- {reference_file}\n++ {test_file}\n{diff_out}"  # pragma: no cover
+        )
+    else:
+        diff_out = list(
+            difflib.unified_diff(
+                reference.splitlines(keepends=True),
+                test.splitlines(keepends=True),
+                fromfile=reference_file,
+                tofile=test_file,
+            )
+        )
+
+        diff_is_empty = len(diff_out) == 0
+        if diff_is_empty:
+            return
+        diff_out = "".join(diff_out)  # pragma: no cover
+
+    raise AssertionError(diff_out)  # pragma: no cover
 
 
 def run(cmd, cwd=None):
@@ -176,11 +204,11 @@ def find_reference_files(output_pattern):
     for reference_dir in REFERENCE_DIRS:
         for pattern in output_pattern:
             if os.path.isdir(reference_dir):
-                for file in glob.glob(os.path.join(reference_dir, pattern)):
-                    if os.path.basename(file) not in seen_files:
-                        coverage = os.path.basename(file)
-                        seen_files.add(coverage)
-                        yield coverage, file
+                for reference_file in glob.glob(os.path.join(reference_dir, pattern)):
+                    if os.path.basename(reference_file) not in seen_files:
+                        test_file = os.path.basename(reference_file)
+                        seen_files.add(test_file)
+                        yield test_file, reference_file
 
 
 @pytest.fixture(scope="module")
@@ -445,8 +473,6 @@ OUTPUT_PATTERN = dict(
     sonarqube=["sonarqube*.xml"],
 )
 
-ASSERT_EQUALS = dict(cobertura=assert_xml_equals, sonarqube=assert_xml_equals)
-
 
 def test_build(
     compiled,
@@ -459,7 +485,6 @@ def test_build(
     name = compiled
     scrub = SCRUBBERS[format]
     output_pattern = OUTPUT_PATTERN[format]
-    assert_equals = ASSERT_EQUALS.get(format, None)
 
     encoding = "utf8"
     if format == "html" and name.startswith("html-encoding-"):
@@ -486,21 +511,15 @@ def test_build(
                 reference_scrubbed = scrub(f.read())
 
         try:
-            if assert_equals is not None:
-                assert_equals(reference_scrubbed, test_scrubbed)
-            else:
-                diff_out = list(
-                    difflib.unified_diff(
-                        reference_scrubbed.splitlines(keepends=True),
-                        test_scrubbed.splitlines(keepends=True),
-                        fromfile=reference_file,
-                        tofile=test_file,
-                    )
-                )
-                diff_is_empty = len(diff_out) == 0
-                assert diff_is_empty, "".join(diff_out)
-        except Exception as e:  # pragma: no cover
-            whole_diff_output += "  " + str(e) + "\n"
+            assert_equals(
+                reference_file,
+                reference_scrubbed,
+                test_file,
+                test_scrubbed,
+                encoding,
+            )
+        except AssertionError as e:  # pragma: no cover
+            whole_diff_output += str(e) + "\n"
             if update_reference:
                 reference_file = update_reference_data(
                     reference_file, test_scrubbed, encoding

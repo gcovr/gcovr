@@ -24,7 +24,7 @@ import pytest
 import subprocess
 import sys
 
-from gcovr.tests.test_gcovr import SCRUBBERS, ASSERT_EQUALS
+from gcovr.tests.test_gcovr import SCRUBBERS, assert_equals
 
 IS_MACOS = platform.system() == "Darwin"
 
@@ -75,17 +75,13 @@ def test_example(example):
     baseline_file = example.baseline
     ext = os.path.splitext(baseline_file)[1][1:]
     scrub = SCRUBBERS[ext]
-    assert_equals = ASSERT_EQUALS.get(ext, None)
 
     startdir = os.getcwd()
     os.chdir(datadir)
     output = scrub(subprocess.check_output(cmd).decode().replace("\r\n", "\n"))
     with open(baseline_file) as f:
         baseline = scrub(f.read())
-    if assert_equals is not None:
-        assert_equals(output, baseline)
-    else:
-        assert output == baseline
+    assert_equals(baseline_file, baseline, "<STDOUT>", output, encoding="utf8")
     os.chdir(startdir)
 
 
