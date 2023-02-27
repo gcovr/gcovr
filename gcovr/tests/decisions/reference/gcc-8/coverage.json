@@ -825,6 +825,10 @@
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 190
                 },
                 {
@@ -835,6 +839,10 @@
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 196
                 },
                 {

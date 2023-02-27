@@ -895,11 +895,19 @@
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 192
                 },
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 198
                 },
                 {
@@ -936,16 +944,28 @@
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 210
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/decision": {
+                        "count": 1,
+                        "type": "switch"
+                    },
                     "line_number": 213
                 },
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 216
                 },
                 {
@@ -982,16 +1002,28 @@
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 226
                 },
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 229
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/decision": {
+                        "count": 1,
+                        "type": "switch"
+                    },
                     "line_number": 232
                 },
                 {
