@@ -45,8 +45,14 @@ def _prep_decision_string(code: str) -> str:
 
     >>> _prep_decision_string('   a++  ;  if  (a > 5)  { // check for something ')
     ' a++ ; if (a > 5) {'
+    >>> _prep_decision_string('case x: // check for something ')
+    ' case x :'
+    >>> _prep_decision_string('    default     : // check for something ')
+    ' default :'
     """
 
+    # Add whitespaces around ":"
+    code = code.replace(":", " : ")
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
     code = _WHITESPACE_PATTERN.sub(" ", code)
@@ -70,8 +76,8 @@ def _is_a_branch_statement(code: str) -> bool:
             ";if (",
             " case ",
             ";case ",
-            " default:",
-            ";default:",
+            " default :",
+            ";default :",
         )
     )
 
@@ -126,11 +132,13 @@ def _is_a_loop(code: str) -> bool:
 def _is_a_switch(code: str) -> bool:
     r"""Check if the given line relates to a switch-case label (case,default)
 
-    >>> _is_a_switch('case 5:')
+    >>> _is_a_switch('case /* Comment */ 5 /* Comment */:')
+    True
+    >>> _is_a_switch('default /* Comment */ :')
     True
     """
     compare_string = _prep_decision_string(code)
-    return any(s in compare_string for s in (" case ", " default:"))
+    return any(s in compare_string for s in (" case ", " default :"))
 
 
 class DecisionParser:
@@ -166,7 +174,7 @@ class DecisionParser:
     def parse_one_line(self, lineno: int, code: str) -> None:
         line_coverage = self.coverage.lines.get(lineno)
 
-        if line_coverage is None:
+        if line_coverage is None and not _is_a_switch(code):
             return
 
         # check, if a analysis for a classic if-/else if-branch is active
@@ -176,11 +184,12 @@ class DecisionParser:
         # if no decision analysis is active, check the active line of code for a branch_statement or a loop
         if self.decision_analysis_active:
             return
+
         if not (_is_a_branch_statement(code) or _is_a_loop(code)):
             return
 
         # check if a branch exists (prevent misdetection caused by inaccurante parsing)
-        if len(line_coverage.branches.items()) > 0:
+        if line_coverage and len(line_coverage.branches.items()) > 0:
             if (
                 _is_a_loop(code)
                 or _is_a_oneline_branch(code)
@@ -207,16 +216,14 @@ class DecisionParser:
 
         # check if it's a case statement (measured at every line of a case, so a branch definition isn't given)
         elif _is_a_switch(code):
-            if "; break;" in code.replace(" ", "").replace(";", "; "):
-                # just use execution counts of case lines
-                line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
-            else:
-                # use the execution counts of the following line (compatibility with GCC 5)
-                line_coverage_next_line = self.coverage.lines.get(lineno + 1)
-                if line_coverage_next_line is not None:
-                    line_coverage.decision = DecisionCoverageSwitch(
-                        line_coverage_next_line.count
-                    )
+            # Get the coverage of the next line before a break
+            for next_lineno in range(lineno, max(lineno + 1, *self.coverage.lines.keys())):
+                line_coverage = self.coverage.lines.get(next_lineno)
+                if line_coverage is not None:
+                    line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
+                    break
+                if " break;" in (" " + code.replace(" ", "").replace(";", "; ")):
+                    break
 
     def start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
         # normal (non-compact) branch, analyze execution of following lines
