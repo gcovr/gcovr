@@ -49,6 +49,7 @@ Bug fixes and small improvements:
 - Add Python 3.11 to test matrix. (:issue:`717`)
 - Fix casing of files if filesystem is case insensitive. (:issue:`694`)
 - Fix deadlock if :option:`-j` is used and there are errors from ``gcov`` execution. (:issue:`719`)
+- Fix problem in decision parser if case is not on a single line with the break statement. (:issue:`738`)
 
 Documentation:
 
