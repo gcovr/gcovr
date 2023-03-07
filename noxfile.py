@@ -327,14 +327,14 @@ def bundle_app(session: nox.Session) -> None:
 @nox.session
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
-    session.run("./build/gcovr", "--help", external=True)
+    session.run("bash", "-c", "./build/gcovr --help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
     with session.chdir(session.create_tmp()):
         for format in OUTPUT_FORMATS:
             session.run(
-                f"{session.invoked_from}/build/gcovr",
-                f"--{format}",
-                f"out.{format}",
+                "bash",
+                "-c",
+                f"{session.invoked_from}/build/gcovr --{format} out.{format}",
                 external=True,
             )
 
