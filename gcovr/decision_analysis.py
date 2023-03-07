@@ -49,12 +49,14 @@ def _prep_decision_string(code: str) -> str:
     ' case x :'
     >>> _prep_decision_string('    default     : // check for something ')
     ' default :'
+    >>> _prep_decision_string('    def/* Comment */ault: /* xxx */ ')
+    ' def ault :'
     """
 
     # Add whitespaces around ":"
     code = code.replace(":", " : ")
-    code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
-    code = _C_STYLE_COMMENT_PATTERN.sub("", code)
+    code = _CPP_STYLE_COMMENT_PATTERN.sub(" ", code)
+    code = _C_STYLE_COMMENT_PATTERN.sub(" ", code)
     code = _WHITESPACE_PATTERN.sub(" ", code)
 
     return " " + code.lstrip().strip()
