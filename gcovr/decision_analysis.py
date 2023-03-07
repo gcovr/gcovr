@@ -30,10 +30,12 @@ from .coverage import (
 
 logger = logging.getLogger("gcovr")
 
+_CHARACTERS_TO_ADD_SPACES = re.compile(r"([;:\(\)\{\}])")
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
 _WHITESPACE_PATTERN = re.compile(r"\s+")
 
+_ONE_LINE_BRANCH = re.compile(r"^[^;]+{(?:.*;)*.*}$")
 
 # helper functions
 
@@ -43,12 +45,16 @@ def _prepare_decision_string(code: str) -> str:
     Remove comments, remove whitespace, add leading space to separate branch-keywords
     from possible collisions with variable names.
 
-    >>> _prepare_decision_string('   a++  ;  if  (a > 5)  { // check for something ')
-    ' a++ ; if (a > 5) {'
+    >>> _prepare_decision_string('   a++;if  (a > 5)  { // check for something ')
+    ' a++ ; if ( a > 5 ) {'
     >>> _prepare_decision_string('case x: // check for something ')
     ' case x :'
     >>> _prepare_decision_string('    default     : // check for something ')
     ' default :'
+    >>> _prepare_decision_string('{/* Comment */')
+    ' {'
+    >>> _prepare_decision_string('}/* Comment */')
+    ' }'
 
     Check that removal of comment does not create tokens.
     >>> _prepare_decision_string('    def/* Comment */ault: /* xxx */ ')
@@ -56,7 +62,7 @@ def _prepare_decision_string(code: str) -> str:
     """
 
     # Add whitespaces around ":"
-    code = code.replace(":", " : ")
+    code = _CHARACTERS_TO_ADD_SPACES.sub(r" \1 ", code)
     code = _CPP_STYLE_COMMENT_PATTERN.sub(" ", code)
     code = _C_STYLE_COMMENT_PATTERN.sub(" ", code)
     code = _WHITESPACE_PATTERN.sub(" ", code)
@@ -74,14 +80,12 @@ def _is_a_branch_statement(code: str) -> bool:
     return any(
         s in _prepare_decision_string(code)
         for s in (
-            " if(",
-            ";if(",
             " if (",
-            ";if (",
+            "; if (",
             " case ",
-            ";case ",
+            "; case ",
             " default :",
-            ";default :",
+            "; default :",
         )
     )
 
@@ -94,7 +98,7 @@ def _is_a_oneline_branch(code: str) -> bool:
     >>> _is_a_oneline_branch('if(a>5){')
     False
     """
-    return re.match(r"^[^;]+{(?:.*;)*.*}$", _prepare_decision_string(code)) is not None
+    return _ONE_LINE_BRANCH.match(_prepare_decision_string(code)) is not None
 
 
 def _is_a_closed_branch(code: str) -> bool:
@@ -128,8 +132,7 @@ def _is_a_loop(code: str) -> bool:
     """
     prepared_string = _prepare_decision_string(code)
     return any(
-        s in prepared_string
-        for s in (" while(", " while (", "}while(", " for ", " for(")
+        s in prepared_string for s in (" while (", "} while (", " for ", " for (")
     )
 
 
@@ -228,7 +231,7 @@ class DecisionParser:
                 if line_coverage is not None:
                     line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
                     break
-                if " break;" in (" " + code.replace(" ", "").replace(";", "; ")):
+                if " break ;" in _prepare_decision_string(code):
                     break
 
     def start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
