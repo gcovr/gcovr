@@ -59,6 +59,16 @@ DEFAULT_LINT_ARGUMENTS = [
 
 BLACK_PINNED_VERSION = "black==22.3.0"
 
+OUTPUT_FORMATS = [
+        "cobertura",
+        "coveralls",
+        "csv",
+        "html-details",
+        "json",
+        "sonarqube",
+        "txt",
+    ]
+
 nox.options.sessions = ["qa"]
 
 
@@ -271,17 +281,10 @@ def check_wheel(session: nox.Session) -> None:
         session.install(glob.glob("*.whl")[0])
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
+    session.log("Run all transformations to check if all the modules are packed")
     tmp_dir = session.create_tmp()
-    for format in [
-        "cobertura",
-        "coveralls",
-        "csv",
-        "html-details",
-        "json",
-        "sonarqube",
-        "txt",
-    ]:
-        session.run("gcovr", f"--{format}", f"{tmp_dir}/{format}", external=True)
+    for format in OUTPUT_FORMATS:
+        session.run("gcovr", f"--{format}", f"{tmp_dir}/out.{format}", external=True)
 
 
 @nox.session
@@ -324,11 +327,11 @@ def bundle_app(session: nox.Session) -> None:
 @nox.session
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
-    session.chdir("build")
-    session.run("bash", "-c", "./gcovr --help", external=True)
-    session.log("Run HTML all transformations to check if all the modules are packed")
-    for format in ["txt", "html", "cobertura", "sonarqube", "csv", "coveralls"]:
-        session.run("bash", "-c", f"./gcovr --{format} out.{format}", external=True)
+    session.run("./build/gcovr", "--help", external=True)
+    session.log("Run all transformations to check if all the modules are packed")
+    tmp_dir = session.create_tmp()
+    for format in OUTPUT_FORMATS:
+        session.run("./build/gcovr", f"--{format}", f"{tmp_dir}/out.{format}", external=True)
 
 
 def docker_container_os(session: nox.Session) -> str:
