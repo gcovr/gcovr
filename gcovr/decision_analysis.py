@@ -38,18 +38,20 @@ _WHITESPACE_PATTERN = re.compile(r"\s+")
 # helper functions
 
 
-def _prep_decision_string(code: str) -> str:
+def _prepare_decision_string(code: str) -> str:
     r"""Prepare the input to analyze, if it's a branch statement.
-    Remove comments, remove whitespace, add leading space to seperate branch-keywords
+    Remove comments, remove whitespace, add leading space to separate branch-keywords
     from possible collisions with variable names.
 
-    >>> _prep_decision_string('   a++  ;  if  (a > 5)  { // check for something ')
+    >>> _prepare_decision_string('   a++  ;  if  (a > 5)  { // check for something ')
     ' a++ ; if (a > 5) {'
-    >>> _prep_decision_string('case x: // check for something ')
+    >>> _prepare_decision_string('case x: // check for something ')
     ' case x :'
-    >>> _prep_decision_string('    default     : // check for something ')
+    >>> _prepare_decision_string('    default     : // check for something ')
     ' default :'
-    >>> _prep_decision_string('    def/* Comment */ault: /* xxx */ ')
+
+    Check that removal of comment does not create tokens.
+    >>> _prepare_decision_string('    def/* Comment */ault: /* xxx */ ')
     ' def ault :'
     """
 
@@ -63,14 +65,14 @@ def _prep_decision_string(code: str) -> str:
 
 
 def _get_delta_braces(code):
-    prepped_code = _prep_decision_string(code)
-    return prepped_code.count("(") - prepped_code.count(")")
+    prepared_string = _prepare_decision_string(code)
+    return prepared_string.count("(") - prepared_string.count(")")
 
 
 def _is_a_branch_statement(code: str) -> bool:
     r"""Checks, if the given line of code is a branch statement"""
     return any(
-        s in _prep_decision_string(code)
+        s in _prepare_decision_string(code)
         for s in (
             " if(",
             ";if(",
@@ -92,7 +94,7 @@ def _is_a_oneline_branch(code: str) -> bool:
     >>> _is_a_oneline_branch('if(a>5){')
     False
     """
-    return re.match(r"^[^;]+{(?:.*;)*.*}$", _prep_decision_string(code)) is not None
+    return re.match(r"^[^;]+{(?:.*;)*.*}$", _prepare_decision_string(code)) is not None
 
 
 def _is_a_closed_branch(code: str) -> bool:
@@ -109,11 +111,11 @@ def _is_a_closed_branch(code: str) -> bool:
     >>> _is_a_closed_branch('   while (a>5')
     False
     """
-    prepped_code = _prep_decision_string(code)
+    prepared_string = _prepare_decision_string(code)
     if (
-        _is_a_branch_statement(prepped_code) or _is_a_loop(prepped_code)
-    ) and not _is_a_oneline_branch(prepped_code):
-        return _get_delta_braces(prepped_code) == 0
+        _is_a_branch_statement(prepared_string) or _is_a_loop(prepared_string)
+    ) and not _is_a_oneline_branch(prepared_string):
+        return _get_delta_braces(prepared_string) == 0
 
     return False
 
@@ -124,9 +126,9 @@ def _is_a_loop(code: str) -> bool:
     >>> _is_a_loop('while(5 < a) {')
     True
     """
-    compare_string = _prep_decision_string(code)
+    prepared_string = _prepare_decision_string(code)
     return any(
-        s in compare_string
+        s in prepared_string
         for s in (" while(", " while (", "}while(", " for ", " for(")
     )
 
@@ -139,8 +141,8 @@ def _is_a_switch(code: str) -> bool:
     >>> _is_a_switch('default /* Comment */ :')
     True
     """
-    compare_string = _prep_decision_string(code)
-    return any(s in compare_string for s in (" case ", " default :"))
+    prepared_string = _prepare_decision_string(code)
+    return any(s in prepared_string for s in (" case ", " default :"))
 
 
 class DecisionParser:
