@@ -60,14 +60,14 @@ DEFAULT_LINT_ARGUMENTS = [
 BLACK_PINNED_VERSION = "black==22.3.0"
 
 OUTPUT_FORMATS = [
-        "cobertura",
-        "coveralls",
-        "csv",
-        "html-details",
-        "json",
-        "sonarqube",
-        "txt",
-    ]
+    "cobertura",
+    "coveralls",
+    "csv",
+    "html-details",
+    "json",
+    "sonarqube",
+    "txt",
+]
 
 nox.options.sessions = ["qa"]
 
@@ -331,7 +331,9 @@ def check_bundled_app(session: nox.Session) -> None:
     session.log("Run all transformations to check if all the modules are packed")
     tmp_dir = session.create_tmp()
     for format in OUTPUT_FORMATS:
-        session.run("./build/gcovr", f"--{format}", f"{tmp_dir}/out.{format}", external=True)
+        session.run(
+            "./build/gcovr", f"--{format}", f"{tmp_dir}/out.{format}", external=True
+        )
 
 
 def docker_container_os(session: nox.Session) -> str:
