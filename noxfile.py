@@ -266,11 +266,22 @@ def build_wheel(session: nox.Session) -> None:
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
     session.install("wheel", "twine")
-    session.chdir(f"{session.cache_dir}/dist")
-    session.run("twine", "check", "*", external=True)
-    session.install(glob.glob("*.whl")[0])
+    with session.chdir(f"{session.cache_dir}/dist"):
+        session.run("twine", "check", "*", external=True)
+        session.install(glob.glob("*.whl")[0])
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
+    tmp_dir = session.create_tmp()
+    for format in [
+        "cobertura",
+        "coveralls",
+        "csv",
+        "html-details",
+        "json",
+        "sonarqube",
+        "txt",
+    ]:
+        session.run("gcovr", f"--{format}", f"{tmp_dir}/{format}", external=True)
 
 
 @nox.session
