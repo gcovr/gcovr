@@ -282,9 +282,9 @@ def check_wheel(session: nox.Session) -> None:
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
-    tmp_dir = session.create_tmp()
-    for format in OUTPUT_FORMATS:
-        session.run("gcovr", f"--{format}", f"{tmp_dir}/out.{format}", external=True)
+    with session.chdir(session.create_tmp()):
+        for format in OUTPUT_FORMATS:
+            session.run("gcovr", f"--{format}", f"out.{format}", external=True)
 
 
 @nox.session
@@ -329,11 +329,14 @@ def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
     session.run("./build/gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
-    tmp_dir = session.create_tmp()
-    for format in OUTPUT_FORMATS:
-        session.run(
-            "./build/gcovr", f"--{format}", f"{tmp_dir}/out.{format}", external=True
-        )
+    with session.chdir(session.create_tmp()):
+        for format in OUTPUT_FORMATS:
+            session.run(
+                f"{session.invoked_from}/build/gcovr",
+                f"--{format}",
+                f"out.{format}",
+                external=True,
+            )
 
 
 def docker_container_os(session: nox.Session) -> str:
