@@ -1,0 +1,67 @@
+{# -*- engine: jinja -*- #}
+<div>
+  <table class="legend">
+    <tr>
+      <th scope="row">Directory:</th>
+      <td>{{info.get_directory()}}</td>
+    </tr>
+    <tr>
+      <th scope="row">File:</th>
+      <td>{{filename}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Date:</th>
+      <td>{{info.date}}</td>
+    </tr>
+    {% if SHOW_DECISION and decisions.unchecked > 0 %}
+    <tr>
+      <th scrope="row">Warnings:</th>
+      <td class="warning_text">{{decisions.unchecked}} unchecked decisions!</td>
+    </tr>
+    {% endif %}
+  </table>
+</div>
+<div>
+  <table class="coverage">
+    <tr>
+      <th></th>
+      <th scope="col">Exec</th>
+      <th scope="col">Total</th>
+      <th scope="col">Coverage</th>
+    </tr>
+    <tr>
+      <th scope="row">Lines:</th>
+      <td>{{lines.exec}}</td>
+      <td>{{lines.total}}</td>
+      <td class="{{lines.class}}">{{lines.coverage}}%</td>
+    </tr>
+    <tr>
+      <th scope="row">Functions:</th>
+      <td>{{functions.exec}}</td>
+      <td>{{functions.total}}</td>
+      <td class="{{functions.class}}">{{functions.coverage}}%</td>
+    </tr>
+    <tr>
+      <th scope="row">Branches:</th>
+      <td>{{branches.exec}}</td>
+      <td>{{branches.total}}</td>
+      <td class="{{branches.class}}">{{branches.coverage}}%</td>
+    </tr>
+    {% if SHOW_DECISION %}
+    <tr>
+      <th scope="row">Decisions:</th>
+      <td>{{decisions.exec}}</td>
+      <td>{{decisions.total}}</td>
+      <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
+    </tr>
+    {% endif %}
+    {% if not EXCLUDE_CALLS %}
+    <tr>
+      <th scope="row">Calls:</th>
+      <td>{{calls.exec}}</td>
+      <td>{{calls.total}}</td>
+      <td class="{{calls.class}}">{{calls.coverage}}%</td>
+    </tr>
+    {% endif %}
+  </table>
+</div>

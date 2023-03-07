@@ -64,6 +64,7 @@ Internal changes:
 - Rename the reference files coverage.xml to cobertura.xml and the test from xml to cobertura (:issue:`721`)
 - Add support for ``clang-14`` in our test suite and improve startup performance of docker image. (:issue:`731`)
 - Compare files by extension in test suite. (:issue:`733`)
+- Split HTML templates into one file for each part of the page. (:issue:`735`)
 
 5.2 (06 August 2022)
 --------------------

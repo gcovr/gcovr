@@ -1,0 +1,33 @@
+{# -*- engine: jinja -*- #}
+{% if function_list %}
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+{% for entry in function_list %}
+    <tr>
+      <td>
+        <a href="#l{{ entry['line'] }}">{{ entry["name"] }}</a>
+      </td>
+      <td>
+        <a href="#l{{ entry['line'] }}">{{ entry["line"] }}</a>
+      </td>
+      <td>
+        <a href="#l{{ entry['line'] }}">
+          {%- if entry["excluded"] %} excluded
+          {%- else %}
+          {%-  if entry["count"] == 0 %} not called
+          {%-  else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}
+          {%-  endif -%}
+          {%- endif -%}
+        </a>
+      </td>
+    </tr>
+{% endfor %}
+  </table>
+</details>
+{% endif -%}
