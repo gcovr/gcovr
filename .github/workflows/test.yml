@@ -181,13 +181,19 @@ jobs:
       if: ${{ env.USE_COVERAGE == 'true' }}
       run: |
         codecov --flags ${{ matrix.os }} -X gcov search
+    - name: Generate documentation
+      run: |
+        nox --non-interactive --session doc
     - name: Test bundle of app
       run: |
         nox --non-interactive --session bundle_app
       if: ${{ ! startsWith(matrix.python-version,'pypy') }}
-    - name: Generate documentation
+    - name: Build wheel
       run: |
-        make doc
+        nox --non-interactive --session build_wheel
+    - name: Check wheel
+      run: |
+        nox --non-interactive --session check_wheel
 
   run-docker:
     runs-on: ubuntu-22.04
@@ -206,9 +212,21 @@ jobs:
     - name: Build Docker
       run: |
         python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
-    - name: Run session lint in container
+    - name: Lint files (in container)
       run: |
         python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session lint
-    - name: Run session test in container
+    - name: Test with pytest (in container)
       run: |
         python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
+    - name: Generate documentation (in container)
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
+    - name: Test bundle of app (in container)
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session bundle_app
+    - name: Build wheel (in container)
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session build_wheel
+    - name: Check wheel (in container)
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session check_wheel
