@@ -402,13 +402,13 @@ First, build the container image:
 
 .. code:: bash
 
-    python3 -m nox --session docker_qa_build
+    python3 -m nox --session docker_build
 
-Then, run the container, which executes ``python3 -m nox`` within the container:
+Then, run the container, which executes ``nox`` within the container:
 
 .. code:: bash
 
-    python3 -m nox --session docker_qa_run
+    python3 -m nox --session docker_run -s qa
 
 Or to build and run the container in one step:
 
@@ -424,12 +424,20 @@ clang-13 or clang-14 or you can build and run the container with:
 
     python3 -m nox --session 'docker_qa_compiler(gcc-9)'
 
-You can also use the compiler 'all' to run the tests for all compiler versions.
-This is usefull to update the all reference files:
+To run a specific session you can use the session ``docker_compiler``
+and give the arguments to the ``nox`` executed inside the container
+after a ``--`` :
 
 .. code:: bash
 
-    python3 -m nox --session 'docker_qa_compiler(all)' -- --update_reference
+    python3 -m nox --session 'docker_compiler(gcc-9)' -- -s tests
+
+You can also use the compiler 'all' to run the tests for all compiler versions.
+This is useful to update the all reference files:
+
+.. code:: bash
+
+    python3 -m nox --session 'docker_compiler(all)' -- -s tests -- --update_reference
 
 .. _join:
 

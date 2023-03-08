@@ -66,6 +66,7 @@ Internal changes:
 - Add support for ``clang-14`` in our test suite and improve startup performance of docker image. (:issue:`731`)
 - Compare files by extension in test suite. (:issue:`733`)
 - Split HTML templates into one file for each part of the page. (:issue:`735`)
+- Change docker image to be able to use it like the ``nox`` command itself. (:issue:`734`)
 
 5.2 (06 August 2022)
 --------------------
