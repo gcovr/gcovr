@@ -182,7 +182,7 @@ jobs:
       run: |
         codecov --flags ${{ matrix.os }} -X gcov search
     - name: Generate documentation
-      if: ${{ (!startsWith(matrix.python-version,'pypy')) && (matrix.python-version != '3.7') }}
+      if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
       run: |
         nox --non-interactive --session doc
     - name: Test bundle of app
@@ -220,7 +220,6 @@ jobs:
       run: |
         python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
     - name: Generate documentation (in container)
-      if: ${{ (matrix.gcc != 'gcc-5') && (matrix.gcc != 'gcc-6') }} # Uses Ubuntu 18.04
       run: |
         python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
     - name: Test bundle of app (in container)
