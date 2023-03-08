@@ -61,7 +61,7 @@ of some servers, especially Jenkins.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
 
-.. versionadded:: NEXT
+.. versionadded:: 6.0
    Added :option:`--html-nested<gcovr --html-nested>`
    and :option:`--html-syntax-highlighting<gcovr --html-syntax-highlighting>`.
 

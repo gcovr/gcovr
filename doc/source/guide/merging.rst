@@ -42,7 +42,7 @@ With the :option:`--merge-mode-functions` you can change this:
 - ``merge-use-line-max``: Allow same function on different lines, in this case use maximum line.
 - ``separate``: Allow same function on different lines. Instead of merging keep the functions separate.
 
-.. versionadded:: NEXT
+.. versionadded:: 6.0
 
    The :option:`gcovr --json-base` option.
    The :option:`gcovr --merge-mode-functions` option.
