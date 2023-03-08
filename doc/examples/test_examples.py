@@ -84,7 +84,9 @@ def test_example(example):
         baseline = scrub(f.read())
 
     try:
-        assert_equals(baseline_file, baseline, "<STDOUT>", scrubbed_output, encoding="utf8")
+        assert_equals(
+            baseline_file, baseline, "<STDOUT>", scrubbed_output, encoding="utf8"
+        )
     except AssertionError:  # pragma: no cover
         with open(baseline_file, "w", encoding="utf8") as out:
             out.write(output)
