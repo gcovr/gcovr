@@ -25,6 +25,7 @@ RUN \
                           $CC \
                           $CXX \
                           python3-setuptools \
+                          python3-dev \
                           $(if [ "$DOCKER_OS" != "ubuntu:22.04" ]; then echo python3.7; fi) \
                           ninja-build \
                           curl \
