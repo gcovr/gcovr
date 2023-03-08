@@ -50,6 +50,7 @@ Bug fixes and small improvements:
 - Fix casing of files if filesystem is case insensitive. (:issue:`694`)
 - Fix deadlock if :option:`-j` is used and there are errors from ``gcov`` execution. (:issue:`719`)
 - Fix problem in decision parser if case is not on a single line with the break statement. (:issue:`738`)
+- Do not use ``realpath`` for ``DirectoryPrefixFilter`` to support symlinks in root directory. (:issue:`712`)
 
 Documentation:
 

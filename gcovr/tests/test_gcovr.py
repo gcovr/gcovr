@@ -301,12 +301,6 @@ def pytest_generate_tests(metafunc):
                     name == "cmake_gtest" and not GCOVR_ISOLATED_TEST,
                     reason="only available in docker",
                 ),
-                pytest.mark.skipif(
-                    name == "symlink-root"
-                    and IS_WINDOWS
-                    and (sys.version_info < (3, 8)),
-                    reason="os.path.realpath resolves symlinks on windows starting with 3.8",
-                ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
                     and format == "html"
