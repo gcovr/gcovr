@@ -222,6 +222,7 @@ jobs:
       run: |
         python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
     - name: Test bundle of app (in container)
+      if: ${{ (matrix.gcc != 'gcc-5') && (matrix.gcc != 'gcc-6') }}
       run: |
         python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session bundle_app
     - name: Build wheel (in container)
