@@ -80,9 +80,12 @@ jobs:
     - name: Test bundle of app
       run: |
         nox --non-interactive --session bundle_app
-    - name: Build
+    - name: Build wheel
       run: |
         nox --non-interactive --session build_wheel
+    - name: Check wheel
+      run: |
+        nox --non-interactive --session check_wheel
     - name: Upload distribution
       if: ${{ success() }}
       uses: actions/upload-artifact@v3

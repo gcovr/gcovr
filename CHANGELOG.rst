@@ -49,6 +49,7 @@ Bug fixes and small improvements:
 - Add Python 3.11 to test matrix. (:issue:`717`)
 - Fix casing of files if filesystem is case insensitive. (:issue:`694`)
 - Fix deadlock if :option:`-j` is used and there are errors from ``gcov`` execution. (:issue:`719`)
+- Fix problem in decision parser if case is not on a single line with the break statement. (:issue:`738`)
 - Do not use ``realpath`` for ``DirectoryPrefixFilter`` to support symlinks in root directory. (:issue:`712`)
 
 Documentation:
@@ -64,6 +65,9 @@ Internal changes:
 - Install ninja with package manager instead of GitHub action. (:issue:`699`)
 - Rename the reference files coverage.xml to cobertura.xml and the test from xml to cobertura (:issue:`721`)
 - Add support for ``clang-14`` in our test suite and improve startup performance of docker image. (:issue:`731`)
+- Compare files by extension in test suite. (:issue:`733`)
+- Split HTML templates into one file for each part of the page. (:issue:`735`)
+- Change docker image to be able to use it like the ``nox`` command itself. (:issue:`734`)
 
 5.2 (06 August 2022)
 --------------------

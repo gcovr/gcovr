@@ -181,13 +181,20 @@ jobs:
       if: ${{ env.USE_COVERAGE == 'true' }}
       run: |
         codecov --flags ${{ matrix.os }} -X gcov search
+    - name: Generate documentation
+      if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
+      run: |
+        nox --non-interactive --session doc
     - name: Test bundle of app
       run: |
         nox --non-interactive --session bundle_app
       if: ${{ ! startsWith(matrix.python-version,'pypy') }}
-    - name: Generate documentation
+    - name: Build wheel
       run: |
-        make doc
+        nox --non-interactive --session build_wheel
+    - name: Check wheel
+      run: |
+        nox --non-interactive --session check_wheel
 
   run-docker:
     runs-on: ubuntu-22.04
@@ -205,7 +212,23 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build Docker
       run: |
-        python3 -m nox --non-interactive --session "docker_qa_build_compiler(${{ matrix.gcc }})"
-    - name: Run Docker
+        python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
+    - name: Lint files (in container)
       run: |
-        python3 -m nox --non-interactive --session "docker_qa_run_compiler(${{ matrix.gcc }})"
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session lint
+    - name: Test with pytest (in container)
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
+    - name: Generate documentation (in container)
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
+    - name: Test bundle of app (in container)
+      if: ${{ (matrix.gcc != 'gcc-5') && (matrix.gcc != 'gcc-6') }} # Uses Ubuntu 18.04
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session bundle_app
+    - name: Build wheel (in container)
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session build_wheel
+    - name: Check wheel (in container)
+      run: |
+        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session check_wheel
