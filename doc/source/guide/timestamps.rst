@@ -10,7 +10,7 @@ This can be achieved via the :option:`--timestamp <gcovr --timestamp>` option
 or via :ref:`Using SOURCE_DATE_EPOCH` environment variable.
 This option does not affect the modification times or other filesystem metadata.
 
-.. versionadded:: NEXT
+.. versionadded:: 6.0
 
    Respect environment variable `SOURCE_DATE_EPOCH`_ for default of :option:`gcovr --timestamp`.
 

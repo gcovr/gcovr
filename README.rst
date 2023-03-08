@@ -207,7 +207,7 @@ License
 
 .. begin license
 
-Copyright (c) 2013-2022 the gcovr authors
+Copyright (c) 2013-2023 the gcovr authors
 Copyright (c) 2013 Sandia Corporation.
 Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 the U.S. Government retains certain rights in this software.

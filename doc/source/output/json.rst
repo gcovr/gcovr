@@ -121,10 +121,10 @@ The line entry should be interpreted as follows:
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
 
-.. versionchanged:: NEXT
+.. versionchanged:: 6.0
    The ``gcovr/excluded`` field can be absent if false.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 6.0
    The ``gcovr/noncode`` field was removed.
    Instead of generating noncode entries, the entire line is skipped.
 
@@ -233,7 +233,7 @@ gcovr/excluded: boolean
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
-.. versionadded:: NEXT
+.. versionadded:: 6.0
    New ``gcovr/excluded`` field.
 
 .. _json_summary_output:
