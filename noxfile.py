@@ -59,6 +59,16 @@ DEFAULT_LINT_ARGUMENTS = [
 
 BLACK_PINNED_VERSION = "black==22.3.0"
 
+OUTPUT_FORMATS = [
+    "cobertura",
+    "coveralls",
+    "csv",
+    "html-details",
+    "json",
+    "sonarqube",
+    "txt",
+]
+
 nox.options.sessions = ["qa"]
 
 
@@ -266,11 +276,15 @@ def build_wheel(session: nox.Session) -> None:
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
     session.install("wheel", "twine")
-    session.chdir(f"{session.cache_dir}/dist")
-    session.run("twine", "check", "*", external=True)
-    session.install(glob.glob("*.whl")[0])
+    with session.chdir(f"{session.cache_dir}/dist"):
+        session.run("twine", "check", "*", external=True)
+        session.install(glob.glob("*.whl")[0])
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
+    session.log("Run all transformations to check if all the modules are packed")
+    with session.chdir(session.create_tmp()):
+        for format in OUTPUT_FORMATS:
+            session.run("gcovr", f"--{format}", f"out.{format}", external=True)
 
 
 @nox.session
@@ -301,7 +315,7 @@ def bundle_app(session: nox.Session) -> None:
         "./pyinstaller",
         "--onefile",
         "--collect-all",
-        "gcovr",
+        "gcovr.writer",
         "-n",
         executable,
         *session.posargs,
@@ -313,11 +327,18 @@ def bundle_app(session: nox.Session) -> None:
 @nox.session
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
-    session.chdir("build")
-    session.run("bash", "-c", "./gcovr --help", external=True)
-    session.log("Run HTML all transformations to check if all the modules are packed")
-    for format in ["txt", "html", "cobertura", "sonarqube", "csv", "coveralls"]:
-        session.run("bash", "-c", f"./gcovr --{format} out.{format}", external=True)
+    with session.chdir("build"):
+        # bash here is needed to be independent from the file extension (Windows).
+        session.run("bash", "-c", "./gcovr --help", external=True)
+        session.log("Run all transformations to check if all the modules are packed")
+        session.create_tmp()
+        for format in OUTPUT_FORMATS:
+            session.run(
+                "bash",
+                "-c",
+                f"./gcovr --{format} $TMPDIR/out.{format}",
+                external=True,
+            )
 
 
 def docker_container_os(session: nox.Session) -> str:
