@@ -182,7 +182,7 @@ def doc(session: nox.Session) -> None:
 
     # Ensure that the README builds fine as a standalone document.
     readme_html = session.create_tmp() + "/README.html"
-    session.run("rst2html5.py", "--strict", "README.rst", readme_html)
+    session.run("rst2html5", "--strict", "README.rst", readme_html)
 
 
 @nox.session(python=False)
