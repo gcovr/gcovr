@@ -2,7 +2,7 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
@@ -123,6 +123,13 @@ def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
     session.env["CFLAGS"] = "--this_flag_does_not_exist"
     session.env["CXX"] = cxx
     session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
+
+
+@nox.session
+def bump_version(session: nox.Session) -> None:
+    """Bump the new version"""
+    session.install("-e", ".")
+    session.run("python", "admin/bump_version.py")
 
 
 @nox.session(python=False)
