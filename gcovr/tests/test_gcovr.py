@@ -38,6 +38,7 @@ python_interpreter = force_unix_separator(
     sys.executable
 )  # use forward slash on windows as well
 env = os.environ
+env["SOURCE_DATE_EPOCH"] = "1678392448"
 env["GCOVR"] = python_interpreter + " -m gcovr"
 for var in [
     "CPATH",
