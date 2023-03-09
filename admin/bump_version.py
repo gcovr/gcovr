@@ -147,7 +147,7 @@ def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
     callFound = False
     for line in lines:
         if callReleaseChecklist in line:
-            line = re.sub(r"\d+\.\d+(?:\+master)$", VERSION, line)
+            line = re.sub(r"\d+\.\d+(?:\+master)?$", VERSION, line)
             callFound = True
         newLines.append(line)
     if not callFound:
