@@ -79,11 +79,10 @@ grep -qF "version=\"gcovr $target_version\"" doc/examples/example_cobertura.xml 
     || error "examples: Please regenerate: " \
             "cd doc/examples; ./example_cobertura.sh > example_cobertura.xml"
 
-target_version_html="$(echo "$target_version" | sed -e "s/.*+//")"
-grep -qF "GCOVR (Version $target_version_html)" doc/examples/example_html.html \
+grep -qF "GCOVR (Version $target_version)" doc/examples/example_html.html \
     || error "examples: Please regenerate: " \
             "cd doc/examples; ./example_html.sh > example_html.html"
-grep -qF "GCOVR (Version $target_version_html)" doc/examples/example_html.details.html \
+grep -qF "GCOVR (Version $target_version)" doc/examples/example_html.details.html \
     || error "examples: Please regenerate: " \
             "cd doc/examples; ./example_html.sh > example_html.details.html"
 
