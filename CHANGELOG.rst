@@ -3,6 +3,23 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+Next Release
+------------
+
+Known bugs:
+
+Breaking changes:
+
+New features and notable changes:
+
+Bug fixes and small improvements:
+
+Documentation:
+
+Internal changes:
+
+- Do not scrub versions in reference data. (:issue:`747`)
+
 6.0 (08 March 2023)
 -------------------
 

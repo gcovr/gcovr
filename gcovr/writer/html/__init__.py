@@ -2,7 +2,7 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
@@ -210,7 +210,7 @@ class RootInfo:
         self.link_function_list = options.html_details or options.html_nested
         self.relative_anchors = options.relative_anchors
 
-        self.version = "master" if __version__.endswith("+master") else __version__
+        self.version = __version__
         self.head = options.html_title
         self.date = options.timestamp.isoformat(sep=" ", timespec="seconds")
         self.encoding = options.html_encoding
