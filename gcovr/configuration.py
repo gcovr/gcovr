@@ -807,14 +807,14 @@ GCOVR_CONFIG_OPTIONS = [
         "show_decision",
         ["--decisions"],
         group="output_options",
-        help="Report the decision coverage. For HTML and JSON report.",
+        help="Report the decision coverage. For HTML, JSON, and the summary report.",
         action="store_true",
     ),
     GcovrConfigOption(
         "exclude_calls",
         ["--calls"],
         group="output_options",
-        help="Report the calls coverage. For HTML report.",
+        help="Report the calls coverage. For HTML and the summary report.",
         action="store_false",
     ),
     GcovrConfigOption(

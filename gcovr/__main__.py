@@ -537,7 +537,7 @@ def print_reports(covdata: CovData, options):
         )
 
     if options.print_summary:
-        print_summary(covdata)
+        print_summary(covdata, options)
 
     return generator_error_occurred
 
