@@ -807,7 +807,7 @@ GCOVR_CONFIG_OPTIONS = [
         "show_decision",
         ["--decisions"],
         group="output_options",
-        help="Report the decision coverage. For HTML, JSON  and the summary report.",
+        help="Report the decision coverage. For HTML, JSON, and the summary report.",
         action="store_true",
     ),
     GcovrConfigOption(
