@@ -483,27 +483,35 @@ class DirectoryCoverage:
         collapse_dirs = set()
         root_key = DirectoryCoverage.directory_root(subdirs, root_filter)
         for key, value in subdirs.items():
-            if (
-                isinstance(value, DirectoryCoverage)
-                and len(value.children) == 1
-                and not key == root_key
-            ):
+            if isinstance(value, DirectoryCoverage) and len(value.children) == 1:
                 parent_key = value.parent_key
-                # Remove current element from parent
-                subdirs[parent_key].children = {
-                    k: child
-                    for k, child in subdirs[parent_key].children.items()
-                    if child != value
-                }
                 # Get the key and value of the only child
                 orphan_key = next(iter(value.children))
                 orphan_value = value.children[orphan_key]
                 # Change the parent key
+                parent_key = value.parent_key
                 orphan_value.parent_key = parent_key
-                # ...and add it to the parent
-                subdirs[parent_key].children[orphan_key] = orphan_value
-                # Mark the key for removal
-                collapse_dirs.add(key)
+                if key == root_key:
+                    # Replace the children with the orphan ones
+                    value.children = orphan_value.children
+                    # Change the parent key of each new child element
+                    for new_child_key, new_child_value in value.children.items():
+                        new_child_value.parent_key = key
+                        if isinstance(new_child_value, DirectoryCoverage):
+                            subdirs[new_child_key].parent_key = key
+                    # Mark the key for removal
+                    collapse_dirs.add(orphan_key)
+                else:
+                    # Add orphan value to the parent
+                    subdirs[parent_key].children[orphan_key] = orphan_value
+                    # and remove the current one
+                    subdirs[parent_key].children = {
+                        k: child
+                        for k, child in subdirs[parent_key].children.items()
+                        if child != value
+                    }
+                    # Mark the key for removal
+                    collapse_dirs.add(key)
 
         for key in collapse_dirs:
             del subdirs[key]
