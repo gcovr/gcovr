@@ -488,24 +488,22 @@ class DirectoryCoverage:
                 and len(value.children) == 1
                 and not key == root_key
             ):
-                while True:
-                    parent_key = DirectoryCoverage.directory_key(key, root_filter)
-                    if parent_key not in collapse_dirs or parent_key == root_key:
-                        break
-
-                if parent_key:
-                    newchildren = {
-                        k: child
-                        for k, child in subdirs[parent_key].children.items()
-                        if child != value
-                    }
-                    orphan_key = next(iter(value.children))
-                    orphan = value.children[orphan_key]
-                    orphan.parent_key = parent_key
-                    newchildren[orphan_key] = orphan
-
-                    subdirs[parent_key].children = newchildren
-                    collapse_dirs.add(key)
+                parent_key = value.parent_key
+                # Remove current element from parent
+                subdirs[parent_key].children = {
+                    k: child
+                    for k, child in subdirs[parent_key].children.items()
+                    if child != value
+                }
+                # Get the key and value of the only child
+                orphan_key = next(iter(value.children))
+                orphan_value = value.children[orphan_key]
+                # Change the parent key
+                orphan_value.parent_key = parent_key
+                # ...and add it to the parent
+                subdirs[parent_key].children[orphan_key] = orphan_value
+                # Mark the key for removal
+                collapse_dirs.add(key)
 
         for key in collapse_dirs:
             del subdirs[key]
