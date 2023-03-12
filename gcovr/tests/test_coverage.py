@@ -43,14 +43,14 @@ def compile_filter(root_dir: str) -> re.Pattern:
 @pytest.mark.parametrize(
     "test_input,root_dir,expected",
     [
-        ("/foo/bar/foobar.cpp", "/foo", "/foo/bar"),
-        ("/foo/bar/A/B.cpp", "/foo/bar", "/foo/bar/A"),
-        ("/foo/bar/A/B", "/foo/bar", "/foo/bar/A"),
+        ("/foo/bar/foobar.cpp", "/foo", "/foo/bar/"),
+        ("/foo/bar/A/B.cpp", "/foo/bar", "/foo/bar/A/"),
+        ("/foo/bar/A/B", "/foo/bar", "/foo/bar/A/"),
         ("/foo/bar", "/foo/bar", None),
-        ("/A/bar.cpp", "/A", "/A"),
+        ("/A/bar.cpp", "/A", "/A/"),
         ("/A", "/A", None),
-        ("C:\\foo\\bar\\A\\foobar.cpp", "C:/foo/bar", "C:/foo/bar/A"),
-        ("C:\\foo\\bar\\A", "C:/foo/bar", "C:/foo/bar"),
+        ("C:\\foo\\bar\\A\\foobar.cpp", "C:/foo/bar", "C:/foo/bar/A/"),
+        ("C:\\foo\\bar\\A", "C:/foo/bar", "C:/foo/bar/"),
     ],
 )
 def test_directory_key(test_input, root_dir, expected, capsys) -> None:
@@ -115,7 +115,7 @@ def test_directory_add_file() -> None:
     add_file_to_directory(subdirs, "/foo/bar/helper.cpp", root_dir, 10, 50)
     assert len(subdirs) == 1
 
-    dircov = subdirs[root_dir]
+    dircov = subdirs[root_dir + os.sep]
 
     assert len(dircov.children) == 2
     linecov = dircov.line_coverage()
@@ -134,7 +134,7 @@ def test_directory_root() -> None:
 
     add_file_to_directory(subdirs, "/foo/bar/main.cpp", root_dir, 20, 50)
     add_file_to_directory(subdirs, "/foo/bar/A/B/C/D/E.cpp", root_dir, 10, 50)
-    assert DirectoryCoverage.directory_root(subdirs, root_filter) == root_dir
+    assert DirectoryCoverage.directory_root(subdirs, root_filter) == root_dir + os.sep
 
 
 def test_directory_collapse() -> None:
@@ -150,7 +150,7 @@ def test_directory_collapse() -> None:
     DirectoryCoverage.collapse_subdirectories(subdirs, root_filter)
     assert len(subdirs) == 1
 
-    dircov = subdirs[fix_filename(root_dir)]
+    dircov = subdirs[fix_filename(root_dir) + os.sep]
 
     assert len(dircov.children) == 2
     linecov = dircov.line_coverage()
