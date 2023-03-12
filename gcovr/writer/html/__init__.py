@@ -67,7 +67,7 @@ class Lazy:
         return self.get(*args)
 
 
-# Loading Jinja and preparing the environmen is fairly costly.
+# Loading Jinja and preparing the environment is fairly costly.
 # Only do this work if templates are actually used.
 # This speeds up text and XML output.
 @Lazy
