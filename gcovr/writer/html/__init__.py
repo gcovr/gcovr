@@ -410,15 +410,16 @@ def print_html_report(covdata: CovData, output_file: str, options) -> bool:
     cdata_fname = {}
     cdata_sourcefile = {}
     for f in sorted_keys + list(root_info.subdirs.keys()):
-        filtered_fname = options.root_filter.sub("", f)
-        files.append(filtered_fname)
+        filtered_fname: str = options.root_filter.sub("", f)
+        if filtered_fname != "":
+            files.append(filtered_fname)
         cdata_fname[f] = filtered_fname
         if options.html_details or options.html_nested:
             if os.path.normpath(f) == os.path.normpath(options.root_dir):
                 cdata_sourcefile[f] = output_file
             else:
                 cdata_sourcefile[f] = _make_short_sourcename(
-                    output_file, filtered_fname
+                    output_file, filtered_fname.rstrip(os.sep)
                 )
         else:
             cdata_sourcefile[f] = None
@@ -653,13 +654,13 @@ def write_directory_pages(
 
         html_string = templates().get_template("directory_page.html").render(**data)
         filename = None
-        if f == root_key:
+        if f in [root_key, ""]:
             filename = output_file
         elif f in cdata_sourcefile:
             filename = cdata_sourcefile[f]
         else:
             logger.warning(
-                f"There's a subdirectory {f} that there's no source files within it"
+                f"There's a subdirectory {f!r} that there's no source files within it"
             )
 
         if filename:
