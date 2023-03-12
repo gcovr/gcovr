@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2022 the gcovr authors
+# Copyright (c) 2013-2023 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -280,14 +280,13 @@ class AlwaysMatchFilter(Filter):
 
 class DirectoryPrefixFilter(Filter):
     def __init__(self, directory):
-        path = realpath(directory)
-        os_independent_path = get_os_independent_path(path)
+        os_independent_path = get_os_independent_path(directory)
         pattern = re.escape(f"{os_independent_path}/")
         super().__init__(pattern)
 
     def match(self, path: str):
-        realpath = os.path.normpath(path)
-        return super().match(realpath)
+        path = os.path.normpath(path)
+        return super().match(path)
 
 
 def configure_logging() -> None:

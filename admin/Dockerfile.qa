@@ -25,6 +25,7 @@ RUN \
                           $CC \
                           $CXX \
                           python3-setuptools \
+                          python3-dev \
                           $(if [ "$DOCKER_OS" != "ubuntu:22.04" ]; then echo python3.7; fi) \
                           ninja-build \
                           curl \
@@ -47,6 +48,7 @@ RUN \
 
 # Install nox
 RUN \
+  python3 -m pip install --upgrade pip ; \
   python3 -m pip install --no-cache-dir nox
 
 ENV \
@@ -82,5 +84,5 @@ USER docker:docker
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 WORKDIR /gcovr
-
-CMD python3 -m nox --envdir $NOX_ENV_DIR --non-interactive $NOX_OPTIONS
+                                                       # This are the arguments given to "docker run ... <Image> $0 $@"
+ENTRYPOINT nox --envdir $NOX_ENV_DIR --non-interactive $0 "$@"

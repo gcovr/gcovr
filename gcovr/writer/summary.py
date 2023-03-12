@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2022 the gcovr authors
+# Copyright (c) 2013-2023 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -22,7 +22,7 @@ import sys
 from ..coverage import CovData, CoverageStat, SummarizedStats
 
 
-def print_summary(covdata: CovData):
+def print_summary(covdata: CovData, options):
     """Print a small report to the standard output.
     Output the percentage, covered and total lines and branches.
     """
@@ -38,5 +38,8 @@ def print_summary(covdata: CovData):
     print_stat("lines", stats.line)
     print_stat("functions", stats.function)
     print_stat("branches", stats.branch)
-    print_stat("calls", stats.call)
+    if options.show_decision:
+        print_stat("decisions", stats.decision)
+    if not options.exclude_calls:
+        print_stat("calls", stats.call)
     sys.stdout.flush()

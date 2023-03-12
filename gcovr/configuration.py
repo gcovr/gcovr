@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2022 the gcovr authors
+# Copyright (c) 2013-2023 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -807,14 +807,14 @@ GCOVR_CONFIG_OPTIONS = [
         "show_decision",
         ["--decisions"],
         group="output_options",
-        help="Report the decision coverage. For HTML and JSON report.",
+        help="Report the decision coverage. For HTML, JSON, and the summary report.",
         action="store_true",
     ),
     GcovrConfigOption(
         "exclude_calls",
         ["--calls"],
         group="output_options",
-        help="Report the calls coverage. For HTML report.",
+        help="Report the calls coverage. For HTML and the summary report.",
         action="store_false",
     ),
     GcovrConfigOption(

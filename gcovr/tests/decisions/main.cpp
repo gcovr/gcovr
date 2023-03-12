@@ -186,12 +186,19 @@ bool checkSwitch1(int a)
    switch (a)
    {
    case 5: return true; break;
+   /* Comment */
    case 10:
+      /* Comment */
       return true;
+      /* Comment */
       break;
+      /* Comment */
    default:
+      /* Comment */
       return false;
+      /* Comment */
       break;
+      /* Comment */
    }
 }
 

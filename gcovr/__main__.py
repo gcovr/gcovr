@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2022 the gcovr authors
+# Copyright (c) 2013-2023 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -128,7 +128,7 @@ def create_argument_parser():
 
 
 COPYRIGHT = (
-    "Copyright (c) 2013-2022 the gcovr authors\n"
+    "Copyright (c) 2013-2023 the gcovr authors\n"
     "Copyright (c) 2013 Sandia Corporation.\n"
     "Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,\n"
     "the U.S. Government retains certain rights in this software.\n"
@@ -266,16 +266,6 @@ def main(args=None):
 
     options.starting_dir = os.path.abspath(os.getcwd())
     options.root_dir = os.path.abspath(options.root)
-    root_dir_realpath = os.path.realpath(options.root_dir)
-    if options.root_dir != root_dir_realpath and not options.filter:
-        logger.warning(
-            "Your project --root directory seems to contain a symlink. "
-            "This will EXCLUDE source files in your root directory! "
-            "To fix this, you may have to add a --filter option:\n"
-            "    --filter='%s'\n"
-            "For details, see https://github.com/gcovr/gcovr/issues/635",
-            re.escape(root_dir_realpath),
-        )
 
     #
     # Setup filters
@@ -547,7 +537,7 @@ def print_reports(covdata: CovData, options):
         )
 
     if options.print_summary:
-        print_summary(covdata)
+        print_summary(covdata, options)
 
     return generator_error_occurred
 

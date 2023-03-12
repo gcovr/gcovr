@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2022 the gcovr authors
+# Copyright (c) 2013-2023 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -30,48 +30,62 @@ from .coverage import (
 
 logger = logging.getLogger("gcovr")
 
+_CHARACTERS_TO_ADD_SPACES = re.compile(r"([;:\(\)\{\}])")
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
 _WHITESPACE_PATTERN = re.compile(r"\s+")
 
+_ONE_LINE_BRANCH = re.compile(r"^[^;]+{(?:.*;)*.*}$")
 
 # helper functions
 
 
-def _prep_decision_string(code: str) -> str:
+def _prepare_decision_string(code: str) -> str:
     r"""Prepare the input to analyze, if it's a branch statement.
-    Remove comments, remove whitespace, add leading space to seperate branch-keywords
+    Remove comments, remove whitespace, add leading space to separate branch-keywords
     from possible collisions with variable names.
 
-    >>> _prep_decision_string('   a++  ;  if  (a > 5)  { // check for something ')
-    ' a++ ; if (a > 5) {'
+    >>> _prepare_decision_string('   a++;if  (a > 5)  { // check for something ')
+    ' a++ ; if ( a > 5 ) {'
+    >>> _prepare_decision_string('case x: // check for something ')
+    ' case x :'
+    >>> _prepare_decision_string('    default     : // check for something ')
+    ' default :'
+    >>> _prepare_decision_string('{/* Comment */')
+    ' {'
+    >>> _prepare_decision_string('}/* Comment */')
+    ' }'
+
+    Check that removal of comment does not create tokens.
+    >>> _prepare_decision_string('    def/* Comment */ault: /* xxx */ ')
+    ' def ault :'
     """
 
-    code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
-    code = _C_STYLE_COMMENT_PATTERN.sub("", code)
+    # Add whitespaces around ":"
+    code = _CHARACTERS_TO_ADD_SPACES.sub(r" \1 ", code)
+    code = _CPP_STYLE_COMMENT_PATTERN.sub(" ", code)
+    code = _C_STYLE_COMMENT_PATTERN.sub(" ", code)
     code = _WHITESPACE_PATTERN.sub(" ", code)
 
     return " " + code.lstrip().strip()
 
 
 def _get_delta_braces(code):
-    prepped_code = _prep_decision_string(code)
-    return prepped_code.count("(") - prepped_code.count(")")
+    prepared_string = _prepare_decision_string(code)
+    return prepared_string.count("(") - prepared_string.count(")")
 
 
 def _is_a_branch_statement(code: str) -> bool:
     r"""Checks, if the given line of code is a branch statement"""
     return any(
-        s in _prep_decision_string(code)
+        s in _prepare_decision_string(code)
         for s in (
-            " if(",
-            ";if(",
             " if (",
-            ";if (",
+            "; if (",
             " case ",
-            ";case ",
-            " default:",
-            ";default:",
+            "; case ",
+            " default :",
+            "; default :",
         )
     )
 
@@ -84,7 +98,7 @@ def _is_a_oneline_branch(code: str) -> bool:
     >>> _is_a_oneline_branch('if(a>5){')
     False
     """
-    return re.match(r"^[^;]+{(?:.*;)*.*}$", _prep_decision_string(code)) is not None
+    return _ONE_LINE_BRANCH.match(_prepare_decision_string(code)) is not None
 
 
 def _is_a_closed_branch(code: str) -> bool:
@@ -101,11 +115,11 @@ def _is_a_closed_branch(code: str) -> bool:
     >>> _is_a_closed_branch('   while (a>5')
     False
     """
-    prepped_code = _prep_decision_string(code)
+    prepared_string = _prepare_decision_string(code)
     if (
-        _is_a_branch_statement(prepped_code) or _is_a_loop(prepped_code)
-    ) and not _is_a_oneline_branch(prepped_code):
-        return _get_delta_braces(prepped_code) == 0
+        _is_a_branch_statement(prepared_string) or _is_a_loop(prepared_string)
+    ) and not _is_a_oneline_branch(prepared_string):
+        return _get_delta_braces(prepared_string) == 0
 
     return False
 
@@ -116,21 +130,22 @@ def _is_a_loop(code: str) -> bool:
     >>> _is_a_loop('while(5 < a) {')
     True
     """
-    compare_string = _prep_decision_string(code)
+    prepared_string = _prepare_decision_string(code)
     return any(
-        s in compare_string
-        for s in (" while(", " while (", "}while(", " for ", " for(")
+        s in prepared_string for s in (" while (", "} while (", " for ", " for (")
     )
 
 
 def _is_a_switch(code: str) -> bool:
     r"""Check if the given line relates to a switch-case label (case,default)
 
-    >>> _is_a_switch('case 5:')
+    >>> _is_a_switch('case /* Comment */ 5 /* Comment */:')
+    True
+    >>> _is_a_switch('default /* Comment */ :')
     True
     """
-    compare_string = _prep_decision_string(code)
-    return any(s in compare_string for s in (" case ", " default:"))
+    prepared_string = _prepare_decision_string(code)
+    return any(s in prepared_string for s in (" case ", " default :"))
 
 
 class DecisionParser:
@@ -166,7 +181,7 @@ class DecisionParser:
     def parse_one_line(self, lineno: int, code: str) -> None:
         line_coverage = self.coverage.lines.get(lineno)
 
-        if line_coverage is None:
+        if line_coverage is None and not _is_a_switch(code):
             return
 
         # check, if a analysis for a classic if-/else if-branch is active
@@ -176,11 +191,12 @@ class DecisionParser:
         # if no decision analysis is active, check the active line of code for a branch_statement or a loop
         if self.decision_analysis_active:
             return
+
         if not (_is_a_branch_statement(code) or _is_a_loop(code)):
             return
 
         # check if a branch exists (prevent misdetection caused by inaccurante parsing)
-        if len(line_coverage.branches.items()) > 0:
+        if line_coverage and len(line_coverage.branches.items()) > 0:
             if (
                 _is_a_loop(code)
                 or _is_a_oneline_branch(code)
@@ -207,16 +223,16 @@ class DecisionParser:
 
         # check if it's a case statement (measured at every line of a case, so a branch definition isn't given)
         elif _is_a_switch(code):
-            if "; break;" in code.replace(" ", "").replace(";", "; "):
-                # just use execution counts of case lines
-                line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
-            else:
-                # use the execution counts of the following line (compatibility with GCC 5)
-                line_coverage_next_line = self.coverage.lines.get(lineno + 1)
-                if line_coverage_next_line is not None:
-                    line_coverage.decision = DecisionCoverageSwitch(
-                        line_coverage_next_line.count
-                    )
+            # Get the coverage of the next line before a break
+            for next_lineno in range(
+                lineno, max(lineno + 1, *self.coverage.lines.keys())
+            ):
+                line_coverage = self.coverage.lines.get(next_lineno)
+                if line_coverage is not None:
+                    line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
+                    break
+                if " break ;" in _prepare_decision_string(code):
+                    break
 
     def start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
         # normal (non-compact) branch, analyze execution of following lines

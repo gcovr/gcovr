@@ -1,0 +1,104 @@
+{# -*- engine: jinja -*- #}
+<div>
+  <table class="legend">
+    <tr>
+      <th scope="row">Directory:</th>
+      <td>{{info.get_directory()}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Date:</th>
+      <td>{{info.date}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        {% if COVERAGE_MED != COVERAGE_HIGH %}
+        <span class="coverage-medium">medium: &ge; {{COVERAGE_MED}}%</span>
+        {% endif %}
+        {% if COVERAGE_HIGH < 100 %}
+        <span class="coverage-high">high: &ge; {{COVERAGE_HIGH}}%</span>
+        {% else %}
+        <span class="coverage-high">high: = 100%</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% if (COVERAGE_MED != LINE_COVERAGE_MED) or (COVERAGE_HIGH != LINE_COVERAGE_HIGH) %}
+    <tr>
+      <th scope="row">Lines:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        {% if LINE_COVERAGE_MED != LINE_COVERAGE_HIGH %}
+        <span class="coverage-medium">medium: &ge; {{LINE_COVERAGE_MED}}%</span>
+        {% endif %}
+        {% if LINE_COVERAGE_HIGH < 100 %}
+        <span class="coverage-high">high: &ge; {{LINE_COVERAGE_HIGH}}%</span>
+        {% else %}
+        <span class="coverage-high">high: = 100%</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% if (COVERAGE_MED != BRANCH_COVERAGE_MED) or (COVERAGE_HIGH != BRANCH_COVERAGE_HIGH) %}
+    <tr>
+      <th scope="row">Branches:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        {% if BRANCH_COVERAGE_MED != BRANCH_COVERAGE_HIGH %}
+        <span class="coverage-medium">medium: &ge; {{BRANCH_COVERAGE_MED}}%</span>
+        {% endif %}
+        {% if BRANCH_COVERAGE_HIGH < 100 %}
+        <span class="coverage-high">high: &ge; {{BRANCH_COVERAGE_HIGH}}%</span>
+        {% else %}
+        <span class="coverage-high">high: = 100%</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endif %}
+  </table>
+</div>
+
+<div>
+  <table class="coverage">
+    <tr>
+      <th></th>
+      <th scope="col">Exec</th>
+      <th scope="col">Total</th>
+      <th scope="col">Coverage</th>
+    </tr>
+    <tr>
+      <th scope="row">Lines:</th>
+      <td>{{info.lines.exec}}</td>
+      <td>{{info.lines.total}}</td>
+      <td class="{{info.lines.class}}">{{info.lines.coverage}}%</td>
+    </tr>
+    <tr>
+      <th scope="row">Functions:</th>
+      <td>{{info.functions.exec}}</td>
+      <td>{{info.functions.total}}</td>
+      <td class="{{info.functions.class}}">{{info.functions.coverage}}%</td>
+    </tr>
+    <tr>
+      <th scope="row">Branches:</th>
+      <td>{{info.branches.exec}}</td>
+      <td>{{info.branches.total}}</td>
+      <td class="{{info.branches.class}}">{{info.branches.coverage}}%</td>
+    </tr>
+    {% if SHOW_DECISION %}
+    <tr>
+      <th scope="row">Decisions:</th>
+      <td>{{info.decisions.exec}}</td>
+      <td>{{info.decisions.total}}</td>
+      <td class="{{info.decisions.class}}">{{info.decisions.coverage}}%</td>
+    </tr>
+    {% endif %}
+    {% if not EXCLUDE_CALLS %}
+    <tr>
+      <th scope="row">Calls:</th>
+      <td>{{info.calls.exec}}</td>
+      <td>{{info.calls.total}}</td>
+      <td class="{{info.calls.class}}">{{info.calls.coverage}}%</td>
+    </tr>
+    {% endif %}
+  </table>
+</div>

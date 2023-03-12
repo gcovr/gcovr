@@ -4,12 +4,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2022 the gcovr authors
+# Copyright (c) 2013-2023 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -147,7 +147,7 @@ def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
     callFound = False
     for line in lines:
         if callReleaseChecklist in line:
-            line = re.sub(r"\d+\.\d+$", VERSION, line)
+            line = re.sub(r"\d+\.\d+(?:\+master)?$", VERSION, line)
             callFound = True
         newLines.append(line)
     if not callFound:
@@ -212,7 +212,7 @@ def updateReadme(filename: str, lines: List[str]):
     return newLines
 
 
-def updatDocumentation(filename: str, lines: List[str]):
+def updateDocumentation(filename: str, lines: List[str]):
     newLines = []
 
     for line in lines:
@@ -247,6 +247,22 @@ def updateLicense(filename: str, lines: List[str]):
     return newLines
 
 
+def updateSourceDateEpoch(filename: str, lines: List[str]):
+    newLines = []
+
+    envSourceDateEpoch = 'env["SOURCE_DATE_EPOCH"] = '
+    setEnvironmentFound = False
+    for line in lines:
+        if line.startswith(envSourceDateEpoch):
+            line = re.sub(r"\d+", str(int(time.time())), line)
+            setEnvironmentFound = True
+        newLines.append(line)
+    if not setEnvironmentFound:
+        raise RuntimeError(f"Call of {envSourceDateEpoch!r} not found in {filename!r}.")
+
+    return newLines
+
+
 def main():
     for root, dirs, files in os.walk(".", topdown=True):
 
@@ -264,14 +280,18 @@ def main():
                 handlers.append(updateCopyrightString)
             if filename == "deploy.yml":
                 handlers.append(updateCallOfReleaseChecklist)
-            if filename == "CHANGELOG.rst":
-                handlers.append(updateChangelog)
             if filename == "README.rst":
                 handlers.append(updateReadme)
-            if filename.endswith(".rst"):
-                handlers.append(updatDocumentation)
             if filename == "LICENSE.txt":
                 handlers.append(updateLicense)
+            if filename == "test_gcovr.py":
+                handlers.append(updateSourceDateEpoch)
+
+            if not VERSION.endswith("+master"):
+                if filename == "CHANGELOG.rst":
+                    handlers.append(updateChangelog)
+                if filename.endswith(".rst"):
+                    handlers.append(updateDocumentation)
 
             if handlers:
                 with open(fullname) as f:

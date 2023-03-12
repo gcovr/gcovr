@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 5.2, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2022 the gcovr authors
+# Copyright (c) 2013-2023 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -32,8 +32,9 @@ datadir = os.path.dirname(os.path.abspath(__file__))
 
 
 class Example(object):
-    def __init__(self, name, script, baseline):
+    def __init__(self, name, format, script, baseline):
         self.name = name
+        self.format = format
         self.script = script
         self.baseline = baseline
 
@@ -51,18 +52,18 @@ def find_test_cases():
     for script in glob.glob(datadir + "/*.sh"):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
-        for ext in "txt cobertura csv json html".split():
-            if ext == "html" and is_compiler(os.getenv("CC"), "gcc-5", "gcc-6"):
+        for format in "txt cobertura csv json html".split():
+            if format == "html" and is_compiler(os.getenv("CC"), "gcc-5", "gcc-6"):
                 continue
             baseline = "{datadir}/{name}.{ext}".format(
                 datadir=datadir,
                 name=name,
-                ext=ext,
+                ext="xml" if format == "cobertura" else format,
             )
             if not os.path.exists(baseline):
                 continue
             else:
-                yield Example(name, script, baseline)
+                yield Example(name, format, script, baseline)
 
 
 @pytest.mark.skipif(
@@ -73,15 +74,23 @@ def find_test_cases():
 def test_example(example):
     cmd = example.script
     baseline_file = example.baseline
-    ext = os.path.splitext(baseline_file)[1][1:]
-    scrub = SCRUBBERS[ext]
+    scrub = SCRUBBERS[example.format]
 
     startdir = os.getcwd()
     os.chdir(datadir)
-    output = scrub(subprocess.check_output(cmd).decode().replace("\r\n", "\n"))
+    output = subprocess.check_output(cmd).decode().replace("\r\n", "\n")
+    scrubbed_output = scrub(output)
     with open(baseline_file) as f:
         baseline = scrub(f.read())
-    assert_equals(baseline_file, baseline, "<STDOUT>", output, encoding="utf8")
+
+    try:
+        assert_equals(
+            baseline_file, baseline, "<STDOUT>", scrubbed_output, encoding="utf8"
+        )
+    except AssertionError:  # pragma: no cover
+        with open(baseline_file, "w", encoding="utf8") as out:
+            out.write(output)
+        raise
     os.chdir(startdir)
 
 

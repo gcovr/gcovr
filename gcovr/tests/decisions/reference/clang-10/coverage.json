@@ -20,7 +20,7 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 270,
+                    "lineno": 277,
                     "name": "_Z12checkForLoopi"
                 },
                 {
@@ -30,12 +30,12 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 198,
+                    "lineno": 205,
                     "name": "_Z12checkSwitch2i"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 214,
+                    "lineno": 221,
                     "name": "_Z12checkSwitch3i"
                 },
                 {
@@ -45,7 +45,7 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 290,
+                    "lineno": 297,
                     "name": "_Z14checkWhileLoopi"
                 },
                 {
@@ -75,12 +75,12 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 304,
+                    "lineno": 311,
                     "name": "_Z16checkDoWhileLoopi"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 318,
+                    "lineno": 325,
                     "name": "_Z16checkInterpreteri"
                 },
                 {
@@ -90,7 +90,7 @@
                 },
                 {
                     "execution_count": 2,
-                    "lineno": 342,
+                    "lineno": 349,
                     "name": "_Z16verify_issue_679b"
                 },
                 {
@@ -110,12 +110,12 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 250,
+                    "lineno": 257,
                     "name": "_Z17checkTernary1Truei"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 260,
+                    "lineno": 267,
                     "name": "_Z17checkTernary2Truei"
                 },
                 {
@@ -125,42 +125,42 @@
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 255,
+                    "lineno": 262,
                     "name": "_Z18checkTernary1Falsei"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 265,
+                    "lineno": 272,
                     "name": "_Z18checkTernary2Falsei"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 280,
+                    "lineno": 287,
                     "name": "_Z19checkComplexForLoopi"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 230,
+                    "lineno": 237,
                     "name": "_Z23checkCompactBranch1Truei"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 240,
+                    "lineno": 247,
                     "name": "_Z23checkCompactBranch2Truei"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 235,
+                    "lineno": 242,
                     "name": "_Z24checkCompactBranch1Falsei"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 245,
+                    "lineno": 252,
                     "name": "_Z24checkCompactBranch2Falsei"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 349,
+                    "lineno": 356,
                     "name": "main"
                 }
             ],
@@ -895,68 +895,88 @@
                 {
                     "branches": [],
                     "count": 0,
-                    "line_number": 190
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "line_number": 192
                 },
                 {
                     "branches": [],
                     "count": 0,
-                    "line_number": 193
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 196
-                },
-                {
-                    "branches": [],
-                    "count": 1,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
                     "line_number": 198
                 },
                 {
-                    "branches": [
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
-                    "count": 1,
-                    "line_number": 200
-                },
-                {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "line_number": 203
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 206
+                    "line_number": 205
+                },
+                {
+                    "branches": [
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "line_number": 207
                 },
                 {
                     "branches": [],
                     "count": 0,
-                    "line_number": 209
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "line_number": 210
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 212
+                    "gcovr/decision": {
+                        "count": 1,
+                        "type": "switch"
+                    },
+                    "line_number": 213
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "line_number": 216
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 214
+                    "line_number": 219
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 221
                 },
                 {
                     "branches": [
@@ -977,32 +997,44 @@
                         }
                     ],
                     "count": 1,
-                    "line_number": 216
+                    "line_number": 223
                 },
                 {
                     "branches": [],
                     "count": 0,
-                    "line_number": 219
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "line_number": 226
                 },
                 {
                     "branches": [],
                     "count": 0,
-                    "line_number": 222
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "line_number": 229
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 225
+                    "gcovr/decision": {
+                        "count": 1,
+                        "type": "switch"
+                    },
+                    "line_number": 232
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 228
+                    "line_number": 235
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 230
+                    "line_number": 237
                 },
                 {
                     "branches": [
@@ -1023,17 +1055,17 @@
                         "count_true": 1,
                         "type": "conditional"
                     },
-                    "line_number": 232
+                    "line_number": 239
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 233
+                    "line_number": 240
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 235
+                    "line_number": 242
                 },
                 {
                     "branches": [
@@ -1054,51 +1086,7 @@
                         "count_true": 0,
                         "type": "conditional"
                     },
-                    "line_number": 237
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 238
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 240
-                },
-                {
-                    "branches": [
-                        {
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
-                    "count": 1,
-                    "gcovr/decision": {
-                        "type": "uncheckable"
-                    },
-                    "line_number": 242
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 243
+                    "line_number": 244
                 },
                 {
                     "branches": [],
@@ -1106,7 +1094,17 @@
                     "line_number": 245
                 },
                 {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 247
+                },
+                {
                     "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
                         {
                             "count": 0,
                             "fallthrough": false,
@@ -1121,23 +1119,13 @@
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
                         }
                     ],
                     "count": 1,
                     "gcovr/decision": {
                         "type": "uncheckable"
                     },
-                    "line_number": 247
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 248
+                    "line_number": 249
                 },
                 {
                     "branches": [],
@@ -1148,6 +1136,35 @@
                     "branches": [],
                     "count": 1,
                     "line_number": 252
+                },
+                {
+                    "branches": [
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "gcovr/decision": {
+                        "type": "uncheckable"
+                    },
+                    "line_number": 254
                 },
                 {
                     "branches": [],
@@ -1162,28 +1179,43 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 260
+                    "line_number": 259
                 },
                 {
-                    "branches": [
-                        {
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
+                    "branches": [],
                     "count": 1,
                     "line_number": 262
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 265
+                    "line_number": 264
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 267
+                },
+                {
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "line_number": 269
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 272
                 },
                 {
                     "branches": [
@@ -1199,17 +1231,17 @@
                         }
                     ],
                     "count": 1,
-                    "line_number": 267
+                    "line_number": 274
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 270
+                    "line_number": 277
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 272
+                    "line_number": 279
                 },
                 {
                     "branches": [
@@ -1230,32 +1262,32 @@
                         "count_true": 5,
                         "type": "conditional"
                     },
-                    "line_number": 273
-                },
-                {
-                    "branches": [],
-                    "count": 5,
-                    "line_number": 275
-                },
-                {
-                    "branches": [],
-                    "count": 5,
-                    "line_number": 276
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 277
-                },
-                {
-                    "branches": [],
-                    "count": 1,
                     "line_number": 280
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 5,
                     "line_number": 282
+                },
+                {
+                    "branches": [],
+                    "count": 5,
+                    "line_number": 283
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 284
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 287
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 289
                 },
                 {
                     "branches": [
@@ -1284,37 +1316,37 @@
                     "gcovr/decision": {
                         "type": "uncheckable"
                     },
-                    "line_number": 283
-                },
-                {
-                    "branches": [],
-                    "count": 5,
-                    "line_number": 285
-                },
-                {
-                    "branches": [],
-                    "count": 5,
-                    "line_number": 286
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 287
-                },
-                {
-                    "branches": [],
-                    "count": 1,
                     "line_number": 290
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 5,
                     "line_number": 292
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 5,
                     "line_number": 293
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 294
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 297
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 299
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 300
                 },
                 {
                     "branches": [
@@ -1335,52 +1367,52 @@
                         "count_true": 5,
                         "type": "conditional"
                     },
-                    "line_number": 295
+                    "line_number": 302
                 },
                 {
                     "branches": [],
                     "count": 5,
-                    "line_number": 297
-                },
-                {
-                    "branches": [],
-                    "count": 5,
-                    "line_number": 298
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 301
-                },
-                {
-                    "branches": [],
-                    "count": 1,
                     "line_number": 304
                 },
                 {
                     "branches": [],
-                    "count": 1,
-                    "line_number": 306
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 307
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 309
-                },
-                {
-                    "branches": [],
                     "count": 5,
+                    "line_number": 305
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 308
+                },
+                {
+                    "branches": [],
+                    "count": 1,
                     "line_number": 311
                 },
                 {
                     "branches": [],
+                    "count": 1,
+                    "line_number": 313
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 314
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 316
+                },
+                {
+                    "branches": [],
                     "count": 5,
-                    "line_number": 312
+                    "line_number": 318
+                },
+                {
+                    "branches": [],
+                    "count": 5,
+                    "line_number": 319
                 },
                 {
                     "branches": [
@@ -1401,32 +1433,12 @@
                         "count_true": 4,
                         "type": "conditional"
                     },
-                    "line_number": 313
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 315
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 318
-                },
-                {
-                    "branches": [],
-                    "count": 1,
                     "line_number": 320
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 321
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 323
+                    "line_number": 322
                 },
                 {
                     "branches": [],
@@ -1436,22 +1448,42 @@
                 {
                     "branches": [],
                     "count": 1,
+                    "line_number": 327
+                },
+                {
+                    "branches": [],
+                    "count": 1,
                     "line_number": 328
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 329
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 331
+                    "line_number": 330
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "line_number": 332
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 335
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 336
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 338
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 339
                 },
                 {
                     "branches": [
@@ -1472,27 +1504,27 @@
                         "count_true": 1,
                         "type": "conditional"
                     },
-                    "line_number": 334
+                    "line_number": 341
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 336
+                    "line_number": 343
                 },
                 {
                     "branches": [],
                     "count": 0,
-                    "line_number": 339
+                    "line_number": 346
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 340
+                    "line_number": 347
                 },
                 {
                     "branches": [],
                     "count": 2,
-                    "line_number": 342
+                    "line_number": 349
                 },
                 {
                     "branches": [
@@ -1513,7 +1545,7 @@
                         "count_true": 1,
                         "type": "conditional"
                     },
-                    "line_number": 343
+                    "line_number": 350
                 },
                 {
                     "branches": [
@@ -1534,36 +1566,11 @@
                         "count_true": 10,
                         "type": "conditional"
                     },
-                    "line_number": 344
-                },
-                {
-                    "branches": [],
-                    "count": 10,
-                    "line_number": 345
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 346
-                },
-                {
-                    "branches": [],
-                    "count": 2,
-                    "line_number": 347
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "line_number": 349
-                },
-                {
-                    "branches": [],
-                    "count": 1,
                     "line_number": 351
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 10,
                     "line_number": 352
                 },
                 {
@@ -1573,7 +1580,7 @@
                 },
                 {
                     "branches": [],
-                    "count": 1,
+                    "count": 2,
                     "line_number": 354
                 },
                 {
@@ -1584,7 +1591,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 357
+                    "line_number": 358
                 },
                 {
                     "branches": [],
@@ -1599,7 +1606,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 362
+                    "line_number": 361
                 },
                 {
                     "branches": [],
@@ -1609,7 +1616,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 365
+                    "line_number": 364
                 },
                 {
                     "branches": [],
@@ -1619,7 +1626,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 368
+                    "line_number": 367
                 },
                 {
                     "branches": [],
@@ -1644,7 +1651,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 374
+                    "line_number": 375
                 },
                 {
                     "branches": [],
@@ -1669,7 +1676,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 382
+                    "line_number": 381
                 },
                 {
                     "branches": [],
@@ -1679,7 +1686,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 385
+                    "line_number": 384
                 },
                 {
                     "branches": [],
@@ -1689,7 +1696,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 388
+                    "line_number": 387
                 },
                 {
                     "branches": [],
@@ -1704,7 +1711,7 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "line_number": 391
+                    "line_number": 392
                 },
                 {
                     "branches": [],
@@ -1724,7 +1731,32 @@
                 {
                     "branches": [],
                     "count": 1,
+                    "line_number": 397
+                },
+                {
+                    "branches": [],
+                    "count": 1,
                     "line_number": 398
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 400
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 402
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 403
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "line_number": 405
                 }
             ]
         }
