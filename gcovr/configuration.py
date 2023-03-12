@@ -916,6 +916,16 @@ GCOVR_CONFIG_OPTIONS = [
         const=OutputOrDefault(None),
     ),
     GcovrConfigOption(
+        "template_dir",
+        ["--template-dir"],
+        group="output_options",
+        metavar="OUTPUT",
+        help=(
+            "Relative directory to Jinja2 templates to use instead of the "
+            "default templates included with gcovr. "
+        ),
+    ),
+    GcovrConfigOption(
         "html_syntax_highlighting",
         ["--html-syntax-highlighting", "--html-details-syntax-highlighting"],
         group="output_options",
