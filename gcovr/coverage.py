@@ -492,15 +492,17 @@ class DirectoryCoverage:
                 parent_key = value.parent_key
                 orphan_value.parent_key = parent_key
                 if key == root_key:
-                    # Replace the children with the orphan ones
-                    value.children = orphan_value.children
-                    # Change the parent key of each new child element
-                    for new_child_key, new_child_value in value.children.items():
-                        new_child_value.parent_key = key
-                        if isinstance(new_child_value, DirectoryCoverage):
-                            subdirs[new_child_key].parent_key = key
-                    # Mark the key for removal.
-                    collapse_dirs.add(orphan_key)
+                    # The only child is not a File object
+                    if not isinstance(orphan_value, FileCoverage):
+                        # Replace the children with the orphan ones
+                        value.children = orphan_value.children
+                        # Change the parent key of each new child element
+                        for new_child_key, new_child_value in value.children.items():
+                            new_child_value.parent_key = key
+                            if isinstance(new_child_value, DirectoryCoverage):
+                                subdirs[new_child_key].parent_key = key
+                        # Mark the key for removal.
+                        collapse_dirs.add(orphan_key)
                 else:
                     # Add orphan value to the parent
                     subdirs[parent_key].children[orphan_key] = orphan_value
