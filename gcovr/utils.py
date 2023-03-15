@@ -30,6 +30,10 @@ from contextlib import contextmanager
 logger = logging.getLogger("gcovr")
 
 
+LOG_FORMAT = "(%(levelname)s) %(message)s"
+LOG_FORMAT_THREADS = "(%(levelname)s) - %(threadName)s - %(message)s"
+
+
 class LoopChecker(object):
     def __init__(self):
         self._seen = set()
@@ -290,9 +294,11 @@ class DirectoryPrefixFilter(Filter):
 
 
 def configure_logging() -> None:
+    stream_handler = logging.StreamHandler(sys.stderr)
+    stream_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+
     logging.basicConfig(
-        format="(%(levelname)s) %(message)s",
-        stream=sys.stderr,
+        handlers=[stream_handler],
         level=logging.INFO,
     )
 
@@ -302,6 +308,16 @@ def configure_logging() -> None:
         )
 
     sys.excepthook = exception_hook
+
+
+def switch_to_logging_format_with_threads() -> None:
+    # The one and only logger was configured from ourselve.
+    if len(logging.getLogger().handlers) == 1 and (
+        logging.getLogger().handlers[0].formatter._fmt == LOG_FORMAT
+    ):
+        logging.getLogger().handlers[0].setFormatter(
+            logging.Formatter(LOG_FORMAT_THREADS)
+        )
 
 
 @contextmanager
