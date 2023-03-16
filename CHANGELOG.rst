@@ -15,6 +15,7 @@ New features and notable changes:
 Bug fixes and small improvements:
 
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)
+- Log the thread name if :option:`-j` is used. (:issue:`752`)
 
 Documentation:
 

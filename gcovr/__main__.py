@@ -45,6 +45,7 @@ from .utils import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
     configure_logging,
+    switch_to_logging_format_with_threads,
 )
 from .version import __version__
 from .workers import Workers
@@ -177,6 +178,9 @@ def main(args=None):
 
     options_dict = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
     options = Options(**options_dict)
+    # Reconfigure the logging.
+    if options.gcov_parallel > 1:
+        switch_to_logging_format_with_threads()
 
     if options.verbose:
         logger.setLevel(logging.DEBUG)
