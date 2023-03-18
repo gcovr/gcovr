@@ -403,9 +403,6 @@ def print_html_report(covdata: CovData, output_file: str, options) -> bool:
         root_info.subdirs = DirectoryCoverage.from_covdata(
             covdata, sorted_keys, options.root_filter
         )
-        DirectoryCoverage.collapse_subdirectories(
-            root_info.subdirs, options.root_filter
-        )
 
     cdata_fname = {}
     cdata_sourcefile = {}
@@ -546,12 +543,10 @@ def write_source_pages(
         data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
         data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
 
-        parent_directory_key = cdata.parent_key
-        if parent_directory_key:
-            data["parent_link"] = os.path.basename(
-                cdata_sourcefile[parent_directory_key]
-            )
-            data["parent_directory"] = cdata_fname[parent_directory_key]
+        parent_dirname = cdata.parent_dirname
+        if parent_dirname:
+            data["parent_link"] = os.path.basename(cdata_sourcefile[parent_dirname])
+            data["parent_directory"] = cdata_fname[parent_dirname]
 
         data["source_lines"] = []
         currdir = os.getcwd()
@@ -626,12 +621,10 @@ def write_directory_pages(
 
         data["date"] = root_info.date
 
-        parent_directory_key = directory.parent_key
-        if parent_directory_key:
-            data["parent_link"] = os.path.basename(
-                cdata_sourcefile[parent_directory_key]
-            )
-            data["parent_directory"] = cdata_fname[parent_directory_key]
+        parent_dirname = directory.parent_dirname
+        if parent_dirname:
+            data["parent_link"] = os.path.basename(cdata_sourcefile[parent_dirname])
+            data["parent_directory"] = cdata_fname[parent_dirname]
         else:
             data["parent_link"] = None
             data["parent_directory"] = None
