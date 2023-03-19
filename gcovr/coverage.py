@@ -38,7 +38,7 @@ from __future__ import annotations
 from collections import OrderedDict
 import os
 import re
-from typing import List, Dict, Iterable, Optional, TypeVar, Union
+from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union
 from dataclasses import dataclass
 
 from .utils import commonpath, realpath, force_unix_separator
@@ -332,13 +332,13 @@ class LineCoverage:
 
 
 class FileCoverage:
-    __slots__ = "filename", "functions", "lines", "parent_key"
+    __slots__ = "filename", "functions", "lines", "parent_dirname"
 
     def __init__(self, filename: str) -> None:
         self.filename: str = filename
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
-        self.parent_key: str = ""
+        self.parent_dirname: str = None
 
     def function_coverage(self) -> CoverageStat:
         total = 0
@@ -400,29 +400,34 @@ class FileCoverage:
 CovData = Dict[str, FileCoverage]
 
 
-@dataclass
 class DirectoryCoverage:
-    dirname: str
-    stats: SummarizedStats
-    children: Dict[str, Union[DirectoryCoverage, FileCoverage]]
-    parent_key: str
+    __slots__ = "dirname", "parent_dirname", "children", "stats"
 
-    @classmethod
-    def new_empty(cls) -> DirectoryCoverage:
-        return cls("", SummarizedStats.new_empty(), dict(), "")
-
-    @property
-    def filename(self) -> str:
-        """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage"""
-        return self.dirname
+    def __init__(self, dirname: str) -> None:
+        self.dirname: str = dirname
+        self.parent_dirname: DirectoryCoverage = None
+        self.children: Dict[str, Any[DirectoryCoverage, FileCoverage]] = {}
+        self.stats: SummarizedStats = SummarizedStats.new_empty()
 
     @staticmethod
-    def add_directory_coverage(
-        subdirs: CovData_subdirectories,
-        root_filter: re.Pattern,
-        filecov: FileCoverage,
-        dircov: Optional[DirectoryCoverage] = None,
-    ) -> None:
+    def _get_dirname(filename: str, root_filter: re.Pattern):
+        filename = filename.replace("\\", os.sep).replace("/", os.sep).rstrip(os.sep)
+        dirname = os.path.dirname(filename)
+        if root_filter.search(dirname + os.sep) and dirname != filename:
+            return dirname + os.sep
+        return None
+
+    @staticmethod
+    def directory_root(subdirs: CovData_directories, root_filter: re.Pattern) -> str:
+        if not subdirs:
+            return os.sep
+        # The first directory is the shortest one --> This is the root dir
+        return next(iter(sorted(subdirs.keys())))
+
+    @staticmethod
+    def from_covdata(
+        covdata: CovData, sorted_keys: Iterable, root_filter: re.Pattern
+    ) -> CovData_directories:
         r"""Add a file coverage item to the directory structure and accumulate stats.
 
         This recursive function will accumulate statistics such that every directory
@@ -430,34 +435,66 @@ class DirectoryCoverage:
         directory structure.
 
         Args:
-            subdirs: The top level data structure for all subdirectories. (can start as empty)
+            covdata: The file coverage statistics to get the directory coverage from
+            sorted_keys: The sorted keys for covdata
             root_filter: Information about the filter used with the root directory
-            filecov: The new file and its statistics
-            dircov: For recursive use only, the directory this item was added to.
         """
-        if dircov is None:
-            key = DirectoryCoverage.directory_key(filecov.filename, root_filter)
-            filecov.parent_key = key
-        else:
-            key = DirectoryCoverage.directory_key(dircov.dirname, root_filter)
-            dircov.parent_key = key
 
-        if key:
-            if key not in subdirs:
-                subdir = DirectoryCoverage.new_empty()
-                subdir.dirname = key
-                subdir.parent_key = DirectoryCoverage.directory_key(key, root_filter)
-                subdirs[key] = subdir
+        dirname_root = None
+        subdirs: CovData_directories = OrderedDict()
+        for key in sorted_keys:
+            filecov = covdata[key]
+            dircov = filecov
+            while True:
+                dirname = DirectoryCoverage._get_dirname(dircov.filename, root_filter)
+                if dirname is None:
+                    dirname_root = dircov.filename
+                    break
+                dircov.parent_dirname = dirname
+                if dirname not in subdirs:
+                    subdirs[dirname] = DirectoryCoverage(dirname)
+                subdirs[dirname].children[dircov.filename] = dircov
+                subdirs[dirname].stats += SummarizedStats.from_file(filecov)
+                dircov = subdirs[dirname]
 
-            if dircov is None:
-                subdirs[key].children[filecov.filename] = filecov
-            else:
-                subdirs[key].children[dircov.filename] = dircov
+        collapse_dirs = set()
+        for dirname, covdata in subdirs.items():
+            if isinstance(covdata, DirectoryCoverage) and len(covdata.children) == 1:
+                parent_dirname = covdata.parent_dirname
+                # Get the key and value of the only child
+                orphan_key = next(iter(covdata.children))
+                orphan_value = covdata.children[orphan_key]
+                # Change the parent key
+                orphan_value.parent_dirname = parent_dirname
+                if dirname == dirname_root:
+                    # The only child is not a File object
+                    if not isinstance(orphan_value, FileCoverage):
+                        # Replace the children with the orphan ones
+                        covdata.children = orphan_value.children
+                        # Change the parent key of each new child element
+                        for new_child_key, new_child_value in covdata.children.items():
+                            new_child_value.parent_dirname = dirname
+                            if isinstance(new_child_value, DirectoryCoverage):
+                                subdirs[new_child_key].parent_dirname = dirname
+                        # Mark the key for removal.
+                        collapse_dirs.add(orphan_key)
+                else:
+                    # Add orphan value to the parent
+                    subdirs[parent_dirname].children[orphan_key] = orphan_value
+                    # and remove the current one.
+                    subdirs[parent_dirname].children.pop(dirname)
+                    # Mark the key for removal.
+                    collapse_dirs.add(dirname)
 
-            subdirs[key].stats += SummarizedStats.from_file(filecov)
-            DirectoryCoverage.add_directory_coverage(
-                subdirs, root_filter, filecov, subdirs[key]
-            )
+        for dirname in collapse_dirs:
+            del subdirs[dirname]
+
+        return subdirs
+
+    @property
+    def filename(self) -> str:
+        """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage"""
+        return self.dirname
 
     def line_coverage(self) -> CoverageStat:
         """A simple wrapper function necessary for sort_coverage()."""
@@ -467,81 +504,8 @@ class DirectoryCoverage:
         """A simple wrapper function necessary for sort_coverage()."""
         return self.stats.branch
 
-    @staticmethod
-    def collapse_subdirectories(
-        subdirs: CovData_subdirectories, root_filter: re.Pattern
-    ) -> None:
-        r"""Loop over all the directories and look for items that have only one child.
 
-        For each occurence, move the orphan up to the parent such that the directory
-        appears as a single entry in the parent directory with other items at that level.
-
-        Args:
-            subdirs: The dictionary of all subdirectories
-            root_filter: Information about the filter used with the root directory
-        """
-        collapse_dirs = set()
-        root_key = DirectoryCoverage.directory_root(subdirs, root_filter)
-        for key, value in subdirs.items():
-            if (
-                isinstance(value, DirectoryCoverage)
-                and len(value.children) == 1
-                and not key == root_key
-            ):
-                while True:
-                    parent_key = DirectoryCoverage.directory_key(key, root_filter)
-                    if parent_key not in collapse_dirs or parent_key == root_key:
-                        break
-
-                if parent_key:
-                    newchildren = {
-                        k: child
-                        for k, child in subdirs[parent_key].children.items()
-                        if child != value
-                    }
-                    orphan_key = next(iter(value.children))
-                    orphan = value.children[orphan_key]
-                    orphan.parent_key = parent_key
-                    newchildren[orphan_key] = orphan
-
-                    subdirs[parent_key].children = newchildren
-                    collapse_dirs.add(key)
-
-        for key in collapse_dirs:
-            del subdirs[key]
-
-    @staticmethod
-    def from_covdata(
-        covdata: CovData, sorted_keys: Iterable, root_filter: re.Pattern
-    ) -> CovData_subdirectories:
-        subdirs = OrderedDict()
-        for key in sorted_keys:
-            filecov = covdata[key]
-            DirectoryCoverage.add_directory_coverage(subdirs, root_filter, filecov)
-        return subdirs
-
-    @staticmethod
-    def directory_key(filename: str, root_filter: re.Pattern):
-        filename = filename.replace("\\", os.sep).replace("/", os.sep)
-        key = os.path.dirname(filename)
-        if root_filter.search(key + os.sep) and key != filename:
-            return key
-        return None
-
-    @staticmethod
-    def directory_root(subdirs: CovData_subdirectories, root_filter: re.Pattern) -> str:
-        if not subdirs:
-            return os.sep
-        key = next(iter(subdirs))
-        while True:
-            next_key = DirectoryCoverage.directory_key(key, root_filter)
-            if not next_key:
-                return key
-            else:
-                key = next_key
-
-
-CovData_subdirectories = Dict[str, DirectoryCoverage]
+CovData_directories = Dict[str, DirectoryCoverage]
 
 
 @dataclass
