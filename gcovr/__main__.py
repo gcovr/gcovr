@@ -56,7 +56,7 @@ from .writer import write_reports
 from .writer.json import gcovr_json_files_to_coverage
 
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 #
@@ -76,12 +76,12 @@ def fail_under(covdata: CovData, threshold_line, threshold_branch):
     branch_nok = False
     if percent_lines < threshold_line:
         line_nok = True
-        logger.error(
+        LOGGER.error(
             f"failed minimum line coverage (got {percent_lines}%, minimum {threshold_line}%)"
         )
     if percent_branches < threshold_branch:
         branch_nok = True
-        logger.error(
+        LOGGER.error(
             f"failed minimum branch coverage (got {percent_branches}%, minimum {threshold_branch}%)"
         )
     if line_nok and branch_nok:
@@ -170,10 +170,10 @@ def main(args=None):
         switch_to_logging_format_with_threads()
 
     if options.verbose:
-        logger.setLevel(logging.DEBUG)
+        LOGGER.setLevel(logging.DEBUG)
 
     if options.html_title == "":
-        logger.error("an empty --html_title= is not allowed.")
+        LOGGER.error("an empty --html_title= is not allowed.")
         sys.exit(1)
 
     for postfix in ["", "line", "branch"]:
@@ -186,7 +186,7 @@ def main(args=None):
         option_high = f"--{key_high.replace('_', '-')}"
 
         if getattr(options, key_medium) == 0:
-            logger.error(f"value of {option_medium}= should not be zero.")
+            LOGGER.error(f"value of {option_medium}= should not be zero.")
             sys.exit(1)
 
         # Inherit the defaults from the global covarage values if not set
@@ -209,18 +209,18 @@ def main(args=None):
                 option_medium = "--html-high-threshold"
 
         if getattr(options, key_medium) > getattr(options, key_high):
-            logger.error(
+            LOGGER.error(
                 f"value of {option_medium}={getattr(options, key_medium)} should be\n"
                 f"lower than or equal to the value of {option_high}={getattr(options, key_high)}."
             )
             sys.exit(1)
 
     if options.html_tab_size < 1:
-        logger.error("value of --html-tab-size= should be greater 0.")
+        LOGGER.error("value of --html-tab-size= should be greater 0.")
         sys.exit(1)
 
     if options.html_details and options.html_nested:
-        logger.error("--html-details and --html-nested can not be used together.")
+        LOGGER.error("--html-details and --html-nested can not be used together.")
         sys.exit(1)
 
     potential_html_output = (
@@ -230,26 +230,26 @@ def main(args=None):
         or (options.output and options.output.value)
     )
     if options.html_details and not potential_html_output:
-        logger.error(
+        LOGGER.error(
             "a named output must be given, if the option --html-details\n" "is used."
         )
         sys.exit(1)
 
     if options.html_nested and not potential_html_output:
-        logger.error(
+        LOGGER.error(
             "a named output must be given, if the option --html-nested\n" "is used."
         )
         sys.exit(1)
 
     if options.html_self_contained is False and not potential_html_output:
-        logger.error(
+        LOGGER.error(
             "can only disable --html-self-contained when a named output is given."
         )
         sys.exit(1)
 
     if options.objdir is not None:
         if not os.path.exists(options.objdir):
-            logger.error(
+            LOGGER.error(
                 "Bad --object-directory option.\n"
                 "\tThe specified directory does not exist."
             )
@@ -288,15 +288,15 @@ def main(args=None):
         ("--gcov-exclude", options.gcov_exclude),
         ("--exclude-directories", options.exclude_dirs),
     ]:
-        logger.debug(f"Filters for {name}: ({len(filters)})")
+        LOGGER.debug(f"Filters for {name}: ({len(filters)})")
         for f in filters:
-            logger.debug(f" - {f}")
+            LOGGER.debug(f" - {f}")
 
     if options.exclude_lines_by_pattern:
         try:
             re.compile(options.exclude_lines_by_pattern)
         except re.error as e:
-            logger.error(
+            LOGGER.error(
                 "--exclude-lines-by-pattern: "
                 f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
             )
@@ -306,7 +306,7 @@ def main(args=None):
         try:
             re.compile(options.exclude_branches_by_pattern)
         except re.error as e:
-            logger.error(
+            LOGGER.error(
                 "--exclude-branches-by-pattern: "
                 f"Invalid regular expression: {repr(options.exclude_branches_by_pattern)}, error: {e}"
             )
@@ -318,12 +318,12 @@ def main(args=None):
     else:
         covdata = collect_coverage_from_gcov(options)
 
-    logger.debug(f"Gathered coveraged data for {len(covdata)} files")
+    LOGGER.debug(f"Gathered coveraged data for {len(covdata)} files")
 
     # Print reports
     error_occurred = write_reports(covdata, options)
     if error_occurred:
-        logger.error("Error occurred while printing reports")
+        LOGGER.error("Error occurred while printing reports")
         sys.exit(7)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
@@ -336,7 +336,7 @@ def collect_coverage_from_tracefiles(options) -> CovData:
     for trace_files_regex in options.add_tracefile:
         trace_files = glob(trace_files_regex, recursive=True)
         if not trace_files:
-            logger.error(
+            LOGGER.error(
                 "Bad --add-tracefile option.\n" "\tThe specified file does not exist."
             )
             sys.exit(1)
@@ -372,7 +372,7 @@ def collect_coverage_from_gcov(options) -> CovData:
         options.gcov_parallel,
         lambda: {"covdata": dict(), "toerase": set(), "options": options},
     ) as pool:
-        logger.debug(f"Pool started with {pool.size()} threads")
+        LOGGER.debug(f"Pool started with {pool.size()} threads")
         for file_ in datafiles:
             pool.add(process_file, file_)
         contexts = pool.wait()

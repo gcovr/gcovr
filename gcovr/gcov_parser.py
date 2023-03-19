@@ -69,7 +69,7 @@ from .merging import (
 )
 
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 def _line_pattern(pattern: str) -> Pattern[str]:
@@ -325,7 +325,7 @@ def parse_coverage(
         "negative_hits.warn_once_per_file" in persistent_states
         and persistent_states["negative_hits.warn_once_per_file"] > 1
     ):
-        logger.warning(
+        LOGGER.warning(
             f"Ignored {persistent_states['negative_hits.warn_once_per_file']} issues overall."
         )
 
@@ -497,7 +497,7 @@ def _report_lines_with_errors(
     errors = [error for _, error in lines_with_errors]
 
     lines_output = "\n\t  ".join(lines)
-    logger.warning(
+    LOGGER.warning(
         f"Unrecognized GCOV output for {filename}\n"
         f"\t  {lines_output}\n"
         "\tThis is indicative of a gcov output parse error.\n"
@@ -506,12 +506,12 @@ def _report_lines_with_errors(
     )
 
     for ex in errors:
-        logger.warning(f"Exception during parsing:\n\t{type(ex).__name__}: {ex}")
+        LOGGER.warning(f"Exception during parsing:\n\t{type(ex).__name__}: {ex}")
 
     if ignore_parse_errors is not None and "all" in ignore_parse_errors:
         return
 
-    logger.error(
+    LOGGER.error(
         "Exiting because of parse errors.\n"
         "\tYou can run gcovr with --gcov-ignore-parse-errors\n"
         "\tto continue anyway."
@@ -739,7 +739,7 @@ def _parse_tag_line(
                 ):
                     if "negative_hits.warn_once_per_file" not in persistent_states:
                         persistent_states["negative_hits.warn_once_per_file"] = 0
-                        logger.warning(f"Ignoring negative hits in line {line!r}.")
+                        LOGGER.warning(f"Ignoring negative hits in line {line!r}.")
                     persistent_states["negative_hits.warn_once_per_file"] += 1
                 else:
                     raise NegativeHits(line)

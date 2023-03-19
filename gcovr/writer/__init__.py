@@ -14,7 +14,7 @@ from .summary import print_summary
 from .sonarqube import print_sonarqube_report
 from .coveralls import print_coveralls_report
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 def write_reports(covdata: CovData, options):
@@ -32,7 +32,7 @@ def write_reports(covdata: CovData, options):
             (
                 [options.txt],
                 print_text_report,
-                lambda: logger.warning(
+                lambda: LOGGER.warning(
                     "Text output skipped - "
                     "consider providing an output file with `--txt=OUTPUT`."
                 ),
@@ -44,7 +44,7 @@ def write_reports(covdata: CovData, options):
             (
                 [options.cobertura],
                 print_cobertura_report,
-                lambda: logger.warning(
+                lambda: LOGGER.warning(
                     "Cobertura output skipped - "
                     "consider providing an output file with `--cobertura=OUTPUT`."
                 ),
@@ -56,7 +56,7 @@ def write_reports(covdata: CovData, options):
             (
                 [options.html, options.html_details, options.html_nested],
                 print_html_report,
-                lambda: logger.warning(
+                lambda: LOGGER.warning(
                     "HTML output skipped - "
                     "consider providing an output file with `--html=OUTPUT`."
                 ),
@@ -68,7 +68,7 @@ def write_reports(covdata: CovData, options):
             (
                 [options.sonarqube],
                 print_sonarqube_report,
-                lambda: logger.warning(
+                lambda: LOGGER.warning(
                     "Sonarqube output skipped - "
                     "consider providing an output file with `--sonarqube=OUTPUT`."
                 ),
@@ -80,7 +80,7 @@ def write_reports(covdata: CovData, options):
             (
                 [options.json],
                 print_json_report,
-                lambda: logger.warning(
+                lambda: LOGGER.warning(
                     "JSON output skipped - "
                     "consider providing an output file with `--json=OUTPUT`."
                 ),
@@ -92,7 +92,7 @@ def write_reports(covdata: CovData, options):
             (
                 [options.json_summary],
                 print_json_summary_report,
-                lambda: logger.warning(
+                lambda: LOGGER.warning(
                     "JSON summary output skipped - "
                     "consider providing an output file with `--json-summary=OUTPUT`."
                 ),
@@ -104,7 +104,7 @@ def write_reports(covdata: CovData, options):
             (
                 [options.csv],
                 print_csv_report,
-                lambda: logger.warning(
+                lambda: LOGGER.warning(
                     "CSV output skipped - "
                     "consider providing an output file with `--csv=OUTPUT`."
                 ),
@@ -116,7 +116,7 @@ def write_reports(covdata: CovData, options):
             (
                 [options.coveralls],
                 print_coveralls_report,
-                lambda: logger.warning(
+                lambda: LOGGER.warning(
                     "Coveralls output skipped - "
                     "consider providing an output file with `--coveralls=OUTPUT`."
                 ),
@@ -152,7 +152,7 @@ def write_reports(covdata: CovData, options):
         and default_output.value is not None
         and not default_output_used
     ):
-        logger.warning(
+        LOGGER.warning(
             f"--output={repr(default_output.value)} option was provided but not used."
         )
 

@@ -34,7 +34,7 @@ from ..coverage import FileCoverage
 from .markers import apply_exclusion_markers
 from .noncode import remove_unreachable_branches, remove_noncode_lines
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 @dataclass
@@ -113,7 +113,7 @@ def remove_internal_functions(filecov: FileCoverage):
     # iterate over shallow copy
     for function in list(filecov.functions.values()):
         if _function_can_be_excluded(function.name):
-            logger.debug(
+            LOGGER.debug(
                 "Ignoring symbol %s in line %s in file %s",
                 function.name,
                 ", ".join([str(line) for line in sorted(function.count.keys())]),
@@ -149,7 +149,7 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
             if not branch.throw:
                 continue
 
-            logger.debug(
+            LOGGER.debug(
                 "Excluding unreachable branch on line %d file %s: detected as exception-only code",
                 linecov.lineno,
                 filecov.filename,

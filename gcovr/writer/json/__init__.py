@@ -52,7 +52,7 @@ from ...merging import (
     insert_call_coverage,
 )
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 JSON_FORMAT_VERSION = "0.5"
@@ -159,7 +159,7 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
 
     covdata: CovData = dict()
     for filename in filenames:
-        logger.debug(f"Processing JSON file: {filename}")
+        LOGGER.debug(f"Processing JSON file: {filename}")
 
         with open(filename, "r") as json_file:
             gcovr_json_data = json.load(json_file)
@@ -182,12 +182,12 @@ def gcovr_json_files_to_coverage(filenames, options) -> CovData:
 
             # Ignore if the filename does not match the filter
             if filtered:
-                logger.debug(f"  Filtering coverage data for file {file_path}")
+                LOGGER.debug(f"  Filtering coverage data for file {file_path}")
                 continue
 
             # Ignore if the filename matches the exclude pattern
             if excluded:
-                logger.debug(f"  Excluding coverage data for file {file_path}")
+                LOGGER.debug(f"  Excluding coverage data for file {file_path}")
                 continue
 
             file_coverage = FileCoverage(file_path)

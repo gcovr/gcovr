@@ -32,7 +32,7 @@ import re
 from .utils import FilterOption, force_unix_separator
 from .writer.html import CssRenderer
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 def check_percentage(value: str) -> float:
@@ -133,7 +133,7 @@ def source_date_epoch() -> Optional[datetime.datetime]:
         try:
             return datetime.datetime.fromtimestamp(int(ts), datetime.timezone.utc)
         except Exception:
-            logger.warning(
+            LOGGER.warning(
                 "Ignoring invalid environment variable SOURCE_DATE_EPOCH=%r",
                 ts,
             )

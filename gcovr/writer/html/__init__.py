@@ -47,7 +47,7 @@ from ...coverage import (
     sort_coverage,
 )
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 class Lazy:
@@ -150,7 +150,7 @@ class PygmentHighlighting:
 
             self.formatter = HtmlFormatter(nowrap=True)
         except ImportError as e:  # pragma: no cover
-            logger.warning(f"No syntax highlighting available: {str(e)}")
+            LOGGER.warning(f"No syntax highlighting available: {str(e)}")
 
     def get_css(self):
         if self.formatter is None:  # pragma: no cover
@@ -568,11 +568,11 @@ def write_source_pages(
                         source_row(ctr, line, cdata.lines.get(ctr))
                     )
                 if ctr < max_line_from_cdata:
-                    logger.warning(
+                    LOGGER.warning(
                         f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
                     )
         except IOError as e:
-            logger.warning(f'File {data["filename"]} not found: {repr(e)}')
+            LOGGER.warning(f'File {data["filename"]} not found: {repr(e)}')
             # Python ranges are exclusive. We want to iterate over all lines, including
             # that last line. Thus, we have to add a +1 to include that line.
             for ctr in range(1, max_line_from_cdata + 1):
@@ -652,7 +652,7 @@ def write_directory_pages(
         elif f in cdata_sourcefile:
             filename = cdata_sourcefile[f]
         else:
-            logger.warning(
+            LOGGER.warning(
                 f"There's a subdirectory {f!r} that there's no source files within it"
             )
 

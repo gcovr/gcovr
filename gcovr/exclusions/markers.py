@@ -27,7 +27,7 @@ import re
 
 from ..coverage import FileCoverage
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 _EXCLUDE_FLAG = "_EXCL_"
 _EXCLUDE_LINE_WORD = ""
@@ -127,7 +127,7 @@ class _ExclusionRangeWarnings:
         self, start_lineno: int, start: str, stop_lineno: int, stop: str
     ) -> None:
         """warn that start/stop region markers don't match"""
-        logger.warning(
+        LOGGER.warning(
             f"{start} found on line {start_lineno} "
             f"was terminated by {stop} on line {stop_lineno}, "
             f"when processing {self.filename}."
@@ -135,7 +135,7 @@ class _ExclusionRangeWarnings:
 
     def stop_without_start(self, lineno: int, expected_start: str, stop: str) -> None:
         """warn that a region was ended without corresponding start marker"""
-        logger.warning(
+        LOGGER.warning(
             "mismatched coverage exclusion flags.\n"
             f"          {stop} found on line {lineno} without corresponding {expected_start}, "
             f"when processing {self.filename}."
@@ -143,7 +143,7 @@ class _ExclusionRangeWarnings:
 
     def start_without_stop(self, lineno: int, start: str, expected_stop: str) -> None:
         """warn that a region was started but not closed"""
-        logger.warning(
+        LOGGER.warning(
             f"The coverage exclusion region start flag {start}\n"
             f"          on line {lineno} did not have corresponding {expected_stop} flag\n"
             f"          in file {self.filename}."
@@ -151,7 +151,7 @@ class _ExclusionRangeWarnings:
 
     def line_after_start(self, lineno: int, start: str, start_lineno: int) -> None:
         """warn that a region was started but an excluded line was found"""
-        logger.warning(
+        LOGGER.warning(
             f"{start} found on line {lineno} in excluded region started on line {start_lineno}, "
             f"when processing {self.filename}."
         )
