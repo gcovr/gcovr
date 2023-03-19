@@ -421,13 +421,8 @@ class DirectoryCoverage:
     def directory_root(subdirs: CovData_directories, root_filter: re.Pattern) -> str:
         if not subdirs:
             return os.sep
-        key = next(iter(subdirs))
-        while True:
-            next_key = DirectoryCoverage._get_dirname(key, root_filter)
-            if not next_key:
-                return key
-            else:
-                key = next_key
+        # The first directory is the shortest one --> This is the root dir
+        return next(iter(sorted(subdirs.keys())))
 
     @staticmethod
     def from_covdata(
@@ -445,6 +440,7 @@ class DirectoryCoverage:
             root_filter: Information about the filter used with the root directory
         """
 
+        dirname_root = None
         subdirs: CovData_directories = OrderedDict()
         for key in sorted_keys:
             filecov = covdata[key]
@@ -452,6 +448,7 @@ class DirectoryCoverage:
             while True:
                 dirname = DirectoryCoverage._get_dirname(dircov.filename, root_filter)
                 if dirname is None:
+                    dirname_root = dircov.filename
                     break
                 dircov.parent_dirname = dirname
                 if dirname not in subdirs:
@@ -461,7 +458,6 @@ class DirectoryCoverage:
                 dircov = subdirs[dirname]
 
         collapse_dirs = set()
-        root_key = DirectoryCoverage.directory_root(subdirs, root_filter)
         for dirname, covdata in subdirs.items():
             if isinstance(covdata, DirectoryCoverage) and len(covdata.children) == 1:
                 parent_dirname = covdata.parent_dirname
@@ -470,7 +466,7 @@ class DirectoryCoverage:
                 orphan_value = covdata.children[orphan_key]
                 # Change the parent key
                 orphan_value.parent_dirname = parent_dirname
-                if dirname == root_key:
+                if dirname == dirname_root:
                     # The only child is not a File object
                     if not isinstance(orphan_value, FileCoverage):
                         # Replace the children with the orphan ones
