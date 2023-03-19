@@ -26,14 +26,13 @@ import io
 from argparse import ArgumentParser
 from os.path import normpath
 from glob import glob
-from typing import Callable, List, Optional, Tuple
 
 from .configuration import (
+    Options,
     argument_parser_setup,
     merge_options_and_set_defaults,
     parse_config_file,
     parse_config_into_dict,
-    OutputOrDefault,
 )
 from .gcov import (
     find_existing_gcov_files,
@@ -53,15 +52,8 @@ from .coverage import CovData, SummarizedStats
 from .merging import merge_covdata
 
 # generators
+from .writer import write_reports
 from .writer.json import gcovr_json_files_to_coverage
-from .writer.cobertura import print_cobertura_report
-from .writer.html import print_html_report
-from .writer.json import print_json_report, print_json_summary_report
-from .writer.txt import print_text_report
-from .writer.csv import print_csv_report
-from .writer.summary import print_summary
-from .writer.sonarqube import print_sonarqube_report
-from .writer.coveralls import print_coveralls_report
 
 
 logger = logging.getLogger("gcovr")
@@ -151,11 +143,6 @@ def find_config_name(partial_options):
         return cfg_name
 
     return None
-
-
-class Options(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
 
 
 def main(args=None):
@@ -334,7 +321,7 @@ def main(args=None):
     logger.debug(f"Gathered coveraged data for {len(covdata)} files")
 
     # Print reports
-    error_occurred = print_reports(covdata, options)
+    error_occurred = write_reports(covdata, options)
     if error_occurred:
         logger.error("Error occurred while printing reports")
         sys.exit(7)
@@ -401,149 +388,6 @@ def collect_coverage_from_gcov(options) -> CovData:
             os.remove(filepath)
 
     return covdata
-
-
-def print_reports(covdata: CovData, options):
-    Generator = Tuple[
-        List[Optional[OutputOrDefault]],
-        Callable[[CovData, str, Options], None],
-        Callable[[], None],
-    ]
-    generators: List[Generator] = []
-
-    if options.txt:
-        generators.append(
-            (
-                [options.txt],
-                print_text_report,
-                lambda: logger.warning(
-                    "Text output skipped - "
-                    "consider providing an output file with `--txt=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.cobertura or options.cobertura_pretty:
-        generators.append(
-            (
-                [options.cobertura],
-                print_cobertura_report,
-                lambda: logger.warning(
-                    "Cobertura output skipped - "
-                    "consider providing an output file with `--cobertura=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.html or options.html_details or options.html_nested:
-        generators.append(
-            (
-                [options.html, options.html_details, options.html_nested],
-                print_html_report,
-                lambda: logger.warning(
-                    "HTML output skipped - "
-                    "consider providing an output file with `--html=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.sonarqube:
-        generators.append(
-            (
-                [options.sonarqube],
-                print_sonarqube_report,
-                lambda: logger.warning(
-                    "Sonarqube output skipped - "
-                    "consider providing an output file with `--sonarqube=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.json or options.json_pretty:
-        generators.append(
-            (
-                [options.json],
-                print_json_report,
-                lambda: logger.warning(
-                    "JSON output skipped - "
-                    "consider providing an output file with `--json=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.json_summary or options.json_summary_pretty:
-        generators.append(
-            (
-                [options.json_summary],
-                print_json_summary_report,
-                lambda: logger.warning(
-                    "JSON summary output skipped - "
-                    "consider providing an output file with `--json-summary=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.csv:
-        generators.append(
-            (
-                [options.csv],
-                print_csv_report,
-                lambda: logger.warning(
-                    "CSV output skipped - "
-                    "consider providing an output file with `--csv=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.coveralls or options.coveralls_pretty:
-        generators.append(
-            (
-                [options.coveralls],
-                print_coveralls_report,
-                lambda: logger.warning(
-                    "Coveralls output skipped - "
-                    "consider providing an output file with `--coveralls=OUTPUT`."
-                ),
-            )
-        )
-
-    generator_error_occurred = False
-    reports_were_written = False
-    default_output_used = False
-    default_output = OutputOrDefault(None) if options.output is None else options.output
-
-    for output_choices, generator, on_no_output in generators:
-        output = OutputOrDefault.choose(output_choices, default=default_output)
-        if output is not None and output is default_output:
-            default_output_used = True
-            if not output.is_dir:
-                default_output = None
-        if output is not None:
-            if generator(covdata, output.abspath, options):
-                generator_error_occurred = True
-            reports_were_written = True
-        else:
-            on_no_output()
-
-    if not reports_were_written:
-        print_text_report(
-            covdata, "-" if default_output is None else default_output.abspath, options
-        )
-        default_output = None
-
-    if (
-        default_output is not None
-        and default_output.value is not None
-        and not default_output_used
-    ):
-        logger.warning(
-            f"--output={repr(default_output.value)} option was provided but not used."
-        )
-
-    if options.print_summary:
-        print_summary(covdata, options)
-
-    return generator_error_occurred
 
 
 if __name__ == "__main__":

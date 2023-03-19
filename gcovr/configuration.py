@@ -240,6 +240,11 @@ class OutputOrDefault:
         return default
 
 
+class Options(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+
 class GcovrConfigOption:
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-few-public-methods
