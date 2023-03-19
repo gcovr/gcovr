@@ -18,8 +18,30 @@
 # ****************************************************************************
 
 import sys
+from typing import List
+
+from ...options import GcovrConfigOption
+from ...writer.base import writer_base
 
 from ...coverage import CovData, CoverageStat, SummarizedStats
+
+
+class writer(writer_base):
+    def get_options() -> List[GcovrConfigOption]:
+        return [
+            GcovrConfigOption(
+                "print_summary",
+                ["-s", "--print-summary"],
+                group="output_options",
+                help=(
+                    "Print a small report to stdout "
+                    "with line & function & branch percentage coverage. "
+                    "This is in addition to other reports. "
+                    "Default: {default!s}."
+                ),
+                action="store_true",
+            ),
+        ]
 
 
 def print_summary(covdata: CovData, options):

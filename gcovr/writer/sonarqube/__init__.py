@@ -17,10 +17,34 @@
 #
 # ****************************************************************************
 
+from typing import List
 from lxml import etree
+
+from ...options import GcovrConfigOption, OutputOrDefault
+from ...writer.base import writer_base
 
 from ...utils import open_binary_for_writing, presentable_filename
 from ...coverage import CovData
+
+
+class writer(writer_base):
+    def get_options() -> List[GcovrConfigOption]:
+        return [
+            GcovrConfigOption(
+                "sonarqube",
+                ["--sonarqube"],
+                group="output_options",
+                metavar="OUTPUT",
+                help=(
+                    "Generate sonarqube generic coverage report in this file name. "
+                    "OUTPUT is optional and defaults to --output."
+                ),
+                nargs="?",
+                type=OutputOrDefault,
+                default=None,
+                const=OutputOrDefault(None),
+            ),
+        ]
 
 
 def print_sonarqube_report(covdata: CovData, output_file, options):

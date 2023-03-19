@@ -18,10 +18,33 @@
 # ****************************************************************************
 
 import csv
-from typing import Tuple, Optional
+from typing import List, Tuple, Optional
+
+from ...options import GcovrConfigOption, OutputOrDefault
+from ...writer.base import writer_base
 
 from ...utils import presentable_filename, open_text_for_writing
 from ...coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
+
+
+class writer(writer_base):
+    def get_options() -> List[GcovrConfigOption]:
+        return [
+            GcovrConfigOption(
+                "csv",
+                ["--csv"],
+                group="output_options",
+                metavar="OUTPUT",
+                help=(
+                    "Generate a CSV summary report. "
+                    "OUTPUT is optional and defaults to --output."
+                ),
+                nargs="?",
+                type=OutputOrDefault,
+                default=None,
+                const=OutputOrDefault(None),
+            ),
+        ]
 
 
 def print_csv_report(covdata: CovData, output_file, options):

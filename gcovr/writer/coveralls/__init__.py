@@ -27,12 +27,45 @@ import re
 import shutil
 import subprocess
 from hashlib import md5
-from typing import Any, Dict
+from typing import Any, Dict, List
+
+from ...options import GcovrConfigOption, OutputOrDefault
+from ...writer.base import writer_base
 
 from ...utils import presentable_filename, open_text_for_writing
 from ...coverage import CovData, FileCoverage
 
 PRETTY_JSON_INDENT = 4
+
+
+class writer(writer_base):
+    def get_options() -> List[GcovrConfigOption]:
+        return [
+            GcovrConfigOption(
+                "coveralls",
+                ["--coveralls"],
+                group="output_options",
+                metavar="OUTPUT",
+                help=(
+                    "Generate Coveralls API coverage report in this file name. "
+                    "OUTPUT is optional and defaults to --output."
+                ),
+                nargs="?",
+                type=OutputOrDefault,
+                default=None,
+                const=OutputOrDefault(None),
+            ),
+            GcovrConfigOption(
+                "coveralls_pretty",
+                ["--coveralls-pretty"],
+                group="output_options",
+                help=(
+                    "Pretty-print the coveralls report. "
+                    "Implies --coveralls. Default: {default!s}."
+                ),
+                action="store_true",
+            ),
+        ]
 
 
 def _write_coveralls_result(gcovr_json_dict, output_file, pretty):

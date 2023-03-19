@@ -19,12 +19,45 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict
-from lxml import etree  # type: ignore
+from typing import Dict, List
+from lxml import etree
+
+from ...options import GcovrConfigOption, OutputOrDefault
+from ...writer.base import writer_base
 
 from ...version import __version__
 from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
 from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
+
+
+class writer(writer_base):
+    def get_options() -> List[GcovrConfigOption]:
+        return [
+            GcovrConfigOption(
+                "cobertura",
+                ["--cobertura", "-x", "--xml"],
+                group="output_options",
+                metavar="OUTPUT",
+                help=(
+                    "Generate a Cobertura XML report. "
+                    "OUTPUT is optional and defaults to --output."
+                ),
+                nargs="?",
+                type=OutputOrDefault,
+                default=None,
+                const=OutputOrDefault(None),
+            ),
+            GcovrConfigOption(
+                "cobertura_pretty",
+                ["--cobertura-pretty", "--xml-pretty"],
+                group="output_options",
+                help=(
+                    "Pretty-print the Cobertura XML report. "
+                    "Implies --cobertura. Default: {default!s}."
+                ),
+                action="store_true",
+            ),
+        ]
 
 
 def print_cobertura_report(covdata: CovData, output_file, options):

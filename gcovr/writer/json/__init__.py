@@ -21,10 +21,14 @@ import json
 import logging
 import os
 import functools
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
+
+from ...options import GcovrConfigOption, OutputOrDefault
+from ...writer.base import writer_base
 
 from ...gcov import apply_filter_include_exclude
 from ...utils import (
+    force_unix_separator,
     presentable_filename,
     open_text_for_writing,
 )
@@ -58,6 +62,63 @@ LOGGER = logging.getLogger("gcovr")
 JSON_FORMAT_VERSION = "0.5"
 JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
+
+
+class writer(writer_base):
+    def get_options() -> List[GcovrConfigOption]:
+        return [
+            GcovrConfigOption(
+                "json",
+                ["--json"],
+                group="output_options",
+                metavar="OUTPUT",
+                help="Generate a JSON report. OUTPUT is optional and defaults to --output.",
+                nargs="?",
+                type=OutputOrDefault,
+                default=None,
+                const=OutputOrDefault(None),
+            ),
+            GcovrConfigOption(
+                "json_pretty",
+                ["--json-pretty"],
+                group="output_options",
+                help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
+                action="store_true",
+            ),
+            GcovrConfigOption(
+                "json_summary",
+                ["--json-summary"],
+                group="output_options",
+                metavar="OUTPUT",
+                help=(
+                    "Generate a JSON summary report. "
+                    "OUTPUT is optional and defaults to --output."
+                ),
+                nargs="?",
+                type=OutputOrDefault,
+                default=None,
+                const=OutputOrDefault(None),
+            ),
+            GcovrConfigOption(
+                "json_summary_pretty",
+                ["--json-summary-pretty"],
+                group="output_options",
+                help=(
+                    "Pretty-print the JSON SUMMARY report."
+                    "Implies --json-summary. Default: {default!s}."
+                ),
+                action="store_true",
+            ),
+            GcovrConfigOption(
+                "json_base",
+                ["--json-base"],
+                group="output_options",
+                metavar="PATH",
+                help="Prepend the given path to all file paths in JSON report.",
+                type=lambda p: force_unix_separator(os.path.normpath(p)),
+                default=None,
+            ),
+        ]
 
 
 def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):

@@ -17,7 +17,10 @@
 #
 # ****************************************************************************
 
-from typing import Iterable, Tuple
+from typing import Iterable, List, Tuple
+
+from ...options import GcovrConfigOption, OutputOrDefault
+from ...writer.base import writer_base
 
 from ...utils import (
     force_unix_separator,
@@ -33,6 +36,23 @@ COL_COVERED_COUNT_WIDTH = 8
 COL_PERCENTAGE_WIDTH = 7  # including "%" percentage sign
 MISSING_SEPARATOR = "   "
 LINE_WIDTH = 78
+
+
+class writer(writer_base):
+    def get_options() -> List[GcovrConfigOption]:
+        return [
+            GcovrConfigOption(
+                "txt",
+                ["--txt"],
+                group="output_options",
+                metavar="OUTPUT",
+                help="Generate a text report. OUTPUT is optional and defaults to --output.",
+                nargs="?",
+                type=OutputOrDefault,
+                default=None,
+                const=OutputOrDefault(None),
+            ),
+        ]
 
 
 def print_text_report(covdata: CovData, output_file, options):

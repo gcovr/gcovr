@@ -28,7 +28,6 @@ from os.path import normpath
 from glob import glob
 
 from .configuration import (
-    Options,
     argument_parser_setup,
     merge_options_and_set_defaults,
     parse_config_file,
@@ -52,7 +51,7 @@ from .coverage import CovData, SummarizedStats
 from .merging import merge_covdata
 
 # generators
-from .writer import write_reports
+from . import writer
 from .writer.json import gcovr_json_files_to_coverage
 
 
@@ -163,8 +162,7 @@ def main(args=None):
                 parse_config_file(cfg_file, filename=cfg_name)
             )
 
-    options_dict = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
-    options = Options(**options_dict)
+    options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
     # Reconfigure the logging.
     if options.gcov_parallel > 1:
         switch_to_logging_format_with_threads()
@@ -321,7 +319,7 @@ def main(args=None):
     LOGGER.debug(f"Gathered coveraged data for {len(covdata)} files")
 
     # Print reports
-    error_occurred = write_reports(covdata, options)
+    error_occurred = writer.write_reports(covdata, options)
     if error_occurred:
         LOGGER.error("Error occurred while printing reports")
         sys.exit(7)

@@ -332,7 +332,7 @@ def test_namespace_merging_overwriting(testspec):
         [{"testopt": ref.value} if ref else {} for ref in input_values],
         all_options=all_options,
     )
-    assert options["testopt"] == result
+    assert options.testopt == result
 
 
 @pytest.mark.parametrize(
@@ -365,4 +365,4 @@ def test_namespace_merging_appending(testspec):
         [{"testopt": ref.value} if ref else {} for ref in input_values],
         all_options=all_options,
     )
-    assert options["testopt"] == result
+    assert options.testopt == result
