@@ -403,22 +403,20 @@ def print_html_report(covdata: CovData, output_file: str, options) -> bool:
         root_info.subdirs = DirectoryCoverage.from_covdata(
             covdata, sorted_keys, options.root_filter
         )
-        DirectoryCoverage.collapse_subdirectories(
-            root_info.subdirs, options.root_filter
-        )
 
     cdata_fname = {}
     cdata_sourcefile = {}
     for f in sorted_keys + list(root_info.subdirs.keys()):
-        filtered_fname = options.root_filter.sub("", f)
-        files.append(filtered_fname)
+        filtered_fname: str = options.root_filter.sub("", f)
+        if filtered_fname != "":
+            files.append(filtered_fname)
         cdata_fname[f] = filtered_fname
         if options.html_details or options.html_nested:
             if os.path.normpath(f) == os.path.normpath(options.root_dir):
                 cdata_sourcefile[f] = output_file
             else:
                 cdata_sourcefile[f] = _make_short_sourcename(
-                    output_file, filtered_fname
+                    output_file, filtered_fname.rstrip(os.sep)
                 )
         else:
             cdata_sourcefile[f] = None
@@ -545,12 +543,10 @@ def write_source_pages(
         data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
         data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
 
-        parent_directory_key = cdata.parent_key
-        if parent_directory_key:
-            data["parent_link"] = os.path.basename(
-                cdata_sourcefile[parent_directory_key]
-            )
-            data["parent_directory"] = cdata_fname[parent_directory_key]
+        parent_dirname = cdata.parent_dirname
+        if parent_dirname:
+            data["parent_link"] = os.path.basename(cdata_sourcefile[parent_dirname])
+            data["parent_directory"] = cdata_fname[parent_dirname]
 
         data["source_lines"] = []
         currdir = os.getcwd()
@@ -625,12 +621,10 @@ def write_directory_pages(
 
         data["date"] = root_info.date
 
-        parent_directory_key = directory.parent_key
-        if parent_directory_key:
-            data["parent_link"] = os.path.basename(
-                cdata_sourcefile[parent_directory_key]
-            )
-            data["parent_directory"] = cdata_fname[parent_directory_key]
+        parent_dirname = directory.parent_dirname
+        if parent_dirname:
+            data["parent_link"] = os.path.basename(cdata_sourcefile[parent_dirname])
+            data["parent_directory"] = cdata_fname[parent_dirname]
         else:
             data["parent_link"] = None
             data["parent_directory"] = None
@@ -653,13 +647,13 @@ def write_directory_pages(
 
         html_string = templates().get_template("directory_page.html").render(**data)
         filename = None
-        if f == root_key:
+        if f in [root_key, ""]:
             filename = output_file
         elif f in cdata_sourcefile:
             filename = cdata_sourcefile[f]
         else:
             logger.warning(
-                f"There's a subdirectory {f} that there's no source files within it"
+                f"There's a subdirectory {f!r} that there's no source files within it"
             )
 
         if filename:

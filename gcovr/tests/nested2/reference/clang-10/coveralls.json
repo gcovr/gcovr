@@ -109,33 +109,6 @@
             ],
             "name": "A/file7.cpp",
             "source_digest": "cbd3974ad5ed983ce0a47c7a7d8b5725"
-        },
-        {
-            "coverage": [
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                null,
-                1,
-                null
-            ],
-            "name": "B/main.cpp",
-            "source_digest": "8051e1c52cab743a41a6bbe9822a917a"
         }
     ]
 }
