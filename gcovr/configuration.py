@@ -29,7 +29,7 @@ import datetime
 import os
 import re
 
-from . import writer
+from . import formats
 from .options import (
     GcovrConfigOption,
     Options,
@@ -510,7 +510,7 @@ GCOVR_CONFIG_OPTIONS = [
         ),
         action="store_true",
     ),
-    *writer.get_options(),
+    *formats.get_options(),
     GcovrConfigOption(
         "timestamp",
         ["--timestamp"],

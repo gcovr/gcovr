@@ -20,7 +20,9 @@
 import json
 import logging
 import os
-from typing import Optional
+from typing import Optional, Set
+
+from gcovr.options import Options
 
 
 from ...gcov import apply_filter_include_exclude
@@ -53,12 +55,12 @@ LOGGER = logging.getLogger("gcovr")
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def gcovr_json_files_to_coverage(filenames, options) -> CovData:
-    r"""merge a coverage from multiple reports in the format
+def read_report(input_files: Set[str], options: Options) -> CovData:
+    """merge a coverage from multiple reports in the format
     partially compatible with gcov JSON output"""
 
     covdata: CovData = dict()
-    for filename in filenames:
+    for filename in input_files:
         LOGGER.debug(f"Processing JSON file: {filename}")
 
         with open(filename, "r") as json_file:

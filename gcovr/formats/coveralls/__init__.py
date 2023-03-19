@@ -18,24 +18,23 @@
 # ****************************************************************************
 
 from typing import List
-from lxml import etree
 
 from ...options import GcovrConfigOption, Options, OutputOrDefault
-from ...writer.base import writer_base
+from ...formats.base import handler_base
 
 from ...coverage import CovData
 
 
-class writer(writer_base):
+class handler(handler_base):
     def get_options() -> List[GcovrConfigOption]:
         return [
             GcovrConfigOption(
-                "sonarqube",
-                ["--sonarqube"],
+                "coveralls",
+                ["--coveralls"],
                 group="output_options",
                 metavar="OUTPUT",
                 help=(
-                    "Generate sonarqube generic coverage report in this file name. "
+                    "Generate Coveralls API coverage report in this file name. "
                     "OUTPUT is optional and defaults to --output."
                 ),
                 nargs="?",
@@ -43,9 +42,19 @@ class writer(writer_base):
                 default=None,
                 const=OutputOrDefault(None),
             ),
+            GcovrConfigOption(
+                "coveralls_pretty",
+                ["--coveralls-pretty"],
+                group="output_options",
+                help=(
+                    "Pretty-print the coveralls report. "
+                    "Implies --coveralls. Default: {default!s}."
+                ),
+                action="store_true",
+            ),
         ]
 
-    def print_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        from .print import print_report
+    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+        from .write import write_report
 
-        return print_report(covdata, output_file, options)
+        return write_report(covdata, output_file, options)

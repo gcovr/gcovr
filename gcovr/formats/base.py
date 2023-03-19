@@ -17,20 +17,24 @@
 #
 # ****************************************************************************
 
-from typing import List
+from typing import List, Set
 
 from ..options import GcovrConfigOption, Options, OutputOrDefault
 from ..coverage import CovData
 
 
-class writer_base(object):
+class handler_base(object):
     def get_options() -> List[GcovrConfigOption]:
         return []
 
     @staticmethod
-    def print_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        raise RuntimeError(f"Function 'print_report' not implemented.")
+    def read_report(input_files: Set[str], options: Options) -> CovData:
+        raise RuntimeError(f"Function 'read_report' not implemented.")
 
     @staticmethod
-    def print_summary_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        raise RuntimeError(f"Function 'print_summary_report' not implemented.")
+    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+        raise RuntimeError(f"Function 'write_report' not implemented.")
+
+    @staticmethod
+    def write_summary_report(covdata: CovData, output_file: str, options: Options) -> bool:
+        raise RuntimeError(f"Function 'write_summary_report' not implemented.")

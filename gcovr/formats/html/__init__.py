@@ -27,16 +27,16 @@ from ...options import (
     check_input_file,
     check_percentage,
 )
-from ...writer.base import writer_base
+from ...formats.base import handler_base
 
 from ...coverage import CovData
 
 LOGGER = logging.getLogger("gcovr")
 
 
-class writer(writer_base):
+class handler(handler_base):
     def get_options() -> List[GcovrConfigOption]:
-        from .print import CssRenderer
+        from .write import CssRenderer
 
         return [
             GcovrConfigOption(
@@ -253,7 +253,7 @@ class writer(writer_base):
             ),
         ]
 
-    def print_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        from .print import print_report
+    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+        from .write import write_report
 
-        return print_report(covdata, output_file, options)
+        return write_report(covdata, output_file, options)

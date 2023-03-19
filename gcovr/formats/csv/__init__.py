@@ -17,24 +17,26 @@
 #
 # ****************************************************************************
 
-from typing import List
+import csv
+from typing import List, Tuple, Optional
 
 from ...options import GcovrConfigOption, Options, OutputOrDefault
-from ...writer.base import writer_base
+from ...formats.base import handler_base
 
-from ...coverage import CovData
+from ...utils import presentable_filename, open_text_for_writing
+from ...coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
 
 
-class writer(writer_base):
+class handler(handler_base):
     def get_options() -> List[GcovrConfigOption]:
         return [
             GcovrConfigOption(
-                "cobertura",
-                ["--cobertura", "-x", "--xml"],
+                "csv",
+                ["--csv"],
                 group="output_options",
                 metavar="OUTPUT",
                 help=(
-                    "Generate a Cobertura XML report. "
+                    "Generate a CSV summary report. "
                     "OUTPUT is optional and defaults to --output."
                 ),
                 nargs="?",
@@ -42,19 +44,9 @@ class writer(writer_base):
                 default=None,
                 const=OutputOrDefault(None),
             ),
-            GcovrConfigOption(
-                "cobertura_pretty",
-                ["--cobertura-pretty", "--xml-pretty"],
-                group="output_options",
-                help=(
-                    "Pretty-print the Cobertura XML report. "
-                    "Implies --cobertura. Default: {default!s}."
-                ),
-                action="store_true",
-            ),
         ]
 
-    def print_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        from .print import print_report
+    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+        from .write import write_report
 
-        return print_report(covdata, output_file, options)
+        return write_report(covdata, output_file, options)

@@ -19,46 +19,42 @@
 
 from typing import List
 
+from ...options import GcovrConfigOption, Options, OutputOrDefault
+from ...formats.base import handler_base
+
 from ...coverage import CovData
 
-from ...options import GcovrConfigOption, Options, OutputOrDefault
-from ...writer.base import writer_base
 
-
-class writer(writer_base):
+class handler(handler_base):
     def get_options() -> List[GcovrConfigOption]:
         return [
             GcovrConfigOption(
-                "txt",
-                ["--txt"],
+                "cobertura",
+                ["--cobertura", "-x", "--xml"],
                 group="output_options",
                 metavar="OUTPUT",
-                help="Generate a text report. OUTPUT is optional and defaults to --output.",
+                help=(
+                    "Generate a Cobertura XML report. "
+                    "OUTPUT is optional and defaults to --output."
+                ),
                 nargs="?",
                 type=OutputOrDefault,
                 default=None,
                 const=OutputOrDefault(None),
             ),
             GcovrConfigOption(
-                "print_summary",
-                ["-s", "--print-summary"],
+                "cobertura_pretty",
+                ["--cobertura-pretty", "--xml-pretty"],
                 group="output_options",
                 help=(
-                    "Print a small report to stdout "
-                    "with line & function & branch percentage coverage. "
-                    "This is in addition to other reports. "
-                    "Default: {default!s}."
+                    "Pretty-print the Cobertura XML report. "
+                    "Implies --cobertura. Default: {default!s}."
                 ),
                 action="store_true",
             ),
         ]
 
-    def print_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        from .print import print_report
+    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+        from .write import write_report
 
-        return print_report(covdata, output_file, options)
-
-    def print_summary_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        from .print import print_summary_report
-
-        return print_summary_report(covdata, output_file, options)
+        return write_report(covdata, output_file, options)

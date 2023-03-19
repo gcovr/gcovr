@@ -17,23 +17,20 @@
 #
 # ****************************************************************************
 
-import json
 import logging
 import os
-import functools
-from typing import Any, Dict, List, Optional
+from typing import List, Set
+
+from ...options import GcovrConfigOption, Options, OutputOrDefault
+from ...formats.base import handler_base
 
 from ...coverage import CovData
 from ...utils import force_unix_separator
 
-from ...options import GcovrConfigOption, Options, OutputOrDefault
-from ...writer.base import writer_base
-
-
 LOGGER = logging.getLogger("gcovr")
 
 
-class writer(writer_base):
+class handler(handler_base):
     def get_options() -> List[GcovrConfigOption]:
         return [
             GcovrConfigOption(
@@ -89,12 +86,17 @@ class writer(writer_base):
             ),
         ]
 
-    def print_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        from .print import print_report
+    def read_report(input_files: Set[str], options: Options) -> CovData:
+        from .read import read_report
 
-        return print_report(covdata, output_file, options)
+        return read_report(input_files, options)
 
-    def print_summary_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        from .print import print_summary_report
+    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+        from .write import write_report
 
-        return print_summary_report(covdata, output_file, options)
+        return write_report(covdata, output_file, options)
+
+    def write_summary_report(covdata: CovData, output_file: str, options: Options) -> bool:
+        from .write import write_summary_report
+
+        return write_summary_report(covdata, output_file, options)

@@ -77,7 +77,7 @@ def templates():
     from jinja2 import Environment, PackageLoader
 
     return Environment(
-        loader=PackageLoader("gcovr.writer.html"),
+        loader=PackageLoader("gcovr.formats.html"),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -326,7 +326,7 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def print_report(covdata: CovData, output_file: str, options: Options) -> bool:
+def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold

@@ -26,7 +26,7 @@ from ...utils import presentable_filename, open_text_for_writing
 from ...coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
 
 
-def print_report(covdata: CovData, output_file: str, options: Options):
+def write_report(covdata: CovData, output_file: str, options: Options):
     """produce gcovr csv report"""
 
     with open_text_for_writing(output_file, "coverage.csv", newline="") as fh:

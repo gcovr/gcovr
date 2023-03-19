@@ -51,9 +51,8 @@ from .coverage import CovData, SummarizedStats
 from .merging import merge_covdata
 
 # generators
-from . import writer
-from .writer.json.read import gcovr_json_files_to_coverage
-
+from . import formats
+from .formats.json import handler as json_handler
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -319,7 +318,7 @@ def main(args=None):
     LOGGER.debug(f"Gathered coveraged data for {len(covdata)} files")
 
     # Print reports
-    error_occurred = writer.write_reports(covdata, options)
+    error_occurred = formats.write_reports(covdata, options)
     if error_occurred:
         LOGGER.error("Error occurred while printing reports")
         sys.exit(7)
@@ -343,7 +342,7 @@ def collect_coverage_from_tracefiles(options) -> CovData:
                 datafiles.add(normpath(trace_file))
 
     options.root_dir = os.path.abspath(options.root)
-    return gcovr_json_files_to_coverage(datafiles, options)
+    return json_handler.read_report(datafiles, options)
 
 
 def collect_coverage_from_gcov(options) -> CovData:
