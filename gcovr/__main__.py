@@ -52,7 +52,7 @@ from .merging import merge_covdata
 
 # generators
 from . import writer
-from .writer.json import gcovr_json_files_to_coverage
+from .writer.json.read import gcovr_json_files_to_coverage
 
 
 LOGGER = logging.getLogger("gcovr")

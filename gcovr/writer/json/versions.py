@@ -17,20 +17,5 @@
 #
 # ****************************************************************************
 
-from typing import List
-
-from ..options import GcovrConfigOption, Options, OutputOrDefault
-from ..coverage import CovData
-
-
-class writer_base(object):
-    def get_options() -> List[GcovrConfigOption]:
-        return []
-
-    @staticmethod
-    def print_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        raise RuntimeError(f"Function 'print_report' not implemented.")
-
-    @staticmethod
-    def print_summary_report(covdata: CovData, output_file: str, options: Options) -> bool:
-        raise RuntimeError(f"Function 'print_summary_report' not implemented.")
+JSON_FORMAT_VERSION = "0.5"
+JSON_SUMMARY_FORMAT_VERSION = "0.5"

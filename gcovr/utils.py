@@ -341,6 +341,8 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
     finally:
         if close:
             fh.close()
+        else:
+            fh.flush()
 
 
 @contextmanager
