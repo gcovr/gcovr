@@ -20,8 +20,8 @@
 import csv
 from typing import Tuple, Optional
 
-from ..utils import presentable_filename, open_text_for_writing
-from ..coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
+from ...utils import presentable_filename, open_text_for_writing
+from ...coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
 
 
 def print_csv_report(covdata: CovData, output_file, options):

@@ -29,8 +29,8 @@ import subprocess
 from hashlib import md5
 from typing import Any, Dict
 
-from ..utils import presentable_filename, open_text_for_writing
-from ..coverage import CovData, FileCoverage
+from ...utils import presentable_filename, open_text_for_writing
+from ...coverage import CovData, FileCoverage
 
 PRETTY_JSON_INDENT = 4
 

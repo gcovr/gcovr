@@ -22,9 +22,9 @@ from dataclasses import dataclass
 from typing import Dict
 from lxml import etree  # type: ignore
 
-from ..version import __version__
-from ..utils import force_unix_separator, open_binary_for_writing, presentable_filename
-from ..coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
+from ...version import __version__
+from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
+from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
 
 
 def print_cobertura_report(covdata: CovData, output_file, options):

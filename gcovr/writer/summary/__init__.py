@@ -19,7 +19,7 @@
 
 import sys
 
-from ..coverage import CovData, CoverageStat, SummarizedStats
+from ...coverage import CovData, CoverageStat, SummarizedStats
 
 
 def print_summary(covdata: CovData, options):

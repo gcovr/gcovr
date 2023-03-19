@@ -19,8 +19,8 @@
 
 from lxml import etree
 
-from ..utils import open_binary_for_writing, presentable_filename
-from ..coverage import CovData
+from ...utils import open_binary_for_writing, presentable_filename
+from ...coverage import CovData
 
 
 def print_sonarqube_report(covdata: CovData, output_file, options):

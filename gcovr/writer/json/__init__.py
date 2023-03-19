@@ -23,12 +23,12 @@ import os
 import functools
 from typing import Any, Dict, Optional
 
-from ..gcov import apply_filter_include_exclude
-from ..utils import (
+from ...gcov import apply_filter_include_exclude
+from ...utils import (
     presentable_filename,
     open_text_for_writing,
 )
-from ..coverage import (
+from ...coverage import (
     BranchCoverage,
     CovData,
     DecisionCoverage,
@@ -42,7 +42,7 @@ from ..coverage import (
     SummarizedStats,
     sort_coverage,
 )
-from ..merging import (
+from ...merging import (
     get_merge_mode_from_options,
     insert_branch_coverage,
     insert_decision_coverage,

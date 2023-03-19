@@ -19,12 +19,12 @@
 
 from typing import Iterable, Tuple
 
-from ..utils import (
+from ...utils import (
     force_unix_separator,
     presentable_filename,
     open_text_for_writing,
 )
-from ..coverage import CovData, CoverageStat, FileCoverage, sort_coverage
+from ...coverage import CovData, CoverageStat, FileCoverage, sort_coverage
 
 # Widths of the various columns
 COL_FILE_WIDTH = 40
