@@ -24,20 +24,12 @@ import sys
 import io
 
 from argparse import ArgumentParser
-from os.path import normpath
-from glob import glob
 
 from .configuration import (
     argument_parser_setup,
     merge_options_and_set_defaults,
     parse_config_file,
     parse_config_into_dict,
-)
-from .gcov import (
-    find_existing_gcov_files,
-    find_datafiles,
-    process_existing_gcov_file,
-    process_datafile,
 )
 from .utils import (
     AlwaysMatchFilter,
@@ -46,13 +38,10 @@ from .utils import (
     switch_to_logging_format_with_threads,
 )
 from .version import __version__
-from .workers import Workers
 from .coverage import CovData, SummarizedStats
-from .merging import merge_covdata
 
-# generators
-from . import formats
-from .formats.json import handler as json_handler
+# formats
+from . import formats as gcovr_formats
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -309,82 +298,17 @@ def main(args=None):
             )
             sys.exit(1)
 
-    covdata: CovData
-    if options.add_tracefile:
-        covdata = collect_coverage_from_tracefiles(options)
-    else:
-        covdata = collect_coverage_from_gcov(options)
+    covdata: CovData = dict()
+    if gcovr_formats.read_reports(covdata, options):
+        LOGGER.error("Error occurred while reading reports")
+        sys.exit(1)
 
-    LOGGER.debug(f"Gathered coveraged data for {len(covdata)} files")
-
-    # Print reports
-    error_occurred = formats.write_reports(covdata, options)
-    if error_occurred:
+    if gcovr_formats.write_reports(covdata, options):
         LOGGER.error("Error occurred while printing reports")
         sys.exit(7)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
         fail_under(covdata, options.fail_under_line, options.fail_under_branch)
-
-
-def collect_coverage_from_tracefiles(options) -> CovData:
-    datafiles = set()
-
-    for trace_files_regex in options.add_tracefile:
-        trace_files = glob(trace_files_regex, recursive=True)
-        if not trace_files:
-            LOGGER.error(
-                "Bad --add-tracefile option.\n" "\tThe specified file does not exist."
-            )
-            sys.exit(1)
-        else:
-            for trace_file in trace_files:
-                datafiles.add(normpath(trace_file))
-
-    options.root_dir = os.path.abspath(options.root)
-    return json_handler.read_report(datafiles, options)
-
-
-def collect_coverage_from_gcov(options) -> CovData:
-    datafiles = set()
-
-    find_files = find_datafiles
-    process_file = process_datafile
-    if options.gcov_files:
-        find_files = find_existing_gcov_files
-        process_file = process_existing_gcov_file
-
-    # Get data files
-    if not options.search_paths:
-        options.search_paths = [options.root]
-
-        if options.objdir is not None:
-            options.search_paths.append(options.objdir)
-
-    for search_path in options.search_paths:
-        datafiles.update(find_files(search_path, options.exclude_dirs))
-
-    # Get coverage data
-    with Workers(
-        options.gcov_parallel,
-        lambda: {"covdata": dict(), "toerase": set(), "options": options},
-    ) as pool:
-        LOGGER.debug(f"Pool started with {pool.size()} threads")
-        for file_ in datafiles:
-            pool.add(process_file, file_)
-        contexts = pool.wait()
-
-    toerase = set()
-    covdata = dict()
-    for context in contexts:
-        covdata = merge_covdata(covdata, context["covdata"])
-        toerase.update(context["toerase"])
-
-    for filepath in toerase:
-        if os.path.exists(filepath):
-            os.remove(filepath)
-
-    return covdata
 
 
 if __name__ == "__main__":

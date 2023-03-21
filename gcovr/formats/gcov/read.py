@@ -26,13 +26,17 @@ import io
 from threading import Lock
 from typing import Optional
 
-from .utils import search_file, commonpath, is_fs_case_insensitive, fix_case_of_path
-from .workers import locked_directory
-from .gcov_parser import parse_metadata, parse_coverage
-from .coverage import CovData
-from .merging import get_merge_mode_from_options, insert_file_coverage
-from .exclusions import apply_all_exclusions
-from .decision_analysis import DecisionParser
+from ...options import Options
+from ...merging import merge_covdata
+
+from ...utils import search_file, commonpath, is_fs_case_insensitive, fix_case_of_path
+from .workers import Workers, locked_directory
+from ...coverage import CovData
+from ...merging import get_merge_mode_from_options, insert_file_coverage
+from ...exclusions import apply_all_exclusions
+from ...decision_analysis import DecisionParser
+
+from .parser import parse_metadata, parse_coverage
 
 
 LOGGER = logging.getLogger("gcovr")
@@ -42,6 +46,51 @@ source_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory)"
 )
 unknown_cla_re = re.compile(r"Unknown command line argument")
+
+
+def read_report(covdata: CovData, options: Options) -> bool:
+    datafiles = set()
+
+    find_files = find_datafiles
+    process_file = process_datafile
+    if options.gcov_files:
+        find_files = find_existing_gcov_files
+        process_file = process_existing_gcov_file
+
+    # Get data files
+    if not options.search_paths:
+        options.search_paths = [options.root]
+
+        if options.objdir is not None:
+            options.search_paths.append(options.objdir)
+
+    for search_path in options.search_paths:
+        datafiles.update(find_files(search_path, options.exclude_dirs))
+
+    # Get coverage data
+    with Workers(
+        options.gcov_parallel,
+        lambda: {"covdata": dict(), "toerase": set(), "options": options},
+    ) as pool:
+        LOGGER.debug(f"Pool started with {pool.size()} threads")
+        for file_ in datafiles:
+            pool.add(process_file, file_)
+        contexts = pool.wait()
+
+    toerase = set()
+    # Local copy to work on
+    covdata_work = dict()
+    for context in contexts:
+        covdata_work = merge_covdata(covdata_work, context["covdata"])
+        toerase.update(context["toerase"])
+    # Import the working copy
+    covdata.update(covdata_work)
+
+    for filepath in toerase:
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+    return False
 
 
 def find_existing_gcov_files(search_path, exclude_dirs):

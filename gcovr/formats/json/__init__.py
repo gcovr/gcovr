@@ -19,7 +19,7 @@
 
 import logging
 import os
-from typing import List, Set
+from typing import List
 
 from ...options import GcovrConfigOption, Options, OutputOrDefault
 from ...formats.base import handler_base
@@ -84,19 +84,39 @@ class handler(handler_base):
                 type=lambda p: force_unix_separator(os.path.normpath(p)),
                 default=None,
             ),
+            GcovrConfigOption(
+                "add_tracefile",
+                ["-a", "--add-tracefile"],
+                help=(
+                    "Combine the coverage data from JSON files. "
+                    "Coverage files contains source files structure relative "
+                    "to root directory. Those structures are combined "
+                    "in the output relative to the current root directory. "
+                    "Unix style wildcards can be used to add the pathnames "
+                    "matching a specified pattern. In this case pattern "
+                    "must be set in double quotation marks. "
+                    "Option can be specified multiple times. "
+                    "When option is used gcov is not run to collect "
+                    "the new coverage data."
+                ),
+                action="append",
+                default=[],
+            ),
         ]
 
-    def read_report(input_files: Set[str], options: Options) -> CovData:
+    def read_report(covdata: CovData, options: Options) -> bool:
         from .read import read_report
 
-        return read_report(input_files, options)
+        return read_report(covdata, options)
 
     def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
         from .write import write_report
 
         return write_report(covdata, output_file, options)
 
-    def write_summary_report(covdata: CovData, output_file: str, options: Options) -> bool:
+    def write_summary_report(
+        covdata: CovData, output_file: str, options: Options
+    ) -> bool:
         from .write import write_summary_report
 
         return write_summary_report(covdata, output_file, options)

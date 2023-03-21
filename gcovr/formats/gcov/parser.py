@@ -53,14 +53,14 @@ from typing import (
     Union,
 )
 
-from .coverage import (
+from ...coverage import (
     BranchCoverage,
     FileCoverage,
     FunctionCoverage,
     CallCoverage,
     LineCoverage,
 )
-from .merging import (
+from ...merging import (
     FUNCTION_MAX_LINE_MERGE_OPTIONS,
     insert_branch_coverage,
     insert_function_coverage,
@@ -566,7 +566,7 @@ def _parse_line(
     _BranchLine(branchno=0, hits=0, annotation='fallthrough')
     >>> _parse_line('branch 2 with some unknown format')
     Traceback (most recent call last):
-    gcovr.gcov_parser.UnknownLineType: branch 2 with some unknown format
+    gcovr.formats.gcov.parser.UnknownLineType: branch 2 with some unknown format
 
     Example: can parse call tags:
     >>> _parse_line('call  0 never executed')
@@ -577,21 +577,21 @@ def _parse_line(
     _CallLine(callno=17, returned=9)
     >>> _parse_line('call 2 with some unknown format')
     Traceback (most recent call last):
-    gcovr.gcov_parser.UnknownLineType: call 2 with some unknown format
+    gcovr.formats.gcov.parser.UnknownLineType: call 2 with some unknown format
 
     Example: can parse unconditional branches
     >>> _parse_line('unconditional 1 taken 17')
     _UnconditionalLine(branchno=1, hits=17)
     >>> _parse_line('unconditional with some unknown format')
     Traceback (most recent call last):
-    gcovr.gcov_parser.UnknownLineType: unconditional with some unknown format
+    gcovr.formats.gcov.parser.UnknownLineType: unconditional with some unknown format
 
     Example: can parse function tags:
     >>> _parse_line('function foo called 2 returned 95% blocks executed 85%')
     _FunctionLine(name='foo', count=2, returned=1, blocks_covered=1)
     >>> _parse_line('function foo with some unknown format')
     Traceback (most recent call last):
-    gcovr.gcov_parser.UnknownLineType: function foo with some unknown format
+    gcovr.formats.gcov.parser.UnknownLineType: function foo with some unknown format
 
     Example: can parse template specialization markers:
     >>> _parse_line('------------------')
@@ -602,10 +602,10 @@ def _parse_line(
     _SpecializationNameLine(name='Foo<bar>::baz()')
     >>> _parse_line(' foo:')
     Traceback (most recent call last):
-    gcovr.gcov_parser.UnknownLineType:  foo:
+    gcovr.formats.gcov.parser.UnknownLineType:  foo:
     >>> _parse_line(':')
     Traceback (most recent call last):
-    gcovr.gcov_parser.UnknownLineType: :
+    gcovr.formats.gcov.parser.UnknownLineType: :
 
     Example: can parse block line:
     >>> _parse_line('     1: 32-block  0')
@@ -616,12 +616,12 @@ def _parse_line(
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=EXCEPTION_ONLY)
     >>> _parse_line('     1: 9-block with some unknown format')
     Traceback (most recent call last):
-    gcovr.gcov_parser.UnknownLineType:      1: 9-block with some unknown format
+    gcovr.formats.gcov.parser.UnknownLineType:      1: 9-block with some unknown format
 
     Example: will reject garbage:
     >>> _parse_line('nonexistent_tag foo bar')
     Traceback (most recent call last):
-    gcovr.gcov_parser.UnknownLineType: nonexistent_tag foo bar
+    gcovr.formats.gcov.parser.UnknownLineType: nonexistent_tag foo bar
     """
     # pylint: disable=too-many-branches
 

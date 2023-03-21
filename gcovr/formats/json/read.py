@@ -20,12 +20,13 @@
 import json
 import logging
 import os
-from typing import Optional, Set
+from glob import glob
+from typing import Optional
 
-from gcovr.options import Options
+from ...options import Options
 
 
-from ...gcov import apply_filter_include_exclude
+from ..gcov.read import apply_filter_include_exclude
 from ...coverage import (
     BranchCoverage,
     CovData,
@@ -52,15 +53,28 @@ from . import versions
 
 LOGGER = logging.getLogger("gcovr")
 
+
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def read_report(input_files: Set[str], options: Options) -> CovData:
+def read_report(covdata: CovData, options: Options) -> bool:
     """merge a coverage from multiple reports in the format
     partially compatible with gcov JSON output"""
 
-    covdata: CovData = dict()
-    for filename in input_files:
+    datafiles = set()
+
+    for trace_files_regex in options.add_tracefile:
+        trace_files = glob(trace_files_regex, recursive=True)
+        if not trace_files:
+            LOGGER.error(
+                "Bad --add-tracefile option.\n" "\tThe specified file does not exist."
+            )
+            return True
+        else:
+            for trace_file in trace_files:
+                datafiles.add(os.path.normpath(trace_file))
+
+    for filename in datafiles:
         LOGGER.debug(f"Processing JSON file: {filename}")
 
         with open(filename, "r") as json_file:
@@ -103,7 +117,7 @@ def read_report(input_files: Set[str], options: Options) -> CovData:
 
             insert_file_coverage(covdata, file_coverage, merge_options)
 
-    return covdata
+    return False
 
 
 def _function_from_json(json_function: dict) -> FunctionCoverage:

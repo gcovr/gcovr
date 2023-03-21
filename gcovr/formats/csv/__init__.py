@@ -17,14 +17,12 @@
 #
 # ****************************************************************************
 
-import csv
-from typing import List, Tuple, Optional
+from typing import List
 
 from ...options import GcovrConfigOption, Options, OutputOrDefault
 from ...formats.base import handler_base
 
-from ...utils import presentable_filename, open_text_for_writing
-from ...coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
+from ...coverage import CovData
 
 
 class handler(handler_base):

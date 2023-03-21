@@ -18,7 +18,6 @@
 # ****************************************************************************
 
 from typing import List
-from lxml import etree
 
 from ...options import GcovrConfigOption, Options, OutputOrDefault
 from ...formats.base import handler_base

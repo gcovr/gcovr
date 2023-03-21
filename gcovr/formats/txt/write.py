@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import Iterable, List, Tuple
+from typing import Iterable, Tuple
 
 from ...options import Options
 

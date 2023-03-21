@@ -5,28 +5,40 @@ from ..options import GcovrConfigOption
 
 from ..coverage import CovData
 
-# the writers
-from . import cobertura
-from . import html
-from . import json
-from . import txt
-from . import csv
-from . import sonarqube
-from . import coveralls
+# the handler
+from .gcov import handler as gcov_handler
+from .cobertura import handler as cobertura_handler
+from .html import handler as html_handler
+from .json import handler as json_handler
+from .txt import handler as txt_handler
+from .csv import handler as csv_handler
+from .sonarqube import handler as sonarqube_handler
+from .coveralls import handler as coveralls_handler
 
 LOGGER = logging.getLogger("gcovr")
 
 
 def get_options() -> List[GcovrConfigOption]:
     return [
-        *txt.handler.get_options(),
-        *cobertura.handler.get_options(),
-        *html.handler.get_options(),
-        *json.handler.get_options(),
-        *csv.handler.get_options(),
-        *sonarqube.handler.get_options(),
-        *coveralls.handler.get_options(),
+        *gcov_handler.get_options(),
+        *txt_handler.get_options(),
+        *cobertura_handler.get_options(),
+        *html_handler.get_options(),
+        *json_handler.get_options(),
+        *csv_handler.get_options(),
+        *sonarqube_handler.get_options(),
+        *coveralls_handler.get_options(),
     ]
+
+
+def read_reports(covdata: CovData, options) -> bool:
+    if json_handler.read_report(covdata, options):
+        return True
+
+    if not covdata:
+        return gcov_handler.read_report(covdata, options)
+
+    return False
 
 
 def write_reports(covdata: CovData, options):
@@ -43,7 +55,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.txt],
-                txt.handler.write_report,
+                txt_handler.write_report,
                 lambda: LOGGER.warning(
                     "Text output skipped - "
                     "consider providing an output file with `--txt=OUTPUT`."
@@ -55,7 +67,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.cobertura],
-                cobertura.handler.write_report,
+                cobertura_handler.write_report,
                 lambda: LOGGER.warning(
                     "Cobertura output skipped - "
                     "consider providing an output file with `--cobertura=OUTPUT`."
@@ -67,7 +79,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.html, options.html_details, options.html_nested],
-                html.handler.write_report,
+                html_handler.write_report,
                 lambda: LOGGER.warning(
                     "HTML output skipped - "
                     "consider providing an output file with `--html=OUTPUT`."
@@ -79,7 +91,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.sonarqube],
-                sonarqube.handler.write_report,
+                sonarqube_handler.write_report,
                 lambda: LOGGER.warning(
                     "Sonarqube output skipped - "
                     "consider providing an output file with `--sonarqube=OUTPUT`."
@@ -91,7 +103,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.json],
-                json.handler.write_report,
+                json_handler.write_report,
                 lambda: LOGGER.warning(
                     "JSON output skipped - "
                     "consider providing an output file with `--json=OUTPUT`."
@@ -103,7 +115,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.json_summary],
-                json.handler.write_summary_report,
+                json_handler.write_summary_report,
                 lambda: LOGGER.warning(
                     "JSON summary output skipped - "
                     "consider providing an output file with `--json-summary=OUTPUT`."
@@ -115,7 +127,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.csv],
-                csv.handler.write_report,
+                csv_handler.write_report,
                 lambda: LOGGER.warning(
                     "CSV output skipped - "
                     "consider providing an output file with `--csv=OUTPUT`."
@@ -127,7 +139,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.coveralls],
-                coveralls.handler.write_report,
+                coveralls_handler.write_report,
                 lambda: LOGGER.warning(
                     "Coveralls output skipped - "
                     "consider providing an output file with `--coveralls=OUTPUT`."
@@ -154,7 +166,7 @@ def write_reports(covdata: CovData, options):
             on_no_output()
 
     if not reports_were_written:
-        txt.handler.write_report(
+        txt_handler.write_report(
             covdata, "-" if default_output is None else default_output.abspath, options
         )
         default_output = None
@@ -169,6 +181,6 @@ def write_reports(covdata: CovData, options):
         )
 
     if options.print_summary:
-        txt.handler.write_summary_report(covdata, "-", options)
+        txt_handler.write_summary_report(covdata, "-", options)
 
     return generator_error_occurred

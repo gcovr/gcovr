@@ -58,7 +58,9 @@ class handler(handler_base):
 
         return write_report(covdata, output_file, options)
 
-    def write_summary_report(covdata: CovData, output_file: str, options: Options) -> bool:
+    def write_summary_report(
+        covdata: CovData, output_file: str, options: Options
+    ) -> bool:
         from .write import write_summary_report
 
         return write_summary_report(covdata, output_file, options)

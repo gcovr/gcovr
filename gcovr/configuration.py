@@ -22,7 +22,6 @@ from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 import logging
-from multiprocessing import cpu_count
 from typing import Iterable, Any, List, Optional, Callable, TextIO, Dict
 from dataclasses import dataclass
 import datetime
@@ -374,35 +373,6 @@ GCOVR_CONFIG_OPTIONS = [
         type=relative_path,
     ),
     GcovrConfigOption(
-        "add_tracefile",
-        ["-a", "--add-tracefile"],
-        help=(
-            "Combine the coverage data from JSON files. "
-            "Coverage files contains source files structure relative "
-            "to root directory. Those structures are combined "
-            "in the output relative to the current root directory. "
-            "Unix style wildcards can be used to add the pathnames "
-            "matching a specified pattern. In this case pattern "
-            "must be set in double quotation marks. "
-            "Option can be specified multiple times. "
-            "When option is used gcov is not run to collect "
-            "the new coverage data."
-        ),
-        action="append",
-        default=[],
-    ),
-    GcovrConfigOption(
-        "search_paths",
-        config="search-path",
-        positional=True,
-        nargs="*",
-        help=(
-            "Search these directories for coverage files. "
-            "Defaults to --root and --object-directory."
-        ),
-        type=relative_path,
-    ),
-    GcovrConfigOption(
         "config",
         ["--config"],
         config=False,
@@ -542,67 +512,22 @@ GCOVR_CONFIG_OPTIONS = [
         default=[],
     ),
     GcovrConfigOption(
-        "exclude",
-        ["-e", "--exclude"],
-        group="filter_options",
-        help=(
-            "Exclude source files that match this filter. "
-            "Can be specified multiple times."
-        ),
-        action="append",
-        type=FilterOption.NonEmpty,
-        default=[],
-    ),
-    GcovrConfigOption(
-        "gcov_filter",
-        ["--gcov-filter"],
-        group="filter_options",
-        help=(
-            "Keep only gcov data files that match this filter. "
-            "Can be specified multiple times."
-        ),
-        action="append",
-        type=FilterOption,
-        default=[],
-    ),
-    GcovrConfigOption(
-        "gcov_exclude",
-        ["--gcov-exclude"],
-        group="filter_options",
-        help=(
-            "Exclude gcov data files that match this filter. "
-            "Can be specified multiple times."
-        ),
-        action="append",
-        type=FilterOption,
-        default=[],
-    ),
-    GcovrConfigOption(
-        "exclude_dirs",
-        ["--exclude-directories"],
-        group="filter_options",
-        help=(
-            "Exclude directories that match this regex "
-            "while searching raw coverage files. "
-            "Can be specified multiple times."
-        ),
-        action="append",
-        type=FilterOption.NonEmpty,
-        default=[],
-    ),
-    GcovrConfigOption(
-        "gcov_cmd",
-        ["--gcov-executable"],
+        "merge_mode_functions",
+        ["--merge-mode-functions"],
+        metavar="MERGE_MODE",
         group="gcov_options",
+        choices=[
+            "strict",
+            "merge-use-line-0",
+            "merge-use-line-min",
+            "merge-use-line-max",
+            "separate",
+        ],
+        default="strict",
         help=(
-            "Use a particular gcov executable. "
-            "Must match the compiler you are using, "
-            "e.g. 'llvm-cov gcov' for Clang. "
-            "Can include additional arguments. "
-            "Defaults to the GCOV environment variable, "
-            "or 'gcov': '{default!s}'."
+            "The merge mode for functions coverage from different gcov files for same sourcefile."
+            "Default: {default!s}."
         ),
-        default=os.environ.get("GCOV", "gcov"),
     ),
     GcovrConfigOption(
         "exclude_internal_functions",
@@ -631,24 +556,6 @@ GCOVR_CONFIG_OPTIONS = [
         group="gcov_options",
         help="Exclude coverage from lines defining a function. Default: {default!s}.",
         action="store_true",
-    ),
-    GcovrConfigOption(
-        "merge_mode_functions",
-        ["--merge-mode-functions"],
-        metavar="MERGE_MODE",
-        group="gcov_options",
-        choices=[
-            "strict",
-            "merge-use-line-0",
-            "merge-use-line-min",
-            "merge-use-line-max",
-            "separate",
-        ],
-        default="strict",
-        help=(
-            "The merge mode for functions coverage from different gcov files for same sourcefile."
-            "Default: {default!s}."
-        ),
     ),
     GcovrConfigOption(
         "exclude_noncode_lines",
@@ -682,101 +589,6 @@ GCOVR_CONFIG_OPTIONS = [
         ["--exclude-branches-by-pattern"],
         help="Exclude branches that match this regex.",
         type=str,
-    ),
-    GcovrConfigOption(
-        "gcov_files",
-        ["-g", "--use-gcov-files"],
-        group="gcov_options",
-        help="Use existing gcov files for analysis. Default: {default!s}.",
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "gcov_ignore_errors",
-        ["--gcov-ignore-errors"],
-        group="gcov_options",
-        choices=[
-            "all",
-            "no_working_dir_found",
-        ],
-        nargs="?",
-        const="all",
-        default=None,
-        help=(
-            "Ignore errors from invoking GCOV command "
-            "instead of exiting with an error. "
-            "A report will be shown on stderr. "
-            "Default: {default!s}."
-        ),
-        type=str,
-        action="append",
-    ),
-    GcovrConfigOption(
-        "gcov_ignore_parse_errors",
-        ["--gcov-ignore-parse-errors"],
-        group="gcov_options",
-        choices=[
-            "all",
-            "negative_hits.warn",
-            "negative_hits.warn_once_per_file",
-        ],
-        nargs="?",
-        const="all",
-        default=None,
-        help=(
-            "Skip lines with parse errors in GCOV files "
-            "instead of exiting with an error. "
-            "A report will be shown on stderr. "
-            "Default: {default!s}."
-        ),
-        type=str,
-        action="append",
-    ),
-    GcovrConfigOption(
-        "objdir",
-        ["--object-directory"],
-        group="gcov_options",
-        help=(
-            "Override normal working directory detection. "
-            "Gcovr needs to identify the path between gcda files "
-            "and the directory where the compiler was originally run. "
-            "Normally, gcovr can guess correctly. "
-            "This option specifies either "
-            "the path from gcc to the gcda file (i.e. gcc's '-o' option), "
-            "or the path from the gcda file to gcc's working directory."
-        ),
-        type=relative_path,
-    ),
-    GcovrConfigOption(
-        "keep",
-        ["-k", "--keep"],
-        config="keep-gcov-files",
-        group="gcov_options",
-        help=(
-            "Keep gcov files after processing. "
-            "This applies both to files that were generated by gcovr, "
-            "or were supplied via the --use-gcov-files option. "
-            "Default: {default!s}."
-        ),
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "delete",
-        ["-d", "--delete"],
-        config="delete-gcov-files",
-        group="gcov_options",
-        help="Delete gcda files after processing. Default: {default!s}.",
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "gcov_parallel",
-        ["-j"],
-        config="gcov-parallel",
-        group="gcov_options",
-        help="Set the number of threads to use in parallel.",
-        nargs="?",
-        const=cpu_count(),
-        type=int,
-        default=1,
     ),
     GcovrConfigOption(
         "exclude_pattern_prefix",
