@@ -46,6 +46,14 @@ from . import formats as gcovr_formats
 LOGGER = logging.getLogger("gcovr")
 
 
+EXIT_SUCCESS = 0
+EXIT_CMDLINE_ERROR = 1
+EXIT_LINE_NOK = 2
+EXIT_BRANCH_NOK = 4
+EXIT_LINE_AND_BRANCH_NOK = 6
+EXIT_WRITE_ERROR = 7
+EXIT_READ_ERROR = 8
+
 #
 # Exits with status 2 if below threshold
 #
@@ -72,11 +80,11 @@ def fail_under(covdata: CovData, threshold_line, threshold_branch):
             f"failed minimum branch coverage (got {percent_branches}%, minimum {threshold_branch}%)"
         )
     if line_nok and branch_nok:
-        sys.exit(6)
+        sys.exit(EXIT_LINE_AND_BRANCH_NOK)
     if line_nok:
-        sys.exit(2)
+        sys.exit(EXIT_LINE_NOK)
     if branch_nok:
-        sys.exit(4)
+        sys.exit(EXIT_BRANCH_NOK)
 
 
 def create_argument_parser():
@@ -139,7 +147,7 @@ def main(args=None):
 
     if cli_options.version:
         sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
-        sys.exit(0)
+        sys.exit(EXIT_SUCCESS)
 
     # load the config
     cfg_name = find_config_name(cli_options)
@@ -160,7 +168,7 @@ def main(args=None):
 
     if options.html_title == "":
         LOGGER.error("an empty --html_title= is not allowed.")
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     for postfix in ["", "line", "branch"]:
         key_medium = "html_medium_threshold"
@@ -173,7 +181,7 @@ def main(args=None):
 
         if getattr(options, key_medium) == 0:
             LOGGER.error(f"value of {option_medium}= should not be zero.")
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
         # Inherit the defaults from the global covarage values if not set
         if postfix:
@@ -199,15 +207,15 @@ def main(args=None):
                 f"value of {option_medium}={getattr(options, key_medium)} should be\n"
                 f"lower than or equal to the value of {option_high}={getattr(options, key_high)}."
             )
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.html_tab_size < 1:
         LOGGER.error("value of --html-tab-size= should be greater 0.")
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.html_details and options.html_nested:
         LOGGER.error("--html-details and --html-nested can not be used together.")
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     potential_html_output = (
         (options.html and options.html.value)
@@ -219,19 +227,19 @@ def main(args=None):
         LOGGER.error(
             "a named output must be given, if the option --html-details\n" "is used."
         )
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.html_nested and not potential_html_output:
         LOGGER.error(
             "a named output must be given, if the option --html-nested\n" "is used."
         )
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.html_self_contained is False and not potential_html_output:
         LOGGER.error(
             "can only disable --html-self-contained when a named output is given."
         )
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.objdir is not None:
         if not os.path.exists(options.objdir):
@@ -239,7 +247,7 @@ def main(args=None):
                 "Bad --object-directory option.\n"
                 "\tThe specified directory does not exist."
             )
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
     options.starting_dir = os.path.abspath(os.getcwd())
     options.root_dir = os.path.abspath(options.root)
@@ -286,7 +294,7 @@ def main(args=None):
                 "--exclude-lines-by-pattern: "
                 f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
             )
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.exclude_branches_by_pattern:
         try:
@@ -296,16 +304,16 @@ def main(args=None):
                 "--exclude-branches-by-pattern: "
                 f"Invalid regular expression: {repr(options.exclude_branches_by_pattern)}, error: {e}"
             )
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
     covdata: CovData = dict()
     if gcovr_formats.read_reports(covdata, options):
         LOGGER.error("Error occurred while reading reports")
-        sys.exit(1)
+        sys.exit(EXIT_READ_ERROR)
 
     if gcovr_formats.write_reports(covdata, options):
         LOGGER.error("Error occurred while printing reports")
-        sys.exit(7)
+        sys.exit(EXIT_WRITE_ERROR)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
         fail_under(covdata, options.fail_under_line, options.fail_under_branch)
