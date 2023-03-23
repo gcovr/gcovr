@@ -56,8 +56,26 @@ def write_reports(covdata: CovData, options):
         format_writer = (
             format_handler.write_summary_report if summary else format_handler.write_report
         )
-        format_options = options
-        return (format_writer, format_options)
+        global_options = [
+            "timestamp",
+            "root",
+            "root_dir",
+            "root_filter",
+            "show_branch",
+            "exclude_calls",
+            "show_decision",
+            "sort_uncovered",
+            "sort_percent",
+            "search_path",
+            "source_encoding",
+            "starting_dir",
+            "filter",
+            "exclude",
+        ]
+        option_dict = {}
+        for name in global_options + [o.name for o in format_handler.get_options()]:
+            option_dict[name] = options.get(name)
+        return (format_writer, Options(**option_dict))
 
     if options.txt:
         generators.append(

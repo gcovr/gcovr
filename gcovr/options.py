@@ -183,6 +183,8 @@ class Options(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
+    def get(self, name: str) -> Any:
+        return self.__dict__.get(name)
 
 class GcovrConfigOption:
     # pylint: disable=too-many-instance-attributes
