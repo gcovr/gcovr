@@ -241,10 +241,10 @@ def main(args=None):
         )
         sys.exit(EXIT_CMDLINE_ERROR)
 
-    if options.objdir is not None:
-        if not os.path.exists(options.objdir):
+    if options.gcov_objdir is not None:
+        if not os.path.exists(options.gcov_objdir):
             LOGGER.error(
-                "Bad --object-directory option.\n"
+                "Bad --gcov-object-directory option.\n"
                 "\tThe specified directory does not exist."
             )
             sys.exit(EXIT_CMDLINE_ERROR)
@@ -260,8 +260,8 @@ def main(args=None):
     # but is used to turn absolute paths into relative paths
     options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
-    if options.exclude_dirs is not None:
-        options.exclude_dirs = [f.build_filter() for f in options.exclude_dirs]
+    if options.gcov_exclude_dirs is not None:
+        options.gcov_exclude_dirs = [f.build_filter() for f in options.gcov_exclude_dirs]
 
     options.exclude = [f.build_filter() for f in options.exclude]
     options.filter = [f.build_filter() for f in options.filter]
@@ -280,7 +280,7 @@ def main(args=None):
         ("--exclude", options.exclude),
         ("--gcov-filter", options.gcov_filter),
         ("--gcov-exclude", options.gcov_exclude),
-        ("--exclude-directories", options.exclude_dirs),
+        ("--gcov-exclude-directories", options.gcov_exclude_dirs),
     ]:
         LOGGER.debug(f"Filters for {name}: ({len(filters)})")
         for f in filters:

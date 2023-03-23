@@ -40,8 +40,8 @@ class handler(handler_base):
                 const=OutputOrDefault(None),
             ),
             GcovrConfigOption(
-                "print_summary",
-                ["-s", "--print-summary"],
+                "txt_summary",
+                ["-s", "--print-summary", "--txt-summary"],
                 group="output_options",
                 help=(
                     "Print a small report to stdout "

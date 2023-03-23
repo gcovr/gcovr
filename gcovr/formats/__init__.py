@@ -1,9 +1,10 @@
 import logging
-from typing import Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
-from ..options import GcovrConfigOption
+from ..options import GcovrConfigOption, Options
 
 from ..coverage import CovData
+from ..formats.base import handler_base
 
 # the handler
 from .gcov import handler as gcov_handler
@@ -46,16 +47,23 @@ def write_reports(covdata: CovData, options):
 
     Generator = Tuple[
         List[Optional[OutputOrDefault]],
-        Callable[[CovData, str, Options], None],
+        Callable[[CovData, str, Options], bool],
         Callable[[], None],
     ]
     generators: List[Generator] = []
+
+    def get_format_data(format_handler: handler_base, summary: bool = False) -> Tuple[Generator, Options]:
+        format_writer = (
+            format_handler.write_summary_report if summary else format_handler.write_report
+        )
+        format_options = options
+        return (format_writer, format_options)
 
     if options.txt:
         generators.append(
             (
                 [options.txt],
-                txt_handler.write_report,
+                *get_format_data(txt_handler),
                 lambda: LOGGER.warning(
                     "Text output skipped - "
                     "consider providing an output file with `--txt=OUTPUT`."
@@ -67,7 +75,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.cobertura],
-                cobertura_handler.write_report,
+                *get_format_data(cobertura_handler),
                 lambda: LOGGER.warning(
                     "Cobertura output skipped - "
                     "consider providing an output file with `--cobertura=OUTPUT`."
@@ -79,7 +87,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.html, options.html_details, options.html_nested],
-                html_handler.write_report,
+                *get_format_data(html_handler),
                 lambda: LOGGER.warning(
                     "HTML output skipped - "
                     "consider providing an output file with `--html=OUTPUT`."
@@ -91,7 +99,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.sonarqube],
-                sonarqube_handler.write_report,
+                *get_format_data(sonarqube_handler),
                 lambda: LOGGER.warning(
                     "Sonarqube output skipped - "
                     "consider providing an output file with `--sonarqube=OUTPUT`."
@@ -103,7 +111,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.json],
-                json_handler.write_report,
+                *get_format_data(json_handler),
                 lambda: LOGGER.warning(
                     "JSON output skipped - "
                     "consider providing an output file with `--json=OUTPUT`."
@@ -115,7 +123,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.json_summary],
-                json_handler.write_summary_report,
+                *get_format_data(json_handler, summary=True),
                 lambda: LOGGER.warning(
                     "JSON summary output skipped - "
                     "consider providing an output file with `--json-summary=OUTPUT`."
@@ -127,7 +135,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.csv],
-                csv_handler.write_report,
+                *get_format_data(csv_handler),
                 lambda: LOGGER.warning(
                     "CSV output skipped - "
                     "consider providing an output file with `--csv=OUTPUT`."
@@ -139,7 +147,7 @@ def write_reports(covdata: CovData, options):
         generators.append(
             (
                 [options.coveralls],
-                coveralls_handler.write_report,
+                *get_format_data(coveralls_handler),
                 lambda: LOGGER.warning(
                     "Coveralls output skipped - "
                     "consider providing an output file with `--coveralls=OUTPUT`."
@@ -147,27 +155,28 @@ def write_reports(covdata: CovData, options):
             )
         )
 
-    generator_error_occurred = False
+    writer_error_occurred = False
     reports_were_written = False
     default_output_used = False
     default_output = OutputOrDefault(None) if options.output is None else options.output
 
-    for output_choices, generator, on_no_output in generators:
+    for output_choices, format_writer, format_options, on_no_output in generators:
         output = OutputOrDefault.choose(output_choices, default=default_output)
         if output is not None and output is default_output:
             default_output_used = True
             if not output.is_dir:
                 default_output = None
         if output is not None:
-            if generator(covdata, output.abspath, options):
-                generator_error_occurred = True
+            if format_writer(covdata, output.abspath, format_options):
+                writer_error_occurred = True
             reports_were_written = True
         else:
             on_no_output()
 
     if not reports_were_written:
-        txt_handler.write_report(
-            covdata, "-" if default_output is None else default_output.abspath, options
+        format_writer, format_options = get_format_data(txt_handler)
+        format_writer(
+            covdata, "-" if default_output is None else default_output.abspath, format_options
         )
         default_output = None
 
@@ -180,7 +189,8 @@ def write_reports(covdata: CovData, options):
             f"--output={repr(default_output.value)} option was provided but not used."
         )
 
-    if options.print_summary:
-        txt_handler.write_summary_report(covdata, "-", options)
+    if options.txt_summary:
+        format_writer, format_options = get_format_data(txt_handler, summary=True)
+        format_writer(covdata, "-", format_options)
 
-    return generator_error_occurred
+    return writer_error_occurred

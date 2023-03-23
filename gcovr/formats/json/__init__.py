@@ -85,8 +85,9 @@ class handler(handler_base):
                 default=None,
             ),
             GcovrConfigOption(
-                "add_tracefile",
-                ["-a", "--add-tracefile"],
+                "json_add_tracefile",
+                ["-a", "--add-tracefile", "--json-add-tracefile"],
+                config="add-tracefile",
                 help=(
                     "Combine the coverage data from JSON files. "
                     "Coverage files contains source files structure relative "

@@ -512,6 +512,18 @@ GCOVR_CONFIG_OPTIONS = [
         default=[],
     ),
     GcovrConfigOption(
+        "exclude",
+        ["-e", "--exclude"],
+        group="filter_options",
+        help=(
+            "Exclude source files that match this filter. "
+            "Can be specified multiple times."
+        ),
+        action="append",
+        type=FilterOption.NonEmpty,
+        default=[],
+    ),
+    GcovrConfigOption(
         "merge_mode_functions",
         ["--merge-mode-functions"],
         metavar="MERGE_MODE",
@@ -599,6 +611,17 @@ GCOVR_CONFIG_OPTIONS = [
         ),
         type=str,
         default=r"[GL]COVR?",
+    ),
+    GcovrConfigOption(
+        "search_paths",
+        config="search-path",
+        positional=True,
+        nargs="*",
+        help=(
+            "Search these directories for coverage files. "
+            "Defaults to --root and --gcov-object-directory."
+        ),
+        type=relative_path,
     ),
 ]
 

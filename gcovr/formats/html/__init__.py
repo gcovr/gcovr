@@ -216,7 +216,7 @@ class handler(handler_base):
                 default=4,
             ),
             GcovrConfigOption(
-                "relative_anchors",
+                "html_relative_anchors",
                 ["--html-absolute-paths"],
                 group="output_options",
                 help=(

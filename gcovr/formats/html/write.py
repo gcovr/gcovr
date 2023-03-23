@@ -210,7 +210,7 @@ class RootInfo:
         self.medium_threshold_branch = options.html_medium_threshold_branch
         self.high_threshold_branch = options.html_high_threshold_branch
         self.link_function_list = options.html_details or options.html_nested
-        self.relative_anchors = options.relative_anchors
+        self.relative_anchors = options.html_relative_anchors
 
         self.version = __version__
         self.head = options.html_title
@@ -379,7 +379,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
         with open_text_for_writing(css_output) as f:
             f.write(css_data)
 
-        if options.relative_anchors:
+        if options.html_relative_anchors:
             css_link = os.path.basename(css_output)
         else:
             css_link = css_output

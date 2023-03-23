@@ -34,7 +34,7 @@ class handler(handler_base):
         return [
             GcovrConfigOption(
                 "gcov_files",
-                ["-g", "--use-gcov-files"],
+                ["-g", "--use-gcov-files", "--gcov-use-existing-files"],
                 group="gcov_options",
                 help="Use existing gcov files for analysis. Default: {default!s}.",
                 action="store_true",
@@ -81,18 +81,6 @@ class handler(handler_base):
                 action="append",
             ),
             GcovrConfigOption(
-                "exclude",
-                ["-e", "--exclude"],
-                group="filter_options",
-                help=(
-                    "Exclude source files that match this filter. "
-                    "Can be specified multiple times."
-                ),
-                action="append",
-                type=FilterOption.NonEmpty,
-                default=[],
-            ),
-            GcovrConfigOption(
                 "gcov_filter",
                 ["--gcov-filter"],
                 group="filter_options",
@@ -117,8 +105,8 @@ class handler(handler_base):
                 default=[],
             ),
             GcovrConfigOption(
-                "exclude_dirs",
-                ["--exclude-directories"],
+                "gcov_exclude_dirs",
+                ["--exclude-directories", "--gcov-exclude-directories"],
                 group="filter_options",
                 help=(
                     "Exclude directories that match this regex "
@@ -144,8 +132,8 @@ class handler(handler_base):
                 default=os.environ.get("GCOV", "gcov"),
             ),
             GcovrConfigOption(
-                "objdir",
-                ["--object-directory"],
+                "gcov_objdir",
+                ["--object-directory", "--gcov-object-directory"],
                 group="gcov_options",
                 help=(
                     "Override normal working directory detection. "
@@ -159,8 +147,8 @@ class handler(handler_base):
                 type=relative_path,
             ),
             GcovrConfigOption(
-                "keep",
-                ["-k", "--keep"],
+                "gcov_keep",
+                ["-k", "--keep", "--gcov-keep"],
                 config="keep-gcov-files",
                 group="gcov_options",
                 help=(
@@ -172,8 +160,8 @@ class handler(handler_base):
                 action="store_true",
             ),
             GcovrConfigOption(
-                "delete",
-                ["-d", "--delete"],
+                "gcov_delete",
+                ["-d", "--delete", "--gcov-delete"],
                 config="delete-gcov-files",
                 group="gcov_options",
                 help="Delete gcda files after processing. Default: {default!s}.",
@@ -189,17 +177,6 @@ class handler(handler_base):
                 const=cpu_count(),
                 type=int,
                 default=1,
-            ),
-            GcovrConfigOption(
-                "search_paths",
-                config="search-path",
-                positional=True,
-                nargs="*",
-                help=(
-                    "Search these directories for coverage files. "
-                    "Defaults to --root and --object-directory."
-                ),
-                type=relative_path,
             ),
         ]
 

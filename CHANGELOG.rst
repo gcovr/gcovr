@@ -23,6 +23,7 @@ Documentation:
 Internal changes:
 
 - Do not scrub versions in reference data. (:issue:`747`)
+- Add interface for the different formats to easily add new formats. (:issue:`755`)
 
 6.0 (08 March 2023)
 -------------------

@@ -61,11 +61,11 @@ def read_report(covdata: CovData, options: Options) -> bool:
     if not options.search_paths:
         options.search_paths = [options.root]
 
-        if options.objdir is not None:
-            options.search_paths.append(options.objdir)
+        if options.gcov_objdir is not None:
+            options.search_paths.append(options.gcov_objdir)
 
     for search_path in options.search_paths:
-        datafiles.update(find_files(search_path, options.exclude_dirs))
+        datafiles.update(find_files(search_path, options.gcov_exclude_dirs))
 
     # Get coverage data
     with Workers(
@@ -164,7 +164,7 @@ def process_gcov_data(
         gcda_fname,
         root_dir=options.root_dir,
         starting_dir=options.starting_dir,
-        obj_dir=None if options.objdir is None else os.path.abspath(options.objdir),
+        obj_dir=None if options.gcov_objdir is None else os.path.abspath(options.gcov_objdir),
         currdir=currdir,
     )
 
@@ -325,7 +325,7 @@ def process_datafile(filename, covdata, options, toerase):
     If present, the *workdir* argument is always tried first.
 
     Ideally, the build process only runs gcc from *one* directory
-    and the user can provide this directory as the ``--object-directory``.
+    and the user can provide this directory as the ``--gcov-object-directory``.
     If it exists, we try that path as a workdir,
     If the path is relative,
     it is resolved relative to the gcovr cwd and the object file location.
@@ -351,9 +351,9 @@ def process_datafile(filename, covdata, options, toerase):
 
     potential_wd = []
 
-    if options.objdir:
+    if options.gcov_objdir:
         potential_wd = find_potential_working_directories_via_objdir(
-            abs_filename, options.objdir, error=errors.append
+            abs_filename, options.gcov_objdir, error=errors.append
         )
 
     # no objdir was specified or objdir didn't exist
@@ -377,7 +377,7 @@ def process_datafile(filename, covdata, options, toerase):
             chdir=wd,
         )
 
-        if options.delete:
+        if options.gcov_delete:
             if not abs_filename.endswith("gcno"):
                 toerase.add(abs_filename)
 
@@ -420,7 +420,7 @@ def find_potential_working_directories_via_objdir(abs_filename, objdir, error):
 
     error(
         "ERROR: cannot identify the location where GCC "
-        "was run using --object-directory=%s\n" % objdir
+        "was run using --gcov-object-directory=%s\n" % objdir
     )
 
     return []
@@ -613,7 +613,7 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, chdir):
                     process_gcov_data(fname, covdata, abs_filename, options)
                 done = True
 
-            if options.keep and done:
+            if options.gcov_keep and done:
                 basename = os.path.basename(abs_filename)
                 for file in active_gcov_files:
                     dir, filename = os.path.split(file)
@@ -621,7 +621,7 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, chdir):
 
             for filepath in (
                 all_gcov_files - active_gcov_files
-                if options.keep and done
+                if options.gcov_keep and done
                 else all_gcov_files
             ):
                 if os.path.exists(filepath):
@@ -688,7 +688,7 @@ def process_existing_gcov_file(filename, covdata, options, toerase):
 
     process_gcov_data(filename, covdata, None, options)
 
-    if not options.keep:
+    if not options.gcov_keep:
         toerase.add(filename)
 
 
