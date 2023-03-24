@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple
 
 from ..options import GcovrConfigOption, Options
 
@@ -42,8 +42,8 @@ def read_reports(covdata: CovData, options) -> bool:
     return False
 
 
-def write_reports(covdata: CovData, options):
-    from ..configuration import Options, OutputOrDefault
+def write_reports(covdata: CovData, options: Options):
+    from ..configuration import OutputOrDefault
 
     Generator = Tuple[
         List[Optional[OutputOrDefault]],
@@ -52,9 +52,13 @@ def write_reports(covdata: CovData, options):
     ]
     generators: List[Generator] = []
 
-    def get_format_data(format_handler: handler_base, summary: bool = False) -> Tuple[Generator, Options]:
+    def get_format_data(
+        format_handler: handler_base, summary: bool = False
+    ) -> Tuple[Generator, Options]:
         format_writer = (
-            format_handler.write_summary_report if summary else format_handler.write_report
+            format_handler.write_summary_report
+            if summary
+            else format_handler.write_report
         )
         global_options = [
             "timestamp",
@@ -194,7 +198,9 @@ def write_reports(covdata: CovData, options):
     if not reports_were_written:
         format_writer, format_options = get_format_data(txt_handler)
         format_writer(
-            covdata, "-" if default_output is None else default_output.abspath, format_options
+            covdata,
+            "-" if default_output is None else default_output.abspath,
+            format_options,
         )
         default_output = None
 

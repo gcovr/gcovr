@@ -164,7 +164,9 @@ def process_gcov_data(
         gcda_fname,
         root_dir=options.root_dir,
         starting_dir=options.starting_dir,
-        obj_dir=None if options.gcov_objdir is None else os.path.abspath(options.gcov_objdir),
+        obj_dir=None
+        if options.gcov_objdir is None
+        else os.path.abspath(options.gcov_objdir),
         currdir=currdir,
     )
 

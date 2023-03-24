@@ -54,6 +54,7 @@ EXIT_LINE_AND_BRANCH_NOK = 6
 EXIT_WRITE_ERROR = 7
 EXIT_READ_ERROR = 8
 
+
 #
 # Exits with status 2 if below threshold
 #
@@ -261,7 +262,9 @@ def main(args=None):
     options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
     if options.gcov_exclude_dirs is not None:
-        options.gcov_exclude_dirs = [f.build_filter() for f in options.gcov_exclude_dirs]
+        options.gcov_exclude_dirs = [
+            f.build_filter() for f in options.gcov_exclude_dirs
+        ]
 
     options.exclude = [f.build_filter() for f in options.exclude]
     options.filter = [f.build_filter() for f in options.filter]

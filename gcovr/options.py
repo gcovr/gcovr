@@ -184,7 +184,9 @@ class Options(object):
         self.__dict__.update(kwargs)
 
     def get(self, name: str) -> Any:
+        """Function to get an option by name."""
         return self.__dict__.get(name)
+
 
 class GcovrConfigOption:
     # pylint: disable=too-many-instance-attributes

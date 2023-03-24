@@ -127,7 +127,14 @@ def test_unknown_keys():
     [
         ("type=bool", "testopt-bool", "testopt_bool", True, False, True),
         ("store_true", "delete-gcov-files", "gcov_delete", True, False, True),
-        ("store_false", "html-absolute-paths", "html_relative_anchors", False, True, True),
+        (
+            "store_false",
+            "html-absolute-paths",
+            "html_relative_anchors",
+            False,
+            True,
+            True,
+        ),
         ("store_const", "testopt-const", "testopt_const", 17, 3, True),
         ("nargs=?", "testopt-nargs", "testopt_nargs", 49, 11, False),
     ],
