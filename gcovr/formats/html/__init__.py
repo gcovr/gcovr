@@ -22,7 +22,6 @@ from typing import List
 
 from ...options import (
     GcovrConfigOption,
-    Options,
     OutputOrDefault,
     check_input_file,
     check_percentage,
@@ -256,7 +255,7 @@ class HtmlHandler(BaseHandler):
             ),
         ]
 
-    def write_report(self, covdata: CovData, output_file: str) -> bool:
+    def write_report(self, covdata: CovData, output_file: str) -> None:
         from .write import write_report
 
-        return write_report(covdata, output_file, self.options)
+        write_report(covdata, output_file, self.options)

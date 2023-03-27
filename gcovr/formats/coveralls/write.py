@@ -55,7 +55,7 @@ def _write_coveralls_result(gcovr_json_dict, output_file, pretty):
         write_json(gcovr_json_dict, fh)
 
 
-def write_report(covdata: CovData, output_file: str, options: Options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """
     Outputs a JSON report in the Coveralls API coverage format
 

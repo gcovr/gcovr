@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import Callable, List
+from typing import List
 
 from ..options import GcovrConfigOption, Options
 from ..coverage import CovData
@@ -50,11 +50,11 @@ class BaseHandler:
             option_dict[name] = options.get(name)
         self.options = Options(**option_dict)
 
-    def read_report(self, covdata: CovData) -> bool:
+    def read_report(self) -> CovData:
         raise RuntimeError("Function 'read_report' not implemented.")
 
-    def write_report(self, covdata: CovData, output_file: str) -> bool:
+    def write_report(self, covdata: CovData, output_file: str) -> None:
         raise RuntimeError("Function 'write_report' not implemented.")
 
-    def write_summary_report(self, covdata: CovData, output_file: str) -> bool:
+    def write_summary_report(self, covdata: CovData, output_file: str) -> None:
         raise RuntimeError("Function 'write_summary_report' not implemented.")

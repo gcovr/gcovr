@@ -21,7 +21,7 @@ from typing import List
 
 from ...coverage import CovData
 
-from ...options import GcovrConfigOption, Options, OutputOrDefault
+from ...options import GcovrConfigOption, OutputOrDefault
 from ...formats.base import BaseHandler
 
 
@@ -56,12 +56,12 @@ class TxtHandler(BaseHandler):
             ),
         ]
 
-    def write_report(self, covdata: CovData, output_file: str) -> bool:
+    def write_report(self, covdata: CovData, output_file: str) -> None:
         from .write import write_report
 
-        return write_report(covdata, output_file, self.options)
+        write_report(covdata, output_file, self.options)
 
-    def write_summary_report(self, covdata: CovData, output_file: str) -> bool:
+    def write_summary_report(self, covdata: CovData, output_file: str) -> None:
         from .write import write_summary_report
 
-        return write_summary_report(covdata, output_file, self.options)
+        write_summary_report(covdata, output_file, self.options)

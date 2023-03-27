@@ -309,13 +309,16 @@ def main(args=None):
             )
             sys.exit(EXIT_CMDLINE_ERROR)
 
-    covdata: CovData = dict()
-    if gcovr_formats.read_reports(covdata, options):
-        LOGGER.error("Error occurred while reading reports")
+    try:
+        covdata: CovData = gcovr_formats.read_reports(options)
+    except Exception as e:
+        LOGGER.error(f"Error occurred while reading reports:\n\t{str(e)}")
         sys.exit(EXIT_READ_ERROR)
 
-    if gcovr_formats.write_reports(covdata, options):
-        LOGGER.error("Error occurred while printing reports")
+    try:
+        gcovr_formats.write_reports(covdata, options)
+    except Exception as e:
+        LOGGER.error(f"Error occurred while printing reports:\n{str(e)}")
         sys.exit(EXIT_WRITE_ERROR)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:

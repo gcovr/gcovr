@@ -69,7 +69,7 @@ def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
         write_json(gcovr_json_dict, fh)
 
 
-def write_report(covdata: CovData, output_file: str, options: Options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     r"""produce an JSON report in the format partially
     compatible with gcov JSON output"""
 

@@ -57,23 +57,26 @@ LOGGER = logging.getLogger("gcovr")
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def read_report(covdata: CovData, options: Options) -> bool:
+def read_report(options: Options) -> CovData:
     """merge a coverage from multiple reports in the format
     partially compatible with gcov JSON output"""
+
+    if len(options.json_add_tracefile) == 0:
+        return None
 
     datafiles = set()
 
     for trace_files_regex in options.json_add_tracefile:
         trace_files = glob(trace_files_regex, recursive=True)
         if not trace_files:
-            LOGGER.error(
+            raise RuntimeError(
                 "Bad --add-tracefile option.\n" "\tThe specified file does not exist."
             )
-            return True
         else:
             for trace_file in trace_files:
                 datafiles.add(os.path.normpath(trace_file))
 
+    covdata = dict()
     for filename in datafiles:
         LOGGER.debug(f"Processing JSON file: {filename}")
 
@@ -117,7 +120,7 @@ def read_report(covdata: CovData, options: Options) -> bool:
 
             insert_file_coverage(covdata, file_coverage, merge_options)
 
-    return False
+    return covdata
 
 
 def _function_from_json(json_function: dict) -> FunctionCoverage:

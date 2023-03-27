@@ -29,7 +29,7 @@ from ...utils import force_unix_separator, open_binary_for_writing, presentable_
 from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
 
 
-def write_report(covdata: CovData, output_file: str, options: Options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce an XML report in the Cobertura format"""
 
     stats = SummarizedStats.from_covdata(covdata)

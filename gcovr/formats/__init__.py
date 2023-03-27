@@ -4,7 +4,6 @@ from typing import Callable, List, Optional, Tuple
 from ..options import GcovrConfigOption, Options
 
 from ..coverage import CovData
-from ..formats.base import BaseHandler
 
 # the handler
 from .gcov import GcovHandler
@@ -36,14 +35,13 @@ def get_options() -> List[GcovrConfigOption]:
     ]
 
 
-def read_reports(covdata: CovData, options) -> bool:
-    if JsonHandler(options).read_report(covdata):
-        return True
+def read_reports(options) -> CovData:
+    covdata: CovData = JsonHandler(options).read_report()
 
-    if not covdata:
-        return GcovHandler(options).read_report(covdata)
+    if covdata is None:
+        covdata = GcovHandler(options).read_report()
 
-    return False
+    return covdata
 
 
 def write_reports(covdata: CovData, options: Options):
@@ -152,7 +150,7 @@ def write_reports(covdata: CovData, options: Options):
             )
         )
 
-    writer_error_occurred = False
+    writer_errors = []
     reports_were_written = False
     default_output_used = False
     default_output = OutputOrDefault(None) if options.output is None else options.output
@@ -164,18 +162,21 @@ def write_reports(covdata: CovData, options: Options):
             if not output.is_dir:
                 default_output = None
         if output is not None:
-            if format_writer(covdata, output.abspath):
-                writer_error_occurred = True
+            try:
+                format_writer(covdata, output.abspath)
+            except RuntimeError as e:
+                writer_errors.append(str(e))
             reports_were_written = True
         else:
             on_no_output()
 
     if not reports_were_written:
-        TxtHandler(options).write_report(
-            covdata,
-            "-" if default_output is None else default_output.abspath,
-        )
+        output_path = "-" if default_output is None else default_output.abspath
         default_output = None
+        try:
+            TxtHandler(options).write_report(covdata, output_path)
+        except RuntimeError as e:
+            writer_errors.append(str(e))
 
     if (
         default_output is not None
@@ -187,6 +188,13 @@ def write_reports(covdata: CovData, options: Options):
         )
 
     if options.txt_summary:
-        TxtHandler(options).write_summary_report(covdata, "-")
+        try:
+            TxtHandler(options).write_summary_report(covdata, "-")
+        except RuntimeError as e:
+            writer_errors.append(str(e))
 
-    return writer_error_occurred
+    if writer_errors:
+        errors_as_string = "\n".join(writer_errors)
+        raise RuntimeError(
+            f"Not all output files where written successful:\n{errors_as_string}"
+        )

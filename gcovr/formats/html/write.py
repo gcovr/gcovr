@@ -326,7 +326,7 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -458,9 +458,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
             root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
         write_root_page(output_file, options, data)
         if not options.html_details:
-            return False
+            return
 
-    return write_source_pages(
+    write_source_pages(
         functions_output_file,
         covdata,
         cdata_fname,
@@ -501,7 +501,7 @@ def write_source_pages(
     medium_threshold_branch = options.html_medium_threshold_branch
     high_threshold_branch = options.html_high_threshold_branch
     formatter = get_formatter(options)
-    error_occurred = False
+    error_no_files_not_found = 0
 
     all_functions = dict()
     for f, cdata in covdata.items():
@@ -585,7 +585,7 @@ def write_source_pages(
                         cdata.lines.get(ctr),
                     )
                 )
-            error_occurred = True
+            error_no_files_not_found += 1
         os.chdir(currdir)
 
         html_string = templates().get_template("source_page.html").render(**data)
@@ -605,7 +605,8 @@ def write_source_pages(
     ) as fh:
         fh.write(html_string + "\n")
 
-    return error_occurred
+    if error_no_files_not_found != 0:
+        raise RuntimeError(f"{error_no_files_not_found} source file(s) not found.")
 
 
 def write_directory_pages(

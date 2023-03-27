@@ -48,7 +48,7 @@ source_re = re.compile(
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
 
-def read_report(covdata: CovData, options: Options) -> bool:
+def read_report(options: Options) -> CovData:
     datafiles = set()
 
     find_files = find_datafiles
@@ -78,19 +78,16 @@ def read_report(covdata: CovData, options: Options) -> bool:
         contexts = pool.wait()
 
     toerase = set()
-    # Local copy to work on
-    covdata_work = dict()
+    covdata = dict()
     for context in contexts:
-        covdata_work = merge_covdata(covdata_work, context["covdata"])
+        covdata = merge_covdata(covdata, context["covdata"])
         toerase.update(context["toerase"])
-    # Import the working copy
-    covdata.update(covdata_work)
 
     for filepath in toerase:
         if os.path.exists(filepath):
             os.remove(filepath)
 
-    return False
+    return covdata
 
 
 def find_existing_gcov_files(search_path, exclude_dirs):

@@ -25,7 +25,7 @@ from ...utils import open_binary_for_writing, presentable_filename
 from ...coverage import CovData
 
 
-def write_report(covdata: CovData, output_file: str, options: Options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce an XML report in the Sonarqube generic coverage format"""
 
     root = etree.Element("coverage")

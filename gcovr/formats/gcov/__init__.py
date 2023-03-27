@@ -21,7 +21,7 @@ from multiprocessing import cpu_count
 import os
 from typing import List
 
-from ...options import GcovrConfigOption, Options, relative_path
+from ...options import GcovrConfigOption, relative_path
 from ...formats.base import BaseHandler
 
 from ...coverage import CovData
@@ -193,7 +193,7 @@ class GcovHandler(BaseHandler):
             ),
         ]
 
-    def read_report(self, covdata: CovData) -> bool:
+    def read_report(self) -> CovData:
         from .read import read_report
 
-        return read_report(covdata, self.options)
+        return read_report(self.options)
