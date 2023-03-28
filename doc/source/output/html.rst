@@ -59,6 +59,13 @@ but :option:`--html-details<gcovr --html-details>` and
 in order to avoid problems with the `Content Security Policy <CSP_>`_
 of some servers, especially Jenkins.
 
+The :option:`--template-dir<gcovr --template-dir>` option allows you to use an
+alternate directory filled with Jinja2 templates to allow you to fully customize
+the HTML output in detail.  It is advised that you start by copying and modifying
+`the existing templates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/templates>`_
+. Keep in mind the template context data that is passed to these templates *MAY* change
+between release versions.
+
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
 
 .. versionadded:: 6.0
