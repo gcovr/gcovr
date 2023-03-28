@@ -20,12 +20,12 @@
 from typing import List
 
 from ...options import GcovrConfigOption, Options, OutputOrDefault
-from ...formats.base import handler_base
+from ...formats.base import BaseHandler
 
 from ...coverage import CovData
 
 
-class handler(handler_base):
+class CoberturaHandler(BaseHandler):
     def get_options() -> List[GcovrConfigOption]:
         return [
             GcovrConfigOption(
@@ -54,7 +54,7 @@ class handler(handler_base):
             ),
         ]
 
-    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+    def write_report(self, covdata: CovData, output_file: str) -> bool:
         from .write import write_report
 
-        return write_report(covdata, output_file, options)
+        return write_report(covdata, output_file, self.options)

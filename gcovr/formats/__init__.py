@@ -4,40 +4,44 @@ from typing import Callable, List, Optional, Tuple
 from ..options import GcovrConfigOption, Options
 
 from ..coverage import CovData
-from ..formats.base import handler_base
+from ..formats.base import BaseHandler
 
 # the handler
-from .gcov import handler as gcov_handler
-from .cobertura import handler as cobertura_handler
-from .html import handler as html_handler
-from .json import handler as json_handler
-from .txt import handler as txt_handler
-from .csv import handler as csv_handler
-from .sonarqube import handler as sonarqube_handler
-from .coveralls import handler as coveralls_handler
+from .gcov import GcovHandler
+from .cobertura import CoberturaHandler
+from .html import HtmlHandler
+from .json import JsonHandler
+from .txt import TxtHandler
+from .csv import CsvHandler
+from .sonarqube import SonarqubeHandler
+from .coveralls import CoverallsHandler
 
 LOGGER = logging.getLogger("gcovr")
 
 
 def get_options() -> List[GcovrConfigOption]:
     return [
-        *gcov_handler.get_options(),
-        *txt_handler.get_options(),
-        *cobertura_handler.get_options(),
-        *html_handler.get_options(),
-        *json_handler.get_options(),
-        *csv_handler.get_options(),
-        *sonarqube_handler.get_options(),
-        *coveralls_handler.get_options(),
+        o
+        for o in [
+            *GcovHandler.get_options(),
+            *TxtHandler.get_options(),
+            *CoberturaHandler.get_options(),
+            *HtmlHandler.get_options(),
+            *JsonHandler.get_options(),
+            *CsvHandler.get_options(),
+            *SonarqubeHandler.get_options(),
+            *CoverallsHandler.get_options(),
+        ]
+        if not isinstance(o, str)
     ]
 
 
 def read_reports(covdata: CovData, options) -> bool:
-    if json_handler.read_report(covdata, options):
+    if JsonHandler(options).read_report(covdata):
         return True
 
     if not covdata:
-        return gcov_handler.read_report(covdata, options)
+        return GcovHandler(options).read_report(covdata)
 
     return False
 
@@ -47,45 +51,16 @@ def write_reports(covdata: CovData, options: Options):
 
     Generator = Tuple[
         List[Optional[OutputOrDefault]],
-        Callable[[CovData, str, Options], bool],
+        Callable[[CovData, str], bool],
         Callable[[], None],
     ]
     generators: List[Generator] = []
-
-    def get_format_data(
-        format_handler: handler_base, summary: bool = False
-    ) -> Tuple[Generator, Options]:
-        format_writer = (
-            format_handler.write_summary_report
-            if summary
-            else format_handler.write_report
-        )
-        global_options = [
-            "timestamp",
-            "root",
-            "root_dir",
-            "root_filter",
-            "show_branch",
-            "exclude_calls",
-            "show_decision",
-            "sort_uncovered",
-            "sort_percent",
-            "search_path",
-            "source_encoding",
-            "starting_dir",
-            "filter",
-            "exclude",
-        ]
-        option_dict = {}
-        for name in global_options + [o.name for o in format_handler.get_options()]:
-            option_dict[name] = options.get(name)
-        return (format_writer, Options(**option_dict))
 
     if options.txt:
         generators.append(
             (
                 [options.txt],
-                *get_format_data(txt_handler),
+                TxtHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "Text output skipped - "
                     "consider providing an output file with `--txt=OUTPUT`."
@@ -97,7 +72,7 @@ def write_reports(covdata: CovData, options: Options):
         generators.append(
             (
                 [options.cobertura],
-                *get_format_data(cobertura_handler),
+                CoberturaHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "Cobertura output skipped - "
                     "consider providing an output file with `--cobertura=OUTPUT`."
@@ -109,7 +84,7 @@ def write_reports(covdata: CovData, options: Options):
         generators.append(
             (
                 [options.html, options.html_details, options.html_nested],
-                *get_format_data(html_handler),
+                HtmlHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "HTML output skipped - "
                     "consider providing an output file with `--html=OUTPUT`."
@@ -121,7 +96,7 @@ def write_reports(covdata: CovData, options: Options):
         generators.append(
             (
                 [options.sonarqube],
-                *get_format_data(sonarqube_handler),
+                SonarqubeHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "Sonarqube output skipped - "
                     "consider providing an output file with `--sonarqube=OUTPUT`."
@@ -133,7 +108,7 @@ def write_reports(covdata: CovData, options: Options):
         generators.append(
             (
                 [options.json],
-                *get_format_data(json_handler),
+                JsonHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "JSON output skipped - "
                     "consider providing an output file with `--json=OUTPUT`."
@@ -145,7 +120,7 @@ def write_reports(covdata: CovData, options: Options):
         generators.append(
             (
                 [options.json_summary],
-                *get_format_data(json_handler, summary=True),
+                JsonHandler(options).write_summary_report,
                 lambda: LOGGER.warning(
                     "JSON summary output skipped - "
                     "consider providing an output file with `--json-summary=OUTPUT`."
@@ -157,7 +132,7 @@ def write_reports(covdata: CovData, options: Options):
         generators.append(
             (
                 [options.csv],
-                *get_format_data(csv_handler),
+                CsvHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "CSV output skipped - "
                     "consider providing an output file with `--csv=OUTPUT`."
@@ -169,7 +144,7 @@ def write_reports(covdata: CovData, options: Options):
         generators.append(
             (
                 [options.coveralls],
-                *get_format_data(coveralls_handler),
+                CoverallsHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "Coveralls output skipped - "
                     "consider providing an output file with `--coveralls=OUTPUT`."
@@ -182,25 +157,23 @@ def write_reports(covdata: CovData, options: Options):
     default_output_used = False
     default_output = OutputOrDefault(None) if options.output is None else options.output
 
-    for output_choices, format_writer, format_options, on_no_output in generators:
+    for output_choices, format_writer, on_no_output in generators:
         output = OutputOrDefault.choose(output_choices, default=default_output)
         if output is not None and output is default_output:
             default_output_used = True
             if not output.is_dir:
                 default_output = None
         if output is not None:
-            if format_writer(covdata, output.abspath, format_options):
+            if format_writer(covdata, output.abspath):
                 writer_error_occurred = True
             reports_were_written = True
         else:
             on_no_output()
 
     if not reports_were_written:
-        format_writer, format_options = get_format_data(txt_handler)
-        format_writer(
+        TxtHandler(options).write_report(
             covdata,
             "-" if default_output is None else default_output.abspath,
-            format_options,
         )
         default_output = None
 
@@ -214,7 +187,6 @@ def write_reports(covdata: CovData, options: Options):
         )
 
     if options.txt_summary:
-        format_writer, format_options = get_format_data(txt_handler, summary=True)
-        format_writer(covdata, "-", format_options)
+        TxtHandler(options).write_summary_report(covdata, "-")
 
     return writer_error_occurred

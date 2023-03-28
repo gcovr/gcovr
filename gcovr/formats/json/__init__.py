@@ -22,7 +22,7 @@ import os
 from typing import List
 
 from ...options import GcovrConfigOption, Options, OutputOrDefault
-from ...formats.base import handler_base
+from ...formats.base import BaseHandler
 
 from ...coverage import CovData
 from ...utils import force_unix_separator
@@ -30,7 +30,7 @@ from ...utils import force_unix_separator
 LOGGER = logging.getLogger("gcovr")
 
 
-class handler(handler_base):
+class JsonHandler(BaseHandler):
     def get_options() -> List[GcovrConfigOption]:
         return [
             GcovrConfigOption(
@@ -105,19 +105,17 @@ class handler(handler_base):
             ),
         ]
 
-    def read_report(covdata: CovData, options: Options) -> bool:
+    def read_report(self, covdata: CovData) -> bool:
         from .read import read_report
 
-        return read_report(covdata, options)
+        return read_report(covdata, self.options)
 
-    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+    def write_report(self, covdata: CovData, output_file: str) -> bool:
         from .write import write_report
 
-        return write_report(covdata, output_file, options)
+        return write_report(covdata, output_file, self.options)
 
-    def write_summary_report(
-        covdata: CovData, output_file: str, options: Options
-    ) -> bool:
+    def write_summary_report(self, covdata: CovData, output_file: str) -> bool:
         from .write import write_summary_report
 
-        return write_summary_report(covdata, output_file, options)
+        return write_summary_report(covdata, output_file, self.options)

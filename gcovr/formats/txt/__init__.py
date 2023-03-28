@@ -22,12 +22,15 @@ from typing import List
 from ...coverage import CovData
 
 from ...options import GcovrConfigOption, Options, OutputOrDefault
-from ...formats.base import handler_base
+from ...formats.base import BaseHandler
 
 
-class handler(handler_base):
+class TxtHandler(BaseHandler):
     def get_options() -> List[GcovrConfigOption]:
         return [
+            # Global options needed for report
+            "exclude_calls",
+            # Local options
             GcovrConfigOption(
                 "txt",
                 ["--txt"],
@@ -53,14 +56,12 @@ class handler(handler_base):
             ),
         ]
 
-    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+    def write_report(self, covdata: CovData, output_file: str) -> bool:
         from .write import write_report
 
-        return write_report(covdata, output_file, options)
+        return write_report(covdata, output_file, self.options)
 
-    def write_summary_report(
-        covdata: CovData, output_file: str, options: Options
-    ) -> bool:
+    def write_summary_report(self, covdata: CovData, output_file: str) -> bool:
         from .write import write_summary_report
 
-        return write_summary_report(covdata, output_file, options)
+        return write_summary_report(covdata, output_file, self.options)

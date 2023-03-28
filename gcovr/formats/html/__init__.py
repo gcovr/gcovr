@@ -27,18 +27,21 @@ from ...options import (
     check_input_file,
     check_percentage,
 )
-from ...formats.base import handler_base
+from ...formats.base import BaseHandler
 
 from ...coverage import CovData
 
 LOGGER = logging.getLogger("gcovr")
 
 
-class handler(handler_base):
+class HtmlHandler(BaseHandler):
     def get_options() -> List[GcovrConfigOption]:
         from .write import CssRenderer
 
         return [
+            # Global options needed for report
+            "exclude_calls",
+            # Local options
             GcovrConfigOption(
                 "html",
                 ["--html"],
@@ -253,7 +256,7 @@ class handler(handler_base):
             ),
         ]
 
-    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+    def write_report(self, covdata: CovData, output_file: str) -> bool:
         from .write import write_report
 
-        return write_report(covdata, output_file, options)
+        return write_report(covdata, output_file, self.options)

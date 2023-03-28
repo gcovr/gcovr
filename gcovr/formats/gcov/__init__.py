@@ -22,16 +22,29 @@ import os
 from typing import List
 
 from ...options import GcovrConfigOption, Options, relative_path
-from ...formats.base import handler_base
+from ...formats.base import BaseHandler
 
 from ...coverage import CovData
 
 from ...utils import FilterOption
 
 
-class handler(handler_base):
+class GcovHandler(BaseHandler):
     def get_options() -> List[GcovrConfigOption]:
         return [
+            # Global options used for merging end exclusion processing.
+            "exclude_calls",
+            "exclude_noncode_lines",
+            "exclude_throw_branches",
+            "exclude_unreachable_branches",
+            "exclude_function_lines",
+            "exclude_internal_functions",
+            "respect_exclusion_markers",
+            "exclude_lines_by_pattern",
+            "exclude_branches_by_pattern",
+            "exclude_pattern_prefix",
+            "merge_mode_functions",
+            # Local options
             GcovrConfigOption(
                 "gcov_files",
                 ["-g", "--use-gcov-files", "--gcov-use-existing-files"],
@@ -180,7 +193,7 @@ class handler(handler_base):
             ),
         ]
 
-    def read_report(covdata: CovData, options: Options) -> bool:
+    def read_report(self, covdata: CovData) -> bool:
         from .read import read_report
 
-        return read_report(covdata, options)
+        return read_report(covdata, self.options)

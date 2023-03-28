@@ -17,26 +17,44 @@
 #
 # ****************************************************************************
 
-from typing import List
+from typing import Callable, List
 
 from ..options import GcovrConfigOption, Options
 from ..coverage import CovData
 
 
-class handler_base(object):
+class BaseHandler:
     def get_options() -> List[GcovrConfigOption]:
         return []
 
-    @staticmethod
-    def read_report(covdata: CovData, options: Options) -> bool:
+    def __init__(self, options: Options):
+        global_options = [
+            "timestamp",
+            "root",
+            "root_dir",
+            "root_filter",
+            "show_branch",
+            "show_decision",
+            "sort_uncovered",
+            "sort_percent",
+            "search_paths",
+            "source_encoding",
+            "starting_dir",
+            "filter",
+            "exclude",
+        ]
+        option_dict = {}
+        for name in global_options + [
+            o if isinstance(o, str) else o.name for o in self.__class__.get_options()
+        ]:
+            option_dict[name] = options.get(name)
+        self.options = Options(**option_dict)
+
+    def read_report(self, covdata: CovData) -> bool:
         raise RuntimeError("Function 'read_report' not implemented.")
 
-    @staticmethod
-    def write_report(covdata: CovData, output_file: str, options: Options) -> bool:
+    def write_report(self, covdata: CovData, output_file: str) -> bool:
         raise RuntimeError("Function 'write_report' not implemented.")
 
-    @staticmethod
-    def write_summary_report(
-        covdata: CovData, output_file: str, options: Options
-    ) -> bool:
+    def write_summary_report(self, covdata: CovData, output_file: str) -> bool:
         raise RuntimeError("Function 'write_summary_report' not implemented.")
