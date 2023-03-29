@@ -21,14 +21,15 @@ import json
 import logging
 import os
 import functools
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
-from ..gcov import apply_filter_include_exclude
-from ..utils import (
+from ...options import Options
+
+from ...utils import (
     presentable_filename,
     open_text_for_writing,
 )
-from ..coverage import (
+from ...coverage import (
     BranchCoverage,
     CovData,
     DecisionCoverage,
@@ -42,21 +43,11 @@ from ..coverage import (
     SummarizedStats,
     sort_coverage,
 )
-from ..merging import (
-    get_merge_mode_from_options,
-    insert_branch_coverage,
-    insert_decision_coverage,
-    insert_file_coverage,
-    insert_function_coverage,
-    insert_line_coverage,
-    insert_call_coverage,
-)
 
-logger = logging.getLogger("gcovr")
+from . import versions
 
+LOGGER = logging.getLogger("gcovr")
 
-JSON_FORMAT_VERSION = "0.5"
-JSON_SUMMARY_FORMAT_VERSION = "0.5"
 PRETTY_JSON_INDENT = 4
 
 
@@ -78,12 +69,12 @@ def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
         write_json(gcovr_json_dict, fh)
 
 
-def print_json_report(covdata: CovData, output_file, options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     r"""produce an JSON report in the format partially
     compatible with gcov JSON output"""
 
     gcovr_json_root = {
-        "gcovr/format_version": JSON_FORMAT_VERSION,
+        "gcovr/format_version": versions.JSON_FORMAT_VERSION,
         "files": _json_from_files(covdata, options),
     }
 
@@ -92,7 +83,7 @@ def print_json_report(covdata: CovData, output_file, options):
     )
 
 
-def print_json_summary_report(covdata, output_file, options):
+def write_summary_report(covdata, output_file: str, options: Options):
     """Produce gcovr JSON summary report"""
 
     json_dict = {}
@@ -101,7 +92,7 @@ def print_json_summary_report(covdata, output_file, options):
         options.root,
         os.getcwd() if output_file == "-" else os.path.dirname(output_file),
     )
-    json_dict["gcovr/summary_format_version"] = JSON_SUMMARY_FORMAT_VERSION
+    json_dict["gcovr/summary_format_version"] = versions.JSON_SUMMARY_FORMAT_VERSION
     json_dict["files"] = []
 
     # Data
@@ -148,60 +139,6 @@ def _summary_from_stats(stats: SummarizedStats, default) -> Dict[str, Any]:
     json_dict["branch_percent"] = stats.branch.percent_or(default)
 
     return json_dict
-
-
-#
-#  Get coverage from already existing gcovr JSON files
-#
-def gcovr_json_files_to_coverage(filenames, options) -> CovData:
-    r"""merge a coverage from multiple reports in the format
-    partially compatible with gcov JSON output"""
-
-    covdata: CovData = dict()
-    for filename in filenames:
-        logger.debug(f"Processing JSON file: {filename}")
-
-        with open(filename, "r") as json_file:
-            gcovr_json_data = json.load(json_file)
-
-        version = str(gcovr_json_data["gcovr/format_version"])
-        assert (
-            version == JSON_FORMAT_VERSION
-        ), "Wrong format version, got {} expected {}.".format(
-            version, JSON_FORMAT_VERSION
-        )
-
-        for gcovr_file in gcovr_json_data["files"]:
-            file_path = os.path.join(
-                os.path.abspath(options.root), os.path.normpath(gcovr_file["file"])
-            )
-
-            filtered, excluded = apply_filter_include_exclude(
-                file_path, options.filter, options.exclude
-            )
-
-            # Ignore if the filename does not match the filter
-            if filtered:
-                logger.debug(f"  Filtering coverage data for file {file_path}")
-                continue
-
-            # Ignore if the filename matches the exclude pattern
-            if excluded:
-                logger.debug(f"  Excluding coverage data for file {file_path}")
-                continue
-
-            file_coverage = FileCoverage(file_path)
-            merge_options = get_merge_mode_from_options(options)
-            for json_function in gcovr_file["functions"]:
-                insert_function_coverage(
-                    file_coverage, _function_from_json(json_function), merge_options
-                )
-            for json_line in gcovr_file["lines"]:
-                insert_line_coverage(file_coverage, _line_from_json(json_line))
-
-            insert_file_coverage(covdata, file_coverage, merge_options)
-
-    return covdata
 
 
 def _json_from_files(files: CovData, options) -> list:
@@ -299,62 +236,3 @@ def _json_from_function(function: FunctionCoverage) -> list:
         json_functions.append(json_function)
 
     return json_functions
-
-
-def _function_from_json(json_function: dict) -> FunctionCoverage:
-    return FunctionCoverage(
-        name=json_function["name"],
-        lineno=json_function["lineno"],
-        count=json_function["execution_count"],
-        excluded=json_function.get("gcovr/excluded", False),
-    )
-
-
-def _line_from_json(json_line: dict) -> LineCoverage:
-    line = LineCoverage(
-        json_line["line_number"],
-        count=json_line["count"],
-        excluded=json_line.get("gcovr/excluded", False),
-    )
-
-    for branchno, json_branch in enumerate(json_line["branches"]):
-        insert_branch_coverage(line, branchno, _branch_from_json(json_branch))
-
-    insert_decision_coverage(line, _decision_from_json(json_line.get("gcovr/decision")))
-
-    if "gcovr/calls" in json_line:
-        for json_call in json_line["gcovr/calls"]:
-            insert_call_coverage(line, _call_from_json(json_call))
-
-    return line
-
-
-def _branch_from_json(json_branch: dict) -> BranchCoverage:
-    return BranchCoverage(
-        count=json_branch["count"],
-        fallthrough=json_branch["fallthrough"],
-        throw=json_branch["throw"],
-    )
-
-
-def _call_from_json(json_call: dict) -> CallCoverage:
-    return CallCoverage(covered=json_call["covered"], callno=json_call["callno"])
-
-
-def _decision_from_json(json_decision: Optional[dict]) -> Optional[DecisionCoverage]:
-    if json_decision is None:
-        return None
-
-    decision_type = json_decision["type"]
-
-    if decision_type == "uncheckable":
-        return DecisionCoverageUncheckable()
-
-    if decision_type == "conditional":
-        return DecisionCoverageConditional(
-            json_decision["count_true"], json_decision["count_false"]
-        )
-    if decision_type == "switch":
-        return DecisionCoverageSwitch(json_decision["count"])
-
-    raise RuntimeError(f"Unknown decision type: {decision_type!r}")

@@ -29,8 +29,10 @@ import subprocess
 from hashlib import md5
 from typing import Any, Dict
 
-from ..utils import presentable_filename, open_text_for_writing
-from ..coverage import CovData, FileCoverage
+from ...options import Options
+
+from ...utils import presentable_filename, open_text_for_writing
+from ...coverage import CovData, FileCoverage
 
 PRETTY_JSON_INDENT = 4
 
@@ -53,7 +55,7 @@ def _write_coveralls_result(gcovr_json_dict, output_file, pretty):
         write_json(gcovr_json_dict, fh)
 
 
-def print_coveralls_report(covdata: CovData, output_file, options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """
     Outputs a JSON report in the Coveralls API coverage format
 

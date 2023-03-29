@@ -23,6 +23,16 @@ Documentation:
 Internal changes:
 
 - Do not scrub versions in reference data. (:issue:`747`)
+- Add interface for the different formats to easily add new formats. (:issue:`755`)
+- All options have now a prefix of the format and all long option names can be used in a configuration file. (:issue:`755`)
+
+  - :option:`--txt-summary` in addition to :option:`--print-summary`
+  - :option:`--json-add-tracefile` in addition to :option:`--add-tracefile`
+  - :option:`--gcov-delete` in addition to :option:`--delete`
+  - :option:`--gcov-keep` in addition to :option:`--keep`
+  - :option:`--gcov-object-directory` in addition to :option:`--object-directory`
+  - :option:`--gcov-exclude-directories` in addition to :option:`--exclude-directories`
+  - :option:`--gcov-use-existing-files` in addition to :option:`--use-gcov-files`
 
 6.0 (08 March 2023)
 -------------------

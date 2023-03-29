@@ -27,7 +27,7 @@ import re
 import sys
 from contextlib import contextmanager
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 LOG_FORMAT = "(%(levelname)s) %(message)s"
@@ -82,7 +82,7 @@ def is_fs_case_insensitive():
         and os.path.exists(cwd.upper())
         and os.path.exists(cwd.lower())
     )
-    logger.debug(f"File system is case {'in' if ret else ''}sensitive.")
+    LOGGER.debug(f"File system is case {'in' if ret else ''}sensitive.")
 
     return ret
 
@@ -205,9 +205,9 @@ class FilterOption:
             r"\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])", "/", self.regex
         )
         if bs_count:
-            logger.warning("filters must use forward slashes as path separators")
-            logger.warning(f"your filter : {self.regex}")
-            logger.warning(f"did you mean: {suggestion}")
+            LOGGER.warning("filters must use forward slashes as path separators")
+            LOGGER.warning(f"your filter : {self.regex}")
+            LOGGER.warning(f"did you mean: {suggestion}")
 
         isabs = self.regex.startswith("/")
         if not isabs and (sys.platform == "win32"):
@@ -311,7 +311,7 @@ def configure_logging() -> None:
 
 
 def switch_to_logging_format_with_threads() -> None:
-    # The one and only logger was configured from ourselve.
+    # The one and only LOGGER was configured from ourselve.
     if len(logging.getLogger().handlers) == 1 and (
         logging.getLogger().handlers[0].formatter._fmt == LOG_FORMAT
     ):
@@ -341,6 +341,8 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
     finally:
         if close:
             fh.close()
+        else:
+            fh.flush()
 
 
 @contextmanager

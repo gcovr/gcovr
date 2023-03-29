@@ -19,11 +19,13 @@
 
 from lxml import etree
 
-from ..utils import open_binary_for_writing, presentable_filename
-from ..coverage import CovData
+from ...options import Options
+
+from ...utils import open_binary_for_writing, presentable_filename
+from ...coverage import CovData
 
 
-def print_sonarqube_report(covdata: CovData, output_file, options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce an XML report in the Sonarqube generic coverage format"""
 
     root = etree.Element("coverage")

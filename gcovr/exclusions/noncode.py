@@ -28,7 +28,7 @@ import logging
 from ..coverage import FileCoverage
 
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -43,7 +43,7 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: List[str]) -> N
         if _line_can_contain_branches(lines[linecov.lineno - 1]):
             continue
 
-        logger.debug(
+        LOGGER.debug(
             "Excluding unreachable branch on line %d file %s: detected as compiler-generated code",
             linecov.lineno,
             filecov.filename,

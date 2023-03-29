@@ -19,12 +19,20 @@
 
 from typing import Iterable, Tuple
 
-from ..utils import (
+from ...options import Options
+
+from ...utils import (
     force_unix_separator,
     presentable_filename,
     open_text_for_writing,
 )
-from ..coverage import CovData, CoverageStat, FileCoverage, sort_coverage
+from ...coverage import (
+    CovData,
+    CoverageStat,
+    FileCoverage,
+    SummarizedStats,
+    sort_coverage,
+)
 
 # Widths of the various columns
 COL_FILE_WIDTH = 40
@@ -35,7 +43,7 @@ MISSING_SEPARATOR = "   "
 LINE_WIDTH = 78
 
 
-def print_text_report(covdata: CovData, output_file, options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce the classic gcovr text report"""
 
     with open_text_for_writing(output_file, "coverage.txt") as fh:
@@ -79,6 +87,30 @@ def print_text_report(covdata: CovData, output_file, options):
         fh.write("-" * LINE_WIDTH + "\n")
         fh.write(_format_line("TOTAL", total_stat, "") + "\n")
         fh.write("-" * LINE_WIDTH + "\n")
+
+
+def write_summary_report(covdata: CovData, output_file: str, options: Options) -> None:
+    """Print a small report to the standard output.
+    Output the percentage, covered and total lines and branches.
+    """
+
+    with open_text_for_writing(output_file, "coverage.txt") as fh:
+
+        def print_stat(name: str, stat: CoverageStat):
+            percent = stat.percent_or(0.0)
+            covered = stat.covered
+            total = stat.total
+            fh.write(f"{name}: {percent:0.1f}% ({covered} out of {total})\n")
+
+        stats = SummarizedStats.from_covdata(covdata)
+
+        print_stat("lines", stats.line)
+        print_stat("functions", stats.function)
+        print_stat("branches", stats.branch)
+        if options.show_decision:
+            print_stat("decisions", stats.decision)
+        if not options.exclude_calls:
+            print_stat("calls", stats.call)
 
 
 def _summarize_file_coverage(coverage: FileCoverage, options):

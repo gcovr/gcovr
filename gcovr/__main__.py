@@ -24,22 +24,12 @@ import sys
 import io
 
 from argparse import ArgumentParser
-from os.path import normpath
-from glob import glob
-from typing import Callable, List, Optional, Tuple
 
 from .configuration import (
     argument_parser_setup,
     merge_options_and_set_defaults,
     parse_config_file,
     parse_config_into_dict,
-    OutputOrDefault,
-)
-from .gcov import (
-    find_existing_gcov_files,
-    find_datafiles,
-    process_existing_gcov_file,
-    process_datafile,
 )
 from .utils import (
     AlwaysMatchFilter,
@@ -48,23 +38,21 @@ from .utils import (
     switch_to_logging_format_with_threads,
 )
 from .version import __version__
-from .workers import Workers
 from .coverage import CovData, SummarizedStats
-from .merging import merge_covdata
 
-# generators
-from .writer.json import gcovr_json_files_to_coverage
-from .writer.cobertura import print_cobertura_report
-from .writer.html import print_html_report
-from .writer.json import print_json_report, print_json_summary_report
-from .writer.txt import print_text_report
-from .writer.csv import print_csv_report
-from .writer.summary import print_summary
-from .writer.sonarqube import print_sonarqube_report
-from .writer.coveralls import print_coveralls_report
+# formats
+from . import formats as gcovr_formats
+
+LOGGER = logging.getLogger("gcovr")
 
 
-logger = logging.getLogger("gcovr")
+EXIT_SUCCESS = 0
+EXIT_CMDLINE_ERROR = 1
+EXIT_LINE_NOK = 2
+EXIT_BRANCH_NOK = 4
+EXIT_LINE_AND_BRANCH_NOK = 6
+EXIT_WRITE_ERROR = 7
+EXIT_READ_ERROR = 8
 
 
 #
@@ -84,20 +72,20 @@ def fail_under(covdata: CovData, threshold_line, threshold_branch):
     branch_nok = False
     if percent_lines < threshold_line:
         line_nok = True
-        logger.error(
+        LOGGER.error(
             f"failed minimum line coverage (got {percent_lines}%, minimum {threshold_line}%)"
         )
     if percent_branches < threshold_branch:
         branch_nok = True
-        logger.error(
+        LOGGER.error(
             f"failed minimum branch coverage (got {percent_branches}%, minimum {threshold_branch}%)"
         )
     if line_nok and branch_nok:
-        sys.exit(6)
+        sys.exit(EXIT_LINE_AND_BRANCH_NOK)
     if line_nok:
-        sys.exit(2)
+        sys.exit(EXIT_LINE_NOK)
     if branch_nok:
-        sys.exit(4)
+        sys.exit(EXIT_BRANCH_NOK)
 
 
 def create_argument_parser():
@@ -153,11 +141,6 @@ def find_config_name(partial_options):
     return None
 
 
-class Options(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-
 def main(args=None):
     configure_logging()
     parser = create_argument_parser()
@@ -165,7 +148,7 @@ def main(args=None):
 
     if cli_options.version:
         sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
-        sys.exit(0)
+        sys.exit(EXIT_SUCCESS)
 
     # load the config
     cfg_name = find_config_name(cli_options)
@@ -176,18 +159,17 @@ def main(args=None):
                 parse_config_file(cfg_file, filename=cfg_name)
             )
 
-    options_dict = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
-    options = Options(**options_dict)
+    options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
     # Reconfigure the logging.
     if options.gcov_parallel > 1:
         switch_to_logging_format_with_threads()
 
     if options.verbose:
-        logger.setLevel(logging.DEBUG)
+        LOGGER.setLevel(logging.DEBUG)
 
     if options.html_title == "":
-        logger.error("an empty --html_title= is not allowed.")
-        sys.exit(1)
+        LOGGER.error("an empty --html_title= is not allowed.")
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     for postfix in ["", "line", "branch"]:
         key_medium = "html_medium_threshold"
@@ -199,8 +181,8 @@ def main(args=None):
         option_high = f"--{key_high.replace('_', '-')}"
 
         if getattr(options, key_medium) == 0:
-            logger.error(f"value of {option_medium}= should not be zero.")
-            sys.exit(1)
+            LOGGER.error(f"value of {option_medium}= should not be zero.")
+            sys.exit(EXIT_CMDLINE_ERROR)
 
         # Inherit the defaults from the global covarage values if not set
         if postfix:
@@ -222,19 +204,19 @@ def main(args=None):
                 option_medium = "--html-high-threshold"
 
         if getattr(options, key_medium) > getattr(options, key_high):
-            logger.error(
+            LOGGER.error(
                 f"value of {option_medium}={getattr(options, key_medium)} should be\n"
                 f"lower than or equal to the value of {option_high}={getattr(options, key_high)}."
             )
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.html_tab_size < 1:
-        logger.error("value of --html-tab-size= should be greater 0.")
-        sys.exit(1)
+        LOGGER.error("value of --html-tab-size= should be greater 0.")
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.html_details and options.html_nested:
-        logger.error("--html-details and --html-nested can not be used together.")
-        sys.exit(1)
+        LOGGER.error("--html-details and --html-nested can not be used together.")
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     potential_html_output = (
         (options.html and options.html.value)
@@ -243,30 +225,30 @@ def main(args=None):
         or (options.output and options.output.value)
     )
     if options.html_details and not potential_html_output:
-        logger.error(
+        LOGGER.error(
             "a named output must be given, if the option --html-details\n" "is used."
         )
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.html_nested and not potential_html_output:
-        logger.error(
+        LOGGER.error(
             "a named output must be given, if the option --html-nested\n" "is used."
         )
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.html_self_contained is False and not potential_html_output:
-        logger.error(
+        LOGGER.error(
             "can only disable --html-self-contained when a named output is given."
         )
-        sys.exit(1)
+        sys.exit(EXIT_CMDLINE_ERROR)
 
-    if options.objdir is not None:
-        if not os.path.exists(options.objdir):
-            logger.error(
+    if options.gcov_objdir is not None:
+        if not os.path.exists(options.gcov_objdir):
+            LOGGER.error(
                 "Bad --object-directory option.\n"
                 "\tThe specified directory does not exist."
             )
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
     options.starting_dir = os.path.abspath(os.getcwd())
     options.root_dir = os.path.abspath(options.root)
@@ -279,8 +261,10 @@ def main(args=None):
     # but is used to turn absolute paths into relative paths
     options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
-    if options.exclude_dirs is not None:
-        options.exclude_dirs = [f.build_filter() for f in options.exclude_dirs]
+    if options.gcov_exclude_dirs is not None:
+        options.gcov_exclude_dirs = [
+            f.build_filter() for f in options.gcov_exclude_dirs
+        ]
 
     options.exclude = [f.build_filter() for f in options.exclude]
     options.filter = [f.build_filter() for f in options.filter]
@@ -299,251 +283,46 @@ def main(args=None):
         ("--exclude", options.exclude),
         ("--gcov-filter", options.gcov_filter),
         ("--gcov-exclude", options.gcov_exclude),
-        ("--exclude-directories", options.exclude_dirs),
+        ("--gcov-exclude-directories", options.gcov_exclude_dirs),
     ]:
-        logger.debug(f"Filters for {name}: ({len(filters)})")
+        LOGGER.debug(f"Filters for {name}: ({len(filters)})")
         for f in filters:
-            logger.debug(f" - {f}")
+            LOGGER.debug(f" - {f}")
 
     if options.exclude_lines_by_pattern:
         try:
             re.compile(options.exclude_lines_by_pattern)
         except re.error as e:
-            logger.error(
+            LOGGER.error(
                 "--exclude-lines-by-pattern: "
                 f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
             )
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.exclude_branches_by_pattern:
         try:
             re.compile(options.exclude_branches_by_pattern)
         except re.error as e:
-            logger.error(
+            LOGGER.error(
                 "--exclude-branches-by-pattern: "
                 f"Invalid regular expression: {repr(options.exclude_branches_by_pattern)}, error: {e}"
             )
-            sys.exit(1)
+            sys.exit(EXIT_CMDLINE_ERROR)
 
-    covdata: CovData
-    if options.add_tracefile:
-        covdata = collect_coverage_from_tracefiles(options)
-    else:
-        covdata = collect_coverage_from_gcov(options)
+    try:
+        covdata: CovData = gcovr_formats.read_reports(options)
+    except Exception as e:
+        LOGGER.error(f"Error occurred while reading reports:\n\t{str(e)}")
+        sys.exit(EXIT_READ_ERROR)
 
-    logger.debug(f"Gathered coveraged data for {len(covdata)} files")
-
-    # Print reports
-    error_occurred = print_reports(covdata, options)
-    if error_occurred:
-        logger.error("Error occurred while printing reports")
-        sys.exit(7)
+    try:
+        gcovr_formats.write_reports(covdata, options)
+    except Exception as e:
+        LOGGER.error(f"Error occurred while printing reports:\n{str(e)}")
+        sys.exit(EXIT_WRITE_ERROR)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
         fail_under(covdata, options.fail_under_line, options.fail_under_branch)
-
-
-def collect_coverage_from_tracefiles(options) -> CovData:
-    datafiles = set()
-
-    for trace_files_regex in options.add_tracefile:
-        trace_files = glob(trace_files_regex, recursive=True)
-        if not trace_files:
-            logger.error(
-                "Bad --add-tracefile option.\n" "\tThe specified file does not exist."
-            )
-            sys.exit(1)
-        else:
-            for trace_file in trace_files:
-                datafiles.add(normpath(trace_file))
-
-    options.root_dir = os.path.abspath(options.root)
-    return gcovr_json_files_to_coverage(datafiles, options)
-
-
-def collect_coverage_from_gcov(options) -> CovData:
-    datafiles = set()
-
-    find_files = find_datafiles
-    process_file = process_datafile
-    if options.gcov_files:
-        find_files = find_existing_gcov_files
-        process_file = process_existing_gcov_file
-
-    # Get data files
-    if not options.search_paths:
-        options.search_paths = [options.root]
-
-        if options.objdir is not None:
-            options.search_paths.append(options.objdir)
-
-    for search_path in options.search_paths:
-        datafiles.update(find_files(search_path, options.exclude_dirs))
-
-    # Get coverage data
-    with Workers(
-        options.gcov_parallel,
-        lambda: {"covdata": dict(), "toerase": set(), "options": options},
-    ) as pool:
-        logger.debug(f"Pool started with {pool.size()} threads")
-        for file_ in datafiles:
-            pool.add(process_file, file_)
-        contexts = pool.wait()
-
-    toerase = set()
-    covdata = dict()
-    for context in contexts:
-        covdata = merge_covdata(covdata, context["covdata"])
-        toerase.update(context["toerase"])
-
-    for filepath in toerase:
-        if os.path.exists(filepath):
-            os.remove(filepath)
-
-    return covdata
-
-
-def print_reports(covdata: CovData, options):
-    Generator = Tuple[
-        List[Optional[OutputOrDefault]],
-        Callable[[CovData, str, Options], None],
-        Callable[[], None],
-    ]
-    generators: List[Generator] = []
-
-    if options.txt:
-        generators.append(
-            (
-                [options.txt],
-                print_text_report,
-                lambda: logger.warning(
-                    "Text output skipped - "
-                    "consider providing an output file with `--txt=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.cobertura or options.cobertura_pretty:
-        generators.append(
-            (
-                [options.cobertura],
-                print_cobertura_report,
-                lambda: logger.warning(
-                    "Cobertura output skipped - "
-                    "consider providing an output file with `--cobertura=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.html or options.html_details or options.html_nested:
-        generators.append(
-            (
-                [options.html, options.html_details, options.html_nested],
-                print_html_report,
-                lambda: logger.warning(
-                    "HTML output skipped - "
-                    "consider providing an output file with `--html=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.sonarqube:
-        generators.append(
-            (
-                [options.sonarqube],
-                print_sonarqube_report,
-                lambda: logger.warning(
-                    "Sonarqube output skipped - "
-                    "consider providing an output file with `--sonarqube=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.json or options.json_pretty:
-        generators.append(
-            (
-                [options.json],
-                print_json_report,
-                lambda: logger.warning(
-                    "JSON output skipped - "
-                    "consider providing an output file with `--json=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.json_summary or options.json_summary_pretty:
-        generators.append(
-            (
-                [options.json_summary],
-                print_json_summary_report,
-                lambda: logger.warning(
-                    "JSON summary output skipped - "
-                    "consider providing an output file with `--json-summary=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.csv:
-        generators.append(
-            (
-                [options.csv],
-                print_csv_report,
-                lambda: logger.warning(
-                    "CSV output skipped - "
-                    "consider providing an output file with `--csv=OUTPUT`."
-                ),
-            )
-        )
-
-    if options.coveralls or options.coveralls_pretty:
-        generators.append(
-            (
-                [options.coveralls],
-                print_coveralls_report,
-                lambda: logger.warning(
-                    "Coveralls output skipped - "
-                    "consider providing an output file with `--coveralls=OUTPUT`."
-                ),
-            )
-        )
-
-    generator_error_occurred = False
-    reports_were_written = False
-    default_output_used = False
-    default_output = OutputOrDefault(None) if options.output is None else options.output
-
-    for output_choices, generator, on_no_output in generators:
-        output = OutputOrDefault.choose(output_choices, default=default_output)
-        if output is not None and output is default_output:
-            default_output_used = True
-            if not output.is_dir:
-                default_output = None
-        if output is not None:
-            if generator(covdata, output.abspath, options):
-                generator_error_occurred = True
-            reports_were_written = True
-        else:
-            on_no_output()
-
-    if not reports_were_written:
-        print_text_report(
-            covdata, "-" if default_output is None else default_output.abspath, options
-        )
-        default_output = None
-
-    if (
-        default_output is not None
-        and default_output.value is not None
-        and not default_output_used
-    ):
-        logger.warning(
-            f"--output={repr(default_output.value)} option was provided but not used."
-        )
-
-    if options.print_summary:
-        print_summary(covdata, options)
-
-    return generator_error_occurred
 
 
 if __name__ == "__main__":
