@@ -153,9 +153,11 @@ def parse_config_into_dict(
     if all_options is None:
         all_options = GCOVR_CONFIG_OPTIONS
 
-    options_lookup = {
-        option.config: option for option in all_options if option.config is not None
-    }
+    options_lookup = {}
+    for option in all_options:
+        if option.config_keys is not None:
+            for config_key in option.config_keys:
+                options_lookup[config_key] = option
 
     for cfg_entry in config_entry_source:
         try:
@@ -213,7 +215,7 @@ def _get_value_from_config_entry(
         except (ValueError, ArgumentTypeError) as err:
             raise cfg_entry.error(str(err))
 
-    elif option.config == "add-tracefile":  # Special case for patterns
+    elif option.name == "json_add_tracefile":  # Special case for patterns
         assert (
             cfg_entry.filename is not None
         ), "conversion function must derive base directory from filename"

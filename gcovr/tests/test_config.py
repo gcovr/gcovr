@@ -103,6 +103,7 @@ def test_unknown_keys():
         GcovrConfigOption(
             "testopt2",
             ["--testopt2", "--testopt-two"],
+            config="testopt2",
             help="for unit tests only",
         ),
     ]

@@ -24,7 +24,7 @@ Internal changes:
 
 - Do not scrub versions in reference data. (:issue:`747`)
 - Add interface for the different formats to easily add new formats. (:issue:`755`)
-- All options have now a prefix of the format. (:issue:`755`)
+- All options have now a prefix of the format and all long option names can be used in a configuration file. (:issue:`755`)
 
   - :option:`--txt-summary` in addition to :option:`--print-summary`
   - :option:`--json-add-tracefile` in addition to :option:`--add-tracefile`

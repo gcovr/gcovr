@@ -280,11 +280,11 @@ class GcovrConfigOption:
 
         assert not (flags and positional), "option cannot have flags and be positional"
 
-        config_key = _derive_configuration_key(config, flags=flags)
+        config_keys = _derive_configuration_key(config, flags=flags)
         del config
 
         assert (
-            flags or positional or config_key
+            flags or positional or config_keys
         ), "option must be named, positional, or config argument."
 
         negate: List[str] = []
@@ -295,8 +295,13 @@ class GcovrConfigOption:
         assert help is not None, "help required"
         if negate:
             help += " Negation: {}.".format(", ".join(negate))
-        if (flags or positional) and config_key and "--" + config_key not in flags:
-            help += f" Config key: {config_key}."
+        if (flags or positional) and config_keys:
+            for config_key in config_keys:
+                config_keys_help = []
+                if "--" + config_key not in flags:
+                    config_keys_help.append(config_key)
+                if len(config_keys_help) > 0:
+                    help += f" Config key(s): {', '.join(config_keys_help)}."
 
         # the store_true and store_false actions have hardcoded boolean
         # constants in their definitions so they need switched to the generic
@@ -321,7 +326,7 @@ class GcovrConfigOption:
 
         self.action = action
         self.choices = choices
-        self.config = config_key
+        self.config_keys = config_keys
         self.const = const
         self.const_negate = const_negate
         self.default = default
@@ -360,12 +365,18 @@ def _derive_configuration_key(
     flags: List[str],
 ) -> Optional[str]:
     if config is True:
+        config_keys = []
         for flag in flags:
             if flag.startswith("--"):
-                return flag.lstrip("-")
+                config_keys.append(flag.lstrip("-"))
+        if len(config_keys) > 0:
+            return config_keys
         assert False, "could not autogenerate config key from {flags!r}"
     elif config is False:
         return None
     else:
-        assert isinstance(config, str)
+        if not isinstance(config, list):
+            config = [config]
+        for c in config:
+            assert isinstance(c, str)
         return config
