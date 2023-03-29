@@ -28,7 +28,7 @@ from .coverage import (
     FileCoverage,
 )
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 _CHARACTERS_TO_ADD_SPACES = re.compile(r"([;:\(\)\{\}])")
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
@@ -170,13 +170,13 @@ class DecisionParser:
         self.decision_analysis_open_brackets: int = 0
 
     def parse_all_lines(self):
-        logger.debug("Starting the decision analysis")
+        LOGGER.debug("Starting the decision analysis")
 
         # start to iterate through the lines
         for lineno, code in enumerate(self.lines, 1):
             self.parse_one_line(lineno, code)
 
-        logger.debug("Decision Analysis finished!")
+        LOGGER.debug("Decision Analysis finished!")
 
     def parse_one_line(self, lineno: int, code: str) -> None:
         line_coverage = self.coverage.lines.get(lineno)
@@ -217,7 +217,7 @@ class DecisionParser:
                     # it's a compplex decision with more than 2 branches. No accurate detection possible
                     # Set the decision to uncheckable
                     line_coverage.decision = DecisionCoverageUncheckable()
-                    logger.debug(f"Uncheckable decision at line {lineno}")
+                    LOGGER.debug(f"Uncheckable decision at line {lineno}")
             else:
                 self.start_multiline_decision_analysis(lineno, code)
 
@@ -259,7 +259,7 @@ class DecisionParser:
                 )
             else:
                 last_decision_line_cov.decision = DecisionCoverageUncheckable()
-                logger.debug(
+                LOGGER.debug(
                     f"Uncheckable decision at line {lineno}. (Delta = {delta_count})"
                 )
 

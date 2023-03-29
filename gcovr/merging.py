@@ -65,7 +65,7 @@ from .coverage import (
 )
 
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 @dataclass

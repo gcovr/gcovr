@@ -20,14 +20,16 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict
-from lxml import etree  # type: ignore
+from lxml import etree
 
-from ..version import __version__
-from ..utils import force_unix_separator, open_binary_for_writing, presentable_filename
-from ..coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
+from ...options import Options
+
+from ...version import __version__
+from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
+from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
 
 
-def print_cobertura_report(covdata: CovData, output_file, options):
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce an XML report in the Cobertura format"""
 
     stats = SummarizedStats.from_covdata(covdata)

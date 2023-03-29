@@ -27,9 +27,9 @@ from unittest import mock
 
 import pytest
 
-from ..gcov_parser import NegativeHits, parse_coverage, UnknownLineType
+from ..formats.gcov.parser import NegativeHits, parse_coverage, UnknownLineType
 from ..utils import configure_logging
-from ..workers import Workers
+from ..formats.gcov.workers import Workers
 from ..exclusions import ExclusionOptions, apply_all_exclusions
 
 configure_logging()
@@ -439,7 +439,7 @@ def test_exception_during_coverage_processing(caplog):
     )
     lines = source.splitlines()
 
-    with mock.patch("gcovr.gcov_parser.insert_function_coverage") as m:
+    with mock.patch("gcovr.formats.gcov.parser.insert_function_coverage") as m:
         m.side_effect = AssertionError("totally broken")
         with pytest.raises(AssertionError) as ex_info:
             parse_coverage(

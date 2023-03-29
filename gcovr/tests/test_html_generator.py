@@ -21,7 +21,7 @@ import logging
 import os
 import pytest
 import sys
-from ..writer.html import _make_short_sourcename
+from ..formats.html.write import _make_short_sourcename
 
 CurrentDrive = os.getcwd()[0:1]
 

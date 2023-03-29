@@ -24,6 +24,8 @@ import io
 from argparse import ArgumentTypeError
 from typing import Any, Callable, Dict, Optional, Union
 
+from ...options import Options
+
 from ...version import __version__
 from ...utils import (
     force_unix_separator,
@@ -47,7 +49,7 @@ from ...coverage import (
     sort_coverage,
 )
 
-logger = logging.getLogger("gcovr")
+LOGGER = logging.getLogger("gcovr")
 
 
 class Lazy:
@@ -75,7 +77,7 @@ def templates():
     from jinja2 import Environment, PackageLoader
 
     return Environment(
-        loader=PackageLoader("gcovr.writer.html"),
+        loader=PackageLoader("gcovr.formats.html"),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -150,7 +152,7 @@ class PygmentHighlighting:
 
             self.formatter = HtmlFormatter(nowrap=True)
         except ImportError as e:  # pragma: no cover
-            logger.warning(f"No syntax highlighting available: {str(e)}")
+            LOGGER.warning(f"No syntax highlighting available: {str(e)}")
 
     def get_css(self):
         if self.formatter is None:  # pragma: no cover
@@ -208,7 +210,7 @@ class RootInfo:
         self.medium_threshold_branch = options.html_medium_threshold_branch
         self.high_threshold_branch = options.html_high_threshold_branch
         self.link_function_list = options.html_details or options.html_nested
-        self.relative_anchors = options.relative_anchors
+        self.relative_anchors = options.html_relative_anchors
 
         self.version = __version__
         self.head = options.html_title
@@ -324,7 +326,7 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def print_html_report(covdata: CovData, output_file: str, options) -> bool:
+def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -377,7 +379,7 @@ def print_html_report(covdata: CovData, output_file: str, options) -> bool:
         with open_text_for_writing(css_output) as f:
             f.write(css_data)
 
-        if options.relative_anchors:
+        if options.html_relative_anchors:
             css_link = os.path.basename(css_output)
         else:
             css_link = css_output
@@ -456,9 +458,9 @@ def print_html_report(covdata: CovData, output_file: str, options) -> bool:
             root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
         write_root_page(output_file, options, data)
         if not options.html_details:
-            return False
+            return
 
-    return write_source_pages(
+    write_source_pages(
         functions_output_file,
         covdata,
         cdata_fname,
@@ -499,7 +501,7 @@ def write_source_pages(
     medium_threshold_branch = options.html_medium_threshold_branch
     high_threshold_branch = options.html_high_threshold_branch
     formatter = get_formatter(options)
-    error_occurred = False
+    error_no_files_not_found = 0
 
     all_functions = dict()
     for f, cdata in covdata.items():
@@ -568,11 +570,11 @@ def write_source_pages(
                         source_row(ctr, line, cdata.lines.get(ctr))
                     )
                 if ctr < max_line_from_cdata:
-                    logger.warning(
+                    LOGGER.warning(
                         f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
                     )
         except IOError as e:
-            logger.warning(f'File {data["filename"]} not found: {repr(e)}')
+            LOGGER.warning(f'File {data["filename"]} not found: {repr(e)}')
             # Python ranges are exclusive. We want to iterate over all lines, including
             # that last line. Thus, we have to add a +1 to include that line.
             for ctr in range(1, max_line_from_cdata + 1):
@@ -583,7 +585,7 @@ def write_source_pages(
                         cdata.lines.get(ctr),
                     )
                 )
-            error_occurred = True
+            error_no_files_not_found += 1
         os.chdir(currdir)
 
         html_string = templates().get_template("source_page.html").render(**data)
@@ -603,7 +605,8 @@ def write_source_pages(
     ) as fh:
         fh.write(html_string + "\n")
 
-    return error_occurred
+    if error_no_files_not_found != 0:
+        raise RuntimeError(f"{error_no_files_not_found} source file(s) not found.")
 
 
 def write_directory_pages(
@@ -652,7 +655,7 @@ def write_directory_pages(
         elif f in cdata_sourcefile:
             filename = cdata_sourcefile[f]
         else:
-            logger.warning(
+            LOGGER.warning(
                 f"There's a subdirectory {f!r} that there's no source files within it"
             )
 

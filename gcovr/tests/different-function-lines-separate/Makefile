@@ -13,9 +13,9 @@ coverage.json:
 
 json: coverage.json
 	# Check error with default merge mode 'strict'.
-	$(GCOVR) --verbose --add-tracefile $< > coverage.log 2>&1 ; test $$? -eq 1
+	$(GCOVR) --verbose --add-tracefile $< > coverage.log 2>&1 ; test $$? -eq 8
 	cat coverage.log
-	grep -E 'AssertionError: Got function .*foo.* on multiple lines: 3, 5\.' coverage.log
+	grep -E 'Got function .*foo.* on multiple lines: 3, 5\.' coverage.log
 
 txt: coverage.json
 	$(GCOVR) -a $<  --merge-mode-functions=separate -o coverage.txt

@@ -103,6 +103,7 @@ def test_unknown_keys():
         GcovrConfigOption(
             "testopt2",
             ["--testopt2", "--testopt-two"],
+            config="testopt2",
             help="for unit tests only",
         ),
     ]
@@ -126,8 +127,15 @@ def test_unknown_keys():
     "testspec",
     [
         ("type=bool", "testopt-bool", "testopt_bool", True, False, True),
-        ("store_true", "delete-gcov-files", "delete", True, False, True),
-        ("store_false", "html-absolute-paths", "relative_anchors", False, True, True),
+        ("store_true", "delete-gcov-files", "gcov_delete", True, False, True),
+        (
+            "store_false",
+            "html-absolute-paths",
+            "html_relative_anchors",
+            False,
+            True,
+            True,
+        ),
         ("store_const", "testopt-const", "testopt_const", 17, 3, True),
         ("nargs=?", "testopt-nargs", "testopt_nargs", 49, 11, False),
     ],
@@ -332,7 +340,7 @@ def test_namespace_merging_overwriting(testspec):
         [{"testopt": ref.value} if ref else {} for ref in input_values],
         all_options=all_options,
     )
-    assert options["testopt"] == result
+    assert options.testopt == result
 
 
 @pytest.mark.parametrize(
@@ -365,4 +373,4 @@ def test_namespace_merging_appending(testspec):
         [{"testopt": ref.value} if ref else {} for ref in input_values],
         all_options=all_options,
     )
-    assert options["testopt"] == result
+    assert options.testopt == result

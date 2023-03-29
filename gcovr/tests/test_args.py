@@ -114,7 +114,10 @@ def test_empty_exclude_directories(capsys):
 def test_empty_objdir(capsys):
     c = capture(capsys, ["--object-directory", ""])
     assert c.out == ""
-    assert "argument --object-directory: Should not be set to an empty string." in c.err
+    assert (
+        "argument --object-directory/--gcov-object-directory: Should not be set to an empty string."
+        in c.err
+    )
     assert c.exception.code != 0
 
 
