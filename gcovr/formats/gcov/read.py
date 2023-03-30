@@ -205,12 +205,15 @@ def guess_source_file_name(
 ):
     if currdir is None:
         currdir = os.getcwd()
-    if gcda_fname is None:
-        fname = guess_source_file_name_via_aliases(gcovname, currdir, data_fname)
+    if os.path.isabs(gcovname):
+        fname = gcovname
     else:
-        fname = guess_source_file_name_heuristics(
-            gcovname, data_fname, currdir, root_dir, starting_dir, obj_dir, gcda_fname
-        )
+        if gcda_fname is None:
+            fname = guess_source_file_name_via_aliases(gcovname, currdir, data_fname)
+        else:
+            fname = guess_source_file_name_heuristics(
+                gcovname, data_fname, currdir, root_dir, starting_dir, obj_dir, gcda_fname
+            )
 
     if is_fs_case_insensitive():
         fname = fix_case_of_path(fname)
