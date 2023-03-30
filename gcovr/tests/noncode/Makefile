@@ -5,7 +5,7 @@ run: txt cobertura html sonarqube json json_summary coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --verbose --keep --exclude-noncode-lines --json-pretty --json $@
+	$(GCOVR) --verbose --gcov-keep --exclude-noncode-lines --json-pretty --json $@
 
 json: coverage.json
 

@@ -17,7 +17,7 @@ run: txt cobertura html sonarqube coveralls
 
 coverage.json:
 	./subdir/testcase
-	$(GCOVR) -r subdir --object-directory objs --exclude-function-lines --json-pretty --json coverage.json
+	$(GCOVR) -r subdir --gcov-object-directory objs --exclude-function-lines --json-pretty --json coverage.json
 
 txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt
