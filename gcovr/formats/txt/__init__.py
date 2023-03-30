@@ -48,7 +48,8 @@ class TxtHandler(BaseHandler):
                 group="output_options",
                 help=(
                     "Print a small report to stdout "
-                    "with line & function & branch percentage coverage. "
+                    "with line & function & branch percentage coverage "
+                    "optional parts are decision & call coverage. "
                     "This is in addition to other reports. "
                     "Default: {default!s}."
                 ),
