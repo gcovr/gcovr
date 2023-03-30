@@ -44,7 +44,7 @@ class TxtHandler(BaseHandler):
             ),
             GcovrConfigOption(
                 "txt_summary",
-                ["-s", "--print-summary", "--txt-summary"],
+                ["-s", "--txt-summary", "--print-summary"],
                 group="output_options",
                 help=(
                     "Print a small report to stdout "

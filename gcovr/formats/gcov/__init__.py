@@ -47,7 +47,7 @@ class GcovHandler(BaseHandler):
             # Local options
             GcovrConfigOption(
                 "gcov_files",
-                ["-g", "--use-gcov-files", "--gcov-use-existing-files"],
+                ["-g", "--gcov-use-existing-files", "--use-gcov-files"],
                 group="gcov_options",
                 help="Use existing gcov files for analysis. Default: {default!s}.",
                 action="store_true",
@@ -119,7 +119,7 @@ class GcovHandler(BaseHandler):
             ),
             GcovrConfigOption(
                 "gcov_exclude_dirs",
-                ["--exclude-directories", "--gcov-exclude-directories"],
+                ["--gcov-exclude-directories", "--exclude-directories"],
                 group="filter_options",
                 help=(
                     "Exclude directories that match this regex "
@@ -146,7 +146,7 @@ class GcovHandler(BaseHandler):
             ),
             GcovrConfigOption(
                 "gcov_objdir",
-                ["--object-directory", "--gcov-object-directory"],
+                ["--gcov-object-directory", "--object-directory"],
                 group="gcov_options",
                 help=(
                     "Override normal working directory detection. "
@@ -161,7 +161,7 @@ class GcovHandler(BaseHandler):
             ),
             GcovrConfigOption(
                 "gcov_keep",
-                ["-k", "--keep", "--gcov-keep"],
+                ["-k", "--gcov-keep", "--keep"],
                 config="keep-gcov-files",
                 group="gcov_options",
                 help=(
@@ -174,7 +174,7 @@ class GcovHandler(BaseHandler):
             ),
             GcovrConfigOption(
                 "gcov_delete",
-                ["-d", "--delete", "--gcov-delete"],
+                ["-d", "--gcov-delete", "--delete"],
                 config="delete-gcov-files",
                 group="gcov_options",
                 help="Delete gcda files after processing. Default: {default!s}.",
