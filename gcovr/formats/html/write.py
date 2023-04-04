@@ -76,15 +76,10 @@ class Lazy:
 def templates(options):
     from jinja2 import Environment, PackageLoader, FileSystemLoader
 
-    loader = PackageLoader("gcovr.writer.html")
-
-<<<<<<< HEAD
-    if options.template_dir is not None:
-        loader = FileSystemLoader(options.template_dir)
-=======
-    if options.html_template_dir is not None:
+    if options.html_template_dir is None:
+        loader = PackageLoader("gcovr.writer.html")
+    else:
         loader = FileSystemLoader(options.html_template_dir)
->>>>>>> f242e8bd (Finish --html-template-dir option)
 
     return Environment(
         loader=loader,
