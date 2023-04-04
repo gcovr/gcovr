@@ -77,7 +77,7 @@ def templates(options):
     from jinja2 import Environment, PackageLoader, FileSystemLoader
 
     if options.html_template_dir is None:
-        loader = PackageLoader("gcovr.writer.html")
+        loader = PackageLoader("gcovr.formats.html")
     else:
         loader = FileSystemLoader(options.html_template_dir)
 

@@ -15,7 +15,7 @@ gcovr
 .. |abstract-option-html| replace:: :option:`--html`
 .. |abstract-option-html-details| replace:: :option:`--html-details`
 .. |abstract-option-html-nested| replace:: :option:`--html-nested`
-.. |abstract-option-template-dir| replace:: :option:`--template-dir`
+.. |abstract-option-html-template-dir| replace:: :option:`--html-template-dir`
 .. |abstract-option-cobertura| replace:: :option:`--cobertura`
 .. |abstract-option-sonarqube| replace:: :option:`--sonarqube`
 .. |abstract-option-json| replace:: :option:`--json`

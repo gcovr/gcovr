@@ -85,7 +85,7 @@ text summaries and XML reports.
 .. |abstract-option-html| replace:: ``--html``
 .. |abstract-option-html-details| replace:: ``--html-details``
 .. |abstract-option-html-nested| replace:: ``--html-nested``
-.. |abstract-option-template-dir| replace:: ``--template-dir``
+.. |abstract-option-html-template-dir| replace:: ``--html-template-dir``
 .. |abstract-option-cobertura| replace:: ``--cobertura``
 .. |abstract-option-sonarqube| replace:: ``--sonarqube``
 .. |abstract-option-json| replace:: ``--json``
