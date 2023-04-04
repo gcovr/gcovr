@@ -534,6 +534,7 @@ class GcovProgram:
     __cmd = None
     __cmd_split = None
     __default_options = []
+    __use_json_format_if_available = None
     __help_output = None
 
     class LockContext(object):
@@ -546,8 +547,9 @@ class GcovProgram:
         def __exit__(self, *_):
             self.lock.release()
 
-    def __init__(self, cmd):
+    def __init__(self, cmd, options):
         with GcovProgram.LockContext(GcovProgram.__lock):
+            GcovProgram.__use_json_format_if_available = options.exclude_calls
             if GcovProgram.__cmd is None:
                 GcovProgram.__cmd = cmd
                 # If the first element of cmd - the executable name - has embedded spaces
@@ -567,7 +569,10 @@ class GcovProgram:
                     "--all-blocks",
                 ]
 
-                if self.__check_gcov_option("--json-format"):
+                if (
+                    GcovProgram.__use_json_format_if_available
+                    and self.__check_gcov_option("--json-format")
+                ):
                     GcovProgram.__default_options.append("--json-format")
 
                 if self.__check_gcov_option("--demangled-names"):
@@ -682,7 +687,7 @@ def run_gcov_and_process_files(abs_filename, covdata, options, error, chdir):
     out = None
     err = None
     try:
-        gcov_cmd = GcovProgram(options.gcov_cmd)
+        gcov_cmd = GcovProgram(options.gcov_cmd, options)
         gcov_cmd.identify_and_cache_capabilities()
 
         # ATTENTION:
