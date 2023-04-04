@@ -228,10 +228,16 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
-        with open(
-            fname, "r", encoding=options.source_encoding, errors="replace"
-        ) as fh_in:
-            source_lines = fh_in.read().splitlines()
+        if file["file"] == "<stdin>":
+            message = f"Got sourcefile {file['file']}, using empty lines."
+            LOGGER.info(message)
+            source_lines = ["" for _ in range(file["lines"][-1]["line_number"])]
+            source_lines[0] = f"/* {message} */"
+        else:
+            with open(
+                fname, "r", encoding=options.source_encoding, errors="replace"
+            ) as fh_in:
+                source_lines = fh_in.read().splitlines()
 
         apply_all_exclusions(file_cov, lines=source_lines, options=options)
 
