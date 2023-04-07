@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add `--html-template-dir` option to use custom Jinja2 templates (:issue:`758`)
+
 Bug fixes and small improvements:
 
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)
