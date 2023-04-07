@@ -35,7 +35,7 @@ The ``gcovr`` command can produce different kinds of coverage reports:
      - |abstract-guide-html-details|
      - annotated source files
 
-   * - |abstract-option-template-dir|
+   * - |abstract-option-html-template-dir|
      - |abstract-guide-html-template-dir|
      - use custom set of Jinja2 templates
 
