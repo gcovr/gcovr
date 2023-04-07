@@ -43,7 +43,7 @@ a separate web page for each file and directory. Each of these web pages include
 the contents of file with annotations that summarize code coverage. Consider
 the following command:
 
-Note that the :option:`--html-details<gcovr --html-details>` and
+Note that the :option:`--html<gcovr --html>` and
 :option:`--html-details<gcovr --html-details>` options need
 a named output, e.g. via the the :option:`-o/--output<gcovr --output>` option.
 For example, if the output is named ``coverage.html``,
