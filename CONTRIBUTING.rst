@@ -223,21 +223,25 @@ Project Structure
 Path                    Description
 ======================= =======================================================
 ``/``                   project root
-``/gcovr/``             the gcovr source code (Python module)
-``/gcovr/__main__.py``  command line interface + top-level behaviour
-``/gcovr/templates/``   HTML report templates
-``/gcovr/tests/``       unit tests + integration test corpus
-``/noxfile.py``         Definition of tests tasks
-``/setup.py``           Python package configuration
+``/.github/``           GitHub actions and PR templates
+``/admin/``             Administrative scripts and Dockerfile
 ``/doc/``               documentation
 ``/doc/sources/``       user guide + website
 ``/doc/examples/``      runnable examples for the user guide
+``/gcovr/``             the gcovr source code (Python module)
+``/gcovr/__main__.py``  command line interface + top-level behavior
+``/gcovr/exclusions/``  Exclusion processing of coverage data
+``/gcovr/formats/``     Input/output format handlers
+``/gcovr/tests/``       unit tests + integration test corpus
+``/scripts/``           Entry point for standalone executable
+``/noxfile.py``         Definition of tests tasks
+``/setup.py``           Python package configuration
 ======================= =======================================================
 
 The program entrypoint and command line interface is in ``gcovr/__main__.py``.
-The coverage data is parsed in the ``gcovr.gcov`` module.
+The coverage data is parsed in the ``gcovr.formats.gcov`` module.
 The HTML, XML, text, and summary reports
-are in ``gcovr.generator.html`` and respective modules.
+are in ``gcovr.formats.html`` and respective modules.
 
 .. _test suite:
 

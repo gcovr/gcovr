@@ -150,5 +150,6 @@ Following options are always used:
 
 Following options are only used if available:
 
+- ``--json-format``: Use JSON intermediate format. Can only be used if no calls are needed in the report.
 - ``--demangled-names``: Not available for LLVM based ``gcov``.
 - ``--hash-filenames``: Available since GCC 7, as fallback the option ``--preserve-paths`` is used.
