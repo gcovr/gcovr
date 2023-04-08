@@ -4,7 +4,7 @@ GCOVR ?= gcovr
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube json
+run: txt cobertura html sonarqube jacoco json
 
 txt:
 	./testcase $(TESTCASE_ARGS)
@@ -22,6 +22,10 @@ sonarqube:
 	./testcase $(TESTCASE_ARGS)
 	$(GCOVR) -d $(MARKER_OPT) --sonarqube sonarqube.xml
 
+jacoco:
+	./testcase $(TESTCASE_ARGS)
+	$(GCOVR) -d $(MARKER_OPT) --jacoco jacoco.xml
+
 json:
 	./testcase $(TESTCASE_ARGS)
 	$(GCOVR) -d $(MARKER_OPT) --json-pretty --json -o coverage.json
@@ -29,7 +33,7 @@ json:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage*.html cobertura.xml sonarqube.xml coverage.json
+	rm -f coverage.txt coverage*.html cobertura.xml sonarqube.xml jacoco.xml coverage.json
 
 # mark ALL targets as phony (because they are)
 .PHONY: %

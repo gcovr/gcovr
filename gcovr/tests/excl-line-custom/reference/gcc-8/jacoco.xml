@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>
+<report><package name=""><class name="main_cpp" sourcefilename="./main.cpp"><lines><line nr="4"/><line nr="5" mb="1" cb="1"/><line nr="7"/><line nr="15"/><line nr="18"/><line nr="26"/><line nr="31"/><line nr="32"/><line nr="34"/></lines><counter type="LINE" missed="2" covered="7"/><counter type="BRANCH" missed="1" covered="1"/></class><counter type="LINE" missed="2" covered="7"/><counter type="BRANCH" missed="1" covered="1"/></package><counter type="LINE" missed="2" covered="7"/><counter type="BRANCH" missed="1" covered="1"/></report>
