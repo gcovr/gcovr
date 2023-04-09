@@ -34,6 +34,8 @@ Internal changes:
   - :option:`--gcov-exclude-directories` in addition to :option:`--exclude-directories`
   - :option:`--gcov-use-existing-files` in addition to :option:`--use-gcov-files`
 
+- Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
+
 6.0 (08 March 2023)
 -------------------
 
