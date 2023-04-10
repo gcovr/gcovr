@@ -289,22 +289,49 @@ def test_no_output_html_nested(caplog):
     assert c.exception.code != 0
 
 
-def test_branch_threshold_nan(capsys):
-    c = capture(capsys, ["--fail-under-branch", "nan"])
+@pytest.mark.parametrize(
+    "option",
+    [
+        "--fail-under-line",
+        "--fail-under-branch",
+        "--fail-under-decision",
+        "--fail-under-function",
+    ],
+)
+def test_failed_under_threshold_nan(option, capsys):
+    c = capture(capsys, [option, "nan"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
-def test_line_threshold_negative(capsys):
-    c = capture(capsys, ["--fail-under-line", "-0.1"])
+@pytest.mark.parametrize(
+    "option",
+    [
+        "--fail-under-line",
+        "--fail-under-branch",
+        "--fail-under-decision",
+        "--fail-under-function",
+    ],
+)
+def test_failed_under_threshold_negative(option, capsys):
+    c = capture(capsys, [option, "-0.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
-def test_line_threshold_100_1(capsys):
-    c = capture(capsys, ["--fail-under-line", "100.1"])
+@pytest.mark.parametrize(
+    "option",
+    [
+        "--fail-under-line",
+        "--fail-under-branch",
+        "--fail-under-decision",
+        "--fail-under-function",
+    ],
+)
+def test_failed_under_threshold_100_1(option, capsys):
+    c = capture(capsys, [option, "100.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
