@@ -18,88 +18,105 @@
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "1da1cd97debf0f1f1611efcb978ecb25",
                     "line_number": 3
                 },
                 {
                     "branches": [
                         {
+                            "blockno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
+                            "blockno": 0,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         }
                     ],
                     "count": 1,
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
                     "line_number": 4
                 },
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/md5": "89f41aa2034ee1a649c881db918f21e3",
                     "line_number": 5
                 },
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/md5": "17b58c344e83183b8a338d2e72450b30",
                     "line_number": 6
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "a19418b9987a4c14c00c52394588f7a0",
                     "line_number": 7
                 },
                 {
                     "branches": [
                         {
+                            "blockno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
+                            "blockno": 0,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         }
                     ],
                     "count": 1,
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
                     "line_number": 10
                 },
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/md5": "0b2fbaaf039f484e5e4dc8d1a3d62368",
                     "line_number": 11
                 },
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/md5": "17b58c344e83183b8a338d2e72450b30",
                     "line_number": 12
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "a19418b9987a4c14c00c52394588f7a0",
                     "line_number": 13
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
                     "line_number": 16
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
                     "line_number": 19
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "12808cce914b7254afa3cb2f5d32ff17",
                     "line_number": 20
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
                     "line_number": 21
                 }
             ]

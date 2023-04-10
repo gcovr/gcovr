@@ -32,7 +32,7 @@
             <line number="12" hits="1" branch="false"/>
             <line number="15" hits="1" branch="false"/>
             <line number="18" hits="2" branch="false"/>
-            <line number="19" hits="6" branch="true" condition-coverage="50% (2/4)">
+            <line number="19" hits="8" branch="true" condition-coverage="50% (2/4)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>

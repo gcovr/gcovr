@@ -168,6 +168,8 @@ def _json_from_line(line: LineCoverage) -> dict:
     }
     if line.excluded:
         json_line["gcovr/excluded"] = True
+    if line.md5:
+        json_line["gcovr/md5"] = line.md5
     if line.decision is not None:
         json_line["gcovr/decision"] = _json_from_decision(line.decision)
     if len(line.calls) > 0:
@@ -182,6 +184,7 @@ def _json_from_branches(branches: Dict[int, BranchCoverage]) -> list:
 
 def _json_from_branch(branch: BranchCoverage) -> dict:
     return {
+        "blockno": branch.blockno,
         "count": branch.count,
         "fallthrough": branch.fallthrough,
         "throw": branch.throw,

@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
+
 Bug fixes and small improvements:
 
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)

@@ -460,6 +460,7 @@ class GcovProgram:
                 GcovProgram.__default_options = [
                     "--branch-counts",
                     "--branch-probabilities",
+                    "--all-blocks",
                 ]
 
                 if self.__check_gcov_option("--demangled-names"):

@@ -244,6 +244,11 @@ def merge_line(
     Precondition: both objects must have same lineno.
     """
     assert left.lineno == right.lineno
+    # If both checksums exists compare them if only one exists, use it.
+    if left.md5 is not None and right.md5 is not None:
+        assert left.md5 == right.md5
+    elif right.md5 is not None:
+        left.md5 = right.md5
 
     left.count += right.count
     left.excluded |= right.excluded

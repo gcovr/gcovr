@@ -137,6 +137,7 @@ def _line_from_json(json_line: dict) -> LineCoverage:
         json_line["line_number"],
         count=json_line["count"],
         excluded=json_line.get("gcovr/excluded", False),
+        md5=json_line.get("gcovr/md5", None),
     )
 
     for branchno, json_branch in enumerate(json_line["branches"]):
@@ -153,6 +154,7 @@ def _line_from_json(json_line: dict) -> LineCoverage:
 
 def _branch_from_json(json_branch: dict) -> BranchCoverage:
     return BranchCoverage(
+        blockno=json_branch["blockno"],
         count=json_branch["count"],
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
