@@ -68,7 +68,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install nox
-    - name: Lint with flake8
+    - name: Lint files
       run: |
         nox --non-interactive --session lint
     - name: Test with pytest
