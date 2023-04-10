@@ -37,6 +37,7 @@ Internal changes:
   - :option:`--gcov-use-existing-files` in addition to :option:`--use-gcov-files`
 
 - Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
+- Use separate session for flake8 and us this session in lint. (:issue:`768`)
 
 6.0 (08 March 2023)
 -------------------
