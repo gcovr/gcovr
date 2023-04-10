@@ -4,7 +4,7 @@ all:
 run: html
 
 html:
-	$(GCOVR) -d --json-add-tracefile input.json --html-details coverage.html; test $$? -eq 7
+	$(GCOVR) -d --json-add-tracefile input.json --html-details coverage.html; test $$? -eq 128
 
 clean:
 	rm -f coverage*.html coverage.css
