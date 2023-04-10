@@ -160,6 +160,10 @@ def test_non_existing_directory_html_nested(capsys):
     helper_test_non_existing_directory_output(capsys, "--html-nested")
 
 
+def test_non_existing_directory_html_template_dir(capsys):
+    helper_test_non_existing_directory_output(capsys, "--html-template-dir")
+
+
 def test_non_existing_directory_sonarqube(capsys):
     helper_test_non_existing_directory_output(capsys, "--sonarqube")
 
