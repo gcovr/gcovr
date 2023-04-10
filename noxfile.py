@@ -439,7 +439,7 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "docker",
         "run",
         "--rm",
-        "-t",
+        "-it" if session.interactive else "-t",
         "-e",
         "CC",
         "-v",
