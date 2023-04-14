@@ -160,10 +160,6 @@ def test_non_existing_directory_html_nested(capsys):
     helper_test_non_existing_directory_output(capsys, "--html-nested")
 
 
-def test_non_existing_directory_html_template_dir(capsys):
-    helper_test_non_existing_directory_output(capsys, "--html-template-dir")
-
-
 def test_non_existing_directory_sonarqube(capsys):
     helper_test_non_existing_directory_output(capsys, "--sonarqube")
 
@@ -408,6 +404,13 @@ def test_html_tab_size_zero(caplog):
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2] == "value of --html-tab-size= should be greater 0."
+    assert c.exception.code != 0
+
+
+def test_html_template_dir(caplog):
+    c = log_capture(caplog, ["--html", "--html-template-dir", "foo"])
+    assert "<html" in c.out
+    assert "</html>" in c.out
     assert c.exception.code != 0
 
 
