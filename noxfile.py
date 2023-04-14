@@ -155,25 +155,33 @@ def qa_compiler(session: nox.Session, version: str) -> None:
     session.notify(session_id)
 
 
-@nox.session
+@nox.session(python=False)
 def lint(session: nox.Session) -> None:
-    """Run the lint (flake8 and black)."""
-    session.install("flake8", "flake8-print")
+    """Run the linters."""
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = DEFAULT_LINT_ARGUMENTS
+    session.notify("flake8", args)
+
     # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
     if platform.python_implementation() == "CPython":
-        session.install(BLACK_PINNED_VERSION)
+        session.notify("black", ["--diff", "--check", *args])
+    else:
+        session.log(
+            f"Skip black because of platform {platform.python_implementation()}."
+        )
+
+
+@nox.session
+def flake8(session: nox.Session) -> None:
+    """Run flake8."""
+    session.install("flake8", "flake8-print")
     if session.posargs:
         args = session.posargs
     else:
         args = DEFAULT_LINT_ARGUMENTS
     session.run("flake8", *args)
-
-    if platform.python_implementation() == "CPython":
-        session.run("python", "-m", "black", "--diff", "--check", *args)
-    else:
-        session.log(
-            f"Skip black because of platform {platform.python_implementation()}."
-        )
 
 
 @nox.session
@@ -439,7 +447,7 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "docker",
         "run",
         "--rm",
-        "-t",
+        "-it" if session.interactive else "-t",
         "-e",
         "CC",
         "-v",

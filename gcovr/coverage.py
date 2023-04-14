@@ -110,6 +110,8 @@ class BranchCoverage:
     r"""Represent coverage information about a branch.
 
     Args:
+        blockno (int):
+            The block number.
         count (int):
             Number of times this branch was followed.
         fallthrough (bool, optional):
@@ -118,16 +120,18 @@ class BranchCoverage:
             Whether this is an exception-handling branch. False if unknown.
     """
 
-    __slots__ = "count", "fallthrough", "throw"
+    __slots__ = "blockno", "count", "fallthrough", "throw"
 
     def __init__(
         self,
+        blockno: int,
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
     ) -> None:
         assert count >= 0
 
+        self.blockno = blockno
         self.count = count
         self.fallthrough = fallthrough
         self.throw = throw
@@ -256,24 +260,30 @@ class LineCoverage:
             How often this line was executed at least partially.
         excluded (bool, optional):
             Whether this line is excluded by a marker.
+        md5 (str):
+            The md5 checksum of the source code line.
     """
 
     __slots__ = (
         "lineno",
         "count",
         "excluded",
+        "md5",
         "branches",
         "decision",
         "calls",
     )
 
-    def __init__(self, lineno: int, count: int, excluded: bool = False) -> None:
+    def __init__(
+        self, lineno: int, count: int, excluded: bool = False, md5: str = None
+    ) -> None:
         assert lineno > 0
         assert count >= 0
 
         self.lineno: int = lineno
         self.count: int = count
         self.excluded: bool = excluded
+        self.md5: str = md5
         self.branches: Dict[int, BranchCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
         self.calls: Dict[int, CallCoverage] = {}

@@ -119,7 +119,7 @@
             <line number="17" hits="1" branch="false"/>
             <line number="18" hits="1" branch="false"/>
             <line number="20" hits="1" branch="false"/>
-            <line number="21" hits="3" branch="true" condition-coverage="50% (2/4)">
+            <line number="21" hits="4" branch="true" condition-coverage="50% (2/4)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>

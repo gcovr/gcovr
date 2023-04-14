@@ -27,7 +27,7 @@
             </line>
             <line number="22" hits="0" branch="false"/>
             <line number="25" hits="1" branch="false"/>
-            <line number="26" hits="3" branch="true" condition-coverage="50% (2/4)">
+            <line number="26" hits="4" branch="true" condition-coverage="50% (2/4)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>

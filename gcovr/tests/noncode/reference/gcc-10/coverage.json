@@ -13,53 +13,63 @@
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
                     "line_number": 4
                 },
                 {
                     "branches": [
                         {
+                            "blockno": 0,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
+                            "blockno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         },
                         {
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         }
                     ],
                     "count": 1,
+                    "gcovr/md5": "081d5fb82495b5cd31889b9f42f01280",
                     "line_number": 6
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "7dca543db65aeb09385b27737ebed8b3",
                     "line_number": 7
                 },
                 {
                     "branches": [
                         {
+                            "blockno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
+                            "blockno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         }
                     ],
                     "count": 0,
+                    "gcovr/md5": "2346f8c9887231d4dc95411978ecfabf",
                     "line_number": 9
                 }
             ]

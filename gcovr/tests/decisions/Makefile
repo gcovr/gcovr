@@ -5,7 +5,7 @@ run: html json
 
 coverage.json:
 	./testcase
-	$(GCOVR) --verbose --decisions --json-pretty --json -o coverage.json
+	$(GCOVR) --keep --verbose --decisions --json-pretty --json -o coverage.json
 
 html: coverage.json
 	$(GCOVR) --verbose -a coverage.json --decisions --html-details -o coverage.html

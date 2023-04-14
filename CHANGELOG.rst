@@ -13,6 +13,8 @@ Breaking changes:
 New features and notable changes:
 
 - Add `--html-template-dir` option to use custom Jinja2 templates (:issue:`758`)
+- Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
+
 
 Bug fixes and small improvements:
 
@@ -35,6 +37,9 @@ Internal changes:
   - :option:`--gcov-object-directory` in addition to :option:`--object-directory`
   - :option:`--gcov-exclude-directories` in addition to :option:`--exclude-directories`
   - :option:`--gcov-use-existing-files` in addition to :option:`--use-gcov-files`
+
+- Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
+- Use separate session for flake8 and us this session in lint. (:issue:`768`)
 
 6.0 (08 March 2023)
 -------------------
