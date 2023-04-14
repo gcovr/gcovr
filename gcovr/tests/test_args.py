@@ -407,11 +407,10 @@ def test_html_tab_size_zero(caplog):
     assert c.exception.code != 0
 
 
-def test_html_template_dir(caplog):
-    c = log_capture(caplog, ["--html", "--html-template-dir", "foo"])
+def test_html_template_dir(capsys):
+    c = capture(capsys, ["--html", "--html-template-dir", "foo"])
     assert "<html" in c.out
     assert "</html>" in c.out
-    assert c.exception.code != 0
 
 
 def test_multiple_output_formats_to_stdout(caplog):
