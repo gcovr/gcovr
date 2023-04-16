@@ -118,9 +118,9 @@ jobs:
         run: |
           # Enable coverage for specific target configurations
           case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
-            windows-2019/gcc-8/3.7) USE_COVERAGE=true ;;
-            ubuntu-20.04/gcc-9/3.9) USE_COVERAGE=true ;;
-            *)                      USE_COVERAGE=false ;;
+            windows-2019/gcc-8/3.7)   USE_COVERAGE=true ;;
+            ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
+            *)                        USE_COVERAGE=false ;;
           esac
           echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
         shell: bash
@@ -185,7 +185,7 @@ jobs:
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           files: ./coverage.xml
-          name: ${{ matrix.os }}
+          name: ${{ matrix.os }}-${{ matrix.gcc }}
           verbose: true
           xtra_args: -X gcov search
       - name: Generate documentation
@@ -215,11 +215,13 @@ jobs:
     steps:
       - name: Setup environment
         run: |
-          if [ "${{ matrix.gcc }}" == "gcc-11" ] ; then
-            USE_COVERAGE=true
-          else
-            USE_COVERAGE=false
-          fi
+          # Enable coverage for specific target configurations
+          case "${{ matrix.gcc }}" in
+            gcc-5)    USE_COVERAGE=true ;;
+            clang-10) USE_COVERAGE=true ;;
+            clang-14) USE_COVERAGE=true ;;
+            *)        USE_COVERAGE=false ;;
+          esac
           echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
         shell: bash
       - name: Install dependencies
