@@ -177,18 +177,17 @@ jobs:
         with:
           name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
           path: gcovr/tests/diff.zip
-      - name: Creating coverage report
+      - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-"* ]] ; then
-            curl -Os https://uploader.codecov.io/latest/windows/codecov.exe
-          else
-            curl -Os https://uploader.codecov.io/latest/linux/codecov
-            chmod +x codecov
-          fi
-
-          ./codecov -t ${CODECOV_TOKEN} --flags ${{ matrix.os }} -X gcov search
-        shell: bash
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: ./coverage.xml
+          name: ${{ matrix.os }}
+          verbose: true
+          xtra_args: -X gcov search
       - name: Generate documentation
         if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
         run: |
@@ -214,6 +213,15 @@ jobs:
         gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10, clang-13, clang-14]
 
     steps:
+      - name: Setup environment
+        run: |
+          if [ "${{ matrix.gcc }}" == "gcc-11" ] ; then
+            USE_COVERAGE=true
+          else
+            USE_COVERAGE=false
+          fi
+          echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
+        shell: bash
       - name: Install dependencies
         run: |
           python3 -m pip install nox
@@ -227,6 +235,17 @@ jobs:
       - name: Test with pytest (in container)
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
+      - name: Upload coverage to Codecov
+        if: ${{ env.USE_COVERAGE == 'true' }}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: ./coverage.xml
+          name: docker-${{ matrix.gcc }}
+          verbose: true
+          xtra_args: -X gcov search
       - name: Generate documentation (in container)
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc

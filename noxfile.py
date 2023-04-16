@@ -244,7 +244,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         session.install("pywin32")
     coverage_args = []
     if os.environ.get("USE_COVERAGE") == "true":
-        session.install("pytest-cov")
+        session.install("coverage", "pytest-cov")
         coverage_args = ["--cov=gcovr", "--cov-branch"]
     session.install("-e", ".")
     set_environment(session, version)
@@ -271,6 +271,8 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
     session.run("python", *args)
+    if os.environ.get("USE_COVERAGE") == "true":
+        session.run("coverage", "xml")
 
 
 @nox.session
@@ -450,6 +452,8 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "-it" if session.interactive else "-t",
         "-e",
         "CC",
+        "-e",
+        "USE_COVERAGE",
         "-v",
         f"{os.getcwd()}:/gcovr",
         docker_container_id(session, version),
