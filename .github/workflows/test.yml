@@ -19,15 +19,15 @@ jobs:
       PR_MILESTONE: "${{ github.event.pull_request.milestone.number }}"
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Check if PR is assigned to a milestone
-      if: ${{ github.event_name == 'pull_request' }}
-      run: |
-        if [ -z "$PR_MILESTONE" ]; then
-          echo 'No milestone selected for PR'
-          exit 1
-        fi
-        exit 0
+      - uses: actions/checkout@v3
+      - name: Check if PR is assigned to a milestone
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [ -z "$PR_MILESTONE" ]; then
+            echo 'No milestone selected for PR'
+            exit 1
+          fi
+          exit 0
 
   changelog-check:
     runs-on: ubuntu-22.04
@@ -37,32 +37,32 @@ jobs:
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Check if PR is mentioned in changelog
-      if: ${{ always() }}
-      run: |
-        if [ -z "${{ github.event.pull_request.number }}" ]; then
-          echo 'No PR defined'
-        else
-          if grep -qE '^\[no changelog\]' <<<"$PR_BODY"; then
-            echo 'Marker "[no changelog]" found in PR body'
-            if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" != "" ]; then
-              echo "ERROR: $CHANGELOG_ISSUE found in CHANGELOG.rst."
-              exit 1
-            else
-              echo "OK: $CHANGELOG_ISSUE not found in CHANGELOG.rst"
-            fi
+      - uses: actions/checkout@v3
+      - name: Check if PR is mentioned in changelog
+        if: ${{ always() }}
+        run: |
+          if [ -z "${{ github.event.pull_request.number }}" ]; then
+            echo 'No PR defined'
           else
-            echo 'Marker "[no changelog]" not found in PR body'
-            if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" == "" ]; then
-              echo "ERROR: $CHANGELOG_ISSUE not found in CHANGELOG.rst."
-              exit 1
+            if grep -qE '^\[no changelog\]' <<<"$PR_BODY"; then
+              echo 'Marker "[no changelog]" found in PR body'
+              if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" != "" ]; then
+                echo "ERROR: $CHANGELOG_ISSUE found in CHANGELOG.rst."
+                exit 1
+              else
+                echo "OK: $CHANGELOG_ISSUE not found in CHANGELOG.rst"
+              fi
             else
-              echo "OK: $CHANGELOG_ISSUE found in CHANGELOG.rst"
+              echo 'Marker "[no changelog]" not found in PR body'
+              if [ "$(grep -F "$CHANGELOG_ISSUE" CHANGELOG.rst)" == "" ]; then
+                echo "ERROR: $CHANGELOG_ISSUE not found in CHANGELOG.rst."
+                exit 1
+              else
+                echo "OK: $CHANGELOG_ISSUE found in CHANGELOG.rst"
+              fi
             fi
           fi
-        fi
-        exit 0
+          exit 0
 
   build:
     runs-on: ${{ matrix.os }}
@@ -113,88 +113,94 @@ jobs:
             python-version: '3.11'
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup environment
-      run: |
-        # Enable coverage for specific target configurations
-        case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
-          windows-2019/gcc-8/3.7) USE_COVERAGE=true ;;
-          ubuntu-20.04/gcc-9/3.9) USE_COVERAGE=true ;;
-          *)                      USE_COVERAGE=false ;;
-        esac
-        echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
-      shell: bash
-    - name: Install msys with GCC (Windows)
-      if: ${{ startsWith(matrix.os,'windows-') }}
-      uses: msys2/setup-msys2@v2
-      with:
-        install: gcc make
-    - name: Install ninja (Windows)
-      if: ${{ startsWith(matrix.os,'windows-') }}
-      run: |
-        choco install ninja
-    - name: Install build commands and GCC (Linux)
-      if: ${{ startsWith(matrix.os,'ubuntu-') }}
-      run: |
-        sudo apt update
-        sudo apt-get install -y \
-          make \
-          ninja-build \
-          ${{ matrix.gcc }} \
-          $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
-        sudo apt-get clean
-    - name: Install libxml2
-      if: ${{ startsWith(matrix.os,'ubuntu-') }}
-      run: |
-        sudo apt-get install -y \
-          libxml2-utils
-        sudo apt-get clean
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Cache pip
-      uses: actions/cache@v3
-      with:
-        # This path is specific to Ubuntu
-        path: ~/.cache/pip
-        # Look to see if there is a cache hit for the corresponding requirements file
-        key: ${{ runner.os }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    - name: Install dependencies
-      run: |
-        python3 -m pip install nox codecov
-    - name: Lint files
-      run: |
-        nox --non-interactive --session lint
-    - name: Test with pytest
-      run: |
-        nox --non-interactive --session "tests_compiler(${{ matrix.gcc }})" -- --archive_differences
-    - name: Upload pytest test results
-      if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
-        path: gcovr/tests/diff.zip
-    - name: Creating coverage report
-      if: ${{ env.USE_COVERAGE == 'true' }}
-      run: |
-        codecov --flags ${{ matrix.os }} -X gcov search
-    - name: Generate documentation
-      if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
-      run: |
-        nox --non-interactive --session doc
-    - name: Test bundle of app
-      run: |
-        nox --non-interactive --session bundle_app
-      if: ${{ ! startsWith(matrix.python-version,'pypy') }}
-    - name: Build wheel
-      run: |
-        nox --non-interactive --session build_wheel
-    - name: Check wheel
-      run: |
-        nox --non-interactive --session check_wheel
+      - uses: actions/checkout@v3
+      - name: Setup environment
+        run: |
+          # Enable coverage for specific target configurations
+          case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
+            windows-2019/gcc-8/3.7)   USE_COVERAGE=true ;;
+            ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
+            *)                        USE_COVERAGE=false ;;
+          esac
+          echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
+        shell: bash
+      - name: Install msys with GCC (Windows)
+        if: ${{ startsWith(matrix.os,'windows-') }}
+        uses: msys2/setup-msys2@v2
+        with:
+          install: gcc make
+      - name: Install ninja (Windows)
+        if: ${{ startsWith(matrix.os,'windows-') }}
+        run: |
+          choco install ninja
+      - name: Install build commands and GCC (Linux)
+        if: ${{ startsWith(matrix.os,'ubuntu-') }}
+        run: |
+          sudo apt update
+          sudo apt-get install -y \
+            make \
+            ninja-build \
+            ${{ matrix.gcc }} \
+            $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
+          sudo apt-get clean
+      - name: Install libxml2
+        if: ${{ startsWith(matrix.os,'ubuntu-') }}
+        run: |
+          sudo apt-get install -y \
+            libxml2-utils
+          sudo apt-get clean
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          # This path is specific to Ubuntu
+          path: ~/.cache/pip
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: |
+          python3 -m pip install nox
+      - name: Lint files
+        run: |
+          nox --non-interactive --session lint
+      - name: Test with pytest
+        run: |
+          nox --non-interactive --session "tests_compiler(${{ matrix.gcc }})" -- --archive_differences
+      - name: Upload pytest test results
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
+          path: gcovr/tests/diff.zip
+      - name: Upload coverage to Codecov
+        if: ${{ env.USE_COVERAGE == 'true' }}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: ./coverage.xml
+          name: ${{ matrix.os }}-${{ matrix.gcc }}
+          verbose: true
+      - name: Generate documentation
+        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
+        run: |
+          nox --non-interactive --session doc
+      - name: Test bundle of app
+        run: |
+          nox --non-interactive --session bundle_app
+        if: ${{ ! startsWith(matrix.python-version,'pypy') }}
+      - name: Build wheel
+        run: |
+          nox --non-interactive --session build_wheel
+      - name: Check wheel
+        run: |
+          nox --non-interactive --session check_wheel
 
   run-docker:
     runs-on: ubuntu-22.04
@@ -206,29 +212,50 @@ jobs:
         gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10, clang-13, clang-14]
 
     steps:
-    - name: Install dependencies
-      run: |
-        python3 -m pip install nox
-    - uses: actions/checkout@v3
-    - name: Build Docker
-      run: |
-        python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
-    - name: Lint files (in container)
-      run: |
-        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session lint
-    - name: Test with pytest (in container)
-      run: |
-        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
-    - name: Generate documentation (in container)
-      run: |
-        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
-    - name: Test bundle of app (in container)
-      if: ${{ (matrix.gcc != 'gcc-5') && (matrix.gcc != 'gcc-6') }} # Uses Ubuntu 18.04
-      run: |
-        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session bundle_app
-    - name: Build wheel (in container)
-      run: |
-        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session build_wheel
-    - name: Check wheel (in container)
-      run: |
-        python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session check_wheel
+      - name: Setup environment
+        run: |
+          # Enable coverage for specific target configurations
+          case "${{ matrix.gcc }}" in
+            gcc-5)    USE_COVERAGE=true ;;
+            clang-10) USE_COVERAGE=true ;;
+            clang-14) USE_COVERAGE=true ;;
+            *)        USE_COVERAGE=false ;;
+          esac
+          echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
+        shell: bash
+      - name: Install dependencies
+        run: |
+          python3 -m pip install nox
+      - uses: actions/checkout@v3
+      - name: Build Docker
+        run: |
+          python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
+      - name: Lint files (in container)
+        run: |
+          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session lint
+      - name: Test with pytest (in container)
+        run: |
+          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
+      - name: Upload coverage to Codecov
+        if: ${{ env.USE_COVERAGE == 'true' }}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: ./coverage.xml
+          name: docker-${{ matrix.gcc }}
+          verbose: true
+      - name: Generate documentation (in container)
+        run: |
+          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
+      - name: Test bundle of app (in container)
+        if: ${{ (matrix.gcc != 'gcc-5') && (matrix.gcc != 'gcc-6') }} # Uses Ubuntu 18.04
+        run: |
+          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session bundle_app
+      - name: Build wheel (in container)
+        run: |
+          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session build_wheel
+      - name: Check wheel (in container)
+        run: |
+          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session check_wheel
