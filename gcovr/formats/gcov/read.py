@@ -109,7 +109,7 @@ def find_existing_gcov_files(search_path, exclude_dirs):
     LOGGER.debug(f"Scanning directory {search_path} for gcov files...")
     gcov_files = list(
         search_file(
-            re.compile(r".*(\.gcov|\.json\.gz)$").match,
+            re.compile(r".*\.gcov(?:\.json\.gz)?$").match,
             search_path,
             exclude_dirs=exclude_dirs,
         )
