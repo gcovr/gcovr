@@ -13,6 +13,7 @@ Breaking changes:
 New features and notable changes:
 
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
+- Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
 
 Bug fixes and small improvements:
 
