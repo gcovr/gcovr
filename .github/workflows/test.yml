@@ -164,7 +164,7 @@ jobs:
           ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
-        python3 -m pip install nox codecov
+        python3 -m pip install nox
     - name: Lint files
       run: |
         nox --non-interactive --session lint
@@ -180,7 +180,14 @@ jobs:
     - name: Creating coverage report
       if: ${{ env.USE_COVERAGE == 'true' }}
       run: |
-        codecov --flags ${{ matrix.os }} -X gcov search
+        if [[ "${{ matrix.os }}" == "windows-"* ]] ; then
+          curl -Os https://uploader.codecov.io/latest/windows/codecov.exe
+        else
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+        fi
+
+        ./codecov -t ${CODECOV_TOKEN} --flags ${{ matrix.os }} -X gcov search
     - name: Generate documentation
       if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
       run: |
