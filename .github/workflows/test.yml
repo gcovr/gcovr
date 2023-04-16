@@ -187,7 +187,6 @@ jobs:
           files: ./coverage.xml
           name: ${{ matrix.os }}-${{ matrix.gcc }}
           verbose: true
-          xtra_args: -X gcov search
       - name: Generate documentation
         if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
         run: |
@@ -247,7 +246,6 @@ jobs:
           files: ./coverage.xml
           name: docker-${{ matrix.gcc }}
           verbose: true
-          xtra_args: -X gcov search
       - name: Generate documentation (in container)
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
