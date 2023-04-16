@@ -188,6 +188,7 @@ jobs:
         fi
 
         ./codecov -t ${CODECOV_TOKEN} --flags ${{ matrix.os }} -X gcov search
+      shell: bash
     - name: Generate documentation
       if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
       run: |
