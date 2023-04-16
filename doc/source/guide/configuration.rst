@@ -70,7 +70,7 @@ In the config file,
 whereas ``gcov-parallel = 4`` would provide an explicit argument.
 
 If the option is a path and is not absolute the path is used relative to
-the config file. For the option :option:`gcovr --add-tracefile` the
+the config file. For the option :option:`gcovr --json-add-tracefile` the
 directory of the config file is always prepended.
 
 Some config file syntax is explicitly reserved for future extensions:

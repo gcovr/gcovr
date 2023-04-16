@@ -89,7 +89,7 @@ class JsonHandler(BaseHandler):
             ),
             GcovrConfigOption(
                 "json_add_tracefile",
-                ["-a", "--add-tracefile", "--json-add-tracefile"],
+                ["-a", "--json-add-tracefile", "--add-tracefile"],
                 config="add-tracefile",
                 help=(
                     "Combine the coverage data from JSON files. "
