@@ -287,7 +287,7 @@ class RootInfo:
         }
 
         display_filename = force_unix_separator(
-            os.path.relpath(realpath(cdata_fname), self.directory)
+            realpath(cdata_fname)
         )
 
         if link_report is not None:

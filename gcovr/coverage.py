@@ -91,7 +91,7 @@ def sort_coverage(
 
     def filename(key: str) -> str:
         return (
-            force_unix_separator(os.path.relpath(realpath(key), basedir))
+            force_unix_separator(realpath(key))
             if filename_uses_relative_pathname
             else key
         )

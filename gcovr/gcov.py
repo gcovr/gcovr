@@ -124,7 +124,7 @@ def process_gcov_data(
     # Return if the filename does not match the filter
     # Return if the filename matches the exclude pattern
     filtered, excluded = apply_filter_include_exclude(
-        fname, options.filter, options.exclude
+        gcda_fname, options.filter, options.exclude
     )
 
     if filtered:
