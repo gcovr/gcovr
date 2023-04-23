@@ -9,19 +9,19 @@
             "branch_total": 8,
             "filename": "test/dir/main.cpp",
             "function_covered": 2,
-            "function_percent": 100.0,
-            "function_total": 2,
+            "function_percent": 66.7,
+            "function_total": 3,
             "line_covered": 8,
-            "line_percent": 80.0,
-            "line_total": 10
+            "line_percent": 66.7,
+            "line_total": 12
         }
     ],
     "function_covered": 2,
-    "function_percent": 100.0,
-    "function_total": 2,
+    "function_percent": 66.7,
+    "function_total": 3,
     "gcovr/summary_format_version": "0.5",
     "line_covered": 8,
-    "line_percent": 80.0,
-    "line_total": 10,
+    "line_percent": 66.7,
+    "line_total": 12,
     "root": "."
 }
