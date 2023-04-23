@@ -27,7 +27,7 @@ RUN \
                           $CXX \
                           python3-setuptools \
                           python3-dev \
-                          $(if [ "$DOCKER_OS" != "ubuntu:22.04" && "$DOCKER_OS" != "mcr.microsoft.com/devcontainers/base:jammy"]; then echo python3.7; fi) \
+                          $(if [ "$DOCKER_OS" != "ubuntu:22.04" -a "$DOCKER_OS" != "mcr.microsoft.com/devcontainers/base:jammy" ]; then echo python3.7; fi) \
                           ninja-build \
                           curl \
                           libxml2-utils \
