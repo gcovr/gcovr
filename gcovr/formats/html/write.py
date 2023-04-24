@@ -17,22 +17,13 @@
 #
 # ****************************************************************************
 
-import logging
-import os
 import hashlib
 import io
+import logging
+import os
 from argparse import ArgumentTypeError
 from typing import Any, Callable, Dict, Optional, Union
 
-from ...options import Options
-
-from ...version import __version__
-from ...utils import (
-    force_unix_separator,
-    realpath,
-    commonpath,
-    open_text_for_writing,
-)
 from ...coverage import (
     CallCoverage,
     CovData,
@@ -48,6 +39,14 @@ from ...coverage import (
     SummarizedStats,
     sort_coverage,
 )
+from ...options import Options
+from ...utils import (
+    commonpath,
+    force_unix_separator,
+    open_text_for_writing,
+    realpath,
+)
+from ...version import __version__
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -74,7 +73,7 @@ class Lazy:
 # This speeds up text and XML output.
 @Lazy
 def templates(options):
-    from jinja2 import Environment, PackageLoader, FileSystemLoader, ChoiceLoader
+    from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
     if options.html_template_dir is None:
         loader = PackageLoader("gcovr.formats.html")
@@ -85,6 +84,7 @@ def templates(options):
                 PackageLoader("gcovr.formats.html"),
             ]
         )
+        print("IN LOADER")
 
     return Environment(
         loader=loader,
@@ -177,8 +177,8 @@ class PygmentHighlighting:
             return NullHighlighting.highlighter_for_file(filename)
 
         import pygments
-        from pygments.lexers import get_lexer_for_filename
         from markupsafe import Markup
+        from pygments.lexers import get_lexer_for_filename
 
         try:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)

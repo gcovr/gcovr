@@ -19,8 +19,10 @@
 
 import logging
 import os
-import pytest
 import sys
+
+import pytest
+
 from ..formats.html.write import _make_short_sourcename
 
 CurrentDrive = os.getcwd()[0:1]
@@ -71,3 +73,45 @@ def test_windows__make_short_sourcename(outfile, source_filename):
     )
 
     assert len(result) < 256
+
+
+@pytest.fixture(scope="session")
+def template_dir(tmp_path_factory):
+    """
+    Return alternate template directory where base.html and directory_page.summary.html
+    are replaced
+    """
+    # Build temp directory and filenames
+    tdir = tmp_path_factory.mktemp("alt_templates", numbered=True)
+    base_template = tdir / "base.html"
+    directory_template = tdir / "directory_page.summary.html"
+
+    # Write some content we can spot in the templates
+    base_template.write_text("NEW_BASE_TEMPLATE")
+    directory_template.write_text("NEW_DIRECTORY_TEMPLATE")
+
+    return tdir
+
+
+def test_template_dir_fallthrough(template_dir):
+    from gcovr.formats.html.write import templates
+
+    # Inject options to set --html-template-dir to temporary directory
+    # created in fixture
+    class TestTemplateDir(object):
+        html_template_dir = template_dir
+
+    tdir = TestTemplateDir()
+
+    env = templates(tdir)
+
+    # Ensure our two overriden templates come from this temporary directory
+    base = env.get_template("base.html")
+    directory_template = env.get_template("directory_page.summary.html")
+
+    # Test non-overriden template
+    functions_template = env.get_template("functions_page.html")
+
+    assert str(template_dir) in base.filename
+    assert str(template_dir) in directory_template.filename
+    assert str(template_dir) not in functions_template.filename
