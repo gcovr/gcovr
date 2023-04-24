@@ -105,27 +105,27 @@ def test_empty_exclude(capsys):
 
 
 def test_empty_exclude_directories(capsys):
-    c = capture(capsys, ["--exclude-directories", ""])
+    c = capture(capsys, ["--gcov-exclude-directories", ""])
     assert c.out == ""
     assert "filter cannot be empty" in c.err
     assert c.exception.code != 0
 
 
 def test_empty_objdir(capsys):
-    c = capture(capsys, ["--object-directory", ""])
+    c = capture(capsys, ["--gcov-object-directory", ""])
     assert c.out == ""
     assert (
-        "argument --object-directory/--gcov-object-directory: Should not be set to an empty string."
+        "argument --gcov-object-directory/--object-directory: Should not be set to an empty string."
         in c.err
     )
     assert c.exception.code != 0
 
 
 def test_invalid_objdir(caplog):
-    c = log_capture(caplog, ["--object-directory", "not-existing-dir"])
+    c = log_capture(caplog, ["--gcov-object-directory", "not-existing-dir"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2].startswith("Bad --object-directory option.")
+    assert message[2].startswith("Bad --gcov-object-directory option.")
     assert c.exception.code == 1
 
 
@@ -215,7 +215,7 @@ def test_non_existing_directory_2_csv(capsys):
     helper_test_non_existing_directory_2_output(capsys, "--csv")
 
 
-def helper_test_non_writable_directory_output(capsys, option):  # pragma: no cover
+def helper_test_non_writable_directory_output(capsys, option):
     c = capture(capsys, [option, "/file.txt"])
     assert c.out == ""
     assert "Could not create output file '/file.txt': " in c.err
@@ -223,47 +223,47 @@ def helper_test_non_writable_directory_output(capsys, option):  # pragma: no cov
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_output(capsys):  # pragma: no cover
+def test_non_writable_directory_output(capsys):
     helper_test_non_writable_directory_output(capsys, "--output")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_txt(capsys):  # pragma: no cover
+def test_non_writable_directory_txt(capsys):
     helper_test_non_writable_directory_output(capsys, "--txt")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_xml(capsys):  # pragma: no cover
+def test_non_writable_directory_xml(capsys):
     helper_test_non_writable_directory_output(capsys, "--xml")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_html(capsys):  # pragma: no cover
+def test_non_writable_directory_html(capsys):
     helper_test_non_writable_directory_output(capsys, "--html")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_html_details(capsys):  # pragma: no cover
+def test_non_writable_directory_html_details(capsys):
     helper_test_non_writable_directory_output(capsys, "--html-details")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_html_nested(capsys):  # pragma: no cover
+def test_non_writable_directory_html_nested(capsys):
     helper_test_non_writable_directory_output(capsys, "--html-nested")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_sonarqube(capsys):  # pragma: no cover
+def test_non_writable_directory_sonarqube(capsys):
     helper_test_non_writable_directory_output(capsys, "--sonarqube")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_json(capsys):  # pragma: no cover
+def test_non_writable_directory_json(capsys):
     helper_test_non_writable_directory_output(capsys, "--json")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_csv(capsys):  # pragma: no cover
+def test_non_writable_directory_csv(capsys):
     helper_test_non_writable_directory_output(capsys, "--csv")
 
 

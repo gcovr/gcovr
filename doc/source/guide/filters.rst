@@ -11,7 +11,7 @@ not for your libraries. This is influenced by the following options:
 -   :option:`-e <gcovr -e>`, :option:`--exclude <gcovr --exclude>`
 -   :option:`--gcov-filter <gcovr --gcov-filter>`
 -   :option:`--gcov-exclude <gcovr --gcov-exclude>`
--   :option:`--exclude-directories <gcovr --exclude-directories>`
+-   :option:`--gcov-exclude-directories <gcovr --gcov-exclude-directories>`
 -   (the current working directory where gcovr is invoked)
 
 NOTE: Filters can also be specified in the gcovr configuration file: :ref:`configuration`
@@ -60,16 +60,16 @@ The :option:`--gcov-filter<gcovr --gcov-filter>`
 and :option:`--gcov-exclude<gcovr --gcov-exclude>` filters apply to the
 ``.gcov`` files created by ``gcov``.
 This is useful mostly when running gcov yourself,
-and then invoking gcovr with :option:`-g/--use-gcov-files<gcovr --use-gcov-files>`.
+and then invoking gcovr with :option:`-g/--gcov-use-existing-files<gcovr --gcov-use-existing-files>`.
 But these filters also apply when gcov is launched by gcovr.
 
 
 Speeding up coverage data search
 --------------------------------
 
-The :option:`--exclude-directories<gcovr --exclude-directories>` filter is used
+The :option:`--gcov-exclude-directories<gcovr --gcov-exclude-directories>` filter is used
 while searching for raw coverage data (or for existing ``.gcov`` files when
-:option:`-g/--use-gcov-files<gcovr --use-gcov-files>` is active).
+:option:`-g/--gcov-use-existing-files/--use-gcov-files<gcovr --gcov-use-existing-files>` is active).
 This filter is matched against directory paths, not file paths.
 If a directory matches,
 all its contents (files and subdirectories) will be excluded from the search.
@@ -88,13 +88,13 @@ For example, consider this build directory::
        ├─ better_code.gcda
        └─ better_code.gcno
 
-If we run ``gcovr --exclude-directories 'build/a$'``,
+If we run ``gcovr --gcov-exclude-directories 'build/a$'``,
 this will exclude anything in the ``build/a`` directory
 but will use the coverage data for ``better_code.o`` and ``main.o``.
 
 This can speed up gcovr when you have a complicated build directory structure.
 Consider also using the :option:`search_paths <gcovr search_paths>`
-or :option:`--object-directory<gcovr --object-directory>` arguments to specify
+or :option:`--gcov-object-directory<gcovr --gcov-object-directory>` arguments to specify
 where gcovr starts searching.
 If you are unsure which directories are being searched,
 run gcovr in :option:`-v/--verbose<gcovr --verbose>` mode.

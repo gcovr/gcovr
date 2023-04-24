@@ -98,7 +98,7 @@ Please follow this checklist for your pull request:
 
         python3 -m flake8 doc gcovr
 
-    The command ``python3 -m nox`` will run the linter, run the tests,
+    The command ``python3 -m nox`` will run the linters, run the tests,
     and check that the docs can be built.
 
 -   **Add yourself as an author.**

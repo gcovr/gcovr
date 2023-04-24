@@ -37,6 +37,7 @@ The behavior of this parser was informed by the following sources:
 
 
 import enum
+import hashlib
 import logging
 import re
 
@@ -376,6 +377,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
 class _ParserState(NamedTuple):
     deferred_functions: List[_FunctionLine] = []
     lineno: int = 0
+    blockno: int = None
     line_contents: str = ""
     is_recovering: bool = False
 
@@ -398,12 +400,19 @@ def _gather_coverage_from_line(
     # pylint: disable=no-else-return  # make life easier for type checkers
 
     if isinstance(line, _SourceLine):
-        raw_count, lineno, _, extra_info = line
+        raw_count, lineno, source_code, extra_info = line
 
         is_noncode = extra_info & _ExtraInfo.NONCODE
 
         if not is_noncode:
-            insert_line_coverage(coverage, LineCoverage(lineno, count=raw_count))
+            insert_line_coverage(
+                coverage,
+                LineCoverage(
+                    lineno,
+                    count=raw_count,
+                    md5=hashlib.md5(source_code.encode("utf-8")).hexdigest(),
+                ),
+            )
 
         # handle deferred functions
         for function in state.deferred_functions:
@@ -418,6 +427,7 @@ def _gather_coverage_from_line(
         return _ParserState(
             lineno=line.lineno,
             line_contents=line.source_code,
+            blockno=state.blockno,
         )
 
     elif state.is_recovering:
@@ -439,6 +449,7 @@ def _gather_coverage_from_line(
                 line_cov,
                 branchno,
                 BranchCoverage(
+                    blockno=state.blockno,
                     count=hits,
                     fallthrough=(annotation == "fallthrough"),
                     throw=(annotation == "throw"),
@@ -470,7 +481,11 @@ def _gather_coverage_from_line(
 
         return state
 
-    elif isinstance(line, (_UnconditionalLine, _BlockLine)):
+    elif isinstance(line, _BlockLine):
+        _, _, blockno, _ = line
+        return state._replace(blockno=blockno)
+
+    elif isinstance(line, (_UnconditionalLine,)):
         return state
 
     else:

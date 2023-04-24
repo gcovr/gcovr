@@ -24,6 +24,12 @@ gcovr-*/
 # nox
 .nox*/
 
+# coverage report
+.coverage
+coverage.xml
+# temporary generated files
+.coverage.*
+
 # Translations
 *.mo
 

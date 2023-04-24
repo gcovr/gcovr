@@ -296,12 +296,10 @@ class GcovrConfigOption:
         if negate:
             help += " Negation: {}.".format(", ".join(negate))
         if (flags or positional) and config_keys:
+            config_keys_help = []
             for config_key in config_keys:
-                config_keys_help = []
-                if "--" + config_key not in flags:
-                    config_keys_help.append(config_key)
-                if len(config_keys_help) > 0:
-                    help += f" Config key(s): {', '.join(config_keys_help)}."
+                config_keys_help.append(config_key)
+            help += f" Config key(s): {', '.join(config_keys_help)}."
 
         # the store_true and store_false actions have hardcoded boolean
         # constants in their definitions so they need switched to the generic
@@ -345,8 +343,8 @@ class GcovrConfigOption:
     def __repr__(self):
         r"""String representation of instance.
 
-        >>> GcovrConfigOption('foo', ['-f', '--foo'], help="fooify")
-        GcovrConfigOption('foo', [-f, --foo], ..., help='fooify', ...)
+        >>> GcovrConfigOption('foo', ['-f', '--foo'], help="fooify.")
+        GcovrConfigOption('foo', [-f, --foo], ..., help='fooify. Config key(s): foo.', ...)
         """
         name = self.name
         flags = ", ".join(self.flags)

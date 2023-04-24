@@ -245,7 +245,7 @@ def main(args=None):
     if options.gcov_objdir is not None:
         if not os.path.exists(options.gcov_objdir):
             LOGGER.error(
-                "Bad --object-directory option.\n"
+                "Bad --gcov-object-directory option.\n"
                 "\tThe specified directory does not exist."
             )
             sys.exit(EXIT_CMDLINE_ERROR)

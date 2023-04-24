@@ -8,7 +8,7 @@ testcase:
 run: html json
 
 html: coverage.json
-	$(GCOVR) --calls --html --add-tracefile $< -o coverage.html --html-details
+	$(GCOVR) --calls --html --json-add-tracefile $< -o coverage.html --html-details
 
 json: coverage.json
 
@@ -17,7 +17,7 @@ coverage.json:
 	${GCOVR} --calls --json -o first.json
 	./testcase
 	${GCOVR} --calls --json -o second.json
-	${GCOVR} --calls --add-tracefile first.json --add-tracefile second.json --json -o $@
+	${GCOVR} --calls --json-add-tracefile first.json --json-add-tracefile second.json --json -o $@
 
 clean:
 	rm -f testcase

@@ -5,7 +5,7 @@ all:
 
 run: txt
 
-GCOVR_TEST_OPTIONS = --print-summary
+GCOVR_TEST_OPTIONS = --txt-summary
 
 txt:
 	./testcase

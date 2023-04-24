@@ -10,7 +10,7 @@ run: txt cobertura html sonarqube coveralls
 
 coverage.json:
 	cd build && ./gcovr_gtest
-	$(GCOVR) --filter source/ --json-pretty --json coverage.json --object-directory=build
+	$(GCOVR) --filter source/ --json-pretty --json coverage.json --gcov-object-directory=build
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
