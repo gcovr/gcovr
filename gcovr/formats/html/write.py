@@ -84,7 +84,6 @@ def templates(options):
                 PackageLoader("gcovr.formats.html"),
             ]
         )
-        print("IN LOADER")
 
     return Environment(
         loader=loader,
