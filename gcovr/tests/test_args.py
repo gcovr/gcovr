@@ -337,6 +337,14 @@ def test_failed_under_threshold_100_1(option, capsys):
     assert c.exception.code != 0
 
 
+def test_failed_under_decision_without_active_decision(caplog):
+    c = log_capture(caplog, ["--fail-under-decision", "90"])
+    message0 = c.record_tuples[0]
+    assert message0[1] == logging.ERROR
+    assert message0[2] == "--fail-under-decision need also option --decision."
+    assert c.exception.code != 0
+
+
 def test_filter_backslashes_are_detected(caplog):
     # gcov-exclude all to prevent any coverage data from being found
     c = log_capture(

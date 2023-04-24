@@ -345,7 +345,7 @@ def main(args=None):
             sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.fail_under_decision > 0.0 and not options.show_decision:
-        LOGGER.error("--fail-under-decision: Option needs to activate --decision.")
+        LOGGER.error("--fail-under-decision need also option --decision.")
         sys.exit(EXIT_CMDLINE_ERROR)
 
     try:
