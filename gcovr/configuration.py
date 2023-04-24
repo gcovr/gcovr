@@ -441,7 +441,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Exit with a status of 16 "
             "if the total function coverage is less than MIN. "
             "Can be ORed with exit status of '--fail-under-line', "
-            "'--fail-under-branch', and `--fail-under-decision option."
+            "'--fail-under-branch', and '--fail-under-decision' option."
         ),
         default=0.0,
     ),
