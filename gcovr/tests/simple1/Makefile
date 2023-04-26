@@ -1,12 +1,8 @@
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 
-ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
-  CC_REFERENCE ?= $(notdir $(CC))
-  FAIL_UNDER_LINE := $(shell cat reference/$(CC_REFERENCE)/fail_under)
-else
-  FAIL_UNDER_LINE := 76.9
-endif
+CC_REFERENCE ?= $(notdir $(CC))
+FAIL_UNDER_LINE := $(shell cat reference/$(CC_REFERENCE)$(if $(filter $(BASE_OS),MSYS_NT MINGW64_NT),-Windows,)/fail_under)
 
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
