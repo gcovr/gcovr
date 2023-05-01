@@ -551,7 +551,7 @@ def write_source_pages(
             data["parent_directory"] = cdata_fname[parent_dirname]
 
         data["source_lines"] = []
-        currdir = os.getcwd()
+        current_dir = os.getcwd()
         os.chdir(options.root_dir)
         max_line_from_cdata = max(cdata.lines.keys(), default=0)
         try:
@@ -586,7 +586,7 @@ def write_source_pages(
                     )
                 )
             error_no_files_not_found += 1
-        os.chdir(currdir)
+        os.chdir(current_dir)
 
         html_string = templates().get_template("source_page.html").render(**data)
         with open_text_for_writing(

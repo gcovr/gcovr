@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 from argparse import ArgumentTypeError
-from typing import Type
+from typing import Callable, List, Type
 import logging
 import os
 import functools
@@ -110,7 +110,9 @@ def get_os_independent_path(path):
     return path.replace(os.path.sep, "/")
 
 
-def search_file(predicate, path, exclude_dirs):
+def search_file(
+    predicate: Callable[[str], bool], path: str, exclude_dirs: List[re.Pattern]
+):
     """
     Given a search path, recursively descend to find files that satisfy a
     predicate.
