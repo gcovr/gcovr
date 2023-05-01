@@ -294,6 +294,10 @@ def pytest_generate_tests(metafunc):
                     name == "cmake_gtest" and not GCOVR_ISOLATED_TEST,
                     reason="only available in docker",
                 ),
+                pytest.mark.skipif(
+                    name == "not_writable_source_dir" and not GCOVR_ISOLATED_TEST,
+                    reason="only available in docker",
+                ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
                     and format == "html"
