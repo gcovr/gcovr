@@ -24,7 +24,7 @@ import shlex
 import subprocess
 import io
 from threading import Lock
-from typing import Callable, List, Optional, Set
+from typing import Callable, List, Optional, Set, Tuple
 
 from ...options import Options
 from ...merging import merge_covdata
@@ -558,7 +558,7 @@ class GcovProgram:
             **kwargs,
         )
 
-    def run_with_args(self, args: List[str], **kwargs) -> tuple[str, str]:
+    def run_with_args(self, args: List[str], **kwargs) -> Tuple[str, str]:
         """Run the gcov program
 
         >>> import platform
@@ -681,7 +681,7 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str, gcov_filter: List[re.Pattern], gcov_exclude: List[re.Pattern], chdir: str
-) -> tuple[List[str], List[str]]:
+) -> Tuple[List[str], List[str]]:
     active_files = set([])
     all_files = set([])
 
@@ -737,7 +737,7 @@ def process_existing_gcov_file(
 
 def apply_filter_include_exclude(
     filename: str, include_filters: List[re.Pattern], exclude_filters: List[re.Pattern]
-) -> tuple[bool, bool]:
+) -> Tuple[bool, bool]:
     """Apply inclusion/exclusion filters to filename
 
     The include_filters are tested against
