@@ -43,7 +43,7 @@ LOGGER = logging.getLogger("gcovr")
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(
-    r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory)"
+    r"(?:[Cc](?:annot|ould not) open (?:graph|output) file|: No such file or directory)"
 )
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
