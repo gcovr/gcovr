@@ -103,7 +103,7 @@ _RE_UNCONDITIONAL_LINE = _line_pattern(
     r"unconditional (INT) (?:taken (VALUE)|never executed)"
 )
 _RE_SOURCE_LINE = _line_pattern(r"(?: )?(VALUE[*]?|-|[#]{5}|[=]{5}):(?: )?(INT):(.*)")
-_RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5}|[%]{5}):%s*(INT)-block (INT)")
+_RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5}|[%]{5}):\s*(INT)-block (INT)")
 
 
 class _ExtraInfo(enum.Flag):
