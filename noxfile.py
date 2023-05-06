@@ -35,6 +35,8 @@ GCC_VERSIONS = [
     "gcc-9",
     "gcc-10",
     "gcc-11",
+    "gcc-12",
+    "gcc-13",
     "clang-10",
     "clang-13",
     "clang-14",
@@ -360,7 +362,12 @@ def docker_container_os(session: nox.Session) -> str:
         return "ubuntu:18.04"
     elif session.env["CC"] in ["gcc-8", "gcc-9", "clang-10"]:
         return "ubuntu:20.04"
-    return "ubuntu:22.04"
+    elif session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14"]:
+        return "ubuntu:22.04"
+    elif session.env["CC"] in ["gcc-12", "gcc-13"]:
+        return "ubuntu:23.04"
+
+    raise RuntimeError(f"No container image defined for {session.env['CC']}")
 
 
 def docker_container_id(session: nox.Session, version: str) -> str:
@@ -441,10 +448,13 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
             return " ".join(shlex.quote(arg) for arg in args)
 
     nox_options = session.posargs
+    if not session.interactive:
+        nox_options.insert(0, "--non-interactive")
     if session._runner.global_config.no_install:
         nox_options.insert(0, "--no-install")
     if session._runner.global_config.reuse_existing_virtualenvs:
         nox_options.insert(0, "--reuse-existing-virtualenvs")
+
     session.run(
         "docker",
         "run",

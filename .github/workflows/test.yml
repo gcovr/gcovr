@@ -96,7 +96,7 @@ jobs:
         include:
 
           # Test additional compilers with Linux.
-          # Note that gcc-5, gcc-6, clang-10 and clang-13 is handled via Docker.
+          # Note that gcc-5, gcc-6, gcc-8, gcc-12, gcc-13, clang-10, and clang-13 is handled via Docker.
           - os: ubuntu-20.04
             gcc: gcc-9
             python-version: '3.9'
@@ -209,7 +209,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10, clang-13, clang-14]
+        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12, gcc-13, clang-10, clang-13, clang-14]
 
     steps:
       - name: Setup environment
@@ -217,6 +217,7 @@ jobs:
           # Enable coverage for specific target configurations
           case "${{ matrix.gcc }}" in
             gcc-5)    USE_COVERAGE=true ;;
+            gcc-13)    USE_COVERAGE=true ;;
             clang-10) USE_COVERAGE=true ;;
             clang-14) USE_COVERAGE=true ;;
             *)        USE_COVERAGE=false ;;

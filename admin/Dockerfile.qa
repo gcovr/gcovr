@@ -25,8 +25,10 @@ RUN \
                           $CC \
                           $CXX \
                           python3-setuptools \
-                          python3-dev \
-                          $(if [ "$DOCKER_OS" != "ubuntu:22.04" ]; then echo python3.7; fi) \
+                          $(if [ "$DOCKER_OS" != "ubuntu:23.04"  ]; then echo "python3-dev"; fi) \
+                          $(if [ "$DOCKER_OS" = "ubuntu:23.04"  ]; then echo "python3-full python3-pip python3-nox"; fi) \
+                          python3-venv \
+                          $(if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" ]; then echo "python3.7"; fi) \
                           ninja-build \
                           curl \
                           libxml2-utils \
@@ -41,15 +43,12 @@ RUN if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then \
     python3 --version
 
 # Install pip manually
-RUN \
-    curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python3 get-pip.py && \
-    rm get-pip.py
-
-# Install nox
-RUN \
-  python3 -m pip install --upgrade pip ; \
-  python3 -m pip install --no-cache-dir nox
+RUN if [ "$DOCKER_OS" != "ubuntu:23.04" ]; then \
+       curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; \
+       python3 get-pip.py ; \
+       rm get-pip.py ; \
+       python3 -m pip install --upgrade pip ; \
+    fi;
 
 ENV \
   CC=$CC \
@@ -72,6 +71,12 @@ RUN git clone -q \
   && make install \
   && rm -rf /tmp/googletest
 
+# Install nox
+RUN \
+    if [ "$DOCKER_OS" != "ubuntu:23.04"  ]; then \
+      python3 -m pip install --no-cache-dir nox ; \
+    fi;
+
 # Create new user "docker" and set password to "docker"
 RUN addgroup docker
 RUN useradd -d $HOME -u $USERID -g docker -g sudo -s /bin/bash docker
@@ -84,5 +89,6 @@ USER docker:docker
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 WORKDIR /gcovr
-                                                       # This are the arguments given to "docker run ... <Image> $0 $@"
-ENTRYPOINT nox --envdir $NOX_ENV_DIR --non-interactive $0 "$@"
+
+                                     # This are the arguments given to "docker run ... <Image> $0 $@"
+ENTRYPOINT python3 -m nox --envdir $NOX_ENV_DIR $0 "$@"
