@@ -40,6 +40,7 @@ Internal changes:
 - Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
 - Use separate session for flake8 and us this session in lint. (:issue:`768`)
 - Replace the deprecated codecov python uploader with the binary uploader. (:issue:`770`)
+- Add gcc-12 and gcc-13 to the test suite. (:issue:`780`)
 
 6.0 (08 March 2023)
 -------------------
