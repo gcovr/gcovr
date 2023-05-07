@@ -435,8 +435,9 @@ after a ``--`` :
 
     python3 -m nox --session 'docker_compiler(gcc-9)' -- -s tests
 
-You can also use the compiler 'all' to run the tests for all compiler versions.
-This is useful to update the all reference files:
+You can also use the compiler 'all' to run the tests for all compiler versions,
+'gcc' to only use the ``gcc`` versions, or 'clang' to use ``clang`` versions.
+A useful command to update all the reference files is :
 
 .. code:: bash
 
