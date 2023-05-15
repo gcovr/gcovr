@@ -20,6 +20,7 @@ Bug fixes and small improvements:
 - Log the thread name if :option:`-j` is used. (:issue:`752`)
 - Collapse also root directory if needed in nested HTML report. (:issue:`750`)
 - Handle special case of absolute source file paths in gcov output. (:issue:`776`)
+- Check length of lines dictionary during decision analysis for switch statements before making a range from its keys. (:issue:`783`)
 
 Documentation:
 
