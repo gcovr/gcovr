@@ -13,6 +13,7 @@ Breaking changes:
 New features and notable changes:
 
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
+- If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
 
 Bug fixes and small improvements:
 
