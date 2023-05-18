@@ -50,6 +50,7 @@ from ...coverage import (
 )
 
 LOGGER = logging.getLogger("gcovr")
+PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
 
 
 class Lazy:
@@ -369,8 +370,12 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         else:
             output_file += "coverage.html"
 
-    formatter = get_formatter(options)
-    css_data += formatter.get_css()
+    if PYGMENTS_CSS_MARKER in css_data:
+        LOGGER.info(
+            "Skip adding of pygments styles since {PYGMENTS_CSS_MARKER!r} found in user stylesheet"
+        )
+    else:
+        css_data += get_formatter(options).get_css()
 
     if self_contained:
         data["css"] = css_data
