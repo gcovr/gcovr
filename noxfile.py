@@ -361,7 +361,7 @@ def bundle_app(session: nox.Session) -> None:
     session.notify("check_bundled_app")
 
 
-@nox.session
+@nox.session(python=False)
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
     with session.chdir("build"):

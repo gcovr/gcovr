@@ -6,6 +6,7 @@ ARG DOCKER_OS
 ARG USERID
 ARG CC
 ARG CXX
+ARG NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
 
 # Install dependencies.
 #
@@ -54,9 +55,7 @@ ENV \
   CC=$CC \
   CXX=$CXX \
   GCOVR_ISOLATED_TEST=zkQEVaBpXF1i \
-  NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
-# Separate instruction because of reference to NOX_ENV_DIR
-ENV \
+  NOX_ENV_DIR=$NOX_ENV_DIR \
   XDG_CACHE_HOME=$NOX_ENV_DIR/.cache
 
 RUN git clone -q \
@@ -79,7 +78,7 @@ RUN \
 
 # Create new user "docker" and set password to "docker"
 RUN addgroup docker
-RUN useradd -d $HOME -u $USERID -g docker -g sudo -s /bin/bash docker
+RUN useradd -d $HOME $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
 RUN echo "docker:docker" | chpasswd
 
 USER docker:docker
