@@ -13,6 +13,7 @@ Breaking changes:
 New features and notable changes:
 
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
+- If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
 
 Bug fixes and small improvements:
@@ -20,6 +21,7 @@ Bug fixes and small improvements:
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)
 - Log the thread name if :option:`-j` is used. (:issue:`752`)
 - Collapse also root directory if needed in nested HTML report. (:issue:`750`)
+- Handle special case of absolute source file paths in gcov output. (:issue:`776`)
 
 Documentation:
 
@@ -40,6 +42,8 @@ Internal changes:
 - Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
 - Use separate session for flake8 and us this session in lint. (:issue:`768`)
 - Replace the deprecated codecov python uploader with the binary uploader. (:issue:`770`)
+- Add gcc-12 and gcc-13 to the test suite. (:issue:`780`)
+- Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
 
 6.0 (08 March 2023)
 -------------------

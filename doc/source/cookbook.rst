@@ -62,7 +62,7 @@ A shell session might look like this:
 
     # run gcovr
     rm -rf coverage; mkdir coverage
-    gcovr --filter src/ --print-summary --html-details coverage/index.html
+    gcovr --filter src/ --txt-summary --html-details coverage/index.html
 
 .. _oos cmake:
 
@@ -147,7 +147,7 @@ Then, apply this Sed script to all gcov files before invoking gcovr:
 .. code-block:: sh
 
    find . -name '*.gcov' -exec sed -i -f fix-gcov.sed {} \;
-   gcovr --use-gcov-files
+   gcovr --gcov-use-existing-files
 
 .. warning:: Untested because we have no access to Keil uVision compiler
 

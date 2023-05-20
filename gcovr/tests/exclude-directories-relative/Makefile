@@ -10,7 +10,7 @@ run: txt cobertura html sonarqube coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --exclude-directories 'build/a' --json-pretty --json $@
+	$(GCOVR) --gcov-exclude-directories 'build/a' --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt

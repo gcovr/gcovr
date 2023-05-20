@@ -13,7 +13,7 @@ coverage.json:
 
 json: coverage.json
 	# Check error with default merge mode 'strict'.
-	$(GCOVR) --verbose --add-tracefile $< > coverage.log 2>&1 ; test $$? -eq 8
+	$(GCOVR) --verbose --json-add-tracefile $< > coverage.log 2>&1 ; test $$? -eq 8
 	cat coverage.log
 	grep -E 'Got function .*foo.* on multiple lines: 3, 5\.' coverage.log
 

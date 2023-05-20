@@ -1,0 +1,138 @@
+{
+    "files": [
+        {
+            "file": "main.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 5,
+                    "name": "Foo::work(int)"
+                },
+                {
+                    "execution_count": 1,
+                    "lineno": 14,
+                    "name": "main"
+                }
+            ],
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "8304260594bce9b34610dec9e5a4e877",
+                    "line_number": 5
+                },
+                {
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "gcovr/decision": {
+                        "count_false": 0,
+                        "count_true": 1,
+                        "type": "conditional"
+                    },
+                    "gcovr/md5": "1aedbc743aca5457e63d15ff98c7c6b0",
+                    "line_number": 6
+                },
+                {
+                    "branches": [
+                        {
+                            "blockno": 1,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        }
+                    ],
+                    "count": 2,
+                    "gcovr/md5": "531c09b5b187d2a095229382a14585af",
+                    "line_number": 7
+                },
+                {
+                    "branches": [
+                        {
+                            "blockno": 1,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 1,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        }
+                    ],
+                    "count": 3,
+                    "gcovr/decision": {
+                        "count_false": 1,
+                        "count_true": 2,
+                        "type": "conditional"
+                    },
+                    "gcovr/md5": "7b25e7042a6c283ef5ff4184aa8a5bbd",
+                    "line_number": 8
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3",
+                    "line_number": 10
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9",
+                    "line_number": 11
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "853b69efca6192aad15b1a4363e38a64",
+                    "line_number": 14
+                },
+                {
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        }
+                    ],
+                    "count": 1,
+                    "gcovr/md5": "24293cd6780e791208b4517af39d0960",
+                    "line_number": 16
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
+                    "line_number": 17
+                }
+            ]
+        }
+    ],
+    "gcovr/format_version": "0.5"
+}
