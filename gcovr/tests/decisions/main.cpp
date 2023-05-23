@@ -1,6 +1,8 @@
 #include "stdint.h"
 #include "stdbool.h"
 
+#include "switch_test.h"
+
 bool checkBiggerTrue(int a)
 {
    if (a > 5)
@@ -379,6 +381,8 @@ int main(int argc, char *argv[])
    checkSwitch1(5);
    checkSwitch2(10);
    checkSwitch3(0);
+
+   SwitchTest{}.checkSwitch();
 
    checkCompactBranch1True(6);
    checkCompactBranch1False(4);
