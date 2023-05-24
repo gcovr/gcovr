@@ -7,11 +7,11 @@ run: json
 
 json:
 	cd build ; ./testcase
-	chmod 0555 src
+	chmod 0555 src build
 	$(GCOVR) --verbose --json-pretty --json coverage.json --gcov-ignore-errors=no_working_dir_found --root src build
 
 clean:
-	chmod 0755 src
+	chmod 0755 src build 2>/dev/null ; exit 0
 	rm -rf build
 	rm -f *.gc*
 	rm -f coverage.json
