@@ -1,5 +1,5 @@
 all:
-	/usr/bin/clang++ -fprofile-arcs -ftest-coverage main.cpp switch_test.cpp -o testcase
+	$(CXX) -fprofile-arcs -ftest-coverage main.cpp switch_test.cpp -o testcase
 
 run: html json
 
