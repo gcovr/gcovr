@@ -23,6 +23,7 @@ Bug fixes and small improvements:
 - Collapse also root directory if needed in nested HTML report. (:issue:`750`)
 - Handle special case of absolute source file paths in ``gcov`` output. (:issue:`776`)
 - Ignore exit code 6 when running ``gcov`` (output write error introduced gcc-12). (:issue:`781`)
+- Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
 
 Documentation:
 
