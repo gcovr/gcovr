@@ -21,7 +21,8 @@ Bug fixes and small improvements:
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)
 - Log the thread name if :option:`-j` is used. (:issue:`752`)
 - Collapse also root directory if needed in nested HTML report. (:issue:`750`)
-- Handle special case of absolute source file paths in gcov output. (:issue:`776`)
+- Handle special case of absolute source file paths in ``gcov`` output. (:issue:`776`)
+- Ignore exit code 6 when running ``gcov`` (output write error introduced gcc-12). (:issue:`781`)
 
 Documentation:
 
