@@ -13,14 +13,14 @@
             <div>Date: {{info.date}}</div>
             <div>
                 <span class="mr-2">Coverage:</span>
-                <span class="IssueLabel color-bg-danger-emphasis color-fg-on-emphasis mr-1">low: &ge; 0%</span>
+                <span class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</span>
                 {% if COVERAGE_MED != COVERAGE_HIGH %}
-                <span class="IssueLabel color-bg-attention-emphasis color-fg-on-emphasis mr-1">medium: &ge; {{COVERAGE_MED}}%</span>
+                <span class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; {{COVERAGE_MED}}%</span>
                 {% endif %}
                 {% if COVERAGE_HIGH < 100 %}
-                <span class="IssueLabel color-bg-success-emphasis color-fg-on-emphasis mr-1">high: &ge; {{COVERAGE_HIGH}}%</span>
+                <span class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; {{COVERAGE_HIGH}}%</span>
                 {% else %}
-                <span class="IssueLabel color-bg-success-emphasis color-fg-on-emphasis mr-1">high: = 100%</span>
+                <span class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: = 100%</span>
                 {% endif %}
                 <!-- TODO if level coverage is different show more -->
             </div>
