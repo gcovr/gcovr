@@ -1,0 +1,34 @@
+{# -*- engine: jinja -*- #}
+<div class="Box m-3">
+    <div class="Box-header d-flex flex-space-between">
+    </div>
+    <div style="overflow-x: auto;">
+        <table class="text-mono text-small wb-break-word" style="width:100%;">
+            <tr>
+                <th class="p-2" style="min-width: 50px;">Line</th>
+                <th class="p-2" style="min-width: 60px;">Branch</th>
+                <!--TODO SHOW_DECISION
+                    {% if SHOW_DECISION %}
+                    <th class="p-2">Decision</th>
+                    {% endif %}
+                    {% if not EXCLUDE_CALLS %}
+                    <th class="p-2">Call</th>
+                    {% endif %}
+                -->
+                <th class="p-2" style="min-width: 50px;">Exec</th>
+                <th class="p-2 text-left">Source</th>
+            </tr>
+            {% for row in source_lines %}
+            <tr>
+                <td class="pr-2 pl-2 text-right"><a id="l{{row.lineno}}" class="color-fg-muted"  href="#l{{row.lineno}}">{{row.lineno}}</a></td>
+                <!--TODO SHOW_DECISION EXCLUDE_CALLS -->
+                <!--TODO BRANCH TOOLTIP-->
+                <td class="pr-2 pl-2 color-fg-muted text-right">{% if row.linebranch %}{{row.linebranch.taken}}/{{row.linebranch.total}}{% endif %}</td>
+                <td class="{{row.covclass}} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
+                <td class="src {{row.covclass}}">{{row.source}}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+</div>
