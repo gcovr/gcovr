@@ -26,6 +26,8 @@ Bug fixes and small improvements:
 
 Documentation:
 
+- Fix wrong command in 'How to create a standalone application' docs (:issue:`792`)
+
 Internal changes:
 
 - Do not scrub versions in reference data. (:issue:`747`)
