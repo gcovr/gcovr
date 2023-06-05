@@ -13,29 +13,31 @@
     /* TODO choose colors */
     --excluded_color: green;
     --warning_color: orangered;
-    --takenBranch_color: green;
-    --notTakenBranch_color: red;
-    --takenDecision_color: green;
-    --uncheckedDecision_color: darkorange;
-    --notTakenDecision_color: red;
-    --invokedCall_color: green;
-    --notInvokedCall_color: red;
+    --taken_color: var(--color-success-fg);
+    --invokedCall_color: var(--color-success-fg);
 }
 
 .theme-blue {
     --high_color: var(--color-accent-emphasis);
     --high_color_fg: var(--color-accent-fg);
     --covered_color: var(--color-accent-subtle);
-    /* TODO choose colors */
-    --takenBranch_color: blue;
+    --taken_color: var(--color-accent-fg);
 }
 
 .transy-2 {
-    transform: translateY(-2px);
+transform: translateY(-2px);
 }
 
 .src {
-    white-space: pre;
+white-space: pre;
+}
+
+.ws-unset {
+white-space: unset;
+}
+
+.color-taken-branch, .color-taken-decision, .color-invoked-call {
+color: var(--taken_color) !important;
 }
 
 .excludedLine {
@@ -43,15 +45,15 @@
 }
 
 .uncoveredLine {
-    background-color: var(--uncovered_color) !important;
+background-color: var(--uncovered_color) !important;
 }
 
 .coveredLine {
-    background-color: var(--covered_color) !important;
+background-color: var(--covered_color) !important;
 }
 
 .coverage-unknown, .coverage-none {
-    background-color: var(--unknown_color) !important;
+background-color: var(--unknown_color) !important;
 }
 
 .coverage-low {
@@ -93,6 +95,8 @@
 .filelist .Box-row:nth-child(2n+3){
   background-color: var(--color-accent-subtle);
 }
+
+
 
 @media (max-width: 544px) {
   .filelist .Box-row {
