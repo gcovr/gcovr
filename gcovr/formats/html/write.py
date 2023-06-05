@@ -110,7 +110,7 @@ def user_templates():
 
 class CssRenderer:
 
-    THEMES = ["green", "blue"]
+    THEMES = ["green", "blue", "dark-green", "dark-blue"]
 
     @staticmethod
     def get_themes():
@@ -146,12 +146,12 @@ class NullHighlighting:
 
 
 class PygmentHighlighting:
-    def __init__(self):
+    def __init__(self, style="default"):
         self.formatter = None
         try:
             from pygments.formatters.html import HtmlFormatter
 
-            self.formatter = HtmlFormatter(nowrap=True)
+            self.formatter = HtmlFormatter(nowrap=True, style=style)
         except ImportError as e:  # pragma: no cover
             LOGGER.warning(f"No syntax highlighting available: {str(e)}")
 
@@ -183,8 +183,9 @@ class PygmentHighlighting:
 
 @Lazy
 def get_formatter(options):
+    highlight_style = "github-dark" if ("dark" in options.html_theme) else "default"
     return (
-        PygmentHighlighting()
+        PygmentHighlighting(style=highlight_style)
         if options.html_syntax_highlighting
         else NullHighlighting()
     )
