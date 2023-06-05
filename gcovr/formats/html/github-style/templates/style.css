@@ -38,6 +38,10 @@
     white-space: pre;
 }
 
+.excludedLine {
+
+}
+
 .uncoveredLine {
     background-color: var(--uncovered_color) !important;
 }
@@ -62,6 +66,11 @@
     background-color: var(--high_color) !important;
 }
 
+.Label--coverage-none, .Label--coverage-unknown {
+    border-color: var(--color-fg-muted) !important;
+    color: var(--color-fg-muted) !important;
+}
+
 .Label--coverage-low {
     border-color: var(--low_color);
     color: var(--low_color_fg);
@@ -83,4 +92,24 @@
 
 .filelist .Box-row:nth-child(2n+3){
   background-color: var(--color-accent-subtle);
+}
+
+@media (max-width: 544px) {
+  .filelist .Box-row {
+    flex-direction: column;
+  }
+
+  .filelist .Box-row > div{
+    width: 100%;
+  }
+
+  .meter {
+    display: none !important;
+  }
+  .meter-label {
+    display: inline !important;
+  }
+  .line-percentage-text {
+      display: none !important;
+  }
 }

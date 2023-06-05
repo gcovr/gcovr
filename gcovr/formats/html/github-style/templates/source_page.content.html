@@ -7,23 +7,25 @@
             <tr>
                 <th class="p-2" style="min-width: 50px;">Line</th>
                 <th class="p-2" style="min-width: 60px;">Branch</th>
-                <!--TODO SHOW_DECISION
-                    {% if SHOW_DECISION %}
-                    <th class="p-2">Decision</th>
-                    {% endif %}
-                    {% if not EXCLUDE_CALLS %}
-                    <th class="p-2">Call</th>
-                    {% endif %}
-                -->
+                {% if SHOW_DECISION %}
+                <th class="p-2" style="min-width: 70px;">Decision</th>
+                {% endif %}
+                {% if not EXCLUDE_CALLS %}
+                <th class="p-2" style="min-width: 50px;">Call</th>
+                {% endif %}
                 <th class="p-2" style="min-width: 50px;">Exec</th>
                 <th class="p-2 text-left">Source</th>
             </tr>
             {% for row in source_lines %}
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l{{row.lineno}}" href="#l{{row.lineno}}">{{row.lineno}}</a></td>
-                <!--TODO SHOW_DECISION EXCLUDE_CALLS -->
-                <!--TODO BRANCH TOOLTIP-->
                 <td class="text-right src linenos"><span class="normal">{% if row.linebranch %}{{row.linebranch.taken}}/{{row.linebranch.total}}{% endif %}</span></td>
+                {% if SHOW_DECISION %}
+                <td class="text-right src linenos"><span class="normal">{% if row.linedecision %}{{row.linedecision.taken}}/{{row.linedecision.total}}{% endif %}</span></td>
+                {% endif %}
+                {% if not EXCLUDE_CALLS %}
+                <td class="text-right src linenos"><span class="normal">{% if row.linecall %}{{row.linecall.invoked}}/{{row.linecall.total}}{% endif %}</span></td>
+                {% endif %}
                 <td class="src {{row.covclass}} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
                 <td class="src {{row.covclass}}">{{row.source}}</td>
             </tr>

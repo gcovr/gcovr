@@ -41,7 +41,20 @@
                 <div class="mr-2" style="margin: auto;">{{info.branches.exec}}/{{info.branches.total}}</div>
                 <div><span class="{{info.branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.branches.coverage}}%</span></div>
             </div>
-            <!-- TODO SHOW_DECISION EXCLUDE_CALLS -->
+            {% if SHOW_DECISION %}
+            <div class="d-flex">
+                <div class="mr-2">Decisions:</div>
+                <div class="mr-2" style="margin: auto;">{{info.decisions.exec}}/{{info.decisions.total}}</div>
+                <div><span class="{{info.decisions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.decisions.coverage}}%</span></div>
+            </div>
+            {% endif %}
+            {% if not EXCLUDE_CALLS %}
+            <div class="d-flex">
+                <div class="mr-2">Calls:</div>
+                <div class="mr-2" style="margin: auto;">{{info.calls.exec}}/{{info.calls.total}}</div>
+                <div><span class="{{info.calls.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.calls.coverage}}%</span></div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -14,10 +14,11 @@
     </div>
     {% for row in info.files %}
     <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-        <div role="gridcell" class="mr-3 flex-shrink-0" style="width: 16px;">
+        <div role="rowheader" class="flex-auto min-width-0 mr-3 col-md-2">
+            <div class="d-flex">
+            <span class="mr-2">
             <svg aria-hidden="true" focusable="false" role="img" class="color-fg-muted" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style="display: inline-block; user-select: none; vertical-align: text-bottom; overflow: visible;"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"></path></svg>
-        </div>
-        <div role="rowheader" class="flex-auto min-width-0 col-md-2 mr-3">
+            </span>
             <span class="css-truncate css-truncate-target d-block width-fit">
             {% if row.link is not none %}
             <a class="" title="{{row.filename}}" href="{{row.link}}">{{row.filename}}</a>
@@ -25,10 +26,12 @@
             {{row.filename}}
             {% endif %}
             </span>
+            </div>
         </div>
-        <div role="gridcell" class="flex-auto min-width-0 col-5 mr-3 text-right">
-            <span class="text-small color-fg-muted mr-2">{{row.lines.exec}} of {{row.lines.total}} lines ({{row.lines.coverage}}%)</span>
-            <span class="Progress Progress--large d-inline-flex" style="width: calc(100% - 170px);">
+        <div role="gridcell" class="flex-auto min-width-0 r-3 text-right">
+        <span class="text-small color-fg-muted">{{row.lines.exec}} of {{row.lines.total}} lines <span class="line-percentage-text  {% if SHOW_DECISION and not EXCLUDE_CALLS %}d-none{% endif %}">({{row.lines.coverage}}%)</span>
+            <span class="meter-label Label mr-1 Label--{{row.lines.class}} {% if SHOW_DECISION and not EXCLUDE_CALLS %}d-inline{% else %}d-none{% endif %}">{{row.lines.coverage}}%</span>
+            <span class="meter Progress Progress--large d-inline-flex {% if SHOW_DECISION and not EXCLUDE_CALLS %}d-none{% endif %}" style="width: 200px;">
                 <span class="Progress-item {{row.lines.class}}" style="width: {{row.lines.coverage}}%"></span>
             </span>
         </div>
@@ -40,7 +43,18 @@
             <span class="text-small color-fg-muted mr-2">{{row.branches.exec}} of {{row.branches.total}} branches</span>
             <span class="Label mr-1 Label--{{row.branches.class}}">{{row.branches.coverage}}%</span>
         </div>
-        <!-- TODO SHOW_DECISION EXCLUDE_CALLS -->
+        {% if SHOW_DECISION %}
+        <div role="gridcell" class="color-fg-muted text-right col-2">
+            <span class="text-small color-fg-muted mr-2">{{row.decisions.exec}} of {{row.decisions.total}} decisions</span>
+            <span class="Label mr-1 Label--{{row.decisions.class}}">{{row.decisions.coverage}}%</span>
+        </div>
+        {% endif %}
+        {% if not EXCLUDE_CALLS %}
+        <div role="gridcell" class="color-fg-muted text-right col-2">
+            <span class="text-small color-fg-muted mr-2">{{row.calls.exec}} of {{row.calls.total}} calls</span>
+            <span class="Label mr-1 Label--{{row.calls.class}}">{{row.calls.coverage}}%</span>
+        </div>
+        {% endif %}
     </div>
   {% endfor %}
 </div>
