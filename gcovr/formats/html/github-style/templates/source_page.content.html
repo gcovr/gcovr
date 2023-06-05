@@ -20,11 +20,11 @@
             </tr>
             {% for row in source_lines %}
             <tr>
-                <td class="pr-2 pl-2 text-right"><a id="l{{row.lineno}}" class="color-fg-muted"  href="#l{{row.lineno}}">{{row.lineno}}</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l{{row.lineno}}" href="#l{{row.lineno}}">{{row.lineno}}</a></td>
                 <!--TODO SHOW_DECISION EXCLUDE_CALLS -->
                 <!--TODO BRANCH TOOLTIP-->
-                <td class="pr-2 pl-2 color-fg-muted text-right">{% if row.linebranch %}{{row.linebranch.taken}}/{{row.linebranch.total}}{% endif %}</td>
-                <td class="{{row.covclass}} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
+                <td class="text-right src linenos"><span class="normal">{% if row.linebranch %}{{row.linebranch.taken}}/{{row.linebranch.total}}{% endif %}</span></td>
+                <td class="src {{row.covclass}} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
                 <td class="src {{row.covclass}}">{{row.source}}</td>
             </tr>
             {% endfor %}

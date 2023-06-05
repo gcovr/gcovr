@@ -76,3 +76,11 @@
     border-color: var(--high_color);
     color: var(--high_color_fg);
 }
+
+.Box-row--focus-gray:hover {
+    background-color: var(--color-canvas-subtle) !important;
+}
+
+.filelist .Box-row:nth-child(2n+3){
+  background-color: var(--color-accent-subtle);
+}
