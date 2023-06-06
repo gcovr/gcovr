@@ -78,7 +78,7 @@ def templates():
     from jinja2 import Environment, PackageLoader
 
     return Environment(
-        loader=PackageLoader("gcovr.formats.html.github-style"),
+        loader=PackageLoader("gcovr.formats.html.github"),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,

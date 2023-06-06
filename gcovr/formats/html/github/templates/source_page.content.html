@@ -3,18 +3,18 @@
     <div class="Box-header d-flex flex-space-between">
     </div>
     <div style="overflow-x: auto;">
-        <table class="text-mono text-small wb-break-word" style="width:100%;">
+        <table class="text-mono text-small" style="width:100%;">
             <tr>
-                <th class="p-2" style="min-width: 50px;">Line</th>
-                <th class="p-2" style="min-width: 60px;">Branch</th>
+                <th class="p-2">Line</th>
+                <th class="p-2">Branch</th>
                 {% if SHOW_DECISION %}
-                <th class="p-2" style="min-width: 70px;">Decision</th>
+                <th class="p-2">Decision</th>
                 {% endif %}
                 {% if not EXCLUDE_CALLS %}
-                <th class="p-2" style="min-width: 50px;">Call</th>
+                <th class="p-2">Call</th>
                 {% endif %}
-                <th class="p-2" style="min-width: 50px;">Exec</th>
-                <th class="p-2 text-left">Source</th>
+                <th class="p-2">Exec</th>
+                <th class="p-2 text-left" style="width: 100%;">Source</th>
             </tr>
             {% for row in source_lines %}
             <tr>

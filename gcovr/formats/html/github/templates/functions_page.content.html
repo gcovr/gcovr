@@ -1,5 +1,5 @@
 {# -*- engine: jinja -*- #}
-<table class="m-3 text-mono text-small wb-break-word" style="width:100%;">
+<table class="m-3 text-mono text-small" style="width:100%;">
    <tr class="text-left">
       <th>Function</th>
       <th>File</th>
@@ -8,10 +8,10 @@
   </tr>
 {% for entry in all_functions %}
   <tr>
-    <td class="css-truncate">
+    <td>
       <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["name"] }}</a>
     </td>
-    <td class="css-truncate">
+    <td>
       <a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["filename"] }}</a>
     </td>
     <td>
