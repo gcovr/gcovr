@@ -74,11 +74,14 @@ class Lazy:
 # Only do this work if templates are actually used.
 # This speeds up text and XML output.
 @Lazy
-def templates():
+def templates(options):
     from jinja2 import Environment, PackageLoader
 
+    # Select the theme directory based on theme_dirctory.color
+    theme = options.html_theme.split(".")[0]  if "." in options.html_theme else "default"
+
     return Environment(
-        loader=PackageLoader("gcovr.formats.html.github"),
+        loader=PackageLoader("gcovr.formats.html.%s" % theme),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -110,7 +113,9 @@ def user_templates():
 
 class CssRenderer:
 
-    THEMES = ["green", "blue", "dark-green", "dark-blue"]
+    THEMES = ["green", "blue",
+              "github.blue", "github.green", "github.dark-green", "github.dark-blue"
+    ]
 
     @staticmethod
     def get_themes():
@@ -126,7 +131,7 @@ class CssRenderer:
             template_path = os.path.relpath(options.html_css)
             return user_templates().get_template(template_path)
 
-        return templates().get_template("style.css")
+        return templates(options).get_template("style.css")
 
     @staticmethod
     def render(options):
@@ -391,7 +396,8 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             css_link = css_output
         data["css_link"] = css_link
 
-    data["theme"] = options.html_theme
+    theme_color = options.html_theme.split(".")[1]  if "." in options.html_theme else options.html_theme
+    data["theme"] = theme_color
 
     root_info.set_coverage(covdata)
 
@@ -481,7 +487,7 @@ def write_root_page(output_file: str, options, data: Dict[str, Any]) -> None:
     #
     # Generate the root HTML file that contains the high level report
     #
-    html_string = templates().get_template("directory_page.html").render(**data)
+    html_string = templates(options).get_template("directory_page.html").render(**data)
     with open_text_for_writing(
         output_file, encoding=options.html_encoding, errors="xmlcharrefreplace"
     ) as fh:
@@ -594,7 +600,7 @@ def write_source_pages(
             error_no_files_not_found += 1
         os.chdir(current_dir)
 
-        html_string = templates().get_template("source_page.html").render(**data)
+        html_string = templates(options).get_template("source_page.html").render(**data)
         with open_text_for_writing(
             cdata_sourcefile[f],
             encoding=options.html_encoding,
@@ -603,7 +609,7 @@ def write_source_pages(
             fh.write(html_string + "\n")
 
     data["all_functions"] = [all_functions[k] for k in sorted(all_functions)]
-    html_string = templates().get_template("functions_page.html").render(**data)
+    html_string = templates(options).get_template("functions_page.html").render(**data)
     with open_text_for_writing(
         functions_output_file,
         encoding=options.html_encoding,
@@ -654,7 +660,7 @@ def write_directory_pages(
                 directory.children[key], cdata_sourcefile[fname], cdata_fname[fname]
             )
 
-        html_string = templates().get_template("directory_page.html").render(**data)
+        html_string = templates(options).get_template("directory_page.html").render(**data)
         filename = None
         if f in [root_key, ""]:
             filename = output_file
