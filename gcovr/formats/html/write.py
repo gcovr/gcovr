@@ -117,7 +117,6 @@ def user_templates():
 
 
 class CssRenderer:
-
     THEMES = ["green", "blue"]
 
     @staticmethod
