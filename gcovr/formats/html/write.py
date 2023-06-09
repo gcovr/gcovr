@@ -69,6 +69,13 @@ class Lazy:
     def __call__(self, *args):
         return self.get(*args)
 
+# html_theme string is <theme_directory>.<color> or only <color> (if only color the use default)
+# examples: github.green github.blue or blue or green
+def get_theme_name(html_theme):
+    return html_theme.split(".")[0]  if "." in html_theme else "default"
+
+def get_theme_color(html_theme):
+    return html_theme.split(".")[1]  if "." in html_theme else html_theme
 
 # Loading Jinja and preparing the environmen is fairly costly.
 # Only do this work if templates are actually used.
@@ -77,11 +84,8 @@ class Lazy:
 def templates(options):
     from jinja2 import Environment, PackageLoader
 
-    # Select the theme directory based on theme_dirctory.color
-    theme = options.html_theme.split(".")[0]  if "." in options.html_theme else "default"
-
     return Environment(
-        loader=PackageLoader("gcovr.formats.html.%s" % theme),
+        loader=PackageLoader("gcovr.formats.html.%s" % get_theme_name(options.html_theme)),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -188,7 +192,7 @@ class PygmentHighlighting:
 
 @Lazy
 def get_formatter(options):
-    highlight_style = "github-dark" if ("dark" in options.html_theme) else "default"
+    highlight_style = templates(options).get_template("%s.pygments" % get_theme_color(options.html_theme)).render()
     return (
         PygmentHighlighting(style=highlight_style)
         if options.html_syntax_highlighting
@@ -396,8 +400,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             css_link = css_output
         data["css_link"] = css_link
 
-    theme_color = options.html_theme.split(".")[1]  if "." in options.html_theme else options.html_theme
-    data["theme"] = theme_color
+    data["theme"] = get_theme_color(options.html_theme)
 
     root_info.set_coverage(covdata)
 
