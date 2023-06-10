@@ -158,6 +158,8 @@ def process_gcov_data(
     ) as INPUT:
         lines = INPUT.read().splitlines()
 
+    LOGGER.info(f"Content: {str(lines)}\n")
+
     # Find the source file
     # TODO: instead of heuristics, use "working directory" if available
     metadata = parse_metadata(lines)
@@ -646,6 +648,8 @@ def run_gcov_and_process_files(
                 gcov_exclude=options.gcov_exclude,
                 chdir=chdir,
             )
+
+            LOGGER.info(f"Out: >>{out}<<\nErr: >>{err}<<\n")
 
             if unknown_cla_re.search(err):
                 # gcov tossed errors: throw exception

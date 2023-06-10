@@ -4,7 +4,7 @@ GCOVR_TEST_DRIVE_WINDOWS ?=
 override GCOVR += --verbose
 
 define wrapDrive
-	cmd.exe /C "subst $(GCOVR_TEST_DRIVE_WINDOWS) .."; \
+	cmd.exe /C "subst $(GCOVR_TEST_DRIVE_WINDOWS) .. && subst && dir && dir z:\\" ; ls -al $(GCOVR_TEST_DRIVE_WINDOWS) ; \
 	( pushd $(GCOVR_TEST_DRIVE_WINDOWS)/simple1-drive-subst && $1 ) \
 	   || ( popd & cmd.exe /C "subst $(GCOVR_TEST_DRIVE_WINDOWS) /d" & exit 1 ); \
 	cmd.exe /C "subst $(GCOVR_TEST_DRIVE_WINDOWS) /d"
