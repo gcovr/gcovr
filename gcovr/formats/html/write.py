@@ -71,10 +71,10 @@ class Lazy:
 
 # html_theme string is <theme_directory>.<color> or only <color> (if only color the use default)
 # examples: github.green github.blue or blue or green
-def get_theme_name(html_theme):
+def get_theme_name(html_theme: str) -> str:
     return html_theme.split(".")[0]  if "." in html_theme else "default"
 
-def get_theme_color(html_theme):
+def get_theme_color(html_theme: str) -> str:
     return html_theme.split(".")[1]  if "." in html_theme else html_theme
 
 # Loading Jinja and preparing the environmen is fairly costly.
@@ -85,7 +85,7 @@ def templates(options):
     from jinja2 import Environment, PackageLoader
 
     return Environment(
-        loader=PackageLoader("gcovr.formats.html.%s" % get_theme_name(options.html_theme)),
+        loader=PackageLoader(f"gcovr.formats.html.{get_theme_name(options.html_theme)}"),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -117,8 +117,13 @@ def user_templates():
 
 class CssRenderer:
 
-    THEMES = ["green", "blue",
-              "github.blue", "github.green", "github.dark-green", "github.dark-blue"
+    THEMES = [
+        "green",
+        "blue",
+        "github.blue",
+        "github.green",
+        "github.dark-green",
+        "github.dark-blue",
     ]
 
     @staticmethod
@@ -155,7 +160,7 @@ class NullHighlighting:
 
 
 class PygmentHighlighting:
-    def __init__(self, style="default"):
+    def __init__(self, style: str):
         self.formatter = None
         try:
             from pygments.formatters.html import HtmlFormatter
@@ -192,7 +197,7 @@ class PygmentHighlighting:
 
 @Lazy
 def get_formatter(options):
-    highlight_style = templates(options).get_template("%s.pygments" % get_theme_color(options.html_theme)).render()
+    highlight_style = templates(options).get_template(f"pygments.{get_theme_color(options.html_theme)}").render()
     return (
         PygmentHighlighting(style=highlight_style)
         if options.html_syntax_highlighting
