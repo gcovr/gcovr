@@ -22,7 +22,7 @@
             <line number="12" hits="2" branch="false"/>
           </lines>
         </class>
-        <class name="main_c" filename="main.c" line-rate="1.0" branch-rate="0.0" complexity="0.0">
+        <class name="main_c" filename="main.c" line-rate="1.0" branch-rate="1.0" complexity="0.0">
           <methods/>
           <lines>
             <line number="5" hits="2" branch="false"/>
