@@ -199,7 +199,7 @@ class PygmentHighlighting:
 def get_formatter(options):
     highlight_style = templates(options).get_template(f"pygments.{get_theme_color(options.html_theme)}").render()
     return (
-        PygmentHighlighting(style=highlight_style)
+        PygmentHighlighting(highlight_style)
         if options.html_syntax_highlighting
         else NullHighlighting()
     )
