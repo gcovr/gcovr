@@ -52,7 +52,12 @@ background-color: var(--uncovered_color) !important;
 background-color: var(--covered_color) !important;
 }
 
-.coverage-unknown, .coverage-none {
+.coverage-unknown {
+    visibility: hidden;
+    min-width: 43px;
+}
+
+.coverage-none {
 background-color: var(--unknown_color) !important;
 }
 
@@ -68,7 +73,16 @@ background-color: var(--unknown_color) !important;
     background-color: var(--high_color) !important;
 }
 
-.Label--coverage-none, .Label--coverage-unknown {
+.Label--minw {
+    min-width: 61px;
+    text-align: right;
+}
+
+.Label--coverage-unknown {
+    visibility: hidden;
+}
+
+.Label--coverage-none {
     border-color: var(--color-fg-muted) !important;
     color: var(--color-fg-muted) !important;
 }
@@ -116,7 +130,7 @@ background-color: var(--unknown_color) !important;
     display: none !important;
   }
   .meter-label {
-    display: inline !important;
+    display: block !important;
   }
   .line-percentage-text {
       display: none !important;

@@ -7,9 +7,9 @@
         </div>
         <div role="gridcell" class="flex-auto min-width-0 col-5 mr-3">
         </div>
-        <div role="gridcell" class="color-fg-muted text-right col-2">
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
         </div>
-        <div role="gridcell" class="color-fg-muted text-right col-2" style="">
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" style="">
         </div>
     </div>
     {% for row in info.files %}
@@ -28,31 +28,41 @@
             </span>
             </div>
         </div>
-        <div role="gridcell" class="flex-auto min-width-0 r-3 text-right">
-        <span class="text-small color-fg-muted">{{row.lines.exec}} of {{row.lines.total}} lines <span class="line-percentage-text  {% if SHOW_DECISION and not EXCLUDE_CALLS %}d-none{% endif %}">({{row.lines.coverage}}%)</span>
-            <span class="meter-label Label mr-1 Label--{{row.lines.class}} {% if SHOW_DECISION and not EXCLUDE_CALLS %}d-inline{% else %}d-none{% endif %}">{{row.lines.coverage}}%</span>
+        <div role="gridcell" class="flex-auto min-width-0 r-3 d-flex flex-justify-end flex-wrap flex-items-baseline">
+            <span class="text-small color-fg-muted mr-2">{{row.lines.exec}} of {{row.lines.total}} lines <span class="line-percentage-text {% if SHOW_DECISION and not EXCLUDE_CALLS %}d-none{% endif %}">({{row.lines.coverage}}%)</span></span>
+            <div class="Label--minw meter-label {% if SHOW_DECISION and not EXCLUDE_CALLS %}d-block{% else %}d-none{% endif %}">
+                <span class="Label mr-1 Label--{{row.lines.class}}">{{row.lines.coverage}}%</span>
+            </div>
             <span class="meter Progress Progress--large d-inline-flex {% if SHOW_DECISION and not EXCLUDE_CALLS %}d-none{% endif %}" style="width: 200px;">
                 <span class="Progress-item {{row.lines.class}}" style="width: {{row.lines.coverage}}%"></span>
             </span>
         </div>
-        <div role="gridcell" class="color-fg-muted text-right col-2">
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
             <span class="text-small color-fg-muted mr-2">{{row.functions.exec}} of {{row.functions.total}} functions</span>
-            <span class="Label mr-1 Label--{{row.functions.class}}">{{row.functions.coverage}}%</span>
+            <div class="Label--minw">
+                <span class="Label mr-1 Label--{{row.functions.class}}">{{row.functions.coverage}}%</span>
+            </div >
         </div>
-        <div role="gridcell" class="color-fg-muted text-right col-2">
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
             <span class="text-small color-fg-muted mr-2">{{row.branches.exec}} of {{row.branches.total}} branches</span>
-            <span class="Label mr-1 Label--{{row.branches.class}}">{{row.branches.coverage}}%</span>
+            <div class="Label--minw">
+                <span class="Label mr-1 Label--{{row.branches.class}}">{{row.branches.coverage}}%</span>
+            </div>
         </div>
         {% if SHOW_DECISION %}
-        <div role="gridcell" class="color-fg-muted text-right col-2">
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
             <span class="text-small color-fg-muted mr-2">{{row.decisions.exec}} of {{row.decisions.total}} decisions</span>
-            <span class="Label mr-1 Label--{{row.decisions.class}}">{{row.decisions.coverage}}%</span>
+            <div class="Label--minw">
+                <span class="Label mr-1 Label--{{row.decisions.class}}">{{row.decisions.coverage}}%</span>
+            </div>
         </div>
         {% endif %}
         {% if not EXCLUDE_CALLS %}
-        <div role="gridcell" class="color-fg-muted text-right col-2">
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
             <span class="text-small color-fg-muted mr-2">{{row.calls.exec}} of {{row.calls.total}} calls</span>
-            <span class="Label mr-1 Label--{{row.calls.class}}">{{row.calls.coverage}}%</span>
+            <div class="Label--minw">
+                <span class="Label mr-1 Label--{{row.calls.class}}">{{row.calls.coverage}}%</span>
+            </div>
         </div>
         {% endif %}
     </div>

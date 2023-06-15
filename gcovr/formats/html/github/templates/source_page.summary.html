@@ -17,30 +17,30 @@
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
                 <div class="mr-2" style="margin: auto;">{{lines.exec}}/{{lines.total}}</div>
-                <div><span class="{{lines.class}} IssueLabel color-fg-on-emphasis mr-1">{{lines.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{lines.class}} IssueLabel color-fg-on-emphasis mr-1">{{lines.coverage}}%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Functions:</div>
                 <div class="mr-2" style="margin: auto;">{{functions.exec}}/{{functions.total}}</div>
-                <div><span class="{{functions.class}} IssueLabel color-fg-on-emphasis mr-1">{{functions.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{functions.class}} IssueLabel color-fg-on-emphasis mr-1">{{functions.coverage}}%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Branches:</div>
                 <div class="mr-2" style="margin: auto;">{{branches.exec}}/{{branches.total}}</div>
-                <div><span class="{{branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{branches.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{branches.coverage}}%</span></div>
             </div>
             {% if SHOW_DECISION %}
             <div class="d-flex">
                 <div class="mr-2">Decisions:</div>
                 <div class="mr-2" style="margin: auto;">{{decisions.exec}}/{{decisions.total}}</div>
-                <div><span class="{{decisions.class}} IssueLabel color-fg-on-emphasis mr-1">{{decisions.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{decisions.class}} IssueLabel color-fg-on-emphasis mr-1">{{decisions.coverage}}%</span></div>
             </div>
             {% endif %}
             {% if not EXCLUDE_CALLS %}
             <div class="d-flex">
                 <div class="mr-2">Calls:</div>
                 <div class="mr-2" style="margin: auto;">{{calls.exec}}/{{calls.total}}</div>
-                <div><span class="{{calls.class}} IssueLabel color-fg-on-emphasis mr-1">{{calls.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{calls.class}} IssueLabel color-fg-on-emphasis mr-1">{{calls.coverage}}%</span></div>
             </div>
             {% endif %}
         </div>

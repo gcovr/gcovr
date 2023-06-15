@@ -11,43 +11,43 @@
                 <span>{{info.get_directory()}}</span>
             </div>
             <div>Date: {{info.date}}</div>
-            <div class="d-flex" style="margin-bottom: 2px;">
+            <div class="d-flex flex-wrap" style="margin-bottom: 2px;">
                 <div class="mr-2" style="min-width: 65px;">Coverage:</div>
-                <span class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</span>
+                <div class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</div>
                 {% if COVERAGE_MED != COVERAGE_HIGH %}
-                <span class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; {{COVERAGE_MED}}%</span>
+                <div class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; {{COVERAGE_MED}}%</div>
                 {% endif %}
                 {% if COVERAGE_HIGH < 100 %}
-                <span class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; {{COVERAGE_HIGH}}%</span>
+                <div class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; {{COVERAGE_HIGH}}%</div>
                 {% else %}
-                <span class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: = 100%</span>
+                <div class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: = 100%</div>
                 {% endif %}
             </div>
             {% if (COVERAGE_MED != LINE_COVERAGE_MED) or (COVERAGE_HIGH != LINE_COVERAGE_HIGH) %}
-            <div class="d-flex" style="margin-bottom: 2px;">
+            <div class="d-flex flex-wrap" style="margin-bottom: 2px;">
                 <div class="mr-2" style="min-width: 65px;">Lines:</div>
-                <span class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</span>
+                <div class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</div>
                 {% if LINE_COVERAGE_MED != LINE_COVERAGE_HIGH %}
-                <span class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; {{LINE_COVERAGE_MED}}%</span>
+                <div class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; {{LINE_COVERAGE_MED}}%</div>
                 {% endif %}
                 {% if LINE_COVERAGE_HIGH < 100 %}
-                <span class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; {{LINE_COVERAGE_HIGH}}%</span>
+                <div class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; {{LINE_COVERAGE_HIGH}}%</div>
                 {% else %}
-                <span class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: = 100%</span>
+                <div class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: = 100%</div>
                 {% endif %}
             </div>
             {% endif %}
             {% if (COVERAGE_MED != BRANCH_COVERAGE_MED) or (COVERAGE_HIGH != LINE_COVERAGE_HIGH) %}
-            <div class="d-flex" style="margin-bottom: 2px;">
+            <div class="d-flex flex-wrap" style="margin-bottom: 2px;">
                 <div class="mr-2" style="min-width: 65px;">Branches:</div>
-                <span class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</span>
+                <div class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</div>
                 {% if BRANCH_COVERAGE_MED != BRANCH_COVERAGE_HIGH %}
-                <span class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; {{BRANCH_COVERAGE_MED}}%</span>
+                <div class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; {{BRANCH_COVERAGE_MED}}%</div>
                 {% endif %}
                 {% if BRANCH_COVERAGE_HIGH < 100 %}
-                <span class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; {{BRANCH_COVERAGE_HIGH}}%</span>
+                <div class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; {{BRANCH_COVERAGE_HIGH}}%</div>
                 {% else %}
-                <span class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: = 100%</span>
+                <div class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: = 100%</div>
                 {% endif %}
             </div>
             {% endif %}
@@ -56,30 +56,30 @@
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
                 <div class="mr-2" style="margin: auto;">{{info.lines.exec}}/{{info.lines.total}}</div>
-                <div><span class="{{info.lines.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.lines.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{info.lines.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.lines.coverage}}%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Functions:</div>
                 <div class="mr-2" style="margin: auto;">{{info.functions.exec}}/{{info.functions.total}}</div>
-                <div><span class="{{info.functions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.functions.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{info.functions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.functions.coverage}}%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Branches:</div>
                 <div class="mr-2" style="margin: auto;">{{info.branches.exec}}/{{info.branches.total}}</div>
-                <div><span class="{{info.branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.branches.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{info.branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.branches.coverage}}%</span></div>
             </div>
             {% if SHOW_DECISION %}
             <div class="d-flex">
                 <div class="mr-2">Decisions:</div>
                 <div class="mr-2" style="margin: auto;">{{info.decisions.exec}}/{{info.decisions.total}}</div>
-                <div><span class="{{info.decisions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.decisions.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{info.decisions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.decisions.coverage}}%</span></div>
             </div>
             {% endif %}
             {% if not EXCLUDE_CALLS %}
             <div class="d-flex">
                 <div class="mr-2">Calls:</div>
                 <div class="mr-2" style="margin: auto;">{{info.calls.exec}}/{{info.calls.total}}</div>
-                <div><span class="{{info.calls.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.calls.coverage}}%</span></div>
+                <div class="Label--minw"><span class="{{info.calls.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.calls.coverage}}%</span></div>
             </div>
             {% endif %}
         </div>
