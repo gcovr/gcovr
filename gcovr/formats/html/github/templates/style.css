@@ -25,19 +25,26 @@
 }
 
 .transy-2 {
-transform: translateY(-2px);
+    transform: translateY(-2px);
+}
+
+td.linenos .normal {
+    color: inherit;
+    background-color: transparent;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .src {
-white-space: pre;
+    white-space: pre;
 }
 
 .ws-unset {
-white-space: unset;
+    white-space: unset;
 }
 
 .color-taken-branch, .color-taken-decision, .color-invoked-call {
-color: var(--taken_color) !important;
+    color: var(--taken_color) !important;
 }
 
 .excludedLine {
@@ -45,11 +52,11 @@ color: var(--taken_color) !important;
 }
 
 .uncoveredLine {
-background-color: var(--uncovered_color) !important;
+    background-color: var(--uncovered_color) !important;
 }
 
 .coveredLine {
-background-color: var(--covered_color) !important;
+    background-color: var(--covered_color) !important;
 }
 
 .coverage-unknown {
@@ -58,7 +65,7 @@ background-color: var(--covered_color) !important;
 }
 
 .coverage-none {
-background-color: var(--unknown_color) !important;
+    background-color: var(--unknown_color) !important;
 }
 
 .coverage-low {
@@ -107,7 +114,7 @@ background-color: var(--unknown_color) !important;
 }
 
 .filelist .Box-row:nth-child(2n+3){
-  background-color: var(--color-accent-subtle);
+    background-color: var(--color-accent-subtle);
 }
 
 .functionslist {
@@ -115,24 +122,25 @@ background-color: var(--unknown_color) !important;
 }
 
 @media (max-width: 544px) {
-  .filelist .Box-row {
-    flex-direction: column;
-  }
+    .filelist .Box-row {
+        flex-direction: column;
+    }
 
-  .filelist .Box-row > div{
-    width: 100%;
-  }
-  .functionslist {
-      width: 100%;
-  }
+    .filelist .Box-row > div{
+        width: 100%;
+    }
+    .functionslist {
+        width: 100%;
+    }
 
-  .meter {
-    display: none !important;
-  }
-  .meter-label {
-    display: block !important;
-  }
-  .line-percentage-text {
-      display: none !important;
-  }
+    .meter {
+        display: none !important;
+    }
+    .meter-label {
+        display: block !important;
+    }
+    .line-percentage-text {
+        display: none !important;
+    }
 }
+
