@@ -12,6 +12,7 @@ Breaking changes:
 
 New features and notable changes:
 
+- Pygments required >= 2.13.0 (:issue:`799`)
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
 - If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
