@@ -56,7 +56,8 @@ def read_report(options: Options) -> CovData:
         trace_files = glob(trace_files_regex, recursive=True)
         if not trace_files:
             raise RuntimeError(
-                "Bad --add-tracefile option.\n" "\tThe specified file does not exist."
+                "Bad --covertura-add-tracefile option.\n"
+                "\tThe specified file does not exist."
             )
         else:
             for trace_file in trace_files:
@@ -68,11 +69,8 @@ def read_report(options: Options) -> CovData:
 
         try:
             root = etree.parse(filename).getroot()
-        except Exception:
-            raise RuntimeError(
-                "Bad --add-tracefile option.\n"
-                f"\tThe file {filename} is not a valid XML file."
-            )
+        except Exception as e:
+            raise RuntimeError(f"Bad --cobertura-add-tracefile option.\n{e}")
 
         for gcovr_file in root.xpath("./packages//class"):
             if gcovr_file.get("filename") is None:
@@ -113,17 +111,27 @@ def read_report(options: Options) -> CovData:
 def _line_from_xml(filename: str, xml_line) -> LineCoverage:
     try:
         lineno = int(xml_line.get("number"))
-        count = int(xml_line.get("hits"))
-        is_branch = xml_line.get("branch") == "true"
-        branch_msg = xml_line.get("condition-coverage")
     except Exception:
-        LOGGER.warning(f"Invalid line information in file {filename}")
+        raise RuntimeError(
+            "Bad --covertura-add-tracefile option.\n"
+            f"'number' attribute is required and must be an integer: {etree.tostring(xml_line).decode()}\n"
+        )
 
+    try:
+        count = int(xml_line.get("hits"))
+    except Exception:
+        raise RuntimeError(
+            "Bad --covertura-add-tracefile option.\n"
+            f"'hits' attribute is required and must be an integer: {etree.tostring(xml_line).decode()}\n"
+        )
+
+    is_branch = xml_line.get("branch") == "true"
+    branch_msg = xml_line.get("condition-coverage")
     line = LineCoverage(lineno, count=count)
 
     if is_branch and branch_msg is not None:
         try:
-            [covered, total] = branch_msg[branch_msg.find("(") + 1 : -1].split("/")
+            [covered, total] = branch_msg[branch_msg.rfind("(") + 1 : -1].split("/")
             for i in range(int(total)):
                 insert_branch_coverage(line, i, _branch_from_json(i, i < int(covered)))
         except Exception:
