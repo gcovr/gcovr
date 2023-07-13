@@ -499,7 +499,8 @@ def test_import_valid_cobertura_file(tmp_path):
     from ..configuration import merge_options_and_set_defaults
     from ..coverage import FileCoverage
 
-    xmldata = """<?xml version='1.0' encoding='UTF-8'?>
+    testfile = "/path/to/source/code.cpp"
+    xmldata = f"""<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 6.0+master">
   <sources>
@@ -508,7 +509,7 @@ def test_import_valid_cobertura_file(tmp_path):
   <packages>
     <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">
       <classes>
-        <class name="code_cpp" filename="/path/to/source/code.cpp" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+        <class name="code_cpp" filename="{testfile}" line-rate="0.9" branch-rate="0.75" complexity="0.0">
           <methods/>
           <lines>
             <line number="3" hits="3" branch="false"/>
@@ -546,8 +547,8 @@ def test_import_valid_cobertura_file(tmp_path):
     )
     covdata = read_reports(opts)
     assert covdata is not None
-    assert "/path/to/source/code.cpp" in covdata
-    fcov: FileCoverage = covdata["/path/to/source/code.cpp"]
+    assert testfile in covdata
+    fcov: FileCoverage = covdata[testfile]
     assert len(fcov.lines) == 10
     assert fcov.lines[7].count == 1
     assert fcov.lines[9].count == 3
