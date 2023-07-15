@@ -550,12 +550,17 @@ def test_import_valid_cobertura_file(tmp_path):
     assert testfile in covdata
     fcov: FileCoverage = covdata[testfile]
     assert len(fcov.lines) == 10
-    assert fcov.lines[7].count == 1
-    assert fcov.lines[9].count == 3
-    assert fcov.lines[16].count == 0
-    assert len(fcov.lines[13].branches) == 2
-    assert fcov.lines[13].branches[0].count == 1
-    assert fcov.lines[13].branches[1].count == 0
+    for line, count, branches in [
+        (7, 1, None),
+        (9, 3, None),
+        (16, 0, None),
+        (13, 2, [1, 0]),
+    ]:
+        assert fcov.lines[line].count == count
+        if branches is not None:
+            assert len(fcov.lines[line].branches) == len(branches)
+            for branch_idx, branch_count in enumerate(branches):
+                assert fcov.lines[line].branches[branch_idx].count == branch_count
 
 
 def test_import_corrupt_cobertura_file(caplog, tmp_path):
