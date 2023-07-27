@@ -91,7 +91,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         gcc: [gcc-8]
-        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.7'] # 3.7 is used in Docker
+        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.8'] # 3.7 is used in Docker
 
         include:
 

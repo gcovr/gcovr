@@ -78,6 +78,7 @@ RUN \
 
 # Create new user "docker" and set password to "docker"
 RUN addgroup docker
+RUN id -un "$USERID" && userdel $(id -un "$USERID") || true
 RUN useradd -d $HOME $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
 RUN echo "docker:docker" | chpasswd
 
