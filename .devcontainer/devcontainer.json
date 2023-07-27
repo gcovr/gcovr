@@ -1,0 +1,37 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/debian
+{
+    "name": "Debian",
+    // Build from Dockerfile. More info: https://containers.dev/guide/dockerfile
+    "build": {
+        // Path is relataive to the devcontainer.json file.
+        "dockerfile": "../admin/Dockerfile.qa",
+        "args": {
+            "DOCKER_OS": "mcr.microsoft.com/devcontainers/base:jammy",
+            "CC": "gcc-11",
+            "CXX": "g++-11",
+            "NOX_ENV_DIR": "/workspaces/gcovr/.nox-devcontainer"
+        },
+        "context": ".."
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "DotJoshJohnson.xml",
+                "trond-snekvik.simple-rst",
+                "ms-python.vscode-pylance",
+                "GitHub.vscode-pull-request-github",
+                "EditorConfig.EditorConfig",
+                "streetsidesoftware.code-spell-checker"
+            ]
+        }
+    }
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    // Configure tool-specific properties.
+    // "customizations": {},
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
+}

@@ -43,7 +43,7 @@ LOGGER = logging.getLogger("gcovr")
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_re = re.compile(
-    r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory)"
+    r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory|Operation not permitted|Permission denied)"
 )
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
@@ -463,6 +463,7 @@ class GcovProgram:
     __cmd = None
     __cmd_split = None
     __default_options = []
+    __exitcode_to_ignore = None
     __help_output = None
 
     class LockContext(object):
@@ -496,12 +497,12 @@ class GcovProgram:
                     "--all-blocks",
                 ]
 
-                if self.__check_gcov_option("--demangled-names"):
+                if self.__check_gcov_help_content("--demangled-names"):
                     GcovProgram.__default_options.append("--demangled-names")
 
-                if self.__check_gcov_option("--hash-filenames"):
+                if self.__check_gcov_help_content("--hash-filenames"):
                     GcovProgram.__default_options.append("--hash-filenames")
-                elif self.__check_gcov_option("--preserve-paths"):
+                elif self.__check_gcov_help_content("--preserve-paths"):
                     GcovProgram.__default_options.append("--preserve-paths")
                 else:
                     LOGGER.warning(
@@ -509,6 +510,10 @@ class GcovProgram:
                         f"supported by '{GcovProgram.__cmd}'. Source files with "
                         "identical file names may result in incorrect coverage."
                     )
+            if GcovProgram.__exitcode_to_ignore is None:
+                GcovProgram.__exitcode_to_ignore = [0]  # SUCCESS
+                if not self.__check_gcov_help_content("LLVM"):
+                    GcovProgram.__exitcode_to_ignore.append(6)  # WRITE GCOV ERROR
 
     def __get_help_output(self) -> str:
         if GcovProgram.__help_output is None:
@@ -529,7 +534,7 @@ class GcovProgram:
 
         return GcovProgram.__help_output
 
-    def __check_gcov_option(self, option: str) -> bool:
+    def __check_gcov_help_content(self, option: str) -> bool:
         if option in self.__get_help_output():
             return True
 
@@ -597,7 +602,7 @@ class GcovProgram:
             raise RuntimeError(
                 f"GCOV returncode was {gcov_process.returncode} (exited by signal)."
             )
-        elif gcov_process.returncode != 0:
+        elif gcov_process.returncode not in GcovProgram.__exitcode_to_ignore:
             raise RuntimeError(f"GCOV returncode was {gcov_process.returncode}.")
 
         return (out, err)

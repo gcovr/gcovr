@@ -145,7 +145,7 @@ How to set up a development environment
 
 For working on gcovr, you will need a supported version of Python 3,
 GCC version 5, 6, 8, 9, 10 or 11 (other GCC versions are supported by gcovr,
-but will cause spurious test failures) or clang version 10 or 13, ``make``,
+but will cause spurious test failures) or clang version 10, 13 or 14, ``make``,
 ``cmake`` and ``ninja``.
 Please make sure that the tools are in the system ``PATH``.
 On **Windows**, you will need to install a GCC toolchain as the
@@ -442,6 +442,16 @@ A useful command to update all the reference files is :
 .. code:: bash
 
     python3 -m nox --session 'docker_compiler(all)' -- -s tests -- --update_reference
+
+.. _devcontainer:
+
+Use a devcontainer
+~~~~~~~~~~~~~~~~~~
+
+For developing ``gcovr`` you can use whatever editor you want.
+If the editor supports Devcontainers (e.g. VS Code) you do not
+need to install the needed tools on your local system.
+You can also use ``GitHub Codespaces`` to contribute to the project.
 
 .. _join:
 

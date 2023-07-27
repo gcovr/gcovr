@@ -257,7 +257,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     session.install(
         "jinja2",
         "lxml",
-        "pygments==2.7.4",
+        "pygments==2.13.0",
         "pytest",
         "pytest-timeout",
         "cmake",
@@ -361,7 +361,7 @@ def bundle_app(session: nox.Session) -> None:
     session.notify("check_bundled_app")
 
 
-@nox.session
+@nox.session(python=False)
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
     with session.chdir("build"):
