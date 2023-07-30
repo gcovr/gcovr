@@ -443,8 +443,8 @@ GCOVR_CONFIG_OPTIONS = [
         config="txt-branch",
         group="output_options",
         help=(
-            "Report the branch coverage instead of the line coverage. "
-            "For text report only."
+            "For text report: Report the branch coverage instead of the line coverage.\n"
+            "For CSV/JSON report: Sort files by branch coverage instead of line coverage."
         ),
         action="store_true",
     ),
