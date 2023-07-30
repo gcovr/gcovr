@@ -49,6 +49,7 @@ class LoopChecker(object):
 
 
 if (sys.platform == "win32") and (sys.version_info < (3, 8)):
+    LOGGER.debug("Use own implementation of 'realpath' to resolve symbolic links.")
     # Only used for old python versions. Function can be treated as stable.
     from nt import _getfinalpathname
 
@@ -94,7 +95,7 @@ def fix_case_of_path(path: str):
     if not rest:
         return cur
     if not cur:  # e.g path = "C:/"
-        return os.path.realpath(rest)  # resolves the case of c:/
+        return rest.upper()  # Always use uppercase drive letter
 
     curL = cur.lower()
     matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
@@ -185,9 +186,14 @@ def commonpath(files):
                 break
         prefix_path = os.path.sep.join(common)
 
+    LOGGER.debug(f"Common prefix path is {prefix_path!r}")
+
     # make the path relative and add a trailing slash
     if prefix_path:
-        prefix_path = os.path.join(os.path.relpath(prefix_path), "")
+        prefix_path = os.path.join(
+            os.path.relpath(prefix_path, realpath(os.getcwd())), ""
+        )
+        LOGGER.debug(f"Common relative prefix path is {prefix_path!r}")
     return prefix_path
 
 

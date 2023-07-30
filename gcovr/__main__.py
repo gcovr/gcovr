@@ -24,6 +24,7 @@ import sys
 import io
 
 from argparse import ArgumentParser
+import traceback
 
 from .configuration import (
     argument_parser_setup,
@@ -309,16 +310,22 @@ def main(args=None):
             )
             sys.exit(EXIT_CMDLINE_ERROR)
 
+    LOGGER.info("Reading coverage data...")
     try:
         covdata: CovData = gcovr_formats.read_reports(options)
     except Exception as e:
-        LOGGER.error(f"Error occurred while reading reports:\n\t{str(e)}")
+        LOGGER.error(
+            f"Error occurred while reading reports:\n{traceback.format_exc()}\n{str(e)}"
+        )
         sys.exit(EXIT_READ_ERROR)
 
+    LOGGER.info("Writing coverage report...")
     try:
         gcovr_formats.write_reports(covdata, options)
     except Exception as e:
-        LOGGER.error(f"Error occurred while printing reports:\n{str(e)}")
+        LOGGER.error(
+            f"Error occurred while printing reports:\n{traceback.format_exc()}\n{str(e)}"
+        )
         sys.exit(EXIT_WRITE_ERROR)
 
     if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
