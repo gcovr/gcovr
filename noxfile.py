@@ -257,7 +257,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     session.install(
         "jinja2",
         "lxml",
-        "pygments==2.7.4",
+        "pygments==2.13.0",
         "pytest",
         "pytest-timeout",
         "cmake",

@@ -29,7 +29,12 @@ from typing import Callable, List, Optional, Set, Tuple
 from ...options import Options
 from ...merging import merge_covdata
 
-from ...utils import search_file, commonpath, is_fs_case_insensitive, fix_case_of_path
+from ...utils import (
+    search_file,
+    commonpath,
+    is_fs_case_insensitive,
+    fix_case_of_path,
+)
 from .workers import Workers, locked_directory
 from ...coverage import CovData
 from ...merging import get_merge_mode_from_options, insert_file_coverage
@@ -177,8 +182,6 @@ def process_gcov_data(
         current_dir=current_dir,
     )
 
-    LOGGER.debug(f"Parsing coverage data for file {fname}")
-
     # Return if the filename does not match the filter
     # Return if the filename matches the exclude pattern
     filtered, excluded = apply_filter_include_exclude(
@@ -193,6 +196,7 @@ def process_gcov_data(
         LOGGER.debug(f"  Excluding coverage data for file {fname}")
         return
 
+    LOGGER.debug(f"Parsing coverage data for file {fname}")
     key = os.path.normpath(fname)
 
     coverage, source_lines = parse_coverage(
@@ -201,12 +205,14 @@ def process_gcov_data(
         ignore_parse_errors=options.gcov_ignore_parse_errors,
     )
 
+    LOGGER.debug(f"Apply exclusions for {fname}")
     apply_all_exclusions(coverage, lines=source_lines, options=options)
 
     if options.show_decision:
         decision_parser = DecisionParser(coverage, source_lines)
         decision_parser.parse_all_lines()
 
+    LOGGER.debug(f"Merge coverage data for {fname}")
     insert_file_coverage(covdata, coverage, get_merge_mode_from_options(options))
 
 
@@ -244,7 +250,7 @@ def guess_source_file_name(
     LOGGER.debug(
         f"Finding source file corresponding to a gcov data file\n"
         f"  gcov_fname   {data_fname}\n"
-        f"  current_dir      {current_dir}\n"
+        f"  current_dir  {current_dir}\n"
         f"  root         {root_dir}\n"
         f"  starting_dir {starting_dir}\n"
         f"  obj_dir      {obj_dir}\n"
