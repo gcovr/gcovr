@@ -34,16 +34,6 @@ sonarqube: coverage.json
 coveralls: coverage.json
 	$(GCOVR) -a $< --coveralls-pretty --coveralls coveralls.json
 
-clean:
-ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
-	rm -Rf subdir
-else
-	if [ -d "subdir" ]; then\
-		cmd.exe /C "rmdir /S /Q subdir";\
-	fi
-endif
-	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json
-
 links:
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
 	if [ -d "subdir" ]; then\
@@ -59,14 +49,16 @@ ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
 	ln -s m/n A;\
 	ln -s . loop;
 else
+	cmd.exe /C call setup.cmd
+endif
+	find ../nested -name '*.o' -or -name '*.gc*' -delete || exit 0
+
+clean:
+ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
+	rm -Rf subdir
+else
 	if [ -d "subdir" ]; then\
 		cmd.exe /C "rmdir /S /Q subdir";\
 	fi
-	mkdir subdir;
-	cmd.exe /C "cd subdir && mklink /j B ..\..\nested\subdir\B"
-	cmd.exe /C "cd subdir && mkdir m"
-	cmd.exe /C "cd subdir\m && mklink /j n ..\..\..\nested\subdir\A"
-	cmd.exe /C "cd subdir && mklink /j A m\n"
-	cmd.exe /C "cd subdir && mklink /j loop ."
 endif
-	find ../nested -name '*.o' -or -name '*.gc*' -delete || exit 0
+	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json
