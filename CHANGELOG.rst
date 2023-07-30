@@ -26,7 +26,8 @@ Bug fixes and small improvements:
 - Handle special case of absolute source file paths in ``gcov`` output. (:issue:`776`)
 - Ignore exit code 6 when running ``gcov`` (output write error introduced gcc-12). (:issue:`781`)
 - Change coveralls value from 0.0 to 1.0 if no code lines or branches are present. (:issue:`796`)
-- Check length of lines dictionary during decision analysis for switch statements before making a range from its keys. (:issue:`784`)
+- Fix symlinked root directories on Windows. (:issue:`814`)
+- Fix ``TypeError`` during decision analysis. (:issue:`784`)
 
 Documentation:
 
