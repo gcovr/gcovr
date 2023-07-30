@@ -89,7 +89,8 @@ def templates(options):
 
     return Environment(
         loader=PackageLoader(
-            f"gcovr.formats.html.{get_theme_name(options.html_theme)}"
+            "gcovr.formats.html",
+            package_path=get_theme_name(options.html_theme),
         ),
         autoescape=True,
         trim_blocks=True,
