@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <string>
 
-struct SwitchTest {
-    SwitchTest();
+struct SwitchTestIssue783 {
+    SwitchTestIssue783();
 
     enum class SomeEnum {
         EnumValue_1,

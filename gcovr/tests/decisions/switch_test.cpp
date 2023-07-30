@@ -1,8 +1,10 @@
+
+#if defined __GNUC__ && (__GNUC__ >= 6)
 #include "switch_test.h"
 
-SwitchTest::SwitchTest() : _name("test") {}
+SwitchTestIssue783::SwitchTestIssue783() : _name("test") {}
 
-void SwitchTest::checkSwitch() {
+void SwitchTestIssue783::checkSwitch() {
     doSomething(SomeEnum::EnumValue_1);
 }
-
+#endif

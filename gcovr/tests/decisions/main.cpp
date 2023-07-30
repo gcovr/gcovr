@@ -1,7 +1,9 @@
 #include "stdint.h"
 #include "stdbool.h"
 
+#if defined __GNUC__ && (__GNUC__ >= 6)
 #include "switch_test.h"
+#endif
 
 bool checkBiggerTrue(int a)
 {
@@ -382,7 +384,9 @@ int main(int argc, char *argv[])
    checkSwitch2(10);
    checkSwitch3(0);
 
-   SwitchTest{}.checkSwitch();
+#if defined __GNUC__ && (__GNUC__ >= 6)
+   SwitchTestIssue783{}.checkSwitch();
+#endif
 
    checkCompactBranch1True(6);
    checkCompactBranch1False(4);
