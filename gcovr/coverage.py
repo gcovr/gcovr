@@ -48,19 +48,19 @@ _T = TypeVar("_T")
 
 def sort_coverage(
     covdata: CovData,
-    show_branch: bool,
+    by_branch: bool,
+    by_num_uncovered: bool,
+    by_percent_uncovered: bool,
     filename_uses_relative_pathname: bool = False,
-    by_num_uncovered: bool = False,
-    by_percent_uncovered: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
-    show_branch (bool): select branch coverage (True) or line coverage (False)
-    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
-        relative path, but not for other formats.
+    by_branch (bool): select branch coverage (True) or line coverage (False)
     by_num_uncovered, by_percent_uncovered (bool):
         select the sort mode. By default, sort alphabetically.
+    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
+        relative path, but not for other formats.
 
     returns: the sorted keys
     """
@@ -68,7 +68,7 @@ def sort_coverage(
 
     def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
-        if show_branch:
+        if by_branch:
             return cov.branch_coverage()
         return cov.line_coverage()
 
@@ -91,7 +91,7 @@ def sort_coverage(
 
     def filename(key: str) -> str:
         return (
-            force_unix_separator(os.path.relpath(realpath(key), basedir))
+            force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
             if filename_uses_relative_pathname
             else key
         )
