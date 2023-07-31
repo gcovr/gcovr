@@ -290,7 +290,7 @@ class RootInfo:
         }
 
         display_filename = force_unix_separator(
-            os.path.relpath(realpath(cdata_fname), self.directory)
+            os.path.relpath(realpath(cdata_fname), realpath(self.directory))
         )
 
         if link_report is not None:
@@ -400,10 +400,10 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     filtered_fname = ""
     sorted_keys = sort_coverage(
         covdata,
-        show_branch=False,
-        filename_uses_relative_pathname=True,
+        by_branch=False,
         by_num_uncovered=options.sort_uncovered,
         by_percent_uncovered=options.sort_percent,
+        filename_uses_relative_pathname=True,
     )
 
     if options.html_nested:
@@ -639,10 +639,10 @@ def write_directory_pages(
 
         sorted_files = sort_coverage(
             directory.children,
-            show_branch=False,
-            filename_uses_relative_pathname=True,
+            by_branch=False,
             by_num_uncovered=options.sort_uncovered,
             by_percent_uncovered=options.sort_percent,
+            filename_uses_relative_pathname=True,
         )
 
         root_info.clear_files()
