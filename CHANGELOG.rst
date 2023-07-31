@@ -27,6 +27,7 @@ Bug fixes and small improvements:
 - Ignore exit code 6 when running ``gcov`` (output write error introduced gcc-12). (:issue:`781`)
 - Change coveralls value from 0.0 to 1.0 if no code lines or branches are present. (:issue:`796`)
 - Fix symlinked root directories on Windows. (:issue:`814`)
+- Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
 
 Documentation:
 
