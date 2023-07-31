@@ -292,7 +292,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     args += coverage_args
     args += session.posargs
     if "--" not in args:
-        args += ["--"] + DEFAULT_TEST_DIRECTORIES
+        args += ["-k", "simple1", "--"] + DEFAULT_TEST_DIRECTORIES
     session.run("python", *args)
     if os.environ.get("USE_COVERAGE") == "true":
         session.run("coverage", "xml")

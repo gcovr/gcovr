@@ -338,6 +338,10 @@ def pytest_generate_tests(metafunc):
                     reason="Only windows has a case insensitive file system",
                 ),
                 pytest.mark.xfail(
+                    name in ["gcov-ignore_output_error"] and IS_WINDOWS,
+                    reason="Permission is ignored on Windows",
+                ),
+                pytest.mark.xfail(
                     name == "gcc-abspath"
                     and (
                         not env["CC"].startswith("gcc-")
