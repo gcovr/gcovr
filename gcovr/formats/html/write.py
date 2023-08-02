@@ -403,6 +403,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         by_branch=False,
         by_num_uncovered=options.sort_uncovered,
         by_percent_uncovered=options.sort_percent,
+        reverse=options.sort_reverse,
         filename_uses_relative_pathname=True,
     )
 
@@ -642,6 +643,7 @@ def write_directory_pages(
             by_branch=False,
             by_num_uncovered=options.sort_uncovered,
             by_percent_uncovered=options.sort_percent,
+            reverse=options.sort_reverse,
             filename_uses_relative_pathname=True,
         )
 

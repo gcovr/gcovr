@@ -51,6 +51,7 @@ def sort_coverage(
     by_branch: bool,
     by_num_uncovered: bool,
     by_percent_uncovered: bool,
+    reverse: bool,
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
@@ -59,6 +60,7 @@ def sort_coverage(
     by_branch (bool): select branch coverage (True) or line coverage (False)
     by_num_uncovered, by_percent_uncovered (bool):
         select the sort mode. By default, sort alphabetically.
+    reverse (bool): if true the sort order is from highest to lowest value.
     filename_uses_relative_pathname (bool): for html, we break down a pathname to the
         relative path, but not for other formats.
 
@@ -112,7 +114,7 @@ def sort_coverage(
     else:
         key_fn = key_filename  # by default, we sort by filename alphabetically
 
-    return sorted(covdata, key=key_fn)
+    return sorted(covdata, key=key_fn, reverse=reverse)
 
 
 class BranchCoverage:

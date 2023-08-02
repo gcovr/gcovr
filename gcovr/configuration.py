@@ -444,7 +444,7 @@ GCOVR_CONFIG_OPTIONS = [
         group="output_options",
         help=(
             "For text report: Report the branch coverage instead of the line coverage.\n"
-            "For CSV/JSON report: Sort files by branch coverage instead of line coverage."
+            "For CSV, JSON and text report: Also sets the option --sort-branches."
         ),
         action="store_true",
     ),
@@ -463,13 +463,23 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_false",
     ),
     GcovrConfigOption(
+        "sort_branches",
+        ["--sort-branches"],
+        group="output_options",
+        help=(
+            "Sort entries by branches instead of lines if --sort-uncovered or --sort-percent is used."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "sort_uncovered",
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
-            "Sort entries by increasing number of uncovered lines. Default is sorting by files. "
-            "For CSV, HTML, JSON and text report. If the option --show-branches is used the "
-            "branch values instead of the lines are used (Not valid for HTML report)."
+            "Sort entries by increasing number of uncovered lines (if the option --sort-branches "
+            "is used the branch values are used). "
+            "Order can be changed by --sort-decreasing."
+            "For CSV, HTML, JSON and text report."
         ),
         action="store_true",
     ),
@@ -478,9 +488,20 @@ GCOVR_CONFIG_OPTIONS = [
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
-            "Sort entries by increasing percentage of uncovered lines. Default is sorting by files. "
-            "For CSV, HTML, JSON and text report. If the option --show-branches is used the "
-            "branch values instead of the lines are used (Not valid for HTML report)."
+            "Sort entries by increasing percentage of uncovered lines (if the option --sort-branches "
+            "is used the branch values are used). "
+            "Order can be changed by --sort-decreasing."
+            "For CSV, HTML, JSON and text report."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "sort_reverse",
+        ["--sort-decreasing"],
+        group="output_options",
+        help=(
+            "Sort entries decreasing instead of increasing. "
+            "For CSV, HTML, JSON and text report."
         ),
         action="store_true",
     ),
