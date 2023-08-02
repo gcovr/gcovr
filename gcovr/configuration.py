@@ -187,7 +187,7 @@ def _get_value_from_config_entry(
     if option.action == "store_const":
         use_const = get_boolean()
     # special case: nargs=? optionally expects a boolean
-    elif option.nargs == "?":
+    elif option.nargs == "?" and option.choices is None:
         use_const = get_boolean(silent_error=True)
     else:
         use_const = None  # marker to continue with parsing

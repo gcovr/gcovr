@@ -31,6 +31,7 @@ Bug fixes and small improvements:
 - Change coveralls value from 0.0 to 1.0 if no code lines or branches are present. (:issue:`796`)
 - Fix symlinked root directories on Windows. (:issue:`814`)
 - Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
+- Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
 
 Documentation:
 
