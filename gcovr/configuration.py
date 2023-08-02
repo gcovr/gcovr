@@ -467,8 +467,9 @@ GCOVR_CONFIG_OPTIONS = [
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
-            "Sort entries by increasing number of uncovered lines. "
-            "For text and HTML report."
+            "Sort entries by increasing number of uncovered lines. Default is sorting by files. "
+            "For CSV, HTML, JSON and text report. If the option --show-branches is used the "
+            "branch values instead of the lines are used (Not valid for HTML report)."
         ),
         action="store_true",
     ),
@@ -477,8 +478,9 @@ GCOVR_CONFIG_OPTIONS = [
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
-            "Sort entries by increasing percentage of uncovered lines. "
-            "For text and HTML report."
+            "Sort entries by increasing percentage of uncovered lines. Default is sorting by files. "
+            "For CSV, HTML, JSON and text report. If the option --show-branches is used the "
+            "branch values instead of the lines are used (Not valid for HTML report)."
         ),
         action="store_true",
     ),
