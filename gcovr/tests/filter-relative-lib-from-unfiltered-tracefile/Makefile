@@ -39,8 +39,7 @@ else
 	   test -d relevant-library || ln -s ../external-library relevant-library
 endif
 else
-	cd project; \
-	   test -d relevant-library || cmd.exe /C "mklink /j relevant-library ..\external-library"
+	cmd.exe /C call setup.cmd
 endif
 
 clean:

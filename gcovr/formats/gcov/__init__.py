@@ -58,6 +58,8 @@ class GcovHandler(BaseHandler):
                 group="gcov_options",
                 choices=[
                     "all",
+                    "source_not_found",
+                    "output_error",
                     "no_working_dir_found",
                 ],
                 nargs="?",
