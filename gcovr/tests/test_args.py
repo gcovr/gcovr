@@ -346,7 +346,7 @@ def test_html_title_empty_string(caplog):
     c = log_capture(caplog, ["--html-title", ""])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "an empty --html_title= is not allowed."
+    assert message[2] == "an empty --html-title= is not allowed."
     assert c.exception.code != 0
 
 
