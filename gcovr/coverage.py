@@ -72,12 +72,12 @@ def sort_coverage(
             return cov.branch_coverage()
         return cov.line_coverage()
 
-    def num_uncovered_key(key: str) -> int:
+    def key_num_uncovered(key: str) -> int:
         stat = coverage_stat(key)
         uncovered = stat.total - stat.covered
         return uncovered
 
-    def percent_uncovered_key(key: str) -> float:
+    def key_percent_uncovered(key: str) -> float:
         stat = coverage_stat(key)
         covered = stat.covered
         total = stat.total
@@ -89,7 +89,7 @@ def sort_coverage(
         else:
             return 1e6
 
-    def filename(key: str) -> str:
+    def key_filename(key: str) -> str:
         return (
             force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
             if filename_uses_relative_pathname
@@ -97,11 +97,11 @@ def sort_coverage(
         )
 
     if by_num_uncovered:
-        key_fn = num_uncovered_key
+        key_fn = key_num_uncovered
     elif by_percent_uncovered:
-        key_fn = percent_uncovered_key
+        key_fn = key_percent_uncovered
     else:
-        key_fn = filename  # by default, we sort by filename alphabetically
+        key_fn = key_filename  # by default, we sort by filename alphabetically
 
     return sorted(covdata, key=key_fn)
 
