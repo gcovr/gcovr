@@ -90,11 +90,20 @@ def sort_coverage(
             return 1e6
 
     def key_filename(key: str) -> str:
-        return (
-            force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
-            if filename_uses_relative_pathname
-            else key
-        )
+        convert_to_int_if_possible = lambda text: int(text) if text.isdigit() else text
+        return [
+            convert_to_int_if_possible(part)
+            for part in re.split(
+                r"([0-9]+)",
+                (
+                    force_unix_separator(
+                        os.path.relpath(realpath(key), realpath(basedir))
+                    )
+                    if filename_uses_relative_pathname
+                    else key
+                ),
+            )
+        ]
 
     if by_num_uncovered:
         key_fn = key_num_uncovered
