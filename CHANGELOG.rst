@@ -20,7 +20,7 @@ New features and notable changes:
 - Improve sorting of data in reports (:issue:`817`):
   - Sort file names alpha numerical (``file_10.c`` comes after ``file_0.c``).
   - Always sort at the end by filename if line or branch coverage is identical for a file.
-  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--branch` is used.
+  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--branches` is used.
   - Add :option:`--sort-decreasing` to start with the files with lower coverage values.
 
 Bug fixes and small improvements:
