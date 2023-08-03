@@ -17,6 +17,11 @@ New features and notable changes:
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
 - Fix Dockerfile.qa to avoid uid conflicts. (:issue:`801`)
 - Pygments required >= 2.13.0 (:issue:`799`)
+- Improve sorting of data in reports (:issue:`817`):
+  - Sort file names alpha numerical (``file_10.c`` comes after ``file_0.c``).
+  - Always sort at the end by filename if line or branch coverage is identical for a file.
+  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--branch` is used.
+  - Add :option:`--sort-decreasing` to start with the files with lower coverage values.
 
 Bug fixes and small improvements:
 
