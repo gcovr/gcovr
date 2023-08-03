@@ -1,0 +1,146 @@
+{% include "primer.css" %}
+
+.theme-green, .theme-blue, .theme-dark-blue, .theme-dark-green {
+    --unknown_color: var(--color-neutral-emphasis-plus);
+    --low_color: var(--color-danger-emphasis);
+    --low_color_fg: var(--color-danger-fg);
+    --medium_color: var(--color-attention-emphasis);
+    --medium_color_fg: var(--color-attention-fg);
+    --high_color: var(--color-success-emphasis);
+    --high_color_fg: var(--color-success-fg);
+    --covered_color: var(--color-success-subtle);
+    --uncovered_color: var(--color-danger-subtle);;
+    /* TODO choose colors */
+    --excluded_color: green;
+    --warning_color: orangered;
+    --taken_color: var(--color-success-fg);
+    --invokedCall_color: var(--color-success-fg);
+}
+
+.theme-blue, .theme-dark-blue  {
+    --high_color: var(--color-accent-emphasis);
+    --high_color_fg: var(--color-accent-fg);
+    --covered_color: var(--color-accent-subtle);
+    --taken_color: var(--color-accent-fg);
+}
+
+.transy-2 {
+    transform: translateY(-2px);
+}
+
+td.linenos .normal {
+    color: inherit;
+    background-color: transparent;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.src {
+    white-space: pre;
+}
+
+.ws-unset {
+    white-space: unset;
+}
+
+.color-taken-branch, .color-taken-decision, .color-invoked-call {
+    color: var(--taken_color) !important;
+}
+
+.excludedLine {
+
+}
+
+.uncoveredLine {
+    background-color: var(--uncovered_color) !important;
+}
+
+.coveredLine {
+    background-color: var(--covered_color) !important;
+}
+
+.coverage-unknown {
+    visibility: hidden;
+    min-width: 43px;
+}
+
+.coverage-none {
+    background-color: var(--unknown_color) !important;
+}
+
+.coverage-low {
+    background-color: var(--low_color) !important;
+}
+
+.coverage-medium {
+    background-color: var(--medium_color) !important;
+}
+
+.coverage-high {
+    background-color: var(--high_color) !important;
+}
+
+.Label--minw {
+    min-width: 61px;
+    text-align: right;
+}
+
+.Label--coverage-unknown {
+    visibility: hidden;
+}
+
+.Label--coverage-none {
+    border-color: var(--color-fg-muted) !important;
+    color: var(--color-fg-muted) !important;
+}
+
+.Label--coverage-low {
+    border-color: var(--low_color);
+    color: var(--low_color_fg);
+}
+
+.Label--coverage-medium {
+    border-color: var(--medium_color);
+    color: var(--medium_color_fg);
+}
+
+.Label--coverage-high{
+    border-color: var(--high_color);
+    color: var(--high_color_fg);
+}
+
+.Box-row--focus-gray:hover {
+    background-color: var(--color-canvas-subtle) !important;
+}
+
+.filelist .Box-row:nth-child(2n+3){
+    background-color: var(--color-accent-subtle);
+}
+
+.functionslist {
+    width: 50%;
+}
+
+@media (max-width: 544px) {
+    .filelist .Box-row {
+        flex-direction: column;
+    }
+
+    .filelist .Box-row > div{
+        width: 100%;
+    }
+    .functionslist {
+        width: 100%;
+    }
+
+    .meter {
+        display: none !important;
+    }
+    .meter-label {
+        display: block !important;
+    }
+    .line-percentage-text {
+        display: none !important;
+    }
+}
+

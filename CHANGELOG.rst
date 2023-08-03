@@ -16,7 +16,8 @@ New features and notable changes:
 - If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
 - Fix Dockerfile.qa to avoid uid conflicts. (:issue:`801`)
-- Pygments required >= 2.13.0 (:issue:`799`)
+- Pygments required >= 2.13.0. (:issue:`799`)
+- Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
 - Improve sorting of data in reports (:issue:`817`):
   - Sort file names alpha numerical (``file_10.c`` comes after ``file_0.c``).
   - Always sort at the end by filename if line or branch coverage is identical for a file.
