@@ -69,7 +69,9 @@ def sort_coverage(
     basedir = commonpath(list(covdata.keys()))
 
     def key_filename(key: str) -> str:
-        convert_to_int_if_possible = lambda text: int(text) if text.isdigit() else text
+        def convert_to_int_if_possible(text):
+            return int(text) if text.isdigit() else text
+
         return [
             convert_to_int_if_possible(part)
             for part in re.split(
