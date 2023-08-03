@@ -68,29 +68,6 @@ def sort_coverage(
     """
     basedir = commonpath(list(covdata.keys()))
 
-    def coverage_stat(key: str) -> CoverageStat:
-        cov = covdata[key]
-        if by_branch:
-            return cov.branch_coverage()
-        return cov.line_coverage()
-
-    def key_num_uncovered(key: str) -> int:
-        stat = coverage_stat(key)
-        uncovered = stat.total - stat.covered
-        return uncovered
-
-    def key_percent_uncovered(key: str) -> float:
-        stat = coverage_stat(key)
-        covered = stat.covered
-        total = stat.total
-
-        if covered:
-            return -1.0 * covered / total
-        elif total:
-            return total
-        else:
-            return 1e6
-
     def key_filename(key: str) -> str:
         convert_to_int_if_possible = lambda text: int(text) if text.isdigit() else text
         return [
@@ -106,6 +83,31 @@ def sort_coverage(
                 ),
             )
         ]
+
+    def coverage_stat(key: str) -> CoverageStat:
+        cov = covdata[key]
+        if by_branch:
+            return cov.branch_coverage()
+        return cov.line_coverage()
+
+    def key_num_uncovered(key: str) -> int:
+        stat = coverage_stat(key)
+        uncovered = stat.total - stat.covered
+        return (uncovered, *key_filename(key))
+
+    def key_percent_uncovered(key: str) -> float:
+        stat = coverage_stat(key)
+        covered = stat.covered
+        total = stat.total
+
+        if covered:
+            value = -1.0 * covered / total
+        elif total:
+            value = total
+        else:
+            value = 1e6
+
+        return (value, *key_filename(key))
 
     if by_num_uncovered:
         key_fn = key_num_uncovered
