@@ -1,5 +1,5 @@
 
-#if defined __GNUC__ && (__GNUC__ >= 6)
+#if (defined __GNUC__ && (__GNUC__ >= 6)) || (defined __clang_major__)
 #include "switch_test.h"
 
 SwitchTestIssue783::SwitchTestIssue783() : _name("test") {}

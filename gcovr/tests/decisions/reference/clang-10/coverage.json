@@ -1941,6 +1941,25 @@
                     "line_number": 385
                 },
                 {
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "gcovr/md5": "9aef5fe9108e3cbc13c6552674316763",
+                    "line_number": 388
+                },
+                {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "bf47c01ac22ec690a031557d2549af78",
@@ -2035,6 +2054,168 @@
                     "count": 1,
                     "gcovr/md5": "7483dc5d2ba8642b2a3fed7915b6f508",
                     "line_number": 413
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
+                    "line_number": 414
+                }
+            ]
+        },
+        {
+            "file": "switch_test.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 7,
+                    "name": "_ZN18SwitchTestIssue78311checkSwitchEv"
+                },
+                {
+                    "execution_count": 1,
+                    "lineno": 5,
+                    "name": "_ZN18SwitchTestIssue783C2Ev"
+                }
+            ],
+            "lines": [
+                {
+                    "branches": [
+                        {
+                            "blockno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "gcovr/md5": "daaee5f922cdfe45cf6519c84a4de5b0",
+                    "line_number": 5
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "8047128d0af317bb6db2334074f87249",
+                    "line_number": 7
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "fa6d8aa38011d7d76109ffc5e615ffeb",
+                    "line_number": 8
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
+                    "line_number": 9
+                }
+            ]
+        },
+        {
+            "file": "switch_test.h",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 15,
+                    "name": "_ZN18SwitchTestIssue78311doSomethingENS_8SomeEnumE"
+                },
+                {
+                    "execution_count": 1,
+                    "lineno": 6,
+                    "name": "_ZN18SwitchTestIssue783D2Ev"
+                }
+            ],
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "df72eab90372f983f0d57b89b580221b",
+                    "line_number": 6
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "af21e6405cc1226c39e994ba8233ef61",
+                    "line_number": 15
+                },
+                {
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "gcovr/md5": "fcb068fee0ede6857cdd1a834d4da42f",
+                    "line_number": 16
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/decision": {
+                        "count": 1,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "6cf38b6f666597bfe088a84dea6fe22b",
+                    "line_number": 17
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "e442aca3482ae01847a8e3624a553ba3",
+                    "line_number": 18
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "648cebceec88bee865d519f95c2f386c",
+                    "line_number": 19
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/md5": "10768d314ff01a06ad913aa6ed6ece64",
+                    "line_number": 21
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3",
+                    "line_number": 22
                 }
             ]
         }
