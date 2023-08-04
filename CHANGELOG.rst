@@ -10,6 +10,8 @@ Known bugs:
 
 Breaking changes:
 
+- The exit code for an error of the reader module is changed from 8 to 64 and for a writer from 7 to 128. (:issue:`773`)
+
 New features and notable changes:
 
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
@@ -18,6 +20,7 @@ New features and notable changes:
 - Fix Dockerfile.qa to avoid uid conflicts. (:issue:`801`)
 - Pygments required >= 2.13.0. (:issue:`799`)
 - Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
+- Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
 
 Bug fixes and small improvements:
 
