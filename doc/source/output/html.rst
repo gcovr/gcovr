@@ -59,6 +59,31 @@ but :option:`--html-details<gcovr --html-details>` and
 in order to avoid problems with the `Content Security Policy <CSP_>`_
 of some servers, especially Jenkins.
 
+The :option:`--html-theme<gcovr --html-theme>` option controls the theme and color of html report.
+
+
+.. figure:: ../../images/screenshot-html-github-green-src.png
+    :align: center
+
+``--html-theme github.green``
+
+.. figure:: ../../images/screenshot-html-github-blue-src.png
+    :align: center
+
+``--html-theme github.blue``
+
+.. figure:: ../../images/screenshot-html-github-dark-green-src.png
+    :align: center
+
+``--html-theme github.dark-green``
+
+.. figure:: ../../images/screenshot-html-github-dark-blue-src.png
+    :align: center
+
+``--html-theme github.dark-blue``
+
+
+
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
 
 .. versionadded:: 6.0
