@@ -49,6 +49,7 @@ from ...utils import (
 from ...version import __version__
 
 LOGGER = logging.getLogger("gcovr")
+PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
 
 
 class Lazy:
@@ -68,11 +69,22 @@ class Lazy:
         return self.get(*args)
 
 
-# Loading Jinja and preparing the environment is fairly costly.
+# html_theme string is <theme_directory>.<color> or only <color> (if only color the use default)
+# examples: github.green github.blue or blue or green
+def get_theme_name(html_theme: str) -> str:
+    return html_theme.split(".")[0] if "." in html_theme else "default"
+
+
+def get_theme_color(html_theme: str) -> str:
+    return html_theme.split(".")[1] if "." in html_theme else html_theme
+
+
+# Loading Jinja and preparing the environmen is fairly costly.
 # Only do this work if templates are actually used.
 # This speeds up text and XML output.
 @Lazy
 def templates(options):
+
     from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
     if options.html_template_dir is None:
@@ -81,7 +93,11 @@ def templates(options):
         loader = ChoiceLoader(
             [
                 FileSystemLoader(options.html_template_dir),
-                PackageLoader("gcovr.formats.html"),
+                PackageLoader(
+                  "gcovr.formats.html",
+                  package_path=get_theme_name(options.html_theme),
+               )
+                  
             ]
         )
 
@@ -117,7 +133,15 @@ def user_templates():
 
 
 class CssRenderer:
-    THEMES = ["green", "blue"]
+
+    THEMES = [
+        "green",
+        "blue",
+        "github.blue",
+        "github.green",
+        "github.dark-green",
+        "github.dark-blue",
+    ]
 
     @staticmethod
     def get_themes():
@@ -153,12 +177,12 @@ class NullHighlighting:
 
 
 class PygmentHighlighting:
-    def __init__(self):
+    def __init__(self, style: str):
         self.formatter = None
         try:
             from pygments.formatters.html import HtmlFormatter
 
-            self.formatter = HtmlFormatter(nowrap=True)
+            self.formatter = HtmlFormatter(nowrap=True, style=style)
         except ImportError as e:  # pragma: no cover
             LOGGER.warning(f"No syntax highlighting available: {str(e)}")
 
@@ -190,8 +214,13 @@ class PygmentHighlighting:
 
 @Lazy
 def get_formatter(options):
+    highlight_style = (
+        templates(options)
+        .get_template(f"pygments.{get_theme_color(options.html_theme)}")
+        .render()
+    )
     return (
-        PygmentHighlighting()
+        PygmentHighlighting(highlight_style)
         if options.html_syntax_highlighting
         else NullHighlighting()
     )
@@ -297,7 +326,7 @@ class RootInfo:
         }
 
         display_filename = force_unix_separator(
-            os.path.relpath(realpath(cdata_fname), self.directory)
+            os.path.relpath(realpath(cdata_fname), realpath(self.directory))
         )
 
         if link_report is not None:
@@ -377,8 +406,12 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         else:
             output_file += "coverage.html"
 
-    formatter = get_formatter(options)
-    css_data += formatter.get_css()
+    if PYGMENTS_CSS_MARKER in css_data:
+        LOGGER.info(
+            "Skip adding of pygments styles since {PYGMENTS_CSS_MARKER!r} found in user stylesheet"
+        )
+    else:
+        css_data += get_formatter(options).get_css()
 
     if self_contained:
         data["css"] = css_data
@@ -393,7 +426,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             css_link = css_output
         data["css_link"] = css_link
 
-    data["theme"] = options.html_theme
+    data["theme"] = get_theme_color(options.html_theme)
 
     root_info.set_coverage(covdata)
 
@@ -403,10 +436,10 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     filtered_fname = ""
     sorted_keys = sort_coverage(
         covdata,
-        show_branch=False,
-        filename_uses_relative_pathname=True,
+        by_branch=False,
         by_num_uncovered=options.sort_uncovered,
         by_percent_uncovered=options.sort_percent,
+        filename_uses_relative_pathname=True,
     )
 
     if options.html_nested:
@@ -559,7 +592,7 @@ def write_source_pages(
             data["parent_directory"] = cdata_fname[parent_dirname]
 
         data["source_lines"] = []
-        currdir = os.getcwd()
+        current_dir = os.getcwd()
         os.chdir(options.root_dir)
         max_line_from_cdata = max(cdata.lines.keys(), default=0)
         try:
@@ -594,7 +627,7 @@ def write_source_pages(
                     )
                 )
             error_no_files_not_found += 1
-        os.chdir(currdir)
+        os.chdir(current_dir)
 
         html_string = templates(options).get_template("source_page.html").render(**data)
         with open_text_for_writing(
@@ -642,10 +675,10 @@ def write_directory_pages(
 
         sorted_files = sort_coverage(
             directory.children,
-            show_branch=False,
-            filename_uses_relative_pathname=True,
+            by_branch=False,
             by_num_uncovered=options.sort_uncovered,
             by_percent_uncovered=options.sort_percent,
+            filename_uses_relative_pathname=True,
         )
 
         root_info.clear_files()

@@ -14,6 +14,11 @@ New features and notable changes:
 
 - Add `--html-template-dir` option to use custom Jinja2 templates (:issue:`758`)
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
+- If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
+- Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
+- Fix Dockerfile.qa to avoid uid conflicts. (:issue:`801`)
+- Pygments required >= 2.13.0. (:issue:`799`)
+- Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
 
 
 Bug fixes and small improvements:
@@ -21,8 +26,16 @@ Bug fixes and small improvements:
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)
 - Log the thread name if :option:`-j` is used. (:issue:`752`)
 - Collapse also root directory if needed in nested HTML report. (:issue:`750`)
+- Handle special case of absolute source file paths in ``gcov`` output. (:issue:`776`)
+- Ignore exit code 6 when running ``gcov`` (output write error introduced gcc-12). (:issue:`781`)
+- Change coveralls value from 0.0 to 1.0 if no code lines or branches are present. (:issue:`796`)
+- Fix symlinked root directories on Windows. (:issue:`814`)
+- Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
+- Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
 
 Documentation:
+
+- Fix wrong command in ``How to create a standalone application`` docs (:issue:`792`)
 
 Internal changes:
 
@@ -41,6 +54,8 @@ Internal changes:
 - Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
 - Use separate session for flake8 and us this session in lint. (:issue:`768`)
 - Replace the deprecated codecov python uploader with the binary uploader. (:issue:`770`)
+- Add gcc-12 and gcc-13 to the test suite. (:issue:`780`)
+- Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
 
 6.0 (08 March 2023)
 -------------------

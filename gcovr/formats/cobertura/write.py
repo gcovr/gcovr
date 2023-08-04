@@ -142,7 +142,7 @@ def _rate(stat: CoverageStat) -> str:
     total = stat.total
     covered = stat.covered
     if not total:
-        return "0.0"
+        return "1.0"
     return str(covered / total)
 
 

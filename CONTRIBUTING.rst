@@ -145,7 +145,7 @@ How to set up a development environment
 
 For working on gcovr, you will need a supported version of Python 3,
 GCC version 5, 6, 8, 9, 10 or 11 (other GCC versions are supported by gcovr,
-but will cause spurious test failures) or clang version 10 or 13, ``make``,
+but will cause spurious test failures) or clang version 10, 13 or 14, ``make``,
 ``cmake`` and ``ninja``.
 Please make sure that the tools are in the system ``PATH``.
 On **Windows**, you will need to install a GCC toolchain as the
@@ -164,6 +164,8 @@ is needed.
     -  gcc-9/g++-9/gcov-9
     -  gcc-10/g++-10/gcov-10
     -  gcc-11/g++-11/gcov-11
+    -  gcc-12/g++-12/gcov-12
+    -  gcc-13/g++-13/gcov-13
     -  clang-10/clang++-10/llvm-cov
     -  clang-13/clang++-13/llvm-cov
     -  clang-14/clang++-14/llvm-cov
@@ -326,7 +328,8 @@ The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
 Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8``, ``CC=gcc-9``,
-``gcc-10``, ``gcc-11``, ``clang-10``, ``clang-13`` and ``clang-14``.
+``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``clang-10``, ``clang-13``,
+and ``clang-14``.
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
@@ -417,8 +420,8 @@ Or to build and run the container in one step:
     python3 -m nox --session docker_qa
 
 You can select the gcc version to use inside the docker by setting the environment
-variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10,
-clang-13 or clang-14 or you can build and run the container with:
+variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12,
+gcc-13, clang-10, clang-13, or clang-14 or you can build and run the container with:
 
 .. code:: bash
 
@@ -432,12 +435,23 @@ after a ``--`` :
 
     python3 -m nox --session 'docker_compiler(gcc-9)' -- -s tests
 
-You can also use the compiler 'all' to run the tests for all compiler versions.
-This is useful to update the all reference files:
+You can also use the compiler 'all' to run the tests for all compiler versions,
+'gcc' to only use the ``gcc`` versions, or 'clang' to use ``clang`` versions.
+A useful command to update all the reference files is :
 
 .. code:: bash
 
     python3 -m nox --session 'docker_compiler(all)' -- -s tests -- --update_reference
+
+.. _devcontainer:
+
+Use a devcontainer
+~~~~~~~~~~~~~~~~~~
+
+For developing ``gcovr`` you can use whatever editor you want.
+If the editor supports Devcontainers (e.g. VS Code) you do not
+need to install the needed tools on your local system.
+You can also use ``GitHub Codespaces`` to contribute to the project.
 
 .. _join:
 

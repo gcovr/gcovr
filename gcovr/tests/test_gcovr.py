@@ -80,7 +80,7 @@ CC_REFERENCE = env.get("CC_REFERENCE", CC)
 
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
-    ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "gcc-10", "gcc-11"]
+    ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "gcc-10", "gcc-11", "gcc-12", "gcc-13"]
     if "gcc" in CC_REFERENCE
     else ["clang-10", "clang-13", "clang-14"]
 )
@@ -294,6 +294,10 @@ def pytest_generate_tests(metafunc):
                     name == "cmake_gtest" and not GCOVR_ISOLATED_TEST,
                     reason="only available in docker",
                 ),
+                pytest.mark.skipif(
+                    name == "not_writable_source_dir" and not GCOVR_ISOLATED_TEST,
+                    reason="only available in docker",
+                ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
                     and format == "html"
@@ -332,6 +336,10 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.xfail(
                     name in ["wrong-casing"] and not IS_WINDOWS,
                     reason="Only windows has a case insensitive file system",
+                ),
+                pytest.mark.xfail(
+                    name in ["gcov-ignore_output_error"] and IS_WINDOWS,
+                    reason="Permission is ignored on Windows",
                 ),
                 pytest.mark.xfail(
                     name == "gcc-abspath"

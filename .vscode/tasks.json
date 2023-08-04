@@ -1,0 +1,91 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "Compiler",
+            "description": "The compiler to run the tests for",
+            "type": "pickString",
+            "options": [
+                "gcc-5",
+                "gcc-6",
+                "gcc-8",
+                "gcc-9",
+                "gcc-10",
+                "gcc-11",
+                "clang-10",
+                "clang-13",
+                "clang-14"
+            ]
+        }
+    ],
+    "tasks": [
+        {
+            "label": "Run quality checks",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s qa",
+            "group": "build"
+        },
+        {
+            "label": "Run lint",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s lint",
+            "group": "build"
+        },
+        {
+            "label": "Run black",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s black",
+            "group": "build"
+        },
+        {
+            "label": "Run flake8",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s flake8",
+            "group": "build"
+        },
+        {
+            "label": "Run documentation generation",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s doc",
+            "group": "build"
+        },
+        {
+            "label": "Run tests",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s tests",
+            "group": "build"
+        },
+        {
+            "label": "Build wheel",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s build_wheel",
+            "group": "build"
+        },
+        {
+            "label": "Check wheel",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s check_wheel",
+            "group": "build"
+        },
+        {
+            "label": "Build and check standalone application",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s bundle_app",
+            "group": "build"
+        },
+        {
+            "label": "Format current file",
+            "type": "shell",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s black -- ${file}",
+            "group": "build"
+        },
+        {
+            "label": "Run tests for specific compiler",
+            "type": "shell",
+            "command": "nox -s 'docker_qa_compiler(${input:Compiler})' -- -k simple1-txt",
+            "group": "build"
+        },
+    ]
+}
