@@ -82,15 +82,15 @@ def template_dir(tmp_path_factory):
     are replaced
     """
     # Build temp directory and filenames
-    tdir = tmp_path_factory.mktemp("alt_templates", numbered=True)
-    base_template = tdir / "base.html"
-    directory_template = tdir / "directory_page.summary.html"
+    template_dir: pathlib.Path = tmp_path_factory.mktemp("alt_templates", numbered=True)
+    base_template = template_dir / "base.html"
+    directory_template = template_dir / "directory_page.summary.html"
 
     # Write some content we can spot in the templates
     base_template.write_text("NEW_BASE_TEMPLATE")
     directory_template.write_text("NEW_DIRECTORY_TEMPLATE")
 
-    return tdir
+    return template_dir
 
 
 def test_template_dir_fallthrough(template_dir):
