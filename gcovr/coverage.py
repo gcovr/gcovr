@@ -52,6 +52,7 @@ def sort_coverage(
     by_num_uncovered: bool,
     by_percent_uncovered: bool,
     reverse: bool,
+    casefold: bool,
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
@@ -71,6 +72,9 @@ def sort_coverage(
     def key_filename(key: str) -> str:
         def convert_to_int_if_possible(text):
             return int(text) if text.isdigit() else text
+
+        if casefold:
+            key = key.casefold()
 
         return [
             convert_to_int_if_possible(part)

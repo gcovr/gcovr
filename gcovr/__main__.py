@@ -213,6 +213,11 @@ def main(args=None):
             "the options --sort-branches without --sort-uncovered or --sort-percent doesn't make sense."
         )
         sys.exit(EXIT_CMDLINE_ERROR)
+    if options.sort_casefold and (options.sort_uncovered or options.sort_percent):
+        LOGGER.error(
+            "the options --sort-casefold with --sort-uncovered or --sort-percent doesn't make sense."
+        )
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     # This needs to be set AFTER the check
     if options.show_branch:

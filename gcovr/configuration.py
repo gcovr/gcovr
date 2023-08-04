@@ -533,6 +533,16 @@ GCOVR_CONFIG_OPTIONS = [
         ),
         action="store_true",
     ),
+    GcovrConfigOption(
+        "sort_casefold",
+        ["--sort-casefold"],
+        group="output_options",
+        help=(
+            "Sort entries using with case folding. "
+            "For CSV, HTML, JSON and text report."
+        ),
+        action="store_true",
+    ),
     *formats.get_options(),
     GcovrConfigOption(
         "timestamp",
