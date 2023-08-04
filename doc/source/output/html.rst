@@ -65,22 +65,22 @@ The :option:`--html-theme<gcovr --html-theme>` option controls the theme and col
 .. figure:: ../../images/screenshot-html-github-green-src.png
     :align: center
 
-``--html-theme github.green``
+:option:`--html-theme github.green<gcovr --html-theme>`
 
 .. figure:: ../../images/screenshot-html-github-blue-src.png
     :align: center
 
-``--html-theme github.blue``
+:option:`--html-theme github.blue<gcovr --html-theme>`
 
 .. figure:: ../../images/screenshot-html-github-dark-green-src.png
     :align: center
 
-``--html-theme github.dark-green``
+:option:`--html-theme github.dark-green<gcovr --html-theme>`
 
 .. figure:: ../../images/screenshot-html-github-dark-blue-src.png
     :align: center
 
-``--html-theme github.dark-blue``
+:option:`--html-theme github.dark-blue<gcovr --html-theme>`
 
 
 
