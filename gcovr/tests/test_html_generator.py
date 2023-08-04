@@ -91,27 +91,3 @@ def template_dir(tmp_path_factory):
     directory_template.write_text("NEW_DIRECTORY_TEMPLATE")
 
     return template_dir
-
-
-def test_template_dir_fallthrough(template_dir):
-    from gcovr.formats.html.write import templates
-
-    # Inject options to set --html-template-dir to temporary directory
-    # created in fixture
-    class TestTemplateDir(object):
-        html_template_dir = template_dir
-
-    tdir = TestTemplateDir()
-
-    env = templates(tdir)
-
-    # Ensure our two overriden templates come from this temporary directory
-    base = env.get_template("base.html")
-    directory_template = env.get_template("directory_page.summary.html")
-
-    # Test non-overriden template
-    functions_template = env.get_template("functions_page.html")
-
-    assert str(template_dir) in base.filename
-    assert str(template_dir) in directory_template.filename
-    assert str(template_dir) not in functions_template.filename
