@@ -495,7 +495,8 @@ GCOVR_CONFIG_OPTIONS = [
         ["--sort-branches"],
         group="output_options",
         help=(
-            "Sort entries by branches instead of lines if --sort-uncovered or --sort-percent is used."
+            "Sort entries by branches instead of lines. Can only be used together "
+            "with --sort-uncovered or --sort-percent is used."
         ),
         action="store_true",
     ),
