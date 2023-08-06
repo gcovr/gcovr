@@ -484,7 +484,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#if defined __GNUC__ &amp;&amp; (__GNUC__ &gt;= 6)</span></td>
+      <td class="src "><span class="cp">#if (defined __GNUC__ &amp;&amp; (__GNUC__ &gt;= 6)) || (defined __clang_major__)</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l5" href="#l5">5</a></td>
@@ -4423,7 +4423,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#if defined __GNUC__ &amp;&amp; (__GNUC__ &gt;= 6)</span></td>
+      <td class="src "><span class="cp">#if (defined __GNUC__ &amp;&amp; (__GNUC__ &gt;= 6)) || (defined __clang_major__)</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l388" href="#l388">388</a></td>

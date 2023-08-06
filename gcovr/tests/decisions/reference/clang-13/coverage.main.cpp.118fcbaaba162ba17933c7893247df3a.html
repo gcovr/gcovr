@@ -19,7 +19,7 @@
   <table class="legend">
     <tr>
       <th scope="row">Directory:</th>
-      <td>.</td>
+      <td>./</td>
     </tr>
     <tr>
       <th scope="row">File:</th>
@@ -45,9 +45,9 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>171</td>
-      <td>195</td>
-      <td class="coverage-medium">87.7%</td>
+      <td>172</td>
+      <td>197</td>
+      <td class="coverage-medium">87.3%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
@@ -57,9 +57,9 @@
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>45</td>
-      <td>83</td>
-      <td class="coverage-low">54.2%</td>
+      <td>46</td>
+      <td>85</td>
+      <td class="coverage-low">54.1%</td>
     </tr>
     <tr>
       <th scope="row">Decisions:</th>
@@ -484,7 +484,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#if defined __GNUC__ &amp;&amp; (__GNUC__ &gt;= 6)</span></td>
+      <td class="src "><span class="cp">#if (defined __GNUC__ &amp;&amp; (__GNUC__ &gt;= 6)) || (defined __clang_major__)</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l5" href="#l5">5</a></td>
@@ -4419,16 +4419,23 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#if defined __GNUC__ &amp;&amp; (__GNUC__ &gt;= 6)</span></td>
+      <td class="src "><span class="cp">#if (defined __GNUC__ &amp;&amp; (__GNUC__ &gt;= 6)) || (defined __clang_major__)</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l388" href="#l388">388</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">   </span><span class="n">SwitchTestIssue783</span><span class="p">{}.</span><span class="n">checkSwitch</span><span class="p">();</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">   </span><span class="n">SwitchTestIssue783</span><span class="p">{}.</span><span class="n">checkSwitch</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l389" href="#l389">389</a></td>
@@ -4661,8 +4668,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l415" href="#l415">415</a></td>
