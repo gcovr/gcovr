@@ -939,12 +939,6 @@
                         "count": 0,
                         "type": "switch"
                     },
-                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
-                    "line_number": 194
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 196
                 },
@@ -955,12 +949,6 @@
                         "count": 0,
                         "type": "switch"
                     },
-                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
-                    "line_number": 200
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 202
                 },
@@ -1002,12 +990,6 @@
                         "count": 0,
                         "type": "switch"
                     },
-                    "gcovr/md5": "4e16c5488167f241ab1487a55fdbe6d1",
-                    "line_number": 213
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 214
                 },
@@ -1018,12 +1000,6 @@
                         "count": 1,
                         "type": "switch"
                     },
-                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
-                    "line_number": 216
-                },
-                {
-                    "branches": [],
-                    "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 217
                 },
@@ -1034,12 +1010,6 @@
                         "count": 0,
                         "type": "switch"
                     },
-                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
-                    "line_number": 219
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 220
                 },
@@ -1081,12 +1051,6 @@
                         "count": 0,
                         "type": "switch"
                     },
-                    "gcovr/md5": "4e16c5488167f241ab1487a55fdbe6d1",
-                    "line_number": 229
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 230
                 },
@@ -1097,12 +1061,6 @@
                         "count": 0,
                         "type": "switch"
                     },
-                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
-                    "line_number": 232
-                },
-                {
-                    "branches": [],
-                    "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 233
                 },
@@ -1113,12 +1071,6 @@
                         "count": 1,
                         "type": "switch"
                     },
-                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
-                    "line_number": 235
-                },
-                {
-                    "branches": [],
-                    "count": 1,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 236
                 },
@@ -1377,13 +1329,13 @@
                         {
                             "blockno": 1,
                             "count": 5,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 1,
                             "count": 1,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         }
                     ],
@@ -1437,13 +1389,13 @@
                         {
                             "blockno": 2,
                             "count": 5,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 2,
                             "count": 0,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         }
                     ],
@@ -1487,15 +1439,15 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 0,
                             "count": 5,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 0,
                             "count": 1,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         }
                     ],
@@ -1546,6 +1498,12 @@
                 },
                 {
                     "branches": [],
+                    "count": 4,
+                    "gcovr/md5": "c0c9ed61fb99428c3859e48844926c6c",
+                    "line_number": 320
+                },
+                {
+                    "branches": [],
                     "count": 5,
                     "gcovr/md5": "ff85af6301d128a7daa567a0a0390e91",
                     "line_number": 322
@@ -1561,13 +1519,13 @@
                         {
                             "blockno": 0,
                             "count": 4,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 0,
                             "count": 1,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         }
                     ],
@@ -1672,7 +1630,7 @@
                 },
                 {
                     "branches": [],
-                    "count": 0,
+                    "count": 1,
                     "gcovr/md5": "645924eb3b07dbb34295edeaa6442673",
                     "line_number": 350
                 },
@@ -1709,15 +1667,15 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 10,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         }
                     ],
@@ -1985,13 +1943,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 0,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -2028,9 +1986,20 @@
                     "execution_count": 1,
                     "lineno": 15,
                     "name": "SwitchTestIssue783::doSomething(SwitchTestIssue783::SomeEnum)"
+                },
+                {
+                    "execution_count": 1,
+                    "lineno": 6,
+                    "name": "SwitchTestIssue783::~SwitchTestIssue783()"
                 }
             ],
             "lines": [
+                {
+                    "branches": [],
+                    "count": 2,
+                    "gcovr/md5": "df72eab90372f983f0d57b89b580221b",
+                    "line_number": 6
+                },
                 {
                     "branches": [],
                     "count": 1,

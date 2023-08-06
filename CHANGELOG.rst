@@ -33,6 +33,7 @@ Bug fixes and small improvements:
 - Fix symlinked root directories on Windows. (:issue:`814`)
 - Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
+- Fix ``TypeError`` during decision analysis. (:issue:`784`)
 
 Documentation:
 
