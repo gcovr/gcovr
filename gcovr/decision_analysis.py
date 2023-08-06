@@ -225,7 +225,7 @@ class DecisionParser:
         elif _is_a_switch(code):
             # Get the coverage of the next line before a break
             max_lineno = lineno + 1
-            if len(self.coverage.lines) > 0:
+            if self.coverage.lines:
                 max_lineno = max(max_lineno, *self.coverage.lines.keys())
 
             for next_lineno in range(lineno, max_lineno):
