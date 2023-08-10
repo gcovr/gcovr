@@ -99,7 +99,7 @@ def sort_coverage(
     def key_num_uncovered(key: str) -> int:
         stat = coverage_stat(key)
         uncovered = stat.total - stat.covered
-        return (uncovered, *key_filename(key))
+        return uncovered
 
     def key_percent_uncovered(key: str) -> float:
         stat = coverage_stat(key)
@@ -113,16 +113,18 @@ def sort_coverage(
         else:
             value = 1e6
 
-        return (value, *key_filename(key))
+        return value
 
     if by_num_uncovered:
         key_fn = key_num_uncovered
     elif by_percent_uncovered:
         key_fn = key_percent_uncovered
     else:
-        key_fn = key_filename  # by default, we sort by filename alphabetically
+        # by default, we sort by filename alphabetically
+        return sorted(covdata, key=key_filename, reverse=reverse)
 
-    return sorted(covdata, key=key_fn, reverse=reverse)
+    # First sort filename alphabetical and then by the requested key
+    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=reverse)
 
 
 class BranchCoverage:
