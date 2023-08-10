@@ -505,9 +505,10 @@ GCOVR_CONFIG_OPTIONS = [
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
-            "Sort entries by increasing number of uncovered lines (if the option --sort-branches "
-            "is used the branch values are used). "
-            "Order can be changed by --sort-decreasing."
+            "Sort entries by number of uncovered lines (if the option --sort-branches "
+            "is given the uncovered branches are used). "
+            "The default order is increasing and can be changed by --sort-reverse. "
+            "The secondary sort key (if values are identical) is always the ascending filename. "
             "For CSV, HTML, JSON and text report."
         ),
         action="store_true",
@@ -517,31 +518,26 @@ GCOVR_CONFIG_OPTIONS = [
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
-            "Sort entries by increasing percentage of uncovered lines (if the option --sort-branches "
-            "is used the branch values are used). "
-            "Order can be changed by --sort-decreasing."
+            "Sort entries by percentage of uncovered lines (if the option --sort-branches "
+            "is given the percentage of uncovered branches are used). "
+            "The default order is decreasing and can be changed by --sort-reverse."
+            "The secondary sort key (if values are identical) is always the ascending filename. "
             "For CSV, HTML, JSON and text report."
         ),
         action="store_true",
     ),
     GcovrConfigOption(
         "sort_reverse",
-        ["--sort-decreasing"],
+        ["--sort-reverse"],
         group="output_options",
-        help=(
-            "Sort entries decreasing instead of increasing. "
-            "For CSV, HTML, JSON and text report."
-        ),
+        help="Sort entries in reverse order. For CSV, HTML, JSON and text report.",
         action="store_true",
     ),
     GcovrConfigOption(
         "sort_casefold",
         ["--sort-casefold"],
         group="output_options",
-        help=(
-            "Sort entries using with case folding. "
-            "For CSV, HTML, JSON and text report."
-        ),
+        help="Sort file names with case folding. For CSV, HTML, JSON and text report.",
         action="store_true",
     ),
     *formats.get_options(),
