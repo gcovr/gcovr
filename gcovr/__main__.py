@@ -51,42 +51,77 @@ EXIT_SUCCESS = 0
 EXIT_CMDLINE_ERROR = 1
 EXIT_LINE_NOK = 2
 EXIT_BRANCH_NOK = 4
-EXIT_LINE_AND_BRANCH_NOK = 6
-EXIT_WRITE_ERROR = 7
-EXIT_READ_ERROR = 8
+EXIT_DECISION_NOK = 8
+EXIT_FUNCTION_NOK = 16
+EXIT_READ_ERROR = 64
+EXIT_WRITE_ERROR = 128
 
 
 #
 # Exits with status 2 if below threshold
 #
-def fail_under(covdata: CovData, threshold_line, threshold_branch):
+def fail_under(
+    covdata: CovData,
+    threshold_line,
+    threshold_branch,
+    threshold_decision,
+    threshold_function,
+):
     stats = SummarizedStats.from_covdata(covdata)
 
-    # If there are no lines, mark as uncovered
-    # (indicates no data at all, likely an error).
-    percent_lines = stats.line.percent_or(0.0)
-
-    # Allow data with no branches.
-    percent_branches = stats.branch.percent_or(100.0)
-
     line_nok = False
+    if threshold_line > 0.0:
+        # If there are no lines, mark as uncovered
+        # (indicates no data at all, likely an error).
+        percent_lines = stats.line.percent_or(0.0)
+
+        if percent_lines < threshold_line:
+            line_nok = True
+            LOGGER.error(
+                f"failed minimum line coverage (got {percent_lines}%, minimum {threshold_line}%)"
+            )
+
     branch_nok = False
-    if percent_lines < threshold_line:
-        line_nok = True
-        LOGGER.error(
-            f"failed minimum line coverage (got {percent_lines}%, minimum {threshold_line}%)"
-        )
-    if percent_branches < threshold_branch:
-        branch_nok = True
-        LOGGER.error(
-            f"failed minimum branch coverage (got {percent_branches}%, minimum {threshold_branch}%)"
-        )
-    if line_nok and branch_nok:
-        sys.exit(EXIT_LINE_AND_BRANCH_NOK)
+    if threshold_branch > 0.0:
+        # Allow data with no branches.
+        percent_branches = stats.branch.percent_or(100.0)
+        if percent_branches < threshold_branch:
+            branch_nok = True
+            LOGGER.error(
+                f"failed minimum branch coverage (got {percent_branches}%, minimum {threshold_branch}%)"
+            )
+
+    decision_nok = False
+    if threshold_decision > 0.0:
+        # Allow data with no decisions.
+        percent_decision = stats.decision.percent_or(100.0)
+        if percent_decision < threshold_decision:
+            decision_nok = True
+            LOGGER.error(
+                f"failed minimum decision coverage (got {percent_decision}%, minimum {threshold_decision}%)"
+            )
+
+    function_nok = False
+    if threshold_function > 0.0:
+        # Allow data with no decisions.
+        percent_function = stats.function.percent_or(100.0)
+        if percent_function < threshold_function:
+            function_nok = True
+            LOGGER.error(
+                f"failed minimum function coverage (got {percent_function}%, minimum {threshold_function}%)"
+            )
+
+    exit_code = 0
     if line_nok:
-        sys.exit(EXIT_LINE_NOK)
+        exit_code |= EXIT_LINE_NOK
     if branch_nok:
-        sys.exit(EXIT_BRANCH_NOK)
+        exit_code |= EXIT_BRANCH_NOK
+    if decision_nok:
+        exit_code |= EXIT_DECISION_NOK
+    if function_nok:
+        exit_code |= EXIT_FUNCTION_NOK
+    if exit_code != 0:
+        sys.exit(exit_code)
 
 
 def create_argument_parser():
@@ -310,6 +345,10 @@ def main(args=None):
             )
             sys.exit(EXIT_CMDLINE_ERROR)
 
+    if options.fail_under_decision > 0.0 and not options.show_decision:
+        LOGGER.error("--fail-under-decision need also option --decision.")
+        sys.exit(EXIT_CMDLINE_ERROR)
+
     LOGGER.info("Reading coverage data...")
     try:
         covdata: CovData = gcovr_formats.read_reports(options)
@@ -328,8 +367,19 @@ def main(args=None):
         )
         sys.exit(EXIT_WRITE_ERROR)
 
-    if options.fail_under_line > 0.0 or options.fail_under_branch > 0.0:
-        fail_under(covdata, options.fail_under_line, options.fail_under_branch)
+    if (
+        options.fail_under_line > 0.0
+        or options.fail_under_branch > 0.0
+        or options.fail_under_decision > 0.0
+        or options.fail_under_function > 0.0
+    ):
+        fail_under(
+            covdata,
+            options.fail_under_line,
+            options.fail_under_branch,
+            options.fail_under_decision,
+            options.fail_under_function,
+        )
 
 
 if __name__ == "__main__":
