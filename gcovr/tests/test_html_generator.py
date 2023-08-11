@@ -73,21 +73,3 @@ def test_windows__make_short_sourcename(outfile, source_filename):
     )
 
     assert len(result) < 256
-
-
-@pytest.fixture(scope="session")
-def template_dir(tmp_path_factory):
-    """
-    Return alternate template directory where base.html and directory_page.summary.html
-    are replaced
-    """
-    # Build temp directory and filenames
-    template_dir: pathlib.Path = tmp_path_factory.mktemp("alt_templates", numbered=True)
-    base_template = template_dir / "base.html"
-    directory_template = template_dir / "directory_page.summary.html"
-
-    # Write some content we can spot in the templates
-    base_template.write_text("NEW_BASE_TEMPLATE")
-    directory_template.write_text("NEW_DIRECTORY_TEMPLATE")
-
-    return template_dir

@@ -69,7 +69,7 @@ class Lazy:
         return self.get(*args)
 
 
-# html_theme string is <theme_directory>.<color> or only <color> (if only color the use default)
+# html_theme string is <theme_directory>.<color> or only <color> (if only color use default)
 # examples: github.green github.blue or blue or green
 def get_theme_name(html_theme: str) -> str:
     return html_theme.split(".")[0] if "." in html_theme else "default"
@@ -79,7 +79,7 @@ def get_theme_color(html_theme: str) -> str:
     return html_theme.split(".")[1] if "." in html_theme else html_theme
 
 
-# Loading Jinja and preparing the environmen is fairly costly.
+# Loading Jinja and preparing the environment is fairly costly.
 # Only do this work if templates are actually used.
 # This speeds up text and XML output.
 @Lazy
@@ -87,19 +87,15 @@ def templates(options):
 
     from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
-    if options.html_template_dir is None:
-        loader = PackageLoader("gcovr.formats.html")
-    else:
-        loader = ChoiceLoader(
-            [
-                FileSystemLoader(options.html_template_dir),
-                PackageLoader(
-                  "gcovr.formats.html",
-                  package_path=get_theme_name(options.html_theme),
-               )
-                  
-            ]
-        )
+    # As default use the package loader
+    loader = PackageLoader(
+        "gcovr.formats.html",
+        package_path=get_theme_name(options.html_theme),
+    )
+
+    # If a directory is given files in the directory have higher precedence.
+    if options.html_template_dir is not None:
+        loader = ChoiceLoader([FileSystemLoader(options.html_template_dir), loader])
 
     return Environment(
         loader=loader,
