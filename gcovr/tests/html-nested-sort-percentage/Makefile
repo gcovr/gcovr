@@ -15,7 +15,7 @@ run: html
 
 coverage.json:
 	./subdir/testcase
-	$(GCOVR) -r subdir --json-pretty --json $@
+	$(GCOVR) -r subdir --sort-casefold --json-pretty --json $@
 
 html: coverage.json
 	$(GCOVR) -r subdir -a $< --html-nested --sort-percentage --sort-casefold -o coverage.html

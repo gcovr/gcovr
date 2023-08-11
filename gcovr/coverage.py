@@ -73,22 +73,16 @@ def sort_coverage(
         def convert_to_int_if_possible(text):
             return int(text) if text.isdigit() else text
 
+        key = (
+            force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
+            if filename_uses_relative_pathname
+            else key
+        )
+
         if casefold:
             key = key.casefold()
 
-        return [
-            convert_to_int_if_possible(part)
-            for part in re.split(
-                r"([0-9]+)",
-                (
-                    force_unix_separator(
-                        os.path.relpath(realpath(key), realpath(basedir))
-                    )
-                    if filename_uses_relative_pathname
-                    else key
-                ),
-            )
-        ]
+        return [convert_to_int_if_possible(part) for part in re.split(r"([0-9]+)", key)]
 
     def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
