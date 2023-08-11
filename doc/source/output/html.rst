@@ -63,8 +63,8 @@ The :option:`--html-template-dir<gcovr --html-template-dir>` option allows you t
 alternate directory with Jinja2 templates to fully customize the HTML output in detail.
 If a template is missing from this directory the original is used. It is advised that you
 start by copying the part you want to modify from
-`the existing templates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/default>`_
-or `the existing templates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/github>`_
+`the existing default theme emplates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/default>`_
+or `the existing githup theme templates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/github>`_
 . Keep in mind the template context data that is passed to these templates *MAY* change
 between release versions.
 
@@ -72,6 +72,9 @@ Note that you do not have to copy every single template and can copy and edit on
 templates you wish to customize.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+
+.. versionadded:: NEXT
+   Added :option:`--html-template-dir<gcovr --html-template-dir>`
 
 .. versionadded:: 6.0
    Added :option:`--html-nested<gcovr --html-nested>`
