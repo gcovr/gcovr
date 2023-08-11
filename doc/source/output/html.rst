@@ -60,10 +60,12 @@ in order to avoid problems with the `Content Security Policy <CSP_>`_
 of some servers, especially Jenkins.
 
 The :option:`--html-template-dir<gcovr --html-template-dir>` option allows you to use an
-an additional directory of Jinja2 templates to override the default HTML output.  If a template
-is missing from this directory the original is used. It is advised that you start by copying
-and modifying `the existing template or templates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/templates>`_
-and adjust them as needed. Keep in mind the template context data that is passed to these templates *MAY* change
+alternate directory with Jinja2 templates to fully customize the HTML output in detail.
+If a template is missing from this directory the original is used. It is advised that you
+start by copying the part you want to modify from
+`the existing templates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/default>`_
+or `the existing templates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/github>`_
+. Keep in mind the template context data that is passed to these templates *MAY* change
 between release versions.
 
 Note that you do not have to copy every single template and can copy and edit only the
