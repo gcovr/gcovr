@@ -214,10 +214,6 @@ def main(args=None):
         )
         sys.exit(EXIT_CMDLINE_ERROR)
 
-    # This needs to be set AFTER the check
-    if options.show_branch:
-        options.sort_branches = True
-
     if options.html_title == "":
         LOGGER.error("an empty --html-title= is not allowed.")
         sys.exit(EXIT_CMDLINE_ERROR)

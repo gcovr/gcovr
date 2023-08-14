@@ -466,17 +466,6 @@ GCOVR_CONFIG_OPTIONS = [
         default=None,
     ),
     GcovrConfigOption(
-        "show_branch",
-        ["-b", "--branches"],
-        config="txt-branch",
-        group="output_options",
-        help=(
-            "For text report: Report the branch coverage instead of the line coverage.\n"
-            "For CSV, JSON and text report: Also sets the option --sort-branches."
-        ),
-        action="store_true",
-    ),
-    GcovrConfigOption(
         "show_decision",
         ["--decisions"],
         group="output_options",
