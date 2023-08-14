@@ -17,22 +17,13 @@
 #
 # ****************************************************************************
 
-import logging
-import os
 import hashlib
 import io
+import logging
+import os
 from argparse import ArgumentTypeError
 from typing import Any, Callable, Dict, Optional, Union
 
-from ...options import Options
-
-from ...version import __version__
-from ...utils import (
-    force_unix_separator,
-    realpath,
-    commonpath,
-    open_text_for_writing,
-)
 from ...coverage import (
     CallCoverage,
     CovData,
@@ -48,6 +39,14 @@ from ...coverage import (
     SummarizedStats,
     sort_coverage,
 )
+from ...options import Options
+from ...utils import (
+    commonpath,
+    force_unix_separator,
+    open_text_for_writing,
+    realpath,
+)
+from ...version import __version__
 
 LOGGER = logging.getLogger("gcovr")
 PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
@@ -70,7 +69,7 @@ class Lazy:
         return self.get(*args)
 
 
-# html_theme string is <theme_directory>.<color> or only <color> (if only color the use default)
+# html_theme string is <theme_directory>.<color> or only <color> (if only color use default)
 # examples: github.green github.blue or blue or green
 def get_theme_name(html_theme: str) -> str:
     return html_theme.split(".")[0] if "." in html_theme else "default"
@@ -80,18 +79,26 @@ def get_theme_color(html_theme: str) -> str:
     return html_theme.split(".")[1] if "." in html_theme else html_theme
 
 
-# Loading Jinja and preparing the environmen is fairly costly.
+# Loading Jinja and preparing the environment is fairly costly.
 # Only do this work if templates are actually used.
 # This speeds up text and XML output.
 @Lazy
 def templates(options):
-    from jinja2 import Environment, PackageLoader
+
+    from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
+
+    # As default use the package loader
+    loader = PackageLoader(
+        "gcovr.formats.html",
+        package_path=get_theme_name(options.html_theme),
+    )
+
+    # If a directory is given files in the directory have higher precedence.
+    if options.html_template_dir is not None:
+        loader = ChoiceLoader([FileSystemLoader(options.html_template_dir), loader])
 
     return Environment(
-        loader=PackageLoader(
-            "gcovr.formats.html",
-            package_path=get_theme_name(options.html_theme),
-        ),
+        loader=loader,
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -188,8 +195,8 @@ class PygmentHighlighting:
             return NullHighlighting.highlighter_for_file(filename)
 
         import pygments
-        from pygments.lexers import get_lexer_for_filename
         from markupsafe import Markup
+        from pygments.lexers import get_lexer_for_filename
 
         try:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)

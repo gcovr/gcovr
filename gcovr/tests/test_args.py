@@ -442,6 +442,12 @@ def test_html_tab_size_zero(caplog):
     assert c.exception.code != 0
 
 
+def test_html_template_dir(capsys):
+    c = capture(capsys, ["--html", "--html-template-dir", "foo"])
+    assert "<html" in c.out
+    assert "</html>" in c.out
+
+
 def test_multiple_output_formats_to_stdout(caplog):
     c = log_capture(
         caplog, ["--xml", "--html", "--sonarqube", "--coveralls", "--root", "gcovr"]

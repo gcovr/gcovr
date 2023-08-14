@@ -14,6 +14,7 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add `--html-template-dir` option to use custom Jinja2 templates (:issue:`758`)
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
 - If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
@@ -27,6 +28,7 @@ New features and notable changes:
   - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
   - Add :option:`--sort-reverse` to reverse the sort order.
 
+
 Bug fixes and small improvements:
 
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)
@@ -38,6 +40,7 @@ Bug fixes and small improvements:
 - Fix symlinked root directories on Windows. (:issue:`814`)
 - Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
+- Fix ``TypeError`` during decision analysis. (:issue:`784`)
 
 Documentation:
 
@@ -62,6 +65,7 @@ Internal changes:
 - Replace the deprecated codecov python uploader with the binary uploader. (:issue:`770`)
 - Add gcc-12 and gcc-13 to the test suite. (:issue:`780`)
 - Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
+- Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
 
 6.0 (08 March 2023)
 -------------------

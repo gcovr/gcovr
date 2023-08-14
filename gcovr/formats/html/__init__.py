@@ -85,6 +85,15 @@ class HtmlHandler(BaseHandler):
                 const=OutputOrDefault(None),
             ),
             GcovrConfigOption(
+                "html_template_dir",
+                ["--html-template-dir"],
+                group="output_options",
+                metavar="OUTPUT",
+                help=(
+                    "Override the default Jinja2 template directory for the HTML report. "
+                ),
+            ),
+            GcovrConfigOption(
                 "html_syntax_highlighting",
                 ["--html-syntax-highlighting", "--html-details-syntax-highlighting"],
                 group="output_options",

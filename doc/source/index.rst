@@ -15,6 +15,7 @@ gcovr
 .. |abstract-option-html| replace:: :option:`--html`
 .. |abstract-option-html-details| replace:: :option:`--html-details`
 .. |abstract-option-html-nested| replace:: :option:`--html-nested`
+.. |abstract-option-html-template-dir| replace:: :option:`--html-template-dir`
 .. |abstract-option-cobertura| replace:: :option:`--cobertura`
 .. |abstract-option-sonarqube| replace:: :option:`--sonarqube`
 .. |abstract-option-json| replace:: :option:`--json`
@@ -25,6 +26,7 @@ gcovr
 .. |abstract-guide-txt| replace:: :ref:`txt_output`
 .. |abstract-guide-html| replace:: :ref:`html_output`
 .. |abstract-guide-html-details| replace:: :ref:`html_output`
+.. |abstract-guide-html-template-dir| replace:: :ref:`html_output`
 .. |abstract-guide-cobertura| replace:: :ref:`cobertura_output`
 .. |abstract-guide-sonarqube| replace:: :ref:`sonarqube_xml_output`
 .. |abstract-guide-json| replace:: :ref:`json_output`
