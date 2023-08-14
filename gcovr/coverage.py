@@ -52,7 +52,6 @@ def sort_coverage(
     by_num_uncovered: bool,
     by_percent_uncovered: bool,
     reverse: bool,
-    casefold: bool,
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
@@ -77,10 +76,7 @@ def sort_coverage(
             force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
             if filename_uses_relative_pathname
             else key
-        )
-
-        if casefold:
-            key = key.casefold()
+        ).casefold()
 
         return [convert_to_int_if_possible(part) for part in re.split(r"([0-9]+)", key)]
 

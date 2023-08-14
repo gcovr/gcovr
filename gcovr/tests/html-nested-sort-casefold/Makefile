@@ -15,10 +15,10 @@ run: html
 
 coverage.json:
 	./subdir/testcase
-	$(GCOVR) -r subdir --sort-casefold --json-pretty --json $@
+	$(GCOVR) -r subdir --json-pretty --json $@
 
 html: coverage.json
-	$(GCOVR) -r subdir -a $< --sort-casefold --html-nested ./
+	$(GCOVR) -r subdir -a $< --html-nested ./
 
 clean:
 	rm -rf ./subdir

@@ -76,7 +76,6 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             by_num_uncovered=options.sort_uncovered,
             by_percent_uncovered=options.sort_percent,
             reverse=options.sort_reverse,
-            casefold=options.sort_casefold,
         )
 
         total_stat = CoverageStat.new_empty()

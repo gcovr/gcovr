@@ -38,7 +38,6 @@ class BaseHandler:
             "sort_uncovered",
             "sort_percent",
             "sort_reverse",
-            "sort_casefold",
             "search_paths",
             "source_encoding",
             "starting_dir",

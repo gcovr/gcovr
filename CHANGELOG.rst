@@ -22,10 +22,9 @@ New features and notable changes:
 - Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
 - Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
 - Improve sorting of data in reports (:issue:`817`):
-  - Sort file names alpha numerical (``file_10.c`` comes after ``file_0.c``).
+  - Sort file names alpha numerical and with casefold (see `str.casefold <https://docs.python.org/3.11/library/stdtypes.html?highlight=str%20casefold#str.casefold>`_) (``file_10.c`` comes after ``file_0.c``).
   - Always sort at the end by filename if line or branch coverage is identical for a file.
-  - Add :option:`--sort-casefold` to ignore the case and fold special characters.
-  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--branches` is used.
+  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
   - Add :option:`--sort-reverse` to reverse the sort order.
 
 Bug fixes and small improvements:
