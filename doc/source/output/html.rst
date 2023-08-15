@@ -43,7 +43,7 @@ a separate web page for each file and directory. Each of these web pages include
 the contents of file with annotations that summarize code coverage. Consider
 the following command:
 
-Note that the :option:`--html-details<gcovr --html-details>` and
+Note that the :option:`--html<gcovr --html>` and
 :option:`--html-details<gcovr --html-details>` options need
 a named output, e.g. via the the :option:`-o/--output<gcovr --output>` option.
 For example, if the output is named ``coverage.html``,
@@ -60,7 +60,6 @@ in order to avoid problems with the `Content Security Policy <CSP_>`_
 of some servers, especially Jenkins.
 
 The :option:`--html-theme<gcovr --html-theme>` option controls the theme and color of html report.
-
 
 .. figure:: ../../images/screenshot-html-github-green-src.png
     :align: center
@@ -82,9 +81,22 @@ The :option:`--html-theme<gcovr --html-theme>` option controls the theme and col
 
 :option:`--html-theme github.dark-blue<gcovr --html-theme>`
 
+The :option:`--html-template-dir<gcovr --html-template-dir>` option allows you to use an
+alternate directory with Jinja2 templates to fully customize the HTML output in detail.
+If a template is missing from this directory the original is used. It is advised that you
+start by copying the part you want to modify from
+`the existing default theme emplates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/default>`_
+or `the existing githup theme templates <https://github.com/gcovr/gcovr/tree/master/gcovr/writer/html/github>`_
+. Keep in mind the template context data that is passed to these templates *MAY* change
+between release versions.
 
+Note that you do not have to copy every single template and can copy and edit only the
+templates you wish to customize.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+
+.. versionadded:: NEXT
+   Added :option:`--html-template-dir<gcovr --html-template-dir>`
 
 .. versionadded:: 6.0
    Added :option:`--html-nested<gcovr --html-nested>`

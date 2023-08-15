@@ -5,162 +5,162 @@
             "functions": [
                 {
                     "execution_count": 2,
-                    "lineno": 28,
+                    "lineno": 32,
                     "name": "checkBiggerBoth(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 16,
+                    "lineno": 20,
                     "name": "checkBiggerFalse(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 4,
+                    "lineno": 8,
                     "name": "checkBiggerTrue(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 242,
+                    "lineno": 246,
                     "name": "checkCompactBranch1False(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 237,
+                    "lineno": 241,
                     "name": "checkCompactBranch1True(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 252,
+                    "lineno": 256,
                     "name": "checkCompactBranch2False(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 247,
+                    "lineno": 251,
                     "name": "checkCompactBranch2True(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 124,
+                    "lineno": 128,
                     "name": "checkComplexFalse(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 287,
+                    "lineno": 291,
                     "name": "checkComplexForLoop(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 112,
+                    "lineno": 116,
                     "name": "checkComplexTrue(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 311,
+                    "lineno": 315,
                     "name": "checkDoWhileLoop(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 136,
+                    "lineno": 140,
                     "name": "checkElseIf1(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 152,
+                    "lineno": 156,
                     "name": "checkElseIf2(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 168,
+                    "lineno": 172,
                     "name": "checkElseIf3(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 76,
+                    "lineno": 80,
                     "name": "checkEqualFalse(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 64,
+                    "lineno": 68,
                     "name": "checkEqualTrue(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 277,
+                    "lineno": 281,
                     "name": "checkForLoop(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 325,
+                    "lineno": 329,
                     "name": "checkInterpreter(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 100,
+                    "lineno": 104,
                     "name": "checkNotEqualFalse(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 88,
+                    "lineno": 92,
                     "name": "checkNotEqualTrue(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 52,
+                    "lineno": 56,
                     "name": "checkSmallerFalse(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 40,
+                    "lineno": 44,
                     "name": "checkSmallerTrue(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 184,
+                    "lineno": 188,
                     "name": "checkSwitch1(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 205,
+                    "lineno": 209,
                     "name": "checkSwitch2(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 221,
+                    "lineno": 225,
                     "name": "checkSwitch3(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 262,
+                    "lineno": 266,
                     "name": "checkTernary1False(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 257,
+                    "lineno": 261,
                     "name": "checkTernary1True(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 272,
+                    "lineno": 276,
                     "name": "checkTernary2False(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 267,
+                    "lineno": 271,
                     "name": "checkTernary2True(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 297,
+                    "lineno": 301,
                     "name": "checkWhileLoop(int)"
                 },
                 {
                     "execution_count": 1,
-                    "lineno": 356,
+                    "lineno": 360,
                     "name": "main"
                 },
                 {
                     "execution_count": 2,
-                    "lineno": 349,
+                    "lineno": 353,
                     "name": "verify_issue_679(bool)"
                 }
             ],
@@ -169,7 +169,7 @@
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "6787aacdd04e18ff50f22cb09af64959",
-                    "line_number": 4
+                    "line_number": 8
                 },
                 {
                     "branches": [
@@ -193,25 +193,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884",
-                    "line_number": 6
+                    "line_number": 10
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 8
+                    "line_number": 12
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 12
+                    "line_number": 16
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "260f9a095d49eb9dd2c2fa021674d079",
-                    "line_number": 16
+                    "line_number": 20
                 },
                 {
                     "branches": [
@@ -235,25 +235,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884",
-                    "line_number": 18
+                    "line_number": 22
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 20
+                    "line_number": 24
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 24
+                    "line_number": 28
                 },
                 {
                     "branches": [],
                     "count": 2,
                     "gcovr/md5": "b848ba6f16ad8e8b5c12256d5aecd684",
-                    "line_number": 28
+                    "line_number": 32
                 },
                 {
                     "branches": [
@@ -277,25 +277,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884",
-                    "line_number": 30
+                    "line_number": 34
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 32
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 36
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "37d231dfe6f9f10d7281467eacbd00ed",
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 40
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "37d231dfe6f9f10d7281467eacbd00ed",
+                    "line_number": 44
                 },
                 {
                     "branches": [
@@ -319,25 +319,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "aefaa176c8639c64cebe2afde4bc42af",
-                    "line_number": 42
+                    "line_number": 46
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 44
+                    "line_number": 48
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 48
+                    "line_number": 52
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "e308518e2f82e0e2d7b68dfafb8d005f",
-                    "line_number": 52
+                    "line_number": 56
                 },
                 {
                     "branches": [
@@ -361,25 +361,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "aefaa176c8639c64cebe2afde4bc42af",
-                    "line_number": 54
+                    "line_number": 58
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 56
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 60
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "e877d9ef2d646c713eb69df3d1ae1b87",
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 64
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "e877d9ef2d646c713eb69df3d1ae1b87",
+                    "line_number": 68
                 },
                 {
                     "branches": [
@@ -403,25 +403,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
-                    "line_number": 66
+                    "line_number": 70
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 68
+                    "line_number": 72
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 72
+                    "line_number": 76
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "32156227fa301e21b7798267f1d41fe9",
-                    "line_number": 76
+                    "line_number": 80
                 },
                 {
                     "branches": [
@@ -445,25 +445,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
-                    "line_number": 78
+                    "line_number": 82
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 80
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 84
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "1b839eefb1c215aed886395e851c20db",
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 88
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "1b839eefb1c215aed886395e851c20db",
+                    "line_number": 92
                 },
                 {
                     "branches": [
@@ -487,25 +487,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "f1b4991cba9c51e1b01479bf5a3f8107",
-                    "line_number": 90
+                    "line_number": 94
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 92
+                    "line_number": 96
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 96
+                    "line_number": 100
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "aedcd800a4eccc0d565b3361b4b7a4fe",
-                    "line_number": 100
+                    "line_number": 104
                 },
                 {
                     "branches": [
@@ -529,25 +529,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "f1b4991cba9c51e1b01479bf5a3f8107",
-                    "line_number": 102
+                    "line_number": 106
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 104
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 108
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "42e96b0366090f26436c9bf59b01660b",
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 112
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "42e96b0366090f26436c9bf59b01660b",
+                    "line_number": 116
                 },
                 {
                     "branches": [
@@ -595,25 +595,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "488462d327ca243033ac1a4eebc24b42",
-                    "line_number": 114
+                    "line_number": 118
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 116
+                    "line_number": 120
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 120
+                    "line_number": 124
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "afc37d67b5def9e06b8c1ba2a081c0b9",
-                    "line_number": 124
+                    "line_number": 128
                 },
                 {
                     "branches": [
@@ -661,25 +661,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "488462d327ca243033ac1a4eebc24b42",
-                    "line_number": 126
+                    "line_number": 130
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 128
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 132
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "9cca3668005168d0e054caf95cd8948c",
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 136
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "9cca3668005168d0e054caf95cd8948c",
+                    "line_number": 140
                 },
                 {
                     "branches": [
@@ -703,13 +703,13 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
-                    "line_number": 138
+                    "line_number": 142
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 140
+                    "line_number": 144
                 },
                 {
                     "branches": [
@@ -733,25 +733,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "49b898f9974955f74f69f174b54a6668",
-                    "line_number": 142
+                    "line_number": 146
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 144
+                    "line_number": 148
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 148
+                    "line_number": 152
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "ef8de72a20f145f62aca999f152f0034",
-                    "line_number": 152
+                    "line_number": 156
                 },
                 {
                     "branches": [
@@ -775,13 +775,13 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
-                    "line_number": 154
+                    "line_number": 158
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 156
+                    "line_number": 160
                 },
                 {
                     "branches": [
@@ -805,54 +805,24 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "b428569a14d78c85b2215dd962d9c82c",
-                    "line_number": 158
+                    "line_number": 162
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 160
+                    "line_number": 164
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 164
+                    "line_number": 168
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "ef28e06cf701eb5dee133164631e1de5",
-                    "line_number": 168
-                },
-                {
-                    "branches": [
-                        {
-                            "blockno": 0,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false
-                        },
-                        {
-                            "blockno": 0,
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
-                    "count": 1,
-                    "gcovr/decision": {
-                        "count_false": 1,
-                        "count_true": 0,
-                        "type": "conditional"
-                    },
-                    "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
-                    "line_number": 170
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 172
                 },
                 {
@@ -876,7 +846,7 @@
                         "count_true": 0,
                         "type": "conditional"
                     },
-                    "gcovr/md5": "b428569a14d78c85b2215dd962d9c82c",
+                    "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
                     "line_number": 174
                 },
                 {
@@ -886,16 +856,46 @@
                     "line_number": 176
                 },
                 {
-                    "branches": [],
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
                     "count": 1,
-                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
+                    "gcovr/decision": {
+                        "count_false": 1,
+                        "count_true": 0,
+                        "type": "conditional"
+                    },
+                    "gcovr/md5": "b428569a14d78c85b2215dd962d9c82c",
+                    "line_number": 178
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 180
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "779fed7d2f7ce06627a9f4f67dedfe5f",
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
                     "line_number": 184
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "779fed7d2f7ce06627a9f4f67dedfe5f",
+                    "line_number": 188
                 },
                 {
                     "branches": [
@@ -920,7 +920,7 @@
                     ],
                     "count": 1,
                     "gcovr/md5": "a942ed799094287b927e24b1b7d47d5d",
-                    "line_number": 186
+                    "line_number": 190
                 },
                 {
                     "branches": [],
@@ -930,22 +930,6 @@
                         "type": "switch"
                     },
                     "gcovr/md5": "c55ac16d79ecde6ccafa6981a9351947",
-                    "line_number": 188
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/decision": {
-                        "count": 0,
-                        "type": "switch"
-                    },
-                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
-                    "line_number": 190
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 192
                 },
                 {
@@ -955,20 +939,36 @@
                         "count": 0,
                         "type": "switch"
                     },
-                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
+                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
+                    "line_number": 194
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 196
                 },
                 {
                     "branches": [],
                     "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
+                    "line_number": 200
+                },
+                {
+                    "branches": [],
+                    "count": 0,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 198
+                    "line_number": 202
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "b27839bf103fdd94b8d5f7c0fec7d676",
-                    "line_number": 205
+                    "line_number": 209
                 },
                 {
                     "branches": [
@@ -993,7 +993,7 @@
                     ],
                     "count": 1,
                     "gcovr/md5": "a942ed799094287b927e24b1b7d47d5d",
-                    "line_number": 207
+                    "line_number": 211
                 },
                 {
                     "branches": [],
@@ -1003,51 +1003,51 @@
                         "type": "switch"
                     },
                     "gcovr/md5": "4e16c5488167f241ab1487a55fdbe6d1",
-                    "line_number": 209
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 210
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/decision": {
-                        "count": 1,
-                        "type": "switch"
-                    },
-                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
-                    "line_number": 212
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
                     "line_number": 213
                 },
                 {
                     "branches": [],
                     "count": 0,
-                    "gcovr/decision": {
-                        "count": 0,
-                        "type": "switch"
-                    },
-                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
-                    "line_number": 215
+                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
+                    "line_number": 214
                 },
                 {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
+                    "count": 1,
+                    "gcovr/decision": {
+                        "count": 1,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
                     "line_number": 216
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
+                    "line_number": 217
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
+                    "line_number": 219
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
+                    "line_number": 220
+                },
+                {
+                    "branches": [],
+                    "count": 1,
                     "gcovr/md5": "e1b1c7d843f820d35f09c2df667c15ef",
-                    "line_number": 221
+                    "line_number": 225
                 },
                 {
                     "branches": [
@@ -1072,7 +1072,7 @@
                     ],
                     "count": 1,
                     "gcovr/md5": "a942ed799094287b927e24b1b7d47d5d",
-                    "line_number": 223
+                    "line_number": 227
                 },
                 {
                     "branches": [],
@@ -1082,13 +1082,13 @@
                         "type": "switch"
                     },
                     "gcovr/md5": "4e16c5488167f241ab1487a55fdbe6d1",
-                    "line_number": 225
+                    "line_number": 229
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 226
+                    "line_number": 230
                 },
                 {
                     "branches": [],
@@ -1098,13 +1098,13 @@
                         "type": "switch"
                     },
                     "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
-                    "line_number": 228
+                    "line_number": 232
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 229
+                    "line_number": 233
                 },
                 {
                     "branches": [],
@@ -1114,19 +1114,19 @@
                         "type": "switch"
                     },
                     "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
-                    "line_number": 231
+                    "line_number": 235
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171",
-                    "line_number": 232
+                    "line_number": 236
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "dbdb1200cd98fca90a93dfb7f426bfa6",
-                    "line_number": 237
+                    "line_number": 241
                 },
                 {
                     "branches": [
@@ -1150,13 +1150,13 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "e749733f42b89caef9a0026be7b83b75",
-                    "line_number": 239
+                    "line_number": 243
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "880e53e4a12d09f7cd28d27076b2e586",
-                    "line_number": 242
+                    "line_number": 246
                 },
                 {
                     "branches": [
@@ -1180,13 +1180,13 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "e749733f42b89caef9a0026be7b83b75",
-                    "line_number": 244
+                    "line_number": 248
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "768bcd7c52e4ebd1157dc298740c4c75",
-                    "line_number": 247
+                    "line_number": 251
                 },
                 {
                     "branches": [
@@ -1220,13 +1220,13 @@
                         "type": "uncheckable"
                     },
                     "gcovr/md5": "f10e70f8cd7ef7ef1645378b8571e499",
-                    "line_number": 249
+                    "line_number": 253
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "04774800e109bfa6463950e63def9f9b",
-                    "line_number": 252
+                    "line_number": 256
                 },
                 {
                     "branches": [
@@ -1260,37 +1260,37 @@
                         "type": "uncheckable"
                     },
                     "gcovr/md5": "f10e70f8cd7ef7ef1645378b8571e499",
-                    "line_number": 254
+                    "line_number": 258
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "b2ce0dd6c936dc2090ed5fce103cab77",
-                    "line_number": 257
+                    "line_number": 261
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "e5687ce2bfb55e6b964d04780a002b51",
-                    "line_number": 259
+                    "line_number": 263
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "50d4f07d1fecada716d18177c9a504a1",
-                    "line_number": 262
+                    "line_number": 266
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "e5687ce2bfb55e6b964d04780a002b51",
-                    "line_number": 264
+                    "line_number": 268
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "38133a7c12b812e2590432cbc63041c5",
-                    "line_number": 267
+                    "line_number": 271
                 },
                 {
                     "branches": [
@@ -1321,13 +1321,13 @@
                     ],
                     "count": 1,
                     "gcovr/md5": "cc459c18ce48cc663bdc4a760ec410f6",
-                    "line_number": 269
+                    "line_number": 273
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "a3e296dc69cd28202a38f73b2d4b57a9",
-                    "line_number": 272
+                    "line_number": 276
                 },
                 {
                     "branches": [
@@ -1358,19 +1358,19 @@
                     ],
                     "count": 1,
                     "gcovr/md5": "cc459c18ce48cc663bdc4a760ec410f6",
-                    "line_number": 274
+                    "line_number": 278
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "a5ed42af8f8896d1af443379712e5a5f",
-                    "line_number": 277
+                    "line_number": 281
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "4060985ba945597cd1f528d1880b4999",
-                    "line_number": 279
+                    "line_number": 283
                 },
                 {
                     "branches": [
@@ -1394,31 +1394,31 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "3acfab0519f3428bd6e85b610574acac",
-                    "line_number": 280
+                    "line_number": 284
                 },
                 {
                     "branches": [],
                     "count": 5,
                     "gcovr/md5": "55d711b351fb023f321f67130eacc2e8",
-                    "line_number": 282
+                    "line_number": 286
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "043b84861b98adf987e1231784d5af52",
-                    "line_number": 284
+                    "line_number": 288
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "6452493326f1adb6dbb8e661240f0725",
-                    "line_number": 287
+                    "line_number": 291
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "4060985ba945597cd1f528d1880b4999",
-                    "line_number": 289
+                    "line_number": 293
                 },
                 {
                     "branches": [
@@ -1452,37 +1452,37 @@
                         "type": "uncheckable"
                     },
                     "gcovr/md5": "f045ba8b7bbb82cb14b97f844c17a868",
-                    "line_number": 290
+                    "line_number": 294
                 },
                 {
                     "branches": [],
                     "count": 5,
                     "gcovr/md5": "55d711b351fb023f321f67130eacc2e8",
-                    "line_number": 292
+                    "line_number": 296
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "043b84861b98adf987e1231784d5af52",
-                    "line_number": 294
+                    "line_number": 298
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "f4b8e72891cf996cb8da3195b075336a",
-                    "line_number": 297
+                    "line_number": 301
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "4060985ba945597cd1f528d1880b4999",
-                    "line_number": 299
+                    "line_number": 303
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "d0a5dc4bd59ad4730f939048c07e34b3",
-                    "line_number": 300
+                    "line_number": 304
                 },
                 {
                     "branches": [
@@ -1506,55 +1506,55 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "670ed65f1c3b23a11afd3746e0865ce4",
-                    "line_number": 302
+                    "line_number": 306
                 },
                 {
                     "branches": [],
                     "count": 5,
                     "gcovr/md5": "ff85af6301d128a7daa567a0a0390e91",
-                    "line_number": 304
+                    "line_number": 308
                 },
                 {
                     "branches": [],
                     "count": 5,
                     "gcovr/md5": "55d711b351fb023f321f67130eacc2e8",
-                    "line_number": 305
+                    "line_number": 309
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "043b84861b98adf987e1231784d5af52",
-                    "line_number": 308
+                    "line_number": 312
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "cbafffe2e47d8b1805f93607e5a668c0",
-                    "line_number": 311
+                    "line_number": 315
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "4060985ba945597cd1f528d1880b4999",
-                    "line_number": 313
+                    "line_number": 317
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "d0a5dc4bd59ad4730f939048c07e34b3",
-                    "line_number": 314
-                },
-                {
-                    "branches": [],
-                    "count": 5,
-                    "gcovr/md5": "ff85af6301d128a7daa567a0a0390e91",
                     "line_number": 318
                 },
                 {
                     "branches": [],
                     "count": 5,
+                    "gcovr/md5": "ff85af6301d128a7daa567a0a0390e91",
+                    "line_number": 322
+                },
+                {
+                    "branches": [],
+                    "count": 5,
                     "gcovr/md5": "55d711b351fb023f321f67130eacc2e8",
-                    "line_number": 319
+                    "line_number": 323
                 },
                 {
                     "branches": [
@@ -1578,67 +1578,67 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "3e8434067cc44c9640dd8a6d237d800a",
-                    "line_number": 320
+                    "line_number": 324
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "043b84861b98adf987e1231784d5af52",
-                    "line_number": 322
+                    "line_number": 326
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "f8b4513731a14f4d9805082c72c433f7",
-                    "line_number": 325
+                    "line_number": 329
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "928c0e79786bd7f4e271f1b810308475",
-                    "line_number": 327
+                    "line_number": 331
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "527a8f31bcf6609350fead60576d6bce",
-                    "line_number": 328
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "0e9387f55399ceee62583ce672cc1370",
-                    "line_number": 330
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "9c196756bc02433fb578f76c2e8ca85f",
                     "line_number": 332
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "9aaae14be89d538995df72937d38b87e",
-                    "line_number": 335
+                    "gcovr/md5": "0e9387f55399ceee62583ce672cc1370",
+                    "line_number": 334
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "527a8f31bcf6609350fead60576d6bce",
+                    "gcovr/md5": "9c196756bc02433fb578f76c2e8ca85f",
                     "line_number": 336
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "3a8920632809f93dd1e65c2c9dc778ef",
-                    "line_number": 338
+                    "gcovr/md5": "9aaae14be89d538995df72937d38b87e",
+                    "line_number": 339
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "527a8f31bcf6609350fead60576d6bce",
-                    "line_number": 339
+                    "line_number": 340
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "3a8920632809f93dd1e65c2c9dc778ef",
+                    "line_number": 342
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "527a8f31bcf6609350fead60576d6bce",
+                    "line_number": 343
                 },
                 {
                     "branches": [
@@ -1662,25 +1662,25 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884",
-                    "line_number": 341
+                    "line_number": 345
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d",
-                    "line_number": 343
+                    "line_number": 347
                 },
                 {
                     "branches": [],
                     "count": 0,
                     "gcovr/md5": "645924eb3b07dbb34295edeaa6442673",
-                    "line_number": 346
+                    "line_number": 350
                 },
                 {
                     "branches": [],
                     "count": 2,
                     "gcovr/md5": "78cbf5dc7f0e6f7d02476603c791b3fd",
-                    "line_number": 349
+                    "line_number": 353
                 },
                 {
                     "branches": [
@@ -1704,7 +1704,7 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "ea7f2e78805e85d9aa20a2bec77cee2e",
-                    "line_number": 350
+                    "line_number": 354
                 },
                 {
                     "branches": [
@@ -1728,223 +1728,393 @@
                         "type": "conditional"
                     },
                     "gcovr/md5": "3e2cc082cb7c4086fe2acf4d52b8819b",
-                    "line_number": 351
+                    "line_number": 355
                 },
                 {
                     "branches": [],
                     "count": 2,
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "line_number": 354
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "8e855b46bd5f3510eb5ca2bf348886b1",
-                    "line_number": 356
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "3cc5c7379c991f20593f9e60cdff92e3",
                     "line_number": 358
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "b3aee9744dd3c8c21ee7958a20c812b8",
-                    "line_number": 359
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "92645afa29c10f35a9cff34bb1055444",
+                    "gcovr/md5": "8e855b46bd5f3510eb5ca2bf348886b1",
                     "line_number": 360
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "a01db9b27704d7c9d491dc2c4f8f9eb3",
-                    "line_number": 361
+                    "gcovr/md5": "3cc5c7379c991f20593f9e60cdff92e3",
+                    "line_number": 362
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "15d893e7d4568dd18290c2ad0f4bf4bb",
+                    "gcovr/md5": "b3aee9744dd3c8c21ee7958a20c812b8",
                     "line_number": 363
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "a9f40f5247afa5eafcf9d73780a49d14",
+                    "gcovr/md5": "92645afa29c10f35a9cff34bb1055444",
                     "line_number": 364
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "ab7cc9c5a6a1b8bacbce76dc0b953556",
-                    "line_number": 366
+                    "gcovr/md5": "a01db9b27704d7c9d491dc2c4f8f9eb3",
+                    "line_number": 365
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "4637d80dd004526f2eff906696f203ee",
+                    "gcovr/md5": "15d893e7d4568dd18290c2ad0f4bf4bb",
                     "line_number": 367
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "d0539d8a5f62a39e677f88e292e9596f",
-                    "line_number": 369
+                    "gcovr/md5": "a9f40f5247afa5eafcf9d73780a49d14",
+                    "line_number": 368
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "435dd23a0ad476b42e5e97c11ee07c59",
+                    "gcovr/md5": "ab7cc9c5a6a1b8bacbce76dc0b953556",
                     "line_number": 370
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "c5422996dc66f19290c22c6f15ce9975",
-                    "line_number": 372
+                    "gcovr/md5": "4637d80dd004526f2eff906696f203ee",
+                    "line_number": 371
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "e7110dd34c53922142313c2e26ddc0ac",
+                    "gcovr/md5": "d0539d8a5f62a39e677f88e292e9596f",
                     "line_number": 373
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "92007538956d002a31e280c7b6484fd3",
-                    "line_number": 375
+                    "gcovr/md5": "435dd23a0ad476b42e5e97c11ee07c59",
+                    "line_number": 374
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "3a5aa177c25976ed9a7fef7147852155",
+                    "gcovr/md5": "c5422996dc66f19290c22c6f15ce9975",
                     "line_number": 376
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "3ca06b2d4a93036239b05f0ec57838e2",
+                    "gcovr/md5": "e7110dd34c53922142313c2e26ddc0ac",
                     "line_number": 377
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "90e3bdbd267998fffc247854eafb7fab",
+                    "gcovr/md5": "92007538956d002a31e280c7b6484fd3",
                     "line_number": 379
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "2218abcab99d7f157fb8a725c709eff8",
+                    "gcovr/md5": "3a5aa177c25976ed9a7fef7147852155",
                     "line_number": 380
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "b47672a79f6c622ed3f76d76eca245b0",
+                    "gcovr/md5": "3ca06b2d4a93036239b05f0ec57838e2",
                     "line_number": 381
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "bf47c01ac22ec690a031557d2549af78",
+                    "gcovr/md5": "90e3bdbd267998fffc247854eafb7fab",
                     "line_number": 383
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "5c2e91ce4cb9f01e5d9c593325852c79",
+                    "gcovr/md5": "2218abcab99d7f157fb8a725c709eff8",
                     "line_number": 384
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "98a7a749633438d8c3fbce5f6e0e4dbe",
-                    "line_number": 386
+                    "gcovr/md5": "b47672a79f6c622ed3f76d76eca245b0",
+                    "line_number": 385
+                },
+                {
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        }
+                    ],
+                    "count": 1,
+                    "gcovr/md5": "9aef5fe9108e3cbc13c6552674316763",
+                    "line_number": 388
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "3d07f757c579cdcb84199581ac590035",
-                    "line_number": 387
+                    "gcovr/md5": "bf47c01ac22ec690a031557d2549af78",
+                    "line_number": 391
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "417d286a6a330312ff021a41177652df",
-                    "line_number": 389
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "6fca1b917c3eb34dafaf42c5b2fba108",
-                    "line_number": 390
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "a07e47adac4b00d46e8d03e1b3b4f074",
+                    "gcovr/md5": "5c2e91ce4cb9f01e5d9c593325852c79",
                     "line_number": 392
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "5c4ad7fb65100111dee2989629b891db",
-                    "line_number": 393
+                    "gcovr/md5": "98a7a749633438d8c3fbce5f6e0e4dbe",
+                    "line_number": 394
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "9267e0de8997916348249ed2da14f25b",
+                    "gcovr/md5": "3d07f757c579cdcb84199581ac590035",
                     "line_number": 395
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "33cef5a3aa96b6891c77909242530dca",
-                    "line_number": 396
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "5f8093ff079edf5092bf9c7103ea702b",
+                    "gcovr/md5": "417d286a6a330312ff021a41177652df",
                     "line_number": 397
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "dafda76cddea8476c38f1d88673abb9d",
+                    "gcovr/md5": "6fca1b917c3eb34dafaf42c5b2fba108",
                     "line_number": 398
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "2df255f12bacc5d1208535956b261df8",
+                    "gcovr/md5": "a07e47adac4b00d46e8d03e1b3b4f074",
                     "line_number": 400
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "3f3d124026146a196f8bbd3d3b64601c",
-                    "line_number": 402
+                    "gcovr/md5": "5c4ad7fb65100111dee2989629b891db",
+                    "line_number": 401
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "8ca7cc4fbe5ff42bfbc97665e2fd738d",
+                    "gcovr/md5": "9267e0de8997916348249ed2da14f25b",
                     "line_number": 403
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "7483dc5d2ba8642b2a3fed7915b6f508",
+                    "gcovr/md5": "33cef5a3aa96b6891c77909242530dca",
+                    "line_number": 404
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "5f8093ff079edf5092bf9c7103ea702b",
                     "line_number": 405
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "dafda76cddea8476c38f1d88673abb9d",
+                    "line_number": 406
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "2df255f12bacc5d1208535956b261df8",
+                    "line_number": 408
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "3f3d124026146a196f8bbd3d3b64601c",
+                    "line_number": 410
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "8ca7cc4fbe5ff42bfbc97665e2fd738d",
+                    "line_number": 411
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "7483dc5d2ba8642b2a3fed7915b6f508",
+                    "line_number": 413
+                }
+            ]
+        },
+        {
+            "file": "switch_test.cpp",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 5,
+                    "name": "SwitchTestIssue783::SwitchTestIssue783()"
+                },
+                {
+                    "execution_count": 1,
+                    "lineno": 7,
+                    "name": "SwitchTestIssue783::checkSwitch()"
+                }
+            ],
+            "lines": [
+                {
+                    "branches": [
+                        {
+                            "blockno": 1,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        }
+                    ],
+                    "count": 3,
+                    "gcovr/md5": "daaee5f922cdfe45cf6519c84a4de5b0",
+                    "line_number": 5
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "8047128d0af317bb6db2334074f87249",
+                    "line_number": 7
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "fa6d8aa38011d7d76109ffc5e615ffeb",
+                    "line_number": 8
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
+                    "line_number": 9
+                }
+            ]
+        },
+        {
+            "file": "switch_test.h",
+            "functions": [
+                {
+                    "execution_count": 1,
+                    "lineno": 15,
+                    "name": "SwitchTestIssue783::doSomething(SwitchTestIssue783::SomeEnum)"
+                }
+            ],
+            "lines": [
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "af21e6405cc1226c39e994ba8233ef61",
+                    "line_number": 15
+                },
+                {
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "count": 1,
+                    "gcovr/md5": "fcb068fee0ede6857cdd1a834d4da42f",
+                    "line_number": 16
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/decision": {
+                        "count": 1,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "6cf38b6f666597bfe088a84dea6fe22b",
+                    "line_number": 17
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "e442aca3482ae01847a8e3624a553ba3",
+                    "line_number": 18
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/decision": {
+                        "count": 0,
+                        "type": "switch"
+                    },
+                    "gcovr/md5": "648cebceec88bee865d519f95c2f386c",
+                    "line_number": 19
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "gcovr/md5": "10768d314ff01a06ad913aa6ed6ece64",
+                    "line_number": 21
                 }
             ]
         }
