@@ -635,12 +635,22 @@ def run_gcov_and_process_files(
         # This lock is essential for parallel processing because without
         # this there can be name collisions for the generated output files.
         with locked_directory(chdir):
+            filename = abs_filename
+            try:
+                filename = os.path.relpath(filename, chdir)
+            except Exception:
+                pass
+            object_directory = os.path.dirname(abs_filename)
+            try:
+                object_directory = os.path.relpath(object_directory, chdir)
+            except Exception:
+                pass
             out, err = gcov_cmd.run_with_args(
                 [
                     abs_filename,
                     *gcov_cmd.get_default_options(),
                     "--object-directory",
-                    os.path.dirname(abs_filename),
+                    object_directory,
                 ],
                 cwd=chdir,
             )
