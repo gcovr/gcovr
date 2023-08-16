@@ -224,9 +224,11 @@ class DecisionParser:
         # check if it's a case statement (measured at every line of a case, so a branch definition isn't given)
         elif _is_a_switch(code):
             # Get the coverage of the next line before a break
-            for next_lineno in range(
-                lineno, max(lineno + 1, *self.coverage.lines.keys())
-            ):
+            max_lineno = lineno + 1
+            if self.coverage.lines:
+                max_lineno = max(max_lineno, *self.coverage.lines.keys())
+
+            for next_lineno in range(lineno, max_lineno):
                 line_coverage = self.coverage.lines.get(next_lineno)
                 if line_coverage is not None:
                     line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)

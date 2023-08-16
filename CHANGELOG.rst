@@ -10,14 +10,19 @@ Known bugs:
 
 Breaking changes:
 
+- The exit code for an error of the reader module is changed from 8 to 64 and for a writer from 7 to 128. (:issue:`773`)
+
 New features and notable changes:
 
+- Add `--html-template-dir` option to use custom Jinja2 templates (:issue:`758`)
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
 - If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
 - Fix Dockerfile.qa to avoid uid conflicts. (:issue:`801`)
 - Pygments required >= 2.13.0. (:issue:`799`)
 - Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
+- Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
+
 
 Bug fixes and small improvements:
 
@@ -30,6 +35,7 @@ Bug fixes and small improvements:
 - Fix symlinked root directories on Windows. (:issue:`814`)
 - Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
+- Fix ``TypeError`` during decision analysis. (:issue:`784`)
 
 Documentation:
 
@@ -55,6 +61,7 @@ Internal changes:
 - Replace the deprecated codecov python uploader with the binary uploader. (:issue:`770`)
 - Add gcc-12 and gcc-13 to the test suite. (:issue:`780`)
 - Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
+- Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
 
 6.0 (08 March 2023)
 -------------------
