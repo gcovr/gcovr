@@ -23,7 +23,6 @@ New features and notable changes:
 - Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
 - Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
 
-
 Bug fixes and small improvements:
 
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)
@@ -36,6 +35,7 @@ Bug fixes and small improvements:
 - Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
 - Fix ``TypeError`` during decision analysis. (:issue:`784`)
+- Use relative paths if possible when running ``gcov``. (:issue:`820`)
 
 Documentation:
 
