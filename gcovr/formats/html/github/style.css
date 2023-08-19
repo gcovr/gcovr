@@ -85,6 +85,11 @@ td.linenos .normal {
     text-align: right;
 }
 
+.Label--minw > span {
+    min-width: 57px;
+    width: 57px;
+}
+
 .Label--coverage-unknown {
     visibility: hidden;
 }

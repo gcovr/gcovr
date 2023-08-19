@@ -59,6 +59,28 @@ but :option:`--html-details<gcovr --html-details>` and
 in order to avoid problems with the `Content Security Policy <CSP_>`_
 of some servers, especially Jenkins.
 
+The :option:`--html-theme<gcovr --html-theme>` option controls the theme and color of html report.
+
+.. figure:: ../../images/screenshot-html-github-green-src.png
+    :align: center
+
+:option:`--html-theme github.green<gcovr --html-theme>`
+
+.. figure:: ../../images/screenshot-html-github-blue-src.png
+    :align: center
+
+:option:`--html-theme github.blue<gcovr --html-theme>`
+
+.. figure:: ../../images/screenshot-html-github-dark-green-src.png
+    :align: center
+
+:option:`--html-theme github.dark-green<gcovr --html-theme>`
+
+.. figure:: ../../images/screenshot-html-github-dark-blue-src.png
+    :align: center
+
+:option:`--html-theme github.dark-blue<gcovr --html-theme>`
+
 The :option:`--html-template-dir<gcovr --html-template-dir>` option allows you to use an
 alternate directory with Jinja2 templates to fully customize the HTML output in detail.
 If a template is missing from this directory the original is used. It is advised that you
