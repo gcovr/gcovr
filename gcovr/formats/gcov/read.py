@@ -636,14 +636,16 @@ def run_gcov_and_process_files(
         # this there can be name collisions for the generated output files.
         with locked_directory(chdir):
             filename = abs_filename
+            # Use try catch because the relpath can fail on Windows for different drives.
+            # Do not know how to force this exception therefore ignore coverage.
             try:
                 filename = os.path.relpath(filename, chdir)
-            except Exception:
+            except Exception:  # pragma: no cover
                 pass
             object_directory = os.path.dirname(abs_filename)
             try:
                 object_directory = os.path.relpath(object_directory, chdir)
-            except Exception:
+            except Exception:  # pragma: no cover
                 pass
             out, err = gcov_cmd.run_with_args(
                 [
