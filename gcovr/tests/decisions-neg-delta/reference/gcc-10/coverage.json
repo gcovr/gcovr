@@ -4,10 +4,10 @@
             "file": "main.cpp",
             "functions": [
                 {
-                    "blocks_percent": 81.0,
+                    "blocks_percent": 70.0,
                     "execution_count": 1,
                     "lineno": 5,
-                    "name": "_ZN3Foo4workEi",
+                    "name": "Foo::work(int)",
                     "returned_count": 1
                 },
                 {
@@ -30,7 +30,7 @@
                         {
                             "blockno": 0,
                             "count": 1,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
@@ -54,30 +54,30 @@
                         {
                             "blockno": 0,
                             "count": 1,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 0,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": true
                         }
                     ],
-                    "count": 1,
+                    "count": 2,
                     "gcovr/md5": "531c09b5b187d2a095229382a14585af",
                     "line_number": 7
                 },
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 0,
                             "count": 2,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 0,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -95,12 +95,6 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3",
-                    "line_number": 10
-                },
-                {
-                    "branches": [],
-                    "count": 1,
                     "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9",
                     "line_number": 11
                 },
@@ -111,7 +105,20 @@
                     "line_number": 14
                 },
                 {
-                    "branches": [],
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        }
+                    ],
                     "count": 1,
                     "gcovr/md5": "24293cd6780e791208b4517af39d0960",
                     "line_number": 16

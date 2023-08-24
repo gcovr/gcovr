@@ -4,11 +4,11 @@
             "file": "main.cpp",
             "functions": [
                 {
-                    "blocks_percent": 33.0,
+                    "blocks_percent": 37.0,
                     "execution_count": 1,
                     "lineno": 4,
                     "name": "main",
-                    "returned_count": 0
+                    "returned_count": 1
                 }
             ],
             "lines": [

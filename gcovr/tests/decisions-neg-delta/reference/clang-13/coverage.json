@@ -4,14 +4,18 @@
             "file": "main.cpp",
             "functions": [
                 {
+                    "blocks_percent": 80.0,
                     "execution_count": 1,
                     "lineno": 5,
-                    "name": "Foo::work(int)"
+                    "name": "Foo::work(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 14,
-                    "name": "main"
+                    "name": "main",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -121,5 +125,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.5"
+    "gcovr/format_version": "0.6"
 }
