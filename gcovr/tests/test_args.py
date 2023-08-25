@@ -19,6 +19,7 @@
 
 from ..__main__ import main
 from ..version import __version__
+from ..formats.json.versions import JSON_FORMAT_VERSION
 
 import logging
 import pytest
@@ -516,7 +517,7 @@ def test_html_injection_via_json(capsys, tmp_path):
 
     script = '<script>alert("pwned")</script>'
     jsondata = {
-        "gcovr/format_version": "0.5",
+        "gcovr/format_version": JSON_FORMAT_VERSION,
         "files": [
             {"file": script, "functions": [], "lines": []},
             {"file": "other", "functions": [], "lines": []},
