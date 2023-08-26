@@ -240,7 +240,14 @@ class FunctionCoverage:
     __slots__ = "name", "count", "returned", "blocks", "excluded"
 
     def __init__(
-        self, name: str, *, lineno: int, count: int, returned: int, blocks: float, excluded: bool = False
+        self,
+        name: str,
+        *,
+        lineno: int,
+        count: int,
+        returned: int,
+        blocks: float,
+        excluded: bool = False,
     ) -> None:
         assert count >= 0
         self.name = name

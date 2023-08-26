@@ -349,7 +349,13 @@ def parse_coverage(
         name, count, returned, blocks = function
         insert_function_coverage(
             coverage,
-            FunctionCoverage(name, lineno=state.lineno + 1, count=count, returned=returned, blocks=blocks),
+            FunctionCoverage(
+                name,
+                lineno=state.lineno + 1,
+                count=count,
+                returned=returned,
+                blocks=blocks,
+            ),
             FUNCTION_MAX_LINE_MERGE_OPTIONS,
         )
 
@@ -420,7 +426,9 @@ def _gather_coverage_from_line(
 
             insert_function_coverage(
                 coverage,
-                FunctionCoverage(name, lineno=lineno, count=count, returned=returned, blocks=blocks),
+                FunctionCoverage(
+                    name, lineno=lineno, count=count, returned=returned, blocks=blocks
+                ),
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
@@ -815,7 +823,6 @@ def _parse_tag_line(
         return _SpecializationMarkerLine()
 
     return None
-
 
 
 def _int_from_gcov_unit(formatted: str) -> int:
