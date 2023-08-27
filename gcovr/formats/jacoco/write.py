@@ -76,9 +76,8 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
         className = fname.replace(".", "_")
         c.set("name", className)
-        c.set("sourcefilename", force_unix_separator(
-                os.path.join(options.root, filename)
-            )
+        c.set(
+            "sourcefilename", force_unix_separator(os.path.join(options.root, filename))
         )
         c.append(_counter_element("LINE", stats.line))
         c.append(_counter_element("BRANCH", class_branch))

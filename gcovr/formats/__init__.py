@@ -147,7 +147,7 @@ def write_reports(covdata: CovData, options: Options):
                 [options.sonarqube],
                 SonarqubeHandler(options).write_report,
                 lambda: LOGGER.warning(
-                    "Sonarqube output skipped - "
+                    "SonarQube output skipped - "
                     "consider providing an output file with `--sonarqube=OUTPUT`."
                 ),
             )
