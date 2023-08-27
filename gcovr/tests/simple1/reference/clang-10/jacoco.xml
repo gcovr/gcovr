@@ -4,24 +4,26 @@
   <package name="">
     <class name="main_cpp" sourcefilename="./main.cpp">
       <lines>
+        <line nr="3"/>
         <line nr="4"/>
-        <line nr="5" mb="1" cb="1"/>
-        <line nr="6"/>
-        <line nr="8"/>
-        <line nr="10"/>
+        <line nr="7"/>
+        <line nr="8" mb="1" cb="1"/>
+        <line nr="9"/>
+        <line nr="11"/>
         <line nr="13"/>
-        <line nr="14"/>
-        <line nr="18" mb="1" cb="1"/>
-        <line nr="19"/>
-        <line nr="23"/>
-        <line nr="25"/>
+        <line nr="16"/>
+        <line nr="17"/>
+        <line nr="21" mb="1" cb="1"/>
+        <line nr="22"/>
+        <line nr="26"/>
+        <line nr="28"/>
       </lines>
-      <counter type="LINE" missed="3" covered="8"/>
+      <counter type="LINE" missed="5" covered="8"/>
       <counter type="BRANCH" missed="2" covered="2"/>
     </class>
-    <counter type="LINE" missed="3" covered="8"/>
+    <counter type="LINE" missed="5" covered="8"/>
     <counter type="BRANCH" missed="2" covered="2"/>
   </package>
-  <counter type="LINE" missed="3" covered="8"/>
+  <counter type="LINE" missed="5" covered="8"/>
   <counter type="BRANCH" missed="2" covered="2"/>
 </report>
