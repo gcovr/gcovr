@@ -48,19 +48,19 @@ _T = TypeVar("_T")
 
 def sort_coverage(
     covdata: CovData,
-    show_branch: bool,
+    by_branch: bool,
+    by_num_uncovered: bool,
+    by_percent_uncovered: bool,
     filename_uses_relative_pathname: bool = False,
-    by_num_uncovered: bool = False,
-    by_percent_uncovered: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
-    show_branch (bool): select branch coverage (True) or line coverage (False)
-    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
-        relative path, but not for other formats.
+    by_branch (bool): select branch coverage (True) or line coverage (False)
     by_num_uncovered, by_percent_uncovered (bool):
         select the sort mode. By default, sort alphabetically.
+    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
+        relative path, but not for other formats.
 
     returns: the sorted keys
     """
@@ -68,7 +68,7 @@ def sort_coverage(
 
     def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
-        if show_branch:
+        if by_branch:
             return cov.branch_coverage()
         return cov.line_coverage()
 
@@ -229,18 +229,31 @@ class FunctionCoverage:
             The line number.
         count (int):
             How often this function was executed.
+        returned (int):
+            How often this function returned.
+        blocks (float):
+            Block coverage of function.
         excluded (bool, optional):
             Whether this line is excluded by a marker.
     """
 
-    __slots__ = "name", "count", "excluded"
+    __slots__ = "name", "count", "returned", "blocks", "excluded"
 
     def __init__(
-        self, name: str, *, lineno: int, count: int, excluded: bool = False
+        self,
+        name: str,
+        *,
+        lineno: int,
+        count: int,
+        returned: int,
+        blocks: float,
+        excluded: bool = False,
     ) -> None:
         assert count >= 0
         self.name = name
         self.count: Dict[int, int] = {lineno: count}
+        self.returned: Dict[int, int] = {lineno: returned}
+        self.blocks: Dict[int, int] = {lineno: blocks}
         self.excluded: Dict[int, bool] = {lineno: excluded}
 
 

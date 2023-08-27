@@ -187,7 +187,7 @@ def _get_value_from_config_entry(
     if option.action == "store_const":
         use_const = get_boolean()
     # special case: nargs=? optionally expects a boolean
-    elif option.nargs == "?":
+    elif option.nargs == "?" and option.choices is None:
         use_const = get_boolean(silent_error=True)
     else:
         use_const = None  # marker to continue with parsing
@@ -401,7 +401,8 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "Exit with a status of 2 "
             "if the total line coverage is less than MIN. "
-            "Can be ORed with exit status of '--fail-under-branch' option."
+            "Can be ORed with exit status of '--fail-under-branch', "
+            "'--fail-under-decision', and '--fail-under-function' option."
         ),
         default=0.0,
     ),
@@ -413,7 +414,34 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "Exit with a status of 4 "
             "if the total branch coverage is less than MIN. "
-            "Can be ORed with exit status of '--fail-under-line' option."
+            "Can be ORed with exit status of '--fail-under-line', "
+            "'--fail-under-decision', and '--fail-under-function' option."
+        ),
+        default=0.0,
+    ),
+    GcovrConfigOption(
+        "fail_under_decision",
+        ["--fail-under-decision"],
+        type=check_percentage,
+        metavar="MIN",
+        help=(
+            "Exit with a status of 8 "
+            "if the total decision coverage is less than MIN. "
+            "Can be ORed with exit status of '--fail-under-line', "
+            "'--fail-under-branch', and '--fail-under-function' option."
+        ),
+        default=0.0,
+    ),
+    GcovrConfigOption(
+        "fail_under_function",
+        ["--fail-under-function"],
+        type=check_percentage,
+        metavar="MIN",
+        help=(
+            "Exit with a status of 16 "
+            "if the total function coverage is less than MIN. "
+            "Can be ORed with exit status of '--fail-under-line', "
+            "'--fail-under-branch', and '--fail-under-decision' option."
         ),
         default=0.0,
     ),
@@ -443,8 +471,8 @@ GCOVR_CONFIG_OPTIONS = [
         config="txt-branch",
         group="output_options",
         help=(
-            "Report the branch coverage instead of the line coverage. "
-            "For text report only."
+            "For text report: Report the branch coverage instead of the line coverage.\n"
+            "For CSV/JSON report: Sort files by branch coverage instead of line coverage."
         ),
         action="store_true",
     ),

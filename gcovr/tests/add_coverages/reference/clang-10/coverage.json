@@ -4,9 +4,11 @@
             "file": "bar.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "_Z3barv"
+                    "name": "_Z3barv",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -40,9 +42,11 @@
             "file": "foo.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "_Z3foov"
+                    "name": "_Z3foov",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -76,9 +80,11 @@
             "file": "main.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 10,
-                    "name": "main"
+                    "name": "main",
+                    "returned_count": 2
                 }
             ],
             "lines": [
@@ -109,5 +115,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.5"
+    "gcovr/format_version": "0.6"
 }

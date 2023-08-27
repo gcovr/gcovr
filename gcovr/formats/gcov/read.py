@@ -47,8 +47,11 @@ from .parser import parse_metadata, parse_coverage
 LOGGER = logging.getLogger("gcovr")
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
-source_re = re.compile(
-    r"(?:[Cc](?:annot|ould not) open (?:source|graph|output) file|: No such file or directory|Operation not permitted|Permission denied)"
+source_error_re = re.compile(
+    r"(?:[Cc](?:annot|ould not) open (?:source|graph) file|: No such file or directory)"
+)
+output_error_re = re.compile(
+    r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied)"
 )
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
@@ -653,15 +656,35 @@ def run_gcov_and_process_files(
             if unknown_cla_re.search(err):
                 # gcov tossed errors: throw exception
                 raise RuntimeError(f"Error in gcov command line: {err}")
-            elif source_re.search(err):
-                # gcov tossed errors: try the next potential_wd
-                error(err)
-                done = False
             else:
-                # Process *.gcov files
-                for fname in active_gcov_files:
-                    process_gcov_data(fname, abs_filename, covdata, options)
-                done = True
+                ignore_source_errors = options.gcov_ignore_errors is not None and any(
+                    [
+                        v in options.gcov_ignore_errors
+                        for v in ["all", "source_not_found"]
+                    ]
+                )
+                ignore_output_errors = options.gcov_ignore_errors is not None and any(
+                    [v in options.gcov_ignore_errors for v in ["all", "output_error"]]
+                )
+                if (
+                    # GCOV did not find source file and error shall not be ignored
+                    (source_error_re.search(err) and not ignore_source_errors)
+                    # GCOV can not write output file and error shall not be ignored
+                    or (output_error_re.search(err) and not ignore_output_errors)
+                ):
+                    # gcov tossed errors: try the next potential_wd
+                    error(f"In directory {chdir}:\n{err}")
+                    done = False
+                else:
+                    if ignore_output_errors:
+                        active_gcov_files = [
+                            f for f in active_gcov_files if os.path.exists(f)
+                        ]
+
+                    # Process *.gcov files
+                    for fname in active_gcov_files:
+                        process_gcov_data(fname, abs_filename, covdata, options)
+                    done = True
 
             if options.gcov_keep and done:
                 basename = os.path.basename(abs_filename)
@@ -683,7 +706,7 @@ def run_gcov_and_process_files(
             f"Stdout of gcov was >>{out}<< End of stdout\n"
             f"Stderr of gcov was >>{err}<< End of stderr\n"
             f"Current processed gcov file was {fname!r}.\n"
-            "Use option --verbose to get extended informations."
+            "Use option --verbose to get extended information."
         )
         raise
 

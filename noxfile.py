@@ -301,8 +301,8 @@ def tests_compiler(session: nox.Session, version: str) -> None:
 @nox.session
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
-    session.install("wheel")
-    session.run("python", "setup.py", "sdist", "bdist_wheel")
+    session.install("build")
+    session.run("python", "-m", "build")
     dist_cache = f"{session.cache_dir}/dist"
     if os.path.isdir(dist_cache):
         shutil.rmtree(dist_cache)

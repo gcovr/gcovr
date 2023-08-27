@@ -35,6 +35,10 @@ The ``gcovr`` command can produce different kinds of coverage reports:
      - |abstract-guide-html-details|
      - annotated source files
 
+   * - |abstract-option-html-template-dir|
+     - |abstract-guide-html-template-dir|
+     - use custom set of Jinja2 templates
+
    * - |abstract-option-cobertura|
      - |abstract-guide-cobertura|
      - machine readable XML reports in Cobertura_ format
@@ -81,6 +85,7 @@ text summaries and XML reports.
 .. |abstract-option-html| replace:: ``--html``
 .. |abstract-option-html-details| replace:: ``--html-details``
 .. |abstract-option-html-nested| replace:: ``--html-nested``
+.. |abstract-option-html-template-dir| replace:: ``--html-template-dir``
 .. |abstract-option-cobertura| replace:: ``--cobertura``
 .. |abstract-option-sonarqube| replace:: ``--sonarqube``
 .. |abstract-option-json| replace:: ``--json``
@@ -91,6 +96,7 @@ text summaries and XML reports.
 .. |abstract-guide-txt| replace:: `Text Output <https://gcovr.com/en/stable/output/txt.html>`__
 .. |abstract-guide-html| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
 .. |abstract-guide-html-details| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
+.. |abstract-guide-html-template-dir| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
 .. |abstract-guide-cobertura| replace:: `Cobertura XML Output <https://gcovr.com/en/stable/output/cobertura.html>`__
 .. |abstract-guide-sonarqube| replace:: `Sonarqube XML Output <https://gcovr.com/en/stable/output/sonarqube.html>`__
 .. |abstract-guide-json| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__

@@ -1,5 +1,8 @@
 #include <iostream>
 
+int not_called(void) {
+   return 1;
+}
 
 int foo(int param) {
   if (param) {
