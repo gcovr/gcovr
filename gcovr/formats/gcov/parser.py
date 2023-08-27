@@ -346,10 +346,16 @@ def parse_coverage(
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
-        name, count, _, _ = function
+        name, count, returned, blocks = function
         insert_function_coverage(
             coverage,
-            FunctionCoverage(name, lineno=state.lineno + 1, count=count),
+            FunctionCoverage(
+                name,
+                lineno=state.lineno + 1,
+                count=count,
+                returned=returned,
+                blocks=blocks,
+            ),
             FUNCTION_MAX_LINE_MERGE_OPTIONS,
         )
 
@@ -416,11 +422,13 @@ def _gather_coverage_from_line(
 
         # handle deferred functions
         for function in state.deferred_functions:
-            name, count, _, _ = function
+            name, count, returned, blocks = function
 
             insert_function_coverage(
                 coverage,
-                FunctionCoverage(name, lineno=lineno, count=count),
+                FunctionCoverage(
+                    name, lineno=lineno, count=count, returned=returned, blocks=blocks
+                ),
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
@@ -602,8 +610,12 @@ def _parse_line(
     gcovr.formats.gcov.parser.UnknownLineType: unconditional with some unknown format
 
     Example: can parse function tags:
-    >>> _parse_line('function foo called 2 returned 95% blocks executed 85%')
-    _FunctionLine(name='foo', count=2, returned=1, blocks_covered=1)
+    >>> _parse_line('function foo called 2 returned 1 blocks executed 85%')
+    _FunctionLine(name='foo', count=2, returned=1, blocks_covered=85.0)
+    >>> _parse_line('function foo called 2 returned 50% blocks executed 85%')
+    _FunctionLine(name='foo', count=2, returned=1, blocks_covered=85.0)
+    >>> _parse_line('function foo called 2 returned 100% blocks executed 85%')
+    _FunctionLine(name='foo', count=2, returned=2, blocks_covered=85.0)
     >>> _parse_line('function foo with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.UnknownLineType: function foo with some unknown format
@@ -793,12 +805,15 @@ def _parse_tag_line(
     if line.startswith("function "):
         match = _RE_FUNCTION_LINE.match(line)
         if match is not None:
-            name, count, returns, blocks = match.groups()
+            name, count, returned, blocks = match.groups()
+            count = _int_from_gcov_unit(count)
             return _FunctionLine(
                 name,
-                _int_from_gcov_unit(count),
-                _int_from_gcov_unit(returns),
-                _int_from_gcov_unit(blocks),
+                count,
+                int(_float_from_gcov_percent(returned) * count / 100)
+                if returned[-1] == "%"
+                else int(returned),
+                _float_from_gcov_percent(blocks),
             )
 
     # SPECIALIZATION MARKER
@@ -851,3 +866,17 @@ def _int_from_gcov_unit(formatted: str) -> int:
             return int(float(formatted[:-1]) * 1000**exponent)
 
     return int(formatted)
+
+
+def _float_from_gcov_percent(formatted: str) -> int:
+    """
+    Transform percentage to float value
+
+    Examples:
+    >>> [_float_from_gcov_percent(value) for value in ('NAN %', '17.2%', '0%')]
+    [nan, 17.2, 0.0]
+    """
+
+    assert formatted.endswith("%"), f"Number must end with %, got {formatted}"
+
+    return float(formatted[:-1])

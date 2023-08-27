@@ -36,9 +36,10 @@ def get_options() -> List[GcovrConfigOption]:
 
 
 def read_reports(options) -> CovData:
-    covdata: CovData = JsonHandler(options).read_report()
-
-    if covdata is None:
+    if options.json_add_tracefile or options.cobertura_add_tracefile:
+        covdata: CovData = JsonHandler(options).read_report() or {}
+        covdata.update(CoberturaHandler(options).read_report() or {})
+    else:
         covdata = GcovHandler(options).read_report()
 
     return covdata

@@ -4,20 +4,26 @@
             "file": "main.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 0,
                     "gcovr/excluded": true,
                     "lineno": 20,
-                    "name": "bar()"
+                    "name": "bar()",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 4,
-                    "name": "foo(int)"
+                    "name": "foo(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 25,
-                    "name": "main"
+                    "name": "main",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -107,5 +113,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.5"
+    "gcovr/format_version": "0.6"
 }

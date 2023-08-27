@@ -486,7 +486,7 @@ def test_trailing_function_tag():
     source = textwrap.dedent(
         """\
       #####: 2:example line
-    function example called 17 returned 16 blocks executed 3
+    function example called 17 returned 16 blocks executed 3%
     """
     )
 

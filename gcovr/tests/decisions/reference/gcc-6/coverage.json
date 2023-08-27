@@ -4,164 +4,228 @@
             "file": "main.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 32,
-                    "name": "checkBiggerBoth(int)"
+                    "name": "checkBiggerBoth(int)",
+                    "returned_count": 2
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 20,
-                    "name": "checkBiggerFalse(int)"
+                    "name": "checkBiggerFalse(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 8,
-                    "name": "checkBiggerTrue(int)"
+                    "name": "checkBiggerTrue(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 246,
-                    "name": "checkCompactBranch1False(int)"
+                    "name": "checkCompactBranch1False(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 241,
-                    "name": "checkCompactBranch1True(int)"
+                    "name": "checkCompactBranch1True(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 256,
-                    "name": "checkCompactBranch2False(int)"
+                    "name": "checkCompactBranch2False(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 80.0,
                     "execution_count": 1,
                     "lineno": 251,
-                    "name": "checkCompactBranch2True(int)"
+                    "name": "checkCompactBranch2True(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 67.0,
                     "execution_count": 1,
                     "lineno": 128,
-                    "name": "checkComplexFalse(int)"
+                    "name": "checkComplexFalse(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 291,
-                    "name": "checkComplexForLoop(int)"
+                    "name": "checkComplexForLoop(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 83.0,
                     "execution_count": 1,
                     "lineno": 116,
-                    "name": "checkComplexTrue(int)"
+                    "name": "checkComplexTrue(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 315,
-                    "name": "checkDoWhileLoop(int)"
+                    "name": "checkDoWhileLoop(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 50.0,
                     "execution_count": 1,
                     "lineno": 140,
-                    "name": "checkElseIf1(int)"
+                    "name": "checkElseIf1(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 67.0,
                     "execution_count": 1,
                     "lineno": 156,
-                    "name": "checkElseIf2(int)"
+                    "name": "checkElseIf2(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 67.0,
                     "execution_count": 1,
                     "lineno": 172,
-                    "name": "checkElseIf3(int)"
+                    "name": "checkElseIf3(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 80,
-                    "name": "checkEqualFalse(int)"
+                    "name": "checkEqualFalse(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 68,
-                    "name": "checkEqualTrue(int)"
+                    "name": "checkEqualTrue(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 281,
-                    "name": "checkForLoop(int)"
+                    "name": "checkForLoop(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 80.0,
                     "execution_count": 1,
                     "lineno": 329,
-                    "name": "checkInterpreter(int)"
+                    "name": "checkInterpreter(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 104,
-                    "name": "checkNotEqualFalse(int)"
+                    "name": "checkNotEqualFalse(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 92,
-                    "name": "checkNotEqualTrue(int)"
+                    "name": "checkNotEqualTrue(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 56,
-                    "name": "checkSmallerFalse(int)"
+                    "name": "checkSmallerFalse(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 44,
-                    "name": "checkSmallerTrue(int)"
+                    "name": "checkSmallerTrue(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 188,
-                    "name": "checkSwitch1(int)"
+                    "name": "checkSwitch1(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 209,
-                    "name": "checkSwitch2(int)"
+                    "name": "checkSwitch2(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 225,
-                    "name": "checkSwitch3(int)"
+                    "name": "checkSwitch3(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 266,
-                    "name": "checkTernary1False(int)"
+                    "name": "checkTernary1False(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 261,
-                    "name": "checkTernary1True(int)"
+                    "name": "checkTernary1True(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 67.0,
                     "execution_count": 1,
                     "lineno": 276,
-                    "name": "checkTernary2False(int)"
+                    "name": "checkTernary2False(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 83.0,
                     "execution_count": 1,
                     "lineno": 271,
-                    "name": "checkTernary2True(int)"
+                    "name": "checkTernary2True(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 301,
-                    "name": "checkWhileLoop(int)"
+                    "name": "checkWhileLoop(int)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 95.0,
                     "execution_count": 1,
                     "lineno": 360,
-                    "name": "main"
+                    "name": "main",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 353,
-                    "name": "verify_issue_679(bool)"
+                    "name": "verify_issue_679(bool)",
+                    "returned_count": 2
                 }
             ],
             "lines": [
@@ -1929,14 +1993,18 @@
             "file": "switch_test.cpp",
             "functions": [
                 {
+                    "blocks_percent": 71.0,
                     "execution_count": 1,
                     "lineno": 5,
-                    "name": "SwitchTestIssue783::SwitchTestIssue783()"
+                    "name": "SwitchTestIssue783::SwitchTestIssue783()",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 7,
-                    "name": "SwitchTestIssue783::checkSwitch()"
+                    "name": "SwitchTestIssue783::checkSwitch()",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -1983,14 +2051,18 @@
             "file": "switch_test.h",
             "functions": [
                 {
+                    "blocks_percent": 50.0,
                     "execution_count": 1,
                     "lineno": 15,
-                    "name": "SwitchTestIssue783::doSomething(SwitchTestIssue783::SomeEnum)"
+                    "name": "SwitchTestIssue783::doSomething(SwitchTestIssue783::SomeEnum)",
+                    "returned_count": 1
                 },
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 6,
-                    "name": "SwitchTestIssue783::~SwitchTestIssue783()"
+                    "name": "SwitchTestIssue783::~SwitchTestIssue783()",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -2076,5 +2148,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.5"
+    "gcovr/format_version": "0.6"
 }

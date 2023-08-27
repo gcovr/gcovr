@@ -19,6 +19,7 @@
 
 from ..__main__ import main
 from ..version import __version__
+from ..formats.json.versions import JSON_FORMAT_VERSION
 
 import logging
 import pytest
@@ -516,7 +517,7 @@ def test_html_injection_via_json(capsys, tmp_path):
 
     script = '<script>alert("pwned")</script>'
     jsondata = {
-        "gcovr/format_version": "0.5",
+        "gcovr/format_version": JSON_FORMAT_VERSION,
         "files": [
             {"file": script, "functions": [], "lines": []},
             {"file": "other", "functions": [], "lines": []},
@@ -533,6 +534,124 @@ def test_html_injection_via_json(capsys, tmp_path):
     assert script not in c.out
     assert str(markupsafe.escape(script)) in c.out, "--- got:\n{}\n---".format(c.out)
     assert c.exception.code == 0
+
+
+def test_import_valid_cobertura_file(tmp_path):
+    from ..formats import read_reports
+    from ..configuration import merge_options_and_set_defaults
+    from ..coverage import FileCoverage
+
+    testfile = "/path/to/source/code.cpp"
+    xmldata = f"""<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 6.0+master">
+  <sources>
+    <source>.</source>
+  </sources>
+  <packages>
+    <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+      <classes>
+        <class name="code_cpp" filename="{testfile}" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="3" hits="3" branch="false"/>
+            <line number="4" hits="3" branch="true" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="100%"/>
+              </conditions>
+            </line>
+            <line number="5" hits="2" branch="false"/>
+            <line number="7" hits="1" branch="false"/>
+            <line number="9" hits="3" branch="false"/>
+            <line number="12" hits="2" branch="false"/>
+            <line number="13" hits="2" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="14" hits="2" branch="false"/>
+            <line number="16" hits="0" branch="false"/>
+            <line number="18" hits="2" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
+    """
+    tempfile = tmp_path / "valid_cobertura.xml"
+    with tempfile.open("w+") as fp:
+        fp.write(xmldata)
+
+    filename = str(tempfile)
+    opts = merge_options_and_set_defaults(
+        [{"cobertura_add_tracefile": [filename], "filter": [re.compile(".")]}]
+    )
+    covdata = read_reports(opts)
+    assert covdata is not None
+    assert testfile in covdata
+    fcov: FileCoverage = covdata[testfile]
+    assert len(fcov.lines) == 10
+    for line, count, branches in [
+        (7, 1, None),
+        (9, 3, None),
+        (16, 0, None),
+        (13, 2, [1, 0]),
+    ]:
+        assert fcov.lines[line].count == count
+        if branches is not None:
+            assert len(fcov.lines[line].branches) == len(branches)
+            for branch_idx, branch_count in enumerate(branches):
+                assert fcov.lines[line].branches[branch_idx].count == branch_count
+
+
+def test_import_corrupt_cobertura_file(caplog, tmp_path):
+    xmldata = "weiuh wliecsdfsef"
+    tempfile = tmp_path / "corrupt_cobertura.xml"
+    with tempfile.open("w+") as fp:
+        fp.write(xmldata)
+
+    c = log_capture(caplog, ["--cobertura-add-tracefile", str(tempfile)])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert "Start tag expected" in message[2]
+    assert c.exception.code != 0
+
+
+def test_import_cobertura_file_with_invalid_line(caplog, tmp_path):
+    xmldata = """<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 6.0+master">
+  <sources>
+    <source>.</source>
+  </sources>
+  <packages>
+    <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+      <classes>
+        <class name="code_cpp" filename="/path/to/source/code.cpp" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="3" hits="3" branch="false"/>
+            <line number="asdas" branch="true" condition-coverage="100% (2/2)" />
+            <line number="18" hits="2" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
+    """
+    tempfile = tmp_path / "cobertura_invalid_line.xml"
+    with tempfile.open("w+") as fp:
+        fp.write(xmldata)
+
+    c = log_capture(
+        caplog, ["--cobertura-add-tracefile", str(tempfile), "--filter", "."]
+    )
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert "'number' attribute is required and must be an integer" in message[2]
+    assert c.exception.code != 0
 
 
 def test_exclude_lines_by_pattern(caplog):

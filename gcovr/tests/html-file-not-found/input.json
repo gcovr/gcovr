@@ -4,9 +4,11 @@
             "file": "does-not-exist.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 2,
-                    "name": "main"
+                    "name": "main",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -23,5 +25,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.5"
+    "gcovr/format_version": "0.6"
 }

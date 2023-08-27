@@ -302,11 +302,21 @@ def merge_function(
 
     # keep distinct counts for each line number
     if options.separate_function:
-        for lineno, count in right.count.items():
+        for lineno, count in sorted(right.count.items()):
             try:
                 left.count[lineno] += count
             except KeyError:
                 left.count[lineno] = count
+        for lineno, returned in right.returned.items():
+            try:
+                left.returned[lineno] += returned
+            except KeyError:
+                left.returned[lineno] = returned
+        for lineno, blocks in right.blocks.items():
+            try:
+                left.blocks[lineno] += blocks
+            except KeyError:
+                left.blocks[lineno] = blocks
         for lineno, excluded in right.excluded.items():
             try:
                 left.excluded[lineno] += excluded
@@ -329,6 +339,9 @@ def merge_function(
 
     # Overwrite data with the sum at the desired line
     left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
+    left.returned = {lineno: sum(left.returned.values()) + sum(right.returned.values())}
+    # or the max value at the desired line
+    left.blocks = {lineno: max(*left.blocks.values(), *right.blocks.values())}
     left.excluded = {
         lineno: any(left.excluded.values()) or any(right.excluded.values())
     }
