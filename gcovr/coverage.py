@@ -229,18 +229,31 @@ class FunctionCoverage:
             The line number.
         count (int):
             How often this function was executed.
+        returned (int):
+            How often this function returned.
+        blocks (float):
+            Block coverage of function.
         excluded (bool, optional):
             Whether this line is excluded by a marker.
     """
 
-    __slots__ = "name", "count", "excluded"
+    __slots__ = "name", "count", "returned", "blocks", "excluded"
 
     def __init__(
-        self, name: str, *, lineno: int, count: int, excluded: bool = False
+        self,
+        name: str,
+        *,
+        lineno: int,
+        count: int,
+        returned: int,
+        blocks: float,
+        excluded: bool = False,
     ) -> None:
         assert count >= 0
         self.name = name
         self.count: Dict[int, int] = {lineno: count}
+        self.returned: Dict[int, int] = {lineno: returned}
+        self.blocks: Dict[int, int] = {lineno: blocks}
         self.excluded: Dict[int, bool] = {lineno: excluded}
 
 

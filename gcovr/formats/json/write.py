@@ -232,6 +232,8 @@ def _json_from_function(function: FunctionCoverage) -> list:
             "name": function.name,
             "lineno": lineno,
             "execution_count": count,
+            "returned_count": function.returned[lineno],
+            "blocks_percent": function.blocks[lineno],
         }
         if function.excluded[lineno]:
             json_function["gcovr/excluded"] = True

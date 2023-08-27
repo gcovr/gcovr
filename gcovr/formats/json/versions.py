@@ -17,5 +17,5 @@
 #
 # ****************************************************************************
 
-JSON_FORMAT_VERSION = "0.5"
+JSON_FORMAT_VERSION = "0.6"
 JSON_SUMMARY_FORMAT_VERSION = "0.5"
