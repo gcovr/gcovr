@@ -529,8 +529,6 @@ def test_multiple_output_formats_to_stdout_1(caplog):
     assert c.exception.code == 0
 
 
-
-
 def test_no_self_contained_without_file(caplog):
     c = log_capture(caplog, ["--no-html-self-contained", "--html"])
     message = c.record_tuples[0]
