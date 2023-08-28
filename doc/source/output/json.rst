@@ -212,6 +212,8 @@ Each **function** entry describes a line in the source file::
       "name": name,
       "lineno": lineno,
       "execution_count": count,
+      "returned_count": count,
+      "branch_percent": percent,
       "gcovr/excluded": excluded
     }
 
@@ -226,12 +228,21 @@ lineno: int
 execution_count: int
   How often this function was called.
 
+returned_count: int
+  How often this function returned.
+
+branch_percent: float
+  The branch coverage in percent (0.0 to 100.0).
+
 gcovr/excluded: boolean
   True if coverage data for this function was explicitly excluded,
   in particular with :ref:`exclusion markers`.
   May be absent if false.
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
+
+.. versionadded:: NEXT
+   New ``returned_count`` and ``branch_percent`` field.
 
 .. versionadded:: 6.0
    New ``gcovr/excluded`` field.
