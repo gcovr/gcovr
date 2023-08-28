@@ -25,7 +25,6 @@ from lxml import etree
 
 from ...options import Options
 
-from ...version import __version__
 from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
 from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
 
