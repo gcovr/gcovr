@@ -1,12 +1,15 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube coveralls
+run: json txt cobertura html sonarqube coveralls
 
 coverage-throw.json coverage-excl-throw.json:
 	./testcase
-	$(GCOVR) --json-pretty --json coverage-throw.json
-	$(GCOVR) --json-pretty --json coverage-excl-throw.json --exclude-throw-branches
+	$(GCOVR) --gcov-keep --json-pretty --json coverage-throw.json
+	$(GCOVR) --gcov-keep  --json-pretty --json coverage-excl-throw.json --exclude-throw-branches
+
+json: coverage-throw.json coverage-excl-throw.json
+	echo "Files created"
 
 txt: coverage-throw.json coverage-excl-throw.json
 	$(GCOVR) -a coverage-throw.json -o coverage-throw.txt

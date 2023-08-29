@@ -4,9 +4,11 @@
             "file": "bar.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "bar()"
+                    "name": "bar()",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -40,9 +42,11 @@
             "file": "foo.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "foo()"
+                    "name": "foo()",
+                    "returned_count": 1
                 }
             ],
             "lines": [
@@ -76,9 +80,11 @@
             "file": "main.cpp",
             "functions": [
                 {
+                    "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 10,
-                    "name": "main"
+                    "name": "main",
+                    "returned_count": 2
                 }
             ],
             "lines": [
@@ -140,5 +146,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.5"
+    "gcovr/format_version": "0.6"
 }
