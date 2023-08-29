@@ -579,6 +579,7 @@ def test_import_valid_cobertura_file(tmp_path):
   </packages>
 </coverage>
     """
+    testfile = os.path.abspath(testfile)
     tempfile = tmp_path / "valid_cobertura.xml"
     with tempfile.open("w+") as fp:
         fp.write(xmldata)
