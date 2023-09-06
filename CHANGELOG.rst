@@ -24,6 +24,7 @@ New features and notable changes:
 - Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
 - Add function coverage to data model. (:issue:`822`)
 - Add support for importing Cobertura XML files with ``--cobertura-add-tracefile`` option. (:issue:`805`)
+- Add function coverage to HTML report. (:issue:`828`)
 
 Bug fixes and small improvements:
 
