@@ -451,52 +451,81 @@ def test_html_template_dir(capsys):
 
 def test_multiple_output_formats_to_stdout(caplog):
     c = log_capture(
-        caplog, ["--xml", "--html", "--sonarqube", "--coveralls", "--root", "gcovr"]
+        caplog,
+        [
+            "--coveralls",
+            "--cobertura",
+            "--csv",
+            "--html",
+            "--jacoco",
+            "--json",
+            "--json-summary",
+            "--sonarqube",
+            "--txt",
+            "--root",
+            "gcovr",
+        ],
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
-    )
-    message = c.record_tuples[1]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
-    )
-    message = c.record_tuples[2]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
-    )
+    for index, text_fragments in enumerate(
+        [
+            ("Coveralls", "--coveralls"),
+            ("CSV", "--csv"),
+            ("HTML", "--html"),
+            ("JaCoCo", "--jacoco"),
+            ("JSON", "--json"),
+            ("JSON summary", "--json-summary"),
+            ("SonarQube", "--sonarqube"),
+            ("Text", "--txt"),
+        ]
+    ):
+        format, option = text_fragments
+        message = c.record_tuples[index]
+        assert message[1] == logging.WARNING
+        assert (
+            message[2]
+            == f"{format} output skipped - consider providing an output file with `{option}=OUTPUT`."
+        )
     assert c.exception.code == 0
 
 
 def test_multiple_output_formats_to_stdout_1(caplog):
     c = log_capture(
         caplog,
-        ["--xml", "--html", "--sonarqube", "--coveralls", "-o", "-", "--root", "gcovr"],
+        [
+            "--coveralls",
+            "--cobertura",
+            "--csv",
+            "--html",
+            "--jacoco",
+            "--json",
+            "--json-summary",
+            "--sonarqube",
+            "--txt",
+            "-o",
+            "-",
+            "--root",
+            "gcovr",
+        ],
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
-    )
-    message = c.record_tuples[1]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
-    )
-    message = c.record_tuples[2]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
-    )
+    for index, text_fragments in enumerate(
+        [
+            ("Coveralls", "--coveralls"),
+            ("CSV", "--csv"),
+            ("HTML", "--html"),
+            ("JaCoCo", "--jacoco"),
+            ("JSON", "--json"),
+            ("JSON summary", "--json-summary"),
+            ("SonarQube", "--sonarqube"),
+            ("Text", "--txt"),
+        ]
+    ):
+        format, option = text_fragments
+        message = c.record_tuples[index]
+        assert message[1] == logging.WARNING
+        assert (
+            message[2]
+            == f"{format} output skipped - consider providing an output file with `{option}=OUTPUT`."
+        )
     assert c.exception.code == 0
 
 

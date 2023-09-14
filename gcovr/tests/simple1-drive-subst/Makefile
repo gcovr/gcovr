@@ -13,7 +13,7 @@ endif
 all: check-env
 	cmd.exe /C call wrap.cmd $(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube json json_summary coveralls
+run: txt cobertura html sonarqube jacoco json json_summary coveralls
 
 txt: check-env
 	cmd.exe /C call wrap.cmd testcase
@@ -33,6 +33,10 @@ sonarqube: check-env
 	cmd.exe /C call wrap.cmd testcase
 	cmd.exe /C call wrap.cmd $(GCOVR) -d --sonarqube sonarqube.xml
 
+jacoco: check-env
+	$(call wrapDrive, ./testcase)
+	$(call wrapDrive, $(GCOVR) -d --jacoco jacoco.xml)
+
 json_summary: check-env
 	cmd.exe /C call wrap.cmd testcase
 	cmd.exe /C call wrap.cmd $(GCOVR) -d --json-summary-pretty -o summary_coverage.json
@@ -49,4 +53,4 @@ clean:
 	rm -f testcase
 	rm -f fail_under.stderr
 	rm -f *.gc*
-	rm -f coverage.txt coverage*.html coverage*.css cobertura.xml sonarqube.xml coverage.json summary_coverage.json coveralls.json
+	rm -f coverage.txt coverage*.html coverage*.css cobertura.xml sonarqube.xml jacoco.xml coverage.json summary_coverage.json coveralls.json

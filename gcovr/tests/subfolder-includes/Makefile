@@ -9,4 +9,4 @@ html:
 
 clean:
 	make -C subfolder clean
-	rm -f coverage*.html
+	rm -f coverage*.html coverage*.css
