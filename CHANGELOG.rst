@@ -25,6 +25,7 @@ New features and notable changes:
 - Add function coverage to data model. (:issue:`822`)
 - Add support for importing Cobertura XML files with ``--cobertura-add-tracefile`` option. (:issue:`805`)
 - Add :option:`--jacoco` to generate JaCoCo XML format. (:issue:`823`))
+- Add function coverage to HTML report. (:issue:`828`)
 
 Bug fixes and small improvements:
 
