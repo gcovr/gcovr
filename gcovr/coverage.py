@@ -97,11 +97,16 @@ def sort_coverage(
         total = stat.total
 
         if covered:
-            value = -1.0 * covered / total
+            # If branches are covered, use the percentage
+            value = covered / total
         elif total:
+            # If no branches are covered use the number of branches
+            # + 1 to be inserted after the covered branches
             value = total
         else:
-            value = 1e6
+            # No branches are always put at the end.
+            # Hopefully no one has such many branches.
+            value = -1 if reverse else 1e99
 
         return value
 

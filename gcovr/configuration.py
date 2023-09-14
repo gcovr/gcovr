@@ -494,8 +494,8 @@ GCOVR_CONFIG_OPTIONS = [
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
-            "Sort entries by number of uncovered lines (if the option --sort-branches "
-            "is given the uncovered branches are used). "
+            "Sort entries by number of uncovered lines or branches (if the option "
+            "--sort-branches is given). "
             "The default order is increasing and can be changed by --sort-reverse. "
             "The secondary sort key (if values are identical) is always the ascending filename. "
             "For CSV, HTML, JSON and text report."
@@ -507,9 +507,9 @@ GCOVR_CONFIG_OPTIONS = [
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
-            "Sort entries by percentage of uncovered lines (if the option --sort-branches "
-            "is given the percentage of uncovered branches are used). "
-            "The default order is decreasing and can be changed by --sort-reverse."
+            "Sort entries by percentage of uncovered lines or branches (if the option "
+            "--sort-branches is given). "
+            "The default order is increasing and can be changed by --sort-reverse."
             "The secondary sort key (if values are identical) is always the ascending filename. "
             "For CSV, HTML, JSON and text report."
         ),
