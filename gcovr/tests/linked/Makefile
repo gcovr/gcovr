@@ -13,7 +13,7 @@ all: links
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CFLAGS) subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/m/n/C/D/file6.o subdir/A/file7.o subdir/B/main.o -o subdir/testcase
 
-run: txt cobertura html sonarqube coveralls
+run: txt cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./subdir/testcase
@@ -30,6 +30,9 @@ html: coverage.json
 
 sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube sonarqube.xml
+
+jacoco: coverage.json
+	$(GCOVR) -a $< --jacoco jacoco.xml
 
 coveralls: coverage.json
 	$(GCOVR) -a $< --coveralls-pretty --coveralls coveralls.json

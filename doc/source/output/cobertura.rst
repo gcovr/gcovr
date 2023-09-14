@@ -20,9 +20,9 @@ This generates an XML summary of the lines executed:
 .. include:: ../../examples/example_cobertura.xml
     :code: xml
 
-This XML format is in the
+This XML format is described in the
 `Cobertura XML <http://cobertura.sourceforge.net/xml/coverage-04.dtd>`__
-format suitable for import and display within the
+DTD suitable for import and display within the
 `Jenkins <http://www.jenkins-ci.org/>`__ and `Hudson <http://www.hudson-ci.org/>`__
 continuous integration servers using the
 `Cobertura Plugin <https://wiki.jenkins-ci.org/display/JENKINS/Cobertura+Plugin>`__.

@@ -11,4 +11,4 @@ txt cobertura:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.*
+	rm -f coverage.* cobertura.xml

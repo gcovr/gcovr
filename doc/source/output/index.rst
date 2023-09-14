@@ -12,6 +12,7 @@ that are documented on the following pages.
    html
    cobertura
    sonarqube
+   jacoco
    json
    csv
    coveralls

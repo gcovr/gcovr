@@ -8,7 +8,7 @@ all: links
 	cd project; $(CXX) $(CFLAGS) -c relevant-library/src/yes.cpp -o yes.o
 	cd project; $(CXX) $(CFLAGS) main.o no.o yes.o -o testcase
 
-run: txt cobertura html sonarqube
+run: txt cobertura html sonarqube jacoco
 
 # the src/ filter is provided by the project/gcovr.cfg configuration file
 GCOVR_TEST_OPTIONS = -f '\.\./external-library/src'
@@ -28,6 +28,9 @@ html: coverage_unfiltered.json
 
 sonarqube: coverage_unfiltered.json
 	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --sonarqube ../sonarqube.xml
+
+jacoco: coverage_unfiltered.json
+	cd project; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../$< --jacoco ../jacoco.xml
 
 links:
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
@@ -51,4 +54,4 @@ else
 		cmd.exe /C "rmdir /S /Q project\relevant-library";\
 	fi
 endif
-	rm -f coverage*.* sonarqube.xml
+	rm -f coverage*.* sonarqube.xml jacoco.xml
