@@ -13,6 +13,7 @@ from .csv import CsvHandler
 from .html import HtmlHandler
 from .jacoco import JaCoCoHandler
 from .json import JsonHandler
+from .lcov import LcovHandler
 from .sonarqube import SonarqubeHandler
 from .txt import TxtHandler
 
@@ -30,6 +31,7 @@ def get_options() -> List[GcovrConfigOption]:
             *HtmlHandler.get_options(),
             *JaCoCoHandler.get_options(),
             *JsonHandler.get_options(),
+            *LcovHandler.get_options(),
             *SonarqubeHandler.get_options(),
             *TxtHandler.get_options(),
         ]
@@ -137,6 +139,18 @@ def write_reports(covdata: CovData, options: Options):
                 lambda: LOGGER.warning(
                     "JSON summary output skipped - "
                     "consider providing an output file with `--json-summary=OUTPUT`."
+                ),
+            )
+        )
+
+    if options.lcov:
+        generators.append(
+            (
+                [options.lcov],
+                LcovHandler(options).write_report,
+                lambda: LOGGER.warning(
+                    "LCOV output skipped - "
+                    "consider providing an output file with `--lcov=OUTPUT`."
                 ),
             )
         )
