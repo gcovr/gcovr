@@ -61,7 +61,6 @@ class TxtHandler(BaseHandler):
                     "with line & function & branch percentage coverage "
                     "optional parts are decision & call coverage. "
                     "This is in addition to other reports. "
-                    "Default: {default!s}."
                 ),
                 action="store_true",
             ),
