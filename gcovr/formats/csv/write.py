@@ -32,9 +32,10 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     with open_text_for_writing(output_file, "coverage.csv", newline="") as fh:
         keys = sort_coverage(
             covdata,
-            by_branch=options.show_branch,
+            by_branch=options.sort_branches,
             by_num_uncovered=options.sort_uncovered,
             by_percent_uncovered=options.sort_percent,
+            reverse=options.sort_reverse,
         )
 
         writer = csv.writer(fh)

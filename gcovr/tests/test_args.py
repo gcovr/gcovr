@@ -382,7 +382,7 @@ def test_html_title_empty_string(caplog):
     c = log_capture(caplog, ["--html-title", ""])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "an empty --html_title= is not allowed."
+    assert message[2] == "an empty --html-title= is not allowed."
     assert c.exception.code != 0
 
 
@@ -709,3 +709,23 @@ def test_invalid_timestamp(capsys):
     assert c.out == ""
     assert "argument --timestamp: unknown timestamp format: 'foo'" in c.err
     assert c.exception.code != 0
+
+
+def test_sort_uncovered_and_percent(caplog):
+    c = log_capture(caplog, ["--sort-uncovered", "--sort-percent"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith(
+        "the options --sort-uncovered and --sort-percent can not be used together."
+    )
+    assert c.exception.code == 1
+
+
+def test_sort_branch_and_not_uncovered_or_percent(caplog):
+    c = log_capture(caplog, ["--sort-branches"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith(
+        "the options --sort-branches without --sort-uncovered or --sort-percent doesn't make sense."
+    )
+    assert c.exception.code == 1

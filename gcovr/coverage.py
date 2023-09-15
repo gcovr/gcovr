@@ -51,6 +51,7 @@ def sort_coverage(
     by_branch: bool,
     by_num_uncovered: bool,
     by_percent_uncovered: bool,
+    reverse: bool,
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
@@ -59,6 +60,7 @@ def sort_coverage(
     by_branch (bool): select branch coverage (True) or line coverage (False)
     by_num_uncovered, by_percent_uncovered (bool):
         select the sort mode. By default, sort alphabetically.
+    reverse (bool): if true the sort order is from highest to lowest value.
     filename_uses_relative_pathname (bool): for html, we break down a pathname to the
         relative path, but not for other formats.
 
@@ -66,44 +68,58 @@ def sort_coverage(
     """
     basedir = commonpath(list(covdata.keys()))
 
+    def key_filename(key: str) -> str:
+        def convert_to_int_if_possible(text):
+            return int(text) if text.isdigit() else text
+
+        key = (
+            force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
+            if filename_uses_relative_pathname
+            else key
+        ).casefold()
+
+        return [convert_to_int_if_possible(part) for part in re.split(r"([0-9]+)", key)]
+
     def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
         if by_branch:
             return cov.branch_coverage()
         return cov.line_coverage()
 
-    def num_uncovered_key(key: str) -> int:
+    def key_num_uncovered(key: str) -> int:
         stat = coverage_stat(key)
         uncovered = stat.total - stat.covered
         return uncovered
 
-    def percent_uncovered_key(key: str) -> float:
+    def key_percent_uncovered(key: str) -> float:
         stat = coverage_stat(key)
         covered = stat.covered
         total = stat.total
 
         if covered:
-            return -1.0 * covered / total
+            # If branches are covered, use the percentage
+            value = covered / total
         elif total:
-            return total
+            # If no branches are covered use the number of branches
+            # + 1 to be inserted after the covered branches
+            value = total
         else:
-            return 1e6
+            # No branches are always put at the end.
+            # Hopefully no one has such many branches.
+            value = -1 if reverse else 1e99
 
-    def filename(key: str) -> str:
-        return (
-            force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
-            if filename_uses_relative_pathname
-            else key
-        )
+        return value
 
     if by_num_uncovered:
-        key_fn = num_uncovered_key
+        key_fn = key_num_uncovered
     elif by_percent_uncovered:
-        key_fn = percent_uncovered_key
+        key_fn = key_percent_uncovered
     else:
-        key_fn = filename  # by default, we sort by filename alphabetically
+        # by default, we sort by filename alphabetically
+        return sorted(covdata, key=key_filename, reverse=reverse)
 
-    return sorted(covdata, key=key_fn)
+    # First sort filename alphabetical and then by the requested key
+    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=reverse)
 
 
 class BranchCoverage:

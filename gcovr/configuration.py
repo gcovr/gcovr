@@ -466,17 +466,6 @@ GCOVR_CONFIG_OPTIONS = [
         default=None,
     ),
     GcovrConfigOption(
-        "show_branch",
-        ["-b", "--branches"],
-        config="txt-branch",
-        group="output_options",
-        help=(
-            "For text report: Report the branch coverage instead of the line coverage.\n"
-            "For CSV/JSON report: Sort files by branch coverage instead of line coverage."
-        ),
-        action="store_true",
-    ),
-    GcovrConfigOption(
         "show_decision",
         ["--decisions"],
         group="output_options",
@@ -491,12 +480,25 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_false",
     ),
     GcovrConfigOption(
+        "sort_branches",
+        ["--sort-branches"],
+        group="output_options",
+        help=(
+            "Sort entries by branches instead of lines. Can only be used together "
+            "with --sort-uncovered or --sort-percent is used."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "sort_uncovered",
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
-            "Sort entries by increasing number of uncovered lines. "
-            "For text and HTML report."
+            "Sort entries by number of uncovered lines or branches (if the option "
+            "--sort-branches is given). "
+            "The default order is increasing and can be changed by --sort-reverse. "
+            "The secondary sort key (if values are identical) is always the ascending filename. "
+            "For CSV, HTML, JSON and text report."
         ),
         action="store_true",
     ),
@@ -505,9 +507,19 @@ GCOVR_CONFIG_OPTIONS = [
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
-            "Sort entries by increasing percentage of uncovered lines. "
-            "For text and HTML report."
+            "Sort entries by percentage of uncovered lines or branches (if the option "
+            "--sort-branches is given). "
+            "The default order is increasing and can be changed by --sort-reverse."
+            "The secondary sort key (if values are identical) is always the ascending filename. "
+            "For CSV, HTML, JSON and text report."
         ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "sort_reverse",
+        ["--sort-reverse"],
+        group="output_options",
+        help="Sort entries in reverse order. For CSV, HTML, JSON and text report.",
         action="store_true",
     ),
     *formats.get_options(),

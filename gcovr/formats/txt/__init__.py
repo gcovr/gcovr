@@ -32,6 +32,16 @@ class TxtHandler(BaseHandler):
             "exclude_calls",
             # Local options
             GcovrConfigOption(
+                "txt_use_branch_coverage",
+                ["-b", "--txt-branches", "--branches"],
+                config="txt-branch",
+                group="output_options",
+                help=(
+                    "Report the branch coverage instead of the line coverage in text report."
+                ),
+                action="store_true",
+            ),
+            GcovrConfigOption(
                 "txt",
                 ["--txt"],
                 group="output_options",

@@ -203,8 +203,19 @@ def main(args=None):
     if options.verbose:
         LOGGER.setLevel(logging.DEBUG)
 
+    if options.sort_uncovered and options.sort_percent:
+        LOGGER.error(
+            "the options --sort-uncovered and --sort-percent can not be used together."
+        )
+        sys.exit(EXIT_CMDLINE_ERROR)
+    if options.sort_branches and not (options.sort_uncovered or options.sort_percent):
+        LOGGER.error(
+            "the options --sort-branches without --sort-uncovered or --sort-percent doesn't make sense."
+        )
+        sys.exit(EXIT_CMDLINE_ERROR)
+
     if options.html_title == "":
-        LOGGER.error("an empty --html_title= is not allowed.")
+        LOGGER.error("an empty --html-title= is not allowed.")
         sys.exit(EXIT_CMDLINE_ERROR)
 
     for postfix in ["", "line", "branch"]:
