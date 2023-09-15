@@ -24,6 +24,8 @@ New features and notable changes:
 - Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
 - Add function coverage to data model. (:issue:`822`)
 - Add support for importing Cobertura XML files with ``--cobertura-add-tracefile`` option. (:issue:`805`)
+- Add :option:`--jacoco` to generate JaCoCo XML format. (:issue:`823`))
+- Add function coverage to HTML report. (:issue:`828`)
 - Improve sorting of data in reports (:issue:`817`):
   - Sort file names alpha numerical and with casefold (see `str.casefold <https://docs.python.org/3.11/library/stdtypes.html?highlight=str%20casefold#str.casefold>`_) (``file_10.c`` comes after ``file_0.c``).
   - Always sort at the end by filename if line or branch coverage is identical for a file.
@@ -42,6 +44,7 @@ Bug fixes and small improvements:
 - Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
 - Fix ``TypeError`` during decision analysis. (:issue:`784`)
+- Use relative paths if possible when running ``gcov``. (:issue:`820`)
 
 Documentation:
 

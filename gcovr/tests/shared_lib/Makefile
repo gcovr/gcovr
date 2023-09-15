@@ -32,7 +32,7 @@ all:
 	$(CXX) $(CFLAGS) $(SOFLAGS) obj/libs.o -o lib/libs.$(DYNLIB_EXT)
 	$(MAKE) -C testApp
 
-run: txt cobertura html sonarqube coveralls
+run: txt cobertura html sonarqube jacoco coveralls
 
 ifneq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
 ifneq ($(notdir $(SHELL)),sh)
@@ -64,11 +64,14 @@ html: coverage.json
 sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube sonarqube.xml
 
+jacoco: coverage.json
+	$(GCOVR) -a $< --jacoco jacoco.xml
+
 coveralls: coverage.json
 	$(GCOVR) -a $< --coveralls-pretty --coveralls coveralls.json
 
 clean:
 	rm -rf obj
 	rm -f lib/*.$(DYNLIB_EXT)
-	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json
+	rm -f coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json
 	$(MAKE) -C testApp clean

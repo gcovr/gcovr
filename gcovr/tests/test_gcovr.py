@@ -224,6 +224,7 @@ KNOWN_FORMATS = [
     # Other formats
     "cobertura",
     "coveralls",
+    "jacoco",
     "sonarqube",
 ]
 
@@ -452,6 +453,7 @@ SCRUBBERS = dict(
     # Other formats
     cobertura=scrub_xml,
     coveralls=scrub_coveralls,
+    jacoco=scrub_xml,
     sonarqube=scrub_xml,
 )
 
@@ -465,6 +467,7 @@ OUTPUT_PATTERN = dict(
     # Other formats
     cobertura=["cobertura*.xml"],
     coveralls=["coveralls*.json"],
+    jacoco=["jacoco*.xml"],
     sonarqube=["sonarqube*.xml"],
 )
 

@@ -6,7 +6,7 @@ all:
 	cd build; $(CXX) $(CFLAGS) -c ../src/main.cpp  -o main.o
 	cd build; $(CXX) $(CFLAGS) main.o file1.o -o testcase
 
-run: txt cobertura html sonarqube coveralls
+run: txt cobertura html sonarqube jacoco coveralls
 
 GCOVR_TEST_OPTIONS = -r ../src .
 
@@ -26,9 +26,12 @@ html: coverage.json
 sonarqube: coverage.json
 	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --sonarqube ../sonarqube.xml
 
+jacoco: coverage.json
+	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --jacoco ../jacoco.xml
+
 coveralls: coverage.json
 	cd build; $(GCOVR) $(GCOVR_TEST_OPTIONS) -a ../coverage.json --coveralls-pretty --coveralls ../coveralls.json
 
 clean:
 	rm -f build/*
-	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json
+	rm -f coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json

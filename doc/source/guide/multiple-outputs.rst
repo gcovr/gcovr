@@ -18,6 +18,7 @@ The following report format flags can take an optional output file name:
 - :option:`gcovr --html-details`
 - :option:`gcovr --html-nested`
 - :option:`gcovr --sonarqube`
+- :option:`gcovr --jacoco`
 - :option:`gcovr --json`
 - :option:`gcovr --json-summary`
 - :option:`gcovr --coveralls`

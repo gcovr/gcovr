@@ -20,7 +20,7 @@ all:
 	mkdir -p build
 	cd build && cmake -G $(CMAKE_GENERATOR) -DCMAKE_BUILD_TYPE=PROFILE .. && make
 
-run: txt cobertura html sonarqube coveralls
+run: txt cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	cd build && ./gcovrtest
@@ -41,6 +41,9 @@ coveralls: coverage.json
 sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube -o sonarqube.xml
 
+jacoco: coverage.json
+	$(GCOVR) -a $< --jacoco -o jacoco.xml
+
 clean:
 	rm -rf build
-	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json
+	rm -f coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json

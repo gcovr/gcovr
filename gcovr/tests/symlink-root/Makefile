@@ -30,4 +30,4 @@ else
 		cmd.exe /C "rmdir /S /Q symlink";\
 	fi
 endif
-	rm -f root/*.gc* root/coverage*.* root/cobertura*.* sonarqube*.* root/coveralls.json root/out.log
+	rm -f root/*.gc* coverage*.*

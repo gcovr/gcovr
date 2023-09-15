@@ -7,7 +7,7 @@ FAIL_UNDER_LINE := $(shell cat reference/$(CC_REFERENCE)$(if $(filter $(BASE_OS)
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube json json_summary coveralls
+run: txt cobertura html sonarqube jacoco json json_summary coveralls
 
 txt:
 	./testcase
@@ -49,6 +49,9 @@ sonarqube:
 	./testcase
 	$(GCOVR) -d --sonarqube sonarqube.xml
 
+jacoco:
+	./testcase
+	$(GCOVR) -d --jacoco-pretty --jacoco jacoco.xml
 
 json_summary:
 	./testcase
@@ -66,4 +69,4 @@ clean:
 	rm -f testcase
 	rm -f fail_under.stderr
 	rm -f *.gc*
-	rm -f coverage.txt coverage*.html coverage*.css cobertura.xml sonarqube.xml coverage.json summary_coverage.json coveralls.json
+	rm -f coverage.txt jacoco.xml coverage*.html coverage*.css cobertura.xml sonarqube.xml coverage.json summary_coverage.json coveralls.json

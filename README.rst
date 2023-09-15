@@ -45,7 +45,11 @@ The ``gcovr`` command can produce different kinds of coverage reports:
 
    * - |abstract-option-sonarqube|
      - |abstract-guide-sonarqube|
-     - machine readable XML reports in Sonarqube format
+     - machine readable XML reports in SonarQube format
+
+   * - |abstract-option-jacoco|
+     - |abstract-guide-jacoco|
+     - machine readable XML reports in JaCoCo_ format
 
    * - |abstract-option-json|
      - |abstract-guide-json|
@@ -72,6 +76,7 @@ text summaries and XML reports.
 .. _gcov: https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
 .. _coverage.py: https://coverage.readthedocs.io/en/stable/
 .. _cobertura: http://cobertura.sourceforge.net/
+.. _jacoco: https://www.eclemma.org/jacoco/
 .. _lcov: http://ltp.sourceforge.net/coverage/lcov.php
 .. _coveralls: https://coveralls.io/
 
@@ -88,6 +93,7 @@ text summaries and XML reports.
 .. |abstract-option-html-template-dir| replace:: ``--html-template-dir``
 .. |abstract-option-cobertura| replace:: ``--cobertura``
 .. |abstract-option-sonarqube| replace:: ``--sonarqube``
+.. |abstract-option-jacoco| replace:: ``--jacoco``
 .. |abstract-option-json| replace:: ``--json``
 .. |abstract-option-json-summary| replace:: ``--json-summary``
 .. |abstract-option-csv| replace:: ``--csv``
@@ -98,7 +104,8 @@ text summaries and XML reports.
 .. |abstract-guide-html-details| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
 .. |abstract-guide-html-template-dir| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
 .. |abstract-guide-cobertura| replace:: `Cobertura XML Output <https://gcovr.com/en/stable/output/cobertura.html>`__
-.. |abstract-guide-sonarqube| replace:: `Sonarqube XML Output <https://gcovr.com/en/stable/output/sonarqube.html>`__
+.. |abstract-guide-sonarqube| replace:: `SonarQube XML Output <https://gcovr.com/en/stable/output/sonarqube.html>`__
+.. |abstract-guide-jacoco| replace:: `JaCoCo XML Output <https://gcovr.com/en/stable/output/jacoco.html>`__
 .. |abstract-guide-json| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
 .. |abstract-guide-json-summary| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
 .. |abstract-guide-csv| replace:: `CSV Output <https://gcovr.com/en/stable/output/csv.html>`__

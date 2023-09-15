@@ -5,6 +5,7 @@
     <th>File</th>
     <th>Line</th>
     <th>Call count</th>
+    <th>Block coverage</th>
   </tr>
 {% for entry in all_functions %}
   <tr>
@@ -22,11 +23,14 @@
         {%- if entry["excluded"] %} excluded
         {%- else %}
         {%-  if entry["count"] == 0 %} not called
-        {%-  else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}
+        {%-  else %} called {{ entry["count"] }} time{% if entry["count"] > 1 %}s{% endif %}, returned {{ entry["returned"] }} time{% if entry["returned"] > 1 %}s{% endif %}
         {%-  endif -%}
         {%- endif -%}
       </a>
     </td>
-  </tr>
+    <td>
+      <a href="#l{{ entry['line'] }}">{{ entry["blocks"] }}%</a>
+    </td>
+</tr>
 {% endfor %}
 </table>
