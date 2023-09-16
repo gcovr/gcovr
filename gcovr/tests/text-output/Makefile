@@ -1,12 +1,11 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura
+run: txt
 
-txt cobertura:
+txt:
 	./testcase
-	# Create both, text and cobertura in one call
-	$(GCOVR) -d --txt coverage.txt --cobertura-pretty --cobertura cobertura.xml
+	$(GCOVR) -d --txt coverage.txt
 
 clean:
 	rm -f testcase
