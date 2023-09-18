@@ -1,11 +1,15 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube jacoco coveralls
+run: txt lcov cobertura html sonarqube jacoco coveralls
 
 txt:
 	./testcase
 	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' -o coverage.txt
+
+lcov:
+	./testcase
+	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --lcov coverage.lcov
 
 cobertura:
 	./testcase

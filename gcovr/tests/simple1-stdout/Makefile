@@ -2,11 +2,15 @@ all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
 
-run: txt cobertura html jacoco json json_summary coveralls
+run: txt lcov cobertura html jacoco json json_summary coveralls
 
 txt:
 	./testcase
 	$(GCOVR) -d --txt > coverage.txt
+
+lcov:
+	./testcase
+	$(GCOVR) -d --lcov > coverage.lcov
 
 cobertura:
 	./testcase
@@ -18,11 +22,11 @@ html:
 
 jacoco:
 	./testcase
-	$(GCOVR) --jacoco-pretty --jacoco > jacoco.xml
+	$(GCOVR) -d --jacoco-pretty --jacoco > jacoco.xml
 
 json:
 	./testcase
-	$(GCOVR) --json-pretty --json > coverage.json
+	$(GCOVR) -d --json-pretty --json > coverage.json
 
 json_summary:
 	./testcase

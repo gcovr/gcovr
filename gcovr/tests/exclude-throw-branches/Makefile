@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: json txt cobertura html sonarqube jacoco coveralls
+run: json txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage-throw.json coverage-excl-throw.json:
 	./testcase
@@ -14,6 +14,10 @@ json: coverage-throw.json coverage-excl-throw.json
 txt: coverage-throw.json coverage-excl-throw.json
 	$(GCOVR) -a coverage-throw.json -o coverage-throw.txt
 	$(GCOVR) -a coverage-excl-throw.json -o coverage-excl-throw.txt
+
+lcov: coverage-throw.json coverage-excl-throw.json
+	$(GCOVR) -a coverage-throw.json -o coverage-throw.lcov
+	$(GCOVR) -a coverage-excl-throw.json -o coverage-excl-throw.lcov
 
 cobertura: coverage-throw.json coverage-excl-throw.json
 	$(GCOVR) -x -a coverage-throw.json -o cobertura-throw.xml

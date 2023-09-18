@@ -4,7 +4,7 @@ all:
 	cd build1 ; $(CXX) -fprofile-arcs -ftest-coverage -fPIC ../main.c -o testcase
 	cd build2 ; $(CXX) -fprofile-arcs -ftest-coverage -fPIC -DFOO_OTHER_LINE ../main.c -o testcase
 
-run: json txt cobertura html sonarqube coveralls
+run: json txt lcov cobertura html sonarqube coveralls
 
 coverage.json:
 	cd build1 ; ./testcase
@@ -19,6 +19,9 @@ json: coverage.json
 
 txt: coverage.json
 	$(GCOVR) -a $<  --merge-mode-functions=separate -o coverage.txt
+
+lcov: coverage.json
+	$(GCOVR) -a $<  --merge-mode-functions=separate --lcov coverage.lcov
 
 cobertura: coverage.json
 	$(GCOVR) -a $<  --merge-mode-functions=separate --cobertura-pretty --cobertura cobertura.xml

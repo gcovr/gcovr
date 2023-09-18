@@ -5,7 +5,7 @@ all:
 	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CFLAGS) subdir/B/main.o subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/A/C/D/file6.o subdir/A/file7.o  -o subdir/B/testcase
 
-run: txt cobertura html sonarqube jacoco coveralls
+run: txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./subdir/B/testcase
@@ -13,6 +13,9 @@ coverage.json:
 
 txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt
+
+lcov: coverage.json
+	$(GCOVR) -r subdir -a $< --lcov coverage.lcov
 
 cobertura: coverage.json
 	$(GCOVR) -r subdir -a $< --cobertura-pretty --cobertura cobertura.xml
