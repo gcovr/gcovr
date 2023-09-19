@@ -31,6 +31,7 @@ New features and notable changes:
   - Always sort at the end by filename if line or branch coverage is identical for a file.
   - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
   - Add :option:`--sort-reverse` to reverse the sort order.
+- Add support to generate LCOV info files. (:issue:`830`)
 
 Bug fixes and small improvements:
 
