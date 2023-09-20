@@ -71,6 +71,7 @@ Internal changes:
 - Add gcc-12 and gcc-13 to the test suite. (:issue:`780`)
 - Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
 - Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
+- Add nox session to import reference file from pipeline. (:issue:`831`)
 
 6.0 (08 March 2023)
 -------------------

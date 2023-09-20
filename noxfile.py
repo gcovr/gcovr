@@ -18,6 +18,7 @@
 # ****************************************************************************
 
 import glob
+import io
 import os
 import platform
 import re
@@ -25,6 +26,7 @@ import shutil
 import shlex
 import subprocess
 import sys
+import zipfile
 import nox
 
 
@@ -618,3 +620,22 @@ def docker_qa_compiler(session: nox.Session, version: str) -> None:
     session_id = f"docker_compiler({version})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id, ["-s", "qa", "--", *session.posargs])
+
+
+@nox.session(python=False)
+def import_reference(session: nox.Session) -> None:
+    """Import reference data from ZIP generated in Github pipeline."""
+    if len(session.posargs) != 1:
+        session.error(
+            "Exact one ZIP file needed. Usage: nox -s import_reference -- file.zip"
+        )
+
+    with zipfile.ZipFile(session.posargs[0]) as fh_zip:
+        try:
+            zip_info_diff_zip = fh_zip.getinfo("diff.zip")
+            with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
+                seekable_buf = io.BytesIO(fh_inner_zip.read())
+                with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
+                    fh_diff_zip.extractall()
+        except KeyError:
+            fh_zip.extractall()
