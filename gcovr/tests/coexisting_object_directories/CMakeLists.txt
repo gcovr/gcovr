@@ -8,17 +8,17 @@ add_executable(parallel_call)
 
 target_sources (parallel_call
 	PRIVATE
-	source/fn_00.cc
-	source/fn_01.cc
-	source/fn_02.cc
-	source/fn_03.cc
-	source/fn_04.cc
-	source/fn_05.cc
-	source/fn_06.cc
-	source/fn_07.cc
-	source/fn_08.cc
-	source/fn_09.cc
-	source/main.cc)
+	source/fn_00.cpp
+	source/fn_01.cpp
+	source/fn_02.cpp
+	source/fn_03.cpp
+	source/fn_04.cpp
+	source/fn_05.cpp
+	source/fn_06.cpp
+	source/fn_07.cpp
+	source/fn_08.cpp
+	source/fn_09.cpp
+	source/main.cpp)
 
 if(ODD)
 	target_compile_definitions (parallel_call PRIVATE ODD)
