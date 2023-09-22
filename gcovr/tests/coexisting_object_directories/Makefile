@@ -14,28 +14,35 @@ run: txt cobertura html sonarqube coveralls
 
 coverage.%.json:
 	cd build/$* && ./parallel_call
-	$(GCOVR) --json-pretty --json $@ --object-directory=build/$*
+	$(GCOVR) --json-pretty --json $@ --object-directory=build/$*  build/$*
 
 coverage.json: coverage.a.json coverage.b.json coverage.c.json
 	#make coverage.a.json & make coverage.b.json & make coverage.c.json & wait
 
-coverage.%.txt:
+coverage.%.txt: coverage.json
 	$(GCOVR) -a coverage.$*.json -o $@
 
-txt: coverage.json coverage.a.txt coverage.b.txt coverage.c.txt
-	$(GCOVR) -a coverage.a.json -o coverage.a.txt
+txt: coverage.a.txt coverage.b.txt coverage.c.txt
 
-cobertura: coverage.json
-	$(GCOVR) -a coverage.a.json --cobertura-pretty --cobertura cobertura.a.xml
+cobertura.%.xml: coverage.json
+	$(GCOVR) -a coverage.$*.json --cobertura-pretty --cobertura $@
 
-html: coverage.json
-	$(GCOVR) -a coverage.a.json --html-details -o coverage.a.html
+cobertura: cobertura.a.xml cobertura.b.xml cobertura.c.xml
 
-coveralls: coverage.json
-	$(GCOVR) -a coverage.a.json --coveralls-pretty --coveralls coveralls.a.json
+coverage.%.html: coverage.json
+	$(GCOVR) -a coverage.$*.json --html-details -o $@
 
-sonarqube: coverage.json
-	$(GCOVR) -a coverage.a.json --sonarqube -o sonarqube.a.xml
+html: coverage.a.html coverage.b.html coverage.c.html
+
+coveralls.%.json: coverage.json
+	$(GCOVR) -a coverage.$*.json --coveralls-pretty --coveralls $@
+
+coveralls: coveralls.a.json coveralls.b.json coveralls.c.json
+
+sonarqube.%.xml: coverage.json
+		$(GCOVR) -a coverage.$*.json --sonarqube -o $@
+
+sonarqube: sonarqube.a.xml sonarqube.b.xml sonarqube.c.xml
 
 clean:
 	rm -rf build
