@@ -74,6 +74,7 @@ Internal changes:
 - Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
 - Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
 - Add nox session to import reference file from pipeline. (:issue:`831`)
+- Add test for parallel execution of multiple gcovr instances. (:issue:`832`)
 
 6.0 (08 March 2023)
 -------------------
