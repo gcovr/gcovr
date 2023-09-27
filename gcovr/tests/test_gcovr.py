@@ -107,7 +107,7 @@ RE_COVERALLS_GIT_PRETTY = re.compile(
 )
 
 RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')
-RE_HTML_HEADER_DATE = re.compile(r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(\+\d\d:\d\d)?<(/td>)")
+RE_HTML_HEADER_DATE = re.compile(r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?:\+\d\d:\d\d)?<(/td>)")
 
 
 def scrub_txt(contents):
@@ -127,7 +127,7 @@ def scrub_xml(contents):
 
 def scrub_html(contents):
     contents = RE_HTML_ATTRS.sub('\\1=""', contents)
-    contents = RE_HTML_HEADER_DATE.sub("\\1>0000-00-00 00:00:00<\\3", contents)
+    contents = RE_HTML_HEADER_DATE.sub("\\1>0000-00-00 00:00:00<\\2", contents)
     contents = force_unix_separator(contents)
     return contents
 
