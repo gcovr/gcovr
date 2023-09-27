@@ -5,7 +5,7 @@ run: html
 
 html:
 	./testcase
-	$(GCOVR) -d --html-details --html-title="Title of report" -o coverage.html
+	$(GCOVR) -d --verbose --html-details --html-title="Title of report" -o coverage.html main.gcda
 
 clean:
 	rm -f testcase
