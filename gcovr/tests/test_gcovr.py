@@ -107,7 +107,9 @@ RE_COVERALLS_GIT_PRETTY = re.compile(
 )
 
 RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')
-RE_HTML_HEADER_DATE = re.compile(r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?:\+\d\d:\d\d)?<(/td>)")
+RE_HTML_HEADER_DATE = re.compile(
+    r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?:\+\d\d:\d\d)?<(/td>)"
+)
 
 
 def scrub_txt(contents):
