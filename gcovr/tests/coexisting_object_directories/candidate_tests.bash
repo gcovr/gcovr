@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# The script describes working and failing cases
+# when having several coexisting build folders.
+
 set -eu
 
 rootdir="$(realpath "$(dirname "$0")")"
@@ -14,6 +17,8 @@ run () {
 	${rootdir}/build/$1/parallel_call
 }
 
+# calling gcovr from project root dir
+# specifying object dir and search dir
 generate_coverage_ok_1 () {
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
@@ -22,6 +27,10 @@ generate_coverage_ok_1 () {
 		${rootdir}/build/$1
 }
 
+# calling gcovr from project root dir
+# specifying object dir
+# not specifying search dir
+# => object files from other build directories are processed.
 generate_coverage_fail_11 () {
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
@@ -29,6 +38,10 @@ generate_coverage_fail_11 () {
 		--output ${rootdir}/coverage.$1.txt
 }
 
+# calling gcovr from project root dir
+# not specifying object dir
+# specifying search dir
+# => race conditions when triggering several gcovr calls.
 generate_coverage_fail_12 () {
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
@@ -36,6 +49,10 @@ generate_coverage_fail_12 () {
 		${rootdir}/build/$1
 }
 
+# calling gcovr from project build dir
+# specifying object dir
+# specifying root dir
+# specifying search dir
 generate_coverage_ok_2 () {
 	cd ${rootdir}/build/$1
 	gcovr \
@@ -47,6 +64,11 @@ generate_coverage_ok_2 () {
 	cd -
 }
 
+# calling gcovr from project build dir
+# specifying object dir
+# specifying root dir
+# not specifying search dir
+# => object files from other build directories are processed.
 generate_coverage_fail_21 () {
 	cd ${rootdir}/build/$1
 	gcovr \
@@ -54,8 +76,14 @@ generate_coverage_fail_21 () {
 		--object-directory ${rootdir}/build/$1 \
 		--output ${rootdir}/coverage.$1.txt \
 		--root ${rootdir}
+	cd -
 }
 
+# calling gcovr from project build dir
+# not specifying object dir
+# specifying root dir
+# specifying search dir
+# => race conditions when triggering several gcovr calls.
 generate_coverage_fail_22 () {
 	cd ${rootdir}/build/$1
 	gcovr \
