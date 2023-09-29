@@ -131,7 +131,9 @@ def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str
         LOGGER.debug(f"Scanning directory {search_path} for gcda/gcno files...")
         files = list(
             search_file(
-                re.compile(r".*\.gc(da|no)$").match, search_path, exclude_dirs=exclude_dirs
+                re.compile(r".*\.gc(da|no)$").match,
+                search_path,
+                exclude_dirs=exclude_dirs,
             )
         )
     gcda_files = []
