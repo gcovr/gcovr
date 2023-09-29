@@ -336,7 +336,7 @@ def upload_wheel(session: nox.Session) -> None:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    session.install("pyinstaller")
+    session.install("pyinstaller~=5.13.2")
     session.install("-e", ".")
     os.makedirs("build", exist_ok=True)
     session.chdir("build")
