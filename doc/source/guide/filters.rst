@@ -95,7 +95,8 @@ but will use the coverage data for ``better_code.o`` and ``main.o``.
 This can speed up gcovr when you have a complicated build directory structure.
 Consider also using the :option:`search_paths <gcovr search_paths>`
 or :option:`--gcov-object-directory<gcovr --gcov-object-directory>` arguments to specify
-where gcovr starts searching.
+where gcovr starts searching. Here you can also specify the ``gcda`` or ``gcov`` file
+directly to get the coverage data for a specific file without searching a whole tree.
 If you are unsure which directories are being searched,
 run gcovr in :option:`-v/--verbose<gcovr --verbose>` mode.
 
@@ -104,6 +105,10 @@ This is typically the slowest part,
 and other filters can only be applied *after* this step.
 In some cases, parallel execution with the :option:`-j<gcovr -j>` option
 might be helpful to speed up processing.
+
+.. versionadded:: NEXT
+
+   :option:`search_paths <gcovr search_paths>` also accept specific files
 
 
 Filters for symlinks
