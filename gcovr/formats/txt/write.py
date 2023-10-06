@@ -39,7 +39,7 @@ COL_FILE_WIDTH = 40
 COL_TOTAL_COUNT_WIDTH = 8
 COL_COVERED_COUNT_WIDTH = 8
 COL_PERCENTAGE_WIDTH = 7  # including "%" percentage sign
-MISSING_SEPARATOR = "   "
+UN_COVERED_SEPARATOR = "   "
 LINE_WIDTH = 78
 
 
@@ -57,14 +57,14 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         title_total = "Branches" if options.txt_use_branch_coverage else "Lines"
         title_covered = "Taken" if options.txt_use_branch_coverage else "Exec"
         title_percentage = "Cover"
-        title_missing = "Missing"
+        title_un_covered = "Covered" if options.txt_report_covered else "Missing"
         fh.write(
             "File".ljust(COL_FILE_WIDTH)
             + title_total.rjust(COL_TOTAL_COUNT_WIDTH)
             + title_covered.rjust(COL_COVERED_COUNT_WIDTH)
             + title_percentage.rjust(COL_PERCENTAGE_WIDTH)
-            + MISSING_SEPARATOR
-            + title_missing
+            + UN_COVERED_SEPARATOR
+            + title_un_covered
             + "\n"
         )
         fh.write("-" * LINE_WIDTH + "\n")
@@ -117,14 +117,24 @@ def write_summary_report(covdata: CovData, output_file: str, options: Options) -
 def _summarize_file_coverage(coverage: FileCoverage, options):
     filename = presentable_filename(coverage.filename, root_filter=options.root_filter)
 
-    if options.txt_use_branch_coverage:
-        stat = coverage.branch_coverage()
-        uncovered_lines = _uncovered_branches_str(coverage)
-    else:
-        stat = coverage.line_coverage()
-        uncovered_lines = _uncovered_lines_str(coverage)
+    if options.txt_report_covered:
+        if options.txt_use_branch_coverage:
+            stat = coverage.branch_coverage()
+            covered_lines = _covered_branches_str(coverage)
+        else:
+            stat = coverage.line_coverage()
+            covered_lines = _covered_lines_str(coverage)
 
-    return stat, _format_line(filename, stat, uncovered_lines)
+        return stat, _format_line(filename, stat, covered_lines)
+    else:
+        if options.txt_use_branch_coverage:
+            stat = coverage.branch_coverage()
+            uncovered_lines = _uncovered_branches_str(coverage)
+        else:
+            stat = coverage.line_coverage()
+            uncovered_lines = _uncovered_lines_str(coverage)
+
+        return stat, _format_line(filename, stat, uncovered_lines)
 
 
 def _format_line(name: str, stat: CoverageStat, uncovered_lines: str) -> str:
@@ -147,9 +157,27 @@ def _format_line(name: str, stat: CoverageStat, uncovered_lines: str) -> str:
     )
 
     if uncovered_lines:
-        line += MISSING_SEPARATOR + uncovered_lines
+        line += UN_COVERED_SEPARATOR + uncovered_lines
 
     return line
+
+
+def _covered_lines_str(filecov: FileCoverage) -> str:
+    covered_lines = sorted(
+        line.lineno for line in filecov.lines.values() if not line.is_uncovered
+    )
+
+    # Walk through the covered lines in sorted order.
+    # Find blocks of consecutive uncovered lines, and return
+    # a string with that information.
+    #
+    # Should we exclude noncode lines in the range of lines
+    # to be covered???  This simplifies the ranges summary, but it
+    # provides a counterintuitive listing.
+    return ",".join(
+        _format_range(first, last)
+        for first, last in _find_consecutive_ranges(covered_lines)
+    )
 
 
 def _uncovered_lines_str(filecov: FileCoverage) -> str:
@@ -168,6 +196,15 @@ def _uncovered_lines_str(filecov: FileCoverage) -> str:
         _format_range(first, last)
         for first, last in _find_consecutive_ranges(uncovered_lines)
     )
+
+
+def _covered_branches_str(filecov: FileCoverage) -> str:
+    covered_lines = sorted(
+        line.lineno for line in filecov.lines.values() if not line.has_uncovered_branch
+    )
+
+    # Dn't do any aggregation on branch results.
+    return ",".join(str(lineno) for lineno in covered_lines)
 
 
 def _uncovered_branches_str(filecov: FileCoverage) -> str:
