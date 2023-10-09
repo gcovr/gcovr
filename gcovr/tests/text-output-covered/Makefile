@@ -5,9 +5,9 @@ run: txt
 
 txt:
 	./testcase
-	$(GCOVR) -d --txt coverage.txt
+	$(GCOVR) -d --txt coverage.txt --txt-report-covered
 
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.*
+	rm -f coverage.* cobertura.xml
