@@ -42,6 +42,13 @@ class TxtHandler(BaseHandler):
                 action="store_true",
             ),
             GcovrConfigOption(
+                "txt_report_covered",
+                ["--txt-report-covered"],
+                config="txt-covered",
+                help="Report the covered lines instead of the uncovered.",
+                action="store_true",
+            ),
+            GcovrConfigOption(
                 "txt",
                 ["--txt"],
                 group="output_options",
