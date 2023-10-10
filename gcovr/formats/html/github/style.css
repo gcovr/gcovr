@@ -6,21 +6,26 @@
     --low_color_fg: var(--color-danger-fg);
     --medium_color: var(--color-attention-emphasis);
     --medium_color_fg: var(--color-attention-fg);
-    --high_color: var(--color-success-emphasis);
-    --high_color_fg: var(--color-success-fg);
-    --covered_color: var(--color-success-subtle);
     --uncovered_color: var(--color-danger-subtle);;
     /* TODO choose colors */
-    --excluded_color: green;
+    --excluded_color: var(--color-severe-subtle);
     --warning_color: orangered;
-    --taken_color: var(--color-success-fg);
     --invokedCall_color: var(--color-success-fg);
+}
+
+.theme-green, .theme-dark-green {
+    --high_color: var(--color-success-emphasis);
+    --high_color_fg: var(--color-success-fg);
+    --covered_color: var(--color-success-muted);
+    --partial_covered_color: var(--color-success-subtle);
+    --taken_color: var(--color-success-fg);
 }
 
 .theme-blue, .theme-dark-blue  {
     --high_color: var(--color-accent-emphasis);
     --high_color_fg: var(--color-accent-fg);
-    --covered_color: var(--color-accent-subtle);
+    --covered_color: var(--color-accent-muted);
+    --partial_covered_color: var(--color-accent-subtle);
     --taken_color: var(--color-accent-fg);
 }
 
@@ -47,16 +52,20 @@ td.linenos .normal {
     color: var(--taken_color) !important;
 }
 
-.excludedLine {
+.coveredLine {
+    background-color: var(--covered_color) !important;
+}
 
+.partialCoveredLine {
+    background-color: var(--partial_covered_color) !important;
 }
 
 .uncoveredLine {
     background-color: var(--uncovered_color) !important;
 }
 
-.coveredLine {
-    background-color: var(--covered_color) !important;
+.excludedLine {
+    background-color: var(--excluded_color) !important;
 }
 
 .coverage-unknown {
