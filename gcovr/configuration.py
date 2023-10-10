@@ -660,8 +660,9 @@ GCOVR_CONFIG_OPTIONS = [
         positional=True,
         nargs="*",
         help=(
-            "Search these directories for coverage files. "
-            "Defaults to --root and --gcov-object-directory."
+            "Search paths for coverage files. "
+            "Defaults to --root and --gcov-object-directory. "
+            "If path is a file it is used directly."
         ),
         type=relative_path,
     ),

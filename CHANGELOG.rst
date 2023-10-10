@@ -32,6 +32,7 @@ New features and notable changes:
   - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
   - Add :option:`--sort-reverse` to reverse the sort order.
 - Add option to report covered lines in txt report. (:issue:`836`)
+- Add support for specifying files for :option:`search_paths`. (:issue:`834`)
 
 Bug fixes and small improvements:
 

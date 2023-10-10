@@ -102,13 +102,17 @@ def find_existing_gcov_files(
     search_path: str, exclude_dirs: List[re.Pattern]
 ) -> List[str]:
     """Find .gcov files under the given search path."""
-    LOGGER.debug(f"Scanning directory {search_path} for gcov files...")
-    gcov_files = list(
-        search_file(
-            re.compile(r".*\.gcov$").match, search_path, exclude_dirs=exclude_dirs
+    if os.path.isfile(search_path):
+        LOGGER.debug(f"Using given file {search_path}")
+        gcov_files = [search_path]
+    else:
+        LOGGER.debug(f"Scanning directory {search_path} for gcov files...")
+        gcov_files = list(
+            search_file(
+                re.compile(r".*\.gcov$").match, search_path, exclude_dirs=exclude_dirs
+            )
         )
-    )
-    LOGGER.debug(f"Found {len(gcov_files)} files (and will process all of them)")
+        LOGGER.debug(f"Found {len(gcov_files)} files (and will process all of them)")
     return gcov_files
 
 
@@ -120,12 +124,18 @@ def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str
     is never actually exercised by the test code.
     So we ONLY return them if there's no corresponding .gcda file.
     """
-    LOGGER.debug(f"Scanning directory {search_path} for gcda/gcno files...")
-    files = list(
-        search_file(
-            re.compile(r".*\.gc(da|no)$").match, search_path, exclude_dirs=exclude_dirs
+    if os.path.isfile(search_path):
+        LOGGER.debug(f"Using given file {search_path}")
+        files = [search_path]
+    else:
+        LOGGER.debug(f"Scanning directory {search_path} for gcda/gcno files...")
+        files = list(
+            search_file(
+                re.compile(r".*\.gc(da|no)$").match,
+                search_path,
+                exclude_dirs=exclude_dirs,
+            )
         )
-    )
     gcda_files = []
     gcno_files = []
     known_file_stems = set()
