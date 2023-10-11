@@ -33,6 +33,7 @@ New features and notable changes:
   - Add :option:`--sort-reverse` to reverse the sort order.
 - Add option to report covered lines in txt report. (:issue:`836`)
 - Add support for specifying files for :option:`search_paths`. (:issue:`834`)
+- Use different color for partial covered lines in HTML report. (:issue:`839`)
 
 Bug fixes and small improvements:
 
