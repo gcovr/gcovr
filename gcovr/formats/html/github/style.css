@@ -28,6 +28,20 @@
     transform: translateY(-2px);
 }
 
+.listOfFunctions tr > td > a::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5em;
+}
+
+.listOfFunctions tr:hover > td
+{
+    background-color: #ddd;
+}
+
 td.linenos .normal {
     color: inherit;
     background-color: transparent;

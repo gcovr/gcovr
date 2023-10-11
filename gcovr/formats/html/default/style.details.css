@@ -136,10 +136,13 @@ pre
 {
     background-color: #ddd;
 }
-.listOfFunctions tr > td > a
-{
-    text-decoration: none;
-    color: inherit;
+.listOfFunctions tr > td > a::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5em;
 }
 
 .source-line
