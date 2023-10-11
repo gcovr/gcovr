@@ -33,6 +33,7 @@ New features and notable changes:
   - Add :option:`--sort-reverse` to reverse the sort order.
 - Add option to report covered lines in txt report. (:issue:`836`)
 - Add support for specifying files for :option:`search_paths`. (:issue:`834`)
+- Reduce file size for detailed HTML reports by using CSS to link the function lists. (:issue:`840`)
 
 Bug fixes and small improvements:
 
