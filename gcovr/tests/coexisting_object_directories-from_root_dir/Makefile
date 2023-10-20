@@ -7,37 +7,45 @@ all: build.a build.b build.c
 
 run: txt cobertura html sonarqube coveralls
 
-coverage.%.json:
+run.%.done:
 	$(eval base_dir := $(shell pwd))
 	$(eval build_dir := $(base_dir)/build/$*)
+	touch $@
 	cd $(build_dir) && ./parallel_call
+
+run.done: run.a.done run.b.done run.c.done
+
+coverage.%.json: run.%.done
+	$(eval base_dir := $(shell pwd))
+	$(eval build_dir := $(base_dir)/build/$*)
 	$(GCOVR) --json-pretty --json $(base_dir)/$@ --object-directory=$(build_dir) $(build_dir)
 
 coverage.%.txt: coverage.%.json
-	$(GCOVR) -a coverage.$*.json -o $@
+	$(GCOVR) -a $< -o $@
 
 txt: coverage.a.txt coverage.b.txt coverage.c.txt
 
 cobertura.%.xml: coverage.%.json
-	$(GCOVR) -a coverage.$*.json --cobertura-pretty --cobertura $@
+	$(GCOVR) -a $< --cobertura-pretty --cobertura $@
 
 cobertura: cobertura.a.xml cobertura.b.xml cobertura.c.xml
 
 coverage.%.html: coverage.%.json
-	$(GCOVR) -a coverage.$*.json --html-details -o $@
+	$(GCOVR) -a $< --html-details -o $@
 
 html: coverage.a.html coverage.b.html coverage.c.html
 
 coveralls.%.json: coverage.%.json
-	$(GCOVR) -a coverage.$*.json --coveralls-pretty --coveralls $@
+	$(GCOVR) -a $< --coveralls-pretty --coveralls $@
 
 coveralls: coveralls.a.json coveralls.b.json coveralls.c.json
 
 sonarqube.%.xml: coverage.%.json
-		$(GCOVR) -a coverage.$*.json --sonarqube -o $@
+		$(GCOVR) -a $< --sonarqube -o $@
 
 sonarqube: sonarqube.a.xml sonarqube.b.xml sonarqube.c.xml
 
 clean:
 	rm -rf build
+	rm -f run.*.done
 	rm -f coverage.*.* cobertura.*.* sonarqube.*.* coveralls.*.*
