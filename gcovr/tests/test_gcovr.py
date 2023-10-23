@@ -491,7 +491,7 @@ def test_build(
         encoding = re.match("^html-encoding-(.*)$", name).group(1)
 
     os.chdir(os.path.join(basedir, name))
-    assert run(["make", "-j", "4", format])
+    assert run(["make", "-j", "4", "--output-sync=target", format])
 
     if generate_reference:  # pragma: no cover
         generate_reference_data(output_pattern)
