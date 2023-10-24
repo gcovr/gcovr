@@ -15,24 +15,30 @@
     --unknown_color: lightgray;
     --low_color: #FF6666;
     --medium_color: #F9FD63;
-    --high_color: #85E485;
-    --covered_color: #85E485;
+    --partial_covered_color: var(--medium_color);
     --uncovered_color: #FF8C8C;
-    --excluded_color: #53BFFD;
     --warning_color: orangered;
-    --takenBranch_color: green;
     --notTakenBranch_color: red;
-    --takenDecision_color: green;
     --uncheckedDecision_color: darkorange;
     --notTakenDecision_color: red;
-    --invokedCall_color: green;
     --notInvokedCall_color: red;
+    --excluded_color: rgb(255, 241, 229);
+}
+
+.theme-green {
+    --high_color: #85E485;
+    --covered_color: #85E485;
+    --takenBranch_color: green;
+    --takenDecision_color: green;
+    --invokedCall_color: green;
 }
 
 .theme-blue {
     --high_color: #66B4FF;
     --covered_color: #66B4Ff;
     --takenBranch_color: blue;
+    --takenDecision_color: blue;
+    --invokedCall_color: blue;
 }
 
 body
@@ -331,6 +337,12 @@ td.coveredLine,
 span.coveredLine
 {
     background-color: var(--covered_color) !important;
+}
+
+td.partialCoveredLine,
+span.partialCoveredLine
+{
+    background-color: var(--partial_covered_color) !important;
 }
 
 td.uncoveredLine,
