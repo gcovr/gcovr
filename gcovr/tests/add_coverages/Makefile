@@ -19,7 +19,7 @@ coverage_foo.json:
 	$(GCOVR) -d --json-pretty -o $@
 
 # Just use --json-pretty and --json and pass the output filename directly.
-coverage_bar.json:
+coverage_bar.json: coverage_foo.json
 	./testcase_bar
 	$(GCOVR) -d --json-pretty --json $@
 
