@@ -5,15 +5,13 @@
   <summary>List of functions</summary>
   <table class="functionslist text-mono text-small wb-break-word listOfFunctions">
     <tr class="text-left">
-      <th class="css-truncate css-truncate-target">Function</th>
-      <th>Line</th>
+      <th class="css-truncate css-truncate-target">Function (Line)</th>
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
 {% for entry in function_list %}
     <tr>
-      {#- #}<td><a href="#l{{ entry['line'] }}"></a>{{ entry["name"] }}</td>
-      {#- #}<td>{{ entry["line"] }}</td>
+      {#- #}<td><a href="#l{{ entry['line'] }}">{{ entry["name"] }} (line {{ entry["line"] }})</a></td>
       {#- #}<td>
                 {%- if entry["excluded"] %} excluded
                 {%- else %}

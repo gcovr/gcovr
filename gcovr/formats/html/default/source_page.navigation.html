@@ -4,15 +4,13 @@
   <summary>List of functions</summary>
   <table class="listOfFunctions">
     <tr>
-      <th>Function</th>
-      <th>Line</th>
+      <th>Function (Line)</th>
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
 {% for entry in function_list %}
     <tr>
-      {#- #}<td><a href="#l{{ entry['line'] }}"></a>{{ entry["name"] }}</td>
-      {#- #}<td>{{ entry["line"] }}</td>
+      {#- #}<td><a href="#l{{ entry['line'] }}">{{ entry["name"] }} (line {{ entry["line"] }})</a></td>
       {#- #}<td>
                 {%- if entry["excluded"] %} excluded
                 {%- else %}
