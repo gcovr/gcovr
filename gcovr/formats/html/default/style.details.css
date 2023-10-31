@@ -10,6 +10,12 @@ span.coveredLine
     background-color: var(--covered_color) !important;
 }
 
+td.partialCoveredLine,
+span.partialCoveredLine
+{
+    background-color: var(--partial_covered_color) !important;
+}
+
 td.uncoveredLine,
 span.uncoveredLine
 {
