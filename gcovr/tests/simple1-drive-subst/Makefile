@@ -13,12 +13,17 @@ endif
 all: check-env
 	cmd.exe /C call wrap.cmd $(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube jacoco json json_summary coveralls
+run: txt lcov cobertura html sonarqube jacoco json json_summary coveralls
 
 txt: check-env
 	cmd.exe /C call wrap.cmd testcase
 	# generate actual output
 	cmd.exe /C call wrap.cmd $(GCOVR) -d --txt -o coverage.txt
+
+lcov: check-env
+	cmd.exe /C call wrap.cmd testcase
+	# generate actual output
+	cmd.exe /C call wrap.cmd $(GCOVR) -d --lcov coverage.lcov
 
 cobertura: check-env
 	cmd.exe /C call wrap.cmd testcase

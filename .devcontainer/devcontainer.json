@@ -22,6 +22,7 @@
                 "ms-python.vscode-pylance",
                 "GitHub.vscode-pull-request-github",
                 "EditorConfig.EditorConfig",
+                "sergelamikhov.lcov-lang",
                 "streetsidesoftware.code-spell-checker"
             ]
         }

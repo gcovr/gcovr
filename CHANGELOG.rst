@@ -34,6 +34,7 @@ New features and notable changes:
 - Add option to report covered lines in txt report. (:issue:`836`)
 - Add support for specifying files for :option:`search_paths`. (:issue:`834`)
 - Use different color for partial covered lines in HTML report. (:issue:`839`)
+- Add support to generate LCOV info files. (:issue:`830`)
 
 Bug fixes and small improvements:
 

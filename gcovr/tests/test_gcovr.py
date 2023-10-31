@@ -96,6 +96,8 @@ RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
 RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
 
+RE_LCOV_PATH = re.compile(r"(SF:).+?/(gcovr/tests/.+?)$", flags=re.MULTILINE)
+
 RE_XML_ATTRS = re.compile(r'(timestamp)="[^"]*"')
 
 RE_COVERALLS_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at)": "[^"]*"')
@@ -112,6 +114,10 @@ RE_HTML_HEADER_DATE = re.compile(r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d<(/td>
 
 def scrub_txt(contents):
     return RE_TXT_WHITESPACE.sub("", contents)
+
+
+def scrub_lcov(contents):
+    return RE_LCOV_PATH.sub(r"\1\2", contents)
 
 
 def scrub_csv(contents):
@@ -225,6 +231,7 @@ KNOWN_FORMATS = [
     "cobertura",
     "coveralls",
     "jacoco",
+    "lcov",
     "sonarqube",
 ]
 
@@ -454,6 +461,7 @@ SCRUBBERS = dict(
     cobertura=scrub_xml,
     coveralls=scrub_coveralls,
     jacoco=scrub_xml,
+    lcov=scrub_lcov,
     sonarqube=scrub_xml,
 )
 
@@ -468,6 +476,7 @@ OUTPUT_PATTERN = dict(
     cobertura=["cobertura*.xml"],
     coveralls=["coveralls*.json"],
     jacoco=["jacoco*.xml"],
+    lcov=["coverage*.lcov"],
     sonarqube=["sonarqube*.xml"],
 )
 

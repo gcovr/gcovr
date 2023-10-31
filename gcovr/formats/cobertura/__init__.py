@@ -49,10 +49,7 @@ class CoberturaHandler(BaseHandler):
                 "cobertura_pretty",
                 ["--cobertura-pretty", "--xml-pretty"],
                 group="output_options",
-                help=(
-                    "Pretty-print the Cobertura XML report. "
-                    "Implies --cobertura. Default: {default!s}."
-                ),
+                help=("Pretty-print the Cobertura XML report. Implies --cobertura."),
                 action="store_true",
             ),
             GcovrConfigOption(

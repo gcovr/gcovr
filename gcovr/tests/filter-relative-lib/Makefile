@@ -8,7 +8,7 @@ all: links
 	cd project; $(CXX) $(CFLAGS) -c relevant-library/src/yes.cpp -o yes.o
 	cd project; $(CXX) $(CFLAGS) main.o no.o yes.o -o testcase
 
-run: txt cobertura html sonarqube jacoco coveralls
+run: txt lcov cobertura html sonarqube jacoco coveralls
 
 # the src/ filter is provided by the project/gcovr.cfg configuration file
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
@@ -23,6 +23,9 @@ coverage.json:
 
 txt: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg -o ../coverage.txt
+
+lcov: coverage.json
+	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --lcov ../coverage.lcov
 
 cobertura: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --cobertura-pretty --cobertura ../cobertura.xml

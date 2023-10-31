@@ -46,10 +46,7 @@ class JaCoCoHandler(BaseHandler):
                 "jacoco_pretty",
                 ["--jacoco-pretty"],
                 group="output_options",
-                help=(
-                    "Pretty-print the JaCoCo XML report. "
-                    "Implies --jacoco. Default: {default!s}."
-                ),
+                help=("Pretty-print the JaCoCo XML report. Implies --jacoco."),
                 action="store_true",
             ),
         ]
