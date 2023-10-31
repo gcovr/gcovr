@@ -7,11 +7,13 @@ all: build.a build.b build.c
 
 run: txt cobertura html sonarqube coveralls
 
+.NOTPARALLEL: coverage.a.json coverage.b.json coverage.c.json
+
 coverage.%.json:
 	$(eval base_dir := $(shell pwd))
 	$(eval build_dir := $(base_dir)/build/$*)
 	cd $(build_dir) && ./parallel_call
-	GCOV_STRIP=99 GCOV_PREFIX=$(build_dir) $(GCOVR) --verbose --json-pretty --json $(base_dir)/$@ --object-directory=$(build_dir)
+	$(GCOVR) --verbose --json-pretty --json $(base_dir)/$@ --object-directory=$(build_dir)
 
 coverage.%.txt: coverage.%.json
 	$(GCOVR) -a $< -o $@

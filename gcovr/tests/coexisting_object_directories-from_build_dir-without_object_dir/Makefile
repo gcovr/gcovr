@@ -7,6 +7,8 @@ all: build.a build.b build.c
 
 run: txt cobertura html sonarqube coveralls
 
+.NOTPARALLEL: coverage.a.json coverage.b.json coverage.c.json
+
 coverage.%.json:
 	$(eval base_dir := $(shell pwd))
 	$(eval build_dir := $(base_dir)/build/$*)
