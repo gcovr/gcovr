@@ -8,10 +8,8 @@ all: build.a build.b build.c
 run: txt cobertura html sonarqube coveralls
 
 coverage.%.json:
-	$(eval base_dir := $(shell pwd))
-	$(eval build_dir := $(base_dir)/build/$*)
-	cd $(build_dir) && ./parallel_call
-	$(GCOVR) --json-pretty --json $(base_dir)/$@ --object-directory=$(build_dir) $(build_dir)
+	cd build/$* && ./parallel_call
+	$(GCOVR) --json-pretty --json $@ --object-directory=build/$* build/$*
 
 coverage.%.txt: coverage.%.json
 	$(GCOVR) -a $< -o $@
