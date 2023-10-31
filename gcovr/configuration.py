@@ -531,7 +531,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Override current time for reproducible reports. "
             "Can use `YYYY-MM-DD hh:mm:ss` or epoch notation. "
             "Used by HTML, Coveralls, and Cobertura reports. "
-            "Default: Environment variable SOURCE_DATE_EPOCH "
+            "Default is taken from environment variable SOURCE_DATE_EPOCH "
             "(see https://reproducible-builds.org/docs/source-date-epoch) "
             "or current time."
         ),
@@ -580,7 +580,7 @@ GCOVR_CONFIG_OPTIONS = [
         default="strict",
         help=(
             "The merge mode for functions coverage from different gcov files for same sourcefile."
-            "Default: {default!s}."
+            "Default is '{default!s}'."
         ),
     ),
     GcovrConfigOption(
@@ -599,8 +599,7 @@ GCOVR_CONFIG_OPTIONS = [
         group="gcov_options",
         help=(
             "Exclude branch coverage from lines without useful source code "
-            '(often, compiler-generated "dead" code). '
-            "Default: {default!s}."
+            "(often, compiler-generated 'dead' code)."
         ),
         action="store_true",
     ),
@@ -608,7 +607,7 @@ GCOVR_CONFIG_OPTIONS = [
         "exclude_function_lines",
         ["--exclude-function-lines"],
         group="gcov_options",
-        help="Exclude coverage from lines defining a function. Default: {default!s}.",
+        help="Exclude coverage from lines defining a function.",
         action="store_true",
     ),
     GcovrConfigOption(
@@ -616,7 +615,7 @@ GCOVR_CONFIG_OPTIONS = [
         ["--exclude-noncode-lines"],
         config="exclude-noncode-lines",
         group="gcov_options",
-        help="Exclude coverage from lines which seem to be non-code. Default: {default!s}.",
+        help="Exclude coverage from lines which seem to be non-code.",
         action="store_true",
         const_negate=False,
     ),
@@ -627,8 +626,7 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "For branch coverage, exclude branches "
             "that the compiler generates for exception handling. "
-            'This often leads to more "sensible" coverage reports. '
-            "Default: {default!s}."
+            "This often leads to more 'sensible' coverage reports."
         ),
         action="store_true",
     ),

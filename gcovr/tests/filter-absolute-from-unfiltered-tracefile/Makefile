@@ -13,7 +13,7 @@ all:
 	$(CXX) $(CFLAGS) -c main.cpp -o main.o
 	$(CXX) $(CFLAGS) main.o file1.o -o testcase
 
-run: txt cobertura html sonarqube jacoco
+run: txt lcov cobertura html sonarqube jacoco
 
 coverage_unfiltered.json:
 	./testcase
@@ -21,6 +21,9 @@ coverage_unfiltered.json:
 
 txt: coverage_unfiltered.json
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< -o coverage.txt
+
+lcov: coverage_unfiltered.json
+	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --lcov coverage.lcov
 
 cobertura: coverage_unfiltered.json
 	$(GCOVR) $(GCOVR_TEST_OPTIONS) -a $< --cobertura-pretty --cobertura cobertura.xml

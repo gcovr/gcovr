@@ -3,7 +3,7 @@ GCOV ?= gcov
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube jacoco coveralls
+run: txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
@@ -12,6 +12,9 @@ coverage.json:
 
 txt: coverage.json
 	$(GCOVR) -v -a $< -o coverage.txt
+
+lcov: coverage.json
+	$(GCOVR) -v -a $< --lcov coverage.lcov
 
 cobertura: coverage.json
 	$(GCOVR) -v -a $< --cobertura-pretty --cobertura cobertura.xml

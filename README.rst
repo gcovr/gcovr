@@ -67,6 +67,10 @@ The ``gcovr`` command can produce different kinds of coverage reports:
      - |abstract-guide-coveralls|
      - machine readable JSON report in Coveralls_ format
 
+   * - |abstract-option-lcov|
+     - |abstract-guide-lcov|
+     - machine readable JSON report in LCOV_ format
+
 Thus, gcovr can be viewed
 as a command-line alternative to the lcov_ utility, which runs gcov
 and generates an HTML-formatted report.
@@ -98,6 +102,7 @@ text summaries and XML reports.
 .. |abstract-option-json-summary| replace:: ``--json-summary``
 .. |abstract-option-csv| replace:: ``--csv``
 .. |abstract-option-coveralls| replace:: ``--coveralls``
+.. |abstract-option-lcov| replace:: ``--lcov``
 
 .. |abstract-guide-txt| replace:: `Text Output <https://gcovr.com/en/stable/output/txt.html>`__
 .. |abstract-guide-html| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
@@ -110,6 +115,7 @@ text summaries and XML reports.
 .. |abstract-guide-json-summary| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
 .. |abstract-guide-csv| replace:: `CSV Output <https://gcovr.com/en/stable/output/csv.html>`__
 .. |abstract-guide-coveralls| replace:: `Coveralls JSON Output <https://gcovr.com/en/stable/output/coveralls.html>`__
+.. |abstract-guide-lcov| replace:: `LCOV info Output <https://gcovr.com/en/stable/output/lcov.html>`__
 
 
 Example HTML summary:

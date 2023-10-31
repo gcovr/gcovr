@@ -51,7 +51,7 @@ class JsonHandler(BaseHandler):
                 "json_pretty",
                 ["--json-pretty"],
                 group="output_options",
-                help="Pretty-print the JSON report. Implies --json. Default: {default!s}.",
+                help="Pretty-print the JSON report. Implies --json.",
                 action="store_true",
             ),
             GcovrConfigOption(
@@ -72,10 +72,7 @@ class JsonHandler(BaseHandler):
                 "json_summary_pretty",
                 ["--json-summary-pretty"],
                 group="output_options",
-                help=(
-                    "Pretty-print the JSON SUMMARY report."
-                    "Implies --json-summary. Default: {default!s}."
-                ),
+                help="Pretty-print the JSON SUMMARY report. Implies --json-summary.",
                 action="store_true",
             ),
             GcovrConfigOption(

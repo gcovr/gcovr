@@ -6,7 +6,7 @@ all:
 	$(CXX) $(CFLAGS) -c src/main.cpp -o build/main.o
 	$(CXX) $(CFLAGS) build/main.o build/file1.o -o build/testcase
 
-run: txt cobertura html sonarqube jacoco json_summary coveralls
+run: txt lcov cobertura html sonarqube jacoco json_summary coveralls
 
 
 coverage.json:
@@ -15,6 +15,9 @@ coverage.json:
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
+
+lcov: coverage.json
+	$(GCOVR) -a $< --lcov coverage.lcov
 
 cobertura: coverage.json
 	$(GCOVR) -a $< --cobertura-pretty --cobertura cobertura.xml

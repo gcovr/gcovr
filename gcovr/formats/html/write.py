@@ -740,8 +740,12 @@ def source_row(
         if line_cov.is_excluded:
             covclass = "excludedLine"
         elif line_cov.is_covered:
-            covclass = "coveredLine"
             linebranch = source_row_branch(line_cov.branches)
+            covclass = (
+                "coveredLine"
+                if linebranch is None or linebranch["taken"] == linebranch["total"]
+                else "partialCoveredLine"
+            )
             linedecision = source_row_decision(line_cov.decision)
             linecount = line_cov.count
         elif line_cov.is_uncovered:

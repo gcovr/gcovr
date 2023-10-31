@@ -16,5 +16,6 @@ that are documented on the following pages.
    json
    csv
    coveralls
+   lcov
 
 You can use :ref:`multiple output formats` at the same time.
