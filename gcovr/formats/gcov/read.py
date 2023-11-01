@@ -88,7 +88,9 @@ def read_report(options: Options) -> CovData:
     toerase = set()
     covdata = dict()
     for context in contexts:
-        covdata = merge_covdata(covdata, context["covdata"])
+        covdata = merge_covdata(
+            covdata, context["covdata"], get_merge_mode_from_options(options)
+        )
         toerase.update(context["toerase"])
 
     for filepath in toerase:
@@ -305,7 +307,6 @@ def guess_source_file_name_heuristics(
     starting_dir: str,
     obj_dir: str,
 ) -> str:
-
     # 0. Try using the path to the gcov file
     fname = os.path.join(os.path.dirname(data_fname), source_from_gcov)
     if os.path.exists(fname):
