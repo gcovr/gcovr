@@ -179,9 +179,7 @@ def _insert_coverage_item(
     return merged_item
 
 
-def merge_covdata(
-    left: CovData, right: CovData, options: MergeOptions = DEFAULT_MERGE_OPTIONS
-) -> CovData:
+def merge_covdata(left: CovData, right: CovData, options: MergeOptions) -> CovData:
     """
     Merge CovData information.
 
@@ -202,7 +200,7 @@ def insert_file_coverage(
 def merge_file(
     left: FileCoverage,
     right: FileCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> FileCoverage:
     """
     Merge FileCoverage information.
@@ -234,7 +232,7 @@ def insert_line_coverage(
 def merge_line(
     left: LineCoverage,
     right: LineCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> LineCoverage:
     """
     Merge LineCoverage information.
@@ -273,7 +271,7 @@ def insert_function_coverage(
 def merge_function(
     left: FunctionCoverage,
     right: FunctionCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> FunctionCoverage:
     """
     Merge FunctionCoverage information.
@@ -364,7 +362,7 @@ def insert_branch_coverage(
 def merge_branch(
     left: BranchCoverage,
     right: BranchCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> BranchCoverage:
     """
     Merge BranchCoverage information.
@@ -391,7 +389,7 @@ def insert_call_coverage(
 def merge_call(
     left: CallCoverage,
     right: CallCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> BranchCoverage:
     """
     Merge CallCoverage information.
@@ -409,14 +407,14 @@ def insert_decision_coverage(
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> Optional[DecisionCoverage]:
     """Insert DecisionCoverage into LineCoverage."""
-    target.decision = merge_decision(target.decision, decision)
+    target.decision = merge_decision(target.decision, decision, options)
     return target.decision
 
 
 def merge_decision(
     left: Optional[DecisionCoverage],
     right: Optional[DecisionCoverage],
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> Optional[DecisionCoverage]:
     """
     Merge DecisionCoverage information.

@@ -49,6 +49,7 @@ Bug fixes and small improvements:
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
 - Fix ``TypeError`` during decision analysis. (:issue:`784`)
 - Use relative paths if possible when running ``gcov``. (:issue:`820`)
+- Use options when merging coverage data. (:issue:`841`)
 
 Documentation:
 
