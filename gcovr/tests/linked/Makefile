@@ -67,4 +67,4 @@ else
 		cmd.exe /C "rmdir /S /Q subdir";\
 	fi
 endif
-	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json
+	rm -f coverage*.* cobertura*.* sonarqube*.* coveralls.json jacoco.xml
