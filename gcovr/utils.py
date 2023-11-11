@@ -401,5 +401,5 @@ def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
 
 def get_md5_hexdigest(data: bytes) -> str:
     return (
-        md5(data, usedforsecurity=False) if sys.version_info >= (3, 8) else md5(data)
+        md5(data, usedforsecurity=False) if sys.version_info >= (3, 9) else md5(data)
     ).hexdigest()
