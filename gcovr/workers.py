@@ -20,7 +20,7 @@
 from threading import Thread, Condition, RLock
 from contextlib import contextmanager
 from queue import Queue, Empty
-
+#import pdb
 
 class LockedDirectories(object):
     """
@@ -71,8 +71,12 @@ def worker(queue, context, pool):
     Run work items from the queue until the sentinal
     None value is hit
     """
+    #pdb.set_trace()
     while True:
-        work, args, kwargs = queue.get(True)
+        try:
+            work, args, kwargs = queue.get(False)
+        except Empty:
+            continue
         if not work:
             break
         kwargs.update(context)

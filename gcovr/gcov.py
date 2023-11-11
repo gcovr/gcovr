@@ -124,7 +124,7 @@ def process_gcov_data(
     # Return if the filename does not match the filter
     # Return if the filename matches the exclude pattern
     filtered, excluded = apply_filter_include_exclude(
-        fname, options.filter, options.exclude
+        fname, options.gcov_filter, options.exclude
     )
 
     if filtered:
@@ -516,7 +516,7 @@ class GcovProgram:
                 f"GCOV returncode was {gcov_process.returncode} (exited by signal)."
             )
         elif gcov_process.returncode != 0:
-            raise RuntimeError(f"GCOV returncode was {gcov_process.returncode}.")
+            pass #raise RuntimeError(f"GCOV returncode was {gcov_process.returncode}.")
 
         return (out, err)
 
