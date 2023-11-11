@@ -35,6 +35,7 @@ New features and notable changes:
 - Add support for specifying files for :option:`search_paths`. (:issue:`834`)
 - Use different color for partial covered lines in HTML report. (:issue:`839`)
 - Add support to generate LCOV info files. (:issue:`830`)
+- Add support for FIPS enabled OS when used with Python 3.9. (:issue:`850`)
 
 Bug fixes and small improvements:
 
