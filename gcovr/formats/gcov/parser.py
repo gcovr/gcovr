@@ -37,7 +37,6 @@ The behavior of this parser was informed by the following sources:
 
 
 import enum
-import hashlib
 import logging
 import re
 
@@ -53,6 +52,8 @@ from typing import (
     Tuple,
     Union,
 )
+
+from gcovr.utils import get_md5_hexdigest
 
 from ...coverage import (
     BranchCoverage,
@@ -416,7 +417,7 @@ def _gather_coverage_from_line(
                 LineCoverage(
                     lineno,
                     count=raw_count,
-                    md5=hashlib.md5(source_code.encode("utf-8")).hexdigest(),
+                    md5=get_md5_hexdigest(source_code.encode("utf-8")),
                 ),
             )
 

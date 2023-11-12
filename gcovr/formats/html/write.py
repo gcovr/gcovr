@@ -17,7 +17,6 @@
 #
 # ****************************************************************************
 
-import hashlib
 import io
 import logging
 import os
@@ -43,6 +42,7 @@ from ...options import Options
 from ...utils import (
     commonpath,
     force_unix_separator,
+    get_md5_hexdigest,
     open_text_for_writing,
     realpath,
 )
@@ -888,7 +888,7 @@ def _make_short_sourcename(output_file: str, filename: str) -> str:
             (
                 output_prefix,
                 os.path.basename(filename),
-                hashlib.md5(filename.encode("utf-8")).hexdigest(),
+                get_md5_hexdigest(filename.encode("utf-8")),
             )
         )
         + output_suffix
