@@ -229,7 +229,9 @@ class NegativeHits(Exception):
         )
 
     @staticmethod
-    def raise_if_not_ignored(line, ignore_parse_errors: set = (), persistent_states: dict = {}) -> None:
+    def raise_if_not_ignored(
+        line, ignore_parse_errors: set = (), persistent_states: dict = {}
+    ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and (
             "negative_hits.warn" in ignore_parse_errors
@@ -714,7 +716,9 @@ def _parse_line(
             extra_info = _ExtraInfo.NONE
 
         if hits < 0:
-            NegativeHits.raise_if_not_ignored(line, ignore_parse_errors, persistent_states)
+            NegativeHits.raise_if_not_ignored(
+                line, ignore_parse_errors, persistent_states
+            )
             hits = 0
 
         return _SourceLine(hits, int(lineno), source_code, extra_info)
@@ -738,7 +742,9 @@ def _parse_line(
                 extra_info = _ExtraInfo.NONE
 
             if hits < 0:
-                NegativeHits.raise_if_not_ignored(line, ignore_parse_errors, persistent_states)
+                NegativeHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
                 hits = 0
 
             return _BlockLine(hits, int(lineno), int(blockno), extra_info)
@@ -784,7 +790,9 @@ def _parse_tag_line(
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
 
             if hits < 0:
-                NegativeHits.raise_if_not_ignored(line, ignore_parse_errors, persistent_states)
+                NegativeHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
                 hits = 0
 
             return _BranchLine(int(branch_id), hits, annotation)
@@ -813,7 +821,9 @@ def _parse_tag_line(
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
 
             if hits < 0:
-                NegativeHits.raise_if_not_ignored(line, ignore_parse_errors, persistent_states)
+                NegativeHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
                 hits = 0
 
             return _UnconditionalLine(int(branch_id), hits)

@@ -601,11 +601,7 @@ def test_negative_line_count_ignored():
         ignore_parse_errors=set(["negative_hits.warn"]),
     )
 
-    covered_lines = {
-        line.lineno
-        for line in coverage.lines.values()
-        if line.is_covered
-    }
+    covered_lines = {line.lineno for line in coverage.lines.values() if line.is_covered}
 
     assert covered_lines == {1, 3}
 
