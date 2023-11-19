@@ -82,7 +82,7 @@ REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
     ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "gcc-10", "gcc-11", "gcc-12", "gcc-13"]
     if "gcc" in CC_REFERENCE
-    else ["clang-10", "clang-13", "clang-14"]
+    else ["clang-10", "clang-13", "clang-14", "clang-15"]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
