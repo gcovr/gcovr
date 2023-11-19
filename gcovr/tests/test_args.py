@@ -286,6 +286,17 @@ def test_no_output_html_nested(caplog):
     assert c.exception.code != 0
 
 
+def test_html_details_and_html_nested(caplog):
+    c = log_capture(caplog, ["--output", "x", "--html-details", "--html-nested"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert (
+        message[2]
+        == "--html-details and --html-nested can not be used together."
+    )
+    assert c.exception.code != 0
+
+
 @pytest.mark.parametrize(
     "option",
     [

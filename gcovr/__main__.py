@@ -110,7 +110,7 @@ def fail_under(
 
     function_nok = False
     if threshold_function > 0.0:
-        # Allow data with no decisions.
+        # Allow data with no functions.
         percent_function = stats.function.percent_or(100.0)
         if percent_function < threshold_function:
             function_nok = True
@@ -329,7 +329,7 @@ def main(args=None):
         # but is used to turn absolute paths into relative paths
         options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
-        if options.gcov_exclude_dirs is not None:
+        if options.gcov_exclude_dirs:
             options.gcov_exclude_dirs = [
                 f.build_filter() for f in options.gcov_exclude_dirs
             ]
