@@ -524,6 +524,8 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "CC",
         "-e",
         "USE_COVERAGE",
+        "-e",
+        f"HOST_OS={platform.system()}",
         "-v",
         f"{os.getcwd()}:/gcovr",
         docker_container_id(session, version),
