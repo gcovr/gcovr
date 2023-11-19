@@ -622,6 +622,10 @@ def _parse_line(
     Example: can parse unconditional branches
     >>> _parse_line('unconditional 1 taken 17')
     _UnconditionalLine(branchno=1, hits=17)
+    >>> _parse_line('unconditional 2 taken -1', ignore_parse_errors=set(['negative_hits.warn']))
+    _UnconditionalLine(branchno=2, hits=0)
+    >>> _parse_line('unconditional 3 never executed')
+    _UnconditionalLine(branchno=3, hits=0)
     >>> _parse_line('unconditional with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.UnknownLineType: unconditional with some unknown format
@@ -658,6 +662,8 @@ def _parse_line(
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=NONE)
     >>> _parse_line(' $$$$$: 33-block  1')
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=EXCEPTION_ONLY)
+    >>> _parse_line('     -1: 32-block  0', ignore_parse_errors=set(['negative_hits.warn']))
+    _BlockLine(hits=0, lineno=32, blockno=0, extra_info=NONE)
     >>> _parse_line('     1: 9-block with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.UnknownLineType:      1: 9-block with some unknown format
