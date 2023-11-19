@@ -78,6 +78,7 @@ Internal changes:
 - Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
 - Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
 - Add nox session to import reference file from pipeline. (:issue:`831`)
+- Add support for ``clang-15`` in our test suite and fix test with write protection under Mac OS. (:issue:`853`)
 
 6.0 (08 March 2023)
 -------------------
