@@ -7,7 +7,7 @@ run: json
 
 json:
 	cd build ; ./testcase
-	chmod 0444 src build
+	chmod 0555 src build
 	$(GCOVR) --verbose --json-pretty --json coverage.json --gcov-ignore-errors=output_error --root src build
 
 clean:
