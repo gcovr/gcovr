@@ -169,6 +169,7 @@ is needed.
     -  clang-10/clang++-10/llvm-cov
     -  clang-13/clang++-13/llvm-cov
     -  clang-14/clang++-14/llvm-cov
+    -  clang-15/clang++-15/llvm-cov
 
     are available everything is OK.
     The test suite uses the newest GCC found in the PATH. To use another one you
@@ -329,7 +330,7 @@ and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
 Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8``, ``CC=gcc-9``,
 ``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``clang-10``, ``clang-13``,
-and ``clang-14``.
+``clang-14`` and ``clang-15``.
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
