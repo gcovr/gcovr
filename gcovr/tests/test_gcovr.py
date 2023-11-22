@@ -326,7 +326,13 @@ def pytest_generate_tests(metafunc):
                     reason="clang doesn't understand -finput-charset=...",
                 ),
                 pytest.mark.xfail(
-                    name in ["excl-branch", "exclude-throw-branches", "html-themes", "html-themes-github"]
+                    name
+                    in [
+                        "excl-branch",
+                        "exclude-throw-branches",
+                        "html-themes",
+                        "html-themes-github",
+                    ]
                     and IS_MACOS,
                     reason="On MacOS the constructor is called twice",
                 ),
@@ -336,11 +342,7 @@ def pytest_generate_tests(metafunc):
                 ),
                 pytest.mark.xfail(
                     name == "decisions"
-                    and (
-                        IS_CLANG
-                        and CC_REFERENCE_VERSION == 15
-                        and IS_MACOS
-                    ),
+                    and (IS_CLANG and CC_REFERENCE_VERSION == 15 and IS_MACOS),
                     reason="On MacOS with clang 15 the file decision/switch_test.h throws compiler errors",
                 ),
                 pytest.mark.xfail(
@@ -356,11 +358,7 @@ def pytest_generate_tests(metafunc):
                     reason="Only windows has a case insensitive file system",
                 ),
                 pytest.mark.xfail(
-                    name == "gcc-abspath"
-                    and (
-                        IS_CLANG
-                        or CC_REFERENCE_VERSION < 8
-                    ),
+                    name == "gcc-abspath" and (IS_CLANG or CC_REFERENCE_VERSION < 8),
                     reason="Option -fprofile-abs-path is supported since gcc-8",
                 ),
             ]
