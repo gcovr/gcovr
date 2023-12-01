@@ -639,6 +639,6 @@ def import_reference(session: nox.Session) -> None:
             with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
                 seekable_buf = io.BytesIO(fh_inner_zip.read())
                 with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
-                    fh_diff_zip.extractall()
+                    fh_diff_zip.extractall("gcovr/tests")
         except KeyError:
-            fh_zip.extractall()
+            fh_zip.extractall("gcovr/tests")
