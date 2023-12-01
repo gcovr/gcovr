@@ -3,7 +3,7 @@ all:
 	$(CC) -fprofile-arcs -ftest-coverage -fPIC -c update-data.c -o update-data.o
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -o testcase main.o update-data.o
 
-run: txt cobertura html sonarqube jacoco coveralls
+run: txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
@@ -11,6 +11,9 @@ coverage.json:
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
+
+lcov: coverage.json
+	$(GCOVR) -a $< --lcov coverage.lcov
 
 cobertura: coverage.json
 	$(GCOVR) -a $< --cobertura-pretty --cobertura cobertura.xml

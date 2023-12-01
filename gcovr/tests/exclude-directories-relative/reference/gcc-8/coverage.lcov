@@ -1,0 +1,23 @@
+TN:GCOVR report
+SF:gcovr/tests/exclude-directories-relative/b/main.cpp
+VER:aa3e0bff9ee1c3840efb1be8065bab01
+FN:5,foo(int)
+FNDA:1,foo(int)
+FN:14,main
+FNDA:1,main
+FNF:2
+FNH:2
+BRDA:6,0,0,-
+BRDA:6,0,1,1
+BRF:2
+BRH:1
+DA:5,1,bb4aae5e443f387349849f9a5a813e31
+DA:6,1,81fff94209b659e33b1459a477e1e747
+DA:7,0,b4b831953973cd241268abf30a147d62
+DA:9,1,724220bfbbc70e6d7982787bca056c38
+DA:14,1,2a787a1309f19379bb0e3d8434d2a18d
+DA:15,1,1cd4f8c6f8a4f17a110d678285562078
+DA:17,1,c26ba559a5f34d46a49fafed87946fb7
+LH:6
+LF:7
+end_of_record

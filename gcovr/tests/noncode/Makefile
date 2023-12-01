@@ -1,7 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube jacoco json json_summary coveralls
+run: txt lcov cobertura html sonarqube jacoco json json_summary coveralls
 
 coverage.json:
 	./testcase
@@ -11,6 +11,9 @@ json: coverage.json
 
 txt: coverage.json
 	$(GCOVR) -d -a $< --txt -o coverage.txt
+
+lcov: coverage.json
+	$(GCOVR) -d -a $< --lcov coverage.lcov
 
 cobertura: coverage.json
 	$(GCOVR) -d -a $< --cobertura-pretty --cobertura cobertura.xml
@@ -33,4 +36,4 @@ coveralls: coverage.json
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage*.html coverage*.css cobertura.xml sonarqube.xml jacoco.xml coverage.json summary_coverage.json coveralls.json
+	rm -f coverage.txt coverage*.html coverage*.css cobertura.xml sonarqube.xml jacoco.xml coverage.json summary_coverage.json coveralls.json coverage.lcov

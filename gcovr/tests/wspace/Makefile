@@ -1,16 +1,12 @@
 all:
 	cd 'src code'; $(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube jacoco coveralls
-
-txt:
-	cd 'src code'; ./testcase
-	$(GCOVR) -r 'src code' -d -o coverage.txt
+run: txt lcov cobertura html sonarqube jacoco coveralls
 
 # generate multiple output formats together
-cobertura html sonarqube jacoco coveralls:
+txt lcov cobertura html sonarqube jacoco coveralls:
 	cd 'src code'; ./testcase
-	$(GCOVR) -r 'src code' -d --cobertura-pretty --cobertura cobertura.xml \
+	$(GCOVR) -r 'src code' -d --txt coverage.txt --lcov coverage.lcov --cobertura-pretty --cobertura cobertura.xml \
 		--html-details coverage.html --sonarqube sonarqube.xml --jacoco-pretty --jacoco jacoco.xml --coveralls-pretty --coveralls coveralls.json
 
 clean:

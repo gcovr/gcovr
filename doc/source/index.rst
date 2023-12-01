@@ -23,6 +23,7 @@ gcovr
 .. |abstract-option-json-summary| replace:: :option:`--json-summary`
 .. |abstract-option-csv| replace:: :option:`--csv`
 .. |abstract-option-coveralls| replace:: :option:`--coveralls`
+.. |abstract-option-lcov| replace:: :option:`--lcov`
 
 .. |abstract-guide-txt| replace:: :ref:`txt_output`
 .. |abstract-guide-html| replace:: :ref:`html_output`
@@ -35,6 +36,7 @@ gcovr
 .. |abstract-guide-json-summary| replace:: :ref:`json_output`
 .. |abstract-guide-csv| replace:: :ref:`csv_output`
 .. |abstract-guide-coveralls| replace:: :ref:`coveralls_output`
+.. |abstract-guide-lcov| replace:: :ref:`lcov_output`
 
 .. admonition:: Quick Links
 
