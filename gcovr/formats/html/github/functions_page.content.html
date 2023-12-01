@@ -1,6 +1,6 @@
 {# -*- engine: jinja -*- #}
 {% for entry in all_functions %}
-{% if loop.first or loop.index % 10000 == 1 %}
+{% if loop.index0 % 10000 == 0 %}
 <table class="m-3 text-mono text-small listOfFunctions" style="width:100%;">
   <tr class="text-left">
     <th>Function (File:Line)</th>
