@@ -1,11 +1,13 @@
 {# -*- engine: jinja -*- #}
+{% for entry in all_functions %}
+{% if loop.first or loop.index % 10000 == 1 %}
 <table class="listOfFunctions">
   <tr>
     <th>Function (File:Line)</th>
     <th>Call count</th>
     <th>Block coverage</th>
   </tr>
-{% for entry in all_functions %}
+  {% endif %}
   <tr>
     {#- #}<td><a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["name"] }} ({{ entry["filename"] }}:{{ entry["line"] }})</a></td>
     {#- #}<td>
@@ -19,5 +21,5 @@
     {#- #}<td>{{ entry["blocks"] }}%</td>
     {#- -#}
   </tr>
+{% if loop.last or loop.index % 10000 == 0 %}</table>{% endif %}
 {% endfor %}
-</table>

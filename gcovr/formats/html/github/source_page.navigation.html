@@ -3,13 +3,14 @@
 <div class="m-3">
 <details>
   <summary>List of functions</summary>
+{% for entry in function_list %}
+{% if loop.first or loop.index % 10000 == 1 %}
   <table class="functionslist text-mono text-small wb-break-word listOfFunctions">
     <tr class="text-left">
       <th class="css-truncate css-truncate-target">Function (Line)</th>
       <th>Call count</th>
       <th>Block coverage</th>
-    </tr>
-{% for entry in function_list %}
+    </tr>{% endif %}
     <tr>
       {#- #}<td><a href="#l{{ entry['line'] }}">{{ entry["name"] }} (line {{ entry["line"] }})</a></td>
       {#- #}<td>
@@ -23,8 +24,7 @@
       {#- #}<td>{{ entry["blocks"] }}%</td>
       {#- -#}
     </tr>
-{% endfor %}
-  </table>
+{% if loop.last or loop.index % 10000 == 0 %}</table>{% endif %}{% endfor %}
 </details>
 </div>
 {% endif -%}
