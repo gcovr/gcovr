@@ -8,12 +8,14 @@ from ..coverage import CovData
 # the handler
 from .gcov import GcovHandler
 from .cobertura import CoberturaHandler
-from .html import HtmlHandler
-from .json import JsonHandler
-from .txt import TxtHandler
-from .csv import CsvHandler
-from .sonarqube import SonarqubeHandler
 from .coveralls import CoverallsHandler
+from .csv import CsvHandler
+from .html import HtmlHandler
+from .jacoco import JaCoCoHandler
+from .json import JsonHandler
+from .lcov import LcovHandler
+from .sonarqube import SonarqubeHandler
+from .txt import TxtHandler
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -23,22 +25,25 @@ def get_options() -> List[GcovrConfigOption]:
         o
         for o in [
             *GcovHandler.get_options(),
-            *TxtHandler.get_options(),
             *CoberturaHandler.get_options(),
-            *HtmlHandler.get_options(),
-            *JsonHandler.get_options(),
-            *CsvHandler.get_options(),
-            *SonarqubeHandler.get_options(),
             *CoverallsHandler.get_options(),
+            *CsvHandler.get_options(),
+            *HtmlHandler.get_options(),
+            *JaCoCoHandler.get_options(),
+            *JsonHandler.get_options(),
+            *LcovHandler.get_options(),
+            *SonarqubeHandler.get_options(),
+            *TxtHandler.get_options(),
         ]
         if not isinstance(o, str)
     ]
 
 
 def read_reports(options) -> CovData:
-    covdata: CovData = JsonHandler(options).read_report()
-
-    if covdata is None:
+    if options.json_add_tracefile or options.cobertura_add_tracefile:
+        covdata: CovData = JsonHandler(options).read_report() or {}
+        covdata.update(CoberturaHandler(options).read_report() or {})
+    else:
         covdata = GcovHandler(options).read_report()
 
     return covdata
@@ -54,18 +59,6 @@ def write_reports(covdata: CovData, options: Options):
     ]
     generators: List[Generator] = []
 
-    if options.txt:
-        generators.append(
-            (
-                [options.txt],
-                TxtHandler(options).write_report,
-                lambda: LOGGER.warning(
-                    "Text output skipped - "
-                    "consider providing an output file with `--txt=OUTPUT`."
-                ),
-            )
-        )
-
     if options.cobertura or options.cobertura_pretty:
         generators.append(
             (
@@ -74,6 +67,30 @@ def write_reports(covdata: CovData, options: Options):
                 lambda: LOGGER.warning(
                     "Cobertura output skipped - "
                     "consider providing an output file with `--cobertura=OUTPUT`."
+                ),
+            )
+        )
+
+    if options.coveralls or options.coveralls_pretty:
+        generators.append(
+            (
+                [options.coveralls],
+                CoverallsHandler(options).write_report,
+                lambda: LOGGER.warning(
+                    "Coveralls output skipped - "
+                    "consider providing an output file with `--coveralls=OUTPUT`."
+                ),
+            )
+        )
+
+    if options.csv:
+        generators.append(
+            (
+                [options.csv],
+                CsvHandler(options).write_report,
+                lambda: LOGGER.warning(
+                    "CSV output skipped - "
+                    "consider providing an output file with `--csv=OUTPUT`."
                 ),
             )
         )
@@ -90,14 +107,14 @@ def write_reports(covdata: CovData, options: Options):
             )
         )
 
-    if options.sonarqube:
+    if options.jacoco or options.jacoco_pretty:
         generators.append(
             (
-                [options.sonarqube],
-                SonarqubeHandler(options).write_report,
+                [options.jacoco],
+                JaCoCoHandler(options).write_report,
                 lambda: LOGGER.warning(
-                    "Sonarqube output skipped - "
-                    "consider providing an output file with `--sonarqube=OUTPUT`."
+                    "JaCoCo output skipped - "
+                    "consider providing an output file with `--jacoco=OUTPUT`."
                 ),
             )
         )
@@ -126,26 +143,38 @@ def write_reports(covdata: CovData, options: Options):
             )
         )
 
-    if options.csv:
+    if options.lcov:
         generators.append(
             (
-                [options.csv],
-                CsvHandler(options).write_report,
+                [options.lcov],
+                LcovHandler(options).write_report,
                 lambda: LOGGER.warning(
-                    "CSV output skipped - "
-                    "consider providing an output file with `--csv=OUTPUT`."
+                    "LCOV output skipped - "
+                    "consider providing an output file with `--lcov=OUTPUT`."
                 ),
             )
         )
 
-    if options.coveralls or options.coveralls_pretty:
+    if options.sonarqube:
         generators.append(
             (
-                [options.coveralls],
-                CoverallsHandler(options).write_report,
+                [options.sonarqube],
+                SonarqubeHandler(options).write_report,
                 lambda: LOGGER.warning(
-                    "Coveralls output skipped - "
-                    "consider providing an output file with `--coveralls=OUTPUT`."
+                    "SonarQube output skipped - "
+                    "consider providing an output file with `--sonarqube=OUTPUT`."
+                ),
+            )
+        )
+
+    if options.txt:
+        generators.append(
+            (
+                [options.txt],
+                TxtHandler(options).write_report,
+                lambda: LOGGER.warning(
+                    "Text output skipped - "
+                    "consider providing an output file with `--txt=OUTPUT`."
                 ),
             )
         )

@@ -19,6 +19,7 @@
 
 from ..__main__ import main
 from ..version import __version__
+from ..formats.json.versions import JSON_FORMAT_VERSION
 
 import logging
 import pytest
@@ -105,27 +106,27 @@ def test_empty_exclude(capsys):
 
 
 def test_empty_exclude_directories(capsys):
-    c = capture(capsys, ["--exclude-directories", ""])
+    c = capture(capsys, ["--gcov-exclude-directories", ""])
     assert c.out == ""
     assert "filter cannot be empty" in c.err
     assert c.exception.code != 0
 
 
 def test_empty_objdir(capsys):
-    c = capture(capsys, ["--object-directory", ""])
+    c = capture(capsys, ["--gcov-object-directory", ""])
     assert c.out == ""
     assert (
-        "argument --object-directory/--gcov-object-directory: Should not be set to an empty string."
+        "argument --gcov-object-directory/--object-directory: Should not be set to an empty string."
         in c.err
     )
     assert c.exception.code != 0
 
 
 def test_invalid_objdir(caplog):
-    c = log_capture(caplog, ["--object-directory", "not-existing-dir"])
+    c = log_capture(caplog, ["--gcov-object-directory", "not-existing-dir"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2].startswith("Bad --object-directory option.")
+    assert message[2].startswith("Bad --gcov-object-directory option.")
     assert c.exception.code == 1
 
 
@@ -289,24 +290,59 @@ def test_no_output_html_nested(caplog):
     assert c.exception.code != 0
 
 
-def test_branch_threshold_nan(capsys):
-    c = capture(capsys, ["--fail-under-branch", "nan"])
+@pytest.mark.parametrize(
+    "option",
+    [
+        "--fail-under-line",
+        "--fail-under-branch",
+        "--fail-under-decision",
+        "--fail-under-function",
+    ],
+)
+def test_failed_under_threshold_nan(option, capsys):
+    c = capture(capsys, [option, "nan"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
-def test_line_threshold_negative(capsys):
-    c = capture(capsys, ["--fail-under-line", "-0.1"])
+@pytest.mark.parametrize(
+    "option",
+    [
+        "--fail-under-line",
+        "--fail-under-branch",
+        "--fail-under-decision",
+        "--fail-under-function",
+    ],
+)
+def test_failed_under_threshold_negative(option, capsys):
+    c = capture(capsys, [option, "-0.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exception.code != 0
 
 
-def test_line_threshold_100_1(capsys):
-    c = capture(capsys, ["--fail-under-line", "100.1"])
+@pytest.mark.parametrize(
+    "option",
+    [
+        "--fail-under-line",
+        "--fail-under-branch",
+        "--fail-under-decision",
+        "--fail-under-function",
+    ],
+)
+def test_failed_under_threshold_100_1(option, capsys):
+    c = capture(capsys, [option, "100.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
+    assert c.exception.code != 0
+
+
+def test_failed_under_decision_without_active_decision(caplog):
+    c = log_capture(caplog, ["--fail-under-decision", "90"])
+    message0 = c.record_tuples[0]
+    assert message0[1] == logging.ERROR
+    assert message0[2] == "--fail-under-decision need also option --decision."
     assert c.exception.code != 0
 
 
@@ -346,7 +382,7 @@ def test_html_title_empty_string(caplog):
     c = log_capture(caplog, ["--html-title", ""])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "an empty --html_title= is not allowed."
+    assert message[2] == "an empty --html-title= is not allowed."
     assert c.exception.code != 0
 
 
@@ -407,54 +443,89 @@ def test_html_tab_size_zero(caplog):
     assert c.exception.code != 0
 
 
+def test_html_template_dir(capsys):
+    c = capture(capsys, ["--html", "--html-template-dir", "foo"])
+    assert "<html" in c.out
+    assert "</html>" in c.out
+
+
 def test_multiple_output_formats_to_stdout(caplog):
     c = log_capture(
-        caplog, ["--xml", "--html", "--sonarqube", "--coveralls", "--root", "gcovr"]
+        caplog,
+        [
+            "--coveralls",
+            "--cobertura",
+            "--csv",
+            "--html",
+            "--jacoco",
+            "--json",
+            "--json-summary",
+            "--sonarqube",
+            "--txt",
+            "--root",
+            "gcovr",
+        ],
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
-    )
-    message = c.record_tuples[1]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
-    )
-    message = c.record_tuples[2]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
-    )
+    for index, text_fragments in enumerate(
+        [
+            ("Coveralls", "--coveralls"),
+            ("CSV", "--csv"),
+            ("HTML", "--html"),
+            ("JaCoCo", "--jacoco"),
+            ("JSON", "--json"),
+            ("JSON summary", "--json-summary"),
+            ("SonarQube", "--sonarqube"),
+            ("Text", "--txt"),
+        ]
+    ):
+        format, option = text_fragments
+        message = c.record_tuples[index]
+        assert message[1] == logging.WARNING
+        assert (
+            message[2]
+            == f"{format} output skipped - consider providing an output file with `{option}=OUTPUT`."
+        )
     assert c.exception.code == 0
 
 
 def test_multiple_output_formats_to_stdout_1(caplog):
     c = log_capture(
         caplog,
-        ["--xml", "--html", "--sonarqube", "--coveralls", "-o", "-", "--root", "gcovr"],
+        [
+            "--coveralls",
+            "--cobertura",
+            "--csv",
+            "--html",
+            "--jacoco",
+            "--json",
+            "--json-summary",
+            "--sonarqube",
+            "--txt",
+            "-o",
+            "-",
+            "--root",
+            "gcovr",
+        ],
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "HTML output skipped - consider providing an output file with `--html=OUTPUT`."
-    )
-    message = c.record_tuples[1]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "Sonarqube output skipped - consider providing an output file with `--sonarqube=OUTPUT`."
-    )
-    message = c.record_tuples[2]
-    assert message[1] == logging.WARNING
-    assert (
-        message[2]
-        == "Coveralls output skipped - consider providing an output file with `--coveralls=OUTPUT`."
-    )
+    for index, text_fragments in enumerate(
+        [
+            ("Coveralls", "--coveralls"),
+            ("CSV", "--csv"),
+            ("HTML", "--html"),
+            ("JaCoCo", "--jacoco"),
+            ("JSON", "--json"),
+            ("JSON summary", "--json-summary"),
+            ("SonarQube", "--sonarqube"),
+            ("Text", "--txt"),
+        ]
+    ):
+        format, option = text_fragments
+        message = c.record_tuples[index]
+        assert message[1] == logging.WARNING
+        assert (
+            message[2]
+            == f"{format} output skipped - consider providing an output file with `{option}=OUTPUT`."
+        )
     assert c.exception.code == 0
 
 
@@ -475,7 +546,7 @@ def test_html_injection_via_json(capsys, tmp_path):
 
     script = '<script>alert("pwned")</script>'
     jsondata = {
-        "gcovr/format_version": "0.5",
+        "gcovr/format_version": JSON_FORMAT_VERSION,
         "files": [
             {"file": script, "functions": [], "lines": []},
             {"file": "other", "functions": [], "lines": []},
@@ -492,6 +563,125 @@ def test_html_injection_via_json(capsys, tmp_path):
     assert script not in c.out
     assert str(markupsafe.escape(script)) in c.out, "--- got:\n{}\n---".format(c.out)
     assert c.exception.code == 0
+
+
+def test_import_valid_cobertura_file(tmp_path):
+    from ..formats import read_reports
+    from ..configuration import merge_options_and_set_defaults
+    from ..coverage import FileCoverage
+
+    testfile = "/path/to/source/code.cpp"
+    xmldata = f"""<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 6.0+master">
+  <sources>
+    <source>.</source>
+  </sources>
+  <packages>
+    <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+      <classes>
+        <class name="code_cpp" filename="{testfile}" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="3" hits="3" branch="false"/>
+            <line number="4" hits="3" branch="true" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="100%"/>
+              </conditions>
+            </line>
+            <line number="5" hits="2" branch="false"/>
+            <line number="7" hits="1" branch="false"/>
+            <line number="9" hits="3" branch="false"/>
+            <line number="12" hits="2" branch="false"/>
+            <line number="13" hits="2" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="14" hits="2" branch="false"/>
+            <line number="16" hits="0" branch="false"/>
+            <line number="18" hits="2" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
+    """
+    testfile = os.path.abspath(testfile)
+    tempfile = tmp_path / "valid_cobertura.xml"
+    with tempfile.open("w+") as fp:
+        fp.write(xmldata)
+
+    filename = str(tempfile)
+    opts = merge_options_and_set_defaults(
+        [{"cobertura_add_tracefile": [filename], "filter": [re.compile(".")]}]
+    )
+    covdata = read_reports(opts)
+    assert covdata is not None
+    assert testfile in covdata
+    fcov: FileCoverage = covdata[testfile]
+    assert len(fcov.lines) == 10
+    for line, count, branches in [
+        (7, 1, None),
+        (9, 3, None),
+        (16, 0, None),
+        (13, 2, [1, 0]),
+    ]:
+        assert fcov.lines[line].count == count
+        if branches is not None:
+            assert len(fcov.lines[line].branches) == len(branches)
+            for branch_idx, branch_count in enumerate(branches):
+                assert fcov.lines[line].branches[branch_idx].count == branch_count
+
+
+def test_import_corrupt_cobertura_file(caplog, tmp_path):
+    xmldata = "weiuh wliecsdfsef"
+    tempfile = tmp_path / "corrupt_cobertura.xml"
+    with tempfile.open("w+") as fp:
+        fp.write(xmldata)
+
+    c = log_capture(caplog, ["--cobertura-add-tracefile", str(tempfile)])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert "Start tag expected" in message[2]
+    assert c.exception.code != 0
+
+
+def test_import_cobertura_file_with_invalid_line(caplog, tmp_path):
+    xmldata = """<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 6.0+master">
+  <sources>
+    <source>.</source>
+  </sources>
+  <packages>
+    <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+      <classes>
+        <class name="code_cpp" filename="/path/to/source/code.cpp" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="3" hits="3" branch="false"/>
+            <line number="asdas" branch="true" condition-coverage="100% (2/2)" />
+            <line number="18" hits="2" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
+    """
+    tempfile = tmp_path / "cobertura_invalid_line.xml"
+    with tempfile.open("w+") as fp:
+        fp.write(xmldata)
+
+    c = log_capture(
+        caplog, ["--cobertura-add-tracefile", str(tempfile), "--filter", "."]
+    )
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert "'number' attribute is required and must be an integer" in message[2]
+    assert c.exception.code != 0
 
 
 def test_exclude_lines_by_pattern(caplog):
@@ -519,3 +709,23 @@ def test_invalid_timestamp(capsys):
     assert c.out == ""
     assert "argument --timestamp: unknown timestamp format: 'foo'" in c.err
     assert c.exception.code != 0
+
+
+def test_sort_uncovered_and_percent(caplog):
+    c = log_capture(caplog, ["--sort-uncovered", "--sort-percent"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith(
+        "the options --sort-uncovered and --sort-percent can not be used together."
+    )
+    assert c.exception.code == 1
+
+
+def test_sort_branch_and_not_uncovered_or_percent(caplog):
+    c = log_capture(caplog, ["--sort-branches"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith(
+        "the options --sort-branches without --sort-uncovered or --sort-percent doesn't make sense."
+    )
+    assert c.exception.code == 1

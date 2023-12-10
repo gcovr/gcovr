@@ -91,12 +91,12 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         gcc: [gcc-8]
-        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.7'] # 3.7 is used in Docker
+        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.8'] # 3.7 is used in Docker
 
         include:
 
           # Test additional compilers with Linux.
-          # Note that gcc-5, gcc-6, clang-10 and clang-13 is handled via Docker.
+          # Note that gcc-5, gcc-6, gcc-8, gcc-12, gcc-13, clang-10, and clang-13 is handled via Docker.
           - os: ubuntu-20.04
             gcc: gcc-9
             python-version: '3.9'
@@ -209,7 +209,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, clang-10, clang-13, clang-14]
+        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12, gcc-13, clang-10, clang-13, clang-14, clang-15]
 
     steps:
       - name: Setup environment
@@ -217,8 +217,9 @@ jobs:
           # Enable coverage for specific target configurations
           case "${{ matrix.gcc }}" in
             gcc-5)    USE_COVERAGE=true ;;
+            gcc-13)    USE_COVERAGE=true ;;
             clang-10) USE_COVERAGE=true ;;
-            clang-14) USE_COVERAGE=true ;;
+            clang-15) USE_COVERAGE=true ;;
             *)        USE_COVERAGE=false ;;
           esac
           echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
@@ -245,6 +246,16 @@ jobs:
           fail_ci_if_error: true
           files: ./coverage.xml
           name: docker-${{ matrix.gcc }}
+          verbose: true
+      - name: Upload LCOV coverage to Codecov
+        if: ${{ matrix.gcc == 'clang-13' }}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: ./gcovr/tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
+          name: docker-${{ matrix.gcc }}-lcov
           verbose: true
       - name: Generate documentation (in container)
         run: |

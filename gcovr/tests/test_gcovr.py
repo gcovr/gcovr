@@ -80,9 +80,9 @@ CC_REFERENCE = env.get("CC_REFERENCE", CC)
 
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
-    ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "gcc-10", "gcc-11"]
+    ["gcc-5", "gcc-6", "gcc-8", "gcc-9", "gcc-10", "gcc-11", "gcc-12", "gcc-13"]
     if "gcc" in CC_REFERENCE
-    else ["clang-10", "clang-13", "clang-14"]
+    else ["clang-10", "clang-13", "clang-14", "clang-15"]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:
     REFERENCE_DIRS.append(os.path.join("reference", ref))
@@ -95,6 +95,8 @@ REFERENCE_DIRS.reverse()
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
 RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
+
+RE_LCOV_PATH = re.compile(r"(SF:).+?/(gcovr/tests/.+?)$", flags=re.MULTILINE)
 
 RE_XML_ATTRS = re.compile(r'(timestamp)="[^"]*"')
 
@@ -112,6 +114,10 @@ RE_HTML_HEADER_DATE = re.compile(r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d<(/td>
 
 def scrub_txt(contents):
     return RE_TXT_WHITESPACE.sub("", contents)
+
+
+def scrub_lcov(contents):
+    return RE_LCOV_PATH.sub(r"\1\2", contents)
 
 
 def scrub_csv(contents):
@@ -224,6 +230,8 @@ KNOWN_FORMATS = [
     # Other formats
     "cobertura",
     "coveralls",
+    "jacoco",
+    "lcov",
     "sonarqube",
 ]
 
@@ -293,6 +301,14 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.skipif(
                     name == "cmake_gtest" and not GCOVR_ISOLATED_TEST,
                     reason="only available in docker",
+                ),
+                pytest.mark.skipif(
+                    name == "gcov-no_working_dir_found" and not GCOVR_ISOLATED_TEST,
+                    reason="only available in docker",
+                ),
+                pytest.mark.xfail(
+                    name in ["gcov-ignore_output_error"] and IS_WINDOWS,
+                    reason="Permission is ignored on Windows",
                 ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
@@ -444,6 +460,8 @@ SCRUBBERS = dict(
     # Other formats
     cobertura=scrub_xml,
     coveralls=scrub_coveralls,
+    jacoco=scrub_xml,
+    lcov=scrub_lcov,
     sonarqube=scrub_xml,
 )
 
@@ -457,6 +475,8 @@ OUTPUT_PATTERN = dict(
     # Other formats
     cobertura=["cobertura*.xml"],
     coveralls=["coveralls*.json"],
+    jacoco=["jacoco*.xml"],
+    lcov=["coverage*.lcov"],
     sonarqube=["sonarqube*.xml"],
 )
 

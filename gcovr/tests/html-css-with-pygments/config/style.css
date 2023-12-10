@@ -1,0 +1,5 @@
+/* custom CSS */
+
+/* pygments syntax highlighting */
+.cp { color: #BC7A00 } /* Comment.Preproc */
+/* this part shall suppress addition of pygments styles */

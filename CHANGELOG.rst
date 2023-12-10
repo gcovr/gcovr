@@ -10,9 +10,32 @@ Known bugs:
 
 Breaking changes:
 
+- The exit code for an error of the reader module is changed from 8 to 64 and for a writer from 7 to 128. (:issue:`773`)
+
 New features and notable changes:
 
+- Add `--html-template-dir` option to use custom Jinja2 templates (:issue:`758`)
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
+- If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
+- Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
+- Fix Dockerfile.qa to avoid uid conflicts. (:issue:`801`)
+- Pygments required >= 2.13.0. (:issue:`799`)
+- Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
+- Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
+- Add function coverage to data model. (:issue:`822`)
+- Add support for importing Cobertura XML files with ``--cobertura-add-tracefile`` option. (:issue:`805`)
+- Add :option:`--jacoco` to generate JaCoCo XML format. (:issue:`823`))
+- Add function coverage to HTML report. (:issue:`828`)
+- Improve sorting of data in reports (:issue:`817`):
+  - Sort file names alpha numerical and with casefold (see `str.casefold <https://docs.python.org/3.11/library/stdtypes.html?highlight=str%20casefold#str.casefold>`_) (``file_10.c`` comes after ``file_0.c``).
+  - Always sort at the end by filename if line or branch coverage is identical for a file.
+  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
+  - Add :option:`--sort-reverse` to reverse the sort order.
+- Add option to report covered lines in txt report. (:issue:`836`)
+- Add support for specifying files for :option:`search_paths`. (:issue:`834`)
+- Use different color for partial covered lines in HTML report. (:issue:`839`)
+- Add support to generate LCOV info files. (:issue:`830`)
+- Add support for FIPS enabled OS when used with Python 3.9. (:issue:`850`)
 - Add support for GCOV JSON intermediate format. (:issue:`766`)
 
 Bug fixes and small improvements:
@@ -20,8 +43,20 @@ Bug fixes and small improvements:
 - Print calls and decision statistics in summary only if values are gathered. (:issue:`749`)
 - Log the thread name if :option:`-j` is used. (:issue:`752`)
 - Collapse also root directory if needed in nested HTML report. (:issue:`750`)
+- Handle special case of absolute source file paths in ``gcov`` output. (:issue:`776`)
+- Ignore exit code 6 when running ``gcov`` (output write error introduced gcc-12). (:issue:`781`)
+- Change coveralls value from 0.0 to 1.0 if no code lines or branches are present. (:issue:`796`)
+- Fix symlinked root directories on Windows. (:issue:`814`)
+- Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
+- Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
+- Fix ``TypeError`` during decision analysis. (:issue:`784`)
+- Use relative paths if possible when running ``gcov``. (:issue:`820`)
+- Respect :option`--merge-mode-functions`when merging coverage data. (:issue:`844`)
 
 Documentation:
+
+- Fix wrong command in ``How to create a standalone application`` docs (:issue:`792`)
+- Update output html to add github style themes (:issue:`818`)
 
 Internal changes:
 
@@ -40,6 +75,11 @@ Internal changes:
 - Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
 - Use separate session for flake8 and us this session in lint. (:issue:`768`)
 - Replace the deprecated codecov python uploader with the binary uploader. (:issue:`770`)
+- Add gcc-12 and gcc-13 to the test suite. (:issue:`780`)
+- Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
+- Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
+- Add nox session to import reference file from pipeline. (:issue:`831`)
+- Add support for ``clang-15`` in our test suite and fix test with write protection under Mac OS. (:issue:`853`)
 
 6.0 (08 March 2023)
 -------------------

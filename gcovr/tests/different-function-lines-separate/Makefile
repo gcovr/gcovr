@@ -4,7 +4,7 @@ all:
 	cd build1 ; $(CXX) -fprofile-arcs -ftest-coverage -fPIC ../main.c -o testcase
 	cd build2 ; $(CXX) -fprofile-arcs -ftest-coverage -fPIC -DFOO_OTHER_LINE ../main.c -o testcase
 
-run: json txt cobertura html sonarqube coveralls
+run: json txt lcov cobertura html sonarqube coveralls
 
 coverage.json:
 	cd build1 ; ./testcase
@@ -13,12 +13,15 @@ coverage.json:
 
 json: coverage.json
 	# Check error with default merge mode 'strict'.
-	$(GCOVR) --verbose --add-tracefile $< > coverage.log 2>&1 ; test $$? -eq 8
+	$(GCOVR) --verbose --json-add-tracefile $< > coverage.log 2>&1 ; test $$? -eq 64
 	cat coverage.log
 	grep -E 'Got function .*foo.* on multiple lines: 3, 5\.' coverage.log
 
 txt: coverage.json
 	$(GCOVR) -a $<  --merge-mode-functions=separate -o coverage.txt
+
+lcov: coverage.json
+	$(GCOVR) -a $<  --merge-mode-functions=separate --lcov coverage.lcov
 
 cobertura: coverage.json
 	$(GCOVR) -a $<  --merge-mode-functions=separate --cobertura-pretty --cobertura cobertura.xml

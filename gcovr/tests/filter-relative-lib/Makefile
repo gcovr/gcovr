@@ -8,7 +8,7 @@ all: links
 	cd project; $(CXX) $(CFLAGS) -c relevant-library/src/yes.cpp -o yes.o
 	cd project; $(CXX) $(CFLAGS) main.o no.o yes.o -o testcase
 
-run: txt cobertura html sonarqube coveralls
+run: txt lcov cobertura html sonarqube jacoco coveralls
 
 # the src/ filter is provided by the project/gcovr.cfg configuration file
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
@@ -24,6 +24,9 @@ coverage.json:
 txt: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg -o ../coverage.txt
 
+lcov: coverage.json
+	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --lcov ../coverage.lcov
+
 cobertura: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --cobertura-pretty --cobertura ../cobertura.xml
 
@@ -32,6 +35,9 @@ html: coverage.json
 
 sonarqube: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --sonarqube ../sonarqube.xml
+
+jacoco: coverage.json
+	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --jacoco ../jacoco.xml
 
 coveralls: coverage.json
 	cd project; $(GCOVR) --config gcovr_empty.cfg --config src/gcovr_add_tracefile.cfg --coveralls-pretty --coveralls ../coveralls.json
@@ -46,8 +52,7 @@ else
 	   test -d relevant-library || ln -s ../external-library relevant-library
 endif
 else
-	cd project; \
-	   test -d relevant-library || cmd.exe /C "mklink /j relevant-library ..\external-library"
+	cmd.exe /C call setup.cmd
 endif
 
 clean:
@@ -59,4 +64,4 @@ else
 		cmd.exe /C "rmdir /S /Q project\relevant-library";\
 	fi
 endif
-	rm -f coverage*.* cobertura.xml sonarqube.xml coveralls.json
+	rm -f coverage*.* cobertura.xml sonarqube.xml jacoco.xml coveralls.json

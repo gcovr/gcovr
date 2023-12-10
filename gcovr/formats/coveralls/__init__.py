@@ -46,10 +46,7 @@ class CoverallsHandler(BaseHandler):
                 "coveralls_pretty",
                 ["--coveralls-pretty"],
                 group="output_options",
-                help=(
-                    "Pretty-print the coveralls report. "
-                    "Implies --coveralls. Default: {default!s}."
-                ),
+                help=("Pretty-print the coveralls report. Implies --coveralls."),
                 action="store_true",
             ),
         ]

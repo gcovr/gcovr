@@ -32,6 +32,23 @@ class TxtHandler(BaseHandler):
             "exclude_calls",
             # Local options
             GcovrConfigOption(
+                "txt_use_branch_coverage",
+                ["-b", "--txt-branches", "--branches"],
+                config="txt-branch",
+                group="output_options",
+                help=(
+                    "Report the branch coverage instead of the line coverage in text report."
+                ),
+                action="store_true",
+            ),
+            GcovrConfigOption(
+                "txt_report_covered",
+                ["--txt-report-covered"],
+                config="txt-covered",
+                help="Report the covered lines instead of the uncovered.",
+                action="store_true",
+            ),
+            GcovrConfigOption(
                 "txt",
                 ["--txt"],
                 group="output_options",
@@ -44,13 +61,13 @@ class TxtHandler(BaseHandler):
             ),
             GcovrConfigOption(
                 "txt_summary",
-                ["-s", "--print-summary", "--txt-summary"],
+                ["-s", "--txt-summary", "--print-summary"],
                 group="output_options",
                 help=(
                     "Print a small report to stdout "
-                    "with line & function & branch percentage coverage. "
+                    "with line & function & branch percentage coverage "
+                    "optional parts are decision & call coverage. "
                     "This is in addition to other reports. "
-                    "Default: {default!s}."
                 ),
                 action="store_true",
             ),

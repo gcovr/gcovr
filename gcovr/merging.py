@@ -179,9 +179,7 @@ def _insert_coverage_item(
     return merged_item
 
 
-def merge_covdata(
-    left: CovData, right: CovData, options: MergeOptions = DEFAULT_MERGE_OPTIONS
-) -> CovData:
+def merge_covdata(left: CovData, right: CovData, options: MergeOptions) -> CovData:
     """
     Merge CovData information.
 
@@ -202,7 +200,7 @@ def insert_file_coverage(
 def merge_file(
     left: FileCoverage,
     right: FileCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> FileCoverage:
     """
     Merge FileCoverage information.
@@ -234,7 +232,7 @@ def insert_line_coverage(
 def merge_line(
     left: LineCoverage,
     right: LineCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> LineCoverage:
     """
     Merge LineCoverage information.
@@ -273,7 +271,7 @@ def insert_function_coverage(
 def merge_function(
     left: FunctionCoverage,
     right: FunctionCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> FunctionCoverage:
     """
     Merge FunctionCoverage information.
@@ -302,11 +300,21 @@ def merge_function(
 
     # keep distinct counts for each line number
     if options.separate_function:
-        for lineno, count in right.count.items():
+        for lineno, count in sorted(right.count.items()):
             try:
                 left.count[lineno] += count
             except KeyError:
                 left.count[lineno] = count
+        for lineno, returned in right.returned.items():
+            try:
+                left.returned[lineno] += returned
+            except KeyError:
+                left.returned[lineno] = returned
+        for lineno, blocks in right.blocks.items():
+            try:
+                left.blocks[lineno] += blocks
+            except KeyError:
+                left.blocks[lineno] = blocks
         for lineno, excluded in right.excluded.items():
             try:
                 left.excluded[lineno] += excluded
@@ -329,6 +337,9 @@ def merge_function(
 
     # Overwrite data with the sum at the desired line
     left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
+    left.returned = {lineno: sum(left.returned.values()) + sum(right.returned.values())}
+    # or the max value at the desired line
+    left.blocks = {lineno: max(*left.blocks.values(), *right.blocks.values())}
     left.excluded = {
         lineno: any(left.excluded.values()) or any(right.excluded.values())
     }
@@ -351,7 +362,7 @@ def insert_branch_coverage(
 def merge_branch(
     left: BranchCoverage,
     right: BranchCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> BranchCoverage:
     """
     Merge BranchCoverage information.
@@ -378,7 +389,7 @@ def insert_call_coverage(
 def merge_call(
     left: CallCoverage,
     right: CallCoverage,
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> BranchCoverage:
     """
     Merge CallCoverage information.
@@ -396,14 +407,14 @@ def insert_decision_coverage(
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> Optional[DecisionCoverage]:
     """Insert DecisionCoverage into LineCoverage."""
-    target.decision = merge_decision(target.decision, decision)
+    target.decision = merge_decision(target.decision, decision, options)
     return target.decision
 
 
 def merge_decision(
     left: Optional[DecisionCoverage],
     right: Optional[DecisionCoverage],
-    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    options: MergeOptions,
 ) -> Optional[DecisionCoverage]:
     """
     Merge DecisionCoverage information.

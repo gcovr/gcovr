@@ -26,7 +26,7 @@ from ...coverage import CovData
 
 
 def write_report(covdata: CovData, output_file: str, options: Options) -> None:
-    """produce an XML report in the Sonarqube generic coverage format"""
+    """produce an XML report in the SonarQube generic coverage format"""
 
     root = etree.Element("coverage")
     root.set("version", "1")

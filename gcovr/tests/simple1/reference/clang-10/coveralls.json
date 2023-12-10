@@ -9,6 +9,9 @@
             "coverage": [
                 null,
                 null,
+                0,
+                0,
+                null,
                 null,
                 1,
                 1,
@@ -35,7 +38,7 @@
                 null
             ],
             "name": "main.cpp",
-            "source_digest": "251395fea4d88bf2d3ffc4d00110a5ef"
+            "source_digest": "cc47035a32a38969a5794b14fc6c4d1e"
         }
     ]
 }

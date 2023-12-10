@@ -62,7 +62,7 @@ A shell session might look like this:
 
     # run gcovr
     rm -rf coverage; mkdir coverage
-    gcovr --filter src/ --print-summary --html-details coverage/index.html
+    gcovr --filter src/ --txt-summary --html-details coverage/index.html
 
 .. _oos cmake:
 
@@ -147,7 +147,7 @@ Then, apply this Sed script to all gcov files before invoking gcovr:
 .. code-block:: sh
 
    find . -name '*.gcov' -exec sed -i -f fix-gcov.sed {} \;
-   gcovr --use-gcov-files
+   gcovr --gcov-use-existing-files
 
 .. warning:: Untested because we have no access to Keil uVision compiler
 
@@ -158,6 +158,6 @@ How to create a standalone application
 
 To create a standalone application you need to install the test suite
 (see :ref:`test suite`). In this test suite you can build a standalone
-executable with the command ``python3 -m nox --session build_app``.
+executable with the command ``python3 -m nox --session bundle_app``.
 The command creates the application ``build/gcovr`` and calls the
 executable whith each format to check if it's working correct.

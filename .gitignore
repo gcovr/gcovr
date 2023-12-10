@@ -41,8 +41,7 @@ coverage.xml
 # MacOS
 .DS_Store
 
-# VS Code
-.vscode
+# VS Code workspace
 *.code-workspace
 
 # PyCharm

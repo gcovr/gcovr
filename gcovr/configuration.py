@@ -187,7 +187,7 @@ def _get_value_from_config_entry(
     if option.action == "store_const":
         use_const = get_boolean()
     # special case: nargs=? optionally expects a boolean
-    elif option.nargs == "?":
+    elif option.nargs == "?" and option.choices is None:
         use_const = get_boolean(silent_error=True)
     else:
         use_const = None  # marker to continue with parsing
@@ -401,7 +401,8 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "Exit with a status of 2 "
             "if the total line coverage is less than MIN. "
-            "Can be ORed with exit status of '--fail-under-branch' option."
+            "Can be ORed with exit status of '--fail-under-branch', "
+            "'--fail-under-decision', and '--fail-under-function' option."
         ),
         default=0.0,
     ),
@@ -413,7 +414,34 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "Exit with a status of 4 "
             "if the total branch coverage is less than MIN. "
-            "Can be ORed with exit status of '--fail-under-line' option."
+            "Can be ORed with exit status of '--fail-under-line', "
+            "'--fail-under-decision', and '--fail-under-function' option."
+        ),
+        default=0.0,
+    ),
+    GcovrConfigOption(
+        "fail_under_decision",
+        ["--fail-under-decision"],
+        type=check_percentage,
+        metavar="MIN",
+        help=(
+            "Exit with a status of 8 "
+            "if the total decision coverage is less than MIN. "
+            "Can be ORed with exit status of '--fail-under-line', "
+            "'--fail-under-branch', and '--fail-under-function' option."
+        ),
+        default=0.0,
+    ),
+    GcovrConfigOption(
+        "fail_under_function",
+        ["--fail-under-function"],
+        type=check_percentage,
+        metavar="MIN",
+        help=(
+            "Exit with a status of 16 "
+            "if the total function coverage is less than MIN. "
+            "Can be ORed with exit status of '--fail-under-line', "
+            "'--fail-under-branch', and '--fail-under-decision' option."
         ),
         default=0.0,
     ),
@@ -438,17 +466,6 @@ GCOVR_CONFIG_OPTIONS = [
         default=None,
     ),
     GcovrConfigOption(
-        "show_branch",
-        ["-b", "--branches"],
-        config="txt-branch",
-        group="output_options",
-        help=(
-            "Report the branch coverage instead of the line coverage. "
-            "For text report only."
-        ),
-        action="store_true",
-    ),
-    GcovrConfigOption(
         "show_decision",
         ["--decisions"],
         group="output_options",
@@ -463,12 +480,25 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_false",
     ),
     GcovrConfigOption(
+        "sort_branches",
+        ["--sort-branches"],
+        group="output_options",
+        help=(
+            "Sort entries by branches instead of lines. Can only be used together "
+            "with --sort-uncovered or --sort-percent is used."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "sort_uncovered",
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
-            "Sort entries by increasing number of uncovered lines. "
-            "For text and HTML report."
+            "Sort entries by number of uncovered lines or branches (if the option "
+            "--sort-branches is given). "
+            "The default order is increasing and can be changed by --sort-reverse. "
+            "The secondary sort key (if values are identical) is always the ascending filename. "
+            "For CSV, HTML, JSON and text report."
         ),
         action="store_true",
     ),
@@ -477,9 +507,19 @@ GCOVR_CONFIG_OPTIONS = [
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
-            "Sort entries by increasing percentage of uncovered lines. "
-            "For text and HTML report."
+            "Sort entries by percentage of uncovered lines or branches (if the option "
+            "--sort-branches is given). "
+            "The default order is increasing and can be changed by --sort-reverse."
+            "The secondary sort key (if values are identical) is always the ascending filename. "
+            "For CSV, HTML, JSON and text report."
         ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "sort_reverse",
+        ["--sort-reverse"],
+        group="output_options",
+        help="Sort entries in reverse order. For CSV, HTML, JSON and text report.",
         action="store_true",
     ),
     *formats.get_options(),
@@ -491,7 +531,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Override current time for reproducible reports. "
             "Can use `YYYY-MM-DD hh:mm:ss` or epoch notation. "
             "Used by HTML, Coveralls, and Cobertura reports. "
-            "Default: Environment variable SOURCE_DATE_EPOCH "
+            "Default is taken from environment variable SOURCE_DATE_EPOCH "
             "(see https://reproducible-builds.org/docs/source-date-epoch) "
             "or current time."
         ),
@@ -540,7 +580,7 @@ GCOVR_CONFIG_OPTIONS = [
         default="strict",
         help=(
             "The merge mode for functions coverage from different gcov files for same sourcefile."
-            "Default: {default!s}."
+            "Default is '{default!s}'."
         ),
     ),
     GcovrConfigOption(
@@ -559,8 +599,7 @@ GCOVR_CONFIG_OPTIONS = [
         group="gcov_options",
         help=(
             "Exclude branch coverage from lines without useful source code "
-            '(often, compiler-generated "dead" code). '
-            "Default: {default!s}."
+            "(often, compiler-generated 'dead' code)."
         ),
         action="store_true",
     ),
@@ -568,7 +607,7 @@ GCOVR_CONFIG_OPTIONS = [
         "exclude_function_lines",
         ["--exclude-function-lines"],
         group="gcov_options",
-        help="Exclude coverage from lines defining a function. Default: {default!s}.",
+        help="Exclude coverage from lines defining a function.",
         action="store_true",
     ),
     GcovrConfigOption(
@@ -576,7 +615,7 @@ GCOVR_CONFIG_OPTIONS = [
         ["--exclude-noncode-lines"],
         config="exclude-noncode-lines",
         group="gcov_options",
-        help="Exclude coverage from lines which seem to be non-code. Default: {default!s}.",
+        help="Exclude coverage from lines which seem to be non-code.",
         action="store_true",
         const_negate=False,
     ),
@@ -587,8 +626,7 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "For branch coverage, exclude branches "
             "that the compiler generates for exception handling. "
-            'This often leads to more "sensible" coverage reports. '
-            "Default: {default!s}."
+            "This often leads to more 'sensible' coverage reports."
         ),
         action="store_true",
     ),
@@ -620,8 +658,9 @@ GCOVR_CONFIG_OPTIONS = [
         positional=True,
         nargs="*",
         help=(
-            "Search these directories for coverage files. "
-            "Defaults to --root and --gcov-object-directory."
+            "Search paths for coverage files. "
+            "Defaults to --root and --gcov-object-directory. "
+            "If path is a file it is used directly."
         ),
         type=relative_path,
     ),
