@@ -42,6 +42,7 @@ ALL_COMPILER_VERSIONS = [
     "clang-10",
     "clang-13",
     "clang-14",
+    "clang-15",
 ]
 
 ALL_COMPILER_VERSIONS_NEWEST_FIRST = [
@@ -385,7 +386,7 @@ def docker_container_os(session: nox.Session) -> str:
         return "ubuntu:18.04"
     elif session.env["CC"] in ["gcc-8", "gcc-9", "clang-10"]:
         return "ubuntu:20.04"
-    elif session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14"]:
+    elif session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
         return "ubuntu:22.04"
     elif session.env["CC"] in ["gcc-12", "gcc-13"]:
         return "ubuntu:23.04"
@@ -523,6 +524,8 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "CC",
         "-e",
         "USE_COVERAGE",
+        "-e",
+        f"HOST_OS={platform.system()}",
         "-v",
         f"{os.getcwd()}:/gcovr",
         docker_container_id(session, version),
@@ -636,6 +639,6 @@ def import_reference(session: nox.Session) -> None:
             with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
                 seekable_buf = io.BytesIO(fh_inner_zip.read())
                 with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
-                    fh_diff_zip.extractall()
+                    fh_diff_zip.extractall("gcovr/tests")
         except KeyError:
-            fh_zip.extractall()
+            fh_zip.extractall("gcovr/tests")

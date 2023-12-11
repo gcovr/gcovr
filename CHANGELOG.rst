@@ -36,6 +36,7 @@ New features and notable changes:
 - Use different color for partial covered lines in HTML report. (:issue:`839`)
 - Add support to generate LCOV info files. (:issue:`830`)
 - Add support for FIPS enabled OS when used with Python 3.9. (:issue:`850`)
+- Reduce file size for detailed HTML reports by using CSS to link the function lists. (:issue:`840`)
 - Ignore all negative hits if :option:`--gcov-ignore-parse-errors` is used. (:issue:`852`)
 
 Bug fixes and small improvements:
@@ -79,6 +80,7 @@ Internal changes:
 - Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
 - Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
 - Add nox session to import reference file from pipeline. (:issue:`831`)
+- Add support for ``clang-15`` in our test suite and fix test with write protection under Mac OS. (:issue:`853`)
 
 6.0 (08 March 2023)
 -------------------
