@@ -824,11 +824,11 @@ def run_gcov_and_process_files(
                         ]
 
                     # Process *.gcov files
-                    for fname in active_gcov_files:
-                        if filename.endswith(".gcov"):
-                            process_gcov_data(fname, filename, covdata, abs_filename, options)
-                        elif filename.endswith(".json.gz"):
-                            process_gcov_json_data(fname, filename, covdata, options)
+                    for gcov_filename in active_gcov_files:
+                        if gcov_filename.endswith(".gcov"):
+                            process_gcov_data(gcov_filename, filename, covdata, options, chdir)
+                        elif gcov_filename.endswith(".json.gz"):
+                            process_gcov_json_data(gcov_filename, covdata, options)
                         else:
                             raise RuntimeError(f"Unknown gcov output format {filename}.")
                     done = True
@@ -913,7 +913,7 @@ def process_existing_gcov_file(
     if filename.endswith(".gcov"):
         process_gcov_data(filename, None, covdata, options)
     elif filename.endswith(".json.gz"):
-        process_gcov_json_data(filename, None, covdata, options)
+        process_gcov_json_data(filename, covdata, options)
     else:
         raise RuntimeError(f"Unknown gcov output format {filename}.")
 
