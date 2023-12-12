@@ -596,6 +596,7 @@ class GcovProgram:
     __exitcode_to_ignore = None
     __use_json_format_if_available = None
     __help_output = None
+    __version_output = None
 
     class LockContext(object):
         def __init__(self, lock: Lock):
@@ -633,15 +634,22 @@ class GcovProgram:
                     GcovProgram.__use_json_format_if_available
                     and self.__check_gcov_help_content("--json-format")
                 ):
-                    GcovProgram.__default_options.append("--json-format")
+                    if self.__check_gcov_version_content("JSON format version: 2"):
+                        LOGGER.debug("GCOV capabilities: JSON format available.")
+                        GcovProgram.__default_options.append("--json-format")
+                    else:
+                        LOGGER.debug("GCOV capabilities: Unsupported JSON format detected.")
+
 
                 if self.__check_gcov_help_content("--demangled-names"):
-
+                    LOGGER.debug("GCOV capabilities: Demangling of names available.")
                     GcovProgram.__default_options.append("--demangled-names")
 
                 if self.__check_gcov_help_content("--hash-filenames"):
+                    LOGGER.debug("GCOV capabilities: Hashing of filenames available.")
                     GcovProgram.__default_options.append("--hash-filenames")
                 elif self.__check_gcov_help_content("--preserve-paths"):
+                    LOGGER.debug("GCOV capabilities: Preserve of paths available.")
                     GcovProgram.__default_options.append("--preserve-paths")
                 else:
                     LOGGER.warning(
@@ -673,8 +681,30 @@ class GcovProgram:
 
         return GcovProgram.__help_output
 
+    def __get_version_output(self) -> str:
+        if GcovProgram.__version_output is None:
+            gcov_process = self.__get_gcov_process(
+                ["--version"],
+                universal_newlines=True,
+            )
+            out, _ = gcov_process.communicate(timeout=30)
+
+            if gcov_process.returncode:
+                # gcov tossed errors: throw exception
+                raise RuntimeError("Error in gcov command line, couldn't get version information.")
+            # gcov execution was successful, help argument is not supported.
+            GcovProgram.__version_output = out
+
+        return GcovProgram.__version_output
+
     def __check_gcov_help_content(self, option: str) -> bool:
         if option in self.__get_help_output():
+            return True
+
+        return False
+
+    def __check_gcov_version_content(self, option: str) -> bool:
+        if option in self.__get_version_output():
             return True
 
         return False
