@@ -1,3 +1,22 @@
+# -*- coding:utf-8 -*-
+
+#  ************************** Copyrights and license ***************************
+#
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/stable
+#
+# _____________________________________________________________________________
+#
+# Copyright (c) 2013-2024 the gcovr authors
+# Copyright (c) 2013 Sandia Corporation.
+# Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
+# the U.S. Government retains certain rights in this software.
+#
+# This software is distributed under the 3-clause BSD License.
+# For more information, see the README.rst file.
+#
+# ****************************************************************************
+
 import logging
 from typing import Callable, List, Optional, Tuple
 
@@ -7,6 +26,7 @@ from ..coverage import CovData
 
 # the handler
 from .gcov import GcovHandler
+from .clover import CloverHandler
 from .cobertura import CoberturaHandler
 from .coveralls import CoverallsHandler
 from .csv import CsvHandler
@@ -25,6 +45,7 @@ def get_options() -> List[GcovrConfigOption]:
         o
         for o in [
             *GcovHandler.get_options(),
+            *CloverHandler.get_options(),
             *CoberturaHandler.get_options(),
             *CoverallsHandler.get_options(),
             *CsvHandler.get_options(),
@@ -58,6 +79,18 @@ def write_reports(covdata: CovData, options: Options):
         Callable[[], None],
     ]
     generators: List[Generator] = []
+
+    if options.clover or options.clover_pretty:
+        generators.append(
+            (
+                [options.clover],
+                CloverHandler(options).write_report,
+                lambda: LOGGER.warning(
+                    "Clover output skipped - "
+                    "consider providing an output file with `--clover=OUTPUT`."
+                ),
+            )
+        )
 
     if options.cobertura or options.cobertura_pretty:
         generators.append(

@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -33,10 +33,8 @@ class BaseHandler:
             "root",
             "root_dir",
             "root_filter",
-            "show_decision",
             "sort_branches",
-            "sort_uncovered",
-            "sort_percent",
+            "sort_key",
             "sort_reverse",
             "search_paths",
             "source_encoding",

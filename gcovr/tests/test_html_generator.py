@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -17,9 +17,9 @@
 #
 # ****************************************************************************
 
+import platform
 import logging
 import os
-import sys
 
 import pytest
 
@@ -58,7 +58,7 @@ CurrentDrive = os.getcwd()[0:1]
         ),
     ],
 )
-@pytest.mark.skipif(sys.platform != "win32", reason="only for Windows")
+@pytest.mark.skipif(platform.system() != "Windows", reason="only for Windows")
 def test_windows__make_short_sourcename(outfile, source_filename):
     outfile = outfile.replace("C:", CurrentDrive)
     source_filename = source_filename.replace("C:", CurrentDrive)

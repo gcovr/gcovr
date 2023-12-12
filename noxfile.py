@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -22,14 +22,18 @@ import io
 import os
 import platform
 import re
+import socket
+from time import sleep
+import requests
 import shutil
-import shlex
 import subprocess
-import sys
 import zipfile
 import nox
 
+from contextlib import ExitStack
 
+
+GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 ALL_COMPILER_VERSIONS = [
     "gcc-5",
     "gcc-6",
@@ -208,10 +212,16 @@ def doc(session: nox.Session) -> None:
     session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
 
+    if not GCOVR_ISOLATED_TEST:
+        docker_build_compiler(session, "gcc-8")
+        session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
+        docker_run_compiler(session, "gcc-8")
+
     # Build the Sphinx documentation
-    session.chdir("doc")
-    session.run("make", "html", "O=-W", external=True)
-    session.chdir("..")
+    with session.chdir("doc"):
+        with open("examples/gcovr.out", "w") as fh_out:
+            session.run("gcovr", "-h", stdout=fh_out)
+        session.run("sphinx-build", "-M", "html", "source", "build", "-W")
 
     # Ensure that the README builds fine as a standalone document.
     readme_html = session.create_tmp() + "/README.html"
@@ -296,9 +306,18 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     args += session.posargs
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
-    session.run("python", *args)
+
+    running_locally = os.environ.get("GITHUB_ACTIONS") is None
+    session.run(
+        "python",
+        *args,
+        success_codes=[0, 1] if running_locally and coverage_args else [0],
+    )
+
     if os.environ.get("USE_COVERAGE") == "true":
         session.run("coverage", "xml")
+        if running_locally:
+            session.run("coverage", "html")
 
 
 @nox.session
@@ -379,6 +398,106 @@ def check_bundled_app(session: nox.Session) -> None:
                 f"./gcovr --{format} $TMPDIR/out.{format}",
                 external=True,
             )
+
+
+@nox.session()
+def html2jpeg(session: nox.Session):
+    """Create JPEGs from HTML for documentation"""
+    session.install("requests")
+
+    # Create a socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Bind the socket to localhost and let the OS assign a free port number
+    sock.bind(("localhost", 0))
+    # Get the assigned port number
+    port = sock.getsockname()[1]
+    # Close the socket
+    sock.close()
+
+    with ExitStack() as defer:
+        container_id = subprocess.check_output(
+            [
+                "docker",
+                "run",
+                "--rm",
+                "--detach",
+                "-p",
+                f"{port}:2305",
+                "bedrockio/export-html",
+            ]
+        ).strip()
+        defer.callback(subprocess.run, ["docker", "stop", container_id])
+        url = f"http://localhost:{port}/1/screenshot"
+        sleep(3.0)
+
+        def screenshot(html, jpeg, size):
+            def read_file(file):
+                with open(file, encoding="utf-8") as fh_in:
+                    return " ".join(fh_in.readlines()).replace("\n", "")
+
+            content = re.sub(
+                r'<link rel="stylesheet" href="([^"]+)"/>',
+                lambda match: f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>',
+                read_file(html),
+            )
+            payload = {
+                "html": content,
+                "export": {
+                    "type": "jpeg",
+                    "fullPage": "false",
+                    "clip": {"x": 1, "y": 1, "width": size[0], "height": size[1]},
+                },
+            }
+            session.log(f"Generating {jpeg} from {html}...")
+            response = requests.post(
+                url,
+                headers={"Content-Type": "application/json"},
+                json=payload,
+            )
+            response.raise_for_status()
+            with open(jpeg, mode="bw") as fh_out:
+                fh_out.write(response.content)
+
+        screenshot(
+            "doc/examples/example_html.html",
+            "doc/images/screenshot-html.jpeg",
+            [800, 290],
+        )
+        screenshot(
+            "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html",
+            "doc/images/screenshot-html-details.example.cpp.jpeg",
+            [800, 600],
+        )
+        screenshot(
+            "gcovr/tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-default-green-src.jpeg",
+            [800, 290],
+        )
+        screenshot(
+            "gcovr/tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-default-blue-src.jpeg",
+            [800, 290],
+        )
+        screenshot(
+            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-github-green-src.jpeg",
+            [800, 500],
+        )
+        screenshot(
+            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-github-blue-src.jpeg",
+            [800, 500],
+        )
+        screenshot(
+            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-github-dark-green-src.jpeg",
+            [800, 500],
+        )
+        screenshot(
+            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-github-dark-blue-src.jpeg",
+            [800, 500],
+        )
 
 
 def docker_container_os(session: nox.Session) -> str:
@@ -500,13 +619,6 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
     """Run the docker container for a specific GCC version."""
     set_environment(session, version, False)
 
-    def shell_join(args):
-        if sys.version_info >= (3, 8):
-            return shlex.join(args)
-        else:
-            # Code for join taken from Python 3.9
-            return " ".join(shlex.quote(arg) for arg in args)
-
     nox_options = session.posargs
     if not session.interactive:
         nox_options.insert(0, "--non-interactive")
@@ -524,6 +636,8 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "CC",
         "-e",
         "USE_COVERAGE",
+        "-e",
+        "FORCE_COLOR",
         "-e",
         f"HOST_OS={platform.system()}",
         "-v",
@@ -633,12 +747,16 @@ def import_reference(session: nox.Session) -> None:
             "Exact one ZIP file needed. Usage: nox -s import_reference -- file.zip"
         )
 
+    def extract(fh_zip: zipfile.ZipFile):
+        for entry in fh_zip.filelist:
+            session.log(fh_zip.extract(entry, "gcovr/tests"))
+
     with zipfile.ZipFile(session.posargs[0]) as fh_zip:
         try:
             zip_info_diff_zip = fh_zip.getinfo("diff.zip")
             with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
                 seekable_buf = io.BytesIO(fh_inner_zip.read())
                 with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
-                    fh_diff_zip.extractall()
+                    extract(fh_diff_zip)
         except KeyError:
-            fh_zip.extractall()
+            extract(fh_zip)

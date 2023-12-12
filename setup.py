@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -49,9 +49,15 @@ setup(
     long_description=long_description,
     long_description_content_type="text/x-rst",
     platforms=["any"],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     packages=find_packages(include=["gcovr*"], exclude=["gcovr.tests"]),
-    install_requires=["jinja2", "lxml", "pygments>=2.13.0"],
+    install_requires=[
+        "jinja2",
+        "lxml",
+        "colorlog",
+        "pygments>=2.13.0",
+        "tomli >= 1.1.0 ; python_version < '3.11'",
+    ],
     package_data={
         "gcovr": [
             "formats/html/*/*.css",

@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -76,7 +76,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         lines = etree.SubElement(c, "lines")
 
         # TODO should use FileCoverage.branch_coverage() calculation
-        class_branch = CoverageStat(0, 0)
+        class_branch = CoverageStat.new_empty()
         for lineno in sorted(data.lines):
             line_cov = data.lines[lineno]
             if not line_cov.is_reportable:

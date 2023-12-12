@@ -1,0 +1,9 @@
+[tool.gcovr]
+
+filter=[ 'main\.cpp', '.*']
+
+html = "coverage.html"
+html-self-contained = true
+
+txt="coverage.txt"
+txt-metric="branch"

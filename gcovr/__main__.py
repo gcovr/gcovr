@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -21,13 +21,20 @@ import logging
 import os
 import re
 import sys
-import io
 
 from argparse import ArgumentParser
 import traceback
+from typing import Iterable
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 from .configuration import (
+    ConfigEntry,
     argument_parser_setup,
+    config_entries_from_dict,
     merge_options_and_set_defaults,
     parse_config_file,
     parse_config_into_dict,
@@ -36,7 +43,7 @@ from .utils import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
     configure_logging,
-    switch_to_logging_format_with_threads,
+    update_logging_formatter,
 )
 from .version import __version__
 from .coverage import CovData, SummarizedStats
@@ -103,7 +110,7 @@ def fail_under(
 
     function_nok = False
     if threshold_function > 0.0:
-        # Allow data with no decisions.
+        # Allow data with no functions.
         percent_function = stats.function.percent_or(100.0)
         if percent_function < threshold_function:
             function_nok = True
@@ -153,28 +160,51 @@ def create_argument_parser():
 
 
 COPYRIGHT = (
-    "Copyright (c) 2013-2023 the gcovr authors\n"
+    "Copyright (c) 2013-2024 the gcovr authors\n"
     "Copyright (c) 2013 Sandia Corporation.\n"
     "Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,\n"
     "the U.S. Government retains certain rights in this software.\n"
 )
 
 
-def find_config_name(partial_options):
-    cfg_name = getattr(partial_options, "config", None)
-    if cfg_name is not None:
-        return cfg_name
-
-    root = getattr(partial_options, "root", "")
+def find_config_name(root: str, filename: str):
     if root:
-        cfg_name = os.path.join(root, "gcovr.cfg")
+        filename = os.path.join(root, filename)
     else:
-        cfg_name = "gcovr.cfg"
+        filename = filename
 
-    if os.path.isfile(cfg_name):
-        return cfg_name
+    if os.path.isfile(filename):
+        return filename
 
     return None
+
+
+def load_config(partial_options) -> Iterable[ConfigEntry]:
+    """Load a configfile if configured or found by default names"""
+    filename = getattr(partial_options, "config", None)
+    if filename is not None:
+        with open(filename, encoding="UTF-8") as buf:
+            return parse_config_into_dict(parse_config_file(buf, filename))
+
+    root = getattr(partial_options, "root", "")
+    if filename := find_config_name(root, "gcovr.cfg"):
+        with open(filename, encoding="UTF-8") as buf:
+            return parse_config_into_dict(parse_config_file(buf, filename))
+
+    if filename := find_config_name(root, "gcovr.toml"):
+        with open(filename, "rb") as buf:
+            data = tomllib.load(buf)
+        return parse_config_into_dict(config_entries_from_dict(data, filename))
+
+    if filename := find_config_name(root, "pyproject.toml"):
+        with open(filename, "rb") as buf:
+            data = tomllib.load(buf)
+        if (gcovr_section := data.get("tool", {}).get("gcovr")) is not None:
+            return parse_config_into_dict(
+                config_entries_from_dict(gcovr_section, filename)
+            )
+
+    return {}
 
 
 def main(args=None):
@@ -187,30 +217,21 @@ def main(args=None):
         sys.exit(EXIT_SUCCESS)
 
     # load the config
-    cfg_name = find_config_name(cli_options)
-    cfg_options = {}
-    if cfg_name is not None:
-        with io.open(cfg_name, encoding="UTF-8") as cfg_file:
-            cfg_options = parse_config_into_dict(
-                parse_config_file(cfg_file, filename=cfg_name)
-            )
-
+    cfg_options = load_config(cli_options)
     options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
+
     # Reconfigure the logging.
-    if options.gcov_parallel > 1:
-        switch_to_logging_format_with_threads()
+    update_logging_formatter(options)
 
     if options.verbose:
         LOGGER.setLevel(logging.DEBUG)
 
-    if options.sort_uncovered and options.sort_percent:
+    if options.sort_branches and options.sort_key not in [
+        "uncovered-number",
+        "uncovered-percent",
+    ]:
         LOGGER.error(
-            "the options --sort-uncovered and --sort-percent can not be used together."
-        )
-        sys.exit(EXIT_CMDLINE_ERROR)
-    if options.sort_branches and not (options.sort_uncovered or options.sort_percent):
-        LOGGER.error(
-            "the options --sort-branches without --sort-uncovered or --sort-percent doesn't make sense."
+            "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
         )
         sys.exit(EXIT_CMDLINE_ERROR)
 
@@ -303,38 +324,41 @@ def main(args=None):
     #
     # Setup filters
     #
+    try:
+        # The root filter isn't technically a filter,
+        # but is used to turn absolute paths into relative paths
+        options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
-    # The root filter isn't technically a filter,
-    # but is used to turn absolute paths into relative paths
-    options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
+        if options.gcov_exclude_dirs:
+            options.gcov_exclude_dirs = [
+                f.build_filter() for f in options.gcov_exclude_dirs
+            ]
 
-    if options.gcov_exclude_dirs is not None:
-        options.gcov_exclude_dirs = [
-            f.build_filter() for f in options.gcov_exclude_dirs
-        ]
+        options.exclude = [f.build_filter() for f in options.exclude]
+        options.filter = [f.build_filter() for f in options.filter]
+        if not options.filter:
+            options.filter = [DirectoryPrefixFilter(options.root_dir)]
 
-    options.exclude = [f.build_filter() for f in options.exclude]
-    options.filter = [f.build_filter() for f in options.filter]
-    if not options.filter:
-        options.filter = [DirectoryPrefixFilter(options.root_dir)]
+        options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
+        options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
+        if not options.gcov_filter:
+            options.gcov_filter = [AlwaysMatchFilter()]
 
-    options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
-    options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
-    if not options.gcov_filter:
-        options.gcov_filter = [AlwaysMatchFilter()]
-
-    # Output the filters for debugging
-    for name, filters in [
-        ("--root", [options.root_filter]),
-        ("--filter", options.filter),
-        ("--exclude", options.exclude),
-        ("--gcov-filter", options.gcov_filter),
-        ("--gcov-exclude", options.gcov_exclude),
-        ("--gcov-exclude-directories", options.gcov_exclude_dirs),
-    ]:
-        LOGGER.debug(f"Filters for {name}: ({len(filters)})")
-        for f in filters:
-            LOGGER.debug(f" - {f}")
+        # Output the filters for debugging
+        for name, filters in [
+            ("--root", [options.root_filter]),
+            ("--filter", options.filter),
+            ("--exclude", options.exclude),
+            ("--gcov-filter", options.gcov_filter),
+            ("--gcov-exclude", options.gcov_exclude),
+            ("--gcov-exclude-directories", options.gcov_exclude_dirs),
+        ]:
+            LOGGER.debug(f"Filters for {name}: ({len(filters)})")
+            for f in filters:
+                LOGGER.debug(f" - {f}")
+    except re.error as e:
+        LOGGER.error(f"Error setting up filter '{e.pattern}': {e}")
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.exclude_lines_by_pattern:
         try:

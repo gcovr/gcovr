@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -38,7 +38,7 @@ python_interpreter = force_unix_separator(
     sys.executable
 )  # use forward slash on windows as well
 env = os.environ
-env["SOURCE_DATE_EPOCH"] = "1678392876"
+env["SOURCE_DATE_EPOCH"] = "1706291558"
 env["GCOVR"] = python_interpreter + " -m gcovr"
 for var in [
     "CPATH",
@@ -61,11 +61,11 @@ skip_clean = None
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 
 CC = os.path.split(env["CC"])[1]
-IS_CLANG = True if CC.startswith("clang") else False
 
 IS_MACOS = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
-if IS_WINDOWS:
+if IS_WINDOWS:  # pragma: no cover
+    # This is only covered on Windows
     import win32api
     import string
 
@@ -77,6 +77,8 @@ if IS_WINDOWS:
     env["GCOVR_TEST_DRIVE_WINDOWS"] = f"{free_drives[-1]}:"
 
 CC_REFERENCE = env.get("CC_REFERENCE", CC)
+CC_REFERENCE_VERSION = int(CC_REFERENCE.split("-")[1])
+IS_CLANG = True if CC_REFERENCE.startswith("clang") else False
 
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
@@ -84,7 +86,7 @@ REFERENCE_DIR_VERSION_LIST = (
     if "gcc" in CC_REFERENCE
     else ["clang-10", "clang-13", "clang-14", "clang-15"]
 )
-for ref in REFERENCE_DIR_VERSION_LIST:
+for ref in REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
     REFERENCE_DIRS.append(os.path.join("reference", ref))
     if platform.system() != "Linux":
         REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
@@ -94,11 +96,14 @@ REFERENCE_DIRS.reverse()
 
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
+RE_CRLF = re.compile(r"\r\n")
+
 RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
 
 RE_LCOV_PATH = re.compile(r"(SF:).+?/(gcovr/tests/.+?)$", flags=re.MULTILINE)
 
-RE_XML_ATTRS = re.compile(r'(timestamp)="[^"]*"')
+RE_XML_ATTR_TIMESTAMP = re.compile(r'timestamp="[^"]*"')
+RE_XML_ATTR_VERSION = re.compile(r'version="[^"]*"')
 
 RE_COVERALLS_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at)": "[^"]*"')
 RE_COVERALLS_GIT = re.compile(
@@ -108,37 +113,54 @@ RE_COVERALLS_GIT_PRETTY = re.compile(
     r'\s+"git": \{\s+"branch": "branch",\s+"head": \{(?:\s+"[^"]+":.+\n)+\s+\},\s+"remotes": \[[^\]]+\]\s+\},'
 )
 
-RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')
-RE_HTML_HEADER_DATE = re.compile(r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d<(/td>)")
+RE_HTML_ATTR_VERSION = RE_XML_ATTR_VERSION
+RE_HTML_HEADER_DATE = re.compile(
+    r"<(td|div)>(Date: )?\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?:\+\d\d:\d\d)?</\1>"
+)
+RE_HTML_FOOTER_VERSION = re.compile(
+    r'(<a href="http://gcovr.com/en/)[^"]+(">GCOVR \(Version )[^\)]+(\)</a>)'
+)
 
 
-def scrub_txt(contents):
+def translate_newlines_if_windows(contents: str) -> str:
+    return RE_CRLF.sub(r"\n", contents) if platform.system() == "Windows" else contents
+
+
+def scrub_txt(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     return RE_TXT_WHITESPACE.sub("", contents)
 
 
-def scrub_lcov(contents):
+def scrub_lcov(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     return RE_LCOV_PATH.sub(r"\1\2", contents)
 
 
-def scrub_csv(contents):
+def scrub_csv(contents: str) -> str:
+    # Her we MUST not translate the Newlines
     contents = force_unix_separator(contents)
     return contents
 
 
-def scrub_xml(contents):
+def scrub_xml(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     contents = RE_DECIMAL.sub(lambda m: str(round(float(m.group(1)), 5)), contents)
-    contents = RE_XML_ATTRS.sub(r'\1=""', contents)
+    contents = RE_XML_ATTR_TIMESTAMP.sub(r'timestamp="0"', contents)
+    contents = RE_XML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
     return contents
 
 
-def scrub_html(contents):
-    contents = RE_HTML_ATTRS.sub('\\1=""', contents)
-    contents = RE_HTML_HEADER_DATE.sub("\\1>0000-00-00 00:00:00<\\2", contents)
+def scrub_html(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
+    contents = RE_HTML_HEADER_DATE.sub(r"<\1>\20000-00-00 00:00:00</\1>", contents)
+    contents = RE_HTML_FOOTER_VERSION.sub(r"\1main\2main\3", contents)
+    contents = RE_HTML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
     contents = force_unix_separator(contents)
     return contents
 
 
-def scrub_coveralls(contents):
+def scrub_coveralls(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     contents = RE_COVERALLS_CLEAN_KEYS.sub('"\\1": ""', contents)
     contents = RE_COVERALLS_GIT_PRETTY.sub("", contents)
     contents = RE_COVERALLS_GIT.sub("", contents)
@@ -216,7 +238,8 @@ def compiled(request, name):
     assert run(["make", "clean"], cwd=path)
     assert run(["make", "all"], cwd=path)
     yield name
-    if not skip_clean:
+    if not skip_clean:  # pragma: no cover
+        # In the automated tests skip_clean is always False.
         assert run(["make", "clean"], cwd=path)
 
 
@@ -228,6 +251,7 @@ KNOWN_FORMATS = [
     "json_summary",
     "csv",
     # Other formats
+    "clover",
     "cobertura",
     "coveralls",
     "jacoco",
@@ -322,20 +346,27 @@ def pytest_generate_tests(metafunc):
                 ),
                 pytest.mark.xfail(
                     name == "html-source-encoding-cp1252" and IS_CLANG,
-                    reason="clang doesnt understand -finput-charset=...",
+                    reason="clang doesn't understand -finput-charset=...",
                 ),
                 pytest.mark.xfail(
-                    name == "html-source-encoding-cp1252" and IS_MACOS,
-                    reason="On MacOS -finput-charset=cp1252 isn't supported",
-                ),
-                pytest.mark.xfail(
-                    name in ["excl-branch", "exclude-throw-branches", "html-themes"]
+                    name
+                    in [
+                        "excl-branch",
+                        "exclude-throw-branches",
+                        "html-themes",
+                        "html-themes-github",
+                    ]
                     and IS_MACOS,
                     reason="On MacOS the constructor is called twice",
                 ),
                 pytest.mark.xfail(
                     name == "noncode" and IS_MACOS,
                     reason="On MacOS the there are other branches",
+                ),
+                pytest.mark.xfail(
+                    name == "decisions"
+                    and (IS_CLANG and CC_REFERENCE_VERSION == 15 and IS_MACOS),
+                    reason="On MacOS with clang 15 the file decision/switch_test.h throws compiler errors",
                 ),
                 pytest.mark.xfail(
                     name in ["decisions-neg-delta"] and IS_MACOS,
@@ -350,11 +381,7 @@ def pytest_generate_tests(metafunc):
                     reason="Only windows has a case insensitive file system",
                 ),
                 pytest.mark.xfail(
-                    name == "gcc-abspath"
-                    and (
-                        not env["CC"].startswith("gcc-")
-                        or int(env["CC"].replace("gcc-", "")) < 8
-                    ),
+                    name == "gcc-abspath" and (IS_CLANG or CC_REFERENCE_VERSION < 8),
                     reason="Option -fprofile-abs-path is supported since gcc-8",
                 ),
             ]
@@ -411,7 +438,7 @@ def update_reference_data(reference_file, content, encoding):  # pragma: no cove
         reference_dir = os.path.join("reference", CC_REFERENCE)
         os.makedirs(reference_dir, exist_ok=True)
         reference_file = os.path.join(reference_dir, os.path.basename(reference_file))
-    with open(reference_file, "w", encoding=encoding) as out:
+    with open(reference_file, "w", newline="", encoding=encoding) as out:
         out.write(content)
 
     return reference_file
@@ -438,7 +465,7 @@ def remove_duplicate_data(
         if other_reference_file != reference_file and os.path.isfile(
             other_reference_file
         ):  # pragma: no cover
-            with open(other_reference_file, encoding=encoding) as f:
+            with open(other_reference_file, newline="", encoding=encoding) as f:
                 if coverage == scrub(f.read()):
                     os.unlink(reference_file)
             break
@@ -458,6 +485,7 @@ SCRUBBERS = dict(
     json_summary=lambda x: x,
     csv=scrub_csv,
     # Other formats
+    clover=scrub_xml,
     cobertura=scrub_xml,
     coveralls=scrub_coveralls,
     jacoco=scrub_xml,
@@ -473,6 +501,7 @@ OUTPUT_PATTERN = dict(
     json_summary=["summary_coverage*.json"],
     csv=["coverage*.csv"],
     # Other formats
+    clover=["clover*.xml"],
     cobertura=["cobertura*.xml"],
     coveralls=["coveralls*.json"],
     jacoco=["jacoco*.xml"],
@@ -498,23 +527,23 @@ def test_build(
         encoding = re.match("^html-encoding-(.*)$", name).group(1)
 
     os.chdir(os.path.join(basedir, name))
-    assert run(["make", format])
+    assert run(["make", "-j", "4", "--output-sync=target", format])
 
     if generate_reference:  # pragma: no cover
         generate_reference_data(output_pattern)
 
     whole_diff_output = []
     for test_file, reference_file in find_reference_files(output_pattern):
-        with open(test_file, encoding=encoding) as f:
+        with open(test_file, newline="", encoding=encoding) as f:
             test_scrubbed = scrub(f.read())
 
         # Overwrite the file created above with the scrubbed content
         if generate_reference:  # pragma: no cover
-            with open(reference_file, "w", encoding=encoding) as f:
+            with open(reference_file, "w", newline="", encoding=encoding) as f:
                 f.write(test_scrubbed)
             reference_scrubbed = test_scrubbed
         else:
-            with open(reference_file, encoding=encoding) as f:
+            with open(reference_file, newline="", encoding=encoding) as f:
                 reference_scrubbed = scrub(f.read())
 
         try:

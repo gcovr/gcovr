@@ -16,27 +16,31 @@ gcovr
 .. |abstract-option-html-details| replace:: :option:`--html-details`
 .. |abstract-option-html-nested| replace:: :option:`--html-nested`
 .. |abstract-option-html-template-dir| replace:: :option:`--html-template-dir`
-.. |abstract-option-cobertura| replace:: :option:`--cobertura`
-.. |abstract-option-sonarqube| replace:: :option:`--sonarqube`
-.. |abstract-option-jacoco| replace:: :option:`--jacoco`
+.. |abstract-option-csv| replace:: :option:`--csv`
 .. |abstract-option-json| replace:: :option:`--json`
 .. |abstract-option-json-summary| replace:: :option:`--json-summary`
-.. |abstract-option-csv| replace:: :option:`--csv`
+
+.. |abstract-option-clover| replace:: :option:`--clover`
+.. |abstract-option-cobertura| replace:: :option:`--cobertura`
 .. |abstract-option-coveralls| replace:: :option:`--coveralls`
+.. |abstract-option-jacoco| replace:: :option:`--jacoco`
 .. |abstract-option-lcov| replace:: :option:`--lcov`
+.. |abstract-option-sonarqube| replace:: :option:`--sonarqube`
 
 .. |abstract-guide-txt| replace:: :ref:`txt_output`
 .. |abstract-guide-html| replace:: :ref:`html_output`
 .. |abstract-guide-html-details| replace:: :ref:`html_output`
 .. |abstract-guide-html-template-dir| replace:: :ref:`html_output`
-.. |abstract-guide-cobertura| replace:: :ref:`cobertura_output`
-.. |abstract-guide-sonarqube| replace:: :ref:`sonarqube_xml_output`
-.. |abstract-guide-jacoco| replace:: :ref:`jacoco_output`
+.. |abstract-guide-csv| replace:: :ref:`csv_output`
 .. |abstract-guide-json| replace:: :ref:`json_output`
 .. |abstract-guide-json-summary| replace:: :ref:`json_output`
-.. |abstract-guide-csv| replace:: :ref:`csv_output`
+
+.. |abstract-guide-clover| replace:: :ref:`clover_output`
+.. |abstract-guide-cobertura| replace:: :ref:`cobertura_output`
 .. |abstract-guide-coveralls| replace:: :ref:`coveralls_output`
+.. |abstract-guide-jacoco| replace:: :ref:`jacoco_output`
 .. |abstract-guide-lcov| replace:: :ref:`lcov_output`
+.. |abstract-guide-sonarqube| replace:: :ref:`sonarqube_xml_output`
 
 .. admonition:: Quick Links
 

@@ -19,7 +19,7 @@ jobs:
       PR_MILESTONE: "${{ github.event.pull_request.milestone.number }}"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check if PR is assigned to a milestone
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -37,7 +37,7 @@ jobs:
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check if PR is mentioned in changelog
         if: ${{ always() }}
         run: |
@@ -85,18 +85,18 @@ jobs:
     # across each axis. The main test matrix just represents the Python axis on
     # Linux. The OS=Windows and Compiler axis are added manually.
     #
-    # Some cases (Linux with Python 3.7, Clang-10) are handled via the Docker-tests.
+    # Some cases (Clang compiler) are handled via the Docker-tests.
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04]
         gcc: [gcc-8]
-        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.8'] # 3.7 is used in Docker
+        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.8']
 
         include:
 
           # Test additional compilers with Linux.
-          # Note that gcc-5, gcc-6, gcc-8, gcc-12, gcc-13, clang-10, and clang-13 is handled via Docker.
+          # Note that gcc-5, gcc-6, gcc-8, gcc-12, gcc-13, clang-10, clang-13, clang-14 and clang-15 is handled via Docker.
           - os: ubuntu-20.04
             gcc: gcc-9
             python-version: '3.9'
@@ -107,18 +107,18 @@ jobs:
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
             gcc: gcc-8
-            python-version: '3.7'
+            python-version: '3.8'
           - os: windows-2019
             gcc: gcc-8
             python-version: '3.11'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup environment
         run: |
           # Enable coverage for specific target configurations
           case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
-            windows-2019/gcc-8/3.7)   USE_COVERAGE=true ;;
+            windows-2019/gcc-8/3.8)   USE_COVERAGE=true ;;
             ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
             *)                        USE_COVERAGE=false ;;
           esac
@@ -150,11 +150,11 @@ jobs:
             libxml2-utils
           sudo apt-get clean
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
@@ -164,7 +164,8 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Install dependencies
         run: |
-          python3 -m pip install nox
+          python -m pip install --upgrade pip
+          python3 -m pip install nox requests
       - name: Lint files
         run: |
           nox --non-interactive --session lint
@@ -179,18 +180,31 @@ jobs:
           path: gcovr/tests/diff.zip
       - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
+          disable_search: true
+          plugins: pycoverage
           files: ./coverage.xml
           name: ${{ matrix.os }}-${{ matrix.gcc }}
           verbose: true
       - name: Generate documentation
         if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
         run: |
-          nox --non-interactive --session doc
+          nox --non-interactive --session doc || exit 1
+
+          # Check if files are modified (outdated screenshots)
+          Status=$(git status --porcelain | grep -F '.jpeg' || exit 0)
+          if [ -n "$Status" ] ; then
+            echo "Following files are modified:"
+            echo "$Status"
+
+            echo "Please regenerate the screenshots!"
+            exit 1
+          fi
+          exit 0
       - name: Test bundle of app
         run: |
           nox --non-interactive --session bundle_app
@@ -217,7 +231,7 @@ jobs:
           # Enable coverage for specific target configurations
           case "${{ matrix.gcc }}" in
             gcc-5)    USE_COVERAGE=true ;;
-            gcc-13)    USE_COVERAGE=true ;;
+            gcc-13)   USE_COVERAGE=true ;;
             clang-10) USE_COVERAGE=true ;;
             clang-15) USE_COVERAGE=true ;;
             *)        USE_COVERAGE=false ;;
@@ -226,8 +240,9 @@ jobs:
         shell: bash
       - name: Install dependencies
         run: |
-          python3 -m pip install nox
-      - uses: actions/checkout@v3
+          python -m pip install --upgrade pip
+          python3 -m pip install nox requests
+      - uses: actions/checkout@v4
       - name: Build Docker
         run: |
           python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
@@ -239,21 +254,24 @@ jobs:
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
       - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
+          disable_search: true
+          plugins: pycoverage
           files: ./coverage.xml
           name: docker-${{ matrix.gcc }}
           verbose: true
       - name: Upload LCOV coverage to Codecov
-        if: ${{ matrix.gcc == 'clang-13' }}
-        uses: codecov/codecov-action@v3
+        if: ${{ (matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10') }}
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
+          disable_search: true
           files: ./gcovr/tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
           name: docker-${{ matrix.gcc }}-lcov
           verbose: true

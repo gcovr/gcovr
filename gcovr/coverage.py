@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -38,34 +38,34 @@ from __future__ import annotations
 from collections import OrderedDict
 import os
 import re
-from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union
+from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union, Literal
+
 from dataclasses import dataclass
 
-from .utils import commonpath, realpath, force_unix_separator
+from .utils import commonpath, force_unix_separator
 
 _T = TypeVar("_T")
 
 
 def sort_coverage(
     covdata: CovData,
-    by_branch: bool,
-    by_num_uncovered: bool,
-    by_percent_uncovered: bool,
-    reverse: bool,
+    sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
+    sort_reverse: bool,
+    by_metric: Literal["line", "branch", "decision"],
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
-    by_branch (bool): select branch coverage (True) or line coverage (False)
-    by_num_uncovered, by_percent_uncovered (bool):
-        select the sort mode. By default, sort alphabetically.
-    reverse (bool): if true the sort order is from highest to lowest value.
+    sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
+    sort_reverse (bool): reverse order if True
+    by_metric ("line", "branch", "decision"): select the metric to sort
     filename_uses_relative_pathname (bool): for html, we break down a pathname to the
         relative path, but not for other formats.
 
     returns: the sorted keys
     """
+
     basedir = commonpath(list(covdata.keys()))
 
     def key_filename(key: str) -> str:
@@ -73,7 +73,9 @@ def sort_coverage(
             return int(text) if text.isdigit() else text
 
         key = (
-            force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
+            force_unix_separator(
+                os.path.relpath(os.path.realpath(key), os.path.realpath(basedir))
+            )
             if filename_uses_relative_pathname
             else key
         ).casefold()
@@ -82,8 +84,10 @@ def sort_coverage(
 
     def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
-        if by_branch:
+        if by_metric == "branch":
             return cov.branch_coverage()
+        elif by_metric == "decision":
+            return cov.decision_coverage()
         return cov.line_coverage()
 
     def key_num_uncovered(key: str) -> int:
@@ -106,20 +110,20 @@ def sort_coverage(
         else:
             # No branches are always put at the end.
             # Hopefully no one has such many branches.
-            value = -1 if reverse else 1e99
+            value = -1 if sort_reverse else 1e99
 
         return value
 
-    if by_num_uncovered:
+    if sort_key == "uncovered-number":
         key_fn = key_num_uncovered
-    elif by_percent_uncovered:
+    elif sort_key == "uncovered-percent":
         key_fn = key_percent_uncovered
     else:
         # by default, we sort by filename alphabetically
-        return sorted(covdata, key=key_filename, reverse=reverse)
+        return sorted(covdata, key=key_filename, reverse=sort_reverse)
 
     # First sort filename alphabetical and then by the requested key
-    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=reverse)
+    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=sort_reverse)
 
 
 class BranchCoverage:
@@ -336,6 +340,20 @@ class LineCoverage:
     @property
     def has_uncovered_branch(self) -> bool:
         return not all(branch.is_covered for branch in self.branches.values())
+
+    @property
+    def has_uncovered_decision(self) -> bool:
+        if self.decision is None:
+            return False
+
+        if isinstance(self.decision, DecisionCoverageUncheckable):
+            return False
+
+        if isinstance(self.decision, DecisionCoverageConditional):
+            return self.decision.count_true == 0 or self.decision.count_false == 0
+
+        if isinstance(self.decision, DecisionCoverageSwitch):
+            return self.decision.count == 0
 
     def branch_coverage(self) -> CoverageStat:
         total = len(self.branches)

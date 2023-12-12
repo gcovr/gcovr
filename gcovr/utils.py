@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -24,15 +24,18 @@ from typing import Callable, List, Type
 import logging
 import os
 import functools
+import platform
 import re
 import sys
 from contextlib import contextmanager
+from colorlog import ColoredFormatter
+from gcovr.options import Options
 
 LOGGER = logging.getLogger("gcovr")
 
 
-LOG_FORMAT = "(%(levelname)s) %(message)s"
-LOG_FORMAT_THREADS = "(%(levelname)s) - %(threadName)s - %(message)s"
+LOG_FORMAT = "%(log_color)s(%(levelname)s) %(message)s"
+LOG_FORMAT_THREADS = "%(log_color)s(%(levelname)s) - %(threadName)s - %(message)s"
 
 
 class LoopChecker(object):
@@ -47,31 +50,6 @@ class LoopChecker(object):
 
         self._seen.add(key)
         return False
-
-
-if (sys.platform == "win32") and (sys.version_info < (3, 8)):
-    LOGGER.debug("Use own implementation of 'realpath' to resolve symbolic links.")
-    # Only used for old python versions. Function can be treated as stable.
-    from nt import _getfinalpathname
-
-    DOS_DEVICE_PATH_PREFIX = "\\\\?\\"
-    DOS_DEVICE_PATH_PREFIX_UNC = DOS_DEVICE_PATH_PREFIX + "UNC\\"
-
-    def realpath(path):
-        path = os.path.realpath(path)
-        # If file exist try to resolve the symbolic links
-        if os.path.exists(path):
-            has_prefix = path.startswith(DOS_DEVICE_PATH_PREFIX)
-            path = _getfinalpathname(path)
-            if not has_prefix and path.startswith(DOS_DEVICE_PATH_PREFIX):
-                if path.startswith(DOS_DEVICE_PATH_PREFIX_UNC):
-                    path = path[len(DOS_DEVICE_PATH_PREFIX_UNC) :]
-                else:
-                    path = path[len(DOS_DEVICE_PATH_PREFIX) :]
-        return path
-
-else:
-    realpath = os.path.realpath
 
 
 @functools.lru_cache(maxsize=1)
@@ -167,9 +145,9 @@ def commonpath(files):
         return ""
 
     if len(files) == 1:
-        prefix_path = os.path.dirname(realpath(files[0]))
+        prefix_path = os.path.dirname(os.path.realpath(files[0]))
     else:
-        split_paths = [realpath(path).split(os.path.sep) for path in files]
+        split_paths = [os.path.realpath(path).split(os.path.sep) for path in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
         #   /a/b/c/d  <- min
@@ -192,7 +170,7 @@ def commonpath(files):
     # make the path relative and add a trailing slash
     if prefix_path:
         prefix_path = os.path.join(
-            os.path.relpath(prefix_path, realpath(os.getcwd())), ""
+            os.path.relpath(prefix_path, os.path.realpath(os.getcwd())), ""
         )
         LOGGER.debug(f"Common relative prefix path is {prefix_path!r}")
     return prefix_path
@@ -219,7 +197,7 @@ class FilterOption:
             LOGGER.warning(f"did you mean: {suggestion}")
 
         isabs = self.regex.startswith("/")
-        if not isabs and (sys.platform == "win32"):
+        if not isabs and (platform.system() == "Windows"):
             # Starts with a drive letter
             isabs = re.match(r"^[A-Za-z]:/", self.regex)
 
@@ -256,21 +234,21 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path: str):
-        path = realpath(path)
+        path = os.path.realpath(path)
         return super().match(path)
 
 
 class RelativeFilter(Filter):
     def __init__(self, root: str, pattern: str):
         super().__init__(pattern)
-        self.root = realpath(root)
+        self.root = os.path.realpath(root)
 
     def match(self, path: str):
-        path = realpath(path)
+        path = os.path.realpath(path)
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
-        if sys.platform == "win32":
+        if platform.system() == "Windows":
             path_drive, _ = os.path.splitdrive(path)
             root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:
@@ -302,9 +280,38 @@ class DirectoryPrefixFilter(Filter):
         return super().match(path)
 
 
-def configure_logging() -> None:
+def __colored_formatter(options: Options) -> ColoredFormatter:
+    if options is not None:
+        log_format = LOG_FORMAT_THREADS if options.gcov_parallel > 1 else LOG_FORMAT
+        force_color = getattr(options, "force_color", False)
+        no_color = getattr(options, "no_color", False)
+    else:
+        log_format = LOG_FORMAT
+        force_color = False
+        no_color = False
+
+    return ColoredFormatter(
+        log_format,
+        datefmt=None,
+        reset=True,
+        log_colors={
+            "DEBUG": "cyan",
+            "INFO": "blue",
+            "WARNING": "yellow",
+            "ERROR": "red",
+            "CRITICAL": "red,bg_white",
+        },
+        secondary_log_colors={},
+        style="%",
+        force_color=force_color,
+        no_color=no_color,
+        stream=sys.stderr,
+    )
+
+
+def configure_logging(options: Options = None) -> None:
     stream_handler = logging.StreamHandler(sys.stderr)
-    stream_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    stream_handler.setFormatter(__colored_formatter(options))
 
     logging.basicConfig(
         handlers=[stream_handler],
@@ -319,14 +326,12 @@ def configure_logging() -> None:
     sys.excepthook = exception_hook
 
 
-def switch_to_logging_format_with_threads() -> None:
+def update_logging_formatter(options: Options) -> None:
     # The one and only LOGGER was configured from ourselve.
     if len(logging.getLogger().handlers) == 1 and (
         logging.getLogger().handlers[0].formatter._fmt == LOG_FORMAT
     ):
-        logging.getLogger().handlers[0].setFormatter(
-            logging.Formatter(LOG_FORMAT_THREADS)
-        )
+        logging.getLogger().handlers[0].setFormatter(__colored_formatter(options))
 
 
 @contextmanager

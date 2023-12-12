@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -65,7 +65,7 @@ source_error_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open (?:source|graph) file|: No such file or directory)"
 )
 output_error_re = re.compile(
-    r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied)"
+    r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied|Read-only file system)"
 )
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
@@ -877,15 +877,16 @@ def run_gcov_and_process_files(
                 if os.path.exists(filepath):
                     os.remove(filepath)
 
-    except Exception:
-        LOGGER.error(
+    except Exception as exc:
+        done = False
+        error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
             f"Stdout of gcov was >>{out}<< End of stdout\n"
             f"Stderr of gcov was >>{err}<< End of stderr\n"
+            f"Exception was >>{str(exc)}<< End of stderr\n"
             f"Current processed gcov file was {filename!r}.\n"
-            "Use option --verbose to get extended informations."
+            "Use option --verbose to get extended information."
         )
-        raise
 
     return done
 

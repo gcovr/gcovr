@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -31,6 +31,8 @@ import re
 from . import formats
 from .options import (
     GcovrConfigOption,
+    GcovrConfigOptionAction,
+    GcovrDeprecatedConfigOptionAction,
     Options,
     OutputOrDefault,
     check_input_file,
@@ -166,7 +168,9 @@ def parse_config_into_dict(
             raise cfg_entry.error("unknown config option") from None
 
         value = _get_value_from_config_entry(cfg_entry, option)
-        _assign_value_to_dict(cfg_dict, value, option, is_single_value=True)
+        _assign_value_to_dict(
+            cfg_dict, value, option, cfg_entry_key=cfg_entry.key, is_single_value=True
+        )
 
     return cfg_dict
 
@@ -268,6 +272,7 @@ def _assign_value_to_dict(
     value: Any,
     option: GcovrConfigOption,
     is_single_value: bool,
+    cfg_entry_key: str = None,
 ) -> None:
     if option.action == "append" or option.nargs == "*":
         append_target = namespace.setdefault(option.name, [])
@@ -279,6 +284,12 @@ def _assign_value_to_dict(
 
     if option.action in ("store", "store_const"):
         namespace[option.name] = value
+        return
+
+    if issubclass(option.action, GcovrConfigOptionAction):
+        option.action(option.flags, option.name)(
+            None, namespace, value, config=cfg_entry_key
+        )
         return
 
     assert False, f"unexpected action for {option.name}: {option.action!r}"
@@ -309,6 +320,18 @@ def merge_options_and_set_defaults(
         target.setdefault(option.name, option.default)
 
     return Options(**target)
+
+
+class UseSortUncoveredNumberAction(GcovrDeprecatedConfigOptionAction):
+    option = "--sort-key"
+    config = "sort-key"
+    value = "uncovered-number"
+
+
+class UseSortUncoveredPercentAction(GcovrDeprecatedConfigOptionAction):
+    option = "--sort-key"
+    config = "sort-key"
+    value = "uncovered-percent"
 
 
 GCOVR_CONFIG_OPTION_GROUPS = [
@@ -360,6 +383,26 @@ GCOVR_CONFIG_OPTIONS = [
         "verbose",
         ["-v", "--verbose"],
         help="Print progress messages. Please include this output in bug reports.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "no_color",
+        ["--no-color"],
+        help=(
+            "Turn off colored logging."
+            " Is also set if environment variable NO_COLOR is present."
+            " Ignored if --force-color is used."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "force_color",
+        ["--force-color"],
+        help=(
+            "Force colored logging, this is the default for a terminal."
+            " Is also set if environment variable FORCE_COLOR is present."
+            " Has presedence over --no-color."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
@@ -490,36 +533,56 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
-        "sort_uncovered",
+        "sort_key",
+        ["--sort"],
+        config="sort",
+        group="output_options",
+        help=(
+            "Sort entries by filename, number or percent of uncovered lines or branches"
+            "(if the option --sort-branches is given). "
+            "The default order is increasing and can be changed by --sort-reverse. "
+            "The secondary sort key (if values are identical) is always the ascending filename. "
+            "For CSV, HTML, JSON, LCOV and text report."
+        ),
+        choices=["filename", "uncovered-number", "uncovered-percent"],
+        default="filename",
+    ),
+    GcovrConfigOption(
+        "sort_key",
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
+            "Deprecated, please use '--sort-key uncovered-number' instead. "
             "Sort entries by number of uncovered lines or branches (if the option "
             "--sort-branches is given). "
             "The default order is increasing and can be changed by --sort-reverse. "
             "The secondary sort key (if values are identical) is always the ascending filename. "
-            "For CSV, HTML, JSON and text report."
+            "For CSV, HTML, JSON, LCOV and text report."
         ),
-        action="store_true",
+        nargs=0,
+        action=UseSortUncoveredNumberAction,
     ),
     GcovrConfigOption(
-        "sort_percent",
+        "sort_key",
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
+            "Deprecated, please use '--sort-key uncovered-percent' instead. "
             "Sort entries by percentage of uncovered lines or branches (if the option "
             "--sort-branches is given). "
-            "The default order is increasing and can be changed by --sort-reverse."
+            "The default order is increasing and can be changed by --sort-reverse. "
             "The secondary sort key (if values are identical) is always the ascending filename. "
-            "For CSV, HTML, JSON and text report."
+            "For CSV, HTML, JSON, LCOV and text report."
         ),
-        action="store_true",
+        nargs=0,
+        action=UseSortUncoveredPercentAction,
     ),
     GcovrConfigOption(
         "sort_reverse",
         ["--sort-reverse"],
+        config="sort_reverse",
         group="output_options",
-        help="Sort entries in reverse order. For CSV, HTML, JSON and text report.",
+        help="Sort entries in reverse order (see --sort).",
         action="store_true",
     ),
     *formats.get_options(),
@@ -748,6 +811,39 @@ def parse_config_file(
         yield ConfigEntry(key, value, filename=filename, lineno=lineno)
 
 
+def config_entries_from_dict(
+    config: Dict[str, Any],
+    filename: str,
+) -> Iterable[ConfigEntry]:
+    r"""
+    Generate config entries from a dictionary
+
+    Yields: ConfigEntry
+
+    Example: basic syntax.
+
+    >>> import io
+    >>> cfg = {
+    ...     'key': ['value', 'can have multiple values'],
+    ...     'another-key': '',
+    ...     'optional': 'spaces',
+    ... }
+    >>> for entry in config_entries_from_dict(cfg, 'test.cfg'):
+    ...     print(entry)
+    test.cfg: ??: key = value
+    test.cfg: ??: key = can have multiple values
+    test.cfg: ??: another-key = # empty
+    test.cfg: ??: optional = spaces
+    """
+
+    for key, value in config.items():
+        if isinstance(value, list):
+            for inner_value in value:
+                yield ConfigEntry(key, inner_value, filename=filename)
+        else:
+            yield ConfigEntry(key, value, filename=filename)
+
+
 @dataclass
 class ConfigEntry:
     """A "key = value" config file entry."""
@@ -793,6 +889,8 @@ class ConfigEntry:
         Traceback (most recent call last):
         ValueError: <config>: ??: k: boolean option must be "yes" or "no"
         """
+        if isinstance(self.value, bool):
+            return self.value
         value = self.value
         if value == "yes":
             return True

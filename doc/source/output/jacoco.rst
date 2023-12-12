@@ -5,8 +5,7 @@ JaCoCo XML Output
 
 .. program:: gcovr
 
-The default output format for ``gcovr`` is to generate a tabular
-summary in plain text.  The ``gcovr`` command can also generate a
+The ``gcovr`` command can generate a
 JaCoCo XML output using the :option:`--jacoco`
 and :option:`--jacoco-pretty` options:
 
@@ -25,6 +24,6 @@ of times that each line was covered.  Consequently, XML output can be
 used to support performance optimization in the same manner that
 ``gcov`` does.
 
-.. versionadded:: NEXT
+.. versionadded:: 7.0
 
    The :option:`--jacoco` and :option:`--jacoco-pretty`.

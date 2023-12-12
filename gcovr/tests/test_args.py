@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -39,7 +39,7 @@ class CaptureObject:
         self.exception = exception
 
 
-def capture(capsys, args, other_ex=()):
+def capture(capsys, args):
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = None
@@ -48,8 +48,6 @@ def capture(capsys, args, other_ex=()):
         # Explicit SystemExit exception in case main() returns normally
         sys.exit(0)
     except SystemExit as exception:
-        e = exception
-    except other_ex as exception:
         e = exception
     out, err = capsys.readouterr()
     return CaptureObject(out, err, e)
@@ -62,7 +60,7 @@ class LogCaptureObject:
         self.exception = exception
 
 
-def log_capture(caplog, args, other_ex=()):
+def log_capture(caplog, args):
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = None
@@ -71,8 +69,6 @@ def log_capture(caplog, args, other_ex=()):
         # Explicit SystemExit exception in case main() returns normally
         sys.exit(0)
     except SystemExit as exception:
-        e = exception
-    except other_ex as exception:
         e = exception
     return LogCaptureObject(caplog.record_tuples, e)
 
@@ -290,6 +286,14 @@ def test_no_output_html_nested(caplog):
     assert c.exception.code != 0
 
 
+def test_html_details_and_html_nested(caplog):
+    c = log_capture(caplog, ["--output", "x", "--html-details", "--html-nested"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "--html-details and --html-nested can not be used together."
+    assert c.exception.code != 0
+
+
 @pytest.mark.parametrize(
     "option",
     [
@@ -351,7 +355,6 @@ def test_filter_backslashes_are_detected(caplog):
     c = log_capture(
         caplog,
         args=["--filter", r"C:\\foo\moo", "--gcov-exclude", ""],
-        other_ex=re.error,
     )
     message0 = c.record_tuples[0]
     assert message0[1] == logging.WARNING
@@ -362,7 +365,11 @@ def test_filter_backslashes_are_detected(caplog):
     message = c.record_tuples[2]
     assert message[1] == logging.WARNING
     assert message[2].startswith("did you mean: C:/foo/moo")
-    assert isinstance(c.exception, re.error) or c.exception.code == 0
+    message = c.record_tuples[3]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith(
+        "Error setting up filter 'C:\\\\foo\\moo': bad escape \\m at position 7"
+    )
 
 
 def test_html_css_not_exists(capsys):
@@ -573,7 +580,7 @@ def test_import_valid_cobertura_file(tmp_path):
     testfile = "/path/to/source/code.cpp"
     xmldata = f"""<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 6.0+master">
+<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 7.0">
   <sources>
     <source>.</source>
   </sources>
@@ -651,7 +658,7 @@ def test_import_corrupt_cobertura_file(caplog, tmp_path):
 def test_import_cobertura_file_with_invalid_line(caplog, tmp_path):
     xmldata = """<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 6.0+master">
+<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 7.0">
   <sources>
     <source>.</source>
   </sources>
@@ -711,21 +718,33 @@ def test_invalid_timestamp(capsys):
     assert c.exception.code != 0
 
 
-def test_sort_uncovered_and_percent(caplog):
-    c = log_capture(caplog, ["--sort-uncovered", "--sort-percent"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith(
-        "the options --sort-uncovered and --sort-percent can not be used together."
-    )
-    assert c.exception.code == 1
-
-
 def test_sort_branch_and_not_uncovered_or_percent(caplog):
     c = log_capture(caplog, ["--sort-branches"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "the options --sort-branches without --sort-uncovered or --sort-percent doesn't make sense."
+        "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
     )
     assert c.exception.code == 1
+
+
+@pytest.mark.parametrize(
+    "option",
+    [
+        ("-b", "--txt-metric branch"),
+        ("--txt-branches", "--txt-metric branch"),
+        ("--branches", "--txt-metric branch"),
+        ("--sort-uncovered", "--sort-key uncovered-number"),
+        ("--sort-percentage", "--sort-key uncovered-percent"),
+    ],
+    ids=lambda option: option[0],
+)
+def test_deprecated_option(caplog, option):
+    c = log_capture(caplog, [option[0]])
+    message = c.record_tuples[0]
+    assert message[1] == logging.WARNING
+    assert (
+        f"Deprecated option {option[0]} used, please use {option[1]!r} instead"
+        in message[2]
+    )
+    assert c.exception.code != 1

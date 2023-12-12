@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -19,10 +19,10 @@
 
 from __future__ import annotations
 from argparse import ArgumentTypeError
+import argparse
 import logging
 from typing import Any, List, Optional, Union, Callable
 import os
-
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -188,6 +188,31 @@ class Options(object):
         return self.__dict__.get(name)
 
 
+class GcovrConfigOptionAction(argparse.Action):
+    pass
+
+
+class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
+    def __init__(self, option_strings, dest, **kwargs):
+        super().__init__(option_strings, dest, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None, config=None):
+        if option_string is not None:
+            LOGGER.warning(
+                f"Deprecated option {option_string} used, please use '{self.option} {self.value}' instead."
+            )
+        if config is not None:
+            LOGGER.warning(
+                f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
+            )
+        # This part is used when merging configurations
+        if isinstance(namespace, dict):
+            namespace[self.dest] = values
+        # We are called from argparse
+        else:
+            setattr(namespace, self.dest, self.value)
+
+
 class GcovrConfigOption:
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-few-public-methods
@@ -317,7 +342,9 @@ class GcovrConfigOption:
             const = False
             default = True
 
-        assert action in ("store", "store_const", "append")
+        assert action in ("store", "store_const", "append") or issubclass(
+            action, GcovrConfigOptionAction
+        )
 
         self.name = name
         self.flags = flags

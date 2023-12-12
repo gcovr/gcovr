@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -44,7 +44,6 @@ from ...utils import (
     force_unix_separator,
     get_md5_hexdigest,
     open_text_for_writing,
-    realpath,
 )
 from ...version import __version__
 
@@ -322,7 +321,9 @@ class RootInfo:
         }
 
         display_filename = force_unix_separator(
-            os.path.relpath(realpath(cdata_fname), realpath(self.directory))
+            os.path.relpath(
+                os.path.realpath(cdata_fname), os.path.realpath(self.directory)
+            )
         )
 
         if link_report is not None:
@@ -432,10 +433,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     filtered_fname = ""
     sorted_keys = sort_coverage(
         covdata,
-        by_branch=options.sort_branches,
-        by_num_uncovered=options.sort_uncovered,
-        by_percent_uncovered=options.sort_percent,
-        reverse=options.sort_reverse,
+        sort_key=options.sort_key,
+        sort_reverse=options.sort_reverse,
+        by_metric="branch" if options.sort_branches else "line",
         filename_uses_relative_pathname=True,
     )
 
@@ -674,10 +674,9 @@ def write_directory_pages(
 
         sorted_files = sort_coverage(
             directory.children,
-            by_branch=options.sort_branches,
-            by_num_uncovered=options.sort_uncovered,
-            by_percent_uncovered=options.sort_percent,
-            reverse=options.sort_reverse,
+            sort_key=options.sort_key,
+            sort_reverse=options.sort_reverse,
+            by_metric="branch" if options.sort_branches else "line",
             filename_uses_relative_pathname=True,
         )
 

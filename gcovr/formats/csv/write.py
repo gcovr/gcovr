@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -29,13 +29,15 @@ from ...coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
 def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce gcovr csv report"""
 
+    # Open output without translation of line endings.
+    # The CSV writer uses as default line enedings "\r\n" (according to
+    # https://datatracker.ietf.org/doc/html/rfc4180)
     with open_text_for_writing(output_file, "coverage.csv", newline="") as fh:
         keys = sort_coverage(
             covdata,
-            by_branch=options.sort_branches,
-            by_num_uncovered=options.sort_uncovered,
-            by_percent_uncovered=options.sort_percent,
-            reverse=options.sort_reverse,
+            sort_key=options.sort_key,
+            sort_reverse=options.sort_reverse,
+            by_metric="branch" if options.sort_branches else "line",
         )
 
         writer = csv.writer(fh)
