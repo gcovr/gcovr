@@ -33,6 +33,16 @@
     transform: translateY(-2px);
 }
 
+.listOfFunctions tr > td > a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.listOfFunctions tr:hover > td
+{
+    background-color: #ddd;
+}
+
 td.linenos .normal {
     color: inherit;
     background-color: transparent;

@@ -582,7 +582,31 @@ def test_negativ_branch_count():
         )
 
 
-def test_negativ_branch_count_ignored():
+def test_negative_line_count_ignored():
+    """
+    A exception shall be raised.
+    """
+
+    source = textwrap.dedent(
+        """\
+             1: 1:foo += 1;
+            -1: 2:foo += 1;
+             2: 3:foo += 1;
+        """
+    )
+
+    coverage, _ = parse_coverage(
+        source.splitlines(),
+        filename="example.cpp",
+        ignore_parse_errors=set(["negative_hits.warn"]),
+    )
+
+    covered_lines = {line.lineno for line in coverage.lines.values() if line.is_covered}
+
+    assert covered_lines == {1, 3}
+
+
+def test_negative_branch_count_ignored():
     """
     A exception shall be raised.
     """
@@ -598,7 +622,7 @@ def test_negativ_branch_count_ignored():
         """
     )
 
-    coverage, lines = parse_coverage(
+    coverage, _ = parse_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set(["negative_hits.warn"]),

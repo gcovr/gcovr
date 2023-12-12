@@ -61,7 +61,6 @@ skip_clean = None
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 
 CC = os.path.split(env["CC"])[1]
-IS_CLANG = True if CC.startswith("clang") else False
 
 IS_MACOS = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
@@ -77,6 +76,8 @@ if IS_WINDOWS:
     env["GCOVR_TEST_DRIVE_WINDOWS"] = f"{free_drives[-1]}:"
 
 CC_REFERENCE = env.get("CC_REFERENCE", CC)
+CC_REFERENCE_VERSION = int(CC_REFERENCE.split("-")[1])
+IS_CLANG = True if CC_REFERENCE.startswith("clang") else False
 
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
@@ -322,20 +323,27 @@ def pytest_generate_tests(metafunc):
                 ),
                 pytest.mark.xfail(
                     name == "html-source-encoding-cp1252" and IS_CLANG,
-                    reason="clang doesnt understand -finput-charset=...",
+                    reason="clang doesn't understand -finput-charset=...",
                 ),
                 pytest.mark.xfail(
-                    name == "html-source-encoding-cp1252" and IS_MACOS,
-                    reason="On MacOS -finput-charset=cp1252 isn't supported",
-                ),
-                pytest.mark.xfail(
-                    name in ["excl-branch", "exclude-throw-branches", "html-themes"]
+                    name
+                    in [
+                        "excl-branch",
+                        "exclude-throw-branches",
+                        "html-themes",
+                        "html-themes-github",
+                    ]
                     and IS_MACOS,
                     reason="On MacOS the constructor is called twice",
                 ),
                 pytest.mark.xfail(
                     name == "noncode" and IS_MACOS,
                     reason="On MacOS the there are other branches",
+                ),
+                pytest.mark.xfail(
+                    name == "decisions"
+                    and (IS_CLANG and CC_REFERENCE_VERSION == 15 and IS_MACOS),
+                    reason="On MacOS with clang 15 the file decision/switch_test.h throws compiler errors",
                 ),
                 pytest.mark.xfail(
                     name in ["decisions-neg-delta"] and IS_MACOS,
@@ -350,11 +358,7 @@ def pytest_generate_tests(metafunc):
                     reason="Only windows has a case insensitive file system",
                 ),
                 pytest.mark.xfail(
-                    name == "gcc-abspath"
-                    and (
-                        not env["CC"].startswith("gcc-")
-                        or int(env["CC"].replace("gcc-", "")) < 8
-                    ),
+                    name == "gcc-abspath" and (IS_CLANG or CC_REFERENCE_VERSION < 8),
                     reason="Option -fprofile-abs-path is supported since gcc-8",
                 ),
             ]

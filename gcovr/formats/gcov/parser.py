@@ -217,7 +217,7 @@ class UnknownLineType(Exception):
 
 
 class NegativeHits(Exception):
-    """Used by `_gather_coverage_from_line()` to signal that a negative count value was found."""
+    """Used to signal that a negative count value was found."""
 
     def __init__(self, line: str) -> None:
         super().__init__(
@@ -225,8 +225,24 @@ class NegativeHits(Exception):
             "bug in gcov tool, see "
             "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option "
             "--gcov-ignore-parse-errors with a value of negative_hits.warn, "
-            "or negative_hits.warn_one."
+            "or negative_hits.warn_once_per_file."
         )
+
+    @staticmethod
+    def raise_if_not_ignored(
+        line, ignore_parse_errors: set = (), persistent_states: dict = {}
+    ) -> None:
+        """Raise exception if not ignored by options"""
+        if ignore_parse_errors is not None and (
+            "negative_hits.warn" in ignore_parse_errors
+            or "negative_hits.warn_once_per_file" in ignore_parse_errors
+        ):
+            if "negative_hits.warn_once_per_file" not in persistent_states:
+                persistent_states["negative_hits.warn_once_per_file"] = 0
+                LOGGER.warning(f"Ignoring negative hits in line {line!r}.")
+            persistent_states["negative_hits.warn_once_per_file"] += 1
+        else:
+            raise NegativeHits(line)
 
 
 def parse_metadata(lines: List[str]) -> Dict[str, Optional[str]]:
@@ -606,6 +622,10 @@ def _parse_line(
     Example: can parse unconditional branches
     >>> _parse_line('unconditional 1 taken 17')
     _UnconditionalLine(branchno=1, hits=17)
+    >>> _parse_line('unconditional 2 taken -1', ignore_parse_errors=set(['negative_hits.warn']))
+    _UnconditionalLine(branchno=2, hits=0)
+    >>> _parse_line('unconditional 3 never executed')
+    _UnconditionalLine(branchno=3, hits=0)
     >>> _parse_line('unconditional with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.UnknownLineType: unconditional with some unknown format
@@ -642,6 +662,8 @@ def _parse_line(
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=NONE)
     >>> _parse_line(' $$$$$: 33-block  1')
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=EXCEPTION_ONLY)
+    >>> _parse_line('     -1: 32-block  0', ignore_parse_errors=set(['negative_hits.warn']))
+    _BlockLine(hits=0, lineno=32, blockno=0, extra_info=NONE)
     >>> _parse_line('     1: 9-block with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.UnknownLineType:      1: 9-block with some unknown format
@@ -672,10 +694,10 @@ def _parse_line(
     #   12*: 13:cond ? bar() : baz();
     match = _RE_SOURCE_LINE.fullmatch(line)
     if match is not None:
-        count_str, lineno, source_code = match.groups()
+        hits_str, lineno, source_code = match.groups()
 
         # METADATA (key, value)
-        if count_str == "-" and lineno == "0":
+        if hits_str == "-" and lineno == "0":
             if ":" in source_code:
                 key, value = source_code.split(":", 1)
                 return _MetadataLine(key, value.strip())
@@ -683,23 +705,29 @@ def _parse_line(
                 # Add a syntethic metadata with no value
                 return _MetadataLine(source_code, None)
 
-        if count_str == "-":
-            count = 0
+        if hits_str == "-":
+            hits = 0
             extra_info = _ExtraInfo.NONCODE
-        elif count_str == "#####":
-            count = 0
+        elif hits_str == "#####":
+            hits = 0
             extra_info = _ExtraInfo.NONE
-        elif count_str == "=====":
-            count = 0
+        elif hits_str == "=====":
+            hits = 0
             extra_info = _ExtraInfo.EXCEPTION_ONLY
-        elif count_str.endswith("*"):
-            count = _int_from_gcov_unit(count_str[:-1])
+        elif hits_str.endswith("*"):
+            hits = _int_from_gcov_unit(hits_str[:-1])
             extra_info = _ExtraInfo.PARTIAL
         else:
-            count = _int_from_gcov_unit(count_str)
+            hits = _int_from_gcov_unit(hits_str)
             extra_info = _ExtraInfo.NONE
 
-        return _SourceLine(count, int(lineno), source_code, extra_info)
+        if hits < 0:
+            NegativeHits.raise_if_not_ignored(
+                line, ignore_parse_errors, persistent_states
+            )
+            hits = 0
+
+        return _SourceLine(hits, int(lineno), source_code, extra_info)
 
     # BLOCK
     #
@@ -707,19 +735,25 @@ def _parse_line(
     if "-block " in line:
         match = _RE_BLOCK_LINE.match(line)
         if match is not None:
-            count_str, lineno, blockno = match.groups()
+            hits_str, lineno, blockno = match.groups()
 
-            if count_str == "%%%%%":
-                count = 0
+            if hits_str == "%%%%%":
+                hits = 0
                 extra_info = _ExtraInfo.NONE
-            elif count_str == "$$$$$":
-                count = 0
+            elif hits_str == "$$$$$":
+                hits = 0
                 extra_info = _ExtraInfo.EXCEPTION_ONLY
             else:
-                count = _int_from_gcov_unit(count_str)
+                hits = _int_from_gcov_unit(hits_str)
                 extra_info = _ExtraInfo.NONE
 
-            return _BlockLine(count, int(lineno), int(blockno), extra_info)
+            if hits < 0:
+                NegativeHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
+                hits = 0
+
+            return _BlockLine(hits, int(lineno), int(blockno), extra_info)
 
     # SPECIALIZATION NAME
     #
@@ -760,17 +794,11 @@ def _parse_tag_line(
         if match is not None:
             branch_id, taken_str, annotation = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
+
             if hits < 0:
-                if ignore_parse_errors is not None and (
-                    "negative_hits.warn" in ignore_parse_errors
-                    or "negative_hits.warn_once_per_file" in ignore_parse_errors
-                ):
-                    if "negative_hits.warn_once_per_file" not in persistent_states:
-                        persistent_states["negative_hits.warn_once_per_file"] = 0
-                        LOGGER.warning(f"Ignoring negative hits in line {line!r}.")
-                    persistent_states["negative_hits.warn_once_per_file"] += 1
-                else:
-                    raise NegativeHits(line)
+                NegativeHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
                 hits = 0
 
             return _BranchLine(int(branch_id), hits, annotation)
@@ -796,8 +824,15 @@ def _parse_tag_line(
         match = _RE_UNCONDITIONAL_LINE.match(line)
         if match is not None:
             branch_id, taken_str = match.groups()
-            taken = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
-            return _UnconditionalLine(int(branch_id), taken)
+            hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
+
+            if hits < 0:
+                NegativeHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
+                hits = 0
+
+            return _UnconditionalLine(int(branch_id), hits)
 
     # FUNCTION
     #
