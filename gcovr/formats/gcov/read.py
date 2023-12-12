@@ -127,7 +127,7 @@ def find_existing_gcov_files(
             search_file(
                 re.compile(r".*\.gcov(?:\.json\.gz)?$").match,
                 search_path,
-                exclude_dirs=exclude_dirs
+                exclude_dirs=exclude_dirs,
             )
         )
         LOGGER.debug(f"Found {len(gcov_files)} files (and will process all of them)")
@@ -638,8 +638,9 @@ class GcovProgram:
                         LOGGER.debug("GCOV capabilities: JSON format available.")
                         GcovProgram.__default_options.append("--json-format")
                     else:
-                        LOGGER.debug("GCOV capabilities: Unsupported JSON format detected.")
-
+                        LOGGER.debug(
+                            "GCOV capabilities: Unsupported JSON format detected."
+                        )
 
                 if self.__check_gcov_help_content("--demangled-names"):
                     LOGGER.debug("GCOV capabilities: Demangling of names available.")
@@ -691,7 +692,9 @@ class GcovProgram:
 
             if gcov_process.returncode:
                 # gcov tossed errors: throw exception
-                raise RuntimeError("Error in gcov command line, couldn't get version information.")
+                raise RuntimeError(
+                    "Error in gcov command line, couldn't get version information."
+                )
             # gcov execution was successful, help argument is not supported.
             GcovProgram.__version_output = out
 
@@ -856,11 +859,15 @@ def run_gcov_and_process_files(
                     # Process *.gcov files
                     for gcov_filename in active_gcov_files:
                         if gcov_filename.endswith(".gcov"):
-                            process_gcov_data(gcov_filename, filename, covdata, options, chdir)
+                            process_gcov_data(
+                                gcov_filename, filename, covdata, options, chdir
+                            )
                         elif gcov_filename.endswith(".json.gz"):
                             process_gcov_json_data(gcov_filename, covdata, options)
                         else:
-                            raise RuntimeError(f"Unknown gcov output format {filename}.")
+                            raise RuntimeError(
+                                f"Unknown gcov output format {filename}."
+                            )
                     done = True
 
             if options.gcov_keep and done:
