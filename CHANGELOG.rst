@@ -35,6 +35,9 @@ New features and notable changes:
 - Add support for specifying files for :option:`search_paths`. (:issue:`834`)
 - Use different color for partial covered lines in HTML report. (:issue:`839`)
 - Add support to generate LCOV info files. (:issue:`830`)
+- Add support for FIPS enabled OS when used with Python 3.9. (:issue:`850`)
+- Reduce file size for detailed HTML reports by using CSS to link the function lists. (:issue:`840`)
+- Ignore all negative hits if :option:`--gcov-ignore-parse-errors` is used. (:issue:`852`)
 
 Bug fixes and small improvements:
 
@@ -49,6 +52,7 @@ Bug fixes and small improvements:
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
 - Fix ``TypeError`` during decision analysis. (:issue:`784`)
 - Use relative paths if possible when running ``gcov``. (:issue:`820`)
+- Respect :option`--merge-mode-functions`when merging coverage data. (:issue:`844`)
 
 Documentation:
 
@@ -76,6 +80,7 @@ Internal changes:
 - Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
 - Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
 - Add nox session to import reference file from pipeline. (:issue:`831`)
+- Add support for ``clang-15`` in our test suite and fix test with write protection under Mac OS. (:issue:`853`)
 - Add test for parallel execution of multiple gcovr instances. (:issue:`832`)
 
 6.0 (08 March 2023)

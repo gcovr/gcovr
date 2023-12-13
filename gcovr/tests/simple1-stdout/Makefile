@@ -39,4 +39,4 @@ coveralls:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage*.html jacoco.xml coverage.json summary_coverage.json cobertura.xml coveralls.json
+	rm -f coverage.txt coverage*.html jacoco.xml coverage.json summary_coverage.json cobertura.xml coveralls.json coverage.lcov

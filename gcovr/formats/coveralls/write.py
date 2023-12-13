@@ -26,12 +26,11 @@ import os
 import re
 import shutil
 import subprocess
-from hashlib import md5
 from typing import Any, Dict
 
 from ...options import Options
 
-from ...utils import presentable_filename, open_text_for_writing
+from ...utils import get_md5_hexdigest, presentable_filename, open_text_for_writing
 from ...coverage import CovData, FileCoverage
 
 PRETTY_JSON_INDENT = 4
@@ -190,9 +189,7 @@ def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]
     with open(coverage_details.filename, "rb") as file_handle:
         contents = file_handle.read()
 
-    hasher = md5()
-    hasher.update(contents)
-    source_file["source_digest"] = hasher.hexdigest()
+    source_file["source_digest"] = get_md5_hexdigest(contents)
 
     total_line_count = len(contents.splitlines())
 

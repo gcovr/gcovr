@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 from argparse import ArgumentTypeError
+from hashlib import md5
 from typing import Callable, List, Type
 import logging
 import os
@@ -396,3 +397,9 @@ def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
         normalized = filename
 
     return force_unix_separator(normalized)
+
+
+def get_md5_hexdigest(data: bytes) -> str:
+    return (
+        md5(data, usedforsecurity=False) if sys.version_info >= (3, 9) else md5(data)
+    ).hexdigest()

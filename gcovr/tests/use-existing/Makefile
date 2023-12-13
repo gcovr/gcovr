@@ -34,4 +34,4 @@ coveralls: coverage.json
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage*.* cobertura.xml sonarqube.xml coveralls.json
+	rm -f coverage*.* cobertura.xml sonarqube.xml coveralls.json jacoco.xml
