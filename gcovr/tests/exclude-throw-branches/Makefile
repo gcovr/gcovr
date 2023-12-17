@@ -3,10 +3,16 @@ all:
 
 run: json txt lcov cobertura html sonarqube jacoco coveralls
 
-coverage-throw.json coverage-excl-throw.json:
+.NOTPARALLEL: coverage-throw.json coverage-excl-throw.json
+
+main.gcda:
 	./testcase
-	$(GCOVR) --gcov-keep --json-pretty --json coverage-throw.json
-	$(GCOVR) --gcov-keep  --json-pretty --json coverage-excl-throw.json --exclude-throw-branches
+
+coverage-throw.json: main.gcda
+	$(GCOVR) --gcov-keep --json-pretty --json $@
+
+coverage-excl-throw.json: main.gcda
+	$(GCOVR) --gcov-keep --exclude-throw-branches --json-pretty --json $@
 
 json: coverage-throw.json coverage-excl-throw.json
 	echo "Files created"

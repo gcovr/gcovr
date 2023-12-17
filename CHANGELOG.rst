@@ -81,6 +81,7 @@ Internal changes:
 - Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
 - Add nox session to import reference file from pipeline. (:issue:`831`)
 - Add support for ``clang-15`` in our test suite and fix test with write protection under Mac OS. (:issue:`853`)
+- Add test for parallel execution of multiple gcovr instances. (:issue:`832`)
 
 6.0 (08 March 2023)
 -------------------

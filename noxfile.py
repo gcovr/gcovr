@@ -633,12 +633,16 @@ def import_reference(session: nox.Session) -> None:
             "Exact one ZIP file needed. Usage: nox -s import_reference -- file.zip"
         )
 
+    def extract(fh_zip: zipfile.ZipFile):
+        for entry in fh_zip.filelist:
+            session.log(fh_zip.extract(entry, "gcovr/tests"))
+
     with zipfile.ZipFile(session.posargs[0]) as fh_zip:
         try:
             zip_info_diff_zip = fh_zip.getinfo("diff.zip")
             with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
                 seekable_buf = io.BytesIO(fh_inner_zip.read())
                 with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
-                    fh_diff_zip.extractall("gcovr/tests")
+                    extract(fh_diff_zip)
         except KeyError:
-            fh_zip.extractall("gcovr/tests")
+            extract(fh_zip)
