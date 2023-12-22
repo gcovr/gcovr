@@ -12,7 +12,7 @@ run: txt cobertura html sonarqube jacoco json json_summary coveralls
 txt:
 	./testcase
 	# a couple of tests about failure thresholds
-	$(GCOVR) --fail-under-line 80.1 --print-summary 2>fail_under.stderr; test $$? -eq 2 || ( cat fail_under.stderr & exit 1 )
+	$(GCOVR) --verbose --fail-under-line 80.1 --print-summary 2>fail_under.stderr; test $$? -eq 2 || ( cat fail_under.stderr & exit 1 )
 	grep -F "failed minimum line coverage" fail_under.stderr
 	$(GCOVR) --fail-under-branch 50.1 --print-summary 2>fail_under.stderr; test $$? -eq 4 || ( cat fail_under.stderr & exit 1 )
 	grep -F "failed minimum branch coverage" fail_under.stderr

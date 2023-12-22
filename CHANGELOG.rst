@@ -38,6 +38,7 @@ New features and notable changes:
 - Add support for FIPS enabled OS when used with Python 3.9. (:issue:`850`)
 - Reduce file size for detailed HTML reports by using CSS to link the function lists. (:issue:`840`)
 - Ignore all negative hits if :option:`--gcov-ignore-parse-errors` is used. (:issue:`852`)
+- Add support for GCOV JSON intermediate format. (:issue:`766`)
 
 Bug fixes and small improvements:
 
