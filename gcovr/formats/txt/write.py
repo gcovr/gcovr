@@ -46,6 +46,9 @@ LINE_WIDTH = 78
 def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce the classic gcovr text report"""
 
+    if options.txt_use_branch_coverage and options.show_decision:
+        raise RuntimeError("Branch coverage and decision coverage are mutually exclusive")
+
     with open_text_for_writing(output_file, "coverage.txt") as fh:
         # Header
         fh.write("-" * LINE_WIDTH + "\n")
@@ -54,8 +57,15 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         fh.write("Directory: " + force_unix_separator(options.root) + "\n")
 
         fh.write("-" * LINE_WIDTH + "\n")
-        title_total = "Branches" if options.txt_use_branch_coverage else "Lines"
-        title_covered = "Taken" if options.txt_use_branch_coverage else "Exec"
+        title_total = "Lines"
+        title_covered = "Exec"
+        if options.txt_use_branch_coverage:
+            title_total = "Branches"
+            title_covered = "Taken"
+        elif options.show_decision:
+            title_total = "Decisions"
+            title_covered = "Taken"
+
         title_percentage = "Cover"
         title_un_covered = "Covered" if options.txt_report_covered else "Missing"
         fh.write(
@@ -73,6 +83,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         keys = sort_coverage(
             covdata,
             by_branch=options.txt_use_branch_coverage,
+            by_decision=options.show_decision,
             by_num_uncovered=options.sort_uncovered,
             by_percent_uncovered=options.sort_percent,
             reverse=options.sort_reverse,
@@ -121,6 +132,9 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
         if options.txt_use_branch_coverage:
             stat = coverage.branch_coverage()
             covered_lines = _covered_branches_str(coverage)
+        elif options.show_decision:
+            stat = coverage.decision_coverage()
+            covered_lines = _covered_decisions_str(coverage)
         else:
             stat = coverage.line_coverage()
             covered_lines = _covered_lines_str(coverage)
@@ -130,6 +144,9 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
         if options.txt_use_branch_coverage:
             stat = coverage.branch_coverage()
             uncovered_lines = _uncovered_branches_str(coverage)
+        elif options.show_decision:
+            stat = coverage.decision_coverage()
+            uncovered_lines = _uncovered_decisions_str(coverage)
         else:
             stat = coverage.line_coverage()
             uncovered_lines = _uncovered_lines_str(coverage)
@@ -203,18 +220,28 @@ def _covered_branches_str(filecov: FileCoverage) -> str:
         line.lineno for line in filecov.lines.values() if not line.has_uncovered_branch
     )
 
-    # Dn't do any aggregation on branch results.
+    # Don't do any aggregation on branch results.
     return ",".join(str(lineno) for lineno in covered_lines)
 
+def _covered_decisions_str(filecov: FileCoverage) -> str:
+    covered_decisions = sorted(
+        line.lineno for line in filecov.lines.values() if not line.has_uncovered_decision
+    )
+    return ",".join(str(lineno) for lineno in covered_decisions)
+
+def _uncovered_decisions_str(filecov: FileCoverage) -> str:
+    uncovered_decisions = sorted(
+        line.lineno for line in filecov.lines.values() if line.has_uncovered_decision
+    )
+    return ",".join(str(lineno) for lineno in uncovered_decisions)
 
 def _uncovered_branches_str(filecov: FileCoverage) -> str:
     uncovered_lines = sorted(
         line.lineno for line in filecov.lines.values() if line.has_uncovered_branch
     )
 
-    # Dn't do any aggregation on branch results.
+    # Don't do any aggregation on branch results.
     return ",".join(str(lineno) for lineno in uncovered_lines)
-
 
 def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[Tuple[int, int]]:
     first = last = None

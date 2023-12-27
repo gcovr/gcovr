@@ -48,16 +48,19 @@ _T = TypeVar("_T")
 
 def sort_coverage(
     covdata: CovData,
-    by_branch: bool,
-    by_num_uncovered: bool,
-    by_percent_uncovered: bool,
     reverse: bool,
+    *, # end of positional arguments
+    by_branch: bool = False,
+    by_decision: bool = False,
+    by_num_uncovered: bool = False,
+    by_percent_uncovered: bool = False,
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
     by_branch (bool): select branch coverage (True) or line coverage (False)
+    by_decision (bool): select branch decision (True) or line coverage (False)
     by_num_uncovered, by_percent_uncovered (bool):
         select the sort mode. By default, sort alphabetically.
     reverse (bool): if true the sort order is from highest to lowest value.
@@ -66,6 +69,12 @@ def sort_coverage(
 
     returns: the sorted keys
     """
+
+    if by_branch and by_decision:
+        raise RuntimeWarning("Sorting by coverage and by decision is mutually exclusive")
+    if by_num_uncovered and by_percent_uncovered:
+        raise RuntimeWarning("Sorting by number and by percent uncovered is mutually exclusive")
+
     basedir = commonpath(list(covdata.keys()))
 
     def key_filename(key: str) -> str:
@@ -84,6 +93,8 @@ def sort_coverage(
         cov = covdata[key]
         if by_branch:
             return cov.branch_coverage()
+        elif by_decision:
+            return cov.decision_coverage()
         return cov.line_coverage()
 
     def key_num_uncovered(key: str) -> int:
@@ -336,6 +347,20 @@ class LineCoverage:
     @property
     def has_uncovered_branch(self) -> bool:
         return not all(branch.is_covered for branch in self.branches.values())
+
+    @property
+    def has_uncovered_decision(self) -> bool:
+        if self.decision is None:
+            return False
+
+        if isinstance(self.decision, DecisionCoverageUncheckable):
+            return False
+
+        if isinstance(self.decision, DecisionCoverageConditional):
+            return self.decision.count_true == 0 or self.decision.count_false == 0
+
+        if isinstance(self.decision, DecisionCoverageSwitch):
+            return self.decision.count == 0
 
     def branch_coverage(self) -> CoverageStat:
         total = len(self.branches)
