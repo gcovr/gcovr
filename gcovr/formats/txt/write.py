@@ -57,14 +57,15 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         fh.write("Directory: " + force_unix_separator(options.root) + "\n")
 
         fh.write("-" * LINE_WIDTH + "\n")
-        title_total = "Lines"
-        title_covered = "Exec"
         if options.txt_use_branch_coverage:
             title_total = "Branches"
             title_covered = "Taken"
         elif options.show_decision:
             title_total = "Decisions"
             title_covered = "Taken"
+        else:
+            title_total = "Lines"
+            title_covered = "Exec"
 
         title_percentage = "Cover"
         title_un_covered = "Covered" if options.txt_report_covered else "Missing"
