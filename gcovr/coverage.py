@@ -71,7 +71,7 @@ def sort_coverage(
     """
 
     if by_branch and by_decision:
-        raise RuntimeWarning("Sorting by coverage and by decision is mutually exclusive")
+        raise RuntimeWarning("Sorting by branch coverage and by decision coverage is mutually exclusive")
     if by_num_uncovered and by_percent_uncovered:
         raise RuntimeWarning("Sorting by number and by percent uncovered is mutually exclusive")
 
