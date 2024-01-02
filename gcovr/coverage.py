@@ -362,6 +362,8 @@ class LineCoverage:
         if isinstance(self.decision, DecisionCoverageSwitch):
             return self.decision.count == 0
 
+raise RuntimeError("Decision type needs to be added.")
+
     def branch_coverage(self) -> CoverageStat:
         total = len(self.branches)
         covered = 0
