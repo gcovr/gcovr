@@ -38,7 +38,14 @@ from __future__ import annotations
 from collections import OrderedDict
 import os
 import re
+import sys
 from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union
+if sys.version_info >= (3, 8):
+    from typing import Literal
+    MetricType = Literal["line", "branch"]
+else:
+    MetricType = str
+
 from dataclasses import dataclass
 
 from .utils import commonpath, realpath, force_unix_separator
@@ -48,7 +55,7 @@ _T = TypeVar("_T")
 
 def sort_coverage(
     covdata: CovData,
-    by_branch: bool,
+    by_metric: MetricType,
     by_num_uncovered: bool,
     by_percent_uncovered: bool,
     reverse: bool,
@@ -82,7 +89,7 @@ def sort_coverage(
 
     def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
-        if by_branch:
+        if by_metric == "branch":
             return cov.branch_coverage()
         return cov.line_coverage()
 

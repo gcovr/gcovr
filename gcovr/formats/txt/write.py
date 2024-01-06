@@ -72,7 +72,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         # Data
         keys = sort_coverage(
             covdata,
-            by_branch=options.txt_use_branch_coverage,
+            by_metric="branch" if options.txt_use_branch_coverage else "line",
             by_num_uncovered=options.sort_uncovered,
             by_percent_uncovered=options.sort_percent,
             reverse=options.sort_reverse,
