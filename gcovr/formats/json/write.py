@@ -99,9 +99,7 @@ def write_summary_report(covdata, output_file: str, options: Options):
     keys = sort_coverage(
         covdata,
         by_metric="branch" if options.sort_branches else "line",
-        by_num_uncovered=options.sort_uncovered,
-        by_percent_uncovered=options.sort_percent,
-        reverse=options.sort_reverse,
+        options=options,
     )
 
     for key in keys:

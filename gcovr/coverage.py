@@ -40,6 +40,8 @@ import os
 import re
 import sys
 from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union
+
+from gcovr.options import Options
 if sys.version_info >= (3, 8):
     from typing import Literal
     MetricType = Literal["line", "branch"]
@@ -56,18 +58,14 @@ _T = TypeVar("_T")
 def sort_coverage(
     covdata: CovData,
     by_metric: MetricType,
-    by_num_uncovered: bool,
-    by_percent_uncovered: bool,
-    reverse: bool,
+    options: Options,
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
     by_metric ("line", "branch"): select the metric to sort
-    by_num_uncovered, by_percent_uncovered (bool):
-        select the sort mode. By default, sort alphabetically.
-    reverse (bool): if true the sort order is from highest to lowest value.
+    options: the command line options
     filename_uses_relative_pathname (bool): for html, we break down a pathname to the
         relative path, but not for other formats.
 
@@ -113,20 +111,20 @@ def sort_coverage(
         else:
             # No branches are always put at the end.
             # Hopefully no one has such many branches.
-            value = -1 if reverse else 1e99
+            value = -1 if options.sort_reverse else 1e99
 
         return value
 
-    if by_num_uncovered:
+    if options.sort_uncovered:
         key_fn = key_num_uncovered
-    elif by_percent_uncovered:
+    elif options.sort_percent:
         key_fn = key_percent_uncovered
     else:
         # by default, we sort by filename alphabetically
-        return sorted(covdata, key=key_filename, reverse=reverse)
+        return sorted(covdata, key=key_filename, reverse=options.sort_reverse)
 
     # First sort filename alphabetical and then by the requested key
-    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=reverse)
+    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=options.sort_reverse)
 
 
 class BranchCoverage:
