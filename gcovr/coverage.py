@@ -64,7 +64,7 @@ def sort_coverage(
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
-    by_branch (bool): select branch coverage (True) or line coverage (False)
+    by_metric ("line", "branch"): select the metric to sort
     by_num_uncovered, by_percent_uncovered (bool):
         select the sort mode. By default, sort alphabetically.
     reverse (bool): if true the sort order is from highest to lowest value.

@@ -31,6 +31,7 @@ import re
 from . import formats
 from .options import (
     GcovrConfigOption,
+    GcovrConfigOptionAction,
     Options,
     OutputOrDefault,
     check_input_file,
@@ -279,6 +280,10 @@ def _assign_value_to_dict(
 
     if option.action in ("store", "store_const"):
         namespace[option.name] = value
+        return
+
+    if issubclass(option.action, GcovrConfigOptionAction):
+        option.action(option.flags, option.name)(None, namespace, value)
         return
 
     assert False, f"unexpected action for {option.name}: {option.action!r}"

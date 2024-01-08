@@ -54,8 +54,8 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         fh.write("Directory: " + force_unix_separator(options.root) + "\n")
 
         fh.write("-" * LINE_WIDTH + "\n")
-        title_total = "Branches" if options.txt_use_branch_coverage else "Lines"
-        title_covered = "Taken" if options.txt_use_branch_coverage else "Exec"
+        title_total = "Branches" if options.txt_metric == "branch" else "Lines"
+        title_covered = "Taken" if options.txt_metric == "branch" else "Exec"
         title_percentage = "Cover"
         title_un_covered = "Covered" if options.txt_report_covered else "Missing"
         fh.write(
@@ -72,7 +72,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         # Data
         keys = sort_coverage(
             covdata,
-            by_metric="branch" if options.txt_use_branch_coverage else "line",
+            by_metric=options.txt_metric,
             by_num_uncovered=options.sort_uncovered,
             by_percent_uncovered=options.sort_percent,
             reverse=options.sort_reverse,
@@ -118,7 +118,7 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
     filename = presentable_filename(coverage.filename, root_filter=options.root_filter)
 
     if options.txt_report_covered:
-        if options.txt_use_branch_coverage:
+        if options.txt_metric == "branch":
             stat = coverage.branch_coverage()
             covered_lines = _covered_branches_str(coverage)
         else:
@@ -127,7 +127,7 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
 
         return stat, _format_line(filename, stat, covered_lines)
     else:
-        if options.txt_use_branch_coverage:
+        if options.txt_metric == "branch":
             stat = coverage.branch_coverage()
             uncovered_lines = _uncovered_branches_str(coverage)
         else:

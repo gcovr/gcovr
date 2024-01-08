@@ -19,13 +19,13 @@
 
 from __future__ import annotations
 from argparse import ArgumentTypeError
+import argparse
 import logging
 from typing import Any, List, Optional, Union, Callable
 import os
 
-
+GET_TYPE = type
 LOGGER = logging.getLogger("gcovr")
-
 
 def check_percentage(value: str) -> float:
     r"""
@@ -188,6 +188,9 @@ class Options(object):
         return self.__dict__.get(name)
 
 
+class GcovrConfigOptionAction(argparse.Action):
+    pass
+
 class GcovrConfigOption:
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-few-public-methods
@@ -317,7 +320,7 @@ class GcovrConfigOption:
             const = False
             default = True
 
-        assert action in ("store", "store_const", "append")
+        assert action in ("store", "store_const", "append") or issubclass(action, GcovrConfigOptionAction)
 
         self.name = name
         self.flags = flags

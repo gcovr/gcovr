@@ -17,12 +17,23 @@
 #
 # ****************************************************************************
 
+import argparse
 from typing import List
 
 from ...coverage import CovData
 
-from ...options import GcovrConfigOption, OutputOrDefault
+from ...options import GcovrConfigOption, GcovrConfigOptionAction, OutputOrDefault
 from ...formats.base import BaseHandler
+
+
+class UseBranchMetricAction(GcovrConfigOptionAction):
+    def __init__(self, option_strings, dest, **kwargs):
+        super().__init__(option_strings, dest, **kwargs)
+    def __call__(self, parser, namespace, values, option_string=None):
+        if isinstance(namespace, dict):
+            namespace[self.dest] = "branch"
+        else:
+            setattr(namespace, self.dest, "branch")
 
 
 class TxtHandler(BaseHandler):
@@ -32,14 +43,26 @@ class TxtHandler(BaseHandler):
             "exclude_calls",
             # Local options
             GcovrConfigOption(
-                "txt_use_branch_coverage",
+                "txt_metric",
+                ["--txt-metric"],
+                config="txt-metric",
+                group="output_options",
+                help=(
+                    "The metric type to report."
+                ),
+                choices=["line", "branch"],
+                default="line",
+            ),
+            GcovrConfigOption(
+                "txt_metric",
                 ["-b", "--txt-branches", "--branches"],
                 config="txt-branch",
                 group="output_options",
                 help=(
                     "Report the branch coverage instead of the line coverage in text report."
                 ),
-                action="store_true",
+                nargs=0,
+                action=UseBranchMetricAction,
             ),
             GcovrConfigOption(
                 "txt_report_covered",
