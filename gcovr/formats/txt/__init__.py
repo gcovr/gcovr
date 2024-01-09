@@ -17,23 +17,24 @@
 #
 # ****************************************************************************
 
-import argparse
+import logging
 from typing import List
 
 from ...coverage import CovData
 
-from ...options import GcovrConfigOption, GcovrConfigOptionAction, OutputOrDefault
+from ...options import (
+    GcovrConfigOption,
+    GcovrDeprecatedConfigOptionAction,
+    OutputOrDefault,
+)
 from ...formats.base import BaseHandler
 
+LOGGER = logging.getLogger("gcovr")
 
-class UseBranchMetricAction(GcovrConfigOptionAction):
-    def __init__(self, option_strings, dest, **kwargs):
-        super().__init__(option_strings, dest, **kwargs)
-    def __call__(self, parser, namespace, values, option_string=None):
-        if isinstance(namespace, dict):
-            namespace[self.dest] = "branch"
-        else:
-            setattr(namespace, self.dest, "branch")
+
+class UseBranchMetricAction(GcovrDeprecatedConfigOptionAction):
+    option = "--txt-metric"
+    value = "branch"
 
 
 class TxtHandler(BaseHandler):
@@ -47,9 +48,7 @@ class TxtHandler(BaseHandler):
                 ["--txt-metric"],
                 config="txt-metric",
                 group="output_options",
-                help=(
-                    "The metric type to report."
-                ),
+                help=("The metric type to report."),
                 choices=["line", "branch"],
                 default="line",
             ),
@@ -59,6 +58,7 @@ class TxtHandler(BaseHandler):
                 config="txt-branch",
                 group="output_options",
                 help=(
+                    "Deprecated, please use '--txt-metric branch' instead\n"
                     "Report the branch coverage instead of the line coverage in text report."
                 ),
                 nargs=0,

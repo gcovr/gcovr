@@ -27,6 +27,7 @@ import os
 GET_TYPE = type
 LOGGER = logging.getLogger("gcovr")
 
+
 def check_percentage(value: str) -> float:
     r"""
     Check that the percentage is within a reasonable range and if so return it.
@@ -191,6 +192,23 @@ class Options(object):
 class GcovrConfigOptionAction(argparse.Action):
     pass
 
+
+class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
+    def __init__(self, option_strings, dest, **kwargs):
+        super().__init__(option_strings, dest, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        # This part is used when merging configurations
+        if isinstance(namespace, dict):
+            namespace[self.dest] = values
+        # We are called from argparse
+        else:
+            LOGGER.warning(
+                f"Deprecated option {option_string} used, please use '{self.option} {self.value}' instead."
+            )
+            setattr(namespace, self.dest, self.value)
+
+
 class GcovrConfigOption:
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-few-public-methods
@@ -320,7 +338,9 @@ class GcovrConfigOption:
             const = False
             default = True
 
-        assert action in ("store", "store_const", "append") or issubclass(action, GcovrConfigOptionAction)
+        assert action in ("store", "store_const", "append") or issubclass(
+            action, GcovrConfigOptionAction
+        )
 
         self.name = name
         self.flags = flags
