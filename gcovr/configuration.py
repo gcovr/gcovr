@@ -32,6 +32,7 @@ from . import formats
 from .options import (
     GcovrConfigOption,
     GcovrConfigOptionAction,
+    GcovrDeprecatedConfigOptionAction,
     Options,
     OutputOrDefault,
     check_input_file,
@@ -316,6 +317,16 @@ def merge_options_and_set_defaults(
     return Options(**target)
 
 
+class UseSortUncoveredNumberAction(GcovrDeprecatedConfigOptionAction):
+    option = "--sort-key"
+    value = "uncovered-number"
+
+
+class UseSortUncoveredPercentAction(GcovrDeprecatedConfigOptionAction):
+    option = "--sort-key"
+    value = "uncovered-percent"
+
+
 GCOVR_CONFIG_OPTION_GROUPS = [
     {
         "key": "output_options",
@@ -495,36 +506,56 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
-        "sort_uncovered",
+        "sort_key",
+        ["--sort"],
+        config="sort",
+        group="output_options",
+        help=(
+            "Sort entries by filename, number or percent of uncovered lines or branches"
+            "(if the option --sort-branches is given). "
+            "The default order is increasing and can be changed by --sort-reverse. "
+            "The secondary sort key (if values are identical) is always the ascending filename. "
+            "For CSV, HTML, JSON, LCOV and text report."
+        ),
+        choices=["filename", "uncovered-number", "uncovered-percent"],
+        default="filename",
+    ),
+    GcovrConfigOption(
+        "sort_key",
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
+            "Deprecated, please use '--sort-key uncovered-number' instead. "
             "Sort entries by number of uncovered lines or branches (if the option "
             "--sort-branches is given). "
-            "The default order is increasing and can be changed by --sort-reverse. "
+            "The default order is increasing and can be changed by --sort-reverse."
             "The secondary sort key (if values are identical) is always the ascending filename. "
-            "For CSV, HTML, JSON and text report."
+            "For CSV, HTML, JSON, LCOV and text report."
         ),
-        action="store_true",
+        nargs=0,
+        action=UseSortUncoveredNumberAction,
     ),
     GcovrConfigOption(
-        "sort_percent",
+        "sort_key",
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
+            "Deprecated, please use '--sort-key uncovered-percent' instead."
             "Sort entries by percentage of uncovered lines or branches (if the option "
             "--sort-branches is given). "
             "The default order is increasing and can be changed by --sort-reverse."
             "The secondary sort key (if values are identical) is always the ascending filename. "
-            "For CSV, HTML, JSON and text report."
+            "For CSV, HTML, JSON, LCOV and text report."
         ),
-        action="store_true",
+        nargs=0,
+        action=UseSortUncoveredPercentAction,
     ),
     GcovrConfigOption(
         "sort_reverse",
         ["--sort-reverse"],
+        config="sort_reverse",
         group="output_options",
-        help="Sort entries in reverse order. For CSV, HTML, JSON and text report.",
+        help="Sort entries in reverse order (see --sort).",
         action="store_true",
     ),
     *formats.get_options(),

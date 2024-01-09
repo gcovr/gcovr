@@ -58,7 +58,7 @@ class TxtHandler(BaseHandler):
                 config="txt-branch",
                 group="output_options",
                 help=(
-                    "Deprecated, please use '--txt-metric branch' instead\n"
+                    "Deprecated, please use '--txt-metric branch' instead."
                     "Report the branch coverage instead of the line coverage in text report."
                 ),
                 nargs=0,

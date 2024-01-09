@@ -36,8 +36,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     with open_text_for_writing(output_file, "coverage.lcov") as fh:
         keys = sort_coverage(
             covdata,
+            sort_key=options.sort_key,
+            sort_reverse=options.sort_reverse,
             by_metric="branch" if options.sort_branches else "line",
-            options=options,
         )
         if options.lcov_comment is not None:
             # #comment_string

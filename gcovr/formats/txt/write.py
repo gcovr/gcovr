@@ -72,8 +72,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         # Data
         keys = sort_coverage(
             covdata,
+            sort_key=options.sort_key,
+            sort_reverse=options.sort_reverse,
             by_metric=options.txt_metric,
-            options=options,
         )
 
         total_stat = CoverageStat.new_empty()

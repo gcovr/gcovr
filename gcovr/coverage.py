@@ -41,11 +41,13 @@ import re
 import sys
 from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union
 
-from gcovr.options import Options
 if sys.version_info >= (3, 8):
     from typing import Literal
+
+    SortType = Literal["filename", "uncovered-number", "uncovered-percent"]
     MetricType = Literal["line", "branch"]
 else:
+    SortType = str
     MetricType = str
 
 from dataclasses import dataclass
@@ -57,20 +59,23 @@ _T = TypeVar("_T")
 
 def sort_coverage(
     covdata: CovData,
+    sort_key: SortType,
+    sort_reverse: bool,
     by_metric: MetricType,
-    options: Options,
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
+    sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
+    sort_reverse (bool): reverse order if True
     by_metric ("line", "branch"): select the metric to sort
-    options: the command line options
     filename_uses_relative_pathname (bool): for html, we break down a pathname to the
         relative path, but not for other formats.
 
     returns: the sorted keys
     """
+
     basedir = commonpath(list(covdata.keys()))
 
     def key_filename(key: str) -> str:
@@ -111,20 +116,20 @@ def sort_coverage(
         else:
             # No branches are always put at the end.
             # Hopefully no one has such many branches.
-            value = -1 if options.sort_reverse else 1e99
+            value = -1 if sort_reverse else 1e99
 
         return value
 
-    if options.sort_uncovered:
+    if sort_key == "uncovered-number":
         key_fn = key_num_uncovered
-    elif options.sort_percent:
+    elif sort_key == "uncovered-percent":
         key_fn = key_percent_uncovered
     else:
         # by default, we sort by filename alphabetically
-        return sorted(covdata, key=key_filename, reverse=options.sort_reverse)
+        return sorted(covdata, key=key_filename, reverse=sort_reverse)
 
     # First sort filename alphabetical and then by the requested key
-    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=options.sort_reverse)
+    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=sort_reverse)
 
 
 class BranchCoverage:

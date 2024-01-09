@@ -432,8 +432,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     filtered_fname = ""
     sorted_keys = sort_coverage(
         covdata,
+        sort_key=options.sort_key,
+        sort_reverse=options.sort_reverse,
         by_metric="branch" if options.sort_branches else "line",
-        options=options,
         filename_uses_relative_pathname=True,
     )
 
@@ -672,8 +673,9 @@ def write_directory_pages(
 
         sorted_files = sort_coverage(
             directory.children,
+            sort_key=options.sort_key,
+            sort_reverse=options.sort_reverse,
             by_metric="branch" if options.sort_branches else "line",
-            options=options,
             filename_uses_relative_pathname=True,
         )
 
