@@ -528,7 +528,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Deprecated, please use '--sort-key uncovered-number' instead. "
             "Sort entries by number of uncovered lines or branches (if the option "
             "--sort-branches is given). "
-            "The default order is increasing and can be changed by --sort-reverse."
+            "The default order is increasing and can be changed by --sort-reverse. "
             "The secondary sort key (if values are identical) is always the ascending filename. "
             "For CSV, HTML, JSON, LCOV and text report."
         ),
@@ -540,10 +540,10 @@ GCOVR_CONFIG_OPTIONS = [
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
-            "Deprecated, please use '--sort-key uncovered-percent' instead."
+            "Deprecated, please use '--sort-key uncovered-percent' instead. "
             "Sort entries by percentage of uncovered lines or branches (if the option "
             "--sort-branches is given). "
-            "The default order is increasing and can be changed by --sort-reverse."
+            "The default order is increasing and can be changed by --sort-reverse. "
             "The secondary sort key (if values are identical) is always the ascending filename. "
             "For CSV, HTML, JSON, LCOV and text report."
         ),
