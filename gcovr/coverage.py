@@ -38,7 +38,18 @@ from __future__ import annotations
 from collections import OrderedDict
 import os
 import re
+import sys
 from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union
+
+if sys.version_info >= (3, 8):
+    from typing import Literal
+
+    SortType = Literal["filename", "uncovered-number", "uncovered-percent"]
+    MetricType = Literal["line", "branch"]
+else:
+    SortType = str
+    MetricType = str
+
 from dataclasses import dataclass
 
 from .utils import commonpath, realpath, force_unix_separator
@@ -48,24 +59,23 @@ _T = TypeVar("_T")
 
 def sort_coverage(
     covdata: CovData,
-    by_branch: bool,
-    by_num_uncovered: bool,
-    by_percent_uncovered: bool,
-    reverse: bool,
+    sort_key: SortType,
+    sort_reverse: bool,
+    by_metric: MetricType,
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
-    by_branch (bool): select branch coverage (True) or line coverage (False)
-    by_num_uncovered, by_percent_uncovered (bool):
-        select the sort mode. By default, sort alphabetically.
-    reverse (bool): if true the sort order is from highest to lowest value.
+    sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
+    sort_reverse (bool): reverse order if True
+    by_metric ("line", "branch"): select the metric to sort
     filename_uses_relative_pathname (bool): for html, we break down a pathname to the
         relative path, but not for other formats.
 
     returns: the sorted keys
     """
+
     basedir = commonpath(list(covdata.keys()))
 
     def key_filename(key: str) -> str:
@@ -82,7 +92,7 @@ def sort_coverage(
 
     def coverage_stat(key: str) -> CoverageStat:
         cov = covdata[key]
-        if by_branch:
+        if by_metric == "branch":
             return cov.branch_coverage()
         return cov.line_coverage()
 
@@ -106,20 +116,20 @@ def sort_coverage(
         else:
             # No branches are always put at the end.
             # Hopefully no one has such many branches.
-            value = -1 if reverse else 1e99
+            value = -1 if sort_reverse else 1e99
 
         return value
 
-    if by_num_uncovered:
+    if sort_key == "uncovered-number":
         key_fn = key_num_uncovered
-    elif by_percent_uncovered:
+    elif sort_key == "uncovered-percent":
         key_fn = key_percent_uncovered
     else:
         # by default, we sort by filename alphabetically
-        return sorted(covdata, key=key_filename, reverse=reverse)
+        return sorted(covdata, key=key_filename, reverse=sort_reverse)
 
     # First sort filename alphabetical and then by the requested key
-    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=reverse)
+    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=sort_reverse)
 
 
 class BranchCoverage:

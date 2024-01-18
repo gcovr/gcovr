@@ -10,7 +10,7 @@ all:
 
 run: txt html
 
-GCOVR_TEST_OPTIONS = --sort-uncovered
+GCOVR_TEST_OPTIONS = --sort uncovered-number
 
 coverage.json:
 	./testcase

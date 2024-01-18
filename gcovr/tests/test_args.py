@@ -711,21 +711,33 @@ def test_invalid_timestamp(capsys):
     assert c.exception.code != 0
 
 
-def test_sort_uncovered_and_percent(caplog):
-    c = log_capture(caplog, ["--sort-uncovered", "--sort-percent"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith(
-        "the options --sort-uncovered and --sort-percent can not be used together."
-    )
-    assert c.exception.code == 1
-
-
 def test_sort_branch_and_not_uncovered_or_percent(caplog):
     c = log_capture(caplog, ["--sort-branches"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "the options --sort-branches without --sort-uncovered or --sort-percent doesn't make sense."
+        "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
     )
     assert c.exception.code == 1
+
+
+@pytest.mark.parametrize(
+    "option",
+    [
+        ("-b", "--txt-metric branch"),
+        ("--txt-branches", "--txt-metric branch"),
+        ("--branches", "--txt-metric branch"),
+        ("--sort-uncovered", "--sort-key uncovered-number"),
+        ("--sort-percentage", "--sort-key uncovered-percent"),
+    ],
+    ids=lambda option: option[0],
+)
+def test_deprecated_option(caplog, option):
+    c = log_capture(caplog, [option[0]])
+    message = c.record_tuples[0]
+    assert message[1] == logging.WARNING
+    assert (
+        f"Deprecated option {option[0]} used, please use {option[1]!r} instead"
+        in message[2]
+    )
+    assert c.exception.code != 1

@@ -27,10 +27,12 @@ New features and notable changes:
 - Add :option:`--jacoco` to generate JaCoCo XML format. (:issue:`823`))
 - Add function coverage to HTML report. (:issue:`828`)
 - Improve sorting of data in reports (:issue:`817`):
+
   - Sort file names alpha numerical and with casefold (see `str.casefold <https://docs.python.org/3.11/library/stdtypes.html?highlight=str%20casefold#str.casefold>`_) (``file_10.c`` comes after ``file_0.c``).
   - Always sort at the end by filename if line or branch coverage is identical for a file.
   - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
   - Add :option:`--sort-reverse` to reverse the sort order.
+
 - Add option to report covered lines in txt report. (:issue:`836`)
 - Add support for specifying files for :option:`search_paths`. (:issue:`834`)
 - Use different color for partial covered lines in HTML report. (:issue:`839`)
@@ -38,6 +40,14 @@ New features and notable changes:
 - Add support for FIPS enabled OS when used with Python 3.9. (:issue:`850`)
 - Reduce file size for detailed HTML reports by using CSS to link the function lists. (:issue:`840`)
 - Ignore all negative hits if :option:`--gcov-ignore-parse-errors` is used. (:issue:`852`)
+- Use literal options for sorting and TXT metric. (:issue:`867`)
+
+  - The :option:`-b`, :option:`--txt-branches` and :option:`--branches` are deprecated, use :option:`--txt-metric` instead.
+    The reason for this is that we have line, branch and decision coverage and handle this with flags is more complex than
+    using an enumeration.
+  - The :option:`--sort-uncovered` and :option:`--sort-percentage` are deprecated, use :option:`--sort` instead.
+    The reason for this is that only one sorting order shall be selectable and and an enumeration is easier to handle
+    than several flags.
 
 Bug fixes and small improvements:
 
