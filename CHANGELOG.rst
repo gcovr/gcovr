@@ -43,7 +43,11 @@ New features and notable changes:
 - Use literal options for sorting and TXT metric. (:issue:`867`)
 
   - The :option:`-b`, :option:`--txt-branches` and :option:`--branches` are deprecated, use :option:`--txt-metric` instead.
+    The reason for this is that we have line, branch and decision coverage and handle this with flags is more complex than
+    using an enumeration.
   - The :option:`--sort-uncovered` and :option:`--sort-percentage` are deprecated, use :option:`--sort` instead.
+    The reason for this is that only one sorting order shall be selectable and and an enumeration is easier to handle
+    than several flags.
 
 Bug fixes and small improvements:
 
