@@ -34,6 +34,7 @@ LOGGER = logging.getLogger("gcovr")
 
 class UseBranchMetricAction(GcovrDeprecatedConfigOptionAction):
     option = "--txt-metric"
+    config = "txt-metric"
     value = "branch"
 
 

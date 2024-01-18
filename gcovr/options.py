@@ -24,7 +24,6 @@ import logging
 from typing import Any, List, Optional, Union, Callable
 import os
 
-GET_TYPE = type
 LOGGER = logging.getLogger("gcovr")
 
 
@@ -197,15 +196,20 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     def __init__(self, option_strings, dest, **kwargs):
         super().__init__(option_strings, dest, **kwargs)
 
-    def __call__(self, parser, namespace, values, option_string=None):
+    def __call__(self, parser, namespace, values, option_string=None, config=None):
+        if option_string is not None:
+            LOGGER.warning(
+                f"Deprecated option {option_string} used, please use '{self.option} {self.value}' instead."
+            )
+        if config is not None:
+            LOGGER.warning(
+                f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
+            )
         # This part is used when merging configurations
         if isinstance(namespace, dict):
             namespace[self.dest] = values
         # We are called from argparse
         else:
-            LOGGER.warning(
-                f"Deprecated option {option_string} used, please use '{self.option} {self.value}' instead."
-            )
             setattr(namespace, self.dest, self.value)
 
 

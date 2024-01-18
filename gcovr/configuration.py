@@ -168,7 +168,9 @@ def parse_config_into_dict(
             raise cfg_entry.error("unknown config option") from None
 
         value = _get_value_from_config_entry(cfg_entry, option)
-        _assign_value_to_dict(cfg_dict, value, option, is_single_value=True)
+        _assign_value_to_dict(
+            cfg_dict, value, option, cfg_entry_key=cfg_entry.key, is_single_value=True
+        )
 
     return cfg_dict
 
@@ -270,6 +272,7 @@ def _assign_value_to_dict(
     value: Any,
     option: GcovrConfigOption,
     is_single_value: bool,
+    cfg_entry_key: str = None,
 ) -> None:
     if option.action == "append" or option.nargs == "*":
         append_target = namespace.setdefault(option.name, [])
@@ -284,7 +287,9 @@ def _assign_value_to_dict(
         return
 
     if issubclass(option.action, GcovrConfigOptionAction):
-        option.action(option.flags, option.name)(None, namespace, value)
+        option.action(option.flags, option.name)(
+            None, namespace, value, config=cfg_entry_key
+        )
         return
 
     assert False, f"unexpected action for {option.name}: {option.action!r}"
@@ -319,11 +324,13 @@ def merge_options_and_set_defaults(
 
 class UseSortUncoveredNumberAction(GcovrDeprecatedConfigOptionAction):
     option = "--sort-key"
+    config = "sort-key"
     value = "uncovered-number"
 
 
 class UseSortUncoveredPercentAction(GcovrDeprecatedConfigOptionAction):
     option = "--sort-key"
+    config = "sort-key"
     value = "uncovered-percent"
 
 
