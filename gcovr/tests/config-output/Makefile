@@ -5,8 +5,9 @@ run: html
 
 html:
 	./testcase
-	$(GCOVR) -d --html --html-self-contained --config config/gcovr.error.config 2>&1 | grep -F "gcovr.error.config: 1: gcov-ignore-parse-errors: must be one of"
-	$(GCOVR) -d --html --html-self-contained --config config/gcovr.config
+	$(GCOVR) --html --html-self-contained --config config/gcovr.error.config 2>&1 | grep -F "gcovr.error.config: 1: gcov-ignore-parse-errors: must be one of"
+	$(GCOVR) --html --html-self-contained --config config/gcovr.txt-branch.config 2>&1 | grep -F "(WARNING) Deprecated config key txt-branch used, please use 'txt-metric=branch' instead."
+	$(GCOVR) --html --html-self-contained --config config/gcovr.config
 
 clean:
 	rm -f testcase
