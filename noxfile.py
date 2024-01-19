@@ -23,9 +23,7 @@ import os
 import platform
 import re
 import shutil
-import shlex
 import subprocess
-import sys
 import zipfile
 import nox
 
@@ -499,13 +497,6 @@ def docker_run_compiler_clang(session: nox.Session) -> None:
 def docker_run_compiler(session: nox.Session, version: str) -> None:
     """Run the docker container for a specific GCC version."""
     set_environment(session, version, False)
-
-    def shell_join(args):
-        if sys.version_info >= (3, 8):
-            return shlex.join(args)
-        else:
-            # Code for join taken from Python 3.9
-            return " ".join(shlex.quote(arg) for arg in args)
 
     nox_options = session.posargs
     if not session.interactive:

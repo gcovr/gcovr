@@ -10,6 +10,7 @@ Known bugs:
 
 Breaking changes:
 
+- Dropped support for Python 3.7 (:issue:`869`)
 - The exit code for an error of the reader module is changed from 8 to 64 and for a writer from 7 to 128. (:issue:`773`)
 
 New features and notable changes:

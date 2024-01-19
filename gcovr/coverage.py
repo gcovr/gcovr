@@ -38,30 +38,20 @@ from __future__ import annotations
 from collections import OrderedDict
 import os
 import re
-import sys
-from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-
-    SortType = Literal["filename", "uncovered-number", "uncovered-percent"]
-    MetricType = Literal["line", "branch"]
-else:
-    SortType = str
-    MetricType = str
+from typing import Any, List, Dict, Iterable, Optional, TypeVar, Union, Literal
 
 from dataclasses import dataclass
 
-from .utils import commonpath, realpath, force_unix_separator
+from .utils import commonpath, force_unix_separator
 
 _T = TypeVar("_T")
 
 
 def sort_coverage(
     covdata: CovData,
-    sort_key: SortType,
+    sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
     sort_reverse: bool,
-    by_metric: MetricType,
+    by_metric: Literal["line", "branch"],
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
@@ -83,7 +73,9 @@ def sort_coverage(
             return int(text) if text.isdigit() else text
 
         key = (
-            force_unix_separator(os.path.relpath(realpath(key), realpath(basedir)))
+            force_unix_separator(
+                os.path.relpath(os.path.realpath(key), os.path.realpath(basedir))
+            )
             if filename_uses_relative_pathname
             else key
         ).casefold()
