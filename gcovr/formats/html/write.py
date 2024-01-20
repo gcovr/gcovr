@@ -44,7 +44,6 @@ from ...utils import (
     force_unix_separator,
     get_md5_hexdigest,
     open_text_for_writing,
-    realpath,
 )
 from ...version import __version__
 
@@ -322,7 +321,9 @@ class RootInfo:
         }
 
         display_filename = force_unix_separator(
-            os.path.relpath(realpath(cdata_fname), realpath(self.directory))
+            os.path.relpath(
+                os.path.realpath(cdata_fname), os.path.realpath(self.directory)
+            )
         )
 
         if link_report is not None:

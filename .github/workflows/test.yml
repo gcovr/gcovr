@@ -85,18 +85,18 @@ jobs:
     # across each axis. The main test matrix just represents the Python axis on
     # Linux. The OS=Windows and Compiler axis are added manually.
     #
-    # Some cases (Linux with Python 3.7, Clang-10) are handled via the Docker-tests.
+    # Some cases (Clang compiler) are handled via the Docker-tests.
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04]
         gcc: [gcc-8]
-        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.8'] # 3.7 is used in Docker
+        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy-3.8']
 
         include:
 
           # Test additional compilers with Linux.
-          # Note that gcc-5, gcc-6, gcc-8, gcc-12, gcc-13, clang-10, and clang-13 is handled via Docker.
+          # Note that gcc-5, gcc-6, gcc-8, gcc-12, gcc-13, clang-10, clang-13, clang-14 and clang-15 is handled via Docker.
           - os: ubuntu-20.04
             gcc: gcc-9
             python-version: '3.9'
@@ -107,7 +107,7 @@ jobs:
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
             gcc: gcc-8
-            python-version: '3.7'
+            python-version: '3.8'
           - os: windows-2019
             gcc: gcc-8
             python-version: '3.11'
@@ -118,7 +118,7 @@ jobs:
         run: |
           # Enable coverage for specific target configurations
           case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
-            windows-2019/gcc-8/3.7)   USE_COVERAGE=true ;;
+            windows-2019/gcc-8/3.8)   USE_COVERAGE=true ;;
             ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
             *)                        USE_COVERAGE=false ;;
           esac
@@ -164,6 +164,7 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           python3 -m pip install nox
       - name: Lint files
         run: |
@@ -217,7 +218,7 @@ jobs:
           # Enable coverage for specific target configurations
           case "${{ matrix.gcc }}" in
             gcc-5)    USE_COVERAGE=true ;;
-            gcc-13)    USE_COVERAGE=true ;;
+            gcc-13)   USE_COVERAGE=true ;;
             clang-10) USE_COVERAGE=true ;;
             clang-15) USE_COVERAGE=true ;;
             *)        USE_COVERAGE=false ;;
@@ -226,6 +227,7 @@ jobs:
         shell: bash
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           python3 -m pip install nox
       - uses: actions/checkout@v3
       - name: Build Docker

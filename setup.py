@@ -49,7 +49,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/x-rst",
     platforms=["any"],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     packages=find_packages(include=["gcovr*"], exclude=["gcovr.tests"]),
     install_requires=["jinja2", "lxml", "pygments>=2.13.0"],
     package_data={
