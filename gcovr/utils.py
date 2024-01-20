@@ -49,31 +49,6 @@ class LoopChecker(object):
         return False
 
 
-if (sys.platform == "win32") and (sys.version_info < (3, 8)):
-    LOGGER.debug("Use own implementation of 'realpath' to resolve symbolic links.")
-    # Only used for old python versions. Function can be treated as stable.
-    from nt import _getfinalpathname
-
-    DOS_DEVICE_PATH_PREFIX = "\\\\?\\"
-    DOS_DEVICE_PATH_PREFIX_UNC = DOS_DEVICE_PATH_PREFIX + "UNC\\"
-
-    def realpath(path):
-        path = os.path.realpath(path)
-        # If file exist try to resolve the symbolic links
-        if os.path.exists(path):
-            has_prefix = path.startswith(DOS_DEVICE_PATH_PREFIX)
-            path = _getfinalpathname(path)
-            if not has_prefix and path.startswith(DOS_DEVICE_PATH_PREFIX):
-                if path.startswith(DOS_DEVICE_PATH_PREFIX_UNC):
-                    path = path[len(DOS_DEVICE_PATH_PREFIX_UNC) :]
-                else:
-                    path = path[len(DOS_DEVICE_PATH_PREFIX) :]
-        return path
-
-else:
-    realpath = os.path.realpath
-
-
 @functools.lru_cache(maxsize=1)
 def is_fs_case_insensitive():
     cwd = os.getcwd()
@@ -167,9 +142,9 @@ def commonpath(files):
         return ""
 
     if len(files) == 1:
-        prefix_path = os.path.dirname(realpath(files[0]))
+        prefix_path = os.path.dirname(os.path.realpath(files[0]))
     else:
-        split_paths = [realpath(path).split(os.path.sep) for path in files]
+        split_paths = [os.path.realpath(path).split(os.path.sep) for path in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
         #   /a/b/c/d  <- min
@@ -192,7 +167,7 @@ def commonpath(files):
     # make the path relative and add a trailing slash
     if prefix_path:
         prefix_path = os.path.join(
-            os.path.relpath(prefix_path, realpath(os.getcwd())), ""
+            os.path.relpath(prefix_path, os.path.realpath(os.getcwd())), ""
         )
         LOGGER.debug(f"Common relative prefix path is {prefix_path!r}")
     return prefix_path
@@ -256,17 +231,17 @@ class Filter(object):
 
 class AbsoluteFilter(Filter):
     def match(self, path: str):
-        path = realpath(path)
+        path = os.path.realpath(path)
         return super().match(path)
 
 
 class RelativeFilter(Filter):
     def __init__(self, root: str, pattern: str):
         super().__init__(pattern)
-        self.root = realpath(root)
+        self.root = os.path.realpath(root)
 
     def match(self, path: str):
-        path = realpath(path)
+        path = os.path.realpath(path)
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.

@@ -10,7 +10,7 @@ all:
 
 run: txt html
 
-GCOVR_TEST_OPTIONS = --sort-percentage
+GCOVR_TEST_OPTIONS = --sort uncovered-percent
 
 coverage.json:
 	./testcase

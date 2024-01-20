@@ -194,7 +194,6 @@ def main(args=None):
             cfg_options = parse_config_into_dict(
                 parse_config_file(cfg_file, filename=cfg_name)
             )
-
     options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
     # Reconfigure the logging.
     if options.gcov_parallel > 1:
@@ -203,14 +202,12 @@ def main(args=None):
     if options.verbose:
         LOGGER.setLevel(logging.DEBUG)
 
-    if options.sort_uncovered and options.sort_percent:
+    if options.sort_branches and options.sort_key not in [
+        "uncovered-number",
+        "uncovered-percent",
+    ]:
         LOGGER.error(
-            "the options --sort-uncovered and --sort-percent can not be used together."
-        )
-        sys.exit(EXIT_CMDLINE_ERROR)
-    if options.sort_branches and not (options.sort_uncovered or options.sort_percent):
-        LOGGER.error(
-            "the options --sort-branches without --sort-uncovered or --sort-percent doesn't make sense."
+            "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
         )
         sys.exit(EXIT_CMDLINE_ERROR)
 
