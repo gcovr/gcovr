@@ -147,7 +147,7 @@ def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
     callFound = False
     for line in lines:
         if callReleaseChecklist in line:
-            line = re.sub(r"\d+\.\d+(?:\+master)?$", VERSION, line)
+            line = re.sub(r"\d+\.\d+(?:\+main)?$", VERSION, line)
             callFound = True
         newLines.append(line)
     if not callFound:
@@ -267,7 +267,7 @@ def main():
     for root, dirs, files in os.walk(".", topdown=True):
 
         def skip_dir(dir: str) -> bool:
-            return dir in [".git", "reference"] or dir.startswith(".nox")
+            return dir in [".git", ".venv", "reference"] or dir.startswith(".nox")
 
         dirs[:] = [dir for dir in dirs if not skip_dir(dir)]
 
@@ -287,7 +287,7 @@ def main():
             if filename == "test_gcovr.py":
                 handlers.append(updateSourceDateEpoch)
 
-            if not VERSION.endswith("+master"):
+            if not VERSION.endswith("+main"):
                 if filename == "CHANGELOG.rst":
                     handlers.append(updateChangelog)
                 if filename.endswith(".rst"):
