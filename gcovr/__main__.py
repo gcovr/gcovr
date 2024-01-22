@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -153,7 +153,7 @@ def create_argument_parser():
 
 
 COPYRIGHT = (
-    "Copyright (c) 2013-2023 the gcovr authors\n"
+    "Copyright (c) 2013-2024 the gcovr authors\n"
     "Copyright (c) 2013 Sandia Corporation.\n"
     "Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,\n"
     "the U.S. Government retains certain rights in this software.\n"

@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 6.0+master, a parsing and reporting tool for gcov.
+# This file is part of gcovr 6.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2023 the gcovr authors
+# Copyright (c) 2013-2024 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -38,7 +38,7 @@ python_interpreter = force_unix_separator(
     sys.executable
 )  # use forward slash on windows as well
 env = os.environ
-env["SOURCE_DATE_EPOCH"] = "1678392876"
+env["SOURCE_DATE_EPOCH"] = "1705960055"
 env["GCOVR"] = python_interpreter + " -m gcovr"
 for var in [
     "CPATH",
