@@ -8,16 +8,7 @@ ARG CC
 ARG CXX
 ARG NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
 
-# Install dependencies.
-#
-# Installing pip is a bit more complicated though:
-# * `apt install python3.7-pip` -> does not exist
-# * `python3.7 -m ensurepip` -> standard library module removed by Debian
-# * `apt install python3-pip` -> pulls in >100MB of unneeded stuff
-# * `get-pip.py` script -> depends on distutils standard library module, removed by Debian
-#
-# Solution: install python3-setuptools (includes Python 3.6),
-# then use the get-pip script from Python 3.7.
+# Install base requirements
 RUN \
     export DEBIAN_FRONTEND=noninteractive&& apt-get update \
     && apt-get install -y sudo \
@@ -25,31 +16,48 @@ RUN \
                           cmake \
                           $CC \
                           $CXX \
-                          python3-setuptools \
-                          $(if [ "$DOCKER_OS" != "ubuntu:23.04"  ]; then echo "python3-dev"; fi) \
-                          $(if [ "$DOCKER_OS" = "ubuntu:23.04"  ]; then echo "python3-full python3-pip python3-nox"; fi) \
-                          $(if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then echo "python3.7-venv"; else echo "python3-venv"; fi)  \
-                          $(if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" ]; then echo "python3.7"; fi) \
                           ninja-build \
                           curl \
                           libxml2-utils \
-                          git \
-    && apt-get clean \
+                          git
+
+# Install Python 3.8 as the default "python3" executable on older linux distribution
+RUN \
+    export DEBIAN_FRONTEND=noninteractive&& apt install -y python3-setuptools ;\
+    if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" ]; then \
+      export DEBIAN_FRONTEND=noninteractive&& apt install -y software-properties-common || exit 1; \
+      add-apt-repository ppa:deadsnakes/ppa || exit 1 ; \
+      apt-get update || exit 1 ; \
+      export DEBIAN_FRONTEND=noninteractive&& apt install -y python3.8-dev python3.8-venv python3.8 || exit 1 ; \
+      update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 10 || exit 1 ; \
+    else \
+      export DEBIAN_FRONTEND=noninteractive&& apt-get install -y \
+        python3-venv \
+        $(if [ "$DOCKER_OS" != "ubuntu:23.04"  ]; then echo "python3-dev"; fi) \
+        $(if [ "$DOCKER_OS" = "ubuntu:23.04"  ]; then echo "python3-full python3-pip python3-nox"; fi) || exit 1 ; \
+    fi ; \
+    python3 --version
+
+RUN \
+    export DEBIAN_FRONTEND=noninteractive&& apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python 3.7 as the default "python3" executable on older linux distribution
-RUN if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then \
-       update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 10; \
-    fi; \
-    python3 --version
+# Install dependencies.
+#
+# Installing pip is a bit more complicated though:
+# * `apt install python3-pip` -> pulls in >100MB of unneeded stuff
+# * `get-pip.py` script -> depends on distutils standard library module, removed by Debian
+#
+# Solution: install python3-setuptools (includes Python 3.6),
+# then use the get-pip script from Python 3.7.
 
 # Install pip manually
 RUN if [ "$DOCKER_OS" != "ubuntu:23.04" ]; then \
-       curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; \
-       python3 get-pip.py ; \
-       rm get-pip.py ; \
-       python3 -m pip install --upgrade pip ; \
-    fi;
+      curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py || exit 1 ; \
+      python3 get-pip.py || exit 1 ; \
+      rm get-pip.py || exit 1 ; \
+      python3 -m pip install --upgrade pip || exit 1 ; \
+    fi ;
 
 ENV \
   CC=$CC \

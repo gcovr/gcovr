@@ -110,7 +110,9 @@ RE_COVERALLS_GIT_PRETTY = re.compile(
 )
 
 RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')
-RE_HTML_HEADER_DATE = re.compile(r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d<(/td>)")
+RE_HTML_HEADER_DATE = re.compile(
+    r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?:\+\d\d:\d\d)?<(/td>)"
+)
 
 
 def scrub_txt(contents):
@@ -502,7 +504,7 @@ def test_build(
         encoding = re.match("^html-encoding-(.*)$", name).group(1)
 
     os.chdir(os.path.join(basedir, name))
-    assert run(["make", format])
+    assert run(["make", "-j", "4", "--output-sync=target", format])
 
     if generate_reference:  # pragma: no cover
         generate_reference_data(output_pattern)
