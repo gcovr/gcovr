@@ -141,8 +141,8 @@ Example HTML details:
 .. |codecov-badge| image:: https://codecov.io/gh/gcovr/gcovr/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/gcovr/gcovr/branch/master
    :alt: Codecov status
-.. |Readthedocs-badge| image:: https://readthedocs.org/projects/gcovr/badge/?version=stable
-   :target: https://gcovr.com/en/stable/?badge=stable
+.. |Readthedocs-badge| image:: https://readthedocs.org/projects/gcovr/badge/?version=main
+   :target: https://gcovr.com/en/main/?badge=main
    :alt: Documentation Status
 .. |gitter-badge| image:: https://badges.gitter.im/gcovr/gcovr.svg
    :target: https://gitter.im/gcovr/gcovr
