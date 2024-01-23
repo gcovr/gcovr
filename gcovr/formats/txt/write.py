@@ -60,7 +60,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         if options.txt_metric == "branch":
             title_total = "Branches"
             title_covered = "Taken"
-        elif options.txt_metric == "decision:
+        elif options.txt_metric == "decision":
             title_total = "Decisions"
             title_covered = "Taken"
         else:
