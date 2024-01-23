@@ -132,14 +132,14 @@ Example HTML details:
 .. _documentation:  website_
 .. _repo:       https://github.com/gcovr/gcovr/
 .. _bugtracker: https://github.com/gcovr/gcovr/issues
-.. |GitHub-Actions-badge| image:: https://github.com/gcovr/gcovr/workflows/Test/badge.svg?branch=master
-   :target: https://github.com/gcovr/gcovr/actions?query=workflow%3ATest+branch%3Amaster+event%3Apush
+.. |GitHub-Actions-badge| image:: https://github.com/gcovr/gcovr/workflows/Test/badge.svg?branch=main
+   :target: https://github.com/gcovr/gcovr/actions?query=workflow%3ATest+branch%3Amain+event%3Apush
    :alt: GitHub Actions build status
 .. |pypi-badge| image:: https://img.shields.io/pypi/v/gcovr.svg
    :target: https://pypi.python.org/pypi/gcovr
    :alt: install from PyPI
-.. |codecov-badge| image:: https://codecov.io/gh/gcovr/gcovr/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/gcovr/gcovr/branch/master
+.. |codecov-badge| image:: https://codecov.io/gh/gcovr/gcovr/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/gcovr/gcovr/branch/main
    :alt: Codecov status
 .. |Readthedocs-badge| image:: https://readthedocs.org/projects/gcovr/badge/?version=main
    :target: https://gcovr.com/en/main/?badge=main
@@ -222,14 +222,14 @@ Contributing
 
 If you want to report a bug or contribute to gcovr development,
 please read our contributing guidelines first:
-`<https://github.com/gcovr/gcovr/blob/master/CONTRIBUTING.rst>`_
+`<https://github.com/gcovr/gcovr/blob/main/CONTRIBUTING.rst>`_
 
 License
 -------
 
 .. begin license
 
-Copyright (c) 2013-2023 the gcovr authors
+Copyright (c) 2013-2024 the gcovr authors
 Copyright (c) 2013 Sandia Corporation.
 Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 the U.S. Government retains certain rights in this software.

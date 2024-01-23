@@ -72,7 +72,7 @@ fi
 grep -qF "__version__ = \"$target_version\"" gcovr/version.py \
     || error "gcovr/version.py: Please update with this version"
 
-grep -qE "^$(echo "$target_version" | sed -e "s/+master//") \\(.+\\)\$" CHANGELOG.rst \
+grep -qE "^$(echo "$target_version" | sed -e "s/+main//") \\(.+\\)\$" CHANGELOG.rst \
     || error "CHANGELOG.rst: Please update with this version"
 
 grep -qF "version=\"gcovr $target_version\"" doc/examples/example_cobertura.xml \

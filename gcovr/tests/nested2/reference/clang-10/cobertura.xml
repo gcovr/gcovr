@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.61538" branch-rate="0.4" lines-covered="24" lines-valid="39" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="" version="gcovr 6.0+master">
+<coverage line-rate="0.61538" branch-rate="0.4" lines-covered="24" lines-valid="39" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="" version="gcovr 6.0+main">
   <sources>
     <source>subdir</source>
   </sources>
