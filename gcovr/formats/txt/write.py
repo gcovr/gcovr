@@ -47,7 +47,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce the classic gcovr text report"""
 
     if options.txt_use_branch_coverage and options.show_decision:
-        raise RuntimeError("Branch coverage and decision coverage are mutually exclusive")
+        raise RuntimeError(
+            "Branch coverage and decision coverage are mutually exclusive"
+        )
 
     with open_text_for_writing(output_file, "coverage.txt") as fh:
         # Header
@@ -222,17 +224,22 @@ def _covered_branches_str(filecov: FileCoverage) -> str:
     # Don't do any aggregation on branch results.
     return ",".join(str(lineno) for lineno in covered_lines)
 
+
 def _covered_decisions_str(filecov: FileCoverage) -> str:
     covered_decisions = sorted(
-        line.lineno for line in filecov.lines.values() if not line.has_uncovered_decision
+        line.lineno
+        for line in filecov.lines.values()
+        if not line.has_uncovered_decision
     )
     return ",".join(str(lineno) for lineno in covered_decisions)
+
 
 def _uncovered_decisions_str(filecov: FileCoverage) -> str:
     uncovered_decisions = sorted(
         line.lineno for line in filecov.lines.values() if line.has_uncovered_decision
     )
     return ",".join(str(lineno) for lineno in uncovered_decisions)
+
 
 def _uncovered_branches_str(filecov: FileCoverage) -> str:
     uncovered_lines = sorted(
@@ -241,6 +248,7 @@ def _uncovered_branches_str(filecov: FileCoverage) -> str:
 
     # Don't do any aggregation on branch results.
     return ",".join(str(lineno) for lineno in uncovered_lines)
+
 
 def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[Tuple[int, int]]:
     first = last = None
