@@ -46,11 +46,6 @@ LINE_WIDTH = 78
 def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce the classic gcovr text report"""
 
-    if options.txt_use_branch_coverage and options.show_decision:
-        raise RuntimeError(
-            "Branch coverage and decision coverage are mutually exclusive"
-        )
-
     with open_text_for_writing(output_file, "coverage.txt") as fh:
         # Header
         fh.write("-" * LINE_WIDTH + "\n")
@@ -133,7 +128,7 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
         if options.txt_metric == "branch":
             stat = coverage.branch_coverage()
             covered_lines = _covered_branches_str(coverage)
-        elif options.show_decision:
+        elif options.txt_metric == "decision":
             stat = coverage.decision_coverage()
             covered_lines = _covered_decisions_str(coverage)
         else:
@@ -145,7 +140,7 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
         if options.txt_metric == "branch":
             stat = coverage.branch_coverage()
             uncovered_lines = _uncovered_branches_str(coverage)
-        elif options.show_decision:
+        elif options.txt_metric == "decision":
             stat = coverage.decision_coverage()
             uncovered_lines = _uncovered_decisions_str(coverage)
         else:

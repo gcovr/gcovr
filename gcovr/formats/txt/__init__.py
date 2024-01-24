@@ -43,6 +43,7 @@ class TxtHandler(BaseHandler):
         return [
             # Global options needed for report
             "exclude_calls",
+            "show_decision",  # Only for summary report
             # Local options
             GcovrConfigOption(
                 "txt_metric",

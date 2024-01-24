@@ -32,6 +32,8 @@ from ...utils import FilterOption
 class GcovHandler(BaseHandler):
     def get_options() -> List[GcovrConfigOption]:
         return [
+            # Global options needed for report
+            "show_decision",
             # Global options used for merging end exclusion processing.
             "exclude_calls",
             "exclude_noncode_lines",

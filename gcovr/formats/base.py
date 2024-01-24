@@ -33,7 +33,6 @@ class BaseHandler:
             "root",
             "root_dir",
             "root_filter",
-            "show_decision",
             "sort_branches",
             "sort_key",
             "sort_reverse",
