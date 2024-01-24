@@ -20,7 +20,7 @@ New features and notable changes:
 - If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
 - Fix Dockerfile.qa to avoid uid conflicts. (:issue:`801`)
-- Pygments required >= 2.13.0. (:issue:`799`)
+- Pygments required ≥ 2.13.0. (:issue:`799`)
 - Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
 - Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
 - Add function coverage to data model. (:issue:`822`)
@@ -49,6 +49,8 @@ New features and notable changes:
   - The :option:`--sort-uncovered` and :option:`--sort-percentage` are deprecated, use :option:`--sort` instead.
     The reason for this is that only one sorting order shall be selectable and and an enumeration is easier to handle
     than several flags.
+
+- The development branch is renamed from ``master`` to ``main``. (:issue:`829`, :issue:`873`)
 
 Bug fixes and small improvements:
 
