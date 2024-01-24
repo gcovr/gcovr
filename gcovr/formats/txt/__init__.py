@@ -43,6 +43,7 @@ class TxtHandler(BaseHandler):
         return [
             # Global options needed for report
             "exclude_calls",
+            "show_decision",  # Only for summary report
             # Local options
             GcovrConfigOption(
                 "txt_metric",
@@ -50,7 +51,7 @@ class TxtHandler(BaseHandler):
                 config="txt-metric",
                 group="output_options",
                 help=("The metric type to report."),
-                choices=["line", "branch"],
+                choices=["line", "branch", "decision"],
                 default="line",
             ),
             GcovrConfigOption(

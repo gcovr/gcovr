@@ -40,6 +40,7 @@ class HtmlHandler(BaseHandler):
         return [
             # Global options needed for report
             "exclude_calls",
+            "show_decision",
             # Local options
             GcovrConfigOption(
                 "html",

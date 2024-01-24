@@ -54,8 +54,16 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         fh.write("Directory: " + force_unix_separator(options.root) + "\n")
 
         fh.write("-" * LINE_WIDTH + "\n")
-        title_total = "Branches" if options.txt_metric == "branch" else "Lines"
-        title_covered = "Taken" if options.txt_metric == "branch" else "Exec"
+        if options.txt_metric == "branch":
+            title_total = "Branches"
+            title_covered = "Taken"
+        elif options.txt_metric == "decision":
+            title_total = "Decisions"
+            title_covered = "Taken"
+        else:
+            title_total = "Lines"
+            title_covered = "Exec"
+
         title_percentage = "Cover"
         title_un_covered = "Covered" if options.txt_report_covered else "Missing"
         fh.write(
@@ -120,6 +128,9 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
         if options.txt_metric == "branch":
             stat = coverage.branch_coverage()
             covered_lines = _covered_branches_str(coverage)
+        elif options.txt_metric == "decision":
+            stat = coverage.decision_coverage()
+            covered_lines = _covered_decisions_str(coverage)
         else:
             stat = coverage.line_coverage()
             covered_lines = _covered_lines_str(coverage)
@@ -129,6 +140,9 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
         if options.txt_metric == "branch":
             stat = coverage.branch_coverage()
             uncovered_lines = _uncovered_branches_str(coverage)
+        elif options.txt_metric == "decision":
+            stat = coverage.decision_coverage()
+            uncovered_lines = _uncovered_decisions_str(coverage)
         else:
             stat = coverage.line_coverage()
             uncovered_lines = _uncovered_lines_str(coverage)
@@ -202,8 +216,24 @@ def _covered_branches_str(filecov: FileCoverage) -> str:
         line.lineno for line in filecov.lines.values() if not line.has_uncovered_branch
     )
 
-    # Dn't do any aggregation on branch results.
+    # Don't do any aggregation on branch results.
     return ",".join(str(lineno) for lineno in covered_lines)
+
+
+def _covered_decisions_str(filecov: FileCoverage) -> str:
+    covered_decisions = sorted(
+        line.lineno
+        for line in filecov.lines.values()
+        if not line.has_uncovered_decision
+    )
+    return ",".join(str(lineno) for lineno in covered_decisions)
+
+
+def _uncovered_decisions_str(filecov: FileCoverage) -> str:
+    uncovered_decisions = sorted(
+        line.lineno for line in filecov.lines.values() if line.has_uncovered_decision
+    )
+    return ",".join(str(lineno) for lineno in uncovered_decisions)
 
 
 def _uncovered_branches_str(filecov: FileCoverage) -> str:
@@ -211,7 +241,7 @@ def _uncovered_branches_str(filecov: FileCoverage) -> str:
         line.lineno for line in filecov.lines.values() if line.has_uncovered_branch
     )
 
-    # Dn't do any aggregation on branch results.
+    # Don't do any aggregation on branch results.
     return ",".join(str(lineno) for lineno in uncovered_lines)
 
 

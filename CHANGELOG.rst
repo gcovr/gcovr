@@ -51,6 +51,7 @@ New features and notable changes:
     than several flags.
 
 - The development branch is renamed from ``master`` to ``main``. (:issue:`829`, :issue:`873`)
+- Add support for decision coverage metric in text report (:issue:`864`)
 
 Bug fixes and small improvements:
 

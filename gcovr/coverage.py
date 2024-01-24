@@ -51,7 +51,7 @@ def sort_coverage(
     covdata: CovData,
     sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
     sort_reverse: bool,
-    by_metric: Literal["line", "branch"],
+    by_metric: Literal["line", "branch", "decision"],
     filename_uses_relative_pathname: bool = False,
 ) -> List[str]:
     """Sort a coverage dict.
@@ -59,7 +59,7 @@ def sort_coverage(
     covdata (dict): the coverage dictionary
     sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
     sort_reverse (bool): reverse order if True
-    by_metric ("line", "branch"): select the metric to sort
+    by_metric ("line", "branch", "decision"): select the metric to sort
     filename_uses_relative_pathname (bool): for html, we break down a pathname to the
         relative path, but not for other formats.
 
@@ -86,6 +86,8 @@ def sort_coverage(
         cov = covdata[key]
         if by_metric == "branch":
             return cov.branch_coverage()
+        elif by_metric == "decision":
+            return cov.decision_coverage()
         return cov.line_coverage()
 
     def key_num_uncovered(key: str) -> int:
@@ -338,6 +340,20 @@ class LineCoverage:
     @property
     def has_uncovered_branch(self) -> bool:
         return not all(branch.is_covered for branch in self.branches.values())
+
+    @property
+    def has_uncovered_decision(self) -> bool:
+        if self.decision is None:
+            return False
+
+        if isinstance(self.decision, DecisionCoverageUncheckable):
+            return False
+
+        if isinstance(self.decision, DecisionCoverageConditional):
+            return self.decision.count_true == 0 or self.decision.count_false == 0
+
+        if isinstance(self.decision, DecisionCoverageSwitch):
+            return self.decision.count == 0
 
     def branch_coverage(self) -> CoverageStat:
         total = len(self.branches)
