@@ -241,7 +241,7 @@ gcovr/excluded: boolean
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
-.. versionadded:: NEXT
+.. versionadded:: 7.0
    New ``returned_count`` and ``branch_percent`` field.
 
 .. versionadded:: 6.0

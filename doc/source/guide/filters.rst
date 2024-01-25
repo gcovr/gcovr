@@ -106,7 +106,7 @@ and other filters can only be applied *after* this step.
 In some cases, parallel execution with the :option:`-j<gcovr -j>` option
 might be helpful to speed up processing.
 
-.. versionadded:: NEXT
+.. versionadded:: 7.0
 
    :option:`search_paths <gcovr search_paths>` also accept specific files
 

@@ -95,7 +95,7 @@ templates you wish to customize.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
 
-.. versionadded:: NEXT
+.. versionadded:: 7.0
    Added :option:`--html-template-dir<gcovr --html-template-dir>`
 
 .. versionadded:: 6.0
