@@ -39,8 +39,8 @@ New features and notable changes:
 - Use different color for partial covered lines in HTML report. (:issue:`839`)
 - Add support to generate LCOV info files. (:issue:`830`)
 - Add support for FIPS enabled OS when used with Python 3.9. (:issue:`850`)
-- Reduce file size for detailed HTML reports by using CSS to link the function lists. (:issue:`840`)
 - Ignore all negative hits if :option:`--gcov-ignore-parse-errors` is used. (:issue:`852`)
+- Reduce file size for detailed HTML reports by merging columns the function lists. (:issue:`840`)
 - Use literal options for sorting and TXT metric. (:issue:`867`)
 
   - The :option:`-b`, :option:`--txt-branches` and :option:`--branches` are deprecated, use :option:`--txt-metric` instead.
@@ -49,6 +49,7 @@ New features and notable changes:
   - The :option:`--sort-uncovered` and :option:`--sort-percentage` are deprecated, use :option:`--sort` instead.
     The reason for this is that only one sorting order shall be selectable and and an enumeration is easier to handle
     than several flags.
+- Split list of functions into tables with maximum 10000 rows to fix rendering issues. (:issue:`858`)
 
 - The development branch is renamed from ``master`` to ``main``. (:issue:`829`, :issue:`873`)
 - Add support for decision coverage metric in text report (:issue:`864`)

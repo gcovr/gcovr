@@ -1,11 +1,12 @@
 {# -*- engine: jinja -*- #}
+{% for function_batch in all_functions | batch(10000) %}
 <table class="m-3 text-mono text-small listOfFunctions" style="width:100%;">
-   <tr class="text-left">
-      <th>Function (File:Line)</th>
-      <th>Call count</th>
-      <th>Block coverage</th>
+  <tr class="text-left">
+    <th>Function (File:Line)</th>
+    <th>Call count</th>
+    <th>Block coverage</th>
   </tr>
-{% for entry in all_functions %}
+  {% for entry in function_batch %}
   <tr>
     {#- #}<td><a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["name"] }} ({{ entry["filename"] }}:{{ entry["line"] }})</a></td>
     {#- #}<td>
@@ -19,5 +20,6 @@
     {#- #}<td>{{ entry["blocks"] }}%</td>
     {#- -#}
   </tr>
-{% endfor %}
+  {% endfor %}
 </table>
+{% endfor %}
