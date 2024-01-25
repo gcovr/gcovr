@@ -25,6 +25,6 @@ of times that each line was covered.  Consequently, XML output can be
 used to support performance optimization in the same manner that
 ``gcov`` does.
 
-.. versionadded:: NEXT
+.. versionadded:: 7.0
 
    The :option:`--jacoco` and :option:`--jacoco-pretty`.
