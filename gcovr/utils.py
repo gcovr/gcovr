@@ -24,6 +24,7 @@ from typing import Callable, List, Type
 import logging
 import os
 import functools
+import platform
 import re
 import sys
 from contextlib import contextmanager
@@ -194,7 +195,7 @@ class FilterOption:
             LOGGER.warning(f"did you mean: {suggestion}")
 
         isabs = self.regex.startswith("/")
-        if not isabs and (sys.platform == "win32"):
+        if not isabs and (platform.system() == "Windows"):
             # Starts with a drive letter
             isabs = re.match(r"^[A-Za-z]:/", self.regex)
 
@@ -245,7 +246,7 @@ class RelativeFilter(Filter):
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
-        if sys.platform == "win32":
+        if platform.system() == "Windows":
             path_drive, _ = os.path.splitdrive(path)
             root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:

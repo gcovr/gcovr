@@ -379,6 +379,16 @@ def check_bundled_app(session: nox.Session) -> None:
             )
 
 
+@nox.session()
+def html2png(session: nox.Session):
+    """Create PNGs from HTML for documentation"""
+    if not session.posargs:
+        docker_build_compiler(session, "gcc-11")
+        session.run("python", "-m", "nox", "-s", "docker_run_compiler(gcc-11)", "--", "-s", "html2png", "--", "--help")
+        session.notify("docker_run_compiler(gcc-11)", ["-s", "html2png", "--", "--help"])
+    else:
+        session.run("wkhtmltoimage", *session.posargs)
+
 def docker_container_os(session: nox.Session) -> str:
     if session.env["CC"] in ["gcc-5", "gcc-6"]:
         return "ubuntu:18.04"

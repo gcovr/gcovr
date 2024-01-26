@@ -47,7 +47,7 @@ def is_compiler(actual: str, *expected: str) -> bool:
 
 
 def find_test_cases():
-    if sys.platform.startswith("win"):
+    if platform.system() == "Windows":
         return
     for script in glob.glob(datadir + "/*.sh"):
         basename = os.path.basename(script)
