@@ -2,7 +2,7 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.0, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
@@ -38,7 +38,7 @@ python_interpreter = force_unix_separator(
     sys.executable
 )  # use forward slash on windows as well
 env = os.environ
-env["SOURCE_DATE_EPOCH"] = "1706214941"
+env["SOURCE_DATE_EPOCH"] = "1706291558"
 env["GCOVR"] = python_interpreter + " -m gcovr"
 for var in [
     "CPATH",
@@ -99,7 +99,8 @@ RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
 
 RE_LCOV_PATH = re.compile(r"(SF:).+?/(gcovr/tests/.+?)$", flags=re.MULTILINE)
 
-RE_XML_ATTRS = re.compile(r'(timestamp)="[^"]*"')
+RE_XML_ATTR_TIMESTAMP = re.compile(r'timestamp="[^"]*"')
+RE_XML_ATTR_VERSION = re.compile(r'version="[^"]*"')
 
 RE_COVERALLS_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at)": "[^"]*"')
 RE_COVERALLS_GIT = re.compile(
@@ -109,9 +110,12 @@ RE_COVERALLS_GIT_PRETTY = re.compile(
     r'\s+"git": \{\s+"branch": "branch",\s+"head": \{(?:\s+"[^"]+":.+\n)+\s+\},\s+"remotes": \[[^\]]+\]\s+\},'
 )
 
-RE_HTML_ATTRS = re.compile('((timestamp)|(version))="[^"]*"')
+RE_HTML_ATTR_VERSION = RE_XML_ATTR_VERSION
 RE_HTML_HEADER_DATE = re.compile(
-    r"(<td)>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?:\+\d\d:\d\d)?<(/td>)"
+    r"<(td|div)>(Date: )?\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?:\+\d\d:\d\d)?</\1>"
+)
+RE_HTML_FOOTER_VERSION = re.compile(
+    r'(<a href="http://gcovr.com/en/)[^"]+(">GCOVR \(Version )[^\)]+(\)</a>)'
 )
 
 
@@ -130,13 +134,15 @@ def scrub_csv(contents):
 
 def scrub_xml(contents):
     contents = RE_DECIMAL.sub(lambda m: str(round(float(m.group(1)), 5)), contents)
-    contents = RE_XML_ATTRS.sub(r'\1=""', contents)
+    contents = RE_XML_ATTR_TIMESTAMP.sub(r'timestamp="0"', contents)
+    contents = RE_XML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
     return contents
 
 
 def scrub_html(contents):
-    contents = RE_HTML_ATTRS.sub('\\1=""', contents)
-    contents = RE_HTML_HEADER_DATE.sub("\\1>0000-00-00 00:00:00<\\2", contents)
+    contents = RE_HTML_HEADER_DATE.sub(r"<\1>\20000-00-00 00:00:00</\1>", contents)
+    contents = RE_HTML_FOOTER_VERSION.sub(r"\1main\2main\3", contents)
+    contents = RE_HTML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
     contents = force_unix_separator(contents)
     return contents
 
