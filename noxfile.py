@@ -19,6 +19,7 @@
 
 import glob
 import io
+import json
 import os
 import platform
 import re
@@ -26,6 +27,9 @@ import shutil
 import subprocess
 import zipfile
 import nox
+
+import socket
+from contextlib import closing
 
 
 ALL_COMPILER_VERSIONS = [
@@ -380,14 +384,61 @@ def check_bundled_app(session: nox.Session) -> None:
 
 
 @nox.session()
-def html2png(session: nox.Session):
-    """Create PNGs from HTML for documentation"""
-    if not session.posargs:
-        docker_build_compiler(session, "gcc-11")
-        session.run("python", "-m", "nox", "-s", "docker_run_compiler(gcc-11)", "--", "-s", "html2png", "--", "--help")
-        session.notify("docker_run_compiler(gcc-11)", ["-s", "html2png", "--", "--help"])
-    else:
-        session.run("wkhtmltoimage", *session.posargs)
+def html2jpeg(session: nox.Session):
+    """Create JPEGs from HTML for documentation"""
+
+    port = 12305
+
+    def exporter_running():
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+            if sock.connect_ex(("localhost", port)) == 0:
+                return True
+            return False
+
+    if not exporter_running():
+        session.error(
+            f"HTML exporter not running. Please run 'docker run  -p {port}:2305 bedrockio/export-html'"
+        )
+
+    for html, jpeg, size in [
+        (
+            "gcovr/tests/html-nested-sort-casefold/reference/gcc-5/coverage_nested.html",
+            "doc/images/screenshot-html.jpeg",
+            [800, 330],
+        )
+    ]:
+
+        def read_file(file):
+            with open(file, encoding="utf-8") as fh_in:
+                return " ".join(fh_in.readlines()).replace("\n", "")
+
+        content = re.sub(
+            r'<link rel="stylesheet" href="([^"]+)"/>',
+            lambda match: f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>',
+            read_file(html),
+        )
+        data = {
+            "html": content,
+            "export": {
+                "type": "jpeg",
+                "fullPage": "false",
+                "clip": {"x": 1, "y": 1, "width": size[0], "height": size[1]},
+            },
+        }
+
+        session.run(
+            "curl",
+            "-d",
+            json.dumps(data),
+            "-H",
+            "Content-Type: application/json",
+            "--output",
+            jpeg,
+            "-XPOST",
+            f"http://localhost:{port}/1/screenshot",
+            external=True,
+        )
+
 
 def docker_container_os(session: nox.Session) -> str:
     if session.env["CC"] in ["gcc-5", "gcc-6"]:
