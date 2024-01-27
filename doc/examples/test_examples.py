@@ -75,22 +75,20 @@ def test_example(example):
     cmd = example.script
     baseline_file = example.baseline
     scrub = SCRUBBERS[example.format]
-
-    startdir = os.getcwd()
-    os.chdir(datadir)
-    output = subprocess.check_output(cmd).decode().replace("\r\n", "\n")
-    scrubbed_output = scrub(output)
+    # Read old file
     with open(baseline_file) as f:
         baseline = scrub(f.read())
 
-    try:
-        assert_equals(
-            baseline_file, baseline, "<STDOUT>", scrubbed_output, encoding="utf8"
-        )
-    except AssertionError:  # pragma: no cover
-        with open(baseline_file, "w", encoding="utf8") as out:
-            out.write(output)
-        raise
+    startdir = os.getcwd()
+    os.chdir(datadir)
+    subprocess.run(cmd)
+    with open(baseline_file) as f:
+        current = scrub(f.read())
+    current = scrub(current)
+
+    assert_equals(
+        baseline_file, baseline, "<STDOUT>", current, encoding="utf8"
+    )
     os.chdir(startdir)
 
 
