@@ -22,7 +22,6 @@ import os
 import platform
 import pytest
 import subprocess
-import sys
 
 from gcovr.tests.test_gcovr import SCRUBBERS, assert_equals
 
