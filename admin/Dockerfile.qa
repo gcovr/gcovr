@@ -33,8 +33,7 @@ RUN \
     else \
       export DEBIAN_FRONTEND=noninteractive&& apt-get install -y \
         python3-venv \
-        $(if [ "$DOCKER_OS" != "ubuntu:23.04"  ]; then echo "python3-dev"; fi) \
-        $(if [ "$DOCKER_OS" = "ubuntu:23.04"  ]; then echo "python3-full python3-pip python3-nox"; fi) || exit 1 ; \
+        $(if [ "$DOCKER_OS" = "ubuntu:23.04"  ]; then echo "python3-full python3-pip python3-nox python3-requests"; else echo "python3-dev"; fi) || exit 1 ; \
     fi ; \
     python3 --version
 
@@ -81,7 +80,7 @@ RUN git clone -q \
 # Install nox
 RUN \
     if [ "$DOCKER_OS" != "ubuntu:23.04"  ]; then \
-      python3 -m pip install --no-cache-dir nox ; \
+      python3 -m pip install --no-cache-dir nox requests ; \
     fi;
 
 # Create new user "docker" and set password to "docker"

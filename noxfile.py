@@ -19,17 +19,18 @@
 
 import glob
 import io
-import json
 import os
 import platform
 import re
+import socket
+from time import sleep
+import requests
 import shutil
 import subprocess
 import zipfile
 import nox
 
-import socket
-from contextlib import closing
+from contextlib import ExitStack
 
 
 ALL_COMPILER_VERSIONS = [
@@ -386,92 +387,100 @@ def check_bundled_app(session: nox.Session) -> None:
 @nox.session()
 def html2jpeg(session: nox.Session):
     """Create JPEGs from HTML for documentation"""
+    session.install("requests")
 
-    port = 12305
+    # Create a socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Bind the socket to localhost and let the OS assign a free port number
+    sock.bind(("localhost", 0))
+    # Get the assigned port number
+    port = sock.getsockname()[1]
+    # Close the socket
+    sock.close()
 
-    def exporter_running():
-        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-            if sock.connect_ex(("localhost", port)) == 0:
-                return True
-            return False
+    with ExitStack() as defer:
+        container_id = subprocess.check_output(
+            [
+                "docker",
+                "run",
+                "--rm",
+                "--detach",
+                "-p",
+                f"{port}:2305",
+                "bedrockio/export-html",
+            ]
+        ).strip()
+        defer.callback(subprocess.run, ["docker", "stop", container_id])
+        url = f"http://localhost:{port}/1/screenshot"
+        sleep(3.0)
 
-    if not exporter_running():
-        session.error(
-            f"HTML exporter not running. Please run 'docker run  -p {port}:2305 bedrockio/export-html'"
-        )
+        def screenshot(html, jpeg, size):
+            def read_file(file):
+                with open(file, encoding="utf-8") as fh_in:
+                    return " ".join(fh_in.readlines()).replace("\n", "")
 
-    for html, jpeg, size in [
-        (
+            content = re.sub(
+                r'<link rel="stylesheet" href="([^"]+)"/>',
+                lambda match: f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>',
+                read_file(html),
+            )
+            payload = {
+                "html": content,
+                "export": {
+                    "type": "jpeg",
+                    "fullPage": "false",
+                    "clip": {"x": 1, "y": 1, "width": size[0], "height": size[1]},
+                },
+            }
+            session.log(f"Generating {jpeg} from {html}...")
+            response = requests.post(
+                url,
+                headers={"Content-Type": "application/json"},
+                json=payload,
+            )
+            response.raise_for_status()
+            with open(jpeg, mode="bw") as fh_out:
+                fh_out.write(response.content)
+
+        screenshot(
             "doc/examples/example_html.html",
             "doc/images/screenshot-html.jpeg",
             [800, 290],
-        ),
-        (
+        )
+        screenshot(
             "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html",
             "doc/images/screenshot-html-details.example.cpp.jpeg",
             [800, 600],
-        ),
-        (
+        )
+        screenshot(
             "gcovr/tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-green-src.jpeg",
             [800, 290],
-        ),
-        (
+        )
+        screenshot(
             "gcovr/tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-blue-src.jpeg",
             [800, 290],
-        ),
-        (
+        )
+        screenshot(
             "gcovr/tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
             [800, 500],
-        ),
-        (
+        )
+        screenshot(
             "gcovr/tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-blue-src.jpeg",
             [800, 500],
-        ),
-        (
+        )
+        screenshot(
             "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-green-src.jpeg",
             [800, 500],
-        ),
-        (
+        )
+        screenshot(
             "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
             [800, 500],
-        ),
-    ]:
-
-        def read_file(file):
-            with open(file, encoding="utf-8") as fh_in:
-                return " ".join(fh_in.readlines()).replace("\n", "")
-
-        content = re.sub(
-            r'<link rel="stylesheet" href="([^"]+)"/>',
-            lambda match: f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>',
-            read_file(html),
-        )
-        data = {
-            "html": content,
-            "export": {
-                "type": "jpeg",
-                "fullPage": "false",
-                "clip": {"x": 1, "y": 1, "width": size[0], "height": size[1]},
-            },
-        }
-
-        session.run(
-            "curl",
-            "-d",
-            json.dumps(data),
-            "-H",
-            "Content-Type: application/json",
-            "--output",
-            jpeg,
-            "-XPOST",
-            f"http://localhost:{port}/1/screenshot",
-            external=True,
         )
 
 
