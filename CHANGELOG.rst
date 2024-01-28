@@ -3,6 +3,23 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+Next Release
+------------
+
+Known bugs:
+
+Breaking changes:
+
+New features and notable changes:
+
+Bug fixes and small improvements:
+
+Documentation:
+
+- Add nox session to generate the screenshots from the HTML files. (:issue:`877`)
+
+Internal changes:
+
 7.0 (25 January 2024)
 ---------------------
 
@@ -15,7 +32,7 @@ Breaking changes:
 
 New features and notable changes:
 
-- Add `--html-template-dir` option to use custom Jinja2 templates (:issue:`758`)
+- Add `--html-template-dir` option to use custom Jinja2 templates. (:issue:`758`)
 - Add block numbers and md5 sums of code lines to data model. (:issue:`764`)
 - If the CSS given with :option:`--html-css` contains the string ``/* Comment.Preproc */`` no ``pygments`` CSS is added anymore. (:issue:`786`)
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
@@ -27,9 +44,11 @@ New features and notable changes:
 - Add support for importing Cobertura XML files with ``--cobertura-add-tracefile`` option. (:issue:`805`)
 - Add :option:`--jacoco` to generate JaCoCo XML format. (:issue:`823`))
 - Add function coverage to HTML report. (:issue:`828`)
-- Improve sorting of data in reports (:issue:`817`):
+- Improve sorting of data in reports. (:issue:`817`):
 
-  - Sort file names alpha numerical and with casefold (see `str.casefold <https://docs.python.org/3.11/library/stdtypes.html?highlight=str%20casefold#str.casefold>`_) (``file_10.c`` comes after ``file_0.c``).
+  - Sort file names alpha numerical and with casefold
+    (see `str.casefold <https://docs.python.org/3.11/library/stdtypes.html?highlight=str%20casefold#str.casefold>`_)
+    (``file_10.c`` comes after ``file_0.c``).
   - Always sort at the end by filename if line or branch coverage is identical for a file.
   - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
   - Add :option:`--sort-reverse` to reverse the sort order.
@@ -51,7 +70,7 @@ New features and notable changes:
     than several flags.
 
 - The development branch is renamed from ``master`` to ``main``. (:issue:`829`, :issue:`873`)
-- Add support for decision coverage metric in text report (:issue:`864`)
+- Add support for decision coverage metric in text report. (:issue:`864`)
 - Split list of functions into tables with maximum 10000 rows to fix rendering issues. (:issue:`858`)
 
 Bug fixes and small improvements:
@@ -71,8 +90,8 @@ Bug fixes and small improvements:
 
 Documentation:
 
-- Fix wrong command in ``How to create a standalone application`` docs (:issue:`792`)
-- Update output html to add github style themes (:issue:`818`)
+- Fix wrong command in ``How to create a standalone application`` docs. (:issue:`792`)
+- Update output html to add github style themes. (:issue:`818`)
 
 Internal changes:
 
@@ -80,13 +99,13 @@ Internal changes:
 - Add interface for the different formats to easily add new formats. (:issue:`755`)
 - All options have now a prefix of the format and all long option names can be used in a configuration file. (:issue:`755`)
 
-  - :option:`--txt-summary` in addition to :option:`--print-summary`
-  - :option:`--json-add-tracefile` in addition to :option:`--add-tracefile`
-  - :option:`--gcov-delete` in addition to :option:`--delete`
-  - :option:`--gcov-keep` in addition to :option:`--keep`
-  - :option:`--gcov-object-directory` in addition to :option:`--object-directory`
-  - :option:`--gcov-exclude-directories` in addition to :option:`--exclude-directories`
-  - :option:`--gcov-use-existing-files` in addition to :option:`--use-gcov-files`
+  - :option:`--txt-summary` in addition to :option:`--print-summary`.
+  - :option:`--json-add-tracefile` in addition to :option:`--add-tracefile`.
+  - :option:`--gcov-delete` in addition to :option:`--delete`.
+  - :option:`--gcov-keep` in addition to :option:`--keep`.
+  - :option:`--gcov-object-directory` in addition to :option:`--object-directory`.
+  - :option:`--gcov-exclude-directories` in addition to :option:`--exclude-directories`.
+  - :option:`--gcov-use-existing-files` in addition to :option:`--use-gcov-files`.
 
 - Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
 - Use separate session for flake8 and us this session in lint. (:issue:`768`)
@@ -97,6 +116,7 @@ Internal changes:
 - Add nox session to import reference file from pipeline. (:issue:`831`)
 - Add support for ``clang-15`` in our test suite and fix test with write protection under Mac OS. (:issue:`853`)
 - Add test for parallel execution of multiple gcovr instances. (:issue:`832`)
+
 
 6.0 (08 March 2023)
 -------------------
@@ -110,7 +130,7 @@ Breaking changes:
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 - New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
 - Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
-- The default filename for :option:`--cobertura` is changed from coverage.xml to cobertura.xml (:issue:`721`)
+- The default filename for :option:`--cobertura` is changed from coverage.xml to cobertura.xml. (:issue:`721`)
 - Handling of ``gcov`` errors:
 
   - Do not ignore return code of ``gcov``. (:issue:`653`)
@@ -123,7 +143,7 @@ New features and notable changes:
 - New :option:`--html-nested` for reports that summarize subdirectories with aggregated statistics per directory. (:issue:`687`)
 - Accept `NAN %` which is used in GCOV 7.5.0 instead of an invalid value. (:issue:`651`)
 - New :option:`--json-base` to define a base bath used in JSON reports. (:issue:`656`)
-- New :option:`--calls` to report call coverage: function calls invoked/total (:issue:`666`)
+- New :option:`--calls` to report call coverage: function calls invoked/total. (:issue:`666`)
 - New nox session to generate a portable application with pyinstaller, see :ref:`standalone application`. (:issue:`661`)
 - Print a warning if root directory contains symlinks. (:issue:`652`)
 - Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
@@ -158,7 +178,7 @@ Internal changes:
 - Detect ``gcc`` version for running tests. (:issue:`686`)
 - Use scrubbed data for ``--update_reference`` option. (:issue:`698`)
 - Install ninja with package manager instead of GitHub action. (:issue:`699`)
-- Rename the reference files coverage.xml to cobertura.xml and the test from xml to cobertura (:issue:`721`)
+- Rename the reference files coverage.xml to cobertura.xml and the test from xml to cobertura. (:issue:`721`)
 - Add support for ``clang-14`` in our test suite and improve startup performance of docker image. (:issue:`731`)
 - Compare files by extension in test suite. (:issue:`733`)
 - Split HTML templates into one file for each part of the page. (:issue:`735`)
