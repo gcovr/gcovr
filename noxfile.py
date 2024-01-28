@@ -402,10 +402,45 @@ def html2jpeg(session: nox.Session):
 
     for html, jpeg, size in [
         (
-            "gcovr/tests/html-nested-sort-casefold/reference/gcc-5/coverage_nested.html",
+            "doc/examples/example_html.html",
             "doc/images/screenshot-html.jpeg",
-            [800, 330],
-        )
+            [800, 290],
+        ),
+        (
+            "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html",
+            "doc/images/screenshot-html-details.example.cpp.jpeg",
+            [800, 600],
+        ),
+        (
+            "gcovr/tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-default-green-src.jpeg",
+            [800, 290],
+        ),
+        (
+            "gcovr/tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-default-blue-src.jpeg",
+            [800, 290],
+        ),
+        (
+            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-github-green-src.jpeg",
+            [800, 500],
+        ),
+        (
+            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-github-blue-src.jpeg",
+            [800, 500],
+        ),
+        (
+            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-github-dark-green-src.jpeg",
+            [800, 500],
+        ),
+        (
+            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-github-dark-blue-src.jpeg",
+            [800, 500],
+        ),
     ]:
 
         def read_file(file):
