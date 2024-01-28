@@ -86,9 +86,7 @@ def test_example(example):
         current = scrub(f.read())
     current = scrub(current)
 
-    assert_equals(
-        baseline_file, baseline, "<STDOUT>", current, encoding="utf8"
-    )
+    assert_equals(baseline_file, baseline, "<STDOUT>", current, encoding="utf8")
     os.chdir(startdir)
 
 
