@@ -80,13 +80,12 @@ jobs:
           nox --non-interactive --session doc
 
           # Check if files are modified (outdated screenshots)
-          Status=$(git diff-index --name-only HEAD)
+          Status=$(git status --porcelain)
           if [ -n "$Status" ] ; then
-            echo """Following files are modified:
-            $Status
+            echo "Following files are modified:"
+            echo "$Status"
 
-            Please regenerate the screenshots!
-            """
+            echo "Please regenerate the screenshots!"
             exit 1
           fi         
       - name: Test bundle of app
