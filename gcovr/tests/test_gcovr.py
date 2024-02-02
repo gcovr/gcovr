@@ -95,6 +95,8 @@ REFERENCE_DIRS.reverse()
 
 RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
+RE_CRLF = re.compile(r"\r\n")
+
 RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
 
 RE_LCOV_PATH = re.compile(r"(SF:).+?/(gcovr/tests/.+?)$", flags=re.MULTILINE)
@@ -119,27 +121,36 @@ RE_HTML_FOOTER_VERSION = re.compile(
 )
 
 
-def scrub_txt(contents):
+def translate_newlines_if_windows(contents: str) -> str:
+    return RE_CRLF.sub(r"\n", contents) if platform.system() == "Windows" else contents
+
+
+def scrub_txt(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     return RE_TXT_WHITESPACE.sub("", contents)
 
 
-def scrub_lcov(contents):
+def scrub_lcov(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     return RE_LCOV_PATH.sub(r"\1\2", contents)
 
 
-def scrub_csv(contents):
+def scrub_csv(contents: str) -> str:
+    # Her we MUST not translate the Newlines
     contents = force_unix_separator(contents)
     return contents
 
 
-def scrub_xml(contents):
+def scrub_xml(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     contents = RE_DECIMAL.sub(lambda m: str(round(float(m.group(1)), 5)), contents)
     contents = RE_XML_ATTR_TIMESTAMP.sub(r'timestamp="0"', contents)
     contents = RE_XML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
     return contents
 
 
-def scrub_html(contents):
+def scrub_html(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     contents = RE_HTML_HEADER_DATE.sub(r"<\1>\20000-00-00 00:00:00</\1>", contents)
     contents = RE_HTML_FOOTER_VERSION.sub(r"\1main\2main\3", contents)
     contents = RE_HTML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
@@ -147,7 +158,8 @@ def scrub_html(contents):
     return contents
 
 
-def scrub_coveralls(contents):
+def scrub_coveralls(contents: str) -> str:
+    contents = translate_newlines_if_windows(contents)
     contents = RE_COVERALLS_CLEAN_KEYS.sub('"\\1": ""', contents)
     contents = RE_COVERALLS_GIT_PRETTY.sub("", contents)
     contents = RE_COVERALLS_GIT.sub("", contents)
@@ -423,7 +435,7 @@ def update_reference_data(reference_file, content, encoding):  # pragma: no cove
         reference_dir = os.path.join("reference", CC_REFERENCE)
         os.makedirs(reference_dir, exist_ok=True)
         reference_file = os.path.join(reference_dir, os.path.basename(reference_file))
-    with open(reference_file, "w", encoding=encoding) as out:
+    with open(reference_file, "w", newline="", encoding=encoding) as out:
         out.write(content)
 
     return reference_file
@@ -450,7 +462,7 @@ def remove_duplicate_data(
         if other_reference_file != reference_file and os.path.isfile(
             other_reference_file
         ):  # pragma: no cover
-            with open(other_reference_file, encoding=encoding) as f:
+            with open(other_reference_file, newline="", encoding=encoding) as f:
                 if coverage == scrub(f.read()):
                     os.unlink(reference_file)
             break
@@ -517,16 +529,16 @@ def test_build(
 
     whole_diff_output = []
     for test_file, reference_file in find_reference_files(output_pattern):
-        with open(test_file, encoding=encoding) as f:
+        with open(test_file, newline="", encoding=encoding) as f:
             test_scrubbed = scrub(f.read())
 
         # Overwrite the file created above with the scrubbed content
         if generate_reference:  # pragma: no cover
-            with open(reference_file, "w", encoding=encoding) as f:
+            with open(reference_file, "w", newline="", encoding=encoding) as f:
                 f.write(test_scrubbed)
             reference_scrubbed = test_scrubbed
         else:
-            with open(reference_file, encoding=encoding) as f:
+            with open(reference_file, newline="", encoding=encoding) as f:
                 reference_scrubbed = scrub(f.read())
 
         try:

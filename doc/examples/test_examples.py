@@ -75,13 +75,13 @@ def test_example(example):
     baseline_file = example.baseline
     scrub = SCRUBBERS[example.format]
     # Read old file
-    with open(baseline_file) as f:
+    with open(baseline_file, newline="") as f:
         baseline = scrub(f.read())
 
     startdir = os.getcwd()
     os.chdir(datadir)
     subprocess.run(cmd)
-    with open(baseline_file) as f:
+    with open(baseline_file, newline="") as f:
         current = scrub(f.read())
     current = scrub(current)
 
