@@ -10,6 +10,7 @@ ARG NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
 
 # Install base requirements
 RUN \
+    --mount=type=cache,target=/var/cache/apt \
     export DEBIAN_FRONTEND=noninteractive&& apt-get update \
     && apt-get install -y sudo \
                           make \
@@ -23,6 +24,7 @@ RUN \
 
 # Install Python 3.8 as the default "python3" executable on older linux distribution
 RUN \
+    --mount=type=cache,target=/var/cache/apt \
     export DEBIAN_FRONTEND=noninteractive&& apt install -y python3-setuptools ;\
     if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" ]; then \
       export DEBIAN_FRONTEND=noninteractive&& apt install -y software-properties-common || exit 1; \
