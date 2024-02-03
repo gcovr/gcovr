@@ -18,7 +18,8 @@ Documentation:
 
 Internal changes:
 
-- Improve Dockerfile for faster rebuilds by using cache. (:issue:`878`) 
+- Improve Dockerfile for faster rebuilds by using cache. (:issue:`878`)
+- Add pipeline job to apply tag if new version is bumped. (:issue:`879`)
 
 7.0 (25 January 2024)
 ---------------------
