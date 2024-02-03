@@ -8,56 +8,56 @@ ARG CC
 ARG CXX
 ARG NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
 
+
+RUN --mount=type=cache,target=/var/cache/apt <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
 # Install base requirements
-RUN \
-    export DEBIAN_FRONTEND=noninteractive&& apt-get update \
-    && apt-get install -y sudo \
-                          make \
-                          cmake \
-                          $CC \
-                          $CXX \
-                          ninja-build \
-                          curl \
-                          libxml2-utils \
-                          git
+apt-get install -y sudo \
+                   make \
+                   cmake \
+                   $CC \
+                   $CXX \
+                   ninja-build \
+                   curl \
+                   libxml2-utils \
+                   git
 
 # Install Python 3.8 as the default "python3" executable on older linux distribution
-RUN \
-    export DEBIAN_FRONTEND=noninteractive&& apt install -y python3-setuptools ;\
-    if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" ]; then \
-      export DEBIAN_FRONTEND=noninteractive&& apt install -y software-properties-common || exit 1; \
-      add-apt-repository ppa:deadsnakes/ppa || exit 1 ; \
-      apt-get update || exit 1 ; \
-      export DEBIAN_FRONTEND=noninteractive&& apt install -y python3.8-dev python3.8-venv python3.8 || exit 1 ; \
-      update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 10 || exit 1 ; \
-    else \
-      export DEBIAN_FRONTEND=noninteractive&& apt-get install -y \
-        python3-venv \
-        $(if [ "$DOCKER_OS" != "ubuntu:23.04"  ]; then echo "python3-dev"; fi) \
-        $(if [ "$DOCKER_OS" = "ubuntu:23.04"  ]; then echo "python3-full python3-pip python3-nox"; fi) || exit 1 ; \
-    fi ; \
-    python3 --version
+apt install -y python3-setuptools
+if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" ]; then
+  apt install -y software-properties-common
+  add-apt-repository ppa:deadsnakes/ppa
+  apt-get update
+  apt install -y python3.8-dev python3.8-venv python3.8
+  update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 10
+else
+  apt-get install -y \
+    python3-venv \
+    $(if [ "$DOCKER_OS" = "ubuntu:23.04"  ]; then echo "python3-full"; else echo "python3-dev"; fi)
+fi
+python3 --version
 
-RUN \
-    export DEBIAN_FRONTEND=noninteractive&& apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install dependencies.
-#
-# Installing pip is a bit more complicated though:
-# * `apt install python3-pip` -> pulls in >100MB of unneeded stuff
-# * `get-pip.py` script -> depends on distutils standard library module, removed by Debian
-#
-# Solution: install python3-setuptools (includes Python 3.6),
-# then use the get-pip script from Python 3.7.
-
-# Install pip manually
-RUN if [ "$DOCKER_OS" != "ubuntu:23.04" ]; then \
-      curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py || exit 1 ; \
-      python3 get-pip.py || exit 1 ; \
-      rm get-pip.py || exit 1 ; \
-      python3 -m pip install --upgrade pip || exit 1 ; \
-    fi ;
+# Install pip and nox
+if [ "$DOCKER_OS" = "ubuntu:23.04" ]; then
+  apt-get install -y python3-pip python3-nox
+else
+  # Install dependencies.
+  #
+  # Installing pip is a bit more complicated though:
+  # * `apt install python3-pip` -> pulls in >100MB of unneeded stuff
+  # * `get-pip.py` script -> depends on distutils standard library module, removed by Debian
+  #
+  # Solution: install python3-setuptools (includes Python 3.6),
+  # then use the get-pip script from Python 3.7.
+  curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  python3 get-pip.py
+  rm get-pip.py
+  python3 -m pip install --upgrade pip
+  python3 -m pip install --no-cache-dir nox
+fi
+EOS
 
 ENV \
   CC=$CC \
@@ -66,23 +66,20 @@ ENV \
   NOX_ENV_DIR=$NOX_ENV_DIR \
   XDG_CACHE_HOME=$NOX_ENV_DIR/.cache
 
-RUN git clone -q \
+RUN <<EOS
+set -e
+git clone -q \
     --branch=release-1.12.1 \
     --depth=1 \
-    https://github.com/google/googletest.git /tmp/googletest \
-  && cd /tmp/googletest \
-  && mkdir build \
-  && cd build \
-  && cmake .. \
-  && make \
-  && make install \
-  && rm -rf /tmp/googletest
-
-# Install nox
-RUN \
-    if [ "$DOCKER_OS" != "ubuntu:23.04"  ]; then \
-      python3 -m pip install --no-cache-dir nox ; \
-    fi;
+    https://github.com/google/googletest.git /tmp/googletest
+cd /tmp/googletest
+mkdir build
+cd build
+cmake ..
+make
+make install
+rm -rf /tmp/googletest
+EOS
 
 # Create new user "docker" and set password to "docker"
 RUN addgroup docker
@@ -98,5 +95,5 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 WORKDIR /gcovr
 
-                                     # This are the arguments given to "docker run ... <Image> $0 $@"
+                                                # This are the arguments given to "docker run ... <Image> $0 $@"
 ENTRYPOINT python3 -m nox --envdir $NOX_ENV_DIR $0 "$@"

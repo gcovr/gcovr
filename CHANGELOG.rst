@@ -3,6 +3,23 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+Next Release
+------------
+
+Known bugs:
+
+Breaking changes:
+
+New features and notable changes:
+
+Bug fixes and small improvements:
+
+Documentation:
+
+Internal changes:
+
+- Improve Dockerfile for faster rebuilds by using cache. (:issue:`878`) 
+
 7.0 (25 January 2024)
 ---------------------
 
