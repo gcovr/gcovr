@@ -19,7 +19,7 @@ jobs:
       PR_MILESTONE: "${{ github.event.pull_request.milestone.number }}"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check if PR is assigned to a milestone
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -37,7 +37,7 @@ jobs:
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check if PR is mentioned in changelog
         if: ${{ always() }}
         run: |
@@ -113,7 +113,7 @@ jobs:
             python-version: '3.11'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup environment
         run: |
           # Enable coverage for specific target configurations
@@ -229,7 +229,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python3 -m pip install nox
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build Docker
         run: |
           python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
