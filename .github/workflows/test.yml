@@ -150,11 +150,11 @@ jobs:
             libxml2-utils
           sudo apt-get clean
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
@@ -180,7 +180,7 @@ jobs:
           path: gcovr/tests/diff.zip
       - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
@@ -241,7 +241,7 @@ jobs:
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
       - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
@@ -251,7 +251,7 @@ jobs:
           verbose: true
       - name: Upload LCOV coverage to Codecov
         if: ${{ matrix.gcc == 'clang-13' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
