@@ -19,6 +19,7 @@ Documentation:
 Internal changes:
 
 - Improve Dockerfile for faster rebuilds by using cache. (:issue:`878`) 
+- Fix deprecation warnings from GitHub actions. (:issue:`880`) 
 
 7.0 (25 January 2024)
 ---------------------
