@@ -35,7 +35,7 @@ jobs:
     env:
       FORCE_COLOR: "1"
       PYTHON_VERSION: "3.8"
-      CC: "gcc-8"
+      CC: "gcc-11"
 
     steps:
       - uses: actions/checkout@v4
