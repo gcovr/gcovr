@@ -110,6 +110,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: fetch all tags  # need to prevent creation of an existing tag
+        run: |
+          git fetch --force --tags --depth=1
       - name: Apply new tag if version is bumped
         run: |
           set -e
