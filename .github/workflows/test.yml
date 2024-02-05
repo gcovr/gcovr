@@ -19,7 +19,7 @@ jobs:
       PR_MILESTONE: "${{ github.event.pull_request.milestone.number }}"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check if PR is assigned to a milestone
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -37,7 +37,7 @@ jobs:
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check if PR is mentioned in changelog
         if: ${{ always() }}
         run: |
@@ -113,7 +113,7 @@ jobs:
             python-version: '3.11'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup environment
         run: |
           # Enable coverage for specific target configurations
@@ -150,11 +150,11 @@ jobs:
             libxml2-utils
           sudo apt-get clean
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
@@ -180,11 +180,13 @@ jobs:
           path: gcovr/tests/diff.zip
       - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
+          disable_search: true
+          plugins: pycoverage
           files: ./coverage.xml
           name: ${{ matrix.os }}-${{ matrix.gcc }}
           verbose: true
@@ -229,7 +231,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python3 -m pip install nox
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build Docker
         run: |
           python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
@@ -241,21 +243,24 @@ jobs:
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
       - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
+          disable_search: true
+          plugins: pycoverage
           files: ./coverage.xml
           name: docker-${{ matrix.gcc }}
           verbose: true
       - name: Upload LCOV coverage to Codecov
-        if: ${{ matrix.gcc == 'clang-13' }}
-        uses: codecov/codecov-action@v3
+        if: ${{ (matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10') }}
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
+          disable_search: true
           files: ./gcovr/tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
           name: docker-${{ matrix.gcc }}-lcov
           verbose: true
