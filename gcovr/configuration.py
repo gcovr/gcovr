@@ -730,108 +730,100 @@ def parse_config_file(
     open_file: TextIO,
     filename: str,
     first_lineno: int = 1,
+    all_options: Iterable[GcovrConfigOption] = None,
 ) -> Iterable[ConfigEntry]:
     r"""
     Parse an ini-style configuration format.
 
-    Yields: ConfigEntry
+    Returns list of configurations.
 
     Example: basic syntax.
 
     >>> import io
     >>> cfg = u'''
     ... # this is a comment
-    ... key =   value  # trailing comment
+    ... filter = 1  # trailing comment
     ... # the next line is empty
     ...
-    ... key = can have multiple values
-    ... another-key =  # can be empty
-    ... optional=spaces
+    ... filter = 2 # can have multiple values
+    ... exclude-pattern-prefix =  # can be empty
+    ... xml=spaces
     ... '''
     >>> open_file = io.StringIO(cfg[1:])
-    >>> for entry in parse_config_file(open_file, 'test.cfg'):
-    ...     print(entry)
-    test.cfg: 2: key = value
-    test.cfg: 5: key = can have multiple values
-    test.cfg: 6: another-key = # empty
-    test.cfg: 7: optional = spaces
+    >>> for key, value in parse_config_file(open_file, 'test.cfg')[0].items():
+    ...     print(f"{key}:{type(value)}:{len(value) if isinstance(value, list) else str(value)}:")
+    filter:<class 'list'>:2:
+    exclude_pattern_prefix:<class 'str'>::
+    cobertura:<class 'gcovr.options.OutputOrDefault'>:OutputOrDefault('spaces'):
     """
 
-    for lineno, line in enumerate(open_file, first_lineno):
-        line = line.rstrip()
+    def get_configuration_iterator():
+        for lineno, line in enumerate(open_file, first_lineno):
+            line = line.rstrip()
 
-        def error(pattern: str, *args, **kwargs):
-            # pylint: disable=cell-var-from-loop
-            message = pattern.format(*args, **kwargs)
-            message += "\non this line: " + line
-            return SyntaxError(": ".join([filename, str(lineno), message]))
+            def error(pattern: str, *args, **kwargs):
+                # pylint: disable=cell-var-from-loop
+                message = pattern.format(*args, **kwargs)
+                message += "\non this line: " + line
+                return SyntaxError(": ".join([filename, str(lineno), message]))
 
-        # strip (trailing) comments
-        line = CONFIG_HASH_COMMENT.sub("", line)
+            # strip (trailing) comments
+            line = CONFIG_HASH_COMMENT.sub("", line)
 
-        if CONFIG_SEMICOLON_COMMENT.search(line):
-            raise error("semicolon comment ; ... is reserved")
+            if CONFIG_SEMICOLON_COMMENT.search(line):
+                raise error("semicolon comment ; ... is reserved")
 
-        if line.isspace() or not line:  # skip empty lines
-            continue
+            if line.isspace() or not line:  # skip empty lines
+                continue
 
-        match = CONFIG_KV.match(line)
-        if not match:
-            raise error('expected "key = value" entry')
+            match = CONFIG_KV.match(line)
+            if not match:
+                raise error('expected "key = value" entry')
 
-        key: str = match.group(1).strip()
-        value: str = match.group(2)
+            key: str = match.group(1).strip()
+            value: str = match.group(2)
 
-        if value.startswith('"'):
-            raise error('leading quote " is reserved')
-        if value.startswith("'"):
-            raise error("leading quote ' is reserved")
-        if value.endswith("\\"):
-            raise error("trailing backslash \\ is reserved")
-        if CONFIG_POSSIBLE_VARIABLE.search(value):
-            raise error(
-                "variable substitution syntax ({example}) is reserved",
-                example="${var}, $(var), or $var",
-            )
+            if value.startswith('"'):
+                raise error('leading quote " is reserved')
+            if value.startswith("'"):
+                raise error("leading quote ' is reserved")
+            if value.endswith("\\"):
+                raise error("trailing backslash \\ is reserved")
+            if CONFIG_POSSIBLE_VARIABLE.search(value):
+                raise error(
+                    "variable substitution syntax ({example}) is reserved",
+                    example="${var}, $(var), or $var",
+                )
 
-        yield ConfigEntry(key, value, filename=filename, lineno=lineno)
+            yield ConfigEntry(key, value, filename=filename, lineno=lineno)
 
+    return [parse_config_into_dict(get_configuration_iterator(), all_options)]
 
 def parse_toml_config_file(
     open_file: BinaryIO,
     filename: str,
+    all_options: Iterable[GcovrConfigOption] = None,
 ) -> Iterable[ConfigEntry]:
     r"""
     Parse an toml-style configuration format.
 
-    Yields: ConfigEntry
-
-    Example: basic syntax.
-
-    >>> import io
-    >>> cfg = u'''
-    ... # this is a comment
-    ... key =   value  # trailing comment
-    ... # the next line is empty
-    ...
-    ... key = can have multiple values
-    ... another-key =  # can be empty
-    ... optional=spaces
-    ... '''
-    >>> open_file = io.StringIO(cfg[1:])
-    >>> for entry in parse_config_file(open_file, 'test.cfg'):
-    ...     print(entry)
-    test.cfg: 2: key = value
-    test.cfg: 5: key = can have multiple values
-    test.cfg: 6: another-key = # empty
-    test.cfg: 7: optional = spaces
+    Returns list of configurations.
     """
 
+    configurations = []
     toml_dict = tomllib.load(open_file)
     if "gcovr" in toml_dict:
-        for key, value in toml_dict["gcovr"].items():
-            yield ConfigEntry(key, value, filename=filename)
+        def get_configuration_iterator(config):
+            for key, value in config.items():
+                yield ConfigEntry(key, value, filename=filename)
+        
+        configs = [toml_dict["gcovr"]] if isinstance(toml_dict["gcovr"], dict) else toml_dict["gcovr"]
+        for config in configs:
+            configurations.append(parse_config_into_dict(get_configuration_iterator(config), all_options))
+    else:
+        configurations.append({})
 
+    return configurations
 
 @dataclass
 class ConfigEntry:
@@ -878,6 +870,9 @@ class ConfigEntry:
         Traceback (most recent call last):
         ValueError: <config>: ??: k: boolean option must be "yes" or "no"
         """
+        if isinstance(self.value, bool):
+            return self.value
+
         value = self.value
         if value == "yes":
             return True

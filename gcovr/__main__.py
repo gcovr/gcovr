@@ -190,212 +190,211 @@ def main(args=None):
 
     # load the config
     cfg_name = find_config_name(cli_options)
-    cfg_options = {}
-    if cfg_name is not None:
+    if cfg_name is None:
+        cfg_options_list = [{}]
+    else:
         if os.path.splitext(cfg_name)[1].lower() == ".toml":
             with io.open(cfg_name, "rb") as cfg_file:
-                cfg_options = parse_config_into_dict(
-                    parse_toml_config_file(cfg_file, filename=cfg_name)
-                )
+                cfg_options_list = parse_toml_config_file(cfg_file, filename=cfg_name)
         else:
             with io.open(cfg_name, encoding="UTF-8") as cfg_file:
-                cfg_options = parse_config_into_dict(
-                    parse_config_file(cfg_file, filename=cfg_name)
-                )
-    options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
-    # Reconfigure the logging.
-    if options.gcov_parallel > 1:
-        switch_to_logging_format_with_threads()
+                cfg_options_list = parse_config_file(cfg_file, filename=cfg_name)
 
-    if options.verbose:
-        LOGGER.setLevel(logging.DEBUG)
+    for cfg_options in cfg_options_list:
+        options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
+        # Reconfigure the logging.
+        if options.gcov_parallel > 1:
+            switch_to_logging_format_with_threads()
 
-    if options.sort_branches and options.sort_key not in [
-        "uncovered-number",
-        "uncovered-percent",
-    ]:
-        LOGGER.error(
-            "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
-        )
-        sys.exit(EXIT_CMDLINE_ERROR)
+        if options.verbose:
+            LOGGER.setLevel(logging.DEBUG)
 
-    if options.html_title == "":
-        LOGGER.error("an empty --html-title= is not allowed.")
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    for postfix in ["", "line", "branch"]:
-        key_medium = "html_medium_threshold"
-        key_high = "html_high_threshold"
-        if postfix:
-            key_medium += f"_{postfix}"
-            key_high += f"_{postfix}"
-        option_medium = f"--{key_medium.replace('_', '-')}"
-        option_high = f"--{key_high.replace('_', '-')}"
-
-        if getattr(options, key_medium) == 0:
-            LOGGER.error(f"value of {option_medium}= should not be zero.")
-            sys.exit(EXIT_CMDLINE_ERROR)
-
-        # Inherit the defaults from the global covarage values if not set
-        if postfix:
-            if getattr(options, key_medium) is None:
-                setattr(
-                    options,
-                    key_medium,
-                    options.html_medium_threshold,
-                )
-                # To get the correct option in the error message below.
-                option_medium = "--html-medium-threshold"
-            if getattr(options, key_high) is None:
-                setattr(
-                    options,
-                    key_high,
-                    options.html_high_threshold,
-                )
-                # To get the correct option in the error message below.
-                option_medium = "--html-high-threshold"
-
-        if getattr(options, key_medium) > getattr(options, key_high):
+        if options.sort_branches and options.sort_key not in [
+            "uncovered-number",
+            "uncovered-percent",
+        ]:
             LOGGER.error(
-                f"value of {option_medium}={getattr(options, key_medium)} should be\n"
-                f"lower than or equal to the value of {option_high}={getattr(options, key_high)}."
+                "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
             )
             sys.exit(EXIT_CMDLINE_ERROR)
 
-    if options.html_tab_size < 1:
-        LOGGER.error("value of --html-tab-size= should be greater 0.")
-        sys.exit(EXIT_CMDLINE_ERROR)
+        if options.html_title == "":
+            LOGGER.error("an empty --html-title= is not allowed.")
+            sys.exit(EXIT_CMDLINE_ERROR)
 
-    if options.html_details and options.html_nested:
-        LOGGER.error("--html-details and --html-nested can not be used together.")
-        sys.exit(EXIT_CMDLINE_ERROR)
+        for postfix in ["", "line", "branch"]:
+            key_medium = "html_medium_threshold"
+            key_high = "html_high_threshold"
+            if postfix:
+                key_medium += f"_{postfix}"
+                key_high += f"_{postfix}"
+            option_medium = f"--{key_medium.replace('_', '-')}"
+            option_high = f"--{key_high.replace('_', '-')}"
 
-    potential_html_output = (
-        (options.html and options.html.value)
-        or (options.html_details and options.html_details.value)
-        or (options.html_nested and options.html_nested.value)
-        or (options.output and options.output.value)
-    )
-    if options.html_details and not potential_html_output:
-        LOGGER.error(
-            "a named output must be given, if the option --html-details\n" "is used."
+            if getattr(options, key_medium) == 0:
+                LOGGER.error(f"value of {option_medium}= should not be zero.")
+                sys.exit(EXIT_CMDLINE_ERROR)
+
+            # Inherit the defaults from the global covarage values if not set
+            if postfix:
+                if getattr(options, key_medium) is None:
+                    setattr(
+                        options,
+                        key_medium,
+                        options.html_medium_threshold,
+                    )
+                    # To get the correct option in the error message below.
+                    option_medium = "--html-medium-threshold"
+                if getattr(options, key_high) is None:
+                    setattr(
+                        options,
+                        key_high,
+                        options.html_high_threshold,
+                    )
+                    # To get the correct option in the error message below.
+                    option_medium = "--html-high-threshold"
+
+            if getattr(options, key_medium) > getattr(options, key_high):
+                LOGGER.error(
+                    f"value of {option_medium}={getattr(options, key_medium)} should be\n"
+                    f"lower than or equal to the value of {option_high}={getattr(options, key_high)}."
+                )
+                sys.exit(EXIT_CMDLINE_ERROR)
+
+        if options.html_tab_size < 1:
+            LOGGER.error("value of --html-tab-size= should be greater 0.")
+            sys.exit(EXIT_CMDLINE_ERROR)
+
+        if options.html_details and options.html_nested:
+            LOGGER.error("--html-details and --html-nested can not be used together.")
+            sys.exit(EXIT_CMDLINE_ERROR)
+
+        potential_html_output = (
+            (options.html and options.html.value)
+            or (options.html_details and options.html_details.value)
+            or (options.html_nested and options.html_nested.value)
+            or (options.output and options.output.value)
         )
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    if options.html_nested and not potential_html_output:
-        LOGGER.error(
-            "a named output must be given, if the option --html-nested\n" "is used."
-        )
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    if options.html_self_contained is False and not potential_html_output:
-        LOGGER.error(
-            "can only disable --html-self-contained when a named output is given."
-        )
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    if options.gcov_objdir is not None:
-        if not os.path.exists(options.gcov_objdir):
+        if options.html_details and not potential_html_output:
             LOGGER.error(
-                "Bad --gcov-object-directory option.\n"
-                "\tThe specified directory does not exist."
+                "a named output must be given, if the option --html-details\n" "is used."
             )
             sys.exit(EXIT_CMDLINE_ERROR)
 
-    options.starting_dir = os.path.abspath(os.getcwd())
-    options.root_dir = os.path.abspath(options.root)
+        if options.html_nested and not potential_html_output:
+            LOGGER.error(
+                "a named output must be given, if the option --html-nested\n" "is used."
+            )
+            sys.exit(EXIT_CMDLINE_ERROR)
 
-    #
-    # Setup filters
-    #
+        if options.html_self_contained is False and not potential_html_output:
+            LOGGER.error(
+                "can only disable --html-self-contained when a named output is given."
+            )
+            sys.exit(EXIT_CMDLINE_ERROR)
 
-    # The root filter isn't technically a filter,
-    # but is used to turn absolute paths into relative paths
-    options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
+        if options.gcov_objdir is not None:
+            if not os.path.exists(options.gcov_objdir):
+                LOGGER.error(
+                    "Bad --gcov-object-directory option.\n"
+                    "\tThe specified directory does not exist."
+                )
+                sys.exit(EXIT_CMDLINE_ERROR)
 
-    if options.gcov_exclude_dirs is not None:
-        options.gcov_exclude_dirs = [
-            f.build_filter() for f in options.gcov_exclude_dirs
-        ]
+        options.starting_dir = os.path.abspath(os.getcwd())
+        options.root_dir = os.path.abspath(options.root)
 
-    options.exclude = [f.build_filter() for f in options.exclude]
-    options.filter = [f.build_filter() for f in options.filter]
-    if not options.filter:
-        options.filter = [DirectoryPrefixFilter(options.root_dir)]
+        #
+        # Setup filters
+        #
 
-    options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
-    options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
-    if not options.gcov_filter:
-        options.gcov_filter = [AlwaysMatchFilter()]
+        # The root filter isn't technically a filter,
+        # but is used to turn absolute paths into relative paths
+        options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
-    # Output the filters for debugging
-    for name, filters in [
-        ("--root", [options.root_filter]),
-        ("--filter", options.filter),
-        ("--exclude", options.exclude),
-        ("--gcov-filter", options.gcov_filter),
-        ("--gcov-exclude", options.gcov_exclude),
-        ("--gcov-exclude-directories", options.gcov_exclude_dirs),
-    ]:
-        LOGGER.debug(f"Filters for {name}: ({len(filters)})")
-        for f in filters:
-            LOGGER.debug(f" - {f}")
+        if options.gcov_exclude_dirs is not None:
+            options.gcov_exclude_dirs = [
+                f.build_filter() for f in options.gcov_exclude_dirs
+            ]
 
-    if options.exclude_lines_by_pattern:
+        options.exclude = [f.build_filter() for f in options.exclude]
+        options.filter = [f.build_filter() for f in options.filter]
+        if not options.filter:
+            options.filter = [DirectoryPrefixFilter(options.root_dir)]
+
+        options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
+        options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
+        if not options.gcov_filter:
+            options.gcov_filter = [AlwaysMatchFilter()]
+
+        # Output the filters for debugging
+        for name, filters in [
+            ("--root", [options.root_filter]),
+            ("--filter", options.filter),
+            ("--exclude", options.exclude),
+            ("--gcov-filter", options.gcov_filter),
+            ("--gcov-exclude", options.gcov_exclude),
+            ("--gcov-exclude-directories", options.gcov_exclude_dirs),
+        ]:
+            LOGGER.debug(f"Filters for {name}: ({len(filters)})")
+            for f in filters:
+                LOGGER.debug(f" - {f}")
+
+        if options.exclude_lines_by_pattern:
+            try:
+                re.compile(options.exclude_lines_by_pattern)
+            except re.error as e:
+                LOGGER.error(
+                    "--exclude-lines-by-pattern: "
+                    f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
+                )
+                sys.exit(EXIT_CMDLINE_ERROR)
+
+        if options.exclude_branches_by_pattern:
+            try:
+                re.compile(options.exclude_branches_by_pattern)
+            except re.error as e:
+                LOGGER.error(
+                    "--exclude-branches-by-pattern: "
+                    f"Invalid regular expression: {repr(options.exclude_branches_by_pattern)}, error: {e}"
+                )
+                sys.exit(EXIT_CMDLINE_ERROR)
+
+        if options.fail_under_decision > 0.0 and not options.show_decision:
+            LOGGER.error("--fail-under-decision need also option --decision.")
+            sys.exit(EXIT_CMDLINE_ERROR)
+
+        LOGGER.info("Reading coverage data...")
         try:
-            re.compile(options.exclude_lines_by_pattern)
-        except re.error as e:
+            covdata: CovData = gcovr_formats.read_reports(options)
+        except Exception as e:
             LOGGER.error(
-                "--exclude-lines-by-pattern: "
-                f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
+                f"Error occurred while reading reports:\n{traceback.format_exc()}\n{str(e)}"
             )
-            sys.exit(EXIT_CMDLINE_ERROR)
+            sys.exit(EXIT_READ_ERROR)
 
-    if options.exclude_branches_by_pattern:
+        LOGGER.info("Writing coverage report...")
         try:
-            re.compile(options.exclude_branches_by_pattern)
-        except re.error as e:
+            gcovr_formats.write_reports(covdata, options)
+        except Exception as e:
             LOGGER.error(
-                "--exclude-branches-by-pattern: "
-                f"Invalid regular expression: {repr(options.exclude_branches_by_pattern)}, error: {e}"
+                f"Error occurred while printing reports:\n{traceback.format_exc()}\n{str(e)}"
             )
-            sys.exit(EXIT_CMDLINE_ERROR)
+            sys.exit(EXIT_WRITE_ERROR)
 
-    if options.fail_under_decision > 0.0 and not options.show_decision:
-        LOGGER.error("--fail-under-decision need also option --decision.")
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    LOGGER.info("Reading coverage data...")
-    try:
-        covdata: CovData = gcovr_formats.read_reports(options)
-    except Exception as e:
-        LOGGER.error(
-            f"Error occurred while reading reports:\n{traceback.format_exc()}\n{str(e)}"
-        )
-        sys.exit(EXIT_READ_ERROR)
-
-    LOGGER.info("Writing coverage report...")
-    try:
-        gcovr_formats.write_reports(covdata, options)
-    except Exception as e:
-        LOGGER.error(
-            f"Error occurred while printing reports:\n{traceback.format_exc()}\n{str(e)}"
-        )
-        sys.exit(EXIT_WRITE_ERROR)
-
-    if (
-        options.fail_under_line > 0.0
-        or options.fail_under_branch > 0.0
-        or options.fail_under_decision > 0.0
-        or options.fail_under_function > 0.0
-    ):
-        fail_under(
-            covdata,
-            options.fail_under_line,
-            options.fail_under_branch,
-            options.fail_under_decision,
-            options.fail_under_function,
-        )
+        if (
+            options.fail_under_line > 0.0
+            or options.fail_under_branch > 0.0
+            or options.fail_under_decision > 0.0
+            or options.fail_under_function > 0.0
+        ):
+            fail_under(
+                covdata,
+                options.fail_under_line,
+                options.fail_under_branch,
+                options.fail_under_decision,
+                options.fail_under_function,
+            )
 
 
 if __name__ == "__main__":
