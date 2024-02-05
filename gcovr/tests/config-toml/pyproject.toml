@@ -1,0 +1,11 @@
+[[gcovr]]
+html = "coverage.html"
+html-self-contained = true
+filter=".*"
+search-path="../"
+
+[[gcovr]]
+output="coverage.txt"
+filter='main\.cpp'
+search-path="../"
+txt-metric="branch"
