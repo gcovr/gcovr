@@ -31,6 +31,7 @@ from .configuration import (
     merge_options_and_set_defaults,
     parse_config_file,
     parse_config_into_dict,
+    parse_toml_config_file,
 )
 from .utils import (
     AlwaysMatchFilter,
@@ -166,13 +167,14 @@ def find_config_name(partial_options):
         return cfg_name
 
     root = getattr(partial_options, "root", "")
-    if root:
-        cfg_name = os.path.join(root, "gcovr.cfg")
-    else:
-        cfg_name = "gcovr.cfg"
+    for cfg_file in ["gcovr.cfg", "gcovr.toml", "pyproject.toml"]:
+        if root:
+            cfg_name = os.path.join(root, cfg_file)
+        else:
+            cfg_name = cfg_file
 
-    if os.path.isfile(cfg_name):
-        return cfg_name
+        if os.path.isfile(cfg_name):
+            return cfg_name
 
     return None
 
@@ -190,10 +192,16 @@ def main(args=None):
     cfg_name = find_config_name(cli_options)
     cfg_options = {}
     if cfg_name is not None:
-        with io.open(cfg_name, encoding="UTF-8") as cfg_file:
-            cfg_options = parse_config_into_dict(
-                parse_config_file(cfg_file, filename=cfg_name)
-            )
+        if os.path.splitext(cfg_name)[1].lower() == ".toml":
+            with io.open(cfg_name, "rb") as cfg_file:
+                cfg_options = parse_config_into_dict(
+                    parse_toml_config_file(cfg_file, filename=cfg_name)
+                )
+        else:
+            with io.open(cfg_name, encoding="UTF-8") as cfg_file:
+                cfg_options = parse_config_into_dict(
+                    parse_config_file(cfg_file, filename=cfg_name)
+                )
     options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
     # Reconfigure the logging.
     if options.gcov_parallel > 1:

@@ -22,11 +22,17 @@ from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 import logging
-from typing import Iterable, Any, List, Optional, Callable, TextIO, Dict
+import sys
+from typing import BinaryIO, Iterable, Any, List, Optional, Callable, TextIO, Dict
 from dataclasses import dataclass
 import datetime
 import os
 import re
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 from . import formats
 from .options import (
@@ -789,6 +795,42 @@ def parse_config_file(
             )
 
         yield ConfigEntry(key, value, filename=filename, lineno=lineno)
+
+
+def parse_toml_config_file(
+    open_file: BinaryIO,
+    filename: str,
+) -> Iterable[ConfigEntry]:
+    r"""
+    Parse an toml-style configuration format.
+
+    Yields: ConfigEntry
+
+    Example: basic syntax.
+
+    >>> import io
+    >>> cfg = u'''
+    ... # this is a comment
+    ... key =   value  # trailing comment
+    ... # the next line is empty
+    ...
+    ... key = can have multiple values
+    ... another-key =  # can be empty
+    ... optional=spaces
+    ... '''
+    >>> open_file = io.StringIO(cfg[1:])
+    >>> for entry in parse_config_file(open_file, 'test.cfg'):
+    ...     print(entry)
+    test.cfg: 2: key = value
+    test.cfg: 5: key = can have multiple values
+    test.cfg: 6: another-key = # empty
+    test.cfg: 7: optional = spaces
+    """
+
+    toml_dict = tomllib.load(open_file)
+    if "gcovr" in toml_dict:
+        for key, value in toml_dict["gcovr"].items():
+            yield ConfigEntry(key, value, filename=filename)
 
 
 @dataclass
