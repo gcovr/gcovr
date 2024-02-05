@@ -11,12 +11,12 @@ on:
 jobs:
 
   release-check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     continue-on-error: ${{ startsWith(github.event.ref,'refs/heads/') }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: fetch all tags  # need annotated tags for release checklist
         run: |
           git fetch --force --tags --depth=1
@@ -29,22 +29,22 @@ jobs:
           admin/release_checklist $EXTRA_CHECKLIST_ARGS 7.0+main
 
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: release-check
 
     env:
       FORCE_COLOR: "1"
       PYTHON_VERSION: "3.8"
-      CC: "gcc-8"
+      CC: "gcc-11"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
