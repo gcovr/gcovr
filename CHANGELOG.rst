@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add support for TOML configuration format. (:issue:`881`) 
+
 Bug fixes and small improvements:
 
 Documentation:
