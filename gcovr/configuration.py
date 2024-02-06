@@ -815,7 +815,13 @@ def parse_toml_config_file(
     if "gcovr" in toml_dict:
         def get_configuration_iterator(config):
             for key, value in config.items():
-                yield ConfigEntry(key, value, filename=filename)
+                if isinstance(value, list):
+                    for value in value.copy():
+                        yield ConfigEntry(key, value, filename=filename)
+                elif isinstance(value, (str, bool)):
+                    yield ConfigEntry(key, value, filename=filename)
+                else:
+                    raise RuntimeError(f"Unsupported type {type(value)} of key {key} in {filename}")
         
         configs = [toml_dict["gcovr"]] if isinstance(toml_dict["gcovr"], dict) else toml_dict["gcovr"]
         for config in configs:

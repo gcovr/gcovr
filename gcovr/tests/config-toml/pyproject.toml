@@ -6,6 +6,6 @@ search-path="../"
 
 [[gcovr]]
 output="coverage.txt"
-filter='main\.cpp'
+filter=[ 'main\.cpp', '.*']
 search-path="../"
 txt-metric="branch"
