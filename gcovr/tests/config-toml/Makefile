@@ -5,13 +5,17 @@ run: html txt
 
 html:
 	./testcase
-	$(GCOVR)
+	rm -f *.toml
+	cp config/pyproject.toml pyproject.toml
+	$(GCOVR) ../
 
 txt:
 	./testcase
-	$(GCOVR) --verbose
+	rm -f *.toml
+	sed -e 's/.*gcovr.*//' config/pyproject.toml > gcovr.toml
+	$(GCOVR) --verbose ../
 
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage*.*
+	rm -f coverage.* *.toml 
