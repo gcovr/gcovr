@@ -21,7 +21,6 @@ import logging
 import os
 import re
 import sys
-import io
 
 from argparse import ArgumentParser
 import traceback

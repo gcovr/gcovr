@@ -22,7 +22,7 @@ from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 import logging
-from typing import BinaryIO, Iterable, Any, List, Optional, Callable, TextIO, Dict
+from typing import Iterable, Any, List, Optional, Callable, TextIO, Dict
 from dataclasses import dataclass
 import datetime
 import os
