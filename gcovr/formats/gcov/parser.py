@@ -87,7 +87,7 @@ def _line_pattern(pattern: str) -> Pattern[str]:
     * the pattern is anchored at the start/end
     * space is replaced by ``[ ]+``
     """
-    pattern = pattern.replace(" ", r"[ ]+")
+    pattern = pattern.replace(" ", r" +")
     pattern = pattern.replace("INT", r"[0-9]+")
     pattern = pattern.replace("VALUE", r"(?:NAN %|-?[0-9.]+[%kMGTPEZY]?)")
     return re.compile("^" + pattern + "$")
@@ -104,7 +104,7 @@ _RE_UNCONDITIONAL_LINE = _line_pattern(
     r"unconditional (INT) (?:taken (VALUE)|never executed)"
 )
 _RE_SOURCE_LINE = _line_pattern(r"(?: )?(VALUE[*]?|-|[#]{5}|[=]{5}):(?: )?(INT):(.*)")
-_RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5}|[%]{5}): (INT)-block (INT)")
+_RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5}|[%]{5}):(?: )?(INT)-block (INT)")
 
 
 class _ExtraInfo(enum.Flag):
