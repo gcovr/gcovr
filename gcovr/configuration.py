@@ -22,17 +22,11 @@ from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 import logging
-import sys
 from typing import BinaryIO, Iterable, Any, List, Optional, Callable, TextIO, Dict
 from dataclasses import dataclass
 import datetime
 import os
 import re
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
 
 from . import formats
 from .options import (
@@ -797,53 +791,37 @@ def parse_config_file(
         yield ConfigEntry(key, value, filename=filename, lineno=lineno)
 
 
-def parse_toml_config_file(
-    open_file: BinaryIO,
+def config_entries_from_dict(
+    config: Dict[str, Any],
     filename: str,
 ) -> Iterable[ConfigEntry]:
     r"""
-    Parse an toml-style configuration format.
+    Generate config entries from a dictionary
 
     Yields: ConfigEntry
 
     Example: basic syntax.
 
     >>> import io
-    >>> cfg = u'''
-    ... # this is a comment
-    ... key =   value  # trailing comment
-    ... # the next line is empty
-    ...
-    ... key = can have multiple values
-    ... another-key =  # can be empty
-    ... optional=spaces
-    ... '''
-    >>> open_file = io.StringIO(cfg[1:])
-    >>> for entry in parse_config_file(open_file, 'test.cfg'):
+    >>> cfg = {
+    ...     'key': ['value', 'can have multiple values'],
+    ...     'another-key': '',
+    ...     'optional': 'spaces',
+    ... }
+    >>> for entry in config_entries_from_dict(cfg, 'test.cfg'):
     ...     print(entry)
-    test.cfg: 2: key = value
-    test.cfg: 5: key = can have multiple values
-    test.cfg: 6: another-key = # empty
-    test.cfg: 7: optional = spaces
+    test.cfg: ??: key = value
+    test.cfg: ??: key = can have multiple values
+    test.cfg: ??: another-key = # empty
+    test.cfg: ??: optional = spaces
     """
 
-    toml_dict = tomllib.load(open_file)
-    if "gcovr" in toml_dict:
-        def get_configuration_iterator(config):
-            for key, value in config.items():
-                if isinstance(value, list):
-                    for value in value.copy():
-                        yield ConfigEntry(key, value, filename=filename)
-                elif isinstance(value, (str, bool)):
-                    yield ConfigEntry(key, value, filename=filename)
-                else:
-                    raise RuntimeError(f"Unsupported type {type(value)} of key {key} in {filename}")
-        
-        configs = [toml_dict["gcovr"]] if isinstance(toml_dict["gcovr"], dict) else toml_dict["gcovr"]
-        for config in configs:
-            configurations.append(parse_config_into_dict(get_configuration_iterator(config), all_options))
-    else:
-        configurations.append({})
+    for key, value in config.items():
+        if isinstance(value, list):
+            for inner_value in value:
+                yield ConfigEntry(key, inner_value, filename=filename)
+        else:
+            yield ConfigEntry(key, value, filename=filename)
 
 
 @dataclass
@@ -891,6 +869,8 @@ class ConfigEntry:
         Traceback (most recent call last):
         ValueError: <config>: ??: k: boolean option must be "yes" or "no"
         """
+        if isinstance(self.value, bool):
+            return self.value
         value = self.value
         if value == "yes":
             return True
