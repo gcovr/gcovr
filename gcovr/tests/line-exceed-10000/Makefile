@@ -1,11 +1,7 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: html txt
-
-html:
-	./testcase
-	$(GCOVR) -d --html-details coverage.html
+run: txt
 
 txt:
 	./testcase
@@ -14,4 +10,4 @@ txt:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage*.html coverage*.css
+	rm -f coverage.txt
