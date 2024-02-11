@@ -574,6 +574,8 @@ def _parse_line(
     _SourceLine(hits=12, lineno=13, source_code='foo += 1;  ', extra_info=NONE)
     >>> _parse_line(' #####: 13:foo += 1;')
     _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=NONE)
+    >>> _parse_line(' #####:10000:foo += 1;')  # see https://github.com/gcovr/gcovr/issues/882
+    _SourceLine(hits=0, lineno=10000, source_code='foo += 1;', extra_info=NONE)
     >>> _parse_line(' =====: 13:foo += 1;')
     _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=EXCEPTION_ONLY)
     >>> _parse_line('   12*: 13:cond ? f() : g();')
@@ -662,6 +664,8 @@ def _parse_line(
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=NONE)
     >>> _parse_line(' $$$$$: 33-block  1')
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=EXCEPTION_ONLY)
+    >>> _parse_line(' %%%%%:10000-block  0')  # see https://github.com/gcovr/gcovr/issues/882
+    _BlockLine(hits=0, lineno=10000, blockno=0, extra_info=NONE)
     >>> _parse_line('     -1: 32-block  0', ignore_parse_errors=set(['negative_hits.warn']))
     _BlockLine(hits=0, lineno=32, blockno=0, extra_info=NONE)
     >>> _parse_line('     1: 9-block with some unknown format')
