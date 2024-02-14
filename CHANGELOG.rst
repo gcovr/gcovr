@@ -14,11 +14,16 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Add support for files with more than 9999 lines. (:issue:`883`, fixes :issue:`882``) 
+
 Documentation:
 
 - Add nox session to generate the screenshots from the HTML files. (:issue:`877`)
 
 Internal changes:
+
+- Improve Dockerfile for faster rebuilds by using cache. (:issue:`878`) 
+- Fix deprecation warnings from GitHub actions. (:issue:`880`) 
 
 7.0 (25 January 2024)
 ---------------------
