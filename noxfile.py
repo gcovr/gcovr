@@ -621,6 +621,8 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "-e",
         "USE_COVERAGE",
         "-e",
+        "FORCE_COLOR",
+        "-e",
         f"HOST_OS={platform.system()}",
         "-v",
         f"{os.getcwd()}:/gcovr",
