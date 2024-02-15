@@ -57,6 +57,9 @@ else
   python3 -m pip install --upgrade pip
   python3 -m pip install --no-cache-dir nox
 fi
+
+# Install requests
+python3 -m pip install --no-cache-dir requests
 EOS
 
 ENV \
