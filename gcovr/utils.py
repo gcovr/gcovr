@@ -24,15 +24,18 @@ from typing import Callable, List, Type
 import logging
 import os
 import functools
+import platform
 import re
 import sys
 from contextlib import contextmanager
+from colorlog import ColoredFormatter
+from gcovr.options import Options
 
 LOGGER = logging.getLogger("gcovr")
 
 
-LOG_FORMAT = "(%(levelname)s) %(message)s"
-LOG_FORMAT_THREADS = "(%(levelname)s) - %(threadName)s - %(message)s"
+LOG_FORMAT = "%(log_color)s(%(levelname)s) %(message)s"
+LOG_FORMAT_THREADS = "%(log_color)s(%(levelname)s) - %(threadName)s - %(message)s"
 
 
 class LoopChecker(object):
@@ -194,7 +197,7 @@ class FilterOption:
             LOGGER.warning(f"did you mean: {suggestion}")
 
         isabs = self.regex.startswith("/")
-        if not isabs and (sys.platform == "win32"):
+        if not isabs and (platform.system() == "Windows"):
             # Starts with a drive letter
             isabs = re.match(r"^[A-Za-z]:/", self.regex)
 
@@ -245,7 +248,7 @@ class RelativeFilter(Filter):
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
-        if sys.platform == "win32":
+        if platform.system() == "Windows":
             path_drive, _ = os.path.splitdrive(path)
             root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:
@@ -277,9 +280,38 @@ class DirectoryPrefixFilter(Filter):
         return super().match(path)
 
 
-def configure_logging() -> None:
+def __colored_formatter(options: Options) -> ColoredFormatter:
+    if options is not None:
+        log_format = LOG_FORMAT_THREADS if options.gcov_parallel > 1 else LOG_FORMAT
+        force_color = getattr(options, "force_color", False)
+        no_color = getattr(options, "no_color", False)
+    else:
+        log_format = LOG_FORMAT
+        force_color = False
+        no_color = False
+
+    return ColoredFormatter(
+        log_format,
+        datefmt=None,
+        reset=True,
+        log_colors={
+            "DEBUG": "cyan",
+            "INFO": "blue",
+            "WARNING": "yellow",
+            "ERROR": "red",
+            "CRITICAL": "red,bg_white",
+        },
+        secondary_log_colors={},
+        style="%",
+        force_color=force_color,
+        no_color=no_color,
+        stream=sys.stderr,
+    )
+
+
+def configure_logging(options: Options = None) -> None:
     stream_handler = logging.StreamHandler(sys.stderr)
-    stream_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    stream_handler.setFormatter(__colored_formatter(options))
 
     logging.basicConfig(
         handlers=[stream_handler],
@@ -294,14 +326,12 @@ def configure_logging() -> None:
     sys.excepthook = exception_hook
 
 
-def switch_to_logging_format_with_threads() -> None:
+def update_logging_formatter(options: Options) -> None:
     # The one and only LOGGER was configured from ourselve.
     if len(logging.getLogger().handlers) == 1 and (
         logging.getLogger().handlers[0].formatter._fmt == LOG_FORMAT
     ):
-        logging.getLogger().handlers[0].setFormatter(
-            logging.Formatter(LOG_FORMAT_THREADS)
-        )
+        logging.getLogger().handlers[0].setFormatter(__colored_formatter(options))
 
 
 @contextmanager

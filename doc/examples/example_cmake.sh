@@ -45,6 +45,6 @@ cd $BLD_DIR
 (
 #BEGIN cmake_gcovr
 cd $BLD_DIR
-gcovr -r $SRC_DIR .
+gcovr -r $SRC_DIR . --txt example_cmake.txt
 #END cmake_gcovr
 )

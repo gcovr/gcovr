@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install nox
+          python -m pip install nox requests
       - name: Lint files
         run: |
           nox --non-interactive --session lint
@@ -78,6 +78,17 @@ jobs:
       - name: Generate documentation
         run: |
           nox --non-interactive --session doc
+
+          # Check if files are modified (outdated screenshots)
+          Status=$(git status --porcelain | grep -F '.jpeg' || exit 0)
+          if [ -n "$Status" ] ; then
+            echo "Following files are modified:"
+            echo "$Status"
+
+            echo "Please regenerate the screenshots!"
+            exit 1
+          fi
+          exit 0
       - name: Test bundle of app
         run: |
           nox --non-interactive --session bundle_app

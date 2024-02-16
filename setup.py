@@ -54,6 +54,7 @@ setup(
     install_requires=[
         "jinja2",
         "lxml",
+        "colorlog",
         "pygments>=2.13.0",
         "tomli >= 1.1.0 ; python_version < '3.11'",
     ],

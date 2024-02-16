@@ -43,7 +43,7 @@ from .utils import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
     configure_logging,
-    switch_to_logging_format_with_threads,
+    update_logging_formatter,
 )
 from .version import __version__
 from .coverage import CovData, SummarizedStats
@@ -219,9 +219,9 @@ def main(args=None):
     # load the config
     cfg_options = load_config(cli_options)
     options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
+
     # Reconfigure the logging.
-    if options.gcov_parallel > 1:
-        switch_to_logging_format_with_threads()
+    update_logging_formatter(options)
 
     if options.verbose:
         LOGGER.setLevel(logging.DEBUG)

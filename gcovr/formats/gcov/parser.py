@@ -87,7 +87,7 @@ def _line_pattern(pattern: str) -> Pattern[str]:
     * the pattern is anchored at the start/end
     * space is replaced by ``[ ]+``
     """
-    pattern = pattern.replace(" ", r"[ ]+")
+    pattern = pattern.replace(" ", r" +")
     pattern = pattern.replace("INT", r"[0-9]+")
     pattern = pattern.replace("VALUE", r"(?:NAN %|-?[0-9.]+[%kMGTPEZY]?)")
     return re.compile("^" + pattern + "$")
@@ -104,7 +104,7 @@ _RE_UNCONDITIONAL_LINE = _line_pattern(
     r"unconditional (INT) (?:taken (VALUE)|never executed)"
 )
 _RE_SOURCE_LINE = _line_pattern(r"(?: )?(VALUE[*]?|-|[#]{5}|[=]{5}):(?: )?(INT):(.*)")
-_RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5}|[%]{5}): (INT)-block (INT)")
+_RE_BLOCK_LINE = _line_pattern(r"(?: )?(VALUE|[$]{5}|[%]{5}):(?: )?(INT)-block (INT)")
 
 
 class _ExtraInfo(enum.Flag):
@@ -574,6 +574,8 @@ def _parse_line(
     _SourceLine(hits=12, lineno=13, source_code='foo += 1;  ', extra_info=NONE)
     >>> _parse_line(' #####: 13:foo += 1;')
     _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=NONE)
+    >>> _parse_line(' #####:10000:foo += 1;')  # see https://github.com/gcovr/gcovr/issues/882
+    _SourceLine(hits=0, lineno=10000, source_code='foo += 1;', extra_info=NONE)
     >>> _parse_line(' =====: 13:foo += 1;')
     _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=EXCEPTION_ONLY)
     >>> _parse_line('   12*: 13:cond ? f() : g();')
@@ -662,6 +664,8 @@ def _parse_line(
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=NONE)
     >>> _parse_line(' $$$$$: 33-block  1')
     _BlockLine(hits=0, lineno=33, blockno=1, extra_info=EXCEPTION_ONLY)
+    >>> _parse_line(' %%%%%:10000-block  0')  # see https://github.com/gcovr/gcovr/issues/882
+    _BlockLine(hits=0, lineno=10000, blockno=0, extra_info=NONE)
     >>> _parse_line('     -1: 32-block  0', ignore_parse_errors=set(['negative_hits.warn']))
     _BlockLine(hits=0, lineno=32, blockno=0, extra_info=NONE)
     >>> _parse_line('     1: 9-block with some unknown format')
