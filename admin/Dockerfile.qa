@@ -39,9 +39,9 @@ else
 fi
 python3 --version
 
-# Install pip and nox
+# Install pip, nox and requests
 if [ "$DOCKER_OS" = "ubuntu:23.04" ]; then
-  apt-get install -y python3-pip python3-nox
+  apt-get install -y python3-pip python3-nox python3-requests
 else
   # Install dependencies.
   #
@@ -55,7 +55,7 @@ else
   python3 get-pip.py
   rm get-pip.py
   python3 -m pip install --upgrade pip
-  python3 -m pip install --no-cache-dir nox
+  python3 -m pip install --no-cache-dir nox requests
 fi
 EOS
 

@@ -17,9 +17,9 @@
 #
 # ****************************************************************************
 
+import platform
 import logging
 import os
-import sys
 
 import pytest
 
@@ -58,7 +58,7 @@ CurrentDrive = os.getcwd()[0:1]
         ),
     ],
 )
-@pytest.mark.skipif(sys.platform != "win32", reason="only for Windows")
+@pytest.mark.skipif(platform.system() != "Windows", reason="only for Windows")
 def test_windows__make_short_sourcename(outfile, source_filename):
     outfile = outfile.replace("C:", CurrentDrive)
     source_filename = source_filename.replace("C:", CurrentDrive)

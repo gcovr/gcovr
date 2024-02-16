@@ -165,7 +165,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python3 -m pip install nox
+          python3 -m pip install nox requests
       - name: Lint files
         run: |
           nox --non-interactive --session lint
@@ -193,7 +193,18 @@ jobs:
       - name: Generate documentation
         if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
         run: |
-          nox --non-interactive --session doc
+          nox --non-interactive --session doc || exit 1
+
+          # Check if files are modified (outdated screenshots)
+          Status=$(git status --porcelain | grep -F '.jpeg' || exit 0)
+          if [ -n "$Status" ] ; then
+            echo "Following files are modified:"
+            echo "$Status"
+
+            echo "Please regenerate the screenshots!"
+            exit 1
+          fi
+          exit 0
       - name: Test bundle of app
         run: |
           nox --non-interactive --session bundle_app
@@ -230,7 +241,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python3 -m pip install nox
+          python3 -m pip install nox requests
       - uses: actions/checkout@v4
       - name: Build Docker
         run: |

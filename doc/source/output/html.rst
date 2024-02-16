@@ -12,10 +12,10 @@ HTML output using the :option:`--html<gcovr --html>` option:
     :end-before: #END gcovr html
 
 This generates a HTML summary of the lines executed.  In this
-example, the file ``example1.html`` is generated, which has the
+example, the file ``example_html.html`` is generated, which has the
 following output:
 
-.. image:: ../../images/screenshot-html.png
+.. image:: ../../images/screenshot-html.jpeg
     :align: center
 
 The default behavior of the :option:`--html<gcovr --html>` option is to generate
@@ -33,9 +33,9 @@ the following command:
     :start-after: #BEGIN gcovr html details
     :end-before: #END gcovr html details
 
-This generates the following HTML page for the file ``example1.cpp``:
+This generates the following HTML page for the file ``example.cpp``:
 
-.. image:: ../../images/screenshot-html-details.example.cpp.png
+.. image:: ../../images/screenshot-html-details.example.cpp.jpeg
     :align: center
 
 The :option:`--html-nested<gcovr --html-nested>` option is used to create
@@ -61,25 +61,35 @@ of some servers, especially Jenkins.
 
 The :option:`--html-theme<gcovr --html-theme>` option controls the theme and color of html report.
 
-.. figure:: ../../images/screenshot-html-github-green-src.png
+.. figure:: ../../images/screenshot-html-default-green-src.jpeg
+    :align: center
+    
+    :option:`--html-theme green<gcovr --html-theme>`, :option:`--html-theme default.green<gcovr --html-theme>`
+
+.. figure:: ../../images/screenshot-html-default-blue-src.jpeg
     :align: center
 
-:option:`--html-theme github.green<gcovr --html-theme>`
+    :option:`--html-theme blue<gcovr --html-theme>`, :option:`--html-theme default.blue<gcovr --html-theme>`
 
-.. figure:: ../../images/screenshot-html-github-blue-src.png
+.. figure:: ../../images/screenshot-html-github-green-src.jpeg
     :align: center
 
-:option:`--html-theme github.blue<gcovr --html-theme>`
+    :option:`--html-theme github.green<gcovr --html-theme>`
 
-.. figure:: ../../images/screenshot-html-github-dark-green-src.png
+.. figure:: ../../images/screenshot-html-github-blue-src.jpeg
     :align: center
 
-:option:`--html-theme github.dark-green<gcovr --html-theme>`
+    :option:`--html-theme github.blue<gcovr --html-theme>`
 
-.. figure:: ../../images/screenshot-html-github-dark-blue-src.png
+.. figure:: ../../images/screenshot-html-github-dark-green-src.jpeg
     :align: center
 
-:option:`--html-theme github.dark-blue<gcovr --html-theme>`
+    :option:`--html-theme github.dark-green<gcovr --html-theme>`
+
+.. figure:: ../../images/screenshot-html-github-dark-blue-src.jpeg
+    :align: center
+
+    :option:`--html-theme github.dark-blue<gcovr --html-theme>`
 
 The :option:`--html-template-dir<gcovr --html-template-dir>` option allows you to use an
 alternate directory with Jinja2 templates to fully customize the HTML output in detail.

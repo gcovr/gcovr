@@ -120,7 +120,7 @@ text summaries and XML reports.
 
 Example HTML summary:
 
-.. image:: ./doc/images/screenshot-html.png
+.. image:: ./doc/images/screenshot-html.jpeg
 
 Example HTML details:
 

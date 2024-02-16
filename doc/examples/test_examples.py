@@ -22,7 +22,6 @@ import os
 import platform
 import pytest
 import subprocess
-import sys
 
 from gcovr.tests.test_gcovr import SCRUBBERS, assert_equals
 
@@ -47,7 +46,7 @@ def is_compiler(actual: str, *expected: str) -> bool:
 
 
 def find_test_cases():
-    if sys.platform.startswith("win"):
+    if platform.system() == "Windows":
         return
     for script in glob.glob(datadir + "/*.sh"):
         basename = os.path.basename(script)
@@ -75,22 +74,18 @@ def test_example(example):
     cmd = example.script
     baseline_file = example.baseline
     scrub = SCRUBBERS[example.format]
+    # Read old file
+    with open(baseline_file, newline="") as f:
+        baseline = scrub(f.read())
 
     startdir = os.getcwd()
     os.chdir(datadir)
-    output = subprocess.check_output(cmd).decode().replace("\r\n", "\n")
-    scrubbed_output = scrub(output)
-    with open(baseline_file) as f:
-        baseline = scrub(f.read())
+    subprocess.run(cmd)
+    with open(baseline_file, newline="") as f:
+        current = scrub(f.read())
+    current = scrub(current)
 
-    try:
-        assert_equals(
-            baseline_file, baseline, "<STDOUT>", scrubbed_output, encoding="utf8"
-        )
-    except AssertionError:  # pragma: no cover
-        with open(baseline_file, "w", encoding="utf8") as out:
-            out.write(output)
-        raise
+    assert_equals(baseline_file, baseline, "<STDOUT>", current, encoding="utf8")
     os.chdir(startdir)
 
 

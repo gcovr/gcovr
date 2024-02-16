@@ -15,7 +15,7 @@ ${CXX:-g++} -fprofile-arcs -ftest-coverage -fPIC -O0 example.cpp -o program
 ./program
 
 #BEGIN gcovr html
-gcovr --html
+gcovr --html example_html.html
 #END gcovr html
 
 #BEGIN gcovr html details
