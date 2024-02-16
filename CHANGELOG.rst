@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add support for colored logging. (:issue:`887`)
+
 Bug fixes and small improvements:
 
 - Add support for files with more than 9999 lines. (:issue:`883`, fixes :issue:`882``) 

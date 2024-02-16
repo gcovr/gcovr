@@ -51,7 +51,7 @@ setup(
     platforms=["any"],
     python_requires=">=3.8",
     packages=find_packages(include=["gcovr*"], exclude=["gcovr.tests"]),
-    install_requires=["jinja2", "lxml", "pygments>=2.13.0"],
+    install_requires=["jinja2", "lxml", "pygments>=2.13.0", "colorlog"],
     package_data={
         "gcovr": [
             "formats/html/*/*.css",

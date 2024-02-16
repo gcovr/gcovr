@@ -386,6 +386,26 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "no_color",
+        ["--no-color"],
+        help=(
+            "Turn off colored logging."
+            " Is also set if environment variable NO_COLOR is present."
+            " Ignored if --force-color is used."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "force_color",
+        ["--force-color"],
+        help=(
+            "Force colored logging, this is the default for a terminal."
+            " Is also set if environment variable FORCE_COLOR is present."
+            " Has presedence over --no-color."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "root",
         ["-r", "--root"],
         help=(
