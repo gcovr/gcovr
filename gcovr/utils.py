@@ -331,9 +331,7 @@ def update_logging_formatter(options: Options) -> None:
     if len(logging.getLogger().handlers) == 1 and (
         logging.getLogger().handlers[0].formatter._fmt == LOG_FORMAT
     ):
-        logging.getLogger().handlers[0].setFormatter(
-            __colored_formatter(options)
-        )
+        logging.getLogger().handlers[0].setFormatter(__colored_formatter(options))
 
 
 @contextmanager
