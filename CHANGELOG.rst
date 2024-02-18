@@ -13,6 +13,7 @@ Breaking changes:
 New features and notable changes:
 
 - Add support for colored logging. (:issue:`887`)
+- Add support for TOML configuration format. (:issue:`881`) 
 
 Bug fixes and small improvements:
 

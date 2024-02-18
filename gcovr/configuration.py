@@ -811,6 +811,39 @@ def parse_config_file(
         yield ConfigEntry(key, value, filename=filename, lineno=lineno)
 
 
+def config_entries_from_dict(
+    config: Dict[str, Any],
+    filename: str,
+) -> Iterable[ConfigEntry]:
+    r"""
+    Generate config entries from a dictionary
+
+    Yields: ConfigEntry
+
+    Example: basic syntax.
+
+    >>> import io
+    >>> cfg = {
+    ...     'key': ['value', 'can have multiple values'],
+    ...     'another-key': '',
+    ...     'optional': 'spaces',
+    ... }
+    >>> for entry in config_entries_from_dict(cfg, 'test.cfg'):
+    ...     print(entry)
+    test.cfg: ??: key = value
+    test.cfg: ??: key = can have multiple values
+    test.cfg: ??: another-key = # empty
+    test.cfg: ??: optional = spaces
+    """
+
+    for key, value in config.items():
+        if isinstance(value, list):
+            for inner_value in value:
+                yield ConfigEntry(key, inner_value, filename=filename)
+        else:
+            yield ConfigEntry(key, value, filename=filename)
+
+
 @dataclass
 class ConfigEntry:
     """A "key = value" config file entry."""
@@ -856,6 +889,8 @@ class ConfigEntry:
         Traceback (most recent call last):
         ValueError: <config>: ??: k: boolean option must be "yes" or "no"
         """
+        if isinstance(self.value, bool):
+            return self.value
         value = self.value
         if value == "yes":
             return True

@@ -21,13 +21,20 @@ import logging
 import os
 import re
 import sys
-import io
 
 from argparse import ArgumentParser
 import traceback
+from typing import Iterable
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 from .configuration import (
+    ConfigEntry,
     argument_parser_setup,
+    config_entries_from_dict,
     merge_options_and_set_defaults,
     parse_config_file,
     parse_config_into_dict,
@@ -160,21 +167,44 @@ COPYRIGHT = (
 )
 
 
-def find_config_name(partial_options):
-    cfg_name = getattr(partial_options, "config", None)
-    if cfg_name is not None:
-        return cfg_name
-
-    root = getattr(partial_options, "root", "")
+def find_config_name(root: str, filename: str):
     if root:
-        cfg_name = os.path.join(root, "gcovr.cfg")
+        filename = os.path.join(root, filename)
     else:
-        cfg_name = "gcovr.cfg"
+        filename = filename
 
-    if os.path.isfile(cfg_name):
-        return cfg_name
+    if os.path.isfile(filename):
+        return filename
 
     return None
+
+
+def load_config(partial_options) -> Iterable[ConfigEntry]:
+    """Load a configfile if configured or found by default names"""
+    filename = getattr(partial_options, "config", None)
+    if filename is not None:
+        with open(filename, encoding="UTF-8") as buf:
+            return parse_config_into_dict(parse_config_file(buf, filename))
+
+    root = getattr(partial_options, "root", "")
+    if filename := find_config_name(root, "gcovr.cfg"):
+        with open(filename, encoding="UTF-8") as buf:
+            return parse_config_into_dict(parse_config_file(buf, filename))
+
+    if filename := find_config_name(root, "gcovr.toml"):
+        with open(filename, "rb") as buf:
+            data = tomllib.load(buf)
+        return parse_config_into_dict(config_entries_from_dict(data, filename))
+
+    if filename := find_config_name(root, "pyproject.toml"):
+        with open(filename, "rb") as buf:
+            data = tomllib.load(buf)
+        if (gcovr_section := data.get("tool", {}).get("gcovr")) is not None:
+            return parse_config_into_dict(
+                config_entries_from_dict(gcovr_section, filename)
+            )
+
+    return {}
 
 
 def main(args=None):
@@ -187,13 +217,7 @@ def main(args=None):
         sys.exit(EXIT_SUCCESS)
 
     # load the config
-    cfg_name = find_config_name(cli_options)
-    cfg_options = {}
-    if cfg_name is not None:
-        with io.open(cfg_name, encoding="UTF-8") as cfg_file:
-            cfg_options = parse_config_into_dict(
-                parse_config_file(cfg_file, filename=cfg_name)
-            )
+    cfg_options = load_config(cli_options)
     options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
 
     # Reconfigure the logging.
