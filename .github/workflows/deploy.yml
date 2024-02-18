@@ -111,3 +111,39 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
           python -m nox --session upload_wheel
+
+  tagging:
+    runs-on: ubuntu-22.04
+    needs: deploy
+    permissions:
+      contents: write  # Needed for pushing the tag
+    if: ${{ success() && (github.event.ref == 'refs/heads/main') }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch all tags  # need to prevent creation of an existing tag
+        run: |
+          git fetch --force --tags --depth=1
+      - name: Apply new tag if version is bumped
+        run: |
+          set -e
+          
+          # Set git user info
+          git config --global user.email "noreply@gcovr.com"
+          git config --global user.name "gcovr authors"
+
+          # Get the version
+          Version="$(sed -n 's/__version__.*"\(.*\)"/\1/ p' gcovr/version.py)"
+
+          # Try to create the tag and print the output. It's only pushed if it's a real release
+          git tag -a "$Version" -m "$Version ($(date -I))"
+          git tag --list -n "$Version"
+          
+          # Check if it is a new release
+          VersionPostfix="$(echo "$Version" | sed -n 's/^[0-9]*\.[0-9]*// p')"
+          if [ -z "$VersionPostfix" ]; then
+            echo "New version bumped"
+            git push origin "refs/tags/$Version"
+          else
+            echo "Skip pushing tag for development build"
+          fi
