@@ -76,7 +76,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         lines = etree.SubElement(c, "lines")
 
         # TODO should use FileCoverage.branch_coverage() calculation
-        class_branch = CoverageStat(0, 0)
+        class_branch = CoverageStat.new_empty()
         for lineno in sorted(data.lines):
             line_cov = data.lines[lineno]
             if not line_cov.is_reportable:
