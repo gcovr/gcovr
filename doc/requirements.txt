@@ -2,3 +2,7 @@ sphinx
 sphinx_rtd_theme
 sphinxcontrib-autoprogram >= 0.1.5
 rst2html5
+jinja2
+lxml
+colorlog
+pygments>=2.13.0

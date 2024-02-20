@@ -33,6 +33,7 @@ import nox
 from contextlib import ExitStack
 
 
+GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 ALL_COMPILER_VERSIONS = [
     "gcc-5",
     "gcc-6",
@@ -211,10 +212,16 @@ def doc(session: nox.Session) -> None:
     session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
 
+    if not GCOVR_ISOLATED_TEST:
+        docker_build_compiler(session, "gcc-8")
+        session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
+        docker_run_compiler(session, "gcc-8")
+
     # Build the Sphinx documentation
-    session.chdir("doc")
-    session.run("make", "html", "O=-W", external=True)
-    session.chdir("..")
+    with session.chdir("doc"):
+        with open("examples/gcovr.out", "w") as fh_out:
+            session.run("gcovr", "-h", stdout=fh_out)
+        session.run("sphinx-build", "-M", "html", "source", "build", "-W")
 
     # Ensure that the README builds fine as a standalone document.
     readme_html = session.create_tmp() + "/README.html"
