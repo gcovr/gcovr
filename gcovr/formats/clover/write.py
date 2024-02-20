@@ -30,7 +30,7 @@ from ...utils import (
     open_binary_for_writing,
     presentable_filename,
 )
-from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
+from ...coverage import CovData, LineCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -38,7 +38,6 @@ LOGGER = logging.getLogger("gcovr")
 def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce an XML report in the Cobertura format"""
 
-    stats = SummarizedStats.from_covdata(covdata)
     timestamp = str(int(options.timestamp.timestamp()))
 
     root = etree.Element("coverage")
@@ -51,6 +50,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     project_elem.set("timestamp", timestamp)
     project_metrics = _metrics_element()
     project_elem.append(project_metrics)
+    project_data = ProjectData(0, 0, 0, 0)
 
     # Generate the coverage output (on a per-package basis)
     packages: Dict[str, PackageData] = {}
@@ -63,9 +63,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         else:
             directory, fname = "root", filename
 
-        package_elem = packages.setdefault(
+        package_data = packages.setdefault(
             directory,
-            PackageData({}, CoverageStat.new_empty(), 0, 0),
+            PackageData({}, 0, 0, 0),
         )
         file_elem = etree.Element("file")
         file_metrics = _metrics_element()
@@ -86,36 +86,51 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
                 covered_elements += 1
             file_elem.append(_line_element(line_cov))
 
-        stats = SummarizedStats.from_file(data)
-
         file_elem.set("name", fname)
         file_elem.set("path", filename)
 
         file_metrics.set("classes", "1")
         file_metrics.set("loc", str(lineno))
         file_metrics.set("ncloc", str(ncloc))
+        file_metrics.set("elements", str(ncloc))
         file_metrics.set("coveredelements", str(covered_elements))
 
-        package_elem.files_xml[fname] = file_elem
-        package_elem.line += stats.line
-        package_elem.loc += lineno
-        package_elem.ncloc += ncloc
+        class_metrics.set("elements", str(ncloc))
+        class_metrics.set("coveredelements", str(covered_elements))
+
+        package_data.files_xml[fname] = file_elem
+        package_data.loc += lineno
+        package_data.ncloc += ncloc
+        package_data.covered_elements += covered_elements
+
+        project_data.files += 1
+        project_data.loc += lineno
+        project_data.ncloc += ncloc
+        project_data.covered_elements += covered_elements
 
     project_metrics.set("packages", str(len(packages)))
+    project_metrics.set("classes", str(project_data.files))
+    project_metrics.set("files", str(project_data.files))
+    project_metrics.set("loc", str(project_data.loc))
+    project_metrics.set("ncloc", str(project_data.ncloc))
+    project_metrics.set("elements", str(project_data.ncloc))
+    project_metrics.set("coveredelements", str(project_data.covered_elements))
 
-    for packageName in sorted(packages):
-        packageData = packages[packageName]
+    for package_name in sorted(packages):
+        package_data = packages[package_name]
         package_elem = etree.SubElement(project_elem, "package")
         package_metrics = _metrics_element()
         package_elem.append(package_metrics)
-        number_files = str(len(packageData.files_xml))
-        package_metrics.set("files", number_files)
+        number_files = str(len(package_data.files_xml))
         package_metrics.set("classes", number_files)
-        package_metrics.set("loc", str(packageData.loc))
-        package_metrics.set("ncloc", str(packageData.ncloc))
-        for fname in sorted(packageData.files_xml):
-            package_elem.append(packageData.files_xml[fname])
-        package_elem.set("name", packageName.replace("/", "."))
+        package_metrics.set("files", number_files)
+        package_metrics.set("loc", str(package_data.loc))
+        package_metrics.set("ncloc", str(package_data.ncloc))
+        package_metrics.set("elements", str(package_data.ncloc))
+        package_metrics.set("coveredelements", str(package_data.covered_elements))
+        for fname in sorted(package_data.files_xml):
+            package_elem.append(package_data.files_xml[fname])
+        package_elem.set("name", package_name.replace("/", "."))
 
     # WTH is this needed???
     testproject_elem = etree.SubElement(root, "testproject")
@@ -150,11 +165,19 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
 
 @dataclass
-class PackageData:
-    files_xml: Dict[str, etree.Element]
-    line: CoverageStat
+class ProjectData:
+    files: int
     loc: int
     ncloc: int
+    covered_elements: int
+
+
+@dataclass
+class PackageData:
+    files_xml: Dict[str, etree.Element]
+    loc: int
+    ncloc: int
+    covered_elements: int
 
 
 def _metrics_element() -> etree.Element:
