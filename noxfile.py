@@ -216,7 +216,7 @@ def doc(session: nox.Session) -> None:
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
         docker_run_compiler(session, "gcc-8")
-    
+
     # Build the Sphinx documentation
     with session.chdir("doc"):
         with open("examples/gcovr.out", "w") as fh_out:
