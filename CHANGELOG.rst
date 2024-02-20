@@ -18,6 +18,7 @@ New features and notable changes:
 Bug fixes and small improvements:
 
 - Add support for files with more than 9999 lines. (:issue:`883`, fixes :issue:`882`) 
+- Do not suppress gcov errors if exception occur. (:issue:`889`) 
 
 Documentation:
 

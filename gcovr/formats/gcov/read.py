@@ -51,7 +51,7 @@ source_error_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open (?:source|graph) file|: No such file or directory)"
 )
 output_error_re = re.compile(
-    r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied)"
+    r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied|Read-only file system)"
 )
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
@@ -723,15 +723,16 @@ def run_gcov_and_process_files(
                 if os.path.exists(filepath):
                     os.remove(filepath)
 
-    except Exception:
-        LOGGER.error(
+    except Exception as exc:
+        done = False
+        error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
             f"Stdout of gcov was >>{out}<< End of stdout\n"
             f"Stderr of gcov was >>{err}<< End of stderr\n"
+            f"Exception was >>{str(exc)}<< End of stderr\n"
             f"Current processed gcov file was {fname!r}.\n"
             "Use option --verbose to get extended information."
         )
-        raise
 
     return done
 
