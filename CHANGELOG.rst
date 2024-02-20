@@ -29,6 +29,7 @@ Internal changes:
 - Improve Dockerfile for faster rebuilds by using cache. (:issue:`878`)
 - Fix deprecation warnings from GitHub actions. (:issue:`880`) 
 - Add pipeline job to apply tag if new version is bumped. (:issue:`879`)
+- Improve test coverage and generate coverage report if executed in local environment. (:issue:`890`) 
 
 7.0 (25 January 2024)
 ---------------------
