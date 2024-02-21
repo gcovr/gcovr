@@ -290,10 +290,7 @@ def test_html_details_and_html_nested(caplog):
     c = log_capture(caplog, ["--output", "x", "--html-details", "--html-nested"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "--html-details and --html-nested can not be used together."
-    )
+    assert message[2] == "--html-details and --html-nested can not be used together."
     assert c.exception.code != 0
 
 
@@ -370,7 +367,9 @@ def test_filter_backslashes_are_detected(caplog):
     assert message[2].startswith("did you mean: C:/foo/moo")
     message = c.record_tuples[3]
     assert message[1] == logging.ERROR
-    assert message[2].startswith("Error setting up filter 'C:\\\\foo\\moo': bad escape \m at position 7")
+    assert message[2].startswith(
+        "Error setting up filter 'C:\\\\foo\\moo': bad escape \m at position 7"
+    )
 
 
 def test_html_css_not_exists(capsys):
