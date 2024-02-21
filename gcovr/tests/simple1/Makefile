@@ -7,7 +7,7 @@ FAIL_UNDER_LINE := $(shell cat reference/$(CC_REFERENCE)$(if $(filter $(BASE_OS)
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt cobertura html sonarqube jacoco json json_summary coveralls
+run: txt clover cobertura html sonarqube jacoco json json_summary coveralls
 
 txt:
 	./testcase
@@ -32,6 +32,10 @@ txt:
 	grep -F "failed minimum function coverage" fail_under.stderr; test $$? -eq 1
 	# generate actual output
 	$(GCOVR) -d --txt -o coverage.txt
+
+clover:
+	./testcase
+	$(GCOVR) -d --clover-pretty --clover clover.xml
 
 cobertura:
 	./testcase

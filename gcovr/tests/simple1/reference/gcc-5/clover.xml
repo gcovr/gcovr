@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<coverage clover="1706291558" generated="1706291558">
+  <project timestamp="0">
+    <metrics complexity="0" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="1" classes="1" files="1" loc="29" ncloc="12"/>
+    <package name="root">
+      <metrics complexity="0" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="29" ncloc="12"/>
+      <file name="main.cpp" path="main.cpp">
+        <metrics complexity="0" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="29" ncloc="12"/>
+        <class name="id$118fcbaaba162ba17933c7893247df3a">
+          <metrics complexity="0" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+        </class>
+        <line num="3" type="stmt" count="0"/>
+        <line num="4" type="stmt" count="0"/>
+        <line num="7" type="stmt" count="1"/>
+        <line num="8" type="stmt" count="1"/>
+        <line num="9" type="stmt" count="0"/>
+        <line num="11" type="stmt" count="1"/>
+        <line num="16" type="stmt" count="1"/>
+        <line num="20" type="stmt" count="1"/>
+        <line num="21" type="stmt" count="1"/>
+        <line num="25" type="stmt" count="0"/>
+        <line num="28" type="stmt" count="1"/>
+        <line num="29" type="stmt" count="4"/>
+      </file>
+    </package>
+  </project>
+  <testproject timestamp="0">
+    <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+    <package name="dummy">
+      <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+      <file name="dummy" path="dummy">
+        <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+        <class name="id$275876e34cf609db118f3d84b799a790">
+          <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+        </class>
+      </file>
+    </package>
+  </testproject>
+</coverage>

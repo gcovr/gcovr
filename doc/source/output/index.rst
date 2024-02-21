@@ -10,12 +10,13 @@ that are documented on the following pages.
 
    txt
    html
+   csv
+   json
+   clover
    cobertura
+   coveralls
    sonarqube
    jacoco
-   json
-   csv
-   coveralls
    lcov
 
 You can use :ref:`multiple output formats` at the same time.

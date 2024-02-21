@@ -39,17 +39,9 @@ The ``gcovr`` command can produce different kinds of coverage reports:
      - |abstract-guide-html-template-dir|
      - use custom set of Jinja2 templates
 
-   * - |abstract-option-cobertura|
-     - |abstract-guide-cobertura|
-     - machine readable XML reports in Cobertura_ format
-
-   * - |abstract-option-sonarqube|
-     - |abstract-guide-sonarqube|
-     - machine readable XML reports in SonarQube format
-
-   * - |abstract-option-jacoco|
-     - |abstract-guide-jacoco|
-     - machine readable XML reports in JaCoCo_ format
+   * - |abstract-option-csv|
+     - |abstract-guide-csv|
+     - CSV report summarizing the coverage of each file
 
    * - |abstract-option-json|
      - |abstract-guide-json|
@@ -59,17 +51,30 @@ The ``gcovr`` command can produce different kinds of coverage reports:
      - |abstract-guide-json-summary|
      - JSON summary coverage report
 
-   * - |abstract-option-csv|
-     - |abstract-guide-csv|
-     - CSV report summarizing the coverage of each file
+   * - |abstract-option-clover|
+     - |abstract-guide-clover|
+     - machine readable XML reports in Clover_ format
+
+   * - |abstract-option-cobertura|
+     - |abstract-guide-cobertura|
+     - machine readable XML reports in Cobertura_ format
 
    * - |abstract-option-coveralls|
      - |abstract-guide-coveralls|
      - machine readable JSON report in Coveralls_ format
 
+   * - |abstract-option-jacoco|
+     - |abstract-guide-jacoco|
+     - machine readable XML reports in JaCoCo_ format
+
    * - |abstract-option-lcov|
      - |abstract-guide-lcov|
-     - machine readable JSON report in LCOV_ format
+     - machine readable report in LCOV_ info format
+
+   * - |abstract-option-sonarqube|
+     - |abstract-guide-sonarqube|
+     - machine readable XML reports in SonarQube_ format
+
 
 Thus, gcovr can be viewed
 as a command-line alternative to the lcov_ utility, which runs gcov
@@ -79,10 +84,12 @@ text summaries and XML reports.
 
 .. _gcov: https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
 .. _coverage.py: https://coverage.readthedocs.io/en/stable/
+.. _clover: https://bitbucket.org/atlassian/clover/src/master/
 .. _cobertura: http://cobertura.sourceforge.net/
-.. _jacoco: https://www.eclemma.org/jacoco/
-.. _lcov: http://ltp.sourceforge.net/coverage/lcov.php
 .. _coveralls: https://coveralls.io/
+.. _jacoco: https://www.eclemma.org/jacoco/
+.. _lcov: https://github.com/linux-test-project/lcov
+.. _sonarqube: https://www.sonarsource.com/products/sonarqube/
 
 .. end abstract
 
@@ -95,27 +102,31 @@ text summaries and XML reports.
 .. |abstract-option-html-details| replace:: ``--html-details``
 .. |abstract-option-html-nested| replace:: ``--html-nested``
 .. |abstract-option-html-template-dir| replace:: ``--html-template-dir``
-.. |abstract-option-cobertura| replace:: ``--cobertura``
-.. |abstract-option-sonarqube| replace:: ``--sonarqube``
-.. |abstract-option-jacoco| replace:: ``--jacoco``
+.. |abstract-option-csv| replace:: ``--csv``
 .. |abstract-option-json| replace:: ``--json``
 .. |abstract-option-json-summary| replace:: ``--json-summary``
-.. |abstract-option-csv| replace:: ``--csv``
+
+.. |abstract-option-clover| replace:: ``--clover``
+.. |abstract-option-cobertura| replace:: ``--cobertura``
 .. |abstract-option-coveralls| replace:: ``--coveralls``
+.. |abstract-option-jacoco| replace:: ``--jacoco``
 .. |abstract-option-lcov| replace:: ``--lcov``
+.. |abstract-option-sonarqube| replace:: ``--sonarqube``
 
 .. |abstract-guide-txt| replace:: `Text Output <https://gcovr.com/en/stable/output/txt.html>`__
 .. |abstract-guide-html| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
 .. |abstract-guide-html-details| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
 .. |abstract-guide-html-template-dir| replace:: `HTML Output <https://gcovr.com/en/stable/output/html.html>`__
-.. |abstract-guide-cobertura| replace:: `Cobertura XML Output <https://gcovr.com/en/stable/output/cobertura.html>`__
-.. |abstract-guide-sonarqube| replace:: `SonarQube XML Output <https://gcovr.com/en/stable/output/sonarqube.html>`__
-.. |abstract-guide-jacoco| replace:: `JaCoCo XML Output <https://gcovr.com/en/stable/output/jacoco.html>`__
+.. |abstract-guide-csv| replace:: `CSV Output <https://gcovr.com/en/stable/output/csv.html>`__
 .. |abstract-guide-json| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
 .. |abstract-guide-json-summary| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
-.. |abstract-guide-csv| replace:: `CSV Output <https://gcovr.com/en/stable/output/csv.html>`__
+
+.. |abstract-guide-clover| replace:: `Clover XML Output <https://gcovr.com/en/stable/output/clover.html>`__
+.. |abstract-guide-cobertura| replace:: `Cobertura XML Output <https://gcovr.com/en/stable/output/cobertura.html>`__
 .. |abstract-guide-coveralls| replace:: `Coveralls JSON Output <https://gcovr.com/en/stable/output/coveralls.html>`__
+.. |abstract-guide-jacoco| replace:: `JaCoCo XML Output <https://gcovr.com/en/stable/output/jacoco.html>`__
 .. |abstract-guide-lcov| replace:: `LCOV info Output <https://gcovr.com/en/stable/output/lcov.html>`__
+.. |abstract-guide-sonarqube| replace:: `SonarQube XML Output <https://gcovr.com/en/stable/output/sonarqube.html>`__
 
 
 Example HTML summary:

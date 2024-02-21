@@ -249,6 +249,7 @@ KNOWN_FORMATS = [
     "json_summary",
     "csv",
     # Other formats
+    "clover",
     "cobertura",
     "coveralls",
     "jacoco",
@@ -482,6 +483,7 @@ SCRUBBERS = dict(
     json_summary=lambda x: x,
     csv=scrub_csv,
     # Other formats
+    clover=scrub_xml,
     cobertura=scrub_xml,
     coveralls=scrub_coveralls,
     jacoco=scrub_xml,
@@ -497,6 +499,7 @@ OUTPUT_PATTERN = dict(
     json_summary=["summary_coverage*.json"],
     csv=["coverage*.csv"],
     # Other formats
+    clover=["clover*.xml"],
     cobertura=["cobertura*.xml"],
     coveralls=["coveralls*.json"],
     jacoco=["jacoco*.xml"],

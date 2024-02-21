@@ -2,6 +2,7 @@
 coverage*.txt
 coverage*.json
 summary_coverage*.json
+clover*.xml
 cobertura*.xml
 sonarqube*.xml
 coverage*.csv

@@ -5,11 +5,11 @@ ${CXX:-g++} -fprofile-arcs -ftest-coverage -fPIC -O0 example.cpp -o program
 ./program
 
 #BEGIN gcovr
-gcovr --cobertura-pretty --cobertura example_cobertura.xml
+gcovr --clover-pretty --clover example_clover.xml
 #END gcovr
 
 rm -f program *.gc*
 
 if [[ "$OSTYPE" != "msys" ]]; then
-xmllint --noout --nowarning --dtdvalid $PWD/../../gcovr/tests/cobertura.coverage-04.dtd example_cobertura.xml || exit 1
+xmllint --noout --nowarning --schema $PWD/../../gcovr/tests/clover.xsd example_clover.xml || exit 1
 fi
