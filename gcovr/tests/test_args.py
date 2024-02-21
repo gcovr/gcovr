@@ -368,7 +368,7 @@ def test_filter_backslashes_are_detected(caplog):
     message = c.record_tuples[3]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "Error setting up filter 'C:\\\\foo\\moo': bad escape \m at position 7"
+        "Error setting up filter 'C:\\\\foo\\moo': bad escape \\m at position 7"
     )
 
 
