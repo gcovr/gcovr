@@ -1,11 +1,14 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage main.cpp switch_test.cpp -o testcase
 
-run: html txt json
+run: html txt json json_summary
 
 coverage.json:
 	./testcase
 	$(GCOVR) --keep --verbose --decisions --json-pretty --json -o coverage.json
+
+json_summary: coverage.json
+	$(GCOVR) --keep --verbose -a coverage.json --decisions --json-summary-pretty -o summary_coverage.json
 
 html: coverage.json
 	$(GCOVR) --verbose -a coverage.json --decisions --html-details -o coverage.html
@@ -13,7 +16,7 @@ html: coverage.json
 txt: coverage.json
 	$(GCOVR) --verbose -a coverage.json --txt-metric decision -o coverage.txt
 
-json: coverage.json
+json: coverage.json summary_coverage.json
 	# pass
 
 clean:
