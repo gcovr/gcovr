@@ -16,7 +16,7 @@ html: coverage.json
 txt: coverage.json
 	$(GCOVR) --verbose -a coverage.json --txt-metric decision -o coverage.txt
 
-json: coverage.json summary_coverage.json
+json: coverage.json
 	# pass
 
 clean:
