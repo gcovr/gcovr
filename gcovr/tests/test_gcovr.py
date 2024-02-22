@@ -64,7 +64,8 @@ CC = os.path.split(env["CC"])[1]
 
 IS_MACOS = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
-if IS_WINDOWS:
+if IS_WINDOWS:  # pragma: no cover
+    # This is only covered on Windows
     import win32api
     import string
 
@@ -85,7 +86,7 @@ REFERENCE_DIR_VERSION_LIST = (
     if "gcc" in CC_REFERENCE
     else ["clang-10", "clang-13", "clang-14", "clang-15"]
 )
-for ref in REFERENCE_DIR_VERSION_LIST:
+for ref in REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
     REFERENCE_DIRS.append(os.path.join("reference", ref))
     if platform.system() != "Linux":
         REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
@@ -237,7 +238,8 @@ def compiled(request, name):
     assert run(["make", "clean"], cwd=path)
     assert run(["make", "all"], cwd=path)
     yield name
-    if not skip_clean:
+    if not skip_clean:  # pragma: no cover
+        # In the automated tests skip_clean is always False.
         assert run(["make", "clean"], cwd=path)
 
 

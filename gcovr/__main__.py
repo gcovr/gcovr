@@ -110,7 +110,7 @@ def fail_under(
 
     function_nok = False
     if threshold_function > 0.0:
-        # Allow data with no decisions.
+        # Allow data with no functions.
         percent_function = stats.function.percent_or(100.0)
         if percent_function < threshold_function:
             function_nok = True
@@ -324,38 +324,41 @@ def main(args=None):
     #
     # Setup filters
     #
+    try:
+        # The root filter isn't technically a filter,
+        # but is used to turn absolute paths into relative paths
+        options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
-    # The root filter isn't technically a filter,
-    # but is used to turn absolute paths into relative paths
-    options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
+        if options.gcov_exclude_dirs:
+            options.gcov_exclude_dirs = [
+                f.build_filter() for f in options.gcov_exclude_dirs
+            ]
 
-    if options.gcov_exclude_dirs is not None:
-        options.gcov_exclude_dirs = [
-            f.build_filter() for f in options.gcov_exclude_dirs
-        ]
+        options.exclude = [f.build_filter() for f in options.exclude]
+        options.filter = [f.build_filter() for f in options.filter]
+        if not options.filter:
+            options.filter = [DirectoryPrefixFilter(options.root_dir)]
 
-    options.exclude = [f.build_filter() for f in options.exclude]
-    options.filter = [f.build_filter() for f in options.filter]
-    if not options.filter:
-        options.filter = [DirectoryPrefixFilter(options.root_dir)]
+        options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
+        options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
+        if not options.gcov_filter:
+            options.gcov_filter = [AlwaysMatchFilter()]
 
-    options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
-    options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
-    if not options.gcov_filter:
-        options.gcov_filter = [AlwaysMatchFilter()]
-
-    # Output the filters for debugging
-    for name, filters in [
-        ("--root", [options.root_filter]),
-        ("--filter", options.filter),
-        ("--exclude", options.exclude),
-        ("--gcov-filter", options.gcov_filter),
-        ("--gcov-exclude", options.gcov_exclude),
-        ("--gcov-exclude-directories", options.gcov_exclude_dirs),
-    ]:
-        LOGGER.debug(f"Filters for {name}: ({len(filters)})")
-        for f in filters:
-            LOGGER.debug(f" - {f}")
+        # Output the filters for debugging
+        for name, filters in [
+            ("--root", [options.root_filter]),
+            ("--filter", options.filter),
+            ("--exclude", options.exclude),
+            ("--gcov-filter", options.gcov_filter),
+            ("--gcov-exclude", options.gcov_exclude),
+            ("--gcov-exclude-directories", options.gcov_exclude_dirs),
+        ]:
+            LOGGER.debug(f"Filters for {name}: ({len(filters)})")
+            for f in filters:
+                LOGGER.debug(f" - {f}")
+    except re.error as e:
+        LOGGER.error(f"Error setting up filter '{e.pattern}': {e}")
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.exclude_lines_by_pattern:
         try:

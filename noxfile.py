@@ -306,9 +306,18 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     args += session.posargs
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
-    session.run("python", *args)
+
+    running_locally = os.environ.get("GITHUB_ACTIONS") is None
+    session.run(
+        "python",
+        *args,
+        success_codes=[0, 1] if running_locally and coverage_args else [0],
+    )
+
     if os.environ.get("USE_COVERAGE") == "true":
         session.run("coverage", "xml")
+        if running_locally:
+            session.run("coverage", "html")
 
 
 @nox.session

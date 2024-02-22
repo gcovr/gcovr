@@ -20,12 +20,12 @@ txt:
 	grep -F "failed minimum decision coverage" fail_under.stderr
 	$(GCOVR) --fail-under-function 100 --print-summary 2>fail_under.stderr; test $$? -eq 16 || ( cat fail_under.stderr & exit 1 )
 	grep -F "failed minimum function coverage" fail_under.stderr
-	$(GCOVR) --fail-under-line 80.1 --fail-under-branch 50.1 --decision --fail-under-decision 50.1 --fail-under-function 100 --print-summary 2>fail_under.stderr; test $$? -eq 30 || ( cat fail_under.stderr & exit 1 )
+	$(GCOVR) --fail-under-line 80.1 --fail-under-branch 50.1 --decision --fail-under-decision 50.1 --fail-under-function 66.8 --print-summary 2>fail_under.stderr; test $$? -eq 30 || ( cat fail_under.stderr & exit 1 )
 	grep -F "failed minimum line coverage" fail_under.stderr
 	grep -F "failed minimum branch coverage" fail_under.stderr
 	grep -F "failed minimum decision coverage" fail_under.stderr
 	grep -F "failed minimum function coverage" fail_under.stderr
-	$(GCOVR) --fail-under-line $(FAIL_UNDER_LINE) --fail-under-branch 49.9 --print-summary 2>fail_under.stderr; test $$? -eq 0 || ( cat fail_under.stderr & exit 1 )
+	$(GCOVR) --fail-under-line $(FAIL_UNDER_LINE) --fail-under-branch 50.0 --decision --fail-under-decision 50.0 --fail-under-function 66.7 --print-summary 2>fail_under.stderr; test $$? -eq 0 || ( cat fail_under.stderr & exit 1 )
 	grep -F "failed minimum line coverage" fail_under.stderr; test $$? -eq 1
 	grep -F "failed minimum branch coverage" fail_under.stderr; test $$? -eq 1
 	grep -F "failed minimum decision coverage" fail_under.stderr; test $$? -eq 1

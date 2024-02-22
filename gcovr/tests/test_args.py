@@ -39,7 +39,7 @@ class CaptureObject:
         self.exception = exception
 
 
-def capture(capsys, args, other_ex=()):
+def capture(capsys, args):
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = None
@@ -48,8 +48,6 @@ def capture(capsys, args, other_ex=()):
         # Explicit SystemExit exception in case main() returns normally
         sys.exit(0)
     except SystemExit as exception:
-        e = exception
-    except other_ex as exception:
         e = exception
     out, err = capsys.readouterr()
     return CaptureObject(out, err, e)
@@ -62,7 +60,7 @@ class LogCaptureObject:
         self.exception = exception
 
 
-def log_capture(caplog, args, other_ex=()):
+def log_capture(caplog, args):
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = None
@@ -71,8 +69,6 @@ def log_capture(caplog, args, other_ex=()):
         # Explicit SystemExit exception in case main() returns normally
         sys.exit(0)
     except SystemExit as exception:
-        e = exception
-    except other_ex as exception:
         e = exception
     return LogCaptureObject(caplog.record_tuples, e)
 
@@ -290,6 +286,14 @@ def test_no_output_html_nested(caplog):
     assert c.exception.code != 0
 
 
+def test_html_details_and_html_nested(caplog):
+    c = log_capture(caplog, ["--output", "x", "--html-details", "--html-nested"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "--html-details and --html-nested can not be used together."
+    assert c.exception.code != 0
+
+
 @pytest.mark.parametrize(
     "option",
     [
@@ -351,7 +355,6 @@ def test_filter_backslashes_are_detected(caplog):
     c = log_capture(
         caplog,
         args=["--filter", r"C:\\foo\moo", "--gcov-exclude", ""],
-        other_ex=re.error,
     )
     message0 = c.record_tuples[0]
     assert message0[1] == logging.WARNING
@@ -362,7 +365,11 @@ def test_filter_backslashes_are_detected(caplog):
     message = c.record_tuples[2]
     assert message[1] == logging.WARNING
     assert message[2].startswith("did you mean: C:/foo/moo")
-    assert isinstance(c.exception, re.error) or c.exception.code == 0
+    message = c.record_tuples[3]
+    assert message[1] == logging.ERROR
+    assert message[2].startswith(
+        "Error setting up filter 'C:\\\\foo\\moo': bad escape \\m at position 7"
+    )
 
 
 def test_html_css_not_exists(capsys):
