@@ -313,7 +313,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         *args,
         success_codes=[0, 1] if running_locally and coverage_args else [0],
     )
-    
+
     if os.environ.get("USE_COVERAGE") == "true":
         session.run("coverage", "xml")
         if running_locally:
