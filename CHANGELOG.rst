@@ -15,6 +15,7 @@ New features and notable changes:
 - Add support for colored logging. (:issue:`887`)
 - Add support for TOML configuration format. (:issue:`881`) 
 - Add support for Clover XML output format. (:issue:`888`) 
+- Add decision to JSON summary report if :option:`--decisions` is used. (:issue:`892`) 
 
 Bug fixes and small improvements:
 
