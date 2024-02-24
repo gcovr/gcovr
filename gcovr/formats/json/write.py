@@ -111,19 +111,25 @@ def write_summary_report(covdata, output_file: str, options: Options):
         json_dict["files"].append(
             {
                 "filename": filename,
-                **_summary_from_stats(SummarizedStats.from_file(covdata[key]), None),
+                **_summary_from_stats(
+                    SummarizedStats.from_file(covdata[key]), None, options
+                ),
             }
         )
 
     # Footer & summary
-    json_dict.update(_summary_from_stats(SummarizedStats.from_covdata(covdata), 0.0))
+    json_dict.update(
+        _summary_from_stats(SummarizedStats.from_covdata(covdata), 0.0, options)
+    )
 
     _write_json_result(
         json_dict, output_file, "summary_coverage.json", options.json_summary_pretty
     )
 
 
-def _summary_from_stats(stats: SummarizedStats, default) -> Dict[str, Any]:
+def _summary_from_stats(
+    stats: SummarizedStats, default, options: Options
+) -> Dict[str, Any]:
     json_dict: Dict[str, Any] = dict()
 
     json_dict["line_total"] = stats.line.total
@@ -137,6 +143,11 @@ def _summary_from_stats(stats: SummarizedStats, default) -> Dict[str, Any]:
     json_dict["branch_total"] = stats.branch.total
     json_dict["branch_covered"] = stats.branch.covered
     json_dict["branch_percent"] = stats.branch.percent_or(default)
+
+    if options.show_decision:
+        json_dict["decision_total"] = stats.decision.total
+        json_dict["decision_covered"] = stats.decision.covered
+        json_dict["decision_percent"] = stats.decision.percent_or(default)
 
     return json_dict
 

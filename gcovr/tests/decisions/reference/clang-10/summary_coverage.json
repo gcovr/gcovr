@@ -1,0 +1,63 @@
+{
+    "branch_covered": 48,
+    "branch_percent": 52.7,
+    "branch_total": 91,
+    "decision_covered": 34,
+    "decision_percent": 50.0,
+    "decision_total": 68,
+    "files": [
+        {
+            "branch_covered": 46,
+            "branch_percent": 54.1,
+            "branch_total": 85,
+            "decision_covered": 33,
+            "decision_percent": 50.8,
+            "decision_total": 65,
+            "filename": "main.cpp",
+            "function_covered": 32,
+            "function_percent": 100.0,
+            "function_total": 32,
+            "line_covered": 172,
+            "line_percent": 87.3,
+            "line_total": 197
+        },
+        {
+            "branch_covered": 1,
+            "branch_percent": 50.0,
+            "branch_total": 2,
+            "decision_covered": 0,
+            "decision_percent": null,
+            "decision_total": 0,
+            "filename": "switch_test.cpp",
+            "function_covered": 2,
+            "function_percent": 100.0,
+            "function_total": 2,
+            "line_covered": 4,
+            "line_percent": 100.0,
+            "line_total": 4
+        },
+        {
+            "branch_covered": 1,
+            "branch_percent": 25.0,
+            "branch_total": 4,
+            "decision_covered": 1,
+            "decision_percent": 33.3,
+            "decision_total": 3,
+            "filename": "switch_test.h",
+            "function_covered": 2,
+            "function_percent": 100.0,
+            "function_total": 2,
+            "line_covered": 5,
+            "line_percent": 62.5,
+            "line_total": 8
+        }
+    ],
+    "function_covered": 36,
+    "function_percent": 100.0,
+    "function_total": 36,
+    "gcovr/summary_format_version": "0.6",
+    "line_covered": 181,
+    "line_percent": 86.6,
+    "line_total": 209,
+    "root": "."
+}

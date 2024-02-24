@@ -135,7 +135,7 @@ Example HTML summary:
 
 Example HTML details:
 
-.. image:: ./doc/images/screenshot-html-details.example.cpp.png
+.. image:: ./doc/images/screenshot-html-details.example.cpp.jpeg
 
 .. begin links
 

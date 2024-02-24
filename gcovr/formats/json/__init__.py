@@ -35,6 +35,7 @@ class JsonHandler(BaseHandler):
         return [
             # Global options used for merging.
             "merge_mode_functions",
+            "show_decision",
             # Local options
             GcovrConfigOption(
                 "json",
