@@ -2,7 +2,7 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.1, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
@@ -38,7 +38,7 @@ python_interpreter = force_unix_separator(
     sys.executable
 )  # use forward slash on windows as well
 env = os.environ
-env["SOURCE_DATE_EPOCH"] = "1706291558"
+env["SOURCE_DATE_EPOCH"] = "1708813925"
 env["GCOVR"] = python_interpreter + " -m gcovr"
 for var in [
     "CPATH",
@@ -102,7 +102,7 @@ RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
 
 RE_LCOV_PATH = re.compile(r"(SF:).+?/(gcovr/tests/.+?)$", flags=re.MULTILINE)
 
-RE_XML_ATTR_TIMESTAMP = re.compile(r'timestamp="[^"]*"')
+RE_XML_ATTR_TIMESTAMP = re.compile(r'(timestamp|generated|clover)="[^"]*"')
 RE_XML_ATTR_VERSION = re.compile(r'version="[^"]*"')
 
 RE_COVERALLS_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at)": "[^"]*"')
@@ -145,7 +145,7 @@ def scrub_csv(contents: str) -> str:
 def scrub_xml(contents: str) -> str:
     contents = translate_newlines_if_windows(contents)
     contents = RE_DECIMAL.sub(lambda m: str(round(float(m.group(1)), 5)), contents)
-    contents = RE_XML_ATTR_TIMESTAMP.sub(r'timestamp="0"', contents)
+    contents = RE_XML_ATTR_TIMESTAMP.sub(r'\1="0"', contents)
     contents = RE_XML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
     return contents
 

@@ -29,6 +29,6 @@ The :option:`--clover` option generates a denser XML output, and the
 :option:`--clover-pretty` option generates an indented
 XML output that is easier to read.
 
-.. versionadded:: NEXT
+.. versionadded:: 7.1
 
     Add :option:`--clover` and :option:`--clover-pretty`.

@@ -26,7 +26,7 @@ jobs:
           echo "EXTRA_CHECKLIST_ARGS=--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
       - name: Run release_checklist
         run: |
-          admin/release_checklist $EXTRA_CHECKLIST_ARGS 7.0+main
+          admin/release_checklist $EXTRA_CHECKLIST_ARGS 7.1
 
   deploy:
     runs-on: ubuntu-22.04
@@ -127,7 +127,7 @@ jobs:
       - name: Apply new tag if version is bumped
         run: |
           set -e
-          
+
           # Set git user info
           git config --global user.email "noreply@gcovr.com"
           git config --global user.name "gcovr authors"
@@ -138,7 +138,7 @@ jobs:
           # Try to create the tag and print the output. It's only pushed if it's a real release
           git tag -a "$Version" -m "$Version ($(date -I))"
           git tag --list -n "$Version"
-          
+
           # Check if it is a new release
           VersionPostfix="$(echo "$Version" | sed -n 's/^[0-9]*\.[0-9]*// p')"
           if [ -z "$VersionPostfix" ]; then

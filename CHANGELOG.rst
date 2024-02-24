@@ -3,8 +3,8 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
-Next Release
-------------
+7.1 (24 February 2024)
+----------------------
 
 Known bugs:
 
@@ -13,13 +13,13 @@ Breaking changes:
 New features and notable changes:
 
 - Add support for colored logging. (:issue:`887`)
-- Add support for TOML configuration format. (:issue:`881`) 
-- Add support for Clover XML output format. (:issue:`888`) 
+- Add support for TOML configuration format. (:issue:`881`)
+- Add support for Clover XML output format. (:issue:`888`)
 
 Bug fixes and small improvements:
 
-- Add support for files with more than 9999 lines. (:issue:`883`, fixes :issue:`882`) 
-- Do not suppress gcov errors if exception occur. (:issue:`889`) 
+- Add support for files with more than 9999 lines. (:issue:`883`, fixes :issue:`882`)
+- Do not suppress gcov errors if exception occur. (:issue:`889`)
 
 Documentation:
 
@@ -28,9 +28,9 @@ Documentation:
 Internal changes:
 
 - Improve Dockerfile for faster rebuilds by using cache. (:issue:`878`)
-- Fix deprecation warnings from GitHub actions. (:issue:`880`) 
+- Fix deprecation warnings from GitHub actions. (:issue:`880`)
 - Add pipeline job to apply tag if new version is bumped. (:issue:`879`)
-- Improve test coverage and generate coverage report if executed in local environment. (:issue:`891`) 
+- Improve test coverage and generate coverage report if executed in local environment. (:issue:`891`)
 
 7.0 (25 January 2024)
 ---------------------
