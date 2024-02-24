@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<coverage clover="1706291558" generated="1706291558">
+<coverage clover="0" generated="0">
   <project timestamp="0">
     <metrics complexity="0" elements="42" coveredelements="28" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="4" classes="8" files="8" loc="72" ncloc="42"/>
     <package name="A">
