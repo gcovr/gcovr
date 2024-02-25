@@ -317,7 +317,7 @@ def main():
                 handlers.append(updateSourceDateEpoch)
             if (
                 ("reference" in fullname or "examples" in fullname)
-                and not "html-encoding-" in fullname
+                and "html-encoding-" not in fullname
                 and extension in [".xml", ".html"]
             ):
                 handlers.append(updateReferenceData)
