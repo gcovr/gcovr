@@ -232,9 +232,7 @@ def updateReferenceData(filename: str, lines: List[str]):
     newLines = []
 
     def replace_html_version(matches) -> str:
-        return (
-            f"{matches.group(1)}{READTHEDOCS_VERSION}{matches.group(2)}{VERSION}{matches.group(3)}"
-        )
+        return f"{matches.group(1)}{READTHEDOCS_VERSION}{matches.group(2)}{VERSION}{matches.group(3)}"
 
     def replace_xml_version(matches) -> str:
         return f"{matches.group(1)}{VERSION}{matches.group(2)}"
