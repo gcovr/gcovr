@@ -3,6 +3,21 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+Next Release
+------------
+
+Known bugs:
+
+Breaking changes:
+
+New features and notable changes:
+
+Bug fixes and small improvements:
+
+Documentation:
+
+Internal changes:
+
 7.2 (24 February 2024)
 ----------------------
 
