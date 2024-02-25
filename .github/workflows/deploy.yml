@@ -26,7 +26,7 @@ jobs:
           echo "EXTRA_CHECKLIST_ARGS=--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
       - name: Run release_checklist
         run: |
-          admin/release_checklist $EXTRA_CHECKLIST_ARGS 7.1
+          admin/release_checklist $EXTRA_CHECKLIST_ARGS 7.2
 
   deploy:
     runs-on: ubuntu-22.04
@@ -100,7 +100,7 @@ jobs:
           nox --non-interactive --session check_wheel
       - name: Upload distribution
         if: ${{ success() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/**

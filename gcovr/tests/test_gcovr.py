@@ -2,7 +2,7 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.1, a parsing and reporting tool for gcov.
+# This file is part of gcovr 7.2, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/stable
 #
 # _____________________________________________________________________________
@@ -38,7 +38,7 @@ python_interpreter = force_unix_separator(
     sys.executable
 )  # use forward slash on windows as well
 env = os.environ
-env["SOURCE_DATE_EPOCH"] = "1708813925"
+env["SOURCE_DATE_EPOCH"] = "1708890063"
 env["GCOVR"] = python_interpreter + " -m gcovr"
 for var in [
     "CPATH",

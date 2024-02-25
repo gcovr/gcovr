@@ -3,6 +3,11 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+7.2 (24 February 2024)
+----------------------
+
+Fix tagging issue of 7.1, no functional change.
+
 7.1 (24 February 2024)
 ----------------------
 
