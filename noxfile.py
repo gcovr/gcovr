@@ -300,7 +300,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
 
     with session.chdir("tests"):
         session.run("make", "--silent", "clean", external=True)
-    
+
     args = ["-m", "pytest"]
     args += coverage_args
     args += session.posargs
