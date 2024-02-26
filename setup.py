@@ -50,7 +50,7 @@ setup(
     long_description_content_type="text/x-rst",
     platforms=["any"],
     python_requires=">=3.8",
-    packages=find_packages(include=["gcovr*"], exclude=["gcovr.tests"]),
+    packages=find_packages(include=["gcovr*"]),
     install_requires=[
         "jinja2",
         "lxml",

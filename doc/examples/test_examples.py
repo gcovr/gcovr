@@ -23,7 +23,7 @@ import platform
 import pytest
 import subprocess
 
-from gcovr.tests.test_gcovr import SCRUBBERS, assert_equals
+from tests.test_gcovr import SCRUBBERS, assert_equals
 
 IS_MACOS = platform.system() == "Darwin"
 

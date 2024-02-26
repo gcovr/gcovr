@@ -61,7 +61,7 @@ ALL_COMPILER_VERSIONS_NEWEST_FIRST = [
 ALL_GCC_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("gcc-")]
 ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")]
 
-DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
+DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr", "tests"]
 DEFAULT_LINT_ARGUMENTS = [
     "setup.py",
     "noxfile.py",
@@ -298,9 +298,9 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     if "llvm-cov" in session.env["GCOV"]:
         session.env["GCOV"] += " gcov"
 
-    session.chdir("gcovr/tests")
-    session.run("make", "--silent", "clean", external=True)
-    session.chdir("../..")
+    with session.chdir("tests"):
+        session.run("make", "--silent", "clean", external=True)
+    
     args = ["-m", "pytest"]
     args += coverage_args
     args += session.posargs
@@ -469,32 +469,32 @@ def html2jpeg(session: nox.Session):
             [800, 600],
         )
         screenshot(
-            "gcovr/tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-green-src.jpeg",
             [800, 290],
         )
         screenshot(
-            "gcovr/tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-blue-src.jpeg",
             [800, 290],
         )
         screenshot(
-            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
             [800, 500],
         )
         screenshot(
-            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-blue-src.jpeg",
             [800, 500],
         )
         screenshot(
-            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-green-src.jpeg",
             [800, 500],
         )
         screenshot(
-            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
             [800, 500],
         )
@@ -749,7 +749,7 @@ def import_reference(session: nox.Session) -> None:
 
     def extract(fh_zip: zipfile.ZipFile):
         for entry in fh_zip.filelist:
-            session.log(fh_zip.extract(entry, "gcovr/tests"))
+            session.log(fh_zip.extract(entry, "tests"))
 
     with zipfile.ZipFile(session.posargs[0]) as fh_zip:
         try:

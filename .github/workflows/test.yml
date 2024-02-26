@@ -177,7 +177,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
-          path: gcovr/tests/diff.zip
+          path: tests/diff.zip
       - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: codecov/codecov-action@v4
@@ -272,7 +272,7 @@ jobs:
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           disable_search: true
-          files: ./gcovr/tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
+          files: ./tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
           name: docker-${{ matrix.gcc }}-lcov
           verbose: true
       - name: Generate documentation (in container)

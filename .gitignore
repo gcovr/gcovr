@@ -1,25 +1,12 @@
+# Python cache files
+__pycache__
 *.py[cod]
 
 # Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
-
-# Installer logs
-pip-log.txt
-
-# wheel
-gcovr-*/
+/gcovr.egg
+/gcovr.egg-info
+/dist
+/build
 
 # nox
 .nox*/
@@ -30,8 +17,11 @@ coverage.xml
 # temporary generated files
 .coverage.*
 
-# Translations
-*.mo
+# VS Code workspace
+*.code-workspace
+
+# PyCharm
+.idea
 
 # Mr Developer
 .mr.developer.cfg
@@ -40,10 +30,3 @@ coverage.xml
 
 # MacOS
 .DS_Store
-
-# VS Code workspace
-*.code-workspace
-
-# PyCharm
-.idea
-
