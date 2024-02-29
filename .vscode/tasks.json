@@ -14,6 +14,8 @@
                 "gcc-9",
                 "gcc-10",
                 "gcc-11",
+                "gcc-12",
+                "gcc-13",
                 "clang-10",
                 "clang-13",
                 "clang-14",
@@ -85,7 +87,7 @@
         {
             "label": "Run tests for specific compiler",
             "type": "shell",
-            "command": "nox -s 'docker_qa_compiler(${input:Compiler})' -- -k simple1-txt",
+            "command": "nox -s 'docker_compiler(${input:Compiler})'",
             "group": "build"
         },
     ]

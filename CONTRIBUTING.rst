@@ -229,7 +229,7 @@ Path                    Description
 ``/gcovr/``             the gcovr source code (Python module)
 ``/gcovr/__main__.py``  command line interface + top-level behaviour
 ``/gcovr/templates/``   HTML report templates
-``/gcovr/tests/``       unit tests + integration test corpus
+``/tests/``             unit tests + integration test corpus
 ``/noxfile.py``         Definition of tests tasks
 ``/setup.py``           Python package configuration
 ``/doc/``               documentation
@@ -253,22 +253,21 @@ The QA process (``python3 -m nox``) consists of multiple parts:
 
 - tests (``python3 -m nox --session tests``)
 
-   - unit tests in ``gcovr/tests``
-   - integration tests in ``gcovr/tests``
+   - unit tests in ``tests``
+   - integration tests in ``tests``
    - documentation examples in ``doc/examples``
 
 - documentation build (``python3 -m nox --session doc``)
 
-The tests are in the ``gcovr/tests`` directory.
+The tests are in the ``tests`` directory.
 You can run the tests with ``python3 -m nox --session tests``
 for the default GCC version (specified via ``CC`` environment variable, defaults to gcc-5).
-You can also select the gcc version if you run the tests with e.g.
-``python3 -m nox --session 'tests_compiler(gcc-8)'``.
+
 
 There are unit tests for some parts of gcovr,
 and a comprehensive corpus of example projects
 that are executed as the ``test_gcovr.py`` integration test.
-Each ``gcovr/tests/*`` directory is one such example project.
+Each ``tests/*`` directory is one such example project.
 
 You can format files with ``python3 -m nox --session black``)
 
@@ -291,7 +290,7 @@ Structure of integration tests
 Each project in the corpus
 contains a ``Makefile`` and a ``reference`` directory::
 
-   gcovr/tests/sometest/
+   tests/sometest/
      reference/
      Makefile
      README
@@ -426,7 +425,7 @@ gcc-13, clang-10, clang-13, or clang-14 or you can build and run the container w
 
 .. code:: bash
 
-    python3 -m nox --session 'docker_qa_compiler(gcc-9)'
+    python3 -m nox --session 'docker_compiler(gcc-9)'
 
 To run a specific session you can use the session ``docker_compiler``
 and give the arguments to the ``nox`` executed inside the container

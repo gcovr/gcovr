@@ -11,5 +11,5 @@ gcovr --cobertura-pretty --cobertura example_cobertura.xml
 rm -f program *.gc*
 
 if [[ "$OSTYPE" != "msys" ]]; then
-xmllint --noout --nowarning --dtdvalid $PWD/../../gcovr/tests/cobertura.coverage-04.dtd example_cobertura.xml || exit 1
+xmllint --noout --nowarning --dtdvalid $PWD/../../tests/cobertura.coverage-04.dtd example_cobertura.xml || exit 1
 fi

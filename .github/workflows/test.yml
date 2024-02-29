@@ -123,6 +123,8 @@ jobs:
             *)                        USE_COVERAGE=false ;;
           esac
           echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
+          echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
+
         shell: bash
       - name: Install msys with GCC (Windows)
         if: ${{ startsWith(matrix.os,'windows-') }}
@@ -171,13 +173,13 @@ jobs:
           nox --non-interactive --session lint
       - name: Test with pytest
         run: |
-          nox --non-interactive --session "tests_compiler(${{ matrix.gcc }})" -- --archive_differences
+          nox --non-interactive --session tests -- --archive_differences
       - name: Upload pytest test results
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
           name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
-          path: gcovr/tests/diff.zip
+          path: tests/diff.zip
       - name: Upload coverage to Codecov
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: codecov/codecov-action@v4
@@ -272,7 +274,7 @@ jobs:
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           disable_search: true
-          files: ./gcovr/tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
+          files: ./tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
           name: docker-${{ matrix.gcc }}-lcov
           verbose: true
       - name: Generate documentation (in container)

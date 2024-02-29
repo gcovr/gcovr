@@ -18,6 +18,8 @@ Documentation:
 
 Internal changes:
 
+- Move tests to directory in the root. (:issue:`897`)
+
 7.2 (24 February 2024)
 ----------------------
 
@@ -33,9 +35,9 @@ Breaking changes:
 New features and notable changes:
 
 - Add support for colored logging. (:issue:`887`)
-- Add support for TOML configuration format. (:issue:`881`) 
-- Add support for Clover XML output format. (:issue:`888`) 
-- Add decision to JSON summary report if :option:`--decisions` is used. (:issue:`892`) 
+- Add support for TOML configuration format. (:issue:`881`)
+- Add support for Clover XML output format. (:issue:`888`)
+- Add decision to JSON summary report if :option:`--decisions` is used. (:issue:`892`)
 
 Bug fixes and small improvements:
 
