@@ -1,14 +1,22 @@
 # Ignore output files
 coverage*.txt
-coverage*.json
-summary_coverage*.json
-clover*.xml
-cobertura*.xml
-sonarqube*.xml
-coverage*.csv
-coveralls*.json
 *.html
 *.css
+coverage*.json
+summary_coverage*.json
+coverage*.csv
+coverage*.lcov
+clover*.xml
+cobertura*.xml
+coveralls*.json
+jacoco*.xml
+sonarqube*.xml
+
+# Ignore executables
+gcovrtest
+
+# CMake build directory
+build/
 
 # except in config, reference and data directories
 !*/config/**
