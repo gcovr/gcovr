@@ -19,6 +19,7 @@ Documentation:
 Internal changes:
 
 - Move tests to directory in the root. (:issue:`897`)
+- Move tag creation before publish the distribution because tag from pipeline doesn't trigger additional runs. (:issue:`899`)
 
 7.2 (24 February 2024)
 ----------------------
