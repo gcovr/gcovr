@@ -2,14 +2,14 @@
 __pycache__
 *.py[cod]
 
+# nox virtual environments
+.nox*/
+
 # Packages
 /gcovr.egg
 /gcovr.egg-info
 /dist
 /build
-
-# nox
-.nox*/
 
 # coverage report
 .coverage
