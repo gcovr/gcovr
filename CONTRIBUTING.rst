@@ -262,8 +262,7 @@ The QA process (``python3 -m nox``) consists of multiple parts:
 The tests are in the ``tests`` directory.
 You can run the tests with ``python3 -m nox --session tests``
 for the default GCC version (specified via ``CC`` environment variable, defaults to gcc-5).
-You can also select the gcc version if you run the tests with e.g.
-``python3 -m nox --session 'tests_compiler(gcc-8)'``.
+
 
 There are unit tests for some parts of gcovr,
 and a comprehensive corpus of example projects
@@ -426,7 +425,7 @@ gcc-13, clang-10, clang-13, or clang-14 or you can build and run the container w
 
 .. code:: bash
 
-    python3 -m nox --session 'docker_qa_compiler(gcc-9)'
+    python3 -m nox --session 'docker_compiler(gcc-9)'
 
 To run a specific session you can use the session ``docker_compiler``
 and give the arguments to the ``nox`` executed inside the container

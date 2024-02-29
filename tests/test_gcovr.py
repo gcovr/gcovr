@@ -527,7 +527,10 @@ def test_build(
         encoding = re.match("^html-encoding-(.*)$", name).group(1)
 
     os.chdir(os.path.join(basedir, name))
-    assert run(["make", "-j", "4", "--output-sync=target", format])
+    make_options = ["-j", "4"]
+    if not IS_MACOS:
+        make_options.append("--output-sync=target")
+    assert run(["make", *make_options, format])
 
     if generate_reference:  # pragma: no cover
         generate_reference_data(output_pattern)

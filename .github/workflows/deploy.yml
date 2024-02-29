@@ -74,7 +74,7 @@ jobs:
           nox --non-interactive --session lint
       - name: Test with pytest
         run: |
-          nox --non-interactive --session "tests_compiler($CC)"
+          nox --non-interactive --session tests
       - name: Generate documentation
         run: |
           nox --non-interactive --session doc

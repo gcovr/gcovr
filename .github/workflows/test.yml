@@ -123,6 +123,8 @@ jobs:
             *)                        USE_COVERAGE=false ;;
           esac
           echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
+          echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
+
         shell: bash
       - name: Install msys with GCC (Windows)
         if: ${{ startsWith(matrix.os,'windows-') }}
@@ -171,7 +173,7 @@ jobs:
           nox --non-interactive --session lint
       - name: Test with pytest
         run: |
-          nox --non-interactive --session "tests_compiler(${{ matrix.gcc }})" -- --archive_differences
+          nox --non-interactive --session tests -- --archive_differences
       - name: Upload pytest test results
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
