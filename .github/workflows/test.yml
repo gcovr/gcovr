@@ -161,10 +161,8 @@ jobs:
         if: ${{ startsWith(matrix.os,'macos-') }}
         run: |
           brew update
-          brew install --cask docker
           brew install ninja
           brew install libxml2
-          open -a Docker
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
