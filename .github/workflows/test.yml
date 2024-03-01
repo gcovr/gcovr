@@ -117,7 +117,7 @@ jobs:
             gcc: gcc
             python-version: '3.8'
           - os: macos-12
-            gcc: gcc
+            gcc: gcc-13
             python-version: '3.11'
 
     steps:
