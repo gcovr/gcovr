@@ -106,10 +106,18 @@ jobs:
 
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
-            gcc: gcc-8
+            gcc: gcc
             python-version: '3.8'
           - os: windows-2019
-            gcc: gcc-8
+            gcc: gcc
+            python-version: '3.11'
+
+          # Test minimum and maximum Python version on Windows.
+          - os: macos-12
+            gcc: gcc
+            python-version: '3.8'
+          - os: macos-12
+            gcc: gcc-13
             python-version: '3.11'
 
     steps:
@@ -118,14 +126,28 @@ jobs:
         run: |
           # Enable coverage for specific target configurations
           case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
-            windows-2019/gcc-8/3.8)   USE_COVERAGE=true ;;
             ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
+            windows-2019/gcc-8/3.8)   USE_COVERAGE=true ;;
+            macos-12/gcc-11/3.9)      USE_COVERAGE=true ;;
             *)                        USE_COVERAGE=false ;;
           esac
           echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
+
+          # Set the CC environment
           echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
 
         shell: bash
+      - name: Install build commands, GCC and libxml2 (Linux)
+        if: ${{ startsWith(matrix.os,'ubuntu-') }}
+        run: |
+          sudo apt update
+          sudo apt-get install -y \
+            make \
+            ninja-build \
+            ${{ matrix.gcc }} \
+            $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/') \
+            libxml2-utils
+          sudo apt-get clean
       - name: Install msys with GCC (Windows)
         if: ${{ startsWith(matrix.os,'windows-') }}
         uses: msys2/setup-msys2@v2
@@ -135,22 +157,12 @@ jobs:
         if: ${{ startsWith(matrix.os,'windows-') }}
         run: |
           choco install ninja
-      - name: Install build commands and GCC (Linux)
-        if: ${{ startsWith(matrix.os,'ubuntu-') }}
+      - name: Install docker, ninja and libxml2 (MacOs)
+        if: ${{ startsWith(matrix.os,'macos-') }}
         run: |
-          sudo apt update
-          sudo apt-get install -y \
-            make \
-            ninja-build \
-            ${{ matrix.gcc }} \
-            $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
-          sudo apt-get clean
-      - name: Install libxml2
-        if: ${{ startsWith(matrix.os,'ubuntu-') }}
-        run: |
-          sudo apt-get install -y \
-            libxml2-utils
-          sudo apt-get clean
+          brew update
+          brew install ninja
+          brew install libxml2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:

@@ -24,6 +24,7 @@ import platform
 import re
 import socket
 from time import sleep
+from typing import Tuple
 import requests
 import shutil
 import subprocess
@@ -85,57 +86,64 @@ OUTPUT_FORMATS = [
 nox.options.sessions = ["qa"]
 
 
-def get_gcc_version_to_use():
+def get_gcc_versions() -> Tuple[str]:
     # If the user explicitly set CC variable, use that directly without checks.
     cc = os.environ.get("CC")
-    if cc:
-        return os.path.split(cc)[1]
+    if cc is None:
+        # Find the first installed compiler version we support
+        for command in ALL_COMPILER_VERSIONS_NEWEST_FIRST:
+            if shutil.which(command):
+                return (command, command)
+    elif cc_reference := os.environ.get("CC_REFERENCE"):
+        return (cc, cc_reference)
 
-    # Find the first insalled compiler version we suport
-    for cc in ALL_COMPILER_VERSIONS_NEWEST_FIRST:
-        if shutil.which(cc):
-            return cc
+    commands = ["gcc", "clang"] if cc is None else [cc]
 
-    for cc in ["gcc", "clang"]:
-        output = subprocess.check_output([cc, "--version"]).decode()
-        # Ignore error code since we want to find a valid executable
+    for command in commands:
+        if shutil.which(command):
+            output = subprocess.check_output([command, "--version"]).decode()
 
-        # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
-        #    gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
-        #    Copyright (C) 2019 Free Software Foundation, Inc.
-        #    This is free software; see the source for copying conditions.  There is NO
-        #    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-        search_gcc_version = re.search(r"^gcc\b.* ([0-9]+)\.\S+$", output, re.M)
+            # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
+            #   gcc-5 (Ubuntu/Linaro 5.5.0-12ubuntu1) 5.5.0 20171010
+            #   Copyright (C) 2015 Free Software Foundation, Inc.
+            #   This is free software; see the source for copying conditions.  There is NO
+            #   warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+            search_gcc_version = re.search(r"^gcc\b.* ([0-9]+)\..+$", output, re.M)
 
-        # look for a line "WHATEVER clang version VERSION.WHATEVER" in output like:
-        #    Apple clang version 13.1.6 (clang-1316.0.21.2.5)
-        #    Target: arm64-apple-darwin21.5.0
-        #    Thread model: posix
-        #    InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
-        search_clang_version = re.search(r"\bclang version ([0-9]+)\.", output, re.M)
+            # look for a line "WHATEVER clang version VERSION.WHATEVER" in output like:
+            #    Apple clang version 13.1.6 (clang-1316.0.21.2.5)
+            #    Target: arm64-apple-darwin21.5.0
+            #    Thread model: posix
+            #    InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+            search_clang_version = re.search(
+                r"\bclang version ([0-9]+)\.", output, re.M
+            )
 
-        if search_gcc_version:
-            major_version = search_gcc_version.group(1)
-            return f"gcc-{major_version}"
-        elif search_clang_version:
-            major_version = search_clang_version.group(1)
-            return f"clang-{major_version}"
+            if search_gcc_version:
+                major_version = search_gcc_version.group(1)
+                return (command, f"gcc-{major_version}")
+            elif search_clang_version:
+                major_version = search_clang_version.group(1)
+                return (command, f"clang-{major_version}")
 
     raise RuntimeError(
-        "Could not detect a valid compiler, you can defin one by setting the environment CC"
+        "Could not detect a valid compiler, you can define one by setting the environment CC"
     )
 
 
-def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
-    if check and (shutil.which(cc) is None):
-        session.env["CC_REFERENCE"] = cc
-        cc = "gcc"
-    cxx = cc.replace("clang", "clang++").replace("gcc", "g++")
+def set_environment(session: nox.Session, cc: str = None) -> None:
+    """Set the environment variables"""
+    if cc is None:
+        cc, cc_reference = get_gcc_versions()
+    else:
+        cc_reference = cc
     session.env["GCOVR_TEST_SUITE"] = "1"
     session.env["CC"] = cc
     session.env["CFLAGS"] = "--this_flag_does_not_exist"
-    session.env["CXX"] = cxx
+    session.env["CXX"] = cc.replace("clang", "clang++").replace("gcc", "g++")
     session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
+    if cc_reference is not None:
+        session.env["CC_REFERENCE"] = cc_reference
 
 
 @nox.session
@@ -198,7 +206,9 @@ def doc(session: nox.Session) -> None:
     session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
 
-    if not GCOVR_ISOLATED_TEST:
+    if not GCOVR_ISOLATED_TEST and not (
+        platform.system() == "Darwin" and "GITHUB_ACTION" in os.environ
+    ):
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
         docker_run_compiler(session, "gcc-8")
@@ -233,7 +243,7 @@ def tests(session: nox.Session) -> None:
         session.install("coverage", "pytest-cov")
         coverage_args = ["--cov=gcovr", "--cov-branch"]
     session.install("-e", ".")
-    set_environment(session, get_gcc_version_to_use())
+    set_environment(session)
     session.log("Print tool versions")
     session.run("python", "--version")
     # Use full path to executable
@@ -247,6 +257,7 @@ def tests(session: nox.Session) -> None:
     session.run(session.env["GCOV"], "--version", external=True)
     if "llvm-cov" in session.env["GCOV"]:
         session.env["GCOV"] += " gcov"
+    session.log(f"Using reference data for {session.env['CC_REFERENCE']}")
 
     with session.chdir("tests"):
         session.run("make", "--silent", "clean", external=True)
@@ -507,7 +518,7 @@ def docker_build_compiler_clang(session: nox.Session) -> None:
 @nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
 def docker_build_compiler(session: nox.Session, version: str) -> None:
     """Build the docker container for a specific GCC version."""
-    set_environment(session, version, False)
+    set_environment(session, version)
     session.run(
         "docker",
         "build",
@@ -567,7 +578,7 @@ def docker_run_compiler_clang(session: nox.Session) -> None:
 @nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
 def docker_run_compiler(session: nox.Session, version: str) -> None:
     """Run the docker container for a specific GCC version."""
-    set_environment(session, version, False)
+    set_environment(session, version)
 
     nox_options = session.posargs if session.posargs else ["-s", "qa"]
     if not session.interactive:

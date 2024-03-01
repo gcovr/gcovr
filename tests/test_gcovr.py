@@ -365,8 +365,8 @@ def pytest_generate_tests(metafunc):
                 ),
                 pytest.mark.xfail(
                     name == "decisions"
-                    and (IS_CLANG and CC_REFERENCE_VERSION == 15 and IS_MACOS),
-                    reason="On MacOS with clang 15 the file decision/switch_test.h throws compiler errors",
+                    and (IS_CLANG and CC_REFERENCE_VERSION in [14, 15] and IS_MACOS),
+                    reason="On MacOS with clang 14 and 15 the file decision/switch_test.h throws compiler errors",
                 ),
                 pytest.mark.xfail(
                     name in ["decisions-neg-delta"] and IS_MACOS,
