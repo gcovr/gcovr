@@ -207,7 +207,9 @@ def doc(session: nox.Session) -> None:
     session.install("-e", ".")
 
     if not GCOVR_ISOLATED_TEST and not (
-        platform.system() == "Darwin" and "GITHUB_ACTION" in os.environ
+        # Github actions on MacOs can't use Docker
+        platform.system() == "Darwin"
+        and "GITHUB_ACTION" in os.environ
     ):
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
