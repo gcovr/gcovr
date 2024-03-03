@@ -1,0 +1,44 @@
+{
+    "git": {
+        "branch": "branch",
+        "head": {
+            "author_email": "40258682+spacetown@users.noreply.github.com",
+            "author_name": "Spacetown",
+            "committer_email": "40258682+spacetown@users.noreply.github.com",
+            "committer_name": "Spacetown",
+            "id": "82bf35bdee6ec9be6171c62cafd4eef9b010a9ef",
+            "message": "Fix the reference directory to update"
+        },
+        "remotes": [
+            {
+                "name": "origin",
+                "url": "https://github.com/Spacetown/gcovr"
+            }
+        ]
+    },
+    "run_at": "2024-02-25 21:07:16 UTC",
+    "service_job_id": "id",
+    "service_name": "gcovr-test-suite",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "coverage": [
+                null,
+                null,
+                null,
+                2,
+                null,
+                2,
+                1,
+                null,
+                null,
+                null,
+                null,
+                2
+            ],
+            "name": "main.cpp",
+            "source_digest": "37c3797ca3d3da31375c29c07adf94cc"
+        }
+    ]
+}
