@@ -22,4 +22,4 @@ json: coverage.json
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage*.*
+	rm -f coverage*.* summary_coverage.json
