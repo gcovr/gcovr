@@ -5,6 +5,6 @@
 SwitchTestIssue783::SwitchTestIssue783() : _name("test") {}
 
 void SwitchTestIssue783::checkSwitch() {
-    doSomething(SomeEnum::EnumValue_1);
+    doSomething(EnumNamespace::EnumValue_1);
 }
 #endif
