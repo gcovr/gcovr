@@ -90,7 +90,7 @@ for ref in REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
     REFERENCE_DIRS.append(os.path.join("reference", ref))
     if platform.system() != "Linux":
         REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
-    if ref in CC_REFERENCE:
+    if ref == CC_REFERENCE:
         break
 REFERENCE_DIRS.reverse()
 
@@ -404,35 +404,33 @@ def generate_reference_data(output_pattern):  # pragma: no cover
 
 
 def update_reference_data(reference_file, content, encoding):  # pragma: no cover
-    if CC_REFERENCE in reference_file:
-        reference_dir = os.path.dirname(reference_file)
-    else:
-        reference_dir = os.path.join("reference", CC_REFERENCE)
-        os.makedirs(reference_dir, exist_ok=True)
-        reference_file = os.path.join(reference_dir, os.path.basename(reference_file))
+    os.makedirs(REFERENCE_DIRS[0], exist_ok=True)
+    reference_file = os.path.join(REFERENCE_DIRS[0], os.path.basename(reference_file))
+
     with open(reference_file, "w", newline="", encoding=encoding) as out:
         out.write(content)
 
     return reference_file
 
 
-def archive_difference_data(name, coverage_file, reference_file):  # pragma: no cover
+def archive_difference_data(name, test_file, reference_file):  # pragma: no cover
     diffs_zip = os.path.join("..", "diff.zip")
+    reference_file_zip = os.path.join(
+        name, REFERENCE_DIRS[0], os.path.basename(reference_file)
+    )
     with zipfile.ZipFile(diffs_zip, mode="a") as f:
         f.write(
-            coverage_file,
-            os.path.join(name, os.path.dirname(reference_file), coverage_file).replace(
-                os.path.sep, "/"
-            ),
+            test_file,
+            reference_file_zip.replace(os.path.sep, "/"),
         )
 
 
 def remove_duplicate_data(
-    encoding, scrub, coverage, coverage_file, reference_file
+    encoding, scrub, coverage, test_file, reference_file
 ):  # pragma: no cover
     # Loop over the other coverage data
     for reference_dir in REFERENCE_DIRS:  # pragma: no cover
-        other_reference_file = os.path.join(reference_dir, coverage_file)
+        other_reference_file = os.path.join(reference_dir, test_file)
         # ... and unlink the current file if it's identical to the other one.
         if other_reference_file != reference_file and os.path.isfile(
             other_reference_file
