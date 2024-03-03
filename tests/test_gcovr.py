@@ -349,34 +349,6 @@ def pytest_generate_tests(metafunc):
                     reason="clang doesn't understand -finput-charset=...",
                 ),
                 pytest.mark.xfail(
-                    name
-                    in [
-                        "excl-branch",
-                        "exclude-throw-branches",
-                        "html-themes",
-                        "html-themes-github",
-                    ]
-                    and IS_MACOS,
-                    reason="On MacOS the constructor is called twice",
-                ),
-                pytest.mark.xfail(
-                    name == "noncode" and IS_MACOS,
-                    reason="On MacOS the there are other branches",
-                ),
-                pytest.mark.xfail(
-                    name == "decisions"
-                    and (IS_CLANG and CC_REFERENCE_VERSION in [14, 15] and IS_MACOS),
-                    reason="On MacOS with clang 14 and 15 the file decision/switch_test.h throws compiler errors",
-                ),
-                pytest.mark.xfail(
-                    name in ["decisions-neg-delta"] and IS_MACOS,
-                    reason="On MacOS there is no branch for std::vector",
-                ),
-                pytest.mark.xfail(
-                    name in ["excl-line-branch"] and IS_MACOS,
-                    reason="On MacOS there are different number of branches generated",
-                ),
-                pytest.mark.xfail(
                     name in ["wrong-casing"] and not IS_WINDOWS,
                     reason="Only windows has a case insensitive file system",
                 ),
