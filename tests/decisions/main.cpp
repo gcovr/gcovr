@@ -385,7 +385,7 @@ int main(int argc, char *argv[])
    checkSwitch3(0);
 
 #if (defined __GNUC__ && (__GNUC__ >= 6)) || (defined __clang_major__)
-   SwitchTestIssue783{}.checkSwitch();
+   SwitchTestIssue783().checkSwitch();
 #endif
 
    checkCompactBranch1True(6);

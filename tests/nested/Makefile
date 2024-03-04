@@ -45,4 +45,4 @@ clean:
 	rm -f ./subdir/testcase
 	rm -f *.gc* */*.gc* */*/*.gc* */*/*/*.gc* */*/*/*/*.gc*
 	rm -f *.o */*.o */*/*.o */*/*/*.o */*/*/*/*.o
-	rm -f coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json
+	rm -f clover.xml coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json

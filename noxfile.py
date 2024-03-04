@@ -207,7 +207,9 @@ def doc(session: nox.Session) -> None:
     session.install("-e", ".")
 
     if not GCOVR_ISOLATED_TEST and not (
-        platform.system() == "Darwin" and "GITHUB_ACTION" in os.environ
+        # Github actions on MacOs can't use Docker
+        platform.system() == "Darwin"
+        and "GITHUB_ACTION" in os.environ
     ):
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
@@ -659,21 +661,22 @@ def docker_compiler(session: nox.Session, version: str) -> None:
 @nox.session(python=False)
 def import_reference(session: nox.Session) -> None:
     """Import reference data from ZIP generated in Github pipeline."""
-    if len(session.posargs) != 1:
+    if len(session.posargs) < 1:
         session.error(
-            "Exact one ZIP file needed. Usage: nox -s import_reference -- file.zip"
+            "Please provide the ZIP files to import. Usage: nox -s import_reference -- file.zip"
         )
 
     def extract(fh_zip: zipfile.ZipFile):
         for entry in fh_zip.filelist:
             session.log(fh_zip.extract(entry, "tests"))
 
-    with zipfile.ZipFile(session.posargs[0]) as fh_zip:
-        try:
-            zip_info_diff_zip = fh_zip.getinfo("diff.zip")
-            with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
-                seekable_buf = io.BytesIO(fh_inner_zip.read())
-                with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
-                    extract(fh_diff_zip)
-        except KeyError:
-            extract(fh_zip)
+    for file in session.posargs:
+        with zipfile.ZipFile(file) as fh_zip:
+            try:
+                zip_info_diff_zip = fh_zip.getinfo("diff.zip")
+                with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
+                    seekable_buf = io.BytesIO(fh_inner_zip.read())
+                    with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
+                        extract(fh_diff_zip)
+            except KeyError:
+                extract(fh_zip)

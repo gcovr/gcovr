@@ -10,5 +10,5 @@ json:
 	$(GCOVR) --verbose --gcov-keep --gcov-use-existing-files --json-pretty --json coverage.json main.case_1.gcov data
 
 clean:
-	rm -f *.gcov
-	rm -f coveralls.json
+	rm -f data/*.gcov
+	rm -f coverage.json
