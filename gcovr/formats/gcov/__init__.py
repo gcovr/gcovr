@@ -84,6 +84,8 @@ class GcovHandler(BaseHandler):
                     "all",
                     "negative_hits.warn",
                     "negative_hits.warn_once_per_file",
+                    "suspicious_hits.warn",
+                    "suspicious_hits.warn_once_per_file",
                 ],
                 nargs="?",
                 const="all",
