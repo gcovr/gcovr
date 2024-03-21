@@ -12,10 +12,10 @@ run: txt clover cobertura html sonarqube jacoco json json_summary coveralls
 txt:
 	./testcase
 	# a couple of tests about failure thresholds
-	$(GCOVR) --fail-under-line 80.1 --print-summary 2>fail_under.stderr; test $$? -eq 2 || ( cat fail_under.stderr & exit 1 )
-	grep -F "failed minimum line coverage" fail_under.stderr
-	$(GCOVR) --fail-under-branch 50.1 --print-summary 2>fail_under.stderr; test $$? -eq 4 || ( cat fail_under.stderr & exit 1 )
-	grep -F "failed minimum branch coverage" fail_under.stderr
+	TF_BUILD=true $(GCOVR) --fail-under-line 80.1 --print-summary 2>fail_under.stderr; test $$? -eq 2 || ( cat fail_under.stderr & exit 1 )
+	grep -F "##vso[task.logissue type=error](ERROR) failed minimum line coverage" fail_under.stderr
+	GITHUB_ACTIONS=true $(GCOVR) --fail-under-branch 50.1 --print-summary 2>fail_under.stderr; test $$? -eq 4 || ( cat fail_under.stderr & exit 1 )
+	grep -F "::error::(ERROR) failed minimum branch coverage" fail_under.stderr
 	$(GCOVR) --decision --fail-under-decision 50.1 --print-summary 2>fail_under.stderr; test $$? -eq 8 || ( cat fail_under.stderr & exit 1 )
 	grep -F "failed minimum decision coverage" fail_under.stderr
 	$(GCOVR) --fail-under-function 100 --print-summary 2>fail_under.stderr; test $$? -eq 16 || ( cat fail_under.stderr & exit 1 )
