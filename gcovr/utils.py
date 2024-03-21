@@ -285,7 +285,9 @@ class DirectoryPrefixFilter(Filter):
 
 def __colored_formatter(options: Options = None) -> ColoredFormatter:
     if options is not None:
-        log_format = COLOR_LOG_FORMAT_THREADS if options.gcov_parallel > 1 else COLOR_LOG_FORMAT
+        log_format = (
+            COLOR_LOG_FORMAT_THREADS if options.gcov_parallel > 1 else COLOR_LOG_FORMAT
+        )
         force_color = getattr(options, "force_color", False)
         no_color = getattr(options, "no_color", False)
     else:
@@ -329,14 +331,18 @@ def configure_logging() -> None:
         }
 
     if ci_logging_prefixes is not None:
+
         class CiFormatter(logging.Formatter):
             """Formatter to format messages to be captured in Azure"""
+
             def __init__(self):
                 super(CiFormatter, self).__init__(fmt=LOG_FORMAT)
 
             def format(self, record):
                 if record.levelno in ci_logging_prefixes:
-                    result = f"{ci_logging_prefixes[record.levelno]}{super().format(record)}"
+                    result = (
+                        f"{ci_logging_prefixes[record.levelno]}{super().format(record)}"
+                    )
                 else:
                     result = ""
 
