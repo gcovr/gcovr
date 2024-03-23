@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Detect suspicious counter values in ``gcov`` output. (:issue:`903`)
+
 Bug fixes and small improvements:
 
 Documentation:
