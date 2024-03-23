@@ -144,7 +144,7 @@ def updateCopyrightString(filename: str, lines: List[str]):
 def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
     newLines = []
 
-    callReleaseChecklist = "admin/release_checklist"
+    callReleaseChecklist = "admin/release_checklist.sh"
     callFound = False
     for line in lines:
         if callReleaseChecklist in line:

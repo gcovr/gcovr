@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail  # "use strict"
 
 # This file is used both as an example and as a test.
