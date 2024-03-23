@@ -32,10 +32,13 @@ from colorlog import ColoredFormatter
 from gcovr.options import Options
 
 LOGGER = logging.getLogger("gcovr")
+DEFAULT_LOGGING_HANDLER = logging.StreamHandler(sys.stderr)
 
 
-LOG_FORMAT = "%(log_color)s(%(levelname)s) %(message)s"
-LOG_FORMAT_THREADS = "%(log_color)s(%(levelname)s) - %(threadName)s - %(message)s"
+LOG_FORMAT = "(%(levelname)s) %(message)s"
+LOG_FORMAT_THREADS = "(%(levelname)s) - %(threadName)s - %(message)s"
+COLOR_LOG_FORMAT = f"%(log_color)s{LOG_FORMAT}"
+COLOR_LOG_FORMAT_THREADS = f"%(log_color)s{LOG_FORMAT_THREADS}"
 
 
 class LoopChecker(object):
@@ -280,13 +283,15 @@ class DirectoryPrefixFilter(Filter):
         return super().match(path)
 
 
-def __colored_formatter(options: Options) -> ColoredFormatter:
+def __colored_formatter(options: Options = None) -> ColoredFormatter:
     if options is not None:
-        log_format = LOG_FORMAT_THREADS if options.gcov_parallel > 1 else LOG_FORMAT
+        log_format = (
+            COLOR_LOG_FORMAT_THREADS if options.gcov_parallel > 1 else COLOR_LOG_FORMAT
+        )
         force_color = getattr(options, "force_color", False)
         no_color = getattr(options, "no_color", False)
     else:
-        log_format = LOG_FORMAT
+        log_format = COLOR_LOG_FORMAT
         force_color = False
         no_color = False
 
@@ -309,14 +314,43 @@ def __colored_formatter(options: Options) -> ColoredFormatter:
     )
 
 
-def configure_logging(options: Options = None) -> None:
-    stream_handler = logging.StreamHandler(sys.stderr)
-    stream_handler.setFormatter(__colored_formatter(options))
+def configure_logging() -> None:
+    logging.basicConfig(level=logging.INFO)
+    DEFAULT_LOGGING_HANDLER.setFormatter(__colored_formatter())
+    logging.getLogger().addHandler(DEFAULT_LOGGING_HANDLER)
+    ci_logging_prefixes = None
+    if "TF_BUILD" in os.environ:
+        ci_logging_prefixes = {
+            logging.WARNING: "##vso[task.logissue type=warning]",
+            logging.ERROR: "##vso[task.logissue type=error]",
+        }
+    elif "GITHUB_ACTIONS" in os.environ:
+        ci_logging_prefixes = {
+            logging.WARNING: "::warning::",
+            logging.ERROR: "::error::",
+        }
 
-    logging.basicConfig(
-        handlers=[stream_handler],
-        level=logging.INFO,
-    )
+    if ci_logging_prefixes is not None:
+
+        class CiFormatter(logging.Formatter):
+            """Formatter to format messages to be captured in Azure"""
+
+            def __init__(self):
+                super(CiFormatter, self).__init__(fmt=LOG_FORMAT)
+
+            def format(self, record):
+                if record.levelno in ci_logging_prefixes:
+                    result = (
+                        f"{ci_logging_prefixes[record.levelno]}{super().format(record)}"
+                    )
+                else:
+                    result = ""
+
+                return result
+
+        handler = logging.StreamHandler(sys.stderr)
+        handler.setFormatter(CiFormatter())
+        logging.getLogger().addHandler(handler)
 
     def exception_hook(exc_type, exc_value, exc_traceback) -> None:
         logging.exception(
@@ -326,12 +360,12 @@ def configure_logging(options: Options = None) -> None:
     sys.excepthook = exception_hook
 
 
-def update_logging_formatter(options: Options) -> None:
-    # The one and only LOGGER was configured from ourselve.
-    if len(logging.getLogger().handlers) == 1 and (
-        logging.getLogger().handlers[0].formatter._fmt == LOG_FORMAT
-    ):
-        logging.getLogger().handlers[0].setFormatter(__colored_formatter(options))
+def update_logging(options: Options) -> None:
+    if options.verbose:
+        LOGGER.setLevel(logging.DEBUG)
+
+    # Update the formatter of the default logger depending on options
+    DEFAULT_LOGGING_HANDLER.setFormatter(__colored_formatter(options))
 
 
 @contextmanager

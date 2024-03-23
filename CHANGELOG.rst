@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)
+
 Bug fixes and small improvements:
 
 Documentation:
