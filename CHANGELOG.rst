@@ -23,6 +23,7 @@ Internal changes:
 - Move tests to directory in the root. (:issue:`897`)
 - Add MacOs to the GitHub test workflow. (:issue:`901`, :issue:`905`)
 - Remove test exclusions for MacOs and adapt tests and reference data. (:issue:`902`)
+- Link correct documentation version in copyright header. (:issue:`907`)
 
 7.2 (24 February 2024)
 ----------------------
