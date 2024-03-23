@@ -5,7 +5,7 @@
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 7.2+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/stable
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -52,7 +52,7 @@ def getLicenseSection(comment_char: str = "#"):
     yield comment_char + "  ************************** Copyrights and license ***************************"
     yield comment_char
     yield comment_char + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
-    yield comment_char + " https://gcovr.com/en/stable"
+    yield comment_char + f" https://gcovr.com/en/{READTHEDOCS_VERSION}"
     yield comment_char
     yield comment_char + " _____________________________________________________________________________"
     yield comment_char
@@ -144,7 +144,7 @@ def updateCopyrightString(filename: str, lines: List[str]):
 def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
     newLines = []
 
-    callReleaseChecklist = "admin/release_checklist"
+    callReleaseChecklist = "admin/release_checklist.sh"
     callFound = False
     for line in lines:
         if callReleaseChecklist in line:
