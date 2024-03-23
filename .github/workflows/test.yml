@@ -158,9 +158,11 @@ jobs:
         if: ${{ startsWith(matrix.os,'windows-') }}
         run: |
           choco install ninja
-      - name: Install docker, ninja and libxml2 (MacOs)
+      - name: Install ninja and libxml2 (MacOs)
         if: ${{ startsWith(matrix.os,'macos-') }}
         run: |
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
           brew update
           brew install ninja
           brew install libxml2
