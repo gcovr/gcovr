@@ -10,4 +10,5 @@
 */reference/**/*.* linguist-detectable=false
 **/Makefile        linguist-detectable=false
 **/CMakeLists.txt  linguist-detectable=false
-**/*.cpp           linguist-detectable=false
+**/*.cmd           linguist-detectable=false
+**/*.sh            linguist-detectable=false
