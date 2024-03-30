@@ -243,6 +243,7 @@ class RootInfo:
         self.high_threshold_branch = options.html_high_threshold_branch
         self.link_function_list = options.html_details or options.html_nested
         self.relative_anchors = options.html_relative_anchors
+        self.single_page = options.html_single_page
 
         self.version = __version__
         self.head = options.html_title

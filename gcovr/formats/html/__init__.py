@@ -263,6 +263,21 @@ class HtmlHandler(BaseHandler):
                 const=True,
                 const_negate=False,
             ),
+            GcovrConfigOption(
+                "html_single_page",
+                ["--html-single-page"],
+                group="output_options",
+                choices=["static", "js-enabled"],
+                nargs="?",
+                const="js-enabled",
+                default=None,
+                help=(
+                    "Use one single html output file containing all data in the "
+                    "specified mode. If mode is 'js-enabled' (default) and javascript "
+                    "is possible the page is interactive like the normal report. "
+                    "If mode is 'static' all files are shown at once."
+                ),
+            ),
         ]
 
     def validate_options(self) -> None:
@@ -282,13 +297,17 @@ class HtmlHandler(BaseHandler):
         )
         if self.options.html_details and not potential_html_output:
             raise RuntimeError(
-                "a named output must be given, if the option --html-details\n"
-                "is used."
+                "a named output must be given, if the option --html-details is used."
             )
 
         if self.options.html_nested and not potential_html_output:
             raise RuntimeError(
-                "a named output must be given, if the option --html-nested\n" "is used."
+                "a named output must be given, if the option --html-nested is used."
+            )
+
+        if self.options.html_single_page and not self.options.html_details:
+            raise RuntimeError(
+                "option --html-details is needed, if the option --html-single-page is used."
             )
 
         if self.options.html_self_contained is False and not potential_html_output:
