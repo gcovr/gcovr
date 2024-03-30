@@ -270,7 +270,7 @@ def test_no_output_html_details(caplog):
     assert message[1] == logging.ERROR
     assert (
         message[2]
-        == "a named output must be given, if the option --html-details\nis used."
+        == "a named output must be given, if the option --html-details is used."
     )
     assert c.exception.code != 0
 
@@ -281,7 +281,7 @@ def test_no_output_html_nested(caplog):
     assert message[1] == logging.ERROR
     assert (
         message[2]
-        == "a named output must be given, if the option --html-nested\nis used."
+        == "a named output must be given, if the option --html-nested is used."
     )
     assert c.exception.code != 0
 
