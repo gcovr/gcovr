@@ -16,9 +16,14 @@
                 <th class="p-2">Exec</th>
                 <th class="p-2 text-left" style="width: 100%;">Source</th>
             </tr>
+            {% if info.single_page %}
+            {%  set anchor_prefix = html_filename + "|" %}
+            {% else %}
+            {%  set anchor_prefix = '' %}
+            {% endif %}
             {% for row in source_lines %}
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l{{row.lineno}}" href="#l{{row.lineno}}">{{row.lineno}}</a></td>
+                <td class="text-right src linenos"><a class="normal" id="{{ anchor_prefix }}l{{row.lineno}}" href="#l{{row.lineno}}">{{row.lineno}}</a></td>
                 <td class="text-right src linenos ws-unset">
                     {% if row.linebranch %}
                     <details class="normal details-overlay">

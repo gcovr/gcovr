@@ -24,12 +24,12 @@
     {% endif %}
   </tr>
 
-  {% for row in info.files %}
+  {% for row in entries %}
 
   <tr>
     <th scope="row">
       {% if row.link is not none %}
-      <a href="{{row.link}}">{{row.filename}}</a>
+      <a href="{% if info.single_page %}#{% endif %}{{row.link}}">{{row.filename}}</a>
       {% else %}
       {{row.filename}}
       {% endif %}

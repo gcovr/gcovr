@@ -113,7 +113,6 @@ RE_COVERALLS_GIT_PRETTY = re.compile(
     r'\s+"git": \{\s+"branch": "branch",\s+"head": \{(?:\s+"[^"]+":.+\n)+\s+\},\s+"remotes": \[[^\]]+\]\s+\},'
 )
 
-RE_HTML_ATTR_VERSION = RE_XML_ATTR_VERSION
 RE_HTML_HEADER_DATE = re.compile(
     r"<(td|div)>(Date: )?\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?:\+\d\d:\d\d)?</\1>"
 )
@@ -152,9 +151,8 @@ def scrub_xml(contents: str) -> str:
 
 def scrub_html(contents: str) -> str:
     contents = translate_newlines_if_windows(contents)
-    contents = RE_HTML_HEADER_DATE.sub(r"<\1>\20000-00-00 00:00:00</\1>", contents)
+    contents = RE_HTML_HEADER_DATE.sub(r"<\1>\g<2>0000-00-00 00:00:00</\1>", contents)
     contents = RE_HTML_FOOTER_VERSION.sub(r"\1main\2main\3", contents)
-    contents = RE_HTML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
     contents = force_unix_separator(contents)
     return contents
 

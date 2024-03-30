@@ -8,7 +8,9 @@
   </tr>
   {% for entry in function_batch %}
   <tr>
-    {#- #}<td><a href="{{ entry['html_filename'] }}#l{{ entry['line'] }}">{{ entry["name"] }} ({{ entry["filename"] }}:{{ entry["line"] }})</a></td>
+    {#- #}<td><a href="{%- if info.single_page %}#{{ entry['html_filename'] }}|
+                       {%- else %}{{ entry['html_filename'] }}#
+                       {%- endif %}l{{ entry['line'] }}">{{ entry["name"] }} ({{ entry["filename"] }}:{{ entry["line"] }})</a></td>
     {#- #}<td>
             {%- if entry["excluded"] %}excluded
             {%- else %}
