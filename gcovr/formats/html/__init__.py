@@ -265,6 +265,37 @@ class HtmlHandler(BaseHandler):
             ),
         ]
 
+    def validate_options(self) -> None:
+        if self.options.html_tab_size < 1:
+            raise RuntimeError("value of --html-tab-size= should be greater 0.")
+
+        if self.options.html_details and self.options.html_nested:
+            raise RuntimeError(
+                "--html-details and --html-nested can not be used together."
+            )
+
+        potential_html_output = (
+            (self.options.html and self.options.html.value)
+            or (self.options.html_details and self.options.html_details.value)
+            or (self.options.html_nested and self.options.html_nested.value)
+            or (self.options.output and self.options.output.value)
+        )
+        if self.options.html_details and not potential_html_output:
+            raise RuntimeError(
+                "a named output must be given, if the option --html-details\n"
+                "is used."
+            )
+
+        if self.options.html_nested and not potential_html_output:
+            raise RuntimeError(
+                "a named output must be given, if the option --html-nested\n" "is used."
+            )
+
+        if self.options.html_self_contained is False and not potential_html_output:
+            raise RuntimeError(
+                "can only disable --html-self-contained when a named output is given."
+            )
+
     def write_report(self, covdata: CovData, output_file: str) -> None:
         from .write import write_report
 

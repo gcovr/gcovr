@@ -60,6 +60,23 @@ def get_options() -> List[GcovrConfigOption]:
     ]
 
 
+def validate_options(options) -> CovData:
+    for handler in [
+        GcovHandler,
+        CloverHandler,
+        CoberturaHandler,
+        CoverallsHandler,
+        CsvHandler,
+        HtmlHandler,
+        JaCoCoHandler,
+        JsonHandler,
+        LcovHandler,
+        SonarqubeHandler,
+        TxtHandler,
+    ]:
+        handler(options).validate_options()
+
+
 def read_reports(options) -> CovData:
     if options.json_add_tracefile or options.cobertura_add_tracefile:
         covdata: CovData = JsonHandler(options).read_report() or {}
