@@ -222,10 +222,10 @@ class NegativeHits(Exception):
 
     def __init__(self, line: str) -> None:
         super().__init__(
-            f"Got negative hit value in gcov line {line!r} caused by a "
-            "bug in gcov tool, see "
-            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option "
-            "--gcov-ignore-parse-errors with a value of negative_hits.warn, "
+            f"Got negative hit value in gcov line {line!r} caused by a\n"
+            "bug in gcov tool, see\n"
+            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
+            "--gcov-ignore-parse-errors with a value of negative_hits.warn,\n"
             "or negative_hits.warn_once_per_file."
         )
 
@@ -257,10 +257,10 @@ class SuspiciousHits(Exception):
 
     def __init__(self, line: str) -> None:
         super().__init__(
-            f"Got suspicious hit value in gcov line {line!r} caused by a "
-            "bug in gcov tool, see "
-            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option "
-            "--gcov-ignore-parse-errors with a value of suspicious_hits.warn, "
+            f"Got suspicious hit value in gcov line {line!r} caused by a\n"
+            "bug in gcov tool, see\n"
+            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
+            "--gcov-ignore-parse-errors with a value of suspicious_hits.warn,\n"
             "or suspicious_hits.warn_once_per_file."
         )
 
