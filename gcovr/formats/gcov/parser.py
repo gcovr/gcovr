@@ -847,12 +847,18 @@ def _parse_tag_line(
         if match is not None:
             name, count, returned, blocks = match.groups()
             count = _int_from_gcov_unit(count)
+            if returned[-1] == "%":
+                if returned == "NAN %":
+                    returned = 0
+                else:
+                    returned = int(_float_from_gcov_percent(returned) * count / 100)
+            else:
+                returned = int(returned)
+
             return _FunctionLine(
                 name,
                 count,
-                int(_float_from_gcov_percent(returned) * count / 100)
-                if returned[-1] == "%"
-                else int(returned),
+                returned,
                 _float_from_gcov_percent(blocks),
             )
 
