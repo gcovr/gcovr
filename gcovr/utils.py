@@ -315,9 +315,9 @@ def __colored_formatter(options: Options = None) -> ColoredFormatter:
 
 
 def configure_logging() -> None:
-    logging.basicConfig(level=logging.INFO)
+    """Configure the logging module"""
     DEFAULT_LOGGING_HANDLER.setFormatter(__colored_formatter())
-    logging.getLogger().addHandler(DEFAULT_LOGGING_HANDLER)
+    logging.basicConfig(level=logging.INFO, handlers=[DEFAULT_LOGGING_HANDLER])
     ci_logging_prefixes = None
     if "TF_BUILD" in os.environ:
         ci_logging_prefixes = {
