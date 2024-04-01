@@ -16,6 +16,8 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Use replacement value of 0 for function call count ``NAN %``. (:issue:`910`)
+
 Documentation:
 
 Internal changes:
