@@ -234,9 +234,15 @@ class NegativeHits(Exception):
         line, ignore_parse_errors: set = (), persistent_states: dict = {}
     ) -> None:
         """Raise exception if not ignored by options"""
-        if ignore_parse_errors is not None and (
-            "negative_hits.warn" in ignore_parse_errors
-            or "negative_hits.warn_once_per_file" in ignore_parse_errors
+        if ignore_parse_errors is not None and any(
+            [
+                v in ignore_parse_errors
+                for v in [
+                    "all",
+                    "negative_hits.warn",
+                    "negative_hits.warn_once_per_file",
+                ]
+            ]
         ):
             if "negative_hits.warn_once_per_file" not in persistent_states:
                 persistent_states["negative_hits.warn_once_per_file"] = 0
@@ -263,9 +269,15 @@ class SuspiciousHits(Exception):
         line, ignore_parse_errors: set = (), persistent_states: dict = {}
     ) -> None:
         """Raise exception if not ignored by options"""
-        if ignore_parse_errors is not None and (
-            "suspicious_hits.warn" in ignore_parse_errors
-            or "suspicious_hits.warn_once_per_file" in ignore_parse_errors
+        if ignore_parse_errors is not None and any(
+            [
+                v in ignore_parse_errors
+                for v in [
+                    "all",
+                    "suspicious_hits.warn",
+                    "suspicious_hits.warn_once_per_file",
+                ]
+            ]
         ):
             if "suspicious_hits.warn_once_per_file" not in persistent_states:
                 persistent_states["suspicious_hits.warn_once_per_file"] = 0
@@ -591,7 +603,7 @@ def _report_lines_with_errors(
 
     LOGGER.error(
         "Exiting because of parse errors.\n"
-        "\tYou can run gcovr with --gcov-ignore-parse-errors\n"
+        "\tYou can run gcovr with --gcov-ignore-parse-errors=...\n"
         "\tto continue anyway."
     )
 
