@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # The script describes working and failing cases
 # when having several coexisting build folders.

@@ -143,8 +143,8 @@ Example HTML details:
 .. _documentation:  website_
 .. _repo:       https://github.com/gcovr/gcovr/
 .. _bugtracker: https://github.com/gcovr/gcovr/issues
-.. |GitHub-Actions-badge| image:: https://github.com/gcovr/gcovr/workflows/Test/badge.svg?branch=main
-   :target: https://github.com/gcovr/gcovr/actions?query=workflow%3ATest+branch%3Amain+event%3Apush
+.. |GitHub-Actions-badge| image:: https://github.com/gcovr/gcovr/actions/workflows/test.yml/badge.svg?event=push
+   :target: https://github.com/gcovr/gcovr/actions/workflows/test.yml?query=branch%3Amain+event%3Apush
    :alt: GitHub Actions build status
 .. |pypi-badge| image:: https://img.shields.io/pypi/v/gcovr.svg
    :target: https://pypi.python.org/pypi/gcovr
