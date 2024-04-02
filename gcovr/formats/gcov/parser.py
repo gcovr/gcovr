@@ -49,6 +49,7 @@ from typing import (
     NoReturn,
     Optional,
     Pattern,
+    Set,
     Tuple,
     Union,
 )
@@ -244,10 +245,12 @@ class NegativeHits(Exception):
                 ]
             ]
         ):
-            if "negative_hits.warn_once_per_file" not in persistent_states:
-                persistent_states["negative_hits.warn_once_per_file"] = 0
+            if "negative_hits.warn_once_per_file" in persistent_states:
+                persistent_states["negative_hits.warn_once_per_file"] += 1
+            else:
                 LOGGER.warning(f"Ignoring negative hits in line {line!r}.")
-            persistent_states["negative_hits.warn_once_per_file"] += 1
+                if "negative_hits.warn_once_per_file" in ignore_parse_errors:
+                    persistent_states["negative_hits.warn_once_per_file"] = 1
         else:
             raise NegativeHits(line)
 
@@ -279,10 +282,12 @@ class SuspiciousHits(Exception):
                 ]
             ]
         ):
-            if "suspicious_hits.warn_once_per_file" not in persistent_states:
-                persistent_states["suspicious_hits.warn_once_per_file"] = 0
+            if "suspicious_hits.warn_once_per_file" in persistent_states:
+                persistent_states["suspicious_hits.warn_once_per_file"] += 1
+            else:
                 LOGGER.warning(f"Ignoring suspicious hits in line {line!r}.")
-            persistent_states["suspicious_hits.warn_once_per_file"] += 1
+                if "suspicious_hits.warn_once_per_file" in ignore_parse_errors:
+                    persistent_states["suspicious_hits.warn_once_per_file"] = 1
         else:
             raise SuspiciousHits(line)
 
@@ -341,7 +346,7 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    ignore_parse_errors: set(),
+    ignore_parse_errors: Set,
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
@@ -386,7 +391,7 @@ def parse_coverage(
         and persistent_states["negative_hits.warn_once_per_file"] > 1
     ):
         LOGGER.warning(
-            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} issues overall."
+            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} negative hits overall."
         )
 
     if (
@@ -394,7 +399,7 @@ def parse_coverage(
         and persistent_states["suspicious_hits.warn_once_per_file"] > 1
     ):
         LOGGER.warning(
-            f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} issues overall."
+            f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
         )
 
     coverage = FileCoverage(filename)

@@ -563,7 +563,7 @@ def test_branch_exclusion(flags):
     assert covered_branches == expected_covered_branches
 
 
-def test_negativ_branch_count():
+def test_negative_branch_count():
     """
     A exception shall be raised.
     """
@@ -587,7 +587,14 @@ def test_negativ_branch_count():
         )
 
 
-def test_negative_line_count_ignored():
+@pytest.mark.parametrize(
+    "flag",
+    [
+        "negative_hits.warn",
+        "negative_hits.warn_once_per_file",
+    ],
+)
+def test_negative_line_count_ignored(caplog, flag):
     """
     A exception shall be raised.
     """
@@ -604,12 +611,26 @@ def test_negative_line_count_ignored():
     coverage, _ = parse_coverage(
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=set(["negative_hits.warn_once_per_file"]),
+        ignore_parse_errors=set([flag]),
     )
 
     covered_lines = {line.lineno for line in coverage.lines.values() if line.is_covered}
 
     assert covered_lines == {1, 3}
+
+    number_of_warnings = 2 if flag == "negative_hits.warn" else 1
+    messages = caplog.record_tuples
+    for index in range(0, number_of_warnings):
+        message = messages[index]
+        assert message[1] == logging.WARNING
+        assert message[2].startswith("Ignoring negative hits in line ")
+
+    if number_of_warnings == 1:
+        message = messages[number_of_warnings]
+        assert message[1] == logging.WARNING
+        assert message[2] == "Ignored 2 negative hits overall."
+    else:
+        assert len(messages) == number_of_warnings
 
 
 def test_negative_branch_count_ignored():
@@ -672,7 +693,14 @@ def test_suspicious_branch_count():
         )
 
 
-def test_suspicious_line_count_ignored():
+@pytest.mark.parametrize(
+    "flag",
+    [
+        "suspicious_hits.warn",
+        "suspicious_hits.warn_once_per_file",
+    ],
+)
+def test_suspicious_line_count_ignored(caplog, flag):
     """
     A exception shall be raised.
     """
@@ -689,12 +717,26 @@ def test_suspicious_line_count_ignored():
     coverage, _ = parse_coverage(
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=set(["suspicious_hits.warn_once_per_file"]),
+        ignore_parse_errors=set([flag]),
     )
 
     covered_lines = {line.lineno for line in coverage.lines.values() if line.is_covered}
 
     assert covered_lines == {1, 3}
+
+    number_of_warnings = 2 if flag == "suspicious_hits.warn" else 1
+    messages = caplog.record_tuples
+    for index in range(0, number_of_warnings):
+        message = messages[index]
+        assert message[1] == logging.WARNING
+        assert message[2].startswith("Ignoring suspicious hits in line ")
+
+    if number_of_warnings == 1:
+        message = messages[number_of_warnings]
+        assert message[1] == logging.WARNING
+        assert message[2] == "Ignored 2 suspicious hits overall."
+    else:
+        assert len(messages) == number_of_warnings
 
 
 def test_suspicious_branch_count_ignored():
