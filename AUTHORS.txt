@@ -74,6 +74,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     TFA-N,
     Thibault Gasc,
     Tilo Wiedera,
+    Tsche,
     Tyler W. Mace,
     trapzero,
     Will Thompson,

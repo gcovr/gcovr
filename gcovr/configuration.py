@@ -323,14 +323,14 @@ def merge_options_and_set_defaults(
 
 
 class UseSortUncoveredNumberAction(GcovrDeprecatedConfigOptionAction):
-    option = "--sort-key"
-    config = "sort-key"
+    option = "--sort"
+    config = "sort"
     value = "uncovered-number"
 
 
 class UseSortUncoveredPercentAction(GcovrDeprecatedConfigOptionAction):
-    option = "--sort-key"
-    config = "sort-key"
+    option = "--sort"
+    config = "sort"
     value = "uncovered-percent"
 
 
@@ -552,7 +552,7 @@ GCOVR_CONFIG_OPTIONS = [
         ["-u", "--sort-uncovered"],
         group="output_options",
         help=(
-            "Deprecated, please use '--sort-key uncovered-number' instead. "
+            "Deprecated, please use '--sort uncovered-number' instead. "
             "Sort entries by number of uncovered lines or branches (if the option "
             "--sort-branches is given). "
             "The default order is increasing and can be changed by --sort-reverse. "
@@ -567,7 +567,7 @@ GCOVR_CONFIG_OPTIONS = [
         ["-p", "--sort-percentage"],
         group="output_options",
         help=(
-            "Deprecated, please use '--sort-key uncovered-percent' instead. "
+            "Deprecated, please use '--sort uncovered-percent' instead. "
             "Sort entries by percentage of uncovered lines or branches (if the option "
             "--sort-branches is given). "
             "The default order is increasing and can be changed by --sort-reverse. "
