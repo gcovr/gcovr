@@ -27,7 +27,12 @@ from unittest import mock
 
 import pytest
 
-from gcovr.formats.gcov.parser import NegativeHits, parse_coverage, UnknownLineType
+from gcovr.formats.gcov.parser import (
+    NegativeHits,
+    SuspiciousHits,
+    parse_coverage,
+    UnknownLineType,
+)
 from gcovr.utils import configure_logging
 from gcovr.formats.gcov.workers import Workers
 from gcovr.exclusions import ExclusionOptions, apply_all_exclusions
@@ -558,7 +563,7 @@ def test_branch_exclusion(flags):
     assert covered_branches == expected_covered_branches
 
 
-def test_negativ_branch_count():
+def test_negative_branch_count():
     """
     A exception shall be raised.
     """
@@ -582,7 +587,14 @@ def test_negativ_branch_count():
         )
 
 
-def test_negative_line_count_ignored():
+@pytest.mark.parametrize(
+    "flag",
+    [
+        "negative_hits.warn",
+        "negative_hits.warn_once_per_file",
+    ],
+)
+def test_negative_line_count_ignored(caplog, flag):
     """
     A exception shall be raised.
     """
@@ -592,18 +604,33 @@ def test_negative_line_count_ignored():
              1: 1:foo += 1;
             -1: 2:foo += 1;
              2: 3:foo += 1;
+            -2: 4:foo += 1;
         """
     )
 
     coverage, _ = parse_coverage(
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=set(["negative_hits.warn"]),
+        ignore_parse_errors=set([flag]),
     )
 
     covered_lines = {line.lineno for line in coverage.lines.values() if line.is_covered}
 
     assert covered_lines == {1, 3}
+
+    number_of_warnings = 2 if flag == "negative_hits.warn" else 1
+    messages = caplog.record_tuples
+    for index in range(0, number_of_warnings):
+        message = messages[index]
+        assert message[1] == logging.WARNING
+        assert message[2].startswith("Ignoring negative hits in line ")
+
+    if number_of_warnings == 1:
+        message = messages[number_of_warnings]
+        assert message[1] == logging.WARNING
+        assert message[2] == "Ignored 2 negative hits overall."
+    else:
+        assert len(messages) == number_of_warnings
 
 
 def test_negative_branch_count_ignored():
@@ -622,10 +649,123 @@ def test_negative_branch_count_ignored():
         """
     )
 
+    with pytest.raises(NegativeHits):
+        coverage, _ = parse_coverage(
+            source.splitlines(),
+            filename="example.cpp",
+            ignore_parse_errors=set([]),
+        )
+
     coverage, _ = parse_coverage(
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=set(["negative_hits.warn"]),
+        ignore_parse_errors=set(["negative_hits.warn_once_per_file"]),
+    )
+
+    covered_branches = {
+        branch
+        for line in coverage.lines.values()
+        for branch in line.branches.keys()
+        if line.branches[branch].is_covered
+    }
+
+    assert covered_branches == {1, 3}
+
+
+def test_suspicious_branch_count():
+    """
+    A exception shall be raised.
+    """
+
+    source = textwrap.dedent(
+        """\
+             1: 1:foo += 1;
+            4294967296: 2:foo += 1;
+             2: 3:foo += 1;
+        """
+    )
+
+    with pytest.raises(SuspiciousHits):
+        parse_coverage(
+            source.splitlines(),
+            filename="example.cpp",
+            ignore_parse_errors=set([]),
+        )
+
+
+@pytest.mark.parametrize(
+    "flag",
+    [
+        "suspicious_hits.warn",
+        "suspicious_hits.warn_once_per_file",
+    ],
+)
+def test_suspicious_line_count_ignored(caplog, flag):
+    """
+    A exception shall be raised.
+    """
+
+    source = textwrap.dedent(
+        """\
+             1: 1:foo += 1;
+            4294967296: 2:foo += 1;
+             2: 3:foo += 1;
+            4294967297: 4:foo += 1;
+        """
+    )
+
+    coverage, _ = parse_coverage(
+        source.splitlines(),
+        filename="example.cpp",
+        ignore_parse_errors=set([flag]),
+    )
+
+    covered_lines = {line.lineno for line in coverage.lines.values() if line.is_covered}
+
+    assert covered_lines == {1, 3}
+
+    number_of_warnings = 2 if flag == "suspicious_hits.warn" else 1
+    messages = caplog.record_tuples
+    for index in range(0, number_of_warnings):
+        message = messages[index]
+        assert message[1] == logging.WARNING
+        assert message[2].startswith("Ignoring suspicious hits in line ")
+
+    if number_of_warnings == 1:
+        message = messages[number_of_warnings]
+        assert message[1] == logging.WARNING
+        assert message[2] == "Ignored 2 suspicious hits overall."
+    else:
+        assert len(messages) == number_of_warnings
+
+
+def test_suspicious_branch_count_ignored():
+    """
+    A exception shall be raised.
+    """
+
+    source = textwrap.dedent(
+        """\
+          1: 1: normal line
+        branch 1 taken 80%
+          1: 2: } // line without apparent code
+        branch 2 taken 4294967296
+          1: 3: exception-only code
+        branch 3 taken 60% (throw)
+        """
+    )
+
+    with pytest.raises(SuspiciousHits):
+        coverage, _ = parse_coverage(
+            source.splitlines(),
+            filename="example.cpp",
+            ignore_parse_errors=set([]),
+        )
+
+    coverage, _ = parse_coverage(
+        source.splitlines(),
+        filename="example.cpp",
+        ignore_parse_errors=set(["suspicious_hits.warn_once_per_file"]),
     )
 
     covered_branches = {

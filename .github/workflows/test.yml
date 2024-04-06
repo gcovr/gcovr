@@ -199,7 +199,6 @@ jobs:
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           disable_search: true
@@ -207,6 +206,8 @@ jobs:
           files: ./coverage.xml
           name: ${{ matrix.os }}-${{ matrix.gcc }}
           verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Generate documentation
         if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
         run: |
@@ -273,7 +274,6 @@ jobs:
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           disable_search: true
@@ -281,17 +281,20 @@ jobs:
           files: ./coverage.xml
           name: docker-${{ matrix.gcc }}
           verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload LCOV coverage to Codecov
         if: ${{ (matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10') }}
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           disable_search: true
           files: ./tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
           name: docker-${{ matrix.gcc }}-lcov
           verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Generate documentation (in container)
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc

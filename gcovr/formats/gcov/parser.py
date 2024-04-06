@@ -49,6 +49,7 @@ from typing import (
     NoReturn,
     Optional,
     Pattern,
+    Set,
     Tuple,
     Union,
 )
@@ -72,6 +73,7 @@ from ...merging import (
 
 
 LOGGER = logging.getLogger("gcovr")
+SUSPICIOUS_COUNTER = 2**32
 
 
 def _line_pattern(pattern: str) -> Pattern[str]:
@@ -221,10 +223,10 @@ class NegativeHits(Exception):
 
     def __init__(self, line: str) -> None:
         super().__init__(
-            f"Got negative hit value in gcov line {line!r} caused by a "
-            "bug in gcov tool, see "
-            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option "
-            "--gcov-ignore-parse-errors with a value of negative_hits.warn, "
+            f"Got negative hit value in gcov line {line!r} caused by a\n"
+            "bug in gcov tool, see\n"
+            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
+            "--gcov-ignore-parse-errors with a value of negative_hits.warn,\n"
             "or negative_hits.warn_once_per_file."
         )
 
@@ -233,16 +235,61 @@ class NegativeHits(Exception):
         line, ignore_parse_errors: set = (), persistent_states: dict = {}
     ) -> None:
         """Raise exception if not ignored by options"""
-        if ignore_parse_errors is not None and (
-            "negative_hits.warn" in ignore_parse_errors
-            or "negative_hits.warn_once_per_file" in ignore_parse_errors
+        if ignore_parse_errors is not None and any(
+            [
+                v in ignore_parse_errors
+                for v in [
+                    "all",
+                    "negative_hits.warn",
+                    "negative_hits.warn_once_per_file",
+                ]
+            ]
         ):
-            if "negative_hits.warn_once_per_file" not in persistent_states:
-                persistent_states["negative_hits.warn_once_per_file"] = 0
+            if "negative_hits.warn_once_per_file" in persistent_states:
+                persistent_states["negative_hits.warn_once_per_file"] += 1
+            else:
                 LOGGER.warning(f"Ignoring negative hits in line {line!r}.")
-            persistent_states["negative_hits.warn_once_per_file"] += 1
+                if "negative_hits.warn_once_per_file" in ignore_parse_errors:
+                    persistent_states["negative_hits.warn_once_per_file"] = 1
         else:
             raise NegativeHits(line)
+
+
+class SuspiciousHits(Exception):
+    """Used to signal that a negative count value was found."""
+
+    def __init__(self, line: str) -> None:
+        super().__init__(
+            f"Got suspicious hit value in gcov line {line!r} caused by a\n"
+            "bug in gcov tool, see\n"
+            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
+            "--gcov-ignore-parse-errors with a value of suspicious_hits.warn,\n"
+            "or suspicious_hits.warn_once_per_file."
+        )
+
+    @staticmethod
+    def raise_if_not_ignored(
+        line, ignore_parse_errors: set = (), persistent_states: dict = {}
+    ) -> None:
+        """Raise exception if not ignored by options"""
+        if ignore_parse_errors is not None and any(
+            [
+                v in ignore_parse_errors
+                for v in [
+                    "all",
+                    "suspicious_hits.warn",
+                    "suspicious_hits.warn_once_per_file",
+                ]
+            ]
+        ):
+            if "suspicious_hits.warn_once_per_file" in persistent_states:
+                persistent_states["suspicious_hits.warn_once_per_file"] += 1
+            else:
+                LOGGER.warning(f"Ignoring suspicious hits in line {line!r}.")
+                if "suspicious_hits.warn_once_per_file" in ignore_parse_errors:
+                    persistent_states["suspicious_hits.warn_once_per_file"] = 1
+        else:
+            raise SuspiciousHits(line)
 
 
 def parse_metadata(lines: List[str]) -> Dict[str, Optional[str]]:
@@ -299,7 +346,7 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    ignore_parse_errors: set(),
+    ignore_parse_errors: Set,
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
@@ -344,7 +391,15 @@ def parse_coverage(
         and persistent_states["negative_hits.warn_once_per_file"] > 1
     ):
         LOGGER.warning(
-            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} issues overall."
+            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} negative hits overall."
+        )
+
+    if (
+        "suspicious_hits.warn_once_per_file" in persistent_states
+        and persistent_states["suspicious_hits.warn_once_per_file"] > 1
+    ):
+        LOGGER.warning(
+            f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
         )
 
     coverage = FileCoverage(filename)
@@ -553,7 +608,7 @@ def _report_lines_with_errors(
 
     LOGGER.error(
         "Exiting because of parse errors.\n"
-        "\tYou can run gcovr with --gcov-ignore-parse-errors\n"
+        "\tYou can run gcovr with --gcov-ignore-parse-errors=...\n"
         "\tto continue anyway."
     )
 
@@ -598,6 +653,8 @@ def _parse_line(
     _BranchLine(branchno=3, hits=123, annotation=None)
     >>> _parse_line('branch 3 taken -1', ("negative_hits.warn",))
     _BranchLine(branchno=3, hits=0, annotation=None)
+    >>> _parse_line('branch 3 taken 4294967296', ("suspicious_hits.warn",))
+    _BranchLine(branchno=3, hits=0, annotation=None)
     >>> _parse_line('branch 7 taken 3% (fallthrough)')
     _BranchLine(branchno=7, hits=1, annotation='fallthrough')
     >>> _parse_line('branch 17 taken 99% (throw)')
@@ -625,6 +682,8 @@ def _parse_line(
     >>> _parse_line('unconditional 1 taken 17')
     _UnconditionalLine(branchno=1, hits=17)
     >>> _parse_line('unconditional 2 taken -1', ignore_parse_errors=set(['negative_hits.warn']))
+    _UnconditionalLine(branchno=2, hits=0)
+    >>> _parse_line('unconditional 2 taken 4294967296', ignore_parse_errors=set(['suspicious_hits.warn']))
     _UnconditionalLine(branchno=2, hits=0)
     >>> _parse_line('unconditional 3 never executed')
     _UnconditionalLine(branchno=3, hits=0)
@@ -667,6 +726,8 @@ def _parse_line(
     >>> _parse_line(' %%%%%:10000-block  0')  # see https://github.com/gcovr/gcovr/issues/882
     _BlockLine(hits=0, lineno=10000, blockno=0, extra_info=NONE)
     >>> _parse_line('     -1: 32-block  0', ignore_parse_errors=set(['negative_hits.warn']))
+    _BlockLine(hits=0, lineno=32, blockno=0, extra_info=NONE)
+    >>> _parse_line('     4294967296: 32-block  0', ignore_parse_errors=set(['suspicious_hits.warn']))
     _BlockLine(hits=0, lineno=32, blockno=0, extra_info=NONE)
     >>> _parse_line('     1: 9-block with some unknown format')
     Traceback (most recent call last):
@@ -731,6 +792,12 @@ def _parse_line(
             )
             hits = 0
 
+        if hits >= SUSPICIOUS_COUNTER:
+            SuspiciousHits.raise_if_not_ignored(
+                line, ignore_parse_errors, persistent_states
+            )
+            hits = 0
+
         return _SourceLine(hits, int(lineno), source_code, extra_info)
 
     # BLOCK
@@ -753,6 +820,12 @@ def _parse_line(
 
             if hits < 0:
                 NegativeHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
+                hits = 0
+
+            if hits >= SUSPICIOUS_COUNTER:
+                SuspiciousHits.raise_if_not_ignored(
                     line, ignore_parse_errors, persistent_states
                 )
                 hits = 0
@@ -805,6 +878,12 @@ def _parse_tag_line(
                 )
                 hits = 0
 
+            if hits >= SUSPICIOUS_COUNTER:
+                SuspiciousHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
+                hits = 0
+
             return _BranchLine(int(branch_id), hits, annotation)
 
     # CALL
@@ -832,6 +911,12 @@ def _parse_tag_line(
 
             if hits < 0:
                 NegativeHits.raise_if_not_ignored(
+                    line, ignore_parse_errors, persistent_states
+                )
+                hits = 0
+
+            if hits >= SUSPICIOUS_COUNTER:
+                SuspiciousHits.raise_if_not_ignored(
                     line, ignore_parse_errors, persistent_states
                 )
                 hits = 0
