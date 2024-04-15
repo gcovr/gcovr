@@ -14,11 +14,13 @@ New features and notable changes:
 
 - In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)
 - Detect suspicious counter values in ``gcov`` output. (:issue:`903`)
+- Add :option:`--html-single-page` to create a single page report (static or with Javascript). (:issue:`916`)
 
 Bug fixes and small improvements:
 
 - Use replacement value of 0 for function call count ``NAN %``. (:issue:`910`)
 - Fix erroneous deprecation warning. (:issue:`912`)
+- Fix filename in detailed source page if directory isn't ``.``. (:issue:`916`)
 
 Documentation:
 
