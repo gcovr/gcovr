@@ -315,7 +315,10 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
     self_contained = options.html_self_contained
     if self_contained is None:
-        self_contained = not (options.html_details or options.html_nested)
+        self_contained = (
+            not (options.html_details or options.html_nested)
+            or options.html_single_page
+        )
     if output_file == "-":
         if not self_contained:
             raise ArgumentTypeError(
@@ -371,7 +374,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     )
 
     subdirs = {}
-    if options.html_nested or options.html_single_page:
+    if options.html_nested:
         subdirs = DirectoryCoverage.from_covdata(
             covdata, sorted_keys, options.root_filter
         )
@@ -625,6 +628,8 @@ def write_single_page(
     if root_info.single_page == "js-enabled":
         for _, cdata in subdirs.items():
             directories.append(get_directory_data(options, root_info, cdata_fname, cdata_sourcefile, cdata))
+    if len(directories) == 1:
+        directories[0]["dirname"] = "/"  # We need this to have a correct id in HTML.
 
     html_string = (
         templates(options)

@@ -18,8 +18,8 @@ coverage.json:
 	$(GCOVR) -r subdir --json-pretty --json $@
 
 html: coverage.json
-	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./ --html-single-page static
-	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./coverage_single_page-js.html --html-single-page
+	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./ --html-single-page static --no-html-self-contained
+	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./coverage_single_page-js.html --html-single-page --no-html-self-contained
 	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./coverage_single_page-gh.html --html-theme github.blue --html-single-page static
 	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./coverage_single_page-gh-js.html --html-theme github.blue --html-single-page
 

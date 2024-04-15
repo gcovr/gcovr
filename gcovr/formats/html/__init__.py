@@ -256,7 +256,8 @@ class HtmlHandler(BaseHandler):
                     "Control whether the HTML report bundles resources like CSS styles. "
                     "Self-contained reports can be sent via email, "
                     "but conflict with the Content Security Policy of some web servers. "
-                    "Defaults to self-contained reports unless --html-details is used."
+                    "Defaults to self-contained reports unless --html-details or "
+                    "--html-nested is used without --html-single-page."
                 ),
                 action="store_const",
                 default=None,
@@ -305,9 +306,9 @@ class HtmlHandler(BaseHandler):
                 "a named output must be given, if the option --html-nested is used."
             )
 
-        if self.options.html_single_page and not self.options.html_details:
+        if self.options.html_single_page and not (self.options.html_details or self.options.html_nested):
             raise RuntimeError(
-                "option --html-details is needed, if the option --html-single-page is used."
+                "option --html-details or --html-nested is needed, if the option --html-single-page is used."
             )
 
         if self.options.html_self_contained is False and not potential_html_output:
