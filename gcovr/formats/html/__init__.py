@@ -306,7 +306,9 @@ class HtmlHandler(BaseHandler):
                 "a named output must be given, if the option --html-nested is used."
             )
 
-        if self.options.html_single_page and not (self.options.html_details or self.options.html_nested):
+        if self.options.html_single_page and not (
+            self.options.html_details or self.options.html_nested
+        ):
             raise RuntimeError(
                 "option --html-details or --html-nested is needed, if the option --html-single-page is used."
             )

@@ -158,8 +158,7 @@ class CssRenderer:
     def render(options):
         template = CssRenderer.load_css_template(options)
         return template.render(
-            tab_size=options.html_tab_size,
-            single_page=options.html_single_page
+            tab_size=options.html_tab_size, single_page=options.html_single_page
         )
 
 
@@ -242,7 +241,9 @@ class RootInfo:
         self.high_threshold_line = options.html_high_threshold_line
         self.medium_threshold_branch = options.html_medium_threshold_branch
         self.high_threshold_branch = options.html_high_threshold_branch
-        self.link_function_list = (options.html_details or options.html_nested) and (options.html_single_page != "static")
+        self.link_function_list = (options.html_details or options.html_nested) and (
+            options.html_single_page != "static"
+        )
         self.relative_anchors = options.html_relative_anchors
         self.single_page = options.html_single_page
 
@@ -479,7 +480,7 @@ def write_root_page(
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, str],
     data: Dict[str, Any],
-    sorted_keys: List[str]
+    sorted_keys: List[str],
 ) -> None:
     #
     # Generate the root HTML file that contains the high level report
@@ -488,14 +489,15 @@ def write_root_page(
     for f in sorted_keys:
         files.append(
             get_coverage_data(
-                root_info,
-                covdata[f],
-                cdata_sourcefile[f],
-                cdata_fname[f]
+                root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
             )
         )
 
-    html_string = templates(options).get_template("directory_page.html").render(**data, entries=files)
+    html_string = (
+        templates(options)
+        .get_template("directory_page.html")
+        .render(**data, entries=files)
+    )
     with open_text_for_writing(
         output_file, encoding=options.html_encoding, errors="xmlcharrefreplace"
     ) as fh:
@@ -566,7 +568,9 @@ def write_directory_pages(
 
     directory_data = dict()
     for directory, cdata in subdirs.items():
-        directory_data = get_directory_data(options, root_info, cdata_fname, cdata_sourcefile, cdata)
+        directory_data = get_directory_data(
+            options, root_info, cdata_fname, cdata_sourcefile, cdata
+        )
         html_string = (
             templates(options)
             .get_template("directory_page.html")
@@ -618,16 +622,17 @@ def write_single_page(
     for f in sorted_keys:
         all_files.append(
             get_coverage_data(
-                root_info,
-                covdata[f],
-                cdata_sourcefile[f],
-                cdata_fname[f]
+                root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
             )
         )
     directories = [{"entries": all_files}]
     if root_info.single_page == "js-enabled":
         for _, cdata in subdirs.items():
-            directories.append(get_directory_data(options, root_info, cdata_fname, cdata_sourcefile, cdata))
+            directories.append(
+                get_directory_data(
+                    options, root_info, cdata_fname, cdata_sourcefile, cdata
+                )
+            )
     if len(directories) == 1:
         directories[0]["dirname"] = "/"  # We need this to have a correct id in HTML.
 
@@ -638,7 +643,7 @@ def write_single_page(
             **data,
             files=files,
             directories=directories,
-            all_functions=[all_functions[k] for k in sorted(all_functions)]
+            all_functions=[all_functions[k] for k in sorted(all_functions)],
         )
     )
     with open_text_for_writing(
@@ -653,7 +658,10 @@ def write_single_page(
 
 
 def get_coverage_data(
-    root_info, cdata: Union[DirectoryCoverage, FileCoverage], link_report: str, cdata_fname: str
+    root_info,
+    cdata: Union[DirectoryCoverage, FileCoverage],
+    link_report: str,
+    cdata_fname: str,
 ) -> Dict[str, Any]:
     """Get the coverage data"""
 
@@ -668,9 +676,7 @@ def get_coverage_data(
         return coverage_to_class(coverage, medium_threshold, high_threshold)
 
     def line_coverage_class(coverage) -> str:
-        return coverage_to_class(
-            coverage, medium_threshold_line, high_threshold_line
-        )
+        return coverage_to_class(coverage, medium_threshold_line, high_threshold_line)
 
     def branch_coverage_class(coverage) -> str:
         return coverage_to_class(
@@ -752,7 +758,9 @@ def get_directory_data(
     if relative_path == ".":
         relative_path = ""
     directory_data: Dict[str, Any] = {
-        "dirname": cdata_sourcefile[cdata.dirname] if cdata_fname[cdata.dirname] else "/",#f"/{relative_path}"
+        "dirname": cdata_sourcefile[cdata.dirname]
+        if cdata_fname[cdata.dirname]
+        else "/",  # f"/{relative_path}"
     }
 
     sorted_files = sort_coverage(
@@ -769,7 +777,10 @@ def get_directory_data(
 
         files.append(
             get_coverage_data(
-                root_info, cdata.children[key], cdata_sourcefile[fname], cdata_fname[fname]
+                root_info,
+                cdata.children[key],
+                cdata_sourcefile[fname],
+                cdata_fname[fname],
             )
         )
 
@@ -802,7 +813,9 @@ def get_file_data(
         "function_list": [],
     }
     file_data.update(
-        get_coverage_data(root_info, cdata, cdata_sourcefile[filename], cdata_fname[filename])
+        get_coverage_data(
+            root_info, cdata, cdata_sourcefile[filename], cdata_fname[filename]
+        )
     )
     functions: Dict[Tuple[str], Dict[str, Any]] = {}
     # Only use demangled names (containing a brace)
