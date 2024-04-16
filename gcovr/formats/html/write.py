@@ -20,7 +20,6 @@
 import io
 import logging
 import os
-from argparse import ArgumentTypeError
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from ...coverage import (
@@ -320,13 +319,6 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             not (options.html_details or options.html_nested)
             or options.html_single_page
         )
-    if output_file == "-":
-        if not self_contained:
-            raise ArgumentTypeError(
-                "Only self contained reports can be printed to STDOUT"
-            )
-        elif options.html_details or options.html_nested:
-            raise ArgumentTypeError("Detailed reports can not be printed to STDOUT")
 
     if output_file.endswith(os.sep):
         if options.html_single_page:
@@ -354,7 +346,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
         if options.html_relative_anchors:
             css_link = os.path.basename(css_output)
-        else:
+        else:  # pragma: no cover  Can't be checked because of the reference compare
             css_link = css_output
         data["css_link"] = css_link
 

@@ -290,20 +290,33 @@ class HtmlHandler(BaseHandler):
                 "--html-details and --html-nested can not be used together."
             )
 
-        potential_html_output = (
-            (self.options.html and self.options.html.value)
-            or (self.options.html_details and self.options.html_details.value)
-            or (self.options.html_nested and self.options.html_nested.value)
-            or (self.options.output and self.options.output.value)
-        )
-        if self.options.html_details and not potential_html_output:
+        html_output = None
+        if self.options.html and self.options.html.value:
+            html_output = self.options.html.value
+        elif self.options.html_details and self.options.html_details.value:
+            html_output = self.options.html_details.value
+        elif self.options.html_nested and self.options.html_nested.value:
+            html_output = self.options.html_nested.value
+        elif self.options.output and self.options.output.value:
+            html_output = self.options.output.value
+
+        if self.options.html_details and not html_output:
             raise RuntimeError(
                 "a named output must be given, if the option --html-details is used."
             )
 
-        if self.options.html_nested and not potential_html_output:
+        if self.options.html_nested and not html_output:
             raise RuntimeError(
                 "a named output must be given, if the option --html-nested is used."
+            )
+
+        if (
+            html_output == "-"
+            and not self.options.html_single_page
+            and (self.options.html_details or self.options.html_nested)
+        ):
+            raise RuntimeError(
+                "detailed reports can only be printed to STDOUT as --html-single-page."
             )
 
         if self.options.html_single_page and not (
@@ -313,10 +326,17 @@ class HtmlHandler(BaseHandler):
                 "option --html-details or --html-nested is needed, if the option --html-single-page is used."
             )
 
-        if self.options.html_self_contained is False and not potential_html_output:
+        if self.options.html_self_contained is False and not html_output:
             raise RuntimeError(
                 "can only disable --html-self-contained when a named output is given."
             )
+
+        if (
+            self.options.html_self_contained is False
+            and html_output == "-"
+            and not self.options.html_single_page
+        ):
+            raise RuntimeError("only self contained reports can be printed to STDOUT")
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
         from .write import write_report
