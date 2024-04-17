@@ -22,6 +22,7 @@ Script to generate the installer for gcovr.
 """
 
 from runpy import run_path
+import time
 from setuptools import setup, find_packages
 from os import path
 import re
@@ -35,7 +36,7 @@ with open(path.join(this_directory, "README.rst"), encoding="utf-8") as f:
 
 long_description = re.sub(
     r"^\.\. image:: \./",
-    r".. image:: https://raw.githubusercontent.com/gcovr/gcovr/{}/".format(version),
+    rf".. image:: https://raw.githubusercontent.com/gcovr/gcovr/{version}/",
     long_description,
     flags=re.MULTILINE,
 )
@@ -45,7 +46,11 @@ long_description = re.sub(
 
 setup(
     name="gcovr",
-    version=version,
+    version=(
+        version.replace("+main", f".dev{int(time.time())}+main")
+        if version.endswith("+main")
+        else version
+    ),
     long_description=long_description,
     long_description_content_type="text/x-rst",
     platforms=["any"],
