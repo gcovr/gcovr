@@ -100,19 +100,9 @@ def sort_coverage(
         covered = stat.covered
         total = stat.total
 
-        if covered:
-            # If branches are covered, use the percentage
-            value = covered / total
-        elif total:
-            # If no branches are covered use the number of branches
-            # + 1 to be inserted after the covered branches
-            value = total
-        else:
-            # No branches are always put at the end.
-            # Hopefully no one has such many branches.
-            value = -1 if sort_reverse else 1e99
-
-        return value
+        if total > 0:
+            return covered / total
+        return -1 if sort_reverse else 1e99
 
     if sort_key == "uncovered-number":
         key_fn = key_num_uncovered
