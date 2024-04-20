@@ -9,3 +9,6 @@
 # that attribute would also suppress diffs on GH. Can't have that!)
 */reference/**/*.* linguist-detectable=false
 **/Makefile        linguist-detectable=false
+**/CMakeLists.txt  linguist-detectable=false
+**/*.cmd           linguist-detectable=false
+**/*.sh            linguist-detectable=false

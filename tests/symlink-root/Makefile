@@ -30,4 +30,4 @@ else
 		cmd.exe /C "rmdir /S /Q symlink";\
 	fi
 endif
-	rm -f root/*.gc* coverage*.*
+	rm -f root/*.gc* root/testcase coverage*.*

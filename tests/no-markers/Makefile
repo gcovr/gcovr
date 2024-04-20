@@ -37,7 +37,7 @@ json:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage*.html cobertura.xml sonarqube.xml jacoco.xml coverage.json coverage.lcov
+	rm -f coverage.txt coverage.css coverage*.html cobertura.xml sonarqube.xml jacoco.xml *coverage.json coverage.lcov
 
 # mark ALL targets as phony (because they are)
 .PHONY: %

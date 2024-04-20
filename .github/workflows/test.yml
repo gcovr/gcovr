@@ -106,10 +106,18 @@ jobs:
 
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
-            gcc: gcc-8
+            gcc: gcc
             python-version: '3.8'
           - os: windows-2019
-            gcc: gcc-8
+            gcc: gcc
+            python-version: '3.11'
+
+          # Test minimum and maximum Python version on Windows.
+          - os: macos-12
+            gcc: gcc
+            python-version: '3.8'
+          - os: macos-12
+            gcc: gcc-13
             python-version: '3.11'
 
     steps:
@@ -118,14 +126,29 @@ jobs:
         run: |
           # Enable coverage for specific target configurations
           case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
-            windows-2019/gcc-8/3.8)   USE_COVERAGE=true ;;
             ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
+            windows-2019/gcc-8/3.8)   USE_COVERAGE=true ;;
+            macos-12/gcc-13/3.11)     USE_COVERAGE=true ;;
+            macos-12/gcc/3.8)         USE_COVERAGE=true ;;
             *)                        USE_COVERAGE=false ;;
           esac
           echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
+
+          # Set the CC environment
           echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
 
         shell: bash
+      - name: Install build commands, GCC and libxml2 (Linux)
+        if: ${{ startsWith(matrix.os,'ubuntu-') }}
+        run: |
+          sudo apt update
+          sudo apt-get install -y \
+            make \
+            ninja-build \
+            ${{ matrix.gcc }} \
+            $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/') \
+            libxml2-utils
+          sudo apt-get clean
       - name: Install msys with GCC (Windows)
         if: ${{ startsWith(matrix.os,'windows-') }}
         uses: msys2/setup-msys2@v2
@@ -135,22 +158,14 @@ jobs:
         if: ${{ startsWith(matrix.os,'windows-') }}
         run: |
           choco install ninja
-      - name: Install build commands and GCC (Linux)
-        if: ${{ startsWith(matrix.os,'ubuntu-') }}
+      - name: Install ninja and libxml2 (MacOs)
+        if: ${{ startsWith(matrix.os,'macos-') }}
         run: |
-          sudo apt update
-          sudo apt-get install -y \
-            make \
-            ninja-build \
-            ${{ matrix.gcc }} \
-            $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/')
-          sudo apt-get clean
-      - name: Install libxml2
-        if: ${{ startsWith(matrix.os,'ubuntu-') }}
-        run: |
-          sudo apt-get install -y \
-            libxml2-utils
-          sudo apt-get clean
+          export HOMEBREW_NO_AUTO_UPDATE=1
+          export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+          brew update
+          brew install ninja
+          brew install libxml2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -176,7 +191,7 @@ jobs:
           nox --non-interactive --session tests -- --archive_differences
       - name: Upload pytest test results
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
           path: tests/diff.zip
@@ -184,7 +199,6 @@ jobs:
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           disable_search: true
@@ -192,6 +206,8 @@ jobs:
           files: ./coverage.xml
           name: ${{ matrix.os }}-${{ matrix.gcc }}
           verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Generate documentation
         if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
         run: |
@@ -258,7 +274,6 @@ jobs:
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           disable_search: true
@@ -266,17 +281,20 @@ jobs:
           files: ./coverage.xml
           name: docker-${{ matrix.gcc }}
           verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload LCOV coverage to Codecov
         if: ${{ (matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10') }}
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           disable_search: true
           files: ./tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
           name: docker-${{ matrix.gcc }}-lcov
           verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Generate documentation (in container)
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc

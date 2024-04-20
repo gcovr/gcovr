@@ -2,31 +2,34 @@
 __pycache__
 *.py[cod]
 
+# nox virtual environments
+/.nox*/
+
 # Packages
 /gcovr.egg
 /gcovr.egg-info
 /dist
 /build
 
-# nox
-.nox*/
-
 # coverage report
-.coverage
-coverage.xml
+/.coverage
+/coverage.xml
 # temporary generated files
-.coverage.*
+/.coverage.*
+
+# Reference files to import
+/*.zip
 
 # VS Code workspace
-*.code-workspace
+/*.code-workspace
 
 # PyCharm
-.idea
+/.idea
 
 # Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
+/.mr.developer.cfg
+/.project
+/.pydevproject
 
 # MacOS
 .DS_Store

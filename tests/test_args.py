@@ -3,7 +3,7 @@
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 7.2+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/stable
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -734,8 +734,8 @@ def test_sort_branch_and_not_uncovered_or_percent(caplog):
         ("-b", "--txt-metric branch"),
         ("--txt-branches", "--txt-metric branch"),
         ("--branches", "--txt-metric branch"),
-        ("--sort-uncovered", "--sort-key uncovered-number"),
-        ("--sort-percentage", "--sort-key uncovered-percent"),
+        ("--sort-uncovered", "--sort uncovered-number"),
+        ("--sort-percentage", "--sort uncovered-percent"),
     ],
     ids=lambda option: option[0],
 )

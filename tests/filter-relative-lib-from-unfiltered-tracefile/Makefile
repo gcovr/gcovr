@@ -57,4 +57,4 @@ else
 		cmd.exe /C "rmdir /S /Q project\relevant-library";\
 	fi
 endif
-	rm -f coverage*.* sonarqube.xml jacoco.xml
+	rm -f coverage*.* cobertura.xml sonarqube.xml jacoco.xml

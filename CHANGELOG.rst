@@ -12,13 +12,22 @@ Breaking changes:
 
 New features and notable changes:
 
+- In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)
+- Detect suspicious counter values in ``gcov`` output. (:issue:`903`)
+
 Bug fixes and small improvements:
+
+- Use replacement value of 0 for function call count ``NAN %``. (:issue:`910`)
+- Fix erroneous deprecation warning. (:issue:`912`)
 
 Documentation:
 
 Internal changes:
 
 - Move tests to directory in the root. (:issue:`897`)
+- Add MacOs to the GitHub test workflow. (:issue:`901`, :issue:`905`)
+- Remove test exclusions for MacOs and adapt tests and reference data. (:issue:`902`)
+- Link correct documentation version in copyright header. (:issue:`907`)
 - Move tag creation before publish the distribution because tag from pipeline doesn't trigger additional runs. (:issue:`899`)
 
 7.2 (24 February 2024)
