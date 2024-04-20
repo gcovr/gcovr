@@ -28,6 +28,7 @@ Internal changes:
 - Add MacOs to the GitHub test workflow. (:issue:`901`, :issue:`905`)
 - Remove test exclusions for MacOs and adapt tests and reference data. (:issue:`902`)
 - Link correct documentation version in copyright header. (:issue:`907`)
+- Move tag creation before publish the distribution because tag from pipeline doesn't trigger additional runs. (:issue:`899`)
 
 7.2 (24 February 2024)
 ----------------------
