@@ -90,6 +90,15 @@ def sort_coverage(
             return cov.decision_coverage()
         return cov.line_coverage()
 
+    def key_num_lines(key: str) -> int:
+        stat = coverage_stat(key)
+        # When sorting in ascending order, a heuristic not uncommonly
+        # employed when looking to improve coverage, is to browse
+        # the list from worst to best, so it makes sense to place
+        # files with many lines higher up in groups that otherwise share
+        # the same (primary) sorting key.
+        return -stat.total
+
     def key_num_uncovered(key: str) -> int:
         stat = coverage_stat(key)
         uncovered = stat.total - stat.covered
@@ -100,20 +109,23 @@ def sort_coverage(
         covered = stat.covered
         total = stat.total
 
-        if total > 0:
-            return covered / total
-        return -1 if sort_reverse else 1e99
+        # No branches are always put directly after (or before when reversed)
+        # files with 100% coverage (by assigning such files 110% coverage)
+        return covered / total if total > 0 else 1.1
 
     if sort_key == "uncovered-number":
         key_fn = key_num_uncovered
     elif sort_key == "uncovered-percent":
         key_fn = key_percent_uncovered
     else:
-        # by default, we sort by filename alphabetically
+        # By default, we sort by filename alphabetically
         return sorted(covdata, key=key_filename, reverse=sort_reverse)
 
-    # First sort filename alphabetical and then by the requested key
-    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=sort_reverse)
+    return sorted(
+        covdata, key=lambda key: (
+            key_fn(key), key_num_lines(key), key_filename(key)
+        ), reverse=sort_reverse
+    )
 
 
 class BranchCoverage:
