@@ -17,6 +17,7 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Implement consistent sorting of files with no lines, or one line with zero coverage (:issue:`918`)
 - Use replacement value of 0 for function call count ``NAN %``. (:issue:`910`)
 - Fix erroneous deprecation warning. (:issue:`912`)
 
