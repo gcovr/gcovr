@@ -528,7 +528,7 @@ GCOVR_CONFIG_OPTIONS = [
         group="output_options",
         help=(
             "Sort entries by branches instead of lines. Can only be used together "
-            "with '--sort uncovered-number' or '--sort uncovered-percent' is used."
+            "with '--sort uncovered-number' or '--sort uncovered-percent'."
         ),
         action="store_true",
     ),
