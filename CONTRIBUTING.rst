@@ -356,7 +356,7 @@ To see which tests would be run, add the ``--collect-only`` option:
 
 Sometimes during development you need to create reference files for new test
 or update the current reference files. To do this you have to
-add ``--generate_reference`` or ``--update-reference`` option
+add ``--generate_reference`` or ``--update_reference`` option
 to the test invocation.
 By default generated output files are automatically removed after test run.
 To skip this process you can add ``--skip_clean`` option the test invocation.

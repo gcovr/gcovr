@@ -100,26 +100,16 @@ def sort_coverage(
         covered = stat.covered
         total = stat.total
 
-        if covered:
-            # If branches are covered, use the percentage
-            value = covered / total
-        elif total:
-            # If no branches are covered use the number of branches
-            # + 1 to be inserted after the covered branches
-            value = total
-        else:
-            # No branches are always put at the end.
-            # Hopefully no one has such many branches.
-            value = -1 if sort_reverse else 1e99
-
-        return value
+        # No branches are always put directly after (or before when reversed)
+        # files with 100% coverage (by assigning such files 110% coverage)
+        return covered / total if total > 0 else 1.1
 
     if sort_key == "uncovered-number":
         key_fn = key_num_uncovered
     elif sort_key == "uncovered-percent":
         key_fn = key_percent_uncovered
     else:
-        # by default, we sort by filename alphabetically
+        # By default, we sort by filename alphabetically
         return sorted(covdata, key=key_filename, reverse=sort_reverse)
 
     # First sort filename alphabetical and then by the requested key

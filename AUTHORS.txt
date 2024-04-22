@@ -23,6 +23,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     Ensky Lin,
     Frank Ullrich,
     Frank Wiles,
+    Fredrik Hoxell,
     Glenn Töws,
     Grégoire Roussel,
     goriy,
