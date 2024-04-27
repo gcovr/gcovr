@@ -152,7 +152,7 @@ def scrub_xml(contents: str) -> str:
 
 def scrub_html(contents: str) -> str:
     contents = translate_newlines_if_windows(contents)
-    contents = RE_HTML_HEADER_DATE.sub(r"<\1>\20000-00-00 00:00:00</\1>", contents)
+    contents = RE_HTML_HEADER_DATE.sub(r"<\1>\g<2>0000-00-00 00:00:00</\1>", contents)
     contents = RE_HTML_FOOTER_VERSION.sub(r"\1main\2main\3", contents)
     contents = RE_HTML_ATTR_VERSION.sub(r'version="gcovr main"', contents)
     contents = force_unix_separator(contents)
