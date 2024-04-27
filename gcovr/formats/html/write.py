@@ -604,9 +604,7 @@ def write_source_pages(
                 encoding=options.source_encoding,
                 errors="replace",
             ) as source_file:
-                lines = formatter.highlighter_for_file(filename)(
-                    source_file.read()
-                )
+                lines = formatter.highlighter_for_file(filename)(source_file.read())
                 ctr = 0
                 for ctr, line in enumerate(lines, 1):
                     data["source_lines"].append(
@@ -617,7 +615,7 @@ def write_source_pages(
                         f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
                     )
         except IOError as e:
-            LOGGER.warning(f'File {filename} not found: {repr(e)}')
+            LOGGER.warning(f"File {filename} not found: {repr(e)}")
             # Python ranges are exclusive. We want to iterate over all lines, including
             # that last line. Thus, we have to add a +1 to include that line.
             for ctr in range(1, max_line_from_cdata + 1):
