@@ -343,6 +343,8 @@ class RootInfo:
             )
         )
 
+        return display_filename
+
     def _coverage_to_class(self, coverage) -> str:
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
@@ -469,7 +471,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         if commondir != "":
             root_directory = commondir
     else:
-        dir_, _file = os.path.split(filtered_fname)
+        dir_, _ = os.path.split(filtered_fname)
         if dir_ != "":
             root_directory = dir_ + os.sep
 
@@ -543,8 +545,9 @@ def write_source_pages(
 
     all_functions = dict()
     for f, cdata in covdata.items():
-        data["filename"] = cdata_fname[f]
-        root_info.add_file(cdata, cdata_sourcefile[f], cdata_fname[f])
+        filename = cdata_fname[f]
+        # Getting the display file name
+        data["filename"] = root_info.add_file(cdata, cdata_sourcefile[f], filename)
 
         # Only use demangled names (containing a brace)
         data["function_list"] = []
@@ -553,7 +556,7 @@ def write_source_pages(
             for lineno in sorted(fcdata.count.keys()):
                 fdata = dict()
                 fdata["name"] = name
-                fdata["filename"] = cdata_fname[f]
+                fdata["filename"] = filename
                 fdata["html_filename"] = os.path.basename(cdata_sourcefile[f])
                 fdata["line"] = lineno
                 fdata["count"] = fcdata.count[lineno]
@@ -596,14 +599,12 @@ def write_source_pages(
         max_line_from_cdata = max(cdata.lines.keys(), default=0)
         try:
             with io.open(
-                data["filename"],
+                filename,
                 "r",
                 encoding=options.source_encoding,
                 errors="replace",
             ) as source_file:
-                lines = formatter.highlighter_for_file(data["filename"])(
-                    source_file.read()
-                )
+                lines = formatter.highlighter_for_file(filename)(source_file.read())
                 ctr = 0
                 for ctr, line in enumerate(lines, 1):
                     data["source_lines"].append(
@@ -614,7 +615,7 @@ def write_source_pages(
                         f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
                     )
         except IOError as e:
-            LOGGER.warning(f'File {data["filename"]} not found: {repr(e)}')
+            LOGGER.warning(f"File {filename} not found: {repr(e)}")
             # Python ranges are exclusive. We want to iterate over all lines, including
             # that last line. Thus, we have to add a +1 to include that line.
             for ctr in range(1, max_line_from_cdata + 1):
