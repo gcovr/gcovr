@@ -21,6 +21,7 @@ Bug fixes and small improvements:
 - Use replacement value of 0 for function call count ``NAN %``. (:issue:`910`)
 - Fix erroneous deprecation warning. (:issue:`912`)
 - Fix display filename in HTML report. (:issue:`920`)
+- Fix bundle of standalone executable with Python 3.12. (:issue:`924`)
 
 Documentation:
 
@@ -32,6 +33,8 @@ Internal changes:
 - Link correct documentation version in copyright header. (:issue:`907`)
 - Move tag creation before publish the distribution because tag from pipeline doesn't trigger additional runs. (:issue:`899`)
 - Fix scrubber for date in HTML test data. (:issue:`919`)
+- Add test with Python 3.12. (:issue:`924`)
+
 
 7.2 (24 February 2024)
 ----------------------
