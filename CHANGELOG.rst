@@ -34,7 +34,7 @@ Internal changes:
 - Move tag creation before publish the distribution because tag from pipeline doesn't trigger additional runs. (:issue:`899`)
 - Fix scrubber for date in HTML test data. (:issue:`919`)
 - Add test with Python 3.12. (:issue:`924`)
-
+- Add gcc-14 to the test suite. (:issue:`923`)
 
 7.2 (24 February 2024)
 ----------------------

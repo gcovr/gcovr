@@ -166,6 +166,7 @@ is needed.
     -  gcc-11/g++-11/gcov-11
     -  gcc-12/g++-12/gcov-12
     -  gcc-13/g++-13/gcov-13
+    -  gcc-14/g++-14/gcov-14
     -  clang-10/clang++-10/llvm-cov
     -  clang-13/clang++-13/llvm-cov
     -  clang-14/clang++-14/llvm-cov
@@ -328,8 +329,8 @@ The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
 Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8``, ``CC=gcc-9``,
-``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``clang-10``, ``clang-13``,
-``clang-14`` and ``clang-15``.
+``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``gcc-14``, ``clang-10``,
+``clang-13``, ``clang-14`` and ``clang-15``.
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
@@ -421,7 +422,7 @@ Or to build and run the container in one step:
 
 You can select the gcc version to use inside the docker by setting the environment
 variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12,
-gcc-13, clang-10, clang-13, or clang-14 or you can build and run the container with:
+gcc-13, gcc-14, clang-10, clang-13, or clang-14 or you can build and run the container with:
 
 .. code:: bash
 
