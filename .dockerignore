@@ -18,7 +18,7 @@
 
 # explicitly allow tests
 !doc/examples
-!gcovr/tests
+!tests
 
 # always ignore these files
 **/__pycache__

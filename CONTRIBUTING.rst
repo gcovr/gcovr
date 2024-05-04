@@ -166,6 +166,7 @@ is needed.
     -  gcc-11/g++-11/gcov-11
     -  gcc-12/g++-12/gcov-12
     -  gcc-13/g++-13/gcov-13
+    -  gcc-14/g++-14/gcov-14
     -  clang-10/clang++-10/llvm-cov
     -  clang-13/clang++-13/llvm-cov
     -  clang-14/clang++-14/llvm-cov
@@ -226,19 +227,15 @@ Project Structure
 Path                    Description
 ======================= =======================================================
 ``/``                   project root
-``/.github/``           GitHub actions and PR templates
-``/admin/``             Administrative scripts and Dockerfile
+``/gcovr/``             the gcovr source code (Python module)
+``/gcovr/__main__.py``  command line interface + top-level behaviour
+``/gcovr/templates/``   HTML report templates
+``/tests/``             unit tests + integration test corpus
+``/noxfile.py``         Definition of tests tasks
+``/setup.py``           Python package configuration
 ``/doc/``               documentation
 ``/doc/sources/``       user guide + website
 ``/doc/examples/``      runnable examples for the user guide
-``/gcovr/``             the gcovr source code (Python module)
-``/gcovr/__main__.py``  command line interface + top-level behavior
-``/gcovr/exclusions/``  Exclusion processing of coverage data
-``/gcovr/formats/``     Input/output format handlers
-``/gcovr/tests/``       unit tests + integration test corpus
-``/scripts/``           Entry point for standalone executable
-``/noxfile.py``         Definition of tests tasks
-``/setup.py``           Python package configuration
 ======================= =======================================================
 
 The program entrypoint and command line interface is in ``gcovr/__main__.py``.
@@ -257,22 +254,21 @@ The QA process (``python3 -m nox``) consists of multiple parts:
 
 - tests (``python3 -m nox --session tests``)
 
-   - unit tests in ``gcovr/tests``
-   - integration tests in ``gcovr/tests``
+   - unit tests in ``tests``
+   - integration tests in ``tests``
    - documentation examples in ``doc/examples``
 
 - documentation build (``python3 -m nox --session doc``)
 
-The tests are in the ``gcovr/tests`` directory.
+The tests are in the ``tests`` directory.
 You can run the tests with ``python3 -m nox --session tests``
 for the default GCC version (specified via ``CC`` environment variable, defaults to gcc-5).
-You can also select the gcc version if you run the tests with e.g.
-``python3 -m nox --session 'tests_compiler(gcc-8)'``.
+
 
 There are unit tests for some parts of gcovr,
 and a comprehensive corpus of example projects
 that are executed as the ``test_gcovr.py`` integration test.
-Each ``gcovr/tests/*`` directory is one such example project.
+Each ``tests/*`` directory is one such example project.
 
 You can format files with ``python3 -m nox --session black``)
 
@@ -295,7 +291,7 @@ Structure of integration tests
 Each project in the corpus
 contains a ``Makefile`` and a ``reference`` directory::
 
-   gcovr/tests/sometest/
+   tests/sometest/
      reference/
      Makefile
      README
@@ -333,8 +329,8 @@ The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
 Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8``, ``CC=gcc-9``,
-``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``clang-10``, ``clang-13``,
-``clang-14`` and ``clang-15``.
+``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``gcc-14``, ``clang-10``,
+``clang-13``, ``clang-14`` and ``clang-15``.
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
@@ -361,7 +357,7 @@ To see which tests would be run, add the ``--collect-only`` option:
 
 Sometimes during development you need to create reference files for new test
 or update the current reference files. To do this you have to
-add ``--generate_reference`` or ``--update-reference`` option
+add ``--generate_reference`` or ``--update_reference`` option
 to the test invocation.
 By default generated output files are automatically removed after test run.
 To skip this process you can add ``--skip_clean`` option the test invocation.
@@ -426,11 +422,11 @@ Or to build and run the container in one step:
 
 You can select the gcc version to use inside the docker by setting the environment
 variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12,
-gcc-13, clang-10, clang-13, or clang-14 or you can build and run the container with:
+gcc-13, gcc-14, clang-10, clang-13, or clang-14 or you can build and run the container with:
 
 .. code:: bash
 
-    python3 -m nox --session 'docker_qa_compiler(gcc-9)'
+    python3 -m nox --session 'docker_compiler(gcc-9)'
 
 To run a specific session you can use the session ``docker_compiler``
 and give the arguments to the ``nox`` executed inside the container

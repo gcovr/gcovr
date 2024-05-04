@@ -1,0 +1,14 @@
+TN:GCOVR report
+SF:tests/nobranch/main.cpp
+VER:e3e6a5d78e81ea389bb54b2bd6c04e7d
+FN:1,main
+FNDA:1,main
+FNF:1
+FNH:1
+BRF:0
+BRH:0
+DA:1,1,2a787a1309f19379bb0e3d8434d2a18d
+DA:2,1,c26ba559a5f34d46a49fafed87946fb7
+LH:2
+LF:2
+end_of_record

@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/stable
+# This file is part of gcovr 7.2+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -84,6 +84,8 @@ class GcovHandler(BaseHandler):
                     "all",
                     "negative_hits.warn",
                     "negative_hits.warn_once_per_file",
+                    "suspicious_hits.warn",
+                    "suspicious_hits.warn_once_per_file",
                 ],
                 nargs="?",
                 const="all",

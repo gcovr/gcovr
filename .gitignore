@@ -1,49 +1,35 @@
+# Python cache files
+__pycache__
 *.py[cod]
 
+# nox virtual environments
+/.nox*/
+
 # Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
-
-# Installer logs
-pip-log.txt
-
-# wheel
-gcovr-*/
-
-# nox
-.nox*/
+/gcovr.egg
+/gcovr.egg-info
+/dist
+/build
 
 # coverage report
-.coverage
-coverage.xml
+/.coverage
+/coverage.xml
 # temporary generated files
-.coverage.*
+/.coverage.*
 
-# Translations
-*.mo
+# Reference files to import
+/*.zip
+
+# VS Code workspace
+/*.code-workspace
+
+# PyCharm
+/.idea
 
 # Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
+/.mr.developer.cfg
+/.project
+/.pydevproject
 
 # MacOS
 .DS_Store
-
-# VS Code workspace
-*.code-workspace
-
-# PyCharm
-.idea
-

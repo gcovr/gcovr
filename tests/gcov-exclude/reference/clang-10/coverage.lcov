@@ -1,0 +1,20 @@
+TN:GCOVR report
+SF:tests/gcov-exclude/subdir/B/main.cpp
+VER:8051e1c52cab743a41a6bbe9822a917a
+FN:12,main
+FNDA:1,main
+FNF:1
+FNH:1
+BRF:0
+BRH:0
+DA:12,1,2a787a1309f19379bb0e3d8434d2a18d
+DA:13,1,c18608b3fe9a00042c41d97d382d1e07
+DA:14,1,a16b1758a01395f320d0ffe89a85defc
+DA:15,1,86e212ad9e6f4e2f6aeed5ebd8f2d4b2
+DA:16,1,50ff38672dfb3881235944c1cbc313ff
+DA:17,1,537738ff9ea76bce1fbf48f1f7ec6a56
+DA:18,1,1e069fab499b18f31b84dea8d0b9f13d
+DA:20,1,c26ba559a5f34d46a49fafed87946fb7
+LH:8
+LF:8
+end_of_record

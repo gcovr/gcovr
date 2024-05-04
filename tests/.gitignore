@@ -1,0 +1,46 @@
+# Ignore output files
+coverage*.txt
+*.html
+*.css
+coverage*.json
+summary_coverage*.json
+coverage*.csv
+coverage*.lcov
+clover*.xml
+cobertura*.xml
+coveralls*.json
+jacoco*.xml
+sonarqube*.xml
+
+# Ignore executables
+gcovrtest
+
+# CMake build directory
+build/
+
+# except in config, reference and data directories
+!*/config/**
+!*/reference/**
+!*/data/**
+# and input stylesheet
+!style.css
+
+# C extensions
+*.o
+*.so
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+*.gcda
+*.gcno
+*.gcov
+.tox
+nosetests.xml
+testcase
+
+# Differences
+diff.zip
+
+# MacOS
+.DS_Store

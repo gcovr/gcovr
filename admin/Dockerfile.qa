@@ -35,14 +35,12 @@ if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" ]; then
 else
   apt-get install -y \
     python3-venv \
-    $(if [ "$DOCKER_OS" = "ubuntu:23.04"  ]; then echo "python3-full"; else echo "python3-dev"; fi)
+    $(if [ "$DOCKER_OS" = "ubuntu:22.04" ]; then echo "python3-dev"; else echo "python3-full"; fi)
 fi
 python3 --version
 
 # Install pip, nox and requests
-if [ "$DOCKER_OS" = "ubuntu:23.04" ]; then
-  apt-get install -y python3-pip python3-nox python3-requests
-else
+if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" -o "$DOCKER_OS" = "ubuntu:22.04" ]; then
   # Install dependencies.
   #
   # Installing pip is a bit more complicated though:
@@ -56,6 +54,8 @@ else
   rm get-pip.py
   python3 -m pip install --upgrade pip
   python3 -m pip install --no-cache-dir nox requests
+else
+  apt-get install -y python3-pip python3-nox python3-requests
 fi
 EOS
 

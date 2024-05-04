@@ -12,15 +12,54 @@ Breaking changes:
 
 New features and notable changes:
 
-- Add support for colored logging. (:issue:`887`)
-- Add support for TOML configuration format. (:issue:`881`) 
-- Add support for Clover XML output format. (:issue:`888`) 
+- In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)
+- Detect suspicious counter values in ``gcov`` output. (:issue:`903`)
 - Add support for GCOV JSON intermediate format. (:issue:`766`)
 
 Bug fixes and small improvements:
 
-- Add support for files with more than 9999 lines. (:issue:`883`, fixes :issue:`882`) 
-- Do not suppress gcov errors if exception occur. (:issue:`889`) 
+- Implement consistent sorting of files with no lines, or one line with zero coverage (:issue:`918`)
+- Use replacement value of 0 for function call count ``NAN %``. (:issue:`910`)
+- Fix erroneous deprecation warning. (:issue:`912`)
+- Fix display filename in HTML report. (:issue:`920`)
+- Fix bundle of standalone executable with Python 3.12. (:issue:`924`)
+
+Documentation:
+
+Internal changes:
+
+- Move tests to directory in the root. (:issue:`897`)
+- Add MacOs to the GitHub test workflow. (:issue:`901`, :issue:`905`)
+- Remove test exclusions for MacOs and adapt tests and reference data. (:issue:`902`)
+- Link correct documentation version in copyright header. (:issue:`907`)
+- Move tag creation before publish the distribution because tag from pipeline doesn't trigger additional runs. (:issue:`899`)
+- Fix scrubber for date in HTML test data. (:issue:`919`)
+- Add test with Python 3.12. (:issue:`924`)
+- Add gcc-14 to the test suite. (:issue:`923`)
+
+7.2 (24 February 2024)
+----------------------
+
+Fix tagging issue of 7.1, no functional change.
+
+7.1 (24 February 2024)
+----------------------
+
+Known bugs:
+
+Breaking changes:
+
+New features and notable changes:
+
+- Add support for colored logging. (:issue:`887`)
+- Add support for TOML configuration format. (:issue:`881`)
+- Add support for Clover XML output format. (:issue:`888`)
+- Add decision to JSON summary report if :option:`--decisions` is used. (:issue:`892`)
+
+Bug fixes and small improvements:
+
+- Add support for files with more than 9999 lines. (:issue:`883`, fixes :issue:`882`)
+- Do not suppress gcov errors if exception occur. (:issue:`889`)
 
 Documentation:
 
@@ -29,9 +68,9 @@ Documentation:
 Internal changes:
 
 - Improve Dockerfile for faster rebuilds by using cache. (:issue:`878`)
-- Fix deprecation warnings from GitHub actions. (:issue:`880`) 
+- Fix deprecation warnings from GitHub actions. (:issue:`880`)
 - Add pipeline job to apply tag if new version is bumped. (:issue:`879`)
-- Improve test coverage and generate coverage report if executed in local environment. (:issue:`891`) 
+- Improve test coverage and generate coverage report if executed in local environment. (:issue:`891`)
 
 7.0 (25 January 2024)
 ---------------------

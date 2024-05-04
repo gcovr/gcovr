@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/stable
+# This file is part of gcovr 7.2+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -43,7 +43,7 @@ from .utils import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
     configure_logging,
-    update_logging_formatter,
+    update_logging,
 )
 from .version import __version__
 from .coverage import CovData, SummarizedStats
@@ -221,10 +221,7 @@ def main(args=None):
     options = merge_options_and_set_defaults([cfg_options, cli_options.__dict__])
 
     # Reconfigure the logging.
-    update_logging_formatter(options)
-
-    if options.verbose:
-        LOGGER.setLevel(logging.DEBUG)
+    update_logging(options)
 
     if options.sort_branches and options.sort_key not in [
         "uncovered-number",

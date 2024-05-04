@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/stable
+# This file is part of gcovr 7.2+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -24,6 +24,7 @@ import platform
 import re
 import socket
 from time import sleep
+from typing import Tuple
 import requests
 import shutil
 import subprocess
@@ -43,11 +44,13 @@ ALL_COMPILER_VERSIONS = [
     "gcc-11",
     "gcc-12",
     "gcc-13",
+    "gcc-14",
     "clang-10",
     "clang-13",
     "clang-14",
     "clang-15",
 ]
+DEFAULT_COMPILER_VERSION = ALL_COMPILER_VERSIONS[0]
 
 ALL_COMPILER_VERSIONS_NEWEST_FIRST = [
     "-".join(cc)
@@ -61,7 +64,7 @@ ALL_COMPILER_VERSIONS_NEWEST_FIRST = [
 ALL_GCC_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("gcc-")]
 ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")]
 
-DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr"]
+DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr", "tests"]
 DEFAULT_LINT_ARGUMENTS = [
     "setup.py",
     "noxfile.py",
@@ -84,57 +87,64 @@ OUTPUT_FORMATS = [
 nox.options.sessions = ["qa"]
 
 
-def get_gcc_version_to_use():
+def get_gcc_versions() -> Tuple[str]:
     # If the user explicitly set CC variable, use that directly without checks.
     cc = os.environ.get("CC")
-    if cc:
-        return os.path.split(cc)[1]
+    if cc is None:
+        # Find the first installed compiler version we support
+        for command in ALL_COMPILER_VERSIONS_NEWEST_FIRST:
+            if shutil.which(command):
+                return (command, command)
+    elif cc_reference := os.environ.get("CC_REFERENCE"):
+        return (cc, cc_reference)
 
-    # Find the first insalled compiler version we suport
-    for cc in ALL_COMPILER_VERSIONS_NEWEST_FIRST:
-        if shutil.which(cc):
-            return cc
+    commands = ["gcc", "clang"] if cc is None else [cc]
 
-    for cc in ["gcc", "clang"]:
-        output = subprocess.check_output([cc, "--version"]).decode()
-        # Ignore error code since we want to find a valid executable
+    for command in commands:
+        if shutil.which(command):
+            output = subprocess.check_output([command, "--version"]).decode()
 
-        # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
-        #    gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
-        #    Copyright (C) 2019 Free Software Foundation, Inc.
-        #    This is free software; see the source for copying conditions.  There is NO
-        #    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-        search_gcc_version = re.search(r"^gcc\b.* ([0-9]+)\.\S+$", output, re.M)
+            # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
+            #   gcc-5 (Ubuntu/Linaro 5.5.0-12ubuntu1) 5.5.0 20171010
+            #   Copyright (C) 2015 Free Software Foundation, Inc.
+            #   This is free software; see the source for copying conditions.  There is NO
+            #   warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+            search_gcc_version = re.search(r"^gcc\b.* ([0-9]+)\..+$", output, re.M)
 
-        # look for a line "WHATEVER clang version VERSION.WHATEVER" in output like:
-        #    Apple clang version 13.1.6 (clang-1316.0.21.2.5)
-        #    Target: arm64-apple-darwin21.5.0
-        #    Thread model: posix
-        #    InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
-        search_clang_version = re.search(r"\bclang version ([0-9]+)\.", output, re.M)
+            # look for a line "WHATEVER clang version VERSION.WHATEVER" in output like:
+            #    Apple clang version 13.1.6 (clang-1316.0.21.2.5)
+            #    Target: arm64-apple-darwin21.5.0
+            #    Thread model: posix
+            #    InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+            search_clang_version = re.search(
+                r"\bclang version ([0-9]+)\.", output, re.M
+            )
 
-        if search_gcc_version:
-            major_version = search_gcc_version.group(1)
-            return f"gcc-{major_version}"
-        elif search_clang_version:
-            major_version = search_clang_version.group(1)
-            return f"clang-{major_version}"
+            if search_gcc_version:
+                major_version = search_gcc_version.group(1)
+                return (command, f"gcc-{major_version}")
+            elif search_clang_version:
+                major_version = search_clang_version.group(1)
+                return (command, f"clang-{major_version}")
 
     raise RuntimeError(
-        "Could not detect a valid compiler, you can defin one by setting the environment CC"
+        "Could not detect a valid compiler, you can define one by setting the environment CC"
     )
 
 
-def set_environment(session: nox.Session, cc: str, check: bool = True) -> None:
-    if check and (shutil.which(cc) is None):
-        session.env["CC_REFERENCE"] = cc
-        cc = "gcc"
-    cxx = cc.replace("clang", "clang++").replace("gcc", "g++")
+def set_environment(session: nox.Session, cc: str = None) -> None:
+    """Set the environment variables"""
+    if cc is None:
+        cc, cc_reference = get_gcc_versions()
+    else:
+        cc_reference = cc
     session.env["GCOVR_TEST_SUITE"] = "1"
     session.env["CC"] = cc
     session.env["CFLAGS"] = "--this_flag_does_not_exist"
-    session.env["CXX"] = cxx
+    session.env["CXX"] = cc.replace("clang", "clang++").replace("gcc", "g++")
     session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
+    if cc_reference is not None:
+        session.env["CC_REFERENCE"] = cc_reference
 
 
 @nox.session
@@ -147,24 +157,9 @@ def bump_version(session: nox.Session) -> None:
 @nox.session(python=False)
 def qa(session: nox.Session) -> None:
     """Run the quality tests for the default GCC version."""
-    session_id = f"qa_compiler({get_gcc_version_to_use()})"
-    session.log(f"Notify session {session_id}")
-    session.notify(session_id)
-
-
-@nox.session(python=False)
-@nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
-def qa_compiler(session: nox.Session, version: str) -> None:
-    """Run the quality tests for a specific GCC version."""
-    session_id = "lint"
-    session.log(f"Notify session {session_id}")
-    session.notify(session_id, [])
-    session_id = "doc"
-    session.log(f"Notify session {session_id}")
-    session.notify(session_id, [])
-    session_id = f"tests_compiler({version})"
-    session.log(f"Notify session {session_id}")
-    session.notify(session_id)
+    for session_id in ["lint", "doc", "tests"]:
+        session.log(f"Notify session {session_id}")
+        session.notify(session_id, [])
 
 
 @nox.session(python=False)
@@ -212,7 +207,11 @@ def doc(session: nox.Session) -> None:
     session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
 
-    if not GCOVR_ISOLATED_TEST:
+    if not GCOVR_ISOLATED_TEST and not (
+        # Github actions on MacOs can't use Docker
+        platform.system() == "Darwin"
+        and "GITHUB_ACTION" in os.environ
+    ):
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
         docker_run_compiler(session, "gcc-8")
@@ -228,45 +227,9 @@ def doc(session: nox.Session) -> None:
     session.run("rst2html5.py", "--strict", "README.rst", readme_html)
 
 
-@nox.session(python=False)
+@nox.session
 def tests(session: nox.Session) -> None:
     """Run the tests with the default GCC version."""
-    session_id = f"tests_compiler({get_gcc_version_to_use()})"
-    session.log(f"Notify session {session_id}")
-    session.notify(session_id)
-
-
-@nox.session(python=False, name="tests_compiler(all)")
-def tests_compiler_all(session: nox.Session) -> None:
-    """Run the tests with all compiler versions."""
-    for version in ALL_COMPILER_VERSIONS:
-        session_id = f"tests_compiler({version})"
-        session.log(f"Notify session {session_id}")
-        session.notify(session_id)
-
-
-@nox.session(python=False, name="tests_compiler(gcc)")
-def tests_compiler_gcc(session: nox.Session) -> None:
-    """Run the tests with all GCC versions."""
-    for version in ALL_GCC_VERSIONS:
-        session_id = f"tests_compiler({version})"
-        session.log(f"Notify session {session_id}")
-        session.notify(session_id)
-
-
-@nox.session(python=False, name="tests_compiler(clang)")
-def tests_compiler_clang(session: nox.Session) -> None:
-    """Run the tests with all CLANG versions."""
-    for version in ALL_CLANG_VERSIONS:
-        session_id = f"tests_compiler({version})"
-        session.log(f"Notify session {session_id}")
-        session.notify(session_id)
-
-
-@nox.session
-@nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
-def tests_compiler(session: nox.Session, version: str) -> None:
-    """Run the test with a specific GCC version."""
     session.install(
         "jinja2",
         "lxml",
@@ -283,7 +246,7 @@ def tests_compiler(session: nox.Session, version: str) -> None:
         session.install("coverage", "pytest-cov")
         coverage_args = ["--cov=gcovr", "--cov-branch"]
     session.install("-e", ".")
-    set_environment(session, version)
+    set_environment(session)
     session.log("Print tool versions")
     session.run("python", "--version")
     # Use full path to executable
@@ -297,10 +260,11 @@ def tests_compiler(session: nox.Session, version: str) -> None:
     session.run(session.env["GCOV"], "--version", external=True)
     if "llvm-cov" in session.env["GCOV"]:
         session.env["GCOV"] += " gcov"
+    session.log(f"Using reference data for {session.env['CC_REFERENCE']}")
 
-    session.chdir("gcovr/tests")
-    session.run("make", "--silent", "clean", external=True)
-    session.chdir("../..")
+    with session.chdir("tests"):
+        session.run("make", "--silent", "clean", external=True)
+
     args = ["-m", "pytest"]
     args += coverage_args
     args += session.posargs
@@ -357,30 +321,34 @@ def upload_wheel(session: nox.Session) -> None:
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
     session.install("pyinstaller~=5.13.2")
-    session.install("-e", ".")
+    # This is needed if the virtual env is reused
+    session.run("pip", "uninstall", "gcovr")
+    # Do not install interactive to get the module resolved
+    # with the needed data
+    session.install(".")
     os.makedirs("build", exist_ok=True)
-    session.chdir("build")
-    if platform.system() == "Windows":
-        executable = "gcovr.exe"
-    else:
-        executable = "gcovr"
-    session.run(
-        "pyinstaller",
-        "--distpath",
-        ".",
-        "--workpath",
-        "./pyinstaller",
-        "--specpath",
-        "./pyinstaller",
-        "--onefile",
-        "--collect-all",
-        "gcovr.formats",
-        "-n",
-        executable,
-        *session.posargs,
-        "../scripts/pyinstaller_entrypoint.py",
-    )
-    session.notify("check_bundled_app")
+    with session.chdir("build"):
+        if platform.system() == "Windows":
+            executable = "gcovr.exe"
+        else:
+            executable = "gcovr"
+        session.run(
+            "pyinstaller",
+            "--distpath",
+            ".",
+            "--workpath",
+            "./pyinstaller",
+            "--specpath",
+            "./pyinstaller",
+            "--onefile",
+            "--collect-all",
+            "gcovr",
+            "-n",
+            executable,
+            *session.posargs,
+            "../scripts/pyinstaller_entrypoint.py",
+        )
+        session.notify("check_bundled_app")
 
 
 @nox.session(python=False)
@@ -469,32 +437,32 @@ def html2jpeg(session: nox.Session):
             [800, 600],
         )
         screenshot(
-            "gcovr/tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-green-src.jpeg",
             [800, 290],
         )
         screenshot(
-            "gcovr/tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-blue-src.jpeg",
             [800, 290],
         )
         screenshot(
-            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
             [800, 500],
         )
         screenshot(
-            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-blue-src.jpeg",
             [800, 500],
         )
         screenshot(
-            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-green-src.jpeg",
             [800, 500],
         )
         screenshot(
-            "gcovr/tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
             [800, 500],
         )
@@ -509,19 +477,21 @@ def docker_container_os(session: nox.Session) -> str:
         return "ubuntu:22.04"
     elif session.env["CC"] in ["gcc-12", "gcc-13"]:
         return "ubuntu:23.04"
+    elif session.env["CC"] in ["gcc-14"]:
+        return "ubuntu:24.04"
 
     raise RuntimeError(f"No container image defined for {session.env['CC']}")
 
 
 def docker_container_id(session: nox.Session, version: str) -> str:
     """Get the docker container ID."""
-    return f"gcovr-qa-{docker_container_os(session).replace(':', '_')}-{version}-uid_{os.geteuid()}"
+    return f"gcovr-{docker_container_os(session).replace(':', '_')}-{version}-uid_{os.geteuid()}"
 
 
 @nox.session(python=False)
 def docker_build(session: nox.Session) -> None:
     """Build the docker container for the default GCC version."""
-    session_id = f"docker_build({ALL_COMPILER_VERSIONS[0]})"
+    session_id = f"docker_build({DEFAULT_COMPILER_VERSION})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
@@ -557,7 +527,7 @@ def docker_build_compiler_clang(session: nox.Session) -> None:
 @nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
 def docker_build_compiler(session: nox.Session, version: str) -> None:
     """Build the docker container for a specific GCC version."""
-    set_environment(session, version, False)
+    set_environment(session, version)
     session.run(
         "docker",
         "build",
@@ -581,7 +551,7 @@ def docker_build_compiler(session: nox.Session, version: str) -> None:
 @nox.session(python=False)
 def docker_run(session: nox.Session) -> None:
     """Run the docker container for the default GCC version."""
-    session_id = f"docker_run_compiler({ALL_COMPILER_VERSIONS[0]})"
+    session_id = f"docker_run_compiler({DEFAULT_COMPILER_VERSION})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
@@ -617,9 +587,9 @@ def docker_run_compiler_clang(session: nox.Session) -> None:
 @nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
 def docker_run_compiler(session: nox.Session, version: str) -> None:
     """Run the docker container for a specific GCC version."""
-    set_environment(session, version, False)
+    set_environment(session, version)
 
-    nox_options = session.posargs
+    nox_options = session.posargs if session.posargs else ["-s", "qa"]
     if not session.interactive:
         nox_options.insert(0, "--non-interactive")
     if session._runner.global_config.no_install:
@@ -651,7 +621,7 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
 @nox.session(python=False)
 def docker(session: nox.Session) -> None:
     """Build and run the docker container for the default GCC version."""
-    session_id = f"docker_compiler({ALL_COMPILER_VERSIONS[0]})"
+    session_id = f"docker_compiler({DEFAULT_COMPILER_VERSION})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
 
@@ -696,67 +666,24 @@ def docker_compiler(session: nox.Session, version: str) -> None:
 
 
 @nox.session(python=False)
-def docker_qa(session: nox.Session) -> None:
-    """Run the session qa for the default GCC version."""
-    session_id = f"docker_qa_compiler({ALL_COMPILER_VERSIONS[0]})"
-    session.log(f"Notify session {session_id}")
-    session.notify(session_id)
-
-
-@nox.session(python=False, name="docker_qa_compiler(all)")
-def docker_qa_compiler_all(session: nox.Session) -> None:
-    """Run the session qa for all compiler versions."""
-    for version in ALL_COMPILER_VERSIONS:
-        session_id = f"docker_qa_compiler({version})"
-        session.log(f"Notify session {session_id}")
-        session.notify(session_id)
-
-
-@nox.session(python=False, name="docker_qa_compiler(gcc)")
-def docker_qa_compiler_gcc(session: nox.Session) -> None:
-    """Run the session qa for all GCC versions."""
-    for version in ALL_GCC_VERSIONS:
-        session_id = f"docker_qa_compiler({version})"
-        session.log(f"Notify session {session_id}")
-        session.notify(session_id)
-
-
-@nox.session(python=False, name="docker_qa_compiler(clang)")
-def docker_qa_compiler_clang(session: nox.Session) -> None:
-    """Run the session qa for all CLANG versions."""
-    for version in ALL_CLANG_VERSIONS:
-        session_id = f"docker_qa_compiler({version})"
-        session.log(f"Notify session {session_id}")
-        session.notify(session_id)
-
-
-@nox.session(python=False)
-@nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
-def docker_qa_compiler(session: nox.Session, version: str) -> None:
-    """Run the session qa for a specific GCC version."""
-    session_id = f"docker_compiler({version})"
-    session.log(f"Notify session {session_id}")
-    session.notify(session_id, ["-s", "qa", "--", *session.posargs])
-
-
-@nox.session(python=False)
 def import_reference(session: nox.Session) -> None:
     """Import reference data from ZIP generated in Github pipeline."""
-    if len(session.posargs) != 1:
+    if len(session.posargs) < 1:
         session.error(
-            "Exact one ZIP file needed. Usage: nox -s import_reference -- file.zip"
+            "Please provide the ZIP files to import. Usage: nox -s import_reference -- file.zip"
         )
 
     def extract(fh_zip: zipfile.ZipFile):
         for entry in fh_zip.filelist:
-            session.log(fh_zip.extract(entry, "gcovr/tests"))
+            session.log(fh_zip.extract(entry, "tests"))
 
-    with zipfile.ZipFile(session.posargs[0]) as fh_zip:
-        try:
-            zip_info_diff_zip = fh_zip.getinfo("diff.zip")
-            with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
-                seekable_buf = io.BytesIO(fh_inner_zip.read())
-                with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
-                    extract(fh_diff_zip)
-        except KeyError:
-            extract(fh_zip)
+    for file in session.posargs:
+        with zipfile.ZipFile(file) as fh_zip:
+            try:
+                zip_info_diff_zip = fh_zip.getinfo("diff.zip")
+                with fh_zip.open(zip_info_diff_zip) as fh_inner_zip:
+                    seekable_buf = io.BytesIO(fh_inner_zip.read())
+                    with zipfile.ZipFile(seekable_buf) as fh_diff_zip:
+                        extract(fh_diff_zip)
+            except KeyError:
+                extract(fh_zip)

@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/stable
+# This file is part of gcovr 7.2+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -35,6 +35,7 @@ class JsonHandler(BaseHandler):
         return [
             # Global options used for merging.
             "merge_mode_functions",
+            "show_decision",
             # Local options
             GcovrConfigOption(
                 "json",

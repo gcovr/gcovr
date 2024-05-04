@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.0+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/stable
+# This file is part of gcovr 7.2+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -18,4 +18,4 @@
 # ****************************************************************************
 
 JSON_FORMAT_VERSION = "0.6"
-JSON_SUMMARY_FORMAT_VERSION = "0.5"
+JSON_SUMMARY_FORMAT_VERSION = "0.6"
