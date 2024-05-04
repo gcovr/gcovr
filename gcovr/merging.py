@@ -293,7 +293,7 @@ def merge_function(
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
             raise AssertionError(
-                f"Got function {right.name} on multiple lines: {', '.join([str(l) for l in lines])}.\n"
+                f"Got function {right.name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                 "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."
             )
