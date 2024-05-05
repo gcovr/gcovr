@@ -312,12 +312,14 @@ def merge_function(
                 left.returned[lineno] = returned
         for lineno, blocks in right.blocks.items():
             try:
-                left.blocks[lineno] += blocks
+                # Take the maximum value for this line
+                if left.blocks[lineno] < blocks:
+                    left.blocks[lineno] = blocks
             except KeyError:
                 left.blocks[lineno] = blocks
         for lineno, excluded in right.excluded.items():
             try:
-                left.excluded[lineno] += excluded
+                left.excluded[lineno] |= excluded
             except KeyError:
                 left.excluded[lineno] = excluded
         return left
@@ -340,6 +342,7 @@ def merge_function(
     left.returned = {lineno: sum(left.returned.values()) + sum(right.returned.values())}
     # or the max value at the desired line
     left.blocks = {lineno: max(*left.blocks.values(), *right.blocks.values())}
+    # or the logical or of all values
     left.excluded = {
         lineno: any(left.excluded.values()) or any(right.excluded.values())
     }

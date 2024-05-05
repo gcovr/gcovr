@@ -263,7 +263,7 @@ class FunctionCoverage:
         self.name = name
         self.count: Dict[int, int] = {lineno: count}
         self.returned: Dict[int, int] = {lineno: returned}
-        self.blocks: Dict[int, int] = {lineno: blocks}
+        self.blocks: Dict[int, float] = {lineno: blocks}
         self.excluded: Dict[int, bool] = {lineno: excluded}
 
 

@@ -23,6 +23,7 @@ Bug fixes and small improvements:
 - Fix erroneous deprecation warning. (:issue:`912`)
 - Fix display filename in HTML report. (:issue:`920`)
 - Fix bundle of standalone executable with Python 3.12. (:issue:`924`)
+- Fix merging of function coverage data. (:issue:`925`)
 
 Documentation:
 
