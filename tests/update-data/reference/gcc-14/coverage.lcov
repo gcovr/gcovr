@@ -37,8 +37,8 @@ FN:12,called_from_update_data
 FNDA:1,called_from_update_data
 FNF:3
 FNH:3
-BRDA:19,2,0,1
-BRDA:19,2,1,1
+BRDA:19,1,0,1
+BRDA:19,1,1,1
 BRF:2
 BRH:2
 DA:7,1,31afb2315355517ade21b9f9f0ae8e70

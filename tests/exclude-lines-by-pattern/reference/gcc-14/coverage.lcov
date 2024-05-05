@@ -9,8 +9,8 @@ FN:5,panic()
 FNDA:0,panic()
 FNF:3
 FNH:2
-BRDA:12,2,0,1
-BRDA:12,2,1,-
+BRDA:12,1,0,1
+BRDA:12,1,1,-
 BRF:2
 BRH:1
 DA:5,0,164797e5b2877c1e145f135ff57aae5a
