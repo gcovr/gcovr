@@ -31,6 +31,7 @@ from typing import Callable, List, Optional, Set, Tuple
 from ...options import Options
 from ...merging import (
     FUNCTION_MAX_LINE_MERGE_OPTIONS,
+    GcovrMergeAssertionError,
     insert_branch_coverage,
     insert_function_coverage,
     insert_line_coverage,
@@ -240,12 +241,23 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                     ),
                 )
         for function in file["functions"]:
+            # Use 100% only if covered == total.
+            if function["blocks_executed"] == function["blocks"]:
+                blocks = 100.0
+            else:
+                # There is at least one uncovered item.
+                # Round to 1 decimal and clamp to max 99.9%.
+                ratio = function["blocks_executed"] / function["blocks"]
+                blocks = min(99.9, round(ratio * 100.0, 1))
+
             insert_function_coverage(
                 file_cov,
                 FunctionCoverage(
                     function["demangled_name"],
                     lineno=function["start_line"],
                     count=function["execution_count"],
+                    returned=None,
+                    blocks=blocks,
                 ),
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
@@ -261,12 +273,14 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
             ) as fh_in:
                 source_lines = fh_in.read().splitlines()
 
+        LOGGER.debug(f"Apply exclusions for {fname}")
         apply_all_exclusions(file_cov, lines=source_lines, options=options)
 
         if options.show_decision:
             decision_parser = DecisionParser(file_cov, source_lines)
             decision_parser.parse_all_lines()
 
+        LOGGER.debug(f"Merge coverage data for {fname}")
         insert_file_coverage(covdata, file_cov, get_merge_mode_from_options(options))
 
 
@@ -528,21 +542,25 @@ def process_datafile(
             potential_wd.append(wd)
             wd = os.path.dirname(wd)
 
-    for wd in potential_wd:
-        done = run_gcov_and_process_files(
-            abs_filename,
-            covdata,
-            options=options,
-            error=errors.append,
-            chdir=wd,
-        )
+    try:
+        for wd in potential_wd:
+            done = run_gcov_and_process_files(
+                abs_filename,
+                covdata,
+                options=options,
+                error=errors.append,
+                chdir=wd,
+            )
 
-        if options.gcov_delete:
-            if not abs_filename.endswith("gcno"):
-                toerase.add(abs_filename)
+            if options.gcov_delete:
+                if not abs_filename.endswith("gcno"):
+                    toerase.add(abs_filename)
 
-        if done:
-            return
+            if done:
+                return
+    except GcovrMergeAssertionError:
+        # The exception is already put to the list of error messages.
+        pass
 
     errors_output = "\n\t".join(errors)
     errors_output = (
@@ -885,6 +903,7 @@ def run_gcov_and_process_files(
                     os.remove(filepath)
 
     except Exception as exc:
+        # If we got an merge assertion error we must end the processing
         done = False
         error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
@@ -894,6 +913,8 @@ def run_gcov_and_process_files(
             f"Current processed gcov file was {filename!r}.\n"
             "Use option --verbose to get extended information."
         )
+        if isinstance(exc, GcovrMergeAssertionError):
+            raise
 
     return done
 

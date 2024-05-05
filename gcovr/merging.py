@@ -68,6 +68,10 @@ from .coverage import (
 LOGGER = logging.getLogger("gcovr")
 
 
+class GcovrMergeAssertionError(AssertionError):
+    pass
+
+
 @dataclass
 class MergeOptions:
     ignore_function_lineno: bool = False
@@ -292,7 +296,7 @@ def merge_function(
     if not options.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
-            raise AssertionError(
+            raise GcovrMergeAssertionError(
                 f"Got function {right.name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                 "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."
@@ -307,7 +311,8 @@ def merge_function(
                 left.count[lineno] = count
         for lineno, returned in right.returned.items():
             try:
-                left.returned[lineno] += returned
+                if left.returned[lineno] is not None and returned is not None:
+                    left.returned[lineno] += returned
             except KeyError:
                 left.returned[lineno] = returned
         for lineno, blocks in right.blocks.items():
@@ -339,7 +344,11 @@ def merge_function(
 
     # Overwrite data with the sum at the desired line
     left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
-    left.returned = {lineno: sum(left.returned.values()) + sum(right.returned.values())}
+    left.returned = (
+        {lineno: None}
+        if None in left.returned.values() or None in right.returned.values()
+        else {lineno: sum(left.returned.values()) + sum(right.returned.values())}
+    )
     # or the max value at the desired line
     left.blocks = {lineno: max(*left.blocks.values(), *right.blocks.values())}
     # or the logical or of all values
