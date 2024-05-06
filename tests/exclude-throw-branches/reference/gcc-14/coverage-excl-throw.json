@@ -8,42 +8,42 @@
                     "execution_count": 3,
                     "lineno": 21,
                     "name": "RAII::RAII(bool)",
-                    "returned_count": 3
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 16,
                     "name": "RAII::method_that_may_throw() const",
-                    "returned_count": 3
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 22,
                     "name": "RAII::~RAII()",
-                    "returned_count": 3
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 88.0,
+                    "blocks_percent": 87.5,
                     "execution_count": 9,
                     "lineno": 3,
                     "name": "function_that_may_throw(bool)",
-                    "returned_count": 6
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 63.0,
+                    "blocks_percent": 63.2,
                     "execution_count": 3,
                     "lineno": 24,
                     "name": "function_with_catchers(int)",
-                    "returned_count": 3
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 47,
                     "name": "main",
-                    "returned_count": 3
+                    "returned_count": null
                 }
             ],
             "lines": [
@@ -56,13 +56,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 6,
                             "fallthrough": false,
                             "throw": false
@@ -75,7 +75,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false
@@ -130,7 +130,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
@@ -143,13 +143,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 10,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 10,
+                            "blockno": 1,
                             "count": 3,
                             "fallthrough": false,
                             "throw": false
@@ -174,7 +174,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false
@@ -187,7 +187,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false
@@ -200,13 +200,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 14,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 14,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -231,7 +231,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 5,
+                            "blockno": 1,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false

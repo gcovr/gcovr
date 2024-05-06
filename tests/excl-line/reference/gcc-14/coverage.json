@@ -9,21 +9,21 @@
                     "gcovr/excluded": true,
                     "lineno": 20,
                     "name": "bar()",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 4,
                     "name": "foo(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 25,
                     "name": "main",
-                    "returned_count": 1
+                    "returned_count": null
                 }
             ],
             "lines": [
@@ -36,13 +36,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
