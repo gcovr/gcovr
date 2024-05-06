@@ -708,7 +708,7 @@ class GcovProgram:
             )
             out, _ = gcov_process.communicate(timeout=30)
 
-            if gcov_process.returncode:
+            if gcov_process.returncode:  # pragma: no cover
                 # gcov tossed errors: throw exception
                 raise RuntimeError(
                     "Error in gcov command line, couldn't get version information."
@@ -882,7 +882,7 @@ def run_gcov_and_process_files(
                             )
                         elif gcov_filename.endswith(".json.gz"):
                             process_gcov_json_data(gcov_filename, covdata, options)
-                        else:
+                        else:  # pragma: no cover
                             raise RuntimeError(
                                 f"Unknown gcov output format {filename}."
                             )
@@ -973,7 +973,7 @@ def process_existing_gcov_file(
         process_gcov_data(filename, None, covdata, options)
     elif filename.endswith(".json.gz"):
         process_gcov_json_data(filename, covdata, options)
-    else:
+    else:  # pragma: no cover
         raise RuntimeError(f"Unknown gcov output format {filename}.")
 
     if not options.gcov_keep:
