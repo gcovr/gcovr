@@ -40,6 +40,7 @@ from ...coverage import (
 )
 from ...options import Options
 from ...utils import (
+    chdir,
     commonpath,
     force_unix_separator,
     get_md5_hexdigest,
@@ -594,40 +595,43 @@ def write_source_pages(
             data["parent_directory"] = cdata_fname[parent_dirname]
 
         data["source_lines"] = []
-        current_dir = os.getcwd()
-        os.chdir(options.root_dir)
-        max_line_from_cdata = max(cdata.lines.keys(), default=0)
-        try:
-            with io.open(
-                filename,
-                "r",
-                encoding=options.source_encoding,
-                errors="replace",
-            ) as source_file:
-                lines = formatter.highlighter_for_file(filename)(source_file.read())
-                ctr = 0
-                for ctr, line in enumerate(lines, 1):
+        with chdir(options.root_dir):
+            max_line_from_cdata = max(cdata.lines.keys(), default=0)
+            try:
+                with io.open(
+                    filename,
+                    "r",
+                    encoding=options.source_encoding,
+                    errors="replace",
+                ) as source_file:
+                    lines = formatter.highlighter_for_file(filename)(source_file.read())
+                    ctr = 0
+                    for ctr, line in enumerate(lines, 1):
+                        data["source_lines"].append(
+                            source_row(ctr, line, cdata.lines.get(ctr))
+                        )
+                    if ctr < max_line_from_cdata:
+                        LOGGER.warning(
+                            f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                        )
+            except IOError as e:
+                if filename.endswith("<stdin>"):
+                    file_info = "!!! File from stdin !!!"
+                else:
+                    error_no_files_not_found += 1
+                    file_info = "!!! File not found !!!"
+                    LOGGER.warning(f"File {filename} not found: {repr(e)}")
+                # Python ranges are exclusive. We want to iterate over all lines, including
+                # that last line. Thus, we have to add a +1 to include that line.
+                for ctr in range(1, max_line_from_cdata + 1):
                     data["source_lines"].append(
-                        source_row(ctr, line, cdata.lines.get(ctr))
+                        source_row(
+                            ctr,
+                            file_info if ctr == 1 else "",
+                            cdata.lines.get(ctr),
+                        )
                     )
-                if ctr < max_line_from_cdata:
-                    LOGGER.warning(
-                        f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
-                    )
-        except IOError as e:
-            LOGGER.warning(f"File {filename} not found: {repr(e)}")
-            # Python ranges are exclusive. We want to iterate over all lines, including
-            # that last line. Thus, we have to add a +1 to include that line.
-            for ctr in range(1, max_line_from_cdata + 1):
-                data["source_lines"].append(
-                    source_row(
-                        ctr,
-                        "!!! File not found !!!" if ctr == 1 else "",
-                        cdata.lines.get(ctr),
-                    )
-                )
-            error_no_files_not_found += 1
-        os.chdir(current_dir)
+
 
         html_string = templates(options).get_template("source_page.html").render(**data)
         with open_text_for_writing(
@@ -882,7 +886,7 @@ def _make_short_sourcename(output_file: str, filename: str) -> str:
     if output_suffix == "":
         output_suffix = ".html"
 
-    filename = filename.replace(os.sep, "/")
+    filename = filename.replace(os.sep, "/").replace("<stdin>", "stdin")
     sourcename = (
         ".".join(
             (

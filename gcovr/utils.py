@@ -417,6 +417,19 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
             fh.close()
 
 
+@contextmanager
+def chdir(dir_):
+    """
+    Context for doing something in a locked directory
+    """
+    current_dir = os.getcwd()
+    os.chdir(dir_)
+    try:
+        yield
+    finally:
+        os.chdir(current_dir)
+
+
 def force_unix_separator(path: str) -> str:
     return path.replace("\\", "/")
 
