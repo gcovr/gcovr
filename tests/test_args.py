@@ -264,13 +264,32 @@ def test_non_writable_directory_csv(capsys):
     helper_test_non_writable_directory_output(capsys, "--csv")
 
 
+def test_stdout_no_html_self_contained(caplog):
+    c = log_capture(caplog, ["--output", "-", "--no-html-self-contained"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "only self contained reports can be printed to STDOUT"
+    assert c.exception.code != 0
+
+
 def test_no_output_html_details(caplog):
     c = log_capture(caplog, ["--html-details"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert (
         message[2]
-        == "a named output must be given, if the option --html-details\nis used."
+        == "a named output must be given, if the option --html-details is used."
+    )
+    assert c.exception.code != 0
+
+
+def test_stdout_html_details(caplog):
+    c = log_capture(caplog, ["--html-details", "-"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert (
+        message[2]
+        == "detailed reports can only be printed to STDOUT as --html-single-page."
     )
     assert c.exception.code != 0
 
@@ -281,7 +300,18 @@ def test_no_output_html_nested(caplog):
     assert message[1] == logging.ERROR
     assert (
         message[2]
-        == "a named output must be given, if the option --html-nested\nis used."
+        == "a named output must be given, if the option --html-nested is used."
+    )
+    assert c.exception.code != 0
+
+
+def test_stdout_html_nested(caplog):
+    c = log_capture(caplog, ["--html-nested", "-"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert (
+        message[2]
+        == "detailed reports can only be printed to STDOUT as --html-single-page."
     )
     assert c.exception.code != 0
 
@@ -291,6 +321,17 @@ def test_html_details_and_html_nested(caplog):
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2] == "--html-details and --html-nested can not be used together."
+    assert c.exception.code != 0
+
+
+def test_html_single_page_without_html_details_or_html_nested(caplog):
+    c = log_capture(caplog, ["--output", "x", "--html-single-page"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert (
+        message[2]
+        == "option --html-details or --html-nested is needed, if the option --html-single-page is used."
+    )
     assert c.exception.code != 0
 
 

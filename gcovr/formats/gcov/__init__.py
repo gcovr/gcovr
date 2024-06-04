@@ -198,6 +198,15 @@ class GcovHandler(BaseHandler):
             ),
         ]
 
+    def validate_options(self) -> None:
+        if self.options.gcov_objdir is not None and not os.path.exists(
+            self.options.gcov_objdir
+        ):
+            raise RuntimeError(
+                "Bad --gcov-object-directory option.\n"
+                "\tThe specified directory does not exist."
+            )
+
     def read_report(self) -> CovData:
         from .read import read_report
 

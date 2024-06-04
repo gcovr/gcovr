@@ -14,6 +14,7 @@ New features and notable changes:
 
 - In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)
 - Detect suspicious counter values in ``gcov`` output. (:issue:`903`)
+- Add :option:`--html-single-page` to create a single page report (static or with Javascript). (:issue:`916`)
 
 Bug fixes and small improvements:
 

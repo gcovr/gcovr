@@ -20,8 +20,7 @@
 import io
 import logging
 import os
-from argparse import ArgumentTypeError
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from ...coverage import (
     CallCoverage,
@@ -158,7 +157,7 @@ class CssRenderer:
     def render(options):
         template = CssRenderer.load_css_template(options)
         return template.render(
-            tab_size=options.html_tab_size,
+            tab_size=options.html_tab_size, single_page=options.html_single_page
         )
 
 
@@ -241,8 +240,11 @@ class RootInfo:
         self.high_threshold_line = options.html_high_threshold_line
         self.medium_threshold_branch = options.html_medium_threshold_branch
         self.high_threshold_branch = options.html_high_threshold_branch
-        self.link_function_list = options.html_details or options.html_nested
+        self.link_function_list = (options.html_details or options.html_nested) and (
+            options.html_single_page != "static"
+        )
         self.relative_anchors = options.html_relative_anchors
+        self.single_page = options.html_single_page
 
         self.version = __version__
         self.head = options.html_title
@@ -254,8 +256,6 @@ class RootInfo:
         self.calls = dict()
         self.functions = dict()
         self.lines = dict()
-        self.files = []
-        self.subdirs = dict()
 
     def set_directory(self, directory) -> None:
         self.directory = directory
@@ -266,94 +266,21 @@ class RootInfo:
     def set_coverage(self, covdata: CovData) -> None:
         """Update this RootInfo with a summary of the CovData."""
         stats = SummarizedStats.from_covdata(covdata)
-        self.lines = dict_from_stat(stats.line, self._line_coverage_to_class, 0.0)
-        self.functions = dict_from_stat(stats.function, self._coverage_to_class)
-        self.branches = dict_from_stat(stats.branch, self._branch_coverage_to_class)
-        self.decisions = dict_from_stat(stats.decision, self._coverage_to_class)
-        self.calls = dict_from_stat(stats.call, self._coverage_to_class)
+        self.lines = dict_from_stat(stats.line, self.line_coverage_class, 0.0)
+        self.functions = dict_from_stat(stats.function, self.coverage_class)
+        self.branches = dict_from_stat(stats.branch, self.branch_coverage_class)
+        self.decisions = dict_from_stat(stats.decision, self.coverage_class)
+        self.calls = dict_from_stat(stats.call, self.coverage_class)
 
-    def clear_files(self) -> None:
-        self.files = []
-
-    def add_file(
-        self, cdata: Union[DirectoryCoverage, FileCoverage], link_report, cdata_fname
-    ) -> None:
-        stats = (
-            cdata.stats
-            if isinstance(cdata, DirectoryCoverage)
-            else SummarizedStats.from_file(cdata)
-        )
-
-        lines = {
-            "total": stats.line.total,
-            "exec": stats.line.covered,
-            "coverage": stats.line.percent_or(100.0),
-            "class": self._line_coverage_to_class(stats.line.percent_or(100.0)),
-        }
-
-        functions = {
-            "total": stats.function.total,
-            "exec": stats.function.covered,
-            "coverage": stats.function.percent_or("-"),
-            "class": self._coverage_to_class(stats.function.percent),
-        }
-
-        branches = {
-            "total": stats.branch.total,
-            "exec": stats.branch.covered,
-            "coverage": stats.branch.percent_or("-"),
-            "class": self._branch_coverage_to_class(stats.branch.percent),
-        }
-
-        decisions = {
-            "total": stats.decision.total,
-            "exec": stats.decision.covered,
-            "unchecked": stats.decision.uncheckable,
-            "coverage": stats.decision.percent_or("-"),
-            "class": self._coverage_to_class(stats.decision.percent),
-        }
-
-        calls = {
-            "total": stats.call.total,
-            "exec": stats.call.covered,
-            "coverage": stats.call.percent_or("-"),
-            "class": self._coverage_to_class(stats.call.percent),
-        }
-
-        display_filename = force_unix_separator(
-            os.path.relpath(
-                os.path.realpath(cdata_fname), os.path.realpath(self.directory)
-            )
-        )
-
-        if link_report is not None:
-            if self.relative_anchors:
-                link_report = os.path.basename(link_report)
-
-        self.files.append(
-            dict(
-                directory=self.directory,
-                filename=display_filename,
-                link=link_report,
-                lines=lines,
-                branches=branches,
-                decisions=decisions,
-                calls=calls,
-                functions=functions,
-            )
-        )
-
-        return display_filename
-
-    def _coverage_to_class(self, coverage) -> str:
+    def coverage_class(self, coverage) -> str:
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
-    def _line_coverage_to_class(self, coverage) -> str:
+    def line_coverage_class(self, coverage) -> str:
         return coverage_to_class(
             coverage, self.medium_threshold_line, self.high_threshold_line
         )
 
-    def _branch_coverage_to_class(self, coverage) -> str:
+    def branch_coverage_class(self, coverage) -> str:
         return coverage_to_class(
             coverage, self.medium_threshold_branch, self.high_threshold_branch
         )
@@ -388,17 +315,15 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
     self_contained = options.html_self_contained
     if self_contained is None:
-        self_contained = not (options.html_details or options.html_nested)
-    if output_file == "-":
-        if not self_contained:
-            raise ArgumentTypeError(
-                "Only self contained reports can be printed to STDOUT"
-            )
-        elif options.html_details or options.html_nested:
-            raise ArgumentTypeError("Detailed reports can not be printed to STDOUT")
+        self_contained = (
+            not (options.html_details or options.html_nested)
+            or options.html_single_page
+        )
 
     if output_file.endswith(os.sep):
-        if options.html_nested:
+        if options.html_single_page:
+            output_file += "coverage_single_page.html"
+        elif options.html_nested:
             output_file += "coverage_nested.html"
         elif options.html_details:
             output_file += "coverage_details.html"
@@ -421,7 +346,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
         if options.html_relative_anchors:
             css_link = os.path.basename(css_output)
-        else:
+        else:  # pragma: no cover  Can't be checked because of the reference compare
             css_link = css_output
         data["css_link"] = css_link
 
@@ -441,25 +366,29 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         filename_uses_relative_pathname=True,
     )
 
+    subdirs = {}
     if options.html_nested:
-        root_info.subdirs = DirectoryCoverage.from_covdata(
+        subdirs = DirectoryCoverage.from_covdata(
             covdata, sorted_keys, options.root_filter
         )
 
     cdata_fname = {}
     cdata_sourcefile = {}
-    for f in sorted_keys + list(root_info.subdirs.keys()):
+    for f in sorted_keys + list(subdirs.keys()):
         filtered_fname: str = options.root_filter.sub("", f)
         if filtered_fname != "":
             files.append(filtered_fname)
         cdata_fname[f] = filtered_fname
-        if options.html_details or options.html_nested:
+        if options.html_details or options.html_nested or options.html_single_page:
             if os.path.normpath(f) == os.path.normpath(options.root_dir):
                 cdata_sourcefile[f] = output_file
             else:
                 cdata_sourcefile[f] = _make_short_sourcename(
                     output_file, filtered_fname.rstrip(os.sep)
                 )
+                if options.html_single_page:
+                    # Remove the prefix to get shorter links
+                    cdata_sourcefile[f] = cdata_sourcefile[f].split(".", maxsplit=1)[1]
         else:
             cdata_sourcefile[f] = None
 
@@ -471,9 +400,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         if commondir != "":
             root_directory = commondir
     else:
-        dir_, _ = os.path.split(filtered_fname)
-        if dir_ != "":
-            root_directory = dir_ + os.sep
+        dir, _ = os.path.split(filtered_fname)
+        if dir != "":
+            root_directory = dir + os.sep
 
     root_info.set_directory(root_directory)
 
@@ -483,39 +412,84 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             output_suffix = ".html"
         functions_output_file = f"{output_prefix}.functions{output_suffix}"
         data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
+        if options.html_single_page:
+            # Remove the prefix to get shorter links
+            data["FUNCTIONS_FNAME"] = data["FUNCTIONS_FNAME"].split(".", maxsplit=1)[1]
 
-    if options.html_nested:
-        write_directory_pages(
-            output_file,
-            cdata_fname,
-            cdata_sourcefile,
+    if options.html_single_page:
+        write_single_page(
             options,
             root_info,
+            output_file,
+            covdata,
+            subdirs,
+            sorted_keys,
+            cdata_fname,
+            cdata_sourcefile,
             data,
         )
     else:
-        for f in sorted_keys:
-            root_info.add_file(covdata[f], cdata_sourcefile[f], cdata_fname[f])
-        write_root_page(output_file, options, data)
-        if not options.html_details:
-            return
+        if options.html_nested:
+            write_directory_pages(
+                options,
+                root_info,
+                subdirs,
+                output_file,
+                cdata_fname,
+                cdata_sourcefile,
+                data,
+            )
+        else:
+            write_root_page(
+                options,
+                root_info,
+                output_file,
+                covdata,
+                cdata_fname,
+                cdata_sourcefile,
+                data,
+                sorted_keys,
+            )
+            if not options.html_details:
+                return
 
-    write_source_pages(
-        functions_output_file,
-        covdata,
-        cdata_fname,
-        cdata_sourcefile,
-        options,
-        root_info,
-        data,
-    )
+        write_source_pages(
+            options,
+            root_info,
+            functions_output_file,
+            covdata,
+            cdata_fname,
+            cdata_sourcefile,
+            data,
+        )
 
 
-def write_root_page(output_file: str, options, data: Dict[str, Any]) -> None:
+def write_root_page(
+    options,
+    root_info: RootInfo,
+    output_file: str,
+    covdata: CovData,
+    cdata_fname: Dict[str, str],
+    cdata_sourcefile: Dict[str, str],
+    data: Dict[str, Any],
+    sorted_keys: List[str],
+) -> None:
     #
     # Generate the root HTML file that contains the high level report
     #
-    html_string = templates(options).get_template("directory_page.html").render(**data)
+    files = []
+    for f in sorted_keys:
+        files.append(
+            get_coverage_data(
+                root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
+            )
+        )
+
+    html_string = (
+        templates(options)
+        .get_template("directory_page.html")
+        .render(**data, entries=files)
+    )
     with open_text_for_writing(
         output_file, encoding=options.html_encoding, errors="xmlcharrefreplace"
     ) as fh:
@@ -523,122 +497,45 @@ def write_root_page(output_file: str, options, data: Dict[str, Any]) -> None:
 
 
 def write_source_pages(
+    options,
+    root_info: RootInfo,
     functions_output_file: str,
     covdata: CovData,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, str],
-    options,
-    root_info: RootInfo,
     data: Dict[str, Any],
 ) -> bool:
-    #
-    # Generate an HTML file for every source file
-    #
-    medium_threshold = options.html_medium_threshold
-    high_threshold = options.html_high_threshold
-    medium_threshold_line = options.html_medium_threshold_line
-    high_threshold_line = options.html_high_threshold_line
-    medium_threshold_branch = options.html_medium_threshold_branch
-    high_threshold_branch = options.html_high_threshold_branch
-    formatter = get_formatter(options)
+
     error_no_files_not_found = 0
-
     all_functions = dict()
-    for f, cdata in covdata.items():
-        filename = cdata_fname[f]
-        # Getting the display file name
-        data["filename"] = root_info.add_file(cdata, cdata_sourcefile[f], filename)
-
-        # Only use demangled names (containing a brace)
-        data["function_list"] = []
-        for name in sorted(cdata.functions.keys()):
-            fcdata = cdata.functions[name]
-            for lineno in sorted(fcdata.count.keys()):
-                fdata = dict()
-                fdata["name"] = name
-                fdata["filename"] = filename
-                fdata["html_filename"] = os.path.basename(cdata_sourcefile[f])
-                fdata["line"] = lineno
-                fdata["count"] = fcdata.count[lineno]
-                fdata["returned"] = fcdata.returned[lineno]
-                fdata["blocks"] = fcdata.blocks[lineno]
-                fdata["excluded"] = fcdata.excluded[lineno]
-
-                data["function_list"].append(fdata)
-                all_functions[(fdata["name"], fdata["filename"], fdata["line"])] = fdata
-
-        def coverage_class(percent: Optional[float]) -> str:
-            return coverage_to_class(percent, medium_threshold, high_threshold)
-
-        def line_coverage_class(percent: Optional[float]) -> str:
-            return coverage_to_class(
-                percent, medium_threshold_line, high_threshold_line
-            )
-
-        def branch_coverage_class(percent: Optional[float]) -> str:
-            return coverage_to_class(
-                percent, medium_threshold_branch, high_threshold_branch
-            )
-
-        data["lines"] = dict_from_stat(cdata.line_coverage(), line_coverage_class)
-        data["functions"] = dict_from_stat(cdata.function_coverage(), coverage_class)
-        data["branches"] = dict_from_stat(
-            cdata.branch_coverage(), branch_coverage_class
+    for fname, cdata in covdata.items():
+        file_data, functions, file_not_found = get_file_data(
+            options, root_info, fname, cdata_fname, cdata_sourcefile, cdata
         )
-        data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
-        data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
-
-        parent_dirname = cdata.parent_dirname
-        if parent_dirname:
-            data["parent_link"] = os.path.basename(cdata_sourcefile[parent_dirname])
-            data["parent_directory"] = cdata_fname[parent_dirname]
-
-        data["source_lines"] = []
-        current_dir = os.getcwd()
-        os.chdir(options.root_dir)
-        max_line_from_cdata = max(cdata.lines.keys(), default=0)
-        try:
-            with io.open(
-                filename,
-                "r",
-                encoding=options.source_encoding,
-                errors="replace",
-            ) as source_file:
-                lines = formatter.highlighter_for_file(filename)(source_file.read())
-                ctr = 0
-                for ctr, line in enumerate(lines, 1):
-                    data["source_lines"].append(
-                        source_row(ctr, line, cdata.lines.get(ctr))
-                    )
-                if ctr < max_line_from_cdata:
-                    LOGGER.warning(
-                        f"File {data['filename']} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
-                    )
-        except IOError as e:
-            LOGGER.warning(f"File {filename} not found: {repr(e)}")
-            # Python ranges are exclusive. We want to iterate over all lines, including
-            # that last line. Thus, we have to add a +1 to include that line.
-            for ctr in range(1, max_line_from_cdata + 1):
-                data["source_lines"].append(
-                    source_row(
-                        ctr,
-                        "!!! File not found !!!" if ctr == 1 else "",
-                        cdata.lines.get(ctr),
-                    )
-                )
+        all_functions.update(functions)
+        if file_not_found:
             error_no_files_not_found += 1
-        os.chdir(current_dir)
 
-        html_string = templates(options).get_template("source_page.html").render(**data)
+        html_string = (
+            templates(options)
+            .get_template("source_page.html")
+            .render(**data, **file_data)
+        )
         with open_text_for_writing(
-            cdata_sourcefile[f],
+            cdata_sourcefile[fname],
             encoding=options.html_encoding,
             errors="xmlcharrefreplace",
         ) as fh:
             fh.write(html_string + "\n")
 
-    data["all_functions"] = [all_functions[k] for k in sorted(all_functions)]
-    html_string = templates(options).get_template("functions_page.html").render(**data)
+    html_string = (
+        templates(options)
+        .get_template("functions_page.html")
+        .render(
+            **data,
+            all_functions=[all_functions[k] for k in sorted(all_functions)],
+        )
+    )
     with open_text_for_writing(
         functions_output_file,
         encoding=options.html_encoding,
@@ -651,55 +548,34 @@ def write_source_pages(
 
 
 def write_directory_pages(
-    output_file: str,
-    cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, str],
     options,
     root_info: RootInfo,
+    subdirs: Dict[str, DirectoryCoverage],
+    output_file: str,
+    cdata_fname: str,
+    cdata_sourcefile: Dict[str, str],
     data: Dict[str, Any],
 ) -> None:
-    root_key = DirectoryCoverage.directory_root(root_info.subdirs, options.root_filter)
+    root_key = DirectoryCoverage.directory_root(subdirs, options.root_filter)
 
-    for f, directory in root_info.subdirs.items():
-        data["directory"] = commonpath(cdata_fname[f])
-
-        data["date"] = root_info.date
-
-        parent_dirname = directory.parent_dirname
-        if parent_dirname:
-            data["parent_link"] = os.path.basename(cdata_sourcefile[parent_dirname])
-            data["parent_directory"] = cdata_fname[parent_dirname]
-        else:
-            data["parent_link"] = None
-            data["parent_directory"] = None
-
-        sorted_files = sort_coverage(
-            directory.children,
-            sort_key=options.sort_key,
-            sort_reverse=options.sort_reverse,
-            by_metric="branch" if options.sort_branches else "line",
-            filename_uses_relative_pathname=True,
+    directory_data = dict()
+    for directory, cdata in subdirs.items():
+        directory_data = get_directory_data(
+            options, root_info, cdata_fname, cdata_sourcefile, cdata
         )
-
-        root_info.clear_files()
-        for key in sorted_files:
-            fname = directory.children[key].filename
-
-            root_info.add_file(
-                directory.children[key], cdata_sourcefile[fname], cdata_fname[fname]
-            )
-
         html_string = (
-            templates(options).get_template("directory_page.html").render(**data)
+            templates(options)
+            .get_template("directory_page.html")
+            .render(**data, **directory_data)
         )
         filename = None
-        if f in [root_key, ""]:
+        if directory in [root_key, ""]:
             filename = output_file
-        elif f in cdata_sourcefile:
-            filename = cdata_sourcefile[f]
+        elif directory in cdata_sourcefile:
+            filename = cdata_sourcefile[directory]
         else:
             LOGGER.warning(
-                f"There's a subdirectory {f!r} that there's no source files within it"
+                f"There's a subdirectory {directory!r} that there's no source files within it"
             )
 
         if filename:
@@ -707,6 +583,306 @@ def write_directory_pages(
                 filename, encoding=options.html_encoding, errors="xmlcharrefreplace"
             ) as fh:
                 fh.write(html_string + "\n")
+
+
+def write_single_page(
+    options,
+    root_info: RootInfo,
+    output_file: str,
+    covdata: CovData,
+    subdirs: Dict[str, DirectoryCoverage],
+    sorted_keys: List[str],
+    cdata_fname: Dict[str, str],
+    cdata_sourcefile: Dict[str, str],
+    data: Dict[str, Any],
+) -> bool:
+
+    error_no_files_not_found = 0
+    files = []
+    all_functions = dict()
+    for filename, cdata in covdata.items():
+        file_data, functions, file_not_found = get_file_data(
+            options, root_info, filename, cdata_fname, cdata_sourcefile, cdata
+        )
+        all_functions.update(functions)
+        if file_not_found:
+            error_no_files_not_found += 1
+
+        files.append(file_data)
+
+    all_files = []
+    for f in sorted_keys:
+        all_files.append(
+            get_coverage_data(
+                root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
+            )
+        )
+    directories = [{"entries": all_files}]
+    if root_info.single_page == "js-enabled":
+        for _, cdata in subdirs.items():
+            directories.append(
+                get_directory_data(
+                    options, root_info, cdata_fname, cdata_sourcefile, cdata
+                )
+            )
+    if len(directories) == 1:
+        directories[0]["dirname"] = "/"  # We need this to have a correct id in HTML.
+
+    html_string = (
+        templates(options)
+        .get_template("single_page.html")
+        .render(
+            **data,
+            files=files,
+            directories=directories,
+            all_functions=[all_functions[k] for k in sorted(all_functions)],
+        )
+    )
+    with open_text_for_writing(
+        output_file,
+        encoding=options.html_encoding,
+        errors="xmlcharrefreplace",
+    ) as fh:
+        fh.write(html_string + "\n")
+
+    if error_no_files_not_found != 0:
+        raise RuntimeError(f"{error_no_files_not_found} source file(s) not found.")
+
+
+def get_coverage_data(
+    root_info,
+    cdata: Union[DirectoryCoverage, FileCoverage],
+    link_report: str,
+    cdata_fname: str,
+) -> Dict[str, Any]:
+    """Get the coverage data"""
+
+    medium_threshold = root_info.medium_threshold
+    high_threshold = root_info.high_threshold
+    medium_threshold_line = root_info.medium_threshold_line
+    high_threshold_line = root_info.high_threshold_line
+    medium_threshold_branch = root_info.medium_threshold_branch
+    high_threshold_branch = root_info.high_threshold_branch
+
+    def coverage_class(coverage) -> str:
+        return coverage_to_class(coverage, medium_threshold, high_threshold)
+
+    def line_coverage_class(coverage) -> str:
+        return coverage_to_class(coverage, medium_threshold_line, high_threshold_line)
+
+    def branch_coverage_class(coverage) -> str:
+        return coverage_to_class(
+            coverage, medium_threshold_branch, high_threshold_branch
+        )
+
+    stats = (
+        cdata.stats
+        if isinstance(cdata, DirectoryCoverage)
+        else SummarizedStats.from_file(cdata)
+    )
+
+    lines = {
+        "total": stats.line.total,
+        "exec": stats.line.covered,
+        "coverage": stats.line.percent_or(100.0),
+        "class": line_coverage_class(stats.line.percent_or(100.0)),
+    }
+
+    functions = {
+        "total": stats.function.total,
+        "exec": stats.function.covered,
+        "coverage": stats.function.percent_or("-"),
+        "class": coverage_class(stats.function.percent),
+    }
+
+    branches = {
+        "total": stats.branch.total,
+        "exec": stats.branch.covered,
+        "coverage": stats.branch.percent_or("-"),
+        "class": branch_coverage_class(stats.branch.percent),
+    }
+
+    decisions = {
+        "total": stats.decision.total,
+        "exec": stats.decision.covered,
+        "unchecked": stats.decision.uncheckable,
+        "coverage": stats.decision.percent_or("-"),
+        "class": coverage_class(stats.decision.percent),
+    }
+
+    calls = {
+        "total": stats.call.total,
+        "exec": stats.call.covered,
+        "coverage": stats.call.percent_or("-"),
+        "class": coverage_class(stats.call.percent),
+    }
+
+    display_filename = force_unix_separator(
+        os.path.relpath(
+            os.path.realpath(cdata_fname), os.path.realpath(root_info.directory)
+        )
+    )
+
+    if link_report is not None:
+        if root_info.relative_anchors or root_info.single_page:
+            link_report = os.path.basename(link_report)
+
+    return {
+        "filename": display_filename,
+        "link": link_report,
+        "lines": lines,
+        "branches": branches,
+        "decisions": decisions,
+        "calls": calls,
+        "functions": functions,
+    }
+
+
+def get_directory_data(
+    options,
+    root_info: RootInfo,
+    cdata_fname: Dict[str, str],
+    cdata_sourcefile: Dict[str, str],
+    cdata: DirectoryCoverage,
+) -> Dict[str, Any]:
+    """Get the data for a directory to generate the HTML"""
+    relative_path = cdata_fname[cdata.dirname]
+    if relative_path == ".":
+        relative_path = ""
+    directory_data: Dict[str, Any] = {
+        "dirname": cdata_sourcefile[cdata.dirname]
+        if cdata_fname[cdata.dirname]
+        else "/",  # f"/{relative_path}"
+    }
+
+    sorted_files = sort_coverage(
+        cdata.children,
+        sort_key=options.sort_key,
+        sort_reverse=options.sort_reverse,
+        by_metric="branch" if options.sort_branches else "line",
+        filename_uses_relative_pathname=True,
+    )
+
+    files = []
+    for key in sorted_files:
+        fname = cdata.children[key].filename
+
+        files.append(
+            get_coverage_data(
+                root_info,
+                cdata.children[key],
+                cdata_sourcefile[fname],
+                cdata_fname[fname],
+            )
+        )
+
+    directory_data["entries"] = files
+
+    return directory_data
+
+
+def get_file_data(
+    options,
+    root_info: RootInfo,
+    filename: str,
+    cdata_fname: Dict[str, str],
+    cdata_sourcefile: Dict[str, str],
+    cdata: FileCoverage,
+) -> Tuple[Dict[str, Any], Dict[Tuple[str], Dict[str, Any]], bool]:
+    """Get the data for a file to generate the HTML"""
+    medium_threshold = root_info.medium_threshold
+    high_threshold = root_info.high_threshold
+    medium_threshold_line = root_info.medium_threshold_line
+    high_threshold_line = root_info.high_threshold_line
+    medium_threshold_branch = root_info.medium_threshold_branch
+    high_threshold_branch = root_info.high_threshold_branch
+    formatter = get_formatter(options)
+
+    file_data: Dict[str, Any] = {
+        "filename": cdata_fname[filename],
+        "html_filename": os.path.basename(cdata_sourcefile[filename]),
+        "source_lines": [],
+        "function_list": [],
+    }
+    file_data.update(
+        get_coverage_data(
+            root_info, cdata, cdata_sourcefile[filename], cdata_fname[filename]
+        )
+    )
+    functions: Dict[Tuple[str], Dict[str, Any]] = {}
+    # Only use demangled names (containing a brace)
+    for name in sorted(cdata.functions.keys()):
+        fcdata = cdata.functions[name]
+        for lineno in sorted(fcdata.count.keys()):
+            fdata: Dict[str, Any] = {}
+            fdata["name"] = name
+            fdata["filename"] = cdata_fname[filename]
+            fdata["html_filename"] = os.path.basename(cdata_sourcefile[filename])
+            fdata["line"] = lineno
+            fdata["count"] = fcdata.count[lineno]
+            fdata["returned"] = fcdata.returned[lineno]
+            fdata["blocks"] = fcdata.blocks[lineno]
+            fdata["excluded"] = fcdata.excluded[lineno]
+
+            file_data["function_list"].append(fdata)
+            functions[(fdata["name"], fdata["filename"], fdata["line"])] = fdata
+
+    def coverage_class(percent: Optional[float]) -> str:
+        return coverage_to_class(percent, medium_threshold, high_threshold)
+
+    def line_coverage_class(percent: Optional[float]) -> str:
+        return coverage_to_class(percent, medium_threshold_line, high_threshold_line)
+
+    def branch_coverage_class(percent: Optional[float]) -> str:
+        return coverage_to_class(
+            percent, medium_threshold_branch, high_threshold_branch
+        )
+
+    file_data["lines"] = dict_from_stat(cdata.line_coverage(), line_coverage_class)
+    file_data["functions"] = dict_from_stat(cdata.function_coverage(), coverage_class)
+    file_data["branches"] = dict_from_stat(
+        cdata.branch_coverage(), branch_coverage_class
+    )
+    file_data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
+    file_data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
+
+    current_dir = os.getcwd()
+    os.chdir(options.root_dir)
+    max_line_from_cdata = max(cdata.lines.keys(), default=0)
+    try:
+        with io.open(
+            filename,
+            "r",
+            encoding=options.source_encoding,
+            errors="replace",
+        ) as source_file:
+            file_not_found = False
+            lines = formatter.highlighter_for_file(filename)(source_file.read())
+            ctr = 0
+            for ctr, line in enumerate(lines, 1):
+                file_data["source_lines"].append(
+                    source_row(ctr, line, cdata.lines.get(ctr))
+                )
+            if ctr < max_line_from_cdata:
+                LOGGER.warning(
+                    f"File {filename} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                )
+    except IOError as e:
+        file_not_found = True
+        LOGGER.warning(f"File {filename} not found: {repr(e)}")
+        # Python ranges are exclusive. We want to iterate over all lines, including
+        # that last line. Thus, we have to add a +1 to include that line.
+        for ctr in range(1, max_line_from_cdata + 1):
+            file_data["source_lines"].append(
+                source_row(
+                    ctr,
+                    "!!! File not found !!!" if ctr == 1 else "",
+                    cdata.lines.get(ctr),
+                )
+            )
+    os.chdir(current_dir)
+
+    return file_data, functions, file_not_found
 
 
 def dict_from_stat(

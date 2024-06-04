@@ -29,6 +29,7 @@ class BaseHandler:
 
     def __init__(self, options: Options):
         global_options = [
+            "output",
             "timestamp",
             "root",
             "root_dir",
@@ -49,11 +50,18 @@ class BaseHandler:
             option_dict[name] = options.get(name)
         self.options = Options(**option_dict)
 
+    def validate_options(self) -> None:
+        """Validation of command line options"""
+        pass
+
     def read_report(self) -> CovData:
+        """Read a report in the format of the handler"""
         raise RuntimeError("Function 'read_report' not implemented.")
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
+        """Write a report in the format of the handler"""
         raise RuntimeError("Function 'write_report' not implemented.")
 
     def write_summary_report(self, covdata: CovData, output_file: str) -> None:
+        """Write a summary report in the format of the handler"""
         raise RuntimeError("Function 'write_summary_report' not implemented.")
