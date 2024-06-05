@@ -12,7 +12,7 @@
         <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" style="">
         </div>
     </div>
-    {% for row in info.files %}
+    {% for row in entries %}
     <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
         <div role="rowheader" class="flex-auto min-width-0 mr-3 col-md-2">
             <div class="d-flex">
@@ -21,7 +21,7 @@
             </span>
             <span class="css-truncate css-truncate-target d-block width-fit">
             {% if row.link is not none %}
-            <a class="" title="{{row.filename}}" href="{{row.link}}">{{row.filename}}</a>
+            <a class="" title="{{row.filename}}" href="{% if info.single_page %}#{% endif %}{{row.link}}">{{row.filename}}</a>
             {% else %}
             {{row.filename}}
             {% endif %}

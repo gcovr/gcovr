@@ -275,45 +275,11 @@ def main(args=None):
             )
             sys.exit(EXIT_CMDLINE_ERROR)
 
-    if options.html_tab_size < 1:
-        LOGGER.error("value of --html-tab-size= should be greater 0.")
+    try:
+        gcovr_formats.validate_options(options)
+    except RuntimeError as exc:
+        LOGGER.error(str(exc))
         sys.exit(EXIT_CMDLINE_ERROR)
-
-    if options.html_details and options.html_nested:
-        LOGGER.error("--html-details and --html-nested can not be used together.")
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    potential_html_output = (
-        (options.html and options.html.value)
-        or (options.html_details and options.html_details.value)
-        or (options.html_nested and options.html_nested.value)
-        or (options.output and options.output.value)
-    )
-    if options.html_details and not potential_html_output:
-        LOGGER.error(
-            "a named output must be given, if the option --html-details\n" "is used."
-        )
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    if options.html_nested and not potential_html_output:
-        LOGGER.error(
-            "a named output must be given, if the option --html-nested\n" "is used."
-        )
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    if options.html_self_contained is False and not potential_html_output:
-        LOGGER.error(
-            "can only disable --html-self-contained when a named output is given."
-        )
-        sys.exit(EXIT_CMDLINE_ERROR)
-
-    if options.gcov_objdir is not None:
-        if not os.path.exists(options.gcov_objdir):
-            LOGGER.error(
-                "Bad --gcov-object-directory option.\n"
-                "\tThe specified directory does not exist."
-            )
-            sys.exit(EXIT_CMDLINE_ERROR)
 
     options.starting_dir = os.path.abspath(os.getcwd())
     options.root_dir = os.path.abspath(options.root)

@@ -256,14 +256,87 @@ class HtmlHandler(BaseHandler):
                     "Control whether the HTML report bundles resources like CSS styles. "
                     "Self-contained reports can be sent via email, "
                     "but conflict with the Content Security Policy of some web servers. "
-                    "Defaults to self-contained reports unless --html-details is used."
+                    "Defaults to self-contained reports unless --html-details or "
+                    "--html-nested is used without --html-single-page."
                 ),
                 action="store_const",
                 default=None,
                 const=True,
                 const_negate=False,
             ),
+            GcovrConfigOption(
+                "html_single_page",
+                ["--html-single-page"],
+                group="output_options",
+                choices=["static", "js-enabled"],
+                nargs="?",
+                const="js-enabled",
+                default=None,
+                help=(
+                    "Use one single html output file containing all data in the "
+                    "specified mode. If mode is 'js-enabled' (default) and javascript "
+                    "is possible the page is interactive like the normal report. "
+                    "If mode is 'static' all files are shown at once."
+                ),
+            ),
         ]
+
+    def validate_options(self) -> None:
+        if self.options.html_tab_size < 1:
+            raise RuntimeError("value of --html-tab-size= should be greater 0.")
+
+        if self.options.html_details and self.options.html_nested:
+            raise RuntimeError(
+                "--html-details and --html-nested can not be used together."
+            )
+
+        html_output = None
+        if self.options.html and self.options.html.value:
+            html_output = self.options.html.value
+        elif self.options.html_details and self.options.html_details.value:
+            html_output = self.options.html_details.value
+        elif self.options.html_nested and self.options.html_nested.value:
+            html_output = self.options.html_nested.value
+        elif self.options.output and self.options.output.value:
+            html_output = self.options.output.value
+
+        if self.options.html_details and not html_output:
+            raise RuntimeError(
+                "a named output must be given, if the option --html-details is used."
+            )
+
+        if self.options.html_nested and not html_output:
+            raise RuntimeError(
+                "a named output must be given, if the option --html-nested is used."
+            )
+
+        if (
+            html_output == "-"
+            and not self.options.html_single_page
+            and (self.options.html_details or self.options.html_nested)
+        ):
+            raise RuntimeError(
+                "detailed reports can only be printed to STDOUT as --html-single-page."
+            )
+
+        if self.options.html_single_page and not (
+            self.options.html_details or self.options.html_nested
+        ):
+            raise RuntimeError(
+                "option --html-details or --html-nested is needed, if the option --html-single-page is used."
+            )
+
+        if self.options.html_self_contained is False and not html_output:
+            raise RuntimeError(
+                "can only disable --html-self-contained when a named output is given."
+            )
+
+        if (
+            self.options.html_self_contained is False
+            and html_output == "-"
+            and not self.options.html_single_page
+        ):
+            raise RuntimeError("only self contained reports can be printed to STDOUT")
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
         from .write import write_report

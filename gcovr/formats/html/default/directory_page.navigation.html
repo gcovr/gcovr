@@ -1,4 +1,4 @@
 {# -*- engine: jinja -*- #}
-{% if info.link_function_list %}
-<a href="{{ FUNCTIONS_FNAME }}">List of functions</a>
+{%  if info.link_function_list %}
+<a href="{% if info.single_page %}#{% endif %}{{ FUNCTIONS_FNAME }}"{% if info.single_page == "js-enabled" %} class="js-disabled-hidden"{% endif %}>List of functions</a>
 {%- endif %}

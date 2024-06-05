@@ -8,9 +8,14 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
+{% if info.single_page %}
+{%  set anchor_prefix = html_filename + "|" %}
+{% else %}
+{%  set anchor_prefix = '' %}
+{% endif %}
 {% for entry in function_list %}
     <tr>
-      {#- #}<td><a href="#l{{ entry['line'] }}">{{ entry["name"] }} (line {{ entry["line"] }})</a></td>
+      {#- #}<td><a href="#{{ anchor_prefix }}l{{ entry['line'] }}">{{ entry["name"] }} (line {{ entry["line"] }})</a></td>
       {#- #}<td>
                 {%- if entry["excluded"] %}excluded
                 {%- else %}
