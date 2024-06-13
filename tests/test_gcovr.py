@@ -364,6 +364,12 @@ def pytest_generate_tests(metafunc):
                     name == "gcc-abspath" and (IS_CLANG or CC_REFERENCE_VERSION < 8),
                     reason="Option -fprofile-abs-path is supported since gcc-8",
                 ),
+                pytest.mark.xfail(
+                    name == "coexisting_object_directories"
+                    and IS_MACOS
+                    and not IS_CLANG,
+                    reason="There are compiler errors from include of iostream",
+                ),
             ]
 
             collected_params.append(
