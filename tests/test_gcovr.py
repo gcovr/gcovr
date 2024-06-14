@@ -365,7 +365,17 @@ def pytest_generate_tests(metafunc):
                     reason="Option -fprofile-abs-path is supported since gcc-8",
                 ),
                 pytest.mark.xfail(
-                    name in ["coexisting_object_directories", "cmake_oos"]
+                    name
+                    in [
+                        "cmake_oos",
+                        "cmake_oos_ninja",
+                        "coexisting_object_directories-from_build_dir",
+                        "coexisting_object_directories-from_build_dir-without_search_dir",
+                        "coexisting_object_directories-from_build_dir-without_object_dir",
+                        "coexisting_object_directories-from_root_dir",
+                        "coexisting_object_directories-from_root_dir-without_search_dir",
+                        "coexisting_object_directories-from_root_dir-without_object_dir",
+                    ]
                     and IS_MACOS
                     and CC_REFERENCE == "gcc-13",
                     reason="There are compiler errors from include of iostream",
