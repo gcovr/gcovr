@@ -275,7 +275,8 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           env_vars: OS,PYTHON
-          fail_ci_if_error: true
+          # The upload process is often failing on MacOs.
+          fail_ci_if_error: ${{ ! startsWith(matrix.os, 'macos-') }}
           disable_search: true
           plugins: pycoverage
           files: ./coverage.xml
