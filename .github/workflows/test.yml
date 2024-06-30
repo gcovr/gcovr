@@ -223,6 +223,9 @@ jobs:
           verbose: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Expose GitHub Runtime for Docker cache
+        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
+        uses: crazy-max/ghaction-github-runtime@v3
       - name: Generate documentation
         if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
         run: |
@@ -276,6 +279,8 @@ jobs:
           python -m pip install --upgrade pip
           python3 -m pip install nox requests
       - uses: actions/checkout@v4
+      - name: Expose GitHub Runtime for Docker cache
+        uses: crazy-max/ghaction-github-runtime@v3
       - name: Build Docker
         run: |
           python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"

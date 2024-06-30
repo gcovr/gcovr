@@ -530,11 +530,35 @@ def docker_build_compiler_clang(session: nox.Session) -> None:
 def docker_build_compiler(session: nox.Session, version: str) -> None:
     """Build the docker container for a specific GCC version."""
     set_environment(session, version)
+    container_id = docker_container_id(session, version)
+    cache_options = []
+    if "GITHUB_ACTIONS" in os.environ:
+        session.log(
+            "Create a builder because the default on doesn't support the gha cache"
+        )
+        session.run(
+            "docker",
+            "buildx",
+            "create",
+            "--name",
+            "gha-container",
+            "--driver=docker-container",
+            "--driver-opt=default-load=true",
+            external=True,
+        )
+        cache_options += [
+            "--builder=gha-container",
+            "--cache-to",
+            f"type=gha,mode=max,scope={container_id}",
+            "--cache-from",
+            f"type=gha,scope={container_id}",
+        ]
     session.run(
         "docker",
         "build",
+        *cache_options,
         "--tag",
-        docker_container_id(session, version),
+        container_id,
         "--build-arg",
         f"DOCKER_OS={docker_container_os(session)}",
         "--build-arg",
