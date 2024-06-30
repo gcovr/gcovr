@@ -320,7 +320,9 @@ def upload_wheel(session: nox.Session) -> None:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    session.install("pyinstaller~=5.13.2")
+    session.install(
+        "pyinstaller~=6.8.0" if platform.system() == "Darwin" else "pyinstaller~=5.13.2"
+    )
     # This is needed if the virtual env is reused
     session.run("pip", "uninstall", "gcovr")
     # Do not install interactive to get the module resolved

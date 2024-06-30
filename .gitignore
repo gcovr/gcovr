@@ -4,6 +4,8 @@ __pycache__
 
 # nox virtual environments
 /.nox*/
+# User virtual environment
+/.venv/
 
 # Packages
 /gcovr.egg
