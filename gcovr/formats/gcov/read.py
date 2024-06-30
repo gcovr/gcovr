@@ -118,7 +118,7 @@ def read_report(options: Options) -> CovData:
 def find_existing_gcov_files(
     search_path: str, exclude_dirs: List[re.Pattern]
 ) -> List[str]:
-    """Find .gcov and .json.gz files under the given search path."""
+    """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
         LOGGER.debug(f"Using given file {search_path}")
         gcov_files = [search_path]
