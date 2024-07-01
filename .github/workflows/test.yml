@@ -122,12 +122,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup environment
         run: |
           # Enable coverage for specific target configurations
           case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
             ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
-            windows-2019/gcc-8/3.12)   USE_COVERAGE=true ;;
+            windows-2019/gcc-8/3.12)  USE_COVERAGE=true ;;
             macos-12/gcc-13/3.12)     USE_COVERAGE=true ;;
             macos-12/gcc/3.8)         USE_COVERAGE=true ;;
             *)                        USE_COVERAGE=false ;;
@@ -138,6 +139,8 @@ jobs:
           echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
 
         shell: bash
+
+      # Setup Ubuntu
       - name: Install build commands, GCC and libxml2 (Linux)
         if: ${{ startsWith(matrix.os,'ubuntu-') }}
         run: |
@@ -148,16 +151,20 @@ jobs:
             ${{ matrix.gcc }} \
             $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/') \
             libxml2-utils
-          sudo apt-get clean
+
+      # Setup Windows
       - name: Install msys with GCC (Windows)
         if: ${{ startsWith(matrix.os,'windows-') }}
         uses: msys2/setup-msys2@v2
         with:
           install: gcc make
+          cache: true
       - name: Install ninja (Windows)
         if: ${{ startsWith(matrix.os,'windows-') }}
         run: |
           choco install ninja
+
+      # Setup MacOS
       - name: Install ninja and libxml2 (MacOs)
         if: ${{ startsWith(matrix.os,'macos-') }}
         run: |
@@ -166,23 +173,31 @@ jobs:
           brew update
           brew install ninja
           brew install libxml2
+
+      # Setup python
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
+        shell: bash
       - name: Cache pip
         uses: actions/cache@v4
         with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
+          path: ${{ steps.pip-cache.outputs.dir }}
           # Look to see if there is a cache hit for the corresponding requirements file
-          key: ${{ runner.os }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
+          key: ${{ matrix.os }}-python${{ matrix.python-version }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
+            ${{ matrix.os }}-pip-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python3 -m pip install nox requests
+
+      # Run tests
       - name: Lint files
         run: |
           nox --non-interactive --session lint
@@ -208,6 +223,9 @@ jobs:
           verbose: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Expose GitHub Runtime for Docker cache
+        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
+        uses: crazy-max/ghaction-github-runtime@v3
       - name: Generate documentation
         if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
         run: |
@@ -261,6 +279,8 @@ jobs:
           python -m pip install --upgrade pip
           python3 -m pip install nox requests
       - uses: actions/checkout@v4
+      - name: Expose GitHub Runtime for Docker cache
+        uses: crazy-max/ghaction-github-runtime@v3
       - name: Build Docker
         run: |
           python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
