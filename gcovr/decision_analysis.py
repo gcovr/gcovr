@@ -17,6 +17,8 @@
 #
 # ****************************************************************************
 
+# cspell:ignore ault
+
 import logging
 import re
 from typing import List
@@ -195,7 +197,7 @@ class DecisionParser:
         if not (_is_a_branch_statement(code) or _is_a_loop(code)):
             return
 
-        # check if a branch exists (prevent misdetection caused by inaccurante parsing)
+        # check if a branch exists (prevent misdetection caused by inaccurate parsing)
         if line_coverage and len(line_coverage.branches.items()) > 0:
             if (
                 _is_a_loop(code)
@@ -214,7 +216,7 @@ class DecisionParser:
                         line_coverage.branches[keys[1]].count,
                     )
                 else:
-                    # it's a compplex decision with more than 2 branches. No accurate detection possible
+                    # it's a complex decision with more than 2 branches. No accurate detection possible
                     # Set the decision to uncheckable
                     line_coverage.decision = DecisionCoverageUncheckable()
                     LOGGER.debug(f"Uncheckable decision at line {lineno}")

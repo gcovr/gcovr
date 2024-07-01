@@ -180,7 +180,7 @@ def find_config_name(root: str, filename: str):
 
 
 def load_config(partial_options) -> Iterable[ConfigEntry]:
-    """Load a configfile if configured or found by default names"""
+    """Load a config file if configured or found by default names"""
     filename = getattr(partial_options, "config", None)
     if filename is not None:
         with open(filename, encoding="UTF-8") as buf:
@@ -249,7 +249,7 @@ def main(args=None):
             LOGGER.error(f"value of {option_medium}= should not be zero.")
             sys.exit(EXIT_CMDLINE_ERROR)
 
-        # Inherit the defaults from the global covarage values if not set
+        # Inherit the defaults from the global coverage values if not set
         if postfix:
             if getattr(options, key_medium) is None:
                 setattr(

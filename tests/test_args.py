@@ -593,7 +593,7 @@ def test_html_injection_via_json(capsys, tmp_path):
     import markupsafe
 
     script = '<script>alert("pwned")</script>'
-    jsondata = {
+    json_data = {
         "gcovr/format_version": JSON_FORMAT_VERSION,
         "files": [
             {"file": script, "functions": [], "lines": []},
@@ -603,8 +603,8 @@ def test_html_injection_via_json(capsys, tmp_path):
 
     tempfile = tmp_path / "injection.json"
 
-    with tempfile.open("w+") as jsonfile:
-        json.dump(jsondata, jsonfile)
+    with tempfile.open("w+") as json_file:
+        json.dump(json_data, json_file)
 
     c = capture(capsys, ["-a", str(tempfile), "--html"])
 
@@ -619,7 +619,7 @@ def test_import_valid_cobertura_file(tmp_path):
     from gcovr.coverage import FileCoverage
 
     testfile = "/path/to/source/code.cpp"
-    xmldata = f"""<?xml version='1.0' encoding='UTF-8'?>
+    xml_data = f"""<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 7.1">
   <sources>
@@ -659,7 +659,7 @@ def test_import_valid_cobertura_file(tmp_path):
     testfile = os.path.abspath(testfile)
     tempfile = tmp_path / "valid_cobertura.xml"
     with tempfile.open("w+") as fp:
-        fp.write(xmldata)
+        fp.write(xml_data)
 
     filename = str(tempfile)
     opts = merge_options_and_set_defaults(
@@ -668,26 +668,26 @@ def test_import_valid_cobertura_file(tmp_path):
     covdata = read_reports(opts)
     assert covdata is not None
     assert testfile in covdata
-    fcov: FileCoverage = covdata[testfile]
-    assert len(fcov.lines) == 10
+    f_cov: FileCoverage = covdata[testfile]
+    assert len(f_cov.lines) == 10
     for line, count, branches in [
         (7, 1, None),
         (9, 3, None),
         (16, 0, None),
         (13, 2, [1, 0]),
     ]:
-        assert fcov.lines[line].count == count
+        assert f_cov.lines[line].count == count
         if branches is not None:
-            assert len(fcov.lines[line].branches) == len(branches)
+            assert len(f_cov.lines[line].branches) == len(branches)
             for branch_idx, branch_count in enumerate(branches):
-                assert fcov.lines[line].branches[branch_idx].count == branch_count
+                assert f_cov.lines[line].branches[branch_idx].count == branch_count
 
 
 def test_import_corrupt_cobertura_file(caplog, tmp_path):
-    xmldata = "weiuh wliecsdfsef"
+    xml_data = "Invalid XML content"
     tempfile = tmp_path / "corrupt_cobertura.xml"
     with tempfile.open("w+") as fp:
-        fp.write(xmldata)
+        fp.write(xml_data)
 
     c = log_capture(caplog, ["--cobertura-add-tracefile", str(tempfile)])
     message = c.record_tuples[0]
@@ -697,7 +697,7 @@ def test_import_corrupt_cobertura_file(caplog, tmp_path):
 
 
 def test_import_cobertura_file_with_invalid_line(caplog, tmp_path):
-    xmldata = """<?xml version='1.0' encoding='UTF-8'?>
+    xml_data = """<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 7.1">
   <sources>
@@ -710,7 +710,7 @@ def test_import_cobertura_file_with_invalid_line(caplog, tmp_path):
           <methods/>
           <lines>
             <line number="3" hits="3" branch="false"/>
-            <line number="asdas" branch="true" condition-coverage="100% (2/2)" />
+            <line number="NoNumber" branch="true" condition-coverage="100% (2/2)" />
             <line number="18" hits="2" branch="false"/>
           </lines>
         </class>
@@ -721,7 +721,7 @@ def test_import_cobertura_file_with_invalid_line(caplog, tmp_path):
     """
     tempfile = tmp_path / "cobertura_invalid_line.xml"
     with tempfile.open("w+") as fp:
-        fp.write(xmldata)
+        fp.write(xml_data)
 
     c = log_capture(
         caplog, ["--cobertura-add-tracefile", str(tempfile), "--filter", "."]

@@ -17,6 +17,8 @@
 #
 # ****************************************************************************
 
+# cspell:ignore getpreferredencoding getfixture caplog
+
 from __future__ import annotations
 from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
@@ -129,7 +131,7 @@ def argument_parser_setup(parser: ArgumentParser, default_group):
         if opt.type is not None:
             kwargs["type"] = opt.type
 
-        # We only want to set dest and required for non-positionals.
+        # We only want to set dest and required for non-positional.
         if opt.flags:
             kwargs["dest"] = opt.name
             kwargs["required"] = opt.required  # only meaningful for flags
@@ -401,7 +403,7 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "Force colored logging, this is the default for a terminal."
             " Is also set if environment variable FORCE_COLOR is present."
-            " Has presedence over --no-color."
+            " Has precedence over --no-color."
         ),
         action="store_true",
     ),

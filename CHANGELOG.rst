@@ -202,7 +202,7 @@ New features and notable changes:
 - New :option:`--calls` to report call coverage: function calls invoked/total. (:issue:`666`)
 - New nox session to generate a portable application with pyinstaller, see :ref:`standalone application`. (:issue:`661`)
 - Print a warning if root directory contains symlinks. (:issue:`652`)
-- Change :option:`--keep` when calling gcov internaly. (:issue:`703`)
+- Change :option:`--keep` when calling gcov internal. (:issue:`703`)
 - Allow annotations for never executed branches. (:issue:`711`)
 - Add function merge mode for same function defined in different lines. (:issue:`700`)
 - Update link to gcovr documentation in HTML report to point to the documentation of the used version. (:issue:`723`)
@@ -251,7 +251,7 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
-- Remove function coverage from sonarcube report. (:issue:`591`)
+- Remove function coverage from sonarqube report. (:issue:`591`)
 - Fix parallel processing of gcov data. (:issue:`592`)
 - Better diagnostics when dealing with corrupted input files. (:issue:`593`)
 - Accept metadata lines without values (introduced in gcc-11). (:issue:`601`)
@@ -623,7 +623,7 @@ Internal changes:
   the name/location of the gcov executable. The command line option
   overrides the environment variable, which overrides the default 'gcov'.
 - Adding an empty "<methods/>" block to <classes/> in the XML output: this
-  makes out XML complient with the Cobertura DTD. (#3951)
+  makes out XML compliant with the Cobertura DTD. (#3951)
 - Allow the GCOV environment variable to override the default 'gcov'
   executable.  The default is to search the PATH for 'gcov' if the GCOV
   environment variable is not set. (#3950)
@@ -666,7 +666,7 @@ Internal changes:
   correctly on systems with non-English locales (#3898, #3902).
 - Segregate warning/error information onto the stderr stream (#3924)
 - Miscellaneous (Python 3.x) portability fixes
-- Added the master svn revision number as part of the verson identifier
+- Added the master svn revision number as part of the version identifier
 
 
 2.3.1 (6 January 2012)

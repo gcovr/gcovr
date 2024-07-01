@@ -33,10 +33,10 @@ you have to place your pathnames with wildcards in double quotation marks::
 If you want to merge coverage reports generated in different `--root` directories you
 can use the :option:`--json-base` to get the same root directory for all reports.
 
-If you have same function names defined on different line the default behaviour is to abort.
+If you have same function names defined on different line the default behavior is to abort.
 With the :option:`--merge-mode-functions` you can change this:
 
-- ``strict``: Abort if same function is defined on a different line (old behaviour).
+- ``strict``: Abort if same function is defined on a different line (old behavior).
 - ``merge-use-line-0``: Allow same function on different lines, in this case use line 0.
 - ``merge-use-line-min``: Allow same function on different lines, in this case the minimum line.
 - ``merge-use-line-max``: Allow same function on different lines, in this case use maximum line.

@@ -101,14 +101,14 @@ class _ExclusionRangeWarnings:
     ... baz // GCOV_EXCL_STOP
     ... "GCOVR_EXCL_START"
     ... '''
-    >>> caplog = getfixture('caplog')
+    >>> caplog = getfixture("caplog")
     >>> caplog.clear()
     >>> _ = apply_exclusion_markers(  # doctest: +NORMALIZE_WHITESPACE
-    ...     FileCoverage('example.cpp'),
+    ...     FileCoverage("example.cpp"),
     ...     lines=source.strip().splitlines(),
     ...     exclude_lines_by_pattern=None,
     ...     exclude_branches_by_pattern=None,
-    ...     exclude_pattern_prefix='[GL]COVR?')
+    ...     exclude_pattern_prefix=r"[GL]COVR?")
     >>> for message in caplog.record_tuples:
     ...     print(f"{message[1]}: {message[2]}")
     30: mismatched coverage exclusion flags.
@@ -171,7 +171,7 @@ def _process_exclusion_marker(
 
     Header is a marker name like LCOV or GCOVR.
 
-    START flags are added to the exlusion stack
+    START flags are added to the exclusion stack
     STOP flags remove a marker from the exclusion stack
     """
 

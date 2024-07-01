@@ -767,7 +767,7 @@ def _parse_line(
                 key, value = source_code.split(":", 1)
                 return _MetadataLine(key, value.strip())
             else:
-                # Add a syntethic metadata with no value
+                # Add a synthetic metadata with no value
                 return _MetadataLine(source_code, None)
 
         if hits_str == "-":

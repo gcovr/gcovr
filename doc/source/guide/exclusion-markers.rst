@@ -11,7 +11,7 @@ You can exclude parts of your code from coverage metrics.
     all following lines (including the current line) are ignored
     until a ``GCOVR_EXCL_STOP`` marker is encountered.
 -   If ``GCOVR_EXCL_BR_*`` markers are used the same exclusion rules
-    apply as above, with the difference beeing that they are only taken
+    apply as above, with the difference being that they are only taken
     into account for branch coverage.
 
 Instead of ``GCOVR_*``,

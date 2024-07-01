@@ -34,7 +34,7 @@ must behave somewhat like an addition operator:
 * associative: order of merging must not matter,
   so that ``merge(a, merge(b, c))`` must match ``merge(merge(a, b), c)``.
 * identity element: there must be an empty element,
-  so that ``merge(a, empty)`` and ``merge(emtpy, a)`` and ``a`` all match.
+  so that ``merge(a, empty)`` and ``merge(empty, a)`` and ``a`` all match.
   However, the empty state might be implied by “parent dict does not contain an entry”,
   or must contain matching information like the same line number.
 

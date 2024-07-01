@@ -3,7 +3,7 @@ all: testcase
 GCOVR ?= gcovr
 
 testcase:
-	$(CXX) -fprofile-arcs -ftest-coverage callcov.c -o testcase
+	$(CXX) -fprofile-arcs -ftest-coverage main.c -o testcase
 
 run: html json
 

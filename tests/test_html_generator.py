@@ -23,7 +23,7 @@ import os
 
 import pytest
 
-from gcovr.formats.html.write import _make_short_sourcename
+from gcovr.formats.html.write import _make_short_source_filename
 
 CurrentDrive = os.getcwd()[0:1]
 
@@ -59,11 +59,11 @@ CurrentDrive = os.getcwd()[0:1]
     ],
 )
 @pytest.mark.skipif(platform.system() != "Windows", reason="only for Windows")
-def test_windows__make_short_sourcename(outfile, source_filename):
+def test_windows_make_short_source_filename(outfile, source_filename):
     outfile = outfile.replace("C:", CurrentDrive)
     source_filename = source_filename.replace("C:", CurrentDrive)
 
-    result = _make_short_sourcename(outfile, source_filename)
+    result = _make_short_source_filename(outfile, source_filename)
     logging.info("=" * 100)
     logging.info(outfile)
     logging.info(source_filename)

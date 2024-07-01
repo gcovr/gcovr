@@ -78,22 +78,22 @@ def read_report(options: Options) -> CovData:
     # Get coverage data
     with Workers(
         options.gcov_parallel,
-        lambda: {"covdata": dict(), "toerase": set(), "options": options},
+        lambda: {"covdata": dict(), "to_erase": set(), "options": options},
     ) as pool:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
         for file_ in datafiles:
             pool.add(process_file, file_)
         contexts = pool.wait()
 
-    toerase = set()
+    to_erase = set()
     covdata = dict()
     for context in contexts:
         covdata = merge_covdata(
             covdata, context["covdata"], get_merge_mode_from_options(options)
         )
-        toerase.update(context["toerase"])
+        to_erase.update(context["to_erase"])
 
-    for filepath in toerase:
+    for filepath in to_erase:
         if os.path.exists(filepath):
             os.remove(filepath)
 
@@ -191,9 +191,11 @@ def process_gcov_data(
         gcda_fname,
         root_dir=options.root_dir,
         starting_dir=options.starting_dir,
-        obj_dir=None
-        if options.gcov_objdir is None
-        else os.path.abspath(options.gcov_objdir),
+        obj_dir=(
+            None
+            if options.gcov_objdir is None
+            else os.path.abspath(options.gcov_objdir)
+        ),
         current_dir=current_dir,
     )
 
@@ -294,7 +296,7 @@ def guess_source_file_name_via_aliases(
         return fname
 
     # @latk-2018: The original code is *very* insistent
-    # on returning the inital guess. Why?
+    # on returning the initial guess. Why?
     return initial_fname
 
 
@@ -349,7 +351,7 @@ def guess_source_file_name_heuristics(
 
 
 def process_datafile(
-    filename: str, covdata: CovData, options: Options, toerase: Set[str]
+    filename: str, covdata: CovData, options: Options, to_erase: Set[str]
 ) -> None:
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
@@ -357,7 +359,7 @@ def process_datafile(
         filename (path): the path to a gcda or gcno file
         covdata (dict, mutable): the global covdata dictionary
         options (object): the configuration options namespace
-        toerase (set, mutable): files that should be deleted later
+        to_erase (set, mutable): files that should be deleted later
 
     Returns:
         Nothing.
@@ -376,7 +378,7 @@ def process_datafile(
 
     Ideally, the build process only runs gcc from *one* directory
     and the user can provide this directory as the ``--gcov-object-directory``.
-    If it exists, we try that path as a workdir,
+    If it exists, we try that path as a work dir,
     If the path is relative, it is resolved relative to the gcovr cwd and the
     object file location.
 
@@ -429,7 +431,7 @@ def process_datafile(
 
         if options.gcov_delete:
             if not abs_filename.endswith("gcno"):
-                toerase.add(abs_filename)
+                to_erase.add(abs_filename)
 
         if done:
             return
@@ -773,7 +775,7 @@ def select_gcov_files_from_stdout(
 #  Process Already existing gcov files
 #
 def process_existing_gcov_file(
-    filename: str, covdata: CovData, options: Options, toerase: List[str]
+    filename: str, covdata: CovData, options: Options, to_erase: List[str]
 ) -> None:
     filtered, excluded = apply_filter_include_exclude(
         filename, options.gcov_filter, options.gcov_exclude
@@ -790,7 +792,7 @@ def process_existing_gcov_file(
     process_gcov_data(filename, None, covdata, options)
 
     if not options.gcov_keep:
-        toerase.add(filename)
+        to_erase.add(filename)
 
 
 def apply_filter_include_exclude(

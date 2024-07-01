@@ -18,7 +18,7 @@ NOTE: Filters can also be specified in the gcovr configuration file: :ref:`confi
 
 These options take filters.
 A filter is a regular expression that matches a file path.
-Because filters are regexes,
+Because filters are regular expressions,
 you will have to escape “special” characters with a backslash ``\``.
 
 Always use forward slashes ``/`` as path separators, even on Windows:
@@ -34,7 +34,7 @@ or if defined in a configuration file to the directory of the file.
 
 Examples of relative filters:
 
--   ``--filter subdir/`` matches only that subdirectory
+-   ``--filter sub-dir/`` matches only that subdirectory
 
 -   ``--filter '\.\./src/'`` matches a sibling directory ``../src``.
     But because a dot ``.`` matches any character in a regex,

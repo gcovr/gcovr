@@ -5,16 +5,16 @@
 
 set -eu
 
-rootdir="$(realpath "$(dirname "$0")")"
+root_dir="$(realpath "$(dirname "$0")")"
 
 build () {
-	cmake -G "Ninja" -DCMAKE_BUILD_TYPE=PROFILE -S ${rootdir} -B ${rootdir}/build/$1 -D ODD=$2
-	cmake --build ${rootdir}/build/$1
+	cmake -G "Ninja" -DCMAKE_BUILD_TYPE=PROFILE -S ${root_dir} -B ${root_dir}/build/$1 -D ODD=$2
+	cmake --build ${root_dir}/build/$1
 }
 #
 # run coverage data
 run () {
-	${rootdir}/build/$1/parallel_call
+	${root_dir}/build/$1/parallel_call
 }
 
 # calling gcovr from project root dir
@@ -23,9 +23,9 @@ run () {
 generate_coverage_ok_1 () {
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
-		--object-directory ${rootdir}/build/$1 \
-		--output ${rootdir}/coverage.$1.txt \
-		${rootdir}/build/$1
+		--object-directory ${root_dir}/build/$1 \
+		--output ${root_dir}/coverage.$1.txt \
+		${root_dir}/build/$1
 }
 
 # calling gcovr from project root dir
@@ -36,8 +36,8 @@ generate_coverage_ok_1 () {
 generate_coverage_fail_11 () {
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
-		--object-directory ${rootdir}/build/$1 \
-		--output ${rootdir}/coverage.$1.txt
+		--object-directory ${root_dir}/build/$1 \
+		--output ${root_dir}/coverage.$1.txt
 }
 
 # calling gcovr from project root dir
@@ -47,8 +47,8 @@ generate_coverage_fail_11 () {
 generate_coverage_fail_12 () {
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
-		--output ${rootdir}/coverage.$1.txt \
-		${rootdir}/build/$1
+		--output ${root_dir}/coverage.$1.txt \
+		${root_dir}/build/$1
 }
 
 # calling gcovr from project build dir
@@ -56,13 +56,13 @@ generate_coverage_fail_12 () {
 # specifying root dir
 # specifying search dir
 generate_coverage_ok_2 () {
-	cd ${rootdir}/build/$1
+	cd ${root_dir}/build/$1
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
-		--object-directory ${rootdir}/build/$1 \
-		--output ${rootdir}/coverage.$1.txt \
-		--root ${rootdir} \
-		${rootdir}/build/$1
+		--object-directory ${root_dir}/build/$1 \
+		--output ${root_dir}/coverage.$1.txt \
+		--root ${root_dir} \
+		${root_dir}/build/$1
 	cd -
 }
 
@@ -72,12 +72,12 @@ generate_coverage_ok_2 () {
 # not specifying search dir
 # => object files from other build directories are processed.
 generate_coverage_fail_21 () {
-	cd ${rootdir}/build/$1
+	cd ${root_dir}/build/$1
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
-		--object-directory ${rootdir}/build/$1 \
-		--output ${rootdir}/coverage.$1.txt \
-		--root ${rootdir}
+		--object-directory ${root_dir}/build/$1 \
+		--output ${root_dir}/coverage.$1.txt \
+		--root ${root_dir}
 	cd -
 }
 
@@ -87,12 +87,12 @@ generate_coverage_fail_21 () {
 # specifying search dir
 # => race conditions when triggering several gcovr calls.
 generate_coverage_fail_22 () {
-	cd ${rootdir}/build/$1
+	cd ${root_dir}/build/$1
 	gcovr \
 		--gcov-executable /usr/bin/gcov \
-		--output ${rootdir}/coverage.$1.txt \
-		--root ${rootdir} \
-		${rootdir}/build/$1
+		--output ${root_dir}/coverage.$1.txt \
+		--root ${root_dir} \
+		${root_dir}/build/$1
 	cd -
 }
 
@@ -101,13 +101,13 @@ compare () {
 	for v in a b c ; do diff \
 		--brief \
 		--ignore-matching-lines="^Directory:" \
-		${rootdir}/reference/gcc-12/coverage.$v.txt \
-		${rootdir}/coverage.$v.txt ; done
+		${root_dir}/reference/gcc-12/coverage.$v.txt \
+		${root_dir}/coverage.$v.txt ; done
 }
 
-cd ${rootdir}
+cd ${root_dir}
 rm -f coverage.?.txt
-rm -rf ${rootdir}/build
+rm -rf ${root_dir}/build
 
 for v in a c ; do build $v ON; done
 for v in b ; do build $v OFF; done

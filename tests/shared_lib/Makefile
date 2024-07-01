@@ -2,34 +2,34 @@ CFLAGS=-fprofile-arcs -ftest-coverage
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 ifeq ($(BASE_OS),Darwin)
-  DYNLIB_EXT  = dylib
+  DYNAMIC_LIB_EXT  = dylib
   CFLAGS     += -fPIC
-  SOFLAGS    += -dynamiclib -undefined dynamic_lookup
+  SHARED_OBJECT_FLAGS    += -dynamiclib -undefined dynamic_lookup
 endif
 ifeq ($(BASE_OS),CYGWIN_NT)
-  DYNLIB_EXT = dll
+  DYNAMIC_LIB_EXT = dll
   #DEFINES   += -mno-cygwin
-  #SOFLAGS   += -shared -wl,--kill-at
-  SOFLAGS    += -shared
+  #SHARED_OBJECT_FLAGS   += -shared -wl,--kill-at
+  SHARED_OBJECT_FLAGS    += -shared
 endif
 ifneq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
-  DYNLIB_EXT = dll
-  SOFLAGS    += -shared
+  DYNAMIC_LIB_EXT = dll
+  SHARED_OBJECT_FLAGS    += -shared
 endif
 ifeq ($(BASE_OS),Linux)
-  DYNLIB_EXT  = so
+  DYNAMIC_LIB_EXT  = so
   CFLAGS     += -fPIC
-  SOFLAGS    += -shared
+  SHARED_OBJECT_FLAGS    += -shared
 endif
 
-ifndef DYNLIB_EXT
+ifndef DYNAMIC_LIB_EXT
   $(error ERROR: platform $(BASE_OS) not supported)
 endif
 
 all:
 	mkdir obj
 	$(CXX) $(CFLAGS) -c lib/lib.cpp -o obj/libs.o
-	$(CXX) $(CFLAGS) $(SOFLAGS) obj/libs.o -o lib/libs.$(DYNLIB_EXT)
+	$(CXX) $(CFLAGS) $(SHARED_OBJECT_FLAGS) obj/libs.o -o lib/libs.$(DYNAMIC_LIB_EXT)
 	$(MAKE) -C testApp
 
 run: txt cobertura html sonarqube jacoco coveralls
@@ -72,6 +72,6 @@ coveralls: coverage.json
 
 clean:
 	rm -rf obj
-	rm -f lib/*.$(DYNLIB_EXT)
+	rm -f lib/*.$(DYNAMIC_LIB_EXT)
 	rm -f coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json
 	$(MAKE) -C testApp clean

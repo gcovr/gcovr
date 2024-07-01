@@ -10,7 +10,7 @@ run: txt lcov cobertura html sonarqube jacoco coveralls
 coverage.json:
 	./testcase
 	# use a relative filter here
-	# if testcase.exe exists (windows) use wrong case to check caseinsensitive filter
+	# if testcase.exe exists (windows) use wrong case to check case insensitive filter
 	$(GCOVR) -e '$(if $(wildcard ./testcase.exe),File1.cpp,file1.cpp)'  --json-pretty --json $@
 
 txt: coverage.json

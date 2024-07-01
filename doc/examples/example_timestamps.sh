@@ -29,7 +29,7 @@ gcovr --timestamp 'rfc3339:2021-12-27 13:05:27'
 # The following commands can only be performed if
 # A) we are in a git repository, and
 # B) git is installed.
-# The use of "command -v" is a Posixly-correct way to check for existence of a
+# The use of "command -v" is a Posix-correct way to check for existence of a
 # command, unlike the "which", "type", or "hash" commands.
 if test -d ../../.git && command -v git >/dev/null; then
 
