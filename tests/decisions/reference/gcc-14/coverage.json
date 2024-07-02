@@ -8,224 +8,224 @@
                     "execution_count": 2,
                     "lineno": 32,
                     "name": "checkBiggerBoth(int)",
-                    "returned_count": 2
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 20,
                     "name": "checkBiggerFalse(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 8,
                     "name": "checkBiggerTrue(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 246,
                     "name": "checkCompactBranch1False(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 241,
                     "name": "checkCompactBranch1True(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 256,
                     "name": "checkCompactBranch2False(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 80.0,
                     "execution_count": 1,
                     "lineno": 251,
                     "name": "checkCompactBranch2True(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 66.7,
                     "execution_count": 1,
                     "lineno": 128,
                     "name": "checkComplexFalse(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 291,
                     "name": "checkComplexForLoop(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 83.0,
+                    "blocks_percent": 83.3,
                     "execution_count": 1,
                     "lineno": 116,
                     "name": "checkComplexTrue(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 315,
                     "name": "checkDoWhileLoop(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 50.0,
                     "execution_count": 1,
                     "lineno": 140,
                     "name": "checkElseIf1(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 66.7,
                     "execution_count": 1,
                     "lineno": 156,
                     "name": "checkElseIf2(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 66.7,
                     "execution_count": 1,
                     "lineno": 172,
                     "name": "checkElseIf3(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 80,
                     "name": "checkEqualFalse(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 68,
                     "name": "checkEqualTrue(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 281,
                     "name": "checkForLoop(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 80.0,
                     "execution_count": 1,
                     "lineno": 329,
                     "name": "checkInterpreter(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 104,
                     "name": "checkNotEqualFalse(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 92,
                     "name": "checkNotEqualTrue(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 56,
                     "name": "checkSmallerFalse(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 44,
                     "name": "checkSmallerTrue(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 188,
                     "name": "checkSwitch1(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 209,
                     "name": "checkSwitch2(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 225,
                     "name": "checkSwitch3(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 266,
                     "name": "checkTernary1False(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 261,
                     "name": "checkTernary1True(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 66.7,
                     "execution_count": 1,
                     "lineno": 276,
                     "name": "checkTernary2False(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 83.0,
+                    "blocks_percent": 83.3,
                     "execution_count": 1,
                     "lineno": 271,
                     "name": "checkTernary2True(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 301,
                     "name": "checkWhileLoop(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
-                    "blocks_percent": 95.0,
+                    "blocks_percent": 95.1,
                     "execution_count": 1,
                     "lineno": 360,
                     "name": "main",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 353,
                     "name": "verify_issue_679(bool)",
-                    "returned_count": 2
+                    "returned_count": null
                 }
             ],
             "lines": [
@@ -238,13 +238,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -280,13 +280,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -322,13 +322,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -364,13 +364,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -406,13 +406,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -448,13 +448,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -490,13 +490,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -532,13 +532,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -574,13 +574,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -616,37 +616,37 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -682,37 +682,37 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -748,13 +748,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -778,13 +778,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -820,13 +820,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -850,13 +850,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -892,13 +892,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -922,13 +922,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -964,19 +964,19 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -1037,19 +1037,19 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -1116,19 +1116,19 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -1195,13 +1195,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -1225,13 +1225,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -1255,25 +1255,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -1295,25 +1295,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -1359,25 +1359,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -1396,25 +1396,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -1439,13 +1439,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 5,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
@@ -1487,25 +1487,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 5,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 5,
+                            "blockno": 1,
                             "count": 5,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 5,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
@@ -1551,13 +1551,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 5,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
@@ -1623,13 +1623,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 4,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -1707,13 +1707,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -1749,13 +1749,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -1773,13 +1773,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 5,
+                            "blockno": 1,
                             "count": 10,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 5,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
@@ -1917,25 +1917,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         },
                         {
-                            "blockno": 21,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 21,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -2051,27 +2051,27 @@
                     "execution_count": 1,
                     "lineno": 5,
                     "name": "SwitchTestIssue783::SwitchTestIssue783()",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 7,
                     "name": "SwitchTestIssue783::checkSwitch()",
-                    "returned_count": 1
+                    "returned_count": null
                 }
             ],
             "lines": [
                 {
                     "branches": [
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -2109,7 +2109,7 @@
                     "execution_count": 1,
                     "lineno": 17,
                     "name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)",
-                    "returned_count": 1
+                    "returned_count": null
                 }
             ],
             "lines": [
@@ -2122,25 +2122,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false

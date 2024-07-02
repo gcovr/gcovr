@@ -1,4 +1,16 @@
 TN:GCOVR report
+SF:tests/source_from_pipe/<stdin>
+FN:3,main
+FNDA:1,main
+FNF:1
+FNH:1
+BRF:0
+BRH:0
+DA:3,1,d41d8cd98f00b204e9800998ecf8427e
+DA:5,1,d41d8cd98f00b204e9800998ecf8427e
+LH:2
+LF:2
+end_of_record
 SF:tests/source_from_pipe/code.cpp
 VER:f6c5b94686e43537860a1364ddf21730
 FN:3,foo1(int)
@@ -7,10 +19,10 @@ FN:12,foo2(int)
 FNDA:1,foo2(int)
 FNF:2
 FNH:2
-BRDA:4,2,0,-
-BRDA:4,2,1,1
-BRDA:13,2,0,1
-BRDA:13,2,1,-
+BRDA:4,1,0,-
+BRDA:4,1,1,1
+BRDA:13,1,0,1
+BRDA:13,1,1,-
 BRF:4
 BRH:2
 DA:3,1,d202d6f6b151ca991538c418a08707bd

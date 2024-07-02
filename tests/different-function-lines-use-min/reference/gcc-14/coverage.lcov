@@ -5,8 +5,8 @@ FN:3,foo(int)
 FNDA:2,foo(int)
 FNF:1
 FNH:1
-BRDA:7,2,0,-
-BRDA:7,2,1,2
+BRDA:7,1,0,-
+BRDA:7,1,1,2
 BRF:2
 BRH:1
 DA:3,1,bb4aae5e443f387349849f9a5a813e31

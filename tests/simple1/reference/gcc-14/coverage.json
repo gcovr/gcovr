@@ -8,21 +8,21 @@
                     "execution_count": 1,
                     "lineno": 7,
                     "name": "foo(int)",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 80.0,
                     "execution_count": 1,
                     "lineno": 16,
                     "name": "main",
-                    "returned_count": 1
+                    "returned_count": null
                 },
                 {
                     "blocks_percent": 0.0,
                     "execution_count": 0,
                     "lineno": 3,
                     "name": "not_called()",
-                    "returned_count": 0
+                    "returned_count": null
                 }
             ],
             "lines": [
@@ -47,13 +47,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -90,13 +90,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false

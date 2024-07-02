@@ -4,11 +4,11 @@
             "file": "main.cpp",
             "functions": [
                 {
-                    "blocks_percent": 44.0,
+                    "blocks_percent": 44.4,
                     "execution_count": 1,
                     "lineno": 4,
                     "name": "main",
-                    "returned_count": 0
+                    "returned_count": null
                 }
             ],
             "lines": [
@@ -21,25 +21,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -58,13 +58,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 6,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 6,
+                            "blockno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false

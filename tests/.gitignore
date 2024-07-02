@@ -35,6 +35,7 @@ build/
 *.gcda
 *.gcno
 *.gcov
+*.gcov.json.gz
 .tox
 nosetests.xml
 testcase
