@@ -37,7 +37,7 @@ _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
 _WHITESPACE_PATTERN = re.compile(r"\s+")
 
-_ONE_LINE_BRANCH = re.compile(r"^[^;]+{(?:.*;)*.*}$")
+_ONE_LINE_BRANCH = re.compile(r"^[^;]+{(?:[^;]+;)*.*}$")
 
 # helper functions
 
