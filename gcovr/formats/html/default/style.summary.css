@@ -100,7 +100,7 @@ table.legend span.coverage-high
 
 table.legend span.coverage-unknown,
 table.coverage td.coverage-unknown,
-table.file-list td.coverage-unknow
+table.file-list td.coverage-unknown
 {
     background-color: var(--unknown_color) !important;
 }

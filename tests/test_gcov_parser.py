@@ -129,6 +129,7 @@ branch  2 taken 0% (throw)
 # This example is adapted from #226
 # <https://github.com/gcovr/gcovr/issues/226#issuecomment-368226650>
 # It is stripped down to the minimum useful testcase.
+# cspell:disable
 GCOV_8_NAUTILUS = r"""
         -:    0:Source:../src/nautilus-freedesktop-dbus.c
         -:    0:Graph:/home/user/nautilus/_build/src/nautilus@sta/nautilus-freedesktop-dbus.c.gcno
@@ -184,6 +185,7 @@ call    4 never executed
         -:   53:  baz();  // above line tests that sections can be terminated
     #####:   54:qux();
 """
+# cspell:enable
 
 # This example is taken from the GCC 8 Gcov documentation:
 # <https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html>
@@ -299,8 +301,8 @@ GCOV_8_EXCLUDE_THROW_BRANCHES = dict(
 )
 
 
-@pytest.mark.parametrize("sourcename", sorted(GCOV_8_SOURCES))
-def test_gcov_8(capsys, sourcename):
+@pytest.mark.parametrize("source_filename", sorted(GCOV_8_SOURCES))
+def test_gcov_8(capsys, source_filename):
     """Verify support for GCC 8 .gcov files.
 
     GCC 8 introduces two changes:
@@ -309,10 +311,10 @@ def test_gcov_8(capsys, sourcename):
         are show broken down for each specialization
     """
 
-    source = GCOV_8_SOURCES[sourcename]
+    source = GCOV_8_SOURCES[source_filename]
     lines = source.splitlines()
-    expected_uncovered_lines = GCOV_8_EXPECTED_UNCOVERED_LINES[sourcename]
-    expected_uncovered_branches = GCOV_8_EXPECTED_UNCOVERED_BRANCHES[sourcename]
+    expected_uncovered_lines = GCOV_8_EXPECTED_UNCOVERED_LINES[source_filename]
+    expected_uncovered_branches = GCOV_8_EXPECTED_UNCOVERED_BRANCHES[source_filename]
 
     coverage, lines = parse_coverage(
         filename="tmp.cpp",
@@ -324,7 +326,9 @@ def test_gcov_8(capsys, sourcename):
         coverage,
         lines=lines,
         options=ExclusionOptions(
-            exclude_throw_branches=GCOV_8_EXCLUDE_THROW_BRANCHES.get(sourcename, False),
+            exclude_throw_branches=GCOV_8_EXCLUDE_THROW_BRANCHES.get(
+                source_filename, False
+            ),
         ),
     )
 
@@ -390,7 +394,7 @@ def test_unknown_tags(caplog, ignore_errors):
 
 
 def test_pathologic_codeline(caplog):
-    source = r": 7:haha"
+    source = r": 7:xxx"
     lines = source.splitlines()
 
     with pytest.raises(UnknownLineType):
@@ -405,7 +409,7 @@ def test_pathologic_codeline(caplog):
     assert message0[1] == logging.WARNING
     warning_phrases1 = [
         "Unrecognized GCOV output",
-        ": 7:haha",
+        ": 7:xxx",
     ]
     assert contains_phrases(message0[2], *warning_phrases1)
 
@@ -502,10 +506,10 @@ def test_trailing_function_tag():
     )
 
     assert coverage.functions.keys() == {"example"}
-    fcov = coverage.functions["example"]
-    assert list(fcov.count.keys()) == [3]  # previous lineno + 1
-    assert fcov.name == "example"
-    assert fcov.count[3] == 17  # number of calls
+    f_cov = coverage.functions["example"]
+    assert list(f_cov.count.keys()) == [3]  # previous lineno + 1
+    assert f_cov.name == "example"
+    assert f_cov.count[3] == 17  # number of calls
 
 
 @pytest.mark.parametrize(
@@ -899,7 +903,7 @@ def test_pathologic_threads(threads):
     mutable = []
     queue_full = Event()
     exc_raised = Event()
-    with pytest.raises(Exception) as excinfo:
+    with pytest.raises(Exception) as exc_info:
         with Workers(
             threads,
             lambda: {
@@ -924,7 +928,7 @@ def test_pathologic_threads(threads):
             pool.wait()
 
     # Outer level catches correct exception
-    assert excinfo.value.args[0] == "Number == 0"
+    assert exc_info.value.args[0] == "Number == 0"
 
     # At most (threads - 1) appends can take place as the
     # first job throws an exception and every other thread

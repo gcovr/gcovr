@@ -20,7 +20,7 @@ txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt .
 
 # this test also includes a separator "--"
-# to ensure that nargs=? arguments can be terminated
+# to ensure that optional argument can be terminated
 lcov: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.lcov --lcov -- .
 

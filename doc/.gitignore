@@ -3,4 +3,4 @@ examples/program-example.*
 examples/gcovr.out
 examples/example-*.html
 examples/example-*.css
-build/*
+build/

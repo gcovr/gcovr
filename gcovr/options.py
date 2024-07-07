@@ -119,7 +119,7 @@ class OutputOrDefault:
             self.abspath = value
 
             if self.is_dir:
-                # Now mormalize and add the trailing slash after creating the directory.
+                # Now normalize and add the trailing slash after creating the directory.
                 if not os.path.isdir(value):
                     try:
                         os.mkdir(value)
@@ -222,7 +222,7 @@ class GcovrConfigOption:
 
     Gcovr can be extensively configured through a series of options,
     representing these options as a simple class object allows them to be
-    portabilty re-used in multiple configuration schemes. This is implemented
+    portability re-used in multiple configuration schemes. This is implemented
     in a way similar to how options are defined in argparse. The converter
     keyword argument is expected to return a valid conversion of a string
     value or throw an error.
@@ -370,8 +370,8 @@ class GcovrConfigOption:
     def __repr__(self):
         r"""String representation of instance.
 
-        >>> GcovrConfigOption('foo', ['-f', '--foo'], help="fooify.")
-        GcovrConfigOption('foo', [-f, --foo], ..., help='fooify. Config key(s): foo.', ...)
+        >>> GcovrConfigOption('foo', ['-f', '--foo'], help="foo text.")
+        GcovrConfigOption('foo', [-f, --foo], ..., help='foo text. Config key(s): foo.', ...)
         """
         name = self.name
         flags = ", ".join(self.flags)

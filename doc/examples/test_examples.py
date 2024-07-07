@@ -27,7 +27,7 @@ from tests.test_gcovr import SCRUBBERS, assert_equals
 
 IS_MACOS = platform.system() == "Darwin"
 
-datadir = os.path.dirname(os.path.abspath(__file__))
+data_dirname = os.path.dirname(os.path.abspath(__file__))
 
 
 class Example(object):
@@ -48,14 +48,14 @@ def is_compiler(actual: str, *expected: str) -> bool:
 def find_test_cases():
     if platform.system() == "Windows":
         return
-    for script in glob.glob(datadir + "/*.sh"):
+    for script in glob.glob(data_dirname + "/*.sh"):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
         for format in "txt cobertura csv json html".split():
             if format == "html" and is_compiler(os.getenv("CC"), "gcc-5", "gcc-6"):
                 continue
-            baseline = "{datadir}/{name}.{ext}".format(
-                datadir=datadir,
+            baseline = "{data_dirname}/{name}.{ext}".format(
+                data_dirname=data_dirname,
                 name=name,
                 ext="xml" if format == "cobertura" else format,
             )
@@ -78,16 +78,16 @@ def test_example(example):
     with open(baseline_file, newline="") as f:
         baseline = scrub(f.read())
 
-    startdir = os.getcwd()
-    os.chdir(datadir)
+    start_dirname = os.getcwd()
+    os.chdir(data_dirname)
     subprocess.run(cmd)
     with open(baseline_file, newline="") as f:
         current = scrub(f.read())
     current = scrub(current)
 
     assert_equals(baseline_file, baseline, "<STDOUT>", current, encoding="utf8")
-    os.chdir(startdir)
+    os.chdir(start_dirname)
 
 
 def test_timestamps_example():
-    subprocess.check_call(["sh", "example_timestamps.sh"], cwd=datadir)
+    subprocess.check_call(["sh", "example_timestamps.sh"], cwd=data_dirname)

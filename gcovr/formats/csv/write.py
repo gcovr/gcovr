@@ -30,7 +30,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce gcovr csv report"""
 
     # Open output without translation of line endings.
-    # The CSV writer uses as default line enedings "\r\n" (according to
+    # The CSV writer uses as default line endings "\r\n" (according to
     # https://datatracker.ietf.org/doc/html/rfc4180)
     with open_text_for_writing(output_file, "coverage.csv", newline="") as fh:
         keys = sort_coverage(

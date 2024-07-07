@@ -104,6 +104,7 @@ def get_gcc_versions() -> Tuple[str]:
         if shutil.which(command):
             output = subprocess.check_output([command, "--version"]).decode()
 
+            # cspell:ignore Linaro xctoolchain
             # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
             #   gcc-5 (Ubuntu/Linaro 5.5.0-12ubuntu1) 5.5.0 20171010
             #   Copyright (C) 2015 Free Software Foundation, Inc.

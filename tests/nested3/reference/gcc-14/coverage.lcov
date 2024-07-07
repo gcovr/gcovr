@@ -66,11 +66,11 @@ LH:3
 LF:5
 end_of_record
 SF:tests/nested3/subdir/A/file3.cpp
-VER:2676d9d3e59bfb8cf028df06bf1cc9fe
-FN:1,fourbar()
-FNDA:1,fourbar()
-FN:8,fourbar_()
-FNDA:0,fourbar_()
+VER:17749ac4040d8e71ff948fceb4e522d9
+FN:1,four_bar()
+FNDA:1,four_bar()
+FN:8,four_bar_()
+FNDA:0,four_bar_()
 FNF:2
 FNH:1
 BRDA:11,2,0,-
@@ -116,7 +116,7 @@ LH:0
 LF:1
 end_of_record
 SF:tests/nested3/subdir/B/main.cpp
-VER:8051e1c52cab743a41a6bbe9822a917a
+VER:c95232e53ac0253b638414c18fd6ba6c
 FN:12,main
 FNDA:1,main
 FNF:1
@@ -126,7 +126,7 @@ BRH:0
 DA:13,1,c18608b3fe9a00042c41d97d382d1e07
 DA:14,1,a16b1758a01395f320d0ffe89a85defc
 DA:15,1,86e212ad9e6f4e2f6aeed5ebd8f2d4b2
-DA:16,1,50ff38672dfb3881235944c1cbc313ff
+DA:16,1,ac4921f7e0ce489b8e00d83bb18e8474
 DA:17,1,537738ff9ea76bce1fbf48f1f7ec6a56
 DA:18,1,1e069fab499b18f31b84dea8d0b9f13d
 DA:20,1,c26ba559a5f34d46a49fafed87946fb7

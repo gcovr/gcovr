@@ -4,7 +4,7 @@
     "name": "Debian",
     // Build from Dockerfile. More info: https://containers.dev/guide/dockerfile
     "build": {
-        // Path is relataive to the devcontainer.json file.
+        // Path is relative to the devcontainer.json file.
         "dockerfile": "../admin/Dockerfile.qa",
         "args": {
             "DOCKER_OS": "mcr.microsoft.com/devcontainers/base:jammy",
@@ -17,6 +17,7 @@
     "customizations": {
         "vscode": {
             "extensions": [
+                // cspell:disable
                 "DotJoshJohnson.xml",
                 "trond-snekvik.simple-rst",
                 "ms-python.vscode-pylance",
@@ -24,6 +25,7 @@
                 "EditorConfig.EditorConfig",
                 "sergelamikhov.lcov-lang",
                 "streetsidesoftware.code-spell-checker"
+                // cspell:enable
             ]
         }
     }

@@ -17,6 +17,8 @@
 #
 # ****************************************************************************
 
+# cspell:ignore xmlcharrefreplace
+
 import io
 import logging
 import os
@@ -112,7 +114,7 @@ def user_templates():
         try:
             with open(template, "rb") as f:
                 contents = f.read().decode("utf-8")
-        # This exception can only occure if the file gets inaccesable while gcovr is running.
+        # This exception can only occur if the file gets inaccessible while gcovr is running.
         except Exception:  # pragma: no cover
             pass
 
@@ -170,7 +172,7 @@ class NullHighlighting:
         return lambda code: [line.rstrip() for line in code.split("\n")]
 
 
-class PygmentHighlighting:
+class PygmentsHighlighting:
     def __init__(self, style: str):
         self.formatter = None
         try:
@@ -214,7 +216,7 @@ def get_formatter(options):
         .render()
     )
     return (
-        PygmentHighlighting(highlight_style)
+        PygmentsHighlighting(highlight_style)
         if options.html_syntax_highlighting
         else NullHighlighting()
     )
@@ -383,7 +385,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             if os.path.normpath(f) == os.path.normpath(options.root_dir):
                 cdata_sourcefile[f] = output_file
             else:
-                cdata_sourcefile[f] = _make_short_sourcename(
+                cdata_sourcefile[f] = _make_short_source_filename(
                     output_file, filtered_fname.rstrip(os.sep)
                 )
                 if options.html_single_page:
@@ -396,9 +398,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     # when source files share a common prefix.
     root_directory = ""
     if len(files) > 1:
-        commondir = commonpath(files)
-        if commondir != "":
-            root_directory = commondir
+        common_dir = commonpath(files)
+        if common_dir != "":
+            root_directory = common_dir
     else:
         dir, _ = os.path.split(filtered_fname)
         if dir != "":
@@ -750,9 +752,9 @@ def get_directory_data(
     if relative_path == ".":
         relative_path = ""
     directory_data: Dict[str, Any] = {
-        "dirname": cdata_sourcefile[cdata.dirname]
-        if cdata_fname[cdata.dirname]
-        else "/",  # f"/{relative_path}"
+        "dirname": (
+            cdata_sourcefile[cdata.dirname] if cdata_fname[cdata.dirname] else "/"
+        ),  # f"/{relative_path}"
     }
 
     sorted_files = sort_coverage(
@@ -812,20 +814,20 @@ def get_file_data(
     functions: Dict[Tuple[str], Dict[str, Any]] = {}
     # Only use demangled names (containing a brace)
     for name in sorted(cdata.functions.keys()):
-        fcdata = cdata.functions[name]
-        for lineno in sorted(fcdata.count.keys()):
-            fdata: Dict[str, Any] = {}
-            fdata["name"] = name
-            fdata["filename"] = cdata_fname[filename]
-            fdata["html_filename"] = os.path.basename(cdata_sourcefile[filename])
-            fdata["line"] = lineno
-            fdata["count"] = fcdata.count[lineno]
-            fdata["returned"] = fcdata.returned[lineno]
-            fdata["blocks"] = fcdata.blocks[lineno]
-            fdata["excluded"] = fcdata.excluded[lineno]
+        f_cdata = cdata.functions[name]
+        for lineno in sorted(f_cdata.count.keys()):
+            f_data: Dict[str, Any] = {}
+            f_data["name"] = name
+            f_data["filename"] = cdata_fname[filename]
+            f_data["html_filename"] = os.path.basename(cdata_sourcefile[filename])
+            f_data["line"] = lineno
+            f_data["count"] = f_cdata.count[lineno]
+            f_data["returned"] = f_cdata.returned[lineno]
+            f_data["blocks"] = f_cdata.blocks[lineno]
+            f_data["excluded"] = f_cdata.excluded[lineno]
 
-            file_data["function_list"].append(fdata)
-            functions[(fdata["name"], fdata["filename"], fdata["line"])] = fdata
+            file_data["function_list"].append(f_data)
+            functions[(f_data["name"], f_data["filename"], f_data["line"])] = f_data
 
     def coverage_class(percent: Optional[float]) -> str:
         return coverage_to_class(percent, medium_threshold, high_threshold)
@@ -1045,12 +1047,11 @@ def source_row_decision(
     }
 
 
-def _make_short_sourcename(output_file: str, filename: str) -> str:
+def _make_short_source_filename(output_file: str, filename: str) -> str:
     r"""Make a short-ish file path for --html-detail output.
 
     Args:
-        output_file (str): The --output path.
-        defaultdefault_filename_name (str): The -default output name.
+        output_file (str): The output path.
         filename (str): Path from root to source code.
     """
 
@@ -1059,7 +1060,7 @@ def _make_short_sourcename(output_file: str, filename: str) -> str:
         output_suffix = ".html"
 
     filename = filename.replace(os.sep, "/")
-    sourcename = (
+    source_filename = (
         ".".join(
             (
                 output_prefix,
@@ -1069,4 +1070,4 @@ def _make_short_sourcename(output_file: str, filename: str) -> str:
         )
         + output_suffix
     )
-    return sourcename
+    return source_filename

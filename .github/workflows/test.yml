@@ -67,10 +67,23 @@ jobs:
           fi
           exit 0
 
+  spellchecker:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install spellchecker
+        run:
+          npm install -g cspell@latest
+      - name: Run spellchecker
+        run: |
+          cspell
+
+
   build:
     runs-on: ${{ matrix.os }}
 
-    needs: [milestone-check, changelog-check]
+    needs: [milestone-check, changelog-check, spellchecker]
 
     env:
       FORCE_COLOR: "1"
@@ -257,7 +270,7 @@ jobs:
 
   run-docker:
     runs-on: ubuntu-22.04
-    needs: [milestone-check, changelog-check]
+    needs: [milestone-check, changelog-check, spellchecker]
 
     strategy:
       fail-fast: false

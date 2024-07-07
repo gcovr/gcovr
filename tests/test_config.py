@@ -17,6 +17,9 @@
 #
 # ****************************************************************************
 
+# cspell:ignore testopt
+
+
 import io
 import re
 
@@ -124,7 +127,7 @@ def test_unknown_keys():
 
 
 @pytest.mark.parametrize(
-    "testspec",
+    "test_spec",
     [
         ("type=bool", "testopt-bool", "testopt_bool", True, False, True),
         ("store_true", "delete-gcov-files", "gcov_delete", True, False, True),
@@ -139,9 +142,9 @@ def test_unknown_keys():
         ("store_const", "testopt-const", "testopt_const", 17, 3, True),
         ("nargs=?", "testopt-nargs", "testopt_nargs", 49, 11, False),
     ],
-    ids=lambda testspec: testspec[0],
+    ids=lambda test_spec: test_spec[0],
 )
-def test_option_with_boolean_values(testspec):
+def test_option_with_boolean_values(test_spec):
     r"""
     Boolean values need special consideration.
 
@@ -161,7 +164,7 @@ def test_option_with_boolean_values(testspec):
     but try to parse non-boolean values.
     """
 
-    _, key, target, when_yes, when_no, test_other = testspec
+    _, key, target, when_yes, when_no, test_other = test_spec
 
     all_options = GCOVR_CONFIG_OPTIONS + [
         GcovrConfigOption(
@@ -314,7 +317,7 @@ class Ref(object):
 
 
 @pytest.mark.parametrize(
-    "testspec",
+    "test_spec",
     [
         ("both are empty", [None, None], "the default"),
         ("left value", [Ref("from left"), None], "from left"),
@@ -322,10 +325,10 @@ class Ref(object):
         ("left and right", [Ref("from left"), Ref("from right")], "from right"),
         ("left value but right None", [Ref("from left"), Ref(None)], None),
     ],
-    ids=lambda testspec: testspec[0],
+    ids=lambda test_spec: test_spec[0],
 )
-def test_namespace_merging_overwriting(testspec):
-    _, input_values, result = testspec
+def test_namespace_merging_overwriting(test_spec):
+    _, input_values, result = test_spec
 
     all_options = GCOVR_CONFIG_OPTIONS + [
         GcovrConfigOption(
@@ -344,7 +347,7 @@ def test_namespace_merging_overwriting(testspec):
 
 
 @pytest.mark.parametrize(
-    "testspec",
+    "test_spec",
     [
         ("both are empty", [None, None], None),
         ("value left", [Ref(["from left"]), None], ["from left"]),
@@ -355,10 +358,10 @@ def test_namespace_merging_overwriting(testspec):
             ["from left", "from right"],
         ),
     ],
-    ids=lambda testspec: testspec[0],
+    ids=lambda test_spec: test_spec[0],
 )
-def test_namespace_merging_appending(testspec):
-    _, input_values, result = testspec
+def test_namespace_merging_appending(test_spec):
+    _, input_values, result = test_spec
 
     all_options = GCOVR_CONFIG_OPTIONS + [
         GcovrConfigOption(

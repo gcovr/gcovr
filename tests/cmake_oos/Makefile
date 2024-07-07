@@ -4,7 +4,7 @@
 #   cd build
 #   cmake ..
 #   make
-#   gcovrtest
+#   testcase
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 ifeq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
@@ -23,7 +23,7 @@ all:
 run: txt cobertura html sonarqube jacoco coveralls
 
 coverage.json:
-	cd build && ./gcovrtest
+	cd build && ./testcase
 	$(GCOVR) --json-pretty --json coverage.json
 
 txt: coverage.json
