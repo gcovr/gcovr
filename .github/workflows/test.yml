@@ -227,7 +227,7 @@ jobs:
           name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
           path: tests/diff.zip
       - name: Upload coverage to Codecov
-        if: ${{ (env.USE_COVERAGE == 'true') && (env.GITHUB_REPOSITORY == 'gcovr/gcovr') }}
+        if: ${{ (env.USE_COVERAGE == 'true') && (github.repository == 'gcovr/gcovr') }}
         uses: codecov/codecov-action@v4
         with:
           env_vars: OS,PYTHON
@@ -307,7 +307,7 @@ jobs:
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
       - name: Upload coverage to Codecov
-        if: ${{ (env.USE_COVERAGE == 'true') && (env.GITHUB_REPOSITORY == 'gcovr/gcovr') }}
+        if: ${{ (github.repository == 'gcovr/gcovr') && (env.USE_COVERAGE == 'true') }}
         uses: codecov/codecov-action@v4
         with:
           env_vars: OS,PYTHON
@@ -320,7 +320,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload LCOV coverage to Codecov
-        if: ${{ (env.GITHUB_REPOSITORY == 'gcovr/gcovr') && ((matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10')) }}
+        if: ${{ (github.repository == 'gcovr/gcovr') && ((matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10')) }}
         uses: codecov/codecov-action@v4
         with:
           env_vars: OS,PYTHON
