@@ -4,7 +4,10 @@
 name: Test
 
 on:
+  workflow_dispatch: # For manual triggering
   push:
+    branches:
+      - main
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
@@ -211,7 +214,7 @@ jobs:
           name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
           path: tests/diff.zip
       - name: Upload coverage to Codecov
-        if: ${{ env.USE_COVERAGE == 'true' }}
+        if: ${{ (env.USE_COVERAGE == 'true') && (env.GITHUB_REPOSITORY == 'gcovr/gcovr') }}
         uses: codecov/codecov-action@v4
         with:
           env_vars: OS,PYTHON
@@ -224,10 +227,10 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Expose GitHub Runtime for Docker cache
-        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
+        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-')) }}
         uses: crazy-max/ghaction-github-runtime@v3
       - name: Generate documentation
-        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-'))}}
+        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-')) }}
         run: |
           nox --non-interactive --session doc || exit 1
 
@@ -291,12 +294,11 @@ jobs:
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
       - name: Upload coverage to Codecov
-        if: ${{ env.USE_COVERAGE == 'true' }}
+        if: ${{ (env.USE_COVERAGE == 'true') && (env.GITHUB_REPOSITORY == 'gcovr/gcovr') }}
         uses: codecov/codecov-action@v4
         with:
           env_vars: OS,PYTHON
-          # The upload process is often failing on MacOs.
-          fail_ci_if_error: ${{ ! startsWith(matrix.os, 'macos-') }}
+          fail_ci_if_error: true
           disable_search: true
           plugins: pycoverage
           files: ./coverage.xml
@@ -305,7 +307,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload LCOV coverage to Codecov
-        if: ${{ (matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10') }}
+        if: ${{ (env.GITHUB_REPOSITORY == 'gcovr/gcovr') && ((matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10')) }}
         uses: codecov/codecov-action@v4
         with:
           env_vars: OS,PYTHON

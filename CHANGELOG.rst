@@ -37,6 +37,8 @@ Internal changes:
 - Fix scrubber for date in HTML test data. (:issue:`919`)
 - Add test with Python 3.12. (:issue:`924`)
 - Add gcc-14 to the test suite. (:issue:`923`)
+- Skip coverage upload if executed in a fork. (:issue:`930`)
+- Only execute on pipeline if pushed on main and add button to execute workflow manual. (:issue:`930`)
 
 7.2 (24 February 2024)
 ----------------------
