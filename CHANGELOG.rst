@@ -24,6 +24,8 @@ Bug fixes and small improvements:
 - Fix display filename in HTML report. (:issue:`920`)
 - Fix bundle of standalone executable with Python 3.12. (:issue:`924`)
 - Fix merging of function coverage data. (:issue:`925`)
+- Fix inefficient regular expression. (:issue:`933`)
+
 
 Documentation:
 
