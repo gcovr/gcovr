@@ -822,7 +822,6 @@ def get_file_data(
             f_data["html_filename"] = os.path.basename(cdata_sourcefile[filename])
             f_data["line"] = lineno
             f_data["count"] = f_cdata.count[lineno]
-            f_data["returned"] = f_cdata.returned[lineno]
             f_data["blocks"] = f_cdata.blocks[lineno]
             f_data["excluded"] = f_cdata.excluded[lineno]
 

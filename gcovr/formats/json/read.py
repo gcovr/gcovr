@@ -128,7 +128,6 @@ def _function_from_json(json_function: dict) -> FunctionCoverage:
         name=json_function["name"],
         lineno=json_function["lineno"],
         count=json_function["execution_count"],
-        returned=json_function["returned_count"],
         blocks=json_function["blocks_percent"],
         excluded=json_function.get("gcovr/excluded", False),
     )
