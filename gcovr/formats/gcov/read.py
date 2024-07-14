@@ -882,7 +882,7 @@ def run_gcov_and_process_files(
                             process_gcov_data(
                                 gcov_filename, filename, covdata, options, chdir
                             )
-                        elif gcov_filename.endswith(".json.gz"):
+                        elif gcov_filename.endswith(".gcov.json.gz"):
                             process_gcov_json_data(gcov_filename, covdata, options)
                         else:  # pragma: no cover
                             raise RuntimeError(
@@ -973,7 +973,7 @@ def process_existing_gcov_file(
 
     if filename.endswith(".gcov"):
         process_gcov_data(filename, None, covdata, options)
-    elif filename.endswith(".json.gz"):
+    elif filename.endswith(".gcov.json.gz"):
         process_gcov_json_data(filename, covdata, options)
     else:  # pragma: no cover
         raise RuntimeError(f"Unknown gcov output format {filename}.")
