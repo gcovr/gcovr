@@ -17,6 +17,8 @@
 #
 # ****************************************************************************
 
+# cspell:ignore addoption
+
 
 def pytest_addoption(parser):  # pragma: no cover
     parser.addoption(

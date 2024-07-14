@@ -196,7 +196,7 @@ is needed.
 
 -   Clone the git repository.
 
--   (Optional) Set up a virtualenv (e.g. with ``python3 -m venv my-venv``)
+-   (Optional) Set up a virtualenv (e.g. with ``python3 -m venv .venv``)
 
 -   Install gcovr in development mode, and install nox::
 
@@ -228,7 +228,7 @@ Path                    Description
 ======================= =======================================================
 ``/``                   project root
 ``/gcovr/``             the gcovr source code (Python module)
-``/gcovr/__main__.py``  command line interface + top-level behaviour
+``/gcovr/__main__.py``  command line interface + top-level behavior
 ``/gcovr/templates/``   HTML report templates
 ``/tests/``             unit tests + integration test corpus
 ``/noxfile.py``         Definition of tests tasks
@@ -291,7 +291,7 @@ Structure of integration tests
 Each project in the corpus
 contains a ``Makefile`` and a ``reference`` directory::
 
-   tests/sometest/
+   tests/some-test/
      reference/
      Makefile
      README
@@ -374,7 +374,7 @@ For example:
     # run only XML tests and do not remove generated files
     python3 -m nox --session tests -- -k 'xml' --skip_clean
 
-To update the refernce data for all compiler in one call see
+To update the reference data for all compiler in one call see
 :ref:`run tests with Docker <docker tests>`.
 
 When the currently generated output reports differ to the reference files

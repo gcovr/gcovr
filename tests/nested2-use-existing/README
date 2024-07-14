@@ -9,7 +9,7 @@ when you invoked the compiler.
 ./subdir/A/C/file5.cpp is built from ./subdir/A/C/
 ./subdir/A/C/D/file6.cpp is built from ./subdir/A/C/D/
 
-Exluding system headers coverage files, here's what we get running gcov
+Excluding system headers coverage files, here's what we get running gcov
 ./subdir/A/file7.cpp.gcov
 ./subdir/A/file1.cpp.gcov
 ./subdir/A/file4.cpp.gcov

@@ -98,7 +98,7 @@
                 null
             ],
             "name": "A/file3.cpp",
-            "source_digest": "2676d9d3e59bfb8cf028df06bf1cc9fe"
+            "source_digest": "17749ac4040d8e71ff948fceb4e522d9"
         },
         {
             "coverage": [
@@ -135,7 +135,7 @@
                 4
             ],
             "name": "B/main.cpp",
-            "source_digest": "8051e1c52cab743a41a6bbe9822a917a"
+            "source_digest": "c95232e53ac0253b638414c18fd6ba6c"
         }
     ]
 }

@@ -4,9 +4,12 @@
 name: Deploy
 
 on:
+  workflow_dispatch: # For manual triggering
   push:
+    branches:
+      - main
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [synchronize, reopened, edited]  # opened: If PR is created a 'opened' and a 'edited' is triggered
 
 jobs:
 

@@ -77,8 +77,8 @@ commands need to be in ``CMakeLists.txt``:
 
 .. include:: ../examples/CMakeLists.txt
     :code: cmake
-    :start-after: #BEGIN cmakecmds
-    :end-before: #END cmakecmds
+    :start-after: #BEGIN cmake_cmd
+    :end-before: #END cmake_cmd
 
 The ``--coverage`` compiler flag is an alternative to
 ``-fprofile-arcs -ftest-coverage`` for
@@ -160,4 +160,4 @@ To create a standalone application you need to install the test suite
 (see :ref:`test suite`). In this test suite you can build a standalone
 executable with the command ``python3 -m nox --session bundle_app``.
 The command creates the application ``build/gcovr`` and calls the
-executable whith each format to check if it's working correct.
+executable with each format to check if it's working correct.

@@ -17,6 +17,9 @@
 #
 # ****************************************************************************
 
+# cspell:ignore metafunc finput
+
+
 import glob
 import logging
 import os
@@ -175,7 +178,7 @@ def scrub_coveralls(contents: str) -> str:
     return contents
 
 
-def findtests(basedir):
+def find_tests(basedir):
     for f in sorted(os.listdir(basedir)):
         if not os.path.isdir(os.path.join(basedir, f)):
             continue
@@ -284,7 +287,7 @@ def pytest_generate_tests(metafunc):
         # Create an empty ZIP
         zipfile.ZipFile(diffs_zip, mode="w").close()
 
-    for name in findtests(basedir):
+    for name in find_tests(basedir):
         targets = parse_makefile_for_available_targets(
             os.path.join(basedir, name, "Makefile")
         )
@@ -300,11 +303,11 @@ def pytest_generate_tests(metafunc):
             )
 
         # check that all "run" targets are actually available
-        unresolved_prereqs = target_run.difference(targets)
-        if unresolved_prereqs:  # pragma: no cover
+        unresolved_prerequisite = target_run.difference(targets)
+        if unresolved_prerequisite:  # pragma: no cover
             raise ValueError(
                 "{}/Makefile target 'run' has unresolved prerequisite {}".format(
-                    name, unresolved_prereqs
+                    name, unresolved_prerequisite
                 )
             )
 
@@ -363,6 +366,22 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.xfail(
                     name == "gcc-abspath" and (IS_CLANG or CC_REFERENCE_VERSION < 8),
                     reason="Option -fprofile-abs-path is supported since gcc-8",
+                ),
+                pytest.mark.xfail(
+                    name
+                    in [
+                        "cmake_oos",
+                        "cmake_oos_ninja",
+                        "coexisting_object_directories-from_build_dir",
+                        "coexisting_object_directories-from_build_dir-without_search_dir",
+                        "coexisting_object_directories-from_build_dir-without_object_dir",
+                        "coexisting_object_directories-from_root_dir",
+                        "coexisting_object_directories-from_root_dir-without_search_dir",
+                        "coexisting_object_directories-from_root_dir-without_object_dir",
+                    ]
+                    and IS_MACOS
+                    and CC_REFERENCE == "gcc-13",
+                    reason="There are compiler errors from include of iostream",
                 ),
             ]
 

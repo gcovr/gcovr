@@ -3,7 +3,7 @@
 Frequently Asked Questions
 ==========================
 
-.. _lcov vs gcvor:
+.. _lcov vs gcovr:
 
 What is the difference between lcov and gcovr?
 ----------------------------------------------
@@ -97,7 +97,7 @@ With the :option:`gcovr --decisions` option,
 gcovr parses the source code to extract a ISO 26262 compliant metric
 for decision coverage. This metric can be interpreted as the branch coverage
 on C/C++-Level.
-While the feature is not always able to detect the decisions reliabily
+While the feature is not always able to detect the decisions reliably
 when the code is written very compact (uncheckable decisions will be marked),
 it provides a reliable tool for (i.e. MISRA-compliant) code
 in security-relevant situations.

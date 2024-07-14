@@ -12,9 +12,6 @@ coveralls*.json
 jacoco*.xml
 sonarqube*.xml
 
-# Ignore executables
-gcovrtest
-
 # CMake build directory
 build/
 
@@ -37,7 +34,6 @@ build/
 *.gcov
 *.gcov.json.gz
 .tox
-nosetests.xml
 testcase
 
 # Differences

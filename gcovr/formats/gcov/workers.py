@@ -68,7 +68,7 @@ locked_directory.global_object = LockedDirectories()
 
 def worker(queue, context, pool):
     """
-    Run work items from the queue until the sentinal
+    Run work items from the queue until the sentinel
     None value is hit
     """
     while True:

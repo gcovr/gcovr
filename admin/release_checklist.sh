@@ -4,7 +4,7 @@ set -eu
 # This is an automated release checklist. Call it to ensure that all known
 # mentions of the gcovr version have been updated to a target version.
 
-printerr() {
+print_err() {
     echo "$@" >&2
 }
 
@@ -29,8 +29,8 @@ while [[ "$#" -gt 0 ]]; do
             shift
             ;;
         -*)
-            printerr "unknown argument $1"
-            printerr "$usage"
+            print_err "unknown argument $1"
+            print_err "$usage"
             exit 1
             ;;
         *)
@@ -42,21 +42,21 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 if [[ -z "$target_version" || "$#" -ne 0 ]]; then
-    printerr "$usage"
+    print_err "$usage"
     exit 1
 fi
 
 ok=yes
 
 maybe_error() {
-    local iserr="$1"
+    local is_err="$1"
     shift
-    if [[ "$iserr" = yes ]]; then
+    if [[ "$is_err" = yes ]]; then
         ok=no
-        printerr "ERROR:" "$@"
+        print_err "ERROR:" "$@"
     else
         # ok stays unchanged
-        printerr "WARNING:" "$@"
+        print_err "WARNING:" "$@"
     fi
 }
 

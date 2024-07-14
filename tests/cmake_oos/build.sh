@@ -4,6 +4,6 @@ cd build
 cmake ..
 make
 
-gcovrtest
+testcase
 
 

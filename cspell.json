@@ -1,0 +1,202 @@
+{
+    "version": "0.2",
+    "files": [
+        "/**"
+    ],
+    "ignorePaths": [
+        "/.git/",
+        "/.gitbugtraq",
+        "/AUTHORS.txt",
+        "/doc/source/conf.py",
+        "/gcovr/formats/html/github/primer.css",
+        "/tests/*.dtd",
+        "/tests/*.xsd",
+        "/**/reference/**",
+        "/tests/html*-encoding-*/main.cpp",
+        "/**/requirements.txt"
+    ],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "enableGlobDot": true,
+    "words": [
+        "autoprogram",
+        "bdist",
+        "blockno",
+        "branchcoverage",
+        "branchno",
+        "bugtracker",
+        "callno",
+        "casefold",
+        "ccache",
+        "CFLAGS",
+        "choco",
+        "cobertura",
+        "codecov",
+        "codeline",
+        "Codespaces",
+        "colorlog",
+        "covclass",
+        "covdata",
+        "coverable",
+        "CPATH",
+        "CPLUS",
+        "CXXFLAGS",
+        "cygpath",
+        "datafiles",
+        "deadsnakes",
+        "demangled",
+        "Devcontainer",
+        "Devcontainers",
+        "dircov",
+        "distutils",
+        "epub",
+        "ERRORLEVEL",
+        "filecov",
+        "filelist",
+        "FIPS",
+        "fprofile",
+        "functioncov",
+        "gcda",
+        "gcno",
+        "gcov",
+        "gcovr",
+        "gitbugtraq",
+        "Gitter",
+        "Godbolt",
+        "googletest",
+        "gtest",
+        "Hashbang",
+        "iostream",
+        "jacoco",
+        "kcov",
+        "latk",
+        "lcov",
+        "LDFLAGS",
+        "levelname",
+        "linebranch",
+        "linecall",
+        "linecount",
+        "linecov",
+        "linedecision",
+        "Lukas",
+        "lxml",
+        "Makefiles",
+        "markupsafe",
+        "maxdepth",
+        "misdetection",
+        "MISRA",
+        "MSYS",
+        "noncode",
+        "noninteractive",
+        "noxfile",
+        "OBJC",
+        "objdir",
+        "oneline",
+        "OSTYPE",
+        "pathnames",
+        "POSIX",
+        "pycache",
+        "pycoverage",
+        "Pygments",
+        "pyinstaller",
+        "pypi",
+        "pyproject",
+        "pypy",
+        "pytest",
+        "pywin32",
+        "Quickstart",
+        "realpath",
+        "setuptools",
+        "sonarqube",
+        "stylesheet",
+        "Traceback",
+        "tracefile",
+        "venv",
+        "versionadded",
+        "versionchanged",
+        "virtualenv",
+        "yaxmldiff"
+    ],
+    "ignoreWords": [
+        "addgroup",
+        "addopts",
+        "bedrockio",
+        "buildx",
+        "caplog",
+        "capsys",
+        "cout",
+        "cstdlib",
+        "dylib",
+        "Emph",
+        "endl",
+        "esac",
+        "ftest",
+        "includecss",
+        "keil",
+        "kMGTPEZY",
+        "levelno",
+        "linenos",
+        "linkcss",
+        "logissue",
+        "mklink",
+        "posargs",
+        "Preproc",
+        "pthread",
+        "pushd",
+        "popd",
+        "pydevproject",
+        "Sandia",
+        "strerror",
+        "testcase",
+        "userdel",
+        "userid",
+        "uvision",
+        "WORKDIR"
+    ],
+    "ignoreRegExpList": [
+        // RST directives
+        "(?::[a-z]+:|\\.\\. [a-z]+::)",
+        // CLI options
+        "--[a-z0-9-]+",
+        // Defines in command line
+        " -D[^ ]+",
+        // GH actions
+        "uses: [^\\s]+/[^\\s]+@[^\\s]+"
+    ],
+    "import": [],
+    "languageSettings": [
+        {
+            "languageId": "python",
+            "ignoreRegExpList": [
+                // Python function calls with package
+                "[a-z0-9]+\\.[a-z0-9]+(?:\\(| =)",
+                // Python function call assignments
+                "= [a-z0-9]+\\(",
+                // Python named arguments
+                "(?:\\(| )[a-z0-9]+=",
+                // Regular expressions in python
+                "\\br\\\".+\\\""
+            ]
+        },
+        {
+            "languageId": "xml",
+            "ignoreRegExpList": [
+                // Tag names
+                "<[^ >]+",
+                // cspell:disable
+                // Clover attributes
+                " (?:covered[^=]+|ncloc)="
+                // cspell:enable
+            ]
+        },
+        {
+            "languageId": "css",
+            "ignoreWords": [
+                // cspell:disable
+                "functionslist",
+                "transy"
+                // cspell:enable
+            ]
+        }
+    ]
+}

@@ -10,7 +10,7 @@ all:
 run: txt cobertura html sonarqube jacoco coveralls
 
 coverage.json:
-	cd build && ./gcovrtest
+	cd build && ./testcase
 	$(GCOVR) --json-pretty --json coverage.json --gcov-object-directory=build
 
 txt: coverage.json
