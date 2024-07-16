@@ -46,6 +46,8 @@ version = gcovr.version.__version__
 # The full version, including alpha/beta/rc tags
 release = version
 
+# Define the canonical URL used on Read the Docs
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
 
 # -- General configuration ---------------------------------------------------
 
@@ -192,3 +194,11 @@ todo_include_todos = True
 
 # see http://www.sphinx-doc.org/en/master/ext/extlinks.html
 extlinks = {"issue": ("https://github.com/gcovr/gcovr/issues/%s", "#%s")}
+
+# -- Jinja2 template context ------------------------------------------
+
+# Tell Jinja2 templates the build is running on Read the Docs
+if os.environ.get("READTHEDOCS", "") == "True":
+    if "html_context" not in globals():
+        html_context = {}
+    html_context["READTHEDOCS"] = True

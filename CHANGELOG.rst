@@ -28,6 +28,8 @@ Bug fixes and small improvements:
 
 Documentation:
 
+- Update Sphinx config because of deprecated context injection from Read The Docs. (:issue:`936`)
+
 Internal changes:
 
 - Move tests to directory in the root. (:issue:`897`)
