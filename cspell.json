@@ -114,6 +114,7 @@
         "venv",
         "versionadded",
         "versionchanged",
+        "versionremoved",
         "virtualenv",
         "yaxmldiff"
     ],
