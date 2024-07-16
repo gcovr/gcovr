@@ -7,8 +7,7 @@
                     "blocks_percent": 44.0,
                     "execution_count": 1,
                     "lineno": 4,
-                    "name": "main",
-                    "returned_count": 0
+                    "name": "main"
                 }
             ],
             "lines": [
@@ -77,5 +76,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.6"
+    "gcovr/format_version": "0.7"
 }

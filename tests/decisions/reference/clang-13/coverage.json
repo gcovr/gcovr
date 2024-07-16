@@ -7,225 +7,193 @@
                     "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 32,
-                    "name": "checkBiggerBoth(int)",
-                    "returned_count": 2
+                    "name": "checkBiggerBoth(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 20,
-                    "name": "checkBiggerFalse(int)",
-                    "returned_count": 1
+                    "name": "checkBiggerFalse(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 8,
-                    "name": "checkBiggerTrue(int)",
-                    "returned_count": 1
+                    "name": "checkBiggerTrue(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 246,
-                    "name": "checkCompactBranch1False(int)",
-                    "returned_count": 1
+                    "name": "checkCompactBranch1False(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 241,
-                    "name": "checkCompactBranch1True(int)",
-                    "returned_count": 1
+                    "name": "checkCompactBranch1True(int)"
                 },
                 {
                     "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 256,
-                    "name": "checkCompactBranch2False(int)",
-                    "returned_count": 1
+                    "name": "checkCompactBranch2False(int)"
                 },
                 {
                     "blocks_percent": 80.0,
                     "execution_count": 1,
                     "lineno": 251,
-                    "name": "checkCompactBranch2True(int)",
-                    "returned_count": 1
+                    "name": "checkCompactBranch2True(int)"
                 },
                 {
                     "blocks_percent": 66.0,
                     "execution_count": 1,
                     "lineno": 128,
-                    "name": "checkComplexFalse(int)",
-                    "returned_count": 1
+                    "name": "checkComplexFalse(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 291,
-                    "name": "checkComplexForLoop(int)",
-                    "returned_count": 1
+                    "name": "checkComplexForLoop(int)"
                 },
                 {
                     "blocks_percent": 83.0,
                     "execution_count": 1,
                     "lineno": 116,
-                    "name": "checkComplexTrue(int)",
-                    "returned_count": 1
+                    "name": "checkComplexTrue(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 315,
-                    "name": "checkDoWhileLoop(int)",
-                    "returned_count": 1
+                    "name": "checkDoWhileLoop(int)"
                 },
                 {
                     "blocks_percent": 50.0,
                     "execution_count": 1,
                     "lineno": 140,
-                    "name": "checkElseIf1(int)",
-                    "returned_count": 1
+                    "name": "checkElseIf1(int)"
                 },
                 {
                     "blocks_percent": 66.0,
                     "execution_count": 1,
                     "lineno": 156,
-                    "name": "checkElseIf2(int)",
-                    "returned_count": 1
+                    "name": "checkElseIf2(int)"
                 },
                 {
                     "blocks_percent": 66.0,
                     "execution_count": 1,
                     "lineno": 172,
-                    "name": "checkElseIf3(int)",
-                    "returned_count": 1
+                    "name": "checkElseIf3(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 80,
-                    "name": "checkEqualFalse(int)",
-                    "returned_count": 1
+                    "name": "checkEqualFalse(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 68,
-                    "name": "checkEqualTrue(int)",
-                    "returned_count": 1
+                    "name": "checkEqualTrue(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 281,
-                    "name": "checkForLoop(int)",
-                    "returned_count": 1
+                    "name": "checkForLoop(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 329,
-                    "name": "checkInterpreter(int)",
-                    "returned_count": 1
+                    "name": "checkInterpreter(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 104,
-                    "name": "checkNotEqualFalse(int)",
-                    "returned_count": 1
+                    "name": "checkNotEqualFalse(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 92,
-                    "name": "checkNotEqualTrue(int)",
-                    "returned_count": 1
+                    "name": "checkNotEqualTrue(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 56,
-                    "name": "checkSmallerFalse(int)",
-                    "returned_count": 1
+                    "name": "checkSmallerFalse(int)"
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 44,
-                    "name": "checkSmallerTrue(int)",
-                    "returned_count": 1
+                    "name": "checkSmallerTrue(int)"
                 },
                 {
                     "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 188,
-                    "name": "checkSwitch1(int)",
-                    "returned_count": 1
+                    "name": "checkSwitch1(int)"
                 },
                 {
                     "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 209,
-                    "name": "checkSwitch2(int)",
-                    "returned_count": 1
+                    "name": "checkSwitch2(int)"
                 },
                 {
                     "blocks_percent": 60.0,
                     "execution_count": 1,
                     "lineno": 225,
-                    "name": "checkSwitch3(int)",
-                    "returned_count": 1
+                    "name": "checkSwitch3(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 266,
-                    "name": "checkTernary1False(int)",
-                    "returned_count": 1
+                    "name": "checkTernary1False(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 261,
-                    "name": "checkTernary1True(int)",
-                    "returned_count": 1
+                    "name": "checkTernary1True(int)"
                 },
                 {
                     "blocks_percent": 66.0,
                     "execution_count": 1,
                     "lineno": 276,
-                    "name": "checkTernary2False(int)",
-                    "returned_count": 1
+                    "name": "checkTernary2False(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 271,
-                    "name": "checkTernary2True(int)",
-                    "returned_count": 1
+                    "name": "checkTernary2True(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 301,
-                    "name": "checkWhileLoop(int)",
-                    "returned_count": 1
+                    "name": "checkWhileLoop(int)"
                 },
                 {
                     "blocks_percent": 50.0,
                     "execution_count": 1,
                     "lineno": 360,
-                    "name": "main",
-                    "returned_count": 1
+                    "name": "main"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 353,
-                    "name": "verify_issue_679(bool)",
-                    "returned_count": 2
+                    "name": "verify_issue_679(bool)"
                 }
             ],
             "lines": [
@@ -2134,15 +2102,13 @@
                     "blocks_percent": 50.0,
                     "execution_count": 1,
                     "lineno": 5,
-                    "name": "SwitchTestIssue783::SwitchTestIssue783()",
-                    "returned_count": 1
+                    "name": "SwitchTestIssue783::SwitchTestIssue783()"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 7,
-                    "name": "SwitchTestIssue783::checkSwitch()",
-                    "returned_count": 1
+                    "name": "SwitchTestIssue783::checkSwitch()"
                 }
             ],
             "lines": [
@@ -2192,8 +2158,7 @@
                     "blocks_percent": 50.0,
                     "execution_count": 1,
                     "lineno": 17,
-                    "name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)",
-                    "returned_count": 1
+                    "name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)"
                 }
             ],
             "lines": [
@@ -2279,5 +2244,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.6"
+    "gcovr/format_version": "0.7"
 }

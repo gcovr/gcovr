@@ -7,8 +7,7 @@
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "bar()",
-                    "returned_count": 1
+                    "name": "bar()"
                 }
             ],
             "lines": [
@@ -45,8 +44,7 @@
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "foo()",
-                    "returned_count": 1
+                    "name": "foo()"
                 }
             ],
             "lines": [
@@ -83,8 +81,7 @@
                     "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 10,
-                    "name": "main",
-                    "returned_count": 2
+                    "name": "main"
                 }
             ],
             "lines": [
@@ -146,5 +143,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.6"
+    "gcovr/format_version": "0.7"
 }
