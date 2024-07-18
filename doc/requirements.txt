@@ -1,5 +1,5 @@
-sphinx
-sphinx_rtd_theme
+sphinx == 7.4.6
+sphinx_rtd_theme == 2.0.0
 sphinxcontrib-autoprogram >= 0.1.5
 rst2html5
 jinja2
