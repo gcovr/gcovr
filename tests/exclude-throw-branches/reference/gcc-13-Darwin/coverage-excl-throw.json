@@ -7,43 +7,37 @@
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 21,
-                    "name": "RAII::RAII(bool)",
-                    "returned_count": 3
+                    "name": "RAII::RAII(bool)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 16,
-                    "name": "RAII::method_that_may_throw() const",
-                    "returned_count": 3
+                    "name": "RAII::method_that_may_throw() const"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 22,
-                    "name": "RAII::~RAII()",
-                    "returned_count": 3
+                    "name": "RAII::~RAII()"
                 },
                 {
                     "blocks_percent": 88.0,
                     "execution_count": 9,
                     "lineno": 3,
-                    "name": "function_that_may_throw(bool)",
-                    "returned_count": 6
+                    "name": "function_that_may_throw(bool)"
                 },
                 {
                     "blocks_percent": 63.0,
                     "execution_count": 3,
                     "lineno": 24,
-                    "name": "function_with_catchers(int)",
-                    "returned_count": 3
+                    "name": "function_with_catchers(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 47,
-                    "name": "main",
-                    "returned_count": 3
+                    "name": "main"
                 }
             ],
             "lines": [
@@ -261,5 +255,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.6"
+    "gcovr/format_version": "0.7"
 }
