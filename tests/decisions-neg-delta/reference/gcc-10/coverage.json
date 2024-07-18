@@ -7,15 +7,13 @@
                     "blocks_percent": 70.0,
                     "execution_count": 1,
                     "lineno": 5,
-                    "name": "Foo::work(int)",
-                    "returned_count": 1
+                    "name": "Foo::work(int)"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 14,
-                    "name": "main",
-                    "returned_count": 1
+                    "name": "main"
                 }
             ],
             "lines": [
@@ -132,5 +130,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.6"
+    "gcovr/format_version": "0.7"
 }

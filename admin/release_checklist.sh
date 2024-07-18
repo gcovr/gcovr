@@ -90,7 +90,7 @@ grep -qF "$(basename $0) \$EXTRA_CHECKLIST_ARGS $target_version" .github/workflo
     || error ".github/workflows/deploy.yml: Please update the $0 version"
 
 occurrences="$(
-  grep -E '\.\. (versionadded|versionchanged|deprecated):: NEXT' \
+  grep -E '\.\. (versionadded|versionchanged|versionremoved|deprecated):: NEXT' \
        -A 1 doc/source/*.rst doc/source/*/*.rst *.rst || exit 0)"
 test -z "$occurrences" || {
     maybe_error $verify_docs_next_version \

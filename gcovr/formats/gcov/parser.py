@@ -189,7 +189,6 @@ class _FunctionLine(NamedTuple):
 
     name: str
     count: int
-    returned: int
     blocks_covered: int
 
 
@@ -418,14 +417,13 @@ def parse_coverage(
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
-        name, count, returned, blocks = function
+        name, count, blocks = function
         insert_function_coverage(
             coverage,
             FunctionCoverage(
                 name,
                 lineno=state.lineno + 1,
                 count=count,
-                returned=returned,
                 blocks=blocks,
             ),
             FUNCTION_MAX_LINE_MERGE_OPTIONS,
@@ -494,13 +492,11 @@ def _gather_coverage_from_line(
 
         # handle deferred functions
         for function in state.deferred_functions:
-            name, count, returned, blocks = function
+            name, count, blocks = function
 
             insert_function_coverage(
                 coverage,
-                FunctionCoverage(
-                    name, lineno=lineno, count=count, returned=returned, blocks=blocks
-                ),
+                FunctionCoverage(name, lineno=lineno, count=count, blocks=blocks),
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
@@ -693,11 +689,11 @@ def _parse_line(
 
     Example: can parse function tags:
     >>> _parse_line('function foo called 2 returned 1 blocks executed 85%')
-    _FunctionLine(name='foo', count=2, returned=1, blocks_covered=85.0)
+    _FunctionLine(name='foo', count=2, blocks_covered=85.0)
     >>> _parse_line('function foo called 2 returned 50% blocks executed 85%')
-    _FunctionLine(name='foo', count=2, returned=1, blocks_covered=85.0)
+    _FunctionLine(name='foo', count=2, blocks_covered=85.0)
     >>> _parse_line('function foo called 2 returned 100% blocks executed 85%')
-    _FunctionLine(name='foo', count=2, returned=2, blocks_covered=85.0)
+    _FunctionLine(name='foo', count=2, blocks_covered=85.0)
     >>> _parse_line('function foo with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.UnknownLineType: function foo with some unknown format
@@ -930,20 +926,12 @@ def _parse_tag_line(
     if line.startswith("function "):
         match = _RE_FUNCTION_LINE.match(line)
         if match is not None:
-            name, count, returned, blocks = match.groups()
+            name, count, _, blocks = match.groups()
             count = _int_from_gcov_unit(count)
-            if returned[-1] == "%":
-                if returned == "NAN %":
-                    returned = 0
-                else:
-                    returned = int(_float_from_gcov_percent(returned) * count / 100)
-            else:
-                returned = int(returned)
 
             return _FunctionLine(
                 name,
                 count,
-                returned,
                 _float_from_gcov_percent(blocks),
             )
 

@@ -256,7 +256,6 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                     function["demangled_name"],
                     lineno=function["start_line"],
                     count=function["execution_count"],
-                    returned=None,
                     blocks=blocks,
                 ),
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
@@ -904,7 +903,7 @@ def run_gcov_and_process_files(
                 if os.path.exists(filepath):
                     os.remove(filepath)
 
-    except Exception as exc:
+    except RuntimeError as exc:
         # If we got an merge assertion error we must end the processing
         done = False
         error(
