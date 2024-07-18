@@ -305,11 +305,6 @@ def merge_function(
                 left.count[lineno] += count
             except KeyError:
                 left.count[lineno] = count
-        for lineno, returned in right.returned.items():
-            try:
-                left.returned[lineno] += returned
-            except KeyError:
-                left.returned[lineno] = returned
         for lineno, blocks in right.blocks.items():
             try:
                 # Take the maximum value for this line
@@ -339,7 +334,6 @@ def merge_function(
 
     # Overwrite data with the sum at the desired line
     left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
-    left.returned = {lineno: sum(left.returned.values()) + sum(right.returned.values())}
     # or the max value at the desired line
     left.blocks = {lineno: max(*left.blocks.values(), *right.blocks.values())}
     # or the logical or of all values

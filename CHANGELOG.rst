@@ -10,6 +10,8 @@ Known bugs:
 
 Breaking changes:
 
+- The function return count is removed from internal data model, HTML and JSON output because missing in ``gcov`` JSON output. (:issue:`935`)
+
 New features and notable changes:
 
 - In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)

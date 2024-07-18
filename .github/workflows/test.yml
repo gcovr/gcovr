@@ -240,10 +240,10 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Expose GitHub Runtime for Docker cache
-        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-')) }}
+        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-')) && (matrix.python-version != '3.8') }}
         uses: crazy-max/ghaction-github-runtime@v3
       - name: Generate documentation
-        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-')) }}
+        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-')) && (matrix.python-version != '3.8') }}
         run: |
           nox --non-interactive --session doc || exit 1
 
@@ -305,7 +305,13 @@ jobs:
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session lint
       - name: Test with pytest (in container)
         run: |
-          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests
+          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests --  --archive_differences
+      - name: Upload pytest test results
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: diffs-docker-${{ matrix.gcc }}
+          path: tests/diff.zip
       - name: Upload coverage to Codecov
         if: ${{ (github.repository == 'gcovr/gcovr') && (env.USE_COVERAGE == 'true') }}
         uses: codecov/codecov-action@v4
@@ -332,6 +338,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Generate documentation (in container)
+        if: ${{ (matrix.gcc != 'gcc-5') && (matrix.gcc != 'gcc-6') && (matrix.gcc != 'gcc-8') && (matrix.gcc != 'gcc-9') && (matrix.gcc != 'clang-10') }} # Uses Python 3.8
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
       - name: Test bundle of app (in container)

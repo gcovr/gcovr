@@ -7,8 +7,7 @@
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "_Z3barv",
-                    "returned_count": 1
+                    "name": "_Z3barv"
                 }
             ],
             "lines": [
@@ -45,8 +44,7 @@
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "_Z3foov",
-                    "returned_count": 1
+                    "name": "_Z3foov"
                 }
             ],
             "lines": [
@@ -83,8 +81,7 @@
                     "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 10,
-                    "name": "main",
-                    "returned_count": 2
+                    "name": "main"
                 }
             ],
             "lines": [
@@ -115,5 +112,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.6"
+    "gcovr/format_version": "0.7"
 }
