@@ -26,13 +26,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -69,13 +69,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 3,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 3,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false

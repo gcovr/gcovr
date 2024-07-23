@@ -50,13 +50,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 6,
                             "fallthrough": false,
                             "throw": false
@@ -69,7 +69,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 4,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false
@@ -124,7 +124,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
@@ -137,13 +137,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 10,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 10,
                             "count": 3,
                             "fallthrough": false,
                             "throw": false
@@ -168,7 +168,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 3,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false
@@ -181,7 +181,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 4,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false
@@ -194,13 +194,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 14,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 14,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -225,7 +225,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 5,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false

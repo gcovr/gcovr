@@ -26,13 +26,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
@@ -50,13 +50,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 5,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 5,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -69,13 +69,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 12,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 12,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
@@ -111,13 +111,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true

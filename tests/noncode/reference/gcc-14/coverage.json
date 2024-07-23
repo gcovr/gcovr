@@ -20,25 +20,25 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 3,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -57,13 +57,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 6,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 6,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
