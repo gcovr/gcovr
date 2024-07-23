@@ -234,7 +234,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                     line_cov,
                     index,
                     BranchCoverage(
-                        1,  # Stub because of missing information
+                        branch["source_block_id"],
                         branch["count"],
                         fallthrough=branch["fallthrough"],
                         throw=branch["throw"],
