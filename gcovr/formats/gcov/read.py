@@ -244,6 +244,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                         branch["count"],
                         fallthrough=branch["fallthrough"],
                         throw=branch["throw"],
+                        destination_blockno=branch["destination_block_id"],
                     ),
                 )
         for function in file["functions"]:

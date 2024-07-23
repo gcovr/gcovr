@@ -194,12 +194,16 @@ def _json_from_branches(branches: Dict[int, BranchCoverage]) -> list:
 
 
 def _json_from_branch(branch: BranchCoverage) -> dict:
-    return {
+    json_branch = {
         "blockno": branch.blockno,
         "count": branch.count,
         "fallthrough": branch.fallthrough,
         "throw": branch.throw,
     }
+    if branch.destination_blockno is not None:
+        json_branch["destination_blockno"] = branch.destination_blockno
+
+    return json_branch
 
 
 def _json_from_decision(decision: DecisionCoverage) -> dict:

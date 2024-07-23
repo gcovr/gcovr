@@ -128,9 +128,11 @@ class BranchCoverage:
             Whether this is a fallthrough branch. False if unknown.
         throw (bool, optional):
             Whether this is an exception-handling branch. False if unknown.
+        destination_blockno (int, optional):
+            The destination block of the branch. None if unknown.
     """
 
-    __slots__ = "blockno", "count", "fallthrough", "throw"
+    __slots__ = "blockno", "count", "fallthrough", "throw", "destination_blockno"
 
     def __init__(
         self,
@@ -138,6 +140,7 @@ class BranchCoverage:
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
+        destination_blockno: Optional[int] = None,
     ) -> None:
         if count < 0:
             raise AssertionError("count must not be a negative value.")
@@ -146,6 +149,7 @@ class BranchCoverage:
         self.count = count
         self.fallthrough = fallthrough
         self.throw = throw
+        self.destination_blockno = destination_blockno
 
     @property
     def is_covered(self) -> bool:
