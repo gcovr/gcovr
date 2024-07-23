@@ -22,13 +22,13 @@
                     "name": "RAII::~RAII()"
                 },
                 {
-                    "blocks_percent": 88.0,
+                    "blocks_percent": 87.5,
                     "execution_count": 9,
                     "lineno": 3,
                     "name": "function_that_may_throw(bool)"
                 },
                 {
-                    "blocks_percent": 63.0,
+                    "blocks_percent": 63.2,
                     "execution_count": 3,
                     "lineno": 24,
                     "name": "function_with_catchers(int)"
@@ -69,7 +69,7 @@
                 {
                     "branches": [
                         {
-                            "blockno": 3,
+                            "blockno": 4,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false

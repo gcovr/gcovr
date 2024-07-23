@@ -32,6 +32,8 @@ build/
 *.gcda
 *.gcno
 *.gcov
+*.gcov.json.gz
+*.gcov.json
 .tox
 testcase
 

@@ -186,12 +186,14 @@ def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]
     source_file = {}
 
     # Generate md5 hash of file contents
-    with open(coverage_details.filename, "rb") as file_handle:
-        contents = file_handle.read()
+    if coverage_details.filename.endswith("<stdin>"):
+        total_line_count = None
+    else:
+        with open(coverage_details.filename, "rb") as file_handle:
+            contents = file_handle.read()
 
-    source_file["source_digest"] = get_md5_hexdigest(contents)
-
-    total_line_count = len(contents.splitlines())
+        source_file["source_digest"] = get_md5_hexdigest(contents)
+        total_line_count = len(contents.splitlines())
 
     # Isolate relative file path
     relative_file_path = presentable_filename(
@@ -229,7 +231,8 @@ def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]
         #     source_file['coverage'].append(b_hits)
 
     # add trailing empty lines
-    _extend_with_none(source_file["coverage"], total_line_count)
+    if total_line_count is not None:
+        _extend_with_none(source_file["coverage"], total_line_count)
 
     return source_file
 

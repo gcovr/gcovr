@@ -4,7 +4,7 @@
             "file": "main.cpp",
             "functions": [
                 {
-                    "blocks_percent": 79.0,
+                    "blocks_percent": 78.9,
                     "execution_count": 1,
                     "lineno": 5,
                     "name": "Foo::work(int)"
@@ -69,13 +69,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 11,
+                            "blockno": 12,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 11,
+                            "blockno": 12,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false

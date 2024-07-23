@@ -54,11 +54,13 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             # SF:<path to the source file>
             fh.write(f"SF:{filename}\n")
 
-            # VER:<version ID>
-            # Generate md5 hash of file contents
-            with open(filename, "rb") as file_handle:
-                contents = file_handle.read()
-            fh.write(f"VER:{get_md5_hexdigest(contents)}\n")
+            # This filename is generated in the JSON intermediate format
+            if not filename.endswith("<stdin>"):
+                # VER:<version ID>
+                # Generate md5 hash of file contents
+                with open(filename, "rb") as file_handle:
+                    contents = file_handle.read()
+                fh.write(f"VER:{get_md5_hexdigest(contents)}\n")
 
             functions = 0
             function_hits = 0
