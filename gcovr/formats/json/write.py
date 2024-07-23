@@ -247,6 +247,11 @@ def _json_from_function(function: FunctionCoverage) -> list:
         }
         if function.excluded[lineno]:
             json_function["gcovr/excluded"] = True
+        if function.start is not None and function.end is not None:
+            json_function["pos"] = (
+                ":".join([str(e) for e in function.start[lineno]]),
+                ":".join([str(e) for e in function.end[lineno]]),
+            )
 
         json_functions.append(json_function)
 

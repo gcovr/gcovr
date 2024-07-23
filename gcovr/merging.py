@@ -325,6 +325,12 @@ def merge_function(
                 left.excluded[lineno] |= excluded
             except KeyError:
                 left.excluded[lineno] = excluded
+        if right.start is not None:
+            for lineno, start in right.start.items():
+                left.start[lineno] = start
+        if right.end is not None:
+            for lineno, end in right.end.items():
+                left.end[lineno] = end
         return left
 
     right_lineno = list(right.count.keys())[0]
@@ -348,6 +354,13 @@ def merge_function(
     left.excluded = {
         lineno: any(left.excluded.values()) or any(right.excluded.values())
     }
+
+    if left.start is not None:
+        # or the minimum start
+        left.start = {lineno: min(*left.start.values(), *right.start.values())}
+    if left.end is not None:
+        # or the maximum end
+        left.end = {lineno: max(*left.end.values(), *right.end.values())}
 
     return left
 
