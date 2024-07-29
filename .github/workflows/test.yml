@@ -118,7 +118,8 @@ jobs:
             python-version: '3.9'
           - os: ubuntu-22.04
             gcc: gcc-11
-            python-version: '3.11'
+            python-version: "3.12"
+            upload-app: true
 
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
@@ -126,7 +127,8 @@ jobs:
             python-version: '3.8'
           - os: windows-2019
             gcc: gcc
-            python-version: '3.12'
+            python-version: "3.12"
+            upload-app: true
 
           # Test minimum and maximum Python version on Mac OS.
           - os: macos-12
@@ -134,7 +136,8 @@ jobs:
             python-version: '3.8'
           - os: macos-12
             gcc: gcc-13
-            python-version: '3.12'
+            python-version: "3.12"
+            upload-app: true
 
     steps:
       - uses: actions/checkout@v4
@@ -261,6 +264,12 @@ jobs:
         run: |
           nox --non-interactive --session bundle_app
         if: ${{ ! startsWith(matrix.python-version,'pypy') }}
+      - name: Upload app bundle artifacts
+        if: ${{ matrix.upload-app == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.os }}
+          path: artifacts/gcovr*
       - name: Build wheel
         run: |
           nox --non-interactive --session build_wheel
