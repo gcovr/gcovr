@@ -24,6 +24,7 @@ import platform
 import re
 import socket
 import sys
+from pathlib import Path
 from time import sleep
 from typing import Tuple
 import requests
@@ -373,6 +374,20 @@ def check_bundled_app(session: nox.Session) -> None:
                 f"./gcovr --{format} $TMPDIR/out.{format}",
                 external=True,
             )
+    if "CI" in os.environ:
+        executable = next(Path().glob("build/gcovr*"))
+        platform_suffix = "linux"
+        if platform.system() == "Windows":
+            platform_suffix = "win"
+        if platform.system() == "Darwin":
+            platform_suffix = "macos"
+        dest_path = (
+            Path()
+            / "artifacts"
+            / f"{executable.stem}-{platform_suffix}{executable.suffix}"
+        )
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        executable.rename(dest_path)
 
 
 @nox.session()
