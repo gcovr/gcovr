@@ -335,11 +335,15 @@ def bundle_app(session: nox.Session) -> None:
     # with the needed data
     session.install(".")
     os.makedirs("build", exist_ok=True)
+    additional_build_args = []
     with session.chdir("build"):
         if platform.system() == "Windows":
             executable = "gcovr.exe"
         else:
             executable = "gcovr"
+        # See: https://pyinstaller.org/en/stable/feature-notes.html#macos-multi-arch-support
+        if platform.system() == "Darwin" and "CI" in os.environ:
+            additional_build_args.extend(["--target-arch", "universal2"])
         session.run(
             "pyinstaller",
             "--distpath",
