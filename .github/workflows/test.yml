@@ -360,3 +360,23 @@ jobs:
       - name: Check wheel (in container)
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session check_wheel
+
+  upload-release-artifacts:
+    name: Upload standalone applications as release artifacts
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    permissions:
+      contents: write
+    needs: [build, run-docker]
+    steps:
+      - name: Download App Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: app
+          pattern: app-*
+          merge-multiple: true
+
+      - name: Upload Release Artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/*
