@@ -354,6 +354,7 @@ def bundle_app(session: nox.Session) -> None:
             "./pyinstaller",
             "--onefile",
             "--collect-all",
+            *additional_build_args,
             "gcovr",
             "-n",
             executable,
