@@ -218,7 +218,7 @@ def doc(session: nox.Session) -> None:
     if not GCOVR_ISOLATED_TEST and not (
         # Github actions on MacOs can't use Docker
         platform.system() == "Darwin"
-        and CI_RUN is True
+        and CI_RUN
     ):
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
@@ -279,7 +279,7 @@ def tests(session: nox.Session) -> None:
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
 
-    running_locally = CI_RUN is False
+    running_locally = not CI_RUN
     session.run(
         "python",
         *args,
@@ -344,7 +344,7 @@ def bundle_app(session: nox.Session) -> None:
         else:
             executable = "gcovr"
         # See: https://pyinstaller.org/en/stable/feature-notes.html#macos-multi-arch-support
-        if platform.system() == "Darwin" and CI_RUN is True:
+        if platform.system() == "Darwin" and CI_RUN:
             additional_build_args.extend(["--target-arch", "universal2"])
         session.run(
             "pyinstaller",
@@ -381,7 +381,7 @@ def check_bundled_app(session: nox.Session) -> None:
                 f"./gcovr --{format} $TMPDIR/out.{format}",
                 external=True,
             )
-    if CI_RUN is True:
+    if CI_RUN:
         executable = next(Path().glob("build/gcovr*"))
         platform_suffix = "linux"
         if platform.system() == "Windows":
@@ -559,7 +559,7 @@ def docker_build_compiler(session: nox.Session, version: str) -> None:
     set_environment(session, version)
     container_id = docker_container_id(session, version)
     cache_options = []
-    if CI_RUN is True:
+    if CI_RUN:
         session.log(
             "Create a builder because the default on doesn't support the gha cache"
         )
