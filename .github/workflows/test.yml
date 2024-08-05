@@ -118,7 +118,7 @@ jobs:
             python-version: '3.9'
           - os: ubuntu-22.04
             gcc: gcc-11
-            python-version: "3.12"
+            python-version: '3.12'
             upload-app: true
 
           # Test minimum and maximum Python version on Windows.
