@@ -279,16 +279,15 @@ def tests(session: nox.Session) -> None:
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
 
-    running_locally = not CI_RUN
     session.run(
         "python",
         *args,
-        success_codes=[0, 1] if running_locally and coverage_args else [0],
+        success_codes=[0, 1] if not CI_RUN and coverage_args else [0],
     )
 
     if os.environ.get("USE_COVERAGE") == "true":
         session.run("coverage", "xml")
-        if running_locally:
+        if not CI_RUN:
             session.run("coverage", "html")
 
 
