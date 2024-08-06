@@ -336,15 +336,11 @@ def bundle_app(session: nox.Session) -> None:
     # with the needed data
     session.install(".")
     os.makedirs("build", exist_ok=True)
-    additional_build_args = []
     with session.chdir("build"):
         if platform.system() == "Windows":
             executable = "gcovr.exe"
         else:
             executable = "gcovr"
-        # See: https://pyinstaller.org/en/stable/feature-notes.html#macos-multi-arch-support
-        if platform.system() == "Darwin" and CI_RUN:
-            additional_build_args.extend(["--target-arch", "universal2"])
         session.run(
             "pyinstaller",
             "--distpath",
@@ -354,7 +350,6 @@ def bundle_app(session: nox.Session) -> None:
             "--specpath",
             "./pyinstaller",
             "--onefile",
-            *additional_build_args,
             "--collect-all",
             "gcovr",
             "-n",
@@ -381,16 +376,17 @@ def check_bundled_app(session: nox.Session) -> None:
                 external=True,
             )
     if CI_RUN:
-        executable = next(Path().glob("build/gcovr*"))
-        platform_suffix = "linux"
+        executable = list(Path().glob("build/gcovr*"))[0]
         if platform.system() == "Windows":
             platform_suffix = "win"
-        if platform.system() == "Darwin":
+        elif platform.system() == "Darwin":
             platform_suffix = "macos"
+        else:
+            platform_suffix = "linux"
         dest_path = (
             Path()
             / "artifacts"
-            / f"{executable.stem}-{platform_suffix}{executable.suffix}"
+            / f"{executable.stem}-{platform_suffix}-{platform.machine()}{executable.suffix}"
         )
         dest_path.parent.mkdir(parents=True, exist_ok=True)
         executable.rename(dest_path)
