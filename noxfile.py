@@ -24,6 +24,7 @@ import platform
 import re
 import socket
 import sys
+from pathlib import Path
 from time import sleep
 from typing import Tuple
 import requests
@@ -84,6 +85,8 @@ OUTPUT_FORMATS = [
     "sonarqube",
     "txt",
 ]
+
+CI_RUN = "GITHUB_ACTION" in os.environ
 
 nox.options.sessions = ["qa"]
 
@@ -215,7 +218,7 @@ def doc(session: nox.Session) -> None:
     if not GCOVR_ISOLATED_TEST and not (
         # Github actions on MacOs can't use Docker
         platform.system() == "Darwin"
-        and "GITHUB_ACTION" in os.environ
+        and CI_RUN
     ):
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
@@ -276,16 +279,15 @@ def tests(session: nox.Session) -> None:
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
 
-    running_locally = os.environ.get("GITHUB_ACTIONS") is None
     session.run(
         "python",
         *args,
-        success_codes=[0, 1] if running_locally and coverage_args else [0],
+        success_codes=[0, 1] if not CI_RUN and coverage_args else [0],
     )
 
     if os.environ.get("USE_COVERAGE") == "true":
         session.run("coverage", "xml")
-        if running_locally:
+        if not CI_RUN:
             session.run("coverage", "html")
 
 
@@ -373,6 +375,21 @@ def check_bundled_app(session: nox.Session) -> None:
                 f"./gcovr --{format} $TMPDIR/out.{format}",
                 external=True,
             )
+    if CI_RUN:
+        executable = list(Path().glob("build/gcovr*"))[0]
+        if platform.system() == "Windows":
+            platform_suffix = "win"
+        elif platform.system() == "Darwin":
+            platform_suffix = "macos"
+        else:
+            platform_suffix = "linux"
+        dest_path = (
+            Path()
+            / "artifacts"
+            / f"{executable.stem}-{platform_suffix}-{platform.machine()}{executable.suffix}"
+        )
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        executable.rename(dest_path)
 
 
 @nox.session()
@@ -537,7 +554,7 @@ def docker_build_compiler(session: nox.Session, version: str) -> None:
     set_environment(session, version)
     container_id = docker_container_id(session, version)
     cache_options = []
-    if "GITHUB_ACTIONS" in os.environ:
+    if CI_RUN:
         session.log(
             "Create a builder because the default on doesn't support the gha cache"
         )

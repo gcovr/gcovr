@@ -35,3 +35,6 @@ __pycache__
 
 # MacOS
 .DS_Store
+
+# CI standalone app folder
+/artifacts

@@ -10,6 +10,8 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened, edited]
+  release:
+    types: [published]
 
 jobs:
 
@@ -118,7 +120,8 @@ jobs:
             python-version: '3.9'
           - os: ubuntu-22.04
             gcc: gcc-11
-            python-version: '3.11'
+            python-version: '3.12'
+            upload-app: true
 
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
@@ -127,14 +130,24 @@ jobs:
           - os: windows-2019
             gcc: gcc
             python-version: '3.12'
+            upload-app: true
 
           # Test minimum and maximum Python version on Mac OS.
           - os: macos-12
             gcc: gcc
-            python-version: '3.8'
-          - os: macos-12
+            python-version: '3.12'
+            upload-app: true
+          - os: macos-13
+            gcc: gcc
+            python-version: '3.12'
+            upload-app: true
+          - os: macos-14
+            gcc: gcc
+            python-version: '3.9'
+          - os: macos-14
             gcc: gcc-13
             python-version: '3.12'
+            upload-app: true
 
     steps:
       - uses: actions/checkout@v4
@@ -145,8 +158,8 @@ jobs:
           case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
             ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
             windows-2019/gcc-8/3.12)  USE_COVERAGE=true ;;
-            macos-12/gcc-13/3.12)     USE_COVERAGE=true ;;
-            macos-12/gcc/3.8)         USE_COVERAGE=true ;;
+            macos-14/gcc/3.9)         USE_COVERAGE=true ;;
+            macos-14/gcc-13/3.12)     USE_COVERAGE=true ;;
             *)                        USE_COVERAGE=false ;;
           esac
           echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
@@ -261,6 +274,12 @@ jobs:
         run: |
           nox --non-interactive --session bundle_app
         if: ${{ ! startsWith(matrix.python-version,'pypy') }}
+      - name: Upload app bundle artifacts
+        if: ${{ matrix.upload-app == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.os }}
+          path: artifacts/gcovr*
       - name: Build wheel
         run: |
           nox --non-interactive --session build_wheel
@@ -351,3 +370,23 @@ jobs:
       - name: Check wheel (in container)
         run: |
           python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session check_wheel
+
+  upload-release-artifacts:
+    name: Upload standalone applications as release artifacts
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'release'
+    permissions:
+      contents: write
+    needs: [build, run-docker]
+    steps:
+      - name: Download App Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: app
+          pattern: app-*
+          merge-multiple: true
+
+      - name: Upload Release Artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/*
