@@ -10,6 +10,8 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened, edited]
+  release:
+    types: [published]
 
 jobs:
 
@@ -372,7 +374,7 @@ jobs:
   upload-release-artifacts:
     name: Upload standalone applications as release artifacts
     runs-on: ubuntu-22.04
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    if: github.event_name == 'release'
     permissions:
       contents: write
     needs: [build, run-docker]
