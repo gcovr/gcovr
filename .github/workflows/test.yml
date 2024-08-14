@@ -89,6 +89,7 @@ jobs:
       os: ${{ matrix.os }}
       gcc: ${{ matrix.gcc }}
       python-version: ${{ matrix.python-version }}
+      upload-wheel: ${{ matrix.upload-wheel || false }}  # Explicit set to false if not set
       upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
     secrets: inherit
 
@@ -123,6 +124,7 @@ jobs:
           - os: ubuntu-22.04
             gcc: gcc-11
             python-version: '3.12'
+            upload-wheel: true
             upload-app: true
 
           # Test minimum and maximum Python version on Windows.

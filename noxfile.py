@@ -17,11 +17,12 @@
 #
 # ****************************************************************************
 
-import glob
+import functools
 import io
 import os
 import platform
 import re
+from runpy import run_path
 import socket
 import sys
 from pathlib import Path
@@ -87,6 +88,7 @@ OUTPUT_FORMATS = [
 ]
 
 CI_RUN = "GITHUB_ACTION" in os.environ
+GCOVR_VERSION = run_path("./gcovr/version.py")["__version__"]
 
 nox.options.sessions = ["qa"]
 
@@ -308,7 +310,8 @@ def check_wheel(session: nox.Session) -> None:
     session.install("wheel", "twine")
     with session.chdir(f"{session.cache_dir}/dist"):
         session.run("twine", "check", "*", external=True)
-        session.install(glob.glob("*.whl")[0])
+        wheel = list(Path().glob("*.whl"))[0].absolute()
+        session.install(wheel)
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
@@ -316,12 +319,33 @@ def check_wheel(session: nox.Session) -> None:
         for format in OUTPUT_FORMATS:
             session.run("gcovr", f"--{format}", f"out.{format}", external=True)
 
+    if CI_RUN and platform.system() != "Windows":
+        dest_path = Path() / "dist" / wheel.name
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        wheel.rename(dest_path)
+
 
 @nox.session
 def upload_wheel(session: nox.Session) -> None:
     """Upload the wheel."""
     session.install("twine")
     session.run("twine", "upload", "dist/*", external=True)
+
+
+@functools.lru_cache(maxsize=1)
+def get_executable_name() -> Path:
+    """Get the executable name."""
+    if platform.system() == "Windows":
+        suffix = ".exe"
+    else:
+        suffix = ""
+    if platform.system() == "Windows":
+        platform_suffix = "win"
+    elif platform.system() == "Darwin":
+        platform_suffix = "macos"
+    else:
+        platform_suffix = "linux"
+    return Path(f"gcovr-{GCOVR_VERSION}-{platform_suffix}-{platform.machine()}{suffix}")
 
 
 @nox.session
@@ -337,10 +361,6 @@ def bundle_app(session: nox.Session) -> None:
     session.install(".")
     os.makedirs("build", exist_ok=True)
     with session.chdir("build"):
-        if platform.system() == "Windows":
-            executable = "gcovr.exe"
-        else:
-            executable = "gcovr"
         session.run(
             "pyinstaller",
             "--distpath",
@@ -353,7 +373,7 @@ def bundle_app(session: nox.Session) -> None:
             "--collect-all",
             "gcovr",
             "-n",
-            executable,
+            str(get_executable_name()),
             *session.posargs,
             "../scripts/pyinstaller_entrypoint.py",
         )
@@ -364,30 +384,20 @@ def bundle_app(session: nox.Session) -> None:
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
     with session.chdir("build"):
+        executable = get_executable_name().absolute()
         # bash here is needed to be independent from the file extension (Windows).
-        session.run("bash", "-c", "./gcovr --help", external=True)
+        session.run("bash", "-c", f"{executable} --help", external=True)
         session.log("Run all transformations to check if all the modules are packed")
         session.create_tmp()
         for format in OUTPUT_FORMATS:
             session.run(
                 "bash",
                 "-c",
-                f"./gcovr --{format} $TMPDIR/out.{format}",
+                f"{executable} --{format} $TMPDIR/out.{format}",
                 external=True,
             )
     if CI_RUN:
-        executable = list(Path().glob("build/gcovr*"))[0]
-        if platform.system() == "Windows":
-            platform_suffix = "win"
-        elif platform.system() == "Darwin":
-            platform_suffix = "macos"
-        else:
-            platform_suffix = "linux"
-        dest_path = (
-            Path()
-            / "artifacts"
-            / f"{executable.stem}-{platform_suffix}-{platform.machine()}{executable.suffix}"
-        )
+        dest_path = Path() / "artifacts" / executable.name
         dest_path.parent.mkdir(parents=True, exist_ok=True)
         executable.rename(dest_path)
 

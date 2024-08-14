@@ -1,4 +1,4 @@
-name: Set up python
+name: Set up Python
 # Schema: https://json.schemastore.org/github-action.json
 
 inputs:

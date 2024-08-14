@@ -20,6 +20,10 @@ on:
         type: string
         description: 'The Python version to use'
         required: false  # Only needed if not in container
+      upload-wheel:
+        type: boolean
+        description: 'Upload the wheel file'
+        default: false
       upload-app:
         type: boolean
         description: 'Upload the standalone application'
@@ -41,14 +45,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up runner
+      - name: Set up Runner
         if: ${{ !inputs.container }}
         uses: "./.github/actions/setup-runner"
         with:
           os: ${{ inputs.os}}
           gcc: ${{ inputs.gcc }}
 
-      - name: Set up python
+      - name: Set up Python
         if: ${{ !inputs.container }}
         uses: "./.github/actions/setup-python"
         with:
@@ -138,6 +142,21 @@ jobs:
           fi
           exit 0
 
+      - name: Build wheel
+        run: |
+          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session build_wheel
+
+      - name: Check wheel
+        run: |
+          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session check_wheel
+
+      - name: Upload wheel
+        if: ${{ inputs.upload-wheel == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcovr.whl
+          path: dist/*.whl
+
       - name: Test bundle of app
         if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}
         run: |
@@ -149,11 +168,3 @@ jobs:
         with:
           name: app-${{ inputs.os }}
           path: artifacts/gcovr*
-
-      - name: Build wheel
-        run: |
-          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session build_wheel
-
-      - name: Check wheel
-        run: |
-          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session check_wheel
