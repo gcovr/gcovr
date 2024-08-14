@@ -69,7 +69,7 @@ jobs:
           fi
           exit 0
 
-  spellchecker:
+  spell-check:
     runs-on: ubuntu-22.04
 
     steps:
@@ -82,13 +82,15 @@ jobs:
           cspell
 
 
-  build:
-    runs-on: ${{ matrix.os }}
-
-    needs: [milestone-check, changelog-check, spellchecker]
-
-    env:
-      FORCE_COLOR: "1"
+  host:
+    needs: [milestone-check, changelog-check, spell-check]
+    uses: ./.github/workflows/gcovr-ci-job.yml
+    with:
+      os: ${{ matrix.os }}
+      gcc: ${{ matrix.gcc }}
+      python-version: ${{ matrix.python-version }}
+      upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
+    secrets: inherit
 
     # Testing strategy
     # ----------------
@@ -96,8 +98,8 @@ jobs:
     # We have different axes of the testing matrix:
     #
     # OS: Linux, Windows
-    # Compiler: GCC-5, GCC-6, GCC-8, Clang-10
-    # Python: 3.7 -- 3.10, pypy3
+    # Compiler: GCC-5 to GCC-14, Clang-10 to CLANG-15
+    # Python: 3.8 -- 3.12, pypy3
     #
     # Instead of testing all combinations, we try to achieve full coverage
     # across each axis. The main test matrix just represents the Python axis on
@@ -114,7 +116,7 @@ jobs:
         include:
 
           # Test additional compilers with Linux.
-          # Note that gcc-5, gcc-6, gcc-8, gcc-12, gcc-13, gcc-14, clang-10, clang-13, clang-14 and clang-15 is handled via Docker.
+          # Note that all compiler versions are also handled via Docker.
           - os: ubuntu-20.04
             gcc: gcc-9
             python-version: '3.9'
@@ -149,227 +151,19 @@ jobs:
             python-version: '3.12'
             upload-app: true
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup environment
-        run: |
-          # Enable coverage for specific target configurations
-          case "${{ matrix.os }}/${{ matrix.gcc }}/${{ matrix.python-version }}" in
-            ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
-            windows-2019/gcc-8/3.12)  USE_COVERAGE=true ;;
-            macos-14/gcc/3.9)         USE_COVERAGE=true ;;
-            macos-14/gcc-13/3.12)     USE_COVERAGE=true ;;
-            *)                        USE_COVERAGE=false ;;
-          esac
-          echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
-
-          # Set the CC environment
-          echo "CC=${{ matrix.gcc }}" >> $GITHUB_ENV
-
-        shell: bash
-
-      # Setup Ubuntu
-      - name: Install build commands, GCC and libxml2 (Linux)
-        if: ${{ startsWith(matrix.os,'ubuntu-') }}
-        run: |
-          sudo apt update
-          sudo apt-get install -y \
-            make \
-            ninja-build \
-            ${{ matrix.gcc }} \
-            $(echo ${{ matrix.gcc }} | sed -e 's/gcc/g\+\+/') \
-            libxml2-utils
-
-      # Setup Windows
-      - name: Install msys with GCC (Windows)
-        if: ${{ startsWith(matrix.os,'windows-') }}
-        uses: msys2/setup-msys2@v2
-        with:
-          install: gcc make
-          cache: true
-      - name: Install ninja (Windows)
-        if: ${{ startsWith(matrix.os,'windows-') }}
-        run: |
-          choco install ninja
-
-      # Setup MacOS
-      - name: Install ninja and libxml2 (MacOs)
-        if: ${{ startsWith(matrix.os,'macos-') }}
-        run: |
-          export HOMEBREW_NO_AUTO_UPDATE=1
-          export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-          brew update
-          brew install ninja
-          brew install libxml2
-
-      # Setup python
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
-        shell: bash
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          # Look to see if there is a cache hit for the corresponding requirements file
-          key: ${{ matrix.os }}-python${{ matrix.python-version }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
-          restore-keys: |
-            ${{ matrix.os }}-pip-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python3 -m pip install nox requests
-
-      # Run tests
-      - name: Lint files
-        run: |
-          nox --non-interactive --session lint
-      - name: Test with pytest
-        run: |
-          nox --non-interactive --session tests -- --archive_differences
-      - name: Upload pytest test results
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: diffs-${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python-version }}
-          path: tests/diff.zip
-      - name: Upload coverage to Codecov
-        if: ${{ (env.USE_COVERAGE == 'true') && (github.repository == 'gcovr/gcovr') }}
-        uses: codecov/codecov-action@v4
-        with:
-          env_vars: OS,PYTHON
-          fail_ci_if_error: true
-          disable_search: true
-          plugins: pycoverage
-          files: ./coverage.xml
-          name: ${{ matrix.os }}-${{ matrix.gcc }}
-          verbose: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      - name: Expose GitHub Runtime for Docker cache
-        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-')) && (matrix.python-version != '3.8') }}
-        uses: crazy-max/ghaction-github-runtime@v3
-      - name: Generate documentation
-        if: ${{ (! startsWith(matrix.python-version,'pypy')) && (! startsWith(matrix.os,'windows-')) && (matrix.python-version != '3.8') }}
-        run: |
-          nox --non-interactive --session doc || exit 1
-
-          # Check if files are modified (outdated screenshots)
-          Status=$(git status --porcelain | grep -F '.jpeg' || exit 0)
-          if [ -n "$Status" ] ; then
-            echo "Following files are modified:"
-            echo "$Status"
-
-            echo "Please regenerate the screenshots!"
-            exit 1
-          fi
-          exit 0
-      - name: Test bundle of app
-        run: |
-          nox --non-interactive --session bundle_app
-        if: ${{ ! startsWith(matrix.python-version,'pypy') }}
-      - name: Upload app bundle artifacts
-        if: ${{ matrix.upload-app == true }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-${{ matrix.os }}
-          path: artifacts/gcovr*
-      - name: Build wheel
-        run: |
-          nox --non-interactive --session build_wheel
-      - name: Check wheel
-        run: |
-          nox --non-interactive --session check_wheel
-
-  run-docker:
-    runs-on: ubuntu-22.04
-    needs: [milestone-check, changelog-check, spellchecker]
+  docker:
+    needs: [milestone-check, changelog-check, spell-check]
+    uses: ./.github/workflows/gcovr-ci-job.yml
+    with:
+      container: true
+      gcc: ${{ matrix.gcc }}
+    secrets: inherit
 
     strategy:
       fail-fast: false
       matrix:
         gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12, gcc-13, gcc-14, clang-10, clang-13, clang-14, clang-15]
 
-    steps:
-      - name: Setup environment
-        run: |
-          # Enable coverage for specific target configurations
-          case "${{ matrix.gcc }}" in
-            gcc-5)    USE_COVERAGE=true ;;
-            gcc-14)   USE_COVERAGE=true ;;
-            clang-10) USE_COVERAGE=true ;;
-            clang-15) USE_COVERAGE=true ;;
-            *)        USE_COVERAGE=false ;;
-          esac
-          echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
-        shell: bash
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python3 -m pip install nox requests
-      - uses: actions/checkout@v4
-      - name: Expose GitHub Runtime for Docker cache
-        uses: crazy-max/ghaction-github-runtime@v3
-      - name: Build Docker
-        run: |
-          python3 -m nox --non-interactive --session "docker_build_compiler(${{ matrix.gcc }})"
-      - name: Lint files (in container)
-        run: |
-          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session lint
-      - name: Test with pytest (in container)
-        run: |
-          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session tests --  --archive_differences
-      - name: Upload pytest test results
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: diffs-docker-${{ matrix.gcc }}
-          path: tests/diff.zip
-      - name: Upload coverage to Codecov
-        if: ${{ (github.repository == 'gcovr/gcovr') && (env.USE_COVERAGE == 'true') }}
-        uses: codecov/codecov-action@v4
-        with:
-          env_vars: OS,PYTHON
-          fail_ci_if_error: true
-          disable_search: true
-          plugins: pycoverage
-          files: ./coverage.xml
-          name: docker-${{ matrix.gcc }}
-          verbose: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      - name: Upload LCOV coverage to Codecov
-        if: ${{ (github.repository == 'gcovr/gcovr') && ((matrix.gcc == 'gcc-5') || (matrix.gcc == 'clang-10')) }}
-        uses: codecov/codecov-action@v4
-        with:
-          env_vars: OS,PYTHON
-          fail_ci_if_error: true
-          disable_search: true
-          files: ./tests/nested/reference/${{ matrix.gcc }}/coverage.lcov
-          name: docker-${{ matrix.gcc }}-lcov
-          verbose: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      - name: Generate documentation (in container)
-        if: ${{ (matrix.gcc != 'gcc-5') && (matrix.gcc != 'gcc-6') && (matrix.gcc != 'gcc-8') && (matrix.gcc != 'gcc-9') && (matrix.gcc != 'clang-10') }} # Uses Python 3.8
-        run: |
-          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session doc
-      - name: Test bundle of app (in container)
-        if: ${{ (matrix.gcc != 'gcc-5') && (matrix.gcc != 'gcc-6') }} # Uses Ubuntu 18.04
-        run: |
-          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session bundle_app
-      - name: Build wheel (in container)
-        run: |
-          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session build_wheel
-      - name: Check wheel (in container)
-        run: |
-          python3 -m nox --non-interactive --session "docker_run_compiler(${{ matrix.gcc }})" -- --session check_wheel
 
   upload-release-artifacts:
     name: Upload standalone applications as release artifacts
@@ -377,7 +171,7 @@ jobs:
     if: github.event_name == 'release'
     permissions:
       contents: write
-    needs: [build, run-docker]
+    needs: [host, docker]
     steps:
       - name: Download App Artifacts
         uses: actions/download-artifact@v4
