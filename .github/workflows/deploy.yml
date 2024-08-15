@@ -85,17 +85,13 @@ jobs:
           fi
           exit 0
 
-      - name: Test bundle of app
+      - name: Build and check the standalone application
         run: |
           nox --non-interactive --session bundle_app
 
-      - name: Build wheel
+      - name: Build and check the wheel
         run: |
           nox --non-interactive --session build_wheel
-
-      - name: Check wheel
-        run: |
-          nox --non-interactive --session check_wheel
 
       - name: Upload distribution
         if: ${{ success() }}

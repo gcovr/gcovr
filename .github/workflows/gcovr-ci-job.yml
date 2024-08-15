@@ -142,13 +142,9 @@ jobs:
           fi
           exit 0
 
-      - name: Build wheel
+      - name: Build and check the wheel
         run: |
           nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session build_wheel
-
-      - name: Check wheel
-        run: |
-          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session check_wheel
 
       - name: Upload wheel
         if: ${{ inputs.upload-wheel == true }}
@@ -157,7 +153,7 @@ jobs:
           name: gcovr.whl
           path: dist/*.whl
 
-      - name: Test bundle of app
+      - name: Build and check standalone application
         if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}
         run: |
           nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session bundle_app

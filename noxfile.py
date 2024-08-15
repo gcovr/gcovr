@@ -303,6 +303,7 @@ def build_wheel(session: nox.Session) -> None:
     if os.path.isdir(dist_cache):
         shutil.rmtree(dist_cache)
     shutil.copytree("dist", dist_cache)
+    session.notify(("check_wheel"))
 
 
 @nox.session
@@ -346,7 +347,9 @@ def get_executable_name() -> Path:
         platform_suffix = "macos"
     else:
         platform_suffix = "linux"
-    return Path(f"gcovr-{GCOVR_VERSION}-{platform_suffix}-{platform.machine()}{suffix}")
+    return Path(
+        f"gcovr-{GCOVR_VERSION}-{platform_suffix}-{platform.machine().lower()}{suffix}"
+    )
 
 
 @nox.session
