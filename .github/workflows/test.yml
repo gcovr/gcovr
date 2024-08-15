@@ -91,7 +91,8 @@ jobs:
       python-version: ${{ matrix.python-version }}
       upload-wheel: ${{ matrix.upload-wheel || false }}  # Explicit set to false if not set
       upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
-    secrets: inherit
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     # Testing strategy
     # ----------------
@@ -159,7 +160,8 @@ jobs:
     with:
       container: true
       gcc: ${{ matrix.gcc }}
-    secrets: inherit
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     strategy:
       fail-fast: false
