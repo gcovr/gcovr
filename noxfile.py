@@ -26,6 +26,7 @@ from runpy import run_path
 import socket
 import sys
 from pathlib import Path
+import tempfile
 from time import sleep
 from typing import Tuple
 import requests
@@ -385,15 +386,14 @@ def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
     with session.chdir("build"):
         executable = get_executable_name().absolute()
-        # bash here is needed to be independent from the file extension (Windows).
-        session.run("bash", "-c", f"{executable} --help", external=True)
+        session.run(str(executable), "--help", external=True)
         session.log("Run all transformations to check if all the modules are packed")
         session.create_tmp()
         for format in OUTPUT_FORMATS:
             session.run(
-                "bash",
-                "-c",
-                f"{executable} --{format} $TMPDIR/out.{format}",
+                str(executable),
+                f"--{format}",
+                f"{tempfile.mktemp(suffix=format)}",
                 external=True,
             )
     if CI_RUN:
