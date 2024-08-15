@@ -1,0 +1,50 @@
+name: Set up Runner
+# Schema: https://json.schemastore.org/github-action.json
+
+inputs:
+  os:
+    type: string
+    description: 'The operating system of the runner'
+    required: true
+  gcc:
+    type: string
+    description: 'The GCC version to use'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install build commands, GCC and libxml2 (Linux)
+      if: ${{ startsWith(inputs.os,'ubuntu-') }}
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt-get install -y \
+          make \
+          ninja-build \
+          ${{ inputs.gcc }} \
+          $(echo ${{ inputs.gcc }} | sed -e 's/gcc/g\+\+/') \
+          libxml2-utils
+
+    - name: Install msys with GCC (Windows)
+      if: ${{ startsWith(inputs.os,'windows-') }}
+      uses: msys2/setup-msys2@v2
+      with:
+        install: gcc make
+        cache: true
+
+    - name: Install ninja (Windows)
+      if: ${{ startsWith(inputs.os,'windows-') }}
+      shell: bash
+      run: |
+        choco install ninja
+
+    - name: Install ninja and libxml2 (MacOs)
+      if: ${{ startsWith(inputs.os,'macos-') }}
+      shell: bash
+      run: |
+        export HOMEBREW_NO_AUTO_UPDATE=1
+        export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+        brew update
+        brew install ninja
+        brew install libxml2

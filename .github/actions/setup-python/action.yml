@@ -1,0 +1,35 @@
+name: Set up Python
+# Schema: https://json.schemastore.org/github-action.json
+
+inputs:
+  os:
+    type: string
+    description: 'The operating system of the runner'
+    required: true
+  python-version:
+    type: string
+    description: 'The Python version to use'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Get pip cache dir
+      id: pip-cache
+      run: |
+        echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Cache pip
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ inputs.os }}-python${{ inputs.python-version }}-pip-${{ hashFiles('noxfile.py', 'doc/requirements.txt') }}
+        restore-keys: |
+          ${{ inputs.os }}-python${{ inputs.python-version }}-pip

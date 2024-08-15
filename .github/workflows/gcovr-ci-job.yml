@@ -1,0 +1,166 @@
+name: Run gcovr CI job
+# Schema: https://json.schemastore.org/github-action.json
+
+on:
+  workflow_call:
+    inputs:
+      container:
+        type: boolean
+        description: 'Running in docker container'
+        default: false
+      os:
+        type: string
+        description: 'The operating system of the runner'
+        default: 'ubuntu-22.04'  # Default used for container
+      gcc:
+        type: string
+        description: 'The GCC version to use'
+        required: true
+      python-version:
+        type: string
+        description: 'The Python version to use'
+        required: false  # Only needed if not in container
+      upload-wheel:
+        type: boolean
+        description: 'Upload the wheel file'
+        default: false
+      upload-app:
+        type: boolean
+        description: 'Upload the standalone application'
+        default: false
+    secrets:
+      CODECOV_TOKEN:
+        required: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  gcovr-ci-job:
+    runs-on: ${{ inputs.container && 'ubuntu-22.04' || inputs.os }}
+    env:
+      FORCE_COLOR: "1"
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Runner
+        if: ${{ !inputs.container }}
+        uses: "./.github/actions/setup-runner"
+        with:
+          os: ${{ inputs.os}}
+          gcc: ${{ inputs.gcc }}
+
+      - name: Set up Python
+        if: ${{ !inputs.container }}
+        uses: "./.github/actions/setup-python"
+        with:
+          os: ${{ inputs.os }}
+          python-version: ${{ inputs.python-version }}
+
+      - name: Set up environment
+        run: |
+          # Enable coverage for specific target configurations
+          if [ "${{ inputs.container }}" == "true" ] ; then
+            case "${{ inputs.gcc }}" in
+              gcc-5)    USE_COVERAGE=true ;;
+              gcc-14)   USE_COVERAGE=true ;;
+              clang-10) USE_COVERAGE=true ;;
+              clang-15) USE_COVERAGE=true ;;
+              *)        USE_COVERAGE=false ;;
+            esac
+          else
+            case "${{ inputs.os }}/${{ inputs.gcc }}/${{ inputs.python-version }}" in
+              ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
+              windows-2019/gcc-8/3.12)  USE_COVERAGE=true ;;
+              macos-14/gcc/3.9)         USE_COVERAGE=true ;;
+              macos-14/gcc-13/3.12)     USE_COVERAGE=true ;;
+              *)                        USE_COVERAGE=false ;;
+            esac
+          fi
+          echo "USE_COVERAGE=$USE_COVERAGE" >> $GITHUB_ENV
+
+          # Set the CC environment
+          echo "CC=${{ inputs.gcc }}" >> $GITHUB_ENV
+
+      - name: Expose GitHub Runtime for Docker cache
+        uses: crazy-max/ghaction-github-runtime@v3
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install nox requests
+
+      - name: Build Docker
+        if: ${{ inputs.container }}
+        run: |
+          nox --non-interactive --session "docker_build_compiler(${{ inputs.gcc }})"
+
+      - name: Lint files
+        run: |
+          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session lint
+
+      - name: Test with pytest
+        run: |
+          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session tests --  --archive_differences
+
+      - name: Upload pytest test results
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: "diffs-${{ inputs.container && format('docker-{0}', inputs.gcc) || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version) }}"
+          path: tests/diff.zip
+
+      - name: Upload coverage to Codecov
+        if: ${{ (github.repository == 'gcovr/gcovr') && (env.USE_COVERAGE == 'true') }}
+        uses: codecov/codecov-action@v4
+        with:
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          disable_search: true
+          plugins: pycoverage
+          files: ./coverage.xml${{ inputs.container && ((inputs.gcc == 'gcc-5') || (inputs.gcc == 'clang-10')) && format(',./tests/nested/reference/{0}/coverage.lcov', inputs.gcc) || '' }}
+          name: "${{ inputs.container && 'docker' || inputs.os }}-${{ inputs.gcc }}"
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Generate documentation
+        if: ${{ (!inputs.container && (! startsWith(inputs.python-version,'pypy')) && (! startsWith(inputs.os,'windows-')) && (inputs.python-version != '3.8')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10')) }}
+        run: |
+          nox --non-interactive ${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session doc || exit 1
+
+          # Check if files are modified (outdated screenshots)
+          Status=$(git status --porcelain | grep -F '.jpeg' || exit 0)
+          if [ -n "$Status" ] ; then
+            echo "Following files are modified:"
+            echo "$Status"
+
+            echo "Please regenerate the screenshots!"
+            exit 1
+          fi
+          exit 0
+
+      - name: Build and check the wheel
+        run: |
+          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session build_wheel
+
+      - name: Upload wheel
+        if: ${{ inputs.upload-wheel == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcovr.whl
+          path: dist/*.whl
+
+      - name: Build and check standalone application
+        if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}
+        run: |
+          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session bundle_app
+
+      - name: Upload app bundle artifacts
+        if: ${{ inputs.upload-app == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ inputs.os }}
+          path: artifacts/gcovr*
