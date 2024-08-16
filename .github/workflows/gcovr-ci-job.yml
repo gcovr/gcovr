@@ -20,9 +20,9 @@ on:
         type: string
         description: 'The Python version to use'
         required: false  # Only needed if not in container
-      upload-wheel:
+      upload-dist:
         type: boolean
-        description: 'Upload the wheel file'
+        description: 'Upload the distribution'
         default: false
       upload-app:
         type: boolean
@@ -143,8 +143,8 @@ jobs:
         run: |
           nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session build_wheel
 
-      - name: Upload wheel
-        if: ${{ inputs.upload-wheel == true }}
+      - name: Upload distribution
+        if: ${{ inputs.upload-dist == true }}
         uses: actions/upload-artifact@v4
         with:
           name: dist

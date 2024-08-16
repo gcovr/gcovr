@@ -82,7 +82,7 @@ jobs:
       os: ${{ matrix.os }}
       gcc: ${{ matrix.gcc }}
       python-version: ${{ matrix.python-version }}
-      upload-wheel: ${{ matrix.upload-wheel || false }}  # Explicit set to false if not set
+      upload-dist: ${{ matrix.upload-dist || false }}  # Explicit set to false if not set
       upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
     secrets: inherit
 
@@ -117,7 +117,7 @@ jobs:
           - os: ubuntu-22.04
             gcc: gcc-11
             python-version: '3.12'
-            upload-wheel: true
+            upload-dist: true
             upload-app: true
 
           # Test minimum and maximum Python version on Windows.
@@ -133,7 +133,6 @@ jobs:
           - os: macos-12
             gcc: gcc
             python-version: '3.12'
-            upload-app: true
           - os: macos-13
             gcc: gcc
             python-version: '3.12'
@@ -231,7 +230,6 @@ jobs:
       - name: Download distribution files
         uses: actions/download-artifact@v4
         with:
-          path: dist
           pattern: dist
 
       - name: List distribution files
