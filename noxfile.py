@@ -236,6 +236,36 @@ def doc(session: nox.Session) -> None:
     readme_html = session.create_tmp() + "/README.html"
     session.run("rst2html5.py", "--strict", "README.rst", readme_html)
 
+    session.log("Create release_notes.md out of CHANGELOG.rst...")
+    changelog_rst = Path("CHANGELOG.rst")
+    with changelog_rst.open(encoding="utf-8") as fh_in:
+        lines = fh_in.readlines()
+
+    out_lines = []
+    iter_lines = iter(lines)
+    for line in iter_lines:
+        if line.startswith("------------"):
+            next(iter_lines)
+            break
+        if (line.rstrip())[:-1] == ":":
+            raise RuntimeError(f"Found section start before release ID: {line}")
+    else:
+        raise RuntimeError(f"Start of release changes not found in {changelog_rst}.")
+
+    for line in iter_lines:
+        if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
+            break
+        line, _ = re.subn(r"``", r"`", line)
+        line, _ = re.subn(r":option:", r"", line)
+        line, _ = re.subn(r":issue:`(\d+)`", r"#\1", line)
+        out_lines.append(line)
+    else:
+        raise RuntimeError(f"End of release changes not found in {changelog_rst}.")
+
+    release_notes_md = Path() / "doc" / "build" / "release_notes.md"
+    with release_notes_md.open("w", encoding="utf-8") as fh_out:
+        fh_out.writelines(out_lines)
+
 
 @nox.session
 def tests(session: nox.Session) -> None:
