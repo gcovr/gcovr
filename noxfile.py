@@ -297,6 +297,10 @@ def tests(session: nox.Session) -> None:
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("build")
+    # Remove old dist if present
+    dist_dir = Path("dist")
+    if dist_dir.exists():
+        shutil.rmtree(dist_dir)
     session.run("python", "-m", "build")
     session.notify(("check_wheel"))
 
