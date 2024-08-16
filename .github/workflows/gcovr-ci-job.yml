@@ -38,7 +38,7 @@ jobs:
     runs-on: ${{ inputs.container && 'ubuntu-22.04' || inputs.os }}
     env:
       FORCE_COLOR: "1"
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
