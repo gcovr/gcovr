@@ -86,8 +86,8 @@ grep -qF "GCOVR (Version $target_version)" doc/examples/example_html.details.htm
     || error "examples: Please regenerate: " \
             "cd doc/examples; ./example_html.sh > example_html.details.html"
 
-grep -qF "$(basename $0) \$EXTRA_CHECKLIST_ARGS $target_version" .github/workflows/deploy.yml \
-    || error ".github/workflows/deploy.yml: Please update the $0 version"
+grep -qF "$(basename $0) \$EXTRA_CHECKLIST_ARGS $target_version" .github/workflows/CI.yml \
+    || error ".github/workflows/CI.yml: Please update the $0 version"
 
 occurrences="$(
   grep -E '\.\. (versionadded|versionchanged|versionremoved|deprecated):: NEXT' \

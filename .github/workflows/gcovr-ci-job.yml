@@ -28,9 +28,6 @@ on:
         type: boolean
         description: 'Upload the standalone application'
         default: false
-    secrets:
-      CODECOV_TOKEN:
-        required: true
 
 defaults:
   run:
@@ -150,8 +147,8 @@ jobs:
         if: ${{ inputs.upload-wheel == true }}
         uses: actions/upload-artifact@v4
         with:
-          name: gcovr.whl
-          path: dist/*.whl
+          name: dist
+          path: dist/**
 
       - name: Build and check standalone application
         if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}
@@ -163,4 +160,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-${{ inputs.os }}
-          path: artifacts/gcovr*
+          path: build/gcovr*

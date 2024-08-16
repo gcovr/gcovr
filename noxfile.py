@@ -26,7 +26,6 @@ from runpy import run_path
 import socket
 import sys
 from pathlib import Path
-import tempfile
 from time import sleep
 from typing import Tuple
 import requests
@@ -299,10 +298,6 @@ def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("build")
     session.run("python", "-m", "build")
-    dist_cache = f"{session.cache_dir}/dist"
-    if os.path.isdir(dist_cache):
-        shutil.rmtree(dist_cache)
-    shutil.copytree("dist", dist_cache)
     session.notify(("check_wheel"))
 
 
@@ -310,21 +305,15 @@ def build_wheel(session: nox.Session) -> None:
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
     session.install("wheel", "twine")
-    with session.chdir(f"{session.cache_dir}/dist"):
+    with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
-        wheel = list(Path().glob("*.whl"))[0].absolute()
-        session.install(wheel)
+        session.install(list(Path().glob("*.whl"))[0])
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
     with session.chdir(session.create_tmp()):
         for format in OUTPUT_FORMATS:
             session.run("gcovr", f"--{format}", f"out.{format}", external=True)
-
-    if CI_RUN and platform.system() != "Windows":
-        dest_path = Path() / "dist" / wheel.name
-        dest_path.parent.mkdir(parents=True, exist_ok=True)
-        wheel.rename(dest_path)
 
 
 @nox.session
@@ -391,18 +380,14 @@ def check_bundled_app(session: nox.Session) -> None:
         executable = get_executable_name().absolute()
         session.run(str(executable), "--help", external=True)
         session.log("Run all transformations to check if all the modules are packed")
-        session.create_tmp()
-        for format in OUTPUT_FORMATS:
-            session.run(
-                str(executable),
-                f"--{format}",
-                f"{tempfile.mktemp(suffix=format)}",
-                external=True,
-            )
-    if CI_RUN:
-        dest_path = Path() / "artifacts" / executable.name
-        dest_path.parent.mkdir(parents=True, exist_ok=True)
-        executable.rename(dest_path)
+        with session.chdir(session.create_tmp()):
+            for format in OUTPUT_FORMATS:
+                session.run(
+                    str(executable),
+                    f"--{format}",
+                    f"out.{format}",
+                    external=True,
+                )
 
 
 @nox.session()
