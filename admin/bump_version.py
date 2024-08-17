@@ -307,7 +307,7 @@ def main():
                 handlers.append(addCopyrightHeaderToPythonFile)
             if filename == "__main__.py":
                 handlers.append(updateCopyrightString)
-            if filename == "deploy.yml":
+            if filename == "CI.yml":
                 handlers.append(updateCallOfReleaseChecklist)
             if filename == "README.rst":
                 handlers.append(updateReadme)

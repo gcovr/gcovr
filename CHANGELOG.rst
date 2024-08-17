@@ -46,7 +46,7 @@ Internal changes:
 - Skip coverage upload if executed in a fork. (:issue:`930`)
 - Only execute pipeline if pushed on main and add button to execute workflow manual. (:issue:`930`)
 - Check spelling in test pipeline. (:issue:`932`)
-- Merge the test and deploy workflow. (:issue:`946`)
+- Merge the test and deploy workflow to a single CI workflow. (:issue:`946`, :issue:`947`)
 
 7.2 (24 February 2024)
 ----------------------

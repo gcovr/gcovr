@@ -20,17 +20,18 @@ on:
         type: string
         description: 'The Python version to use'
         required: false  # Only needed if not in container
-      upload-wheel:
+      upload-dist:
         type: boolean
-        description: 'Upload the wheel file'
+        description: 'Upload the distribution'
         default: false
       upload-app:
         type: boolean
         description: 'Upload the standalone application'
         default: false
-    secrets:
-      CODECOV_TOKEN:
-        required: true
+      upload-release-notes:
+        type: boolean
+        description: 'Upload the release notes generated from markdown'
+        default: false
 
 defaults:
   run:
@@ -41,7 +42,9 @@ jobs:
     runs-on: ${{ inputs.container && 'ubuntu-22.04' || inputs.os }}
     env:
       FORCE_COLOR: "1"
-    timeout-minutes: 10
+      NOX_CONTAINER_ARGUMENTS: ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
+      GENERATE_DOCUMENTATION: ${{ (!inputs.container && (! startsWith(inputs.python-version,'pypy')) && (! startsWith(inputs.os,'windows-')) && (inputs.python-version != '3.8')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10')) }}
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -99,11 +102,11 @@ jobs:
 
       - name: Lint files
         run: |
-          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session lint
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session lint
 
       - name: Test with pytest
         run: |
-          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session tests --  --archive_differences
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session tests --  --archive_differences
 
       - name: Upload pytest test results
         if: ${{ failure() }}
@@ -127,9 +130,9 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Generate documentation
-        if: ${{ (!inputs.container && (! startsWith(inputs.python-version,'pypy')) && (! startsWith(inputs.os,'windows-')) && (inputs.python-version != '3.8')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10')) }}
+        if: ${{ env.GENERATE_DOCUMENTATION == 'true' }}
         run: |
-          nox --non-interactive ${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session doc || exit 1
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session doc || exit 1
 
           # Check if files are modified (outdated screenshots)
           Status=$(git status --porcelain | grep -F '.jpeg' || exit 0)
@@ -142,25 +145,32 @@ jobs:
           fi
           exit 0
 
-      - name: Build and check the wheel
-        run: |
-          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session build_wheel
-
-      - name: Upload wheel
-        if: ${{ inputs.upload-wheel == true }}
+      - name: Upload release notes
+        if: ${{ inputs.upload-release-notes == true && (env.GENERATE_DOCUMENTATION == 'true') }}
         uses: actions/upload-artifact@v4
         with:
-          name: gcovr.whl
-          path: dist/*.whl
+          name: release-notes
+          path: doc/build/release_notes.md
+
+      - name: Build and check the wheel
+        run: |
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
+
+      - name: Upload distribution
+        if: ${{ inputs.upload-dist == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/**
 
       - name: Build and check standalone application
         if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}
         run: |
-          nox --non-interactive${{ inputs.container && format(' --session "docker_run_compiler({0})" --', inputs.gcc) || '' }} --session bundle_app
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session bundle_app
 
       - name: Upload app bundle artifacts
         if: ${{ inputs.upload-app == true }}
         uses: actions/upload-artifact@v4
         with:
           name: app-${{ inputs.os }}
-          path: artifacts/gcovr*
+          path: build/gcovr*

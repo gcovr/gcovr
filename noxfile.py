@@ -26,7 +26,6 @@ from runpy import run_path
 import socket
 import sys
 from pathlib import Path
-import tempfile
 from time import sleep
 from typing import Tuple
 import requests
@@ -237,6 +236,36 @@ def doc(session: nox.Session) -> None:
     readme_html = session.create_tmp() + "/README.html"
     session.run("rst2html5.py", "--strict", "README.rst", readme_html)
 
+    session.log("Create release_notes.md out of CHANGELOG.rst...")
+    changelog_rst = Path("CHANGELOG.rst")
+    with changelog_rst.open(encoding="utf-8") as fh_in:
+        lines = fh_in.readlines()
+
+    out_lines = []
+    iter_lines = iter(lines)
+    for line in iter_lines:
+        if line.startswith("------------"):
+            next(iter_lines)
+            break
+        if (line.rstrip())[:-1] == ":":
+            raise RuntimeError(f"Found section start before release ID: {line}")
+    else:
+        raise RuntimeError(f"Start of release changes not found in {changelog_rst}.")
+
+    for line in iter_lines:
+        if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
+            break
+        line, _ = re.subn(r"``", r"`", line)
+        line, _ = re.subn(r":option:", r"", line)
+        line, _ = re.subn(r":issue:`(\d+)`", r"#\1", line)
+        out_lines.append(line)
+    else:
+        raise RuntimeError(f"End of release changes not found in {changelog_rst}.")
+
+    release_notes_md = Path() / "doc" / "build" / "release_notes.md"
+    with release_notes_md.open("w", encoding="utf-8") as fh_out:
+        fh_out.writelines(out_lines)
+
 
 @nox.session
 def tests(session: nox.Session) -> None:
@@ -298,11 +327,11 @@ def tests(session: nox.Session) -> None:
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("build")
+    # Remove old dist if present
+    dist_dir = Path("dist")
+    if dist_dir.exists():
+        shutil.rmtree(dist_dir)
     session.run("python", "-m", "build")
-    dist_cache = f"{session.cache_dir}/dist"
-    if os.path.isdir(dist_cache):
-        shutil.rmtree(dist_cache)
-    shutil.copytree("dist", dist_cache)
     session.notify(("check_wheel"))
 
 
@@ -310,21 +339,15 @@ def build_wheel(session: nox.Session) -> None:
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
     session.install("wheel", "twine")
-    with session.chdir(f"{session.cache_dir}/dist"):
+    with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
-        wheel = list(Path().glob("*.whl"))[0].absolute()
-        session.install(wheel)
+        session.install(list(Path().glob("*.whl"))[0])
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
     with session.chdir(session.create_tmp()):
         for format in OUTPUT_FORMATS:
             session.run("gcovr", f"--{format}", f"out.{format}", external=True)
-
-    if CI_RUN and platform.system() != "Windows":
-        dest_path = Path() / "dist" / wheel.name
-        dest_path.parent.mkdir(parents=True, exist_ok=True)
-        wheel.rename(dest_path)
 
 
 @nox.session
@@ -391,18 +414,14 @@ def check_bundled_app(session: nox.Session) -> None:
         executable = get_executable_name().absolute()
         session.run(str(executable), "--help", external=True)
         session.log("Run all transformations to check if all the modules are packed")
-        session.create_tmp()
-        for format in OUTPUT_FORMATS:
-            session.run(
-                str(executable),
-                f"--{format}",
-                f"{tempfile.mktemp(suffix=format)}",
-                external=True,
-            )
-    if CI_RUN:
-        dest_path = Path() / "artifacts" / executable.name
-        dest_path.parent.mkdir(parents=True, exist_ok=True)
-        executable.rename(dest_path)
+        with session.chdir(session.create_tmp()):
+            for format in OUTPUT_FORMATS:
+                session.run(
+                    str(executable),
+                    f"--{format}",
+                    f"out.{format}",
+                    external=True,
+                )
 
 
 @nox.session()

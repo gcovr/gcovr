@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: CI
+name: Run GCOVR CI
 
 on:
   workflow_dispatch: # For manual triggering
@@ -10,19 +10,14 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened, edited]
-  release:
-    types: [published]
 
 jobs:
 
   milestone-check:
     runs-on: ubuntu-22.04
-
     continue-on-error: true
-
     env:
       PR_MILESTONE: "${{ github.event.pull_request.milestone.number }}"
-
     steps:
       - uses: actions/checkout@v4
       - name: Check if PR is assigned to a milestone
@@ -34,13 +29,12 @@ jobs:
           fi
           exit 0
 
+
   changelog-check:
     runs-on: ubuntu-22.04
-
     env:
       PR_BODY: "${{ github.event.pull_request.body }}"
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
-
     steps:
       - uses: actions/checkout@v4
       - name: Check if PR is mentioned in changelog
@@ -69,9 +63,9 @@ jobs:
           fi
           exit 0
 
+
   spell-check:
     runs-on: ubuntu-22.04
-
     steps:
       - uses: actions/checkout@v4
       - name: Install spellchecker
@@ -81,7 +75,6 @@ jobs:
         run: |
           cspell
 
-
   host:
     needs: [milestone-check, changelog-check, spell-check]
     uses: ./.github/workflows/gcovr-ci-job.yml
@@ -89,10 +82,10 @@ jobs:
       os: ${{ matrix.os }}
       gcc: ${{ matrix.gcc }}
       python-version: ${{ matrix.python-version }}
-      upload-wheel: ${{ matrix.upload-wheel || false }}  # Explicit set to false if not set
+      upload-dist: ${{ matrix.upload-dist || false }}  # Explicit set to false if not set
       upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      upload-release-notes: ${{ matrix.upload-release-notes || false }}  # Explicit set to false if not set
+    secrets: inherit
 
     # Testing strategy
     # ----------------
@@ -125,8 +118,9 @@ jobs:
           - os: ubuntu-22.04
             gcc: gcc-11
             python-version: '3.12'
-            upload-wheel: true
+            upload-dist: true
             upload-app: true
+            upload-release-notes: true
 
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
@@ -141,7 +135,6 @@ jobs:
           - os: macos-12
             gcc: gcc
             python-version: '3.12'
-            upload-app: true
           - os: macos-13
             gcc: gcc
             python-version: '3.12'
@@ -154,14 +147,14 @@ jobs:
             python-version: '3.12'
             upload-app: true
 
+
   docker:
     needs: [milestone-check, changelog-check, spell-check]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       container: true
       gcc: ${{ matrix.gcc }}
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    secrets: inherit
 
     strategy:
       fail-fast: false
@@ -169,22 +162,113 @@ jobs:
         gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12, gcc-13, gcc-14, clang-10, clang-13, clang-14, clang-15]
 
 
-  upload-release-artifacts:
-    name: Upload standalone applications as release artifacts
+  deployment:
+    needs: [host, docker]
+
     runs-on: ubuntu-22.04
-    if: github.event_name == 'release'
     permissions:
       contents: write
-    needs: [host, docker]
+    env:
+      FORCE_COLOR: "1"
+    timeout-minutes: 10
     steps:
-      - name: Download App Artifacts
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: "./.github/actions/setup-python"
+        with:
+          os: ubuntu-22.04
+          python-version: 3.12
+
+        # Need to prevent creation of an existing tag
+      - name: Fetch all tags
+        run: |
+          git fetch --force --tags --depth=1
+
+      - name: Create new tag
+        run: |
+          # Create the new tag and check if it needs to be pushed
+
+          # Get the version
+          GcovrVersion="$(sed -n 's/__version__.*"\(.*\)"/\1/ p' gcovr/version.py)"
+          echo "GCOVR_VERSION=$GcovrVersion" >> $GITHUB_ENV
+
+          # Set git user info
+          git config --global user.email "noreply@gcovr.com"
+          git config --global user.name "gcovr authors"
+
+          # Try to create the tag and print the output. It's only pushed if it's a real release
+          git tag -a "$GcovrVersion" -m "$GcovrVersion ($(date -I))"
+          git tag --list -n "$GcovrVersion"
+
+          # Check if it is a new release
+          VersionPostfix="$(echo "$GcovrVersion" | sed -n 's/^[0-9]*\.[0-9]*// p')"
+          if [ -z "$VersionPostfix" ]; then
+            echo "TAG_NEEDS_TO_BE_PUSHED=true" >> $GITHUB_ENV
+          else
+            echo "TAG_NEEDS_TO_BE_PUSHED=false" >> $GITHUB_ENV
+          fi
+
+      - name: For a dry run, don't verify tags and documentation
+        if: ${{ env.TAG_NEEDS_TO_BE_PUSHED == 'false' }}
+        run: |
+          echo "EXTRA_CHECKLIST_ARGS=--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
+
+      - name: Run release checklist
+        run: |
+          admin/release_checklist.sh $EXTRA_CHECKLIST_ARGS 7.2+main
+
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          path: app
+          path: build
           pattern: app-*
           merge-multiple: true
 
-      - name: Upload Release Artifacts
+      - name: List standalone applications
+        run: |
+          ls -al build
+
+      - name: Download distribution files
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          name: dist
+
+      - name: List distribution files
+        run: |
+          ls -al dist
+
+      - name: Download release notes
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+
+      - name: Set release notes as job summary
+        run: |
+          cat release_notes.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Push new tag
+        if: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && env.TAG_NEEDS_TO_BE_PUSHED == 'true' }}
+        run: |
+          # Set git user info
+          git config --global user.email "noreply@gcovr.com"
+          git config --global user.name "gcovr authors"
+
+          git push origin "refs/tags/$GCOVR_VERSION"
+
+      - name: Create release and upload build artifacts
+        if: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (env.TAG_NEEDS_TO_BE_PUSHED == 'true') }}
         uses: softprops/action-gh-release@v2
         with:
-          files: app/*
+          tag_name: ${{ env.GCOVR_VERSION }}
+          body_path: release_notes.md
+          files: build/*
+
+      - name: Publish to PyPi
+        if: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (env.TAG_NEEDS_TO_BE_PUSHED == 'true') }}
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          python -m nox --session upload_wheel
