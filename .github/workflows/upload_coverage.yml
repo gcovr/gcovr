@@ -1,0 +1,28 @@
+name: Upload coverage
+
+on:
+  workflow_run:
+    workflows: ['Run GCOVR Ci']
+    types:
+      - completed
+
+jobs:
+  upload:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download artifacts
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          name: coverage-.*
+          name_is_regexp: true
+          run_id: ${{ github.event.workflow_run.id }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload coverage files
+        run: |
+          # Search the coverage files and upload them
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python $(find . -name 'coverage.xml' -print | sed -e 's/^/-r /')
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C -r $(find . -name 'coverage.lcov' -print | sed -e 's/^/-r /')
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) final
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
