@@ -31,6 +31,7 @@
         "CFLAGS",
         "choco",
         "cobertura",
+        "codacy",
         "codecov",
         "codeline",
         "Codespaces",

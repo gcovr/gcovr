@@ -47,6 +47,7 @@ Internal changes:
 - Only execute pipeline if pushed on main and add button to execute workflow manual. (:issue:`930`)
 - Check spelling in test pipeline. (:issue:`932`)
 - Merge the test and deploy workflow to a single CI workflow. (:issue:`946`, :issue:`947`)
+- Add Codacy to CI workflow for tracking coverage and code quality. (:issue:`948`)
 
 7.2 (24 February 2024)
 ----------------------
