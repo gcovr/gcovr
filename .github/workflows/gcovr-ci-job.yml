@@ -129,20 +129,6 @@ jobs:
           name: "coverage-lcov-${{ inputs.container && format('docker-{0}', inputs.gcc) || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version) }}"
           path: ${{ format('./tests/nested/reference/{0}/coverage.lcov', inputs.gcc) }}
 
-      - name: Upload coverage to Codecov
-        if: ${{ (github.repository == 'gcovr/gcovr') && (env.USE_COVERAGE == 'true') }}
-        uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
-        with:
-          env_vars: OS,PYTHON
-          fail_ci_if_error: false
-          disable_search: true
-          plugins: pycoverage
-          files: ./coverage.xml${{ inputs.container && ((inputs.gcc == 'gcc-5') || (inputs.gcc == 'clang-10')) && format(',./tests/nested/reference/{0}/coverage.lcov', inputs.gcc) || '' }}
-          name: "${{ inputs.container && 'docker' || inputs.os }}-${{ inputs.gcc }}"
-          verbose: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
       - name: Generate documentation
         if: ${{ env.GENERATE_DOCUMENTATION == 'true' }}
         run: |
