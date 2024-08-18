@@ -39,7 +39,8 @@ class UseBranchMetricAction(GcovrDeprecatedConfigOptionAction):
 
 
 class TxtHandler(BaseHandler):
-    def get_options() -> List[GcovrConfigOption]:
+    @classmethod
+    def get_options(cls) -> List[GcovrConfigOption]:
         return [
             # Global options needed for report
             "exclude_calls",

@@ -24,7 +24,8 @@ from ..coverage import CovData
 
 
 class BaseHandler:
-    def get_options() -> List[GcovrConfigOption]:
+    @classmethod
+    def get_options(cls) -> List[GcovrConfigOption]:
         return []
 
     def __init__(self, options: Options):
