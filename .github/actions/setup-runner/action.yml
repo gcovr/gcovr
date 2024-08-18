@@ -28,7 +28,7 @@ runs:
 
     - name: Install msys with GCC (Windows)
       if: ${{ startsWith(inputs.os,'windows-') }}
-      uses: msys2/setup-msys2@v2
+      uses: msys2/setup-msys2@ddf331adaebd714795f1042345e6ca57bd66cea8
       with:
         install: gcc make
         cache: true
