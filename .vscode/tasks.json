@@ -84,6 +84,6 @@
             "type": "shell",
             "command": "nox -s 'docker_compiler(${input:Compiler})'",
             "group": "build"
-        },
+        }
     ]
 }

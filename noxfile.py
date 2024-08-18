@@ -30,7 +30,7 @@ from time import sleep
 from typing import Tuple
 import requests
 import shutil
-import subprocess
+import subprocess  # nosec # Commands are trusted.
 import zipfile
 import nox
 
@@ -108,7 +108,9 @@ def get_gcc_versions() -> Tuple[str]:
 
     for command in commands:
         if shutil.which(command):
-            output = subprocess.check_output([command, "--version"]).decode()
+            output = subprocess.check_output(
+                [command, "--version"]
+            ).decode()  # nosec # The command is not a user input
 
             # cspell:ignore Linaro xctoolchain
             # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
@@ -172,15 +174,12 @@ def qa(session: nox.Session) -> None:
 @nox.session(python=False)
 def lint(session: nox.Session) -> None:
     """Run the linters."""
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = DEFAULT_LINT_ARGUMENTS
-    session.notify("flake8", args)
+    session.notify("flake8")
+    session.notify("bandit")
 
     # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
     if platform.python_implementation() == "CPython":
-        session.notify("black", ["--diff", "--check", *args])
+        session.notify("black")
     else:
         session.log(
             f"Skip black because of platform {platform.python_implementation()}."
@@ -199,13 +198,25 @@ def flake8(session: nox.Session) -> None:
 
 
 @nox.session
+def bandit(session: nox.Session) -> None:
+    """Run bandit, a code formatter and format checker."""
+    session.install("bandit[toml]")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = ["-r", *DEFAULT_LINT_ARGUMENTS]
+    session.run("bandit", "-c", "pyproject.toml", *args)
+
+
+@nox.session
 def black(session: nox.Session) -> None:
     """Run black, a code formatter and format checker."""
     session.install(BLACK_PINNED_VERSION)
     if session.posargs:
-        session.run("python", "-m", "black", *session.posargs)
+        args = session.posargs
     else:
-        session.run("python", "-m", "black", *DEFAULT_LINT_ARGUMENTS)
+        args = ["--diff", "--check", *DEFAULT_LINT_ARGUMENTS]
+    session.run("black", *args)
 
 
 @nox.session
@@ -439,7 +450,7 @@ def html2jpeg(session: nox.Session):
     sock.close()
 
     with ExitStack() as defer:
-        container_id = subprocess.check_output(
+        container_id = subprocess.check_output(  # nosec # We run on several system and do not know the full path
             [
                 "docker",
                 "run",
@@ -477,6 +488,7 @@ def html2jpeg(session: nox.Session):
                 url,
                 headers={"Content-Type": "application/json"},
                 json=payload,
+                timeout=10,
             )
             response.raise_for_status()
             with open(jpeg, mode="bw") as fh_out:

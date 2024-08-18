@@ -202,7 +202,8 @@ def _get_value_from_config_entry(
         return option.const
     if use_const is False:
         return option.default
-    assert use_const is None
+    if use_const is not None:  # pragma: no cover
+        raise AssertionError("Oops, sanity check failed.")
 
     # parse the value
     value: object
@@ -210,9 +211,10 @@ def _get_value_from_config_entry(
         value = cfg_entry.value_as_bool
 
     elif option.type is not None:
-        assert (
-            cfg_entry.filename is not None
-        ), "conversion function must derive base directory from filename"
+        if cfg_entry.filename is None:  # pragma: no cover
+            AssertionError(
+                "Conversion function must derive base directory from filename"
+            )
         basedir = os.path.dirname(cfg_entry.filename)
         converter = _get_converter_function(option.type, basedir=basedir)
 
@@ -222,9 +224,10 @@ def _get_value_from_config_entry(
             raise cfg_entry.error(str(err))
 
     elif option.name == "json_add_tracefile":  # Special case for patterns
-        assert (
-            cfg_entry.filename is not None
-        ), "conversion function must derive base directory from filename"
+        if cfg_entry.filename is None:  # pragma: no cover
+            AssertionError(
+                "Conversion function must derive base directory from filename"
+            )
         basedir = os.path.dirname(cfg_entry.filename)
         value = os.path.join(basedir, cfg_entry.value)
     else:
@@ -294,14 +297,15 @@ def _assign_value_to_dict(
         )
         return
 
-    assert False, f"unexpected action for {option.name}: {option.action!r}"
+    raise AssertionError(f"Unexpected action for {option.name}: {option.action!r}")
 
 
 def merge_options_and_set_defaults(
     partial_namespaces: List[Dict[str, Any]],
-    all_options: List[GcovrConfigOption] = None,
+    all_options: Optional[List[GcovrConfigOption]] = None,
 ) -> Options:
-    assert partial_namespaces, "at least one namespace required"
+    if not partial_namespaces:  # pragma: no cover
+        raise AssertionError("At least one namespace required")
 
     if all_options is None:
         all_options = GCOVR_CONFIG_OPTIONS

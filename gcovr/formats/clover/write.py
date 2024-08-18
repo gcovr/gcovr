@@ -23,7 +23,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import logging
 from typing import Dict
-from lxml import etree
+from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
 

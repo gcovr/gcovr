@@ -21,7 +21,7 @@ import logging
 import os
 import re
 import shlex
-import subprocess
+import subprocess  # nosec # Commands are trusted.
 import io
 from threading import Lock
 from typing import Callable, List, Optional, Set, Tuple
@@ -505,10 +505,10 @@ class GcovProgram:
                 # If the first element of cmd - the executable name - has embedded spaces
                 # (other than within quotes), it probably includes extra arguments.
                 GcovProgram.__cmd_split = shlex.split(GcovProgram.__cmd)
-            else:
-                assert (
-                    GcovProgram.__cmd == cmd
-                ), f"Gcov command must not be changed, expected '{GcovProgram.__cmd}', got '{cmd}'"
+            elif GcovProgram.__cmd != cmd:
+                raise RuntimeError(
+                    f"Gcov command must not be changed, expected '{GcovProgram.__cmd}', got '{cmd}'"
+                )
 
     def identify_and_cache_capabilities(self) -> None:
         with GcovProgram.LockContext(GcovProgram.__lock):
@@ -576,7 +576,7 @@ class GcovProgram:
         cmd = GcovProgram.__cmd_split + args
         LOGGER.debug(f"Running gcov: '{' '.join(cmd)}' in '{kwargs['cwd']}'")
 
-        return subprocess.Popen(
+        return subprocess.Popen(  # nosec # We know that we execute gcov tool
             cmd,
             env=env,
             stdout=subprocess.PIPE,
@@ -653,12 +653,12 @@ def run_gcov_and_process_files(
             # Do not know how to force this exception therefore ignore coverage.
             try:
                 filename = os.path.relpath(filename, chdir)
-            except Exception:  # pragma: no cover
+            except Exception:  # pragma: no cover # nosec
                 pass
             object_directory = os.path.dirname(abs_filename)
             try:
                 object_directory = os.path.relpath(object_directory, chdir)
-            except Exception:  # pragma: no cover
+            except Exception:  # pragma: no cover # nosec
                 pass
             out, err = gcov_cmd.run_with_args(
                 [

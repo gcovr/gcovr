@@ -48,6 +48,7 @@ Internal changes:
 - Check spelling in test pipeline. (:issue:`932`)
 - Merge the test and deploy workflow to a single CI workflow. (:issue:`946`, :issue:`947`)
 - Add Codacy to CI workflow for tracking coverage and code quality. (:issue:`948`)
+- Add ``bandit`` to the linters. (:issue:`949`)
 
 7.2 (24 February 2024)
 ----------------------

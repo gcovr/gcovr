@@ -20,7 +20,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict
-from lxml import etree
+from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
 
@@ -155,8 +155,9 @@ def _line_element(line: LineCoverage) -> etree.Element:
 
     if not branch.total:
         elem.set("branch", "false")
+    elif branch.percent is None:  # pragma: no cover
+        raise AssertionError("Percent coverage must not be 'None'.")
     else:
-        assert branch.percent is not None
         elem.set("branch", "true")
         elem.set(
             "condition-coverage",
@@ -175,7 +176,8 @@ def _conditions_element(branch: CoverageStat) -> etree.Element:
 
 def _condition_element(branch: CoverageStat) -> etree.Element:
     coverage = branch.percent
-    assert coverage is not None
+    if coverage is None:  # pragma: no cover
+        raise AssertionError("Percent coverage must not be 'None'.")
 
     elem = etree.Element("condition")
     elem.set("number", "0")

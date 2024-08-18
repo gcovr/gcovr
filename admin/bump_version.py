@@ -23,13 +23,13 @@ import copy
 import os
 import logging
 import re
-import subprocess
+import subprocess  # nosec # Commands are trusted.
 import time
 from typing import List
 
 import gcovr.version
 
-DATE = subprocess.check_output(
+DATE = subprocess.check_output(  # nosec # We run on several system and do not know the full path
     ["git", "log", "-1", "--format=format:%ad", "--date=short"],
     universal_newlines=True,
 )

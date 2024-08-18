@@ -20,7 +20,7 @@
 import logging
 import os
 from glob import glob
-from lxml import etree
+from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
 from ..gcov.read import apply_filter_include_exclude
@@ -68,7 +68,9 @@ def read_report(options: Options) -> CovData:
         LOGGER.debug(f"Processing XML file: {filename}")
 
         try:
-            root = etree.parse(filename).getroot()
+            root = etree.parse(
+                filename
+            ).getroot()  # nosec # We parse the file given by the user
         except Exception as e:
             raise RuntimeError(f"Bad --cobertura-add-tracefile option.\n{e}")
 

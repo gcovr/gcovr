@@ -139,7 +139,8 @@ class BranchCoverage:
         fallthrough: bool = False,
         throw: bool = False,
     ) -> None:
-        assert count >= 0
+        if count < 0:  # pragma: no cover
+            raise AssertionError("count must not be a negative value.")
 
         self.blockno = blockno
         self.count = count
@@ -198,9 +199,11 @@ class DecisionCoverageConditional:
     __slots__ = "count_true", "count_false"
 
     def __init__(self, count_true: int, count_false: int) -> None:
-        assert count_true >= 0
+        if count_true < 0:  # pragma: no cover
+            raise AssertionError("count_true must not be a negative value.")
         self.count_true = count_true
-        assert count_false >= 0
+        if count_false < 0:  # pragma: no cover
+            raise AssertionError("count_true must not be a negative value.")
         self.count_false = count_false
 
 
@@ -215,7 +218,8 @@ class DecisionCoverageSwitch:
     __slots__ = ("count",)
 
     def __init__(self, count: int) -> None:
-        assert count >= 0
+        if count < 0:  # pragma: no cover
+            raise AssertionError("count must not be a negative value.")
         self.count = count
 
 
@@ -256,7 +260,8 @@ class FunctionCoverage:
         blocks: float,
         excluded: bool = False,
     ) -> None:
-        assert count >= 0
+        if count < 0:  # pragma: no cover
+            raise AssertionError("count must not be a negative value.")
         self.name = name
         self.count: Dict[int, int] = {lineno: count}
         self.blocks: Dict[int, float] = {lineno: blocks}
@@ -296,8 +301,10 @@ class LineCoverage:
     def __init__(
         self, lineno: int, count: int, excluded: bool = False, md5: str = None
     ) -> None:
-        assert lineno > 0
-        assert count >= 0
+        if lineno <= 0:  # pragma: no cover
+            raise AssertionError("Line number must be a positive value.")
+        if count < 0:  # pragma: no cover
+            raise AssertionError("count must not be a negative value.")
 
         self.lineno: int = lineno
         self.count: int = count

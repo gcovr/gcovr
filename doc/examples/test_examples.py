@@ -21,7 +21,7 @@ import glob
 import os
 import platform
 import pytest
-import subprocess
+import subprocess  # nosec # Commands are trusted.
 
 from tests.test_gcovr import SCRUBBERS, assert_equals
 
@@ -80,7 +80,7 @@ def test_example(example):
 
     start_dirname = os.getcwd()
     os.chdir(data_dirname)
-    subprocess.run(cmd)
+    subprocess.run(cmd)  # nosec # The command is not a user input
     with open(baseline_file, newline="") as f:
         current = scrub(f.read())
     current = scrub(current)
@@ -90,4 +90,6 @@ def test_example(example):
 
 
 def test_timestamps_example():
-    subprocess.check_call(["sh", "example_timestamps.sh"], cwd=data_dirname)
+    subprocess.check_call(  # nosec # We run on several system and do not know the full path
+        ["sh", "example_timestamps.sh"], cwd=data_dirname
+    )

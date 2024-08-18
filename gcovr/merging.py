@@ -107,7 +107,7 @@ def get_merge_mode_from_options(options):
         return FUNCTION_MAX_LINE_MERGE_OPTIONS
     elif options.merge_mode_functions == "separate":
         return SEPARATE_FUNCTION_MERGE_OPTIONS
-    else:
+    else:  # pragma: no cover
         raise RuntimeError("Sanity check: Unknown merge mode.")
 
 
@@ -210,7 +210,8 @@ def merge_file(
     Precondition: both objects have same filename.
     """
 
-    assert left.filename == right.filename
+    if left.filename != right.filename:  # pragma: no cover
+        raise AssertionError("Filename must be equal")
 
     left.lines = _merge_dict(left.lines, right.lines, merge_line, options)
     left.functions = _merge_dict(
@@ -241,10 +242,12 @@ def merge_line(
 
     Precondition: both objects must have same lineno.
     """
-    assert left.lineno == right.lineno
+    if left.lineno != right.lineno:  # pragma: no cover
+        raise AssertionError("Line number must be equal.")
     # If both checksums exists compare them if only one exists, use it.
     if left.md5 is not None and right.md5 is not None:
-        assert left.md5 == right.md5
+        if left.md5 != right.md5:  # pragma: no cover
+            raise AssertionError("MD5 checksum must be equal.")
     elif right.md5 is not None:
         left.md5 = right.md5
 
@@ -288,7 +291,8 @@ def merge_function(
       - ``options.merge_function_use_line_max``
       - ``options.separate_function``
     """
-    assert left.name == right.name
+    if left.name != right.name:  # pragma: no cover
+        raise AssertionError("Function name must be equal.")
     if not options.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
@@ -329,8 +333,8 @@ def merge_function(
         lineno = min(*left.count.keys(), *right.count.keys())
     elif options.merge_function_use_line_max:
         lineno = max(*left.count.keys(), *right.count.keys())
-    else:
-        assert False, "Unknown merge mode"
+    else:  # pragma: no cover
+        raise AssertionError("Unknown merge mode")
 
     # Overwrite data with the sum at the desired line
     left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
@@ -393,7 +397,8 @@ def merge_call(
 
     Do not use 'left' or 'right' objects afterwards!
     """
-    assert left.callno == right.callno
+    if left.callno != right.callno:  # pragma: no cover
+        raise AssertionError("Call number must be equal.")
     left.covered |= right.covered
     return left
 

@@ -23,7 +23,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import os
 from typing import Dict
-from lxml import etree
+from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
 
@@ -136,7 +136,6 @@ def _line_element(line: LineCoverage) -> etree.Element:
     elem.set("nr", str(line.lineno))
 
     if branch.total:
-        assert branch.percent is not None
         elem.set("mb", str(branch.total - branch.covered))
         elem.set("cb", str(branch.covered))
 

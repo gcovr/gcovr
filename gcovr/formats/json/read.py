@@ -84,11 +84,10 @@ def read_report(options: Options) -> CovData:
             gcovr_json_data = json.load(json_file)
 
         version = str(gcovr_json_data["gcovr/format_version"])
-        assert (
-            version == versions.JSON_FORMAT_VERSION
-        ), "Wrong format version, got {} expected {}.".format(
-            version, versions.JSON_FORMAT_VERSION
-        )
+        if version != versions.JSON_FORMAT_VERSION:  # pragma: no cover
+            raise AssertionError(
+                f"Wrong format version, got {version} expected {versions.JSON_FORMAT_VERSION}."
+            )
 
         for gcovr_file in gcovr_json_data["files"]:
             file_path = os.path.join(
