@@ -39,7 +39,7 @@ jobs:
       - name: Generate list of coverage files for Codecov
         if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
         run: |
-          echo "COVERAGE_FILES=$(find . -name 'coverage.xml' -or -regex '.*/nested/reference/.*/coverage\.lcov' -print | sed -e '2, $ s/^/,/' | tr -d '\n')" >> $GITHUB_ENV
+          echo "COVERAGE_FILES=$((find . -name 'coverage.xml' -print && find . -regex '.*/nested/reference/.*/coverage\.lcov' -print ) | sed -e '2, $ s/^/,/' | tr -d '\n')" >> $GITHUB_ENV
 
       - name: Upload coverage files to Codecov
         if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
