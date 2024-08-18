@@ -10,6 +10,8 @@ jobs:
   upload:
     runs-on: ubuntu-22.04
     steps:
+      - uses: actions/checkout@v4
+
       - name: Download artifacts
         uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11
         with:
@@ -22,17 +24,25 @@ jobs:
         if: ${{ (github.repository == 'gcovr/gcovr') }}
         run: |
           # Search the coverage files and upload them
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python $(find . -name 'coverage.xml' -print | sed -e 's/^/-r /')
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C -r $(find . -name 'coverage.lcov' -print | sed -e 's/^/-r /')
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) final
-
-          # Comma separated list of files
-          echo "COVERAGE_FILES=$(( find . -name 'coverage.xml' -or -name 'coverage.lcov' -print ) | sed -e '2, $ s/^/,/') >> $GITHUB_ENV
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/-r /')
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov $(find . -name 'coverage.lcov' -print | sed -e 's/^/-r /')
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
+      - name: Finalize the upload to Codacy
+        if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
+        run: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) final
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+      - name: Generate list of coverage files for Codecov
+        if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
+        run: |
+          echo "COVERAGE_FILES=$(( find . -name 'coverage.xml' -or -name 'coverage.lcov' -print ) | sed -e '2, $ s/^/,/')" >> $GITHUB_ENV
+
       - name: Upload coverage files to Codecov
-        if: ${{ (github.repository == 'gcovr/gcovr') }}
+        if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
         uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
         with:
           env_vars: OS,PYTHON
