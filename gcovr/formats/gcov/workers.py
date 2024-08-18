@@ -93,7 +93,7 @@ class Workers(object):
     """
 
     def __init__(self, number: int, context: Callable[[], Dict[str, Any]]):
-        if number < 1:
+        if number < 1:  # pragma: no cover
             raise AssertionError("At least one executer is needed.")
         self.q = Queue()
         self.lock = RLock()

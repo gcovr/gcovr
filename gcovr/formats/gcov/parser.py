@@ -996,7 +996,7 @@ def _float_from_gcov_percent(formatted: str) -> int:
     [nan, 17.2, 0.0]
     """
 
-    if not formatted.endswith("%"):
+    if not formatted.endswith("%"):  # pragma: no cover
         raise AssertionError(f"Number must end with %, got {formatted}")
 
     return float(formatted[:-1])

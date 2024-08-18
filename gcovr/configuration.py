@@ -202,7 +202,7 @@ def _get_value_from_config_entry(
         return option.const
     if use_const is False:
         return option.default
-    if use_const is not None:
+    if use_const is not None:  # pragma: no cover
         raise AssertionError("Oops, sanity check failed.")
 
     # parse the value
@@ -211,7 +211,7 @@ def _get_value_from_config_entry(
         value = cfg_entry.value_as_bool
 
     elif option.type is not None:
-        if cfg_entry.filename is None:
+        if cfg_entry.filename is None:  # pragma: no cover
             AssertionError(
                 "Conversion function must derive base directory from filename"
             )
@@ -224,7 +224,7 @@ def _get_value_from_config_entry(
             raise cfg_entry.error(str(err))
 
     elif option.name == "json_add_tracefile":  # Special case for patterns
-        if cfg_entry.filename is None:
+        if cfg_entry.filename is None:  # pragma: no cover
             AssertionError(
                 "Conversion function must derive base directory from filename"
             )
@@ -304,7 +304,7 @@ def merge_options_and_set_defaults(
     partial_namespaces: List[Dict[str, Any]],
     all_options: Optional[List[GcovrConfigOption]] = None,
 ) -> Options:
-    if not partial_namespaces:
+    if not partial_namespaces:  # pragma: no cover
         raise AssertionError("At least one namespace required")
 
     if all_options is None:
