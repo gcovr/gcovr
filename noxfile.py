@@ -30,7 +30,7 @@ from time import sleep
 from typing import Tuple
 import requests
 import shutil
-import subprocess  # nosec
+import subprocess  # nosec # Commands are trusted.
 import zipfile
 import nox
 
@@ -110,7 +110,7 @@ def get_gcc_versions() -> Tuple[str]:
         if shutil.which(command):
             output = subprocess.check_output(
                 [command, "--version"]
-            ).decode()  # nosec: The command is not a user input
+            ).decode()  # nosec # The command is not a user input
 
             # cspell:ignore Linaro xctoolchain
             # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
@@ -200,12 +200,12 @@ def flake8(session: nox.Session) -> None:
 @nox.session
 def bandit(session: nox.Session) -> None:
     """Run bandit, a code formatter and format checker."""
-    session.install("bandit")
+    session.install("bandit[toml]")
     if session.posargs:
         args = session.posargs
     else:
         args = ["-r", *DEFAULT_LINT_ARGUMENTS]
-    session.run("bandit", *args)
+    session.run("bandit", "-c", "pyproject.toml", *args)
 
 
 @nox.session
@@ -450,7 +450,7 @@ def html2jpeg(session: nox.Session):
     sock.close()
 
     with ExitStack() as defer:
-        container_id = subprocess.check_output(  # nosec: We run on several system and do not know the full path
+        container_id = subprocess.check_output(  # nosec # We run on several system and do not know the full path
             [
                 "docker",
                 "run",

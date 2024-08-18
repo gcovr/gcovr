@@ -27,13 +27,13 @@ import platform
 import pytest
 import re
 import shutil
-import subprocess
+import subprocess  # nosec # Commands are trusted.
 import sys
 import difflib
 import zipfile
 
 from yaxmldiff import compare_xml
-from lxml import etree
+from lxml import etree  # nosec # Data is trusted.
 
 from gcovr.utils import force_unix_separator
 
@@ -191,13 +191,19 @@ def assert_equals(reference_file, reference, test_file, test, encoding):
     _, extension = os.path.splitext(reference_file)
     if extension in [".html", ".xml"]:
         if extension == ".html":
-            reference = etree.fromstring(
+            reference = etree.fromstring(  # nosec # We parse our reference files here
                 reference.encode(), etree.HTMLParser(encoding=encoding)
             )
-            test = etree.fromstring(test.encode(), etree.HTMLParser(encoding=encoding))
+            test = etree.fromstring(  # nosec # We parse our test files here
+                test.encode(), etree.HTMLParser(encoding=encoding)
+            )
         else:
-            reference = etree.fromstring(reference.encode())
-            test = etree.fromstring(test.encode())
+            reference = etree.fromstring(  # nosec # We parse our reference files here
+                reference.encode()
+            )
+            test = etree.fromstring(  # nosec # We parse our test files here
+                test.encode()
+            )
 
         diff_out = compare_xml(reference, test)
         if diff_out is None:
@@ -226,7 +232,9 @@ def assert_equals(reference_file, reference, test_file, test, encoding):
 
 def run(cmd, cwd=None):
     sys.stdout.write(f"STDOUT - START {cmd}\n")
-    returncode = subprocess.call(cmd, stderr=subprocess.STDOUT, env=env, cwd=cwd)
+    returncode = subprocess.call(  # nosec # We execute our tests here
+        cmd, stderr=subprocess.STDOUT, env=env, cwd=cwd
+    )
     sys.stdout.write("STDOUT - END\n")
     return returncode == 0
 

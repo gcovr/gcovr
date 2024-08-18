@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from lxml import etree
+from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
 

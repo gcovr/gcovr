@@ -81,7 +81,10 @@ def fix_case_of_path(path: str):
 
     curL = cur.lower()
     matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
-    assert len(matchedFileName) < 2, "Seems that we have a case sensitive filesystem"
+    if len(matchedFileName) > 1:
+        raise RuntimeError(
+            "Seems that we have a case sensitive filesystem, can't fix file case"
+        )
 
     if len(matchedFileName) == 1:
         path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
@@ -440,5 +443,7 @@ def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
 
 def get_md5_hexdigest(data: bytes) -> str:
     return (
-        md5(data, usedforsecurity=False) if sys.version_info >= (3, 9) else md5(data)
+        md5(data, usedforsecurity=False)  # nosec # Not used for security
+        if sys.version_info >= (3, 9)
+        else md5(data)  # nosec # usedforsecurity not available in older versions
     ).hexdigest()

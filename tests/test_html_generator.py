@@ -68,8 +68,8 @@ def test_windows_make_short_source_filename(outfile, source_filename):
     logging.info(outfile)
     logging.info(source_filename)
     logging.info(result)
-    assert ":" not in result or (
+    assert ":" not in result or (  # nosec
         result.startswith(CurrentDrive) and ":" not in result[2:]
     )
 
-    assert len(result) < 256
+    assert len(result) < 256  # nosec
