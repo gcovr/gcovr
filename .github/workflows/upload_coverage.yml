@@ -9,6 +9,7 @@ on:
 jobs:
   upload:
     runs-on: ubuntu-22.04
+    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -24,8 +25,8 @@ jobs:
         if: ${{ (github.repository == 'gcovr/gcovr') }}
         run: |
           # Search the coverage files and upload them
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/-r /' | tr -d '\n')
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov $(find . -regex '.*/nested/reference/.*/coverage\.lcov' -print | sed -e 's/^/-r /' | tr -d '\n')
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov $(find . -regex '.*/nested/reference/.*/coverage\.lcov' -print | sed -e 's/^/ -r /' | tr -d '\n')
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
@@ -39,7 +40,7 @@ jobs:
       - name: Generate list of coverage files for Codecov
         if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
         run: |
-          echo "COVERAGE_FILES=$(find . -name 'coverage.xml' -or -regex '.*/nested/reference/.*/coverage\.lcov' -print | sed -e '2, $ s/^/,/' | tr -d '\n')" >> $GITHUB_ENV
+          echo "COVERAGE_FILES=$((find . -name 'coverage.xml' -print && find . -regex '.*/nested/reference/.*/coverage\.lcov' -print ) | sed -e '2, $ s/^/,/' | tr -d '\n')" >> $GITHUB_ENV
 
       - name: Upload coverage files to Codecov
         if: ${{ always() && (github.repository == 'gcovr/gcovr') }}

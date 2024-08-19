@@ -30,7 +30,8 @@ from ...utils import FilterOption
 
 
 class GcovHandler(BaseHandler):
-    def get_options() -> List[GcovrConfigOption]:
+    @classmethod
+    def get_options(cls) -> List[GcovrConfigOption]:
         return [
             # Global options needed for report
             "show_decision",

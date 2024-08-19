@@ -34,7 +34,8 @@ LOGGER = logging.getLogger("gcovr")
 
 
 class HtmlHandler(BaseHandler):
-    def get_options() -> List[GcovrConfigOption]:
+    @classmethod
+    def get_options(cls) -> List[GcovrConfigOption]:
         from .write import CssRenderer
 
         return [
