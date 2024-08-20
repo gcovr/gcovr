@@ -80,7 +80,7 @@ def read_report(options: Options) -> CovData:
     for filename in datafiles:
         LOGGER.debug(f"Processing JSON file: {filename}")
 
-        with open(filename, "r") as json_file:
+        with open(filename, encoding="utf-8") as json_file:
             gcovr_json_data = json.load(json_file)
 
         version = str(gcovr_json_data["gcovr/format_version"])

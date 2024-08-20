@@ -416,7 +416,7 @@ def pytest_generate_tests(metafunc):
 
 def parse_makefile_for_available_targets(path):
     targets = {}
-    with open(path) as makefile:
+    with open(path, encoding="utf-8") as makefile:
         for line in makefile:
             m = re.match(r"^(\w[\w -]*):([\s\w.-]*)$", line)
             if m:

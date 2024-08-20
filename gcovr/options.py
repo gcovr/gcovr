@@ -129,7 +129,7 @@ class OutputOrDefault:
                         ) from None
             else:
                 try:
-                    with open(value, "w") as _:
+                    with open(value, "w", encoding="utf-8") as _:
                         pass
                 except OSError as e:
                     raise ArgumentTypeError(

@@ -75,13 +75,17 @@ def test_example(example):
     baseline_file = example.baseline
     scrub = SCRUBBERS[example.format]
     # Read old file
-    with open(baseline_file, newline="") as f:
+    with open(  # nosemgrep # It's intended to use the local
+        baseline_file, newline=""
+    ) as f:
         baseline = scrub(f.read())
 
     start_dirname = os.getcwd()
     os.chdir(data_dirname)
     subprocess.run(cmd)  # nosec # The command is not a user input
-    with open(baseline_file, newline="") as f:
+    with open(  # nosemgrep # It's intended to use the local
+        baseline_file, newline=""
+    ) as f:
         current = scrub(f.read())
     current = scrub(current)
 
