@@ -463,7 +463,7 @@ def html2jpeg(session: nox.Session):
         ).strip()
         defer.callback(subprocess.run, ["docker", "stop", container_id])
         url = f"http://localhost:{port}/1/screenshot"
-        sleep(3.0)
+        sleep(3.0)  # nosemgrep # We need to wait here until server is started.
 
         def screenshot(html, jpeg, size):
             def read_file(file):

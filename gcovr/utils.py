@@ -380,20 +380,19 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
     if filename is not None and filename.endswith(os.sep):
         filename += default_filename
 
-    if filename is not None and filename != "-":
-        fh = open(filename, "w", **kwargs)
-        close = True
-    else:
-        fh = sys.stdout
-        close = False
-
     try:
+        if filename is not None and filename != "-":
+            fh = open(filename, "w", **kwargs)
+        else:
+            fh = sys.stdout
+
         yield fh
     finally:
-        if close:
-            fh.close()
-        else:
-            fh.flush()
+        if fh:
+            if fh == sys.stdout:
+                fh.flush()
+            else:
+                fh.close()
 
 
 @contextmanager
@@ -405,18 +404,16 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
     if filename is not None and filename.endswith(os.sep):
         filename += default_filename
 
-    if filename is not None and filename != "-":
-        # files in write binary mode for UTF-8
-        fh = open(filename, "wb", **kwargs)
-        close = True
-    else:
-        fh = sys.stdout.buffer
-        close = False
-
     try:
+        if filename is not None and filename != "-":
+            # files in write binary mode for UTF-8
+            fh = open(filename, "wb", **kwargs)
+        else:
+            fh = sys.stdout.buffer
+
         yield fh
     finally:
-        if close:
+        if fh != sys.stdout.buffer:
             fh.close()
 
 
