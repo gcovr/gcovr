@@ -26,7 +26,8 @@ from ..coverage import CovData
 class BaseHandler:
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
-        return []
+        """Get the options of the format handler"""
+        raise AssertionError("Function 'get_options' not implemented.")
 
     def __init__(self, options: Options):
         global_options = [
@@ -57,12 +58,12 @@ class BaseHandler:
 
     def read_report(self) -> CovData:
         """Read a report in the format of the handler"""
-        raise RuntimeError("Function 'read_report' not implemented.")
+        raise AssertionError("Function 'read_report' not implemented.")
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
         """Write a report in the format of the handler"""
-        raise RuntimeError("Function 'write_report' not implemented.")
+        raise AssertionError("Function 'write_report' not implemented.")
 
     def write_summary_report(self, covdata: CovData, output_file: str) -> None:
         """Write a summary report in the format of the handler"""
-        raise RuntimeError("Function 'write_summary_report' not implemented.")
+        raise AssertionError("Function 'write_summary_report' not implemented.")

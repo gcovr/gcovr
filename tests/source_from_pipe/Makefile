@@ -11,6 +11,9 @@ coverage.json:
 	$(GCOVR) --gcov-keep --verbose --gcov-ignore-errors no_working_dir_found --json-pretty --json coverage.json
 
 txt: coverage.json
+	$(GCOVR) -a '$<.not_exists' 2>no_tracefile.stderr; test $$? -eq 64 || ( cat no_tracefile.stderr & exit 1 )
+	grep -F "Bad --add-tracefile option." no_tracefile.stderr
+	grep -F "The specified file does not exist." no_tracefile.stderr
 	$(GCOVR) -a $< -o coverage.txt
 
 lcov: coverage.json
@@ -33,4 +36,4 @@ jacoco: coverage.json
 
 clean:
 	rm -rf *.gcd* *.o
-	rm -f testcase coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json
+	rm -f no_tracefile.stderr testcase coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json

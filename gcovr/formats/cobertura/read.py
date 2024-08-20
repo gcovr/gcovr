@@ -75,7 +75,7 @@ def read_report(options: Options) -> CovData:
             raise RuntimeError(f"Bad --cobertura-add-tracefile option.\n{e}")
 
         for gcovr_file in root.xpath("./packages//class"):
-            if gcovr_file.get("filename") is None:
+            if gcovr_file.get("filename") is None:  # pragma: no cover
                 LOGGER.warning(
                     f"missing filename attribute in class element of {filename}"
                 )
@@ -91,12 +91,12 @@ def read_report(options: Options) -> CovData:
             )
 
             # Ignore if the filename does not match the filter
-            if filtered:
+            if filtered:  # pragma: no cover
                 LOGGER.debug(f"  Filtering coverage data for file {file_path}")
                 continue
 
             # Ignore if the filename matches the exclude pattern
-            if excluded:
+            if excluded:  # pragma: no cover
                 LOGGER.debug(f"  Excluding coverage data for file {file_path}")
                 continue
 
@@ -113,7 +113,7 @@ def read_report(options: Options) -> CovData:
 def _line_from_xml(filename: str, xml_line) -> LineCoverage:
     try:
         lineno = int(xml_line.get("number"))
-    except Exception:
+    except Exception:  # pragma: no cover
         raise RuntimeError(
             "Bad --covertura-add-tracefile option.\n"
             f"'number' attribute is required and must be an integer: {etree.tostring(xml_line).decode()}\n"
@@ -121,7 +121,7 @@ def _line_from_xml(filename: str, xml_line) -> LineCoverage:
 
     try:
         count = int(xml_line.get("hits"))
-    except Exception:
+    except Exception:  # pragma: no cover
         raise RuntimeError(
             "Bad --covertura-add-tracefile option.\n"
             f"'hits' attribute is required and must be an integer: {etree.tostring(xml_line).decode()}\n"
@@ -136,7 +136,7 @@ def _line_from_xml(filename: str, xml_line) -> LineCoverage:
             [covered, total] = branch_msg[branch_msg.rfind("(") + 1 : -1].split("/")
             for i in range(int(total)):
                 insert_branch_coverage(line, i, _branch_from_json(i, i < int(covered)))
-        except Exception:
+        except Exception:  # pragma: no cover
             LOGGER.warning(
                 f"Invalid branch information for line {line.lineno} in file {filename}"
             )

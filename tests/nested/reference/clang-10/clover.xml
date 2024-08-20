@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <coverage clover="0" generated="0">
   <project name="Test project" timestamp="0">
-    <metrics complexity="0" elements="42" coveredelements="28" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="4" classes="8" files="8" loc="72" ncloc="42"/>
+    <metrics complexity="0" elements="47" coveredelements="32" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="4" classes="8" files="8" loc="81" ncloc="47"/>
     <package name="A">
-      <metrics complexity="0" elements="26" coveredelements="14" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="5" files="5" loc="40" ncloc="26"/>
+      <metrics complexity="0" elements="29" coveredelements="16" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="5" files="5" loc="45" ncloc="29"/>
       <file name="File2.cpp" path="A/File2.cpp">
         <metrics complexity="0" elements="7" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="11" ncloc="7"/>
         <class name="id$79143a710ebe69deafa175a1453e33cd">
@@ -18,29 +18,31 @@
         <line num="11" type="stmt" count="0"/>
       </file>
       <file name="File4.cpp" path="A/File4.cpp">
-        <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="6" ncloc="4"/>
+        <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="8" ncloc="5"/>
         <class name="id$1d7a80554861eb8b5c21bc2e26ff8f70">
-          <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+          <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="1" type="stmt" count="1"/>
         <line num="3" type="stmt" count="1"/>
         <line num="4" type="stmt" count="1"/>
         <line num="6" type="stmt" count="0"/>
+        <line num="8" type="stmt" count="1"/>
       </file>
       <file name="file1.cpp" path="A/file1.cpp">
-        <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="6" ncloc="4"/>
+        <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="8" ncloc="5"/>
         <class name="id$11975e1ce5d9c157e76130f444523bea">
-          <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+          <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="1" type="stmt" count="1"/>
         <line num="3" type="stmt" count="1"/>
         <line num="4" type="stmt" count="0"/>
         <line num="6" type="stmt" count="1"/>
+        <line num="8" type="stmt" count="1"/>
       </file>
       <file name="file3.cpp" path="A/file3.cpp">
-        <metrics complexity="0" elements="9" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="14" ncloc="9"/>
+        <metrics complexity="0" elements="10" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="15" ncloc="10"/>
         <class name="id$bcfa344b5512d8cd5857f2fe86511d71">
-          <metrics complexity="0" elements="9" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+          <metrics complexity="0" elements="10" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="1" type="stmt" count="1"/>
         <line num="3" type="stmt" count="1"/>
@@ -51,6 +53,7 @@
         <line num="11" type="stmt" count="0"/>
         <line num="12" type="stmt" count="0"/>
         <line num="14" type="stmt" count="0"/>
+        <line num="15" type="stmt" count="0"/>
       </file>
       <file name="file7.cpp" path="A/file7.cpp">
         <metrics complexity="0" elements="2" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="3" ncloc="2"/>
@@ -62,29 +65,31 @@
       </file>
     </package>
     <package name="A.C">
-      <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="6" ncloc="4"/>
+      <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="8" ncloc="5"/>
       <file name="file5.cpp" path="A/C/file5.cpp">
-        <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="6" ncloc="4"/>
+        <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="8" ncloc="5"/>
         <class name="id$4f0be33a4dcfe398ba897b87f58ca7ce">
-          <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+          <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="1" type="stmt" count="1"/>
         <line num="3" type="stmt" count="1"/>
         <line num="4" type="stmt" count="0"/>
         <line num="6" type="stmt" count="1"/>
+        <line num="8" type="stmt" count="1"/>
       </file>
     </package>
     <package name="A.C.D">
-      <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="6" ncloc="4"/>
+      <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="8" ncloc="5"/>
       <file name="File6.cpp" path="A/C/D/File6.cpp">
-        <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="6" ncloc="4"/>
+        <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="8" ncloc="5"/>
         <class name="id$73326d74f2aeb2719dd6d8a9bcc3e582">
-          <metrics complexity="0" elements="4" coveredelements="3" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+          <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="1" type="stmt" count="1"/>
         <line num="3" type="stmt" count="1"/>
         <line num="4" type="stmt" count="0"/>
         <line num="6" type="stmt" count="1"/>
+        <line num="8" type="stmt" count="1"/>
       </file>
     </package>
     <package name="B">

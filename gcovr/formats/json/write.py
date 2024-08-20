@@ -219,7 +219,7 @@ def _json_from_decision(decision: DecisionCoverage) -> dict:
             "count": decision.count,
         }
 
-    raise RuntimeError("Unknown decision type: {decision!r}")
+    raise AssertionError(f"Unknown decision type: {decision!r}")
 
 
 def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:

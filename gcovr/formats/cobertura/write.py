@@ -155,7 +155,7 @@ def _line_element(line: LineCoverage) -> etree.Element:
 
     if not branch.total:
         elem.set("branch", "false")
-    elif branch.percent is None:  # pragma: no cover
+    elif branch.percent is None:
         raise AssertionError("Percent coverage must not be 'None'.")
     else:
         elem.set("branch", "true")
@@ -176,7 +176,7 @@ def _conditions_element(branch: CoverageStat) -> etree.Element:
 
 def _condition_element(branch: CoverageStat) -> etree.Element:
     coverage = branch.percent
-    if coverage is None:  # pragma: no cover
+    if coverage is None:
         raise AssertionError("Percent coverage must not be 'None'.")
 
     elem = etree.Element("condition")

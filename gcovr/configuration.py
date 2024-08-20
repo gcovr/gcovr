@@ -147,6 +147,9 @@ def argument_parser_setup(parser: ArgumentParser, default_group):
         elif opt.positional:
             group.add_argument(opt.name, **kwargs)
 
+        else:
+            raise AssertionError("Oops, sanity check failed: Unexpected option.")
+
 
 def parse_config_into_dict(
     config_entry_source: Iterable[ConfigEntry],
@@ -202,8 +205,8 @@ def _get_value_from_config_entry(
         return option.const
     if use_const is False:
         return option.default
-    if use_const is not None:  # pragma: no cover
-        raise AssertionError("Oops, sanity check failed.")
+    if use_const is not None:
+        raise AssertionError("Oops, sanity check failed: Unexpected entry type.")
 
     # parse the value
     value: object
@@ -211,8 +214,8 @@ def _get_value_from_config_entry(
         value = cfg_entry.value_as_bool
 
     elif option.type is not None:
-        if cfg_entry.filename is None:  # pragma: no cover
-            AssertionError(
+        if cfg_entry.filename is None:
+            raise AssertionError(
                 "Conversion function must derive base directory from filename"
             )
         basedir = os.path.dirname(cfg_entry.filename)
@@ -224,8 +227,8 @@ def _get_value_from_config_entry(
             raise cfg_entry.error(str(err))
 
     elif option.name == "json_add_tracefile":  # Special case for patterns
-        if cfg_entry.filename is None:  # pragma: no cover
-            AssertionError(
+        if cfg_entry.filename is None:
+            raise AssertionError(
                 "Conversion function must derive base directory from filename"
             )
         basedir = os.path.dirname(cfg_entry.filename)
@@ -304,7 +307,7 @@ def merge_options_and_set_defaults(
     partial_namespaces: List[Dict[str, Any]],
     all_options: Optional[List[GcovrConfigOption]] = None,
 ) -> Options:
-    if not partial_namespaces:  # pragma: no cover
+    if not partial_namespaces:
         raise AssertionError("At least one namespace required")
 
     if all_options is None:

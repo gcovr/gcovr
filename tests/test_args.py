@@ -683,6 +683,17 @@ def test_import_valid_cobertura_file(tmp_path):
                 assert f_cov.lines[line].branches[branch_idx].count == branch_count
 
 
+def test_invalid_cobertura_file(caplog, tmp_path):
+    c = log_capture(caplog, ["--cobertura-add-tracefile", "/*.FileDoesNotExist.*"])
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert (
+        "Bad --covertura-add-tracefile option.\n\tThe specified file does not exist."
+        in message[2]
+    )
+    assert c.exception.code != 0
+
+
 def test_import_corrupt_cobertura_file(caplog, tmp_path):
     xml_data = "Invalid XML content"
     tempfile = tmp_path / "corrupt_cobertura.xml"

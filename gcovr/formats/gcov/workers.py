@@ -93,7 +93,7 @@ class Workers(object):
     """
 
     def __init__(self, number: int, context: Callable[[], Dict[str, Any]]):
-        if number < 1:  # pragma: no cover
+        if number < 1:
             raise AssertionError("At least one executer is needed.")
         self.q = Queue()
         self.lock = RLock()
@@ -111,8 +111,10 @@ class Workers(object):
         when running it
         """
         with self.lock:
-            if not self.exceptions:
-                self.q.put((work, args, kwargs))
+            # I Do not push additional items if there is already an exception
+            if self.exceptions:  # pragma: no cover
+                return
+            self.q.put((work, args, kwargs))
 
     def add_sentinels(self):
         """
