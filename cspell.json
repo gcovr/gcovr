@@ -89,6 +89,7 @@
         "MSYS",
         "noncode",
         "noninteractive",
+        "nosemgrep",
         "noxfile",
         "OBJC",
         "objdir",
