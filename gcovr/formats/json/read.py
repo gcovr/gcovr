@@ -80,11 +80,11 @@ def read_report(options: Options) -> CovData:
     for filename in datafiles:
         LOGGER.debug(f"Processing JSON file: {filename}")
 
-        with open(filename, "r") as json_file:
+        with open(filename, encoding="utf-8") as json_file:
             gcovr_json_data = json.load(json_file)
 
         version = str(gcovr_json_data["gcovr/format_version"])
-        if version != versions.JSON_FORMAT_VERSION:  # pragma: no cover
+        if version != versions.JSON_FORMAT_VERSION:
             raise AssertionError(
                 f"Wrong format version, got {version} expected {versions.JSON_FORMAT_VERSION}."
             )
@@ -181,4 +181,4 @@ def _decision_from_json(json_decision: Optional[dict]) -> Optional[DecisionCover
     if decision_type == "switch":
         return DecisionCoverageSwitch(json_decision["count"])
 
-    raise RuntimeError(f"Unknown decision type: {decision_type!r}")
+    raise AssertionError(f"Unknown decision type: {decision_type!r}")

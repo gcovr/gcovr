@@ -139,7 +139,7 @@ class BranchCoverage:
         fallthrough: bool = False,
         throw: bool = False,
     ) -> None:
-        if count < 0:  # pragma: no cover
+        if count < 0:
             raise AssertionError("count must not be a negative value.")
 
         self.blockno = blockno
@@ -199,10 +199,10 @@ class DecisionCoverageConditional:
     __slots__ = "count_true", "count_false"
 
     def __init__(self, count_true: int, count_false: int) -> None:
-        if count_true < 0:  # pragma: no cover
+        if count_true < 0:
             raise AssertionError("count_true must not be a negative value.")
         self.count_true = count_true
-        if count_false < 0:  # pragma: no cover
+        if count_false < 0:
             raise AssertionError("count_true must not be a negative value.")
         self.count_false = count_false
 
@@ -218,7 +218,7 @@ class DecisionCoverageSwitch:
     __slots__ = ("count",)
 
     def __init__(self, count: int) -> None:
-        if count < 0:  # pragma: no cover
+        if count < 0:
             raise AssertionError("count must not be a negative value.")
         self.count = count
 
@@ -260,7 +260,7 @@ class FunctionCoverage:
         blocks: float,
         excluded: bool = False,
     ) -> None:
-        if count < 0:  # pragma: no cover
+        if count < 0:
             raise AssertionError("count must not be a negative value.")
         self.name = name
         self.count: Dict[int, int] = {lineno: count}
@@ -301,9 +301,9 @@ class LineCoverage:
     def __init__(
         self, lineno: int, count: int, excluded: bool = False, md5: str = None
     ) -> None:
-        if lineno <= 0:  # pragma: no cover
+        if lineno <= 0:
             raise AssertionError("Line number must be a positive value.")
-        if count < 0:  # pragma: no cover
+        if count < 0:
             raise AssertionError("count must not be a negative value.")
 
         self.lineno: int = lineno
@@ -378,7 +378,7 @@ class LineCoverage:
                 covered += 1
             return DecisionCoverageStat(covered, 0, 1)
 
-        raise RuntimeError(f"Unknown decision type: {self.decision!r}")
+        raise AssertionError(f"Unknown decision type: {self.decision!r}")
 
 
 class FileCoverage:

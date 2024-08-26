@@ -239,7 +239,7 @@ def doc(session: nox.Session) -> None:
 
     # Build the Sphinx documentation
     with session.chdir("doc"):
-        with open("examples/gcovr.out", "w") as fh_out:
+        with open("examples/gcovr.out", "w", encoding="utf-8") as fh_out:
             session.run("gcovr", "-h", stdout=fh_out)
         session.run("sphinx-build", "-M", "html", "source", "build", "-W")
 

@@ -129,7 +129,7 @@ class OutputOrDefault:
                         ) from None
             else:
                 try:
-                    with open(value, "w") as _:
+                    with open(value, "w", encoding="utf-8") as _:
                         pass
                 except OSError as e:
                     raise ArgumentTypeError(
@@ -303,13 +303,13 @@ class GcovrConfigOption:
         if flags is None:
             flags = []
 
-        if flags and positional:  # pragma: no cover
+        if flags and positional:
             raise AssertionError("Option cannot have flags and be positional")
 
         config_keys = _derive_configuration_key(config, flags=flags)
         del config
 
-        if not (flags or positional or config_keys):  # pragma: no cover
+        if not (flags or positional or config_keys):
             raise AssertionError(
                 "Option must be named, positional, or config argument."
             )
@@ -317,10 +317,10 @@ class GcovrConfigOption:
         negate: List[str] = []
         if flags and const_negate is not None:
             negate = ["--no-" + f[2:] for f in flags if f.startswith("--")]
-            if not negate:  # pragma: no cover
+            if not negate:
                 raise AssertionError("Cannot autogenerate negation")
 
-        if not help:  # pragma: no cover
+        if not help:
             raise AssertionError("help required")
         if negate:
             help += " Negation: {}.".format(", ".join(negate))
@@ -334,17 +334,17 @@ class GcovrConfigOption:
         # constants in their definitions so they need switched to the generic
         # store_const in order for the logic here to work correctly.
         if action == "store_true":
-            if const is not None:  # pragma: no cover
+            if const is not None:
                 raise AssertionError("action=store_true and const conflict")
-            if default is not None:  # pragma: no cover
+            if default is not None:
                 raise AssertionError("action=store_true and default conflict")
             action = "store_const"
             const = True
             default = False
         elif action == "store_false":
-            if const is not None:  # pragma: no cover
+            if const is not None:
                 raise AssertionError("action=store_false and const conflict")
-            if default is not None:  # pragma: no cover
+            if default is not None:
                 raise AssertionError("action=store_false and default conflict")
             action = "store_const"
             const = False
@@ -353,7 +353,7 @@ class GcovrConfigOption:
         if not (
             action in ("store", "store_const", "append")
             or issubclass(action, GcovrConfigOptionAction)
-        ):  # pragma: no cover
+        ):
             raise AssertionError(f"Unknown action {action!r}")
 
         self.name = name
@@ -398,21 +398,20 @@ def _derive_configuration_key(
     config: Union[str, bool],
     *,
     flags: List[str],
-) -> Optional[str]:
+) -> Optional[List[str]]:
     if config is True:
         config_keys = []
         for flag in flags:
             if flag.startswith("--"):
                 config_keys.append(flag.lstrip("-"))
-        if not config_keys:  # pragma: no cover
+        if not config_keys:
             raise AssertionError("Could not autogenerate config key from {flags!r}.")
         return config_keys
     elif config is False:
         return None
-    else:
-        if not isinstance(config, list):
-            config = [config]
-        for c in config:
-            if not isinstance(c, str):  # pragma: no cover
-                raise AssertionError("Oops, sanity check failed.")
-        return config
+    elif isinstance(config, str):
+        return [config]
+
+    raise AssertionError(
+        f"Oops, sanity check failed: Unexpected config entry type {config!r}"
+    )

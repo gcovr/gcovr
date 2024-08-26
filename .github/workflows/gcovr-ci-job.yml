@@ -75,7 +75,7 @@ jobs:
             esac
           else
             case "${{ inputs.os }}/${{ inputs.gcc }}/${{ inputs.python-version }}" in
-              ubuntu-22.04/gcc-11/3.11) USE_COVERAGE=true ;;
+              ubuntu-22.04/gcc-11/3.12) USE_COVERAGE=true ;;
               windows-2019/gcc/3.12)    USE_COVERAGE=true ;;
               macos-14/gcc/3.9)         USE_COVERAGE=true ;;
               macos-14/gcc-13/3.12)     USE_COVERAGE=true ;;

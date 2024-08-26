@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <coverage clover="0" generated="0">
-  <project timestamp="0">
+  <project name="Test project" timestamp="0">
     <metrics complexity="0" elements="43" coveredelements="29" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="4" classes="8" files="8" loc="73" ncloc="43"/>
     <package name="A">
       <metrics complexity="0" elements="26" coveredelements="14" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="5" files="5" loc="40" ncloc="26"/>

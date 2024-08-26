@@ -380,19 +380,13 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
     if filename is not None and filename.endswith(os.sep):
         filename += default_filename
 
-    try:
-        if filename is not None and filename != "-":
-            fh = open(filename, "w", **kwargs)
-        else:
-            fh = sys.stdout
-
-        yield fh
-    finally:
-        if fh:
-            if fh == sys.stdout:
-                fh.flush()
-            else:
-                fh.close()
+    if filename is not None and filename != "-":
+        with open(  # nosemgrep # It's intended to use the local
+            filename, "w", **kwargs
+        ) as fh_out:
+            yield fh_out
+    else:
+        yield sys.stdout
 
 
 @contextmanager
@@ -404,17 +398,12 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
     if filename is not None and filename.endswith(os.sep):
         filename += default_filename
 
-    try:
-        if filename is not None and filename != "-":
-            # files in write binary mode for UTF-8
-            fh = open(filename, "wb", **kwargs)
-        else:
-            fh = sys.stdout.buffer
-
-        yield fh
-    finally:
-        if fh != sys.stdout.buffer:
-            fh.close()
+    if filename is not None and filename != "-":
+        # files in write binary mode for UTF-8
+        with open(filename, "wb", **kwargs) as fh_out:
+            yield fh_out
+    else:
+        yield sys.stdout.buffer
 
 
 def force_unix_separator(path: str) -> str:

@@ -329,7 +329,7 @@ def main():
                     handlers.append(updateDocumentation)
 
             if handlers:
-                with open(fullname) as f:
+                with open(fullname, encoding="utf-8") as f:
                     lines = list(line.rstrip() for line in f)
                 newLines = copy.copy(
                     lines
@@ -338,7 +338,7 @@ def main():
                     newLines = handler(fullname, newLines)
                 if newLines != lines:
                     logging.info("Modifying {}".format(fullname))
-                    with open(fullname, "w") as f:
+                    with open(fullname, "w", encoding="utf-8") as f:
                         for line in newLines:
                             f.write(line + "\n")
 
