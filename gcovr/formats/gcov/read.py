@@ -18,14 +18,12 @@
 # ****************************************************************************
 
 import gzip
-import hashlib
 import json
 import logging
 import os
 import re
 import shlex
 import subprocess  # nosec # Commands are trusted.
-import io
 from threading import Lock
 from typing import Callable, List, Optional, Set, Tuple
 
