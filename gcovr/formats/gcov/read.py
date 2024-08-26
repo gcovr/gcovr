@@ -209,12 +209,10 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
         if file["file"] == "<stdin>":
             message = f"Got sourcefile {file['file']}, using empty lines."
             LOGGER.info(message)
-            source_lines = ["" for _ in range(file["lines"][-1]["line_number"])]
-            source_lines[0] = f"/* {message} */"
+            source_lines = [b"" for _ in range(file["lines"][-1]["line_number"])]
+            source_lines[0] = f"/* {message} */".encode()
         else:
-            with open(
-                fname, "r", encoding=options.source_encoding, errors="replace"
-            ) as fh_in:
+            with open(fname, "rb") as fh_in:
                 source_lines = fh_in.read().splitlines()
 
         file_cov = FileCoverage(fname)
@@ -224,11 +222,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                 LineCoverage(
                     line["line_number"],
                     count=line["count"],
-                    md5=get_md5_hexdigest(
-                        source_lines[line["line_number"] - 1].encode(
-                            encoding=options.source_encoding
-                        )
-                    ),
+                    md5=get_md5_hexdigest(source_lines[line["line_number"] - 1]),
                 ),
             )
             for index, branch in enumerate(line["branches"]):
@@ -263,22 +257,15 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 
-        if file["file"] == "<stdin>":
-            message = f"Got sourcefile {file['file']}, using empty lines."
-            LOGGER.info(message)
-            source_lines = ["" for _ in range(file["lines"][-1]["line_number"])]
-            source_lines[0] = f"/* {message} */"
-        else:
-            with open(
-                fname, "r", encoding=options.source_encoding, errors="replace"
-            ) as fh_in:
-                source_lines = fh_in.read().splitlines()
-
+        encoded_source_lines = [
+            line.decode(options.source_encoding, errors="replace")
+            for line in source_lines
+        ]
         LOGGER.debug(f"Apply exclusions for {fname}")
-        apply_all_exclusions(file_cov, lines=source_lines, options=options)
+        apply_all_exclusions(file_cov, lines=encoded_source_lines, options=options)
 
         if options.show_decision:
-            decision_parser = DecisionParser(file_cov, source_lines)
+            decision_parser = DecisionParser(file_cov, encoded_source_lines)
             decision_parser.parse_all_lines()
 
         LOGGER.debug(f"Merge coverage data for {fname}")
