@@ -17,6 +17,7 @@ New features and notable changes:
 - In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)
 - Detect suspicious counter values in ``gcov`` output. (:issue:`903`)
 - Add :option:`--html-single-page` to create a single page report (static or with Javascript). (:issue:`916`)
+- Upload standalone applications as release artifacts. (:issue:`941`)
 - Add support for GCOV JSON intermediate format. (:issue:`766`)
 
 Bug fixes and small improvements:
@@ -45,8 +46,10 @@ Internal changes:
 - Add gcc-14 to the test suite. (:issue:`923`)
 - Skip coverage upload if executed in a fork. (:issue:`930`)
 - Only execute pipeline if pushed on main and add button to execute workflow manual. (:issue:`930`)
-- Do not trigger pipeline twice for new PR. (:issue:`931`)
 - Check spelling in test pipeline. (:issue:`932`)
+- Merge the test and deploy workflow to a single CI workflow. (:issue:`946`, :issue:`947`)
+- Add Codacy to CI workflow for tracking coverage and code quality. (:issue:`948`)
+- Add ``bandit`` to the linters. (:issue:`949`)
 
 7.2 (24 February 2024)
 ----------------------

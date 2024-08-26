@@ -26,7 +26,8 @@ from ...coverage import CovData
 
 
 class CloverHandler(BaseHandler):
-    def get_options() -> List[GcovrConfigOption]:
+    @classmethod
+    def get_options(cls) -> List[GcovrConfigOption]:
         return [
             # Global options used for merging.
             "merge_mode_functions",

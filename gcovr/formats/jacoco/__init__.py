@@ -26,7 +26,8 @@ from ...coverage import CovData
 
 
 class JaCoCoHandler(BaseHandler):
-    def get_options() -> List[GcovrConfigOption]:
+    @classmethod
+    def get_options(cls) -> List[GcovrConfigOption]:
         return [
             GcovrConfigOption(
                 "jacoco",

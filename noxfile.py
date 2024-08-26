@@ -17,18 +17,20 @@
 #
 # ****************************************************************************
 
-import glob
+import functools
 import io
 import os
 import platform
 import re
+from runpy import run_path
 import socket
 import sys
+from pathlib import Path
 from time import sleep
 from typing import Tuple
 import requests
 import shutil
-import subprocess
+import subprocess  # nosec # Commands are trusted.
 import zipfile
 import nox
 
@@ -85,6 +87,9 @@ OUTPUT_FORMATS = [
     "txt",
 ]
 
+CI_RUN = "GITHUB_ACTION" in os.environ
+GCOVR_VERSION = run_path("./gcovr/version.py")["__version__"]
+
 nox.options.sessions = ["qa"]
 
 
@@ -103,7 +108,9 @@ def get_gcc_versions() -> Tuple[str]:
 
     for command in commands:
         if shutil.which(command):
-            output = subprocess.check_output([command, "--version"]).decode()
+            output = subprocess.check_output(
+                [command, "--version"]
+            ).decode()  # nosec # The command is not a user input
 
             # cspell:ignore Linaro xctoolchain
             # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
@@ -167,15 +174,12 @@ def qa(session: nox.Session) -> None:
 @nox.session(python=False)
 def lint(session: nox.Session) -> None:
     """Run the linters."""
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = DEFAULT_LINT_ARGUMENTS
-    session.notify("flake8", args)
+    session.notify("flake8")
+    session.notify("bandit")
 
     # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
     if platform.python_implementation() == "CPython":
-        session.notify("black", ["--diff", "--check", *args])
+        session.notify("black")
     else:
         session.log(
             f"Skip black because of platform {platform.python_implementation()}."
@@ -194,13 +198,25 @@ def flake8(session: nox.Session) -> None:
 
 
 @nox.session
+def bandit(session: nox.Session) -> None:
+    """Run bandit, a code formatter and format checker."""
+    session.install("bandit[toml]")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = ["-r", *DEFAULT_LINT_ARGUMENTS]
+    session.run("bandit", "-c", "pyproject.toml", *args)
+
+
+@nox.session
 def black(session: nox.Session) -> None:
     """Run black, a code formatter and format checker."""
     session.install(BLACK_PINNED_VERSION)
     if session.posargs:
-        session.run("python", "-m", "black", *session.posargs)
+        args = session.posargs
     else:
-        session.run("python", "-m", "black", *DEFAULT_LINT_ARGUMENTS)
+        args = ["--diff", "--check", *DEFAULT_LINT_ARGUMENTS]
+    session.run("black", *args)
 
 
 @nox.session
@@ -215,7 +231,7 @@ def doc(session: nox.Session) -> None:
     if not GCOVR_ISOLATED_TEST and not (
         # Github actions on MacOs can't use Docker
         platform.system() == "Darwin"
-        and "GITHUB_ACTION" in os.environ
+        and CI_RUN
     ):
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
@@ -223,13 +239,43 @@ def doc(session: nox.Session) -> None:
 
     # Build the Sphinx documentation
     with session.chdir("doc"):
-        with open("examples/gcovr.out", "w") as fh_out:
+        with open("examples/gcovr.out", "w", encoding="utf-8") as fh_out:
             session.run("gcovr", "-h", stdout=fh_out)
         session.run("sphinx-build", "-M", "html", "source", "build", "-W")
 
     # Ensure that the README builds fine as a standalone document.
     readme_html = session.create_tmp() + "/README.html"
     session.run("rst2html5.py", "--strict", "README.rst", readme_html)
+
+    session.log("Create release_notes.md out of CHANGELOG.rst...")
+    changelog_rst = Path("CHANGELOG.rst")
+    with changelog_rst.open(encoding="utf-8") as fh_in:
+        lines = fh_in.readlines()
+
+    out_lines = []
+    iter_lines = iter(lines)
+    for line in iter_lines:
+        if line.startswith("------------"):
+            next(iter_lines)
+            break
+        if (line.rstrip())[:-1] == ":":
+            raise RuntimeError(f"Found section start before release ID: {line}")
+    else:
+        raise RuntimeError(f"Start of release changes not found in {changelog_rst}.")
+
+    for line in iter_lines:
+        if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
+            break
+        line, _ = re.subn(r"``", r"`", line)
+        line, _ = re.subn(r":option:", r"", line)
+        line, _ = re.subn(r":issue:`(\d+)`", r"#\1", line)
+        out_lines.append(line)
+    else:
+        raise RuntimeError(f"End of release changes not found in {changelog_rst}.")
+
+    release_notes_md = Path() / "doc" / "build" / "release_notes.md"
+    with release_notes_md.open("w", encoding="utf-8") as fh_out:
+        fh_out.writelines(out_lines)
 
 
 @nox.session
@@ -276,16 +322,15 @@ def tests(session: nox.Session) -> None:
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
 
-    running_locally = os.environ.get("GITHUB_ACTIONS") is None
     session.run(
         "python",
         *args,
-        success_codes=[0, 1] if running_locally and coverage_args else [0],
+        success_codes=[0, 1] if not CI_RUN and coverage_args else [0],
     )
 
     if os.environ.get("USE_COVERAGE") == "true":
         session.run("coverage", "xml")
-        if running_locally:
+        if not CI_RUN:
             session.run("coverage", "html")
 
 
@@ -293,20 +338,21 @@ def tests(session: nox.Session) -> None:
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("build")
+    # Remove old dist if present
+    dist_dir = Path("dist")
+    if dist_dir.exists():
+        shutil.rmtree(dist_dir)
     session.run("python", "-m", "build")
-    dist_cache = f"{session.cache_dir}/dist"
-    if os.path.isdir(dist_cache):
-        shutil.rmtree(dist_cache)
-    shutil.copytree("dist", dist_cache)
+    session.notify(("check_wheel"))
 
 
 @nox.session
 def check_wheel(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
     session.install("wheel", "twine")
-    with session.chdir(f"{session.cache_dir}/dist"):
+    with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
-        session.install(glob.glob("*.whl")[0])
+        session.install(list(Path().glob("*.whl"))[0])
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
@@ -322,6 +368,24 @@ def upload_wheel(session: nox.Session) -> None:
     session.run("twine", "upload", "dist/*", external=True)
 
 
+@functools.lru_cache(maxsize=1)
+def get_executable_name() -> Path:
+    """Get the executable name."""
+    if platform.system() == "Windows":
+        suffix = ".exe"
+    else:
+        suffix = ""
+    if platform.system() == "Windows":
+        platform_suffix = "win"
+    elif platform.system() == "Darwin":
+        platform_suffix = "macos"
+    else:
+        platform_suffix = "linux"
+    return Path(
+        f"gcovr-{GCOVR_VERSION}-{platform_suffix}-{platform.machine().lower()}{suffix}"
+    )
+
+
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
@@ -335,10 +399,6 @@ def bundle_app(session: nox.Session) -> None:
     session.install(".")
     os.makedirs("build", exist_ok=True)
     with session.chdir("build"):
-        if platform.system() == "Windows":
-            executable = "gcovr.exe"
-        else:
-            executable = "gcovr"
         session.run(
             "pyinstaller",
             "--distpath",
@@ -351,7 +411,7 @@ def bundle_app(session: nox.Session) -> None:
             "--collect-all",
             "gcovr",
             "-n",
-            executable,
+            str(get_executable_name()),
             *session.posargs,
             "../scripts/pyinstaller_entrypoint.py",
         )
@@ -362,17 +422,17 @@ def bundle_app(session: nox.Session) -> None:
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
     with session.chdir("build"):
-        # bash here is needed to be independent from the file extension (Windows).
-        session.run("bash", "-c", "./gcovr --help", external=True)
+        executable = get_executable_name().absolute()
+        session.run(str(executable), "--help", external=True)
         session.log("Run all transformations to check if all the modules are packed")
-        session.create_tmp()
-        for format in OUTPUT_FORMATS:
-            session.run(
-                "bash",
-                "-c",
-                f"./gcovr --{format} $TMPDIR/out.{format}",
-                external=True,
-            )
+        with session.chdir(session.create_tmp()):
+            for format in OUTPUT_FORMATS:
+                session.run(
+                    str(executable),
+                    f"--{format}",
+                    f"out.{format}",
+                    external=True,
+                )
 
 
 @nox.session()
@@ -390,7 +450,7 @@ def html2jpeg(session: nox.Session):
     sock.close()
 
     with ExitStack() as defer:
-        container_id = subprocess.check_output(
+        container_id = subprocess.check_output(  # nosec # We run on several system and do not know the full path
             [
                 "docker",
                 "run",
@@ -403,7 +463,7 @@ def html2jpeg(session: nox.Session):
         ).strip()
         defer.callback(subprocess.run, ["docker", "stop", container_id])
         url = f"http://localhost:{port}/1/screenshot"
-        sleep(3.0)
+        sleep(3.0)  # nosemgrep # We need to wait here until server is started.
 
         def screenshot(html, jpeg, size):
             def read_file(file):
@@ -428,6 +488,7 @@ def html2jpeg(session: nox.Session):
                 url,
                 headers={"Content-Type": "application/json"},
                 json=payload,
+                timeout=10,
             )
             response.raise_for_status()
             with open(jpeg, mode="bw") as fh_out:
@@ -537,7 +598,7 @@ def docker_build_compiler(session: nox.Session, version: str) -> None:
     set_environment(session, version)
     container_id = docker_container_id(session, version)
     cache_options = []
-    if "GITHUB_ACTIONS" in os.environ:
+    if CI_RUN:
         session.log(
             "Create a builder because the default on doesn't support the gha cache"
         )

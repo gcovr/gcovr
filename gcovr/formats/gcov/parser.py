@@ -46,7 +46,6 @@ from typing import (
     Iterable,
     List,
     NamedTuple,
-    NoReturn,
     Optional,
     Pattern,
     Set,
@@ -231,7 +230,7 @@ class NegativeHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line, ignore_parse_errors: set = (), persistent_states: dict = {}
+        line, ignore_parse_errors: set, persistent_states: dict
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -268,7 +267,7 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line, ignore_parse_errors: set = (), persistent_states: dict = {}
+        line, ignore_parse_errors: set, persistent_states: dict
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -470,7 +469,7 @@ def _gather_coverage_from_line(
     The function handles all possible Line variants, and dies otherwise:
     >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=...)
     Traceback (most recent call last):
-    AssertionError: Unexpected variant: 'illegal line type'
+    AssertionError: Unexpected line type: 'illegal line type'
     """
     # pylint: disable=too-many-return-statements,too-many-branches
     # pylint: disable=no-else-return  # make life easier for type checkers
@@ -564,13 +563,7 @@ def _gather_coverage_from_line(
     elif isinstance(line, (_UnconditionalLine,)):
         return state
 
-    else:
-        return _assert_never(line)
-
-
-def _assert_never(never: NoReturn) -> NoReturn:
-    """Used for the type checker"""
-    raise AssertionError(f"Unexpected variant: {never!r}")
+    raise AssertionError(f"Unexpected line type: {line!r}")
 
 
 def _report_lines_with_errors(
@@ -996,6 +989,7 @@ def _float_from_gcov_percent(formatted: str) -> int:
     [nan, 17.2, 0.0]
     """
 
-    assert formatted.endswith("%"), f"Number must end with %, got {formatted}"
+    if not formatted.endswith("%"):
+        raise AssertionError(f"Number must end with %, got {formatted}")
 
     return float(formatted[:-1])

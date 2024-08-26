@@ -81,7 +81,10 @@ def fix_case_of_path(path: str):
 
     curL = cur.lower()
     matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
-    assert len(matchedFileName) < 2, "Seems that we have a case sensitive filesystem"
+    if len(matchedFileName) > 1:
+        raise RuntimeError(
+            "Seems that we have a case sensitive filesystem, can't fix file case"
+        )
 
     if len(matchedFileName) == 1:
         path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
@@ -378,19 +381,12 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
         filename += default_filename
 
     if filename is not None and filename != "-":
-        fh = open(filename, "w", **kwargs)
-        close = True
+        with open(  # nosemgrep # It's intended to use the local
+            filename, "w", **kwargs
+        ) as fh_out:
+            yield fh_out
     else:
-        fh = sys.stdout
-        close = False
-
-    try:
-        yield fh
-    finally:
-        if close:
-            fh.close()
-        else:
-            fh.flush()
+        yield sys.stdout
 
 
 @contextmanager
@@ -404,17 +400,10 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
 
     if filename is not None and filename != "-":
         # files in write binary mode for UTF-8
-        fh = open(filename, "wb", **kwargs)
-        close = True
+        with open(filename, "wb", **kwargs) as fh_out:
+            yield fh_out
     else:
-        fh = sys.stdout.buffer
-        close = False
-
-    try:
-        yield fh
-    finally:
-        if close:
-            fh.close()
+        yield sys.stdout.buffer
 
 
 @contextmanager
@@ -453,5 +442,7 @@ def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
 
 def get_md5_hexdigest(data: bytes) -> str:
     return (
-        md5(data, usedforsecurity=False) if sys.version_info >= (3, 9) else md5(data)
+        md5(data, usedforsecurity=False)  # nosec # Not used for security
+        if sys.version_info >= (3, 9)
+        else md5(data)  # nosec # usedforsecurity not available in older versions
     ).hexdigest()

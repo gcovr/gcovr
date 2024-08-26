@@ -256,12 +256,14 @@ def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[Tuple[int, int]]:
             last = item
             continue
 
-        assert first is not None
+        if first is None:  # pragma: no cover
+            raise AssertionError("First must not be 'None'")
         yield first, last
         first = last = item
 
     if last is not None:
-        assert first is not None
+        if first is None:  # pragma: no cover
+            raise AssertionError("First must not be 'None'")
         yield first, last
 
 

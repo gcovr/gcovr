@@ -20,6 +20,7 @@
 from threading import Thread, Condition, RLock
 from contextlib import contextmanager
 from queue import Queue, Empty
+from typing import Any, Callable, Dict
 
 
 class LockedDirectories(object):
@@ -91,8 +92,9 @@ class Workers(object):
     add method and will run until work is complete
     """
 
-    def __init__(self, number, context):
-        assert number >= 1
+    def __init__(self, number: int, context: Callable[[], Dict[str, Any]]):
+        if number < 1:
+            raise AssertionError("At least one executer is needed.")
         self.q = Queue()
         self.lock = RLock()
         self.exceptions = []
@@ -109,8 +111,10 @@ class Workers(object):
         when running it
         """
         with self.lock:
-            if not self.exceptions:
-                self.q.put((work, args, kwargs))
+            # I Do not push additional items if there is already an exception
+            if self.exceptions:  # pragma: no cover
+                return
+            self.q.put((work, args, kwargs))
 
     def add_sentinels(self):
         """

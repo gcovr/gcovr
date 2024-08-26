@@ -116,7 +116,7 @@ def user_templates():
             with open(template, "rb") as f:
                 contents = f.read().decode("utf-8")
         # This exception can only occur if the file gets inaccessible while gcovr is running.
-        except Exception:  # pragma: no cover
+        except FileNotFoundError:  # pragma: no cover
             pass
 
         return contents

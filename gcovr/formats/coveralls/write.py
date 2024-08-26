@@ -25,7 +25,7 @@ import functools
 import os
 import re
 import shutil
-import subprocess
+import subprocess  # nosec # Commands are trusted.
 from typing import Any, Dict
 
 from ...options import Options
@@ -138,7 +138,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     )
 
     def run_git_cmd(*args):
-        process = subprocess.Popen(
+        process = subprocess.Popen(  # nosec # We execute git
             [git] + list(args), stdout=subprocess.PIPE, cwd=options.root_dir
         )
         return process.communicate()[0].decode("UTF-8").rstrip()
