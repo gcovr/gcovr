@@ -19,7 +19,6 @@
 
 # cspell:ignore xmlcharrefreplace
 
-import io
 import logging
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -852,7 +851,7 @@ def get_file_data(
         max_line_from_cdata = max(cdata.lines.keys(), default=0)
         try:
             file_not_found = True
-            with io.open(
+            with open(
                 filename,
                 "r",
                 encoding=options.source_encoding,

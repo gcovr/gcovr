@@ -381,9 +381,7 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
         filename += default_filename
 
     if filename is not None and filename != "-":
-        with open(  # nosemgrep # It's intended to use the local
-            filename, "w", **kwargs
-        ) as fh_out:
+        with open(filename, "w", **kwargs) as fh_out:
             yield fh_out
     else:
         yield sys.stdout
