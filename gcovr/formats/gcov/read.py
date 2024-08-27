@@ -546,9 +546,9 @@ def process_datafile(
 
             if done:
                 return
-    except GcovrMergeAssertionError:
-        # The exception is already put to the list of error messages.
-        pass
+    # This exception fails fast
+    except GcovrMergeAssertionError as exc:
+        errors.append(str(exc).split("\n"))
 
     errors_output = "\n\t".join(errors)
     errors_output = (
@@ -901,8 +901,6 @@ def run_gcov_and_process_files(
             f"Current processed gcov file was {filename!r}.\n"
             "Use option --verbose to get extended information."
         )
-        if isinstance(exc, GcovrMergeAssertionError):
-            raise
 
     return done
 
