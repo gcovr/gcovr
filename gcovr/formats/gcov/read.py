@@ -17,26 +17,41 @@
 #
 # ****************************************************************************
 
+import gzip
+import json
 import logging
 import os
 import re
 import shlex
 import subprocess  # nosec # Commands are trusted.
-import io
 from threading import Lock
 from typing import Callable, List, Optional, Set, Tuple
 
 from ...options import Options
-from ...merging import merge_covdata
+from ...merging import (
+    FUNCTION_MAX_LINE_MERGE_OPTIONS,
+    GcovrMergeAssertionError,
+    insert_branch_coverage,
+    insert_function_coverage,
+    insert_line_coverage,
+    merge_covdata,
+)
 
 from ...utils import (
     search_file,
     commonpath,
     is_fs_case_insensitive,
     fix_case_of_path,
+    get_md5_hexdigest,
 )
 from .workers import Workers, locked_directory
-from ...coverage import CovData
+from ...coverage import (
+    BranchCoverage,
+    CovData,
+    FileCoverage,
+    FunctionCoverage,
+    LineCoverage,
+)
 from ...merging import get_merge_mode_from_options, insert_file_coverage
 from ...exclusions import apply_all_exclusions
 from ...decision_analysis import DecisionParser
@@ -103,7 +118,7 @@ def read_report(options: Options) -> CovData:
 def find_existing_gcov_files(
     search_path: str, exclude_dirs: List[re.Pattern]
 ) -> List[str]:
-    """Find .gcov files under the given search path."""
+    """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
         LOGGER.debug(f"Using given file {search_path}")
         gcov_files = [search_path]
@@ -111,7 +126,9 @@ def find_existing_gcov_files(
         LOGGER.debug(f"Scanning directory {search_path} for gcov files...")
         gcov_files = list(
             search_file(
-                re.compile(r".*\.gcov$").match, search_path, exclude_dirs=exclude_dirs
+                re.compile(r".*\.gcov(?:\.json\.gz)?$").match,
+                search_path,
+                exclude_dirs=exclude_dirs,
             )
         )
         LOGGER.debug(f"Found {len(gcov_files)} files (and will process all of them)")
@@ -163,6 +180,109 @@ def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str
 #
 # Process a single gcov datafile
 #
+def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
+    with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
+        gcov_json_data = json.loads(fh_in.read())
+
+    for file in gcov_json_data["files"]:
+        fname = os.path.normpath(
+            os.path.join(gcov_json_data["current_working_directory"], file["file"])
+        )
+        LOGGER.debug(f"Parsing coverage data for file {fname}")
+
+        # Return if the filename does not match the filter
+        # Return if the filename matches the exclude pattern
+        filtered, excluded = apply_filter_include_exclude(
+            fname, options.filter, options.exclude
+        )
+
+        if filtered:
+            LOGGER.debug(f"  Filtering coverage data for file {fname}")
+            continue
+
+        if excluded:
+            LOGGER.debug(f"  Excluding coverage data for file {fname}")
+            continue
+
+        if file["file"] == "<stdin>":
+            message = f"Got sourcefile {file['file']}, using empty lines."
+            LOGGER.info(message)
+            source_lines = [b"" for _ in range(file["lines"][-1]["line_number"])]
+            source_lines[0] = f"/* {message} */".encode()
+        else:
+            with open(fname, "rb") as fh_in:
+                source_lines = fh_in.read().splitlines()
+            lines = len(source_lines)
+            max_line_from_cdata = file["lines"][-1]["line_number"]
+            if lines < max_line_from_cdata:
+                LOGGER.warning(
+                    f"File {fname} has {lines} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                )
+                # Python ranges are exclusive. We want to iterate over all lines, including
+                # that last line. Thus, we have to add a +1 to include that line.
+                for _ in range(lines, max_line_from_cdata):
+                    source_lines.append(b"/*EOF*/")
+
+        file_cov = FileCoverage(fname)
+        for line in file["lines"]:
+            line_cov = insert_line_coverage(
+                file_cov,
+                LineCoverage(
+                    line["line_number"],
+                    count=line["count"],
+                    md5=get_md5_hexdigest(source_lines[line["line_number"] - 1]),
+                ),
+            )
+            for index, branch in enumerate(line["branches"]):
+                insert_branch_coverage(
+                    line_cov,
+                    index,
+                    BranchCoverage(
+                        branch["source_block_id"],
+                        branch["count"],
+                        fallthrough=branch["fallthrough"],
+                        throw=branch["throw"],
+                    ),
+                )
+        for function in file["functions"]:
+            # Use 100% only if covered == total.
+            if function["blocks_executed"] == function["blocks"]:
+                blocks = 100.0
+            else:
+                # There is at least one uncovered item.
+                # Round to 1 decimal and clamp to max 99.9%.
+                ratio = function["blocks_executed"] / function["blocks"]
+                blocks = min(99.9, round(ratio * 100.0, 1))
+
+            insert_function_coverage(
+                file_cov,
+                FunctionCoverage(
+                    function["demangled_name"],
+                    lineno=function["start_line"],
+                    count=function["execution_count"],
+                    blocks=blocks,
+                ),
+                FUNCTION_MAX_LINE_MERGE_OPTIONS,
+            )
+
+        encoded_source_lines = [
+            line.decode(options.source_encoding, errors="replace")
+            for line in source_lines
+        ]
+        LOGGER.debug(f"Apply exclusions for {fname}")
+        apply_all_exclusions(file_cov, lines=encoded_source_lines, options=options)
+
+        if options.show_decision:
+            decision_parser = DecisionParser(file_cov, encoded_source_lines)
+            decision_parser.parse_all_lines()
+
+        LOGGER.debug(f"Merge coverage data for {fname}")
+        insert_file_coverage(covdata, file_cov, get_merge_mode_from_options(options))
+
+
+#
+# Process a single gcov datafile
+#
 def process_gcov_data(
     data_fname: str,
     gcda_fname: Optional[str],
@@ -170,10 +290,10 @@ def process_gcov_data(
     options: Options,
     current_dir: str = None,
 ) -> None:
-    with io.open(
+    with open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
-    ) as INPUT:
-        lines = INPUT.read().splitlines()
+    ) as fh_in:
+        lines = fh_in.read().splitlines()
 
     # Find the source file
     # TODO: instead of heuristics, use "working directory" if available
@@ -420,21 +540,25 @@ def process_datafile(
             potential_wd.append(wd)
             wd = os.path.dirname(wd)
 
-    for wd in potential_wd:
-        done = run_gcov_and_process_files(
-            abs_filename,
-            covdata,
-            options=options,
-            error=errors.append,
-            chdir=wd,
-        )
+    try:
+        for wd in potential_wd:
+            done = run_gcov_and_process_files(
+                abs_filename,
+                covdata,
+                options=options,
+                error=errors.append,
+                chdir=wd,
+            )
 
-        if options.gcov_delete:
-            if not abs_filename.endswith("gcno"):
-                to_erase.add(abs_filename)
+            if options.gcov_delete:
+                if not abs_filename.endswith("gcno"):
+                    to_erase.add(abs_filename)
 
-        if done:
-            return
+            if done:
+                return
+    # This exception fails fast
+    except GcovrMergeAssertionError as exc:
+        errors.append(str(exc).split("\n"))
 
     errors_output = "\n\t".join(errors)
     errors_output = (
@@ -486,7 +610,9 @@ class GcovProgram:
     __cmd_split = None
     __default_options = []
     __exitcode_to_ignore = None
+    __use_json_format_if_available = None
     __help_output = None
+    __version_output = None
 
     class LockContext(object):
         def __init__(self, lock: Lock):
@@ -498,15 +624,16 @@ class GcovProgram:
         def __exit__(self, *_):
             self.lock.release()
 
-    def __init__(self, cmd: str):
+    def __init__(self, cmd: str, options: Options):
         with GcovProgram.LockContext(GcovProgram.__lock):
+            GcovProgram.__use_json_format_if_available = options.exclude_calls
             if GcovProgram.__cmd is None:
                 GcovProgram.__cmd = cmd
                 # If the first element of cmd - the executable name - has embedded spaces
                 # (other than within quotes), it probably includes extra arguments.
                 GcovProgram.__cmd_split = shlex.split(GcovProgram.__cmd)
             elif GcovProgram.__cmd != cmd:
-                raise RuntimeError(
+                raise AssertionError(
                     f"Gcov command must not be changed, expected '{GcovProgram.__cmd}', got '{cmd}'"
                 )
 
@@ -519,12 +646,27 @@ class GcovProgram:
                     "--all-blocks",
                 ]
 
+                if (
+                    GcovProgram.__use_json_format_if_available
+                    and self.__check_gcov_help_content("--json-format")
+                ):
+                    if self.__check_gcov_version_content("JSON format version: 2"):
+                        LOGGER.debug("GCOV capabilities: JSON format available.")
+                        GcovProgram.__default_options.append("--json-format")
+                    else:
+                        LOGGER.debug(
+                            "GCOV capabilities: Unsupported JSON format detected."
+                        )
+
                 if self.__check_gcov_help_content("--demangled-names"):
+                    LOGGER.debug("GCOV capabilities: Demangled names available.")
                     GcovProgram.__default_options.append("--demangled-names")
 
                 if self.__check_gcov_help_content("--hash-filenames"):
+                    LOGGER.debug("GCOV capabilities: Hashing of filenames available.")
                     GcovProgram.__default_options.append("--hash-filenames")
                 elif self.__check_gcov_help_content("--preserve-paths"):
+                    LOGGER.debug("GCOV capabilities: Preserve of paths available.")
                     GcovProgram.__default_options.append("--preserve-paths")
                 else:
                     LOGGER.warning(
@@ -556,8 +698,32 @@ class GcovProgram:
 
         return GcovProgram.__help_output
 
+    def __get_version_output(self) -> str:
+        if GcovProgram.__version_output is None:
+            gcov_process = self.__get_gcov_process(
+                ["--version"],
+                universal_newlines=True,
+            )
+            out, _ = gcov_process.communicate(timeout=30)
+
+            if gcov_process.returncode:  # pragma: no cover
+                # gcov tossed errors: throw exception
+                raise RuntimeError(
+                    "Error in gcov command line, couldn't get version information."
+                )
+            # gcov execution was successful, help argument is not supported.
+            GcovProgram.__version_output = out
+
+        return GcovProgram.__version_output
+
     def __check_gcov_help_content(self, option: str) -> bool:
         if option in self.__get_help_output():
+            return True
+
+        return False
+
+    def __check_gcov_version_content(self, option: str) -> bool:
+        if option in self.__get_version_output():
             return True
 
         return False
@@ -637,11 +803,11 @@ def run_gcov_and_process_files(
     error: Callable[[str], None],
     chdir: str,
 ) -> bool:
-    fname = None
+    filename = None
     out = None
     err = None
     try:
-        gcov_cmd = GcovProgram(options.gcov_cmd)
+        gcov_cmd = GcovProgram(options.gcov_cmd, options)
         gcov_cmd.identify_and_cache_capabilities()
 
         # ATTENTION:
@@ -707,8 +873,17 @@ def run_gcov_and_process_files(
                         ]
 
                     # Process *.gcov files
-                    for fname in active_gcov_files:
-                        process_gcov_data(fname, abs_filename, covdata, options)
+                    for gcov_filename in active_gcov_files:
+                        if gcov_filename.endswith(".gcov"):
+                            process_gcov_data(
+                                gcov_filename, filename, covdata, options, chdir
+                            )
+                        elif gcov_filename.endswith(".gcov.json.gz"):
+                            process_gcov_json_data(gcov_filename, covdata, options)
+                        else:  # pragma: no cover
+                            raise RuntimeError(
+                                f"Unknown gcov output format {filename}."
+                            )
                     done = True
 
             if options.gcov_keep and done:
@@ -725,14 +900,15 @@ def run_gcov_and_process_files(
                 if os.path.exists(filepath):
                     os.remove(filepath)
 
-    except Exception as exc:
+    except RuntimeError as exc:
+        # If we got an merge assertion error we must end the processing
         done = False
         error(
             f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
             f"Stdout of gcov was >>{out}<< End of stdout\n"
             f"Stderr of gcov was >>{err}<< End of stderr\n"
             f"Exception was >>{str(exc)}<< End of stderr\n"
-            f"Current processed gcov file was {fname!r}.\n"
+            f"Current processed gcov file was {filename!r}.\n"
             "Use option --verbose to get extended information."
         )
 
@@ -789,7 +965,12 @@ def process_existing_gcov_file(
         LOGGER.debug(f"Excluding gcov file: {filename}")
         return
 
-    process_gcov_data(filename, None, covdata, options)
+    if filename.endswith(".gcov"):
+        process_gcov_data(filename, None, covdata, options)
+    elif filename.endswith(".gcov.json.gz"):
+        process_gcov_json_data(filename, covdata, options)
+    else:  # pragma: no cover
+        raise RuntimeError(f"Unknown gcov output format {filename}.")
 
     if not options.gcov_keep:
         to_erase.add(filename)

@@ -68,6 +68,10 @@ from .coverage import (
 LOGGER = logging.getLogger("gcovr")
 
 
+class GcovrMergeAssertionError(AssertionError):
+    pass
+
+
 @dataclass
 class MergeOptions:
     ignore_function_lineno: bool = False
@@ -296,7 +300,7 @@ def merge_function(
     if not options.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
-            raise AssertionError(
+            raise GcovrMergeAssertionError(
                 f"Got function {right.name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                 "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."

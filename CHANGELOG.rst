@@ -18,6 +18,7 @@ New features and notable changes:
 - Detect suspicious counter values in ``gcov`` output. (:issue:`903`)
 - Add :option:`--html-single-page` to create a single page report (static or with Javascript). (:issue:`916`)
 - Upload standalone applications as release artifacts. (:issue:`941`)
+- Add support for GCOV JSON intermediate format. (:issue:`766`)
 
 Bug fixes and small improvements:
 

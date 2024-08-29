@@ -381,9 +381,7 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
         filename += default_filename
 
     if filename is not None and filename != "-":
-        with open(  # nosemgrep # It's intended to use the local
-            filename, "w", **kwargs
-        ) as fh_out:
+        with open(filename, "w", **kwargs) as fh_out:
             yield fh_out
     else:
         yield sys.stdout
@@ -404,6 +402,19 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
             yield fh_out
     else:
         yield sys.stdout.buffer
+
+
+@contextmanager
+def chdir(dir_):
+    """
+    Context for doing something in a locked directory
+    """
+    current_dir = os.getcwd()
+    os.chdir(dir_)
+    try:
+        yield
+    finally:
+        os.chdir(current_dir)
 
 
 def force_unix_separator(path: str) -> str:

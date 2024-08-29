@@ -46,7 +46,7 @@
                     "name": "checkCompactBranch2True(int)"
                 },
                 {
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 66.7,
                     "execution_count": 1,
                     "lineno": 128,
                     "name": "checkComplexFalse(int)"
@@ -58,7 +58,7 @@
                     "name": "checkComplexForLoop(int)"
                 },
                 {
-                    "blocks_percent": 83.0,
+                    "blocks_percent": 83.3,
                     "execution_count": 1,
                     "lineno": 116,
                     "name": "checkComplexTrue(int)"
@@ -76,13 +76,13 @@
                     "name": "checkElseIf1(int)"
                 },
                 {
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 66.7,
                     "execution_count": 1,
                     "lineno": 156,
                     "name": "checkElseIf2(int)"
                 },
                 {
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 66.7,
                     "execution_count": 1,
                     "lineno": 172,
                     "name": "checkElseIf3(int)"
@@ -166,13 +166,13 @@
                     "name": "checkTernary1True(int)"
                 },
                 {
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 66.7,
                     "execution_count": 1,
                     "lineno": 276,
                     "name": "checkTernary2False(int)"
                 },
                 {
-                    "blocks_percent": 83.0,
+                    "blocks_percent": 83.3,
                     "execution_count": 1,
                     "lineno": 271,
                     "name": "checkTernary2True(int)"
@@ -184,7 +184,7 @@
                     "name": "checkWhileLoop(int)"
                 },
                 {
-                    "blocks_percent": 95.0,
+                    "blocks_percent": 95.1,
                     "execution_count": 1,
                     "lineno": 360,
                     "name": "main"
@@ -1885,13 +1885,13 @@
                 {
                     "branches": [
                         {
-                            "blockno": 2,
+                            "blockno": 20,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "blockno": 20,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true

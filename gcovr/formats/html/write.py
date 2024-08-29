@@ -19,7 +19,6 @@
 
 # cspell:ignore xmlcharrefreplace
 
-import io
 import logging
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -41,6 +40,7 @@ from ...coverage import (
 )
 from ...options import Options
 from ...utils import (
+    chdir,
     commonpath,
     force_unix_separator,
     get_md5_hexdigest,
@@ -847,41 +847,44 @@ def get_file_data(
     file_data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
     file_data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
 
-    current_dir = os.getcwd()
-    os.chdir(options.root_dir)
-    max_line_from_cdata = max(cdata.lines.keys(), default=0)
-    try:
-        with io.open(
-            filename,
-            "r",
-            encoding=options.source_encoding,
-            errors="replace",
-        ) as source_file:
-            file_not_found = False
-            lines = formatter.highlighter_for_file(filename)(source_file.read())
-            ctr = 0
-            for ctr, line in enumerate(lines, 1):
+    with chdir(options.root_dir):
+        max_line_from_cdata = max(cdata.lines.keys(), default=0)
+        try:
+            file_not_found = True
+            with open(
+                filename,
+                "r",
+                encoding=options.source_encoding,
+                errors="replace",
+            ) as source_file:
+                file_not_found = False
+                lines = formatter.highlighter_for_file(filename)(source_file.read())
+                ctr = 0
+                for ctr, line in enumerate(lines, 1):
+                    file_data["source_lines"].append(
+                        source_row(ctr, line, cdata.lines.get(ctr))
+                    )
+                if ctr < max_line_from_cdata:
+                    LOGGER.warning(
+                        f"File {filename} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                    )
+        except IOError as e:
+            if filename.endswith("<stdin>"):
+                file_not_found = False
+                file_info = "!!! File from stdin !!!"
+            else:
+                file_info = "!!! File not found !!!"
+                LOGGER.warning(f"File {filename} not found: {repr(e)}")
+            # Python ranges are exclusive. We want to iterate over all lines, including
+            # that last line. Thus, we have to add a +1 to include that line.
+            for ctr in range(1, max_line_from_cdata + 1):
                 file_data["source_lines"].append(
-                    source_row(ctr, line, cdata.lines.get(ctr))
+                    source_row(
+                        ctr,
+                        file_info if ctr == 1 else "",
+                        cdata.lines.get(ctr),
+                    )
                 )
-            if ctr < max_line_from_cdata:
-                LOGGER.warning(
-                    f"File {filename} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
-                )
-    except IOError as e:
-        file_not_found = True
-        LOGGER.warning(f"File {filename} not found: {repr(e)}")
-        # Python ranges are exclusive. We want to iterate over all lines, including
-        # that last line. Thus, we have to add a +1 to include that line.
-        for ctr in range(1, max_line_from_cdata + 1):
-            file_data["source_lines"].append(
-                source_row(
-                    ctr,
-                    "!!! File not found !!!" if ctr == 1 else "",
-                    cdata.lines.get(ctr),
-                )
-            )
-    os.chdir(current_dir)
 
     return file_data, functions, file_not_found
 
@@ -1058,7 +1061,7 @@ def _make_short_source_filename(output_file: str, filename: str) -> str:
     if output_suffix == "":
         output_suffix = ".html"
 
-    filename = filename.replace(os.sep, "/")
+    filename = filename.replace(os.sep, "/").replace("<stdin>", "stdin")
     source_filename = (
         ".".join(
             (

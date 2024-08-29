@@ -235,9 +235,9 @@ Path                    Description
 ======================= =======================================================
 
 The program entrypoint and command line interface is in ``gcovr/__main__.py``.
-The coverage data is parsed in the ``gcovr.gcov`` module.
+The coverage data is parsed in the ``gcovr.formats.gcov`` module.
 The HTML, XML, text, and summary reports
-are in ``gcovr.generator.html`` and respective modules.
+are in ``gcovr.formats.html`` and respective modules.
 
 .. _test suite:
 

@@ -58,7 +58,7 @@ and must not match any :option:`-e/--exclude<gcovr --exclude>` filter.
 
 The :option:`--gcov-filter<gcovr --gcov-filter>`
 and :option:`--gcov-exclude<gcovr --gcov-exclude>` filters apply to the
-``.gcov`` files created by ``gcov``.
+``.gcov`` / ``.json.gz`` files created by ``gcov``.
 This is useful mostly when running gcov yourself,
 and then invoking gcovr with :option:`-g/--gcov-use-existing-files<gcovr --gcov-use-existing-files>`.
 But these filters also apply when gcov is launched by gcovr.

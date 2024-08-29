@@ -8,7 +8,7 @@ run: txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --gcov-keep --verbose --gcov-ignore-errors no_working_dir_found --json-pretty --json coverage.json
+	$(GCOVR) --gcov-keep --verbose $$(if [ "$${CC_REFERENCE:=$$CC}" != "gcc-14" ] ; then echo "--gcov-ignore-errors no_working_dir_found" ; fi) --json-pretty --json coverage.json
 
 txt: coverage.json
 	$(GCOVR) -a '$<.not_exists' 2>no_tracefile.stderr; test $$? -eq 64 || ( cat no_tracefile.stderr & exit 1 )
