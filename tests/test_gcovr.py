@@ -331,7 +331,6 @@ def pytest_generate_tests(metafunc):
             )
 
         for format in KNOWN_FORMATS:
-
             # only test formats where the Makefile provides a target
             if format not in targets:
                 continue
@@ -352,6 +351,17 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.xfail(
                     name in ["gcov-ignore_output_error"] and IS_WINDOWS,
                     reason="Permission is ignored on Windows",
+                ),
+                pytest.mark.xfail(
+                    name in ["less-lines"]
+                    and (
+                        (IS_CLANG and CC_REFERENCE_VERSION in [13, 14, 15])
+                        or (
+                            not IS_CLANG
+                            and CC_REFERENCE_VERSION in [8, 9, 10, 11, 12, 13]
+                        )
+                    ),
+                    reason="Other versions stub the line",
                 ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"

@@ -212,6 +212,16 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
         else:
             with open(fname, "rb") as fh_in:
                 source_lines = fh_in.read().splitlines()
+            lines = len(source_lines)
+            max_line_from_cdata = file["lines"][-1]["line_number"]
+            if lines < max_line_from_cdata:
+                LOGGER.warning(
+                    f"File {fname} has {lines} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                )
+                # Python ranges are exclusive. We want to iterate over all lines, including
+                # that last line. Thus, we have to add a +1 to include that line.
+                for _ in range(lines, max_line_from_cdata):
+                    source_lines.append(b"/*EOF*/")
 
         file_cov = FileCoverage(fname)
         for line in file["lines"]:
