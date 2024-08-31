@@ -163,7 +163,7 @@ destination_blockno: int
   The destination block of this branch.
   Only available if ``gcov`` JSON format is used.
 
-.. versionremoved:: NEXT
+.. versionadded:: NEXT
    Added ``destination_blockno`` field.
 
 .. _json_format_decision:
@@ -260,7 +260,7 @@ gcovr/excluded: boolean
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
-.. versionremoved:: NEXT
+.. versionadded:: NEXT
    Added ``pos`` field.
 
 .. versionremoved:: NEXT
