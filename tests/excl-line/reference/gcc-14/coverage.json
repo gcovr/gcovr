@@ -8,19 +8,31 @@
                     "execution_count": 0,
                     "gcovr/excluded": true,
                     "lineno": 20,
-                    "name": "bar()"
+                    "name": "bar()",
+                    "pos": [
+                        "20:5",
+                        "22:1"
+                    ]
                 },
                 {
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 4,
-                    "name": "foo(int)"
+                    "name": "foo(int)",
+                    "pos": [
+                        "4:5",
+                        "17:1"
+                    ]
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 25,
-                    "name": "main"
+                    "name": "main",
+                    "pos": [
+                        "25:5",
+                        "30:1"
+                    ]
                 }
             ],
             "lines": [
@@ -35,12 +47,14 @@
                         {
                             "blockno": 2,
                             "count": 0,
+                            "destination_blockno": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 2,
                             "count": 1,
+                            "destination_blockno": 4,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -104,5 +118,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.7"
+    "gcovr/format_version": "0.8"
 }
