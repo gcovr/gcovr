@@ -7,7 +7,11 @@
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "bar()"
+                    "name": "bar()",
+                    "pos": [
+                        "1:5",
+                        "6:1"
+                    ]
                 }
             ],
             "lines": [
@@ -44,7 +48,11 @@
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 1,
-                    "name": "foo()"
+                    "name": "foo()",
+                    "pos": [
+                        "1:5",
+                        "6:1"
+                    ]
                 }
             ],
             "lines": [
@@ -81,7 +89,11 @@
                     "blocks_percent": 100.0,
                     "execution_count": 2,
                     "lineno": 10,
-                    "name": "main"
+                    "name": "main",
+                    "pos": [
+                        "10:5",
+                        "19:1"
+                    ]
                 }
             ],
             "lines": [
@@ -108,37 +120,6 @@
                     "count": 2,
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
                     "line_number": 18
-                },
-                {
-                    "branches": [
-                        {
-                            "blockno": 3,
-                            "count": 2,
-                            "fallthrough": true,
-                            "throw": false
-                        },
-                        {
-                            "blockno": 3,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "blockno": 4,
-                            "count": 2,
-                            "fallthrough": true,
-                            "throw": false
-                        },
-                        {
-                            "blockno": 4,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
-                    "count": 8,
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "line_number": 19
                 }
             ]
         }

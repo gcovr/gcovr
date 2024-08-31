@@ -7,13 +7,21 @@
                     "blocks_percent": 63.6,
                     "execution_count": 1,
                     "lineno": 3,
-                    "name": "foo(int)"
+                    "name": "foo(int)",
+                    "pos": [
+                        "3:6",
+                        "16:1"
+                    ]
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 19,
-                    "name": "main"
+                    "name": "main",
+                    "pos": [
+                        "19:5",
+                        "22:1"
+                    ]
                 }
             ],
             "lines": [
@@ -28,12 +36,14 @@
                         {
                             "blockno": 2,
                             "count": 0,
+                            "destination_blockno": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 2,
                             "count": 1,
+                            "destination_blockno": 5,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -59,12 +69,14 @@
                         {
                             "blockno": 7,
                             "count": 0,
+                            "destination_blockno": 8,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 7,
                             "count": 1,
+                            "destination_blockno": 10,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -112,5 +124,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.7"
+    "gcovr/format_version": "0.8"
 }

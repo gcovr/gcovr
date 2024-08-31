@@ -7,37 +7,61 @@
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 21,
-                    "name": "RAII::RAII(bool)"
+                    "name": "RAII::RAII(bool)",
+                    "pos": [
+                        "21:1",
+                        "21:33"
+                    ]
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 16,
-                    "name": "RAII::method_that_may_throw() const"
+                    "name": "RAII::method_that_may_throw() const",
+                    "pos": [
+                        "16:9",
+                        "18:5"
+                    ]
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 22,
-                    "name": "RAII::~RAII()"
+                    "name": "RAII::~RAII()",
+                    "pos": [
+                        "22:1",
+                        "22:16"
+                    ]
                 },
                 {
                     "blocks_percent": 87.5,
                     "execution_count": 9,
                     "lineno": 3,
-                    "name": "function_that_may_throw(bool)"
+                    "name": "function_that_may_throw(bool)",
+                    "pos": [
+                        "3:5",
+                        "9:1"
+                    ]
                 },
                 {
                     "blocks_percent": 63.2,
                     "execution_count": 3,
                     "lineno": 24,
-                    "name": "function_with_catchers(int)"
+                    "name": "function_with_catchers(int)",
+                    "pos": [
+                        "24:5",
+                        "44:1"
+                    ]
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 3,
                     "lineno": 47,
-                    "name": "main"
+                    "name": "main",
+                    "pos": [
+                        "47:5",
+                        "49:1"
+                    ]
                 }
             ],
             "lines": [
@@ -52,12 +76,14 @@
                         {
                             "blockno": 2,
                             "count": 3,
+                            "destination_blockno": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 2,
                             "count": 6,
+                            "destination_blockno": 6,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -71,6 +97,7 @@
                         {
                             "blockno": 4,
                             "count": 3,
+                            "destination_blockno": 5,
                             "fallthrough": true,
                             "throw": false
                         }
@@ -126,6 +153,7 @@
                         {
                             "blockno": 2,
                             "count": 0,
+                            "destination_blockno": 3,
                             "fallthrough": true,
                             "throw": false
                         }
@@ -139,12 +167,14 @@
                         {
                             "blockno": 10,
                             "count": 0,
+                            "destination_blockno": 11,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 10,
                             "count": 3,
+                            "destination_blockno": 12,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -170,6 +200,7 @@
                         {
                             "blockno": 3,
                             "count": 3,
+                            "destination_blockno": 4,
                             "fallthrough": true,
                             "throw": false
                         }
@@ -183,6 +214,7 @@
                         {
                             "blockno": 4,
                             "count": 3,
+                            "destination_blockno": 5,
                             "fallthrough": true,
                             "throw": false
                         }
@@ -196,12 +228,14 @@
                         {
                             "blockno": 14,
                             "count": 0,
+                            "destination_blockno": 15,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 14,
                             "count": 0,
+                            "destination_blockno": 16,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -227,6 +261,7 @@
                         {
                             "blockno": 5,
                             "count": 3,
+                            "destination_blockno": 6,
                             "fallthrough": true,
                             "throw": false
                         }
@@ -262,5 +297,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.7"
+    "gcovr/format_version": "0.8"
 }

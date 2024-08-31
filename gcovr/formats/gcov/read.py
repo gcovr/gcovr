@@ -213,7 +213,9 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
             with open(fname, "rb") as fh_in:
                 source_lines = fh_in.read().splitlines()
             lines = len(source_lines)
-            max_line_from_cdata = file["lines"][-1]["line_number"]
+            max_line_from_cdata = (
+                file["lines"][-1]["line_number"] if file["lines"] else 1
+            )
             if lines < max_line_from_cdata:
                 LOGGER.warning(
                     f"File {fname} has {lines} line(s) but coverage data has {max_line_from_cdata} line(s)."
@@ -242,6 +244,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                         branch["count"],
                         fallthrough=branch["fallthrough"],
                         throw=branch["throw"],
+                        destination_blockno=branch["destination_block_id"],
                     ),
                 )
         for function in file["functions"]:
@@ -261,6 +264,8 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                     lineno=function["start_line"],
                     count=function["execution_count"],
                     blocks=blocks,
+                    start=(function["start_line"], function["start_column"]),
+                    end=(function["end_line"], function["end_column"]),
                 ),
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )

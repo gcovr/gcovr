@@ -7,19 +7,31 @@
                     "blocks_percent": 75.0,
                     "execution_count": 1,
                     "lineno": 7,
-                    "name": "foo(int)"
+                    "name": "foo(int)",
+                    "pos": [
+                        "7:5",
+                        "13:1"
+                    ]
                 },
                 {
                     "blocks_percent": 80.0,
                     "execution_count": 1,
                     "lineno": 16,
-                    "name": "main"
+                    "name": "main",
+                    "pos": [
+                        "16:5",
+                        "29:1"
+                    ]
                 },
                 {
                     "blocks_percent": 0.0,
                     "execution_count": 0,
                     "lineno": 3,
-                    "name": "not_called()"
+                    "name": "not_called()",
+                    "pos": [
+                        "3:5",
+                        "5:1"
+                    ]
                 }
             ],
             "lines": [
@@ -46,12 +58,14 @@
                         {
                             "blockno": 2,
                             "count": 0,
+                            "destination_blockno": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 2,
                             "count": 1,
+                            "destination_blockno": 4,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -89,12 +103,14 @@
                         {
                             "blockno": 3,
                             "count": 0,
+                            "destination_blockno": 4,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 3,
                             "count": 1,
+                            "destination_blockno": 5,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -118,5 +134,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.7"
+    "gcovr/format_version": "0.8"
 }

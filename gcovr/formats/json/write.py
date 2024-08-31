@@ -194,12 +194,16 @@ def _json_from_branches(branches: Dict[int, BranchCoverage]) -> list:
 
 
 def _json_from_branch(branch: BranchCoverage) -> dict:
-    return {
+    json_branch = {
         "blockno": branch.blockno,
         "count": branch.count,
         "fallthrough": branch.fallthrough,
         "throw": branch.throw,
     }
+    if branch.destination_blockno is not None:
+        json_branch["destination_blockno"] = branch.destination_blockno
+
+    return json_branch
 
 
 def _json_from_decision(decision: DecisionCoverage) -> dict:
@@ -247,6 +251,11 @@ def _json_from_function(function: FunctionCoverage) -> list:
         }
         if function.excluded[lineno]:
             json_function["gcovr/excluded"] = True
+        if function.start is not None and function.end is not None:
+            json_function["pos"] = (
+                ":".join([str(e) for e in function.start[lineno]]),
+                ":".join([str(e) for e in function.end[lineno]]),
+            )
 
         json_functions.append(json_function)
 

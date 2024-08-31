@@ -17,5 +17,13 @@
 #
 # ****************************************************************************
 
-JSON_FORMAT_VERSION = "0.7"
-JSON_SUMMARY_FORMAT_VERSION = "0.6"
+JSON_FORMAT_VERSION = (
+    # BEGIN version
+    "0.8"
+    # END version
+)
+JSON_SUMMARY_FORMAT_VERSION = (
+    # BEGIN summary version
+    "0.6"
+    # END summary version
+)

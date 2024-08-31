@@ -50,6 +50,12 @@ gcovr/format_version: string
   with the declared version.
   Gcovr itself will only consume input files that match the exact version.
 
+  Current version is:
+
+  .. include:: ../../../gcovr/formats/json/versions.py
+      :start-after: # BEGIN version
+      :end-before: # END version
+
 files: list
   An unordered list of :ref:`file <json_format_file>` entries.
 
@@ -138,7 +144,8 @@ Each **branch** provides information about a branch on that line::
     {
       "count": count,
       "fallthrough": fallthrough,
-      "throw": throw
+      "throw": throw,
+      "destination_blockno": number
     }
 
 This exactly matches the GCC gcov format.
@@ -151,6 +158,13 @@ fallthrough: boolean
 
 throw: boolean
   Whether this is an exception-only branch.
+
+destination_blockno: int
+  The destination block of this branch.
+  Only available if ``gcov`` JSON format is used.
+
+.. versionadded:: NEXT
+   Added ``destination_blockno`` field.
 
 .. _json_format_decision:
 
@@ -213,6 +227,10 @@ Each **function** entry describes a line in the source file::
       "lineno": lineno,
       "execution_count": count,
       "branch_percent": percent,
+      "pos": [
+        "<start line>:<start column>",
+        "<end line>:<end column>"
+      ]
       "gcovr/excluded": excluded
     }
 
@@ -230,12 +248,20 @@ execution_count: int
 branch_percent: float
   The branch coverage in percent (0.0 to 100.0).
 
+pos: list
+  A list with start and end position of function. Both entries are string with
+  line and column separated by ``:``. Only available if ``gcov`` JSON format is
+  used.
+
 gcovr/excluded: boolean
   True if coverage data for this function was explicitly excluded,
   in particular with :ref:`exclusion markers`.
   May be absent if false.
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
+
+.. versionadded:: NEXT
+   Added ``pos`` field.
 
 .. versionremoved:: NEXT
    Removed ``returned_count`` field because missing in ``gcov`` JSON format.
@@ -296,6 +322,12 @@ gcovr/summary_format_version: string
   This is versioned independently from gcovr and the full JSON format.
   Consumers of gcovr JSON Summary reports should check
   that they are SemVer-compatible with the declared version.
+
+  Current version is:
+
+  .. include:: ../../../gcovr/formats/json/versions.py
+      :start-after: # BEGIN summary version
+      :end-before: # END summary version
 
 files: list
   Unordered list of :ref:`file summary entries <json_summary_format_file>`.

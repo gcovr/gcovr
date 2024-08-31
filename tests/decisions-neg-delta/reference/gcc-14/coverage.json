@@ -7,13 +7,21 @@
                     "blocks_percent": 78.9,
                     "execution_count": 1,
                     "lineno": 5,
-                    "name": "Foo::work(int)"
+                    "name": "Foo::work(int)",
+                    "pos": [
+                        "5:8",
+                        "11:3"
+                    ]
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 14,
-                    "name": "main"
+                    "name": "main",
+                    "pos": [
+                        "14:5",
+                        "18:1"
+                    ]
                 }
             ],
             "lines": [
@@ -28,12 +36,14 @@
                         {
                             "blockno": 2,
                             "count": 1,
+                            "destination_blockno": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 2,
                             "count": 0,
+                            "destination_blockno": 15,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -52,12 +62,14 @@
                         {
                             "blockno": 5,
                             "count": 1,
+                            "destination_blockno": 6,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 5,
                             "count": 0,
+                            "destination_blockno": 16,
                             "fallthrough": false,
                             "throw": true
                         }
@@ -71,12 +83,14 @@
                         {
                             "blockno": 12,
                             "count": 2,
+                            "destination_blockno": 9,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
                             "blockno": 12,
                             "count": 1,
+                            "destination_blockno": 13,
                             "fallthrough": true,
                             "throw": false
                         }
@@ -113,12 +127,14 @@
                         {
                             "blockno": 2,
                             "count": 1,
+                            "destination_blockno": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 2,
                             "count": 0,
+                            "destination_blockno": 5,
                             "fallthrough": false,
                             "throw": true
                         }
@@ -136,5 +152,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.7"
+    "gcovr/format_version": "0.8"
 }

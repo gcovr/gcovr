@@ -19,6 +19,7 @@ New features and notable changes:
 - Add :option:`--html-single-page` to create a single page report (static or with Javascript). (:issue:`916`)
 - Upload standalone applications as release artifacts. (:issue:`941`)
 - Add support for GCOV JSON intermediate format. (:issue:`766`)
+- Add function position and block information to data model if ``gcov`` JSON format is used. (:issue:`954`)
 
 Bug fixes and small improvements:
 

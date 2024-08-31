@@ -7,7 +7,11 @@
                     "blocks_percent": 44.4,
                     "execution_count": 1,
                     "lineno": 4,
-                    "name": "main"
+                    "name": "main",
+                    "pos": [
+                        "4:5",
+                        "12:1"
+                    ]
                 }
             ],
             "lines": [
@@ -22,24 +26,28 @@
                         {
                             "blockno": 2,
                             "count": 1,
+                            "destination_blockno": 3,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 2,
                             "count": 0,
+                            "destination_blockno": 6,
                             "fallthrough": false,
                             "throw": true
                         },
                         {
                             "blockno": 3,
                             "count": 1,
+                            "destination_blockno": 4,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 3,
                             "count": 0,
+                            "destination_blockno": 6,
                             "fallthrough": false,
                             "throw": true
                         }
@@ -59,12 +67,14 @@
                         {
                             "blockno": 6,
                             "count": 0,
+                            "destination_blockno": 7,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
                             "blockno": 6,
                             "count": 0,
+                            "destination_blockno": 8,
                             "fallthrough": false,
                             "throw": false
                         }
@@ -76,5 +86,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.7"
+    "gcovr/format_version": "0.8"
 }
