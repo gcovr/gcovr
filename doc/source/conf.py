@@ -34,6 +34,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 import gcovr.version  # noqa
+import gcovr.formats.json.versions  # noqa
 
 # -- Project information -----------------------------------------------------
 
