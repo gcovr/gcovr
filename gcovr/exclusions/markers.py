@@ -21,20 +21,21 @@
 Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
 """
 
-from typing import List, Optional, Tuple, Callable, Iterable
+from typing import Dict, List, Optional, Tuple, Callable, Iterable
 import logging
 import re
 
-from ..coverage import FileCoverage
+from ..coverage import FileCoverage, FunctionCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
 _EXCLUDE_FLAG = "_EXCL_"
 _EXCLUDE_LINE_WORD = ""
 _EXCLUDE_BRANCH_WORD = "BR_"
-_EXCLUDE_PATTERN_POSTFIX = "(LINE|START|STOP)"
+_EXCLUDE_PATTERN_POSTFIXES = ["LINE", "START", "STOP", "FUNCTION"]
 
 ExclusionPredicate = Callable[[int], bool]
+FunctionListByLine = Dict[int, List[FunctionCoverage]]
 
 
 def apply_exclusion_markers(
@@ -67,6 +68,7 @@ def apply_exclusion_markers(
         exclude_lines_by_custom_pattern=exclude_lines_by_pattern,
         exclude_branches_by_custom_pattern=exclude_branches_by_pattern,
         exclude_pattern_prefix=exclude_pattern_prefix,
+        filecov=filecov,
     )
 
     for linecov in filecov.lines.values():
@@ -156,14 +158,30 @@ class _ExclusionRangeWarnings:
             f"when processing {self.filename}."
         )
 
+    def function_exclude_not_supported(self, lineno: int, columnno: int) -> None:
+        """warn that a function exclude isn't supported"""
+        LOGGER.warning(
+            f"Function exclude marker found on line {lineno}:{columnno} but not supported for this compiler, "
+            f"when processing {self.filename}."
+        )
+
+    def function_exclude_not_at_function_line(self, lineno: int, columnno: int) -> None:
+        """warn that a function exclude is found at a line where no function is defined"""
+        LOGGER.warning(
+            f"Function exclude marker found on line {lineno}:{columnno} but no function definition found, "
+            f"when processing {self.filename}."
+        )
+
 
 def _process_exclusion_marker(
     lineno: int,
+    columnno: int,
     flag: str,
     header: str,
     exclude_word: str,
     warnings: _ExclusionRangeWarnings,
-    exclude_ranges: List[Tuple[int, int]],
+    functions_by_line: FunctionListByLine,
+    exclude_ranges: List[Tuple[int, Optional[int]]],
     exclusion_stack: List[Tuple[str, int]],
 ) -> None:
     """
@@ -184,10 +202,48 @@ def _process_exclusion_marker(
             )
         else:
             exclude_ranges.append((lineno, lineno))
+    elif flag == "FUNCTION":
+        if functions_by_line:
+            lineno_end = None
+            # Find the closest function definition in this line. Check end column if end line is on same line
+            function_iter = iter(functions_by_line.get(lineno, []))
+            for function in function_iter:
+                if columnno > function.start[lineno][1] and (
+                    lineno < function.end[lineno][0]
+                    or columnno < function.end[lineno][1]
+                ):
+                    lineno_end = function.end[lineno][0]
+                    break
+            else:
+                warnings.function_exclude_not_at_function_line(lineno, columnno)
 
-    if flag == "START":
+            if lineno_end is not None:
+                included_ranges = []
+                # Now we need to check for nested functions which are included
+                for function in function_iter:
+                    included_ranges.append((lineno, function.end[lineno][0] + 1))
+                for function_lineno in range(lineno + 1, lineno_end):
+                    for function in functions_by_line.get(function_lineno, []):
+                        included_ranges.append(
+                            (
+                                function.start[function_lineno][0],
+                                function.end[function_lineno][0],
+                            )
+                        )
+                if included_ranges:
+                    last_include_end = lineno
+                    for include_start, include_end in included_ranges:
+                        # The exclusion end must be in the line before
+                        exclude_ranges.append((last_include_end, include_start - 1))
+                        # The next exclusion must start after the included line
+                        last_include_end = include_end + 1
+                    exclude_ranges.append((last_include_end, lineno_end))
+                else:
+                    exclude_ranges.append((lineno, lineno_end))
+        else:
+            warnings.function_exclude_not_supported(lineno, columnno)
+    elif flag == "START":
         exclusion_stack.append((header, lineno))
-
     elif flag == "STOP":
         if not exclusion_stack:
             warnings.stop_without_start(
@@ -207,17 +263,15 @@ def _process_exclusion_marker(
 
             exclude_ranges.append((start_lineno, lineno - 1))
 
-    else:  # pragma: no cover
-        pass
-
 
 def _find_excluded_ranges(
     lines: List[str],
     *,
     warnings: _ExclusionRangeWarnings,
+    exclude_pattern_prefix: str,
     exclude_lines_by_custom_pattern: Optional[str] = None,
     exclude_branches_by_custom_pattern: Optional[str] = None,
-    exclude_pattern_prefix: str,
+    filecov: Optional[FileCoverage] = None,
 ) -> Tuple[ExclusionPredicate, ExclusionPredicate]:
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
@@ -256,6 +310,15 @@ def _find_excluded_ranges(
     9: code
     """
 
+    functions_by_line: FunctionListByLine = {}
+    if filecov is not None:
+        for function in filecov.functions.values():
+            if function.start is not None:
+                for lineno, _ in function.start.items():
+                    if lineno not in functions_by_line:
+                        functions_by_line[lineno] = []
+                    functions_by_line[lineno].append(function)
+
     def find_range_impl(
         custom_pattern: Optional[str],
         exclude_word: str,
@@ -264,26 +327,30 @@ def _find_excluded_ranges(
         if custom_pattern:
             custom_pattern_regex = re.compile(custom_pattern)
 
-        excl_pattern = re.compile(
-            f"({exclude_pattern_prefix}){_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIX}"
-        )
+        excl_pattern = f"(.*?)(({exclude_pattern_prefix}){_EXCLUDE_FLAG}{exclude_word}({'|'.join(_EXCLUDE_PATTERN_POSTFIXES)}))"
+        excl_pattern_compiled = re.compile(excl_pattern)
 
         # possibly overlapping inclusive (closed) ranges that describe exclusions regions
-        exclude_ranges: List[Tuple[int, int]] = []
+        exclude_ranges: List[Tuple[int, Optional[int]]] = []
         exclusion_stack: List[Tuple[str, int]] = []
 
         for lineno, code in enumerate(lines, 1):
             if _EXCLUDE_FLAG in code:
-                for header, flag in excl_pattern.findall(code):
+                columnno = 1
+                for prefix, match, header, flag in excl_pattern_compiled.findall(code):
+                    columnno += len(prefix)
                     _process_exclusion_marker(
                         lineno,
+                        columnno,
                         flag,
                         header,
                         exclude_word,
                         warnings,
+                        functions_by_line,
                         exclude_ranges,
                         exclusion_stack,
                     )
+                    columnno += len(match)
 
             if custom_pattern_regex:
                 if custom_pattern_regex.match(code):
@@ -295,6 +362,10 @@ def _find_excluded_ranges(
                 f"{header}{_EXCLUDE_FLAG}{exclude_word}START",
                 f"{header}{_EXCLUDE_FLAG}{exclude_word}STOP",
             )
+
+        LOGGER.debug(
+            f"Exclusion ranges for pattern {excl_pattern!r}: {exclude_ranges!s}"
+        )
 
         return _make_is_in_any_range_inclusive(exclude_ranges)
 
