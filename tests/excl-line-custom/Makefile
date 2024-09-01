@@ -4,11 +4,13 @@ GCOVR ?= gcovr
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt lcov clover cobertura html sonarqube jacoco coveralls
+run: json txt lcov clover cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
 	$(GCOVR) -d $(MARKER_OPT) --json-pretty --json $@
+
+json: coverage.json
 
 txt: coverage.json
 	$(GCOVR) -d $(MARKER_OPT) -a $< -o coverage.txt
