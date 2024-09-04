@@ -307,6 +307,10 @@ def main(args=None):
         if not options.gcov_filter:
             options.gcov_filter = [AlwaysMatchFilter()]
 
+        options.exclude_functions = [
+            (re.compile(f[1:-1] if f[0] == "/" and f[-1] == "/" else re.escape(f)))
+            for f in options.exclude_functions
+        ]
         # Output the filters for debugging
         for name, filters in [
             ("--root", [options.root_filter]),
@@ -315,10 +319,12 @@ def main(args=None):
             ("--gcov-filter", options.gcov_filter),
             ("--gcov-exclude", options.gcov_exclude),
             ("--gcov-exclude-directories", options.gcov_exclude_dirs),
+            ("--exclude-function", options.exclude_functions),
         ]:
             LOGGER.debug(f"Filters for {name}: ({len(filters)})")
             for f in filters:
                 LOGGER.debug(f" - {f}")
+
     except re.error as e:
         LOGGER.error(f"Error setting up filter '{e.pattern}': {e}")
         sys.exit(EXIT_CMDLINE_ERROR)

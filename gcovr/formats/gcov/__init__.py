@@ -43,6 +43,7 @@ class GcovHandler(BaseHandler):
             "exclude_function_lines",
             "exclude_internal_functions",
             "respect_exclusion_markers",
+            "exclude_functions",
             "exclude_lines_by_pattern",
             "exclude_branches_by_pattern",
             "exclude_pattern_prefix",

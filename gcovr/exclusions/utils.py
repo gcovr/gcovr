@@ -1,7 +1,7 @@
 """Utils for exclusion of lines and branches"""
 
 import logging
-from typing import Callable, Dict, Iterable, List, Tuple
+from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
 from ..coverage import FileCoverage, FunctionCoverage
 
@@ -11,12 +11,19 @@ ExclusionPredicate = Callable[[int], bool]
 FunctionListByLine = Dict[int, List[FunctionCoverage]]
 
 
-def function_exclude_not_supported(filename: str, lineno: int, columnno: int) -> None:
+def function_exclude_not_supported(
+    filename: Optional[str] = None,
+    lineno: Optional[int] = None,
+    columnno: Optional[int] = None,
+) -> None:
     """warn that a function exclude isn't supported"""
-    LOGGER.warning(
-        f"Function exclude marker found on line {lineno}:{columnno} but not supported for this compiler, "
-        f"when processing {filename}."
-    )
+    if filename is None:
+        LOGGER.warning("Function exclusion not supported for this compiler.")
+    else:
+        LOGGER.warning(
+            f"Function exclude marker found on line {lineno}:{columnno} but not supported for this compiler, "
+            f"when processing {filename}."
+        )
 
 
 def function_exclude_not_at_function_line(
