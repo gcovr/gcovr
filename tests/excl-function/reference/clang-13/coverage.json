@@ -12,7 +12,7 @@
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
-                    "lineno": 81,
+                    "lineno": 86,
                     "name": "main"
                 }
             ],
@@ -143,26 +143,26 @@
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "d74ab6c48c1c1db38fd5d6a0ad9172cf",
+                    "gcovr/md5": "b9330380be76bcf88cf87e1b60420539",
                     "line_number": 74
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
-                    "line_number": 81
+                    "line_number": 86
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "666f8f06d06141336f41aebe519a6ea3",
-                    "line_number": 82
+                    "line_number": 87
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "7483dc5d2ba8642b2a3fed7915b6f508",
-                    "line_number": 88
+                    "line_number": 93
                 }
             ]
         }

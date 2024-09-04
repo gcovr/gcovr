@@ -12,44 +12,50 @@
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
-                    "lineno": 81,
+                    "lineno": 86,
                     "name": "main"
                 },
                 {
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 92.0,
                     "execution_count": 1,
-                    "lineno": 31,
+                    "lineno": 46,
                     "name": "sort_excluded()"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 41,
-                    "lineno": 38,
+                    "lineno": 46,
                     "name": "sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 1,
-                    "lineno": 63,
+                    "lineno": 68,
                     "name": "sort_excluded_both()"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 41,
-                    "lineno": 70,
+                    "lineno": 75,
                     "name": "sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const"
                 },
                 {
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 92.0,
                     "execution_count": 1,
-                    "lineno": 47,
+                    "lineno": 50,
                     "name": "sort_lambda_excluded()"
                 },
                 {
                     "blocks_percent": 100.0,
                     "execution_count": 41,
-                    "lineno": 54,
+                    "lineno": 52,
                     "name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const"
+                },
+                {
+                    "blocks_percent": 100.0,
+                    "execution_count": 41,
+                    "lineno": 59,
+                    "name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const"
                 }
             ],
             "lines": [
@@ -159,41 +165,29 @@
                     "line_number": 27
                 },
                 {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "1e6eb27dd1514c30e8f1395c71dfa2af",
-                    "line_number": 31
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "03e86c738e9509c13c4de2fc9cc35509",
-                    "line_number": 33
-                },
-                {
                     "branches": [
                         {
-                            "blockno": 1,
-                            "count": 1,
+                            "blockno": 0,
+                            "count": 25,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 2,
+                            "count": 17,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         }
                     ],
-                    "count": 2,
-                    "gcovr/md5": "859bb7d6c6c31753231ab01258dc14c8",
-                    "line_number": 35
-                },
-                {
-                    "branches": [],
-                    "count": 41,
-                    "gcovr/md5": "37ac7c8e3419e6724047be0cf37e67a6",
-                    "line_number": 38
+                    "count": 88,
+                    "gcovr/md5": "f016c358cdf0f308f07a7505c148cf65",
+                    "line_number": 46
                 },
                 {
                     "branches": [
@@ -205,73 +199,98 @@
                         },
                         {
                             "blockno": 0,
-                            "count": 16,
-                            "fallthrough": false,
+                            "count": 17,
+                            "fallthrough": true,
                             "throw": false
+                        },
+                        {
+                            "blockno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
                         }
                     ],
-                    "count": 41,
-                    "gcovr/md5": "44bf2cf251411a0bfca22fd5090ff03f",
-                    "line_number": 39
+                    "count": 47,
+                    "gcovr/md5": "0e23f483ee2d1c8ae8a72f3ad0cb806c",
+                    "line_number": 47
                 },
                 {
                     "branches": [],
-                    "count": 25,
-                    "gcovr/md5": "779c5af1c6532bd2c4966e02c459fffb",
-                    "line_number": 40
-                },
-                {
-                    "branches": [],
-                    "count": 16,
-                    "gcovr/md5": "d74ab6c48c1c1db38fd5d6a0ad9172cf",
-                    "line_number": 42
-                },
-                {
-                    "branches": [],
-                    "count": 1,
+                    "count": 2,
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "line_number": 45
+                    "line_number": 48
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "2d0f37458d0ced87fa8bd5fbb15181e0",
-                    "line_number": 47
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "03e86c738e9509c13c4de2fc9cc35509",
-                    "line_number": 49
+                    "line_number": 50
                 },
                 {
                     "branches": [
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
+                        },
+                        {
+                            "blockno": 3,
+                            "count": 25,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 3,
+                            "count": 16,
+                            "fallthrough": false,
+                            "throw": false
                         }
                     ],
-                    "count": 2,
-                    "gcovr/md5": "859bb7d6c6c31753231ab01258dc14c8",
-                    "line_number": 51
+                    "count": 44,
+                    "gcovr/md5": "32aa62aaaf291ad675c5d40c9b2dfa29",
+                    "line_number": 52
                 },
                 {
                     "branches": [],
-                    "count": 41,
-                    "gcovr/md5": "51d4349f7651a5e5391b6d009d608507",
+                    "count": 1,
+                    "gcovr/md5": "03e86c738e9509c13c4de2fc9cc35509",
                     "line_number": 54
                 },
                 {
                     "branches": [
                         {
+                            "blockno": 1,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true
+                        }
+                    ],
+                    "count": 2,
+                    "gcovr/md5": "859bb7d6c6c31753231ab01258dc14c8",
+                    "line_number": 56
+                },
+                {
+                    "branches": [],
+                    "count": 41,
+                    "gcovr/md5": "51d4349f7651a5e5391b6d009d608507",
+                    "line_number": 59
+                },
+                {
+                    "branches": [
+                        {
                             "blockno": 0,
                             "count": 25,
                             "fallthrough": true,
@@ -286,37 +305,37 @@
                     ],
                     "count": 41,
                     "gcovr/md5": "44bf2cf251411a0bfca22fd5090ff03f",
-                    "line_number": 55
+                    "line_number": 60
                 },
                 {
                     "branches": [],
                     "count": 25,
                     "gcovr/md5": "779c5af1c6532bd2c4966e02c459fffb",
-                    "line_number": 56
+                    "line_number": 61
                 },
                 {
                     "branches": [],
                     "count": 16,
                     "gcovr/md5": "d74ab6c48c1c1db38fd5d6a0ad9172cf",
-                    "line_number": 58
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "line_number": 61
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "6f534a277420f0bb508c2c4490bf8b4e",
                     "line_number": 63
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
+                    "line_number": 66
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "6f534a277420f0bb508c2c4490bf8b4e",
+                    "line_number": 68
+                },
+                {
+                    "branches": [],
+                    "count": 1,
                     "gcovr/md5": "03e86c738e9509c13c4de2fc9cc35509",
-                    "line_number": 65
+                    "line_number": 70
                 },
                 {
                     "branches": [
@@ -335,13 +354,13 @@
                     ],
                     "count": 2,
                     "gcovr/md5": "859bb7d6c6c31753231ab01258dc14c8",
-                    "line_number": 67
+                    "line_number": 72
                 },
                 {
                     "branches": [],
                     "count": 41,
                     "gcovr/md5": "51d4349f7651a5e5391b6d009d608507",
-                    "line_number": 70
+                    "line_number": 75
                 },
                 {
                     "branches": [
@@ -360,61 +379,61 @@
                     ],
                     "count": 41,
                     "gcovr/md5": "44bf2cf251411a0bfca22fd5090ff03f",
-                    "line_number": 71
+                    "line_number": 76
                 },
                 {
                     "branches": [],
                     "count": 25,
                     "gcovr/md5": "779c5af1c6532bd2c4966e02c459fffb",
-                    "line_number": 72
+                    "line_number": 77
                 },
                 {
                     "branches": [],
                     "count": 16,
                     "gcovr/md5": "d74ab6c48c1c1db38fd5d6a0ad9172cf",
-                    "line_number": 74
+                    "line_number": 79
                 },
                 {
                     "branches": [],
                     "count": 1,
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "line_number": 77
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
-                    "line_number": 81
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "666f8f06d06141336f41aebe519a6ea3",
                     "line_number": 82
                 },
                 {
                     "branches": [],
                     "count": 1,
-                    "gcovr/md5": "95c0c8af7dd68953f1c57a1fe3bb99e5",
-                    "line_number": 84
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "7d9dd85f5271259543827cc3b508152e",
-                    "line_number": 85
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "c2e11bfa1ed5de109a6dc48624a82ff2",
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
                     "line_number": 86
                 },
                 {
                     "branches": [],
                     "count": 1,
+                    "gcovr/md5": "666f8f06d06141336f41aebe519a6ea3",
+                    "line_number": 87
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "95c0c8af7dd68953f1c57a1fe3bb99e5",
+                    "line_number": 89
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "7d9dd85f5271259543827cc3b508152e",
+                    "line_number": 90
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "gcovr/md5": "c2e11bfa1ed5de109a6dc48624a82ff2",
+                    "line_number": 91
+                },
+                {
+                    "branches": [],
+                    "count": 1,
                     "gcovr/md5": "7483dc5d2ba8642b2a3fed7915b6f508",
-                    "line_number": 88
+                    "line_number": 93
                 }
             ]
         }

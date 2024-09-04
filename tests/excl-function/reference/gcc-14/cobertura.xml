@@ -1,37 +1,44 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="1.0" branch-rate="0.75" lines-covered="14" lines-valid="14" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="0" version="gcovr main">
+<coverage line-rate="1.0" branch-rate="0.8" lines-covered="13" lines-valid="13" branches-covered="8" branches-valid="10" complexity="0.0" timestamp="0" version="gcovr main">
   <sources>
     <source>.</source>
   </sources>
   <packages>
-    <package name="" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+    <package name="" line-rate="1.0" branch-rate="0.8" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.8" complexity="0.0">
           <methods/>
           <lines>
-            <line number="38" hits="41" branch="false"/>
-            <line number="39" hits="41" branch="true" condition-coverage="100% (2/2)">
+            <line number="46" hits="44" branch="true" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="100%"/>
               </conditions>
             </line>
-            <line number="40" hits="25" branch="false"/>
-            <line number="42" hits="16" branch="false"/>
-            <line number="47" hits="1" branch="false"/>
-            <line number="49" hits="1" branch="false"/>
-            <line number="51" hits="2" branch="true" condition-coverage="50% (1/2)">
+            <line number="47" hits="44" branch="true" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="100%"/>
+              </conditions>
+            </line>
+            <line number="50" hits="1" branch="false"/>
+            <line number="52" hits="44" branch="true" condition-coverage="75% (3/4)">
+              <conditions>
+                <condition number="0" type="jump" coverage="75%"/>
+              </conditions>
+            </line>
+            <line number="54" hits="1" branch="false"/>
+            <line number="56" hits="2" branch="true" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
-            <line number="61" hits="1" branch="false"/>
-            <line number="81" hits="1" branch="false"/>
-            <line number="82" hits="1" branch="false"/>
-            <line number="84" hits="1" branch="false"/>
-            <line number="85" hits="1" branch="false"/>
+            <line number="66" hits="1" branch="false"/>
             <line number="86" hits="1" branch="false"/>
-            <line number="88" hits="1" branch="false"/>
+            <line number="87" hits="1" branch="false"/>
+            <line number="89" hits="1" branch="false"/>
+            <line number="90" hits="1" branch="false"/>
+            <line number="91" hits="1" branch="false"/>
+            <line number="93" hits="1" branch="false"/>
           </lines>
         </class>
       </classes>

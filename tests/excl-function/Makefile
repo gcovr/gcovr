@@ -15,14 +15,16 @@ coverage.json:
 	grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 9:8 but no function definition found" stderr || exit 0
 	grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 9:51 but not supported for this compiler" stderr
 	grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 9:51 but not supported for this compiler" stderr || exit 0
-	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 31:29 but not supported for this compiler" stderr,)
-	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 31:29 but not supported for this compiler" stderr || exit 0,)
-	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 54:29 but not supported for this compiler" stderr,)
-	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 54:29 but not supported for this compiler" stderr || exit 0,)
-	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 63:34 but not supported for this compiler" stderr,)
-	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 63:34 but not supported for this compiler" stderr || exit 0,)
-	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 70:29 but not supported for this compiler" stderr,)
-	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 70:29 but not supported for this compiler" stderr || exit 0,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 46:29 but not supported for this compiler" stderr,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 46:29 but not supported for this compiler" stderr || exit 0,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 52:29 but not supported for this compiler" stderr,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 52:29 but no function definition found" stderr || exit 0,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 59:29 but not supported for this compiler" stderr,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 59:29 but not supported for this compiler" stderr || exit 0,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 68:34 but not supported for this compiler" stderr,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 68:34 but not supported for this compiler" stderr || exit 0,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ || grep -F "Function exclude marker found on line 75:29 but not supported for this compiler" stderr,)
+	$(if $(USE_LAMBDA),grep -F '"pos"' --silent $@ && grep -F "Function exclude marker found on line 75:29 but not supported for this compiler" stderr || exit 0,)
 json: coverage.json
 
 txt: coverage.json
