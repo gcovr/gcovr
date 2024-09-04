@@ -8,22 +8,20 @@
 
 int /* GCOVR_EXCL_FUNCTION */ foo(int param) { // GCOVR_EXCL_FUNCTION
    if (param) {
-      param++; //std::cout << "param not null." << std::endl;
+      param++;
    } else {
-      param--; //std::cout << "param is null." << std::endl;
-   }
-   if (param) {
-      param++; //std::cout << "param not null." << std::endl;
-   } else {
-      param--; //std::cout << "param is null." << std::endl;
+      param--;
    }
 
-   if (param) {
-      param++; //std::cout << "param not null." << std::endl;
-   } else {
-      param--; //std::cout << "param is null." << std::endl;
-   }
+   return param;
+}
 
+int bar(int param) { // Excluded by CLI option
+   if (param) {
+      param++;
+   } else {
+      param--;
+   }
    return param;
 }
 
@@ -79,12 +77,24 @@ void sort_excluded_both(void) // GCOVR_EXCL_FUNCTION
          return false;
       }
    );
+
+   std::sort(
+      std::begin(arr),
+      std::end(arr),
+      [](int a, int b) { // Excluded by CLI option
+         if (a > b)
+            return true;
+
+         return false;
+      }
+   );
 }
 #endif
 
 
 int main(int argc, char* argv[]) {
    foo(0);
+   bar(0);
 #if defined USE_LAMBDA
    sort_excluded();
    sort_lambda_excluded();

@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.7058823529411765" branch-rate="0.5" lines-covered="12" lines-valid="17" branches-covered="3" branches-valid="6" complexity="0.0" timestamp="1708895236" version="gcovr 7.2+main">
+<coverage line-rate="0.75" branch-rate="0.5" lines-covered="12" lines-valid="16" branches-covered="2" branches-valid="4" complexity="0.0" timestamp="1708895236" version="gcovr 7.2+main">
   <sources>
     <source>.</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.7058823529411765" branch-rate="0.5" complexity="0.0">
+    <package name="" line-rate="0.75" branch-rate="0.5" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="0.7058823529411765" branch-rate="0.5" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>
           <lines>
             <line number="9" hits="1" branch="false"/>
@@ -19,26 +19,21 @@
             <line number="11" hits="0" branch="false"/>
             <line number="12" hits="0" branch="false"/>
             <line number="13" hits="1" branch="false"/>
-            <line number="15" hits="1" branch="true" condition-coverage="50% (1/2)">
-              <conditions>
-                <condition number="0" type="jump" coverage="50%"/>
-              </conditions>
-            </line>
             <line number="16" hits="1" branch="false"/>
-            <line number="17" hits="1" branch="false"/>
-            <line number="18" hits="0" branch="false"/>
-            <line number="21" hits="1" branch="true" condition-coverage="50% (1/2)">
+            <line number="19" hits="1" branch="false"/>
+            <line number="20" hits="1" branch="true" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
+            <line number="21" hits="0" branch="false"/>
             <line number="22" hits="0" branch="false"/>
-            <line number="23" hits="0" branch="false"/>
-            <line number="24" hits="1" branch="false"/>
-            <line number="27" hits="1" branch="false"/>
-            <line number="81" hits="1" branch="false"/>
-            <line number="82" hits="1" branch="false"/>
-            <line number="88" hits="1" branch="false"/>
+            <line number="23" hits="1" branch="false"/>
+            <line number="25" hits="1" branch="false"/>
+            <line number="95" hits="1" branch="false"/>
+            <line number="96" hits="1" branch="false"/>
+            <line number="97" hits="1" branch="false"/>
+            <line number="103" hits="1" branch="false"/>
           </lines>
         </class>
       </classes>
