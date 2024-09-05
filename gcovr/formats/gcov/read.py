@@ -802,7 +802,7 @@ class GcovProgram:
                 f"GCOV returncode was {gcov_process.returncode}.\n"
                 f"Stdout of gcov was >>{out}<< End of stdout\n"
                 f"Stderr of gcov was >>{err}<< End of stderr"
-                )
+            )
 
         return (out, err)
 
