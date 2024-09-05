@@ -793,10 +793,16 @@ class GcovProgram:
         out, err = gcov_process.communicate()
         if gcov_process.returncode < 0:
             raise RuntimeError(
-                f"GCOV returncode was {gcov_process.returncode} (exited by signal)."
+                f"GCOV returncode was {gcov_process.returncode} (exited by signal).\n"
+                f"Stdout of gcov was >>{out}<< End of stdout\n"
+                f"Stderr of gcov was >>{err}<< End of stderr"
             )
         elif gcov_process.returncode not in GcovProgram.__exitcode_to_ignore:
-            raise RuntimeError(f"GCOV returncode was {gcov_process.returncode}.")
+            raise RuntimeError(
+                f"GCOV returncode was {gcov_process.returncode}.\n"
+                f"Stdout of gcov was >>{out}<< End of stdout\n"
+                f"Stderr of gcov was >>{err}<< End of stderr"
+            )
 
         return (out, err)
 
