@@ -1,11 +1,13 @@
 all:
 	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
 
-run: txt lcov clover cobertura html sonarqube jacoco json_summary coveralls
+run: json txt lcov clover cobertura html sonarqube jacoco json_summary coveralls
 
 coverage.json:
 	./testcase
 	$(GCOVR) --exclude-unreachable-branches --json-pretty --json $@
+
+json: coverage.json
 
 txt: coverage.json
 	$(GCOVR) -a $< -b -o coverage.txt

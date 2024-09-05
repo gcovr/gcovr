@@ -689,6 +689,19 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
+        "exclude_functions",
+        ["--exclude-function"],
+        help=(
+            "Exclude coverage of functions. If function starts and end "
+            "with '/' it is treated as a regular expression. "
+            "This option needs at least GCC 14 with a supported version of "
+            "JSON output format."
+        ),
+        action="append",
+        type=str,
+        default=[],
+    ),
+    GcovrConfigOption(
         "exclude_lines_by_pattern",
         ["--exclude-lines-by-pattern"],
         help="Exclude lines that match this regex.",

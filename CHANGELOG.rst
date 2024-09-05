@@ -20,6 +20,7 @@ New features and notable changes:
 - Upload standalone applications as release artifacts. (:issue:`941`)
 - Add support for GCOV JSON intermediate format. (:issue:`766`)
 - Add function position and block information to data model if ``gcov`` JSON format is used. (:issue:`954`)
+- Add :ref:`Exclusion markers` to exclude a while function. (:issue:`955`)
 
 Bug fixes and small improvements:
 

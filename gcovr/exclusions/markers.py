@@ -21,20 +21,28 @@
 Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
 """
 
-from typing import List, Optional, Tuple, Callable, Iterable
+from typing import Dict, List, Optional, Tuple, Callable
 import logging
 import re
 
-from ..coverage import FileCoverage
+from .utils import (
+    _make_is_in_any_range_inclusive,
+    apply_exclusion_ranges,
+    get_function_exclude_ranges,
+    get_functions_by_line,
+)
+
+from ..coverage import FileCoverage, FunctionCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
 _EXCLUDE_FLAG = "_EXCL_"
 _EXCLUDE_LINE_WORD = ""
 _EXCLUDE_BRANCH_WORD = "BR_"
-_EXCLUDE_PATTERN_POSTFIX = "(LINE|START|STOP)"
+_EXCLUDE_PATTERN_POSTFIXES = ["LINE", "START", "STOP", "FUNCTION"]
 
 ExclusionPredicate = Callable[[int], bool]
+FunctionListByLine = Dict[int, List[FunctionCoverage]]
 
 
 def apply_exclusion_markers(
@@ -67,25 +75,14 @@ def apply_exclusion_markers(
         exclude_lines_by_custom_pattern=exclude_lines_by_pattern,
         exclude_branches_by_custom_pattern=exclude_branches_by_pattern,
         exclude_pattern_prefix=exclude_pattern_prefix,
+        filecov=filecov,
     )
 
-    for linecov in filecov.lines.values():
-        # always erase decision coverage since exclusions can change analysis
-        linecov.decision = None
-
-        if line_is_excluded(linecov.lineno):
-            linecov.excluded = True
-            linecov.branches = {}
-            linecov.count = 0
-
-        elif branch_is_excluded(linecov.lineno):
-            linecov.branches = {}
-
-    for functioncov in filecov.functions.values():
-        for lineno in functioncov.excluded.keys():
-            if line_is_excluded(lineno):
-                functioncov.count[lineno] = 0
-                functioncov.excluded[lineno] = True
+    apply_exclusion_ranges(
+        filecov,
+        line_is_excluded=line_is_excluded,
+        branch_is_excluded=branch_is_excluded,
+    )
 
 
 class _ExclusionRangeWarnings:
@@ -159,11 +156,13 @@ class _ExclusionRangeWarnings:
 
 def _process_exclusion_marker(
     lineno: int,
+    columnno: int,
     flag: str,
     header: str,
     exclude_word: str,
     warnings: _ExclusionRangeWarnings,
-    exclude_ranges: List[Tuple[int, int]],
+    functions_by_line: FunctionListByLine,
+    exclude_ranges: List[Tuple[int, Optional[int]]],
     exclusion_stack: List[Tuple[str, int]],
 ) -> None:
     """
@@ -184,10 +183,12 @@ def _process_exclusion_marker(
             )
         else:
             exclude_ranges.append((lineno, lineno))
-
-    if flag == "START":
+    elif flag == "FUNCTION":
+        exclude_ranges += get_function_exclude_ranges(
+            warnings.filename, lineno, columnno, functions_by_line=functions_by_line
+        )
+    elif flag == "START":
         exclusion_stack.append((header, lineno))
-
     elif flag == "STOP":
         if not exclusion_stack:
             warnings.stop_without_start(
@@ -207,22 +208,21 @@ def _process_exclusion_marker(
 
             exclude_ranges.append((start_lineno, lineno - 1))
 
-    else:  # pragma: no cover
-        pass
-
 
 def _find_excluded_ranges(
     lines: List[str],
     *,
     warnings: _ExclusionRangeWarnings,
+    exclude_pattern_prefix: str,
     exclude_lines_by_custom_pattern: Optional[str] = None,
     exclude_branches_by_custom_pattern: Optional[str] = None,
-    exclude_pattern_prefix: str,
+    filecov: Optional[FileCoverage] = None,
 ) -> Tuple[ExclusionPredicate, ExclusionPredicate]:
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
 
     Example:
+    >>> from .utils import _lines_from_sparse
     >>> lines = [
     ...     (11, '//PREFIX_EXCL_LINE'), (13, '//IGNORE_LINE'),
     ...     (15, '//PREFIX_EXCL_START'), (18, '//PREFIX_EXCL_STOP'),
@@ -256,6 +256,8 @@ def _find_excluded_ranges(
     9: code
     """
 
+    functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
+
     def find_range_impl(
         custom_pattern: Optional[str],
         exclude_word: str,
@@ -264,26 +266,30 @@ def _find_excluded_ranges(
         if custom_pattern:
             custom_pattern_regex = re.compile(custom_pattern)
 
-        excl_pattern = re.compile(
-            f"({exclude_pattern_prefix}){_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIX}"
-        )
+        excl_pattern = f"(.*?)(({exclude_pattern_prefix}){_EXCLUDE_FLAG}{exclude_word}({'|'.join(_EXCLUDE_PATTERN_POSTFIXES)}))"
+        excl_pattern_compiled = re.compile(excl_pattern)
 
         # possibly overlapping inclusive (closed) ranges that describe exclusions regions
-        exclude_ranges: List[Tuple[int, int]] = []
+        exclude_ranges: List[Tuple[int, Optional[int]]] = []
         exclusion_stack: List[Tuple[str, int]] = []
 
         for lineno, code in enumerate(lines, 1):
             if _EXCLUDE_FLAG in code:
-                for header, flag in excl_pattern.findall(code):
+                columnno = 1
+                for prefix, match, header, flag in excl_pattern_compiled.findall(code):
+                    columnno += len(prefix)
                     _process_exclusion_marker(
                         lineno,
+                        columnno,
                         flag,
                         header,
                         exclude_word,
                         warnings,
+                        functions_by_line,
                         exclude_ranges,
                         exclusion_stack,
                     )
+                    columnno += len(match)
 
             if custom_pattern_regex:
                 if custom_pattern_regex.match(code):
@@ -296,75 +302,13 @@ def _find_excluded_ranges(
                 f"{header}{_EXCLUDE_FLAG}{exclude_word}STOP",
             )
 
+        LOGGER.debug(
+            f"Exclusion ranges for pattern {excl_pattern!r}: {exclude_ranges!s}"
+        )
+
         return _make_is_in_any_range_inclusive(exclude_ranges)
 
     return (
         find_range_impl(exclude_lines_by_custom_pattern, _EXCLUDE_LINE_WORD),
         find_range_impl(exclude_branches_by_custom_pattern, _EXCLUDE_BRANCH_WORD),
     )
-
-
-def _make_is_in_any_range_inclusive(
-    ranges: List[Tuple[int, int]],
-) -> ExclusionPredicate:
-    """
-    Create a function to check whether an input is in any range (inclusive).
-
-    This function should provide reasonable performance
-    if queries are mostly made in ascending order.
-
-    Example:
-    >>> select = _make_is_in_any_range_inclusive([(3,3), (5,7)])
-    >>> select(0)
-    False
-    >>> select(6)
-    True
-    >>> [x for x in range(10) if select(x)]
-    [3, 5, 6, 7]
-    """
-
-    # values are likely queried in ascending order,
-    # allowing the search to start with the first possible range
-    ranges = sorted(ranges)
-    hint_value = 0
-    hint_index = 0
-
-    def is_in_any_range(value: int) -> bool:
-        nonlocal hint_value, hint_index
-
-        # if the heuristic failed, restart search from the beginning
-        if value < hint_value:
-            hint_index = 0
-
-        hint_value = value
-
-        for i in range(hint_index, len(ranges)):
-            start, end = ranges[i]
-            hint_index = i
-
-            # stop as soon as a too-large range is seen
-            if value < start:
-                break
-
-            if start <= value <= end:
-                return True
-        else:
-            hint_index = len(ranges)
-
-        return False
-
-    return is_in_any_range
-
-
-def _lines_from_sparse(sparse: Iterable[Tuple[int, str]]) -> List[str]:
-    """
-    Convert lineno–source tuples to a flat list, useful for tests.
-
-    >>> _lines_from_sparse([(3, 'foo'), (2, 'bar'), (3, 'foo2')])
-    ['', 'bar', 'foo2']
-    """
-    lines: List[str] = []
-    for lineno, source in sparse:
-        lines.extend("" for _ in range(len(lines), lineno))
-        lines[lineno - 1] = source
-    return lines
