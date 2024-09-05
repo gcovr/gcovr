@@ -30,6 +30,7 @@ Bug fixes and small improvements:
 - Fix bundle of standalone executable with Python 3.12. (:issue:`924`)
 - Fix merging of function coverage data. (:issue:`925`)
 - Fix inefficient regular expression. (:issue:`933`)
+- Fix missing output of gcov if execution fails. (:issue:`956`)
 
 Documentation:
 
