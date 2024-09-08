@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-22.04
     if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
     steps:
-      - uses: actions/checkout@v4
-
       - name: Download artifacts
         uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11
         with:
@@ -26,7 +24,8 @@ jobs:
         run: |
           # Search the coverage files and upload them
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov $(find . -regex '.*/nested/reference/.*/coverage\.lcov' -print | sed -e 's/^/ -r /' | tr -d '\n')
+          # Do not upload lcov because of https://github.com/codacy/codacy-coverage-reporter/issues/510#issuecomment-2297469928
+          # bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov $(find . -regex '.*/nested/reference/.*/coverage\.lcov' -print | sed -e 's/^/ -r /' | tr -d '\n')
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
@@ -36,22 +35,3 @@ jobs:
           bash <(curl -Ls https://coverage.codacy.com/get.sh) final
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-      - name: Generate list of coverage files for Codecov
-        if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
-        run: |
-          echo "COVERAGE_FILES=$((find . -name 'coverage.xml' -print && find . -regex '.*/nested/reference/.*/coverage\.lcov' -print ) | sed -e '2, $ s/^/,/' | tr -d '\n')" >> $GITHUB_ENV
-
-      - name: Upload coverage files to Codecov
-        if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
-        uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
-        with:
-          env_vars: OS,PYTHON
-          fail_ci_if_error: true
-          disable_search: true
-          plugins: pycoverage
-          files: ${{ env.COVERAGE_FILES }}
-          verbose: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-

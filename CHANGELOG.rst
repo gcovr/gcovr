@@ -53,6 +53,7 @@ Internal changes:
 - Merge the test and deploy workflow to a single CI workflow. (:issue:`946`, :issue:`947`)
 - Add Codacy to CI workflow for tracking coverage and code quality. (:issue:`948`)
 - Add ``bandit`` to the linters. (:issue:`949`)
+- Remove Codecov upload from pipeline. (:issue:`958`)
 
 7.2 (24 February 2024)
 ----------------------
