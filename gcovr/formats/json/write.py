@@ -182,6 +182,8 @@ def _json_from_line(line: LineCoverage) -> dict:
             "branches": _json_from_branches(line.branches),
         }
     )
+    if line.block_ids is not None:
+        json_line["block_ids"] = line.block_ids
     if line.md5:
         json_line["gcovr/md5"] = line.md5
     if line.excluded:

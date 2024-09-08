@@ -145,6 +145,7 @@ def _line_from_json(json_line: dict) -> LineCoverage:
         json_line["line_number"],
         count=json_line["count"],
         function_name=json_line.get("function_name", None),
+        block_ids=json_line.get("block_ids", None),
         md5=json_line.get("gcovr/md5", None),
         excluded=json_line.get("gcovr/excluded", False),
     )

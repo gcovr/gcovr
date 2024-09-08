@@ -98,6 +98,7 @@ Each **line** entry contains coverage data for one line::
         "function_name": function_name,
         "count": count,
         "branches": [branch],
+        "block_ids", block_ids,
         "gcovr/md5": md5,
         "gcovr/excluded": excluded,
         "gcovr/decision": decision
@@ -115,6 +116,9 @@ count: int
 
 branches: list
   A list of :ref:`branch <json_format_branch>` coverage entries.
+
+block_ids: list[int]:
+  The list of block ids defined in this line.
 
 gcovr/md5: str
   The MD5 sum of the line.
@@ -143,6 +147,9 @@ The line entry should be interpreted as follows:
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
+
+.. versionchanged:: NEXT
+   The ``block_ids`` is added.
 
 .. versionchanged:: NEXT
    The ``function_name`` is added.

@@ -306,6 +306,8 @@ class LineCoverage:
             How often this line was executed at least partially.
         function_name (str, optional):
             Mangled name of the function the line belongs to.
+        block_ids (*int, optional):
+            List of block ids in this line
         excluded (bool, optional):
             Whether this line is excluded by a marker.
         md5 (str, optional):
@@ -316,6 +318,7 @@ class LineCoverage:
         "lineno",
         "count",
         "function_name",
+        "block_ids",
         "excluded",
         "md5",
         "branches",
@@ -327,9 +330,10 @@ class LineCoverage:
         self,
         lineno: int,
         count: int,
-        function_name: str = None,
-        md5: str = None,
-        excluded: bool = False,
+        function_name: Optional[str] = None,
+        block_ids: Optional[List[int]] = None,
+        md5: Optional[str] = None,
+        excluded: Optional[bool] = False,
     ) -> None:
         if lineno <= 0:
             raise AssertionError("Line number must be a positive value.")
@@ -338,9 +342,10 @@ class LineCoverage:
 
         self.lineno: int = lineno
         self.count: int = count
-        self.function_name: str = function_name
-        self.excluded: bool = excluded
-        self.md5: str = md5
+        self.function_name: Optional[str] = function_name
+        self.block_ids: Optional[List[int]] = block_ids
+        self.excluded: Optional[bool] = excluded
+        self.md5: Optional[str] = md5
         self.branches: Dict[int, BranchCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
         self.calls: Dict[int, CallCoverage] = {}
