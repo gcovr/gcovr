@@ -29,13 +29,14 @@ build/
 # Unit test / coverage reports
 .pytest_cache/
 .coverage
+testcase
 *.gcda
 *.gcno
 *.gcov
 *.gcov.json.gz
 *.gcov.json
-.tox
-testcase
+# Extracted .json.gz
+*##*.json
 
 # Differences
 diff.zip
