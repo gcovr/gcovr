@@ -1,20 +1,20 @@
 {
-    "commit_sha": "GITHUB_SHA",
-    "run_at": "2022-04-08 21:30:56 UTC",
-    "service_job_id": "GITHUB_WORKFLOW",
+    "run_at": "",
     "service_name": "github-actions-ci",
+    "service_job_id": "GITHUB_WORKFLOW",
     "service_number": "GITHUB_RUN_ID",
     "service_pull_request": "123",
+    "commit_sha": "",
     "source_files": [
         {
+            "name": "main.cpp",
+            "source_digest": "931745ec4387e9df02e2c3590b65f863",
             "coverage": [
                 null,
                 1,
                 1,
                 null
-            ],
-            "name": "main.cpp",
-            "source_digest": "931745ec4387e9df02e2c3590b65f863"
+            ]
         }
     ]
 }

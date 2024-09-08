@@ -22,6 +22,9 @@ with sum of lines and branches execution, see :ref:`merging_coverage`.
 
 See the :ref:`json_format` for a description of the file format.
 
+.. versionchanged:: NEXT
+   Order of keys changed from alphabetical to logical.
+
 .. _json_format:
 
 JSON Format Reference

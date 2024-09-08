@@ -60,10 +60,9 @@ def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
             write_json,
             indent=PRETTY_JSON_INDENT,
             separators=(",", ": "),
-            sort_keys=True,
         )
     else:
-        write_json = functools.partial(write_json, sort_keys=True)
+        write_json = functools.partial(write_json)
 
     with open_text_for_writing(output_file, default_filename) as fh:
         write_json(gcovr_json_dict, fh)
@@ -177,10 +176,10 @@ def _json_from_line(line: LineCoverage) -> dict:
         "count": line.count,
         "branches": _json_from_branches(line.branches),
     }
-    if line.excluded:
-        json_line["gcovr/excluded"] = True
     if line.md5:
         json_line["gcovr/md5"] = line.md5
+    if line.excluded:
+        json_line["gcovr/excluded"] = True
     if line.decision is not None:
         json_line["gcovr/decision"] = _json_from_decision(line.decision)
     if len(line.calls) > 0:

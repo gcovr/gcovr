@@ -21,6 +21,7 @@ New features and notable changes:
 - Add support for GCOV JSON intermediate format. (:issue:`766`)
 - Add function position and block information to data model if ``gcov`` JSON format is used. (:issue:`954`)
 - Add :ref:`Exclusion markers` to exclude a while function. (:issue:`955`)
+- Change sort order in JSON output files. (:issue:`959`)
 
 Bug fixes and small improvements:
 

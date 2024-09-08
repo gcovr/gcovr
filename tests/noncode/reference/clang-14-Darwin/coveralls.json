@@ -1,28 +1,30 @@
 {
+    "run_at": "2024-02-25 21:07:16 UTC",
+    "service_name": "gcovr-test-suite",
+    "service_job_id": "id",
+    "service_number": "number",
+    "service_pull_request": "pr",
     "git": {
-        "branch": "branch",
         "head": {
-            "author_email": "40258682+spacetown@users.noreply.github.com",
-            "author_name": "Spacetown",
-            "committer_email": "40258682+spacetown@users.noreply.github.com",
-            "committer_name": "Spacetown",
-            "id": "82bf35bdee6ec9be6171c62cafd4eef9b010a9ef",
-            "message": "Fix the reference directory to update"
+            "id": "325e0683ac89d5fa26225ef68c69302308102102",
+            "author_name": "Michael F\u00f6rderer",
+            "author_email": "40258682+Spacetown@users.noreply.github.com",
+            "committer_name": "GitHub",
+            "committer_email": "noreply@github.com",
+            "message": "Merge 002a9419975c909643ddfa1f6f70f13c1fb9f540 into d2544096fd5b5fe2bced6019c5d9592bb4f6aa58"
         },
+        "branch": "branch",
         "remotes": [
             {
                 "name": "origin",
-                "url": "https://github.com/Spacetown/gcovr"
+                "url": "https://github.com/gcovr/gcovr"
             }
         ]
     },
-    "run_at": "2024-02-25 21:07:16 UTC",
-    "service_job_id": "id",
-    "service_name": "gcovr-test-suite",
-    "service_number": "number",
-    "service_pull_request": "pr",
     "source_files": [
         {
+            "name": "main.cpp",
+            "source_digest": "37c3797ca3d3da31375c29c07adf94cc",
             "coverage": [
                 null,
                 null,
@@ -36,9 +38,7 @@
                 null,
                 null,
                 2
-            ],
-            "name": "main.cpp",
-            "source_digest": "37c3797ca3d3da31375c29c07adf94cc"
+            ]
         }
     ]
 }
