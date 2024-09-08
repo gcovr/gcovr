@@ -45,10 +45,9 @@ def _write_coveralls_result(gcovr_json_dict, output_file, pretty):
             write_json,
             indent=PRETTY_JSON_INDENT,
             separators=(",", ": "),
-            sort_keys=True,
         )
     else:
-        write_json = functools.partial(write_json, sort_keys=True)
+        write_json = functools.partial(write_json)
 
     with open_text_for_writing(output_file, "coveralls.json") as fh:
         write_json(gcovr_json_dict, fh)
@@ -185,6 +184,13 @@ def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]
     # Object with Coveralls file details
     source_file = {}
 
+    # Isolate relative file path
+    relative_file_path = presentable_filename(
+        coverage_details.filename,
+        root_filter=options.root_filter,
+    )
+    source_file["name"] = relative_file_path
+
     # Generate md5 hash of file contents
     if coverage_details.filename.endswith("<stdin>"):
         total_line_count = None
@@ -194,13 +200,6 @@ def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]
 
         source_file["source_digest"] = get_md5_hexdigest(contents)
         total_line_count = len(contents.splitlines())
-
-    # Isolate relative file path
-    relative_file_path = presentable_filename(
-        coverage_details.filename,
-        root_filter=options.root_filter,
-    )
-    source_file["name"] = relative_file_path
 
     # Initialize coverage array and load with line coverage data
     source_file["coverage"] = []
