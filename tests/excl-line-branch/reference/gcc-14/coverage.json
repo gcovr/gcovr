@@ -1,41 +1,55 @@
 {
-    "gcovr/format_version": "0.8",
+    "gcovr/format_version": "0.9",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 7,
+                    "function_name": "_ZN3BarC2Ev",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "f0d54fc3718423907ffe35d82be9e65c"
                 },
                 {
                     "line_number": 8,
+                    "function_name": "_ZN3BarC2Ev",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "5efee26ba06711f9395b3c3bc7a9d94a"
                 },
                 {
                     "line_number": 9,
+                    "function_name": "_ZN3BarD0Ev",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "ef89afadbfb397fa2428716379142419"
                 },
                 {
                     "line_number": 10,
+                    "function_name": "_ZN3BarD0Ev",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        2,
+                        3
+                    ],
                     "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
                 },
                 {
                     "line_number": 16,
+                    "function_name": "_Z3fooi",
                     "count": 5,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31"
                 },
                 {
                     "line_number": 17,
+                    "function_name": "_Z3fooi",
                     "count": 5,
                     "branches": [
                         {
@@ -67,29 +81,47 @@
                             "destination_blockno": 5
                         }
                     ],
+                    "block_ids": [
+                        2,
+                        3
+                    ],
                     "gcovr/md5": "69d7cb531f90045147347c360a0d81d2"
                 },
                 {
                     "line_number": 18,
+                    "function_name": "_Z3fooi",
                     "count": 2,
                     "branches": [],
+                    "block_ids": [
+                        4
+                    ],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
                 },
                 {
                     "line_number": 19,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        5,
+                        6
+                    ],
                     "gcovr/md5": "7418c3752af701f88bc8f790f4793a6d",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 20,
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        7
+                    ],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
                 },
                 {
                     "line_number": 21,
+                    "function_name": "_Z3fooi",
                     "count": 2,
                     "branches": [
                         {
@@ -107,16 +139,24 @@
                             "destination_blockno": 10
                         }
                     ],
+                    "block_ids": [
+                        8
+                    ],
                     "gcovr/md5": "189a346e59b4b9eb1653c629e9e00396"
                 },
                 {
                     "line_number": 22,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        9
+                    ],
                     "gcovr/md5": "30947b981b8563f1d1a6690c87ba3db6"
                 },
                 {
                     "line_number": 23,
+                    "function_name": "_Z3fooi",
                     "count": 2,
                     "branches": [
                         {
@@ -134,84 +174,128 @@
                             "destination_blockno": 12
                         }
                     ],
+                    "block_ids": [
+                        10
+                    ],
                     "gcovr/md5": "d4dfe4cbc7a957b4db133508a4597ed6"
                 },
                 {
                     "line_number": 24,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        11
+                    ],
                     "gcovr/md5": "3b131baf29a59cf4c789f42a8cb54194"
                 },
                 {
                     "line_number": 28,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        12
+                    ],
                     "gcovr/md5": "1d470a2a37dd4a537d80ee9c575b61a2",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 29,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        13
+                    ],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 30,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        14
+                    ],
                     "gcovr/md5": "b18752f044690130643d37bc530cd788",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 31,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        15
+                    ],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 35,
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        16
+                    ],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 },
                 {
                     "line_number": 38,
+                    "function_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "3c9c1937d90004711fa6cda5e218dc87",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 39,
+                    "function_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        2
+                    ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 40,
+                    "function_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        3
+                    ],
                     "gcovr/md5": "4071653b480e72354bcfb2b2e78f92fd",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 42,
+                    "function_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        4
+                    ],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 46,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 47,
+                    "function_name": "main",
                     "count": 6,
                     "branches": [
                         {
@@ -229,38 +313,60 @@
                             "destination_blockno": 6
                         }
                     ],
+                    "block_ids": [
+                        2,
+                        4,
+                        5
+                    ],
                     "gcovr/md5": "3aac4e3adb4400cb9a56145130946d99"
                 },
                 {
                     "line_number": 48,
+                    "function_name": "main",
                     "count": 5,
                     "branches": [],
+                    "block_ids": [
+                        3
+                    ],
                     "gcovr/md5": "ce31d2067628e009ca3ca41fc3d5f044"
                 },
                 {
                     "line_number": 52,
+                    "function_name": "main",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        6
+                    ],
                     "gcovr/md5": "1c65a24caffdcb0e7b6493034a21dc55",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 53,
+                    "function_name": "main",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        7
+                    ],
                     "gcovr/md5": "f619ca2743f98bae7db1d75919cfc0bc",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 61,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        8
+                    ],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 }
             ],
             "functions": [
                 {
                     "name": "Bar::Bar()",
+                    "mangled_name": "_ZN3BarC2Ev",
                     "lineno": 7,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -271,6 +377,7 @@
                 },
                 {
                     "name": "Bar::~Bar()",
+                    "mangled_name": "_ZN3BarD0Ev",
                     "lineno": 9,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -281,6 +388,7 @@
                 },
                 {
                     "name": "bar(int)",
+                    "mangled_name": "_Z3bari",
                     "lineno": 38,
                     "execution_count": 0,
                     "blocks_percent": 0.0,
@@ -292,6 +400,7 @@
                 },
                 {
                     "name": "foo(int)",
+                    "mangled_name": "_Z3fooi",
                     "lineno": 16,
                     "execution_count": 5,
                     "blocks_percent": 81.2,
@@ -302,6 +411,7 @@
                 },
                 {
                     "name": "main",
+                    "mangled_name": "main",
                     "lineno": 46,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

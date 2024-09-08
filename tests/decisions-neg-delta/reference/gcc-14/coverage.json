@@ -1,17 +1,20 @@
 {
-    "gcovr/format_version": "0.8",
+    "gcovr/format_version": "0.9",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 5,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "8304260594bce9b34610dec9e5a4e877"
                 },
                 {
                     "line_number": 6,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [
                         {
@@ -29,6 +32,9 @@
                             "destination_blockno": 15
                         }
                     ],
+                    "block_ids": [
+                        2
+                    ],
                     "gcovr/md5": "1aedbc743aca5457e63d15ff98c7c6b0",
                     "gcovr/decision": {
                         "type": "conditional",
@@ -38,6 +44,7 @@
                 },
                 {
                     "line_number": 7,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 2,
                     "branches": [
                         {
@@ -55,10 +62,17 @@
                             "destination_blockno": 16
                         }
                     ],
+                    "block_ids": [
+                        3,
+                        5,
+                        18,
+                        19
+                    ],
                     "gcovr/md5": "531c09b5b187d2a095229382a14585af"
                 },
                 {
                     "line_number": 8,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 3,
                     "branches": [
                         {
@@ -76,6 +90,14 @@
                             "destination_blockno": 13
                         }
                     ],
+                    "block_ids": [
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12
+                    ],
                     "gcovr/md5": "7b25e7042a6c283ef5ff4184aa8a5bbd",
                     "gcovr/decision": {
                         "type": "conditional",
@@ -85,24 +107,35 @@
                 },
                 {
                     "line_number": 10,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        13
+                    ],
                     "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
                 },
                 {
                     "line_number": 11,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        15
+                    ],
                     "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9"
                 },
                 {
                     "line_number": 14,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "853b69efca6192aad15b1a4363e38a64"
                 },
                 {
                     "line_number": 16,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -120,18 +153,26 @@
                             "destination_blockno": 5
                         }
                     ],
+                    "block_ids": [
+                        2
+                    ],
                     "gcovr/md5": "24293cd6780e791208b4517af39d0960"
                 },
                 {
                     "line_number": 17,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        3
+                    ],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 }
             ],
             "functions": [
                 {
                     "name": "Foo::work(int)",
+                    "mangled_name": "_ZN3Foo4workEi",
                     "lineno": 5,
                     "execution_count": 1,
                     "blocks_percent": 78.9,
@@ -142,6 +183,7 @@
                 },
                 {
                     "name": "main",
+                    "mangled_name": "main",
                     "lineno": 14,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
