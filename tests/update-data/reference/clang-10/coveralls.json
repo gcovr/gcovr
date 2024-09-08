@@ -1,37 +1,60 @@
 {
-    "run_at": "2022-04-08 21:32:22 UTC",
-    "service_job_id": "id",
+    "run_at": "",
     "service_name": "gcovr-test-suite",
+    "service_job_id": "id",
     "service_number": "number",
     "service_pull_request": "pr",
+    "git": {
+        "head": {
+            "id": "ff90a95121c7a2a72a05da03027401a718334253",
+            "author_name": "Spacetown",
+            "author_email": "40258682+spacetown@users.noreply.github.com",
+            "committer_name": "Spacetown",
+            "committer_email": "40258682+spacetown@users.noreply.github.com",
+            "message": "Remove sorting in JSON output files"
+        },
+        "branch": "branch",
+        "remotes": [
+            {
+                "name": "origin",
+                "url": "https://github.com/Spacetown/gcovr.git"
+            },
+            {
+                "name": "upstream",
+                "url": "https://github.com/gcovr/gcovr"
+            }
+        ]
+    },
     "source_files": [
         {
-            "coverage": [
-                null,
-                null,
-                1,
-                null,
-                1,
-                1,
-                1,
-                null
-            ],
             "name": "main.cpp",
-            "source_digest": "d59f23fd56a486e49d6b9cd1691bebef"
-        },
-        {
+            "source_digest": "d59f23fd56a486e49d6b9cd1691bebef",
             "coverage": [
                 null,
                 null,
                 1,
                 null,
                 1,
+                1,
+                1,
                 null
-            ],
+            ]
+        },
+        {
             "name": "update-data.c",
-            "source_digest": "460f0e4bb0c575711b6df93c5d0c6b28"
+            "source_digest": "460f0e4bb0c575711b6df93c5d0c6b28",
+            "coverage": [
+                null,
+                null,
+                1,
+                null,
+                1,
+                null
+            ]
         },
         {
+            "name": "update-data.h",
+            "source_digest": "24354aa07840bda3337011fbbe660aa9",
             "coverage": [
                 null,
                 null,
@@ -62,9 +85,7 @@
                 null,
                 null,
                 null
-            ],
-            "name": "update-data.h",
-            "source_digest": "24354aa07840bda3337011fbbe660aa9"
+            ]
         }
     ]
 }

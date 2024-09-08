@@ -1,116 +1,116 @@
 {
+    "gcovr/format_version": "0.8",
     "files": [
         {
             "file": "bar.cpp",
-            "functions": [
-                {
-                    "blocks_percent": 100.0,
-                    "execution_count": 1,
-                    "lineno": 1,
-                    "name": "bar()"
-                }
-            ],
             "lines": [
                 {
-                    "branches": [],
+                    "line_number": 1,
                     "count": 1,
-                    "gcovr/md5": "4beba7179d45a57456569f6941093571",
-                    "line_number": 1
+                    "branches": [],
+                    "gcovr/md5": "4beba7179d45a57456569f6941093571"
                 },
                 {
-                    "branches": [],
+                    "line_number": 3,
                     "count": 1,
-                    "gcovr/md5": "1ba937b65a188b24269108d29577cf6d",
-                    "line_number": 3
+                    "branches": [],
+                    "gcovr/md5": "1ba937b65a188b24269108d29577cf6d"
                 },
                 {
-                    "branches": [],
+                    "line_number": 4,
                     "count": 1,
-                    "gcovr/md5": "524766693a21dc700232729ac36807d7",
-                    "line_number": 4
+                    "branches": [],
+                    "gcovr/md5": "524766693a21dc700232729ac36807d7"
                 },
                 {
-                    "branches": [],
+                    "line_number": 5,
                     "count": 1,
-                    "gcovr/md5": "7746e3e1a44c2c4d5c417e4a36bf0469",
-                    "line_number": 5
+                    "branches": [],
+                    "gcovr/md5": "7746e3e1a44c2c4d5c417e4a36bf0469"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "bar()",
+                    "lineno": 1,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
                 }
             ]
         },
         {
             "file": "foo.cpp",
-            "functions": [
-                {
-                    "blocks_percent": 100.0,
-                    "execution_count": 1,
-                    "lineno": 1,
-                    "name": "foo()"
-                }
-            ],
             "lines": [
                 {
-                    "branches": [],
+                    "line_number": 1,
                     "count": 1,
-                    "gcovr/md5": "47ebd7e1bb02e392da3ed5d26b939368",
-                    "line_number": 1
+                    "branches": [],
+                    "gcovr/md5": "47ebd7e1bb02e392da3ed5d26b939368"
                 },
                 {
-                    "branches": [],
+                    "line_number": 3,
                     "count": 1,
-                    "gcovr/md5": "1ba937b65a188b24269108d29577cf6d",
-                    "line_number": 3
+                    "branches": [],
+                    "gcovr/md5": "1ba937b65a188b24269108d29577cf6d"
                 },
                 {
-                    "branches": [],
+                    "line_number": 4,
                     "count": 1,
-                    "gcovr/md5": "524766693a21dc700232729ac36807d7",
-                    "line_number": 4
+                    "branches": [],
+                    "gcovr/md5": "524766693a21dc700232729ac36807d7"
                 },
                 {
-                    "branches": [],
+                    "line_number": 5,
                     "count": 1,
-                    "gcovr/md5": "c745797c27df531f2e2d3d23f80088c9",
-                    "line_number": 5
+                    "branches": [],
+                    "gcovr/md5": "c745797c27df531f2e2d3d23f80088c9"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "foo()",
+                    "lineno": 1,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
                 }
             ]
         },
         {
             "file": "main.cpp",
-            "functions": [
-                {
-                    "blocks_percent": 100.0,
-                    "execution_count": 2,
-                    "lineno": 10,
-                    "name": "main"
-                }
-            ],
             "lines": [
                 {
-                    "branches": [],
+                    "line_number": 10,
                     "count": 2,
-                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
-                    "line_number": 10
+                    "branches": [],
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
-                    "branches": [],
+                    "line_number": 12,
                     "count": 1,
-                    "gcovr/md5": "cbbf56c3917659e6decbe7eaa8161cef",
-                    "line_number": 12
+                    "branches": [],
+                    "gcovr/md5": "cbbf56c3917659e6decbe7eaa8161cef"
                 },
                 {
-                    "branches": [],
+                    "line_number": 15,
                     "count": 1,
-                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2",
-                    "line_number": 15
+                    "branches": [],
+                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2"
                 },
                 {
-                    "branches": [],
+                    "line_number": 18,
                     "count": 2,
-                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
-                    "line_number": 18
+                    "branches": [],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "main",
+                    "lineno": 10,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0
                 }
             ]
         }
-    ],
-    "gcovr/format_version": "0.8"
+    ]
 }

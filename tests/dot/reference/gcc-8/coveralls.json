@@ -1,25 +1,34 @@
 {
     "run_at": "",
-    "service_job_id": "id",
     "service_name": "gcovr-test-suite",
+    "service_job_id": "id",
     "service_number": "number",
     "service_pull_request": "pr",
+    "git": {
+        "head": {
+            "id": "ff90a95121c7a2a72a05da03027401a718334253",
+            "author_name": "Spacetown",
+            "author_email": "40258682+spacetown@users.noreply.github.com",
+            "committer_name": "Spacetown",
+            "committer_email": "40258682+spacetown@users.noreply.github.com",
+            "message": "Remove sorting in JSON output files"
+        },
+        "branch": "branch",
+        "remotes": [
+            {
+                "name": "origin",
+                "url": "https://github.com/Spacetown/gcovr.git"
+            },
+            {
+                "name": "upstream",
+                "url": "https://github.com/gcovr/gcovr"
+            }
+        ]
+    },
     "source_files": [
         {
-            "coverage": [
-                1,
-                null,
-                1,
-                0,
-                null,
-                1,
-                null,
-                null
-            ],
             "name": ".subdir/A/C/D/file6.cpp",
-            "source_digest": "51c81752202f160b25ffc07fb9134018"
-        },
-        {
+            "source_digest": "51c81752202f160b25ffc07fb9134018",
             "coverage": [
                 1,
                 null,
@@ -29,11 +38,11 @@
                 1,
                 null,
                 null
-            ],
+            ]
+        },
+        {
             "name": ".subdir/A/C/file5.cpp",
-            "source_digest": "994904d7cb6f33c4235bc1f132c029f9"
-        },
-        {
+            "source_digest": "994904d7cb6f33c4235bc1f132c029f9",
             "coverage": [
                 1,
                 null,
@@ -43,29 +52,25 @@
                 1,
                 null,
                 null
-            ],
+            ]
+        },
+        {
             "name": ".subdir/A/file1.cpp",
-            "source_digest": "cf6b72cbb3c9c004a97684f1495332fd"
-        },
-        {
+            "source_digest": "cf6b72cbb3c9c004a97684f1495332fd",
             "coverage": [
                 1,
                 null,
                 1,
+                0,
+                null,
                 1,
-                1,
                 null,
-                null,
-                0,
-                null,
-                0,
-                0,
                 null
-            ],
+            ]
+        },
+        {
             "name": ".subdir/A/file2.cpp",
-            "source_digest": "44683de2597fa27a9410e0f65f71fde0"
-        },
-        {
+            "source_digest": "44683de2597fa27a9410e0f65f71fde0",
             "coverage": [
                 1,
                 null,
@@ -79,11 +84,29 @@
                 0,
                 0,
                 null
-            ],
+            ]
+        },
+        {
             "name": ".subdir/A/file3.cpp",
-            "source_digest": "dfc5bb20c81a49a50b2d06748e65d30f"
+            "source_digest": "dfc5bb20c81a49a50b2d06748e65d30f",
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                1,
+                null,
+                null,
+                0,
+                null,
+                0,
+                0,
+                null
+            ]
         },
         {
+            "name": ".subdir/A/file4.cpp",
+            "source_digest": "7451828cfb58f0fefc6e5fbf44d9a6f4",
             "coverage": [
                 1,
                 null,
@@ -93,11 +116,11 @@
                 0,
                 null,
                 null
-            ],
-            "name": ".subdir/A/file4.cpp",
-            "source_digest": "7451828cfb58f0fefc6e5fbf44d9a6f4"
+            ]
         },
         {
+            "name": ".subdir/B/main.cpp",
+            "source_digest": "457649142689db5b68583a0b1d9af31a",
             "coverage": [
                 null,
                 null,
@@ -119,9 +142,7 @@
                 null,
                 1,
                 null
-            ],
-            "name": ".subdir/B/main.cpp",
-            "source_digest": "457649142689db5b68583a0b1d9af31a"
+            ]
         }
     ]
 }

@@ -1,27 +1,27 @@
 {
-    "branch_covered": 8,
-    "branch_percent": 80.0,
-    "branch_total": 10,
+    "root": ".",
+    "gcovr/summary_format_version": "0.6",
     "files": [
         {
-            "branch_covered": 8,
-            "branch_percent": 80.0,
-            "branch_total": 10,
             "filename": "main.cpp",
-            "function_covered": 4,
-            "function_percent": 100.0,
-            "function_total": 4,
+            "line_total": 17,
             "line_covered": 15,
             "line_percent": 88.2,
-            "line_total": 17
+            "function_total": 4,
+            "function_covered": 4,
+            "function_percent": 100.0,
+            "branch_total": 10,
+            "branch_covered": 8,
+            "branch_percent": 80.0
         }
     ],
-    "function_covered": 4,
-    "function_percent": 100.0,
-    "function_total": 4,
-    "gcovr/summary_format_version": "0.6",
+    "line_total": 17,
     "line_covered": 15,
     "line_percent": 88.2,
-    "line_total": 17,
-    "root": "."
+    "function_total": 4,
+    "function_covered": 4,
+    "function_percent": 100.0,
+    "branch_total": 10,
+    "branch_covered": 8,
+    "branch_percent": 80.0
 }

@@ -1,78 +1,42 @@
 {
+    "gcovr/format_version": "0.8",
     "files": [
         {
             "file": "main.cpp",
-            "functions": [
-                {
-                    "blocks_percent": 0.0,
-                    "execution_count": 0,
-                    "gcovr/excluded": true,
-                    "lineno": 38,
-                    "name": "_Z3bari"
-                },
-                {
-                    "blocks_percent": 85.0,
-                    "execution_count": 5,
-                    "lineno": 16,
-                    "name": "_Z3fooi"
-                },
-                {
-                    "blocks_percent": 100.0,
-                    "execution_count": 1,
-                    "lineno": 7,
-                    "name": "_ZN3BarC2Ev"
-                },
-                {
-                    "blocks_percent": 0.0,
-                    "execution_count": 0,
-                    "lineno": 9,
-                    "name": "_ZN3BarD0Ev"
-                },
-                {
-                    "blocks_percent": 100.0,
-                    "execution_count": 1,
-                    "lineno": 9,
-                    "name": "_ZN3BarD2Ev"
-                },
-                {
-                    "blocks_percent": 38.0,
-                    "execution_count": 1,
-                    "lineno": 46,
-                    "name": "main"
-                }
-            ],
             "lines": [
                 {
-                    "branches": [],
+                    "line_number": 7,
                     "count": 1,
-                    "gcovr/md5": "f0d54fc3718423907ffe35d82be9e65c",
-                    "line_number": 7
+                    "branches": [],
+                    "gcovr/md5": "f0d54fc3718423907ffe35d82be9e65c"
                 },
                 {
-                    "branches": [],
+                    "line_number": 8,
                     "count": 1,
-                    "gcovr/md5": "5efee26ba06711f9395b3c3bc7a9d94a",
-                    "line_number": 8
+                    "branches": [],
+                    "gcovr/md5": "5efee26ba06711f9395b3c3bc7a9d94a"
                 },
                 {
-                    "branches": [],
+                    "line_number": 9,
                     "count": 1,
-                    "gcovr/md5": "ef89afadbfb397fa2428716379142419",
-                    "line_number": 9
+                    "branches": [],
+                    "gcovr/md5": "ef89afadbfb397fa2428716379142419"
                 },
                 {
-                    "branches": [],
+                    "line_number": 10,
                     "count": 1,
-                    "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133",
-                    "line_number": 10
+                    "branches": [],
+                    "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
                 },
                 {
-                    "branches": [],
+                    "line_number": 16,
                     "count": 5,
-                    "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31",
-                    "line_number": 16
+                    "branches": [],
+                    "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31"
                 },
                 {
+                    "line_number": 17,
+                    "count": 5,
                     "branches": [
                         {
                             "blockno": 0,
@@ -99,30 +63,30 @@
                             "throw": false
                         }
                     ],
-                    "count": 5,
-                    "gcovr/md5": "69d7cb531f90045147347c360a0d81d2",
-                    "line_number": 17
+                    "gcovr/md5": "69d7cb531f90045147347c360a0d81d2"
                 },
                 {
-                    "branches": [],
+                    "line_number": 18,
                     "count": 2,
-                    "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
-                    "line_number": 18
+                    "branches": [],
+                    "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
                 },
                 {
-                    "branches": [],
+                    "line_number": 19,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "7418c3752af701f88bc8f790f4793a6d",
-                    "line_number": 19
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 20,
                     "count": 1,
-                    "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
-                    "line_number": 20
+                    "branches": [],
+                    "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
                 },
                 {
+                    "line_number": 21,
+                    "count": 2,
                     "branches": [
                         {
                             "blockno": 0,
@@ -137,17 +101,17 @@
                             "throw": false
                         }
                     ],
-                    "count": 2,
-                    "gcovr/md5": "189a346e59b4b9eb1653c629e9e00396",
-                    "line_number": 21
+                    "gcovr/md5": "189a346e59b4b9eb1653c629e9e00396"
                 },
                 {
-                    "branches": [],
+                    "line_number": 22,
                     "count": 0,
-                    "gcovr/md5": "30947b981b8563f1d1a6690c87ba3db6",
-                    "line_number": 22
+                    "branches": [],
+                    "gcovr/md5": "30947b981b8563f1d1a6690c87ba3db6"
                 },
                 {
+                    "line_number": 23,
+                    "count": 2,
                     "branches": [
                         {
                             "blockno": 0,
@@ -162,97 +126,97 @@
                             "throw": false
                         }
                     ],
-                    "count": 2,
-                    "gcovr/md5": "d4dfe4cbc7a957b4db133508a4597ed6",
-                    "line_number": 23
+                    "gcovr/md5": "d4dfe4cbc7a957b4db133508a4597ed6"
                 },
                 {
-                    "branches": [],
+                    "line_number": 24,
                     "count": 0,
-                    "gcovr/md5": "3b131baf29a59cf4c789f42a8cb54194",
-                    "line_number": 24
+                    "branches": [],
+                    "gcovr/md5": "3b131baf29a59cf4c789f42a8cb54194"
                 },
                 {
-                    "branches": [],
+                    "line_number": 28,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "1d470a2a37dd4a537d80ee9c575b61a2",
-                    "line_number": 28
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 29,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
-                    "line_number": 29
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 30,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "b18752f044690130643d37bc530cd788",
-                    "line_number": 30
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 31,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
-                    "line_number": 31
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 35,
                     "count": 1,
-                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
-                    "line_number": 35
+                    "branches": [],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 },
                 {
-                    "branches": [],
+                    "line_number": 36,
                     "count": 5,
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "line_number": 36
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
                 },
                 {
-                    "branches": [],
+                    "line_number": 38,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "3c9c1937d90004711fa6cda5e218dc87",
-                    "line_number": 38
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 39,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
-                    "line_number": 39
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 40,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "4071653b480e72354bcfb2b2e78f92fd",
-                    "line_number": 40
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 42,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
-                    "line_number": 42
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 43,
                     "count": 0,
-                    "gcovr/md5": "205490e389e7a37a48abc32a5303ab7f",
-                    "line_number": 43
-                },
-                {
                     "branches": [],
-                    "count": 1,
-                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
-                    "line_number": 46
+                    "gcovr/md5": "205490e389e7a37a48abc32a5303ab7f"
                 },
                 {
+                    "line_number": 46,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
+                },
+                {
+                    "line_number": 47,
+                    "count": 6,
                     "branches": [
                         {
                             "blockno": 1,
@@ -267,91 +231,127 @@
                             "throw": false
                         }
                     ],
-                    "count": 6,
-                    "gcovr/md5": "3aac4e3adb4400cb9a56145130946d99",
-                    "line_number": 47
+                    "gcovr/md5": "3aac4e3adb4400cb9a56145130946d99"
                 },
                 {
-                    "branches": [],
+                    "line_number": 48,
                     "count": 5,
-                    "gcovr/md5": "ce31d2067628e009ca3ca41fc3d5f044",
-                    "line_number": 48
+                    "branches": [],
+                    "gcovr/md5": "ce31d2067628e009ca3ca41fc3d5f044"
                 },
                 {
-                    "branches": [],
+                    "line_number": 49,
                     "count": 5,
-                    "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9",
-                    "line_number": 49
+                    "branches": [],
+                    "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9"
                 },
                 {
-                    "branches": [],
+                    "line_number": 52,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "1c65a24caffdcb0e7b6493034a21dc55",
-                    "line_number": 52
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 53,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "f619ca2743f98bae7db1d75919cfc0bc",
-                    "line_number": 53
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 54,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "257d5873569672120a0c1f23864092e0",
-                    "line_number": 54
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 55,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "2d5e1e2ac7529e31e605e9849fcff3cc",
-                    "line_number": 55
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 56,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "65dc4e5f2615e265e1dbe349aa2f5858",
-                    "line_number": 56
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 57,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3",
-                    "line_number": 57
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 58,
                     "count": 0,
-                    "gcovr/excluded": true,
+                    "branches": [],
                     "gcovr/md5": "5703f441b323e4ec7b1b87ef3b386cb9",
-                    "line_number": 58
+                    "gcovr/excluded": true
                 },
                 {
-                    "branches": [],
+                    "line_number": 59,
                     "count": 0,
-                    "gcovr/md5": "a90dacea889bc9c99fe5a3b7b5d65d25",
-                    "line_number": 59
+                    "branches": [],
+                    "gcovr/md5": "a90dacea889bc9c99fe5a3b7b5d65d25"
                 },
                 {
-                    "branches": [],
+                    "line_number": 61,
                     "count": 1,
-                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
-                    "line_number": 61
+                    "branches": [],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 },
                 {
-                    "branches": [],
+                    "line_number": 62,
                     "count": 0,
-                    "gcovr/md5": "9e7ce02d034587718cd3b6c29d789ef0",
-                    "line_number": 62
+                    "branches": [],
+                    "gcovr/md5": "9e7ce02d034587718cd3b6c29d789ef0"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_Z3bari",
+                    "lineno": 38,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0,
+                    "gcovr/excluded": true
+                },
+                {
+                    "name": "_Z3fooi",
+                    "lineno": 16,
+                    "execution_count": 5,
+                    "blocks_percent": 85.0
+                },
+                {
+                    "name": "_ZN3BarC2Ev",
+                    "lineno": 7,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
+                },
+                {
+                    "name": "_ZN3BarD0Ev",
+                    "lineno": 9,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0
+                },
+                {
+                    "name": "_ZN3BarD2Ev",
+                    "lineno": 9,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
+                },
+                {
+                    "name": "main",
+                    "lineno": 46,
+                    "execution_count": 1,
+                    "blocks_percent": 38.0
                 }
             ]
         }
-    ],
-    "gcovr/format_version": "0.8"
+    ]
 }
