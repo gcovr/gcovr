@@ -1,2 +1,2 @@
-This test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options. It uses exclude_pattern_prefix to pass a custom prefix.
-
+This test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
+It uses exclude_pattern_prefix to pass a custom prefix.

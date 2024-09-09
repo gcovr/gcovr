@@ -133,9 +133,10 @@ def _function_from_json(json_function: dict) -> FunctionCoverage:
         lineno=json_function["lineno"],
         count=json_function["execution_count"],
         blocks=json_function["blocks_percent"],
-        excluded=json_function.get("gcovr/excluded", False),
+        mangled_name=json_function.get("mangled_name", False),
         start=start,
         end=end,
+        excluded=json_function.get("gcovr/excluded", False),
     )
 
 
@@ -143,8 +144,10 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     line = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
-        excluded=json_line.get("gcovr/excluded", False),
+        function_name=json_line.get("function_name", None),
+        block_ids=json_line.get("block_ids", None),
         md5=json_line.get("gcovr/md5", None),
+        excluded=json_line.get("gcovr/excluded", False),
     )
 
     for branchno, json_branch in enumerate(json_line["branches"]):
@@ -170,7 +173,7 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
 
 
 def _call_from_json(json_call: dict) -> CallCoverage:
-    return CallCoverage(covered=json_call["covered"], callno=json_call["callno"])
+    return CallCoverage(callno=json_call["callno"], covered=json_call["covered"])
 
 
 def _decision_from_json(json_decision: Optional[dict]) -> Optional[DecisionCoverage]:

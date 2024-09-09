@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.8",
+    "gcovr/format_version": "0.9",
     "files": [
         {
             "file": "bar.cpp",
@@ -32,6 +32,7 @@
             "functions": [
                 {
                     "name": "_Z3barv",
+                    "mangled_name": false,
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0
@@ -69,6 +70,7 @@
             "functions": [
                 {
                     "name": "_Z3foov",
+                    "mangled_name": false,
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0
@@ -106,6 +108,7 @@
             "functions": [
                 {
                     "name": "main",
+                    "mangled_name": false,
                     "lineno": 10,
                     "execution_count": 2,
                     "blocks_percent": 100.0

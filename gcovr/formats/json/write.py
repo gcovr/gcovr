@@ -173,9 +173,17 @@ def _json_from_lines(lines: Dict[int, LineCoverage]) -> list:
 def _json_from_line(line: LineCoverage) -> dict:
     json_line = {
         "line_number": line.lineno,
-        "count": line.count,
-        "branches": _json_from_branches(line.branches),
     }
+    if line.function_name is not None:
+        json_line["function_name"] = line.function_name
+    json_line.update(
+        {
+            "count": line.count,
+            "branches": _json_from_branches(line.branches),
+        }
+    )
+    if line.block_ids is not None:
+        json_line["block_ids"] = line.block_ids
     if line.md5:
         json_line["gcovr/md5"] = line.md5
     if line.excluded:
@@ -230,7 +238,7 @@ def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
 
 
 def _json_from_call(call: CallCoverage) -> dict:
-    return {"covered": call.covered, "callno": call.callno}
+    return {"callno": call.callno, "covered": call.covered}
 
 
 def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
@@ -244,10 +252,16 @@ def _json_from_function(function: FunctionCoverage) -> list:
     for lineno, count in function.count.items():
         json_function = {
             "name": function.name,
-            "lineno": lineno,
-            "execution_count": count,
-            "blocks_percent": function.blocks[lineno],
         }
+        if function.mangled_name is not None:
+            json_function["mangled_name"] = function.mangled_name
+        json_function.update(
+            {
+                "lineno": lineno,
+                "execution_count": count,
+                "blocks_percent": function.blocks[lineno],
+            }
+        )
         if function.excluded[lineno]:
             json_function["gcovr/excluded"] = True
         if function.start is not None and function.end is not None:
@@ -255,7 +269,6 @@ def _json_from_function(function: FunctionCoverage) -> list:
                 ":".join([str(e) for e in function.start[lineno]]),
                 ":".join([str(e) for e in function.end[lineno]]),
             )
-
         json_functions.append(json_function)
 
     return json_functions

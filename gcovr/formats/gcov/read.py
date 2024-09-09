@@ -232,6 +232,8 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                 LineCoverage(
                     line["line_number"],
                     count=line["count"],
+                    function_name=line["function_name"],
+                    block_ids=line["block_ids"],
                     md5=get_md5_hexdigest(source_lines[line["line_number"] - 1]),
                 ),
             )
@@ -264,6 +266,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                     lineno=function["start_line"],
                     count=function["execution_count"],
                     blocks=blocks,
+                    mangled_name=function["name"],
                     start=(function["start_line"], function["start_column"]),
                     end=(function["end_line"], function["end_column"]),
                 ),

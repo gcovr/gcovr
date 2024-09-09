@@ -94,21 +94,34 @@ Line entries
 Each **line** entry contains coverage data for one line::
 
     {
-        "branches": [branch],
-        "count": count,
         "line_number": line_number,
+        "function_name": function_name,
+        "count": count,
+        "branches": [branch],
+        "block_ids", block_ids,
+        "gcovr/md5": md5,
         "gcovr/excluded": excluded,
         "gcovr/decision": decision
+        "gcovr/calls": calls,
     }
 
-branches: list
-  A list of :ref:`branch <json_format_branch>` coverage entries.
+line_number: int
+  The 1-based line number to which this entry relates.
+
+function_name: str
+  The (mangled) name of the function.
 
 count: int
   How often this line was executed.
 
-line_number: int
-  The 1-based line number to which this entry relates.
+branches: list
+  A list of :ref:`branch <json_format_branch>` coverage entries.
+
+block_ids: list[int]:
+  The list of block ids defined in this line.
+
+gcovr/md5: str
+  The MD5 sum of the line.
 
 gcovr/excluded: boolean
   True if coverage data for this line was explicitly excluded,
@@ -120,6 +133,11 @@ gcovr/decision: object
   Absent if there is no decision to report.
   Requires that :option:`--decisions <gcovr --decisions>` coverage analysis was enabled.
 
+gcovr/calls: object
+  The :ref:`call <json_format_call>` for this line, if any.
+  Absent if there is no call to report.
+  Requires that :option:`--calls <gcovr --calls>` coverage analysis was enabled.
+
 If there is no line entry for a source code line,
 it either means that the compiler did not generate any code for that line,
 or that gcovr ignored this coverage data due to heuristics.
@@ -129,6 +147,15 @@ The line entry should be interpreted as follows:
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
+
+.. versionchanged:: NEXT
+   The ``block_ids`` is added.
+
+.. versionchanged:: NEXT
+   The ``function_name`` is added.
+
+.. versionchanged:: NEXT
+   The ``gcovr/md5`` is added.
 
 .. versionchanged:: 6.0
    The ``gcovr/excluded`` field can be absent if false.
@@ -218,6 +245,24 @@ type: "switch"
   count: int
     How often this case was taken.
 
+.. _json_format_call:
+
+Call entries
+~~~~~~~~~~~~
+
+Each **call** provides information about a call on that line::
+
+    {
+      "callno": callno,
+      "covered": covered
+    }
+
+callno: int
+  The number of the call.
+
+covered: boolean
+  Whether this call was covered.
+
 .. _json_format_function:
 
 Function entries
@@ -227,6 +272,7 @@ Each **function** entry describes a line in the source file::
 
     {
       "name": name,
+      "mangled_name": mangled_name,
       "lineno": lineno,
       "execution_count": count,
       "branch_percent": percent,
@@ -240,6 +286,11 @@ Each **function** entry describes a line in the source file::
 name: string
   The name of the function, mangled or demangled depending on compiler version.
   May be incompatible with upstream GCC gcov JSON.
+
+mangled_name: string
+  The mangled name of the function, mangled or demangled depending on compiler version.
+  Upstream GCC gcov JSON is mangled name set as ``name`` and the demangled name as
+  ``demangled_name``.
 
 lineno: int
   The line number (1-based) where this function was defined.
@@ -265,6 +316,9 @@ gcovr/excluded: boolean
 
 .. versionadded:: NEXT
    Added ``pos`` field.
+
+.. versionadded:: NEXT
+   Added ``mangled_name`` field.
 
 .. versionremoved:: NEXT
    Removed ``returned_count`` field because missing in ``gcov`` JSON format.

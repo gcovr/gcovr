@@ -160,11 +160,13 @@ class CallCoverage:
     r"""Represent coverage information about a call.
 
     Args:
+        callno (int):
+            The number of the call.
         covered (bool):
             Whether the call was performed.
     """
 
-    __slots__ = "covered", "callno"
+    __slots__ = "callno", "covered"
 
     def __init__(
         self,
@@ -249,15 +251,17 @@ class FunctionCoverage:
             How often this function was executed.
         blocks (float):
             Block coverage of function.
-        excluded (bool, optional):
-            Whether this line is excluded by a marker.
+        mangled_name (str, optional):
+            The mangled name of the function.
         start ((int, int)), optional):
             Tuple with function start line and column.
         end ((int, int)), optional):
             Tuple with function end line and column.
+        excluded (bool, optional):
+            Whether this line is excluded by a marker.
     """
 
-    __slots__ = "name", "count", "blocks", "excluded", "start", "end"
+    __slots__ = "name", "mangled_name", "count", "blocks", "start", "end", "excluded"
 
     def __init__(
         self,
@@ -266,9 +270,10 @@ class FunctionCoverage:
         lineno: int,
         count: int,
         blocks: float,
-        excluded: bool = False,
+        mangled_name: Optional[str] = None,
         start: Optional[Tuple[int, int]] = None,
         end: Optional[Tuple[int, int]] = None,
+        excluded: bool = False,
     ) -> None:
         if count < 0:
             raise AssertionError("count must not be a negative value.")
@@ -276,6 +281,7 @@ class FunctionCoverage:
         self.count: Dict[int, int] = {lineno: count}
         self.blocks: Dict[int, float] = {lineno: blocks}
         self.excluded: Dict[int, bool] = {lineno: excluded}
+        self.mangled_name = mangled_name
         self.start: Dict[int, Optional[Tuple[int, int]]] = (
             None if start is None else {lineno: start}
         )
@@ -298,15 +304,21 @@ class LineCoverage:
             The line number.
         count (int):
             How often this line was executed at least partially.
+        function_name (str, optional):
+            Mangled name of the function the line belongs to.
+        block_ids (*int, optional):
+            List of block ids in this line
         excluded (bool, optional):
             Whether this line is excluded by a marker.
-        md5 (str):
+        md5 (str, optional):
             The md5 checksum of the source code line.
     """
 
     __slots__ = (
         "lineno",
         "count",
+        "function_name",
+        "block_ids",
         "excluded",
         "md5",
         "branches",
@@ -315,7 +327,13 @@ class LineCoverage:
     )
 
     def __init__(
-        self, lineno: int, count: int, excluded: bool = False, md5: str = None
+        self,
+        lineno: int,
+        count: int,
+        function_name: Optional[str] = None,
+        block_ids: Optional[List[int]] = None,
+        md5: Optional[str] = None,
+        excluded: Optional[bool] = False,
     ) -> None:
         if lineno <= 0:
             raise AssertionError("Line number must be a positive value.")
@@ -324,8 +342,10 @@ class LineCoverage:
 
         self.lineno: int = lineno
         self.count: int = count
-        self.excluded: bool = excluded
-        self.md5: str = md5
+        self.function_name: Optional[str] = function_name
+        self.block_ids: Optional[List[int]] = block_ids
+        self.excluded: Optional[bool] = excluded
+        self.md5: Optional[str] = md5
         self.branches: Dict[int, BranchCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
         self.calls: Dict[int, CallCoverage] = {}

@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.8",
+    "gcovr/format_version": "0.9",
     "files": [
         {
             "file": "subfolder/main.c",
