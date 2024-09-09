@@ -391,6 +391,8 @@ def merge_branch(
     left.count += right.count
     left.fallthrough |= right.fallthrough
     left.throw |= right.throw
+    if left.excluded is True or right.excluded is True:
+        left.excluded = True
 
     return left
 
