@@ -6,7 +6,7 @@
             "lines": [
                 {
                     "line_number": 9,
-                    "function_name": "_Z3fooi",
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -15,7 +15,7 @@
                 },
                 {
                     "line_number": 10,
-                    "function_name": "_Z3fooi",
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -26,7 +26,7 @@
                 },
                 {
                     "line_number": 11,
-                    "function_name": "_Z3fooi",
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -37,7 +37,7 @@
                 },
                 {
                     "line_number": 13,
-                    "function_name": "_Z3fooi",
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -48,7 +48,7 @@
                 },
                 {
                     "line_number": 16,
-                    "function_name": "_Z3fooi",
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -59,7 +59,7 @@
                 },
                 {
                     "line_number": 19,
-                    "function_name": "_Z3bari",
+                    "mangled_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -68,7 +68,7 @@
                 },
                 {
                     "line_number": 20,
-                    "function_name": "_Z3bari",
+                    "mangled_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -79,7 +79,7 @@
                 },
                 {
                     "line_number": 21,
-                    "function_name": "_Z3bari",
+                    "mangled_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -90,7 +90,7 @@
                 },
                 {
                     "line_number": 23,
-                    "function_name": "_Z3bari",
+                    "mangled_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -101,7 +101,7 @@
                 },
                 {
                     "line_number": 25,
-                    "function_name": "_Z3bari",
+                    "mangled_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -112,7 +112,7 @@
                 },
                 {
                     "line_number": 44,
-                    "function_name": "_Z13sort_excludedv",
+                    "mangled_name": "_Z13sort_excludedv",
                     "count": 44,
                     "branches": [
                         {
@@ -139,7 +139,7 @@
                 },
                 {
                     "line_number": 45,
-                    "function_name": "_Z13sort_excludedv",
+                    "mangled_name": "_Z13sort_excludedv",
                     "count": 44,
                     "branches": [
                         {
@@ -166,7 +166,7 @@
                 },
                 {
                     "line_number": 46,
-                    "function_name": "_Z13sort_excludedv",
+                    "mangled_name": "_Z13sort_excludedv",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -177,7 +177,7 @@
                 },
                 {
                     "line_number": 48,
-                    "function_name": "_Z20sort_lambda_excludedv",
+                    "mangled_name": "_Z20sort_lambda_excludedv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -185,7 +185,7 @@
                 },
                 {
                     "line_number": 50,
-                    "function_name": "_ZZ20sort_lambda_excludedvENKUliiE_clEii",
+                    "mangled_name": "_ZZ20sort_lambda_excludedvENKUliiE_clEii",
                     "count": 44,
                     "branches": [
                         {
@@ -229,7 +229,7 @@
                 },
                 {
                     "line_number": 52,
-                    "function_name": "_Z20sort_lambda_excludedv",
+                    "mangled_name": "_Z20sort_lambda_excludedv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -239,7 +239,7 @@
                 },
                 {
                     "line_number": 54,
-                    "function_name": "_Z20sort_lambda_excludedv",
+                    "mangled_name": "_Z20sort_lambda_excludedv",
                     "count": 2,
                     "branches": [
                         {
@@ -265,7 +265,7 @@
                 },
                 {
                     "line_number": 57,
-                    "function_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "mangled_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -274,7 +274,7 @@
                 },
                 {
                     "line_number": 58,
-                    "function_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "mangled_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -285,7 +285,7 @@
                 },
                 {
                     "line_number": 59,
-                    "function_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "mangled_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -296,7 +296,7 @@
                 },
                 {
                     "line_number": 61,
-                    "function_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "mangled_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -307,7 +307,7 @@
                 },
                 {
                     "line_number": 64,
-                    "function_name": "_Z20sort_lambda_excludedv",
+                    "mangled_name": "_Z20sort_lambda_excludedv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -317,7 +317,7 @@
                 },
                 {
                     "line_number": 66,
-                    "function_name": "_Z18sort_excluded_bothv",
+                    "mangled_name": "_Z18sort_excluded_bothv",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -326,7 +326,7 @@
                 },
                 {
                     "line_number": 68,
-                    "function_name": "_Z18sort_excluded_bothv",
+                    "mangled_name": "_Z18sort_excluded_bothv",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -337,7 +337,7 @@
                 },
                 {
                     "line_number": 70,
-                    "function_name": "_Z18sort_excluded_bothv",
+                    "mangled_name": "_Z18sort_excluded_bothv",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -349,7 +349,7 @@
                 },
                 {
                     "line_number": 73,
-                    "function_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
+                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -358,7 +358,7 @@
                 },
                 {
                     "line_number": 74,
-                    "function_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
+                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -369,7 +369,7 @@
                 },
                 {
                     "line_number": 75,
-                    "function_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
+                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -380,7 +380,7 @@
                 },
                 {
                     "line_number": 77,
-                    "function_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
+                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -391,7 +391,7 @@
                 },
                 {
                     "line_number": 81,
-                    "function_name": "_Z18sort_excluded_bothv",
+                    "mangled_name": "_Z18sort_excluded_bothv",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -403,7 +403,7 @@
                 },
                 {
                     "line_number": 84,
-                    "function_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
+                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -412,7 +412,7 @@
                 },
                 {
                     "line_number": 85,
-                    "function_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
+                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -423,7 +423,7 @@
                 },
                 {
                     "line_number": 86,
-                    "function_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
+                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -434,7 +434,7 @@
                 },
                 {
                     "line_number": 88,
-                    "function_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
+                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -445,7 +445,7 @@
                 },
                 {
                     "line_number": 91,
-                    "function_name": "_Z18sort_excluded_bothv",
+                    "mangled_name": "_Z18sort_excluded_bothv",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -456,7 +456,7 @@
                 },
                 {
                     "line_number": 95,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -464,7 +464,7 @@
                 },
                 {
                     "line_number": 96,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -474,7 +474,7 @@
                 },
                 {
                     "line_number": 97,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -484,7 +484,7 @@
                 },
                 {
                     "line_number": 99,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -494,7 +494,7 @@
                 },
                 {
                     "line_number": 100,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -504,7 +504,7 @@
                 },
                 {
                     "line_number": 101,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -514,7 +514,7 @@
                 },
                 {
                     "line_number": 103,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [

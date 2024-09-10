@@ -6,7 +6,7 @@
             "lines": [
                 {
                     "line_number": 3,
-                    "function_name": "_Z23function_that_may_throwb",
+                    "mangled_name": "_Z23function_that_may_throwb",
                     "count": 9,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 4,
-                    "function_name": "_Z23function_that_may_throwb",
+                    "mangled_name": "_Z23function_that_may_throwb",
                     "count": 9,
                     "branches": [
                         {
@@ -39,7 +39,7 @@
                 },
                 {
                     "line_number": 5,
-                    "function_name": "_Z23function_that_may_throwb",
+                    "mangled_name": "_Z23function_that_may_throwb",
                     "count": 3,
                     "branches": [
                         {
@@ -60,7 +60,7 @@
                 },
                 {
                     "line_number": 7,
-                    "function_name": "_Z23function_that_may_throwb",
+                    "mangled_name": "_Z23function_that_may_throwb",
                     "count": 6,
                     "branches": [],
                     "block_ids": [
@@ -71,7 +71,7 @@
                 },
                 {
                     "line_number": 16,
-                    "function_name": "_ZNK4RAII21method_that_may_throwEv",
+                    "mangled_name": "_ZNK4RAII21method_that_may_throwEv",
                     "count": 3,
                     "branches": [],
                     "block_ids": [],
@@ -79,7 +79,7 @@
                 },
                 {
                     "line_number": 17,
-                    "function_name": "_ZNK4RAII21method_that_may_throwEv",
+                    "mangled_name": "_ZNK4RAII21method_that_may_throwEv",
                     "count": 3,
                     "branches": [],
                     "block_ids": [
@@ -90,7 +90,7 @@
                 },
                 {
                     "line_number": 21,
-                    "function_name": "_ZN4RAIIC2Eb",
+                    "mangled_name": "_ZN4RAIIC2Eb",
                     "count": 3,
                     "branches": [],
                     "block_ids": [],
@@ -98,7 +98,7 @@
                 },
                 {
                     "line_number": 22,
-                    "function_name": "_ZN4RAIID2Ev",
+                    "mangled_name": "_ZN4RAIID2Ev",
                     "count": 3,
                     "branches": [],
                     "block_ids": [],
@@ -106,7 +106,7 @@
                 },
                 {
                     "line_number": 24,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [],
                     "block_ids": [],
@@ -114,7 +114,7 @@
                 },
                 {
                     "line_number": 25,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [],
                     "block_ids": [],
@@ -122,7 +122,7 @@
                 },
                 {
                     "line_number": 28,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [
                         {
@@ -140,7 +140,7 @@
                 },
                 {
                     "line_number": 29,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [
                         {
@@ -166,7 +166,7 @@
                 },
                 {
                     "line_number": 30,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [],
                     "block_ids": [],
@@ -174,7 +174,7 @@
                 },
                 {
                     "line_number": 31,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [],
                     "block_ids": [
@@ -184,7 +184,7 @@
                 },
                 {
                     "line_number": 33,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [
                         {
@@ -202,7 +202,7 @@
                 },
                 {
                     "line_number": 36,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [
                         {
@@ -220,7 +220,7 @@
                 },
                 {
                     "line_number": 37,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 0,
                     "branches": [
                         {
@@ -246,7 +246,7 @@
                 },
                 {
                     "line_number": 38,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -254,7 +254,7 @@
                 },
                 {
                     "line_number": 39,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -264,7 +264,7 @@
                 },
                 {
                     "line_number": 41,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [
                         {
@@ -282,7 +282,7 @@
                 },
                 {
                     "line_number": 43,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [],
                     "block_ids": [
@@ -292,7 +292,7 @@
                 },
                 {
                     "line_number": 44,
-                    "function_name": "_Z22function_with_catchersi",
+                    "mangled_name": "_Z22function_with_catchersi",
                     "count": 3,
                     "branches": [],
                     "block_ids": [
@@ -303,7 +303,7 @@
                 },
                 {
                     "line_number": 47,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 3,
                     "branches": [],
                     "block_ids": [],
@@ -311,7 +311,7 @@
                 },
                 {
                     "line_number": 48,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 3,
                     "branches": [],
                     "block_ids": [

@@ -6,7 +6,7 @@
             "lines": [
                 {
                     "line_number": 5,
-                    "function_name": "_ZN3Foo4workEi",
+                    "mangled_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 6,
-                    "function_name": "_ZN3Foo4workEi",
+                    "mangled_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [
                         {
@@ -44,7 +44,7 @@
                 },
                 {
                     "line_number": 7,
-                    "function_name": "_ZN3Foo4workEi",
+                    "mangled_name": "_ZN3Foo4workEi",
                     "count": 2,
                     "branches": [
                         {
@@ -72,7 +72,7 @@
                 },
                 {
                     "line_number": 8,
-                    "function_name": "_ZN3Foo4workEi",
+                    "mangled_name": "_ZN3Foo4workEi",
                     "count": 3,
                     "branches": [
                         {
@@ -107,7 +107,7 @@
                 },
                 {
                     "line_number": 10,
-                    "function_name": "_ZN3Foo4workEi",
+                    "mangled_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -117,7 +117,7 @@
                 },
                 {
                     "line_number": 11,
-                    "function_name": "_ZN3Foo4workEi",
+                    "mangled_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -127,7 +127,7 @@
                 },
                 {
                     "line_number": 14,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -135,7 +135,7 @@
                 },
                 {
                     "line_number": 16,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -160,7 +160,7 @@
                 },
                 {
                     "line_number": 17,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [

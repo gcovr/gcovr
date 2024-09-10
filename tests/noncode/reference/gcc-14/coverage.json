@@ -6,7 +6,7 @@
             "lines": [
                 {
                     "line_number": 4,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 6,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -54,7 +54,7 @@
                 },
                 {
                     "line_number": 7,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -64,7 +64,7 @@
                 },
                 {
                     "line_number": 9,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 0,
                     "branches": [
                         {

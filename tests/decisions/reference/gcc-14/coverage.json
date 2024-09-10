@@ -6,7 +6,7 @@
             "lines": [
                 {
                     "line_number": 8,
-                    "function_name": "_Z15checkBiggerTruei",
+                    "mangled_name": "_Z15checkBiggerTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 10,
-                    "function_name": "_Z15checkBiggerTruei",
+                    "mangled_name": "_Z15checkBiggerTruei",
                     "count": 1,
                     "branches": [
                         {
@@ -44,7 +44,7 @@
                 },
                 {
                     "line_number": 12,
-                    "function_name": "_Z15checkBiggerTruei",
+                    "mangled_name": "_Z15checkBiggerTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -54,7 +54,7 @@
                 },
                 {
                     "line_number": 16,
-                    "function_name": "_Z15checkBiggerTruei",
+                    "mangled_name": "_Z15checkBiggerTruei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -64,7 +64,7 @@
                 },
                 {
                     "line_number": 20,
-                    "function_name": "_Z16checkBiggerFalsei",
+                    "mangled_name": "_Z16checkBiggerFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -72,7 +72,7 @@
                 },
                 {
                     "line_number": 22,
-                    "function_name": "_Z16checkBiggerFalsei",
+                    "mangled_name": "_Z16checkBiggerFalsei",
                     "count": 1,
                     "branches": [
                         {
@@ -102,7 +102,7 @@
                 },
                 {
                     "line_number": 24,
-                    "function_name": "_Z16checkBiggerFalsei",
+                    "mangled_name": "_Z16checkBiggerFalsei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -112,7 +112,7 @@
                 },
                 {
                     "line_number": 28,
-                    "function_name": "_Z16checkBiggerFalsei",
+                    "mangled_name": "_Z16checkBiggerFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -122,7 +122,7 @@
                 },
                 {
                     "line_number": 32,
-                    "function_name": "_Z15checkBiggerBothi",
+                    "mangled_name": "_Z15checkBiggerBothi",
                     "count": 2,
                     "branches": [],
                     "block_ids": [],
@@ -130,7 +130,7 @@
                 },
                 {
                     "line_number": 34,
-                    "function_name": "_Z15checkBiggerBothi",
+                    "mangled_name": "_Z15checkBiggerBothi",
                     "count": 2,
                     "branches": [
                         {
@@ -160,7 +160,7 @@
                 },
                 {
                     "line_number": 36,
-                    "function_name": "_Z15checkBiggerBothi",
+                    "mangled_name": "_Z15checkBiggerBothi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -170,7 +170,7 @@
                 },
                 {
                     "line_number": 40,
-                    "function_name": "_Z15checkBiggerBothi",
+                    "mangled_name": "_Z15checkBiggerBothi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -180,7 +180,7 @@
                 },
                 {
                     "line_number": 44,
-                    "function_name": "_Z16checkSmallerTruei",
+                    "mangled_name": "_Z16checkSmallerTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -188,7 +188,7 @@
                 },
                 {
                     "line_number": 46,
-                    "function_name": "_Z16checkSmallerTruei",
+                    "mangled_name": "_Z16checkSmallerTruei",
                     "count": 1,
                     "branches": [
                         {
@@ -218,7 +218,7 @@
                 },
                 {
                     "line_number": 48,
-                    "function_name": "_Z16checkSmallerTruei",
+                    "mangled_name": "_Z16checkSmallerTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -228,7 +228,7 @@
                 },
                 {
                     "line_number": 52,
-                    "function_name": "_Z16checkSmallerTruei",
+                    "mangled_name": "_Z16checkSmallerTruei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -238,7 +238,7 @@
                 },
                 {
                     "line_number": 56,
-                    "function_name": "_Z17checkSmallerFalsei",
+                    "mangled_name": "_Z17checkSmallerFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -246,7 +246,7 @@
                 },
                 {
                     "line_number": 58,
-                    "function_name": "_Z17checkSmallerFalsei",
+                    "mangled_name": "_Z17checkSmallerFalsei",
                     "count": 1,
                     "branches": [
                         {
@@ -276,7 +276,7 @@
                 },
                 {
                     "line_number": 60,
-                    "function_name": "_Z17checkSmallerFalsei",
+                    "mangled_name": "_Z17checkSmallerFalsei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -286,7 +286,7 @@
                 },
                 {
                     "line_number": 64,
-                    "function_name": "_Z17checkSmallerFalsei",
+                    "mangled_name": "_Z17checkSmallerFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -296,7 +296,7 @@
                 },
                 {
                     "line_number": 68,
-                    "function_name": "_Z14checkEqualTruei",
+                    "mangled_name": "_Z14checkEqualTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -304,7 +304,7 @@
                 },
                 {
                     "line_number": 70,
-                    "function_name": "_Z14checkEqualTruei",
+                    "mangled_name": "_Z14checkEqualTruei",
                     "count": 1,
                     "branches": [
                         {
@@ -334,7 +334,7 @@
                 },
                 {
                     "line_number": 72,
-                    "function_name": "_Z14checkEqualTruei",
+                    "mangled_name": "_Z14checkEqualTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -344,7 +344,7 @@
                 },
                 {
                     "line_number": 76,
-                    "function_name": "_Z14checkEqualTruei",
+                    "mangled_name": "_Z14checkEqualTruei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -354,7 +354,7 @@
                 },
                 {
                     "line_number": 80,
-                    "function_name": "_Z15checkEqualFalsei",
+                    "mangled_name": "_Z15checkEqualFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -362,7 +362,7 @@
                 },
                 {
                     "line_number": 82,
-                    "function_name": "_Z15checkEqualFalsei",
+                    "mangled_name": "_Z15checkEqualFalsei",
                     "count": 1,
                     "branches": [
                         {
@@ -392,7 +392,7 @@
                 },
                 {
                     "line_number": 84,
-                    "function_name": "_Z15checkEqualFalsei",
+                    "mangled_name": "_Z15checkEqualFalsei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -402,7 +402,7 @@
                 },
                 {
                     "line_number": 88,
-                    "function_name": "_Z15checkEqualFalsei",
+                    "mangled_name": "_Z15checkEqualFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -412,7 +412,7 @@
                 },
                 {
                     "line_number": 92,
-                    "function_name": "_Z17checkNotEqualTruei",
+                    "mangled_name": "_Z17checkNotEqualTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -420,7 +420,7 @@
                 },
                 {
                     "line_number": 94,
-                    "function_name": "_Z17checkNotEqualTruei",
+                    "mangled_name": "_Z17checkNotEqualTruei",
                     "count": 1,
                     "branches": [
                         {
@@ -450,7 +450,7 @@
                 },
                 {
                     "line_number": 96,
-                    "function_name": "_Z17checkNotEqualTruei",
+                    "mangled_name": "_Z17checkNotEqualTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -460,7 +460,7 @@
                 },
                 {
                     "line_number": 100,
-                    "function_name": "_Z17checkNotEqualTruei",
+                    "mangled_name": "_Z17checkNotEqualTruei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -470,7 +470,7 @@
                 },
                 {
                     "line_number": 104,
-                    "function_name": "_Z18checkNotEqualFalsei",
+                    "mangled_name": "_Z18checkNotEqualFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -478,7 +478,7 @@
                 },
                 {
                     "line_number": 106,
-                    "function_name": "_Z18checkNotEqualFalsei",
+                    "mangled_name": "_Z18checkNotEqualFalsei",
                     "count": 1,
                     "branches": [
                         {
@@ -508,7 +508,7 @@
                 },
                 {
                     "line_number": 108,
-                    "function_name": "_Z18checkNotEqualFalsei",
+                    "mangled_name": "_Z18checkNotEqualFalsei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -518,7 +518,7 @@
                 },
                 {
                     "line_number": 112,
-                    "function_name": "_Z18checkNotEqualFalsei",
+                    "mangled_name": "_Z18checkNotEqualFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -528,7 +528,7 @@
                 },
                 {
                     "line_number": 116,
-                    "function_name": "_Z16checkComplexTruei",
+                    "mangled_name": "_Z16checkComplexTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -536,7 +536,7 @@
                 },
                 {
                     "line_number": 118,
-                    "function_name": "_Z16checkComplexTruei",
+                    "mangled_name": "_Z16checkComplexTruei",
                     "count": 1,
                     "branches": [
                         {
@@ -596,7 +596,7 @@
                 },
                 {
                     "line_number": 120,
-                    "function_name": "_Z16checkComplexTruei",
+                    "mangled_name": "_Z16checkComplexTruei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -606,7 +606,7 @@
                 },
                 {
                     "line_number": 124,
-                    "function_name": "_Z16checkComplexTruei",
+                    "mangled_name": "_Z16checkComplexTruei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -616,7 +616,7 @@
                 },
                 {
                     "line_number": 128,
-                    "function_name": "_Z17checkComplexFalsei",
+                    "mangled_name": "_Z17checkComplexFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -624,7 +624,7 @@
                 },
                 {
                     "line_number": 130,
-                    "function_name": "_Z17checkComplexFalsei",
+                    "mangled_name": "_Z17checkComplexFalsei",
                     "count": 1,
                     "branches": [
                         {
@@ -684,7 +684,7 @@
                 },
                 {
                     "line_number": 132,
-                    "function_name": "_Z17checkComplexFalsei",
+                    "mangled_name": "_Z17checkComplexFalsei",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -694,7 +694,7 @@
                 },
                 {
                     "line_number": 136,
-                    "function_name": "_Z17checkComplexFalsei",
+                    "mangled_name": "_Z17checkComplexFalsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -704,7 +704,7 @@
                 },
                 {
                     "line_number": 140,
-                    "function_name": "_Z12checkElseIf1i",
+                    "mangled_name": "_Z12checkElseIf1i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -712,7 +712,7 @@
                 },
                 {
                     "line_number": 142,
-                    "function_name": "_Z12checkElseIf1i",
+                    "mangled_name": "_Z12checkElseIf1i",
                     "count": 1,
                     "branches": [
                         {
@@ -742,7 +742,7 @@
                 },
                 {
                     "line_number": 144,
-                    "function_name": "_Z12checkElseIf1i",
+                    "mangled_name": "_Z12checkElseIf1i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -752,7 +752,7 @@
                 },
                 {
                     "line_number": 146,
-                    "function_name": "_Z12checkElseIf1i",
+                    "mangled_name": "_Z12checkElseIf1i",
                     "count": 0,
                     "branches": [
                         {
@@ -782,7 +782,7 @@
                 },
                 {
                     "line_number": 148,
-                    "function_name": "_Z12checkElseIf1i",
+                    "mangled_name": "_Z12checkElseIf1i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -792,7 +792,7 @@
                 },
                 {
                     "line_number": 152,
-                    "function_name": "_Z12checkElseIf1i",
+                    "mangled_name": "_Z12checkElseIf1i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -802,7 +802,7 @@
                 },
                 {
                     "line_number": 156,
-                    "function_name": "_Z12checkElseIf2i",
+                    "mangled_name": "_Z12checkElseIf2i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -810,7 +810,7 @@
                 },
                 {
                     "line_number": 158,
-                    "function_name": "_Z12checkElseIf2i",
+                    "mangled_name": "_Z12checkElseIf2i",
                     "count": 1,
                     "branches": [
                         {
@@ -840,7 +840,7 @@
                 },
                 {
                     "line_number": 160,
-                    "function_name": "_Z12checkElseIf2i",
+                    "mangled_name": "_Z12checkElseIf2i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -850,7 +850,7 @@
                 },
                 {
                     "line_number": 162,
-                    "function_name": "_Z12checkElseIf2i",
+                    "mangled_name": "_Z12checkElseIf2i",
                     "count": 1,
                     "branches": [
                         {
@@ -880,7 +880,7 @@
                 },
                 {
                     "line_number": 164,
-                    "function_name": "_Z12checkElseIf2i",
+                    "mangled_name": "_Z12checkElseIf2i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -890,7 +890,7 @@
                 },
                 {
                     "line_number": 168,
-                    "function_name": "_Z12checkElseIf2i",
+                    "mangled_name": "_Z12checkElseIf2i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -900,7 +900,7 @@
                 },
                 {
                     "line_number": 172,
-                    "function_name": "_Z12checkElseIf3i",
+                    "mangled_name": "_Z12checkElseIf3i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -908,7 +908,7 @@
                 },
                 {
                     "line_number": 174,
-                    "function_name": "_Z12checkElseIf3i",
+                    "mangled_name": "_Z12checkElseIf3i",
                     "count": 1,
                     "branches": [
                         {
@@ -938,7 +938,7 @@
                 },
                 {
                     "line_number": 176,
-                    "function_name": "_Z12checkElseIf3i",
+                    "mangled_name": "_Z12checkElseIf3i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -948,7 +948,7 @@
                 },
                 {
                     "line_number": 178,
-                    "function_name": "_Z12checkElseIf3i",
+                    "mangled_name": "_Z12checkElseIf3i",
                     "count": 1,
                     "branches": [
                         {
@@ -978,7 +978,7 @@
                 },
                 {
                     "line_number": 180,
-                    "function_name": "_Z12checkElseIf3i",
+                    "mangled_name": "_Z12checkElseIf3i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -988,7 +988,7 @@
                 },
                 {
                     "line_number": 184,
-                    "function_name": "_Z12checkElseIf3i",
+                    "mangled_name": "_Z12checkElseIf3i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -998,7 +998,7 @@
                 },
                 {
                     "line_number": 188,
-                    "function_name": "_Z12checkSwitch1i",
+                    "mangled_name": "_Z12checkSwitch1i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1006,7 +1006,7 @@
                 },
                 {
                     "line_number": 190,
-                    "function_name": "_Z12checkSwitch1i",
+                    "mangled_name": "_Z12checkSwitch1i",
                     "count": 1,
                     "branches": [
                         {
@@ -1038,7 +1038,7 @@
                 },
                 {
                     "line_number": 192,
-                    "function_name": "_Z12checkSwitch1i",
+                    "mangled_name": "_Z12checkSwitch1i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1052,7 +1052,7 @@
                 },
                 {
                     "line_number": 194,
-                    "function_name": "_Z12checkSwitch1i",
+                    "mangled_name": "_Z12checkSwitch1i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -1064,7 +1064,7 @@
                 },
                 {
                     "line_number": 196,
-                    "function_name": "_Z12checkSwitch1i",
+                    "mangled_name": "_Z12checkSwitch1i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -1074,7 +1074,7 @@
                 },
                 {
                     "line_number": 200,
-                    "function_name": "_Z12checkSwitch1i",
+                    "mangled_name": "_Z12checkSwitch1i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -1086,7 +1086,7 @@
                 },
                 {
                     "line_number": 202,
-                    "function_name": "_Z12checkSwitch1i",
+                    "mangled_name": "_Z12checkSwitch1i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -1096,7 +1096,7 @@
                 },
                 {
                     "line_number": 209,
-                    "function_name": "_Z12checkSwitch2i",
+                    "mangled_name": "_Z12checkSwitch2i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1104,7 +1104,7 @@
                 },
                 {
                     "line_number": 211,
-                    "function_name": "_Z12checkSwitch2i",
+                    "mangled_name": "_Z12checkSwitch2i",
                     "count": 1,
                     "branches": [
                         {
@@ -1136,7 +1136,7 @@
                 },
                 {
                     "line_number": 213,
-                    "function_name": "_Z12checkSwitch2i",
+                    "mangled_name": "_Z12checkSwitch2i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -1148,7 +1148,7 @@
                 },
                 {
                     "line_number": 214,
-                    "function_name": "_Z12checkSwitch2i",
+                    "mangled_name": "_Z12checkSwitch2i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -1158,7 +1158,7 @@
                 },
                 {
                     "line_number": 216,
-                    "function_name": "_Z12checkSwitch2i",
+                    "mangled_name": "_Z12checkSwitch2i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1170,7 +1170,7 @@
                 },
                 {
                     "line_number": 217,
-                    "function_name": "_Z12checkSwitch2i",
+                    "mangled_name": "_Z12checkSwitch2i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1180,7 +1180,7 @@
                 },
                 {
                     "line_number": 219,
-                    "function_name": "_Z12checkSwitch2i",
+                    "mangled_name": "_Z12checkSwitch2i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -1192,7 +1192,7 @@
                 },
                 {
                     "line_number": 220,
-                    "function_name": "_Z12checkSwitch2i",
+                    "mangled_name": "_Z12checkSwitch2i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -1202,7 +1202,7 @@
                 },
                 {
                     "line_number": 225,
-                    "function_name": "_Z12checkSwitch3i",
+                    "mangled_name": "_Z12checkSwitch3i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1210,7 +1210,7 @@
                 },
                 {
                     "line_number": 227,
-                    "function_name": "_Z12checkSwitch3i",
+                    "mangled_name": "_Z12checkSwitch3i",
                     "count": 1,
                     "branches": [
                         {
@@ -1242,7 +1242,7 @@
                 },
                 {
                     "line_number": 229,
-                    "function_name": "_Z12checkSwitch3i",
+                    "mangled_name": "_Z12checkSwitch3i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -1254,7 +1254,7 @@
                 },
                 {
                     "line_number": 230,
-                    "function_name": "_Z12checkSwitch3i",
+                    "mangled_name": "_Z12checkSwitch3i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -1264,7 +1264,7 @@
                 },
                 {
                     "line_number": 232,
-                    "function_name": "_Z12checkSwitch3i",
+                    "mangled_name": "_Z12checkSwitch3i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -1276,7 +1276,7 @@
                 },
                 {
                     "line_number": 233,
-                    "function_name": "_Z12checkSwitch3i",
+                    "mangled_name": "_Z12checkSwitch3i",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -1286,7 +1286,7 @@
                 },
                 {
                     "line_number": 235,
-                    "function_name": "_Z12checkSwitch3i",
+                    "mangled_name": "_Z12checkSwitch3i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1298,7 +1298,7 @@
                 },
                 {
                     "line_number": 236,
-                    "function_name": "_Z12checkSwitch3i",
+                    "mangled_name": "_Z12checkSwitch3i",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1308,7 +1308,7 @@
                 },
                 {
                     "line_number": 241,
-                    "function_name": "_Z23checkCompactBranch1Truei",
+                    "mangled_name": "_Z23checkCompactBranch1Truei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1316,7 +1316,7 @@
                 },
                 {
                     "line_number": 243,
-                    "function_name": "_Z23checkCompactBranch1Truei",
+                    "mangled_name": "_Z23checkCompactBranch1Truei",
                     "count": 1,
                     "branches": [
                         {
@@ -1348,7 +1348,7 @@
                 },
                 {
                     "line_number": 246,
-                    "function_name": "_Z24checkCompactBranch1Falsei",
+                    "mangled_name": "_Z24checkCompactBranch1Falsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1356,7 +1356,7 @@
                 },
                 {
                     "line_number": 248,
-                    "function_name": "_Z24checkCompactBranch1Falsei",
+                    "mangled_name": "_Z24checkCompactBranch1Falsei",
                     "count": 1,
                     "branches": [
                         {
@@ -1388,7 +1388,7 @@
                 },
                 {
                     "line_number": 251,
-                    "function_name": "_Z23checkCompactBranch2Truei",
+                    "mangled_name": "_Z23checkCompactBranch2Truei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1396,7 +1396,7 @@
                 },
                 {
                     "line_number": 253,
-                    "function_name": "_Z23checkCompactBranch2Truei",
+                    "mangled_name": "_Z23checkCompactBranch2Truei",
                     "count": 1,
                     "branches": [
                         {
@@ -1441,7 +1441,7 @@
                 },
                 {
                     "line_number": 256,
-                    "function_name": "_Z24checkCompactBranch2Falsei",
+                    "mangled_name": "_Z24checkCompactBranch2Falsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1449,7 +1449,7 @@
                 },
                 {
                     "line_number": 258,
-                    "function_name": "_Z24checkCompactBranch2Falsei",
+                    "mangled_name": "_Z24checkCompactBranch2Falsei",
                     "count": 1,
                     "branches": [
                         {
@@ -1494,7 +1494,7 @@
                 },
                 {
                     "line_number": 261,
-                    "function_name": "_Z17checkTernary1Truei",
+                    "mangled_name": "_Z17checkTernary1Truei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1502,7 +1502,7 @@
                 },
                 {
                     "line_number": 263,
-                    "function_name": "_Z17checkTernary1Truei",
+                    "mangled_name": "_Z17checkTernary1Truei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1512,7 +1512,7 @@
                 },
                 {
                     "line_number": 266,
-                    "function_name": "_Z18checkTernary1Falsei",
+                    "mangled_name": "_Z18checkTernary1Falsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1520,7 +1520,7 @@
                 },
                 {
                     "line_number": 268,
-                    "function_name": "_Z18checkTernary1Falsei",
+                    "mangled_name": "_Z18checkTernary1Falsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1530,7 +1530,7 @@
                 },
                 {
                     "line_number": 271,
-                    "function_name": "_Z17checkTernary2Truei",
+                    "mangled_name": "_Z17checkTernary2Truei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1538,7 +1538,7 @@
                 },
                 {
                     "line_number": 273,
-                    "function_name": "_Z17checkTernary2Truei",
+                    "mangled_name": "_Z17checkTernary2Truei",
                     "count": 1,
                     "branches": [
                         {
@@ -1581,7 +1581,7 @@
                 },
                 {
                     "line_number": 276,
-                    "function_name": "_Z18checkTernary2Falsei",
+                    "mangled_name": "_Z18checkTernary2Falsei",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1589,7 +1589,7 @@
                 },
                 {
                     "line_number": 278,
-                    "function_name": "_Z18checkTernary2Falsei",
+                    "mangled_name": "_Z18checkTernary2Falsei",
                     "count": 1,
                     "branches": [
                         {
@@ -1632,7 +1632,7 @@
                 },
                 {
                     "line_number": 281,
-                    "function_name": "_Z12checkForLoopi",
+                    "mangled_name": "_Z12checkForLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1640,7 +1640,7 @@
                 },
                 {
                     "line_number": 283,
-                    "function_name": "_Z12checkForLoopi",
+                    "mangled_name": "_Z12checkForLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1648,7 +1648,7 @@
                 },
                 {
                     "line_number": 284,
-                    "function_name": "_Z12checkForLoopi",
+                    "mangled_name": "_Z12checkForLoopi",
                     "count": 6,
                     "branches": [
                         {
@@ -1679,7 +1679,7 @@
                 },
                 {
                     "line_number": 286,
-                    "function_name": "_Z12checkForLoopi",
+                    "mangled_name": "_Z12checkForLoopi",
                     "count": 5,
                     "branches": [],
                     "block_ids": [
@@ -1689,7 +1689,7 @@
                 },
                 {
                     "line_number": 288,
-                    "function_name": "_Z12checkForLoopi",
+                    "mangled_name": "_Z12checkForLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1699,7 +1699,7 @@
                 },
                 {
                     "line_number": 291,
-                    "function_name": "_Z19checkComplexForLoopi",
+                    "mangled_name": "_Z19checkComplexForLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1707,7 +1707,7 @@
                 },
                 {
                     "line_number": 293,
-                    "function_name": "_Z19checkComplexForLoopi",
+                    "mangled_name": "_Z19checkComplexForLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1715,7 +1715,7 @@
                 },
                 {
                     "line_number": 294,
-                    "function_name": "_Z19checkComplexForLoopi",
+                    "mangled_name": "_Z19checkComplexForLoopi",
                     "count": 6,
                     "branches": [
                         {
@@ -1759,7 +1759,7 @@
                 },
                 {
                     "line_number": 296,
-                    "function_name": "_Z19checkComplexForLoopi",
+                    "mangled_name": "_Z19checkComplexForLoopi",
                     "count": 5,
                     "branches": [],
                     "block_ids": [
@@ -1769,7 +1769,7 @@
                 },
                 {
                     "line_number": 298,
-                    "function_name": "_Z19checkComplexForLoopi",
+                    "mangled_name": "_Z19checkComplexForLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1779,7 +1779,7 @@
                 },
                 {
                     "line_number": 301,
-                    "function_name": "_Z14checkWhileLoopi",
+                    "mangled_name": "_Z14checkWhileLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1787,7 +1787,7 @@
                 },
                 {
                     "line_number": 303,
-                    "function_name": "_Z14checkWhileLoopi",
+                    "mangled_name": "_Z14checkWhileLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1795,7 +1795,7 @@
                 },
                 {
                     "line_number": 304,
-                    "function_name": "_Z14checkWhileLoopi",
+                    "mangled_name": "_Z14checkWhileLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1803,7 +1803,7 @@
                 },
                 {
                     "line_number": 306,
-                    "function_name": "_Z14checkWhileLoopi",
+                    "mangled_name": "_Z14checkWhileLoopi",
                     "count": 6,
                     "branches": [
                         {
@@ -1834,7 +1834,7 @@
                 },
                 {
                     "line_number": 308,
-                    "function_name": "_Z14checkWhileLoopi",
+                    "mangled_name": "_Z14checkWhileLoopi",
                     "count": 5,
                     "branches": [],
                     "block_ids": [],
@@ -1842,7 +1842,7 @@
                 },
                 {
                     "line_number": 309,
-                    "function_name": "_Z14checkWhileLoopi",
+                    "mangled_name": "_Z14checkWhileLoopi",
                     "count": 5,
                     "branches": [],
                     "block_ids": [
@@ -1852,7 +1852,7 @@
                 },
                 {
                     "line_number": 312,
-                    "function_name": "_Z14checkWhileLoopi",
+                    "mangled_name": "_Z14checkWhileLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1862,7 +1862,7 @@
                 },
                 {
                     "line_number": 315,
-                    "function_name": "_Z16checkDoWhileLoopi",
+                    "mangled_name": "_Z16checkDoWhileLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1870,7 +1870,7 @@
                 },
                 {
                     "line_number": 317,
-                    "function_name": "_Z16checkDoWhileLoopi",
+                    "mangled_name": "_Z16checkDoWhileLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1878,7 +1878,7 @@
                 },
                 {
                     "line_number": 318,
-                    "function_name": "_Z16checkDoWhileLoopi",
+                    "mangled_name": "_Z16checkDoWhileLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1888,7 +1888,7 @@
                 },
                 {
                     "line_number": 322,
-                    "function_name": "_Z16checkDoWhileLoopi",
+                    "mangled_name": "_Z16checkDoWhileLoopi",
                     "count": 5,
                     "branches": [],
                     "block_ids": [],
@@ -1896,7 +1896,7 @@
                 },
                 {
                     "line_number": 323,
-                    "function_name": "_Z16checkDoWhileLoopi",
+                    "mangled_name": "_Z16checkDoWhileLoopi",
                     "count": 5,
                     "branches": [],
                     "block_ids": [],
@@ -1904,7 +1904,7 @@
                 },
                 {
                     "line_number": 324,
-                    "function_name": "_Z16checkDoWhileLoopi",
+                    "mangled_name": "_Z16checkDoWhileLoopi",
                     "count": 5,
                     "branches": [
                         {
@@ -1934,7 +1934,7 @@
                 },
                 {
                     "line_number": 326,
-                    "function_name": "_Z16checkDoWhileLoopi",
+                    "mangled_name": "_Z16checkDoWhileLoopi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -1944,7 +1944,7 @@
                 },
                 {
                     "line_number": 329,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1952,7 +1952,7 @@
                 },
                 {
                     "line_number": 331,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1960,7 +1960,7 @@
                 },
                 {
                     "line_number": 332,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1968,7 +1968,7 @@
                 },
                 {
                     "line_number": 334,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1976,7 +1976,7 @@
                 },
                 {
                     "line_number": 336,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1984,7 +1984,7 @@
                 },
                 {
                     "line_number": 339,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -1992,7 +1992,7 @@
                 },
                 {
                     "line_number": 340,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -2000,7 +2000,7 @@
                 },
                 {
                     "line_number": 342,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -2008,7 +2008,7 @@
                 },
                 {
                     "line_number": 343,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -2016,7 +2016,7 @@
                 },
                 {
                     "line_number": 345,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [
                         {
@@ -2046,7 +2046,7 @@
                 },
                 {
                     "line_number": 347,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2056,7 +2056,7 @@
                 },
                 {
                     "line_number": 350,
-                    "function_name": "_Z16checkInterpreteri",
+                    "mangled_name": "_Z16checkInterpreteri",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -2066,7 +2066,7 @@
                 },
                 {
                     "line_number": 353,
-                    "function_name": "_Z16verify_issue_679b",
+                    "mangled_name": "_Z16verify_issue_679b",
                     "count": 2,
                     "branches": [],
                     "block_ids": [],
@@ -2074,7 +2074,7 @@
                 },
                 {
                     "line_number": 354,
-                    "function_name": "_Z16verify_issue_679b",
+                    "mangled_name": "_Z16verify_issue_679b",
                     "count": 2,
                     "branches": [
                         {
@@ -2104,7 +2104,7 @@
                 },
                 {
                     "line_number": 355,
-                    "function_name": "_Z16verify_issue_679b",
+                    "mangled_name": "_Z16verify_issue_679b",
                     "count": 11,
                     "branches": [
                         {
@@ -2136,7 +2136,7 @@
                 },
                 {
                     "line_number": 358,
-                    "function_name": "_Z16verify_issue_679b",
+                    "mangled_name": "_Z16verify_issue_679b",
                     "count": 2,
                     "branches": [],
                     "block_ids": [],
@@ -2144,7 +2144,7 @@
                 },
                 {
                     "line_number": 360,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -2152,7 +2152,7 @@
                 },
                 {
                     "line_number": 362,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2162,7 +2162,7 @@
                 },
                 {
                     "line_number": 363,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2172,7 +2172,7 @@
                 },
                 {
                     "line_number": 364,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2182,7 +2182,7 @@
                 },
                 {
                     "line_number": 365,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2192,7 +2192,7 @@
                 },
                 {
                     "line_number": 367,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2202,7 +2202,7 @@
                 },
                 {
                     "line_number": 368,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2212,7 +2212,7 @@
                 },
                 {
                     "line_number": 370,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2222,7 +2222,7 @@
                 },
                 {
                     "line_number": 371,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2232,7 +2232,7 @@
                 },
                 {
                     "line_number": 373,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2242,7 +2242,7 @@
                 },
                 {
                     "line_number": 374,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2252,7 +2252,7 @@
                 },
                 {
                     "line_number": 376,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2262,7 +2262,7 @@
                 },
                 {
                     "line_number": 377,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2272,7 +2272,7 @@
                 },
                 {
                     "line_number": 379,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2282,7 +2282,7 @@
                 },
                 {
                     "line_number": 380,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2292,7 +2292,7 @@
                 },
                 {
                     "line_number": 381,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2302,7 +2302,7 @@
                 },
                 {
                     "line_number": 383,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2312,7 +2312,7 @@
                 },
                 {
                     "line_number": 384,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2322,7 +2322,7 @@
                 },
                 {
                     "line_number": 385,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2332,7 +2332,7 @@
                 },
                 {
                     "line_number": 388,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -2374,7 +2374,7 @@
                 },
                 {
                     "line_number": 391,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2384,7 +2384,7 @@
                 },
                 {
                     "line_number": 392,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2394,7 +2394,7 @@
                 },
                 {
                     "line_number": 394,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2404,7 +2404,7 @@
                 },
                 {
                     "line_number": 395,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2414,7 +2414,7 @@
                 },
                 {
                     "line_number": 397,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2424,7 +2424,7 @@
                 },
                 {
                     "line_number": 398,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2434,7 +2434,7 @@
                 },
                 {
                     "line_number": 400,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2444,7 +2444,7 @@
                 },
                 {
                     "line_number": 401,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2454,7 +2454,7 @@
                 },
                 {
                     "line_number": 403,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2464,7 +2464,7 @@
                 },
                 {
                     "line_number": 404,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2474,7 +2474,7 @@
                 },
                 {
                     "line_number": 405,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2484,7 +2484,7 @@
                 },
                 {
                     "line_number": 406,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2494,7 +2494,7 @@
                 },
                 {
                     "line_number": 408,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2504,7 +2504,7 @@
                 },
                 {
                     "line_number": 410,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2514,7 +2514,7 @@
                 },
                 {
                     "line_number": 411,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2524,7 +2524,7 @@
                 },
                 {
                     "line_number": 413,
-                    "function_name": "main",
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2893,7 +2893,7 @@
             "lines": [
                 {
                     "line_number": 5,
-                    "function_name": "_ZN18SwitchTestIssue783C2Ev",
+                    "mangled_name": "_ZN18SwitchTestIssue783C2Ev",
                     "count": 3,
                     "branches": [
                         {
@@ -2920,7 +2920,7 @@
                 },
                 {
                     "line_number": 7,
-                    "function_name": "_ZN18SwitchTestIssue78311checkSwitchEv",
+                    "mangled_name": "_ZN18SwitchTestIssue78311checkSwitchEv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -2928,7 +2928,7 @@
                 },
                 {
                     "line_number": 8,
-                    "function_name": "_ZN18SwitchTestIssue78311checkSwitchEv",
+                    "mangled_name": "_ZN18SwitchTestIssue78311checkSwitchEv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -2938,7 +2938,7 @@
                 },
                 {
                     "line_number": 9,
-                    "function_name": "_ZN18SwitchTestIssue78311checkSwitchEv",
+                    "mangled_name": "_ZN18SwitchTestIssue78311checkSwitchEv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -2975,7 +2975,7 @@
             "lines": [
                 {
                     "line_number": 17,
-                    "function_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "mangled_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -2983,7 +2983,7 @@
                 },
                 {
                     "line_number": 18,
-                    "function_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "mangled_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
                     "count": 1,
                     "branches": [
                         {
@@ -3022,7 +3022,7 @@
                 },
                 {
                     "line_number": 19,
-                    "function_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "mangled_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -3036,7 +3036,7 @@
                 },
                 {
                     "line_number": 20,
-                    "function_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "mangled_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -3050,7 +3050,7 @@
                 },
                 {
                     "line_number": 21,
-                    "function_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "mangled_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -3064,7 +3064,7 @@
                 },
                 {
                     "line_number": 23,
-                    "function_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "mangled_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
                     "count": 0,
                     "branches": [],
                     "block_ids": [

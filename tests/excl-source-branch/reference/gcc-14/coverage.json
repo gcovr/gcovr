@@ -6,187 +6,273 @@
             "lines": [
                 {
                     "line_number": 3,
+                    "mangled_name": "_Z3fooi",
                     "count": 2,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31"
                 },
                 {
                     "line_number": 4,
+                    "mangled_name": "_Z3fooi",
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "blockno": 2,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 3
                         },
                         {
-                            "blockno": 0,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 4
                         },
                         {
-                            "blockno": 0,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 5,
+                            "gcovr/excluded": true
                         },
                         {
-                            "blockno": 0,
+                            "blockno": 2,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 6
                         },
                         {
-                            "blockno": 0,
+                            "blockno": 2,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 7,
+                            "gcovr/excluded": true
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "2f75aa6a28200bafd87f531f56142cc9"
                 },
                 {
                     "line_number": 5,
+                    "mangled_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "fb7e64b47dcfb3df6c2aaeddc9e95762"
                 },
                 {
                     "line_number": 6,
+                    "mangled_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        3
+                    ],
                     "gcovr/md5": "50693ade9b664175e88de8e274c13f7c"
                 },
                 {
                     "line_number": 7,
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "0bbd6ad156bec8e0cd1870e7b494cdcb"
                 },
                 {
                     "line_number": 8,
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        4
+                    ],
                     "gcovr/md5": "c6a12444de573b2c2b7b0a174f0ebdcc"
                 },
                 {
                     "line_number": 9,
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "c6196456969f23ce17bfbec1a8b970be"
                 },
                 {
                     "line_number": 10,
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        5
+                    ],
                     "gcovr/md5": "56c3379ff05bc32bf6babb7ed531a8b1"
                 },
                 {
                     "line_number": 11,
+                    "mangled_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "c7681c58561326a8e3f994a854c638d0"
                 },
                 {
                     "line_number": 12,
+                    "mangled_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        6
+                    ],
                     "gcovr/md5": "b5e3841cc68726671ff96723b9908f65"
                 },
                 {
                     "line_number": 13,
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2"
                 },
                 {
                     "line_number": 14,
+                    "mangled_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        7
+                    ],
                     "gcovr/md5": "b367dfc135d73e5d67008824d553c40e"
                 },
                 {
                     "line_number": 18,
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 19,
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "blockno": 3,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 4
                         },
                         {
-                            "blockno": 0,
+                            "blockno": 3,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 7
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 5,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 6
                         },
                         {
-                            "blockno": 1,
+                            "blockno": 5,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 7
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 8,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 9
                         },
                         {
-                            "blockno": 4,
+                            "blockno": 8,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "destination_blockno": 11,
+                            "gcovr/excluded": true
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
                     ],
                     "gcovr/md5": "6062586c70805c0b5ba0188b4261aa8f"
                 },
                 {
                     "line_number": 20,
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        9,
+                        10
+                    ],
                     "gcovr/md5": "08770eaa1cf66e1aa1474b46fccbcbba"
                 },
                 {
                     "line_number": 23,
+                    "mangled_name": "main",
                     "count": 0,
                     "branches": [],
+                    "block_ids": [
+                        11,
+                        12
+                    ],
                     "gcovr/md5": "d015ff958fad6b368cc84408e7ff74a6"
                 },
                 {
                     "line_number": 26,
+                    "mangled_name": "main",
                     "count": 1,
                     "branches": [],
+                    "block_ids": [
+                        13
+                    ],
                     "gcovr/md5": "7483dc5d2ba8642b2a3fed7915b6f508"
                 }
             ],
             "functions": [
                 {
                     "name": "foo(int)",
+                    "mangled_name": "_Z3fooi",
                     "lineno": 3,
                     "execution_count": 2,
-                    "blocks_percent": 57.0
+                    "blocks_percent": 57.1,
+                    "pos": [
+                        "3:5",
+                        "16:1"
+                    ]
                 },
                 {
                     "name": "main",
+                    "mangled_name": "main",
                     "lineno": 18,
                     "execution_count": 1,
-                    "blocks_percent": 77.0
+                    "blocks_percent": 76.9,
+                    "pos": [
+                        "18:5",
+                        "27:1"
+                    ]
                 }
             ]
         }
