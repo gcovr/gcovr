@@ -174,8 +174,8 @@ def _json_from_line(line: LineCoverage) -> dict:
     json_line = {
         "line_number": line.lineno,
     }
-    if line.function_name is not None:
-        json_line["function_name"] = line.function_name
+    if line.mangled_name is not None:
+        json_line["mangled_name"] = line.mangled_name
     json_line.update(
         {
             "count": line.count,

@@ -95,7 +95,7 @@ Each **line** entry contains coverage data for one line::
 
     {
         "line_number": line_number,
-        "function_name": function_name,
+        "mangled_name": mangled_name,
         "count": count,
         "branches": [branch],
         "block_ids", block_ids,
@@ -108,7 +108,7 @@ Each **line** entry contains coverage data for one line::
 line_number: int
   The 1-based line number to which this entry relates.
 
-function_name: str
+mangled_name: str
   The (mangled) name of the function.
 
 count: int
@@ -152,7 +152,7 @@ The line entry should be interpreted as follows:
    The ``block_ids`` is added.
 
 .. versionchanged:: NEXT
-   The ``function_name`` is added.
+   The ``mangled_name`` is added.
 
 .. versionchanged:: NEXT
    The ``gcovr/md5`` is added.

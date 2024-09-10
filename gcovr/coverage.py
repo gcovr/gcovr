@@ -134,7 +134,14 @@ class BranchCoverage:
             Whether the branch is excluded.
     """
 
-    __slots__ = "blockno", "count", "fallthrough", "throw", "destination_blockno", "excluded"
+    __slots__ = (
+        "blockno",
+        "count",
+        "fallthrough",
+        "throw",
+        "destination_blockno",
+        "excluded",
+    )
 
     def __init__(
         self,
@@ -308,7 +315,7 @@ class LineCoverage:
             The line number.
         count (int):
             How often this line was executed at least partially.
-        function_name (str, optional):
+        mangled_name (str, optional):
             Mangled name of the function the line belongs to.
         block_ids (*int, optional):
             List of block ids in this line
@@ -321,7 +328,7 @@ class LineCoverage:
     __slots__ = (
         "lineno",
         "count",
-        "function_name",
+        "mangled_name",
         "block_ids",
         "excluded",
         "md5",
@@ -334,7 +341,7 @@ class LineCoverage:
         self,
         lineno: int,
         count: int,
-        function_name: Optional[str] = None,
+        mangled_name: Optional[str] = None,
         block_ids: Optional[List[int]] = None,
         md5: Optional[str] = None,
         excluded: Optional[bool] = False,
@@ -346,7 +353,7 @@ class LineCoverage:
 
         self.lineno: int = lineno
         self.count: int = count
-        self.function_name: Optional[str] = function_name
+        self.mangled_name: Optional[str] = mangled_name
         self.block_ids: Optional[List[int]] = block_ids
         self.excluded: Optional[bool] = excluded
         self.md5: Optional[str] = md5
