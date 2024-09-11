@@ -1,7 +1,7 @@
-CFLAGS = -fprofile-arcs -ftest-coverage -fPIC
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
-	$(CXX) $(CFLAGS) main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: txt
 

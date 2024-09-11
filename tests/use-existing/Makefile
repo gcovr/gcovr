@@ -1,7 +1,7 @@
-GCOV ?= gcov
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: txt lcov cobertura html sonarqube jacoco coveralls
 

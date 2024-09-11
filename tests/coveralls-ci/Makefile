@@ -1,4 +1,6 @@
 
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 # Unset all supported CI's
 unexport GCOVR_TEST_SUITE
 export GCOVR_TEST_SUITE_NO_GIT_COMMAND := 1
@@ -10,7 +12,7 @@ unexport GITHUB_ACTIONS
 unexport GITHUB_HEAD_REF
 
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: coveralls
 

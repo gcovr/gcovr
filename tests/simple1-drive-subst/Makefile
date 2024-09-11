@@ -1,3 +1,4 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 GCOVR_TEST_DRIVE_WINDOWS ?=
 
@@ -11,7 +12,7 @@ else
 endif
 
 all: check-env
-	cmd.exe /C call wrap.cmd $(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	cmd.exe /C call wrap.cmd $(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: txt lcov cobertura html sonarqube jacoco json json_summary coveralls
 

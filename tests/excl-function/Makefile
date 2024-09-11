@@ -1,7 +1,9 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 USE_LAMBDA := $(shell ($(CC) --help --verbose 2>&1 | grep -F "c++20" --silent) && echo 1)
 
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC $(if $(USE_LAMBDA),-std=c++20 -DUSE_LAMBDA,) main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) $(if $(USE_LAMBDA),-std=c++20 -DUSE_LAMBDA,) main.cpp -o testcase
 
 run: json txt lcov clover cobertura html sonarqube jacoco coveralls
 

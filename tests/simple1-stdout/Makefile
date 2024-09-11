@@ -1,6 +1,7 @@
-all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+include $(dir $(MAKEFILE_LIST))../common.mk
 
+all:
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: txt lcov cobertura html jacoco json json_summary coveralls
 

@@ -1,3 +1,4 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
 	@echo "CC:   ${CC} (origin: $(origin CC))"

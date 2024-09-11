@@ -1,12 +1,9 @@
-CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
-GCOV ?= gcov
-
-export GCOV
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
-	make -C subdir/A
-	$(CXX) $(CFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
-	$(CXX) $(CFLAGS) subdir/B/main.o subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/A/C/D/file6.o subdir/A/file7.o  -o subdir/B/testcase
+	make -C subdir/A CXXFLAGS="$(CXXFLAGS)" GCOV="$(GCOV)"
+	$(CXX) $(CXXFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
+	$(CXX) $(CXXFLAGS) subdir/B/main.o subdir/A/file1.o subdir/A/file2.o subdir/A/file3.o subdir/A/file4.o subdir/A/C/file5.o subdir/A/C/D/file6.o subdir/A/file7.o  -o subdir/B/testcase
 
 run: txt lcov cobertura html sonarqube jacoco coveralls
 

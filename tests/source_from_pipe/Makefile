@@ -1,8 +1,9 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -c code.cpp -o code.o
-	cat test.cpp | $(CXX) -fprofile-arcs -ftest-coverage -fPIC -x c++ -c - -o test.o
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC code.o test.o -o testcase
+	$(CXX) $(CXXFLAGS) -c code.cpp -o code.o
+	cat test.cpp | $(CXX) $(CXXFLAGS) -x c++ -c - -o test.o
+	$(CXX) $(CXXFLAGS) code.o test.o -o testcase
 
 run: txt lcov cobertura html sonarqube jacoco coveralls
 

@@ -1,3 +1,4 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 
@@ -5,7 +6,7 @@ CC_REFERENCE ?= $(notdir $(CC))
 FAIL_UNDER_LINE := $(shell cat reference/$(CC_REFERENCE)$(if $(filter $(BASE_OS),MSYS_NT MINGW64_NT),-Windows,)/fail_under)
 
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: txt clover cobertura html sonarqube jacoco json json_summary coveralls
 

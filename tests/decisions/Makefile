@@ -1,5 +1,7 @@
+include ../common.mk
+
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage main.cpp switch_test.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp switch_test.cpp -o testcase
 
 run: html txt json json_summary
 
