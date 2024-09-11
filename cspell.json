@@ -37,6 +37,7 @@
         "Codespaces",
         "colorlog",
         "columnno",
+        "conditionno",
         "covclass",
         "covdata",
         "coverable",

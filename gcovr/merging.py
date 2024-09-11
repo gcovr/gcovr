@@ -53,6 +53,7 @@ import logging
 from typing import Callable, Optional, TypeVar, Dict
 from .coverage import (
     BranchCoverage,
+    ConditionCoverage,
     CovData,
     DecisionCoverage,
     DecisionCoverageConditional,
@@ -395,28 +396,47 @@ def merge_branch(
     return left
 
 
-def insert_call_coverage(
+def insert_condition_coverage(
     target: LineCoverage,
-    call: CallCoverage,
+    condition_id: int,
+    condition: ConditionCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
-) -> CallCoverage:
-    """Insert BranchCoverage into LineCoverage."""
-    return _insert_coverage_item(target.calls, call.callno, call, merge_call, options)
+) -> ConditionCoverage:
+    """Insert ConditionCoverage into LineCoverage."""
+    if target.conditions is None:
+        target.conditions = {}
+    return _insert_coverage_item(
+        target.conditions, condition_id, condition, merge_condition, options
+    )
 
 
-def merge_call(
-    left: CallCoverage,
-    right: CallCoverage,
+def merge_condition(
+    left: ConditionCoverage,
+    right: ConditionCoverage,
     options: MergeOptions,
-) -> BranchCoverage:
+) -> ConditionCoverage:
     """
-    Merge CallCoverage information.
+    Merge ConditionCoverage information.
 
     Do not use 'left' or 'right' objects afterwards!
     """
-    if left.callno != right.callno:
-        raise AssertionError("Call number must be equal.")
-    left.covered |= right.covered
+
+    # If condition coverage is not know for one side, return the other.
+    if left is None:
+        return right
+    if right is None:
+        return left
+
+    left.not_covered_false = sorted(
+        list(set(left.not_covered_false) - set(right.not_covered_false))
+    )
+    left.not_covered_true = sorted(
+        list(set(left.not_covered_true) - set(right.not_covered_true))
+    )
+    left.covered = (
+        right.count - len(left.not_covered_false) - len(left.not_covered_true)
+    )
+
     return left
 
 
@@ -480,3 +500,28 @@ def merge_decision(
 
     # If the decisions have conflicting types, the result is Uncheckable.
     return Uncheckable()
+
+
+def insert_call_coverage(
+    target: LineCoverage,
+    call: CallCoverage,
+    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+) -> CallCoverage:
+    """Insert BranchCoverage into LineCoverage."""
+    return _insert_coverage_item(target.calls, call.callno, call, merge_call, options)
+
+
+def merge_call(
+    left: CallCoverage,
+    right: CallCoverage,
+    options: MergeOptions,
+) -> BranchCoverage:
+    """
+    Merge CallCoverage information.
+
+    Do not use 'left' or 'right' objects afterwards!
+    """
+    if left.callno != right.callno:
+        raise AssertionError("Call number must be equal.")
+    left.covered |= right.covered
+    return left
