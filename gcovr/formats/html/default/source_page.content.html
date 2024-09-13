@@ -4,6 +4,9 @@
     <tr>
       <th align="right">Line</th>
       <th align="right">Branch</th>
+      {% if not EXCLUDE_CONDITIONS %}
+      <th align="right">Condition</th>
+      {% endif %}
       {% if SHOW_DECISION %}
       <th align="right">Decision</th>
       {% endif %}
@@ -37,6 +40,28 @@
         </details>
         {% endif %}
       </td>
+      {% if not EXCLUDE_CONDITIONS %}
+      <td class="linecondition">
+        {% if row.linecondition %}
+          <details class="lineconditionDetails">
+          <summary class="lineconditionSummary">{{row.linecondition.covered}}/{{row.linecondition.count}}</summary>
+          <div class="lineconditionContents">
+            {% for condition in row.linecondition.condition %}
+            {% if condition.not_covered_true and condition.not_covered_false %}
+            <div class="notTakenCondition">&cross; Condition {{condition.name}}: Not covered.</div>
+            {% elif condition.not_covered_true %}
+            <div class="notTakenCondition">&cross; Condition {{condition.name}}: True not covered.</div>
+            {% elif condition.not_covered_false %}
+            <div class="notTakenCondition">&cross; Condition {{condition.name}}: False not covered.</div>
+            {% else %}
+            <div class="takenCondition">&check; Condition {{condition.name}}: Fully covered.</div>
+            {% endif%}
+            {% endfor %}
+          </div>
+         </details>
+        {% endif %}
+      </td>
+      {% endif %}
       {% if SHOW_DECISION %}
       <td class="linedecision">
         {% if row.linedecision %}

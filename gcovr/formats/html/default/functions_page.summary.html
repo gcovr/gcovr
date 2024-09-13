@@ -38,6 +38,14 @@
       <td>{{info.branches.total}}</td>
       <td class="{{info.branches.class}}">{{info.branches.coverage}}%</td>
     </tr>
+    {% if not EXCLUDE_CONDITIONS %}
+    <tr>
+      <th scope="row">Conditions:</th>
+      <td>{{info.conditions.exec}}</td>
+      <td>{{info.conditions.total}}</td>
+      <td class="{{info.conditions.class}}">{{info.conditions.coverage}}%</td>
+    </tr>
+    {% endif %}
     {% if SHOW_DECISION %}
     <tr>
       <th scope="row">Decisions:</th>
@@ -45,6 +53,14 @@
       <td>{{info.decisions.total}}</td>
       <td class="{{info.decisions.class}}">{{info.decisions.coverage}}%</td>
     </tr>
-  {% endif %}
+    {% endif %}
+    {% if not EXCLUDE_CALLS %}
+    <tr>
+      <th scope="row">Calls:</th>
+      <td>{{info.calls.exec}}</td>
+      <td>{{info.calls.total}}</td>
+      <td class="{{info.calls.class}}">{{info.calls.coverage}}%</td>
+    </tr>
+    {% endif %}
   </table>
 </div>

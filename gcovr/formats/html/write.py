@@ -254,6 +254,7 @@ class RootInfo:
         self.encoding = options.html_encoding
         self.directory = None
         self.branches = dict()
+        self.conditions = dict()
         self.decisions = dict()
         self.calls = dict()
         self.functions = dict()
@@ -271,6 +272,7 @@ class RootInfo:
         self.lines = dict_from_stat(stats.line, self.line_coverage_class, 0.0)
         self.functions = dict_from_stat(stats.function, self.coverage_class)
         self.branches = dict_from_stat(stats.branch, self.branch_coverage_class)
+        self.conditions = dict_from_stat(stats.condition, self.coverage_class)
         self.decisions = dict_from_stat(stats.decision, self.coverage_class)
         self.calls = dict_from_stat(stats.call, self.coverage_class)
 
@@ -308,6 +310,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
     data["SHOW_DECISION"] = show_decision
     data["EXCLUDE_CALLS"] = exclude_calls
+    data["EXCLUDE_CONDITIONS"] = not any(
+        filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())
+    )
     data["COVERAGE_MED"] = medium_threshold
     data["COVERAGE_HIGH"] = high_threshold
     data["LINE_COVERAGE_MED"] = medium_threshold_line
@@ -704,6 +709,13 @@ def get_coverage_data(
         "class": branch_coverage_class(stats.branch.percent),
     }
 
+    conditions = {
+        "total": stats.condition.total,
+        "exec": stats.condition.covered,
+        "coverage": stats.condition.percent_or("-"),
+        "class": branch_coverage_class(stats.condition.percent),
+    }
+
     decisions = {
         "total": stats.decision.total,
         "exec": stats.decision.covered,
@@ -733,10 +745,11 @@ def get_coverage_data(
         "filename": display_filename,
         "link": link_report,
         "lines": lines,
+        "functions": functions,
         "branches": branches,
+        "conditions": conditions,
         "decisions": decisions,
         "calls": calls,
-        "functions": functions,
     }
 
 
@@ -792,12 +805,6 @@ def get_file_data(
     cdata: FileCoverage,
 ) -> Tuple[Dict[str, Any], Dict[Tuple[str], Dict[str, Any]], bool]:
     """Get the data for a file to generate the HTML"""
-    medium_threshold = root_info.medium_threshold
-    high_threshold = root_info.high_threshold
-    medium_threshold_line = root_info.medium_threshold_line
-    high_threshold_line = root_info.high_threshold_line
-    medium_threshold_branch = root_info.medium_threshold_branch
-    high_threshold_branch = root_info.high_threshold_branch
     formatter = get_formatter(options)
 
     file_data: Dict[str, Any] = {
@@ -827,25 +834,6 @@ def get_file_data(
 
             file_data["function_list"].append(f_data)
             functions[(f_data["name"], f_data["filename"], f_data["line"])] = f_data
-
-    def coverage_class(percent: Optional[float]) -> str:
-        return coverage_to_class(percent, medium_threshold, high_threshold)
-
-    def line_coverage_class(percent: Optional[float]) -> str:
-        return coverage_to_class(percent, medium_threshold_line, high_threshold_line)
-
-    def branch_coverage_class(percent: Optional[float]) -> str:
-        return coverage_to_class(
-            percent, medium_threshold_branch, high_threshold_branch
-        )
-
-    file_data["lines"] = dict_from_stat(cdata.line_coverage(), line_coverage_class)
-    file_data["functions"] = dict_from_stat(cdata.function_coverage(), coverage_class)
-    file_data["branches"] = dict_from_stat(
-        cdata.branch_coverage(), branch_coverage_class
-    )
-    file_data["decisions"] = dict_from_stat(cdata.decision_coverage(), coverage_class)
-    file_data["calls"] = dict_from_stat(cdata.call_coverage(), coverage_class)
 
     with chdir(options.root_dir):
         max_line_from_cdata = max(cdata.lines.keys(), default=0)
@@ -912,6 +900,7 @@ def source_row(
     lineno: int, source: str, line_cov: Optional[LineCoverage]
 ) -> Dict[str, Any]:
     linebranch = None
+    linecondition = None
     linedecision = None
     linecall = None
     linecount = ""
@@ -926,6 +915,7 @@ def source_row(
                 if linebranch is None or linebranch["taken"] == linebranch["total"]
                 else "partialCoveredLine"
             )
+            linecondition = source_row_condition(line_cov.conditions)
             linedecision = source_row_decision(line_cov.decision)
             linecount = line_cov.count
         elif line_cov.is_uncovered:
@@ -937,6 +927,7 @@ def source_row(
         "source": source,
         "covclass": covclass,
         "linebranch": linebranch,
+        "linecondition": linecondition,
         "linedecision": linedecision,
         "linecall": linecall,
         "linecount": linecount,
@@ -958,8 +949,8 @@ def source_row_branch(branches) -> Dict[str, Any]:
         total += 1
         items.append(
             {
-                "taken": branch.is_covered,
                 "name": branch_id,
+                "taken": branch.is_covered,
                 "count": branch.count,
             }
         )
@@ -971,30 +962,27 @@ def source_row_branch(branches) -> Dict[str, Any]:
     }
 
 
-def source_row_call(calls: Optional[CallCoverage]) -> Dict[str, Any]:
-    if not calls:
+def source_row_condition(conditions) -> Dict[str, Any]:
+    if not conditions:
         return None
 
-    invoked = 0
-    total = 0
     items = []
 
-    for call_id in sorted(calls):
-        call = calls[call_id]
-        if call.is_covered:
-            invoked += 1
-        total += 1
-        items.append(
-            {
-                "invoked": call.is_covered,
-                "name": call_id,
-            }
-        )
+    for condition_id in sorted(conditions):
+        condition = conditions[condition_id]
+        for index in range(0, condition.count // 2):
+            items.append(
+                {
+                    "name": index,
+                    "not_covered_true": index in condition.not_covered_true,
+                    "not_covered_false": index in condition.not_covered_false,
+                }
+            )
 
     return {
-        "invoked": invoked,
-        "total": total,
-        "calls": items,
+        "count": condition.count,
+        "covered": condition.covered,
+        "condition": items,
     }
 
 
@@ -1046,6 +1034,33 @@ def source_row_decision(
         "uncheckable": len([i for i in items if i["uncheckable"]]),
         "total": len(items),
         "decisions": items,
+    }
+
+
+def source_row_call(calls: Optional[CallCoverage]) -> Dict[str, Any]:
+    if not calls:
+        return None
+
+    invoked = 0
+    total = 0
+    items = []
+
+    for call_id in sorted(calls):
+        call = calls[call_id]
+        if call.is_covered:
+            invoked += 1
+        total += 1
+        items.append(
+            {
+                "invoked": call.is_covered,
+                "name": call_id,
+            }
+        )
+
+    return {
+        "invoked": invoked,
+        "total": total,
+        "calls": items,
     }
 
 

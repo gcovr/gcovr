@@ -4,6 +4,9 @@
   <tr>
     <th>Function (File:Line)</th>
     <th>Call count</th>
+    {% if not EXCLUDE_CONDITIONS %}
+    <th>Condition coverage</th>
+    {% endif %}
     <th>Block coverage</th>
   </tr>
   {% for entry in function_batch %}
@@ -19,6 +22,9 @@
             {%-  endif -%}
             {%- endif -%}
     {#- #}</td>
+    {% if not EXCLUDE_CONDITIONS %}
+    {#- #}<td>entry["conditions"]</td>
+    {% endif %}
     {#- #}<td>{{ entry["blocks"] }}%</td>
     {#- -#}
   </tr>
