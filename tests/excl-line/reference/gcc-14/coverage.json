@@ -35,6 +35,16 @@
                     "block_ids": [
                         2
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
                 },
                 {

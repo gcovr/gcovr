@@ -85,6 +85,14 @@
                         2,
                         3
                     ],
+                    "conditions": [
+                        {
+                            "count": 4,
+                            "covered": 4,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
+                    ],
                     "gcovr/md5": "69d7cb531f90045147347c360a0d81d2"
                 },
                 {
@@ -105,6 +113,16 @@
                     "block_ids": [
                         5,
                         6
+                    ],
+                    "conditions": [
+                        {
+                            "count": 4,
+                            "covered": 3,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                1
+                            ]
+                        }
                     ],
                     "gcovr/md5": "7418c3752af701f88bc8f790f4793a6d",
                     "gcovr/excluded": true
@@ -142,6 +160,16 @@
                     "block_ids": [
                         8
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "189a346e59b4b9eb1653c629e9e00396"
                 },
                 {
@@ -177,6 +205,16 @@
                     "block_ids": [
                         10
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "d4dfe4cbc7a957b4db133508a4597ed6"
                 },
                 {
@@ -196,6 +234,14 @@
                     "branches": [],
                     "block_ids": [
                         12
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
                     ],
                     "gcovr/md5": "1d470a2a37dd4a537d80ee9c575b61a2",
                     "gcovr/excluded": true
@@ -218,6 +264,16 @@
                     "branches": [],
                     "block_ids": [
                         14
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
                     ],
                     "gcovr/md5": "b18752f044690130643d37bc530cd788",
                     "gcovr/excluded": true
@@ -259,6 +315,18 @@
                     "branches": [],
                     "block_ids": [
                         2
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 0,
+                            "not_covered_false": [
+                                0
+                            ],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
                     "gcovr/excluded": true
@@ -317,6 +385,14 @@
                         2,
                         4,
                         5
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
                     ],
                     "gcovr/md5": "3aac4e3adb4400cb9a56145130946d99"
                 },

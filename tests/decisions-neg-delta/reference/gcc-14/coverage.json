@@ -35,6 +35,16 @@
                     "block_ids": [
                         2
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [
+                                0
+                            ],
+                            "not_covered_true": []
+                        }
+                    ],
                     "gcovr/md5": "1aedbc743aca5457e63d15ff98c7c6b0",
                     "gcovr/decision": {
                         "type": "conditional",
@@ -97,6 +107,14 @@
                         10,
                         11,
                         12
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
                     ],
                     "gcovr/md5": "7b25e7042a6c283ef5ff4184aa8a5bbd",
                     "gcovr/decision": {

@@ -11,6 +11,7 @@
     --uncovered_color: #FF8C8C;
     --warning_color: orangered;
     --notTakenBranch_color: red;
+    --notTakenCondition_color: red;
     --uncheckedDecision_color: darkorange;
     --notTakenDecision_color: red;
     --notInvokedCall_color: red;
@@ -21,6 +22,7 @@
     --high_color: #85E485;
     --covered_color: #85E485;
     --takenBranch_color: green;
+    --takenCondition_color: green;
     --takenDecision_color: green;
     --invokedCall_color: green;
 }
@@ -29,6 +31,7 @@
     --high_color: #66B4FF;
     --covered_color: #66B4Ff;
     --takenBranch_color: blue;
+    --takenCondition_color: blue;
     --takenDecision_color: blue;
     --invokedCall_color: blue;
 }
@@ -349,7 +352,7 @@ span.excludedLine
     background-color: var(--excluded_color) !important;
 }
 
-.linebranch, .linedecision, .linecall, .linecount
+.linebranch, .linecondition, .linedecision, .linecall, .linecount
 {
     font-family: monospace;
     border-right: 1px gray solid;
@@ -358,15 +361,15 @@ span.excludedLine
 }
 
 
-.linebranchDetails, .linedecisionDetails, .linecallDetails
+.linebranchDetails, .lineconditionDetails, .linedecisionDetails, .linecallDetails
 {
     position: relative;
 }
-.linebranchSummary, .linedecisionSummary, .linecallSummary
+.linebranchSummary, .lineconditionSummary, .linedecisionSummary, .linecallSummary
 {
     cursor: help;
 }
-.linebranchContents, .linedecisionContents, .linecallContents
+.linebranchContents, .lineconditionContents, .linedecisionContents, .linecallContents
 {
     font-family: sans-serif;
     font-size: small;
@@ -388,6 +391,16 @@ span.excludedLine
 .notTakenBranch
 {
     color: var(--notTakenBranch_color) !important;
+}
+
+.takenCondition
+{
+    color: var(--takenCondition_color) !important;
+}
+
+.notTakenCondition
+{
+    color: var(--notTakenCondition_color) !important;
 }
 
 .takenDecision
