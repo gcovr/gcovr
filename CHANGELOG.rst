@@ -19,7 +19,7 @@ New features and notable changes:
 - Add :option:`--html-single-page` to create a single page report (static or with Javascript). (:issue:`916`)
 - Upload standalone applications as release artifacts. (:issue:`941`)
 - Add support for GCOV JSON intermediate format. (:issue:`766`)
-- Add function and block information to data model if ``gcov`` JSON format is used. (:issue:`954`, :issue:`960`)
+- Add function, block and condition information to data model if ``gcov`` JSON format is used. (:issue:`954`, :issue:`960`, :issue:`964`)
 - Add :ref:`Exclusion markers` to exclude a while function. (:issue:`955`)
 - Change sort order in JSON output files. (:issue:`959`)
 
