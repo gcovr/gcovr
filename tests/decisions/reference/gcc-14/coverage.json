@@ -32,9 +32,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -44,6 +41,9 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884",
                     "gcovr/decision": {
@@ -100,9 +100,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -112,6 +109,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884",
                     "gcovr/decision": {
@@ -168,9 +168,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -178,6 +175,9 @@
                             "not_covered_false": [],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884",
                     "gcovr/decision": {
@@ -234,9 +234,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -246,6 +243,9 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "aefaa176c8639c64cebe2afde4bc42af",
                     "gcovr/decision": {
@@ -302,9 +302,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -314,6 +311,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "aefaa176c8639c64cebe2afde4bc42af",
                     "gcovr/decision": {
@@ -370,9 +370,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -382,6 +379,9 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
                     "gcovr/decision": {
@@ -438,9 +438,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -450,6 +447,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
                     "gcovr/decision": {
@@ -506,9 +506,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -518,6 +515,9 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "f1b4991cba9c51e1b01479bf5a3f8107",
                     "gcovr/decision": {
@@ -574,9 +574,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -586,6 +583,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "f1b4991cba9c51e1b01479bf5a3f8107",
                     "gcovr/decision": {
@@ -670,11 +670,6 @@
                             "destination_blockno": 6
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3,
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 6,
@@ -688,6 +683,11 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4
                     ],
                     "gcovr/md5": "488462d327ca243033ac1a4eebc24b42",
                     "gcovr/decision": {
@@ -772,11 +772,6 @@
                             "destination_blockno": 6
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3,
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 6,
@@ -790,6 +785,11 @@
                                 2
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4
                     ],
                     "gcovr/md5": "488462d327ca243033ac1a4eebc24b42",
                     "gcovr/decision": {
@@ -846,9 +846,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -858,6 +855,9 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
                     "gcovr/decision": {
@@ -896,9 +896,6 @@
                             "destination_blockno": 6
                         }
                     ],
-                    "block_ids": [
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -910,6 +907,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        4
                     ],
                     "gcovr/md5": "49b898f9974955f74f69f174b54a6668",
                     "gcovr/decision": {
@@ -966,9 +966,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -978,6 +975,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
                     "gcovr/decision": {
@@ -1016,9 +1016,6 @@
                             "destination_blockno": 6
                         }
                     ],
-                    "block_ids": [
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -1028,6 +1025,9 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        4
                     ],
                     "gcovr/md5": "b428569a14d78c85b2215dd962d9c82c",
                     "gcovr/decision": {
@@ -1084,9 +1084,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -1096,6 +1093,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba",
                     "gcovr/decision": {
@@ -1134,9 +1134,6 @@
                             "destination_blockno": 6
                         }
                     ],
-                    "block_ids": [
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -1146,6 +1143,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        4
                     ],
                     "gcovr/md5": "b428569a14d78c85b2215dd962d9c82c",
                     "gcovr/decision": {
@@ -1512,11 +1512,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3,
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -1526,6 +1521,11 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4
                     ],
                     "gcovr/md5": "e749733f42b89caef9a0026be7b83b75",
                     "gcovr/decision": {
@@ -1562,11 +1562,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3,
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -1576,6 +1571,11 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4
                     ],
                     "gcovr/md5": "e749733f42b89caef9a0026be7b83b75",
                     "gcovr/decision": {
@@ -1626,12 +1626,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3,
-                        4,
-                        5
-                    ],
                     "conditions": [
                         {
                             "count": 4,
@@ -1642,6 +1636,12 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4,
+                        5
                     ],
                     "gcovr/md5": "f10e70f8cd7ef7ef1645378b8571e499",
                     "gcovr/decision": {
@@ -1690,12 +1690,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3,
-                        4,
-                        5
-                    ],
                     "conditions": [
                         {
                             "count": 4,
@@ -1708,6 +1702,12 @@
                                 1
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4,
+                        5
                     ],
                     "gcovr/md5": "f10e70f8cd7ef7ef1645378b8571e499",
                     "gcovr/decision": {
@@ -1792,13 +1792,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3,
-                        4,
-                        5,
-                        6
-                    ],
                     "conditions": [
                         {
                             "count": 4,
@@ -1809,6 +1802,13 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
                     ],
                     "gcovr/md5": "cc459c18ce48cc663bdc4a760ec410f6"
                 },
@@ -1854,13 +1854,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3,
-                        4,
-                        5,
-                        6
-                    ],
                     "conditions": [
                         {
                             "count": 4,
@@ -1873,6 +1866,13 @@
                                 1
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
                     ],
                     "gcovr/md5": "cc459c18ce48cc663bdc4a760ec410f6"
                 },
@@ -1912,10 +1912,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -1923,6 +1919,10 @@
                             "not_covered_false": [],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        4
                     ],
                     "gcovr/md5": "3acfab0519f3428bd6e85b610574acac",
                     "gcovr/decision": {
@@ -2001,11 +2001,6 @@
                             "destination_blockno": 6
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        4,
-                        5
-                    ],
                     "conditions": [
                         {
                             "count": 4,
@@ -2015,6 +2010,11 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        4,
+                        5
                     ],
                     "gcovr/md5": "f045ba8b7bbb82cb14b97f844c17a868",
                     "gcovr/decision": {
@@ -2085,10 +2085,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        4
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -2096,6 +2092,10 @@
                             "not_covered_false": [],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2,
+                        4
                     ],
                     "gcovr/md5": "670ed65f1c3b23a11afd3746e0865ce4",
                     "gcovr/decision": {
@@ -2194,9 +2194,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        3
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -2204,6 +2201,9 @@
                             "not_covered_false": [],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        3
                     ],
                     "gcovr/md5": "3e8434067cc44c9640dd8a6d237d800a",
                     "gcovr/decision": {
@@ -2314,9 +2314,6 @@
                             "destination_blockno": 4
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -2326,6 +2323,9 @@
                             ],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884",
                     "gcovr/decision": {
@@ -2382,9 +2382,6 @@
                             "destination_blockno": 6
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -2392,6 +2389,9 @@
                             "not_covered_false": [],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "ea7f2e78805e85d9aa20a2bec77cee2e",
                     "gcovr/decision": {
@@ -2420,11 +2420,6 @@
                             "destination_blockno": 6
                         }
                     ],
-                    "block_ids": [
-                        3,
-                        4,
-                        5
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -2432,6 +2427,11 @@
                             "not_covered_false": [],
                             "not_covered_true": []
                         }
+                    ],
+                    "block_ids": [
+                        3,
+                        4,
+                        5
                     ],
                     "gcovr/md5": "3e2cc082cb7c4086fe2acf4d52b8819b",
                     "gcovr/decision": {

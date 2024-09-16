@@ -209,10 +209,6 @@ class ConditionCoverage:
         self.not_covered_true = not_covered_true
         self.not_covered_false = not_covered_false
 
-    @property
-    def is_covered(self) -> bool:
-        return self.count == self.covered
-
 
 class DecisionCoverageUncheckable:
     r"""Represent coverage information about a decision."""
@@ -404,13 +400,6 @@ class LineCoverage:
     @property
     def has_uncovered_branch(self) -> bool:
         return not all(branch.is_covered for branch in self.branches.values())
-
-    @property
-    def has_uncovered_condition(self) -> bool:
-        if self.condition is None:
-            return False
-
-        return not all(condition.is_covered for condition in self.conditions)
 
     @property
     def has_uncovered_decision(self) -> bool:

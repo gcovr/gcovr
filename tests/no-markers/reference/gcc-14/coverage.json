@@ -32,9 +32,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -44,6 +41,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
                 },
@@ -89,9 +89,6 @@
                             "destination_blockno": 10
                         }
                     ],
-                    "block_ids": [
-                        7
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -101,6 +98,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        7
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
                 },
@@ -162,9 +162,6 @@
                             "destination_blockno": 5
                         }
                     ],
-                    "block_ids": [
-                        2
-                    ],
                     "conditions": [
                         {
                             "count": 2,
@@ -174,6 +171,9 @@
                                 0
                             ]
                         }
+                    ],
+                    "block_ids": [
+                        2
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
                 },
