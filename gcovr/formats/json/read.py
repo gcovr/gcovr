@@ -72,7 +72,8 @@ def read_report(options: Options) -> CovData:
         trace_files = glob(trace_files_regex, recursive=True)
         if not trace_files:
             raise RuntimeError(
-                "Bad --add-tracefile option.\n" "\tThe specified file does not exist."
+                "Bad --json-add-tracefile option.\n"
+                "\tThe specified file does not exist."
             )
         else:
             for trace_file in trace_files:

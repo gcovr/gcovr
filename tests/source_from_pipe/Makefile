@@ -13,7 +13,7 @@ coverage.json:
 
 txt: coverage.json
 	$(GCOVR) -a '$<.not_exists' 2>no_tracefile.stderr; test $$? -eq 64 || ( cat no_tracefile.stderr & exit 1 )
-	grep -F "Bad --add-tracefile option." no_tracefile.stderr
+	grep -F "Bad --json-add-tracefile option." no_tracefile.stderr
 	grep -F "The specified file does not exist." no_tracefile.stderr
 	$(GCOVR) -a $< -o coverage.txt
 
