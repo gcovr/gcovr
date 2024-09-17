@@ -188,7 +188,7 @@ def _json_from_line(line: LineCoverage) -> dict:
             "branches": _json_from_branches(line.branches),
         }
     )
-    if line.conditions is not None:
+    if line.conditions:
         json_line["conditions"] = _json_from_conditions(line.conditions)
     if line.block_ids is not None:
         json_line["block_ids"] = line.block_ids

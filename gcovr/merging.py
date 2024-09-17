@@ -403,8 +403,6 @@ def insert_condition_coverage(
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> ConditionCoverage:
     """Insert ConditionCoverage into LineCoverage."""
-    if target.conditions is None:
-        target.conditions = {}
     return _insert_coverage_item(
         target.conditions, condition_id, condition, merge_condition, options
     )
@@ -419,6 +417,25 @@ def merge_condition(
     Merge ConditionCoverage information.
 
     Do not use 'left' or 'right' objects afterwards!
+
+    Examples:
+    >>> left = ConditionCoverage(4, 2, [1, 2], [])
+    >>> right = ConditionCoverage(4, 3, [2], [1, 3])
+    >>> merge_condition(left, None, DEFAULT_MERGE_OPTIONS) is left
+    True
+    >>> merge_condition(None, right, DEFAULT_MERGE_OPTIONS) is right
+    True
+    >>> merged = merge_condition(left, right, DEFAULT_MERGE_OPTIONS)
+    >>> merged.count
+    4
+    >>> merged.covered
+    3
+    >>> merged.not_covered_true
+    [1]
+    >>> merged.not_covered_false
+    []
+
+
     """
 
     # If condition coverage is not know for one side, return the other.
@@ -427,15 +444,16 @@ def merge_condition(
     if right is None:
         return left
 
+    if left.count != right.count:
+        raise AssertionError("The number of conditions must be equal.")
+
     left.not_covered_false = sorted(
         list(set(left.not_covered_false) - set(right.not_covered_false))
     )
     left.not_covered_true = sorted(
         list(set(left.not_covered_true) - set(right.not_covered_true))
     )
-    left.covered = (
-        right.count - len(left.not_covered_false) - len(left.not_covered_true)
-    )
+    left.covered = left.count - len(left.not_covered_false) - len(left.not_covered_true)
 
     return left
 

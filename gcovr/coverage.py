@@ -204,6 +204,10 @@ class ConditionCoverage:
         not_covered_true: List[int],
         not_covered_false: List[int],
     ) -> None:
+        if count < 0:
+            raise AssertionError("count must not be a negative value.")
+        if count < covered:
+            raise AssertionError("count must not be less than covered.")
         self.count = count
         self.covered = covered
         self.not_covered_true = not_covered_true
@@ -377,7 +381,7 @@ class LineCoverage:
         self.excluded: Optional[bool] = excluded
         self.md5: Optional[str] = md5
         self.branches: Dict[int, BranchCoverage] = {}
-        self.conditions: Optional[Dict[int, ConditionCoverage]] = None
+        self.conditions: Optional[Dict[int, ConditionCoverage]] = {}
         self.decision: Optional[DecisionCoverage] = None
         self.calls: Dict[int, CallCoverage] = {}
 
@@ -425,9 +429,6 @@ class LineCoverage:
         return CoverageStat(covered=covered, total=total)
 
     def condition_coverage(self) -> CoverageStat:
-        if self.conditions is None:
-            return CoverageStat.new_empty()
-
         total = 0
         covered = 0
         for condition in self.conditions.values():
