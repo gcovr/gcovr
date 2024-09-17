@@ -794,6 +794,7 @@ class GcovProgram:
         """
         gcov_process = self.__get_gcov_process(args, **kwargs)
         out, err = gcov_process.communicate()
+        LOGGER.debug(f"GCOV return code was {gcov_process.returncode}")
         if gcov_process.returncode < 0:
             raise RuntimeError(
                 f"GCOV returncode was {gcov_process.returncode} (exited by signal).\n"
@@ -888,6 +889,11 @@ def run_gcov_and_process_files(
 
                     # Process *.gcov files
                     for gcov_filename in active_gcov_files:
+                        if not os.path.exists(gcov_filename):  # pragma: no cover
+                            raise RuntimeError(
+                                f"Sanity check failed, output file {gcov_filename} doesn't exist but no error from GCOV detected."
+                            )
+
                         if gcov_filename.endswith(".gcov"):
                             process_gcov_data(
                                 gcov_filename, filename, covdata, options, chdir
@@ -896,7 +902,7 @@ def run_gcov_and_process_files(
                             process_gcov_json_data(gcov_filename, covdata, options)
                         else:  # pragma: no cover
                             raise RuntimeError(
-                                f"Unknown gcov output format {filename}."
+                                f"Unknown gcov output format {gcov_filename}."
                             )
                     done = True
 
