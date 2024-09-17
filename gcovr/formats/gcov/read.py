@@ -889,8 +889,7 @@ def run_gcov_and_process_files(
 
                     # Process *.gcov files
                     for gcov_filename in active_gcov_files:
-                        if not os.path.exists(gcov_filename):
-                            LOGGER.debug(f"Message was {err}")
+                        if not os.path.exists(gcov_filename):  # pragma: no cover
                             raise RuntimeError(
                                 f"Sanity check failed, output file {gcov_filename} doesn't exist but no error from GCOV detected."
                             )
