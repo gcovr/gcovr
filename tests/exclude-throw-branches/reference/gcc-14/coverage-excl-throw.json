@@ -32,6 +32,14 @@
                             "destination_blockno": 6
                         }
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
+                    ],
                     "block_ids": [
                         2
                     ],

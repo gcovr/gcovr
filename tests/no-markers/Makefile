@@ -1,8 +1,10 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 MARKER_OPT ?= --no-markers
 GCOVR ?= gcovr
 
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: txt lcov cobertura html sonarqube jacoco json
 

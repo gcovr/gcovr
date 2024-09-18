@@ -7,6 +7,9 @@
             <tr>
                 <th class="p-2">Line</th>
                 <th class="p-2">Branch</th>
+                {% if not EXCLUDE_CONDITIONS %}
+                <th class="p-2">Condition</th>
+                {% endif %}
                 {% if SHOW_DECISION %}
                 <th class="p-2">Decision</th>
                 {% endif %}
@@ -40,6 +43,28 @@
                     </details>
                     {% endif %}
                 </td>
+                {% if not EXCLUDE_CONDITIONS %}
+                <td class="text-right src linenos ws-unset">
+                    {% if row.linecondition %}
+                    <details class="normal details-overlay">
+                        <summary>{% if row.linecondition %}{{row.linecondition.covered}}/{{row.linecondition.count}}{% endif %}</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            {% for condition in row.linecondition.condition %}
+                            {% if condition.not_covered_true and condition.not_covered_false %}
+                            <div class="color-fg-danger">&cross; Condition {{condition.name}}: Not covered.</div>
+                            {% elif condition.not_covered_true %}
+                            <div class="color-fg-danger">&cross; Condition {{condition.name}}: True not covered.</div>
+                            {% elif condition.not_covered_false %}
+                            <div class="color-fg-danger">&cross; Condition {{condition.name}}: False not covered.</div>
+                            {% else %}
+                            <div class="color-taken-branch">&check; Condition {{condition.name}}: Fully covered.</div>
+                            {% endif%}
+                            {% endfor %}
+                        </div>
+                    </details>
+                    {% endif %}
+                </td>
+                {% endif %}
                 {% if SHOW_DECISION %}
                 <td class="text-right src linenos ws-unset">
                     {% if row.linedecision %}

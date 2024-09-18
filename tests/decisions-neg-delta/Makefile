@@ -1,5 +1,7 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 all:
-	$(CXX) -std=c++11 -fprofile-arcs -ftest-coverage -O0 main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) -std=c++11 -O0 main.cpp -o testcase
 
 run: html txt json json_summary
 

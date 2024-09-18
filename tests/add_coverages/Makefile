@@ -1,13 +1,14 @@
-CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 export GCOVR_TEST_SUITE_NO_GIT_COMMAND := 1
 
 all:
-	$(CXX) $(CFLAGS) -c foo.cpp -o foo.o
-	$(CXX) $(CFLAGS) -c bar.cpp -o bar.o
-	$(CXX) $(CFLAGS) -DFOO -c main.cpp -o main_foo.o
-	$(CXX) $(CFLAGS) main_foo.o foo.o -o testcase_foo
-	$(CXX) $(CFLAGS) -DBAR -c main.cpp -o main_bar.o
-	$(CXX) $(CFLAGS) main_bar.o bar.o -o testcase_bar
+	$(CXX) $(CXXFLAGS) -c foo.cpp -o foo.o
+	$(CXX) $(CXXFLAGS) -c bar.cpp -o bar.o
+	$(CXX) $(CXXFLAGS) -DFOO -c main.cpp -o main_foo.o
+	$(CXX) $(CXXFLAGS) main_foo.o foo.o -o testcase_foo
+	$(CXX) $(CXXFLAGS) -DBAR -c main.cpp -o main_bar.o
+	$(CXX) $(CXXFLAGS) main_bar.o bar.o -o testcase_bar
 
 run: txt cobertura html sonarqube jacoco json json_summary coveralls
 

@@ -4,6 +4,9 @@
   <colgroup span="3"/>
   <colgroup span="2"/>
   <colgroup span="2"/>
+  {% if not EXCLUDE_CONDITIONS %}
+  <colgroup span="2"/>
+  {% endif %}
   {% if SHOW_DECISION %}
   <colgroup span="2"/>
   {% endif %}
@@ -16,6 +19,9 @@
     <th scope="colgroup" colspan=3>Lines</th>
     <th scope="colgroup" colspan=2>Functions</th>
     <th scope="colgroup" colspan=2>Branches</th>
+    {% if not EXCLUDE_CONDITIONS %}
+    <th scope="colgroup" colspan=2>Conditions</th>
+    {% endif %}
     {% if SHOW_DECISION %}
     <th scope="colgroup" colspan=2>Decisions</th>
     {% endif %}
@@ -43,6 +49,10 @@
     <td class="CoverValue function-coverage {{row.functions.class}}">{{row.functions.exec}} / {{row.functions.total}}</td>
     <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.coverage}}%</td>
     <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.exec}} / {{row.branches.total}}</td>
+    {% if not EXCLUDE_CONDITIONS %}
+    <td class="CoverValue decision-coverage {{row.conditions.class}}">{{row.conditions.coverage}}%</td>
+    <td class="CoverValue decision-coverage {{row.conditions.class}}">{{row.conditions.exec}} / {{row.conditions.total}}</td>
+    {% endif %}
     {% if SHOW_DECISION %}
     <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.coverage}}%</td>
     <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.exec}} / {{row.decisions.total}}</td>

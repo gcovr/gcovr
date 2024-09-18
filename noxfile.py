@@ -267,7 +267,7 @@ def doc(session: nox.Session) -> None:
         if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
             break
         line, _ = re.subn(r"``", r"`", line)
-        line, _ = re.subn(r":option:", r"", line)
+        line, _ = re.subn(r":(?:option|ref):", r"", line)
         line, _ = re.subn(r":issue:`(\d+)`", r"#\1", line)
         out_lines.append(line)
     else:

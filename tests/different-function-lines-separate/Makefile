@@ -1,8 +1,9 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
 	mkdir -p build1 build2
-	cd build1 ; $(CXX) -fprofile-arcs -ftest-coverage -fPIC ../main.c -o testcase
-	cd build2 ; $(CXX) -fprofile-arcs -ftest-coverage -fPIC -DFOO_OTHER_LINE ../main.c -o testcase
+	cd build1 ; $(CXX) $(CXXFLAGS) ../main.c -o testcase
+	cd build2 ; $(CXX) $(CXXFLAGS) -DFOO_OTHER_LINE ../main.c -o testcase
 
 run: json txt lcov cobertura html sonarqube coveralls
 

@@ -1,6 +1,8 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 # cspell:ignore finput
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -finput-charset=cp1252 main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) -finput-charset=cp1252 main.cpp -o testcase
 
 run: html
 

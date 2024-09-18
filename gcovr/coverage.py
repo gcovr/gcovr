@@ -173,12 +173,45 @@ class CallCoverage:
         callno: int,
         covered: bool,
     ) -> None:
-        self.covered = covered
         self.callno = callno
+        self.covered = covered
 
     @property
     def is_covered(self) -> bool:
         return self.covered
+
+
+class ConditionCoverage:
+    r"""Represent coverage information about a condition.
+
+    Args:
+        count (int):
+            The number of the call.
+        covered (int):
+            Whether the call was performed.
+        not_covered_true List[int]:
+            The conditions which where not true.
+        not_covered_false List[int]:
+            The conditions which where not false
+    """
+
+    __slots__ = "count", "covered", "not_covered_true", "not_covered_false"
+
+    def __init__(
+        self,
+        count: int,
+        covered: int,
+        not_covered_true: List[int],
+        not_covered_false: List[int],
+    ) -> None:
+        if count < 0:
+            raise AssertionError("count must not be a negative value.")
+        if count < covered:
+            raise AssertionError("count must not be less than covered.")
+        self.count = count
+        self.covered = covered
+        self.not_covered_true = not_covered_true
+        self.not_covered_false = not_covered_false
 
 
 class DecisionCoverageUncheckable:
@@ -322,6 +355,7 @@ class LineCoverage:
         "excluded",
         "md5",
         "branches",
+        "conditions",
         "decision",
         "calls",
     )
@@ -347,6 +381,7 @@ class LineCoverage:
         self.excluded: Optional[bool] = excluded
         self.md5: Optional[str] = md5
         self.branches: Dict[int, BranchCoverage] = {}
+        self.conditions: Optional[Dict[int, ConditionCoverage]] = {}
         self.decision: Optional[DecisionCoverage] = None
         self.calls: Dict[int, CallCoverage] = {}
 
@@ -391,6 +426,14 @@ class LineCoverage:
             if branch.is_covered:
                 covered += 1
 
+        return CoverageStat(covered=covered, total=total)
+
+    def condition_coverage(self) -> CoverageStat:
+        total = 0
+        covered = 0
+        for condition in self.conditions.values():
+            total += condition.count
+            covered += condition.covered
         return CoverageStat(covered=covered, total=total)
 
     def decision_coverage(self) -> DecisionCoverageStat:
@@ -457,6 +500,15 @@ class FileCoverage:
         for line in self.lines.values():
             if line.is_reportable:
                 stat += line.branch_coverage()
+
+        return stat
+
+    def condition_coverage(self) -> CoverageStat:
+        stat = CoverageStat.new_empty()
+
+        for line in self.lines.values():
+            if line.is_reportable:
+                stat += line.condition_coverage()
 
         return stat
 
@@ -598,6 +650,7 @@ CovData_directories = Dict[str, DirectoryCoverage]
 class SummarizedStats:
     line: CoverageStat
     branch: CoverageStat
+    condition: CoverageStat
     function: CoverageStat
     decision: DecisionCoverageStat
     call: CoverageStat
@@ -607,6 +660,7 @@ class SummarizedStats:
         return SummarizedStats(
             line=CoverageStat.new_empty(),
             branch=CoverageStat.new_empty(),
+            condition=CoverageStat.new_empty(),
             function=CoverageStat.new_empty(),
             decision=DecisionCoverageStat.new_empty(),
             call=CoverageStat.new_empty(),
@@ -624,6 +678,7 @@ class SummarizedStats:
         return SummarizedStats(
             line=filecov.line_coverage(),
             branch=filecov.branch_coverage(),
+            condition=filecov.condition_coverage(),
             function=filecov.function_coverage(),
             decision=filecov.decision_coverage(),
             call=filecov.call_coverage(),
@@ -632,6 +687,7 @@ class SummarizedStats:
     def __iadd__(self, other: SummarizedStats) -> SummarizedStats:
         self.line += other.line
         self.branch += other.branch
+        self.condition += other.condition
         self.function += other.function
         self.decision += other.decision
         self.call += other.call

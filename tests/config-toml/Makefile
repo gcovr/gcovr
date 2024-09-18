@@ -1,5 +1,7 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: html txt
 
@@ -18,4 +20,4 @@ txt:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.* *.toml 
+	rm -f coverage.* *.toml

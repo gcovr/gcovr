@@ -1,16 +1,11 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 all: testcase
 
-GCOVR ?= gcovr
-
 testcase:
-	$(CXX) -fprofile-arcs -ftest-coverage main.c -o testcase
+	$(CXX) $(CXXFLAGS) main.c -o testcase
 
-run: html json
-
-html: coverage.json
-	$(GCOVR) --calls --html --json-add-tracefile $< -o coverage.html --html-details
-
-json: coverage.json
+run: json html
 
 coverage.json:
 	./testcase
@@ -18,6 +13,11 @@ coverage.json:
 	./testcase
 	${GCOVR} --calls --json -o second.json
 	${GCOVR} --calls --json-add-tracefile first.json --json-add-tracefile second.json --json -o $@
+
+json: coverage.json
+
+html: coverage.json
+	$(GCOVR) --calls --html --json-add-tracefile $< -o coverage.html --html-details
 
 clean:
 	rm -f testcase

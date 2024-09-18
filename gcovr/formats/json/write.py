@@ -31,6 +31,7 @@ from ...utils import (
 )
 from ...coverage import (
     BranchCoverage,
+    ConditionCoverage,
     CovData,
     DecisionCoverage,
     DecisionCoverageConditional,
@@ -143,6 +144,11 @@ def _summary_from_stats(
     json_dict["branch_covered"] = stats.branch.covered
     json_dict["branch_percent"] = stats.branch.percent_or(default)
 
+    if stats.condition.total != 0:
+        json_dict["condition_total"] = stats.condition.total
+        json_dict["condition_covered"] = stats.condition.covered
+        json_dict["condition_percent"] = stats.condition.percent_or(default)
+
     if options.show_decision:
         json_dict["decision_total"] = stats.decision.total
         json_dict["decision_covered"] = stats.decision.covered
@@ -182,6 +188,8 @@ def _json_from_line(line: LineCoverage) -> dict:
             "branches": _json_from_branches(line.branches),
         }
     )
+    if line.conditions:
+        json_line["conditions"] = _json_from_conditions(line.conditions)
     if line.block_ids is not None:
         json_line["block_ids"] = line.block_ids
     if line.md5:
@@ -211,6 +219,21 @@ def _json_from_branch(branch: BranchCoverage) -> dict:
         json_branch["destination_blockno"] = branch.destination_blockno
 
     return json_branch
+
+
+def _json_from_conditions(conditions: Dict[int, ConditionCoverage]) -> list:
+    return [_json_from_condition(conditions[no]) for no in sorted(conditions)]
+
+
+def _json_from_condition(condition: ConditionCoverage) -> dict:
+    json_condition = {
+        "count": condition.count,
+        "covered": condition.covered,
+        "not_covered_false": condition.not_covered_false,
+        "not_covered_true": condition.not_covered_true,
+    }
+
+    return json_condition
 
 
 def _json_from_decision(decision: DecisionCoverage) -> dict:

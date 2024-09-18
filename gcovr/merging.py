@@ -53,6 +53,7 @@ import logging
 from typing import Callable, Optional, TypeVar, Dict
 from .coverage import (
     BranchCoverage,
+    ConditionCoverage,
     CovData,
     DecisionCoverage,
     DecisionCoverageConditional,
@@ -395,28 +396,65 @@ def merge_branch(
     return left
 
 
-def insert_call_coverage(
+def insert_condition_coverage(
     target: LineCoverage,
-    call: CallCoverage,
+    condition_id: int,
+    condition: ConditionCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
-) -> CallCoverage:
-    """Insert BranchCoverage into LineCoverage."""
-    return _insert_coverage_item(target.calls, call.callno, call, merge_call, options)
+) -> ConditionCoverage:
+    """Insert ConditionCoverage into LineCoverage."""
+    return _insert_coverage_item(
+        target.conditions, condition_id, condition, merge_condition, options
+    )
 
 
-def merge_call(
-    left: CallCoverage,
-    right: CallCoverage,
+def merge_condition(
+    left: ConditionCoverage,
+    right: ConditionCoverage,
     options: MergeOptions,
-) -> BranchCoverage:
+) -> ConditionCoverage:
     """
-    Merge CallCoverage information.
+    Merge ConditionCoverage information.
 
     Do not use 'left' or 'right' objects afterwards!
+
+    Examples:
+    >>> left = ConditionCoverage(4, 2, [1, 2], [])
+    >>> right = ConditionCoverage(4, 3, [2], [1, 3])
+    >>> merge_condition(left, None, DEFAULT_MERGE_OPTIONS) is left
+    True
+    >>> merge_condition(None, right, DEFAULT_MERGE_OPTIONS) is right
+    True
+    >>> merged = merge_condition(left, right, DEFAULT_MERGE_OPTIONS)
+    >>> merged.count
+    4
+    >>> merged.covered
+    3
+    >>> merged.not_covered_true
+    [1]
+    >>> merged.not_covered_false
+    []
+
+
     """
-    if left.callno != right.callno:
-        raise AssertionError("Call number must be equal.")
-    left.covered |= right.covered
+
+    # If condition coverage is not know for one side, return the other.
+    if left is None:
+        return right
+    if right is None:
+        return left
+
+    if left.count != right.count:
+        raise AssertionError("The number of conditions must be equal.")
+
+    left.not_covered_false = sorted(
+        list(set(left.not_covered_false) - set(right.not_covered_false))
+    )
+    left.not_covered_true = sorted(
+        list(set(left.not_covered_true) - set(right.not_covered_true))
+    )
+    left.covered = left.count - len(left.not_covered_false) - len(left.not_covered_true)
+
     return left
 
 
@@ -480,3 +518,28 @@ def merge_decision(
 
     # If the decisions have conflicting types, the result is Uncheckable.
     return Uncheckable()
+
+
+def insert_call_coverage(
+    target: LineCoverage,
+    call: CallCoverage,
+    options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+) -> CallCoverage:
+    """Insert BranchCoverage into LineCoverage."""
+    return _insert_coverage_item(target.calls, call.callno, call, merge_call, options)
+
+
+def merge_call(
+    left: CallCoverage,
+    right: CallCoverage,
+    options: MergeOptions,
+) -> BranchCoverage:
+    """
+    Merge CallCoverage information.
+
+    Do not use 'left' or 'right' objects afterwards!
+    """
+    if left.callno != right.callno:
+        raise AssertionError("Call number must be equal.")
+    left.covered |= right.covered
+    return left

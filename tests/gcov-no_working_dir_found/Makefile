@@ -1,7 +1,8 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
 	mkdir build
-	cd build ; $(CXX) -fprofile-arcs -ftest-coverage -fPIC ../src/main.cpp -o testcase
+	cd build ; $(CXX) $(CXXFLAGS) ../src/main.cpp -o testcase
 
 run: json
 

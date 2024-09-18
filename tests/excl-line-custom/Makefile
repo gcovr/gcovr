@@ -1,8 +1,9 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 MARKER_OPT ?= --exclude-pattern-prefix CUSTOM
-GCOVR ?= gcovr
 
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: json txt lcov clover cobertura html sonarqube jacoco coveralls
 

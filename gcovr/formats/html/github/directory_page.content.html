@@ -7,10 +7,18 @@
         </div>
         <div role="gridcell" class="flex-auto min-width-0 col-5 mr-3">
         </div>
+        {% if not EXCLUDE_CONDITIONS %}
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >
+        </div>
+        {% endif %}
+        {% if SHOW_DECISION %}
         <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
         </div>
-        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" style="">
+        {% endif %}
+        {% if not EXCLUDE_CALLS %}
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >
         </div>
+        {% endif %}
     </div>
     {% for row in entries %}
     <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
@@ -49,6 +57,14 @@
                 <span class="Label mr-1 Label--{{row.branches.class}}">{{row.branches.coverage}}%</span>
             </div>
         </div>
+        {% if not EXCLUDE_CONDITIONS %}
+        <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
+            <span class="text-small color-fg-muted mr-2">{{row.conditions.exec}} of {{row.conditions.total}} conditions</span>
+            <div class="Label--minw">
+                <span class="Label mr-1 Label--{{row.conditions.class}}">{{row.conditions.coverage}}%</span>
+            </div>
+        </div>
+        {% endif %}
         {% if SHOW_DECISION %}
         <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
             <span class="text-small color-fg-muted mr-2">{{row.decisions.exec}} of {{row.decisions.total}} decisions</span>

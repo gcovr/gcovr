@@ -1,10 +1,10 @@
-CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
 	mkdir -p build
-	$(CXX) $(CFLAGS) -c src/file1.cpp -o build/file1.o
-	$(CXX) $(CFLAGS) -c src/main.cpp -o build/main.o
-	$(CXX) $(CFLAGS) build/main.o build/file1.o -o build/testcase
+	$(CXX) $(CXXFLAGS) -c src/file1.cpp -o build/file1.o
+	$(CXX) $(CXXFLAGS) -c src/main.cpp -o build/main.o
+	$(CXX) $(CXXFLAGS) build/main.o build/file1.o -o build/testcase
 
 run: txt lcov cobertura html sonarqube jacoco json_summary coveralls
 

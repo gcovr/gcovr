@@ -81,6 +81,14 @@
                             "destination_blockno": 5
                         }
                     ],
+                    "conditions": [
+                        {
+                            "count": 4,
+                            "covered": 4,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
+                    ],
                     "block_ids": [
                         2,
                         3
@@ -102,6 +110,16 @@
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 4,
+                            "covered": 3,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                1
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         5,
                         6
@@ -139,6 +157,16 @@
                             "destination_blockno": 10
                         }
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         8
                     ],
@@ -174,6 +202,16 @@
                             "destination_blockno": 12
                         }
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         10
                     ],
@@ -194,6 +232,14 @@
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
+                    ],
                     "block_ids": [
                         12
                     ],
@@ -216,6 +262,16 @@
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         14
                     ],
@@ -257,6 +313,18 @@
                     "function_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 0,
+                            "not_covered_false": [
+                                0
+                            ],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         2
                     ],
@@ -311,6 +379,14 @@
                             "fallthrough": true,
                             "throw": false,
                             "destination_blockno": 6
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
                         }
                     ],
                     "block_ids": [

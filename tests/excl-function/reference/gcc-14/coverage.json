@@ -18,6 +18,16 @@
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         2
                     ],
@@ -71,6 +81,16 @@
                     "function_name": "_Z3bari",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         2
                     ],
@@ -130,6 +150,14 @@
                             "destination_blockno": 13
                         }
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
+                    ],
                     "block_ids": [
                         2,
                         4,
@@ -155,6 +183,14 @@
                             "fallthrough": false,
                             "throw": true,
                             "destination_blockno": 14
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
                         }
                     ],
                     "block_ids": [
@@ -217,6 +253,14 @@
                             "destination_blockno": 4
                         }
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
+                    ],
                     "block_ids": [
                         2,
                         4,
@@ -277,6 +321,14 @@
                     "function_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
+                    ],
                     "block_ids": [
                         2
                     ],
@@ -361,6 +413,14 @@
                     "function_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 2,
+                            "not_covered_false": [],
+                            "not_covered_true": []
+                        }
+                    ],
                     "block_ids": [
                         2
                     ],
@@ -415,6 +475,16 @@
                     "function_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
                     "count": 0,
                     "branches": [],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         2
                     ],

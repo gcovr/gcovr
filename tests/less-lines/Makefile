@@ -1,8 +1,10 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 all:
 	mkdir build
 	# Create the file with two additional lines
 	(echo "" ; echo "" ; echo "" ; echo "" ; echo "" ; echo "" ; echo "" ; cat main.cpp) > build/main.cpp
-	cd build; $(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	cd build; $(CXX) $(CXXFLAGS) main.cpp -o testcase
 	cp -f main.cpp build/main.cpp
 
 run: html

@@ -29,6 +29,7 @@ from ...options import Options
 from ..gcov.read import apply_filter_include_exclude
 from ...coverage import (
     BranchCoverage,
+    ConditionCoverage,
     CovData,
     DecisionCoverage,
     DecisionCoverageConditional,
@@ -42,6 +43,7 @@ from ...coverage import (
 from ...merging import (
     get_merge_mode_from_options,
     insert_branch_coverage,
+    insert_condition_coverage,
     insert_decision_coverage,
     insert_file_coverage,
     insert_function_coverage,
@@ -70,7 +72,8 @@ def read_report(options: Options) -> CovData:
         trace_files = glob(trace_files_regex, recursive=True)
         if not trace_files:
             raise RuntimeError(
-                "Bad --add-tracefile option.\n" "\tThe specified file does not exist."
+                "Bad --json-add-tracefile option.\n"
+                "\tThe specified file does not exist."
             )
         else:
             for trace_file in trace_files:
@@ -153,6 +156,12 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     for branchno, json_branch in enumerate(json_line["branches"]):
         insert_branch_coverage(line, branchno, _branch_from_json(json_branch))
 
+    if "conditions" in json_line:
+        for conditionno, json_branch in enumerate(json_line["conditions"]):
+            insert_condition_coverage(
+                line, conditionno, _condition_from_json(json_branch)
+            )
+
     insert_decision_coverage(line, _decision_from_json(json_line.get("gcovr/decision")))
 
     if "gcovr/calls" in json_line:
@@ -169,6 +178,15 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
         destination_blockno=json_branch.get("destination_blockno", None),
+    )
+
+
+def _condition_from_json(json_condition: dict) -> ConditionCoverage:
+    return ConditionCoverage(
+        count=json_condition["count"],
+        covered=json_condition["covered"],
+        not_covered_false=json_condition["not_covered_false"],
+        not_covered_true=json_condition["not_covered_true"],
     )
 
 

@@ -1,8 +1,9 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -c code.cpp -o code.o
-	cat test.cpp | $(CXX) -fprofile-arcs -ftest-coverage -fPIC -x c++ -c - -o test.o
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC code.o test.o -o testcase
+	$(CXX) $(CXXFLAGS) -c code.cpp -o code.o
+	cat test.cpp | $(CXX) $(CXXFLAGS) -x c++ -c - -o test.o
+	$(CXX) $(CXXFLAGS) code.o test.o -o testcase
 
 run: txt lcov cobertura html sonarqube jacoco coveralls
 
@@ -12,7 +13,7 @@ coverage.json:
 
 txt: coverage.json
 	$(GCOVR) -a '$<.not_exists' 2>no_tracefile.stderr; test $$? -eq 64 || ( cat no_tracefile.stderr & exit 1 )
-	grep -F "Bad --add-tracefile option." no_tracefile.stderr
+	grep -F "Bad --json-add-tracefile option." no_tracefile.stderr
 	grep -F "The specified file does not exist." no_tracefile.stderr
 	$(GCOVR) -a $< -o coverage.txt
 

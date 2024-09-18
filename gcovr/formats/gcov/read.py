@@ -32,6 +32,7 @@ from ...merging import (
     FUNCTION_MAX_LINE_MERGE_OPTIONS,
     GcovrMergeAssertionError,
     insert_branch_coverage,
+    insert_condition_coverage,
     insert_function_coverage,
     insert_line_coverage,
     merge_covdata,
@@ -47,6 +48,7 @@ from ...utils import (
 from .workers import Workers, locked_directory
 from ...coverage import (
     BranchCoverage,
+    ConditionCoverage,
     CovData,
     FileCoverage,
     FunctionCoverage,
@@ -247,6 +249,17 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                         fallthrough=branch["fallthrough"],
                         throw=branch["throw"],
                         destination_blockno=branch["destination_block_id"],
+                    ),
+                )
+            for index, condition in enumerate(line.get("conditions", [])):
+                insert_condition_coverage(
+                    line_cov,
+                    index,
+                    ConditionCoverage(
+                        condition["count"],
+                        condition["covered"],
+                        condition["not_covered_true"],
+                        condition["not_covered_false"],
                     ),
                 )
         for function in file["functions"]:
@@ -661,6 +674,11 @@ class GcovProgram:
                     if self.__check_gcov_version_content("JSON format version: 2"):
                         LOGGER.debug("GCOV capabilities: JSON format available.")
                         GcovProgram.__default_options.append("--json-format")
+                        if self.__check_gcov_help_content("--condition"):
+                            LOGGER.debug(
+                                "GCOV capabilities: Condition coverage available."
+                            )
+                            GcovProgram.__default_options.append("--condition")
                     else:
                         LOGGER.debug(
                             "GCOV capabilities: Unsupported JSON format detected."
