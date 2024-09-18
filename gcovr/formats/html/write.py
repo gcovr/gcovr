@@ -966,22 +966,29 @@ def source_row_condition(conditions) -> Dict[str, Any]:
     if not conditions:
         return None
 
+    count = 0
+    covered = 0
     items = []
 
     for condition_id in sorted(conditions):
+        prefix = f"{condition_id}-" if len(conditions) > 1 else ""
         condition = conditions[condition_id]
+        count += condition.count
+        covered += condition.covered
         for index in range(0, condition.count // 2):
             items.append(
                 {
-                    "name": index,
+                    "name": None
+                    if condition.count == 2 and prefix == ""
+                    else f"{prefix}{index}",
                     "not_covered_true": index in condition.not_covered_true,
                     "not_covered_false": index in condition.not_covered_false,
                 }
             )
 
     return {
-        "count": condition.count,
-        "covered": condition.covered,
+        "count": count,
+        "covered": covered,
         "condition": items,
     }
 
