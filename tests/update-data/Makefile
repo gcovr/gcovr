@@ -9,7 +9,7 @@ run: txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --json-pretty --json $@
+	$(GCOVR) --verbose --keep --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt
