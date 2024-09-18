@@ -259,6 +259,9 @@ def merge_line(
     left.count += right.count
     left.excluded |= right.excluded
     left.branches = _merge_dict(left.branches, right.branches, merge_branch, options)
+    left.conditions = _merge_dict(
+        left.conditions, right.conditions, merge_condition, options
+    )
     left.decision = merge_decision(left.decision, right.decision, options)
     left.calls = _merge_dict(left.calls, right.calls, merge_call, options)
 
@@ -431,7 +434,7 @@ def merge_condition(
     >>> merged.covered
     3
     >>> merged.not_covered_true
-    [1]
+    [2]
     >>> merged.not_covered_false
     []
 
@@ -448,10 +451,10 @@ def merge_condition(
         raise AssertionError("The number of conditions must be equal.")
 
     left.not_covered_false = sorted(
-        list(set(left.not_covered_false) - set(right.not_covered_false))
+        list(set(left.not_covered_false) & set(right.not_covered_false))
     )
     left.not_covered_true = sorted(
-        list(set(left.not_covered_true) - set(right.not_covered_true))
+        list(set(left.not_covered_true) & set(right.not_covered_true))
     )
     left.covered = left.count - len(left.not_covered_false) - len(left.not_covered_true)
 
