@@ -1,24 +1,18 @@
-CFLAGS=-fprofile-arcs -ftest-coverage
+MAKEFILE_DIRECTORY := $(subst /,\,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 ifeq ($(BASE_OS),Darwin)
   DYNAMIC_LIB_EXT  = dylib
-  CFLAGS     += -fPIC
   SHARED_OBJECT_FLAGS    += -dynamiclib -undefined dynamic_lookup
 endif
-ifeq ($(BASE_OS),CYGWIN_NT)
-  DYNAMIC_LIB_EXT = dll
-  #DEFINES   += -mno-cygwin
-  #SHARED_OBJECT_FLAGS   += -shared -wl,--kill-at
-  SHARED_OBJECT_FLAGS    += -shared
-endif
-ifneq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
+ifneq ($(filter $(BASE_OS),CYGWIN_NT MSYS_NT MINGW64_NT),)
+  CXXFLAGS := $(filter-out -fPIC,$(CXXFLAGS))
   DYNAMIC_LIB_EXT = dll
   SHARED_OBJECT_FLAGS    += -shared
 endif
 ifeq ($(BASE_OS),Linux)
   DYNAMIC_LIB_EXT  = so
-  CFLAGS     += -fPIC
   SHARED_OBJECT_FLAGS    += -shared
 endif
 
@@ -28,15 +22,15 @@ endif
 
 all:
 	mkdir obj
-	$(CXX) $(CFLAGS) -c lib/lib.cpp -o obj/libs.o
-	$(CXX) $(CFLAGS) $(SHARED_OBJECT_FLAGS) obj/libs.o -o lib/libs.$(DYNAMIC_LIB_EXT)
-	$(MAKE) -C testApp
+	$(CXX) $(CXXFLAGS) -c lib/lib.cpp -o obj/libs.o
+	$(CXX) $(CXXFLAGS) $(SHARED_OBJECT_FLAGS) obj/libs.o -o lib/libs.$(DYNAMIC_LIB_EXT)
+	$(MAKE) -C testApp CXXFLAGS="$(CXXFLAGS)"
 
 run: txt cobertura html sonarqube jacoco coveralls
 
 ifneq ($(filter $(BASE_OS),MSYS_NT MINGW64_NT),)
 ifneq ($(notdir $(SHELL)),sh)
-coverage.json : export PATH := $(subst /,\,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))\lib;${PATH}
+coverage.json : export PATH := $(MAKEFILE_DIRECTORY)\lib;${PATH}
 endif
 endif
 

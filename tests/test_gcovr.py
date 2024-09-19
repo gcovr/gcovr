@@ -65,6 +65,7 @@ GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 
 CC = os.path.split(env["CC"])[1]
 
+IS_MACOS_HOST = os.getenv("HOST_OS", None) == "Darwin"
 IS_MACOS = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
 if IS_WINDOWS:  # pragma: no cover
@@ -81,7 +82,8 @@ if IS_WINDOWS:  # pragma: no cover
 
 CC_REFERENCE = env.get("CC_REFERENCE", CC)
 CC_REFERENCE_VERSION = int(CC_REFERENCE.split("-")[1])
-IS_CLANG = True if CC_REFERENCE.startswith("clang") else False
+IS_CLANG = "clang" in CC_REFERENCE
+IS_GCC = not IS_CLANG
 
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
@@ -345,7 +347,16 @@ def pytest_generate_tests(metafunc):
                     reason="only available in docker",
                 ),
                 pytest.mark.skipif(
-                    name == "gcov-no_working_dir_found" and not GCOVR_ISOLATED_TEST,
+                    name == "gcov-no_working_dir_found"
+                    and (
+                        not GCOVR_ISOLATED_TEST
+                        or IS_MACOS_HOST
+                        or (
+                            # With JSON format this test doesn't work
+                            IS_GCC
+                            and CC_REFERENCE_VERSION in (14,)
+                        )
+                    ),
                     reason="only available in docker",
                 ),
                 pytest.mark.xfail(
@@ -356,10 +367,7 @@ def pytest_generate_tests(metafunc):
                     name in ["less-lines"]
                     and (
                         (IS_CLANG and CC_REFERENCE_VERSION in [13, 14, 15])
-                        or (
-                            not IS_CLANG
-                            and CC_REFERENCE_VERSION in [8, 9, 10, 11, 12, 13]
-                        )
+                        or (IS_GCC and CC_REFERENCE_VERSION in [8, 9, 10, 11, 12, 13])
                     ),
                     reason="Other versions stub the line",
                 ),

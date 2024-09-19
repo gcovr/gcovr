@@ -11,6 +11,7 @@
     --uncovered_color: #FF8C8C;
     --warning_color: orangered;
     --notTakenBranch_color: red;
+    --notTakenCondition_color: red;
     --uncheckedDecision_color: darkorange;
     --notTakenDecision_color: red;
     --notInvokedCall_color: red;
@@ -21,6 +22,7 @@
     --high_color: #85E485;
     --covered_color: #85E485;
     --takenBranch_color: green;
+    --takenCondition_color: green;
     --takenDecision_color: green;
     --invokedCall_color: green;
 }
@@ -29,6 +31,7 @@
     --high_color: #66B4FF;
     --covered_color: #66B4Ff;
     --takenBranch_color: blue;
+    --takenCondition_color: blue;
     --takenDecision_color: blue;
     --invokedCall_color: blue;
 }

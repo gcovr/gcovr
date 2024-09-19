@@ -99,6 +99,7 @@ Each **line** entry contains coverage data for one line::
         "count": count,
         "branches": [branch],
         "block_ids", block_ids,
+        "conditions", conditions
         "gcovr/md5": md5,
         "gcovr/excluded": excluded,
         "gcovr/decision": decision
@@ -116,6 +117,9 @@ count: int
 
 branches: list
   A list of :ref:`branch <json_format_branch>` coverage entries.
+
+conditions: list
+  A list of :ref:`branch <json_format_condition>` coverage entries.
 
 block_ids: list[int]:
   The list of block ids defined in this line.
@@ -147,6 +151,9 @@ The line entry should be interpreted as follows:
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
+
+.. versionchanged:: NEXT
+   The ``conditions`` is added.
 
 .. versionchanged:: NEXT
    The ``block_ids`` is added.
@@ -195,6 +202,34 @@ destination_blockno: int
 
 .. versionadded:: NEXT
    Added ``destination_blockno`` field.
+
+.. _json_format_condition:
+
+Condition entries
+~~~~~~~~~~~~~~~~~
+
+Each **condition** provides information about a condition on that line::
+
+    {
+      "count": count,
+      "covered": covered,
+      "not_covered_false": not_covered_false,
+      "not_covered_true": not_covered_true
+    }
+
+This exactly matches the GCC gcov format.
+
+count: int
+  Number of condition outcomes in this expression.
+
+covered: int
+  Number of covered condition outcomes in this expression.
+
+not_covered_false: List[int]
+  Terms, by index, not seen as false in this expression.
+
+not_covered_true: List[int]
+  Terms, by index, not seen as true in this expression.
 
 .. _json_format_decision:
 

@@ -1,8 +1,9 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 GCOVR := $(GCOVR) --txt --cobertura --sonarqube --jacoco --json --json-summary --coveralls --csv -o .\\output/
-
 
 run: txt cobertura html sonarqube jacoco json json_summary coveralls csv
 

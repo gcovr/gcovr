@@ -1,4 +1,3 @@
-CFLAGS := -fPIC -fprofile-arcs -ftest-coverage -fprofile-abs-path
 
 all: testcase
 

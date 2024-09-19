@@ -42,6 +42,7 @@
     {% set lines = file.lines %}
     {% set functions = file.functions %}
     {% set branches = file.branches %}
+    {% set conditions = file.conditions %}
     {% set decisions = file.decisions %}
     {% set calls = file.calls %}
     {% include "source_page.summary.html" | indent(2) %}

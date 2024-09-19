@@ -267,7 +267,7 @@ def doc(session: nox.Session) -> None:
         if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
             break
         line, _ = re.subn(r"``", r"`", line)
-        line, _ = re.subn(r":option:", r"", line)
+        line, _ = re.subn(r":(?:option|ref):", r"", line)
         line, _ = re.subn(r":issue:`(\d+)`", r"#\1", line)
         out_lines.append(line)
     else:
@@ -322,16 +322,18 @@ def tests(session: nox.Session) -> None:
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
 
-    session.run(
-        "python",
-        *args,
-        success_codes=[0, 1] if not CI_RUN and coverage_args else [0],
-    )
-
-    if os.environ.get("USE_COVERAGE") == "true":
-        session.run("coverage", "xml")
-        if not CI_RUN:
-            session.run("coverage", "html")
+    # Delay the session failure,
+    # even if command fail we want to get the coverage report.
+    try:
+        session.run(
+            "python",
+            *args,
+        )
+    finally:
+        if os.environ.get("USE_COVERAGE") == "true":
+            session.run("coverage", "xml")
+            if not CI_RUN:
+                session.run("coverage", "html")
 
 
 @nox.session

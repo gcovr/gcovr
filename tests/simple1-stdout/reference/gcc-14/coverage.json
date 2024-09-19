@@ -32,6 +32,16 @@
                             "destination_blockno": 4
                         }
                     ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
                     "block_ids": [
                         2
                     ],
@@ -93,6 +103,16 @@
                             "fallthrough": false,
                             "throw": false,
                             "destination_blockno": 5
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
                         }
                     ],
                     "block_ids": [

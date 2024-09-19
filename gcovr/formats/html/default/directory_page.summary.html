@@ -84,6 +84,14 @@
       <td>{{info.branches.total}}</td>
       <td class="{{info.branches.class}}">{{info.branches.coverage}}%</td>
     </tr>
+    {% if not EXCLUDE_CONDITIONS %}
+    <tr>
+      <th scope="row">Conditions:</th>
+      <td>{{info.conditions.exec}}</td>
+      <td>{{info.conditions.total}}</td>
+      <td class="{{info.conditions.class}}">{{info.conditions.coverage}}%</td>
+    </tr>
+    {% endif %}
     {% if SHOW_DECISION %}
     <tr>
       <th scope="row">Decisions:</th>

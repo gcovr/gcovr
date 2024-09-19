@@ -1,12 +1,12 @@
-CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 
 all: links
-	cd project; $(CXX) $(CFLAGS) -c src/main.cpp -o main.o
-	cd project; $(CXX) $(CFLAGS) -c ignore-this/no.cpp -o no.o
-	cd project; $(CXX) $(CFLAGS) -c relevant-library/src/yes.cpp -o yes.o
-	cd project; $(CXX) $(CFLAGS) main.o no.o yes.o -o testcase
+	cd project; $(CXX) $(CXXFLAGS) -c src/main.cpp -o main.o
+	cd project; $(CXX) $(CXXFLAGS) -c ignore-this/no.cpp -o no.o
+	cd project; $(CXX) $(CXXFLAGS) -c relevant-library/src/yes.cpp -o yes.o
+	cd project; $(CXX) $(CXXFLAGS) main.o no.o yes.o -o testcase
 
 run: txt lcov cobertura html sonarqube jacoco coveralls
 

@@ -1,5 +1,8 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+CFLAGS += -fprofile-abs-path
+
 all:
-	cd subfolder&& $(MAKE)
+	cd subfolder&& $(MAKE) CFLAGS="$(CFLAGS)"
 
 run: json
 

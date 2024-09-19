@@ -1,13 +1,17 @@
-all:
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -c main.cpp -o main.o
-	$(CC) -fprofile-arcs -ftest-coverage -fPIC -c update-data.c -o update-data.o
-	$(CXX) -fprofile-arcs -ftest-coverage -fPIC -o testcase main.o update-data.o
+include $(dir $(MAKEFILE_LIST))../common.mk
 
-run: txt lcov cobertura html sonarqube jacoco coveralls
+all:
+	$(CXX) $(CXXFLAGS) -c main.cpp -o main.o
+	$(CC) $(CFLAGS) -c update-data.c -o update-data.o
+	$(CXX) $(CXXFLAGS) -o testcase main.o update-data.o
+
+run: json txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --json-pretty --json $@
+	$(GCOVR) --verbose --keep --json-pretty --json $@
+
+json: coverage.json
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt

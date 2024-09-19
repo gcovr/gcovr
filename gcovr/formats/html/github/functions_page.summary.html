@@ -28,6 +28,13 @@
                 <div class="mr-2" style="margin: auto;">{{info.branches.exec}}/{{info.branches.total}}</div>
                 <div class="Label--minw"><span class="{{info.branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.branches.coverage}}%</span></div>
             </div>
+            {% if not EXCLUDE_CONDITIONS %}
+            <div class="d-flex">
+                <div class="mr-2">Conditions:</div>
+                <div class="mr-2" style="margin: auto;">{{info.conditions.exec}}/{{info.conditions.total}}</div>
+                <div class="Label--minw"><span class="{{info.conditions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.conditions.coverage}}%</span></div>
+            </div>
+            {% endif %}
             {% if SHOW_DECISION %}
             <div class="d-flex">
                 <div class="mr-2">Decisions:</div>

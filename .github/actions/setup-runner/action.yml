@@ -44,7 +44,6 @@ runs:
       shell: bash
       run: |
         export HOMEBREW_NO_AUTO_UPDATE=1
-        export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
         brew update
         brew install ninja
         brew install libxml2

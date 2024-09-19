@@ -32,6 +32,7 @@ from ...merging import (
     FUNCTION_MAX_LINE_MERGE_OPTIONS,
     GcovrMergeAssertionError,
     insert_branch_coverage,
+    insert_condition_coverage,
     insert_function_coverage,
     insert_line_coverage,
     merge_covdata,
@@ -47,6 +48,7 @@ from ...utils import (
 from .workers import Workers, locked_directory
 from ...coverage import (
     BranchCoverage,
+    ConditionCoverage,
     CovData,
     FileCoverage,
     FunctionCoverage,
@@ -247,6 +249,17 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                         fallthrough=branch["fallthrough"],
                         throw=branch["throw"],
                         destination_blockno=branch["destination_block_id"],
+                    ),
+                )
+            for index, condition in enumerate(line.get("conditions", [])):
+                insert_condition_coverage(
+                    line_cov,
+                    index,
+                    ConditionCoverage(
+                        condition["count"],
+                        condition["covered"],
+                        condition["not_covered_true"],
+                        condition["not_covered_false"],
                     ),
                 )
         for function in file["functions"]:
@@ -661,6 +674,11 @@ class GcovProgram:
                     if self.__check_gcov_version_content("JSON format version: 2"):
                         LOGGER.debug("GCOV capabilities: JSON format available.")
                         GcovProgram.__default_options.append("--json-format")
+                        if self.__check_gcov_help_content("--condition"):
+                            LOGGER.debug(
+                                "GCOV capabilities: Condition coverage available."
+                            )
+                            GcovProgram.__default_options.append("--condition")
                     else:
                         LOGGER.debug(
                             "GCOV capabilities: Unsupported JSON format detected."
@@ -794,6 +812,7 @@ class GcovProgram:
         """
         gcov_process = self.__get_gcov_process(args, **kwargs)
         out, err = gcov_process.communicate()
+        LOGGER.debug(f"GCOV return code was {gcov_process.returncode}")
         if gcov_process.returncode < 0:
             raise RuntimeError(
                 f"GCOV returncode was {gcov_process.returncode} (exited by signal).\n"
@@ -888,6 +907,11 @@ def run_gcov_and_process_files(
 
                     # Process *.gcov files
                     for gcov_filename in active_gcov_files:
+                        if not os.path.exists(gcov_filename):  # pragma: no cover
+                            raise RuntimeError(
+                                f"Sanity check failed, output file {gcov_filename} doesn't exist but no error from GCOV detected."
+                            )
+
                         if gcov_filename.endswith(".gcov"):
                             process_gcov_data(
                                 gcov_filename, filename, covdata, options, chdir
@@ -896,7 +920,7 @@ def run_gcov_and_process_files(
                             process_gcov_json_data(gcov_filename, covdata, options)
                         else:  # pragma: no cover
                             raise RuntimeError(
-                                f"Unknown gcov output format {filename}."
+                                f"Unknown gcov output format {gcov_filename}."
                             )
                     done = True
 

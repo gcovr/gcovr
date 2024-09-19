@@ -1,9 +1,9 @@
-CFLAGS= -fprofile-arcs -ftest-coverage -fPIC
+include $(dir $(MAKEFILE_LIST))../common.mk
 
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 
 all: links
-	cd symlink; $(CXX) $(CFLAGS) main.cpp -o testcase
+	cd symlink; $(CXX) $(CXXFLAGS) main.cpp -o testcase
 
 run: txt
 

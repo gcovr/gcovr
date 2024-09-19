@@ -4,18 +4,18 @@
     "files": [
         {
             "filename": "main.cpp",
-            "line_total": 170,
-            "line_covered": 147,
+            "line_total": 178,
+            "line_covered": 154,
             "line_percent": 86.5,
-            "function_total": 32,
-            "function_covered": 32,
+            "function_total": 34,
+            "function_covered": 34,
             "function_percent": 100.0,
-            "branch_total": 89,
-            "branch_covered": 46,
-            "branch_percent": 51.7,
-            "decision_total": 65,
-            "decision_covered": 33,
-            "decision_percent": 50.8
+            "branch_total": 97,
+            "branch_covered": 49,
+            "branch_percent": 50.5,
+            "decision_total": 69,
+            "decision_covered": 35,
+            "decision_percent": 50.7
         },
         {
             "filename": "switch_test.cpp",
@@ -48,16 +48,16 @@
             "decision_percent": 33.3
         }
     ],
-    "line_total": 181,
-    "line_covered": 155,
-    "line_percent": 85.6,
-    "function_total": 36,
-    "function_covered": 36,
+    "line_total": 189,
+    "line_covered": 162,
+    "line_percent": 85.7,
+    "function_total": 38,
+    "function_covered": 38,
     "function_percent": 100.0,
-    "branch_total": 95,
-    "branch_covered": 48,
-    "branch_percent": 50.5,
-    "decision_total": 68,
-    "decision_covered": 34,
+    "branch_total": 103,
+    "branch_covered": 51,
+    "branch_percent": 49.5,
+    "decision_total": 72,
+    "decision_covered": 36,
     "decision_percent": 50.0
 }

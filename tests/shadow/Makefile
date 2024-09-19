@@ -1,5 +1,7 @@
+include $(dir $(MAKEFILE_LIST))../common.mk
+
 all:
-	mkdir -p output && cd output && $(CXX) -fprofile-arcs -ftest-coverage -fPIC ../main.cpp -o testcase
+	mkdir -p output && cd output && $(CXX) $(CXXFLAGS) ../main.cpp -o testcase
 
 run: txt cobertura html sonarqube jacoco coveralls json
 
