@@ -117,12 +117,12 @@ def search_file(
 
         dirs[:] = [
             d
-            for d in dirs
+            for d in sorted(dirs)
             if not any(exc.match(os.path.join(root, d)) for exc in exclude_dirs)
         ]
         root = os.path.abspath(root)
 
-        for name in files:
+        for name in sorted(files):
             if predicate(name):
                 yield os.path.abspath(os.path.join(root, name))
 

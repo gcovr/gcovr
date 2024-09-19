@@ -51,13 +51,13 @@
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             {% for condition in row.linecondition.condition %}
                             {% if condition.not_covered_true and condition.not_covered_false %}
-                            <div class="color-fg-danger">&cross; Condition {{condition.name}}: Not covered.</div>
+                            <div class="color-fg-danger">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Not covered.</div>
                             {% elif condition.not_covered_true %}
-                            <div class="color-fg-danger">&cross; Condition {{condition.name}}: True not covered.</div>
+                            <div class="color-fg-danger">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}True not covered.</div>
                             {% elif condition.not_covered_false %}
-                            <div class="color-fg-danger">&cross; Condition {{condition.name}}: False not covered.</div>
+                            <div class="color-fg-danger">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}False not covered.</div>
                             {% else %}
-                            <div class="color-taken-branch">&check; Condition {{condition.name}}: Fully covered.</div>
+                            <div class="color-taken-branch">&check; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Fully covered.</div>
                             {% endif%}
                             {% endfor %}
                         </div>

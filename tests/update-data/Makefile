@@ -5,11 +5,13 @@ all:
 	$(CC) $(CFLAGS) -c update-data.c -o update-data.o
 	$(CXX) $(CXXFLAGS) -o testcase main.o update-data.o
 
-run: txt lcov cobertura html sonarqube jacoco coveralls
+run: json txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --json-pretty --json $@
+	$(GCOVR) --verbose --keep --json-pretty --json $@
+
+json: coverage.json
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt

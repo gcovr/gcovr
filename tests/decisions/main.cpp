@@ -278,6 +278,18 @@ bool checkTernary2False(int a)
    return (a > 5 && a < 10) ? true : false;
 }
 
+bool checkSplittedTrue(int a)
+{
+   if (a > 5) if (a < 10) return true;
+   return false;
+}
+
+bool checkSplittedFalse(int a)
+{
+   if (a > 5) if (a < 10) return true;
+   return false;
+}
+
 int checkForLoop(int a)
 {
    int temp = 0;
@@ -399,6 +411,9 @@ int main(int argc, char *argv[])
 
    checkTernary2True(6);
    checkTernary2False(4);
+
+   checkSplittedTrue(6);
+   checkSplittedFalse(4);
 
    checkForLoop(5);
    checkComplexForLoop(5);

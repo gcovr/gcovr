@@ -48,13 +48,13 @@
           <div class="lineconditionContents">
             {% for condition in row.linecondition.condition %}
             {% if condition.not_covered_true and condition.not_covered_false %}
-            <div class="notTakenCondition">&cross; Condition {{condition.name}}: Not covered.</div>
+            <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Not covered.</div>
             {% elif condition.not_covered_true %}
-            <div class="notTakenCondition">&cross; Condition {{condition.name}}: True not covered.</div>
+            <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}True not covered.</div>
             {% elif condition.not_covered_false %}
-            <div class="notTakenCondition">&cross; Condition {{condition.name}}: False not covered.</div>
+            <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}False not covered.</div>
             {% else %}
-            <div class="takenCondition">&check; Condition {{condition.name}}: Fully covered.</div>
+            <div class="takenCondition">&check; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Fully covered.</div>
             {% endif%}
             {% endfor %}
           </div>
