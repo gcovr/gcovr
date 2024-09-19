@@ -2,16 +2,17 @@ ARG DOCKER_OS
 
 FROM $DOCKER_OS
 
+ARG TARGETARCH
 ARG DOCKER_OS
 ARG USERID
 ARG CC
 ARG CXX
 ARG NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
 
-
 RUN --mount=type=cache,target=/var/cache/apt <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
+
 apt-get update
 # Install base requirements
 apt-get install -y sudo \
@@ -20,9 +21,11 @@ apt-get install -y sudo \
                    $CC \
                    $CXX \
                    ninja-build \
-                   curl \
                    libxml2-utils \
-                   git
+                   git \
+                   apt-transport-https \
+                   curl \
+                   gnupg
 
 # Install Python 3.8 as the default "python3" executable on older linux distribution
 apt install -y python3-setuptools
@@ -81,10 +84,23 @@ make install
 rm -rf /tmp/googletest
 EOS
 
+RUN  <<EOS
+# Install bazel
+if [ "$TARGETARCH" == "arm64" ] ; then
+  echo "4e815a3f92a0285e76f306c5179a4c639e019cb9 -" > /tmp/bazel.sha1sum
+else
+  echo "627291b8ef18762dd98b1535fe5c84b1792ac2d0 -" > /tmp/bazel.sha1sum
+fi
+curl -fsSL https://github.com/bazelbuild/bazelisk/releases/download/v1.21.0/bazelisk-linux-$TARGETARCH \
+  | tee /usr/local/bin/bazel \
+  | sha1sum -c /tmp/bazel.sha1sum
+chmod 0755 /usr/local/bin/bazel
+EOS
+
 # Create new user "docker" and set password to "docker"
 RUN addgroup docker
 RUN id -un "$USERID" && userdel $(id -un "$USERID") || true
-RUN useradd -d $HOME $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
+RUN useradd --create-home $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
 RUN echo "docker:docker" | chpasswd
 
 USER docker:docker
