@@ -184,35 +184,6 @@ def updateChangelog(filename: str, lines: List[str]):
     return newLines
 
 
-def updateReadme(filename: str, lines: List[str]):
-    newLines = []
-
-    iterLines = iter(lines)
-    for line in iterLines:
-        newLines.append(line)
-        if line == ".. begin license":
-            break
-    else:
-        raise RuntimeError(f"Start of license not found in {filename!r}.")
-
-    newLines.append("")
-    for line in COPYRIGHT:
-        newLines.append(line)
-    newLines.append("")
-    newLines.append(LICENSE)
-
-    for line in iterLines:
-        if line == "See LICENSE.txt for full details.":
-            newLines.append(line)
-            break
-    else:
-        raise RuntimeError(f"Reference to LICENSE.txr not found in {filename!r}.")
-
-    newLines.extend(iterLines)
-
-    return newLines
-
-
 def updateDocumentation(filename: str, lines: List[str]):
     newLines = []
 
@@ -256,7 +227,10 @@ def updateReferenceData(filename: str, lines: List[str]):
 
 
 def updateLicense(filename: str, lines: List[str]):
-    newLines = []
+    newLines = [
+        "BSD 3-Clause License",
+        "",
+    ]
 
     for line in COPYRIGHT:
         newLines.append(line)
@@ -309,8 +283,6 @@ def main():
                 handlers.append(updateCopyrightString)
             if filename == "CI.yml":
                 handlers.append(updateCallOfReleaseChecklist)
-            if filename == "README.rst":
-                handlers.append(updateReadme)
             if filename == "LICENSE.txt":
                 handlers.append(updateLicense)
             if filename == "test_gcovr.py":
