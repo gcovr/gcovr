@@ -117,10 +117,10 @@ def _process_exclude_branch_source(
                         filecov.lines[lineno].mangled_name is None
                         or filecov.lines[lineno].block_ids is None
                     ):
-                        LOGGER.error(
+                        LOGGER.warning(
                             f"Source branch exclusion at {location} needs at least gcc-14 with supported JSON format."
                         )
-                    if not filecov.lines[lineno].block_ids:
+                    elif not filecov.lines[lineno].block_ids:
                         LOGGER.error(
                             f"Source branch exclusion at {location} found but no block ids defined at this line."
                         )
@@ -138,7 +138,7 @@ def _process_exclude_branch_source(
                             for branchno in line.branches:
                                 branch = line.branches[branchno]
                                 if branch.destination_blockno in block_ids:
-                                    LOGGER.error(
+                                    LOGGER.debug(
                                         f"Source branch exclusion at {location} is excluding branch {branchno} of line {current_lineno}"
                                     )
                                     branch.excluded = True
