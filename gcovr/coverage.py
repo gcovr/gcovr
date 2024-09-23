@@ -477,6 +477,27 @@ class FileCoverage:
         self.lines: Dict[int, LineCoverage] = {}
         self.parent_dirname: str = None
 
+    def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
+        """Get a file coverage object reduced to a single function"""
+        if functioncov.name not in self.functions:
+            raise AssertionError(
+                f"Function {functioncov.name} must be in filtered file coverage object."
+            )
+        if functioncov.function_name is None:
+            raise AssertionError(
+                "Missing data for filtering is missing. Need supported GCOV JSON format to get the information."
+            )
+        filecov = FileCoverage(self.filename)
+        self.functions[functioncov.name] = functioncov
+
+        filecov.lines = {
+            line: value
+            for line, value in self.lines.items()
+            if value.function_name == functioncov.name
+        }
+
+        return filecov
+
     def function_coverage(self) -> CoverageStat:
         total = 0
         covered = 0
