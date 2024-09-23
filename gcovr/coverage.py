@@ -483,9 +483,9 @@ class FileCoverage:
             raise AssertionError(
                 f"Function {functioncov.name} must be in filtered file coverage object."
             )
-        if functioncov.function_name is None:
+        if functioncov.name is None:
             raise AssertionError(
-                "Missing data for filtering is missing. Need supported GCOV JSON format to get the information."
+                "Data for filtering is missing. Need supported GCOV JSON format to get the information."
             )
         filecov = FileCoverage(self.filename)
         self.functions[functioncov.name] = functioncov

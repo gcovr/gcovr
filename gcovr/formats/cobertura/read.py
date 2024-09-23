@@ -77,7 +77,7 @@ def read_report(options: Options) -> CovData:
         for gcovr_file in root.xpath("./packages//class"):
             if gcovr_file.get("filename") is None:  # pragma: no cover
                 LOGGER.warning(
-                    f"missing filename attribute in class element of {filename}"
+                    f"Missing filename attribute in class element of {filename}"
                 )
                 continue
 
