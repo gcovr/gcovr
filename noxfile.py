@@ -318,6 +318,7 @@ def tests(session: nox.Session) -> None:
 
     args = ["-m", "pytest"]
     args += coverage_args
+    args += ["--ignore-glob", "*/external/bazel_tools/*"]
     args += session.posargs
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
