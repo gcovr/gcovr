@@ -340,9 +340,12 @@ def pytest_generate_tests(metafunc):
             marks = [
                 pytest.mark.xfail(
                     name in ["bazel"]
-                    and IS_GCC
-                    and CC_REFERENCE_VERSION not in [8, 9, 10, 11, 12, 13],
-                    reason="Other versions stub the line",
+                    and (
+                        (IS_GCC and CC_REFERENCE_VERSION in [14])
+                        or IS_MACOS
+                        or IS_WINDOWS
+                    ),
+                    reason="Bazel test not working on Windows or MacOs.",
                 ),
                 pytest.mark.skipif(
                     name == "simple1-drive-subst" and not IS_WINDOWS,
