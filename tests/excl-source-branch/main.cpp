@@ -1,6 +1,7 @@
 #include <iostream>
 
 int foo(int param) {
+   // GCOVR_EXCL_BR_SOURCE: No information
    switch (param) {
    case 0:
       return 1;
@@ -15,7 +16,7 @@ int foo(int param) {
    }
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) { // GCOVR_EXCL_BR_SOURCE: No blocks
    if (foo(0) && foo(3)) {
       std::cout << "True" << std::endl;
    }
