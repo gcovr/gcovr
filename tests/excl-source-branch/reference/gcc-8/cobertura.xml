@@ -11,30 +11,30 @@
           <methods/>
           <lines>
             <line number="3" hits="2" branch="false"/>
-            <line number="4" hits="2" branch="true" condition-coverage="40% (2/5)">
+            <line number="5" hits="2" branch="true" condition-coverage="40% (2/5)">
               <conditions>
                 <condition number="0" type="jump" coverage="40%"/>
               </conditions>
             </line>
-            <line number="5" hits="1" branch="false"/>
             <line number="6" hits="1" branch="false"/>
-            <line number="7" hits="0" branch="false"/>
+            <line number="7" hits="1" branch="false"/>
             <line number="8" hits="0" branch="false"/>
             <line number="9" hits="0" branch="false"/>
             <line number="10" hits="0" branch="false"/>
-            <line number="11" hits="1" branch="false"/>
+            <line number="11" hits="0" branch="false"/>
             <line number="12" hits="1" branch="false"/>
-            <line number="13" hits="0" branch="false"/>
+            <line number="13" hits="1" branch="false"/>
             <line number="14" hits="0" branch="false"/>
-            <line number="18" hits="1" branch="false"/>
-            <line number="19" hits="1" branch="true" condition-coverage="50% (3/6)">
+            <line number="15" hits="0" branch="false"/>
+            <line number="19" hits="1" branch="false"/>
+            <line number="20" hits="1" branch="true" condition-coverage="50% (3/6)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
-            <line number="20" hits="1" branch="false"/>
-            <line number="23" hits="0" branch="false"/>
-            <line number="26" hits="1" branch="false"/>
+            <line number="21" hits="1" branch="false"/>
+            <line number="24" hits="0" branch="false"/>
+            <line number="27" hits="1" branch="false"/>
           </lines>
         </class>
       </classes>
