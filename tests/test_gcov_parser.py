@@ -508,7 +508,8 @@ def test_trailing_function_tag():
     assert coverage.functions.keys() == {"example"}
     f_cov = coverage.functions["example"]
     assert list(f_cov.count.keys()) == [3]  # previous lineno + 1
-    assert f_cov.name == "example"
+    assert f_cov.name is None
+    assert f_cov.demangled_name == "example"
     assert f_cov.count[3] == 17  # number of calls
 
 

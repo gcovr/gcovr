@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "subfolder/main.c",
@@ -36,7 +36,7 @@
             "functions": [
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
