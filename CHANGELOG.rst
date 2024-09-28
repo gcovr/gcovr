@@ -10,7 +10,10 @@ Known bugs:
 
 Breaking changes:
 
-- The function return count is removed from internal data model, HTML and JSON output because missing in ``gcov`` JSON output. (:issue:`935`)
+- The function return count is removed from internal data model, HTML and JSON output because missing in
+  ``gcov`` JSON output. (:issue:`935`)
+- Renamed ``name`` key in JSON output to ``demangled_name``. If GCOV JSON format is used the ``name`` key
+  will contained the mangled name. The keys are now aligned with the GCoV JSON format. (:issue:`974`)
 
 New features and notable changes:
 
