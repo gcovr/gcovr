@@ -276,15 +276,15 @@ class FunctionCoverage:
     to merge function coverage in different ways
 
     Args:
-        name (str):
-            The name (signature) of the functions.
+        demangled_name (str):
+            The demangled name (signature) of the functions.
         lineno (int):
             The line number.
         count (int):
             How often this function was executed.
         blocks (float):
             Block coverage of function.
-        mangled_name (str, optional):
+        name (str, optional):
             The mangled name of the function.
         start ((int, int)), optional):
             Tuple with function start line and column.
@@ -294,27 +294,35 @@ class FunctionCoverage:
             Whether this line is excluded by a marker.
     """
 
-    __slots__ = "name", "mangled_name", "count", "blocks", "start", "end", "excluded"
+    __slots__ = (
+        "demangled_name",
+        "name",
+        "count",
+        "blocks",
+        "start",
+        "end",
+        "excluded",
+    )
 
     def __init__(
         self,
-        name: str,
+        demangled_name: str,
+        name: Optional[str] = None,
         *,
         lineno: int,
         count: int,
         blocks: float,
-        mangled_name: Optional[str] = None,
         start: Optional[Tuple[int, int]] = None,
         end: Optional[Tuple[int, int]] = None,
         excluded: bool = False,
     ) -> None:
         if count < 0:
             raise AssertionError("count must not be a negative value.")
+        self.demangled_name = demangled_name
         self.name = name
         self.count: Dict[int, int] = {lineno: count}
         self.blocks: Dict[int, float] = {lineno: blocks}
         self.excluded: Dict[int, bool] = {lineno: excluded}
-        self.mangled_name = mangled_name
         self.start: Dict[int, Optional[Tuple[int, int]]] = (
             None if start is None else {lineno: start}
         )

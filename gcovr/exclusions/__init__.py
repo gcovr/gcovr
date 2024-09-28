@@ -125,15 +125,15 @@ def remove_internal_functions(filecov: FileCoverage):
 
     # iterate over shallow copy
     for function in list(filecov.functions.values()):
-        if _function_can_be_excluded(function.name):
+        if _function_can_be_excluded(function.demangled_name):
             LOGGER.debug(
                 "Ignoring symbol %s in line %s in file %s",
-                function.name,
+                function.demangled_name,
                 ", ".join([str(line) for line in sorted(function.count.keys())]),
                 filecov.filename,
             )
 
-            filecov.functions.pop(function.name)
+            filecov.functions.pop(function.demangled_name)
 
 
 def _function_can_be_excluded(name: str) -> bool:
@@ -182,7 +182,7 @@ def remove_functions(filecov: FileCoverage, patterns: List[re.Pattern]) -> None:
             for lineno, functions in functions_by_line.items():
                 for function in functions:
                     for pattern in patterns:
-                        if pattern.fullmatch(function.name):
+                        if pattern.fullmatch(function.demangled_name):
                             exclude_ranges += get_function_exclude_ranges(
                                 filecov.filename,
                                 lineno,

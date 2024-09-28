@@ -273,13 +273,12 @@ def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
 def _json_from_function(function: FunctionCoverage) -> list:
     json_functions = []
     for lineno, count in function.count.items():
-        json_function = {
-            "name": function.name,
-        }
-        if function.mangled_name is not None:
-            json_function["mangled_name"] = function.mangled_name
+        json_function = {}
+        if function.name is not None:
+            json_function["name"] = function.name
         json_function.update(
             {
+                "demangled_name": function.demangled_name,
                 "lineno": lineno,
                 "execution_count": count,
                 "blocks_percent": function.blocks[lineno],
