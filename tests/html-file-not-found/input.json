@@ -7,7 +7,7 @@
                     "blocks_percent": 100.0,
                     "execution_count": 1,
                     "lineno": 2,
-                    "name": "main"
+                    "demangled_name": "main"
                 }
             ],
             "lines": [
@@ -24,5 +24,5 @@
             ]
         }
     ],
-    "gcovr/format_version": "0.9"
+    "gcovr/format_version": "0.10"
 }

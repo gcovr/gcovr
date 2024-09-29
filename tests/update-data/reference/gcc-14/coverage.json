@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
@@ -47,7 +47,7 @@
             "functions": [
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -85,7 +85,7 @@
             "functions": [
                 {
                     "name": "update_data",
-                    "mangled_name": "update_data",
+                    "demangled_name": "update_data",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -200,7 +200,7 @@
             "functions": [
                 {
                     "name": "called_from_both",
-                    "mangled_name": "called_from_both",
+                    "demangled_name": "called_from_both",
                     "lineno": 17,
                     "execution_count": 2,
                     "blocks_percent": 75.0,
@@ -211,7 +211,7 @@
                 },
                 {
                     "name": "called_from_main",
-                    "mangled_name": "called_from_main",
+                    "demangled_name": "called_from_main",
                     "lineno": 7,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -222,7 +222,7 @@
                 },
                 {
                     "name": "called_from_update_data",
-                    "mangled_name": "called_from_update_data",
+                    "demangled_name": "called_from_update_data",
                     "lineno": 12,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

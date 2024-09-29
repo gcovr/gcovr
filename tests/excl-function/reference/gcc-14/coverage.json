@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
@@ -595,8 +595,8 @@
             ],
             "functions": [
                 {
-                    "name": "bar(int)",
-                    "mangled_name": "_Z3bari",
+                    "name": "_Z3bari",
+                    "demangled_name": "bar(int)",
                     "lineno": 19,
                     "execution_count": 0,
                     "blocks_percent": 80.0,
@@ -607,8 +607,8 @@
                     ]
                 },
                 {
-                    "name": "foo(int)",
-                    "mangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
+                    "demangled_name": "foo(int)",
                     "lineno": 9,
                     "execution_count": 0,
                     "blocks_percent": 80.0,
@@ -620,7 +620,7 @@
                 },
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 95,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -630,8 +630,8 @@
                     ]
                 },
                 {
-                    "name": "sort_excluded()",
-                    "mangled_name": "_Z13sort_excludedv",
+                    "name": "_Z13sort_excludedv",
+                    "demangled_name": "sort_excluded()",
                     "lineno": 44,
                     "execution_count": 1,
                     "blocks_percent": 92.3,
@@ -641,8 +641,8 @@
                     ]
                 },
                 {
-                    "name": "sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
-                    "mangled_name": "_ZZ13sort_excludedvENKUliiE_clEii",
+                    "name": "_ZZ13sort_excludedvENKUliiE_clEii",
+                    "demangled_name": "sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
                     "lineno": 44,
                     "execution_count": 41,
                     "blocks_percent": 100.0,
@@ -652,8 +652,8 @@
                     ]
                 },
                 {
-                    "name": "sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "mangled_name": "_ZZ13sort_excludedvENKUliiE0_clEii",
+                    "name": "_ZZ13sort_excludedvENKUliiE0_clEii",
+                    "demangled_name": "sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
                     "lineno": 45,
                     "execution_count": 41,
                     "blocks_percent": 100.0,
@@ -663,8 +663,8 @@
                     ]
                 },
                 {
-                    "name": "sort_excluded_both()",
-                    "mangled_name": "_Z18sort_excluded_bothv",
+                    "name": "_Z18sort_excluded_bothv",
+                    "demangled_name": "sort_excluded_both()",
                     "lineno": 66,
                     "execution_count": 0,
                     "blocks_percent": 100.0,
@@ -675,8 +675,8 @@
                     ]
                 },
                 {
-                    "name": "sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const",
-                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
+                    "name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
+                    "demangled_name": "sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const",
                     "lineno": 73,
                     "execution_count": 0,
                     "blocks_percent": 100.0,
@@ -687,8 +687,8 @@
                     ]
                 },
                 {
-                    "name": "sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "mangled_name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
+                    "name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
+                    "demangled_name": "sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const",
                     "lineno": 84,
                     "execution_count": 0,
                     "blocks_percent": 75.0,
@@ -699,8 +699,8 @@
                     ]
                 },
                 {
-                    "name": "sort_lambda_excluded()",
-                    "mangled_name": "_Z20sort_lambda_excludedv",
+                    "name": "_Z20sort_lambda_excludedv",
+                    "demangled_name": "sort_lambda_excluded()",
                     "lineno": 48,
                     "execution_count": 1,
                     "blocks_percent": 92.3,
@@ -710,8 +710,8 @@
                     ]
                 },
                 {
-                    "name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
-                    "mangled_name": "_ZZ20sort_lambda_excludedvENKUliiE_clEii",
+                    "name": "_ZZ20sort_lambda_excludedvENKUliiE_clEii",
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
                     "lineno": 50,
                     "execution_count": 41,
                     "blocks_percent": 100.0,
@@ -721,8 +721,8 @@
                     ]
                 },
                 {
-                    "name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "mangled_name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
                     "lineno": 57,
                     "execution_count": 0,
                     "blocks_percent": 100.0,

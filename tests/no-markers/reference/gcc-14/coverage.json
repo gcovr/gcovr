@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
@@ -248,8 +248,8 @@
             ],
             "functions": [
                 {
-                    "name": "bar(int)",
-                    "mangled_name": "_Z3bari",
+                    "name": "_Z3bari",
+                    "demangled_name": "bar(int)",
                     "lineno": 18,
                     "execution_count": 1,
                     "blocks_percent": 66.7,
@@ -259,8 +259,8 @@
                     ]
                 },
                 {
-                    "name": "foo(int)",
-                    "mangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
+                    "demangled_name": "foo(int)",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 63.6,
@@ -271,7 +271,7 @@
                 },
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 26,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

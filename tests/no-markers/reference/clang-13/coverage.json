@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
@@ -166,19 +166,19 @@
             ],
             "functions": [
                 {
-                    "name": "bar(int)",
+                    "demangled_name": "bar(int)",
                     "lineno": 18,
                     "execution_count": 1,
                     "blocks_percent": 75.0
                 },
                 {
-                    "name": "foo(int)",
+                    "demangled_name": "foo(int)",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 71.0
                 },
                 {
-                    "name": "main",
+                    "demangled_name": "main",
                     "lineno": 26,
                     "execution_count": 1,
                     "blocks_percent": 100.0
