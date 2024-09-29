@@ -680,8 +680,8 @@ class SummarizedStats:
     line: CoverageStat
     branch: CoverageStat
     condition: CoverageStat
-    function: CoverageStat
     decision: DecisionCoverageStat
+    function: CoverageStat
     call: CoverageStat
 
     @staticmethod
@@ -690,8 +690,8 @@ class SummarizedStats:
             line=CoverageStat.new_empty(),
             branch=CoverageStat.new_empty(),
             condition=CoverageStat.new_empty(),
-            function=CoverageStat.new_empty(),
             decision=DecisionCoverageStat.new_empty(),
+            function=CoverageStat.new_empty(),
             call=CoverageStat.new_empty(),
         )
 
@@ -708,8 +708,8 @@ class SummarizedStats:
             line=filecov.line_coverage(),
             branch=filecov.branch_coverage(),
             condition=filecov.condition_coverage(),
-            function=filecov.function_coverage(),
             decision=filecov.decision_coverage(),
+            function=filecov.function_coverage(),
             call=filecov.call_coverage(),
         )
 
@@ -717,8 +717,8 @@ class SummarizedStats:
         self.line += other.line
         self.branch += other.branch
         self.condition += other.condition
-        self.function += other.function
         self.decision += other.decision
+        self.function += other.function
         self.call += other.call
         return self
 
