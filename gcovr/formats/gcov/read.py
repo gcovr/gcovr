@@ -275,8 +275,8 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
             insert_function_coverage(
                 file_cov,
                 FunctionCoverage(
-                    function["demangled_name"],
                     function["name"],
+                    function["demangled_name"],
                     lineno=function["start_line"],
                     count=function["execution_count"],
                     blocks=blocks,
