@@ -331,36 +331,14 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN4RAIIC2Eb",
-                    "demangled_name": "RAII::RAII(bool)",
-                    "lineno": 21,
+                    "name": "_Z22function_with_catchersi",
+                    "demangled_name": "function_with_catchers(int)",
+                    "lineno": 24,
                     "execution_count": 3,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 63.2,
                     "pos": [
-                        "21:1",
-                        "21:33"
-                    ]
-                },
-                {
-                    "name": "_ZNK4RAII21method_that_may_throwEv",
-                    "demangled_name": "RAII::method_that_may_throw() const",
-                    "lineno": 16,
-                    "execution_count": 3,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "16:9",
-                        "18:5"
-                    ]
-                },
-                {
-                    "name": "_ZN4RAIID2Ev",
-                    "demangled_name": "RAII::~RAII()",
-                    "lineno": 22,
-                    "execution_count": 3,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "22:1",
-                        "22:16"
+                        "24:5",
+                        "44:1"
                     ]
                 },
                 {
@@ -375,14 +353,36 @@
                     ]
                 },
                 {
-                    "name": "_Z22function_with_catchersi",
-                    "demangled_name": "function_with_catchers(int)",
-                    "lineno": 24,
+                    "name": "_ZN4RAIIC2Eb",
+                    "demangled_name": "RAII::RAII(bool)",
+                    "lineno": 21,
                     "execution_count": 3,
-                    "blocks_percent": 63.2,
+                    "blocks_percent": 100.0,
                     "pos": [
-                        "24:5",
-                        "44:1"
+                        "21:1",
+                        "21:33"
+                    ]
+                },
+                {
+                    "name": "_ZN4RAIID2Ev",
+                    "demangled_name": "RAII::~RAII()",
+                    "lineno": 22,
+                    "execution_count": 3,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "22:1",
+                        "22:16"
+                    ]
+                },
+                {
+                    "name": "_ZNK4RAII21method_that_may_throwEv",
+                    "demangled_name": "RAII::method_that_may_throw() const",
+                    "lineno": 16,
+                    "execution_count": 3,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "16:9",
+                        "18:5"
                     ]
                 },
                 {

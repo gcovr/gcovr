@@ -595,6 +595,40 @@
             ],
             "functions": [
                 {
+                    "name": "_Z13sort_excludedv",
+                    "demangled_name": "sort_excluded()",
+                    "lineno": 44,
+                    "execution_count": 1,
+                    "blocks_percent": 92.3,
+                    "pos": [
+                        "44:6",
+                        "46:1"
+                    ]
+                },
+                {
+                    "name": "_Z18sort_excluded_bothv",
+                    "demangled_name": "sort_excluded_both()",
+                    "lineno": 66,
+                    "execution_count": 0,
+                    "blocks_percent": 100.0,
+                    "gcovr/excluded": true,
+                    "pos": [
+                        "66:6",
+                        "91:1"
+                    ]
+                },
+                {
+                    "name": "_Z20sort_lambda_excludedv",
+                    "demangled_name": "sort_lambda_excluded()",
+                    "lineno": 48,
+                    "execution_count": 1,
+                    "blocks_percent": 92.3,
+                    "pos": [
+                        "48:6",
+                        "64:1"
+                    ]
+                },
+                {
                     "name": "_Z3bari",
                     "demangled_name": "bar(int)",
                     "lineno": 19,
@@ -619,39 +653,6 @@
                     ]
                 },
                 {
-                    "name": "main",
-                    "demangled_name": "main",
-                    "lineno": 95,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "95:5",
-                        "104:1"
-                    ]
-                },
-                {
-                    "name": "_Z13sort_excludedv",
-                    "demangled_name": "sort_excluded()",
-                    "lineno": 44,
-                    "execution_count": 1,
-                    "blocks_percent": 92.3,
-                    "pos": [
-                        "44:6",
-                        "46:1"
-                    ]
-                },
-                {
-                    "name": "_ZZ13sort_excludedvENKUliiE_clEii",
-                    "demangled_name": "sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
-                    "lineno": 44,
-                    "execution_count": 41,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "44:54",
-                        "44:54"
-                    ]
-                },
-                {
                     "name": "_ZZ13sort_excludedvENKUliiE0_clEii",
                     "demangled_name": "sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
                     "lineno": 45,
@@ -663,27 +664,14 @@
                     ]
                 },
                 {
-                    "name": "_Z18sort_excluded_bothv",
-                    "demangled_name": "sort_excluded_both()",
-                    "lineno": 66,
-                    "execution_count": 0,
+                    "name": "_ZZ13sort_excludedvENKUliiE_clEii",
+                    "demangled_name": "sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
+                    "lineno": 44,
+                    "execution_count": 41,
                     "blocks_percent": 100.0,
-                    "gcovr/excluded": true,
                     "pos": [
-                        "66:6",
-                        "91:1"
-                    ]
-                },
-                {
-                    "name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
-                    "demangled_name": "sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const",
-                    "lineno": 73,
-                    "execution_count": 0,
-                    "blocks_percent": 100.0,
-                    "gcovr/excluded": true,
-                    "pos": [
-                        "73:7",
-                        "78:7"
+                        "44:54",
+                        "44:54"
                     ]
                 },
                 {
@@ -699,14 +687,27 @@
                     ]
                 },
                 {
-                    "name": "_Z20sort_lambda_excludedv",
-                    "demangled_name": "sort_lambda_excluded()",
-                    "lineno": 48,
-                    "execution_count": 1,
-                    "blocks_percent": 92.3,
+                    "name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
+                    "demangled_name": "sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const",
+                    "lineno": 73,
+                    "execution_count": 0,
+                    "blocks_percent": 100.0,
+                    "gcovr/excluded": true,
                     "pos": [
-                        "48:6",
-                        "64:1"
+                        "73:7",
+                        "78:7"
+                    ]
+                },
+                {
+                    "name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
+                    "lineno": 57,
+                    "execution_count": 0,
+                    "blocks_percent": 100.0,
+                    "gcovr/excluded": true,
+                    "pos": [
+                        "57:7",
+                        "62:7"
                     ]
                 },
                 {
@@ -721,15 +722,14 @@
                     ]
                 },
                 {
-                    "name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
-                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "lineno": 57,
-                    "execution_count": 0,
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 95,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
-                    "gcovr/excluded": true,
                     "pos": [
-                        "57:7",
-                        "62:7"
+                        "95:5",
+                        "104:1"
                     ]
                 }
             ]

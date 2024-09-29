@@ -1,8 +1,8 @@
 TN:GCOVR report
 SF:tests/wspace/src code/main.cpp
 VER:251395fea4d88bf2d3ffc4d00110a5ef
-FN:4,foo(int)
-FNDA:1,foo(int)
+FN:4,_Z3fooi
+FNDA:1,_Z3fooi
 FN:13,main
 FNDA:1,main
 FNF:2
