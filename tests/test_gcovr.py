@@ -338,14 +338,14 @@ def pytest_generate_tests(metafunc):
                 continue
 
             marks = [
-                pytest.mark.xfail(
+                pytest.mark.skipif(
                     name in ["bazel"]
                     and (
                         (IS_GCC and CC_REFERENCE_VERSION in [14])
                         or IS_MACOS
                         or IS_WINDOWS
                     ),
-                    reason="Bazel test not working on Windows or MacOs.",
+                    reason="Bazel test not working with JSON intermediate format, on Windows or on MacOs.",
                 ),
                 pytest.mark.skipif(
                     name == "simple1-drive-subst" and not IS_WINDOWS,
