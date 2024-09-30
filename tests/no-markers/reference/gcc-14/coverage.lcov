@@ -1,10 +1,10 @@
 TN:GCOVR report
 SF:tests/no-markers/main.cpp
 VER:058d6bcbb91973465139dfd011da6d89
-FN:18,bar(int)
-FNDA:1,bar(int)
-FN:3,foo(int)
-FNDA:1,foo(int)
+FN:18,_Z3bari
+FNDA:1,_Z3bari
+FN:3,_Z3fooi
+FNDA:1,_Z3fooi
 FN:26,main
 FNDA:1,main
 FNF:3

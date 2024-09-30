@@ -441,28 +441,6 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN3BarC2Ev",
-                    "demangled_name": "Bar::Bar()",
-                    "lineno": 7,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "7:5",
-                        "8:6"
-                    ]
-                },
-                {
-                    "name": "_ZN3BarD0Ev",
-                    "demangled_name": "Bar::~Bar()",
-                    "lineno": 9,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "9:13",
-                        "10:6"
-                    ]
-                },
-                {
                     "name": "_Z3bari",
                     "demangled_name": "bar(int)",
                     "lineno": 38,
@@ -483,6 +461,39 @@
                     "pos": [
                         "16:5",
                         "36:1"
+                    ]
+                },
+                {
+                    "name": "_ZN3BarC2Ev",
+                    "demangled_name": "Bar::Bar()",
+                    "lineno": 7,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "7:5",
+                        "8:6"
+                    ]
+                },
+                {
+                    "name": "_ZN3BarD0Ev",
+                    "demangled_name": "Bar::~Bar()",
+                    "lineno": 9,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0,
+                    "pos": [
+                        "9:13",
+                        "10:6"
+                    ]
+                },
+                {
+                    "name": "_ZN3BarD2Ev",
+                    "demangled_name": "Bar::~Bar()",
+                    "lineno": 9,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "9:13",
+                        "10:6"
                     ]
                 },
                 {

@@ -72,21 +72,39 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         c = etree.Element("class")
         # The Cobertura DTD requires a methods section, which isn't
         # trivial to get from gcov (so we will leave it blank)
-        etree.SubElement(c, "methods")
+        methods = etree.SubElement(c, "methods")
+        for functioncov in data.functions.values():
+            if functioncov.name is not None:
+                filtered_filecov = data.filter_for_function(functioncov)
+                function_stats = SummarizedStats.from_file(filtered_filecov)
+                name = functioncov.demangled_name
+                if "(" in name:
+                    name = name.split("(", maxsplit=1)[0]
+                    signature = functioncov.demangled_name[len(name) :]
+                else:
+                    signature = "()"
+                method = etree.SubElement(methods, "method")
+                method.set("name", name)
+                method.set("signature", signature)
+                method.set("line-rate", _rate(function_stats.line))
+                method.set("branch-rate", _rate(function_stats.branch))
+                method.set("complexity", "0.0")
+                lines = etree.SubElement(method, "lines")
+                for line_cov in filtered_filecov.lines.values():
+                    if line_cov.is_reportable:
+                        lines.append(_line_element(line_cov))
+
         lines = etree.SubElement(c, "lines")
 
         # TODO should use FileCoverage.branch_coverage() calculation
         class_branch = CoverageStat.new_empty()
-        for lineno in sorted(data.lines):
-            line_cov = data.lines[lineno]
-            if not line_cov.is_reportable:
-                continue
+        for line_cov in data.lines.values():
+            if line_cov.is_reportable:
+                b = line_cov.branch_coverage()
+                if b.total:
+                    class_branch += b
 
-            b = line_cov.branch_coverage()
-            if b.total:
-                class_branch += b
-
-            lines.append(_line_element(line_cov))
+                lines.append(_line_element(line_cov))
 
         stats = SummarizedStats.from_file(data)
 

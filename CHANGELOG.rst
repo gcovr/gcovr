@@ -10,10 +10,13 @@ Known bugs:
 
 Breaking changes:
 
-- The function return count is removed from internal data model, HTML and JSON output because missing in
-  ``gcov`` JSON output. (:issue:`935`)
-- Renamed ``name`` key in JSON output to ``demangled_name``. If GCOV JSON format is used the ``name`` key
-  will contained the mangled name. The keys are now aligned with the GCoV JSON format. (:issue:`974`)
+- Changes related ot added support of ``gcov`` JSON intermediate format:
+
+  - The function return count is removed from internal data model, HTML and JSON output because missing in
+    ``gcov`` JSON intermediate format. (:issue:`935`)
+  - Renamed ``name`` key in in data model and JSON report to ``demangled_name``. If ``gcov`` JSON
+    intermediate format is used the ``name`` key will contained the mangled name. The keys are now
+    aligned with the ``gcov`` JSON intermediate format. (:issue:`974`)
 
 New features and notable changes:
 
@@ -21,8 +24,11 @@ New features and notable changes:
 - Detect suspicious counter values in ``gcov`` output. (:issue:`903`)
 - Add :option:`--html-single-page` to create a single page report (static or with Javascript). (:issue:`916`)
 - Upload standalone applications as release artifacts. (:issue:`941`)
-- Add support for GCOV JSON intermediate format. (:issue:`766`)
-- Add function, block and condition information to data model if ``gcov`` JSON format is used. (:issue:`954`, :issue:`960`, :issue:`964`)
+- Add support for ``gcov`` JSON intermediate format. (:issue:`766`)
+
+  - Add function, block and condition information to data model. (:issue:`954`, :issue:`960`, :issue:`964`)
+  - Add function function coverage to coveralls and HTML report. (:issue:`975`)
+
 - Add :ref:`Exclusion markers` to exclude a while function. (:issue:`955`)
 - Change sort order in JSON output files. (:issue:`959`)
 

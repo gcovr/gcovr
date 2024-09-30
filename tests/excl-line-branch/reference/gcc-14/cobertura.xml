@@ -8,7 +8,63 @@
     <package name="" line-rate="0.88235" branch-rate="0.8" complexity="0.0">
       <classes>
         <class name="main_cpp" filename="main.cpp" line-rate="0.88235" branch-rate="0.8" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="bar" signature="(int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="foo" signature="(int)" line-rate="0.77778" branch-rate="0.75" complexity="0.0">
+              <lines>
+                <line number="16" hits="5" branch="false"/>
+                <line number="17" hits="5" branch="true" condition-coverage="100% (4/4)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="100%"/>
+                  </conditions>
+                </line>
+                <line number="18" hits="2" branch="false"/>
+                <line number="20" hits="1" branch="false"/>
+                <line number="21" hits="2" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="22" hits="0" branch="false"/>
+                <line number="23" hits="2" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="24" hits="0" branch="false"/>
+                <line number="35" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="Bar::Bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="7" hits="1" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="Bar::~Bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="9" hits="1" branch="false"/>
+                <line number="10" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="Bar::~Bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="46" hits="1" branch="false"/>
+                <line number="47" hits="6" branch="true" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="100%"/>
+                  </conditions>
+                </line>
+                <line number="48" hits="5" branch="false"/>
+                <line number="61" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="7" hits="1" branch="false"/>
             <line number="8" hits="1" branch="false"/>
