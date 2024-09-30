@@ -310,6 +310,17 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
     data["SHOW_DECISION"] = show_decision
     data["EXCLUDE_CALLS"] = exclude_calls
+    data["EXCLUDE_FUNCTION_COVERAGE"] = not any(
+        filter(
+            lambda filecov: any(
+                filter(
+                    lambda linecov: linecov.function_name is not None,
+                    filecov.lines.values(),
+                )
+            ),
+            covdata.values(),
+        )
+    )
     data["EXCLUDE_CONDITIONS"] = not any(
         filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())
     )
@@ -695,13 +706,6 @@ def get_coverage_data(
         "class": line_coverage_class(stats.line.percent_or(100.0)),
     }
 
-    functions = {
-        "total": stats.function.total,
-        "exec": stats.function.covered,
-        "coverage": stats.function.percent_or("-"),
-        "class": coverage_class(stats.function.percent),
-    }
-
     branches = {
         "total": stats.branch.total,
         "exec": stats.branch.covered,
@@ -724,13 +728,19 @@ def get_coverage_data(
         "class": coverage_class(stats.decision.percent),
     }
 
+    functions = {
+        "total": stats.function.total,
+        "exec": stats.function.covered,
+        "coverage": stats.function.percent_or("-"),
+        "class": coverage_class(stats.function.percent),
+    }
+
     calls = {
         "total": stats.call.total,
         "exec": stats.call.covered,
         "coverage": stats.call.percent_or("-"),
         "class": coverage_class(stats.call.percent),
     }
-
     display_filename = force_unix_separator(
         os.path.relpath(
             os.path.realpath(cdata_fname), os.path.realpath(root_info.directory)
@@ -745,10 +755,10 @@ def get_coverage_data(
         "filename": display_filename,
         "link": link_report,
         "lines": lines,
-        "functions": functions,
         "branches": branches,
         "conditions": conditions,
         "decisions": decisions,
+        "functions": functions,
         "calls": calls,
     }
 
@@ -820,20 +830,34 @@ def get_file_data(
     )
     functions: Dict[Tuple[str], Dict[str, Any]] = {}
     # Only use demangled names (containing a brace)
-    for name in sorted(cdata.functions.keys()):
-        f_cdata = cdata.functions[name]
+    for f_cdata in sorted(
+        cdata.functions.values(), key=lambda f_cdata: f_cdata.demangled_name
+    ):
         for lineno in sorted(f_cdata.count.keys()):
             f_data: Dict[str, Any] = {}
-            f_data["name"] = name
+            f_data["name"] = f_cdata.demangled_name
             f_data["filename"] = cdata_fname[filename]
             f_data["html_filename"] = os.path.basename(cdata_sourcefile[filename])
             f_data["line"] = lineno
             f_data["count"] = f_cdata.count[lineno]
             f_data["blocks"] = f_cdata.blocks[lineno]
             f_data["excluded"] = f_cdata.excluded[lineno]
+            if f_cdata.name is not None:
+                function_stats = SummarizedStats.from_file(
+                    cdata.filter_for_function(f_cdata)
+                )
+                f_data["line_coverage"] = function_stats.line.percent_or(100)
+                f_data["branch_coverage"] = function_stats.branch.percent_or("-")
+                f_data["condition_coverage"] = function_stats.condition.percent_or("-")
 
             file_data["function_list"].append(f_data)
-            functions[(f_data["name"], f_data["filename"], f_data["line"])] = f_data
+            functions[
+                (
+                    f_cdata.name or f_cdata.demangled_name,
+                    f_data["filename"],
+                    f_data["line"],
+                )
+            ] = f_data
 
     with chdir(options.root_dir):
         max_line_from_cdata = max(cdata.lines.keys(), default=0)

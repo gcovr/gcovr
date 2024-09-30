@@ -1,12 +1,12 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 5,
-                    "mangled_name": "_ZN3Foo4workEi",
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 6,
-                    "mangled_name": "_ZN3Foo4workEi",
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [
                         {
@@ -54,7 +54,7 @@
                 },
                 {
                     "line_number": 7,
-                    "mangled_name": "_ZN3Foo4workEi",
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 2,
                     "branches": [
                         {
@@ -82,7 +82,7 @@
                 },
                 {
                     "line_number": 8,
-                    "mangled_name": "_ZN3Foo4workEi",
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 3,
                     "branches": [
                         {
@@ -125,7 +125,7 @@
                 },
                 {
                     "line_number": 10,
-                    "mangled_name": "_ZN3Foo4workEi",
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -135,7 +135,7 @@
                 },
                 {
                     "line_number": 11,
-                    "mangled_name": "_ZN3Foo4workEi",
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -145,7 +145,7 @@
                 },
                 {
                     "line_number": 14,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -153,7 +153,7 @@
                 },
                 {
                     "line_number": 16,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -178,7 +178,7 @@
                 },
                 {
                     "line_number": 17,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -189,8 +189,8 @@
             ],
             "functions": [
                 {
-                    "name": "Foo::work(int)",
-                    "mangled_name": "_ZN3Foo4workEi",
+                    "name": "_ZN3Foo4workEi",
+                    "demangled_name": "Foo::work(int)",
                     "lineno": 5,
                     "execution_count": 1,
                     "blocks_percent": 78.9,
@@ -201,7 +201,7 @@
                 },
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 14,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

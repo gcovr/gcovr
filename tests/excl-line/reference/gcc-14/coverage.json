@@ -1,12 +1,12 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 4,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 5,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [
                         {
@@ -49,7 +49,7 @@
                 },
                 {
                     "line_number": 6,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -59,7 +59,7 @@
                 },
                 {
                     "line_number": 8,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -70,7 +70,7 @@
                 },
                 {
                     "line_number": 20,
-                    "mangled_name": "_Z3barv",
+                    "function_name": "_Z3barv",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -79,7 +79,7 @@
                 },
                 {
                     "line_number": 21,
-                    "mangled_name": "_Z3barv",
+                    "function_name": "_Z3barv",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -90,7 +90,7 @@
                 },
                 {
                     "line_number": 25,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -98,7 +98,7 @@
                 },
                 {
                     "line_number": 26,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -108,7 +108,7 @@
                 },
                 {
                     "line_number": 27,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -119,7 +119,7 @@
                 },
                 {
                     "line_number": 29,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -130,8 +130,8 @@
             ],
             "functions": [
                 {
-                    "name": "bar()",
-                    "mangled_name": "_Z3barv",
+                    "name": "_Z3barv",
+                    "demangled_name": "bar()",
                     "lineno": 20,
                     "execution_count": 0,
                     "blocks_percent": 100.0,
@@ -142,8 +142,8 @@
                     ]
                 },
                 {
-                    "name": "foo(int)",
-                    "mangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
+                    "demangled_name": "foo(int)",
                     "lineno": 4,
                     "execution_count": 1,
                     "blocks_percent": 75.0,
@@ -154,7 +154,7 @@
                 },
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 25,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

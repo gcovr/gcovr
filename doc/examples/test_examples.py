@@ -52,7 +52,7 @@ def find_test_cases():
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
         for format in "txt cobertura csv json html".split():
-            if format == "html" and is_compiler(
+            if format in ("html", "cobertura") and is_compiler(
                 os.getenv("CC"), "gcc-5", "gcc-6", "gcc-14"
             ):
                 continue

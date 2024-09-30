@@ -180,8 +180,8 @@ def _json_from_line(line: LineCoverage) -> dict:
     json_line = {
         "line_number": line.lineno,
     }
-    if line.mangled_name is not None:
-        json_line["mangled_name"] = line.mangled_name
+    if line.function_name is not None:
+        json_line["function_name"] = line.function_name
     json_line.update(
         {
             "count": line.count,
@@ -275,13 +275,12 @@ def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
 def _json_from_function(function: FunctionCoverage) -> list:
     json_functions = []
     for lineno, count in function.count.items():
-        json_function = {
-            "name": function.name,
-        }
-        if function.mangled_name is not None:
-            json_function["mangled_name"] = function.mangled_name
+        json_function = {}
+        if function.name is not None:
+            json_function["name"] = function.name
         json_function.update(
             {
+                "demangled_name": function.demangled_name,
                 "lineno": lineno,
                 "execution_count": count,
                 "blocks_percent": function.blocks[lineno],

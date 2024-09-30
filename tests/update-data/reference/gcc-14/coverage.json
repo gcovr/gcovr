@@ -1,12 +1,12 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 3,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 5,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -25,7 +25,7 @@
                 },
                 {
                     "line_number": 6,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -35,7 +35,7 @@
                 },
                 {
                     "line_number": 7,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -47,7 +47,7 @@
             "functions": [
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -63,7 +63,7 @@
             "lines": [
                 {
                     "line_number": 3,
-                    "mangled_name": "update_data",
+                    "function_name": "update_data",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -71,7 +71,7 @@
                 },
                 {
                     "line_number": 5,
-                    "mangled_name": "update_data",
+                    "function_name": "update_data",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -85,7 +85,7 @@
             "functions": [
                 {
                     "name": "update_data",
-                    "mangled_name": "update_data",
+                    "demangled_name": "update_data",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -101,7 +101,7 @@
             "lines": [
                 {
                     "line_number": 7,
-                    "mangled_name": "called_from_main",
+                    "function_name": "called_from_main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -109,7 +109,7 @@
                 },
                 {
                     "line_number": 9,
-                    "mangled_name": "called_from_main",
+                    "function_name": "called_from_main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -119,7 +119,7 @@
                 },
                 {
                     "line_number": 12,
-                    "mangled_name": "called_from_update_data",
+                    "function_name": "called_from_update_data",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -127,7 +127,7 @@
                 },
                 {
                     "line_number": 14,
-                    "mangled_name": "called_from_update_data",
+                    "function_name": "called_from_update_data",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -137,7 +137,7 @@
                 },
                 {
                     "line_number": 17,
-                    "mangled_name": "called_from_both",
+                    "function_name": "called_from_both",
                     "count": 2,
                     "branches": [],
                     "block_ids": [],
@@ -145,7 +145,7 @@
                 },
                 {
                     "line_number": 19,
-                    "mangled_name": "called_from_both",
+                    "function_name": "called_from_both",
                     "count": 2,
                     "branches": [
                         {
@@ -178,7 +178,7 @@
                 },
                 {
                     "line_number": 20,
-                    "mangled_name": "called_from_both",
+                    "function_name": "called_from_both",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -188,7 +188,7 @@
                 },
                 {
                     "line_number": 23,
-                    "mangled_name": "called_from_both",
+                    "function_name": "called_from_both",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -200,7 +200,7 @@
             "functions": [
                 {
                     "name": "called_from_both",
-                    "mangled_name": "called_from_both",
+                    "demangled_name": "called_from_both",
                     "lineno": 17,
                     "execution_count": 2,
                     "blocks_percent": 75.0,
@@ -211,7 +211,7 @@
                 },
                 {
                     "name": "called_from_main",
-                    "mangled_name": "called_from_main",
+                    "demangled_name": "called_from_main",
                     "lineno": 7,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -222,7 +222,7 @@
                 },
                 {
                     "name": "called_from_update_data",
-                    "mangled_name": "called_from_update_data",
+                    "demangled_name": "called_from_update_data",
                     "lineno": 12,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

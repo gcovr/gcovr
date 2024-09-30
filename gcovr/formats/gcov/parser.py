@@ -420,6 +420,7 @@ def parse_coverage(
         insert_function_coverage(
             coverage,
             FunctionCoverage(
+                None,
                 name,
                 lineno=state.lineno + 1,
                 count=count,
@@ -495,7 +496,7 @@ def _gather_coverage_from_line(
 
             insert_function_coverage(
                 coverage,
-                FunctionCoverage(name, lineno=lineno, count=count, blocks=blocks),
+                FunctionCoverage(None, name, lineno=lineno, count=count, blocks=blocks),
                 FUNCTION_MAX_LINE_MERGE_OPTIONS,
             )
 

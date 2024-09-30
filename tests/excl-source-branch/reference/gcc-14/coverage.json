@@ -1,12 +1,12 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 3,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 2,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 5,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 2,
                     "branches": [
                         {
@@ -62,7 +62,7 @@
                 },
                 {
                     "line_number": 6,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -70,7 +70,7 @@
                 },
                 {
                     "line_number": 7,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -80,7 +80,7 @@
                 },
                 {
                     "line_number": 8,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -88,7 +88,7 @@
                 },
                 {
                     "line_number": 9,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -98,7 +98,7 @@
                 },
                 {
                     "line_number": 10,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -106,7 +106,7 @@
                 },
                 {
                     "line_number": 11,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -116,7 +116,7 @@
                 },
                 {
                     "line_number": 12,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -124,7 +124,7 @@
                 },
                 {
                     "line_number": 13,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -134,7 +134,7 @@
                 },
                 {
                     "line_number": 14,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [],
@@ -142,7 +142,7 @@
                 },
                 {
                     "line_number": 15,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -152,7 +152,7 @@
                 },
                 {
                     "line_number": 19,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -160,7 +160,7 @@
                 },
                 {
                     "line_number": 20,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -220,7 +220,7 @@
                 },
                 {
                     "line_number": 21,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -231,7 +231,7 @@
                 },
                 {
                     "line_number": 24,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -242,7 +242,7 @@
                 },
                 {
                     "line_number": 27,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -253,8 +253,8 @@
             ],
             "functions": [
                 {
-                    "name": "foo(int)",
-                    "mangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
+                    "demangled_name": "foo(int)",
                     "lineno": 3,
                     "execution_count": 2,
                     "blocks_percent": 57.1,
@@ -265,7 +265,7 @@
                 },
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 19,
                     "execution_count": 1,
                     "blocks_percent": 76.9,

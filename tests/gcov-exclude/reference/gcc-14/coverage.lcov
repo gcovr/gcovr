@@ -1,8 +1,8 @@
 TN:GCOVR report
 SF:tests/gcov-exclude/subdir/A/file1.cpp
 VER:cf6b72cbb3c9c004a97684f1495332fd
-FN:1,foo(int)
-FNDA:1,foo(int)
+FN:1,_Z3fooi
+FNDA:1,_Z3fooi
 FNF:1
 FNH:1
 BRDA:3,2,0,-
@@ -18,10 +18,10 @@ LF:4
 end_of_record
 SF:tests/gcov-exclude/subdir/A/File2.cpp
 VER:44683de2597fa27a9410e0f65f71fde0
-FN:1,bar()
-FNDA:1,bar()
-FN:8,bar_()
-FNDA:0,bar_()
+FN:1,_Z3barv
+FNDA:1,_Z3barv
+FN:8,_Z4bar_v
+FNDA:0,_Z4bar_v
 FNF:2
 FNH:1
 BRF:0
@@ -38,10 +38,10 @@ LF:7
 end_of_record
 SF:tests/gcov-exclude/subdir/A/file3.cpp
 VER:17749ac4040d8e71ff948fceb4e522d9
-FN:1,four_bar()
-FNDA:1,four_bar()
-FN:8,four_bar_()
-FNDA:0,four_bar_()
+FN:1,_Z8four_barv
+FNDA:1,_Z8four_barv
+FN:8,_Z9four_bar_v
+FNDA:0,_Z9four_bar_v
 FNF:2
 FNH:1
 BRDA:11,2,0,-
@@ -62,8 +62,8 @@ LF:9
 end_of_record
 SF:tests/gcov-exclude/subdir/A/File4.cpp
 VER:7451828cfb58f0fefc6e5fbf44d9a6f4
-FN:1,foobar(int)
-FNDA:1,foobar(int)
+FN:1,_Z6foobari
+FNDA:1,_Z6foobari
 FNF:1
 FNH:1
 BRDA:3,2,0,1
@@ -79,8 +79,8 @@ LF:4
 end_of_record
 SF:tests/gcov-exclude/subdir/A/file7.cpp
 VER:cbd3974ad5ed983ce0a47c7a7d8b5725
-FN:1,uncovered()
-FNDA:0,uncovered()
+FN:1,_Z9uncoveredv
+FNDA:0,_Z9uncoveredv
 FNF:1
 FNH:0
 BRF:0

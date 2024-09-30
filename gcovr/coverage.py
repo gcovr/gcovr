@@ -288,15 +288,15 @@ class FunctionCoverage:
 
     Args:
         name (str):
-            The name (signature) of the functions.
+            The mangled name of the function, None if not available.
+        demangled_name (str):
+            The demangled name (signature) of the functions.
         lineno (int):
             The line number.
         count (int):
             How often this function was executed.
         blocks (float):
             Block coverage of function.
-        mangled_name (str, optional):
-            The mangled name of the function.
         start ((int, int)), optional):
             Tuple with function start line and column.
         end ((int, int)), optional):
@@ -305,16 +305,24 @@ class FunctionCoverage:
             Whether this line is excluded by a marker.
     """
 
-    __slots__ = "name", "mangled_name", "count", "blocks", "start", "end", "excluded"
+    __slots__ = (
+        "name",
+        "demangled_name",
+        "count",
+        "blocks",
+        "start",
+        "end",
+        "excluded",
+    )
 
     def __init__(
         self,
-        name: str,
+        name: Optional[str],
+        demangled_name: str,
         *,
         lineno: int,
         count: int,
         blocks: float,
-        mangled_name: Optional[str] = None,
         start: Optional[Tuple[int, int]] = None,
         end: Optional[Tuple[int, int]] = None,
         excluded: bool = False,
@@ -322,10 +330,10 @@ class FunctionCoverage:
         if count < 0:
             raise AssertionError("count must not be a negative value.")
         self.name = name
+        self.demangled_name = demangled_name
         self.count: Dict[int, int] = {lineno: count}
         self.blocks: Dict[int, float] = {lineno: blocks}
         self.excluded: Dict[int, bool] = {lineno: excluded}
-        self.mangled_name = mangled_name
         self.start: Dict[int, Optional[Tuple[int, int]]] = (
             None if start is None else {lineno: start}
         )
@@ -348,7 +356,7 @@ class LineCoverage:
             The line number.
         count (int):
             How often this line was executed at least partially.
-        mangled_name (str, optional):
+        function_name (str, optional):
             Mangled name of the function the line belongs to.
         block_ids (*int, optional):
             List of block ids in this line
@@ -361,7 +369,7 @@ class LineCoverage:
     __slots__ = (
         "lineno",
         "count",
-        "mangled_name",
+        "function_name",
         "block_ids",
         "excluded",
         "md5",
@@ -375,7 +383,7 @@ class LineCoverage:
         self,
         lineno: int,
         count: int,
-        mangled_name: Optional[str] = None,
+        function_name: Optional[str] = None,
         block_ids: Optional[List[int]] = None,
         md5: Optional[str] = None,
         excluded: Optional[bool] = False,
@@ -387,7 +395,7 @@ class LineCoverage:
 
         self.lineno: int = lineno
         self.count: int = count
-        self.mangled_name: Optional[str] = mangled_name
+        self.function_name: Optional[str] = function_name
         self.block_ids: Optional[List[int]] = block_ids
         self.excluded: Optional[bool] = excluded
         self.md5: Optional[str] = md5
@@ -481,6 +489,27 @@ class FileCoverage:
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
         self.parent_dirname: str = None
+
+    def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
+        """Get a file coverage object reduced to a single function"""
+        if functioncov.name not in self.functions:
+            raise AssertionError(
+                f"Function {functioncov.name} must be in filtered file coverage object."
+            )
+        if functioncov.name is None:
+            raise AssertionError(
+                "Data for filtering is missing. Need supported GCOV JSON format to get the information."
+            )
+        filecov = FileCoverage(self.filename)
+        self.functions[functioncov.name] = functioncov
+
+        filecov.lines = {
+            line: value
+            for line, value in self.lines.items()
+            if value.function_name == functioncov.name
+        }
+
+        return filecov
 
     def function_coverage(self) -> CoverageStat:
         total = 0
@@ -664,8 +693,8 @@ class SummarizedStats:
     line: CoverageStat
     branch: CoverageStat
     condition: CoverageStat
-    function: CoverageStat
     decision: DecisionCoverageStat
+    function: CoverageStat
     call: CoverageStat
 
     @staticmethod
@@ -674,8 +703,8 @@ class SummarizedStats:
             line=CoverageStat.new_empty(),
             branch=CoverageStat.new_empty(),
             condition=CoverageStat.new_empty(),
-            function=CoverageStat.new_empty(),
             decision=DecisionCoverageStat.new_empty(),
+            function=CoverageStat.new_empty(),
             call=CoverageStat.new_empty(),
         )
 
@@ -692,8 +721,8 @@ class SummarizedStats:
             line=filecov.line_coverage(),
             branch=filecov.branch_coverage(),
             condition=filecov.condition_coverage(),
-            function=filecov.function_coverage(),
             decision=filecov.decision_coverage(),
+            function=filecov.function_coverage(),
             call=filecov.call_coverage(),
         )
 
@@ -701,8 +730,8 @@ class SummarizedStats:
         self.line += other.line
         self.branch += other.branch
         self.condition += other.condition
-        self.function += other.function
         self.decision += other.decision
+        self.function += other.function
         self.call += other.call
         return self
 

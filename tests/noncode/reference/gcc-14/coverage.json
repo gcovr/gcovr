@@ -1,12 +1,12 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 4,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 6,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -54,7 +54,7 @@
                 },
                 {
                     "line_number": 7,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -64,7 +64,7 @@
                 },
                 {
                     "line_number": 9,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 0,
                     "branches": [
                         {
@@ -92,7 +92,7 @@
             "functions": [
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 4,
                     "execution_count": 1,
                     "blocks_percent": 44.4,

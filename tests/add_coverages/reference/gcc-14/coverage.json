@@ -1,12 +1,12 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "bar.cpp",
             "lines": [
                 {
                     "line_number": 1,
-                    "mangled_name": "_Z3barv",
+                    "function_name": "_Z3barv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 3,
-                    "mangled_name": "_Z3barv",
+                    "function_name": "_Z3barv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -22,7 +22,7 @@
                 },
                 {
                     "line_number": 4,
-                    "mangled_name": "_Z3barv",
+                    "function_name": "_Z3barv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -30,7 +30,7 @@
                 },
                 {
                     "line_number": 5,
-                    "mangled_name": "_Z3barv",
+                    "function_name": "_Z3barv",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -41,8 +41,8 @@
             ],
             "functions": [
                 {
-                    "name": "bar()",
-                    "mangled_name": "_Z3barv",
+                    "name": "_Z3barv",
+                    "demangled_name": "bar()",
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -58,7 +58,7 @@
             "lines": [
                 {
                     "line_number": 1,
-                    "mangled_name": "_Z3foov",
+                    "function_name": "_Z3foov",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -66,7 +66,7 @@
                 },
                 {
                     "line_number": 3,
-                    "mangled_name": "_Z3foov",
+                    "function_name": "_Z3foov",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -74,7 +74,7 @@
                 },
                 {
                     "line_number": 4,
-                    "mangled_name": "_Z3foov",
+                    "function_name": "_Z3foov",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -82,7 +82,7 @@
                 },
                 {
                     "line_number": 5,
-                    "mangled_name": "_Z3foov",
+                    "function_name": "_Z3foov",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -93,8 +93,8 @@
             ],
             "functions": [
                 {
-                    "name": "foo()",
-                    "mangled_name": "_Z3foov",
+                    "name": "_Z3foov",
+                    "demangled_name": "foo()",
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -110,7 +110,7 @@
             "lines": [
                 {
                     "line_number": 10,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 2,
                     "branches": [],
                     "block_ids": [],
@@ -118,7 +118,7 @@
                 },
                 {
                     "line_number": 12,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -128,7 +128,7 @@
                 },
                 {
                     "line_number": 15,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -138,7 +138,7 @@
                 },
                 {
                     "line_number": 18,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 2,
                     "branches": [],
                     "block_ids": [
@@ -150,7 +150,7 @@
             "functions": [
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 10,
                     "execution_count": 2,
                     "blocks_percent": 100.0,

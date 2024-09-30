@@ -95,7 +95,7 @@ Each **line** entry contains coverage data for one line::
 
     {
         "line_number": line_number,
-        "mangled_name": mangled_name,
+        "function_name": function_name,
         "count": count,
         "branches": [branch],
         "block_ids", block_ids,
@@ -109,8 +109,9 @@ Each **line** entry contains coverage data for one line::
 line_number: int
   The 1-based line number to which this entry relates.
 
-mangled_name: str
-  The (mangled) name of the function.
+function_name: str
+  Only available if ``gcov`` JSON format is used it contains the name
+  of the function to which the line belongs to.
 
 count: int
   How often this line was executed.
@@ -119,7 +120,8 @@ branches: list
   A list of :ref:`branch <json_format_branch>` coverage entries.
 
 conditions: list
-  A list of :ref:`branch <json_format_condition>` coverage entries.
+  Only available if GCOV JSON format is used it contains a list
+  of :ref:`branch <json_format_condition>` coverage entries.
 
 block_ids: list[int]:
   The list of block ids defined in this line.
@@ -159,7 +161,7 @@ The line entry should be interpreted as follows:
    The ``block_ids`` is added.
 
 .. versionchanged:: NEXT
-   The ``mangled_name`` is added.
+   The ``function_name`` is added.
 
 .. versionchanged:: NEXT
    The ``gcovr/md5`` is added.
@@ -307,7 +309,7 @@ Each **function** entry describes a line in the source file::
 
     {
       "name": name,
-      "mangled_name": mangled_name,
+      "demangled_name": demangled_name,
       "lineno": lineno,
       "execution_count": count,
       "branch_percent": percent,
@@ -319,13 +321,13 @@ Each **function** entry describes a line in the source file::
     }
 
 name: string
-  The name of the function, mangled or demangled depending on compiler version.
-  May be incompatible with upstream GCC gcov JSON.
+  The name of the function. If legacy ``gcov`` text output is used it contains
+  the demangled name if supported by the ``gcov`` tool except for clang-10 where
+  the mangled name is used.
+  If ``gcov`` JSON format is used it always contains the mangled name.
 
-mangled_name: string
-  The mangled name of the function, mangled or demangled depending on compiler version.
-  Upstream GCC gcov JSON is mangled name set as ``name`` and the demangled name as
-  ``demangled_name``.
+demangled_name: string
+  Only available if GCOV JSON format is used it always contains the demangled name.
 
 lineno: int
   The line number (1-based) where this function was defined.
@@ -338,7 +340,7 @@ branch_percent: float
   The branch coverage in percent (0.0 to 100.0).
 
 pos: list
-  A list with start and end position of function. Both entries are string with
+  A list with start and end position of function (1-based). Both entries are string with
   line and column separated by ``:``. Only available if ``gcov`` JSON format is
   used.
 
@@ -352,8 +354,9 @@ gcovr/excluded: boolean
 .. versionadded:: NEXT
    Added ``pos`` field.
 
-.. versionadded:: NEXT
-   Added ``mangled_name`` field.
+.. versionchanged:: NEXT
+   The ``name`` is changed to contain the mangled name previous content is now
+   available as ``demangled_name`` as it is in GCOV JSON format.
 
 .. versionremoved:: NEXT
    Removed ``returned_count`` field because missing in ``gcov`` JSON format.

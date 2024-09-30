@@ -132,11 +132,11 @@ def _function_from_json(json_function: dict) -> FunctionCoverage:
         start = [int(e) for e in json_function["pos"][0].split(":")]
         end = [int(e) for e in json_function["pos"][1].split(":")]
     return FunctionCoverage(
-        name=json_function["name"],
+        json_function.get("name", None),
+        json_function["demangled_name"],
         lineno=json_function["lineno"],
         count=json_function["execution_count"],
         blocks=json_function["blocks_percent"],
-        mangled_name=json_function.get("mangled_name", False),
         start=start,
         end=end,
         excluded=json_function.get("gcovr/excluded", False),
@@ -147,7 +147,7 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     line = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
-        mangled_name=json_line.get("mangled_name", None),
+        function_name=json_line.get("function_name", None),
         block_ids=json_line.get("block_ids", None),
         md5=json_line.get("gcovr/md5", None),
         excluded=json_line.get("gcovr/excluded", False),

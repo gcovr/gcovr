@@ -1,12 +1,12 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 4,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -14,7 +14,7 @@
                 },
                 {
                     "line_number": 5,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [
                         {
@@ -49,7 +49,7 @@
                 },
                 {
                     "line_number": 7,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -60,7 +60,7 @@
                 },
                 {
                     "line_number": 11,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -72,7 +72,7 @@
                 },
                 {
                     "line_number": 14,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -84,7 +84,7 @@
                 },
                 {
                     "line_number": 15,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -94,7 +94,7 @@
                 },
                 {
                     "line_number": 18,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -105,7 +105,7 @@
                 },
                 {
                     "line_number": 22,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -117,7 +117,7 @@
                 },
                 {
                     "line_number": 25,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "block_ids": [
@@ -129,7 +129,7 @@
                 },
                 {
                     "line_number": 26,
-                    "mangled_name": "_Z3fooi",
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -139,7 +139,7 @@
                 },
                 {
                     "line_number": 31,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -147,7 +147,7 @@
                 },
                 {
                     "line_number": 32,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -157,7 +157,7 @@
                 },
                 {
                     "line_number": 34,
-                    "mangled_name": "main",
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "block_ids": [
@@ -168,8 +168,8 @@
             ],
             "functions": [
                 {
-                    "name": "foo(int)",
-                    "mangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
+                    "demangled_name": "foo(int)",
                     "lineno": 4,
                     "execution_count": 1,
                     "blocks_percent": 56.2,
@@ -180,7 +180,7 @@
                 },
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 31,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

@@ -13,10 +13,10 @@ LF:2
 end_of_record
 SF:tests/source_from_pipe/code.cpp
 VER:f6c5b94686e43537860a1364ddf21730
-FN:3,foo1(int)
-FNDA:1,foo1(int)
-FN:12,foo2(int)
-FNDA:1,foo2(int)
+FN:3,_Z4foo1i
+FNDA:1,_Z4foo1i
+FN:12,_Z4foo2i
+FNDA:1,_Z4foo2i
 FNF:2
 FNH:2
 BRDA:4,2,0,-

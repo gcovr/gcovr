@@ -114,7 +114,7 @@ def _process_exclude_branch_source(
                 location = f"{filecov.filename}:{lineno}:{columnno}"
                 if lineno in filecov.lines:
                     if (
-                        filecov.lines[lineno].mangled_name is None
+                        filecov.lines[lineno].function_name is None
                         or filecov.lines[lineno].block_ids is None
                     ):
                         LOGGER.warning(
@@ -125,13 +125,13 @@ def _process_exclude_branch_source(
                             f"Source branch exclusion at {location} found but no block ids defined at this line."
                         )
                     else:
-                        mangled_name = filecov.lines[lineno].mangled_name
+                        function_name = filecov.lines[lineno].function_name
                         block_ids = filecov.lines[lineno].block_ids
                         # Check the lines which belong to the function
                         line: LineCoverage
                         for current_lineno in filecov.lines:
                             line = filecov.lines[current_lineno]
-                            if line.mangled_name != mangled_name:
+                            if line.function_name != function_name:
                                 continue
                             # Exclude the branch where the destination is one of the blocks of the line with the marker
                             branch: BranchCoverage
