@@ -275,7 +275,7 @@ def insert_function_coverage(
 ) -> FunctionCoverage:
     """Insert FunctionCoverage into FileCoverage"""
     return _insert_coverage_item(
-        target.functions, function.name, function, merge_function, options
+        target.functions, function.demangled_name, function, merge_function, options
     )
 
 
@@ -299,13 +299,13 @@ def merge_function(
       - ``options.merge_function_use_line_max``
       - ``options.separate_function``
     """
-    if left.name != right.name:
-        raise AssertionError("Function name must be equal.")
+    if left.demangled_name != right.demangled_name:
+        raise AssertionError("Function demangled name must be equal.")
     if not options.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
             raise GcovrMergeAssertionError(
-                f"Got function {right.name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                f"Got function {right.demangled_name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                 "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."
             )

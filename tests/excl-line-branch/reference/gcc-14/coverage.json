@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
@@ -441,8 +441,8 @@
             ],
             "functions": [
                 {
-                    "name": "Bar::Bar()",
-                    "mangled_name": "_ZN3BarC2Ev",
+                    "name": "_ZN3BarC2Ev",
+                    "demangled_name": "Bar::Bar()",
                     "lineno": 7,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -452,8 +452,8 @@
                     ]
                 },
                 {
-                    "name": "Bar::~Bar()",
-                    "mangled_name": "_ZN3BarD0Ev",
+                    "name": "_ZN3BarD0Ev",
+                    "demangled_name": "Bar::~Bar()",
                     "lineno": 9,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -463,8 +463,8 @@
                     ]
                 },
                 {
-                    "name": "bar(int)",
-                    "mangled_name": "_Z3bari",
+                    "name": "_Z3bari",
+                    "demangled_name": "bar(int)",
                     "lineno": 38,
                     "execution_count": 0,
                     "blocks_percent": 0.0,
@@ -475,8 +475,8 @@
                     ]
                 },
                 {
-                    "name": "foo(int)",
-                    "mangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
+                    "demangled_name": "foo(int)",
                     "lineno": 16,
                     "execution_count": 5,
                     "blocks_percent": 81.2,
@@ -487,7 +487,7 @@
                 },
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 46,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

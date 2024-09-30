@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "bar.cpp",
@@ -31,8 +31,7 @@
             ],
             "functions": [
                 {
-                    "name": "bar()",
-                    "mangled_name": false,
+                    "demangled_name": "bar()",
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0
@@ -69,8 +68,7 @@
             ],
             "functions": [
                 {
-                    "name": "foo()",
-                    "mangled_name": false,
+                    "demangled_name": "foo()",
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0
@@ -138,8 +136,7 @@
             ],
             "functions": [
                 {
-                    "name": "main",
-                    "mangled_name": false,
+                    "demangled_name": "main",
                     "lineno": 10,
                     "execution_count": 2,
                     "blocks_percent": 100.0

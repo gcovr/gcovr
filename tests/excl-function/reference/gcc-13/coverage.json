@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
@@ -426,67 +426,67 @@
             ],
             "functions": [
                 {
-                    "name": "bar(int)",
+                    "demangled_name": "bar(int)",
                     "lineno": 19,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "name": "foo(int)",
+                    "demangled_name": "foo(int)",
                     "lineno": 9,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "name": "main",
+                    "demangled_name": "main",
                     "lineno": 95,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "sort_excluded()",
+                    "demangled_name": "sort_excluded()",
                     "lineno": 44,
                     "execution_count": 1,
                     "blocks_percent": 92.0
                 },
                 {
-                    "name": "sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
+                    "demangled_name": "sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
                     "lineno": 44,
                     "execution_count": 41,
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "sort_excluded_both()",
+                    "demangled_name": "sort_excluded_both()",
                     "lineno": 66,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const",
+                    "demangled_name": "sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const",
                     "lineno": 73,
                     "execution_count": 41,
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const",
+                    "demangled_name": "sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const",
                     "lineno": 84,
                     "execution_count": 18,
                     "blocks_percent": 75.0
                 },
                 {
-                    "name": "sort_lambda_excluded()",
+                    "demangled_name": "sort_lambda_excluded()",
                     "lineno": 48,
                     "execution_count": 1,
                     "blocks_percent": 92.0
                 },
                 {
-                    "name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
                     "lineno": 50,
                     "execution_count": 41,
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
                     "lineno": 57,
                     "execution_count": 41,
                     "blocks_percent": 100.0

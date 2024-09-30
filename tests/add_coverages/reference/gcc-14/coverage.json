@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "bar.cpp",
@@ -41,8 +41,8 @@
             ],
             "functions": [
                 {
-                    "name": "bar()",
-                    "mangled_name": "_Z3barv",
+                    "name": "_Z3barv",
+                    "demangled_name": "bar()",
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -93,8 +93,8 @@
             ],
             "functions": [
                 {
-                    "name": "foo()",
-                    "mangled_name": "_Z3foov",
+                    "name": "_Z3foov",
+                    "demangled_name": "foo()",
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -150,7 +150,7 @@
             "functions": [
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 10,
                     "execution_count": 2,
                     "blocks_percent": 100.0,

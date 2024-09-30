@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.9",
+    "gcovr/format_version": "0.10",
     "files": [
         {
             "file": "main.cpp",
@@ -331,8 +331,8 @@
             ],
             "functions": [
                 {
-                    "name": "RAII::RAII(bool)",
-                    "mangled_name": "_ZN4RAIIC2Eb",
+                    "name": "_ZN4RAIIC2Eb",
+                    "demangled_name": "RAII::RAII(bool)",
                     "lineno": 21,
                     "execution_count": 3,
                     "blocks_percent": 100.0,
@@ -342,8 +342,8 @@
                     ]
                 },
                 {
-                    "name": "RAII::method_that_may_throw() const",
-                    "mangled_name": "_ZNK4RAII21method_that_may_throwEv",
+                    "name": "_ZNK4RAII21method_that_may_throwEv",
+                    "demangled_name": "RAII::method_that_may_throw() const",
                     "lineno": 16,
                     "execution_count": 3,
                     "blocks_percent": 100.0,
@@ -353,8 +353,8 @@
                     ]
                 },
                 {
-                    "name": "RAII::~RAII()",
-                    "mangled_name": "_ZN4RAIID2Ev",
+                    "name": "_ZN4RAIID2Ev",
+                    "demangled_name": "RAII::~RAII()",
                     "lineno": 22,
                     "execution_count": 3,
                     "blocks_percent": 100.0,
@@ -364,8 +364,8 @@
                     ]
                 },
                 {
-                    "name": "function_that_may_throw(bool)",
-                    "mangled_name": "_Z23function_that_may_throwb",
+                    "name": "_Z23function_that_may_throwb",
+                    "demangled_name": "function_that_may_throw(bool)",
                     "lineno": 3,
                     "execution_count": 9,
                     "blocks_percent": 87.5,
@@ -375,8 +375,8 @@
                     ]
                 },
                 {
-                    "name": "function_with_catchers(int)",
-                    "mangled_name": "_Z22function_with_catchersi",
+                    "name": "_Z22function_with_catchersi",
+                    "demangled_name": "function_with_catchers(int)",
                     "lineno": 24,
                     "execution_count": 3,
                     "blocks_percent": 63.2,
@@ -387,7 +387,7 @@
                 },
                 {
                     "name": "main",
-                    "mangled_name": "main",
+                    "demangled_name": "main",
                     "lineno": 47,
                     "execution_count": 3,
                     "blocks_percent": 100.0,
