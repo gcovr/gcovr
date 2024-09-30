@@ -6,6 +6,11 @@
     <tr>
       <th>Function (Line)</th>
       <th>Call count</th>
+      {% if not EXCLUDE_FUNCTION_COVERAGE %}
+      <th>Line coverage</th>
+      <th>Branch coverage</th>
+      <th>Condition coverage</th>
+      {% endif %}
       <th>Block coverage</th>
     </tr>
 {% if info.single_page %}
@@ -24,6 +29,11 @@
                 {%-  endif -%}
                 {%- endif -%}
       {#- #}</td>
+      {%- if not EXCLUDE_FUNCTION_COVERAGE %}
+      {#- #}<td>{{ entry["line_coverage"] }}%</td>
+      {#- #}<td>{{ entry["branch_coverage"] }}%</td>
+      {#- #}<td>{{ entry["condition_coverage"] }}%</td>
+      {%- endif %}
       {#- #}<td>{{ entry["blocks"] }}%</td>
       {#- -#}
     </tr>

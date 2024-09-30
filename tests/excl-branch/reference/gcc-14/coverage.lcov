@@ -1,8 +1,8 @@
 TN:GCOVR report
 SF:tests/excl-branch/main.cpp
 VER:9710c7ed163499ca0c780aca47126484
-FN:4,foo(int)
-FNDA:1,foo(int)
+FN:4,_Z3fooi
+FNDA:1,_Z3fooi
 FN:26,main
 FNDA:1,main
 FNF:2

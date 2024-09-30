@@ -275,7 +275,11 @@ def insert_function_coverage(
 ) -> FunctionCoverage:
     """Insert FunctionCoverage into FileCoverage"""
     return _insert_coverage_item(
-        target.functions, function.demangled_name, function, merge_function, options
+        target.functions,
+        function.name or function.demangled_name,
+        function,
+        merge_function,
+        options,
     )
 
 
@@ -301,6 +305,8 @@ def merge_function(
     """
     if left.demangled_name != right.demangled_name:
         raise AssertionError("Function demangled name must be equal.")
+    if left.name != right.name:
+        raise AssertionError("Function name must be equal.")
     if not options.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
