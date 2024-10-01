@@ -18,6 +18,8 @@ Breaking changes:
     intermediate format is used the ``name`` key will contained the mangled name. The keys are now
     aligned with the ``gcov`` JSON intermediate format. (:issue:`974`)
 
+- If block information is missing in ``gcov`` legacy text format block 0 is assumed. (:issue:`976`)
+
 New features and notable changes:
 
 - In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)

@@ -5,8 +5,8 @@ FN:1,_Z4foo6i
 FNDA:1,_Z4foo6i
 FNF:1
 FNH:1
-BRDA:3,None,0,-
-BRDA:3,None,1,1
+BRDA:3,0,0,-
+BRDA:3,0,1,1
 BRF:2
 BRH:1
 DA:1,1,abb3720e6b8a9cf7dc926235f89cc801
@@ -22,8 +22,8 @@ FN:1,_Z4foo5i
 FNDA:1,_Z4foo5i
 FNF:1
 FNH:1
-BRDA:3,None,0,-
-BRDA:3,None,1,1
+BRDA:3,0,0,-
+BRDA:3,0,1,1
 BRF:2
 BRH:1
 DA:1,1,326f108928b04264c1f3d79bf4ca248b
@@ -39,8 +39,8 @@ FN:1,_Z3fooi
 FNDA:1,_Z3fooi
 FNF:1
 FNH:1
-BRDA:3,None,0,-
-BRDA:3,None,1,1
+BRDA:3,0,0,-
+BRDA:3,0,1,1
 BRF:2
 BRH:1
 DA:1,1,2cfc07b9a0f8cdd3eb4553562d5875b6
@@ -78,8 +78,8 @@ FN:8,_Z9four_bar_v
 FNDA:0,_Z9four_bar_v
 FNF:2
 FNH:1
-BRDA:11,None,0,-
-BRDA:11,None,1,-
+BRDA:11,0,0,-
+BRDA:11,0,1,-
 BRF:2
 BRH:0
 DA:1,1,8ce3c51d6f9f0f061d9e9b30994b92de
@@ -100,8 +100,8 @@ FN:1,_Z6foobari
 FNDA:1,_Z6foobari
 FNF:1
 FNH:1
-BRDA:3,None,0,1
-BRDA:3,None,1,-
+BRDA:3,0,0,1
+BRDA:3,0,1,-
 BRF:2
 BRH:1
 DA:1,1,12ad0375e88bc9a7418a8d84c0757032
