@@ -1,7 +1,7 @@
 include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
-	bazel build $(if $(filter $(BASE_OS),MSYS_NT MINGW64_NT),,--force_pic) --collect_code_coverage=True //test:testcase
+	bazel build $(if $(filter $(BASE_OS),MSYS_NT MINGW64_NT),,--force_pic) --collect_code_coverage=True --test_output=all --test_env=VERBOSE_COVERAGE=1 //test:testcase
 
 run: json
 
@@ -19,7 +19,7 @@ coverage.json:
 
 coverage_bazel.json: coverage.json
 	find $(realpath $(wildcard bazel-out/*-fastbuild/bin)) -name '*.gcda' -delete
-	bazel coverage --instrumentation_filter=//:lib --experimental_fetch_all_coverage_outputs //test:testcase
+	bazel coverage --instrumentation_filter=//:lib --experimental_fetch_all_coverage_outputs --test_output=all --test_env=VERBOSE_COVERAGE=1 //test:testcase
 	$(GCOVR) -v --gcov-keep --json-pretty --json $@ $(realpath $(wildcard bazel-out/*-fastbuild/testlogs))
 
 clean:
