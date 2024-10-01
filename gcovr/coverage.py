@@ -36,6 +36,7 @@ report aggregated metrics/percentages.
 
 from __future__ import annotations
 from collections import OrderedDict
+import logging
 import os
 import re
 from typing import Any, List, Dict, Iterable, Optional, Tuple, TypeVar, Union, Literal
@@ -43,6 +44,8 @@ from typing import Any, List, Dict, Iterable, Optional, Tuple, TypeVar, Union, L
 from dataclasses import dataclass
 
 from .utils import commonpath, force_unix_separator
+
+LOGGER = logging.getLogger("gcovr")
 
 _T = TypeVar("_T")
 
@@ -150,6 +153,14 @@ class BranchCoverage:
         self.fallthrough = fallthrough
         self.throw = throw
         self.destination_blockno = destination_blockno
+
+    @property
+    def blockno_or_0(self) -> int:
+        """Get a valid block number (0) if there was no definition in GCOV file."""
+        if self.blockno is None:
+            LOGGER.info("No block number defined, assuming 0")
+            return 0
+        return self.blockno
 
     @property
     def is_covered(self) -> bool:
