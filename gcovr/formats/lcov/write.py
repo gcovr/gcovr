@@ -100,7 +100,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
                         branch_hits += 1
                     # BRDA:<line_number>,[<exception>]<block>,<branch>,<taken>
                     fh.write(
-                        f"BRDA:{lineno},{'e' if branch_coverage.throw else ''}{branch_coverage.blockno},{branch},{branch_coverage.count if branch_coverage.count else '-'}\n"
+                        f"BRDA:{lineno},{'e' if branch_coverage.throw else ''}{branch_coverage.blockno_or_0},{branch},{branch_coverage.count if branch_coverage.count else '-'}\n"
                     )
 
             # BRF:<number of branches found>

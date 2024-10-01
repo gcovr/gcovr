@@ -453,7 +453,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
 class _ParserState(NamedTuple):
     deferred_functions: List[_FunctionLine] = []
     lineno: int = 0
-    blockno: int = 0
+    blockno: int = None
     line_contents: str = ""
     is_recovering: bool = False
 
@@ -512,9 +512,7 @@ def _gather_coverage_from_line(
     elif isinstance(line, _FunctionLine):
         # Defer handling of the function tag until the next source line.
         # This is important to get correct line number information.
-        return state._replace(
-            deferred_functions=[*state.deferred_functions, line]
-        )._replace(blockno=0)
+        return state._replace(deferred_functions=[*state.deferred_functions, line])
 
     elif isinstance(line, _BranchLine):
         branchno, hits, annotation = line

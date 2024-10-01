@@ -15,25 +15,25 @@
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 2,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         },
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 2,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -58,37 +58,37 @@
                     "count": 6,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 2,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 2,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "blockno": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
