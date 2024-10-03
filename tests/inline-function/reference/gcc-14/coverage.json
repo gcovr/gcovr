@@ -1,0 +1,98 @@
+{
+    "gcovr/format_version": "0.10",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 3,
+                    "function_name": "_Z3fooi",
+                    "count": 1,
+                    "branches": [],
+                    "block_ids": [],
+                    "gcovr/md5": "32df9302a7ee38d84865122ca1a8713f"
+                },
+                {
+                    "line_number": 4,
+                    "function_name": "_Z3fooi",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "blockno": 2,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "destination_blockno": 3
+                        },
+                        {
+                            "blockno": 2,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "destination_blockno": 4
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
+                    "block_ids": [
+                        2,
+                        3,
+                        4,
+                        5
+                    ],
+                    "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
+                },
+                {
+                    "line_number": 7,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "block_ids": [],
+                    "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
+                },
+                {
+                    "line_number": 8,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "block_ids": [
+                        2
+                    ],
+                    "gcovr/md5": "684c0700241bf282a1f4fcb24ed267ac"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_Z3fooi",
+                    "demangled_name": "foo(int)",
+                    "lineno": 3,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "pos": [
+                        "3:12",
+                        "5:1"
+                    ]
+                },
+                {
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 7,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "7:5",
+                        "9:1"
+                    ]
+                }
+            ]
+        }
+    ]
+}
