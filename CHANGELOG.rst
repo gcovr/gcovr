@@ -28,7 +28,7 @@ New features and notable changes:
 - Upload standalone applications as release artifacts. (:issue:`941`)
 - Add support for ``gcov`` JSON intermediate format. (:issue:`766`)
 
-  - Add function, block and condition information to data model. (:issue:`954`, :issue:`960`, :issue:`964`)
+  - Add function, block and condition information to data model. (:issue:`954`, :issue:`960`, :issue:`964`, :issue:`979`)
   - Add function function coverage to coveralls and HTML report. (:issue:`975`)
 
 - Add :ref:`Exclusion markers` to exclude a while function. (:issue:`955`)

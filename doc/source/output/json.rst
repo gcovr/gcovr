@@ -111,7 +111,8 @@ line_number: int
 
 function_name: str
   Only available if ``gcov`` JSON format is used it contains the name
-  of the function to which the line belongs to.
+  of the function to which the line belongs to. Can be missing for a
+  line with an inlined statement.
 
 count: int
   How often this line was executed.
