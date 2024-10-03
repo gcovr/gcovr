@@ -7,6 +7,12 @@
                 {
                     "line_number": 4,
                     "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
+                },
+                {
+                    "line_number": 7,
+                    "count": 1,
                     "branches": [
                         {
                             "blockno": 0,
@@ -21,12 +27,6 @@
                             "throw": false
                         }
                     ],
-                    "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
-                },
-                {
-                    "line_number": 7,
-                    "count": 1,
-                    "branches": [],
                     "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
                 },
                 {
