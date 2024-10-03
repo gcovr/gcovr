@@ -40,14 +40,14 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>4</td>
-      <td>4</td>
+      <td>3</td>
+      <td>3</td>
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
-      <td>2</td>
-      <td>2</td>
+      <td>1</td>
+      <td>1</td>
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
@@ -79,8 +79,7 @@
       <th>Condition coverage</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l3">foo(int) (line 3)</a></td><td>called 1 time</td><td>100.0%</td><td>50.0%</td><td>50.0%</td><td>80.0%</td></tr>
-    <tr><td><a href="#l7">main (line 7)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l7">main (line 7)</a></td><td>called 1 time</td><td>100.0%</td><td>50.0%</td><td>50.0%</td><td>85.7%</td></tr>
   </table>
 </details>
 
@@ -111,7 +110,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">));</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l3" href="#l3">3</a></td>
@@ -119,30 +118,17 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l4" href="#l4">4</a></td>
       <td class="linebranch">
-        <details class="linebranchDetails">
-        <summary class="linebranchSummary">1/2</summary>
-        <div class="linebranchContents">
-          <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
-        </div>
-        </details>
       </td>
       <td class="linecondition">
-          <details class="lineconditionDetails">
-          <summary class="lineconditionSummary">1/2</summary>
-          <div class="lineconditionContents">
-            <div class="notTakenCondition">&cross; True not covered.</div>
-          </div>
-         </details>
       </td>
-      <td class="linecount partialCoveredLine">1</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l5" href="#l5">5</a></td>
@@ -165,11 +151,24 @@
     <tr class="source-line">
       <td class="lineno"><a id="l7" href="#l7">7</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+        </div>
+        </details>
       </td>
       <td class="linecondition">
+          <details class="lineconditionDetails">
+          <summary class="lineconditionSummary">1/2</summary>
+          <div class="lineconditionContents">
+            <div class="notTakenCondition">&cross; True not covered.</div>
+          </div>
+         </details>
       </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount partialCoveredLine">1</td>
+      <td class="src partialCoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l8" href="#l8">8</a></td>

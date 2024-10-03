@@ -5,16 +5,20 @@
             "file": "main.cpp",
             "lines": [
                 {
-                    "line_number": 3,
-                    "function_name": "_Z3fooi",
+                    "line_number": 4,
                     "count": 1,
                     "branches": [],
-                    "block_ids": [],
-                    "gcovr/md5": "32df9302a7ee38d84865122ca1a8713f"
+                    "block_ids": [
+                        3,
+                        4,
+                        5,
+                        6
+                    ],
+                    "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
                 },
                 {
-                    "line_number": 4,
-                    "function_name": "_Z3fooi",
+                    "line_number": 7,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -43,19 +47,8 @@
                         }
                     ],
                     "block_ids": [
-                        2,
-                        3,
-                        4,
-                        5
+                        2
                     ],
-                    "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
-                },
-                {
-                    "line_number": 7,
-                    "function_name": "main",
-                    "count": 1,
-                    "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
                 },
                 {
@@ -64,29 +57,18 @@
                     "count": 1,
                     "branches": [],
                     "block_ids": [
-                        2
+                        7
                     ],
                     "gcovr/md5": "684c0700241bf282a1f4fcb24ed267ac"
                 }
             ],
             "functions": [
                 {
-                    "name": "_Z3fooi",
-                    "demangled_name": "foo(int)",
-                    "lineno": 3,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "pos": [
-                        "3:12",
-                        "5:1"
-                    ]
-                },
-                {
                     "name": "main",
                     "demangled_name": "main",
                     "lineno": 7,
                     "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 85.7,
                     "pos": [
                         "7:5",
                         "9:1"
