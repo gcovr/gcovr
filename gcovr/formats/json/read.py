@@ -132,7 +132,7 @@ def _function_from_json(json_function: dict) -> FunctionCoverage:
         start = [int(e) for e in json_function["pos"][0].split(":")]
         end = [int(e) for e in json_function["pos"][1].split(":")]
     return FunctionCoverage(
-        json_function.get("name", None),
+        json_function.get("name"),
         json_function["demangled_name"],
         lineno=json_function["lineno"],
         count=json_function["execution_count"],
@@ -147,9 +147,9 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     line = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
-        function_name=json_line.get("function_name", None),
-        block_ids=json_line.get("block_ids", None),
-        md5=json_line.get("gcovr/md5", None),
+        function_name=json_line.get("function_name"),
+        block_ids=json_line.get("block_ids"),
+        md5=json_line.get("gcovr/md5"),
         excluded=json_line.get("gcovr/excluded", False),
     )
 
@@ -177,7 +177,7 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
         count=json_branch["count"],
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
-        destination_blockno=json_branch.get("destination_blockno", None),
+        destination_blockno=json_branch.get("destination_blockno"),
     )
 
 

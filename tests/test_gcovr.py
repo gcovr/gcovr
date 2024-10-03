@@ -65,7 +65,7 @@ GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 
 CC = os.path.split(env["CC"])[1]
 
-IS_MACOS_HOST = os.getenv("HOST_OS", None) == "Darwin"
+IS_MACOS_HOST = os.getenv("HOST_OS") == "Darwin"
 IS_MACOS = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
 if IS_WINDOWS:  # pragma: no cover
