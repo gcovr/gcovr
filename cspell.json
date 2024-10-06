@@ -103,6 +103,7 @@
         "OSTYPE",
         "pathnames",
         "POSIX",
+        "profdata",
         "pycache",
         "pycoverage",
         "Pygments",

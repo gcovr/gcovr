@@ -1,0 +1,10 @@
+# remove default coverage flags that use profdata
+build:clang-gcov --features=-coverage
+
+# generate coverage using gcov format
+build:clang-gcov --copt=--coverage
+build:clang-gcov --linkopt=--coverage
+
+# set gcov path `llvm cov gcov` - this needs to match the current toolchain
+build:clang-gcov
+coverage:clang-gcov
