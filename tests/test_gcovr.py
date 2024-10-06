@@ -341,8 +341,7 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.skipif(
                     name in ["bazel"]
                     and (
-                        (IS_GCC and CC_REFERENCE_VERSION in [14])
-                        or IS_MACOS
+                        IS_MACOS
                         or IS_WINDOWS
                     ),
                     reason="Bazel test not working with JSON intermediate format, on Windows or on MacOs.",
