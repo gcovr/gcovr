@@ -339,6 +339,10 @@ def pytest_generate_tests(metafunc):
 
             marks = [
                 pytest.mark.skipif(
+                    name in ["bazel"] and (IS_WINDOWS or IS_MACOS and IS_GCC),
+                    reason="Bazel test not working on Windows or on MacOs (with gcc).",
+                ),
+                pytest.mark.skipif(
                     name == "simple1-drive-subst" and not IS_WINDOWS,
                     reason="drive substitution only available on Windows",
                 ),

@@ -1,0 +1,111 @@
+{
+    "gcovr/format_version": "0.10",
+    "files": [
+        {
+            "file": "lib.c",
+            "lines": [
+                {
+                    "line_number": 4,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "69fb94284e99eab36821cf19f0ac3b2f"
+                },
+                {
+                    "line_number": 5,
+                    "count": 2,
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "bcb3b1b99a21a2a65ea96effd8a8bb89"
+                },
+                {
+                    "line_number": 6,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "5d1e6f3017f24bee35e821720c83e4d7"
+                },
+                {
+                    "line_number": 9,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "4071653b480e72354bcfb2b2e78f92fd"
+                }
+            ],
+            "functions": [
+                {
+                    "demangled_name": "foo",
+                    "lineno": 4,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0
+                }
+            ]
+        },
+        {
+            "file": "test/main.c",
+            "lines": [
+                {
+                    "line_number": 4,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
+                },
+                {
+                    "line_number": 5,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "dc768c8e1b15f4a864f2a7eddcdf98d7"
+                },
+                {
+                    "line_number": 7,
+                    "count": 2,
+                    "branches": [
+                        {
+                            "blockno": 1,
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 1,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "96f3bff1e93bc1ebe1bd098ac20dfee2"
+                }
+            ],
+            "functions": [
+                {
+                    "demangled_name": "main",
+                    "lineno": 4,
+                    "execution_count": 1,
+                    "blocks_percent": 88.0
+                }
+            ]
+        }
+    ]
+}
