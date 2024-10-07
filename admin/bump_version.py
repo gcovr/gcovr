@@ -190,7 +190,7 @@ def updateDocumentation(filename: str, lines: List[str]):
     for line in lines:
         if "NEXT" in line:
             line = re.sub(
-                r"(\.\. (?:versionadded|versionchanged|deprecated):: )NEXT",
+                r"(\.\. (?:versionadded|versionchanged|deprecated|versionremoved):: )NEXT",
                 r"\g<1>" + VERSION,
                 line,
             )
