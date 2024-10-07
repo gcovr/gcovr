@@ -1,0 +1,80 @@
+{
+    "gcovr/format_version": "0.10",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 4,
+                    "count": 1,
+                    "branches": [],
+                    "block_ids": [
+                        3,
+                        4,
+                        5,
+                        6
+                    ],
+                    "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
+                },
+                {
+                    "line_number": 7,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "blockno": 2,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "destination_blockno": 3
+                        },
+                        {
+                            "blockno": 2,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "destination_blockno": 4
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "count": 2,
+                            "covered": 1,
+                            "not_covered_false": [],
+                            "not_covered_true": [
+                                0
+                            ]
+                        }
+                    ],
+                    "block_ids": [
+                        2
+                    ],
+                    "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
+                },
+                {
+                    "line_number": 8,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "block_ids": [
+                        7
+                    ],
+                    "gcovr/md5": "684c0700241bf282a1f4fcb24ed267ac"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 7,
+                    "execution_count": 1,
+                    "blocks_percent": 85.7,
+                    "pos": [
+                        "7:5",
+                        "9:1"
+                    ]
+                }
+            ]
+        }
+    ]
+}

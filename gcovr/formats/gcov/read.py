@@ -234,7 +234,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                 LineCoverage(
                     line["line_number"],
                     count=line["count"],
-                    function_name=line["function_name"],
+                    function_name=line.get("function_name"),
                     block_ids=line["block_ids"],
                     md5=get_md5_hexdigest(source_lines[line["line_number"] - 1]),
                 ),
@@ -812,7 +812,9 @@ class GcovProgram:
         """
         gcov_process = self.__get_gcov_process(args, **kwargs)
         out, err = gcov_process.communicate()
-        LOGGER.debug(f"GCOV return code was {gcov_process.returncode}")
+        LOGGER.debug(
+            f"GCOV return code was {gcov_process.returncode}, stderr was:\n{err}<<"
+        )
         if gcov_process.returncode < 0:
             raise RuntimeError(
                 f"GCOV returncode was {gcov_process.returncode} (exited by signal).\n"

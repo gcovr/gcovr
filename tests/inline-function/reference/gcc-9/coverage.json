@@ -1,0 +1,49 @@
+{
+    "gcovr/format_version": "0.10",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 4,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
+                },
+                {
+                    "line_number": 7,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "blockno": 0,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false
+                        },
+                        {
+                            "blockno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
+                },
+                {
+                    "line_number": 8,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "684c0700241bf282a1f4fcb24ed267ac"
+                }
+            ],
+            "functions": [
+                {
+                    "demangled_name": "main",
+                    "lineno": 7,
+                    "execution_count": 1,
+                    "blocks_percent": 86.0
+                }
+            ]
+        }
+    ]
+}

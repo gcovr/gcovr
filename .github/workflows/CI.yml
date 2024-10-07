@@ -132,9 +132,6 @@ jobs:
             upload-app: true
 
           # Test minimum and maximum Python version on Mac OS.
-          - os: macos-12
-            gcc: gcc
-            python-version: '3.12'
           - os: macos-13
             gcc: gcc
             python-version: '3.12'

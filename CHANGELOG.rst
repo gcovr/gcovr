@@ -18,6 +18,8 @@ Breaking changes:
     intermediate format is used the ``name`` key will contained the mangled name. The keys are now
     aligned with the ``gcov`` JSON intermediate format. (:issue:`974`)
 
+- If block information is missing in ``gcov`` legacy text format block 0 is assumed. (:issue:`976`)
+
 New features and notable changes:
 
 - In Azure pipelines or GitHub actions errors and warnings are printed in an additional format captured by the CI. (:issue:`904`)
@@ -26,7 +28,7 @@ New features and notable changes:
 - Upload standalone applications as release artifacts. (:issue:`941`)
 - Add support for ``gcov`` JSON intermediate format. (:issue:`766`)
 
-  - Add function, block and condition information to data model. (:issue:`954`, :issue:`960`, :issue:`964`)
+  - Add function, block and condition information to data model. (:issue:`954`, :issue:`960`, :issue:`964`, :issue:`979`)
   - Add function function coverage to coveralls and HTML report. (:issue:`975`)
 
 - Add :ref:`Exclusion markers` to exclude a while function. (:issue:`955`)
@@ -51,7 +53,7 @@ Documentation:
 Internal changes:
 
 - Move tests to directory in the root. (:issue:`897`)
-- Add MacOs to the GitHub test workflow. (:issue:`901`, :issue:`905`)
+- Add MacOs to the GitHub test workflow. (:issue:`901`, :issue:`905`, :issue:`980``)
 - Remove test exclusions for MacOs and adapt tests and reference data. (:issue:`902`)
 - Link correct documentation version in copyright header. (:issue:`907`)
 - Move tag creation before publish the distribution because tag from pipeline doesn't trigger additional runs. (:issue:`899`)
@@ -65,6 +67,8 @@ Internal changes:
 - Add Codacy to CI workflow for tracking coverage and code quality. (:issue:`948`)
 - Add ``bandit`` to the linters. (:issue:`949`)
 - Remove Codecov upload from pipeline. (:issue:`958`)
+- Add test with ``bazel`` tests. (:issue:`969`)
+
 
 7.2 (24 February 2024)
 ----------------------
