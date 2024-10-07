@@ -970,12 +970,15 @@ def source_row_branch(branches) -> Dict[str, Any]:
         branch = branches[branch_id]
         if branch.is_covered:
             taken += 1
+        if branch.excluded:
+            total -= 1
         total += 1
         items.append(
             {
                 "name": branch_id,
                 "taken": branch.is_covered,
                 "count": branch.count,
+                "excluded": branch.excluded,
             }
         )
 

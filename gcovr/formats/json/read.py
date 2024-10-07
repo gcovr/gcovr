@@ -178,6 +178,7 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
         destination_blockno=json_branch.get("destination_blockno"),
+        excluded=json_branch.get("gcovr/excluded"),
     )
 
 

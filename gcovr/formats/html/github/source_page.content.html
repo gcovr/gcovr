@@ -30,10 +30,12 @@
                 <td class="text-right src linenos ws-unset">
                     {% if row.linebranch %}
                     <details class="normal details-overlay">
-                        <summary>{% if row.linebranch %}{{row.linebranch.taken}}/{{row.linebranch.total}}{% endif %}</summary>
+                        <summary>{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             {% for branch in row.linebranch.branches %}
-                            {% if branch.taken %}
+                            {% if branch.excluded %}
+                            <div class="color-excluded-branch">&ndash; Branch {{branch.name}} excluded.</div>
+                            {% elif branch.taken %}
                             <div class="color-taken-branch">&check; Branch {{branch.name}} taken {{branch.count}} times.</div>
                             {% else %}
                             <div class="color-fg-danger">&cross; Branch {{branch.name}} not taken.</div>

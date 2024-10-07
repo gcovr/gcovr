@@ -391,6 +391,11 @@ span.excludedLine
     z-index: 1; /* show in front of the table entries */
 }
 
+.excludedBranch
+{
+    color: var(--takenBranch_color) !important;
+}
+
 .takenBranch
 {
     color: var(--takenBranch_color) !important;
@@ -755,11 +760,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td class="lineno"><a id="l8" href="#l8">8</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">1/2</summary>
-        <div class="linebranchContents">
-          <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
-        </div>
+          <summary class="linebranchSummary">1/2</summary>
+          <div class="linebranchContents">
+            <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
+            <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          </div>
         </details>
       </td>
       <td class="linecount partialCoveredLine">1</td>
@@ -853,11 +858,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td class="lineno"><a id="l21" href="#l21">21</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">1/2</summary>
-        <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
-          <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
-        </div>
+          <summary class="linebranchSummary">1/2</summary>
+          <div class="linebranchContents">
+            <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+            <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
+          </div>
         </details>
       </td>
       <td class="linecount partialCoveredLine">1</td>

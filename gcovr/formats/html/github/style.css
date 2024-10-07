@@ -58,7 +58,7 @@ td.linenos .normal {
     white-space: unset;
 }
 
-.color-taken-branch, .color-taken-condition, .color-taken-decision, .color-invoked-call {
+.color-excluded-branch, .color-taken-branch, .color-taken-condition, .color-taken-decision, .color-invoked-call {
     color: var(--taken_color) !important;
 }
 

@@ -27,16 +27,18 @@
       <td class="linebranch">
         {% if row.linebranch %}
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
-        <div class="linebranchContents">
-          {% for branch in row.linebranch.branches %}
-          {% if branch.taken %}
-          <div class="takenBranch">&check; Branch {{branch.name}} taken {{branch.count}} times.</div>
-          {% else %}
-          <div class="notTakenBranch">&cross; Branch {{branch.name}} not taken.</div>
-          {% endif%}
-          {% endfor %}
-        </div>
+          <summary class="linebranchSummary">{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
+          <div class="linebranchContents">
+            {% for branch in row.linebranch.branches %}
+            {% if branch.excluded %}
+            <div class="excludedBranch">&ndash; Branch {{branch.name}} excluded.</div>
+            {% elif branch.taken %}
+            <div class="takenBranch">&check; Branch {{branch.name}} taken {{branch.count}} times.</div>
+            {% else %}
+            <div class="notTakenBranch">&cross; Branch {{branch.name}} not taken.</div>
+            {% endif%}
+            {% endfor %}
+          </div>
         </details>
         {% endif %}
       </td>

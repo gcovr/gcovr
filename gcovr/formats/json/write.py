@@ -217,6 +217,8 @@ def _json_from_branch(branch: BranchCoverage) -> dict:
     }
     if branch.destination_blockno is not None:
         json_branch["destination_blockno"] = branch.destination_blockno
+    if branch.excluded is not None:
+        json_branch["gcovr/excluded"] = branch.excluded
 
     return json_branch
 

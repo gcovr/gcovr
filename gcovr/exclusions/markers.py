@@ -32,7 +32,7 @@ from .utils import (
     get_functions_by_line,
 )
 
-from ..coverage import FileCoverage, FunctionCoverage
+from ..coverage import BranchCoverage, FileCoverage, FunctionCoverage, LineCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -40,6 +40,7 @@ _EXCLUDE_FLAG = "_EXCL_"
 _EXCLUDE_LINE_WORD = ""
 _EXCLUDE_BRANCH_WORD = "BR_"
 _EXCLUDE_PATTERN_POSTFIXES = ["LINE", "START", "STOP", "FUNCTION"]
+_EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX = "SOURCE"
 
 ExclusionPredicate = Callable[[int], bool]
 FunctionListByLine = Dict[int, List[FunctionCoverage]]
@@ -69,6 +70,12 @@ def apply_exclusion_markers(
         exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers.
     """
 
+    _process_exclude_branch_source(
+        lines=lines,
+        exclude_pattern_prefix=exclude_pattern_prefix,
+        filecov=filecov,
+    )
+
     line_is_excluded, branch_is_excluded = _find_excluded_ranges(
         lines=lines,
         warnings=_ExclusionRangeWarnings(filecov.filename),
@@ -83,6 +90,63 @@ def apply_exclusion_markers(
         line_is_excluded=line_is_excluded,
         branch_is_excluded=branch_is_excluded,
     )
+
+
+def _process_exclude_branch_source(
+    lines: List[str],
+    *,
+    exclude_pattern_prefix: str,
+    filecov: Optional[FileCoverage] = None,
+) -> Tuple[ExclusionPredicate, ExclusionPredicate]:
+    """
+    Scan through all lines to find source branch exclusion markers.
+    """
+
+    exclude_word = "BR_"
+    excl_pattern = f"(.*?)({exclude_pattern_prefix}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX})"
+    excl_pattern_compiled = re.compile(excl_pattern)
+
+    for lineno, code in enumerate(lines, 1):
+        if _EXCLUDE_FLAG in code:
+            columnno = 1
+            for prefix, match in excl_pattern_compiled.findall(code):
+                columnno += len(prefix)
+                location = f"{filecov.filename}:{lineno}:{columnno}"
+                if lineno in filecov.lines:
+                    if (
+                        filecov.lines[lineno].function_name is None
+                        or filecov.lines[lineno].block_ids is None
+                    ):
+                        LOGGER.warning(
+                            f"Source branch exclusion at {location} needs at least gcc-14 with supported JSON format."
+                        )
+                    elif not filecov.lines[lineno].block_ids:
+                        LOGGER.error(
+                            f"Source branch exclusion at {location} found but no block ids defined at this line."
+                        )
+                    else:
+                        function_name = filecov.lines[lineno].function_name
+                        block_ids = filecov.lines[lineno].block_ids
+                        # Check the lines which belong to the function
+                        line: LineCoverage
+                        for current_lineno in filecov.lines:
+                            line = filecov.lines[current_lineno]
+                            if line.function_name != function_name:
+                                continue
+                            # Exclude the branch where the destination is one of the blocks of the line with the marker
+                            branch: BranchCoverage
+                            for branchno in line.branches:
+                                branch = line.branches[branchno]
+                                if branch.destination_blockno in block_ids:
+                                    LOGGER.debug(
+                                        f"Source branch exclusion at {location} is excluding branch {branchno} of line {current_lineno}"
+                                    )
+                                    branch.excluded = True
+                else:
+                    LOGGER.error(
+                        f"Found marker for source branch exclusion at {location} without coverage information"
+                    )
+                columnno += len(match)
 
 
 class _ExclusionRangeWarnings:

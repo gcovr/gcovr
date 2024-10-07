@@ -396,11 +396,27 @@ def merge_branch(
     Merge BranchCoverage information.
 
     Do not use 'left' or 'right' objects afterwards!
+
+        Examples:
+    >>> left = BranchCoverage(1, 2)
+    >>> right = BranchCoverage(1, 3, False, True)
+    >>> right.excluded = True
+    >>> merged = merge_branch(left, right, DEFAULT_MERGE_OPTIONS)
+    >>> merged.count
+    5
+    >>> merged.fallthrough
+    False
+    >>> merged.throw
+    True
+    >>> merged.excluded
+    True
     """
 
     left.count += right.count
     left.fallthrough |= right.fallthrough
     left.throw |= right.throw
+    if left.excluded is True or right.excluded is True:
+        left.excluded = True
 
     return left
 
@@ -443,8 +459,6 @@ def merge_condition(
     [2]
     >>> merged.not_covered_false
     []
-
-
     """
 
     # If condition coverage is not know for one side, return the other.

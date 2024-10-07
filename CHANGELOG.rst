@@ -33,6 +33,7 @@ New features and notable changes:
 
 - Add :ref:`Exclusion markers` to exclude a while function. (:issue:`955`)
 - Change sort order in JSON output files. (:issue:`959`)
+- Add source exclusion markers to exclude source branch from target line. (:issue:`961`)
 
 Bug fixes and small improvements:
 
