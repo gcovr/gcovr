@@ -54,7 +54,7 @@ If running in a CI additional variables are used:
 The Coveralls JSON format is documented at
 `<https://docs.coveralls.io/api-introduction>`_.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.0
    Order of keys changed from alphabetical to logical.
 
 .. versionadded:: 5.0

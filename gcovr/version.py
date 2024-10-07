@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 7.2+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/main
+# This file is part of gcovr 8.0, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/8.0
 #
 # _____________________________________________________________________________
 #
@@ -17,4 +17,4 @@
 #
 # ****************************************************************************
 
-__version__ = "7.2+main"
+__version__ = "8.0"

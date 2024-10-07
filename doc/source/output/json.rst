@@ -22,7 +22,7 @@ with sum of lines and branches execution, see :ref:`merging_coverage`.
 
 See the :ref:`json_format` for a description of the file format.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.0
    Order of keys changed from alphabetical to logical.
 
 .. _json_format:
@@ -155,16 +155,16 @@ The line entry should be interpreted as follows:
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.0
    The ``conditions`` is added.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.0
    The ``block_ids`` is added.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.0
    The ``function_name`` is added.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.0
    The ``gcovr/md5`` is added.
 
 .. versionchanged:: 6.0
@@ -203,7 +203,7 @@ destination_blockno: int
   The destination block of this branch.
   Only available if ``gcov`` JSON format is used.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.0
    Added ``destination_blockno`` field.
 
 .. _json_format_condition:
@@ -352,14 +352,14 @@ gcovr/excluded: boolean
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.0
    Added ``pos`` field.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.0
    The ``name`` is changed to contain the mangled name previous content is now
    available as ``demangled_name`` as it is in GCOV JSON format.
 
-.. versionremoved:: NEXT
+.. versionremoved:: 8.0
    Removed ``returned_count`` field because missing in ``gcov`` JSON format.
 
 .. versionadded:: 7.0
