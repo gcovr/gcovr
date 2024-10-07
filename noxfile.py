@@ -481,7 +481,7 @@ def html2jpeg(session: nox.Session):
                 "html": content,
                 "export": {
                     "type": "jpeg",
-                    "fullPage": "false",
+                    "fullPage": False,
                     "clip": {"x": 1, "y": 1, "width": size[0], "height": size[1]},
                 },
             }
