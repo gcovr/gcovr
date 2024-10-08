@@ -177,6 +177,11 @@ jobs:
           os: ubuntu-22.04
           python-version: 3.12
 
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install nox requests
+
         # Need to prevent creation of an existing tag
       - name: Fetch all tags
         run: |
@@ -268,4 +273,4 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          python -m nox --session upload_wheel
+          nox --session upload_wheel
