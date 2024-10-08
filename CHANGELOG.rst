@@ -3,6 +3,22 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+Next Release
+------------
+
+Known bugs:
+
+Breaking changes:
+
+New features and notable changes:
+
+Bug fixes and small improvements:
+
+Documentation:
+
+Internal changes:
+
+
 8.0 (07 October 2024)
 ---------------------
 
@@ -68,7 +84,6 @@ Internal changes:
 - Add ``bandit`` to the linters. (:issue:`949`)
 - Remove Codecov upload from pipeline. (:issue:`958`)
 - Add test with ``bazel`` tests. (:issue:`969`)
-
 
 7.2 (24 February 2024)
 ----------------------
