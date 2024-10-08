@@ -213,7 +213,7 @@ jobs:
 
       - name: Run release checklist
         run: |
-          admin/release_checklist.sh $EXTRA_CHECKLIST_ARGS 7.2+main
+          admin/release_checklist.sh $EXTRA_CHECKLIST_ARGS 8.0
 
       - name: Download artifacts
         uses: actions/download-artifact@v4

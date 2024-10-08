@@ -3,14 +3,14 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
-Next Release
-------------
+8.0 (07 October 2024)
+---------------------
 
 Known bugs:
 
 Breaking changes:
 
-- Changes related ot added support of ``gcov`` JSON intermediate format:
+- Changes related to added support of ``gcov`` JSON intermediate format:
 
   - The function return count is removed from internal data model, HTML and JSON output because missing in
     ``gcov`` JSON intermediate format. (:issue:`935`)

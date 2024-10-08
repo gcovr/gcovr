@@ -49,5 +49,5 @@ The excluded region not includes the line with the stop marker::
 
 In the excluded regions, *any* coverage is excluded.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.0
     If :option:`--verbose<gcovr --verbose>` is used the exclusion ranges are logged.
