@@ -512,7 +512,7 @@ class FileCoverage:
                 "Data for filtering is missing. Need supported GCOV JSON format to get the information."
             )
         filecov = FileCoverage(self.filename)
-        self.functions[functioncov.name] = functioncov
+        filecov.functions[functioncov.name] = functioncov
 
         filecov.lines = {
             line: value
