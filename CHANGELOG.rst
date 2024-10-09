@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add condition coverage to text summary report. (:issue:`985`)
+
 Bug fixes and small improvements:
 
 Documentation:
