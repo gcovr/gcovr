@@ -14,15 +14,18 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Fix exclusion of internal functions. (:issue:`987`)
+
 Documentation:
 
 Internal changes:
-
 
 8.0 (07 October 2024)
 ---------------------
 
 Known bugs:
+
+- Exclusion of internal function not working. (:issue:`984`)
 
 Breaking changes:
 
