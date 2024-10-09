@@ -269,6 +269,8 @@ def doc(session: nox.Session) -> None:
         line, _ = re.subn(r"``", r"`", line)
         line, _ = re.subn(r":(?:option|ref):", r"", line)
         line, _ = re.subn(r":issue:`(\d+)`", r"#\1", line)
+        if line.strip().startswith("- ") and out_lines[-1].rstrip() == "":
+            out_lines.pop()
         out_lines.append(line)
     else:
         raise RuntimeError(f"End of release changes not found in {changelog_rst}.")

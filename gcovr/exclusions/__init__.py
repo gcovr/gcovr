@@ -123,8 +123,9 @@ def remove_calls(filecov: FileCoverage):
 def remove_internal_functions(filecov: FileCoverage):
     """Remove compiler-generated functions, e.g. for static initialization."""
 
-    # iterate over shallow copy
-    for function in list(filecov.functions.values()):
+    # Get all the keys first because we want to remove some of them which will else result in an error.
+    for key in list(filecov.functions.keys()):
+        function = filecov.functions[key]
         if _function_can_be_excluded(function.demangled_name):
             LOGGER.debug(
                 "Ignoring symbol %s in line %s in file %s",
@@ -133,7 +134,7 @@ def remove_internal_functions(filecov: FileCoverage):
                 filecov.filename,
             )
 
-            filecov.functions.pop(function.demangled_name)
+            filecov.functions.pop(key)
 
 
 def _function_can_be_excluded(name: str) -> bool:
