@@ -115,6 +115,8 @@ def write_summary_report(covdata: CovData, output_file: str, options: Options) -
         print_stat("lines", stats.line)
         print_stat("functions", stats.function)
         print_stat("branches", stats.branch)
+        if stats.condition.total != 0:
+            print_stat("conditions", stats.condition)
         if options.show_decision:
             print_stat("decisions", stats.decision)
         if not options.exclude_calls:
