@@ -171,10 +171,11 @@ class BranchCoverage:
     def blockno_or_0(self) -> int:
         """Get a valid block number (0) if there was no definition in GCOV file."""
         if self.blockno is None:
+            self.blockno = 0
             if BranchCoverage.first_undefined_blockno:
                 BranchCoverage.first_undefined_blockno = False
                 LOGGER.info("No block number defined, assuming 0 for all undefined")
-            return 0
+
         return self.blockno
 
     @property
