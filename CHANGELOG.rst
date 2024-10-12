@@ -15,6 +15,7 @@ New features and notable changes:
 Bug fixes and small improvements:
 
 - Fix exclusion of internal functions. (:issue:`987`)
+- Only print info on the first undefined block number in data model. (:issue:`990`)
 
 Documentation:
 
