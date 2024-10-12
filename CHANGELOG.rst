@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- If a internal generated function is excluded the lines, if present, are excluded as well. (:issue:`991`)
+
 Bug fixes and small improvements:
 
 - Fix exclusion of internal functions. (:issue:`987`)
