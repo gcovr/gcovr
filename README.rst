@@ -155,8 +155,8 @@ Example HTML details:
 .. |pypi-badge| image:: https://img.shields.io/pypi/v/gcovr.svg
    :target: https://pypi.python.org/pypi/gcovr
    :alt: install from PyPI
-.. |Readthedocs-badge| image:: https://readthedocs.org/projects/gcovr/badge/?version=main
-   :target: https://gcovr.com/en/main/?badge=main
+.. |Readthedocs-badge| image:: https://readthedocs.org/projects/gcovr/badge/?version=latest
+   :target: https://gcovr.com/en/latest/?badge=latest
    :alt: Documentation Status
 .. |gitter-badge| image:: https://badges.gitter.im/gcovr/gcovr.svg
    :target: https://gitter.im/gcovr/gcovr

@@ -13,23 +13,6 @@ on:
 
 jobs:
 
-  milestone-check:
-    runs-on: ubuntu-22.04
-    continue-on-error: true
-    env:
-      PR_MILESTONE: "${{ github.event.pull_request.milestone.number }}"
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check if PR is assigned to a milestone
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          if [ -z "$PR_MILESTONE" ]; then
-            echo 'No milestone selected for PR'
-            exit 1
-          fi
-          exit 0
-
-
   changelog-check:
     runs-on: ubuntu-22.04
     env:
@@ -76,7 +59,7 @@ jobs:
           cspell
 
   host:
-    needs: [milestone-check, changelog-check, spell-check]
+    needs: [changelog-check, spell-check]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       os: ${{ matrix.os }}
@@ -146,7 +129,7 @@ jobs:
 
 
   docker:
-    needs: [milestone-check, changelog-check, spell-check]
+    needs: [changelog-check, spell-check]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       container: true
@@ -218,7 +201,7 @@ jobs:
 
       - name: Run release checklist
         run: |
-          admin/release_checklist.sh $EXTRA_CHECKLIST_ARGS 8.2
+          admin/release_checklist.sh $EXTRA_CHECKLIST_ARGS 8.2+main
 
       - name: Download artifacts
         uses: actions/download-artifact@v4

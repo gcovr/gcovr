@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.2, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/8.2
+# This file is part of gcovr 8.2+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -26,6 +26,7 @@ from runpy import run_path
 import socket
 import sys
 from pathlib import Path
+import textwrap
 from time import sleep
 from typing import Tuple
 import requests
@@ -88,7 +89,8 @@ OUTPUT_FORMATS = [
 ]
 
 CI_RUN = "GITHUB_ACTION" in os.environ
-GCOVR_VERSION = run_path("./gcovr/version.py")["__version__"]
+GCOVR_VERSION_PY = Path(__file__).parent / "gcovr" / "version.py"
+GCOVR_CHANGELOG_RST = Path(__file__).parent / "CHANGELOG.rst"
 
 nox.options.sessions = ["qa"]
 
@@ -154,6 +156,96 @@ def set_environment(session: nox.Session, cc: str = None) -> None:
     session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
     if cc_reference is not None:
         session.env["CC_REFERENCE"] = cc_reference
+
+
+@nox.session(python=False)
+def prepare_release(session: nox.Session) -> None:
+    """Prepare the release"""
+    new_lines = []
+    lines = iter(GCOVR_VERSION_PY.read_text().splitlines())
+    for line in lines:
+        if line.startswith("__version__"):
+            major, minor = line.split(" = ", maxsplit=1)[1].replace('"', "").split(".")
+            if not minor.endswith("+main"):
+                session.error("Session only allowed for development iteration")
+            session.log("Is this a major release (1) or a minor release (2)?")
+            release_type = input()
+            if release_type == "1":
+                major = str(int(major) + 1)
+                minor = "0"
+            elif release_type == "2":
+                minor = str(int(minor.replace("+main", "")) + 1)
+            else:
+                session.error(f"Invalid input {release_type!r}")
+
+            new_lines.append(f'__version__ = "{major}.{minor}"')
+            break
+        new_lines.append(line)
+    else:
+        session.error("Version line not found")
+
+    new_lines += list(lines)
+
+    GCOVR_VERSION_PY.write_text("\n".join(new_lines))
+    session.notify("bump_version")
+    session.notify("html2jpeg")
+
+
+@nox.session(python=False)
+def prepare_next_iteration(session: nox.Session) -> None:
+    """Prepare the next iteration"""
+    new_lines = []
+    lines = iter(GCOVR_VERSION_PY.read_text().splitlines())
+    for line in lines:
+        if line.startswith("__version__"):
+            major, minor = line.split(" = ", maxsplit=1)[1].replace('"', "").split(".")
+            if minor.endswith("+main"):
+                session.error("Session only allowed after a release")
+            new_lines.append(f'__version__ = "{major}.{minor}+main"')
+            break
+        new_lines.append(line)
+    else:
+        session.error(f"Version line not found in {GCOVR_VERSION_PY.name}")
+
+    new_lines += list(lines)
+
+    GCOVR_VERSION_PY.write_text("\n".join(new_lines))
+
+    new_lines = []
+    lines = iter(GCOVR_CHANGELOG_RST.read_text().splitlines())
+    for line in lines:
+        if line.startswith(f"{major}.{minor} ("):
+            new_lines.append(
+                textwrap.dedent(
+                    """\
+                    Next Release
+                    ------------
+
+                    Known bugs:
+
+                    Breaking changes:
+
+                    New features and notable changes:
+
+                    Bug fixes and small improvements:
+
+                    Documentation:
+
+                    Internal changes:
+                    """
+                )
+            )
+            new_lines.append(line)
+            break
+        new_lines.append(line)
+    else:
+        session.error(f"Version line not found in {GCOVR_CHANGELOG_RST.name}")
+    new_lines += list(lines)
+
+    GCOVR_CHANGELOG_RST.write_text("\n".join(new_lines))
+
+    session.notify("bump_version")
+    session.notify("html2jpeg")
 
 
 @nox.session
@@ -386,7 +478,7 @@ def get_executable_name() -> Path:
     else:
         platform_suffix = "linux"
     return Path(
-        f"gcovr-{GCOVR_VERSION}-{platform_suffix}-{platform.machine().lower()}{suffix}"
+        f"gcovr-{run_path(GCOVR_VERSION_PY)['__version__']}-{platform_suffix}-{platform.machine().lower()}{suffix}"
     )
 
 
@@ -467,7 +559,7 @@ def html2jpeg(session: nox.Session):
         ).strip()
         defer.callback(subprocess.run, ["docker", "stop", container_id])
         url = f"http://localhost:{port}/1/screenshot"
-        sleep(3.0)  # nosemgrep # We need to wait here until server is started.
+        sleep(5.0)  # nosemgrep # We need to wait here until server is started.
 
         def screenshot(html, jpeg, size):
             def read_file(file):
