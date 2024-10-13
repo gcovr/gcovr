@@ -292,20 +292,20 @@ def main(args=None):
         # but is used to turn absolute paths into relative paths
         options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
+        options.filter = [f.build_filter() for f in options.filter]
+        if not options.filter:
+            options.filter = [DirectoryPrefixFilter(options.root_dir)]
+        options.exclude = [f.build_filter() for f in options.exclude]
+        options.include = [f.build_filter() for f in options.include]
+
+        options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
+        if not options.gcov_filter:
+            options.gcov_filter = [AlwaysMatchFilter()]
+        options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
         if options.gcov_exclude_dirs:
             options.gcov_exclude_dirs = [
                 f.build_filter() for f in options.gcov_exclude_dirs
             ]
-
-        options.exclude = [f.build_filter() for f in options.exclude]
-        options.filter = [f.build_filter() for f in options.filter]
-        if not options.filter:
-            options.filter = [DirectoryPrefixFilter(options.root_dir)]
-
-        options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
-        options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
-        if not options.gcov_filter:
-            options.gcov_filter = [AlwaysMatchFilter()]
 
         options.exclude_functions = [
             (re.compile(f[1:-1] if f[0] == "/" and f[-1] == "/" else re.escape(f)))
@@ -316,6 +316,7 @@ def main(args=None):
             ("--root", [options.root_filter]),
             ("--filter", options.filter),
             ("--exclude", options.exclude),
+            ("--include", options.include),
             ("--gcov-filter", options.gcov_filter),
             ("--gcov-exclude", options.gcov_exclude),
             ("--gcov-exclude-directories", options.gcov_exclude_dirs),
