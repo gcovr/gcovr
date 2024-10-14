@@ -13,11 +13,12 @@ Breaking changes:
 New features and notable changes:
 
 - Add condition coverage to text summary report. (:issue:`985`)
+- Add :option:`--include` to search files in search paths which should be added to report. (:issue:`998`)
 
 Bug fixes and small improvements:
 
- - Fixed an error handling bug throwing a `TypeError` exception on a gcov merge assertion failure instead of reporting 
-   the error and (if requested by the user) continuing execution. (:issue:`997`)
+- Fixed an error handling bug throwing a `TypeError` exception on a gcov merge assertion failure
+  instead of reporting the error and (if requested by the user) continuing execution. (:issue:`997`)
 
 Documentation:
 
