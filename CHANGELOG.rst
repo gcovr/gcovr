@@ -15,7 +15,7 @@ New features and notable changes:
 Bug fixes and small improvements:
 
  - Fixed an error handling bug throwing a `TypeError` exception on a gcov merge assertion failure instead of reporting 
-   the error and (if requested by the user) continuing execution.
+   the error and (if requested by the user) continuing execution. (:issue:`997`)
 
 Documentation:
 
