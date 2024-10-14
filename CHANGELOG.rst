@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add condition coverage to text summary report. (:issue:`985`)
+
 Bug fixes and small improvements:
 
  - Fixed an error handling bug throwing a `TypeError` exception on a gcov merge assertion failure instead of reporting 

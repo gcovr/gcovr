@@ -16,7 +16,7 @@ html: coverage.json
 	$(GCOVR) --verbose -a coverage.json --decisions --html-details -o coverage.html
 
 txt: coverage.json
-	$(GCOVR) --verbose -a coverage.json --txt-metric decision -o coverage.txt
+	$(GCOVR) --verbose -a coverage.json --txt-metric decision --txt-summary -o coverage.txt > coverage_summary.txt
 
 json: coverage.json
 	# pass
