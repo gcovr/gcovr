@@ -579,7 +579,7 @@ def process_datafile(
                 return
     # This exception fails fast
     except GcovrMergeAssertionError as exc:
-        errors.append(str(exc))
+        errors += str(exc).split("\n")
 
     errors_output = "\n\t".join(errors)
     errors_output = (
