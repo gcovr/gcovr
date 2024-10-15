@@ -79,15 +79,18 @@ def fix_case_of_path(path: str):
     if not cur:  # e.g path = "C:/"
         return rest.upper()  # Always use uppercase drive letter
 
-    curL = cur.lower()
-    matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
-    if len(matchedFileName) > 1:
-        raise RuntimeError(
-            "Seems that we have a case sensitive filesystem, can't fix file case"
-        )
+    try:
+        curL = cur.lower()
+        matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
+        if len(matchedFileName) > 1:
+            raise RuntimeError(
+                "Seems that we have a case sensitive filesystem, can't fix file case"
+            )
 
-    if len(matchedFileName) == 1:
-        path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
+        if len(matchedFileName) == 1:
+            path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
+    except FileNotFoundError:
+        LOGGER.warning(f"Can not fix case of path because {rest} not found.")
 
     return path.replace("\\", "/")
 
