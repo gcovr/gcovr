@@ -59,11 +59,13 @@ class LoopChecker(object):
 def is_fs_case_insensitive():
     cwd = os.getcwd()
     # Guessing if file system is case insensitive.
-    # The working directory is not the root and accessible in upper and lower case.
+    # The working directory is not the root and accessible in upper and lower case
+    # and pointing to same file.
     ret = (
         (cwd != os.path.sep)
         and os.path.exists(cwd.upper())
         and os.path.exists(cwd.lower())
+        and os.path.samefile(cwd.upper(), cwd.lower())
     )
     LOGGER.debug(f"File system is case {'in' if ret else ''}sensitive.")
 
