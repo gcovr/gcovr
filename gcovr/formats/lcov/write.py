@@ -55,7 +55,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             fh.write(f"SF:{filename}\n")
 
             # This filename is generated in the JSON intermediate format
-            if not filename.endswith("<stdin>"):
+            if not options.lcov_format_v1 and not filename.endswith("<stdin>"):
                 # VER:<version ID>
                 # Generate md5 hash of file contents
                 with open(filename, "rb") as file_handle:
