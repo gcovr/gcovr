@@ -619,7 +619,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Include source files that match this filter. "
             "This is to ensure that files are in report even "
             "if no coverage data is found. Files are searched "
-            "recursive in root directory. "
+            "recursive from th --root directory. "
             "Can be specified multiple times."
         ),
         action="append",
