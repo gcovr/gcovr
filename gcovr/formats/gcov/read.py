@@ -62,6 +62,7 @@ from .parser import parse_metadata, parse_coverage
 
 
 LOGGER = logging.getLogger("gcovr")
+GCOV_JSON_VERSION = "2"
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_error_re = re.compile(
@@ -185,6 +186,12 @@ def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str
 def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json.loads(fh_in.read())
+
+    # Check format version because the file can be created external
+    if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
+        raise RuntimeError(
+            f"Got wrong JSON format version {gcov_json_data['format_version']}, expected {GCOV_JSON_VERSION}"
+        )
 
     for file in gcov_json_data["files"]:
         fname = os.path.normpath(
@@ -671,7 +678,9 @@ class GcovProgram:
                     GcovProgram.__use_json_format_if_available
                     and self.__check_gcov_help_content("--json-format")
                 ):
-                    if self.__check_gcov_version_content("JSON format version: 2"):
+                    if self.__check_gcov_version_content(
+                        f"JSON format version: {GCOV_JSON_VERSION}"
+                    ):
                         LOGGER.debug("GCOV capabilities: JSON format available.")
                         GcovProgram.__default_options.append("--json-format")
                         if self.__check_gcov_help_content("--condition"):
