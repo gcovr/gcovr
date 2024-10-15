@@ -23,8 +23,9 @@ jobs:
         if: ${{ (github.repository == 'gcovr/gcovr') }}
         run: |
           # Search the coverage files and upload them
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python --force-coverage-parser cobertura -r 'coverage-*/coverage.xml'
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov -r 'coverage-lcov/**/*.lcov'
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser cobertura $(find . -regex '.*/coverage-cobertura/.*/cobertura\.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov $(find . -regex '.*/coverage-lcov/.*/coverage\.lcov' -print | sed -e 's/^/ -r /' | tr -d '\n') || echo ignored
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
