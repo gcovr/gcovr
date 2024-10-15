@@ -58,8 +58,18 @@ jobs:
         run: |
           cspell
 
+  upload-lcov:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload LCOV coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: "coverage-lcov"
+          path: ./tests/nested/reference/**/coverage.lcov
+
   host:
-    needs: [changelog-check, spell-check]
+    needs: [changelog-check, spell-check, upload-lcov]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       os: ${{ matrix.os }}
@@ -129,7 +139,7 @@ jobs:
 
 
   docker:
-    needs: [changelog-check, spell-check]
+    needs: [changelog-check, spell-check, upload-lcov]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       container: true
