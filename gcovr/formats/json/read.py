@@ -23,10 +23,7 @@ import os
 from glob import glob
 from typing import Optional
 
-from ...options import Options
-
-
-from ..gcov.read import apply_filter_include_exclude
+from . import versions
 from ...coverage import (
     BranchCoverage,
     ConditionCoverage,
@@ -50,8 +47,8 @@ from ...merging import (
     insert_line_coverage,
     insert_call_coverage,
 )
-
-from . import versions
+from ...options import Options
+from ...utils import is_file_excluded
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -97,18 +94,7 @@ def read_report(options: Options) -> CovData:
                 os.path.abspath(options.root), os.path.normpath(gcovr_file["file"])
             )
 
-            filtered, excluded = apply_filter_include_exclude(
-                file_path, options.filter, options.exclude
-            )
-
-            # Ignore if the filename does not match the filter
-            if filtered:
-                LOGGER.debug(f"  Filtering coverage data for file {file_path}")
-                continue
-
-            # Ignore if the filename matches the exclude pattern
-            if excluded:
-                LOGGER.debug(f"  Excluding coverage data for file {file_path}")
+            if is_file_excluded(file_path, options.filter, options.exclude):
                 continue
 
             file_coverage = FileCoverage(file_path)

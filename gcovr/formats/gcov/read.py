@@ -27,24 +27,7 @@ import subprocess  # nosec # Commands are trusted.
 from threading import Lock
 from typing import Callable, List, Optional, Set, Tuple
 
-from ...options import Options
-from ...merging import (
-    FUNCTION_MAX_LINE_MERGE_OPTIONS,
-    GcovrMergeAssertionError,
-    insert_branch_coverage,
-    insert_condition_coverage,
-    insert_function_coverage,
-    insert_line_coverage,
-    merge_covdata,
-)
-
-from ...utils import (
-    search_file,
-    commonpath,
-    is_fs_case_insensitive,
-    fix_case_of_path,
-    get_md5_hexdigest,
-)
+from .parser import parse_metadata, parse_coverage
 from .workers import Workers, locked_directory
 from ...coverage import (
     BranchCoverage,
@@ -54,11 +37,28 @@ from ...coverage import (
     FunctionCoverage,
     LineCoverage,
 )
-from ...merging import get_merge_mode_from_options, insert_file_coverage
 from ...exclusions import apply_all_exclusions
 from ...decision_analysis import DecisionParser
-
-from .parser import parse_metadata, parse_coverage
+from ...merging import (
+    FUNCTION_MAX_LINE_MERGE_OPTIONS,
+    GcovrMergeAssertionError,
+    insert_branch_coverage,
+    insert_condition_coverage,
+    insert_function_coverage,
+    insert_line_coverage,
+    merge_covdata,
+    get_merge_mode_from_options,
+    insert_file_coverage,
+)
+from ...options import Options
+from ...utils import (
+    is_file_excluded,
+    search_file,
+    commonpath,
+    is_fs_case_insensitive,
+    fix_case_of_path,
+    get_md5_hexdigest,
+)
 
 
 LOGGER = logging.getLogger("gcovr")
@@ -199,18 +199,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
         )
         LOGGER.debug(f"Parsing coverage data for file {fname}")
 
-        # Return if the filename does not match the filter
-        # Return if the filename matches the exclude pattern
-        filtered, excluded = apply_filter_include_exclude(
-            fname, options.filter, options.exclude
-        )
-
-        if filtered:
-            LOGGER.debug(f"  Filtering coverage data for file {fname}")
-            continue
-
-        if excluded:
-            LOGGER.debug(f"  Excluding coverage data for file {fname}")
+        if is_file_excluded(fname, options.filter, options.exclude):
             continue
 
         if file["file"] == "<stdin>":
@@ -347,18 +336,7 @@ def process_gcov_data(
         current_dir=current_dir,
     )
 
-    # Return if the filename does not match the filter
-    # Return if the filename matches the exclude pattern
-    filtered, excluded = apply_filter_include_exclude(
-        fname, options.filter, options.exclude
-    )
-
-    if filtered:
-        LOGGER.debug(f"  Filtering coverage data for file {fname}")
-        return
-
-    if excluded:
-        LOGGER.debug(f"  Excluding coverage data for file {fname}")
+    if is_file_excluded(fname, options.filter, options.exclude):
         return
 
     LOGGER.debug(f"Parsing coverage data for file {fname}")
@@ -979,16 +957,7 @@ def select_gcov_files_from_stdout(
         full = os.path.join(chdir, fname)
         all_files.add(full)
 
-        filtered, excluded = apply_filter_include_exclude(
-            fname, gcov_filter, gcov_exclude
-        )
-
-        if filtered:
-            LOGGER.debug(f"Filtering gcov file {fname}")
-            continue
-
-        if excluded:
-            LOGGER.debug(f"Excluding gcov file {fname}")
+        if is_file_excluded(fname, gcov_filter, gcov_exclude):
             continue
 
         active_files.add(full)
@@ -1002,17 +971,8 @@ def select_gcov_files_from_stdout(
 def process_existing_gcov_file(
     filename: str, covdata: CovData, options: Options, to_erase: List[str]
 ) -> None:
-    filtered, excluded = apply_filter_include_exclude(
-        filename, options.gcov_filter, options.gcov_exclude
-    )
-
-    if filtered:
-        LOGGER.debug(f"This gcov file does not match the filter: {filename}")
-        return
-
-    if excluded:
+    if is_file_excluded(filename, options.gcov_filter, options.gcov_exclude):
         LOGGER.debug(f"Excluding gcov file: {filename}")
-        return
 
     if filename.endswith(".gcov"):
         process_gcov_data(filename, None, covdata, options)
@@ -1023,33 +983,3 @@ def process_existing_gcov_file(
 
     if not options.gcov_keep:
         to_erase.add(filename)
-
-
-def apply_filter_include_exclude(
-    filename: str, include_filters: List[re.Pattern], exclude_filters: List[re.Pattern]
-) -> Tuple[bool, bool]:
-    """Apply inclusion/exclusion filters to filename
-
-    The include_filters are tested against
-    the given (relative) filename.
-    The exclude_filters are tested against
-    the stripped, given (relative), and absolute filenames.
-
-    filename (str): the file path to match, should be relative
-    include_filters (list of regex): ANY of these filters must match
-    exclude_filters (list of regex): NONE of these filters must match
-
-    returns: (filtered, exclude)
-        filtered (bool): True when filename failed the include_filter
-        excluded (bool): True when filename failed the exclude_filters
-    """
-
-    filtered = not any(f.match(filename) for f in include_filters)
-    excluded = False
-
-    if filtered:
-        return filtered, excluded
-
-    excluded = any(f.match(filename) for f in exclude_filters)
-
-    return filtered, excluded

@@ -20,18 +20,15 @@
 import logging
 from typing import Callable, List, Optional, Tuple
 
-from .gcov.read import apply_filter_include_exclude
-
 from ..merging import (
     get_merge_mode_from_options,
     insert_file_coverage,
 )
 
-from ..utils import search_file
-
-from ..options import GcovrConfigOption, Options
-
 from ..coverage import CovData, FileCoverage
+from ..options import GcovrConfigOption, Options
+from ..utils import search_file, is_file_excluded
+
 
 # the handler
 from .gcov import GcovHandler
@@ -103,16 +100,7 @@ def read_reports(options) -> CovData:
             ):
                 # Return if the filename does not match the filter
                 # Return if the filename matches the exclude pattern
-                filtered, excluded = apply_filter_include_exclude(
-                    fname, options.filter, options.exclude
-                )
-
-                if filtered:
-                    LOGGER.debug(f"  Filtering coverage data for file {fname}")
-                    continue
-
-                if excluded:
-                    LOGGER.debug(f"  Excluding coverage data for file {fname}")
+                if is_file_excluded(fname, options.filter, options.exclude):
                     continue
 
                 file_cov = FileCoverage(fname)

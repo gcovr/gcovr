@@ -20,7 +20,7 @@
 from __future__ import annotations
 from argparse import ArgumentTypeError
 from hashlib import md5
-from typing import Callable, List, Type
+from typing import Callable, List, Tuple, Type
 import logging
 import os
 import functools
@@ -230,12 +230,13 @@ class Filter(object):
 
     def match(self, path: str):
         os_independent_path = get_os_independent_path(path)
-        return self.pattern.match(os_independent_path)
+        if self.pattern.match(os_independent_path):
+            LOGGER.debug(f"  Filter {self} matched for path {os_independent_path}.")
+            return True
+        return False
 
     def __str__(self):
-        return "{name}({pattern})".format(
-            name=type(self).__name__, pattern=self.pattern.pattern
-        )
+        return f"{type(self).__name__}({self.pattern.pattern})"
 
 
 class AbsoluteFilter(Filter):
@@ -264,7 +265,7 @@ class RelativeFilter(Filter):
         return super().match(relpath)
 
     def __str__(self):
-        return "RelativeFilter({} root={})".format(self.pattern.pattern, self.root)
+        return f"RelativeFilter({self.pattern.pattern} root={self.root})"
 
 
 class AlwaysMatchFilter(Filter):
@@ -284,6 +285,40 @@ class DirectoryPrefixFilter(Filter):
     def match(self, path: str):
         path = os.path.normpath(path)
         return super().match(path)
+
+
+def is_file_excluded(
+    filename: str, include_filters: List[re.Pattern], exclude_filters: List[re.Pattern]
+) -> Tuple[bool, bool]:
+    """Apply inclusion/exclusion filters to filename
+
+    The include_filters are tested against
+    the given (relative) filename.
+    The exclude_filters are tested against
+    the stripped, given (relative), and absolute filenames.
+
+    filename (str): the file path to match, should be relative
+    include_filters (list of regex): ANY of these filters must match
+    exclude_filters (list of regex): NONE of these filters must match
+
+    returns:
+        True when filename is not matching a include filter or matches an exclude filter.
+    """
+
+    LOGGER.debug(f"Check if {filename} is included...")
+    if not any(f.match(filename) for f in include_filters):
+        LOGGER.debug("  No filter matched.")
+        return True
+
+    if not exclude_filters:
+        return False
+
+    LOGGER.debug("Check for exclusion...")
+    if any(f.match(filename) for f in exclude_filters):
+        return True
+
+    LOGGER.debug("  No filter matched.")
+    return False
 
 
 def __colored_formatter(options: Options = None) -> ColoredFormatter:
