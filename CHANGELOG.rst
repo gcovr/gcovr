@@ -13,6 +13,7 @@ Breaking changes:
 New features and notable changes:
 
 - Add condition coverage to text summary report. (:issue:`985`)
+- Add option to generate LCOV format produced by version 1.x of LCOV tool. (:issue:`1001`)
 
 Bug fixes and small improvements:
 

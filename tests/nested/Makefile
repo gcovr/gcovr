@@ -21,7 +21,7 @@ txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt
 
 lcov: coverage.json
-	$(GCOVR) -r subdir -a $< --lcov coverage.lcov
+	$(GCOVR) -r subdir -a $< --lcov coverage.lcov --lcov-format-1.x
 
 clover: coverage.json
 	$(GCOVR) -r subdir -a $< --clover-pretty --clover clover.xml --clover-project "Test project"

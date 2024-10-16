@@ -44,6 +44,13 @@ class LcovHandler(BaseHandler):
                 const=OutputOrDefault(None),
             ),
             GcovrConfigOption(
+                "lcov_format_v1",
+                ["--lcov-format-1.x"],
+                group="output_options",
+                help="Write format from LCOV version 1.x instead of 2.x.",
+                action="store_true",
+            ),
+            GcovrConfigOption(
                 "lcov_comment",
                 ["--lcov-comment"],
                 group="output_options",
