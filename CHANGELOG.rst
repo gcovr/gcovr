@@ -26,6 +26,8 @@ Documentation:
 
 Internal changes:
 
+- Add MacOs 15 to the GitHub test workflow. (:issue:`1004`)
+
 8.2 (13 October 2024)
 ---------------------
 
