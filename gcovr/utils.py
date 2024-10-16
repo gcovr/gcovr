@@ -20,7 +20,7 @@
 from __future__ import annotations
 from argparse import ArgumentTypeError
 from hashlib import md5
-from typing import Callable, List, Tuple, Type
+from typing import Callable, List, Type
 import logging
 import os
 import functools
@@ -289,7 +289,7 @@ class DirectoryPrefixFilter(Filter):
 
 def is_file_excluded(
     filename: str, include_filters: List[re.Pattern], exclude_filters: List[re.Pattern]
-) -> Tuple[bool, bool]:
+) -> bool:
     """Apply inclusion/exclusion filters to filename
 
     The include_filters are tested against
