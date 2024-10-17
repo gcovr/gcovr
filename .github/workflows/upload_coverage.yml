@@ -14,7 +14,7 @@ jobs:
       - name: Download artifacts
         uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11
         with:
-          name: coverage-.*
+          name: coverage.*
           name_is_regexp: true
           run_id: ${{ github.event.workflow_run.id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -24,10 +24,10 @@ jobs:
         run: |
           # Search the coverage files and upload them
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser cobertura $(find . -regex '.*/coverage/.*/cobertura\.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser clover $(find . -regex '.*/coverage/.*/clover\.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser jacoco $(find . -regex '.*/coverage/.*/jacoco\.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov $(find . -regex '.*/coverage-lcov/.*/coverage\.lcov' -print | sed -e 's/^/ -r /' | tr -d '\n') || echo ignored
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser cobertura -r 'coverage/cobertura.xml'
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser clover -r 'coverage/clover.xml'
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser jacoco -r 'coverage/jacoco.xml' || echo ignored
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report --partial -l C --force-coverage-parser lcov -r 'coverage/coverage.lcov' || echo ignored
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
