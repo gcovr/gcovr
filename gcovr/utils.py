@@ -59,11 +59,13 @@ class LoopChecker(object):
 def is_fs_case_insensitive():
     cwd = os.getcwd()
     # Guessing if file system is case insensitive.
-    # The working directory is not the root and accessible in upper and lower case.
+    # The working directory is not the root and accessible in upper and lower case
+    # and pointing to same file.
     ret = (
         (cwd != os.path.sep)
         and os.path.exists(cwd.upper())
         and os.path.exists(cwd.lower())
+        and os.path.samefile(cwd.upper(), cwd.lower())
     )
     LOGGER.debug(f"File system is case {'in' if ret else ''}sensitive.")
 
@@ -79,15 +81,18 @@ def fix_case_of_path(path: str):
     if not cur:  # e.g path = "C:/"
         return rest.upper()  # Always use uppercase drive letter
 
-    curL = cur.lower()
-    matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
-    if len(matchedFileName) > 1:
-        raise RuntimeError(
-            "Seems that we have a case sensitive filesystem, can't fix file case"
-        )
+    try:
+        curL = cur.lower()
+        matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
+        if len(matchedFileName) > 1:
+            raise RuntimeError(
+                "Seems that we have a case sensitive filesystem, can't fix file case"
+            )
 
-    if len(matchedFileName) == 1:
-        path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
+        if len(matchedFileName) == 1:
+            path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
+    except FileNotFoundError:
+        LOGGER.warning(f"Can not fix case of path because {rest} not found.")
 
     return path.replace("\\", "/")
 

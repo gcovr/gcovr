@@ -1,6 +1,5 @@
 TN:GCOVR report
 SF:tests/nested/subdir/A/C/D/File6.cpp
-VER:51c81752202f160b25ffc07fb9134018
 FN:1,foo6(int)
 FNDA:1,foo6(int)
 FNF:1
@@ -18,7 +17,6 @@ LH:4
 LF:5
 end_of_record
 SF:tests/nested/subdir/A/C/file5.cpp
-VER:994904d7cb6f33c4235bc1f132c029f9
 FN:1,foo5(int)
 FNDA:1,foo5(int)
 FNF:1
@@ -36,7 +34,6 @@ LH:4
 LF:5
 end_of_record
 SF:tests/nested/subdir/A/file1.cpp
-VER:cf6b72cbb3c9c004a97684f1495332fd
 FN:1,foo(int)
 FNDA:1,foo(int)
 FNF:1
@@ -54,7 +51,6 @@ LH:4
 LF:5
 end_of_record
 SF:tests/nested/subdir/A/File2.cpp
-VER:44683de2597fa27a9410e0f65f71fde0
 FN:1,bar()
 FNDA:1,bar()
 FN:8,bar_()
@@ -74,7 +70,6 @@ LH:4
 LF:7
 end_of_record
 SF:tests/nested/subdir/A/file3.cpp
-VER:17749ac4040d8e71ff948fceb4e522d9
 FN:1,four_bar()
 FNDA:1,four_bar()
 FN:8,four_bar_()
@@ -99,7 +94,6 @@ LH:4
 LF:10
 end_of_record
 SF:tests/nested/subdir/A/File4.cpp
-VER:7451828cfb58f0fefc6e5fbf44d9a6f4
 FN:1,foobar(int)
 FNDA:1,foobar(int)
 FNF:1
@@ -117,7 +111,6 @@ LH:4
 LF:5
 end_of_record
 SF:tests/nested/subdir/A/file7.cpp
-VER:cbd3974ad5ed983ce0a47c7a7d8b5725
 FN:1,uncovered()
 FNDA:0,uncovered()
 FNF:1
@@ -130,7 +123,6 @@ LH:0
 LF:2
 end_of_record
 SF:tests/nested/subdir/B/main.cpp
-VER:c95232e53ac0253b638414c18fd6ba6c
 FN:12,main
 FNDA:1,main
 FNF:1
