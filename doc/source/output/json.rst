@@ -73,6 +73,7 @@ Each **file** entry contains coverage data for one source file::
         "file": filename,
         "lines": [line],
         "functions": [function]
+        "gcovr/data_sources": [data_sources]
     }
 
 file: string
@@ -85,6 +86,10 @@ lines: list
 
 functions: list
   An unordered list of :ref:`function <json_format_function>` entries.
+
+gcovr/data_sources: list
+  A list of files from which the coverage object was populated.
+  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
 
 .. _json_format_line:
 

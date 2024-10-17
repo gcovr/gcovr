@@ -34,6 +34,8 @@ class JsonHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
         return [
+            # Global options used for output
+            "verbose",
             # Global options used for merging.
             "merge_mode_functions",
             "show_decision",

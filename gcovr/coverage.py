@@ -39,7 +39,18 @@ from collections import OrderedDict
 import logging
 import os
 import re
-from typing import Any, List, Dict, Iterable, Optional, Tuple, TypeVar, Union, Literal
+from typing import (
+    Any,
+    List,
+    Dict,
+    Iterable,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+    Literal,
+)
 
 from dataclasses import dataclass
 
@@ -498,13 +509,20 @@ class LineCoverage:
 
 
 class FileCoverage:
-    __slots__ = "filename", "functions", "lines", "parent_dirname"
+    __slots__ = "filename", "functions", "lines", "parent_dirname", "data_sources"
 
-    def __init__(self, filename: str) -> None:
+    def __init__(
+        self, filename: str, data_source: Optional[Any[str, Set[str]]]
+    ) -> None:
         self.filename: str = filename
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
         self.parent_dirname: str = None
+        self.data_sources: Optional[Set[str]] = (
+            None
+            if data_source is None
+            else set([data_source] if isinstance(data_source, str) else data_source)
+        )
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function"""
@@ -516,7 +534,7 @@ class FileCoverage:
             raise AssertionError(
                 "Data for filtering is missing. Need supported GCOV JSON format to get the information."
             )
-        filecov = FileCoverage(self.filename)
+        filecov = FileCoverage(self.filename, self.data_sources)
         filecov.functions[functioncov.name] = functioncov
 
         filecov.lines = {

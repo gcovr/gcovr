@@ -218,10 +218,26 @@ def merge_file(
     if left.filename != right.filename:
         raise AssertionError("Filename must be equal")
 
-    left.lines = _merge_dict(left.lines, right.lines, merge_line, options)
-    left.functions = _merge_dict(
-        left.functions, right.functions, merge_function, options
-    )
+    try:
+        left.lines = _merge_dict(left.lines, right.lines, merge_line, options)
+        left.functions = _merge_dict(
+            left.functions, right.functions, merge_function, options
+        )
+        if right.data_sources:
+            left.data_sources.update(right.data_sources)
+    except AssertionError as exc:
+        message = [f"Merging file coverage for {left.filename} failed: {exc}"]
+        if right.data_sources:
+            message += (
+                "GCOV source files of merge source is/are:",
+                *[f"\t{e}" for e in sorted(right.data_sources)],
+            )
+        if left.data_sources:
+            message += (
+                "and of merge target is/are:",
+                *[f"\t{e}" for e in sorted(left.data_sources)],
+            )
+        raise AssertionError("\n".join(message)) from None
 
     return left
 
@@ -252,7 +268,7 @@ def merge_line(
     # If both checksums exists compare them if only one exists, use it.
     if left.md5 is not None and right.md5 is not None:
         if left.md5 != right.md5:
-            raise AssertionError("MD5 checksum must be equal.")
+            raise AssertionError(f"MD5 checksum of line {left.line} must be equal.")
     elif right.md5 is not None:
         left.md5 = right.md5
 
@@ -468,7 +484,9 @@ def merge_condition(
         return left
 
     if left.count != right.count:
-        raise AssertionError("The number of conditions must be equal.")
+        raise AssertionError(
+            f"The number of conditions must be equal, got {left.count} and {right.count}."
+        )
 
     left.not_covered_false = sorted(
         list(set(left.not_covered_false) & set(right.not_covered_false))
@@ -563,6 +581,8 @@ def merge_call(
     Do not use 'left' or 'right' objects afterwards!
     """
     if left.callno != right.callno:
-        raise AssertionError("Call number must be equal.")
+        raise AssertionError(
+            f"Call number must be equal, got {left.callno} and {right.callno}."
+        )
     left.covered |= right.covered
     return left
