@@ -167,6 +167,7 @@ is needed.
     -  clang-13/clang++-13/llvm-cov
     -  clang-14/clang++-14/llvm-cov
     -  clang-15/clang++-15/llvm-cov
+    -  clang-16/clang++-16/llvm-cov
 
     are available everything is OK.
     The test suite uses the newest GCC found in the PATH. To use another one you
