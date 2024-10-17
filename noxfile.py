@@ -54,6 +54,7 @@ ALL_COMPILER_VERSIONS = [
     "clang-13",
     "clang-14",
     "clang-15",
+    "clang-16",
 ]
 DEFAULT_COMPILER_VERSION = ALL_COMPILER_VERSIONS[0]
 
@@ -644,7 +645,7 @@ def docker_container_os(session: nox.Session) -> str:
         return "ubuntu:22.04"
     elif session.env["CC"] in ["gcc-12", "gcc-13"]:
         return "ubuntu:23.04"
-    elif session.env["CC"] in ["gcc-14"]:
+    elif session.env["CC"] in ["gcc-14", "clang-16"]:
         return "ubuntu:24.04"
 
     raise RuntimeError(f"No container image defined for {session.env['CC']}")

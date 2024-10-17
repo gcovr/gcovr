@@ -99,7 +99,7 @@ REFERENCE_DIR_VERSION_LIST = (
         "gcc-14",
     ]
     if "gcc" in CC_REFERENCE
-    else ["clang-10", "clang-13", "clang-14", "clang-15"]
+    else ["clang-10", "clang-13", "clang-14", "clang-15", "clang-16"]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
     REFERENCE_DIRS.append(os.path.join("reference", ref))
@@ -370,7 +370,7 @@ def pytest_generate_tests(metafunc):
                 pytest.mark.xfail(
                     name in ["less-lines"]
                     and (
-                        (IS_CLANG and CC_REFERENCE_VERSION in [13, 14, 15])
+                        (IS_CLANG and CC_REFERENCE_VERSION in [13, 14, 15, 16])
                         or (IS_GCC and CC_REFERENCE_VERSION in [8, 9, 10, 11, 12, 13])
                     ),
                     reason="Other versions stub the line",

@@ -27,6 +27,7 @@ Documentation:
 
 Internal changes:
 
+- Add MacOs 15 and clang-16 to the GitHub test workflow. (:issue:`1004`)
 - Fix sporadic timestamp mismatch in development build package. (:issue:`1006`)
 
 8.2 (13 October 2024)
