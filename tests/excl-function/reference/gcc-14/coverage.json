@@ -732,6 +732,9 @@
                         "104:1"
                     ]
                 }
+            ],
+            "gcovr/data_sources": [
+                "testcase-main##eaf3cd06e6684367ae366dd40c191fc1.gcov.json.gz"
             ]
         }
     ]

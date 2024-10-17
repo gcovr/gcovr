@@ -505,7 +505,7 @@
                 }
             ],
             "gcovr/data_sources": [
-                "main.gcda"
+                "testcase-main.gcda"
             ]
         }
     ]

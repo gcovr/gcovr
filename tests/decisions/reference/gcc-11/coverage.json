@@ -2118,6 +2118,9 @@
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "testcase-main.gcda"
             ]
         },
         {
@@ -2174,6 +2177,9 @@
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "testcase-switch_test.gcda"
             ]
         },
         {
@@ -2260,6 +2266,9 @@
                     "execution_count": 1,
                     "blocks_percent": 50.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "testcase-switch_test.gcda"
             ]
         }
     ]

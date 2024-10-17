@@ -274,6 +274,9 @@
                         "28:1"
                     ]
                 }
+            ],
+            "gcovr/data_sources": [
+                "testcase-main##4719e57143eb6b751493fdeb511be3b9.gcov.json.gz"
             ]
         }
     ]

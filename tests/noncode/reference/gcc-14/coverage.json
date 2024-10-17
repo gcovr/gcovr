@@ -101,6 +101,9 @@
                         "12:1"
                     ]
                 }
+            ],
+            "gcovr/data_sources": [
+                "testcase-main##fdcb2d55c0cb1979b9d39fcb4dddfbd5.gcov.json.gz"
             ]
         }
     ]
