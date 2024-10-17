@@ -94,6 +94,8 @@ GCOVR_VERSION_PY = Path(__file__).parent / "gcovr" / "version.py"
 GCOVR_CHANGELOG_RST = Path(__file__).parent / "CHANGELOG.rst"
 
 nox.options.sessions = ["qa"]
+# Inject the timestamp into setup.py
+os.environ["TIMESTAMP"] = str(int(time.time()))
 
 
 def get_gcc_versions() -> Tuple[str]:
@@ -439,7 +441,7 @@ def build_wheel(session: nox.Session) -> None:
     dist_dir = Path("dist")
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
-    session.run("python", "-m", "build", env={"TIMESTAMP": str(int(time.time()))})
+    session.run("python", "-m", "build")
     session.notify(("check_wheel"))
 
 
