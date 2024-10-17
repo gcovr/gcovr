@@ -612,6 +612,21 @@ GCOVR_CONFIG_OPTIONS = [
         default=[],
     ),
     GcovrConfigOption(
+        "include",
+        ["-i", "--include"],
+        group="filter_options",
+        help=(
+            "Include source files that match this filter. "
+            "This is to ensure that files are in report even "
+            "if no coverage data is found. Files are searched "
+            "recursive from the --root directory. "
+            "Can be specified multiple times."
+        ),
+        action="append",
+        type=FilterOption,
+        default=[],
+    ),
+    GcovrConfigOption(
         "exclude",
         ["-e", "--exclude"],
         group="filter_options",

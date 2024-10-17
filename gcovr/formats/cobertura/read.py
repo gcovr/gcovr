@@ -23,7 +23,6 @@ from glob import glob
 from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
-from ..gcov.read import apply_filter_include_exclude
 from ...coverage import (
     BranchCoverage,
     CovData,
@@ -36,6 +35,7 @@ from ...merging import (
     insert_file_coverage,
     insert_line_coverage,
 )
+from ...utils import is_file_excluded
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -86,18 +86,7 @@ def read_report(options: Options) -> CovData:
                 os.path.normpath(gcovr_file.get("filename")),
             )
 
-            filtered, excluded = apply_filter_include_exclude(
-                file_path, options.filter, options.exclude
-            )
-
-            # Ignore if the filename does not match the filter
-            if filtered:  # pragma: no cover
-                LOGGER.debug(f"  Filtering coverage data for file {file_path}")
-                continue
-
-            # Ignore if the filename matches the exclude pattern
-            if excluded:  # pragma: no cover
-                LOGGER.debug(f"  Excluding coverage data for file {file_path}")
+            if is_file_excluded(file_path, options.filter, options.exclude):
                 continue
 
             file_coverage = FileCoverage(file_path)
