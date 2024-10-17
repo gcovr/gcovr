@@ -34,7 +34,7 @@ if version.endswith("+main"):
     # Add a default if environment is not set
     os.environ["TIMESTAMP"] = os.environ.get("TIMESTAMP", str(int(time.time())))
     # ...and use this timestamp.
-    version.replace("+main", f".dev{os.environ['TIMESTAMP']}+main")
+    version = version.replace("+main", f".dev{os.environ['TIMESTAMP']}+main")
 # read the contents of your README file
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, "README.rst"), encoding="utf-8") as f:
