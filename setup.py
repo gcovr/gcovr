@@ -21,6 +21,7 @@
 Script to generate the installer for gcovr.
 """
 
+import os
 from runpy import run_path
 import time
 from setuptools import setup, find_packages
@@ -29,6 +30,11 @@ import re
 
 
 version = run_path("./gcovr/version.py")["__version__"]
+if version.endswith("+main"):
+    # Add a default if environment is not set
+    os.environ["TIMESTAMP"] = os.environ.get("TIMESTAMP", str(int(time.time())))
+    # ...and use this timestamp.
+    version.replace("+main", f".dev{os.environ['TIMESTAMP']}+main")
 # read the contents of your README file
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, "README.rst"), encoding="utf-8") as f:
@@ -46,11 +52,7 @@ long_description = re.sub(
 
 setup(
     name="gcovr",
-    version=(
-        version.replace("+main", f".dev{int(time.time())}+main")
-        if version.endswith("+main")
-        else version
-    ),
+    version=version,
     long_description=long_description,
     long_description_content_type="text/x-rst",
     platforms=["any"],

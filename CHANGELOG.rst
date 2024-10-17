@@ -26,6 +26,8 @@ Documentation:
 
 Internal changes:
 
+- Fix sporadic timestamp mismatch in development build package. (:issue:`1006`)
+
 8.2 (13 October 2024)
 ---------------------
 
