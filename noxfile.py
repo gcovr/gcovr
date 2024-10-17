@@ -28,6 +28,7 @@ import sys
 from pathlib import Path
 import textwrap
 from time import sleep
+import time
 from typing import Tuple
 import requests
 import shutil
@@ -438,7 +439,7 @@ def build_wheel(session: nox.Session) -> None:
     dist_dir = Path("dist")
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
-    session.run("python", "-m", "build")
+    session.run("python", "-m", "build", env={"TIMESTAMP": str(int(time.time()))})
     session.notify(("check_wheel"))
 
 
