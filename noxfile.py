@@ -289,7 +289,7 @@ def ruff_format(session: nox.Session) -> None:
     if session.posargs:
         args = session.posargs
     else:
-        args = ["--check", *DEFAULT_LINT_ARGUMENTS]
+        args = ["--diff", *DEFAULT_LINT_ARGUMENTS]
     session.run("ruff", "format", *args)
 
 
