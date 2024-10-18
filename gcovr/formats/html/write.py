@@ -84,7 +84,6 @@ def get_theme_color(html_theme: str) -> str:
 # This speeds up text and XML output.
 @Lazy
 def templates(options):
-
     from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
 
     # As default use the package loader
@@ -129,7 +128,6 @@ def user_templates():
 
 
 class CssRenderer:
-
     THEMES = [
         "green",
         "blue",
@@ -523,7 +521,6 @@ def write_source_pages(
     cdata_sourcefile: Dict[str, str],
     data: Dict[str, Any],
 ) -> bool:
-
     error_no_files_not_found = 0
     all_functions = dict()
     for fname, cdata in covdata.items():
@@ -614,7 +611,6 @@ def write_single_page(
     cdata_sourcefile: Dict[str, str],
     data: Dict[str, Any],
 ) -> bool:
-
     error_no_files_not_found = 0
     files = []
     all_functions = dict()
