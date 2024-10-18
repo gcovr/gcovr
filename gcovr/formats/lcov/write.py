@@ -48,6 +48,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         # TN:<test name>
         fh.write(f"TN:{options.lcov_test_name}\n")
 
+        def postfix():
+            return f"_{lineno}" if len(linenos) > 1 else ""
+
         for key in keys:
             filename = force_unix_separator(covdata[key].filename)
 
@@ -67,9 +70,6 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             for function_name in sorted(covdata[key].functions):
                 linenos = list(covdata[key].functions[function_name].count)
                 functions += len(linenos)
-
-                def postfix():
-                    return f"_{lineno}" if len(linenos) > 1 else ""
 
                 for lineno in sorted(linenos):
                     # FN:<line number of function start>,[<line number of function end>,]<function name>
@@ -92,7 +92,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             for lineno in sorted_lines:
                 line_coverage = covdata[key].lines[lineno]
                 if line_coverage.excluded:
-                    next
+                    continue
                 branches += len(line_coverage.branches)
                 for branch in sorted(line_coverage.branches):
                     branch_coverage = line_coverage.branches[branch]

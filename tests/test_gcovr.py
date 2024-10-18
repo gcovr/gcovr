@@ -357,8 +357,7 @@ def pytest_generate_tests(metafunc):
                         or IS_MACOS_HOST
                         or (
                             # With JSON format this test doesn't work
-                            IS_GCC
-                            and CC_REFERENCE_VERSION in (14,)
+                            IS_GCC and CC_REFERENCE_VERSION in (14,)
                         )
                     ),
                     reason="only available in docker",

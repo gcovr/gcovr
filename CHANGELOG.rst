@@ -29,6 +29,7 @@ Internal changes:
 
 - Add MacOs 15 and clang-16 to the GitHub test workflow. (:issue:`1004`)
 - Fix sporadic timestamp mismatch in development build package. (:issue:`1006`)
+- Replace ``black`` and ``flake8`` with ``ruff`` and move configuration of ``pytest`` to ``pyproject.toml``. (:issue:`1007`)
 
 8.2 (13 October 2024)
 ---------------------

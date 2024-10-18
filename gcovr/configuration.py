@@ -224,7 +224,7 @@ def _get_value_from_config_entry(
         try:
             value = converter(cfg_entry.value)
         except (ValueError, ArgumentTypeError) as err:
-            raise cfg_entry.error(str(err))
+            raise cfg_entry.error(str(err)) from None
 
     elif option.name == "json_add_tracefile":  # Special case for patterns
         if cfg_entry.filename is None:
@@ -316,7 +316,6 @@ def merge_options_and_set_defaults(
     target: Dict[str, Any] = {}
     for namespace in partial_namespaces:
         for option in all_options:
-
             if option.name not in namespace:
                 continue
 
@@ -794,14 +793,14 @@ def parse_config_file(
     test.cfg: 7: optional = spaces
     """
 
+    def error(pattern: str, *args, **kwargs):
+        # pylint: disable=cell-var-from-loop
+        message = pattern.format(*args, **kwargs)
+        message += f"\non this line: {line}"
+        return SyntaxError(": ".join([filename, str(lineno), message]))
+
     for lineno, line in enumerate(open_file, first_lineno):
         line = line.rstrip()
-
-        def error(pattern: str, *args, **kwargs):
-            # pylint: disable=cell-var-from-loop
-            message = pattern.format(*args, **kwargs)
-            message += "\non this line: " + line
-            return SyntaxError(": ".join([filename, str(lineno), message]))
 
         # strip (trailing) comments
         line = CONFIG_HASH_COMMENT.sub("", line)
