@@ -27,3 +27,20 @@ unfixable = ["B"]
 [tool.ruff.format]
 # 5. Use single quotes in `ruff format`.
 quote-style = "double"
+
+[tool.pytest.ini_options]
+addopts = "-v --timeout=120 --doctest-modules --ignore-glob=*/linked/subdir/* --ignore-glob */*bazel*/* --ignore-glob */.nox*/*"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "[#]\\s*pragma: no cover",
+
+    "^\\s*raise AssertionError\\b",
+    "^\\s*raise NotImplementedError\\b"
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
