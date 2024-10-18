@@ -49,12 +49,21 @@ HEADER_END = (
 
 
 def getLicenseSection(comment_char: str = "#"):
-    yield comment_char + "  ************************** Copyrights and license ***************************"
+    yield (
+        comment_char
+        + "  ************************** Copyrights and license ***************************"
+    )
     yield comment_char
-    yield comment_char + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
+    yield (
+        comment_char
+        + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
+    )
     yield comment_char + f" https://gcovr.com/en/{READTHEDOCS_VERSION}"
     yield comment_char
-    yield comment_char + " _____________________________________________________________________________"
+    yield (
+        comment_char
+        + " _____________________________________________________________________________"
+    )
     yield comment_char
     for line in COPYRIGHT:
         yield comment_char + " " + line

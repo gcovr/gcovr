@@ -267,7 +267,7 @@ and a comprehensive corpus of example projects
 that are executed as the ``test_gcovr.py`` integration test.
 Each ``tests/*`` directory is one such example project.
 
-You can format files with ``python3 -m nox --session black``)
+You can format files with ``python3 -m nox --session ruff -- format path/to/file``)
 
 To get a list of all available sessions run ``python3 -m nox -l``.
 
@@ -275,6 +275,9 @@ The next sections discuss
 the :ref:`structure of integration tests <integration tests>`,
 how to :ref:`run and filter tests <run tests>`,
 and how to :ref:`run tests with Docker <docker tests>`.
+
+.. versionchanged:: NEXT
+   black is replaced by ruff.
 
 .. versionchanged:: 5.2
    If black is called without arguments, all files are reformated

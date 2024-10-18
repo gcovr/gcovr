@@ -35,7 +35,6 @@ The behavior of this parser was informed by the following sources:
 """
 # pylint: disable=too-many-lines
 
-
 import enum
 import logging
 import re
@@ -315,7 +314,6 @@ def parse_metadata(lines: List[str]) -> Dict[str, Optional[str]]:
     """
     collected = {}
     for line in lines:
-
         # empty lines shouldn't occur in reality, but are common in testing
         if not line:
             continue
@@ -369,7 +367,6 @@ def parse_coverage(
     tokenized_lines: List[Tuple[_Line, str]] = []
     persistent_states: Dict[str, Any] = {}
     for raw_line in lines:
-
         # empty lines shouldn't occur in reality, but are common in testing
         if not raw_line:
             continue
@@ -607,7 +604,9 @@ def _report_lines_with_errors(
 
 
 def _parse_line(
-    line: str, ignore_parse_errors: set = (), persistent_states: dict = {}
+    line: str,
+    ignore_parse_errors: Optional[set] = None,
+    persistent_states: Optional[dict] = None,
 ) -> _Line:
     """
     Categorize/parse individual lines without further processing.
@@ -729,6 +728,10 @@ def _parse_line(
     gcovr.formats.gcov.parser.UnknownLineType: nonexistent_tag foo bar
     """
     # pylint: disable=too-many-branches
+    if ignore_parse_errors is None:
+        ignore_parse_errors = set([])
+    if persistent_states is None:
+        persistent_states = {}
 
     tag = _parse_tag_line(line, ignore_parse_errors, persistent_states)
     if tag is not None:
@@ -838,10 +841,16 @@ def _parse_line(
 
 
 def _parse_tag_line(
-    line: str, ignore_parse_errors: set = (), persistent_states: dict = {}
+    line: str,
+    ignore_parse_errors: Optional[set] = None,
+    persistent_states: Optional[dict] = None,
 ) -> Optional[_Line]:
     """A tag line is any gcov line that starts in the first column."""
     # pylint: disable=too-many-return-statements
+    if ignore_parse_errors is None:
+        ignore_parse_errors = set([])
+    if persistent_states is None:
+        persistent_states = {}
 
     # Tag lines never start with whitespace.
     #

@@ -375,7 +375,7 @@ def test_unknown_tags(caplog, ignore_errors):
         assert uncovered_lines == []
         assert uncovered_branches == []
     else:
-        with pytest.raises(Exception):
+        with pytest.raises(UnknownLineType):
             coverage = run_the_parser()
 
     messages = caplog.record_tuples
