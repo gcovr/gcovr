@@ -78,8 +78,6 @@ DEFAULT_LINT_ARGUMENTS = [
     "admin",
 ] + DEFAULT_TEST_DIRECTORIES
 
-BLACK_PINNED_VERSION = "black==22.3.0"
-
 OUTPUT_FORMATS = [
     "cobertura",
     "coveralls",
@@ -114,9 +112,7 @@ def get_gcc_versions() -> Tuple[str]:
 
     for command in commands:
         if shutil.which(command):
-            output = subprocess.check_output(
-                [command, "--version"]
-            ).decode()  # nosec # The command is not a user input
+            output = subprocess.check_output([command, "--version"]).decode()  # nosec # The command is not a user input
 
             # cspell:ignore Linaro xctoolchain
             # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
@@ -270,27 +266,31 @@ def qa(session: nox.Session) -> None:
 @nox.session(python=False)
 def lint(session: nox.Session) -> None:
     """Run the linters."""
-    session.notify("flake8")
+    session.notify("ruff_check")
+    session.notify("ruff_format")
     session.notify("bandit")
-
-    # Black installs under Pypy but doesn't necessarily run (cf psf/black#2559).
-    if platform.python_implementation() == "CPython":
-        session.notify("black")
-    else:
-        session.log(
-            f"Skip black because of platform {platform.python_implementation()}."
-        )
 
 
 @nox.session
-def flake8(session: nox.Session) -> None:
-    """Run flake8."""
-    session.install("flake8", "flake8-print")
+def ruff_check(session: nox.Session) -> None:
+    """Run ruff check command."""
+    session.install("ruff~=0.7.0")
     if session.posargs:
         args = session.posargs
     else:
         args = DEFAULT_LINT_ARGUMENTS
-    session.run("flake8", *args)
+    session.run("ruff", "check", *args)
+
+
+@nox.session
+def ruff_format(session: nox.Session) -> None:
+    """Run ruff format command."""
+    session.install("ruff~=0.7.0")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = ["--diff", *DEFAULT_LINT_ARGUMENTS]
+    session.run("ruff", "format", *args)
 
 
 @nox.session
@@ -305,17 +305,6 @@ def bandit(session: nox.Session) -> None:
 
 
 @nox.session
-def black(session: nox.Session) -> None:
-    """Run black, a code formatter and format checker."""
-    session.install(BLACK_PINNED_VERSION)
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = ["--diff", "--check", *DEFAULT_LINT_ARGUMENTS]
-    session.run("black", *args)
-
-
-@nox.session
 def doc(session: nox.Session) -> None:
     """Generate the documentation."""
     if sys.version_info < (3, 9):
@@ -326,8 +315,7 @@ def doc(session: nox.Session) -> None:
 
     if not GCOVR_ISOLATED_TEST and not (
         # Github actions on MacOs can't use Docker
-        platform.system() == "Darwin"
-        and CI_RUN
+        platform.system() == "Darwin" and CI_RUN
     ):
         docker_build_compiler(session, "gcc-8")
         session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]

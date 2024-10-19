@@ -68,11 +68,9 @@ def read_report(options: Options) -> CovData:
         LOGGER.debug(f"Processing XML file: {filename}")
 
         try:
-            root = etree.parse(
-                filename
-            ).getroot()  # nosec # We parse the file given by the user
+            root = etree.parse(filename).getroot()  # nosec # We parse the file given by the user
         except Exception as e:
-            raise RuntimeError(f"Bad --cobertura-add-tracefile option.\n{e}")
+            raise RuntimeError(f"Bad --cobertura-add-tracefile option.\n{e}") from None
 
         for gcovr_file in root.xpath("./packages//class"):
             if gcovr_file.get("filename") is None:  # pragma: no cover
@@ -106,7 +104,7 @@ def _line_from_xml(filename: str, xml_line) -> LineCoverage:
         raise RuntimeError(
             "Bad --covertura-add-tracefile option.\n"
             f"'number' attribute is required and must be an integer: {etree.tostring(xml_line).decode()}\n"
-        )
+        ) from None
 
     try:
         count = int(xml_line.get("hits"))
@@ -114,7 +112,7 @@ def _line_from_xml(filename: str, xml_line) -> LineCoverage:
         raise RuntimeError(
             "Bad --covertura-add-tracefile option.\n"
             f"'hits' attribute is required and must be an integer: {etree.tostring(xml_line).decode()}\n"
-        )
+        ) from None
 
     is_branch = xml_line.get("branch") == "true"
     branch_msg = xml_line.get("condition-coverage")

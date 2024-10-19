@@ -1,3 +1,46 @@
 
 [tool.bandit]
 assert_used.skips=['*_test.py', '*test_*.py']
+
+[tool.ruff]
+exclude = [
+    ".git",
+    "__pycache__",
+    "tests/cmake_gtest/build/_deps",
+]
+
+[tool.ruff.lint]
+# 1. Enable flake8-bugbear (`B`) rules, in addition to the defaults.
+select = ["E4", "E7", "E9", "F", "B"]
+
+# 2. Avoid enforcing line-length violations (`E501`)
+ignore = ["E501"]
+
+# 3. Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+
+# 4. Ignore `E402` (import violations) in all `__init__.py` files, and in selected subdirectories.
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402"]
+
+[tool.ruff.format]
+# 5. Use double quotes in `ruff format`.
+quote-style = "double"
+
+[tool.pytest.ini_options]
+addopts = "-v --timeout=120 --doctest-modules --ignore-glob=*/linked/subdir/* --ignore-glob */*bazel*/* --ignore-glob */.nox*/*"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "[#]\\s*pragma: no cover",
+
+    "^\\s*raise AssertionError\\b",
+    "^\\s*raise NotImplementedError\\b"
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
