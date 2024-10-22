@@ -357,18 +357,16 @@ def main(args=None):
     LOGGER.info("Reading coverage data...")
     try:
         covdata: CovData = gcovr_formats.read_reports(options)
-    except Exception as e:
-        LOGGER.error(
-            f"Error occurred while reading reports:\n{traceback.format_exc()}\n{str(e)}"
-        )
+    except Exception:
+        LOGGER.error(f"Error occurred while reading reports:\n{traceback.format_exc()}")
         sys.exit(EXIT_READ_ERROR)
 
     LOGGER.info("Writing coverage report...")
     try:
         gcovr_formats.write_reports(covdata, options)
-    except Exception as e:
+    except Exception:
         LOGGER.error(
-            f"Error occurred while printing reports:\n{traceback.format_exc()}\n{str(e)}"
+            f"Error occurred while printing reports:\n{traceback.format_exc()}"
         )
         sys.exit(EXIT_WRITE_ERROR)
 

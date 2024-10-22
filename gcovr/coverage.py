@@ -40,7 +40,6 @@ import logging
 import os
 import re
 from typing import (
-    Any,
     List,
     Dict,
     Iterable,
@@ -512,7 +511,7 @@ class FileCoverage:
     __slots__ = "filename", "functions", "lines", "parent_dirname", "data_sources"
 
     def __init__(
-        self, filename: str, data_source: Optional[Any[str, Set[str]]]
+        self, filename: str, data_source: Optional[Union[str, Set[str]]]
     ) -> None:
         self.filename: str = filename
         self.functions: Dict[str, FunctionCoverage] = {}
@@ -620,7 +619,7 @@ class DirectoryCoverage:
     def __init__(self, dirname: str) -> None:
         self.dirname: str = dirname
         self.parent_dirname: DirectoryCoverage = None
-        self.children: Dict[str, Any[DirectoryCoverage, FileCoverage]] = {}
+        self.children: Dict[str, Union[DirectoryCoverage, FileCoverage]] = {}
         self.stats: SummarizedStats = SummarizedStats.new_empty()
 
     @staticmethod
