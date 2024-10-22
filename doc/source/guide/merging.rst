@@ -45,7 +45,7 @@ With the :option:`--merge-mode-functions` you can change this:
 If you have differing number of conditions on the same line, the default behaviour is to abort.
 With the :option:`--merge-mode-conditions` you can change this:
 
-- ``strict``: Abort if condition count differs for the same line (old behavior).
+- ``strict``: Abort if condition count differs for the same line (default).
 - ``fold``: Narrow the conditions to match the lowest count between the two coverage counts.
 
 .. versionadded:: 6.0
@@ -53,6 +53,6 @@ With the :option:`--merge-mode-conditions` you can change this:
    The :option:`gcovr --json-base` option.
    The :option:`gcovr --merge-mode-functions` option.
 
-.. versionadded:: 8.3
+.. versionadded:: NEXT
 
     The :option:`gcovr --merge-mode-conditions` option.
