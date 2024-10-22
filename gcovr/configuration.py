@@ -31,7 +31,9 @@ import os
 import re
 
 from . import formats
+from .timestamps import parse_timestamp
 from .options import (
+    FilterOption,
     GcovrConfigOption,
     GcovrConfigOptionAction,
     GcovrDeprecatedConfigOptionAction,
@@ -41,13 +43,12 @@ from .options import (
     check_percentage,
     relative_path,
 )
-from .utils import FilterOption
 
 LOGGER = logging.getLogger("gcovr")
 
 
 def timestamp(value: str) -> datetime.datetime:
-    from .timestamps import parse_timestamp  # lazy import
+    """Get the current timestamp from a given string."""
 
     try:
         return parse_timestamp(value)
@@ -56,8 +57,7 @@ def timestamp(value: str) -> datetime.datetime:
 
 
 def source_date_epoch() -> Optional[datetime.datetime]:
-    """
-    Load time from SOURCE_DATE_EPOCH, if it exists.
+    """Load time from SOURCE_DATE_EPOCH, if it exists.
     See: <https://reproducible-builds.org/docs/source-date-epoch/>
 
     Examples:
@@ -90,7 +90,7 @@ def source_date_epoch() -> Optional[datetime.datetime]:
     if ts:
         try:
             return datetime.datetime.fromtimestamp(int(ts), datetime.timezone.utc)
-        except Exception:
+        except ValueError:
             LOGGER.warning(
                 "Ignoring invalid environment variable SOURCE_DATE_EPOCH=%r",
                 ts,
@@ -155,6 +155,7 @@ def parse_config_into_dict(
     config_entry_source: Iterable[ConfigEntry],
     all_options: Iterable[GcovrConfigOption] = None,
 ) -> Dict[str, Any]:
+    """Parse a config file and save the configuration in a dictionary."""
     cfg_dict: Dict[str, Any] = {}
 
     if all_options is None:
@@ -307,6 +308,7 @@ def merge_options_and_set_defaults(
     partial_namespaces: List[Dict[str, Any]],
     all_options: Optional[List[GcovrConfigOption]] = None,
 ) -> Options:
+    """Merge all options into the namespace and set the default values for unused options."""
     if not partial_namespaces:
         raise AssertionError("At least one namespace required")
 
@@ -331,12 +333,16 @@ def merge_options_and_set_defaults(
 
 
 class UseSortUncoveredNumberAction(GcovrDeprecatedConfigOptionAction):
+    """Argparse action to map old option --sort-uncovered to new option --sort=uncovered-number."""
+
     option = "--sort"
     config = "sort"
     value = "uncovered-number"
 
 
 class UseSortUncoveredPercentAction(GcovrDeprecatedConfigOptionAction):
+    """Argparse action to map old option --sort-percentage to new option --sort=uncovered-percent."""
+
     option = "--sort"
     config = "sort"
     value = "uncovered-percent"

@@ -138,18 +138,18 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
             covered_lines = _covered_lines_str(coverage)
 
         return stat, _format_line(filename, stat, covered_lines)
-    else:
-        if options.txt_metric == "branch":
-            stat = coverage.branch_coverage()
-            uncovered_lines = _uncovered_branches_str(coverage)
-        elif options.txt_metric == "decision":
-            stat = coverage.decision_coverage()
-            uncovered_lines = _uncovered_decisions_str(coverage)
-        else:
-            stat = coverage.line_coverage()
-            uncovered_lines = _uncovered_lines_str(coverage)
 
-        return stat, _format_line(filename, stat, uncovered_lines)
+    if options.txt_metric == "branch":
+        stat = coverage.branch_coverage()
+        uncovered_lines = _uncovered_branches_str(coverage)
+    elif options.txt_metric == "decision":
+        stat = coverage.decision_coverage()
+        uncovered_lines = _uncovered_decisions_str(coverage)
+    else:
+        stat = coverage.line_coverage()
+        uncovered_lines = _uncovered_lines_str(coverage)
+
+    return stat, _format_line(filename, stat, uncovered_lines)
 
 
 def _format_line(name: str, stat: CoverageStat, uncovered_lines: str) -> str:
@@ -272,4 +272,4 @@ def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[Tuple[int, int]]:
 def _format_range(first: int, last: int) -> str:
     if first == last:
         return str(first)
-    return "{first}-{last}".format(first=first, last=last)
+    return f"{first}-{last}"

@@ -23,6 +23,19 @@ import logging
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
+from jinja2 import (
+    Environment,
+    ChoiceLoader,
+    FileSystemLoader,
+    FunctionLoader,
+    PackageLoader,
+)
+from markupsafe import Markup
+import pygments
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers import get_lexer_for_filename
+
+
 from ...coverage import (
     CallCoverage,
     CovData,
@@ -53,11 +66,13 @@ PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
 
 
 class Lazy:
+    """Class for lazy loading and caching the result."""
+
     def __init__(self, fn):
         def load(*args):
             result = fn(*args)
 
-            def reuse_value(*args):
+            def reuse_value(*_):
                 return result
 
             self.get = reuse_value
@@ -72,10 +87,12 @@ class Lazy:
 # html_theme string is <theme_directory>.<color> or only <color> (if only color use default)
 # examples: github.green github.blue or blue or green
 def get_theme_name(html_theme: str) -> str:
+    """Get the theme name without the color."""
     return html_theme.split(".")[0] if "." in html_theme else "default"
 
 
 def get_theme_color(html_theme: str) -> str:
+    """Get the theme color from the theme name."""
     return html_theme.split(".")[1] if "." in html_theme else html_theme
 
 
@@ -84,8 +101,7 @@ def get_theme_color(html_theme: str) -> str:
 # This speeds up text and XML output.
 @Lazy
 def templates(options):
-    from jinja2 import ChoiceLoader, Environment, FileSystemLoader, PackageLoader
-
+    """Get the Jinja2 environment for the templates."""
     # As default use the package loader
     loader = PackageLoader(
         "gcovr.formats.html",
@@ -106,7 +122,7 @@ def templates(options):
 
 @Lazy
 def user_templates():
-    from jinja2 import Environment, FunctionLoader
+    """Get the Jinja2 environment for the user templates."""
 
     def load_user_template(template):
         contents = None
@@ -128,25 +144,11 @@ def user_templates():
 
 
 class CssRenderer:
-    THEMES = [
-        "green",
-        "blue",
-        "github.blue",
-        "github.green",
-        "github.dark-green",
-        "github.dark-blue",
-    ]
+    """Class for rendering the CSS template with Jinja2."""
 
     @staticmethod
-    def get_themes():
-        return CssRenderer.THEMES
-
-    @staticmethod
-    def get_default_theme():
-        return CssRenderer.THEMES[0]
-
-    @staticmethod
-    def load_css_template(options):
+    def __load_css_template(options):
+        """Load the CSS template."""
         if options.html_css is not None:
             template_path = os.path.relpath(options.html_css)
             return user_templates().get_template(template_path)
@@ -155,46 +157,48 @@ class CssRenderer:
 
     @staticmethod
     def render(options):
-        template = CssRenderer.load_css_template(options)
+        """Get the rendered CSS content."""
+        template = CssRenderer.__load_css_template(options)
         return template.render(
             tab_size=options.html_tab_size, single_page=options.html_single_page
         )
 
 
 class NullHighlighting:
+    """Class if no syntax highlighting is available for the given file."""
+
     def get_css(self):
+        """Get the empty CSS."""
         return ""
 
     @staticmethod
-    def highlighter_for_file(filename):
+    def highlighter_for_file(_):
+        """Get the default highlighter which only returns the content as raw text lines."""
         return lambda code: [line.rstrip() for line in code.split("\n")]
 
 
 class PygmentsHighlighting:
+    """Class for syntax highlighting in report."""
+
     def __init__(self, style: str):
         self.formatter = None
         try:
-            from pygments.formatters.html import HtmlFormatter
-
             self.formatter = HtmlFormatter(nowrap=True, style=style)
         except ImportError as e:  # pragma: no cover
             LOGGER.warning(f"No syntax highlighting available: {str(e)}")
 
     def get_css(self):
+        """Get the CSS for the syntax highlighting."""
         if self.formatter is None:  # pragma: no cover
             return ""
         return (
             "\n\n/* pygments syntax highlighting */\n" + self.formatter.get_style_defs()
         )
 
-    # Set the lexer for the given filename. Return true if a lexer is found
     def highlighter_for_file(self, filename):
+        """Get the highlighter for the given filename."""
         if self.formatter is None:  # pragma: no cover
             return NullHighlighting.highlighter_for_file(filename)
-
-        import pygments
-        from markupsafe import Markup
-        from pygments.lexers import get_lexer_for_filename
 
         try:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)
@@ -208,6 +212,7 @@ class PygmentsHighlighting:
 
 @Lazy
 def get_formatter(options):
+    """Get the formatter for the selected theme."""
     highlight_style = (
         templates(options)
         .get_template(f"pygments.{get_theme_color(options.html_theme)}")
@@ -221,6 +226,7 @@ def get_formatter(options):
 
 
 def coverage_to_class(coverage, medium_threshold, high_threshold) -> str:
+    """Get the coverage class depending on the threshold."""
     if coverage is None:
         return "coverage-unknown"
     if coverage == 0:
@@ -233,6 +239,8 @@ def coverage_to_class(coverage, medium_threshold, high_threshold) -> str:
 
 
 class RootInfo:
+    """Class holding the information used in Jinja2 template."""
+
     def __init__(self, options) -> None:
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
@@ -251,17 +259,19 @@ class RootInfo:
         self.date = options.timestamp.isoformat(sep=" ", timespec="seconds")
         self.encoding = options.html_encoding
         self.directory = None
-        self.branches = dict()
-        self.conditions = dict()
-        self.decisions = dict()
-        self.calls = dict()
-        self.functions = dict()
-        self.lines = dict()
+        self.branches = {}
+        self.conditions = {}
+        self.decisions = {}
+        self.calls = {}
+        self.functions = {}
+        self.lines = {}
 
     def set_directory(self, directory) -> None:
+        """Set the directory for the report."""
         self.directory = directory
 
     def get_directory(self) -> str:
+        """Get the directory for the report."""
         return "." if self.directory == "" else force_unix_separator(self.directory)
 
     def set_coverage(self, covdata: CovData) -> None:
@@ -274,24 +284,28 @@ class RootInfo:
         self.decisions = dict_from_stat(stats.decision, self.coverage_class)
         self.calls = dict_from_stat(stats.call, self.coverage_class)
 
-    def coverage_class(self, coverage) -> str:
-        return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
-
     def line_coverage_class(self, coverage) -> str:
+        """Get the coverage class for the line."""
         return coverage_to_class(
             coverage, self.medium_threshold_line, self.high_threshold_line
         )
 
     def branch_coverage_class(self, coverage) -> str:
+        """Get the coverage class for the branch."""
         return coverage_to_class(
             coverage, self.medium_threshold_branch, self.high_threshold_branch
         )
+
+    def coverage_class(self, coverage) -> str:
+        """Get the coverage class for all other types."""
+        return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
 
 #
 # Produce an HTML report
 #
 def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+    """Write the HTML report"""
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
     high_threshold = options.html_high_threshold
@@ -416,9 +430,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         if common_dir != "":
             root_directory = common_dir
     else:
-        dir, _ = os.path.split(filtered_fname)
-        if dir != "":
-            root_directory = dir + os.sep
+        directory, _ = os.path.split(filtered_fname)
+        if directory != "":
+            root_directory = directory + os.sep
 
     root_info.set_directory(root_directory)
 
@@ -490,9 +504,7 @@ def write_root_page(
     data: Dict[str, Any],
     sorted_keys: List[str],
 ) -> None:
-    #
-    # Generate the root HTML file that contains the high level report
-    #
+    """Generate the root HTML file that contains the high level report."""
     files = []
     for f in sorted_keys:
         files.append(
@@ -521,8 +533,9 @@ def write_source_pages(
     cdata_sourcefile: Dict[str, str],
     data: Dict[str, Any],
 ) -> bool:
+    """Write a page for each source file."""
     error_no_files_not_found = 0
-    all_functions = dict()
+    all_functions = {}
     for fname, cdata in covdata.items():
         file_data, functions, file_not_found = get_file_data(
             options, root_info, fname, cdata_fname, cdata_sourcefile, cdata
@@ -571,9 +584,10 @@ def write_directory_pages(
     cdata_sourcefile: Dict[str, str],
     data: Dict[str, Any],
 ) -> None:
-    root_key = DirectoryCoverage.directory_root(subdirs, options.root_filter)
+    """Write a page for each directory."""
+    root_key = DirectoryCoverage.directory_root(subdirs)
 
-    directory_data = dict()
+    directory_data = {}
     for directory, cdata in subdirs.items():
         directory_data = get_directory_data(
             options, root_info, cdata_fname, cdata_sourcefile, cdata
@@ -611,9 +625,10 @@ def write_single_page(
     cdata_sourcefile: Dict[str, str],
     data: Dict[str, Any],
 ) -> bool:
+    """Write a single page HTML report."""
     error_no_files_not_found = 0
     files = []
-    all_functions = dict()
+    all_functions = {}
     for filename, cdata in covdata.items():
         file_data, functions, file_not_found = get_file_data(
             options, root_info, filename, cdata_fname, cdata_sourcefile, cdata
@@ -902,6 +917,7 @@ def dict_from_stat(
     coverage_class: Callable[[Optional[float]], str],
     default: float = None,
 ) -> Dict[str, Any]:
+    """Get a dictionary from the stats."""
     coverage_default = "-" if default is None else default
     data = {
         "total": stat.total,
@@ -919,6 +935,7 @@ def dict_from_stat(
 def source_row(
     lineno: int, source: str, line_cov: Optional[LineCoverage]
 ) -> Dict[str, Any]:
+    """Get information for a row"""
     linebranch = None
     linecondition = None
     linedecision = None
@@ -955,6 +972,7 @@ def source_row(
 
 
 def source_row_branch(branches) -> Dict[str, Any]:
+    """Get branch information for a row"""
     if not branches:
         return None
 
@@ -986,6 +1004,7 @@ def source_row_branch(branches) -> Dict[str, Any]:
 
 
 def source_row_condition(conditions) -> Dict[str, Any]:
+    """Get condition information for a row."""
     if not conditions:
         return None
 
@@ -1019,6 +1038,7 @@ def source_row_condition(conditions) -> Dict[str, Any]:
 def source_row_decision(
     decision: Optional[DecisionCoverage],
 ) -> Optional[Dict[str, Any]]:
+    """Get decision information for a row"""
     if decision is None:
         return None
 
@@ -1068,6 +1088,7 @@ def source_row_decision(
 
 
 def source_row_call(calls: Optional[CallCoverage]) -> Dict[str, Any]:
+    """Get call information for a source row."""
     if not calls:
         return None
 

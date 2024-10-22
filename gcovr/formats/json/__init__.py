@@ -21,16 +21,17 @@ import logging
 import os
 from typing import List
 
-from ...options import GcovrConfigOption, OutputOrDefault
-from ...formats.base import BaseHandler
-
 from ...coverage import CovData
+from ...formats.base import BaseHandler
+from ...options import GcovrConfigOption, OutputOrDefault
 from ...utils import force_unix_separator
 
 LOGGER = logging.getLogger("gcovr")
 
 
 class JsonHandler(BaseHandler):
+    """Class to handle own JSON tracefile format."""
+
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
         return [
@@ -111,16 +112,16 @@ class JsonHandler(BaseHandler):
         ]
 
     def read_report(self) -> CovData:
-        from .read import read_report
+        from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         return read_report(self.options)
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
-        from .write import write_report
+        from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_report(covdata, output_file, self.options)
 
     def write_summary_report(self, covdata: CovData, output_file: str) -> None:
-        from .write import write_summary_report
+        from .write import write_summary_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_summary_report(covdata, output_file, self.options)

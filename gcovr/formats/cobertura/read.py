@@ -59,11 +59,11 @@ def read_report(options: Options) -> CovData:
                 "Bad --covertura-add-tracefile option.\n"
                 "\tThe specified file does not exist."
             )
-        else:
-            for trace_file in trace_files:
-                datafiles.add(os.path.normpath(trace_file))
 
-    covdata = dict()
+        for trace_file in trace_files:
+            datafiles.add(os.path.normpath(trace_file))
+
+    covdata = {}
     for filename in datafiles:
         LOGGER.debug(f"Processing XML file: {filename}")
 
@@ -123,7 +123,7 @@ def _line_from_xml(filename: str, xml_line) -> LineCoverage:
             [covered, total] = branch_msg[branch_msg.rfind("(") + 1 : -1].split("/")
             for i in range(int(total)):
                 insert_branch_coverage(line, i, _branch_from_json(i, i < int(covered)))
-        except Exception:  # pragma: no cover
+        except AssertionError:  # pragma: no cover
             LOGGER.warning(
                 f"Invalid branch information for line {line.lineno} in file {filename}"
             )

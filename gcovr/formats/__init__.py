@@ -20,13 +20,12 @@
 import logging
 from typing import Callable, List, Optional, Tuple
 
+from ..coverage import CovData, FileCoverage
 from ..merging import (
     get_merge_mode_from_options,
     insert_file_coverage,
 )
-
-from ..coverage import CovData, FileCoverage
-from ..options import GcovrConfigOption, Options
+from ..options import GcovrConfigOption, Options, OutputOrDefault
 from ..utils import search_file, is_file_excluded
 
 
@@ -47,6 +46,7 @@ LOGGER = logging.getLogger("gcovr")
 
 
 def get_options() -> List[GcovrConfigOption]:
+    """Get the list of all options from the format handlers."""
     return [
         o
         for o in [
@@ -67,6 +67,7 @@ def get_options() -> List[GcovrConfigOption]:
 
 
 def validate_options(options) -> CovData:
+    """Validate the command line options of the format handlers."""
     for handler in [
         GcovHandler,
         CloverHandler,
@@ -84,6 +85,7 @@ def validate_options(options) -> CovData:
 
 
 def read_reports(options) -> CovData:
+    """Read the reports from the given locations."""
     if options.json_add_tracefile or options.cobertura_add_tracefile:
         covdata: CovData = JsonHandler(options).read_report() or {}
         covdata.update(CoberturaHandler(options).read_report() or {})
@@ -113,14 +115,14 @@ def read_reports(options) -> CovData:
 
 
 def write_reports(covdata: CovData, options: Options):
-    from ..configuration import OutputOrDefault
-
-    Generator = Tuple[
-        List[Optional[OutputOrDefault]],
-        Callable[[CovData, str], bool],
-        Callable[[], None],
-    ]
-    generators: List[Generator] = []
+    """Write the reports to the given locations."""
+    generators: List[
+        Tuple[
+            List[Optional[OutputOrDefault]],
+            Callable[[CovData, str], bool],
+            Callable[[], None],
+        ]
+    ] = []
 
     if options.clover or options.clover_pretty:
         generators.append(

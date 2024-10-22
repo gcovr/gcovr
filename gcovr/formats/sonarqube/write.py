@@ -35,30 +35,30 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         data = covdata[f]
         filename = presentable_filename(f, root_filter=options.root_filter)
 
-        fileNode = etree.Element("file")
-        fileNode.set("path", filename)
+        file_node = etree.Element("file")
+        file_node.set("path", filename)
 
         for lineno in sorted(data.lines):
             line_cov = data.lines[lineno]
             if not line_cov.is_covered and not line_cov.is_uncovered:
                 continue
 
-            L = etree.Element("lineToCover")
-            L.set("lineNumber", str(lineno))
+            line_node = etree.Element("lineToCover")
+            line_node.set("lineNumber", str(lineno))
             if line_cov.is_covered:
-                L.set("covered", "true")
+                line_node.set("covered", "true")
             else:
-                L.set("covered", "false")
+                line_node.set("covered", "false")
 
             branches = line_cov.branches
             if branches:
                 b = line_cov.branch_coverage()
-                L.set("branchesToCover", str(b.total))
-                L.set("coveredBranches", str(b.covered))
+                line_node.set("branchesToCover", str(b.total))
+                line_node.set("coveredBranches", str(b.covered))
 
-            fileNode.append(L)
+            file_node.append(line_node)
 
-        root.append(fileNode)
+        root.append(file_node)
 
     with open_binary_for_writing(output_file, "sonarqube.xml") as fh:
         fh.write(etree.tostring(root, encoding="UTF-8", xml_declaration=True))

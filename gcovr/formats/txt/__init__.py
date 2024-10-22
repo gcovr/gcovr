@@ -21,24 +21,27 @@ import logging
 from typing import List
 
 from ...coverage import CovData
-
+from ...formats.base import BaseHandler
 from ...options import (
     GcovrConfigOption,
     GcovrDeprecatedConfigOptionAction,
     OutputOrDefault,
 )
-from ...formats.base import BaseHandler
 
 LOGGER = logging.getLogger("gcovr")
 
 
 class UseBranchMetricAction(GcovrDeprecatedConfigOptionAction):
+    """Argparse action for mapping deprecated option to new option."""
+
     option = "--txt-metric"
     config = "txt-metric"
     value = "branch"
 
 
 class TxtHandler(BaseHandler):
+    """Class to handle text format."""
+
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
         return [
@@ -100,11 +103,11 @@ class TxtHandler(BaseHandler):
         ]
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
-        from .write import write_report
+        from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_report(covdata, output_file, self.options)
 
     def write_summary_report(self, covdata: CovData, output_file: str) -> None:
-        from .write import write_summary_report
+        from .write import write_summary_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_summary_report(covdata, output_file, self.options)

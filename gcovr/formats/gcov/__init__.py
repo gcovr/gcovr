@@ -21,15 +21,14 @@ from multiprocessing import cpu_count
 import os
 from typing import List
 
-from ...options import GcovrConfigOption, relative_path
-from ...formats.base import BaseHandler
-
 from ...coverage import CovData
-
-from ...utils import FilterOption
+from ...formats.base import BaseHandler
+from ...options import FilterOption, GcovrConfigOption, relative_path
 
 
 class GcovHandler(BaseHandler):
+    """Class to handle GCOV intermediate format."""
+
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
         return [
@@ -211,6 +210,6 @@ class GcovHandler(BaseHandler):
             )
 
     def read_report(self) -> CovData:
-        from .read import read_report
+        from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         return read_report(self.options)

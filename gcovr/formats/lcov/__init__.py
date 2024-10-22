@@ -19,13 +19,14 @@
 
 from typing import List
 
-from ...options import GcovrConfigOption, OutputOrDefault
-from ...formats.base import BaseHandler
-
 from ...coverage import CovData
+from ...formats.base import BaseHandler
+from ...options import GcovrConfigOption, OutputOrDefault
 
 
 class LcovHandler(BaseHandler):
+    """Class to handle LCOV format."""
+
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
         return [
@@ -68,6 +69,6 @@ class LcovHandler(BaseHandler):
         ]
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
-        from .write import write_report
+        from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_report(covdata, output_file, self.options)

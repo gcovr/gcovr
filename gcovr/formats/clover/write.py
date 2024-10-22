@@ -77,6 +77,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         class_metrics = _metrics_element()
         class_elem.append(class_metrics)
 
+        lineno = 0
         ncloc = 0
         covered_elements = 0
         for lineno in sorted(data.lines):
@@ -168,6 +169,8 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
 @dataclass
 class ProjectData:
+    """Data class for the project data."""
+
     files: int
     loc: int
     ncloc: int
@@ -176,6 +179,8 @@ class ProjectData:
 
 @dataclass
 class PackageData:
+    """Data class for the package data."""
+
     files_xml: Dict[str, etree.Element]
     loc: int
     ncloc: int

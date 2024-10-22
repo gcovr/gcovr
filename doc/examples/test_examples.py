@@ -20,8 +20,10 @@
 import glob
 import os
 import platform
-import pytest
 import subprocess  # nosec # Commands are trusted.
+from typing import Iterator
+
+import pytest
 
 from tests.test_gcovr import SCRUBBERS, assert_equals
 
@@ -30,10 +32,12 @@ IS_MACOS = platform.system() == "Darwin"
 data_dirname = os.path.dirname(os.path.abspath(__file__))
 
 
-class Example(object):
-    def __init__(self, name, format, script, baseline):
+class Example:
+    """Class holding data for an example."""
+
+    def __init__(self, name, output_format, script, baseline):
         self.name = name
-        self.format = format
+        self.format = output_format
         self.script = script
         self.baseline = baseline
 
@@ -42,29 +46,26 @@ class Example(object):
 
 
 def is_compiler(actual: str, *expected: str) -> bool:
+    """Return True if the compiler is ine of the expected ones."""
     return any(compiler in actual for compiler in expected)
 
 
-def find_test_cases():
+def find_test_cases() -> Iterator[Example]:
+    """Search the file system for the tests and yield a Example instance."""
     if platform.system() == "Windows":
         return
     for script in glob.glob(data_dirname + "/*.sh"):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
-        for format in "txt cobertura csv json html".split():
-            if format in ("html", "cobertura") and is_compiler(
+        for output_format in ["txt", "cobertura", "csv", "json", "html"]:
+            if output_format in ("html", "cobertura") and is_compiler(
                 os.getenv("CC"), "gcc-5", "gcc-6", "gcc-14"
             ):
                 continue
-            baseline = "{data_dirname}/{name}.{ext}".format(
-                data_dirname=data_dirname,
-                name=name,
-                ext="xml" if format == "cobertura" else format,
-            )
+            baseline = f"{data_dirname}/{name}.{'xml' if output_format == 'cobertura' else output_format}"
             if not os.path.exists(baseline):
                 continue
-            else:
-                yield Example(name, format, script, baseline)
+            yield Example(name, output_format, script, baseline)
 
 
 @pytest.mark.skipif(
@@ -73,20 +74,21 @@ def find_test_cases():
 )
 @pytest.mark.parametrize("example", find_test_cases(), ids=str)
 def test_example(example):
+    """The test generated out of an example."""
     cmd = example.script
     baseline_file = example.baseline
     scrub = SCRUBBERS[example.format]
     # Read old file
     with open(  # nosemgrep # It's intended to use the local
-        baseline_file, newline=""
+        baseline_file, newline="", encoding="utf-8"
     ) as f:
         baseline = scrub(f.read())
 
     start_dirname = os.getcwd()
     os.chdir(data_dirname)
-    subprocess.run(cmd)  # nosec # The command is not a user input
+    subprocess.run(cmd, check=True)  # nosec # The command is not a user input
     with open(  # nosemgrep # It's intended to use the local
-        baseline_file, newline=""
+        baseline_file, newline="", encoding="utf-8"
     ) as f:
         current = scrub(f.read())
     current = scrub(current)
@@ -96,6 +98,7 @@ def test_example(example):
 
 
 def test_timestamps_example():
+    """Run the timestamp example."""
     subprocess.check_call(  # nosec # We run on several system and do not know the full path
         ["sh", "example_timestamps.sh"], cwd=data_dirname
     )

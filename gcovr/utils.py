@@ -18,18 +18,15 @@
 # ****************************************************************************
 
 from __future__ import annotations
-from argparse import ArgumentTypeError
 from hashlib import md5
-from typing import Callable, List, Type
+from typing import Callable, List
 import logging
 import os
 import functools
-import platform
 import re
 import sys
 from contextlib import contextmanager
 from colorlog import ColoredFormatter
-from gcovr.options import Options
 
 LOGGER = logging.getLogger("gcovr")
 DEFAULT_LOGGING_HANDLER = logging.StreamHandler(sys.stderr)
@@ -40,12 +37,17 @@ LOG_FORMAT_THREADS = "(%(levelname)s) - %(threadName)s - %(message)s"
 COLOR_LOG_FORMAT = f"%(log_color)s{LOG_FORMAT}"
 COLOR_LOG_FORMAT_THREADS = f"%(log_color)s{LOG_FORMAT_THREADS}"
 
+MD5_KWARGS = {"usedforsecurity": False} if sys.version_info >= (3, 9) else {}
 
-class LoopChecker(object):
+
+class LoopChecker:
+    """Class for checking if a directory was already scanned."""
+
     def __init__(self):
         self._seen = set()
 
     def already_visited(self, path):
+        """Check if the path was already checked."""
         st = os.stat(path)
         key = (st.st_dev, st.st_ino)
         if key in self._seen:
@@ -57,6 +59,7 @@ class LoopChecker(object):
 
 @functools.lru_cache(maxsize=1)
 def is_fs_case_insensitive():
+    """Check if the file system is case insensitive."""
     cwd = os.getcwd()
     # Guessing if file system is case insensitive.
     # The working directory is not the root and accessible in upper and lower case
@@ -74,6 +77,7 @@ def is_fs_case_insensitive():
 
 @functools.lru_cache(maxsize=None)
 def fix_case_of_path(path: str):
+    """Fix casing of filenames for cas insensitive file systems."""
     rest, cur = os.path.split(path)
     # e.g path = ".." happens if original path is like "../dir/subdir/file.cpp"
     if not rest:
@@ -82,23 +86,19 @@ def fix_case_of_path(path: str):
         return rest.upper()  # Always use uppercase drive letter
 
     try:
-        curL = cur.lower()
-        matchedFileName = [f for f in os.listdir(rest) if f.lower() == curL]
-        if len(matchedFileName) > 1:
+        cur_lower = cur.lower()
+        matched_filename = [f for f in os.listdir(rest) if f.lower() == cur_lower]
+        if len(matched_filename) > 1:
             raise RuntimeError(
                 "Seems that we have a case sensitive filesystem, can't fix file case"
             )
 
-        if len(matchedFileName) == 1:
-            path = os.path.join(fix_case_of_path(rest), matchedFileName[0])
+        if len(matched_filename) == 1:
+            path = os.path.join(fix_case_of_path(rest), matched_filename[0])
     except FileNotFoundError:
         LOGGER.warning(f"Can not fix case of path because {rest} not found.")
 
     return path.replace("\\", "/")
-
-
-def get_os_independent_path(path):
-    return path.replace(os.path.sep, "/")
 
 
 def search_file(
@@ -187,115 +187,10 @@ def commonpath(files):
     return prefix_path
 
 
-class FilterOption:
-    NonEmpty: Type[NonEmptyFilterOption]
-
-    def __init__(self, regex, path_context=None):
-        self.regex = regex
-        self.path_context = os.getcwd() if path_context is None else path_context
-
-    def build_filter(self):
-        # Try to detect unintended backslashes and warn.
-        # Later, the regex engine may or may not raise a syntax error.
-        # An unintended backslash is a literal backslash r"\\",
-        # or a regex escape that doesn't exist.
-        (suggestion, bs_count) = re.subn(
-            r"\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])", "/", self.regex
-        )
-        if bs_count:
-            LOGGER.warning("filters must use forward slashes as path separators")
-            LOGGER.warning(f"your filter : {self.regex}")
-            LOGGER.warning(f"did you mean: {suggestion}")
-
-        isabs = self.regex.startswith("/")
-        if not isabs and (platform.system() == "Windows"):
-            # Starts with a drive letter
-            isabs = re.match(r"^[A-Za-z]:/", self.regex)
-
-        if isabs:
-            return AbsoluteFilter(self.regex)
-        else:
-            return RelativeFilter(self.path_context, self.regex)
-
-
-class NonEmptyFilterOption(FilterOption):
-    def __init__(self, regex, path_context=None):
-        if not regex:
-            raise ArgumentTypeError("filter cannot be empty")
-        super(NonEmptyFilterOption, self).__init__(regex, path_context)
-
-
-FilterOption.NonEmpty = NonEmptyFilterOption
-
-
-class Filter(object):
-    def __init__(self, pattern: str):
-        flags = re.IGNORECASE if is_fs_case_insensitive() else 0
-        self.pattern = re.compile(pattern, flags)
-
-    def match(self, path: str):
-        os_independent_path = get_os_independent_path(path)
-        if self.pattern.match(os_independent_path):
-            LOGGER.debug(f"  Filter {self} matched for path {os_independent_path}.")
-            return True
-        return False
-
-    def __str__(self):
-        return f"{type(self).__name__}({self.pattern.pattern})"
-
-
-class AbsoluteFilter(Filter):
-    def match(self, path: str):
-        path = os.path.realpath(path)
-        return super().match(path)
-
-
-class RelativeFilter(Filter):
-    def __init__(self, root: str, pattern: str):
-        super().__init__(pattern)
-        self.root = os.path.realpath(root)
-
-    def match(self, path: str):
-        path = os.path.realpath(path)
-
-        # On Windows, a relative path can never cross drive boundaries.
-        # If so, the relative filter cannot match.
-        if platform.system() == "Windows":
-            path_drive, _ = os.path.splitdrive(path)
-            root_drive, _ = os.path.splitdrive(self.root)
-            if path_drive != root_drive:
-                return None
-
-        relpath = os.path.relpath(path, self.root)
-        return super().match(relpath)
-
-    def __str__(self):
-        return f"RelativeFilter({self.pattern.pattern} root={self.root})"
-
-
-class AlwaysMatchFilter(Filter):
-    def __init__(self):
-        super().__init__("")
-
-    def match(self, path):
-        return True
-
-
-class DirectoryPrefixFilter(Filter):
-    def __init__(self, directory):
-        os_independent_path = get_os_independent_path(directory)
-        pattern = re.escape(f"{os_independent_path}/")
-        super().__init__(pattern)
-
-    def match(self, path: str):
-        path = os.path.normpath(path)
-        return super().match(path)
-
-
 def is_file_excluded(
     filename: str, include_filters: List[re.Pattern], exclude_filters: List[re.Pattern]
 ) -> bool:
-    """Apply inclusion/exclusion filters to filename
+    """Apply inclusion/exclusion filters to filename.
 
     The include_filters are tested against
     the given (relative) filename.
@@ -326,7 +221,8 @@ def is_file_excluded(
     return False
 
 
-def __colored_formatter(options: Options = None) -> ColoredFormatter:
+def __colored_formatter(options=None) -> ColoredFormatter:
+    """Configure the colored logging formatter."""
     if options is not None:
         log_format = (
             COLOR_LOG_FORMAT_THREADS if options.gcov_parallel > 1 else COLOR_LOG_FORMAT
@@ -358,7 +254,7 @@ def __colored_formatter(options: Options = None) -> ColoredFormatter:
 
 
 def configure_logging() -> None:
-    """Configure the logging module"""
+    """Configure the logging module."""
     DEFAULT_LOGGING_HANDLER.setFormatter(__colored_formatter())
     logging.basicConfig(level=logging.INFO, handlers=[DEFAULT_LOGGING_HANDLER])
     ci_logging_prefixes = None
@@ -379,7 +275,7 @@ def configure_logging() -> None:
             """Formatter to format messages to be captured in Azure"""
 
             def __init__(self):
-                super(CiFormatter, self).__init__(fmt=LOG_FORMAT)
+                super().__init__(fmt=LOG_FORMAT)
 
             def format(self, record):
                 if record.levelno in ci_logging_prefixes:
@@ -403,7 +299,8 @@ def configure_logging() -> None:
     sys.excepthook = exception_hook
 
 
-def update_logging(options: Options) -> None:
+def update_logging(options) -> None:
+    """Update the logger configuration depending on the options."""
     if options.verbose:
         LOGGER.setLevel(logging.DEBUG)
 
@@ -421,7 +318,7 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
         filename += default_filename
 
     if filename is not None and filename != "-":
-        with open(filename, "w", **kwargs) as fh_out:
+        with open(filename, "w", **kwargs) as fh_out:  # pylint: disable=unspecified-encoding
             yield fh_out
     else:
         yield sys.stdout
@@ -446,9 +343,7 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
 
 @contextmanager
 def chdir(dir_):
-    """
-    Context for doing something in a locked directory
-    """
+    """Context for doing something in a locked directory."""
     current_dir = os.getcwd()
     os.chdir(dir_)
     try:
@@ -458,6 +353,7 @@ def chdir(dir_):
 
 
 def force_unix_separator(path: str) -> str:
+    """Get the filename with / independent from OS."""
     return path.replace("\\", "/")
 
 
@@ -479,8 +375,5 @@ def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
 
 
 def get_md5_hexdigest(data: bytes) -> str:
-    return (
-        md5(data, usedforsecurity=False)  # nosec # Not used for security
-        if sys.version_info >= (3, 9)
-        else md5(data)  # nosec # usedforsecurity not available in older versions
-    ).hexdigest()
+    """Get the MD5 digest of the given bytes."""
+    return md5(data, **MD5_KWARGS).hexdigest()  # nosec # Not used for security

@@ -26,6 +26,8 @@ from ...coverage import CovData
 
 
 class CsvHandler(BaseHandler):
+    """Class to handle CSV format."""
+
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
         return [
@@ -46,6 +48,6 @@ class CsvHandler(BaseHandler):
         ]
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
-        from .write import write_report
+        from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_report(covdata, output_file, self.options)

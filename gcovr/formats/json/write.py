@@ -130,7 +130,7 @@ def write_summary_report(covdata, output_file: str, options: Options):
 def _summary_from_stats(
     stats: SummarizedStats, default, options: Options
 ) -> Dict[str, Any]:
-    json_dict: Dict[str, Any] = dict()
+    json_dict: Dict[str, Any] = {}
 
     json_dict["line_total"] = stats.line.total
     json_dict["line_covered"] = stats.line.covered

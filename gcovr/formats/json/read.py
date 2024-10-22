@@ -72,11 +72,11 @@ def read_report(options: Options) -> CovData:
                 "Bad --json-add-tracefile option.\n"
                 "\tThe specified file does not exist."
             )
-        else:
-            for trace_file in trace_files:
-                datafiles.add(os.path.normpath(trace_file))
 
-    covdata = dict()
+        for trace_file in trace_files:
+            datafiles.add(os.path.normpath(trace_file))
+
+    covdata = {}
     for filename in datafiles:
         LOGGER.debug(f"Processing JSON file: {filename}")
 
