@@ -165,11 +165,19 @@ def _json_from_file(file: FileCoverage, options) -> dict:
     filename = presentable_filename(file.filename, options.root_filter)
     if options.json_base:
         filename = "/".join([options.json_base, filename])
-    return {
+    json_file = {
         "file": filename,
         "lines": _json_from_lines(file.lines),
         "functions": _json_from_functions(file.functions),
     }
+    # Only write data in verbose mode
+    if options.verbose and file.data_sources:
+        json_file["gcovr/data_sources"] = [
+            presentable_filename(filename, options.root_filter)
+            for filename in sorted(file.data_sources)
+        ]
+
+    return json_file
 
 
 def _json_from_lines(lines: Dict[int, LineCoverage]) -> list:

@@ -158,6 +158,9 @@
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "main.gcda"
             ]
         }
     ]

@@ -343,6 +343,7 @@ def parse_coverage(
     *,
     filename: str,
     ignore_parse_errors: Set,
+    data_filename: str = None,  # Only for tests
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
@@ -397,7 +398,7 @@ def parse_coverage(
             f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
         )
 
-    coverage = FileCoverage(filename)
+    coverage = FileCoverage(filename, data_filename)
     state = _ParserState()
     for line, raw_line in tokenized_lines:
         try:

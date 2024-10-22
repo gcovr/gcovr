@@ -165,7 +165,7 @@ class _ExclusionRangeWarnings:
     >>> caplog = getfixture("caplog")
     >>> caplog.clear()
     >>> _ = apply_exclusion_markers(  # doctest: +NORMALIZE_WHITESPACE
-    ...     FileCoverage("example.cpp"),
+    ...     FileCoverage("example.cpp", None),
     ...     lines=source.strip().splitlines(),
     ...     exclude_lines_by_pattern=None,
     ...     exclude_branches_by_pattern=None,

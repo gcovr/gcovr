@@ -36,6 +36,9 @@
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "main.gcda"
             ]
         },
         {
@@ -61,6 +64,9 @@
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "update-data.gcda"
             ]
         },
         {
@@ -159,6 +165,10 @@
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "main.gcda",
+                "update-data.gcda"
             ]
         }
     ]

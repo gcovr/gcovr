@@ -123,16 +123,18 @@ _T = TypeVar("_T")
 def _merge_dict(
     left: Dict[_Key, _T],
     right: Dict[_Key, _T],
-    merge_item: Callable[[_T, _T, MergeOptions], _T],
+    merge_item: Callable[[_T, _T, MergeOptions, Optional[str]], _T],
     options: MergeOptions,
+    context: Optional[str],
 ) -> Dict[_Key, _T]:
     """
     Helper function to merge items in a dictionary.
 
     Example:
     >>> _merge_dict(dict(a=2, b=3), dict(b=1, c=5),
-    ...             lambda a, b, _: a + b,
-    ...             DEFAULT_MERGE_OPTIONS)
+    ...             lambda a, b, _o, _c: a + b,
+    ...             DEFAULT_MERGE_OPTIONS,
+    ...             None)
     {'a': 2, 'b': 4, 'c': 5}
     """
     # Ensure that "left" is the larger dict,
@@ -141,7 +143,7 @@ def _merge_dict(
         left, right = right, left
 
     for key, right_item in right.items():
-        _insert_coverage_item(left, key, right_item, merge_item, options)
+        _insert_coverage_item(left, key, right_item, merge_item, options, context)
 
     # At this point, "left" contains all merged items.
     # The caller should access neither the "left" nor "right" objects.
@@ -156,8 +158,9 @@ def _insert_coverage_item(
     target_dict: Dict[_Key, _T],
     key: _Key,
     new_item: _T,
-    merge_item: Callable[[_T, _T, MergeOptions], _T],
+    merge_item: Callable[[_T, _T, MergeOptions, Optional[str]], _T],
     options: MergeOptions,
+    context: Optional[str],
 ) -> _T:
     """
     Insert a single item into a coverage dictionary.
@@ -177,7 +180,7 @@ def _insert_coverage_item(
     """
 
     if key in target_dict:
-        merged_item = merge_item(target_dict[key], new_item, options)
+        merged_item = merge_item(target_dict[key], new_item, options, context)
     else:
         merged_item = new_item
     target_dict[key] = merged_item
@@ -190,7 +193,7 @@ def merge_covdata(left: CovData, right: CovData, options: MergeOptions) -> CovDa
 
     Do not use 'left' or 'right' objects afterwards!
     """
-    return _merge_dict(left, right, merge_file, options)
+    return _merge_dict(left, right, merge_file, options, None)
 
 
 def insert_file_coverage(
@@ -199,13 +202,14 @@ def insert_file_coverage(
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> FileCoverage:
     """Insert FileCoverage into CovData."""
-    return _insert_coverage_item(target, file.filename, file, merge_file, options)
+    return _insert_coverage_item(target, file.filename, file, merge_file, options, None)
 
 
 def merge_file(
     left: FileCoverage,
     right: FileCoverage,
     options: MergeOptions,
+    context: Optional[str],
 ) -> FileCoverage:
     """
     Merge FileCoverage information.
@@ -217,11 +221,31 @@ def merge_file(
 
     if left.filename != right.filename:
         raise AssertionError("Filename must be equal")
+    if context is not None:
+        raise AssertionError("For a file the context must not be set.")
 
-    left.lines = _merge_dict(left.lines, right.lines, merge_line, options)
-    left.functions = _merge_dict(
-        left.functions, right.functions, merge_function, options
-    )
+    try:
+        left.lines = _merge_dict(
+            left.lines, right.lines, merge_line, options, left.filename
+        )
+        left.functions = _merge_dict(
+            left.functions, right.functions, merge_function, options, left.filename
+        )
+        if right.data_sources:
+            left.data_sources.update(right.data_sources)
+    except AssertionError as exc:
+        message = [str(exc)]
+        if right.data_sources:
+            message += (
+                "GCOV source files of merge source is/are:",
+                *[f"\t{e}" for e in sorted(right.data_sources)],
+            )
+        if left.data_sources:
+            message += (
+                "and of merge target is/are:",
+                *[f"\t{e}" for e in sorted(left.data_sources)],
+            )
+        raise AssertionError("\n".join(message)) from None
 
     return left
 
@@ -232,13 +256,16 @@ def insert_line_coverage(
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> LineCoverage:
     """Insert LineCoverage into FileCoverage."""
-    return _insert_coverage_item(target.lines, line.lineno, line, merge_line, options)
+    return _insert_coverage_item(
+        target.lines, line.lineno, line, merge_line, options, target.filename
+    )
 
 
 def merge_line(
     left: LineCoverage,
     right: LineCoverage,
     options: MergeOptions,
+    context: Optional[str],
 ) -> LineCoverage:
     """
     Merge LineCoverage information.
@@ -247,23 +274,26 @@ def merge_line(
 
     Precondition: both objects must have same lineno.
     """
+    context = f"{context}:{left.lineno}"
     if left.lineno != right.lineno:
         raise AssertionError("Line number must be equal.")
     # If both checksums exists compare them if only one exists, use it.
     if left.md5 is not None and right.md5 is not None:
         if left.md5 != right.md5:
-            raise AssertionError("MD5 checksum must be equal.")
+            raise AssertionError(f"MD5 checksum of {context} must be equal.")
     elif right.md5 is not None:
         left.md5 = right.md5
 
     left.count += right.count
     left.excluded |= right.excluded
-    left.branches = _merge_dict(left.branches, right.branches, merge_branch, options)
-    left.conditions = _merge_dict(
-        left.conditions, right.conditions, merge_condition, options
+    left.branches = _merge_dict(
+        left.branches, right.branches, merge_branch, options, context
     )
-    left.decision = merge_decision(left.decision, right.decision, options)
-    left.calls = _merge_dict(left.calls, right.calls, merge_call, options)
+    left.conditions = _merge_dict(
+        left.conditions, right.conditions, merge_condition, options, context
+    )
+    left.decision = merge_decision(left.decision, right.decision, options, context)
+    left.calls = _merge_dict(left.calls, right.calls, merge_call, options, context)
 
     return left
 
@@ -280,6 +310,7 @@ def insert_function_coverage(
         function,
         merge_function,
         options,
+        target.filename,
     )
 
 
@@ -287,6 +318,7 @@ def merge_function(
     left: FunctionCoverage,
     right: FunctionCoverage,
     options: MergeOptions,
+    context: Optional[str],
 ) -> FunctionCoverage:
     """
     Merge FunctionCoverage information.
@@ -311,7 +343,7 @@ def merge_function(
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
             raise GcovrMergeAssertionError(
-                f"Got function {right.demangled_name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                f"Got function {right.demangled_name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                 "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."
             )
@@ -354,7 +386,7 @@ def merge_function(
     elif options.merge_function_use_line_max:
         lineno = max(*left.count.keys(), *right.count.keys())
     else:
-        raise AssertionError("Unknown merge mode")
+        raise AssertionError("Sanity check, unknown merge mode")
 
     # Overwrite data with the sum at the desired line
     left.count = {lineno: sum(left.count.values()) + sum(right.count.values())}
@@ -383,7 +415,7 @@ def insert_branch_coverage(
 ) -> BranchCoverage:
     """Insert BranchCoverage into LineCoverage."""
     return _insert_coverage_item(
-        target.branches, branch_id, branch, merge_branch, options
+        target.branches, branch_id, branch, merge_branch, options, None
     )
 
 
@@ -391,6 +423,7 @@ def merge_branch(
     left: BranchCoverage,
     right: BranchCoverage,
     options: MergeOptions,
+    context: Optional[str],
 ) -> BranchCoverage:
     """
     Merge BranchCoverage information.
@@ -401,7 +434,7 @@ def merge_branch(
     >>> left = BranchCoverage(1, 2)
     >>> right = BranchCoverage(1, 3, False, True)
     >>> right.excluded = True
-    >>> merged = merge_branch(left, right, DEFAULT_MERGE_OPTIONS)
+    >>> merged = merge_branch(left, right, DEFAULT_MERGE_OPTIONS, None)
     >>> merged.count
     5
     >>> merged.fallthrough
@@ -429,7 +462,7 @@ def insert_condition_coverage(
 ) -> ConditionCoverage:
     """Insert ConditionCoverage into LineCoverage."""
     return _insert_coverage_item(
-        target.conditions, condition_id, condition, merge_condition, options
+        target.conditions, condition_id, condition, merge_condition, options, None
     )
 
 
@@ -437,6 +470,7 @@ def merge_condition(
     left: ConditionCoverage,
     right: ConditionCoverage,
     options: MergeOptions,
+    context: Optional[str],
 ) -> ConditionCoverage:
     """
     Merge ConditionCoverage information.
@@ -446,11 +480,11 @@ def merge_condition(
     Examples:
     >>> left = ConditionCoverage(4, 2, [1, 2], [])
     >>> right = ConditionCoverage(4, 3, [2], [1, 3])
-    >>> merge_condition(left, None, DEFAULT_MERGE_OPTIONS) is left
+    >>> merge_condition(left, None, DEFAULT_MERGE_OPTIONS, None) is left
     True
-    >>> merge_condition(None, right, DEFAULT_MERGE_OPTIONS) is right
+    >>> merge_condition(None, right, DEFAULT_MERGE_OPTIONS, None) is right
     True
-    >>> merged = merge_condition(left, right, DEFAULT_MERGE_OPTIONS)
+    >>> merged = merge_condition(left, right, DEFAULT_MERGE_OPTIONS, None)
     >>> merged.count
     4
     >>> merged.covered
@@ -468,7 +502,9 @@ def merge_condition(
         return left
 
     if left.count != right.count:
-        raise AssertionError("The number of conditions must be equal.")
+        raise AssertionError(
+            f"The number of conditions must be equal, got {left.count} and {right.count} while merging {context}."
+        )
 
     left.not_covered_false = sorted(
         list(set(left.not_covered_false) & set(right.not_covered_false))
@@ -487,7 +523,7 @@ def insert_decision_coverage(
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> Optional[DecisionCoverage]:
     """Insert DecisionCoverage into LineCoverage."""
-    target.decision = merge_decision(target.decision, decision, options)
+    target.decision = merge_decision(target.decision, decision, options, None)
     return target.decision
 
 
@@ -495,6 +531,7 @@ def merge_decision(
     left: Optional[DecisionCoverage],
     right: Optional[DecisionCoverage],
     options: MergeOptions,
+    context: Optional[str],
 ) -> Optional[DecisionCoverage]:
     """
     Merge DecisionCoverage information.
@@ -549,13 +586,16 @@ def insert_call_coverage(
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> CallCoverage:
     """Insert BranchCoverage into LineCoverage."""
-    return _insert_coverage_item(target.calls, call.callno, call, merge_call, options)
+    return _insert_coverage_item(
+        target.calls, call.callno, call, merge_call, options, None
+    )
 
 
 def merge_call(
     left: CallCoverage,
     right: CallCoverage,
     options: MergeOptions,
+    context: Optional[str],
 ) -> BranchCoverage:
     """
     Merge CallCoverage information.
@@ -563,6 +603,8 @@ def merge_call(
     Do not use 'left' or 'right' objects afterwards!
     """
     if left.callno != right.callno:
-        raise AssertionError("Call number must be equal.")
+        raise AssertionError(
+            f"Call number must be equal, got {left.callno} and {right.callno} while merging {context}."
+        )
     left.covered |= right.covered
     return left

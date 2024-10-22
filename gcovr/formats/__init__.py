@@ -103,7 +103,7 @@ def read_reports(options) -> CovData:
                 if is_file_excluded(fname, options.filter, options.exclude):
                     continue
 
-                file_cov = FileCoverage(fname)
+                file_cov = FileCoverage(fname, None)
                 LOGGER.debug(f"Merge empty coverage data for {fname}")
                 insert_file_coverage(
                     covdata, file_cov, get_merge_mode_from_options(options)

@@ -35,7 +35,7 @@ json: coverage.json coverage_bazel.json
 coverage.json:
 	find $(realpath $(wildcard bazel-out/*-fastbuild/bin)) -name '*.gcda' -delete
 	bazel-out/*-fastbuild/bin/test/testcase
-	$(GCOVR) -v --gcov-keep --json-pretty --json $@ $(if $(filter 1,$(GCOV_JSON_FORMAT)),--root /proc/self/cwd,) $(wildcard bazel-out/*-fastbuild/bin)
+	$(GCOVR) --gcov-keep --json-pretty --json $@ $(if $(filter 1,$(GCOV_JSON_FORMAT)),--root /proc/self/cwd,) $(wildcard bazel-out/*-fastbuild/bin)
 
 coverage_bazel.json: coverage.json
 # Coverage command isn't working with MacOS in this test
@@ -44,7 +44,7 @@ ifeq ($(IS_DARWIN),1)
 else
 	find $(realpath $(wildcard bazel-out/*-fastbuild/bin)) -name '*.gcda' -delete
 	$(if $(filter 1,$(IS_LLVM)),GCOV=$(firstword $(GCOV)),) bazel coverage $(BAZEL_COVERAGE_OPTIONS) //test:testcase
-	$(GCOVR) -v --gcov-keep --json-pretty --json $@ $(if $(filter 1,$(GCOV_JSON_FORMAT)),--root /proc/self/cwd,) $(realpath $(wildcard bazel-out/*-fastbuild/testlogs))
+	$(GCOVR) --gcov-keep --json-pretty --json $@ $(if $(filter 1,$(GCOV_JSON_FORMAT)),--root /proc/self/cwd,) $(realpath $(wildcard bazel-out/*-fastbuild/testlogs))
 endif
 
 clean:

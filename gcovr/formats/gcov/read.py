@@ -223,7 +223,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                 for _ in range(lines, max_line_from_cdata):
                     source_lines.append(b"/*EOF*/")
 
-        file_cov = FileCoverage(fname)
+        file_cov = FileCoverage(fname, data_fname)
         for line in file["lines"]:
             line_cov = insert_line_coverage(
                 file_cov,
@@ -345,6 +345,7 @@ def process_gcov_data(
     coverage, source_lines = parse_coverage(
         lines,
         filename=key,
+        data_filename=gcda_fname or data_fname,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
     )
 

@@ -97,7 +97,9 @@ def read_report(options: Options) -> CovData:
             if is_file_excluded(file_path, options.filter, options.exclude):
                 continue
 
-            file_coverage = FileCoverage(file_path)
+            file_coverage = FileCoverage(
+                file_path, gcovr_file.get("gcovr/data_sources", filename)
+            )
             merge_options = get_merge_mode_from_options(options)
             for json_function in gcovr_file["functions"]:
                 insert_function_coverage(

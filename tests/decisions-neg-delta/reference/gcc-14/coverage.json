@@ -210,6 +210,9 @@
                         "18:1"
                     ]
                 }
+            ],
+            "gcovr/data_sources": [
+                "testcase-main##3f809c632dcac7a33392abf437fdc6d6.gcov.json.gz"
             ]
         }
     ]

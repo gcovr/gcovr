@@ -74,6 +74,9 @@
                     "execution_count": 1,
                     "blocks_percent": 44.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "main.gcda"
             ]
         }
     ]

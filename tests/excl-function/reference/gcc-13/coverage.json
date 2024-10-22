@@ -491,6 +491,9 @@
                     "execution_count": 41,
                     "blocks_percent": 100.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "testcase-main.gcda"
             ]
         }
     ]

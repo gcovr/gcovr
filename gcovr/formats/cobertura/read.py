@@ -87,7 +87,7 @@ def read_report(options: Options) -> CovData:
             if is_file_excluded(file_path, options.filter, options.exclude):
                 continue
 
-            file_coverage = FileCoverage(file_path)
+            file_coverage = FileCoverage(file_path, filename)
             merge_options = get_merge_mode_from_options(options)
             for xml_line in gcovr_file.xpath("./lines//line"):
                 insert_line_coverage(file_coverage, _line_from_xml(filename, xml_line))
