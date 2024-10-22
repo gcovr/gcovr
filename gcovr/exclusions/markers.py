@@ -32,7 +32,7 @@ from .utils import (
     get_functions_by_line,
 )
 
-from ..coverage import BranchCoverage, FileCoverage, FunctionCoverage, LineCoverage
+from ..coverage import FileCoverage, FunctionCoverage, LineCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -128,20 +128,19 @@ def _process_exclude_branch_source(
                         function_name = filecov.lines[lineno].function_name
                         block_ids = filecov.lines[lineno].block_ids
                         # Check the lines which belong to the function
-                        line: LineCoverage
+                        linecov: LineCoverage
                         for current_lineno in filecov.lines:
-                            line = filecov.lines[current_lineno]
-                            if line.function_name != function_name:
+                            linecov = filecov.lines[current_lineno]
+                            if linecov.function_name != function_name:
                                 continue
                             # Exclude the branch where the destination is one of the blocks of the line with the marker
-                            branch: BranchCoverage
-                            for branchno in line.branches:
-                                branch = line.branches[branchno]
-                                if branch.destination_blockno in block_ids:
+                            for branchno in linecov.branches:
+                                branchcov = linecov.branches[branchno]
+                                if branchcov.destination_blockno in block_ids:
                                     LOGGER.debug(
                                         f"Source branch exclusion at {location} is excluding branch {branchno} of line {current_lineno}"
                                     )
-                                    branch.excluded = True
+                                    branchcov.excluded = True
                 else:
                     LOGGER.error(
                         f"Found marker for source branch exclusion at {location} without coverage information"

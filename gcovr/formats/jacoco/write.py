@@ -41,9 +41,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     # Generate the coverage output (on a per-package basis)
     packages: Dict[str, PackageData] = {}
 
-    for f in sorted(covdata):
-        data = covdata[f]
-        filename = presentable_filename(f, root_filter=options.root_filter)
+    for fname in sorted(covdata):
+        filecov = covdata[fname]
+        filename = presentable_filename(fname, root_filter=options.root_filter)
         if "/" in filename:
             directory, fname = filename.rsplit("/", 1)
         else:
@@ -57,45 +57,36 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
                 CoverageStat.new_empty(),
             ),
         )
-        c = etree.Element("class")
-        lines = etree.SubElement(c, "lines")
+        class_elem = etree.Element("class")
+        lines = etree.SubElement(class_elem, "lines")
 
-        # TODO should use FileCoverage.branch_coverage() calculation
-        class_branch = CoverageStat(0, 0)
-        for lineno in sorted(data.lines):
-            line_cov = data.lines[lineno]
-            if not line_cov.is_reportable:
-                continue
+        for linecov in filecov.lines.values():
+            if linecov.is_reportable:
+                lines.append(_line_element(linecov))
 
-            b = line_cov.branch_coverage()
-            if b.total:
-                class_branch += b
+        stats = SummarizedStats.from_file(filecov)
 
-            lines.append(_line_element(line_cov))
-
-        stats = SummarizedStats.from_file(data)
-
-        className = fname.replace(".", "_")
-        c.set("name", className)
-        c.set(
+        class_name = fname.replace(".", "_")
+        class_elem.set("name", class_name)
+        class_elem.set(
             "sourcefilename", force_unix_separator(os.path.join(options.root, filename))
         )
-        c.append(_counter_element("LINE", stats.line))
-        c.append(_counter_element("BRANCH", class_branch))
+        class_elem.append(_counter_element("LINE", stats.line))
+        class_elem.append(_counter_element("BRANCH", stats.branch))
 
-        package.classes_xml[className] = c
+        package.classes_xml[class_name] = class_elem
         package.line += stats.line
-        package.branch += class_branch
+        package.branch += stats.branch
 
-    for packageName in sorted(packages):
-        packageData = packages[packageName]
-        package = etree.Element("package")
-        root.append(package)
-        for className in sorted(packageData.classes_xml):
-            package.append(packageData.classes_xml[className])
-        package.append(_counter_element("LINE", packageData.line))
-        package.append(_counter_element("BRANCH", packageData.branch))
-        package.set("name", packageName.replace("/", "."))
+    for package_name in sorted(packages):
+        package_data = packages[package_name]
+        package_elem = etree.Element("package")
+        root.append(package_elem)
+        for class_name in sorted(package_data.classes_xml):
+            package_elem.append(package_data.classes_xml[class_name])
+        package_elem.append(_counter_element("LINE", package_data.line))
+        package_elem.append(_counter_element("BRANCH", package_data.branch))
+        package_elem.set("name", package_name.replace("/", "."))
 
     root.append(_counter_element("LINE", stats.line))
     root.append(_counter_element("BRANCH", stats.branch))
@@ -119,24 +110,24 @@ class PackageData:
     branch: CoverageStat
 
 
-def _counter_element(type: str, stat: CoverageStat) -> etree.Element:
+def _counter_element(element_type: str, stat: CoverageStat) -> etree.Element:
     """format a CoverageStat as a string in range 0.0 to 1.0 inclusive"""
-    elem = etree.Element("counter")
-    elem.set("type", type)
-    elem.set("missed", str(stat.total - stat.covered))
-    elem.set("covered", str(stat.covered))
+    counter_elem = etree.Element("counter")
+    counter_elem.set("type", element_type)
+    counter_elem.set("missed", str(stat.total - stat.covered))
+    counter_elem.set("covered", str(stat.covered))
 
-    return elem
+    return counter_elem
 
 
 def _line_element(line: LineCoverage) -> etree.Element:
-    branch = line.branch_coverage()
+    stat = line.branch_coverage()
 
-    elem = etree.Element("line")
-    elem.set("nr", str(line.lineno))
+    line_elem = etree.Element("line")
+    line_elem.set("nr", str(line.lineno))
 
-    if branch.total:
-        elem.set("mb", str(branch.total - branch.covered))
-        elem.set("cb", str(branch.covered))
+    if stat.total:
+        line_elem.set("mb", str(stat.total - stat.covered))
+        line_elem.set("cb", str(stat.covered))
 
-    return elem
+    return line_elem

@@ -95,12 +95,12 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
                 if linecov.is_reportable:
                     branches += len(linecov.branches)
                     for branch in sorted(linecov.branches):
-                        branch_coverage = linecov.branches[branch]
-                        if branch_coverage.count:
+                        branchcov = linecov.branches[branch]
+                        if branchcov.count:
                             branch_hits += 1
                         # BRDA:<line_number>,[<exception>]<block>,<branch>,<taken>
                         fh.write(
-                            f"BRDA:{lineno},{'e' if branch_coverage.throw else ''}{branch_coverage.blockno_or_0},{branch},{branch_coverage.count if branch_coverage.count else '-'}\n"
+                            f"BRDA:{lineno},{'e' if branchcov.throw else ''}{branchcov.blockno_or_0},{branch},{branchcov.count if branchcov.count else '-'}\n"
                         )
 
             # BRF:<number of branches found>

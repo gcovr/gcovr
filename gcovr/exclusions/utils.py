@@ -142,12 +142,10 @@ def apply_exclusion_ranges(
         linecov.decision = None
 
         if line_is_excluded(linecov.lineno):
-            linecov.excluded = True
-            linecov.branches = {}
-            linecov.count = 0
+            linecov.exclude()
 
         elif branch_is_excluded(linecov.lineno):
-            linecov.branches = {}
+            linecov.branches.clear()
 
     for function in filecov.functions.values():
         for lineno in function.excluded.keys():

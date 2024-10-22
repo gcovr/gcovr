@@ -116,8 +116,8 @@ def remove_calls(filecov: FileCoverage):
     """Remove the information about calls."""
 
     # Clear the calls of each line.
-    for line in filecov.lines.values():
-        line.calls.clear()
+    for linecov in filecov.lines.values():
+        linecov.calls.clear()
 
 
 def remove_internal_functions(filecov: FileCoverage):
@@ -141,9 +141,7 @@ def remove_internal_functions(filecov: FileCoverage):
                     linecov.function_name is not None
                     and linecov.function_name == function.name
                 ):
-                    linecov.excluded = True
-                    linecov.branches = {}
-                    linecov.count = 0
+                    linecov.exclude()
 
 
 def _function_can_be_excluded(name: str) -> bool:
@@ -168,14 +166,14 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
     """Remove branches annotated as "throw"."""
     for linecov in filecov.lines.values():
         # iterate over shallow copy
-        for branch_id, branch in list(linecov.branches.items()):
-            if branch.throw:
+        for branchno, branchcov in list(linecov.branches.items()):
+            if branchcov.throw:
                 LOGGER.debug(
                     "Excluding unreachable branch on line %d file %s: detected as exception-only code",
                     linecov.lineno,
                     filecov.filename,
                 )
-                linecov.branches.pop(branch_id)
+                linecov.branches.pop(branchno)
 
 
 def remove_functions(filecov: FileCoverage, patterns: List[re.Pattern]) -> None:

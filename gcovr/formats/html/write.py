@@ -917,7 +917,7 @@ def dict_from_stat(
 
 
 def source_row(
-    lineno: int, source: str, line_cov: Optional[LineCoverage]
+    lineno: int, source: str, linecov: Optional[LineCoverage]
 ) -> Dict[str, Any]:
     linebranch = None
     linecondition = None
@@ -925,23 +925,23 @@ def source_row(
     linecall = None
     linecount = ""
     covclass = ""
-    if line_cov:
-        if line_cov.is_excluded:
+    if linecov:
+        if linecov.is_excluded:
             covclass = "excludedLine"
-        elif line_cov.is_covered:
-            linebranch = source_row_branch(line_cov.branches)
+        elif linecov.is_covered:
+            linebranch = source_row_branch(linecov.branches)
             covclass = (
                 "coveredLine"
                 if linebranch is None or linebranch["taken"] == linebranch["total"]
                 else "partialCoveredLine"
             )
-            linecondition = source_row_condition(line_cov.conditions)
-            linedecision = source_row_decision(line_cov.decision)
-            linecount = line_cov.count
-        elif line_cov.is_uncovered:
+            linecondition = source_row_condition(linecov.conditions)
+            linedecision = source_row_decision(linecov.decision)
+            linecount = linecov.count
+        elif linecov.is_uncovered:
             covclass = "uncoveredLine"
-            linedecision = source_row_decision(line_cov.decision)
-        linecall = source_row_call(line_cov.calls)
+            linedecision = source_row_decision(linecov.decision)
+        linecall = source_row_call(linecov.calls)
     return {
         "lineno": lineno,
         "source": source,

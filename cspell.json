@@ -25,7 +25,7 @@
         "bazel",
         "bdist",
         "blockno",
-        "branchcoverage",
+        "branchcov",
         "branchno",
         "bugtracker",
         "callno",

@@ -50,12 +50,12 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     sources = etree.SubElement(root, "sources")
 
     # Generate the coverage output (on a per-package basis)
-    packageXml = etree.SubElement(root, "packages")
+    package_xml = etree.SubElement(root, "packages")
     packages: Dict[str, PackageData] = {}
 
-    for f in sorted(covdata):
-        data = covdata[f]
-        filename = presentable_filename(f, root_filter=options.root_filter)
+    for fname in sorted(covdata):
+        filecov = covdata[fname]
+        filename = presentable_filename(fname, root_filter=options.root_filter)
         if "/" in filename:
             directory, fname = filename.rsplit("/", 1)
         else:
@@ -69,13 +69,13 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
                 CoverageStat.new_empty(),
             ),
         )
-        c = etree.Element("class")
+        class_elem = etree.Element("class")
         # The Cobertura DTD requires a methods section, which isn't
         # trivial to get from gcov (so we will leave it blank)
-        methods = etree.SubElement(c, "methods")
-        for functioncov in data.functions.values():
+        methods_elem = etree.SubElement(class_elem, "methods")
+        for functioncov in filecov.functions.values():
             if functioncov.name is not None:
-                filtered_filecov = data.filter_for_function(functioncov)
+                filtered_filecov = filecov.filter_for_function(functioncov)
                 function_stats = SummarizedStats.from_file(filtered_filecov)
                 name = functioncov.demangled_name
                 if "(" in name:
@@ -83,53 +83,47 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
                     signature = functioncov.demangled_name[len(name) :]
                 else:
                     signature = "()"
-                method = etree.SubElement(methods, "method")
-                method.set("name", name)
-                method.set("signature", signature)
-                method.set("line-rate", _rate(function_stats.line))
-                method.set("branch-rate", _rate(function_stats.branch))
-                method.set("complexity", "0.0")
-                lines = etree.SubElement(method, "lines")
-                for line_cov in filtered_filecov.lines.values():
-                    if line_cov.is_reportable:
-                        lines.append(_line_element(line_cov))
+                method_elem = etree.SubElement(methods_elem, "method")
+                method_elem.set("name", name)
+                method_elem.set("signature", signature)
+                method_elem.set("line-rate", _rate(function_stats.line))
+                method_elem.set("branch-rate", _rate(function_stats.branch))
+                method_elem.set("complexity", "0.0")
+                lines = etree.SubElement(method_elem, "lines")
+                for linecov in filtered_filecov.lines.values():
+                    if linecov.is_reportable:
+                        lines.append(_line_element(linecov))
 
-        lines = etree.SubElement(c, "lines")
+        lines = etree.SubElement(class_elem, "lines")
 
-        # TODO should use FileCoverage.branch_coverage() calculation
-        class_branch = CoverageStat.new_empty()
-        for line_cov in data.lines.values():
-            if line_cov.is_reportable:
-                b = line_cov.branch_coverage()
-                if b.total:
-                    class_branch += b
+        for linecov in filecov.lines.values():
+            if linecov.is_reportable:
+                lines.append(_line_element(linecov))
 
-                lines.append(_line_element(line_cov))
+        stats = SummarizedStats.from_file(filecov)
 
-        stats = SummarizedStats.from_file(data)
+        class_name = fname.replace(".", "_")
+        class_elem.set("name", class_name)
+        class_elem.set("filename", filename)
+        class_elem.set("line-rate", _rate(stats.line))
+        class_elem.set("branch-rate", _rate(stats.branch))
+        class_elem.set("complexity", "0.0")
 
-        className = fname.replace(".", "_")
-        c.set("name", className)
-        c.set("filename", filename)
-        c.set("line-rate", _rate(stats.line))
-        c.set("branch-rate", _rate(class_branch))
-        c.set("complexity", "0.0")
-
-        package.classes_xml[className] = c
+        package.classes_xml[class_name] = class_elem
         package.line += stats.line
-        package.branch += class_branch
+        package.branch += stats.branch
 
-    for packageName in sorted(packages):
-        packageData = packages[packageName]
-        package = etree.Element("package")
-        packageXml.append(package)
-        classes = etree.SubElement(package, "classes")
-        for className in sorted(packageData.classes_xml):
-            classes.append(packageData.classes_xml[className])
-        package.set("name", packageName.replace("/", "."))
-        package.set("line-rate", _rate(packageData.line))
-        package.set("branch-rate", _rate(packageData.branch))
-        package.set("complexity", "0.0")
+    for package_name in sorted(packages):
+        package_data = packages[package_name]
+        package_elem = etree.Element("package")
+        package_xml.append(package_elem)
+        classes = etree.SubElement(package_elem, "classes")
+        for class_name in sorted(package_data.classes_xml):
+            classes.append(package_data.classes_xml[class_name])
+        package_elem.set("name", package_name.replace("/", "."))
+        package_elem.set("line-rate", _rate(package_data.line))
+        package_elem.set("branch-rate", _rate(package_data.branch))
+        package_elem.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
     etree.SubElement(sources, "source").text = force_unix_separator(
@@ -164,32 +158,32 @@ def _rate(stat: CoverageStat) -> str:
     return str(covered / total)
 
 
-def _line_element(line: LineCoverage) -> etree.Element:
-    branch = line.branch_coverage()
+def _line_element(linecov: LineCoverage) -> etree.Element:
+    stat = linecov.branch_coverage()
 
-    elem = etree.Element("line")
-    elem.set("number", str(line.lineno))
-    elem.set("hits", str(line.count))
+    line_elem = etree.Element("line")
+    line_elem.set("number", str(linecov.lineno))
+    line_elem.set("hits", str(linecov.count))
 
-    if not branch.total:
-        elem.set("branch", "false")
-    elif branch.percent is None:
+    if not stat.total:
+        line_elem.set("branch", "false")
+    elif stat.percent is None:
         raise AssertionError("Percent coverage must not be 'None'.")
     else:
-        elem.set("branch", "true")
-        elem.set(
+        line_elem.set("branch", "true")
+        line_elem.set(
             "condition-coverage",
-            f"{int(branch.percent)}% ({branch.covered}/{branch.total})",
+            f"{int(stat.percent)}% ({stat.covered}/{stat.total})",
         )
-        elem.append(_conditions_element(branch))
+        line_elem.append(_conditions_element(stat))
 
-    return elem
+    return line_elem
 
 
 def _conditions_element(branch: CoverageStat) -> etree.Element:
-    elem = etree.Element("conditions")
-    elem.append(_condition_element(branch))
-    return elem
+    conditions_elem = etree.Element("conditions")
+    conditions_elem.append(_condition_element(branch))
+    return conditions_elem
 
 
 def _condition_element(branch: CoverageStat) -> etree.Element:
@@ -197,8 +191,8 @@ def _condition_element(branch: CoverageStat) -> etree.Element:
     if coverage is None:
         raise AssertionError("Percent coverage must not be 'None'.")
 
-    elem = etree.Element("condition")
-    elem.set("number", "0")
-    elem.set("type", "jump")
-    elem.set("coverage", f"{int(coverage)}%")
-    return elem
+    condition_elem = etree.Element("condition")
+    condition_elem.set("number", "0")
+    condition_elem.set("type", "jump")
+    condition_elem.set("coverage", f"{int(coverage)}%")
+    return condition_elem

@@ -31,34 +31,28 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     root = etree.Element("coverage")
     root.set("version", "1")
 
-    for f in sorted(covdata):
-        data = covdata[f]
-        filename = presentable_filename(f, root_filter=options.root_filter)
+    for fname in sorted(covdata):
+        filecov = covdata[fname]
+        filename = presentable_filename(fname, root_filter=options.root_filter)
 
-        fileNode = etree.Element("file")
-        fileNode.set("path", filename)
+        file_elem = etree.Element("file")
+        file_elem.set("path", filename)
 
-        for lineno in sorted(data.lines):
-            line_cov = data.lines[lineno]
-            if not line_cov.is_covered and not line_cov.is_uncovered:
-                continue
+        for lineno in sorted(filecov.lines):
+            linecov = filecov.lines[lineno]
+            if linecov.is_reportable:
+                line_elem = etree.Element("lineToCover")
+                line_elem.set("lineNumber", str(lineno))
+                line_elem.set("covered", "true" if linecov.is_covered else "false")
 
-            L = etree.Element("lineToCover")
-            L.set("lineNumber", str(lineno))
-            if line_cov.is_covered:
-                L.set("covered", "true")
-            else:
-                L.set("covered", "false")
+                if linecov.branches:
+                    stat = linecov.branch_coverage()
+                    line_elem.set("branchesToCover", str(stat.total))
+                    line_elem.set("coveredBranches", str(stat.covered))
 
-            branches = line_cov.branches
-            if branches:
-                b = line_cov.branch_coverage()
-                L.set("branchesToCover", str(b.total))
-                L.set("coveredBranches", str(b.covered))
+                file_elem.append(line_elem)
 
-            fileNode.append(L)
-
-        root.append(fileNode)
+        root.append(file_elem)
 
     with open_binary_for_writing(output_file, "sonarqube.xml") as fh:
         fh.write(etree.tostring(root, encoding="UTF-8", xml_declaration=True))

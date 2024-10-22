@@ -179,22 +179,22 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     _write_coveralls_result(json_dict, output_file, options.coveralls_pretty)
 
 
-def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]:
+def _make_source_file(filecov: FileCoverage, options) -> Dict[str, Any]:
     # Object with Coveralls file details
     source_file = {}
 
     # Isolate relative file path
     relative_file_path = presentable_filename(
-        coverage_details.filename,
+        filecov.filename,
         root_filter=options.root_filter,
     )
     source_file["name"] = relative_file_path
 
     # Generate md5 hash of file contents
-    if coverage_details.filename.endswith("<stdin>"):
+    if filecov.filename.endswith("<stdin>"):
         total_line_count = None
     else:
-        with open(coverage_details.filename, "rb") as file_handle:
+        with open(filecov.filename, "rb") as file_handle:
             contents = file_handle.read()
 
         source_file["source_digest"] = get_md5_hexdigest(contents)
@@ -203,20 +203,16 @@ def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]
     # Initialize coverage array and load with line coverage data
     source_file["coverage"] = []
     # source_file['branches'] = []
-    for line in sorted(coverage_details.lines):
+    for line in sorted(filecov.lines):
         # Extract LineCoverage object
-        line_details = coverage_details.lines[line]
+        linecov = filecov.lines[line]
 
         # Comment lines are not collected in `covdata`, but must
         # be reported to coveralls (fill missing lines)
         _extend_with_none(source_file["coverage"], line - 1)
 
-        if not line_details.is_reportable:
-            source_file["coverage"].append(None)
-            continue
-
         # Record line counts at corresponding list index
-        source_file["coverage"].append(line_details.count)
+        source_file["coverage"].append(linecov.count if linecov.is_reportable else None)
 
         # Record branch information (INCOMPLETE/OMITTED)
         # branch_details = line_details.branches
