@@ -104,6 +104,10 @@
                     "execution_count": 2,
                     "blocks_percent": 44.0
                 }
+            ],
+            "gcovr/data_sources": [
+                "data/main.case_2.gcov",
+                "main.case_1.gcov"
             ]
         }
     ]
