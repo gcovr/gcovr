@@ -111,10 +111,11 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             lines_covered = 0
             for lineno in sorted_lines:
                 line_coverage = covdata[key].lines[lineno]
-                if line_coverage.count:
-                    lines_covered += 1
-                # DA:<line number>,<execution count>[,<checksum>]
-                fh.write(f"DA:{lineno},{line_coverage.count},{line_coverage.md5}\n")
+                if line_coverage.is_reportable:
+                    if line_coverage.count:
+                        lines_covered += 1
+                    # DA:<line number>,<execution count>[,<checksum>]
+                    fh.write(f"DA:{lineno},{line_coverage.count},{line_coverage.md5}\n")
 
             # LH:<number of lines with a non\-zero execution count>
             fh.write(f"LH:{lines_covered}\n")

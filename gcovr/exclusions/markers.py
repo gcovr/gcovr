@@ -26,7 +26,7 @@ import logging
 import re
 
 from .utils import (
-    _make_is_in_any_range_inclusive,
+    make_is_in_any_range_inclusive,
     apply_exclusion_ranges,
     get_function_exclude_ranges,
     get_functions_by_line,
@@ -97,7 +97,7 @@ def _process_exclude_branch_source(
     *,
     exclude_pattern_prefix: str,
     filecov: Optional[FileCoverage] = None,
-) -> Tuple[ExclusionPredicate, ExclusionPredicate]:
+) -> None:
     """
     Scan through all lines to find source branch exclusion markers.
     """
@@ -370,7 +370,7 @@ def _find_excluded_ranges(
             f"Exclusion ranges for pattern {excl_pattern!r}: {exclude_ranges!s}"
         )
 
-        return _make_is_in_any_range_inclusive(exclude_ranges)
+        return make_is_in_any_range_inclusive(exclude_ranges)
 
     return (
         find_range_impl(exclude_lines_by_custom_pattern, _EXCLUDE_LINE_WORD),
