@@ -274,12 +274,15 @@ def merge_line(
 
     left.count += right.count
     left.excluded |= right.excluded
-    left.branches = _merge_dict(left.branches, right.branches, merge_branch, options)
-    left.conditions = _merge_dict(
-        left.conditions, right.conditions, merge_condition, options
-    )
-    left.decision = merge_decision(left.decision, right.decision, options)
-    left.calls = _merge_dict(left.calls, right.calls, merge_call, options)
+    try:
+        left.branches = _merge_dict(left.branches, right.branches, merge_branch, options)
+        left.conditions = _merge_dict(
+            left.conditions, right.conditions, merge_condition, options
+        )
+        left.decision = merge_decision(left.decision, right.decision, options)
+        left.calls = _merge_dict(left.calls, right.calls, merge_call, options)
+    except AssertionError as exc:
+        raise AssertionError(f"{exc} while merging data for line {left.lineno}.")
 
     return left
 
@@ -485,7 +488,7 @@ def merge_condition(
 
     if left.count != right.count:
         raise AssertionError(
-            f"The number of conditions must be equal, got {left.count} and {right.count}."
+            f"The number of conditions must be equal, got {left.count} and {right.count}"
         )
 
     left.not_covered_false = sorted(
@@ -582,7 +585,7 @@ def merge_call(
     """
     if left.callno != right.callno:
         raise AssertionError(
-            f"Call number must be equal, got {left.callno} and {right.callno}."
+            f"Call number must be equal, got {left.callno} and {right.callno}"
         )
     left.covered |= right.covered
     return left
