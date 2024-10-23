@@ -48,7 +48,7 @@ The insertion functions return the coverage structure that is saved in the targe
 which may not be the same as the input value.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 from typing import Callable, Optional, TypeVar, Dict
 from .coverage import (
@@ -114,8 +114,8 @@ CONDITION_FOLD_MERGE_OPTIONS = MergeConditionOptions(
 
 @dataclass
 class MergeOptions:
-    func_opts: MergeFunctionOptions = MergeFunctionOptions()
-    cond_opts: MergeConditionOptions = MergeConditionOptions()
+    func_opts: MergeFunctionOptions = field(default_factory=MergeFunctionOptions)
+    cond_opts: MergeConditionOptions = field(default_factory=MergeConditionOptions)
 
 
 DEFAULT_MERGE_OPTIONS = MergeOptions()
