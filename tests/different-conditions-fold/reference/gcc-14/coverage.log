@@ -1,0 +1,29 @@
+(DEBUG) File system is case sensitive.
+(DEBUG) Filters for --root: (1)
+(DEBUG)  - re.compile('^/mnt/dev/github/dlegaultbbry/gcovr/tests/different\\-conditions\\-fold/')
+(DEBUG) Filters for --filter: (1)
+(DEBUG)  - DirectoryPrefixFilter(/mnt/dev/github/dlegaultbbry/gcovr/tests/different\-conditions\-fold/)
+(DEBUG) Filters for --exclude: (0)
+(DEBUG) Filters for --include: (0)
+(DEBUG) Filters for --gcov-filter: (1)
+(DEBUG)  - AlwaysMatchFilter()
+(DEBUG) Filters for --gcov-exclude: (0)
+(DEBUG) Filters for --gcov-exclude-directories: (0)
+(DEBUG) Filters for --exclude-function: (0)
+(INFO) Reading coverage data...
+(DEBUG) Processing JSON file: coverage.json
+(DEBUG) Check if /mnt/dev/github/dlegaultbbry/gcovr/tests/different-conditions-fold/main.c is included...
+(DEBUG)   Filter DirectoryPrefixFilter(/mnt/dev/github/dlegaultbbry/gcovr/tests/different\-conditions\-fold/) matched for path /mnt/dev/github/dlegaultbbry/gcovr/tests/different-conditions-fold/main.c.
+(INFO) Writing coverage report...
+(DEBUG) Common prefix path is '/mnt/dev/github/dlegaultbbry/gcovr/tests/different-conditions-fold'
+(DEBUG) Common relative prefix path is './'
+------------------------------------------------------------------------------
+                           GCC Code Coverage Report
+Directory: .
+------------------------------------------------------------------------------
+File                                       Lines    Exec  Cover   Missing
+------------------------------------------------------------------------------
+main.c                                         7       6    85%   5
+------------------------------------------------------------------------------
+TOTAL                                          7       6    85%
+------------------------------------------------------------------------------
