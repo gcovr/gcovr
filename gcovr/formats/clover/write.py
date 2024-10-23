@@ -57,9 +57,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     # Generate the coverage output (on a per-package basis)
     packages: Dict[str, PackageData] = {}
 
-    for f in sorted(covdata):
-        data = covdata[f]
-        filename = presentable_filename(f, root_filter=options.root_filter)
+    for fname in sorted(covdata):
+        filecov = covdata[fname]
+        filename = presentable_filename(fname, root_filter=options.root_filter)
         if "/" in filename:
             directory, fname = filename.rsplit("/", 1)
         else:
@@ -79,14 +79,13 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 
         ncloc = 0
         covered_elements = 0
-        for lineno in sorted(data.lines):
-            line_cov = data.lines[lineno]
-            if not line_cov.is_reportable:
-                continue
-            ncloc += 1
-            if line_cov.is_covered:
-                covered_elements += 1
-            file_elem.append(_line_element(line_cov))
+        for lineno in sorted(filecov.lines):
+            linecov = filecov.lines[lineno]
+            if linecov.is_reportable:
+                ncloc += 1
+                if linecov.is_covered:
+                    covered_elements += 1
+                file_elem.append(_line_element(linecov))
 
         file_elem.set("name", fname)
         file_elem.set("path", filename)
@@ -137,22 +136,18 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     # WTH is this needed???
     testproject_elem = etree.SubElement(root, "testproject")
     testproject_elem.set("timestamp", timestamp)
-    testproject_metrics = _metrics_element()
-    testproject_elem.append(testproject_metrics)
+    testproject_elem.append(_metrics_element())
     package_elem = etree.SubElement(testproject_elem, "package")
     package_elem.set("name", "dummy")
-    package_metrics = _metrics_element()
-    package_elem.append(package_metrics)
+    package_elem.append(_metrics_element())
     file_elem = etree.Element("file")
     file_elem.set("name", "dummy")
     file_elem.set("path", "dummy")
     package_elem.append(file_elem)
-    file_metrics = _metrics_element()
-    file_elem.append(file_metrics)
+    file_elem.append(_metrics_element())
     class_elem = etree.SubElement(file_elem, "class")
     class_elem.set("name", f"id${get_md5_hexdigest(b'dummy')}")
-    class_metrics = _metrics_element()
-    class_elem.append(class_metrics)
+    class_elem.append(_metrics_element())
 
     with open_binary_for_writing(output_file, "clover.xml") as fh:
         fh.write(
@@ -200,10 +195,10 @@ def _metrics_element() -> etree.Element:
     return elem
 
 
-def _line_element(line: LineCoverage) -> etree.Element:
+def _line_element(linecov: LineCoverage) -> etree.Element:
     elem = etree.Element("line")
-    elem.set("num", str(line.lineno))
+    elem.set("num", str(linecov.lineno))
     elem.set("type", "stmt")
-    elem.set("count", str(line.count))
+    elem.set("count", str(linecov.count))
 
     return elem

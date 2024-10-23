@@ -333,10 +333,12 @@ def test_gcov_8(capsys, source_filename):
     )
 
     uncovered_lines = [
-        line.lineno for line in coverage.lines.values() if line.is_uncovered
+        linecov.lineno for linecov in coverage.lines.values() if linecov.is_uncovered
     ]
     uncovered_branches = [
-        line.lineno for line in coverage.lines.values() if line.has_uncovered_branch
+        linecov.lineno
+        for linecov in coverage.lines.values()
+        if linecov.has_uncovered_branch
     ]
     assert uncovered_lines == expected_uncovered_lines
     assert uncovered_branches == expected_uncovered_branches
@@ -367,10 +369,14 @@ def test_unknown_tags(caplog, ignore_errors):
         coverage = run_the_parser()
 
         uncovered_lines = [
-            line.lineno for line in coverage.lines.values() if line.is_uncovered
+            linecov.lineno
+            for linecov in coverage.lines.values()
+            if linecov.is_uncovered
         ]
         uncovered_branches = [
-            line.lineno for line in coverage.lines.values() if line.has_uncovered_branch
+            linecov.lineno
+            for linecov in coverage.lines.values()
+            if linecov.has_uncovered_branch
         ]
         assert uncovered_lines == []
         assert uncovered_branches == []
@@ -562,7 +568,9 @@ def test_branch_exclusion(flags):
     )
 
     covered_branches = {
-        branch for line in coverage.lines.values() for branch in line.branches.keys()
+        branchcov
+        for linecov in coverage.lines.values()
+        for branchcov in linecov.branches.keys()
     }
 
     assert covered_branches == expected_covered_branches
@@ -619,7 +627,9 @@ def test_negative_line_count_ignored(caplog, flag):
         ignore_parse_errors=set([flag]),
     )
 
-    covered_lines = {line.lineno for line in coverage.lines.values() if line.is_covered}
+    covered_lines = {
+        linecov.lineno for linecov in coverage.lines.values() if linecov.is_covered
+    }
 
     assert covered_lines == {1, 3}
 
@@ -668,10 +678,10 @@ def test_negative_branch_count_ignored():
     )
 
     covered_branches = {
-        branch
-        for line in coverage.lines.values()
-        for branch in line.branches.keys()
-        if line.branches[branch].is_covered
+        branchcov
+        for linecov in coverage.lines.values()
+        for branchcov in linecov.branches.keys()
+        if linecov.branches[branchcov].is_covered
     }
 
     assert covered_branches == {1, 3}
@@ -725,7 +735,9 @@ def test_suspicious_line_count_ignored(caplog, flag):
         ignore_parse_errors=set([flag]),
     )
 
-    covered_lines = {line.lineno for line in coverage.lines.values() if line.is_covered}
+    covered_lines = {
+        linecov.lineno for linecov in coverage.lines.values() if linecov.is_covered
+    }
 
     assert covered_lines == {1, 3}
 
@@ -774,10 +786,10 @@ def test_suspicious_branch_count_ignored():
     )
 
     covered_branches = {
-        branch
-        for line in coverage.lines.values()
-        for branch in line.branches.keys()
-        if line.branches[branch].is_covered
+        branchcov
+        for linecov in coverage.lines.values()
+        for branchcov in linecov.branches.keys()
+        if linecov.branches[branchcov].is_covered
     }
 
     assert covered_branches == {1, 3}
@@ -849,8 +861,8 @@ def test_noncode_lines():
         )
         apply_all_exclusions(coverage, lines=source, options=options)
 
-        for line_data in coverage.lines.values():
-            return f"normal:{line_data.count}"
+        for linecov in coverage.lines.values():
+            return f"normal:{linecov.count}"
 
         return "noncode"
 

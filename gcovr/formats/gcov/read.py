@@ -225,7 +225,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
 
         file_cov = FileCoverage(fname, data_fname)
         for line in file["lines"]:
-            line_cov = insert_line_coverage(
+            linecov = insert_line_coverage(
                 file_cov,
                 LineCoverage(
                     line["line_number"],
@@ -237,7 +237,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
             )
             for index, branch in enumerate(line["branches"]):
                 insert_branch_coverage(
-                    line_cov,
+                    linecov,
                     index,
                     BranchCoverage(
                         branch["source_block_id"],
@@ -249,7 +249,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                 )
             for index, condition in enumerate(line.get("conditions", [])):
                 insert_condition_coverage(
-                    line_cov,
+                    linecov,
                     index,
                     ConditionCoverage(
                         condition["count"],

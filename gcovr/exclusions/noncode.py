@@ -49,7 +49,7 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: List[str]) -> N
             filecov.filename,
         )
 
-        linecov.branches = {}
+        linecov.branches.clear()
 
 
 def remove_noncode_lines(filecov: FileCoverage, *, lines: List[str]) -> None:
