@@ -651,7 +651,7 @@ GCOVR_CONFIG_OPTIONS = [
         ],
         default="strict",
         help=(
-            "The merge mode for functions coverage from different gcov files for same sourcefile."
+            "The merge mode for functions coverage from different gcov files for same sourcefile. "
             "Default is '{default!s}'."
         ),
     ),
@@ -666,7 +666,7 @@ GCOVR_CONFIG_OPTIONS = [
         ],
         default="strict",
         help=(
-            "The merge mode for condition coverage from different gcov files for same sourcefile."
+            "The merge mode for condition coverage from different gcov files for same sourcefile. "
             "Default is '{default!s}'."
         ),
     ),
