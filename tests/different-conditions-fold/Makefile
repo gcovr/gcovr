@@ -35,4 +35,4 @@ sonarqube: coverage.json
 
 clean:
 	rm -rf build1 build2
-	rm -f *.gc* coverage*.* cobertura*.* sonarqube*.* coveralls.json
+	rm -f *.gc* coverage*.* cobertura*.* sonarqube*.* coveralls.json main.c
