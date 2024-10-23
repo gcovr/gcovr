@@ -561,7 +561,7 @@ def merge_condition(
             raise AssertionError(
                 f"The number of conditions must be equal, got {left.count} and {right.count} while merging {context}.\n"
                 "\tYou can run gcovr with --merge-mode-conditions=MERGE_MODE.\n"
-                "\tThe available values for COMD_MERGE_MODE are described in the documentation."
+                "\tThe available values for MERGE_MODE are described in the documentation."
             )
 
     left.not_covered_false = sorted(
