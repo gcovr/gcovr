@@ -16,6 +16,7 @@ New features and notable changes:
 - Add :option:`--include` to search files in search paths which should be added to report. (:issue:`998`)
 - Add option to generate LCOV format produced by version 1.x of LCOV tool. (:issue:`1001`)
 - Extend logging for data merge errors with info about the data sources. (:issue:`1010`)
+- Add condition coverage merge mode option :option:`--merge-mode-conditions` (:issue:`1009`)
 
 Bug fixes and small improvements:
 
