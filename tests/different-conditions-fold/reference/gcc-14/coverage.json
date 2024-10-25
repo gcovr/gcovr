@@ -57,8 +57,7 @@
                         }
                     ],
                     "block_ids": [
-                        2,
-                        3
+                        2
                     ],
                     "gcovr/md5": "c53e534dde3abf2f91196ca7d46c08c4"
                 },
@@ -68,7 +67,7 @@
                     "count": 0,
                     "branches": [],
                     "block_ids": [
-                        4
+                        3
                     ],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
                 },
@@ -78,7 +77,7 @@
                     "count": 2,
                     "branches": [],
                     "block_ids": [
-                        5
+                        4
                     ],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
                 },

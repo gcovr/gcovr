@@ -7,6 +7,7 @@ all:
 
 run: json txt lcov cobertura html sonarqube coveralls
 
+coverage.json:
 	cd build1 ; ./testcase
 	cd build2 ; ./testcase
 	$(GCOVR) --verbose --merge-mode-conditions=fold --json-pretty --json coverage.json
