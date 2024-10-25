@@ -26,6 +26,8 @@ Bug fixes and small improvements:
 
 Documentation:
 
+- Update documentation for developing with Docker. (:issue:`1013`)
+
 Internal changes:
 
 - Add MacOs 15 and clang-16 to the GitHub test workflow. (:issue:`1004`)
