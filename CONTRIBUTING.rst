@@ -402,47 +402,57 @@ Run tests with Docker
 ~~~~~~~~~~~~~~~~~~~~~
 
 If you can't set up a toolchain locally, you can run the QA process via Docker.
-First, build the container image:
+First, build the container images:
 
 .. code:: bash
 
-    python3 -m nox --session docker_build
+    python3 -m nox -s docker_build
 
 Then, run the container, which executes ``nox`` within the container:
 
 .. code:: bash
 
-    python3 -m nox --session docker_run -s qa
+    python3 -m nox -s docker_run
 
 Or to build and run the container in one step:
 
 .. code:: bash
 
-    python3 -m nox --session docker_qa
+    python3 -m nox -s docker
 
 You can select the gcc version to use inside the docker by setting the environment
 variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12,
-gcc-13, gcc-14, clang-10, clang-13, or clang-14 or you can build and run the container with:
+gcc-13, gcc-14, clang-10, clang-13, or clang-14 or you can build and run the
+container with a specific version:
 
 .. code:: bash
 
-    python3 -m nox --session 'docker_compiler(gcc-9)'
+    python3 -m nox -s 'docker_compiler(gcc-9)'
 
-To run a specific session you can use the session ``docker_compiler``
+To run a specific session you can use the ``docker_compiler`` sessions
 and give the arguments to the ``nox`` executed inside the container
 after a ``--`` :
 
 .. code:: bash
 
-    python3 -m nox --session 'docker_compiler(gcc-9)' -- -s tests
+    python3 -m nox -s 'docker_compiler(gcc-9)' -- -rs tests
 
 You can also use the compiler 'all' to run the tests for all compiler versions,
 'gcc' to only use the ``gcc`` versions, or 'clang' to use ``clang`` versions.
-A useful command to update all the reference files is :
+
+If you run the ``tests`` session inside the container you can add also
+additional pytest arguments.
+A useful command to update all the reference files is:
 
 .. code:: bash
 
-    python3 -m nox --session 'docker_compiler(all)' -- -s tests -- --update_reference
+    python3 -m nox --s 'docker_compiler(all)' -- -rs tests -- --update_reference
+
+or only for the tests containing ``simple1`` in the name:
+
+.. code:: bash
+
+    python3 -m nox --s 'docker_compiler(all)' -- -rs tests -- --update_reference -k 'simple1'
 
 .. _devcontainer:
 
