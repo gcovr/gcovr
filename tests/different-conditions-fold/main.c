@@ -1,3 +1,7 @@
+#include <stdio.h>
+
+int foo(int param, int param2) {
+  if (param != 0) {
      return 1;
   } else {
      return 0;

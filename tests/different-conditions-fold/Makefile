@@ -1,16 +1,13 @@
 include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
-	mkdir -p build1 build2
-	cd build1 ; cat ../main_hdr.c ../main1.c ../main_ftr.c > ../main.c ; $(CC) $(CXXFLAGS) ../main.c -o testcase
-	cd build2 ; cat ../main_hdr.c ../main2.c ../main_ftr.c > ../main.c ; $(CC) $(CXXFLAGS) ../main.c -o testcase
+	python3 ../create_gz.py conditions-2.json conditions-2.gcov.json.gz
+	python3 ../create_gz.py conditions-4.json conditions-4.gcov.json.gz
 
 run: json txt lcov cobertura html sonarqube coveralls
 
 coverage.json:
-	cd build1 ; ./testcase
-	cd build2 ; ./testcase
-	$(GCOVR) --verbose --merge-mode-conditions=fold --json-pretty --json coverage.json
+	$(GCOVR) --gcov-use-existing --verbose --merge-mode-conditions=fold --json-pretty --json coverage.json
 
 json: coverage.json
 
@@ -33,5 +30,4 @@ sonarqube: coverage.json
 	$(GCOVR) -a $<  --sonarqube -o sonarqube.xml
 
 clean:
-	rm -rf build1 build2
-	rm -f *.gc* coverage*.* cobertura*.* sonarqube*.* coveralls.json main.c
+	rm -f *.gcov.json.gz coverage*.* cobertura*.* sonarqube*.* coveralls.json
