@@ -17,7 +17,9 @@
 #
 # ****************************************************************************
 
+from sys import exc_info
 from threading import Thread, Condition, RLock
+from traceback import print_exception
 from contextlib import contextmanager
 from queue import Queue, Empty
 from typing import Any, Callable, Dict
@@ -79,14 +81,12 @@ def worker(queue, context, pool):
         kwargs.update(context)
         try:
             work(*args, **kwargs)
-        except:  # noqa: E722
-            import sys
-
-            pool.raise_exception(sys.exc_info())
+        except:  # noqa: E722 # pylint: disable=bare-except
+            pool.raise_exception(exc_info())
             break
 
 
-class Workers(object):
+class Workers:
     """
     Create a thread-pool which can be given work via an
     add method and will run until work is complete
@@ -111,7 +111,7 @@ class Workers(object):
         when running it
         """
         with self.lock:
-            # I Do not push additional items if there is already an exception
+            # Do not push additional items if there is already an exception
             if self.exceptions:  # pragma: no cover
                 return
             self.q.put((work, args, kwargs))
@@ -160,18 +160,22 @@ class Workers(object):
             # Allow interrupts in Thread.join
             while w.is_alive():
                 w.join(timeout=1)
-        for exc_type, exc_obj, exc_trace in self.exceptions:
-            import traceback
+        self.workers = None
 
-            traceback.print_exception(exc_type, exc_obj, exc_trace)
+        for exc_type, exc_obj, exc_trace in self.exceptions:
+            print_exception(exc_type, exc_obj, exc_trace)
+
         if self.exceptions:
-            raise self.exceptions[0][1]
+            raise RuntimeError(
+                "Worker thread raised exception, workers canceled."
+            ) from None
         return self.contexts
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_val is not None:
-            self.drain()
-        self.wait()
+        if self.workers is not None:
+            raise AssertionError(
+                "Sanity check, you must call wait on the contextmanager to get the context of the workers."
+            )
