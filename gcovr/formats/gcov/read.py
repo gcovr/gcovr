@@ -100,7 +100,7 @@ def read_report(options: Options) -> CovData:
         lambda: {"covdata": dict(), "to_erase": set(), "options": options},
     ) as pool:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
-        for file_ in datafiles:
+        for file_ in sorted(datafiles):
             pool.add(process_file, file_)
         contexts = pool.wait()
 
