@@ -538,7 +538,7 @@ def merge_condition(
     if left.count != right.count:
         if options.cond_opts.merge_condition_fold:
             LOGGER.warning(
-                f"Condition counts are not equal, got {left.count} and {right.count}. "
+                f"Condition counts are not equal, got {right.count} and expected {left.count}. "
                 f"Reducing to {min(left.count, right.count)}."
             )
             if left.count > right.count:
@@ -559,7 +559,7 @@ def merge_condition(
                 right.count = left.count
         else:
             raise AssertionError(
-                f"The number of conditions must be equal, got {left.count} and {right.count} while merging {context}.\n"
+                f"The number of conditions must be equal, got {right.count} and expected {left.count} while merging {context}.\n"
                 "\tYou can run gcovr with --merge-mode-conditions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."
             )
