@@ -927,9 +927,10 @@ def test_pathologic_threads(threads):
             # Queue should be drained and exception raised
             exc_raised.set()
             pool.wait()
+            assert pool.workers is None, "Workers are removed."
 
     # Outer level catches correct exception
-    assert exc_info.value.args[0] == "Number == 0"
+    assert exc_info.value.args[0] == "Worker thread raised exception, workers canceled."
 
     # At most (threads - 1) appends can take place as the
     # first job throws an exception and every other thread

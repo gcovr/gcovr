@@ -1,4 +1,5 @@
 # Ignore output files
+coverage.log
 coverage*.txt
 *.html
 *.css

@@ -48,7 +48,7 @@ The insertion functions return the coverage structure that is saved in the targe
 which may not be the same as the input value.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 from typing import Callable, Optional, TypeVar, Dict
 from .coverage import (
@@ -74,7 +74,7 @@ class GcovrMergeAssertionError(AssertionError):
 
 
 @dataclass
-class MergeOptions:
+class MergeFunctionOptions:
     ignore_function_lineno: bool = False
     merge_function_use_line_zero: bool = None
     merge_function_use_line_min: bool = None
@@ -82,38 +82,68 @@ class MergeOptions:
     separate_function: bool = None
 
 
-DEFAULT_MERGE_OPTIONS = MergeOptions()
-FUNCTION_LINE_ZERO_MERGE_OPTIONS = MergeOptions(
+FUNCTION_STRICT_MERGE_OPTIONS = MergeFunctionOptions()
+FUNCTION_LINE_ZERO_MERGE_OPTIONS = MergeFunctionOptions(
     ignore_function_lineno=True,
     merge_function_use_line_zero=True,
 )
-FUNCTION_MIN_LINE_MERGE_OPTIONS = MergeOptions(
+FUNCTION_MIN_LINE_MERGE_OPTIONS = MergeFunctionOptions(
     ignore_function_lineno=True,
     merge_function_use_line_min=True,
 )
-FUNCTION_MAX_LINE_MERGE_OPTIONS = MergeOptions(
+FUNCTION_MAX_LINE_MERGE_OPTIONS = MergeFunctionOptions(
     ignore_function_lineno=True,
     merge_function_use_line_max=True,
 )
-SEPARATE_FUNCTION_MERGE_OPTIONS = MergeOptions(
+SEPARATE_FUNCTION_MERGE_OPTIONS = MergeFunctionOptions(
     ignore_function_lineno=True,
     separate_function=True,
 )
 
 
+@dataclass
+class MergeConditionOptions:
+    merge_condition_fold: bool = False
+
+
+CONDITION_STRICT_MERGE_OPTIONS = MergeConditionOptions()
+CONDITION_FOLD_MERGE_OPTIONS = MergeConditionOptions(
+    merge_condition_fold=True,
+)
+
+
+@dataclass
+class MergeOptions:
+    func_opts: MergeFunctionOptions = field(default_factory=MergeFunctionOptions)
+    cond_opts: MergeConditionOptions = field(default_factory=MergeConditionOptions)
+
+
+DEFAULT_MERGE_OPTIONS = MergeOptions()
+
+
 def get_merge_mode_from_options(options):
+    merge_opts = MergeOptions()
     if options.merge_mode_functions == "strict":
-        return DEFAULT_MERGE_OPTIONS
+        merge_opts.func_opts = FUNCTION_STRICT_MERGE_OPTIONS
     elif options.merge_mode_functions == "merge-use-line-0":
-        return FUNCTION_LINE_ZERO_MERGE_OPTIONS
+        merge_opts.func_opts = FUNCTION_LINE_ZERO_MERGE_OPTIONS
     elif options.merge_mode_functions == "merge-use-line-min":
-        return FUNCTION_MIN_LINE_MERGE_OPTIONS
+        merge_opts.func_opts = FUNCTION_MIN_LINE_MERGE_OPTIONS
     elif options.merge_mode_functions == "merge-use-line-max":
-        return FUNCTION_MAX_LINE_MERGE_OPTIONS
+        merge_opts.func_opts = FUNCTION_MAX_LINE_MERGE_OPTIONS
     elif options.merge_mode_functions == "separate":
-        return SEPARATE_FUNCTION_MERGE_OPTIONS
+        merge_opts.func_opts = SEPARATE_FUNCTION_MERGE_OPTIONS
     else:
-        raise AssertionError("Sanity check: Unknown merge mode.")
+        raise AssertionError("Sanity check: Unknown functions merge mode.")
+
+    if options.merge_mode_conditions == "strict":
+        merge_opts.cond_opts = CONDITION_STRICT_MERGE_OPTIONS
+    elif options.merge_mode_conditions == "fold":
+        merge_opts.cond_opts = CONDITION_FOLD_MERGE_OPTIONS
+    else:
+        raise AssertionError("Sanity check: Unknown conditions merge mode.")
+
+    return merge_opts
 
 
 _Key = TypeVar("_Key", int, str)
@@ -327,19 +357,19 @@ def merge_function(
 
     Precondition: both objects must have same name and lineno.
 
-    If ``options.ignore_function_lineno`` is set,
+    If ``options.func_opts.ignore_function_lineno`` is set,
     the two function coverage objects can have differing line numbers.
     With following flags the merge mode can be defined:
-      - ``options.merge_function_use_line_zero``
-      - ``options.merge_function_use_line_min``
-      - ``options.merge_function_use_line_max``
-      - ``options.separate_function``
+      - ``options.func_opts.merge_function_use_line_zero``
+      - ``options.func_opts.merge_function_use_line_min``
+      - ``options.func_opts.merge_function_use_line_max``
+      - ``options.func_opts.separate_function``
     """
     if left.demangled_name != right.demangled_name:
         raise AssertionError("Function demangled name must be equal.")
     if left.name != right.name:
         raise AssertionError("Function name must be equal.")
-    if not options.ignore_function_lineno:
+    if not options.func_opts.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
             raise GcovrMergeAssertionError(
@@ -349,7 +379,7 @@ def merge_function(
             )
 
     # keep distinct counts for each line number
-    if options.separate_function:
+    if options.func_opts.separate_function:
         for lineno, count in sorted(right.count.items()):
             try:
                 left.count[lineno] += count
@@ -379,11 +409,11 @@ def merge_function(
     # merge all counts into an entry for a single line number
     if right_lineno in left.count:
         lineno = right_lineno
-    elif options.merge_function_use_line_zero:
+    elif options.func_opts.merge_function_use_line_zero:
         lineno = 0
-    elif options.merge_function_use_line_min:
+    elif options.func_opts.merge_function_use_line_min:
         lineno = min(*left.count.keys(), *right.count.keys())
-    elif options.merge_function_use_line_max:
+    elif options.func_opts.merge_function_use_line_max:
         lineno = max(*left.count.keys(), *right.count.keys())
     else:
         raise AssertionError("Sanity check, unknown merge mode")
@@ -493,6 +523,10 @@ def merge_condition(
     [2]
     >>> merged.not_covered_false
     []
+
+    If ``options.cond_opts.merge_condition_fold`` is set,
+    the two condition coverage lists can have differing counts.
+    The conditions are shrunk to match the lowest count
     """
 
     # If condition coverage is not know for one side, return the other.
@@ -502,9 +536,33 @@ def merge_condition(
         return left
 
     if left.count != right.count:
-        raise AssertionError(
-            f"The number of conditions must be equal, got {left.count} and {right.count} while merging {context}."
-        )
+        if options.cond_opts.merge_condition_fold:
+            LOGGER.warning(
+                f"Condition counts are not equal, got {right.count} and expected {left.count}. "
+                f"Reducing to {min(left.count, right.count)}."
+            )
+            if left.count > right.count:
+                left.not_covered_true = left.not_covered_true[
+                    : len(right.not_covered_true)
+                ]
+                left.not_covered_false = left.not_covered_false[
+                    : len(right.not_covered_false)
+                ]
+                left.count = right.count
+            else:
+                right.not_covered_true = right.not_covered_true[
+                    : len(left.not_covered_true)
+                ]
+                right.not_covered_false = right.not_covered_false[
+                    : len(left.not_covered_false)
+                ]
+                right.count = left.count
+        else:
+            raise AssertionError(
+                f"The number of conditions must be equal, got {right.count} and expected {left.count} while merging {context}.\n"
+                "\tYou can run gcovr with --merge-mode-conditions=MERGE_MODE.\n"
+                "\tThe available values for MERGE_MODE are described in the documentation."
+            )
 
     left.not_covered_false = sorted(
         list(set(left.not_covered_false) & set(right.not_covered_false))

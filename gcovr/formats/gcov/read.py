@@ -40,6 +40,7 @@ from ...coverage import (
 from ...exclusions import apply_all_exclusions
 from ...decision_analysis import DecisionParser
 from ...merging import (
+    MergeOptions,
     FUNCTION_MAX_LINE_MERGE_OPTIONS,
     GcovrMergeAssertionError,
     insert_branch_coverage,
@@ -99,7 +100,7 @@ def read_report(options: Options) -> CovData:
         lambda: {"covdata": dict(), "to_erase": set(), "options": options},
     ) as pool:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
-        for file_ in datafiles:
+        for file_ in sorted(datafiles):
             pool.add(process_file, file_)
         contexts = pool.wait()
 
@@ -279,7 +280,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
                     start=(function["start_line"], function["start_column"]),
                     end=(function["end_line"], function["end_column"]),
                 ),
-                FUNCTION_MAX_LINE_MERGE_OPTIONS,
+                MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
             )
 
         encoded_source_lines = [
