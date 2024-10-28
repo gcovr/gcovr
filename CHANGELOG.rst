@@ -24,6 +24,7 @@ Bug fixes and small improvements:
   instead of reporting the error and (if requested by the user) continuing execution. (:issue:`997`)
 - Check format version of external generated ``gcov`` JSON files. (:issue:`999`)
 - Fix crash on Windows when trying to fix the case of the files. (:issue:`1000`)
+- Fix LCOV report. Excluded lines where added with a count of 0. (:issue:`1012`)
 
 Documentation:
 
@@ -359,7 +360,7 @@ Bug fixes and small improvements:
 - Use `≥` sign instead of `>=` in HTML legend. (:issue:`603`)
 - Using :option:`--add-tracefile` will now correctly merge branch coverage. (:issue:`600`)
 - Fix package-level function coverage statistics in Cobertura XML reports. (:issue:`605`)
-- Respect excluded/noncode lines for aggregated branchcoverage. (:issue:`611`)
+- Respect excluded/noncode lines for aggregated branch coverage. (:issue:`611`)
 - Fix list options in configuration file (search-path). (:issue:`612`)
 - Fix assert and key error in --decisions flag. (:issue:`642`)
 - Fix adding none existing lines by decision analysis to data model. (:issue:`617`)

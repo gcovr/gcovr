@@ -285,7 +285,6 @@ def pylint(session: nox.Session) -> None:
         args = session.posargs
     else:
         args = DEFAULT_LINT_ARGUMENTS
-    session.run("python", "--version")
     session.run("pylint", *args)
 
 
