@@ -424,8 +424,8 @@ class LineCoverage:
         self.count: int = count
         self.function_name: Optional[str] = function_name
         self.block_ids: Optional[List[int]] = block_ids
-        self.excluded: Optional[bool] = excluded
         self.md5: Optional[str] = md5
+        self.excluded: Optional[bool] = excluded
         self.branches: Dict[int, BranchCoverage] = {}
         self.conditions: Optional[Dict[int, ConditionCoverage]] = {}
         self.decision: Optional[DecisionCoverage] = None
@@ -473,14 +473,23 @@ class LineCoverage:
 
         raise AssertionError(f"Unknown decision type: {self.decision!r}")
 
+    def exclude(self) -> None:
+        """Exclude line from  coverage statistic."""
+        self.excluded = True
+        self.count = 0
+        self.branches.clear()
+        self.conditions.clear()
+        self.decision = None
+        self.calls.clear()
+
     def branch_coverage(self) -> CoverageStat:
         """Return the branch coverage statistic of the line."""
         total = len(self.branches)
         covered = 0
-        for branch in self.branches.values():
-            if branch.excluded:
+        for branchcov in self.branches.values():
+            if branchcov.excluded:
                 total -= 1
-            elif branch.is_covered:
+            elif branchcov.is_covered:
                 covered += 1
 
         return CoverageStat(covered=covered, total=total)
@@ -551,9 +560,9 @@ class FileCoverage:
         filecov.functions[functioncov.name] = functioncov
 
         filecov.lines = {
-            line: value
-            for line, value in self.lines.items()
-            if value.function_name == functioncov.name
+            line: linecov
+            for line, linecov in self.lines.items()
+            if linecov.function_name == functioncov.name
         }
 
         return filecov
@@ -577,10 +586,10 @@ class FileCoverage:
         total = 0
         covered = 0
 
-        for line in self.lines.values():
-            if line.is_reportable:
+        for linecov in self.lines.values():
+            if linecov.is_reportable:
                 total += 1
-                if line.is_covered:
+                if linecov.is_covered:
                     covered += 1
 
         return CoverageStat(covered, total)
@@ -589,9 +598,9 @@ class FileCoverage:
         """Return the branch coverage statistic of the file."""
         stat = CoverageStat.new_empty()
 
-        for line in self.lines.values():
-            if line.is_reportable:
-                stat += line.branch_coverage()
+        for linecov in self.lines.values():
+            if linecov.is_reportable:
+                stat += linecov.branch_coverage()
 
         return stat
 
@@ -599,9 +608,9 @@ class FileCoverage:
         """Return the condition coverage statistic of the file."""
         stat = CoverageStat.new_empty()
 
-        for line in self.lines.values():
-            if line.is_reportable:
-                stat += line.condition_coverage()
+        for linecov in self.lines.values():
+            if linecov.is_reportable:
+                stat += linecov.condition_coverage()
 
         return stat
 
@@ -609,9 +618,9 @@ class FileCoverage:
         """Return the decision coverage statistic of the file."""
         stat = DecisionCoverageStat.new_empty()
 
-        for line in self.lines.values():
-            if line.is_reportable:
-                stat += line.decision_coverage()
+        for linecov in self.lines.values():
+            if linecov.is_reportable:
+                stat += linecov.decision_coverage()
 
         return stat
 
@@ -620,9 +629,9 @@ class FileCoverage:
         covered = 0
         total = 0
 
-        for line in self.lines.values():
-            if len(line.calls) > 0:
-                for call in line.calls.values():
+        for linecov in self.lines.values():
+            if linecov.is_reportable and len(linecov.calls) > 0:
+                for call in linecov.calls.values():
                     total += 1
                     if call.is_covered:
                         covered += 1

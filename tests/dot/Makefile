@@ -39,6 +39,6 @@ coveralls: coverage.json
 
 clean:
 	rm -f ./.subdir/testcase
-	rm -f ./*.gc* ./*/*.gc* ./*/*/*.gc* ./*/*/*/*.gc* ./*/*/*/*/*.gc*
-	rm -f ./*.o ./*/*.o ./*/*/*.o ./*/*/*/*.o ./*/*/*/*/*.o
+	find .subdir -name '*.gc*' -delete
+	find .subdir -name '*.o' -delete
 	rm -f coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json

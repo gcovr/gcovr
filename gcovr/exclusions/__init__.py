@@ -32,7 +32,7 @@ from typing import List, Optional
 import logging
 
 from .utils import (
-    _make_is_in_any_range_inclusive,
+    make_is_in_any_range_inclusive,
     apply_exclusion_ranges,
     function_exclude_not_supported,
     get_function_exclude_ranges,
@@ -202,7 +202,7 @@ def remove_functions(filecov: FileCoverage, patterns: List[re.Pattern]) -> None:
             LOGGER.debug(
                 f"Exclusion range for functions from CLI in {filecov.filename}: {str(exclude_ranges)}."
             )
-            exclusion_predicate: ExclusionPredicate = _make_is_in_any_range_inclusive(
+            exclusion_predicate: ExclusionPredicate = make_is_in_any_range_inclusive(
                 exclude_ranges
             )
             apply_exclusion_ranges(

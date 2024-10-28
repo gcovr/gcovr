@@ -36,5 +36,5 @@ jacoco: coverage.json
 	$(GCOVR) -a $< --jacoco -o jacoco.xml
 
 clean:
-	rm -rf *.gcd* *.o
+	rm -rf *.gc* *.o
 	rm -f no_tracefile.stderr testcase coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json

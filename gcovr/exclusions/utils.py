@@ -157,7 +157,7 @@ def apply_exclusion_ranges(
                 function.excluded[lineno] = True
 
 
-def _make_is_in_any_range_inclusive(
+def make_is_in_any_range_inclusive(
     ranges: List[Tuple[int, int]],
 ) -> ExclusionPredicate:
     """
@@ -167,7 +167,7 @@ def _make_is_in_any_range_inclusive(
     if queries are mostly made in ascending order.
 
     Example:
-    >>> select = _make_is_in_any_range_inclusive([(3,3), (5,7)])
+    >>> select = make_is_in_any_range_inclusive([(3,3), (5,7)])
     >>> select(0)
     False
     >>> select(6)
