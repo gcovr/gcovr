@@ -305,7 +305,7 @@ def test_option_validation():
         parse_config_into_dict(run_cfg_test("html-medium-threshold = 123%"))
 
 
-class Ref(object):
+class Ref:
     r"""
     Container of exactly one element.
 

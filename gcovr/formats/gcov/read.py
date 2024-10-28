@@ -76,6 +76,7 @@ unknown_cla_re = re.compile(r"Unknown command line argument")
 
 
 def read_report(options: Options) -> CovData:
+    """Read data from GCOV output."""
     datafiles = set()
 
     find_files = find_datafiles
@@ -97,7 +98,7 @@ def read_report(options: Options) -> CovData:
     # Get coverage data
     with Workers(
         options.gcov_parallel,
-        lambda: {"covdata": dict(), "to_erase": set(), "options": options},
+        lambda: {"covdata": {}, "to_erase": set(), "options": options},
     ) as pool:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
         for file_ in sorted(datafiles):
@@ -105,7 +106,7 @@ def read_report(options: Options) -> CovData:
         contexts = pool.wait()
 
     to_erase = set()
-    covdata = dict()
+    covdata = {}
     for context in contexts:
         covdata = merge_covdata(
             covdata, context["covdata"], get_merge_mode_from_options(options)
@@ -185,6 +186,7 @@ def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str
 # Process a single gcov datafile
 #
 def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
+    """Process a GCOV JSON output."""
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json.loads(fh_in.read())
 
@@ -308,13 +310,13 @@ def process_gcov_data(
     options: Options,
     current_dir: str = None,
 ) -> None:
+    """Process a GCOV text output."""
     with open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
     ) as fh_in:
         lines = fh_in.read().splitlines()
 
     # Find the source file
-    # TODO: instead of heuristics, use "working directory" if available
     metadata = parse_metadata(lines)
     source = metadata.get("Source")
     if source is None:
@@ -370,6 +372,7 @@ def guess_source_file_name(
     obj_dir: str,
     current_dir: str = None,
 ) -> str:
+    """Guess the full source filename."""
     if current_dir is None:
         current_dir = os.getcwd()
     if os.path.isabs(source_from_gcov):
@@ -411,6 +414,7 @@ def guess_source_file_name_via_aliases(
     data_fname: str,
     current_dir: str,
 ) -> str:
+    """Guess the full source filename with path by an alias."""
     common_dir = commonpath([data_fname, current_dir])
     fname = os.path.abspath(os.path.join(common_dir, source_from_gcov))
     if os.path.exists(fname):
@@ -428,7 +432,7 @@ def guess_source_file_name_via_aliases(
     return initial_fname
 
 
-def guess_source_file_name_heuristics(
+def guess_source_file_name_heuristics(  # pylint: disable=too-many-return-statements
     source_from_gcov: str,
     data_fname: str,
     gcda_fname: str,
@@ -437,6 +441,7 @@ def guess_source_file_name_heuristics(
     starting_dir: str,
     obj_dir: str,
 ) -> str:
+    """Guess the full source filename with path by a heuristic."""
     # 0. Try using the path to the gcov file
     fname = os.path.join(os.path.dirname(data_fname), source_from_gcov)
     if os.path.exists(fname):
@@ -579,7 +584,7 @@ def process_datafile(
 
     # Check if error shall be ignored
     if options.gcov_ignore_errors is None or not any(
-        [v in options.gcov_ignore_errors for v in ["all", "no_working_dir_found"]]
+        v in options.gcov_ignore_errors for v in ["all", "no_working_dir_found"]
     ):
         raise RuntimeError(errors_output)
 
@@ -587,6 +592,7 @@ def process_datafile(
 def find_potential_working_directories_via_objdir(
     abs_filename: str, objdir: str, error: Callable[[str], None]
 ) -> List[str]:
+    """Find the potential working directories."""
     # absolute path - just return the objdir
     if os.path.isabs(objdir):
         if os.path.isdir(objdir):
@@ -606,23 +612,27 @@ def find_potential_working_directories_via_objdir(
 
     error(
         "ERROR: cannot identify the location where GCC "
-        "was run using --gcov-object-directory=%s\n" % objdir
+        f"was run using --gcov-object-directory={objdir}\n"
     )
 
     return []
 
 
 class GcovProgram:
-    __lock = Lock()
-    __cmd = None
-    __cmd_split = None
-    __default_options = []
-    __exitcode_to_ignore = None
-    __use_json_format_if_available = None
-    __help_output = None
-    __version_output = None
+    """Class to execute GCOV command with a set of auto-detected options"""
 
-    class LockContext(object):
+    __lock = Lock()
+    __cmd: str = ""
+    __cmd_split: List[str] = []
+    __default_options: List[str] = []
+    __exitcode_to_ignore: List[str] = [0]
+    __use_json_format_if_available: bool = True
+    __help_output: str = ""
+    __version_output: str = ""
+
+    class LockContext:
+        """Context handler for locking a section in multithreaded executions."""
+
         def __init__(self, lock: Lock):
             self.lock = lock
 
@@ -635,7 +645,7 @@ class GcovProgram:
     def __init__(self, cmd: str, options: Options):
         with GcovProgram.LockContext(GcovProgram.__lock):
             GcovProgram.__use_json_format_if_available = options.exclude_calls
-            if GcovProgram.__cmd is None:
+            if not GcovProgram.__cmd:
                 GcovProgram.__cmd = cmd
                 # If the first element of cmd - the executable name - has embedded spaces
                 # (other than within quotes), it probably includes extra arguments.
@@ -646,6 +656,7 @@ class GcovProgram:
                 )
 
     def identify_and_cache_capabilities(self) -> None:
+        """Check the capabilities of GCOVR once."""
         with GcovProgram.LockContext(GcovProgram.__lock):
             if not GcovProgram.__default_options:
                 GcovProgram.__default_options = [
@@ -689,13 +700,12 @@ class GcovProgram:
                         f"supported by '{GcovProgram.__cmd}'. Source files with "
                         "identical file names may result in incorrect coverage."
                     )
-            if GcovProgram.__exitcode_to_ignore is None:
-                GcovProgram.__exitcode_to_ignore = [0]  # SUCCESS
+
                 if not self.__check_gcov_help_content("LLVM"):
                     GcovProgram.__exitcode_to_ignore.append(6)  # WRITE GCOV ERROR
 
     def __get_help_output(self) -> str:
-        if GcovProgram.__help_output is None:
+        if not GcovProgram.__help_output:
             GcovProgram.__help_output = ""
             for help_option in ["--help", "--help-hidden"]:
                 gcov_process = self.__get_gcov_process(
@@ -707,14 +717,14 @@ class GcovProgram:
                 if not gcov_process.returncode:
                     # gcov execution was successful, help argument is not supported.
                     GcovProgram.__help_output += out
-            if GcovProgram.__help_output == "":
+            if not GcovProgram.__help_output:
                 # gcov tossed errors: throw exception
                 raise RuntimeError("Error in gcov command line, couldn't get help.")
 
         return GcovProgram.__help_output
 
     def __get_version_output(self) -> str:
-        if GcovProgram.__version_output is None:
+        if not GcovProgram.__version_output:
             gcov_process = self.__get_gcov_process(
                 ["--version"],
                 universal_newlines=True,
@@ -744,6 +754,7 @@ class GcovProgram:
         return False
 
     def get_default_options(self) -> List[str]:
+        """Get the default options for GCOV."""
         return GcovProgram.__default_options
 
     def __get_gcov_process(self, args: List[str], **kwargs) -> subprocess.Popen:
@@ -767,7 +778,7 @@ class GcovProgram:
         )
 
     def run_with_args(self, args: List[str], **kwargs) -> Tuple[str, str]:
-        """Run the gcov program
+        """Run the gcov program.
 
         >>> import platform
         >>> if platform.system() == "Windows":
@@ -810,7 +821,8 @@ class GcovProgram:
                 f"Stdout of gcov was >>{out}<< End of stdout\n"
                 f"Stderr of gcov was >>{err}<< End of stderr"
             )
-        elif gcov_process.returncode not in GcovProgram.__exitcode_to_ignore:
+
+        if gcov_process.returncode not in GcovProgram.__exitcode_to_ignore:
             raise RuntimeError(
                 f"GCOV returncode was {gcov_process.returncode}.\n"
                 f"Stdout of gcov was >>{out}<< End of stdout\n"
@@ -827,6 +839,7 @@ def run_gcov_and_process_files(
     error: Callable[[str], None],
     chdir: str,
 ) -> bool:
+    """Run GCOV tool and process the output files."""
     filename = None
     out = None
     err = None
@@ -843,12 +856,12 @@ def run_gcov_and_process_files(
             # Do not know how to force this exception therefore ignore coverage.
             try:
                 filename = os.path.relpath(filename, chdir)
-            except Exception:  # pragma: no cover # nosec
+            except OSError:  # pragma: no cover # nosec
                 pass
             object_directory = os.path.dirname(abs_filename)
             try:
                 object_directory = os.path.relpath(object_directory, chdir)
-            except Exception:  # pragma: no cover # nosec
+            except OSError:  # pragma: no cover # nosec
                 pass
             out, err = gcov_cmd.run_with_args(
                 [
@@ -871,55 +884,52 @@ def run_gcov_and_process_files(
             if unknown_cla_re.search(err):
                 # gcov tossed errors: throw exception
                 raise RuntimeError(f"Error in gcov command line: {err}")
+
+            ignore_source_errors = options.gcov_ignore_errors is not None and any(
+                v in options.gcov_ignore_errors for v in ["all", "source_not_found"]
+            )
+            ignore_output_errors = options.gcov_ignore_errors is not None and any(
+                v in options.gcov_ignore_errors for v in ["all", "output_error"]
+            )
+            if (
+                # GCOV did not find source file and error shall not be ignored
+                (source_error_re.search(err) and not ignore_source_errors)
+                # GCOV can not write output file and error shall not be ignored
+                or (output_error_re.search(err) and not ignore_output_errors)
+            ):
+                # gcov tossed errors: try the next potential_wd
+                error(f"In directory {chdir}:\n{err}")
+                done = False
             else:
-                ignore_source_errors = options.gcov_ignore_errors is not None and any(
-                    [
-                        v in options.gcov_ignore_errors
-                        for v in ["all", "source_not_found"]
+                if ignore_output_errors:
+                    active_gcov_files = [
+                        f for f in active_gcov_files if os.path.exists(f)
                     ]
-                )
-                ignore_output_errors = options.gcov_ignore_errors is not None and any(
-                    [v in options.gcov_ignore_errors for v in ["all", "output_error"]]
-                )
-                if (
-                    # GCOV did not find source file and error shall not be ignored
-                    (source_error_re.search(err) and not ignore_source_errors)
-                    # GCOV can not write output file and error shall not be ignored
-                    or (output_error_re.search(err) and not ignore_output_errors)
-                ):
-                    # gcov tossed errors: try the next potential_wd
-                    error(f"In directory {chdir}:\n{err}")
-                    done = False
-                else:
-                    if ignore_output_errors:
-                        active_gcov_files = [
-                            f for f in active_gcov_files if os.path.exists(f)
-                        ]
 
-                    # Process *.gcov files
-                    for gcov_filename in active_gcov_files:
-                        if not os.path.exists(gcov_filename):  # pragma: no cover
-                            raise RuntimeError(
-                                f"Sanity check failed, output file {gcov_filename} doesn't exist but no error from GCOV detected."
-                            )
+                # Process *.gcov files
+                for gcov_filename in active_gcov_files:
+                    if not os.path.exists(gcov_filename):  # pragma: no cover
+                        raise RuntimeError(
+                            f"Sanity check failed, output file {gcov_filename} doesn't exist but no error from GCOV detected."
+                        )
 
-                        if gcov_filename.endswith(".gcov"):
-                            process_gcov_data(
-                                gcov_filename, filename, covdata, options, chdir
-                            )
-                        elif gcov_filename.endswith(".gcov.json.gz"):
-                            process_gcov_json_data(gcov_filename, covdata, options)
-                        else:  # pragma: no cover
-                            raise RuntimeError(
-                                f"Unknown gcov output format {gcov_filename}."
-                            )
-                    done = True
+                    if gcov_filename.endswith(".gcov"):
+                        process_gcov_data(
+                            gcov_filename, filename, covdata, options, chdir
+                        )
+                    elif gcov_filename.endswith(".gcov.json.gz"):
+                        process_gcov_json_data(gcov_filename, covdata, options)
+                    else:  # pragma: no cover
+                        raise RuntimeError(
+                            f"Unknown gcov output format {gcov_filename}."
+                        )
+                done = True
 
             if options.gcov_keep and done:
                 basename = os.path.basename(abs_filename)
                 for file in active_gcov_files:
-                    dir, filename = os.path.split(file)
-                    os.replace(file, os.path.join(dir, f"{basename}.{filename}"))
+                    directory, filename = os.path.split(file)
+                    os.replace(file, os.path.join(directory, f"{basename}.{filename}"))
 
             for filepath in (
                 all_gcov_files - active_gcov_files
@@ -947,6 +957,7 @@ def run_gcov_and_process_files(
 def select_gcov_files_from_stdout(
     out: str, gcov_filter: List[re.Pattern], gcov_exclude: List[re.Pattern], chdir: str
 ) -> Tuple[List[str], List[str]]:
+    """Parse the output to get the list of files to use and all files (unfiltered)."""
     active_files = set([])
     all_files = set([])
 
@@ -973,6 +984,7 @@ def select_gcov_files_from_stdout(
 def process_existing_gcov_file(
     filename: str, covdata: CovData, options: Options, to_erase: List[str]
 ) -> None:
+    """Process an existing GCOV filename."""
     if is_file_excluded(filename, options.gcov_filter, options.gcov_exclude):
         LOGGER.debug(f"Excluding gcov file: {filename}")
 

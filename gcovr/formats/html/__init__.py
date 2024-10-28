@@ -20,24 +20,32 @@
 import logging
 from typing import List
 
+from ...coverage import CovData
+from ...formats.base import BaseHandler
 from ...options import (
     GcovrConfigOption,
     OutputOrDefault,
     check_input_file,
     check_percentage,
 )
-from ...formats.base import BaseHandler
 
-from ...coverage import CovData
 
 LOGGER = logging.getLogger("gcovr")
+THEMES = [
+    "green",
+    "blue",
+    "github.blue",
+    "github.green",
+    "github.dark-green",
+    "github.dark-blue",
+]
 
 
 class HtmlHandler(BaseHandler):
+    """Class to handle HTML format."""
+
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
-        from .write import CssRenderer
-
         return [
             # Global options needed for report
             "exclude_calls",
@@ -110,13 +118,13 @@ class HtmlHandler(BaseHandler):
                 ["--html-theme"],
                 group="output_options",
                 type=str,
-                choices=CssRenderer.get_themes(),
+                choices=THEMES,
                 metavar="THEME",
                 help=(
                     "Override the default color theme for the HTML report. "
                     "Default is {default!s}."
                 ),
-                default=CssRenderer.get_default_theme(),
+                default=THEMES[0],
             ),
             GcovrConfigOption(
                 "html_css",
@@ -340,6 +348,6 @@ class HtmlHandler(BaseHandler):
             raise RuntimeError("only self contained reports can be printed to STDOUT")
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
-        from .write import write_report
+        from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_report(covdata, output_file, self.options)

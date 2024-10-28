@@ -72,6 +72,7 @@ def get_functions_by_line(filecov: FileCoverage) -> FunctionListByLine:
 def get_function_exclude_ranges(
     filename: str, lineno: int, columnno: int, *, functions_by_line: FunctionListByLine
 ) -> List[Tuple[int, int]]:
+    """Get the exclude range for a given function."""
     exclude_ranges = []
     if functions_by_line:
         lineno_end = None

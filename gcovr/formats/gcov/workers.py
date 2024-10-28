@@ -25,7 +25,7 @@ from queue import Queue, Empty
 from typing import Any, Callable, Dict
 
 
-class LockedDirectories(object):
+class LockedDirectories:
     """
     Class that keeps a list of locked directories
     """
@@ -69,7 +69,7 @@ def locked_directory(dir_):
 locked_directory.global_object = LockedDirectories()
 
 
-def worker(queue, context, pool):
+def worker(queue: Queue, context: Callable[[], Dict[str, Any]], pool: "Workers"):
     """
     Run work items from the queue until the sentinel
     None value is hit
@@ -82,7 +82,7 @@ def worker(queue, context, pool):
         try:
             work(*args, **kwargs)
         except:  # noqa: E722 # pylint: disable=bare-except
-            pool.raise_exception(exc_info())
+            pool.stop_with_exception()
             break
 
 
@@ -123,7 +123,7 @@ class Workers:
         """
         with self.lock:
             for _ in self.workers:
-                self.q.put((None, [], dict()))
+                self.q.put((None, [], {}))
 
     def drain(self):
         """
@@ -132,18 +132,18 @@ class Workers:
         with self.lock:
             while True:
                 try:
-                    work, args, kwargs = self.q.get(False)
+                    self.q.get(False)
                 except Empty:
                     break
             self.add_sentinels()
 
-    def raise_exception(self, exc_info):
+    def stop_with_exception(self):
         """
         A thread has failed and needs to raise an exception.
         """
         with self.lock:
             self.drain()
-            self.exceptions.append(exc_info)
+            self.exceptions.append(exc_info())
 
     def size(self):
         """

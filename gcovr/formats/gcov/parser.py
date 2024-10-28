@@ -234,13 +234,11 @@ class NegativeHits(Exception):
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
-            [
-                v in ignore_parse_errors
-                for v in [
-                    "all",
-                    "negative_hits.warn",
-                    "negative_hits.warn_once_per_file",
-                ]
+            v in ignore_parse_errors
+            for v in [
+                "all",
+                "negative_hits.warn",
+                "negative_hits.warn_once_per_file",
             ]
         ):
             if "negative_hits.warn_once_per_file" in persistent_states:
@@ -271,13 +269,11 @@ class SuspiciousHits(Exception):
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
-            [
-                v in ignore_parse_errors
-                for v in [
-                    "all",
-                    "suspicious_hits.warn",
-                    "suspicious_hits.warn_once_per_file",
-                ]
+            v in ignore_parse_errors
+            for v in [
+                "all",
+                "suspicious_hits.warn",
+                "suspicious_hits.warn_once_per_file",
             ]
         ):
             if "suspicious_hits.warn_once_per_file" in persistent_states:
@@ -761,9 +757,9 @@ def _parse_line(
             if ":" in source_code:
                 key, value = source_code.split(":", 1)
                 return _MetadataLine(key, value.strip())
-            else:
-                # Add a synthetic metadata with no value
-                return _MetadataLine(source_code, None)
+
+            # Add a synthetic metadata with no value
+            return _MetadataLine(source_code, None)
 
         if hits_str == "-":
             hits = 0

@@ -24,6 +24,8 @@ from ..coverage import CovData
 
 
 class BaseHandler:
+    """Base class for a format handler."""
+
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
         """Get the options of the format handler"""
@@ -54,7 +56,6 @@ class BaseHandler:
 
     def validate_options(self) -> None:
         """Validation of command line options"""
-        pass
 
     def read_report(self) -> CovData:
         """Read a report in the format of the handler"""

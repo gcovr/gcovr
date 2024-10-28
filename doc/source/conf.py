@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""Configuration for Sphinx."""
 
 #  ************************** Copyrights and license ***************************
 #
@@ -33,13 +34,15 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
-import gcovr.version  # noqa
-import gcovr.formats.json.versions  # noqa
+import gcovr.version  # noqa # pylint: disable=wrong-import-position
+import gcovr.formats.json.versions  # noqa # pylint: disable=wrong-import-position
 
 # -- Project information -----------------------------------------------------
 
+# pylint: disable=invalid-name
+
 project = "gcovr"
-copyright = "{}, the gcovr authors".format(datetime.today().year)
+copyright = f"{datetime.today().year}, the gcovr authors"  # pylint: disable=redefined-builtin
 author = "the gcovr authors"
 
 # The short X.Y version
@@ -202,4 +205,4 @@ extlinks = {"issue": ("https://github.com/gcovr/gcovr/issues/%s", "#%s")}
 if os.environ.get("READTHEDOCS", "") == "True":
     if "html_context" not in globals():
         html_context = {}
-    html_context["READTHEDOCS"] = True
+    html_context["READTHEDOCS"] = True  # pylint: disable=possibly-used-before-assignment

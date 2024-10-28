@@ -332,9 +332,9 @@ def pytest_generate_tests(metafunc):
                 )
             )
 
-        for format in KNOWN_FORMATS:
+        for current_format in KNOWN_FORMATS:
             # only test formats where the Makefile provides a target
-            if format not in targets:
+            if current_format not in targets:
                 continue
 
             marks = [
@@ -380,7 +380,7 @@ def pytest_generate_tests(metafunc):
                 ),
                 pytest.mark.xfail(
                     name == "exclude-throw-branches"
-                    and format == "html"
+                    and current_format == "html"
                     and IS_WINDOWS,
                     reason="branch coverage details seem to be platform-dependent",
                 ),
@@ -421,13 +421,13 @@ def pytest_generate_tests(metafunc):
             collected_params.append(
                 pytest.param(
                     name,
-                    format,
+                    current_format,
                     targets,
                     generate_reference,
                     update_reference,
                     archive_differences,
                     marks=marks,
-                    id="-".join([name, format]),
+                    id="-".join([name, current_format]),
                 )
             )
 

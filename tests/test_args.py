@@ -491,12 +491,6 @@ def test_html_tab_size_zero(caplog):
     assert c.exception.code != 0
 
 
-def test_html_template_dir(capsys):
-    c = capture(capsys, ["--html", "--html-template-dir", "foo"])
-    assert "<html" in c.out
-    assert "</html>" in c.out
-
-
 def test_multiple_output_formats_to_stdout(caplog):
     c = log_capture(
         caplog,
@@ -683,7 +677,7 @@ def test_import_valid_cobertura_file(tmp_path):
                 assert f_cov.lines[line].branches[branch_idx].count == branch_count
 
 
-def test_invalid_cobertura_file(caplog, tmp_path):
+def test_invalid_cobertura_file(caplog):
     c = log_capture(caplog, ["--cobertura-add-tracefile", "/*.FileDoesNotExist.*"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR

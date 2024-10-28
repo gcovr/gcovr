@@ -26,6 +26,8 @@ from ...coverage import CovData
 
 
 class CloverHandler(BaseHandler):
+    """Class to handle Clover format."""
+
     @classmethod
     def get_options(cls) -> List[GcovrConfigOption]:
         return [
@@ -64,6 +66,6 @@ class CloverHandler(BaseHandler):
         ]
 
     def write_report(self, covdata: CovData, output_file: str) -> None:
-        from .write import write_report
+        from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_report(covdata, output_file, self.options)

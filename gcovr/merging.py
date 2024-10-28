@@ -70,11 +70,13 @@ LOGGER = logging.getLogger("gcovr")
 
 
 class GcovrMergeAssertionError(AssertionError):
-    pass
+    """Exception for data merge errors."""
 
 
 @dataclass
 class MergeFunctionOptions:
+    """Data class to store the function merge options."""
+
     ignore_function_lineno: bool = False
     merge_function_use_line_zero: bool = None
     merge_function_use_line_min: bool = None
@@ -103,6 +105,8 @@ SEPARATE_FUNCTION_MERGE_OPTIONS = MergeFunctionOptions(
 
 @dataclass
 class MergeConditionOptions:
+    """Data class to store the condition merge options."""
+
     merge_condition_fold: bool = False
 
 
@@ -114,6 +118,8 @@ CONDITION_FOLD_MERGE_OPTIONS = MergeConditionOptions(
 
 @dataclass
 class MergeOptions:
+    """Data class to store the merge options."""
+
     func_opts: MergeFunctionOptions = field(default_factory=MergeFunctionOptions)
     cond_opts: MergeConditionOptions = field(default_factory=MergeConditionOptions)
 
@@ -122,6 +128,7 @@ DEFAULT_MERGE_OPTIONS = MergeOptions()
 
 
 def get_merge_mode_from_options(options):
+    """Get the function merge mode."""
     merge_opts = MergeOptions()
     if options.merge_mode_functions == "strict":
         merge_opts.func_opts = FUNCTION_STRICT_MERGE_OPTIONS
@@ -452,8 +459,8 @@ def insert_branch_coverage(
 def merge_branch(
     left: BranchCoverage,
     right: BranchCoverage,
-    options: MergeOptions,
-    context: Optional[str],
+    _options: MergeOptions,
+    _context: Optional[str],
 ) -> BranchCoverage:
     """
     Merge BranchCoverage information.
@@ -585,11 +592,11 @@ def insert_decision_coverage(
     return target.decision
 
 
-def merge_decision(
+def merge_decision(  # pylint: disable=too-many-return-statements
     left: Optional[DecisionCoverage],
     right: Optional[DecisionCoverage],
-    options: MergeOptions,
-    context: Optional[str],
+    _options: MergeOptions,
+    _context: Optional[str],
 ) -> Optional[DecisionCoverage]:
     """
     Merge DecisionCoverage information.
@@ -652,7 +659,7 @@ def insert_call_coverage(
 def merge_call(
     left: CallCoverage,
     right: CallCoverage,
-    options: MergeOptions,
+    _options: MergeOptions,
     context: Optional[str],
 ) -> BranchCoverage:
     """

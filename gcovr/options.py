@@ -21,8 +21,12 @@ from __future__ import annotations
 from argparse import ArgumentTypeError
 import argparse
 import logging
-from typing import Any, List, Optional, Union, Callable
+import platform
+import re
+from typing import Any, List, Optional, Type, Union, Callable
 import os
+
+from .utils import force_unix_separator, is_fs_case_insensitive
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -78,6 +82,131 @@ def relative_path(value: str, basedir: str = None) -> str:
         value = os.path.join(basedir, value)
     value = os.path.normpath(value)
     return os.path.relpath(value, os.getcwd())
+
+
+class FilterOption:
+    """Argparse type for filter options."""
+
+    NonEmpty: Type[NonEmptyFilterOption]
+
+    def __init__(self, regex, path_context=None):
+        self.regex = regex
+        self.path_context = os.getcwd() if path_context is None else path_context
+
+    def build_filter(self):
+        """Return the filter object depending on the given RegEx."""
+        # Try to detect unintended backslashes and warn.
+        # Later, the regex engine may or may not raise a syntax error.
+        # An unintended backslash is a literal backslash r"\\",
+        # or a regex escape that doesn't exist.
+        (suggestion, bs_count) = re.subn(
+            r"\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])", "/", self.regex
+        )
+        if bs_count:
+            LOGGER.warning("filters must use forward slashes as path separators")
+            LOGGER.warning(f"your filter : {self.regex}")
+            LOGGER.warning(f"did you mean: {suggestion}")
+
+        isabs = self.regex.startswith("/")
+        if not isabs and (platform.system() == "Windows"):
+            # Starts with a drive letter
+            isabs = re.match(r"^[A-Za-z]:/", self.regex)
+
+        if isabs:
+            return AbsoluteFilter(self.regex)
+
+        return RelativeFilter(self.path_context, self.regex)
+
+
+class NonEmptyFilterOption(FilterOption):
+    """Argparse type to check filters."""
+
+    def __init__(self, regex, path_context=None):
+        if not regex:
+            raise ArgumentTypeError("filter cannot be empty")
+        super().__init__(regex, path_context)
+
+
+FilterOption.NonEmpty = NonEmptyFilterOption
+
+
+class Filter:
+    """Base class for a filename filter."""
+
+    def __init__(self, pattern: str):
+        flags = re.IGNORECASE if is_fs_case_insensitive() else 0
+        self.pattern = re.compile(pattern, flags)
+
+    def match(self, path: str):
+        """Return True if the given path (always with /) matches the regular expression."""
+        os_independent_path = force_unix_separator(path)
+        if self.pattern.match(os_independent_path):
+            LOGGER.debug(f"  Filter {self} matched for path {os_independent_path}.")
+            return True
+        return False
+
+    def __str__(self):
+        return f"{type(self).__name__}({self.pattern.pattern})"
+
+
+class AbsoluteFilter(Filter):
+    """Class for a filename filter which matches against the real path of a file."""
+
+    def match(self, path: str):
+        """Return True if the given path with all symlinks resolved matches the filter."""
+        path = os.path.realpath(path)
+        return super().match(path)
+
+
+class RelativeFilter(Filter):
+    """Class for a filename filter which matches against the relative paths of a file."""
+
+    def __init__(self, root: str, pattern: str):
+        super().__init__(pattern)
+        self.root = os.path.realpath(root)
+
+    def match(self, path: str):
+        """Return True if the given path with all symlinks resolved matches the filter."""
+        path = os.path.realpath(path)
+
+        # On Windows, a relative path can never cross drive boundaries.
+        # If so, the relative filter cannot match.
+        if platform.system() == "Windows":
+            path_drive, _ = os.path.splitdrive(path)
+            root_drive, _ = os.path.splitdrive(self.root)
+            if path_drive != root_drive:
+                return None
+
+        relpath = os.path.relpath(path, self.root)
+        return super().match(relpath)
+
+    def __str__(self):
+        return f"RelativeFilter({self.pattern.pattern} root={self.root})"
+
+
+class AlwaysMatchFilter(Filter):
+    """Class for a filter which matches for all files."""
+
+    def __init__(self):
+        super().__init__("")
+
+    def match(self, path):
+        """Return always True."""
+        return True
+
+
+class DirectoryPrefixFilter(Filter):
+    """Class for a filename filter which matches for all files in a directory."""
+
+    def __init__(self, directory):
+        os_independent_path = force_unix_separator(directory)
+        pattern = re.escape(f"{os_independent_path}/")
+        super().__init__(pattern)
+
+    def match(self, path: str):
+        """Return True if the given path matches the filter."""
+        path = os.path.normpath(path)
+        return super().match(path)
 
 
 class OutputOrDefault:
@@ -179,7 +308,9 @@ class OutputOrDefault:
         return default
 
 
-class Options(object):
+class Options:
+    """Wrapper for holding the configuration."""
+
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -188,11 +319,13 @@ class Options(object):
         return self.__dict__.get(name)
 
 
-class GcovrConfigOptionAction(argparse.Action):
-    pass
+class GcovrConfigOptionAction(argparse.Action):  # pylint: disable=abstract-method
+    """Abstract class to be detect our own actions."""
 
 
 class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
+    """Argparse action for deprecated options to map on new option with a deprecation warning."""
+
     def __init__(self, option_strings, dest, **kwargs):
         super().__init__(option_strings, dest, **kwargs)
 
@@ -323,7 +456,7 @@ class GcovrConfigOption:
         if not help:
             raise AssertionError("help required")
         if negate:
-            help += " Negation: {}.".format(", ".join(negate))
+            help += f" Negation: {', '.join(negate)}."
         if (flags or positional) and config_keys:
             config_keys_help = []
             for config_key in config_keys:
@@ -407,11 +540,11 @@ def _derive_configuration_key(
         if not config_keys:
             raise AssertionError("Could not autogenerate config key from {flags!r}.")
         return config_keys
-    elif config is False:
+    if config is False:
         return None
-    elif isinstance(config, str):
+    if isinstance(config, str):
         return [config]
 
     raise AssertionError(
-        f"Oops, sanity check failed: Unexpected config entry type {config!r}"
+        f"Sanity check failed, unexpected config entry type {config!r}"
     )

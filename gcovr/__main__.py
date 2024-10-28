@@ -23,13 +23,8 @@ import re
 import sys
 
 from argparse import ArgumentParser
-import traceback
 from typing import Iterable
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
+import traceback
 
 from .configuration import (
     ConfigEntry,
@@ -39,9 +34,11 @@ from .configuration import (
     parse_config_file,
     parse_config_into_dict,
 )
-from .utils import (
+from .options import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
+)
+from .utils import (
     configure_logging,
     update_logging,
 )
@@ -50,6 +47,12 @@ from .coverage import CovData, SummarizedStats
 
 # formats
 from . import formats as gcovr_formats
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
+
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -74,6 +77,7 @@ def fail_under(
     threshold_decision,
     threshold_function,
 ):
+    """Fail depending on the coverage result."""
     stats = SummarizedStats.from_covdata(covdata)
 
     line_nok = False
@@ -168,10 +172,9 @@ COPYRIGHT = (
 
 
 def find_config_name(root: str, filename: str):
+    """Find the configuration to use."""
     if root:
         filename = os.path.join(root, filename)
-    else:
-        filename = filename
 
     if os.path.isfile(filename):
         return filename
@@ -208,6 +211,7 @@ def load_config(partial_options) -> Iterable[ConfigEntry]:
 
 
 def main(args=None):
+    """The main entry point of GCOVR."""
     configure_logging()
     parser = create_argument_parser()
     cli_options = parser.parse_args(args=args)
@@ -357,14 +361,14 @@ def main(args=None):
     LOGGER.info("Reading coverage data...")
     try:
         covdata: CovData = gcovr_formats.read_reports(options)
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         LOGGER.error(f"Error occurred while reading reports:\n{traceback.format_exc()}")
         sys.exit(EXIT_READ_ERROR)
 
     LOGGER.info("Writing coverage report...")
     try:
         gcovr_formats.write_reports(covdata, options)
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         LOGGER.error(
             f"Error occurred while printing reports:\n{traceback.format_exc()}"
         )

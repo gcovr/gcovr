@@ -17,26 +17,26 @@
 #
 # ****************************************************************************
 
+from contextlib import ExitStack
 import functools
 import io
 import os
+from pathlib import Path
 import platform
 import re
 from runpy import run_path
 import socket
 import sys
-from pathlib import Path
 import textwrap
-from time import sleep
 import time
 from typing import Tuple
-import requests
 import shutil
 import subprocess  # nosec # Commands are trusted.
 import zipfile
+
 import nox
 
-from contextlib import ExitStack
+import requests
 
 
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
@@ -98,6 +98,7 @@ os.environ["TIMESTAMP"] = str(int(time.time()))
 
 
 def get_gcc_versions() -> Tuple[str]:
+    """Get the gcc version from the environment or from the output of the executable."""
     # If the user explicitly set CC variable, use that directly without checks.
     cc = os.environ.get("CC")
     if cc is None:
@@ -134,7 +135,8 @@ def get_gcc_versions() -> Tuple[str]:
             if search_gcc_version:
                 major_version = search_gcc_version.group(1)
                 return (command, f"gcc-{major_version}")
-            elif search_clang_version:
+
+            if search_clang_version:
                 major_version = search_clang_version.group(1)
                 return (command, f"clang-{major_version}")
 
@@ -269,6 +271,22 @@ def lint(session: nox.Session) -> None:
     session.notify("ruff_check")
     session.notify("ruff_format")
     session.notify("bandit")
+    session.notify("pylint")
+
+
+@nox.session
+def pylint(session: nox.Session) -> None:
+    """Run pylint command."""
+    session.install("pylint<4.0.0", "nox", "requests", "pytest")
+    if sys.version_info >= (3, 12):
+        session.install("setuptools")
+    session.install("-e", ".")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = DEFAULT_LINT_ARGUMENTS
+    session.run("python", "--version")
+    session.run("pylint", *args)
 
 
 @nox.session
@@ -318,7 +336,8 @@ def doc(session: nox.Session) -> None:
         platform.system() == "Darwin" and CI_RUN
     ):
         docker_build_compiler(session, "gcc-8")
-        session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]
+        # We need to inject the arguments
+        session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]  # pylint: disable=protected-access
         docker_run_compiler(session, "gcc-8")
 
     # Build the Sphinx documentation
@@ -445,8 +464,10 @@ def check_wheel(session: nox.Session) -> None:
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
     with session.chdir(session.create_tmp()):
-        for format in OUTPUT_FORMATS:
-            session.run("gcovr", f"--{format}", f"out.{format}", external=True)
+        for output_format in OUTPUT_FORMATS:
+            session.run(
+                "gcovr", f"--{output_format}", f"out.{output_format}", external=True
+            )
 
 
 @nox.session
@@ -514,11 +535,11 @@ def check_bundled_app(session: nox.Session) -> None:
         session.run(str(executable), "--help", external=True)
         session.log("Run all transformations to check if all the modules are packed")
         with session.chdir(session.create_tmp()):
-            for format in OUTPUT_FORMATS:
+            for output_format in OUTPUT_FORMATS:
                 session.run(
                     str(executable),
-                    f"--{format}",
-                    f"out.{format}",
+                    f"--{output_format}",
+                    f"out.{output_format}",
                     external=True,
                 )
 
@@ -551,7 +572,7 @@ def html2jpeg(session: nox.Session):
         ).strip()
         defer.callback(subprocess.run, ["docker", "stop", container_id])
         url = f"http://localhost:{port}/1/screenshot"
-        sleep(5.0)  # nosemgrep # We need to wait here until server is started.
+        time.sleep(5.0)  # nosemgrep # We need to wait here until server is started.
 
         def screenshot(html, jpeg, size):
             def read_file(file):
@@ -625,15 +646,16 @@ def html2jpeg(session: nox.Session):
 
 
 def docker_container_os(session: nox.Session) -> str:
+    """Get the version of the OS for the used GCC version."""
     if session.env["CC"] in ["gcc-5", "gcc-6"]:
         return "ubuntu:18.04"
-    elif session.env["CC"] in ["gcc-8", "gcc-9", "clang-10"]:
+    if session.env["CC"] in ["gcc-8", "gcc-9", "clang-10"]:
         return "ubuntu:20.04"
-    elif session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
+    if session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
         return "ubuntu:22.04"
-    elif session.env["CC"] in ["gcc-12", "gcc-13"]:
+    if session.env["CC"] in ["gcc-12", "gcc-13"]:
         return "ubuntu:23.04"
-    elif session.env["CC"] in ["gcc-14", "clang-16"]:
+    if session.env["CC"] in ["gcc-14", "clang-16"]:
         return "ubuntu:24.04"
 
     raise RuntimeError(f"No container image defined for {session.env['CC']}")
@@ -772,9 +794,9 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
     nox_options = session.posargs if session.posargs else ["-s", "qa"]
     if not session.interactive:
         nox_options.insert(0, "--non-interactive")
-    if session._runner.global_config.no_install:
+    if session._runner.global_config.no_install:  # pylint: disable=protected-access
         nox_options.insert(0, "--no-install")
-    if session._runner.global_config.reuse_existing_virtualenvs:
+    if session._runner.global_config.reuse_existing_virtualenvs:  # pylint: disable=protected-access
         nox_options.insert(0, "--reuse-existing-virtualenvs")
 
     session.run(
@@ -837,7 +859,7 @@ def docker_compiler_clang(session: nox.Session) -> None:
 @nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
 def docker_compiler(session: nox.Session, version: str) -> None:
     """Build and run the docker container for a specific GCC version."""
-    session_id = "docker_build_compiler({})".format(version)
+    session_id = f"docker_build_compiler({version})"
     session.log(f"Notify session {session_id}")
     session.notify(session_id)
     session_id = f"docker_run_compiler({version})"

@@ -73,35 +73,35 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     if os.environ.get("COVERALLS_REPO_TOKEN") is not None:
         json_dict["repo_token"] = os.environ.get("COVERALLS_REPO_TOKEN")
 
-    CurrentBranch = None
-    CurrentCommit = None
-    CurrentPullRequest = None
+    current_branch = None
+    current_commit = None
+    current_pull_request = None
     # Stub for own test suite
     if os.environ.get("GCOVR_TEST_SUITE") is not None:
         json_dict["service_name"] = "gcovr-test-suite"
         json_dict["service_job_id"] = "id"
         json_dict["service_number"] = "number"
-        CurrentPullRequest = "pr"
-        CurrentBranch = "branch"
-        CurrentCommit = None
+        current_pull_request = "pr"
+        current_branch = "branch"
+        current_commit = None
     # Consume Travis CI specific environment variables _(if available)_
     # See https://docs.travis-ci.com/user/environment-variables
     elif os.environ.get("TRAVIS_JOB_ID") is not None:
         json_dict["service_name"] = "travis-ci"
         json_dict["service_job_id"] = os.environ.get("TRAVIS_JOB_ID")
         json_dict["service_number"] = os.environ.get("TRAVIS_BUILD_NUMBER")
-        CurrentCommit = os.environ.get("TRAVIS_COMMIT")
-        CurrentPullRequest = os.environ.get("TRAVIS_PULL_REQUEST")
-        CurrentBranch = os.environ.get("TRAVIS_BRANCH")
+        current_commit = os.environ.get("TRAVIS_COMMIT")
+        current_pull_request = os.environ.get("TRAVIS_PULL_REQUEST")
+        current_branch = os.environ.get("TRAVIS_BRANCH")
     # Consume Appveyor specific environment variables _(if available)_
     # See https://www.appveyor.com/docs/environment-variables/
     elif os.environ.get("APPVEYOR_URL") is not None:
         json_dict["service_name"] = "appveyor"
         json_dict["service_job_id"] = os.environ.get("APPVEYOR_JOB_ID")
         json_dict["service_number"] = os.environ.get("APPVEYOR_JOB_NUMBER")
-        CurrentCommit = os.environ.get("APPVEYOR_REPO_COMMIT")
-        CurrentPullRequest = os.environ.get("APPVEYOR_PULL_REQUEST_NUMBER")
-        CurrentBranch = os.environ.get("APPVEYOR_REPO_BRANCH")
+        current_commit = os.environ.get("APPVEYOR_REPO_COMMIT")
+        current_pull_request = os.environ.get("APPVEYOR_PULL_REQUEST_NUMBER")
+        current_branch = os.environ.get("APPVEYOR_REPO_BRANCH")
     # Consume Jenkins specific environment variables _(if available)_
     # See https://opensource.triology.de/jenkins/pipeline-syntax/globals
     elif os.environ.get("JENKINS_URL") is not None:
@@ -109,26 +109,26 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         json_dict["service_job_id"] = os.environ.get("JOB_NAME")
         json_dict["service_number"] = os.environ.get("BUILD_ID")
         if os.environ.get("GIT_COMMIT") is not None:
-            CurrentCommit = os.environ.get("GIT_COMMIT")
-        CurrentPullRequest = os.environ.get("CHANGE_ID")
-        CurrentBranch = os.environ.get("BRANCH_NAME")
+            current_commit = os.environ.get("GIT_COMMIT")
+        current_pull_request = os.environ.get("CHANGE_ID")
+        current_branch = os.environ.get("BRANCH_NAME")
     # Consume GitHup Actions specific environment variables _(if available)_
     # See https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables
     elif os.environ.get("GITHUB_ACTIONS") is not None:
         json_dict["service_name"] = "github-actions-ci"
         json_dict["service_job_id"] = os.environ.get("GITHUB_WORKFLOW")
         json_dict["service_number"] = os.environ.get("GITHUB_RUN_ID")
-        CurrentCommit = os.environ.get("GITHUB_SHA")
+        current_commit = os.environ.get("GITHUB_SHA")
         if os.environ.get("GITHUB_HEAD_REF") is not None:
-            CurrentPullRequest = re.sub(
+            current_pull_request = re.sub(
                 r"^refs/pull/(\d+)/merge$", r"\1", os.environ.get("GITHUB_HEAD_REF")
             )
-            CurrentBranch = os.environ.get("GITHUB_REF")
+            current_branch = os.environ.get("GITHUB_REF")
         else:
-            CurrentBranch = re.sub(r"^refs/heads/", "", os.environ.get("GITHUB_REF"))
+            current_branch = re.sub(r"^refs/heads/", "", os.environ.get("GITHUB_REF"))
 
-    if CurrentPullRequest is not None:
-        json_dict["service_pull_request"] = CurrentPullRequest
+    if current_pull_request is not None:
+        json_dict["service_pull_request"] = current_pull_request
 
     git = (
         shutil.which("git")
@@ -137,38 +137,42 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     )
 
     def run_git_cmd(*args):
-        process = subprocess.Popen(  # nosec # We execute git
-            [git] + list(args), stdout=subprocess.PIPE, cwd=options.root_dir
+        process = subprocess.run(  # nosec # We execute git
+            [git] + list(args),
+            stdout=subprocess.PIPE,
+            cwd=options.root_dir,
+            encoding="utf-8",
+            check=True,
         )
-        return process.communicate()[0].decode("UTF-8").rstrip()
+        return process.stdout.rstrip()
 
     def run_git_log_cmd(arg):
-        return run_git_cmd("--no-pager", "log", "-1", "--pretty=format:{}".format(arg))
+        return run_git_cmd("--no-pager", "log", "-1", f"--pretty=format:{arg}")
 
     if git and "true" in run_git_cmd("rev-parse", "--is-inside-work-tree"):
-        if CurrentBranch is None:
-            CurrentBranch = run_git_cmd("rev-parse", "--abbrev-ref", "HEAD").rstrip()
-        if CurrentCommit is None:
-            CurrentCommit = run_git_log_cmd("%H")
+        if current_branch is None:
+            current_branch = run_git_cmd("rev-parse", "--abbrev-ref", "HEAD")
+        if current_commit is None:
+            current_commit = run_git_log_cmd("%H")
 
         json_dict["git"] = {
             "head": {
-                "id": CurrentCommit,
+                "id": current_commit,
                 "author_name": run_git_log_cmd("%aN"),
                 "author_email": run_git_log_cmd("%ae"),
                 "committer_name": run_git_log_cmd("%cN"),
                 "committer_email": run_git_log_cmd("%ce"),
                 "message": run_git_log_cmd("%s"),
             },
-            "branch": CurrentBranch,
+            "branch": current_branch,
             "remotes": [
                 {"name": line.split()[0], "url": line.split()[1]}
                 for line in run_git_cmd("remote", "-v").split("\n")
                 if line.endswith("(fetch)")
             ],
         }
-    elif CurrentCommit is not None:
-        json_dict["commit_sha"] = CurrentCommit
+    elif current_commit is not None:
+        json_dict["commit_sha"] = current_commit
 
     # Loop through each coverage file collecting details
     json_dict["source_files"] = []

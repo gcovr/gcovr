@@ -172,15 +172,17 @@ class DecisionParser:
         self.decision_analysis_open_brackets: int = 0
 
     def parse_all_lines(self):
+        """Parse the decisions of the file."""
         LOGGER.debug("Starting the decision analysis")
 
         # start to iterate through the lines
         for lineno, code in enumerate(self.lines, 1):
-            self.parse_one_line(lineno, code)
+            self._parse_one_line(lineno, code)
 
         LOGGER.debug("Decision Analysis finished!")
 
-    def parse_one_line(self, lineno: int, code: str) -> None:
+    def _parse_one_line(self, lineno: int, code: str) -> None:
+        """Parse a single line"""
         line_coverage = self.coverage.lines.get(lineno)
 
         if line_coverage is None and not _is_a_switch(code):
@@ -188,7 +190,7 @@ class DecisionParser:
 
         # check, if a analysis for a classic if-/else if-branch is active
         if self.decision_analysis_active:
-            self.continue_multiline_decision_analysis(lineno, code)
+            self._continue_multiline_decision_analysis(lineno, code)
 
         # if no decision analysis is active, check the active line of code for a branch_statement or a loop
         if self.decision_analysis_active:
@@ -221,7 +223,7 @@ class DecisionParser:
                     line_coverage.decision = DecisionCoverageUncheckable()
                     LOGGER.debug(f"Uncheckable decision at line {lineno}")
             else:
-                self.start_multiline_decision_analysis(lineno, code)
+                self._start_multiline_decision_analysis(lineno, code)
 
         # check if it's a case statement (measured at every line of a case, so a branch definition isn't given)
         elif _is_a_switch(code):
@@ -238,7 +240,8 @@ class DecisionParser:
                 if " break ;" in _prepare_decision_string(code):
                     break
 
-    def start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
+    def _start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
+        """Handler for start of a decision written over several lines."""
         # normal (non-compact) branch, analyze execution of following lines
         self.decision_analysis_active = True
         self.last_decision_line = lineno
@@ -246,7 +249,8 @@ class DecisionParser:
         # count brackets to make sure we're outside of the decision expression
         self.decision_analysis_open_brackets += _get_delta_braces(code)
 
-    def continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
+    def _continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
+        """Handler for a decision which is continued on the current line."""
         line_coverage = self.coverage.lines.get(lineno)
         exec_count = 0 if line_coverage is None else line_coverage.count
         last_decision_line_cov = self.coverage.lines.get(self.last_decision_line)

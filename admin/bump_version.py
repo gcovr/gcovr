@@ -48,7 +48,8 @@ HEADER_END = (
 )
 
 
-def getLicenseSection(comment_char: str = "#"):
+def get_copyright_header(comment_char: str = "#"):
+    """Get the content of the copyright header."""
     yield (
         comment_char
         + "  ************************** Copyrights and license ***************************"
@@ -74,102 +75,104 @@ def getLicenseSection(comment_char: str = "#"):
     yield comment_char + HEADER_END
 
 
-def addCopyrightHeaderToPythonFile(filename: str, lines: List[str]):
+def add_copyright_header_to_python_file(_filename: str, lines: List[str]):
+    """Add the copyright header to the python file."""
     # Empty file should be kept empty
     if len(lines) == 0:
         return lines
 
-    newLines = []
+    new_lines = []
     # Keep the Shebang
     if lines[0].startswith("#!"):
-        newLines.append(lines.pop(0))
-        newLines.append("")
+        new_lines.append(lines.pop(0))
+        new_lines.append("")
 
     # Set the encoding
     if lines[0].startswith("# -*- coding:"):
         lines.pop(0)
-    newLines.append("# -*- coding:utf-8 -*-")
-    newLines.append("")
+    new_lines.append("# -*- coding:utf-8 -*-")
+    new_lines.append("")
 
     # Add license information
-    newLines.extend(getLicenseSection())
+    new_lines.extend(get_copyright_header())
 
-    iterLines = iter(lines)
+    iter_lines = iter(lines)
 
     # skip lines until header end marker
-    headerEndReached = False
-    for line in iterLines:
+    for line in iter_lines:
         if len(line) > 0 and line == "#" + HEADER_END:
-            headerEndReached = True
+            for line in iter_lines:
+                if line != "":
+                    # Use one empty line
+                    new_lines.append("")
+                    # except for classes or functions, there we need two.
+                    if line.startswith("class") or line.startswith("def"):
+                        new_lines.append("")
+                    new_lines.append(line)
+                    break
             break
-
-    if headerEndReached:
-        for line in iterLines:
-            if line != "":
-                # Use one empty line
-                newLines.append("")
-                # except for classes or functions, there we need two.
-                if line.startswith("class") or line.startswith("def"):
-                    newLines.append("")
-                newLines.append(line)
-                break
-        # keep all other lines
-        newLines.extend(iterLines)
     # no header found
     else:
-        newLines.append("\n")
-        # keep all other lines
-        newLines.extend(lines)
+        new_lines.append("\n")
 
-    return newLines
+    # keep all other lines
+    new_lines.extend(iter_lines)
+
+    return new_lines
 
 
-def updateCopyrightString(filename: str, lines: List[str]):
-    newLines = []
+def update_copyright_string(filename: str, lines: List[str]):
+    """Update the copyright."""
+    new_lines = []
 
-    iterLines = iter(lines)
-    for line in iterLines:
-        newLines.append(line)
+    iter_lines = iter(lines)
+    for line in iter_lines:
+        new_lines.append(line)
         if line == "COPYRIGHT = (":
             break
     else:
         raise RuntimeError(f"Start of copyright not found in {filename!r}.")
 
     for line in COPYRIGHT:
-        newLines.append(f'    "{line}\\n"')
+        new_lines.append(f'    "{line}\\n"')
 
-    for line in iterLines:
+    for line in iter_lines:
         if line == ")":
-            newLines.append(line)
+            new_lines.append(line)
             break
     else:
         raise RuntimeError(f"End of copyright not found in {filename!r}.")
 
-    newLines.extend(iterLines)
+    new_lines.extend(iter_lines)
 
-    return newLines
+    return new_lines
 
 
-def updateCallOfReleaseChecklist(filename: str, lines: List[str]):
-    newLines = []
+def update_call_of_release_checklist(filename: str, lines: List[str]):
+    """Update the release checklist."""
+    new_lines = []
 
-    callReleaseChecklist = "admin/release_checklist.sh"
-    callFound = False
-    for line in lines:
-        if callReleaseChecklist in line:
+    call_release_checklist = "admin/release_checklist.sh"
+    iter_lines = iter(lines)
+    for line in iter_lines:
+        if call_release_checklist in line:
             line = re.sub(r"\d+\.\d+(?:\+main)?$", VERSION, line)
-            callFound = True
-        newLines.append(line)
-    if not callFound:
+            new_lines.append(line)
+            break
+        new_lines.append(line)
+    else:
         raise RuntimeError(
-            f"Call of {callReleaseChecklist!r} not found in {filename!r}."
+            f"Call of {call_release_checklist!r} not found in {filename!r}."
         )
 
-    return newLines
+    new_lines.extend(iter_lines)
+
+    return new_lines
 
 
-def updateChangelog(filename: str, lines: List[str]):
-    newLines = []
+def update_changelog(filename: str, lines: List[str]):
+    """Update the version in the CHANGELOG."""
+    new_lines = []
 
     # We need to also change the line after "Next Release"
     # because the minus must have the same length than the
@@ -180,21 +183,26 @@ def updateChangelog(filename: str, lines: List[str]):
     # to:
     #    x.y (Day Month Year)
     #    --------------------
-    nextLine = None
-    for line in lines:
-        if line == "Next Release":
+    next_release = "Next Release"
+    iter_lines = iter(lines)
+    for line in iter_lines:
+        if line == next_release:
             line = f"{VERSION} ({time.strftime('%d %B %Y')})"
-            nextLine = "-" * len(line)
-        elif nextLine:
-            line = nextLine
-            nextLine = None
-        newLines.append(line)
+            new_lines.extend([line, "-" * len(line)])
+            iter_lines.__next__()  # pylint: disable=unnecessary-dunder-call
+            break
+        new_lines.append(line)
+    else:
+        raise RuntimeError(f"Call of {next_release!r} not found in {filename!r}.")
 
-    return newLines
+    new_lines.extend(iter_lines)
+
+    return new_lines
 
 
-def updateDocumentation(filename: str, lines: List[str]):
-    newLines = []
+def update_documentation(_filename: str, lines: List[str]):
+    """Update the references to the next version in the documentation."""
+    new_lines = []
 
     for line in lines:
         if "NEXT" in line:
@@ -203,13 +211,14 @@ def updateDocumentation(filename: str, lines: List[str]):
                 r"\g<1>" + VERSION,
                 line,
             )
-        newLines.append(line)
+        new_lines.append(line)
 
-    return newLines
+    return new_lines
 
 
-def updateReferenceData(filename: str, lines: List[str]):
-    newLines = []
+def update_reference_data(_filename: str, lines: List[str]):
+    """Update the version in the reference data."""
+    new_lines = []
 
     def replace_html_version(matches) -> str:
         return f"{matches.group(1)}{READTHEDOCS_VERSION}{matches.group(2)}{VERSION}{matches.group(3)}"
@@ -230,97 +239,105 @@ def updateReferenceData(filename: str, lines: List[str]):
                 replace_xml_version,
                 line,
             )
-        newLines.append(line)
+        new_lines.append(line)
 
-    return newLines
+    return new_lines
 
 
-def updateLicense(filename: str, lines: List[str]):
-    newLines = [
+def update_license(filename: str, lines: List[str]):
+    """Update the license file."""
+    new_lines = [
         "BSD 3-Clause License",
         "",
     ]
 
     for line in COPYRIGHT:
-        newLines.append(line)
-    newLines.append("")
+        new_lines.append(line)
+    new_lines.append("")
 
-    iterLines = iter(lines)
-    for line in iterLines:
+    iter_lines = iter(lines)
+    for line in iter_lines:
         if line == "All rights reserved.":
-            newLines.append(line)
+            new_lines.append(line)
             break
     else:
         raise RuntimeError(f"Start of license not found in {filename!r}.")
 
-    newLines.extend(iterLines)
+    new_lines.extend(iter_lines)
 
-    return newLines
+    return new_lines
 
 
-def updateSourceDateEpoch(filename: str, lines: List[str]):
-    newLines = []
+def update_source_date_epoch(filename: str, lines: List[str]):
+    """Update the timestamp in the test."""
+    new_lines = []
 
-    envSourceDateEpoch = 'env["SOURCE_DATE_EPOCH"] = '
-    setEnvironmentFound = False
-    for line in lines:
-        if line.startswith(envSourceDateEpoch):
+    env_source_date_epoch = 'env["SOURCE_DATE_EPOCH"] = '
+    iter_lines = iter(lines)
+    for line in iter_lines:
+        if line.startswith(env_source_date_epoch):
             line = re.sub(r"\d+", str(int(time.time())), line)
-            setEnvironmentFound = True
-        newLines.append(line)
-    if not setEnvironmentFound:
-        raise RuntimeError(f"Call of {envSourceDateEpoch!r} not found in {filename!r}.")
+            new_lines.append(line)
+            break
+        new_lines.append(line)
+    else:
+        raise RuntimeError(
+            f"Call of {env_source_date_epoch!r} not found in {filename!r}."
+        )
 
-    return newLines
+    new_lines.extend(iter_lines)
+
+    return new_lines
 
 
 def main():
+    """Main entry point."""
     for root, dirs, files in os.walk(".", topdown=True):
 
-        def skip_dir(dir: str) -> bool:
-            return dir in [".git", ".venv"] or dir.startswith(".nox")
+        def skip_dir(directory: str) -> bool:
+            return directory in [".git", ".venv"] or directory.startswith(".nox")
 
-        dirs[:] = [dir for dir in dirs if not skip_dir(dir)]
+        dirs[:] = [directory for directory in dirs if not skip_dir(directory)]
 
         for filename in files:
             handlers = []
             _, extension = os.path.splitext(filename)
             fullname = os.path.join(root, filename)
             if filename.endswith(".py"):
-                handlers.append(addCopyrightHeaderToPythonFile)
+                handlers.append(add_copyright_header_to_python_file)
             if filename == "__main__.py":
-                handlers.append(updateCopyrightString)
+                handlers.append(update_copyright_string)
             if filename == "CI.yml":
-                handlers.append(updateCallOfReleaseChecklist)
+                handlers.append(update_call_of_release_checklist)
             if filename == "LICENSE.txt":
-                handlers.append(updateLicense)
+                handlers.append(update_license)
             if filename == "test_gcovr.py":
-                handlers.append(updateSourceDateEpoch)
+                handlers.append(update_source_date_epoch)
             if (
                 ("reference" in fullname or "examples" in fullname)
                 and "html-encoding-" not in fullname
                 and extension in [".xml", ".html"]
             ):
-                handlers.append(updateReferenceData)
+                handlers.append(update_reference_data)
 
             if not VERSION.endswith("+main"):
                 if filename == "CHANGELOG.rst":
-                    handlers.append(updateChangelog)
+                    handlers.append(update_changelog)
                 if filename.endswith(".rst"):
-                    handlers.append(updateDocumentation)
+                    handlers.append(update_documentation)
 
             if handlers:
                 with open(fullname, encoding="utf-8") as f:
                     lines = list(line.rstrip() for line in f)
-                newLines = copy.copy(
+                new_lines = copy.copy(
                     lines
                 )  # use a copy because of the compare at the end
                 for handler in handlers:
-                    newLines = handler(fullname, newLines)
-                if newLines != lines:
-                    logging.info("Modifying {}".format(fullname))
+                    new_lines = handler(fullname, new_lines)
+                if new_lines != lines:
+                    logging.info(f"Modifying {fullname}")
                     with open(fullname, "w", encoding="utf-8") as f:
-                        for line in newLines:
+                        for line in new_lines:
                             f.write(line + "\n")
 
 
