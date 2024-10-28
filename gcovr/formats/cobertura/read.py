@@ -116,19 +116,21 @@ def _line_from_xml(filename: str, xml_line) -> LineCoverage:
 
     is_branch = xml_line.get("branch") == "true"
     branch_msg = xml_line.get("condition-coverage")
-    line = LineCoverage(lineno, count=count)
+    linecov = LineCoverage(lineno, count=count)
 
     if is_branch and branch_msg is not None:
         try:
             [covered, total] = branch_msg[branch_msg.rfind("(") + 1 : -1].split("/")
             for i in range(int(total)):
-                insert_branch_coverage(line, i, _branch_from_json(i, i < int(covered)))
+                insert_branch_coverage(
+                    linecov, i, _branch_from_json(i, i < int(covered))
+                )
         except AssertionError:  # pragma: no cover
             LOGGER.warning(
-                f"Invalid branch information for line {line.lineno} in file {filename}"
+                f"Invalid branch information for line {linecov.lineno} in file {filename}"
             )
 
-    return line
+    return linecov
 
 
 def _branch_from_json(blockno: int, is_covered: bool) -> BranchCoverage:

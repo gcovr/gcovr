@@ -512,12 +512,12 @@ def _gather_coverage_from_line(
     elif isinstance(line, _BranchLine):
         branchno, hits, annotation = line
 
-        # line_cov won't exist if it was considered noncode
-        line_cov = coverage.lines.get(state.lineno)
+        # linecov won't exist if it was considered noncode
+        linecov = coverage.lines.get(state.lineno)
 
-        if line_cov:
+        if linecov:
             insert_branch_coverage(
-                line_cov,
+                linecov,
                 branchno,
                 BranchCoverage(
                     blockno=state.blockno,
@@ -540,10 +540,10 @@ def _gather_coverage_from_line(
     # ignore unused line types, such as specialization sections
     elif isinstance(line, _CallLine):
         callno, returned = line
-        line_cov = coverage.lines[state.lineno]  # must already exist
+        linecov = coverage.lines[state.lineno]  # must already exist
 
         insert_call_coverage(
-            line_cov,
+            linecov,
             CallCoverage(
                 callno=callno,
                 covered=(returned > 0),

@@ -29,6 +29,7 @@
         "branchcoverage",
         "branchno",
         "bugtracker",
+        "callcov",
         "callno",
         "casefold",
         "ccache",

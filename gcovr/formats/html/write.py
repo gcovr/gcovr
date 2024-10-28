@@ -37,6 +37,7 @@ from pygments.lexers import get_lexer_for_filename
 
 
 from ...coverage import (
+    BranchCoverage,
     CallCoverage,
     CovData,
     CoverageStat,
@@ -933,7 +934,7 @@ def dict_from_stat(
 
 
 def source_row(
-    lineno: int, source: str, line_cov: Optional[LineCoverage]
+    lineno: int, source: str, linecov: Optional[LineCoverage]
 ) -> Dict[str, Any]:
     """Get information for a row"""
     linebranch = None
@@ -942,23 +943,23 @@ def source_row(
     linecall = None
     linecount = ""
     covclass = ""
-    if line_cov:
-        if line_cov.is_excluded:
+    if linecov:
+        if linecov.is_excluded:
             covclass = "excludedLine"
-        elif line_cov.is_covered:
-            linebranch = source_row_branch(line_cov.branches)
+        elif linecov.is_covered:
+            linebranch = source_row_branch(linecov.branches)
             covclass = (
                 "coveredLine"
                 if linebranch is None or linebranch["taken"] == linebranch["total"]
                 else "partialCoveredLine"
             )
-            linecondition = source_row_condition(line_cov.conditions)
-            linedecision = source_row_decision(line_cov.decision)
-            linecount = line_cov.count
-        elif line_cov.is_uncovered:
+            linecondition = source_row_condition(linecov.conditions)
+            linedecision = source_row_decision(linecov.decision)
+            linecount = linecov.count
+        elif linecov.is_uncovered:
             covclass = "uncoveredLine"
-            linedecision = source_row_decision(line_cov.decision)
-        linecall = source_row_call(line_cov.calls)
+            linedecision = source_row_decision(linecov.decision)
+        linecall = source_row_call(linecov.calls)
     return {
         "lineno": lineno,
         "source": source,
@@ -971,7 +972,7 @@ def source_row(
     }
 
 
-def source_row_branch(branches) -> Dict[str, Any]:
+def source_row_branch(branches: Dict[int, BranchCoverage]) -> Dict[str, Any]:
     """Get branch information for a row"""
     if not branches:
         return None
@@ -980,19 +981,18 @@ def source_row_branch(branches) -> Dict[str, Any]:
     total = 0
     items = []
 
-    for branch_id in sorted(branches):
-        branch = branches[branch_id]
-        if branch.is_covered:
+    for branchno, branchcov in branches.items():
+        if branchcov.is_covered:
             taken += 1
-        if branch.excluded:
+        if branchcov.excluded:
             total -= 1
         total += 1
         items.append(
             {
-                "name": branch_id,
-                "taken": branch.is_covered,
-                "count": branch.count,
-                "excluded": branch.excluded,
+                "name": branchno,
+                "taken": branchcov.is_covered,
+                "count": branchcov.count,
+                "excluded": branchcov.excluded,
             }
         )
 
@@ -1087,17 +1087,17 @@ def source_row_decision(
     }
 
 
-def source_row_call(calls: Optional[CallCoverage]) -> Dict[str, Any]:
+def source_row_call(callcov: Optional[CallCoverage]) -> Dict[str, Any]:
     """Get call information for a source row."""
-    if not calls:
+    if not callcov:
         return None
 
     invoked = 0
     total = 0
     items = []
 
-    for call_id in sorted(calls):
-        call = calls[call_id]
+    for call_id in sorted(callcov):
+        call = callcov[call_id]
         if call.is_covered:
             invoked += 1
         total += 1

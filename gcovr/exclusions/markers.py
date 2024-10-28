@@ -32,7 +32,7 @@ from .utils import (
     get_functions_by_line,
 )
 
-from ..coverage import BranchCoverage, FileCoverage, FunctionCoverage, LineCoverage
+from ..coverage import FileCoverage, FunctionCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -128,20 +128,19 @@ def _process_exclude_branch_source(
                         function_name = filecov.lines[lineno].function_name
                         block_ids = filecov.lines[lineno].block_ids
                         # Check the lines which belong to the function
-                        line: LineCoverage
-                        for current_lineno in filecov.lines:
-                            line = filecov.lines[current_lineno]
-                            if line.function_name != function_name:
+                        for cur_lineno, cur_linecov in filecov.lines.items():
+                            if cur_linecov.function_name != function_name:
                                 continue
                             # Exclude the branch where the destination is one of the blocks of the line with the marker
-                            branch: BranchCoverage
-                            for branchno in line.branches:
-                                branch = line.branches[branchno]
-                                if branch.destination_blockno in block_ids:
+                            for (
+                                cur_branchno,
+                                cur_branchcov,
+                            ) in cur_linecov.branches.items():
+                                if cur_branchcov.destination_blockno in block_ids:
                                     LOGGER.debug(
-                                        f"Source branch exclusion at {location} is excluding branch {branchno} of line {current_lineno}"
+                                        f"Source branch exclusion at {location} is excluding branch {cur_branchno} of line {cur_lineno}"
                                     )
-                                    branch.excluded = True
+                                    cur_branchcov.excluded = True
                 else:
                     LOGGER.error(
                         f"Found marker for source branch exclusion at {location} without coverage information"

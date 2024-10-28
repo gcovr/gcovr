@@ -207,30 +207,22 @@ def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]
     # Initialize coverage array and load with line coverage data
     source_file["coverage"] = []
     # source_file['branches'] = []
-    for line in sorted(coverage_details.lines):
-        # Extract LineCoverage object
-        line_details = coverage_details.lines[line]
-
+    for lineno, linecov in coverage_details.lines.items():
         # Comment lines are not collected in `covdata`, but must
         # be reported to coveralls (fill missing lines)
-        _extend_with_none(source_file["coverage"], line - 1)
+        _extend_with_none(source_file["coverage"], lineno - 1)
 
-        if not line_details.is_reportable:
-            source_file["coverage"].append(None)
-            continue
-
-        # Record line counts at corresponding list index
-        source_file["coverage"].append(line_details.count)
+        source_file["coverage"].append(linecov.count if linecov.is_reportable else None)
 
         # Record branch information (INCOMPLETE/OMITTED)
-        # branch_details = line_details.branches
+        # branch_details = linecov.branches
         # if branch_details:
-        #     b_total, b_hits, coverage = line_details.branch_coverage()
+        #     stat = linecov.branch_coverage()
         #     source_file['coverage'].append(line)
         #     # TODO: Add block information to `covdata` object
         #     source_file['coverage'].append(0)
-        #     source_file['coverage'].append(b_total)
-        #     source_file['coverage'].append(b_hits)
+        #     source_file['coverage'].append(stat.total)
+        #     source_file['coverage'].append(stat.covered)
 
     # add trailing empty lines
     if total_line_count is not None:

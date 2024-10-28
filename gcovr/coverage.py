@@ -454,7 +454,7 @@ class LineCoverage:
     @property
     def has_uncovered_branch(self) -> bool:
         """Return True if the line has a uncovered branches."""
-        return not all(branch.is_covered for branch in self.branches.values())
+        return not all(branchcov.is_covered for branchcov in self.branches.values())
 
     @property
     def has_uncovered_decision(self) -> bool:
@@ -560,8 +560,8 @@ class FileCoverage:
         filecov.functions[functioncov.name] = functioncov
 
         filecov.lines = {
-            line: linecov
-            for line, linecov in self.lines.items()
+            lineno: linecov
+            for lineno, linecov in self.lines.items()
             if linecov.function_name == functioncov.name
         }
 
@@ -572,11 +572,11 @@ class FileCoverage:
         total = 0
         covered = 0
 
-        for function in self.functions.values():
-            for lineno, excluded in function.excluded.items():
+        for functioncov in self.functions.values():
+            for lineno, excluded in functioncov.excluded.items():
                 if not excluded:
                     total += 1
-                    if function.count[lineno] > 0:
+                    if functioncov.count[lineno] > 0:
                         covered += 1
 
         return CoverageStat(covered, total)
@@ -631,9 +631,9 @@ class FileCoverage:
 
         for linecov in self.lines.values():
             if linecov.is_reportable and len(linecov.calls) > 0:
-                for call in linecov.calls.values():
+                for callcov in linecov.calls.values():
                     total += 1
-                    if call.is_covered:
+                    if callcov.is_covered:
                         covered += 1
 
         return CoverageStat(covered, total)

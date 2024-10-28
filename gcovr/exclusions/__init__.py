@@ -116,8 +116,8 @@ def remove_calls(filecov: FileCoverage):
     """Remove the information about calls."""
 
     # Clear the calls of each line.
-    for line in filecov.lines.values():
-        line.calls.clear()
+    for linecov in filecov.lines.values():
+        linecov.calls.clear()
 
 
 def remove_internal_functions(filecov: FileCoverage):
@@ -125,12 +125,12 @@ def remove_internal_functions(filecov: FileCoverage):
 
     # Get all the keys first because we want to remove some of them which will else result in an error.
     for key in list(filecov.functions.keys()):
-        function = filecov.functions[key]
-        if _function_can_be_excluded(function.demangled_name):
+        functioncov = filecov.functions[key]
+        if _function_can_be_excluded(functioncov.demangled_name):
             LOGGER.debug(
                 "Ignoring symbol %s in line %s in file %s",
-                function.demangled_name,
-                ", ".join([str(line) for line in sorted(function.count.keys())]),
+                functioncov.demangled_name,
+                ", ".join([str(line) for line in sorted(functioncov.count.keys())]),
                 filecov.filename,
             )
 
@@ -139,7 +139,7 @@ def remove_internal_functions(filecov: FileCoverage):
             for linecov in filecov.lines.values():
                 if (
                     linecov.function_name is not None
-                    and linecov.function_name == function.name
+                    and linecov.function_name == functioncov.name
                 ):
                     linecov.excluded = True
                     linecov.branches = {}
@@ -155,9 +155,9 @@ def remove_function_lines(filecov: FileCoverage) -> None:
     """Remove coverage for lines that contain a function definition."""
     # iterate over a shallow copy
     known_function_lines = set(
-        line
-        for function in filecov.functions.values()
-        for line in function.count.keys()
+        lineno
+        for functioncov in filecov.functions.values()
+        for lineno in functioncov.count.keys()
     )
     for linecov in list(filecov.lines.values()):
         if linecov.lineno in known_function_lines:
@@ -168,8 +168,8 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
     """Remove branches annotated as "throw"."""
     for linecov in filecov.lines.values():
         # iterate over shallow copy
-        for branch_id, branch in list(linecov.branches.items()):
-            if branch.throw:
+        for branch_id, branchcov in list(linecov.branches.items()):
+            if branchcov.throw:
                 LOGGER.debug(
                     "Excluding unreachable branch on line %d file %s: detected as exception-only code",
                     linecov.lineno,

@@ -59,12 +59,12 @@ def get_functions_by_line(filecov: FileCoverage) -> FunctionListByLine:
     """Get dict with the linenumber as key and the function defined in the line as value."""
     functions_by_line: FunctionListByLine = {}
     if filecov is not None:
-        for function in filecov.functions.values():
-            if function.start is not None:
-                for lineno, _ in function.start.items():
+        for functioncov in filecov.functions.values():
+            if functioncov.start is not None:
+                for lineno, _ in functioncov.start.items():
                     if lineno not in functions_by_line:
                         functions_by_line[lineno] = []
-                    functions_by_line[lineno].append(function)
+                    functions_by_line[lineno].append(functioncov)
 
     return functions_by_line
 
@@ -150,11 +150,11 @@ def apply_exclusion_ranges(
         elif branch_is_excluded(linecov.lineno):
             linecov.branches = {}
 
-    for function in filecov.functions.values():
-        for lineno in function.excluded.keys():
+    for functioncov in filecov.functions.values():
+        for lineno in functioncov.excluded.keys():
             if line_is_excluded(lineno):
-                function.count[lineno] = 0
-                function.excluded[lineno] = True
+                functioncov.count[lineno] = 0
+                functioncov.excluded[lineno] = True
 
 
 def make_is_in_any_range_inclusive(

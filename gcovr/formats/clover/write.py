@@ -80,14 +80,12 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         lineno = 0
         ncloc = 0
         covered_elements = 0
-        for lineno in sorted(data.lines):
-            line_cov = data.lines[lineno]
-            if not line_cov.is_reportable:
-                continue
-            ncloc += 1
-            if line_cov.is_covered:
-                covered_elements += 1
-            file_elem.append(_line_element(line_cov))
+        for lineno, linecov in data.lines.items():
+            if linecov.is_reportable:
+                ncloc += 1
+                if linecov.is_covered:
+                    covered_elements += 1
+                file_elem.append(_line_element(linecov))
 
         file_elem.set("name", fname)
         file_elem.set("path", filename)
