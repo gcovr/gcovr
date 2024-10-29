@@ -77,10 +77,11 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         class_metrics = _metrics_element()
         class_elem.append(class_metrics)
 
-        lineno = 0
+        loc = 0
         ncloc = 0
         covered_elements = 0
-        for lineno, linecov in data.lines.items():
+        for linecov in data.lines.values():
+            loc = linecov.lineno
             if linecov.is_reportable:
                 ncloc += 1
                 if linecov.is_covered:
@@ -91,7 +92,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         file_elem.set("path", filename)
 
         file_metrics.set("classes", "1")
-        file_metrics.set("loc", str(lineno))
+        file_metrics.set("loc", str(loc))
         file_metrics.set("ncloc", str(ncloc))
         file_metrics.set("elements", str(ncloc))
         file_metrics.set("coveredelements", str(covered_elements))
@@ -100,12 +101,12 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         class_metrics.set("coveredelements", str(covered_elements))
 
         package_data.files_xml[fname] = file_elem
-        package_data.loc += lineno
+        package_data.loc += loc
         package_data.ncloc += ncloc
         package_data.covered_elements += covered_elements
 
         project_data.files += 1
-        project_data.loc += lineno
+        project_data.loc += loc
         project_data.ncloc += ncloc
         project_data.covered_elements += covered_elements
 
