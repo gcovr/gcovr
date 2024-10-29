@@ -20,6 +20,7 @@
 import logging
 import os
 from glob import glob
+from typing import Optional
 from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
@@ -43,7 +44,7 @@ LOGGER = logging.getLogger("gcovr")
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def read_report(options: Options) -> CovData:
+def read_report(options: Options) -> Optional[CovData]:
     """merge a coverage from multiple reports in the format
     compatible with Cobertura"""
 
@@ -63,43 +64,48 @@ def read_report(options: Options) -> CovData:
         for trace_file in trace_files:
             datafiles.add(os.path.normpath(trace_file))
 
-    covdata = {}
-    for filename in datafiles:
-        LOGGER.debug(f"Processing XML file: {filename}")
+    covdata: CovData = {}
+    for data_source_filename in datafiles:
+        LOGGER.debug(f"Processing XML file: {data_source_filename}")
 
         try:
-            root = etree.parse(filename).getroot()  # nosec # We parse the file given by the user
+            root: etree._Element = etree.parse(data_source_filename).getroot()  # nosec # We parse the file given by the user
         except Exception as e:
             raise RuntimeError(f"Bad --cobertura-add-tracefile option.\n{e}") from None
 
-        for gcovr_file in root.xpath("./packages//class"):
-            if gcovr_file.get("filename") is None:  # pragma: no cover
+        gcovr_file: etree._Element
+        for gcovr_file in root.xpath("./packages//class"):  # type: ignore [assignment, union-attr]
+            filename = gcovr_file.get("filename")
+            if filename is None:  # pragma: no cover
                 LOGGER.warning(
-                    f"Missing filename attribute in class element of {filename}"
+                    f"Missing filename attribute in class element at {data_source_filename}:{gcovr_file.sourceline}"
                 )
                 continue
 
             file_path = os.path.join(
                 os.path.abspath(options.root),
-                os.path.normpath(gcovr_file.get("filename")),
+                str(os.path.normpath(filename)),
             )
 
             if is_file_excluded(file_path, options.filter, options.exclude):
                 continue
 
-            file_coverage = FileCoverage(file_path, filename)
+            filecov = FileCoverage(file_path, data_source_filename)
             merge_options = get_merge_mode_from_options(options)
-            for xml_line in gcovr_file.xpath("./lines//line"):
-                insert_line_coverage(file_coverage, _line_from_xml(filename, xml_line))
+            xml_line: etree._Element
+            for xml_line in gcovr_file.xpath("./lines//line"):  # type: ignore [assignment, union-attr]
+                insert_line_coverage(
+                    filecov, _line_from_xml(data_source_filename, xml_line)
+                )
 
-            insert_file_coverage(covdata, file_coverage, merge_options)
+            insert_file_coverage(covdata, filecov, merge_options)
 
     return covdata
 
 
-def _line_from_xml(filename: str, xml_line) -> LineCoverage:
+def _line_from_xml(filename: str, xml_line: etree._Element) -> LineCoverage:
     try:
-        lineno = int(xml_line.get("number"))
+        lineno = int(xml_line.get("number", ""))
     except Exception:  # pragma: no cover
         raise RuntimeError(
             "Bad --covertura-add-tracefile option.\n"
@@ -107,7 +113,7 @@ def _line_from_xml(filename: str, xml_line) -> LineCoverage:
         ) from None
 
     try:
-        count = int(xml_line.get("hits"))
+        count = int(xml_line.get("hits", ""))
     except Exception:  # pragma: no cover
         raise RuntimeError(
             "Bad --covertura-add-tracefile option.\n"

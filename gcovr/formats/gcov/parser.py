@@ -187,8 +187,8 @@ class _FunctionLine(NamedTuple):
     """
 
     name: str
-    count: int
-    blocks_covered: int
+    call_count: int
+    blocks_covered: float
 
 
 # NamedTuples can't inherit from a common base,
@@ -339,8 +339,8 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    ignore_parse_errors: Set,
-    data_filename: str = None,  # Only for tests
+    ignore_parse_errors: Optional[Set[str]],
+    data_filename: Optional[str] = None,  # Only for tests
 ) -> Tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
@@ -448,7 +448,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
 class _ParserState(NamedTuple):
     deferred_functions: List[_FunctionLine] = []
     lineno: int = 0
-    blockno: int = None
+    blockno: Optional[int] = None
     line_contents: str = ""
     is_recovering: bool = False
 
@@ -566,7 +566,7 @@ def _report_lines_with_errors(
     lines_with_errors: List[_LineWithError],
     *,
     filename: str,
-    ignore_parse_errors: set,
+    ignore_parse_errors: Optional[Set[str]],
 ) -> None:
     """Log warnings and potentially re-throw exceptions"""
 
@@ -680,11 +680,11 @@ def _parse_line(
 
     Example: can parse function tags:
     >>> _parse_line('function foo called 2 returned 1 blocks executed 85%')
-    _FunctionLine(name='foo', count=2, blocks_covered=85.0)
+    _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
     >>> _parse_line('function foo called 2 returned 50% blocks executed 85%')
-    _FunctionLine(name='foo', count=2, blocks_covered=85.0)
+    _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
     >>> _parse_line('function foo called 2 returned 100% blocks executed 85%')
-    _FunctionLine(name='foo', count=2, blocks_covered=85.0)
+    _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
     >>> _parse_line('function foo with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.UnknownLineType: function foo with some unknown format
@@ -928,12 +928,8 @@ def _parse_tag_line(
         match = _RE_FUNCTION_LINE.match(line)
         if match is not None:
             name, count, _, blocks = match.groups()
-            count = _int_from_gcov_unit(count)
-
             return _FunctionLine(
-                name,
-                count,
-                _float_from_gcov_percent(blocks),
+                name, _int_from_gcov_unit(count), _float_from_gcov_percent(blocks)
             )
 
     # SPECIALIZATION MARKER
@@ -988,7 +984,7 @@ def _int_from_gcov_unit(formatted: str) -> int:
     return int(formatted)
 
 
-def _float_from_gcov_percent(formatted: str) -> int:
+def _float_from_gcov_percent(formatted: str) -> float:
     """
     Transform percentage to float value
 

@@ -78,10 +78,10 @@ class MergeFunctionOptions:
     """Data class to store the function merge options."""
 
     ignore_function_lineno: bool = False
-    merge_function_use_line_zero: bool = None
-    merge_function_use_line_min: bool = None
-    merge_function_use_line_max: bool = None
-    separate_function: bool = None
+    merge_function_use_line_zero: bool = False
+    merge_function_use_line_min: bool = False
+    merge_function_use_line_max: bool = False
+    separate_function: bool = False
 
 
 FUNCTION_STRICT_MERGE_OPTIONS = MergeFunctionOptions()
@@ -405,9 +405,13 @@ def merge_function(
             except KeyError:
                 left.excluded[lineno] = excluded
         if right.start is not None:
+            if left.start is None:
+                left.start = {}
             for lineno, start in right.start.items():
                 left.start[lineno] = start
         if right.end is not None:
+            if left.end is None:
+                left.end = {}
             for lineno, end in right.end.items():
                 left.end[lineno] = end
         return left
@@ -434,10 +438,10 @@ def merge_function(
         lineno: any(left.excluded.values()) or any(right.excluded.values())
     }
 
-    if left.start is not None:
+    if left.start is not None and right.start is not None:
         # or the minimum start
         left.start = {lineno: min(*left.start.values(), *right.start.values())}
-    if left.end is not None:
+    if left.end is not None and right.end is not None:
         # or the maximum end
         left.end = {lineno: max(*left.end.values(), *right.end.values())}
 
@@ -661,7 +665,7 @@ def merge_call(
     right: CallCoverage,
     _options: MergeOptions,
     context: Optional[str],
-) -> BranchCoverage:
+) -> CallCoverage:
     """
     Merge CallCoverage information.
 

@@ -662,7 +662,7 @@ def test_import_valid_cobertura_file(tmp_path):
     covdata = read_reports(opts)
     assert covdata is not None
     assert testfile in covdata
-    filecov: FileCoverage = covdata[testfile]
+    filecov = covdata[testfile]
     assert len(filecov.lines) == 10
     for line, count, branches in [
         (7, 1, None),

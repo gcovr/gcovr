@@ -21,7 +21,7 @@ import json
 import logging
 import os
 import functools
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from ...options import Options
 
@@ -86,14 +86,15 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 def write_summary_report(covdata, output_file: str, options: Options):
     """Produce gcovr JSON summary report"""
 
-    json_dict = {}
+    json_dict: Dict[str, Any] = {}
 
     json_dict["root"] = os.path.relpath(
         options.root,
         os.getcwd() if output_file == "-" else os.path.dirname(output_file),
     )
     json_dict["gcovr/summary_format_version"] = versions.JSON_SUMMARY_FORMAT_VERSION
-    json_dict["files"] = []
+    files: List[Dict[str, Any]] = []
+    json_dict["files"] = files
 
     # Data
     keys = sort_coverage(
@@ -108,7 +109,7 @@ def write_summary_report(covdata, output_file: str, options: Options):
         if options.json_base:
             filename = "/".join([options.json_base, filename])
 
-        json_dict["files"].append(
+        files.append(
             {
                 "filename": filename,
                 **_summary_from_stats(
@@ -185,7 +186,7 @@ def _json_from_lines(lines: Dict[int, LineCoverage]) -> list:
 
 
 def _json_from_line(linecov: LineCoverage) -> dict:
-    json_line = {
+    json_line: Dict[str, Any] = {
         "line_number": linecov.lineno,
     }
     if linecov.function_name is not None:
@@ -283,7 +284,7 @@ def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
 def _json_from_function(functioncov: FunctionCoverage) -> list:
     json_functions = []
     for lineno, count in functioncov.count.items():
-        json_function = {}
+        json_function: Dict[str, Any] = {}
         if functioncov.name is not None:
             json_function["name"] = functioncov.name
         json_function.update(

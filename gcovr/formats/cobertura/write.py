@@ -143,7 +143,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 class PackageData:
     """Data class holding the package data"""
 
-    classes_xml: Dict[str, etree.Element]
+    classes_xml: Dict[str, etree._Element]
     stats: SummarizedStats
 
 
@@ -156,7 +156,7 @@ def _rate(stat: CoverageStat) -> str:
     return str(covered / total)
 
 
-def _line_element(linecov: LineCoverage) -> etree.Element:
+def _line_element(linecov: LineCoverage) -> etree._Element:
     stat = linecov.branch_coverage()
 
     elem = etree.Element("line")
@@ -178,13 +178,13 @@ def _line_element(linecov: LineCoverage) -> etree.Element:
     return elem
 
 
-def _conditions_element(branch: CoverageStat) -> etree.Element:
+def _conditions_element(branch: CoverageStat) -> etree._Element:
     elem = etree.Element("conditions")
     elem.append(_condition_element(branch))
     return elem
 
 
-def _condition_element(branch: CoverageStat) -> etree.Element:
+def _condition_element(branch: CoverageStat) -> etree._Element:
     coverage = branch.percent
     if coverage is None:
         raise AssertionError("Percent coverage must not be 'None'.")

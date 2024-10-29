@@ -96,7 +96,7 @@ def _process_exclude_branch_source(
     lines: List[str],
     *,
     exclude_pattern_prefix: str,
-    filecov: Optional[FileCoverage] = None,
+    filecov: FileCoverage,
 ) -> None:
     """
     Scan through all lines to find source branch exclusion markers.
@@ -126,7 +126,7 @@ def _process_exclude_branch_source(
                         )
                     else:
                         function_name = filecov.lines[lineno].function_name
-                        block_ids = filecov.lines[lineno].block_ids
+                        block_ids = filecov.lines[lineno].block_ids or []
                         # Check the lines which belong to the function
                         for cur_lineno, cur_linecov in filecov.lines.items():
                             if cur_linecov.function_name != function_name:
@@ -225,7 +225,7 @@ def _process_exclusion_marker(
     exclude_word: str,
     warnings: _ExclusionRangeWarnings,
     functions_by_line: FunctionListByLine,
-    exclude_ranges: List[Tuple[int, Optional[int]]],
+    exclude_ranges: List[Tuple[int, int]],
     exclusion_stack: List[Tuple[str, int]],
 ) -> None:
     """
@@ -279,7 +279,7 @@ def _find_excluded_ranges(
     exclude_pattern_prefix: str,
     exclude_lines_by_custom_pattern: Optional[str] = None,
     exclude_branches_by_custom_pattern: Optional[str] = None,
-    filecov: Optional[FileCoverage] = None,
+    filecov: FileCoverage,
 ) -> Tuple[ExclusionPredicate, ExclusionPredicate]:
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
@@ -295,7 +295,8 @@ def _find_excluded_ranges(
     ...     _lines_from_sparse(lines), warnings=...,
     ...     exclude_lines_by_custom_pattern='.*IGNORE_LINE',
     ...     exclude_branches_by_custom_pattern='.*IGNORE_BR',
-    ...     exclude_pattern_prefix='PREFIX')
+    ...     exclude_pattern_prefix='PREFIX',
+    ...     filecov=None)
     >>> [lineno for lineno in range(30) if exclude_line(lineno)]
     [11, 13, 15, 16, 17]
     >>> [lineno for lineno in range(30) if exclude_branch(lineno)]
@@ -305,7 +306,8 @@ def _find_excluded_ranges(
     >>> exclude_line, _ = _find_excluded_ranges(
     ...     _lines_from_sparse([(3, '// PREFIX_EXCL_START'), (7, '// PREFIX_EXCL_STOP')]),
     ...     warnings=...,
-    ...     exclude_pattern_prefix='PREFIX')
+    ...     exclude_pattern_prefix='PREFIX',
+    ...     filecov=None)
     >>> for lineno in range(1, 10):
     ...     print(f"{lineno}: {'excluded' if exclude_line(lineno) else 'code'}")
     1: code
@@ -333,7 +335,7 @@ def _find_excluded_ranges(
         excl_pattern_compiled = re.compile(excl_pattern)
 
         # possibly overlapping inclusive (closed) ranges that describe exclusions regions
-        exclude_ranges: List[Tuple[int, Optional[int]]] = []
+        exclude_ranges: List[Tuple[int, int]] = []
         exclusion_stack: List[Tuple[str, int]] = []
 
         for lineno, code in enumerate(lines, 1):

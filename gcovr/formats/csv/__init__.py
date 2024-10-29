@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import List
+from typing import List, Union
 
 from ...options import GcovrConfigOption, OutputOrDefault
 from ...formats.base import BaseHandler
@@ -29,7 +29,7 @@ class CsvHandler(BaseHandler):
     """Class to handle CSV format."""
 
     @classmethod
-    def get_options(cls) -> List[GcovrConfigOption]:
+    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
         return [
             GcovrConfigOption(
                 "csv",

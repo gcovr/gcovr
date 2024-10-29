@@ -60,7 +60,7 @@ _T = TypeVar("_T")
 
 
 def sort_coverage(
-    covdata: CovData,
+    covdata: Union[Dict[str, FileCoverage], Dict[str, DirectoryCoverage]],
     sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
     sort_reverse: bool,
     by_metric: Literal["line", "branch", "decision"],
@@ -80,7 +80,7 @@ def sort_coverage(
 
     basedir = commonpath(list(covdata.keys()))
 
-    def key_filename(key: str) -> str:
+    def key_filename(key: str) -> List[str]:
         def convert_to_int_if_possible(text):
             return int(text) if text.isdigit() else text
 
@@ -99,7 +99,7 @@ def sort_coverage(
         if by_metric == "branch":
             return cov.branch_coverage()
         if by_metric == "decision":
-            return cov.decision_coverage()
+            return cov.decision_coverage().to_coverage_stat
         return cov.line_coverage()
 
     def key_num_uncovered(key: str) -> int:
@@ -117,15 +117,22 @@ def sort_coverage(
         return covered / total if total > 0 else 1.1
 
     if sort_key == "uncovered-number":
-        key_fn = key_num_uncovered
-    elif sort_key == "uncovered-percent":
-        key_fn = key_percent_uncovered
-    else:
-        # By default, we sort by filename alphabetically
-        return sorted(covdata, key=key_filename, reverse=sort_reverse)
+        # First sort filename alphabetical and then by the requested key
+        return sorted(
+            sorted(covdata, key=key_filename),
+            key=key_num_uncovered,
+            reverse=sort_reverse,
+        )
+    if sort_key == "uncovered-percent":
+        # First sort filename alphabetical and then by the requested key
+        return sorted(
+            sorted(covdata, key=key_filename),
+            key=key_percent_uncovered,
+            reverse=sort_reverse,
+        )
 
-    # First sort filename alphabetical and then by the requested key
-    return sorted(sorted(covdata, key=key_filename), key=key_fn, reverse=sort_reverse)
+    # By default, we sort by filename alphabetically
+    return sorted(covdata, key=key_filename, reverse=sort_reverse)
 
 
 class BranchCoverage:
@@ -159,7 +166,7 @@ class BranchCoverage:
 
     def __init__(
         self,
-        blockno: int,
+        blockno: Optional[int],
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
@@ -190,7 +197,7 @@ class BranchCoverage:
     @property
     def is_excluded(self) -> bool:
         """Return True if the branch is excluded."""
-        return self.excluded
+        return False if self.excluded is None else self.excluded
 
     @property
     def is_reportable(self) -> bool:
@@ -384,10 +391,10 @@ class FunctionCoverage:
         self.count: Dict[int, int] = {lineno: count}
         self.blocks: Dict[int, float] = {lineno: blocks}
         self.excluded: Dict[int, bool] = {lineno: excluded}
-        self.start: Dict[int, Optional[Tuple[int, int]]] = (
+        self.start: Optional[Dict[int, Tuple[int, int]]] = (
             None if start is None else {lineno: start}
         )
-        self.end: Dict[int, Optional[Tuple[int, int]]] = (
+        self.end: Optional[Dict[int, Tuple[int, int]]] = (
             None if end is None else {lineno: end}
         )
 
@@ -436,7 +443,7 @@ class LineCoverage:
         function_name: Optional[str] = None,
         block_ids: Optional[List[int]] = None,
         md5: Optional[str] = None,
-        excluded: Optional[bool] = False,
+        excluded: bool = False,
     ) -> None:
         if lineno <= 0:
             raise AssertionError("Line number must be a positive value.")
@@ -448,9 +455,9 @@ class LineCoverage:
         self.function_name: Optional[str] = function_name
         self.block_ids: Optional[List[int]] = block_ids
         self.md5: Optional[str] = md5
-        self.excluded: Optional[bool] = excluded
+        self.excluded: bool = excluded
         self.branches: Dict[int, BranchCoverage] = {}
-        self.conditions: Optional[Dict[int, ConditionCoverage]] = {}
+        self.conditions: Dict[int, ConditionCoverage] = {}
         self.decision: Optional[DecisionCoverage] = None
         self.calls: Dict[int, CallCoverage] = {}
 
@@ -564,9 +571,9 @@ class FileCoverage:
         self.filename: str = filename
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
-        self.parent_dirname: str = None
-        self.data_sources: Optional[Set[str]] = (
-            None
+        self.parent_dirname: Optional[str] = None
+        self.data_sources: Set[str] = (
+            set([])
             if data_source is None
             else set([data_source] if isinstance(data_source, str) else data_source)
         )
@@ -675,8 +682,8 @@ class DirectoryCoverage:
 
     def __init__(self, dirname: str) -> None:
         self.dirname: str = dirname
-        self.parent_dirname: DirectoryCoverage = None
-        self.children: Dict[str, Union[DirectoryCoverage, FileCoverage]] = {}
+        self.parent_dirname: Optional[str] = None
+        self.children: Union[CovData, CovDataDirectories] = {}
         self.stats: SummarizedStats = SummarizedStats.new_empty()
 
     @staticmethod
@@ -715,7 +722,7 @@ class DirectoryCoverage:
         subdirs: CovDataDirectories = {}
         for key in sorted_keys:
             filecov = covdata[key]
-            dircov = filecov
+            dircov: Union[FileCoverage, DirectoryCoverage] = filecov
             while True:
                 dirname = DirectoryCoverage._get_dirname(dircov.filename, root_filter)
                 if dirname is None:
@@ -724,7 +731,7 @@ class DirectoryCoverage:
                 dircov.parent_dirname = dirname
                 if dirname not in subdirs:
                     subdirs[dirname] = DirectoryCoverage(dirname)
-                subdirs[dirname].children[dircov.filename] = dircov
+                subdirs[dirname].children[dircov.filename] = dircov  # type: ignore [assignment]
                 subdirs[dirname].stats += SummarizedStats.from_file(filecov)
                 dircov = subdirs[dirname]
 
@@ -757,9 +764,9 @@ class DirectoryCoverage:
                         collapse_dirs.add(orphan_key)
                 else:
                     # Add orphan value to the parent
-                    subdirs[parent_dirname].children[orphan_key] = orphan_value
+                    subdirs[str(parent_dirname)].children[orphan_key] = orphan_value  # type: ignore [assignment]
                     # and remove the current one.
-                    subdirs[parent_dirname].children.pop(dirname)
+                    subdirs[str(parent_dirname)].children.pop(dirname)
                     # Mark the key for removal.
                     collapse_dirs.add(dirname)
 
@@ -780,6 +787,10 @@ class DirectoryCoverage:
     def branch_coverage(self) -> CoverageStat:
         """A simple wrapper function necessary for sort_coverage()."""
         return self.stats.branch
+
+    def decision_coverage(self) -> DecisionCoverageStat:
+        """A simple wrapper function necessary for sort_coverage()."""
+        return self.stats.decision
 
 
 CovDataDirectories = Dict[str, DirectoryCoverage]

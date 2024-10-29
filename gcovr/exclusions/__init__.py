@@ -179,16 +179,16 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
 def remove_functions(filecov: FileCoverage, patterns: List[re.Pattern]) -> None:
     """Remove matching functions"""
     if filecov.functions:
-        if filecov.functions[list(filecov.functions.keys())[0]].start is None:
-            function_exclude_not_supported()
-        else:
-            functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
+        functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
 
-            exclude_ranges = []
-            for lineno, functions in functions_by_line.items():
-                for function in functions:
-                    for pattern in patterns:
-                        if pattern.fullmatch(function.demangled_name):
+        exclude_ranges = []
+        for lineno, functions in functions_by_line.items():
+            for function in functions:
+                for pattern in patterns:
+                    if pattern.fullmatch(function.demangled_name):
+                        if function.start is None or function.start[lineno] is None:
+                            function_exclude_not_supported()
+                        else:
                             exclude_ranges += get_function_exclude_ranges(
                                 filecov.filename,
                                 lineno,
@@ -196,15 +196,15 @@ def remove_functions(filecov: FileCoverage, patterns: List[re.Pattern]) -> None:
                                 + 1,  # Cheat that the comment is after the definition
                                 functions_by_line=functions_by_line,
                             )
-                            break
-            LOGGER.debug(
-                f"Exclusion range for functions from CLI in {filecov.filename}: {str(exclude_ranges)}."
-            )
-            exclusion_predicate: ExclusionPredicate = make_is_in_any_range_inclusive(
-                exclude_ranges
-            )
-            apply_exclusion_ranges(
-                filecov,
-                line_is_excluded=exclusion_predicate,
-                branch_is_excluded=exclusion_predicate,
-            )
+                        break
+        LOGGER.debug(
+            f"Exclusion range for functions from CLI in {filecov.filename}: {str(exclude_ranges)}."
+        )
+        exclusion_predicate: ExclusionPredicate = make_is_in_any_range_inclusive(
+            exclude_ranges
+        )
+        apply_exclusion_ranges(
+            filecov,
+            line_is_excluded=exclusion_predicate,
+            branch_is_excluded=exclusion_predicate,
+        )

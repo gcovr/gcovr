@@ -75,41 +75,46 @@ def get_function_exclude_ranges(
     """Get the exclude range for a given function."""
     exclude_ranges = []
     if functions_by_line:
-        lineno_end = None
         # Find the closest function definition in this line. Check end column if end line is on same line
         function_iter = iter(functions_by_line.get(lineno, []))
         for function in function_iter:
-            if columnno > function.start[lineno][1] and (
-                lineno < function.end[lineno][0] or columnno < function.end[lineno][1]
+            if (
+                function.start is not None
+                and function.end is not None
+                and columnno > function.start[lineno][1]
+                and (
+                    lineno < function.end[lineno][0]
+                    or columnno < function.end[lineno][1]
+                )
             ):
                 lineno_end = function.end[lineno][0]
+                included_ranges = []
+                # Now we need to check for nested functions which are included
+                for function in function_iter:
+                    if function.end is not None:
+                        included_ranges.append((lineno, function.end[lineno][0] + 1))
+                for function_lineno in range(lineno + 1, lineno_end):
+                    for function in functions_by_line.get(function_lineno, []):
+                        if function.start is not None and function.end is not None:
+                            included_ranges.append(
+                                (
+                                    function.start[function_lineno][0],
+                                    function.end[function_lineno][0],
+                                )
+                            )
+                if included_ranges:
+                    last_include_end = lineno
+                    for include_start, include_end in included_ranges:
+                        # The exclusion end must be in the line before
+                        exclude_ranges.append((last_include_end, include_start - 1))
+                        # The next exclusion must start after the included line
+                        last_include_end = include_end + 1
+                    exclude_ranges.append((last_include_end, lineno_end))
+                else:
+                    exclude_ranges.append((lineno, lineno_end))
                 break
         else:
             function_exclude_not_at_function_line(filename, lineno, columnno)
-
-        if lineno_end is not None:
-            included_ranges = []
-            # Now we need to check for nested functions which are included
-            for function in function_iter:
-                included_ranges.append((lineno, function.end[lineno][0] + 1))
-            for function_lineno in range(lineno + 1, lineno_end):
-                for function in functions_by_line.get(function_lineno, []):
-                    included_ranges.append(
-                        (
-                            function.start[function_lineno][0],
-                            function.end[function_lineno][0],
-                        )
-                    )
-            if included_ranges:
-                last_include_end = lineno
-                for include_start, include_end in included_ranges:
-                    # The exclusion end must be in the line before
-                    exclude_ranges.append((last_include_end, include_start - 1))
-                    # The next exclusion must start after the included line
-                    last_include_end = include_end + 1
-                exclude_ranges.append((last_include_end, lineno_end))
-            else:
-                exclude_ranges.append((lineno, lineno_end))
     else:
         function_exclude_not_supported(filename, lineno, columnno)
 

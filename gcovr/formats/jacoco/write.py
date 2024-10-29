@@ -104,11 +104,11 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
 class PackageData:
     """Class holding package information."""
 
-    classes_xml: Dict[str, etree.Element]
+    classes_xml: Dict[str, etree._Element]
     stats: SummarizedStats
 
 
-def _counter_element(element_type: str, stat: CoverageStat) -> etree.Element:
+def _counter_element(element_type: str, stat: CoverageStat) -> etree._Element:
     """format a CoverageStat as a string in range 0.0 to 1.0 inclusive"""
     counter_elem = etree.Element("counter")
     counter_elem.set("type", element_type)
@@ -118,7 +118,7 @@ def _counter_element(element_type: str, stat: CoverageStat) -> etree.Element:
     return counter_elem
 
 
-def _line_element(linecov: LineCoverage) -> etree.Element:
+def _line_element(linecov: LineCoverage) -> etree._Element:
     stat = linecov.branch_coverage()
 
     line_elem = etree.Element("line")

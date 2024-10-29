@@ -59,7 +59,7 @@ def find_test_cases() -> Iterator[Example]:
         name, _ = os.path.splitext(basename)
         for output_format in ["txt", "cobertura", "csv", "json", "html"]:
             if output_format in ("html", "cobertura") and is_compiler(
-                os.getenv("CC"), "gcc-5", "gcc-6", "gcc-14"
+                os.getenv("CC", "None"), "gcc-5", "gcc-6", "gcc-14"
             ):
                 continue
             baseline = f"{data_dirname}/{name}.{'xml' if output_format == 'cobertura' else output_format}"
@@ -69,7 +69,7 @@ def find_test_cases() -> Iterator[Example]:
 
 
 @pytest.mark.skipif(
-    not os.path.split(os.getenv("CC"))[1].startswith("gcc") or IS_MACOS,
+    not os.path.split(os.getenv("CC", ""))[1].startswith("gcc") or IS_MACOS,
     reason="Only for gcc",
 )
 @pytest.mark.parametrize("example", find_test_cases(), ids=str)

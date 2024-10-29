@@ -118,7 +118,7 @@ def write_summary_report(covdata: CovData, output_file: str, options: Options) -
         if stats.condition.total != 0:
             print_stat("conditions", stats.condition)
         if options.show_decision:
-            print_stat("decisions", stats.decision)
+            print_stat("decisions", stats.decision.to_coverage_stat)
         if not options.exclude_calls:
             print_stat("calls", stats.call)
 
@@ -131,7 +131,7 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
             stat = coverage.branch_coverage()
             covered_lines = _covered_branches_str(coverage)
         elif options.txt_metric == "decision":
-            stat = coverage.decision_coverage()
+            stat = coverage.decision_coverage().to_coverage_stat
             covered_lines = _covered_decisions_str(coverage)
         else:
             stat = coverage.line_coverage()
@@ -143,7 +143,7 @@ def _summarize_file_coverage(coverage: FileCoverage, options):
         stat = coverage.branch_coverage()
         uncovered_lines = _uncovered_branches_str(coverage)
     elif options.txt_metric == "decision":
-        stat = coverage.decision_coverage()
+        stat = coverage.decision_coverage().to_coverage_stat
         uncovered_lines = _uncovered_decisions_str(coverage)
     else:
         stat = coverage.line_coverage()

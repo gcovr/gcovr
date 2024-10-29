@@ -18,6 +18,7 @@
 # ****************************************************************************
 
 from __future__ import annotations
+from abc import abstractmethod
 from argparse import ArgumentTypeError
 import argparse
 import logging
@@ -49,7 +50,7 @@ def check_percentage(value: str) -> float:
     return x
 
 
-def check_input_file(value: str, basedir: str = None) -> str:
+def check_input_file(value: str, basedir: Optional[str] = None) -> str:
     r"""
     Check that the input file is present. Return the full path.
     """
@@ -68,7 +69,7 @@ def check_input_file(value: str, basedir: str = None) -> str:
     return os.path.abspath(value)
 
 
-def relative_path(value: str, basedir: str = None) -> str:
+def relative_path(value: str, basedir: Optional[str] = None) -> str:
     r"""
     Make a absolute path if value is a relative path.
     """
@@ -217,7 +218,7 @@ class OutputOrDefault:
     - ``OutputOrDefault(path)``: use that path
     """
 
-    def __init__(self, value: Optional[str], basedir: str = None) -> None:
+    def __init__(self, value: Optional[str], basedir: Optional[str] = None) -> None:
         self.value = value
         self._check_output_and_make_abspath(os.getcwd() if basedir is None else basedir)
 
@@ -308,7 +309,7 @@ class OutputOrDefault:
         return default
 
 
-class Options:
+class Options:  # type: ignore [attr-defined]
     """Wrapper for holding the configuration."""
 
     def __init__(self, **kwargs):
@@ -322,6 +323,10 @@ class Options:
 class GcovrConfigOptionAction(argparse.Action):  # pylint: disable=abstract-method
     """Abstract class to be detect our own actions."""
 
+    @abstractmethod
+    def store_config_key(self, namespace, values, config):
+        """Method to store a configuration key."""
+
 
 class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     """Argparse action for deprecated options to map on new option with a deprecation warning."""
@@ -329,21 +334,18 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     def __init__(self, option_strings, dest, **kwargs):
         super().__init__(option_strings, dest, **kwargs)
 
-    def __call__(self, parser, namespace, values, option_string=None, config=None):
-        if option_string is not None:
-            LOGGER.warning(
-                f"Deprecated option {option_string} used, please use '{self.option} {self.value}' instead."
-            )
-        if config is not None:
-            LOGGER.warning(
-                f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
-            )
-        # This part is used when merging configurations
-        if isinstance(namespace, dict):
-            namespace[self.dest] = values
-        # We are called from argparse
-        else:
-            setattr(namespace, self.dest, self.value)
+    def __call__(self, parser, namespace, values, option_string=None):
+        """Used by argparse to store the values."""
+        LOGGER.warning(
+            f"Deprecated option {option_string} used, please use '{self.option} {self.value}' instead."
+        )
+        setattr(namespace, self.dest, self.value)
+
+    def store_config_key(self, namespace, values, config):
+        LOGGER.warning(
+            f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
+        )
+        namespace[self.dest] = values
 
 
 class GcovrConfigOption:
@@ -420,18 +422,18 @@ class GcovrConfigOption:
         flags: Optional[List[str]] = None,
         *,
         help: str,
-        action: str = "store",
-        choices: list = None,
+        action: Union[str, Type[GcovrConfigOptionAction]] = "store",
+        choices: Optional[list] = None,
         const: Any = None,
         const_negate: Any = None,
         config: Union[str, bool] = True,
         default: Any = None,
-        group: str = None,
-        metavar: str = None,
-        nargs: Union[int, str] = None,
+        group: Optional[str] = None,
+        metavar: Optional[str] = None,
+        nargs: Union[int, str, None] = None,
         positional: bool = False,
         required: bool = False,
-        type: Callable[[str], Any] = None,
+        type: Optional[Callable[[str], Any]] = None,
     ) -> None:
         if flags is None:
             flags = []
@@ -485,7 +487,7 @@ class GcovrConfigOption:
 
         if not (
             action in ("store", "store_const", "append")
-            or issubclass(action, GcovrConfigOptionAction)
+            or issubclass(action, GcovrConfigOptionAction)  # type: ignore [arg-type]
         ):
             raise AssertionError(f"Unknown action {action!r}")
 

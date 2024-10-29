@@ -251,6 +251,10 @@ class DecisionParser:
         linecov = self.coverage.lines.get(lineno)
         exec_count = 0 if linecov is None else linecov.count
         last_decision_line_cov = self.coverage.lines.get(self.last_decision_line)
+        if last_decision_line_cov is None:
+            raise AssertionError(
+                "Sanity check failed, last decision must be present for multi line analysis."
+            )
 
         # check, if the branch statement was finished in the last line
         if self.decision_analysis_open_brackets == 0:

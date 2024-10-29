@@ -17,12 +17,15 @@
 #
 # ****************************************************************************
 
+import logging
 from sys import exc_info
 from threading import Thread, Condition, RLock
-from traceback import print_exception
+from traceback import format_exception
 from contextlib import contextmanager
 from queue import Queue, Empty
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List
+
+LOGGER = logging.getLogger("gcovr")
 
 
 class LockedDirectories:
@@ -54,19 +57,19 @@ class LockedDirectories:
         self.cv.release()
 
 
+locked_directory_global_object = LockedDirectories()
+
+
 @contextmanager
 def locked_directory(dir_):
     """
     Context for doing something in a locked directory
     """
-    locked_directory.global_object.run_in(dir_)
+    locked_directory_global_object.run_in(dir_)
     try:
         yield
     finally:
-        locked_directory.global_object.done(dir_)
-
-
-locked_directory.global_object = LockedDirectories()
+        locked_directory_global_object.done(dir_)
 
 
 def worker(queue: Queue, context: Callable[[], Dict[str, Any]], pool: "Workers"):
@@ -95,9 +98,9 @@ class Workers:
     def __init__(self, number: int, context: Callable[[], Dict[str, Any]]):
         if number < 1:
             raise AssertionError("At least one executer is needed.")
-        self.q = Queue()
+        self.q: Queue = Queue()
         self.lock = RLock()
-        self.exceptions = []
+        self.exceptions: List[str] = []
         self.contexts = [context() for _ in range(0, number)]
         self.workers = [
             Thread(target=worker, args=(self.q, c, self)) for c in self.contexts
@@ -143,7 +146,7 @@ class Workers:
         """
         with self.lock:
             self.drain()
-            self.exceptions.append(exc_info())
+            self.exceptions.append("".join(format_exception(*exc_info())))
 
     def size(self):
         """
@@ -162,8 +165,8 @@ class Workers:
                 w.join(timeout=1)
         self.workers = None
 
-        for exc_type, exc_obj, exc_trace in self.exceptions:
-            print_exception(exc_type, exc_obj, exc_trace)
+        for traceback in self.exceptions:
+            LOGGER.error(traceback)
 
         if self.exceptions:
             raise RuntimeError(
