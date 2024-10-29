@@ -36,6 +36,7 @@ Internal changes:
 - Fix sporadic timestamp mismatch in development build package. (:issue:`1006`)
 - Replace ``black`` and ``flake8`` with ``ruff`` and move configuration of ``pytest`` to ``pyproject.toml``. (:issue:`1007`)
 - Add ``pylint`` for testing code. (:issue:`1014`)
+- Align variable names across the files. (:issue:`1015`)
 
 8.2 (13 October 2024)
 ---------------------
