@@ -188,9 +188,19 @@ class BranchCoverage:
         return self.blockno
 
     @property
+    def is_excluded(self) -> bool:
+        """Return True if the branch is excluded."""
+        return self.excluded
+
+    @property
+    def is_reportable(self) -> bool:
+        """Return True if the branch is reportable."""
+        return not self.excluded
+
+    @property
     def is_covered(self) -> bool:
         """Return True if the branch is covered."""
-        return self.count > 0
+        return self.is_reportable and self.count > 0
 
 
 class CallCoverage:
@@ -201,22 +211,31 @@ class CallCoverage:
             The number of the call.
         covered (bool):
             Whether the call was performed.
+        excluded (bool, optional):
+            Whether the call is excluded.
     """
 
-    __slots__ = "callno", "covered"
+    __slots__ = "callno", "covered", "excluded"
 
     def __init__(
         self,
         callno: int,
         covered: bool,
+        excluded: Optional[bool] = False,
     ) -> None:
         self.callno = callno
         self.covered = covered
+        self.excluded = excluded
+
+    @property
+    def is_reportable(self) -> bool:
+        """Return True if the call is reportable."""
+        return not self.excluded
 
     @property
     def is_covered(self) -> bool:
         """Return True if the call is covered."""
-        return self.covered
+        return self.is_reportable and self.covered
 
 
 class ConditionCoverage:
@@ -228,12 +247,14 @@ class ConditionCoverage:
         covered (int):
             Whether the call was performed.
         not_covered_true List[int]:
-            The conditions which where not true.
+            The conditions which were not true.
         not_covered_false List[int]:
-            The conditions which where not false
+            The conditions which were not false.
+        excluded (bool, optional):
+            Whether the condition is excluded.
     """
 
-    __slots__ = "count", "covered", "not_covered_true", "not_covered_false"
+    __slots__ = "count", "covered", "not_covered_true", "not_covered_false", "excluded"
 
     def __init__(
         self,
@@ -241,6 +262,7 @@ class ConditionCoverage:
         covered: int,
         not_covered_true: List[int],
         not_covered_false: List[int],
+        excluded: Optional[bool] = False,
     ) -> None:
         if count < 0:
             raise AssertionError("count must not be a negative value.")
@@ -250,6 +272,7 @@ class ConditionCoverage:
         self.covered = covered
         self.not_covered_true = not_covered_true
         self.not_covered_false = not_covered_false
+        self.excluded = excluded
 
 
 class DecisionCoverageUncheckable:
@@ -454,7 +477,9 @@ class LineCoverage:
     @property
     def has_uncovered_branch(self) -> bool:
         """Return True if the line has a uncovered branches."""
-        return not all(branchcov.is_covered for branchcov in self.branches.values())
+        return not all(
+            branchcov.is_covered or branchcov.is_excluded for branchcov in self.branches.values()
+        )
 
     @property
     def has_uncovered_decision(self) -> bool:
@@ -474,7 +499,7 @@ class LineCoverage:
         raise AssertionError(f"Unknown decision type: {self.decision!r}")
 
     def exclude(self) -> None:
-        """Exclude line from  coverage statistic."""
+        """Exclude line from coverage statistic."""
         self.excluded = True
         self.count = 0
         self.branches.clear()
@@ -484,14 +509,13 @@ class LineCoverage:
 
     def branch_coverage(self) -> CoverageStat:
         """Return the branch coverage statistic of the line."""
-        total = len(self.branches)
+        total = 0
         covered = 0
         for branchcov in self.branches.values():
-            if branchcov.excluded:
-                total -= 1
-            elif branchcov.is_covered:
-                covered += 1
-
+            if branchcov.is_reportable:
+                total += 1
+                if branchcov.is_covered:
+                    covered += 1
         return CoverageStat(covered=covered, total=total)
 
     def condition_coverage(self) -> CoverageStat:
@@ -632,9 +656,10 @@ class FileCoverage:
         for linecov in self.lines.values():
             if linecov.is_reportable and len(linecov.calls) > 0:
                 for callcov in linecov.calls.values():
-                    total += 1
-                    if callcov.is_covered:
-                        covered += 1
+                    if callcov.is_reportable:
+                        total += 1
+                        if callcov.is_covered:
+                            covered += 1
 
         return CoverageStat(covered, total)
 
