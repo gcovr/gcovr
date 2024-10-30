@@ -183,9 +183,9 @@ class DecisionParser:
 
     def _parse_one_line(self, lineno: int, code: str) -> None:
         """Parse a single line"""
-        line_coverage = self.coverage.lines.get(lineno)
+        linecov = self.coverage.lines.get(lineno)
 
-        if line_coverage is None and not _is_a_switch(code):
+        if linecov is None and not _is_a_switch(code):
             return
 
         # check, if a analysis for a classic if-/else if-branch is active
@@ -200,27 +200,24 @@ class DecisionParser:
             return
 
         # check if a branch exists (prevent misdetection caused by inaccurate parsing)
-        if line_coverage and len(line_coverage.branches.items()) > 0:
+        if linecov and len(linecov.branches.items()) > 0:
             if (
                 _is_a_loop(code)
                 or _is_a_oneline_branch(code)
-                or (
-                    _is_a_closed_branch(code)
-                    and (len(line_coverage.branches.items()) == 2)
-                )
+                or (_is_a_closed_branch(code) and (len(linecov.branches.items()) == 2))
             ):
-                if len(line_coverage.branches.items()) == 2:
-                    keys = sorted(line_coverage.branches)
+                if len(linecov.branches.items()) == 2:
+                    keys = sorted(linecov.branches)
                     # if it's a compact decision, we can only use the fallback to analyze
                     # simple decisions via branch calls
-                    line_coverage.decision = DecisionCoverageConditional(
-                        line_coverage.branches[keys[0]].count,
-                        line_coverage.branches[keys[1]].count,
+                    linecov.decision = DecisionCoverageConditional(
+                        linecov.branches[keys[0]].count,
+                        linecov.branches[keys[1]].count,
                     )
                 else:
                     # it's a complex decision with more than 2 branches. No accurate detection possible
                     # Set the decision to uncheckable
-                    line_coverage.decision = DecisionCoverageUncheckable()
+                    linecov.decision = DecisionCoverageUncheckable()
                     LOGGER.debug(f"Uncheckable decision at line {lineno}")
             else:
                 self._start_multiline_decision_analysis(lineno, code)
@@ -233,9 +230,9 @@ class DecisionParser:
                 max_lineno = max(max_lineno, *self.coverage.lines.keys())
 
             for next_lineno in range(lineno, max_lineno):
-                line_coverage = self.coverage.lines.get(next_lineno)
-                if line_coverage is not None:
-                    line_coverage.decision = DecisionCoverageSwitch(line_coverage.count)
+                linecov = self.coverage.lines.get(next_lineno)
+                if linecov is not None:
+                    linecov.decision = DecisionCoverageSwitch(linecov.count)
                     break
                 if " break ;" in _prepare_decision_string(code):
                     break
@@ -251,8 +248,8 @@ class DecisionParser:
 
     def _continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
         """Handler for a decision which is continued on the current line."""
-        line_coverage = self.coverage.lines.get(lineno)
-        exec_count = 0 if line_coverage is None else line_coverage.count
+        linecov = self.coverage.lines.get(lineno)
+        exec_count = 0 if linecov is None else linecov.count
         last_decision_line_cov = self.coverage.lines.get(self.last_decision_line)
 
         # check, if the branch statement was finished in the last line

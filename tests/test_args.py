@@ -662,19 +662,19 @@ def test_import_valid_cobertura_file(tmp_path):
     covdata = read_reports(opts)
     assert covdata is not None
     assert testfile in covdata
-    f_cov: FileCoverage = covdata[testfile]
-    assert len(f_cov.lines) == 10
+    filecov: FileCoverage = covdata[testfile]
+    assert len(filecov.lines) == 10
     for line, count, branches in [
         (7, 1, None),
         (9, 3, None),
         (16, 0, None),
         (13, 2, [1, 0]),
     ]:
-        assert f_cov.lines[line].count == count
+        assert filecov.lines[line].count == count
         if branches is not None:
-            assert len(f_cov.lines[line].branches) == len(branches)
+            assert len(filecov.lines[line].branches) == len(branches)
             for branch_idx, branch_count in enumerate(branches):
-                assert f_cov.lines[line].branches[branch_idx].count == branch_count
+                assert filecov.lines[line].branches[branch_idx].count == branch_count
 
 
 def test_invalid_cobertura_file(caplog):

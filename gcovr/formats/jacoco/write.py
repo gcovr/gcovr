@@ -59,8 +59,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         class_elem = etree.Element("class")
         lines_elem = etree.SubElement(class_elem, "lines")
 
-        for lineno in sorted(filecov.lines):
-            linecov = filecov.lines[lineno]
+        for linecov in filecov.lines.values():
             if linecov.is_reportable:
                 lines_elem.append(_line_element(linecov))
 
@@ -120,13 +119,13 @@ def _counter_element(element_type: str, stat: CoverageStat) -> etree.Element:
 
 
 def _line_element(linecov: LineCoverage) -> etree.Element:
-    branchcov = linecov.branch_coverage()
+    stat = linecov.branch_coverage()
 
     line_elem = etree.Element("line")
     line_elem.set("nr", str(linecov.lineno))
 
-    if branchcov.total:
-        line_elem.set("mb", str(branchcov.total - branchcov.covered))
-        line_elem.set("cb", str(branchcov.covered))
+    if stat.total:
+        line_elem.set("mb", str(stat.total - stat.covered))
+        line_elem.set("cb", str(stat.covered))
 
     return line_elem

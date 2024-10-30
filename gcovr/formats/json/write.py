@@ -184,30 +184,30 @@ def _json_from_lines(lines: Dict[int, LineCoverage]) -> list:
     return [_json_from_line(lines[no]) for no in sorted(lines)]
 
 
-def _json_from_line(line: LineCoverage) -> dict:
+def _json_from_line(linecov: LineCoverage) -> dict:
     json_line = {
-        "line_number": line.lineno,
+        "line_number": linecov.lineno,
     }
-    if line.function_name is not None:
-        json_line["function_name"] = line.function_name
+    if linecov.function_name is not None:
+        json_line["function_name"] = linecov.function_name
     json_line.update(
         {
-            "count": line.count,
-            "branches": _json_from_branches(line.branches),
+            "count": linecov.count,
+            "branches": _json_from_branches(linecov.branches),
         }
     )
-    if line.conditions:
-        json_line["conditions"] = _json_from_conditions(line.conditions)
-    if line.block_ids is not None:
-        json_line["block_ids"] = line.block_ids
-    if line.md5:
-        json_line["gcovr/md5"] = line.md5
-    if line.excluded:
+    if linecov.conditions:
+        json_line["conditions"] = _json_from_conditions(linecov.conditions)
+    if linecov.block_ids is not None:
+        json_line["block_ids"] = linecov.block_ids
+    if linecov.md5:
+        json_line["gcovr/md5"] = linecov.md5
+    if linecov.excluded:
         json_line["gcovr/excluded"] = True
-    if line.decision is not None:
-        json_line["gcovr/decision"] = _json_from_decision(line.decision)
-    if len(line.calls) > 0:
-        json_line["gcovr/calls"] = _json_from_calls(line.calls)
+    if linecov.decision is not None:
+        json_line["gcovr/decision"] = _json_from_decision(linecov.decision)
+    if len(linecov.calls) > 0:
+        json_line["gcovr/calls"] = _json_from_calls(linecov.calls)
 
     return json_line
 
@@ -216,17 +216,17 @@ def _json_from_branches(branches: Dict[int, BranchCoverage]) -> list:
     return [_json_from_branch(branches[no]) for no in sorted(branches)]
 
 
-def _json_from_branch(branch: BranchCoverage) -> dict:
+def _json_from_branch(branchcov: BranchCoverage) -> dict:
     json_branch = {
-        "blockno": branch.blockno,
-        "count": branch.count,
-        "fallthrough": branch.fallthrough,
-        "throw": branch.throw,
+        "blockno": branchcov.blockno,
+        "count": branchcov.count,
+        "fallthrough": branchcov.fallthrough,
+        "throw": branchcov.throw,
     }
-    if branch.destination_blockno is not None:
-        json_branch["destination_blockno"] = branch.destination_blockno
-    if branch.excluded is not None:
-        json_branch["gcovr/excluded"] = branch.excluded
+    if branchcov.destination_blockno is not None:
+        json_branch["destination_blockno"] = branchcov.destination_blockno
+    if branchcov.excluded is not None:
+        json_branch["gcovr/excluded"] = branchcov.excluded
 
     return json_branch
 
@@ -235,43 +235,43 @@ def _json_from_conditions(conditions: Dict[int, ConditionCoverage]) -> list:
     return [_json_from_condition(conditions[no]) for no in sorted(conditions)]
 
 
-def _json_from_condition(condition: ConditionCoverage) -> dict:
+def _json_from_condition(conditioncov: ConditionCoverage) -> dict:
     json_condition = {
-        "count": condition.count,
-        "covered": condition.covered,
-        "not_covered_false": condition.not_covered_false,
-        "not_covered_true": condition.not_covered_true,
+        "count": conditioncov.count,
+        "covered": conditioncov.covered,
+        "not_covered_false": conditioncov.not_covered_false,
+        "not_covered_true": conditioncov.not_covered_true,
     }
 
     return json_condition
 
 
-def _json_from_decision(decision: DecisionCoverage) -> dict:
-    if isinstance(decision, DecisionCoverageUncheckable):
+def _json_from_decision(decisioncov: DecisionCoverage) -> dict:
+    if isinstance(decisioncov, DecisionCoverageUncheckable):
         return {"type": "uncheckable"}
 
-    if isinstance(decision, DecisionCoverageConditional):
+    if isinstance(decisioncov, DecisionCoverageConditional):
         return {
             "type": "conditional",
-            "count_true": decision.count_true,
-            "count_false": decision.count_false,
+            "count_true": decisioncov.count_true,
+            "count_false": decisioncov.count_false,
         }
 
-    if isinstance(decision, DecisionCoverageSwitch):
+    if isinstance(decisioncov, DecisionCoverageSwitch):
         return {
             "type": "switch",
-            "count": decision.count,
+            "count": decisioncov.count,
         }
 
-    raise AssertionError(f"Unknown decision type: {decision!r}")
+    raise AssertionError(f"Unknown decision type: {decisioncov!r}")
 
 
 def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
     return [_json_from_call(calls[no]) for no in sorted(calls)]
 
 
-def _json_from_call(call: CallCoverage) -> dict:
-    return {"callno": call.callno, "covered": call.covered}
+def _json_from_call(callcov: CallCoverage) -> dict:
+    return {"callno": callcov.callno, "covered": callcov.covered}
 
 
 def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
@@ -280,26 +280,26 @@ def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
     ]
 
 
-def _json_from_function(function: FunctionCoverage) -> list:
+def _json_from_function(functioncov: FunctionCoverage) -> list:
     json_functions = []
-    for lineno, count in function.count.items():
+    for lineno, count in functioncov.count.items():
         json_function = {}
-        if function.name is not None:
-            json_function["name"] = function.name
+        if functioncov.name is not None:
+            json_function["name"] = functioncov.name
         json_function.update(
             {
-                "demangled_name": function.demangled_name,
+                "demangled_name": functioncov.demangled_name,
                 "lineno": lineno,
                 "execution_count": count,
-                "blocks_percent": function.blocks[lineno],
+                "blocks_percent": functioncov.blocks[lineno],
             }
         )
-        if function.excluded[lineno]:
+        if functioncov.excluded[lineno]:
             json_function["gcovr/excluded"] = True
-        if function.start is not None and function.end is not None:
+        if functioncov.start is not None and functioncov.end is not None:
             json_function["pos"] = (
-                ":".join([str(e) for e in function.start[lineno]]),
-                ":".join([str(e) for e in function.end[lineno]]),
+                ":".join([str(e) for e in functioncov.start[lineno]]),
+                ":".join([str(e) for e in functioncov.end[lineno]]),
             )
         json_functions.append(json_function)
 

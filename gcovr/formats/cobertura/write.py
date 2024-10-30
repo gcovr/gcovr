@@ -156,24 +156,24 @@ def _rate(stat: CoverageStat) -> str:
     return str(covered / total)
 
 
-def _line_element(line: LineCoverage) -> etree.Element:
-    branch = line.branch_coverage()
+def _line_element(linecov: LineCoverage) -> etree.Element:
+    stat = linecov.branch_coverage()
 
     elem = etree.Element("line")
-    elem.set("number", str(line.lineno))
-    elem.set("hits", str(line.count))
+    elem.set("number", str(linecov.lineno))
+    elem.set("hits", str(linecov.count))
 
-    if not branch.total:
+    if not stat.total:
         elem.set("branch", "false")
-    elif branch.percent is None:
+    elif stat.percent is None:
         raise AssertionError("Percent coverage must not be 'None'.")
     else:
         elem.set("branch", "true")
         elem.set(
             "condition-coverage",
-            f"{int(branch.percent)}% ({branch.covered}/{branch.total})",
+            f"{int(stat.percent)}% ({stat.covered}/{stat.total})",
         )
-        elem.append(_conditions_element(branch))
+        elem.append(_conditions_element(stat))
 
     return elem
 

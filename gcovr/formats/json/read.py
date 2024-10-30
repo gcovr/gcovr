@@ -132,7 +132,7 @@ def _function_from_json(json_function: dict) -> FunctionCoverage:
 
 
 def _line_from_json(json_line: dict) -> LineCoverage:
-    line = LineCoverage(
+    linecov = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
         function_name=json_line.get("function_name"),
@@ -142,21 +142,23 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     )
 
     for branchno, json_branch in enumerate(json_line["branches"]):
-        insert_branch_coverage(line, branchno, _branch_from_json(json_branch))
+        insert_branch_coverage(linecov, branchno, _branch_from_json(json_branch))
 
     if "conditions" in json_line:
         for conditionno, json_branch in enumerate(json_line["conditions"]):
             insert_condition_coverage(
-                line, conditionno, _condition_from_json(json_branch)
+                linecov, conditionno, _condition_from_json(json_branch)
             )
 
-    insert_decision_coverage(line, _decision_from_json(json_line.get("gcovr/decision")))
+    insert_decision_coverage(
+        linecov, _decision_from_json(json_line.get("gcovr/decision"))
+    )
 
     if "gcovr/calls" in json_line:
         for json_call in json_line["gcovr/calls"]:
-            insert_call_coverage(line, _call_from_json(json_call))
+            insert_call_coverage(linecov, _call_from_json(json_call))
 
-    return line
+    return linecov
 
 
 def _branch_from_json(json_branch: dict) -> BranchCoverage:

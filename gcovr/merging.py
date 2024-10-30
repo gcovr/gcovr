@@ -289,12 +289,12 @@ def merge_file(
 
 def insert_line_coverage(
     target: FileCoverage,
-    line: LineCoverage,
+    linecov: LineCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> LineCoverage:
     """Insert LineCoverage into FileCoverage."""
     return _insert_coverage_item(
-        target.lines, line.lineno, line, merge_line, options, target.filename
+        target.lines, linecov.lineno, linecov, merge_line, options, target.filename
     )
 
 
@@ -336,18 +336,18 @@ def merge_line(
 
 
 def insert_function_coverage(
-    target: FileCoverage,
+    filecov: FileCoverage,
     function: FunctionCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> FunctionCoverage:
     """Insert FunctionCoverage into FileCoverage"""
     return _insert_coverage_item(
-        target.functions,
+        filecov.functions,
         function.name or function.demangled_name,
         function,
         merge_function,
         options,
-        target.filename,
+        filecov.filename,
     )
 
 
@@ -445,14 +445,14 @@ def merge_function(
 
 
 def insert_branch_coverage(
-    target: LineCoverage,
-    branch_id: int,
-    branch: BranchCoverage,
+    linecov: LineCoverage,
+    branchno: int,
+    branchcov: BranchCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> BranchCoverage:
     """Insert BranchCoverage into LineCoverage."""
     return _insert_coverage_item(
-        target.branches, branch_id, branch, merge_branch, options, None
+        linecov.branches, branchno, branchcov, merge_branch, options, None
     )
 
 
@@ -492,14 +492,14 @@ def merge_branch(
 
 
 def insert_condition_coverage(
-    target: LineCoverage,
+    linecov: LineCoverage,
     condition_id: int,
-    condition: ConditionCoverage,
+    conditioncov: ConditionCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> ConditionCoverage:
     """Insert ConditionCoverage into LineCoverage."""
     return _insert_coverage_item(
-        target.conditions, condition_id, condition, merge_condition, options, None
+        linecov.conditions, condition_id, conditioncov, merge_condition, options, None
     )
 
 
