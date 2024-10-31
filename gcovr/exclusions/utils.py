@@ -143,9 +143,7 @@ def apply_exclusion_ranges(
         linecov.decision = None
 
         if line_is_excluded(linecov.lineno):
-            linecov.excluded = True
-            linecov.branches = {}
-            linecov.count = 0
+            linecov.exclude()
 
         elif branch_is_excluded(linecov.lineno):
             linecov.branches = {}

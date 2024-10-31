@@ -141,9 +141,7 @@ def remove_internal_functions(filecov: FileCoverage):
                     linecov.function_name is not None
                     and linecov.function_name == functioncov.name
                 ):
-                    linecov.excluded = True
-                    linecov.branches = {}
-                    linecov.count = 0
+                    linecov.exclude()
 
 
 def _function_can_be_excluded(name: str) -> bool:
