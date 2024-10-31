@@ -478,7 +478,8 @@ class LineCoverage:
     def has_uncovered_branch(self) -> bool:
         """Return True if the line has a uncovered branches."""
         return not all(
-            branchcov.is_covered or branchcov.is_excluded for branchcov in self.branches.values()
+            branchcov.is_covered or branchcov.is_excluded
+            for branchcov in self.branches.values()
         )
 
     @property
