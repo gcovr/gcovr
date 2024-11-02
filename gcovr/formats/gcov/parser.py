@@ -192,7 +192,7 @@ class _FunctionLine(NamedTuple):
 
 
 # NamedTuples can't inherit from a common base,
-# so we use a Union type as the parse_line() return type.
+# so we use a Union type as the _parse_line() return type.
 #
 # Why NamedTuples? Better type safety than tuples, but very low memory overhead.
 _Line = Union[
@@ -209,7 +209,7 @@ _Line = Union[
 
 
 class UnknownLineType(Exception):
-    """Used by `parse_line()` to signal that no known line type matched."""
+    """Used by `_parse_line()` to signal that no known line type matched."""
 
     def __init__(self, line: str) -> None:
         super().__init__(line)
@@ -260,7 +260,8 @@ class SuspiciousHits(Exception):
             "bug in gcov tool, see\n"
             "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
             "--gcov-ignore-parse-errors with a value of suspicious_hits.warn,\n"
-            "or suspicious_hits.warn_once_per_file."
+            "or suspicious_hits.warn_once_per_file or change the threshold\n"
+            "for the detection with option --gcov-suspicious-hits-threshold."
         )
 
     @staticmethod
@@ -286,7 +287,9 @@ class SuspiciousHits(Exception):
             raise SuspiciousHits(line)
 
 
-def parse_metadata(lines: List[str]) -> Dict[str, Optional[str]]:
+def parse_metadata(
+    lines: List[str], *, suspicious_hits_threshold: int = SUSPICIOUS_COUNTER
+) -> Dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
 
@@ -315,7 +318,7 @@ def parse_metadata(lines: List[str]) -> Dict[str, Optional[str]]:
         if not line:
             continue
 
-        parsed_line = _parse_line(line)
+        parsed_line = _parse_line(line, suspicious_hits_threshold)
 
         if isinstance(parsed_line, _MetadataLine):
             key, value = parsed_line
@@ -340,6 +343,7 @@ def parse_coverage(
     *,
     filename: str,
     ignore_parse_errors: Optional[Set[str]],
+    suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     data_filename: Optional[str] = None,  # Only for tests
 ) -> Tuple[FileCoverage, List[str]]:
     """
@@ -372,7 +376,12 @@ def parse_coverage(
         try:
             tokenized_lines.append(
                 (
-                    _parse_line(raw_line, ignore_parse_errors, persistent_states),
+                    _parse_line(
+                        raw_line,
+                        suspicious_hits_threshold,
+                        ignore_parse_errors,
+                        persistent_states,
+                    ),
                     raw_line,
                 )
             )
@@ -603,6 +612,7 @@ def _report_lines_with_errors(
 
 def _parse_line(
     line: str,
+    suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     ignore_parse_errors: Optional[set] = None,
     persistent_states: Optional[dict] = None,
 ) -> _Line:
@@ -638,9 +648,9 @@ def _parse_line(
     _BranchLine(branchno=3, hits=0, annotation=None)
     >>> _parse_line('branch 3 taken 123')
     _BranchLine(branchno=3, hits=123, annotation=None)
-    >>> _parse_line('branch 3 taken -1', ("negative_hits.warn",))
+    >>> _parse_line('branch 3 taken -1', ignore_parse_errors=("negative_hits.warn",))
     _BranchLine(branchno=3, hits=0, annotation=None)
-    >>> _parse_line('branch 3 taken 4294967296', ("suspicious_hits.warn",))
+    >>> _parse_line('branch 3 taken 4294967296', ignore_parse_errors=("suspicious_hits.warn",))
     _BranchLine(branchno=3, hits=0, annotation=None)
     >>> _parse_line('branch 7 taken 3% (fallthrough)')
     _BranchLine(branchno=7, hits=1, annotation='fallthrough')
@@ -731,7 +741,9 @@ def _parse_line(
     if persistent_states is None:
         persistent_states = {}
 
-    tag = _parse_tag_line(line, ignore_parse_errors, persistent_states)
+    tag = _parse_tag_line(
+        line, suspicious_hits_threshold, ignore_parse_errors, persistent_states
+    )
     if tag is not None:
         return tag
 
@@ -783,7 +795,7 @@ def _parse_line(
             )
             hits = 0
 
-        if hits >= SUSPICIOUS_COUNTER:
+        if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
             SuspiciousHits.raise_if_not_ignored(
                 line, ignore_parse_errors, persistent_states
             )
@@ -815,7 +827,7 @@ def _parse_line(
                 )
                 hits = 0
 
-            if hits >= SUSPICIOUS_COUNTER:
+            if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
                 SuspiciousHits.raise_if_not_ignored(
                     line, ignore_parse_errors, persistent_states
                 )
@@ -840,6 +852,7 @@ def _parse_line(
 
 def _parse_tag_line(
     line: str,
+    suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     ignore_parse_errors: Optional[set] = None,
     persistent_states: Optional[dict] = None,
 ) -> Optional[_Line]:
@@ -875,7 +888,7 @@ def _parse_tag_line(
                 )
                 hits = 0
 
-            if hits >= SUSPICIOUS_COUNTER:
+            if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
                 SuspiciousHits.raise_if_not_ignored(
                     line, ignore_parse_errors, persistent_states
                 )
@@ -912,7 +925,7 @@ def _parse_tag_line(
                 )
                 hits = 0
 
-            if hits >= SUSPICIOUS_COUNTER:
+            if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
                 SuspiciousHits.raise_if_not_ignored(
                     line, ignore_parse_errors, persistent_states
                 )
