@@ -4,7 +4,7 @@
 class Bar
 {
 public:
-    Bar()
+    Bar() : m_param(1)
     {}
     virtual ~Bar()
     {} // possible compiler-generated destruction code - auto-detected and excluded
@@ -52,9 +52,7 @@ int main(int argc, char* argv[]) {
     Bar bar; // LCOV_EXCL_LINE
   } catch (const std::exception &e) { // LCOV_EXCL_START
     std::cout << "caught exception";
-    if (std::strlen(e.what()) > 0) {
-      std::cout << ": " << e.what();
-    }
+    std::cout << ": " << e.what();
     std::cout << std::endl;
   } // LCOV_EXCL_STOP
 

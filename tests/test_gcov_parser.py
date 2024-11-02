@@ -20,7 +20,6 @@
 # pylint: disable=missing-function-docstring,missing-module-docstring
 import logging
 import re
-import time
 import textwrap
 from threading import Event
 from typing import List
@@ -905,7 +904,7 @@ def test_noncode_lines():
 def check_and_raise(number, mutable, exc_raised, queue_full):
     queue_full.wait()
     if number == 0:
-        raise Exception("Number == 0")
+        raise AssertionError("Number == 0")
     exc_raised.wait()
     mutable.append(None)
 
@@ -915,7 +914,7 @@ def test_pathologic_threads(threads):
     mutable = []
     queue_full = Event()
     exc_raised = Event()
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(RuntimeError) as exc_info:
         with Workers(
             threads,
             lambda: {
@@ -933,12 +932,13 @@ def test_pathologic_threads(threads):
             # Wait until the exception has been completed
             while not pool.exceptions:
                 # Yield to the worker threads
-                time.sleep(0)
+                pass
 
             # Queue should be drained and exception raised
             exc_raised.set()
             pool.wait()
             assert pool.workers is None, "Workers are removed."
+            assert len(pool.exceptions) == 1, "One traceback available."
 
     # Outer level catches correct exception
     assert exc_info.value.args[0] == "Worker thread raised exception, workers canceled."
