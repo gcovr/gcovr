@@ -106,7 +106,7 @@ def read_report(options: Options) -> CovData:
         contexts = pool.wait()
 
     to_erase = set()
-    covdata = {}
+    covdata: CovData = {}
     for context in contexts:
         covdata = merge_covdata(
             covdata, context["covdata"], get_merge_mode_from_options(options)
@@ -131,7 +131,8 @@ def find_existing_gcov_files(
         LOGGER.debug(f"Scanning directory {search_path} for gcov files...")
         gcov_files = list(
             search_file(
-                re.compile(r".*\.gcov(?:\.json\.gz)?$").match,
+                lambda fname: re.compile(r".*\.gcov(?:\.json\.gz)?$").match(fname)
+                is not None,
                 search_path,
                 exclude_dirs=exclude_dirs,
             )
@@ -155,7 +156,7 @@ def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str
         LOGGER.debug(f"Scanning directory {search_path} for gcda/gcno files...")
         files = list(
             search_file(
-                re.compile(r".*\.gc(da|no)$").match,
+                lambda fname: re.compile(r".*\.gc(da|no)$").match(fname) is not None,
                 search_path,
                 exclude_dirs=exclude_dirs,
             )
@@ -308,7 +309,7 @@ def process_gcov_data(
     gcda_fname: Optional[str],
     covdata: CovData,
     options: Options,
-    current_dir: str = None,
+    current_dir: Optional[str] = None,
 ) -> None:
     """Process a GCOV text output."""
     with open(
@@ -353,7 +354,7 @@ def process_gcov_data(
     )
 
     LOGGER.debug(f"Apply exclusions for {fname}")
-    apply_all_exclusions(coverage, lines=source_lines, options=options)
+    apply_all_exclusions(coverage, lines=source_lines, options=options)  # type: ignore [arg-type]
 
     if options.show_decision:
         decision_parser = DecisionParser(coverage, source_lines)
@@ -366,11 +367,11 @@ def process_gcov_data(
 def guess_source_file_name(
     source_from_gcov: str,
     data_fname: str,
-    gcda_fname: str,
+    gcda_fname: Optional[str],
     root_dir: str,
     starting_dir: str,
-    obj_dir: str,
-    current_dir: str = None,
+    obj_dir: Optional[str],
+    current_dir: Optional[str] = None,
 ) -> str:
     """Guess the full source filename."""
     if current_dir is None:
@@ -439,7 +440,7 @@ def guess_source_file_name_heuristics(  # pylint: disable=too-many-return-statem
     current_dir: str,
     root_dir: str,
     starting_dir: str,
-    obj_dir: str,
+    obj_dir: Optional[str],
 ) -> str:
     """Guess the full source filename with path by a heuristic."""
     # 0. Try using the path to the gcov file
@@ -532,7 +533,7 @@ def process_datafile(
         os.path.sep, "/"
     )  # gcov requires posix style path
 
-    errors = []
+    errors: List[str] = []
 
     potential_wd = []
 
@@ -625,7 +626,7 @@ class GcovProgram:
     __cmd: str = ""
     __cmd_split: List[str] = []
     __default_options: List[str] = []
-    __exitcode_to_ignore: List[str] = [0]
+    __exitcode_to_ignore: List[int] = [0]
     __use_json_format_if_available: bool = True
     __help_output: str = ""
     __version_output: str = ""
@@ -902,9 +903,9 @@ def run_gcov_and_process_files(
                 done = False
             else:
                 if ignore_output_errors:
-                    active_gcov_files = [
+                    active_gcov_files = set(
                         f for f in active_gcov_files if os.path.exists(f)
-                    ]
+                    )
 
                 # Process *.gcov files
                 for gcov_filename in active_gcov_files:
@@ -932,7 +933,7 @@ def run_gcov_and_process_files(
                     os.replace(file, os.path.join(directory, f"{basename}.{filename}"))
 
             for filepath in (
-                all_gcov_files - active_gcov_files
+                list(all_gcov_files - active_gcov_files)
                 if options.gcov_keep and done
                 else all_gcov_files
             ):
@@ -956,7 +957,7 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str, gcov_filter: List[re.Pattern], gcov_exclude: List[re.Pattern], chdir: str
-) -> Tuple[List[str], List[str]]:
+) -> Tuple[Set[str], Set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""
     active_files = set([])
     all_files = set([])
@@ -982,7 +983,7 @@ def select_gcov_files_from_stdout(
 #  Process Already existing gcov files
 #
 def process_existing_gcov_file(
-    filename: str, covdata: CovData, options: Options, to_erase: List[str]
+    filename: str, covdata: CovData, options: Options, to_erase: Set[str]
 ) -> None:
     """Process an existing GCOV filename."""
     if is_file_excluded(filename, options.gcov_filter, options.gcov_exclude):

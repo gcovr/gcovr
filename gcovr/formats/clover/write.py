@@ -180,13 +180,13 @@ class ProjectData:
 class PackageData:
     """Data class for the package data."""
 
-    files_xml: Dict[str, etree.Element]
+    files_xml: Dict[str, etree._Element]
     loc: int
     ncloc: int
     covered_elements: int
 
 
-def _metrics_element() -> etree.Element:
+def _metrics_element() -> etree._Element:
     elem = etree.Element("metrics")
     for metric in [
         "complexity",
@@ -204,7 +204,7 @@ def _metrics_element() -> etree.Element:
     return elem
 
 
-def _line_element(line: LineCoverage) -> etree.Element:
+def _line_element(line: LineCoverage) -> etree._Element:
     elem = etree.Element("line")
     elem.set("num", str(line.lineno))
     elem.set("type", "stmt")

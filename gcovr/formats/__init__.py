@@ -62,11 +62,11 @@ def get_options() -> List[GcovrConfigOption]:
             *SonarqubeHandler.get_options(),
             *TxtHandler.get_options(),
         ]
-        if not isinstance(o, str)
+        if isinstance(o, GcovrConfigOption)
     ]
 
 
-def validate_options(options) -> CovData:
+def validate_options(options) -> None:
     """Validate the command line options of the format handlers."""
     for handler in [
         GcovHandler,
@@ -119,7 +119,7 @@ def write_reports(covdata: CovData, options: Options):
     generators: List[
         Tuple[
             List[Optional[OutputOrDefault]],
-            Callable[[CovData, str], bool],
+            Callable[[CovData, str], None],
             Callable[[], None],
         ]
     ] = []

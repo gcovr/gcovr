@@ -21,7 +21,7 @@ import json
 import logging
 import os
 from glob import glob
-from typing import Optional
+from typing import Optional, Tuple
 
 from . import versions
 from ...coverage import (
@@ -56,7 +56,7 @@ LOGGER = logging.getLogger("gcovr")
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def read_report(options: Options) -> CovData:
+def read_report(options: Options) -> Optional[CovData]:
     """merge a coverage from multiple reports in the format
     partially compatible with gcov JSON output"""
 
@@ -76,11 +76,11 @@ def read_report(options: Options) -> CovData:
         for trace_file in trace_files:
             datafiles.add(os.path.normpath(trace_file))
 
-    covdata = {}
-    for filename in datafiles:
-        LOGGER.debug(f"Processing JSON file: {filename}")
+    covdata: CovData = {}
+    for data_source_filename in datafiles:
+        LOGGER.debug(f"Processing JSON file: {data_source_filename}")
 
-        with open(filename, encoding="utf-8") as json_file:
+        with open(data_source_filename, encoding="utf-8") as json_file:
             gcovr_json_data = json.load(json_file)
 
         version = str(gcovr_json_data["gcovr/format_version"])
@@ -97,28 +97,30 @@ def read_report(options: Options) -> CovData:
             if is_file_excluded(file_path, options.filter, options.exclude):
                 continue
 
-            file_coverage = FileCoverage(
-                file_path, gcovr_file.get("gcovr/data_sources", filename)
+            filecov = FileCoverage(
+                file_path, gcovr_file.get("gcovr/data_sources", data_source_filename)
             )
             merge_options = get_merge_mode_from_options(options)
             for json_function in gcovr_file["functions"]:
                 insert_function_coverage(
-                    file_coverage, _function_from_json(json_function), merge_options
+                    filecov, _function_from_json(json_function), merge_options
                 )
             for json_line in gcovr_file["lines"]:
-                insert_line_coverage(file_coverage, _line_from_json(json_line))
+                insert_line_coverage(filecov, _line_from_json(json_line))
 
-            insert_file_coverage(covdata, file_coverage, merge_options)
+            insert_file_coverage(covdata, filecov, merge_options)
 
     return covdata
 
 
 def _function_from_json(json_function: dict) -> FunctionCoverage:
-    start = None
-    end = None
+    start: Optional[Tuple[int, int]] = None
+    end: Optional[Tuple[int, int]] = None
     if "pos" in json_function:
-        start = [int(e) for e in json_function["pos"][0].split(":")]
-        end = [int(e) for e in json_function["pos"][1].split(":")]
+        start_l_c = json_function["pos"][0].split(":", maxsplit=1)
+        start = (int(start_l_c[0]), int(start_l_c[1]))
+        end_l_c = json_function["pos"][1].split(":", maxsplit=1)
+        end = (int(end_l_c[0]), int(end_l_c[1]))
     return FunctionCoverage(
         json_function.get("name"),
         json_function["demangled_name"],

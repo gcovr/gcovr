@@ -260,12 +260,12 @@ class RootInfo:
         self.date = options.timestamp.isoformat(sep=" ", timespec="seconds")
         self.encoding = options.html_encoding
         self.directory = None
-        self.branches = {}
-        self.conditions = {}
-        self.decisions = {}
-        self.calls = {}
-        self.functions = {}
-        self.lines = {}
+        self.branches: Dict[str, Any] = {}
+        self.conditions: Dict[str, Any] = {}
+        self.decisions: Dict[str, Any] = {}
+        self.calls: Dict[str, Any] = {}
+        self.functions: Dict[str, Any] = {}
+        self.lines: Dict[str, Any] = {}
 
     def set_directory(self, directory) -> None:
         """Set the directory for the report."""
@@ -273,7 +273,9 @@ class RootInfo:
 
     def get_directory(self) -> str:
         """Get the directory for the report."""
-        return "." if self.directory == "" else force_unix_separator(self.directory)
+        return (
+            "." if self.directory == "" else force_unix_separator(str(self.directory))
+        )
 
     def set_coverage(self, covdata: CovData) -> None:
         """Update this RootInfo with a summary of the CovData."""
@@ -317,7 +319,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     exclude_calls = options.exclude_calls
     show_decision = options.show_decision
 
-    data = {}
+    data: Dict[str, Any] = {}
     root_info = RootInfo(options)
     data["info"] = root_info
 
@@ -325,9 +327,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     data["EXCLUDE_CALLS"] = exclude_calls
     data["EXCLUDE_FUNCTION_COVERAGE"] = not any(
         filter(
-            lambda filecov: any(
+            lambda filecov: any(  # type: ignore [arg-type]
                 filter(
-                    lambda linecov: linecov.function_name is not None,
+                    lambda linecov: linecov.function_name is not None,  # type: ignore [arg-type]
                     filecov.lines.values(),
                 )
             ),
@@ -335,7 +337,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         )
     )
     data["EXCLUDE_CONDITIONS"] = not any(
-        filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())
+        filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
     )
     data["COVERAGE_MED"] = medium_threshold
     data["COVERAGE_HIGH"] = high_threshold
@@ -403,10 +405,10 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             covdata, sorted_keys, options.root_filter
         )
 
-    cdata_fname = {}
-    cdata_sourcefile = {}
+    cdata_fname: Dict[str, str] = {}
+    cdata_sourcefile: Dict[str, Optional[str]] = {}
     for f in sorted_keys + list(subdirs.keys()):
-        filtered_fname: str = options.root_filter.sub("", f)
+        filtered_fname = options.root_filter.sub("", f)
         if filtered_fname != "":
             files.append(filtered_fname)
         cdata_fname[f] = filtered_fname
@@ -417,9 +419,11 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
                 cdata_sourcefile[f] = _make_short_source_filename(
                     output_file, filtered_fname.rstrip(os.sep)
                 )
-                if options.html_single_page:
+                if options.html_single_page and cdata_sourcefile[f] is not None:
                     # Remove the prefix to get shorter links
-                    cdata_sourcefile[f] = cdata_sourcefile[f].split(".", maxsplit=1)[1]
+                    cdata_sourcefile[f] = str(cdata_sourcefile[f]).split(
+                        ".", maxsplit=1
+                    )[1]
         else:
             cdata_sourcefile[f] = None
 
@@ -501,7 +505,7 @@ def write_root_page(
     output_file: str,
     covdata: CovData,
     cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, str],
+    cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
     sorted_keys: List[str],
 ) -> None:
@@ -531,9 +535,9 @@ def write_source_pages(
     functions_output_file: str,
     covdata: CovData,
     cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, str],
+    cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
-) -> bool:
+) -> None:
     """Write a page for each source file."""
     error_no_files_not_found = 0
     all_functions = {}
@@ -581,8 +585,8 @@ def write_directory_pages(
     root_info: RootInfo,
     subdirs: Dict[str, DirectoryCoverage],
     output_file: str,
-    cdata_fname: str,
-    cdata_sourcefile: Dict[str, str],
+    cdata_fname: Dict[str, str],
+    cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
 ) -> None:
     """Write a page for each directory."""
@@ -623,16 +627,16 @@ def write_single_page(
     subdirs: Dict[str, DirectoryCoverage],
     sorted_keys: List[str],
     cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, str],
+    cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
-) -> bool:
+) -> None:
     """Write a single page HTML report."""
     error_no_files_not_found = 0
     files = []
     all_functions = {}
-    for filename, cdata in covdata.items():
+    for filename, filecov in covdata.items():
         file_data, functions, file_not_found = get_file_data(
-            options, root_info, filename, cdata_fname, cdata_sourcefile, cdata
+            options, root_info, filename, cdata_fname, cdata_sourcefile, filecov
         )
         all_functions.update(functions)
         if file_not_found:
@@ -647,12 +651,12 @@ def write_single_page(
                 root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
             )
         )
-    directories = [{"entries": all_files}]
+    directories: List[Dict[str, Any]] = [{"entries": all_files}]
     if root_info.single_page == "js-enabled":
-        for _, cdata in subdirs.items():
+        for _, dircov in subdirs.items():
             directories.append(
                 get_directory_data(
-                    options, root_info, cdata_fname, cdata_sourcefile, cdata
+                    options, root_info, cdata_fname, cdata_sourcefile, dircov
                 )
             )
     if len(directories) == 1:
@@ -825,7 +829,7 @@ def get_file_data(
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, str],
     cdata: FileCoverage,
-) -> Tuple[Dict[str, Any], Dict[Tuple[str], Dict[str, Any]], bool]:
+) -> Tuple[Dict[str, Any], Dict[Tuple[str, str, int], Dict[str, Any]], bool]:
     """Get the data for a file to generate the HTML"""
     formatter = get_formatter(options)
 
@@ -840,7 +844,7 @@ def get_file_data(
             root_info, cdata, cdata_sourcefile[filename], cdata_fname[filename]
         )
     )
-    functions: Dict[Tuple[str], Dict[str, Any]] = {}
+    functions: Dict[Tuple[str, str, int], Dict[str, Any]] = {}
     # Only use demangled names (containing a brace)
     for f_cdata in sorted(
         cdata.functions.values(), key=lambda f_cdata: f_cdata.demangled_name
@@ -866,8 +870,8 @@ def get_file_data(
             functions[
                 (
                     f_cdata.name or f_cdata.demangled_name,
-                    f_data["filename"],
-                    f_data["line"],
+                    str(f_data["filename"]),
+                    int(f_data["line"]),
                 )
             ] = f_data
 
@@ -916,7 +920,7 @@ def get_file_data(
 def dict_from_stat(
     stat: Union[CoverageStat, DecisionCoverageStat],
     coverage_class: Callable[[Optional[float]], str],
-    default: float = None,
+    default: Optional[float] = None,
 ) -> Dict[str, Any]:
     """Get a dictionary from the stats."""
     coverage_default = "-" if default is None else default
@@ -941,7 +945,7 @@ def source_row(
     linecondition = None
     linedecision = None
     linecall = None
-    linecount = ""
+    linecount: Union[str, int] = ""
     covclass = ""
     if linecov:
         if linecov.is_excluded:
@@ -972,7 +976,7 @@ def source_row(
     }
 
 
-def source_row_branch(branches: Dict[int, BranchCoverage]) -> Dict[str, Any]:
+def source_row_branch(branches: Dict[int, BranchCoverage]) -> Optional[Dict[str, Any]]:
     """Get branch information for a row"""
     if not branches:
         return None
@@ -1003,7 +1007,7 @@ def source_row_branch(branches: Dict[int, BranchCoverage]) -> Dict[str, Any]:
     }
 
 
-def source_row_condition(conditions) -> Dict[str, Any]:
+def source_row_condition(conditions) -> Optional[Dict[str, Any]]:
     """Get condition information for a row."""
     if not conditions:
         return None
@@ -1042,7 +1046,7 @@ def source_row_decision(
     if decision is None:
         return None
 
-    items = []
+    items: List[Dict[str, Any]] = []
 
     if isinstance(decision, DecisionCoverageUncheckable):
         items.append(
@@ -1087,7 +1091,7 @@ def source_row_decision(
     }
 
 
-def source_row_call(callcov: Optional[CallCoverage]) -> Dict[str, Any]:
+def source_row_call(callcov: Dict[int, CallCoverage]) -> Optional[Dict[str, Any]]:
     """Get call information for a source row."""
     if not callcov:
         return None

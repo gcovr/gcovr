@@ -610,7 +610,6 @@ def test_html_injection_via_json(capsys, tmp_path):
 def test_import_valid_cobertura_file(tmp_path):
     from gcovr.formats import read_reports
     from gcovr.configuration import merge_options_and_set_defaults
-    from gcovr.coverage import FileCoverage
 
     testfile = "/path/to/source/code.cpp"
     xml_data = f"""<?xml version='1.0' encoding='UTF-8'?>
@@ -662,7 +661,7 @@ def test_import_valid_cobertura_file(tmp_path):
     covdata = read_reports(opts)
     assert covdata is not None
     assert testfile in covdata
-    filecov: FileCoverage = covdata[testfile]
+    filecov = covdata[testfile]
     assert len(filecov.lines) == 10
     for line, count, branches in [
         (7, 1, None),

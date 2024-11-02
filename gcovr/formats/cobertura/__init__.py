@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import List
+from typing import List, Optional, Union
 
 from ...coverage import CovData
 from ...formats.base import BaseHandler
@@ -28,7 +28,7 @@ class CoberturaHandler(BaseHandler):
     """Class to handle Cobertura format."""
 
     @classmethod
-    def get_options(cls) -> List[GcovrConfigOption]:
+    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
         return [
             # Global options used for merging.
             "merge_mode_functions",
@@ -69,7 +69,7 @@ class CoberturaHandler(BaseHandler):
             ),
         ]
 
-    def read_report(self) -> CovData:
+    def read_report(self) -> Optional[CovData]:
         from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         return read_report(self.options)

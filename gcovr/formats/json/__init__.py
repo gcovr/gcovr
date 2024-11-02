@@ -19,7 +19,7 @@
 
 import logging
 import os
-from typing import List
+from typing import List, Optional, Union
 
 from ...coverage import CovData
 from ...formats.base import BaseHandler
@@ -33,7 +33,7 @@ class JsonHandler(BaseHandler):
     """Class to handle own JSON tracefile format."""
 
     @classmethod
-    def get_options(cls) -> List[GcovrConfigOption]:
+    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
         return [
             # Global options used for output
             "verbose",
@@ -111,7 +111,7 @@ class JsonHandler(BaseHandler):
             ),
         ]
 
-    def read_report(self) -> CovData:
+    def read_report(self) -> Optional[CovData]:
         from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         return read_report(self.options)

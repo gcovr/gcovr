@@ -29,7 +29,7 @@ import socket
 import sys
 import textwrap
 import time
-from typing import Tuple
+from typing import List, Optional, Tuple
 import shutil
 import subprocess  # nosec # Commands are trusted.
 import zipfile
@@ -97,7 +97,7 @@ nox.options.sessions = ["qa"]
 os.environ["TIMESTAMP"] = str(int(time.time()))
 
 
-def get_gcc_versions() -> Tuple[str]:
+def get_gcc_versions() -> Tuple[str, str]:
     """Get the gcc version from the environment or from the output of the executable."""
     # If the user explicitly set CC variable, use that directly without checks.
     cc = os.environ.get("CC")
@@ -145,7 +145,7 @@ def get_gcc_versions() -> Tuple[str]:
     )
 
 
-def set_environment(session: nox.Session, cc: str = None) -> None:
+def set_environment(session: nox.Session, cc: Optional[str] = None) -> None:
     """Set the environment variables"""
     if cc is None:
         cc, cc_reference = get_gcc_versions()
@@ -272,20 +272,7 @@ def lint(session: nox.Session) -> None:
     session.notify("ruff_format")
     session.notify("bandit")
     session.notify("pylint")
-
-
-@nox.session
-def pylint(session: nox.Session) -> None:
-    """Run pylint command."""
-    session.install("pylint<4.0.0", "nox", "requests", "pytest")
-    if sys.version_info >= (3, 12):
-        session.install("setuptools")
-    session.install("-e", ".")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = DEFAULT_LINT_ARGUMENTS
-    session.run("pylint", *args)
+    session.notify("mypy")
 
 
 @nox.session
@@ -322,6 +309,40 @@ def bandit(session: nox.Session) -> None:
 
 
 @nox.session
+def pylint(session: nox.Session) -> None:
+    """Run pylint command."""
+    session.install("pylint<4.0.0", "nox", "requests", "pytest")
+    if sys.version_info >= (3, 12):
+        session.install("setuptools")
+    session.install("-e", ".")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = DEFAULT_LINT_ARGUMENTS
+    session.run("pylint", *args)
+
+
+@nox.session
+def mypy(session: nox.Session) -> None:
+    """Run mypy command."""
+    session.install("mypy", "nox", "requests", "pytest")
+    session.install(
+        "types-pywin32",
+        "lxml-stubs",
+        "types-Pygments",
+        "types-requests",
+        "types-colorama",
+        "yaxmldiff",
+    )
+    session.install("-e", ".")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = DEFAULT_LINT_ARGUMENTS
+    session.run("mypy", *args)
+
+
+@nox.session
 def doc(session: nox.Session) -> None:
     """Generate the documentation."""
     if sys.version_info < (3, 9):
@@ -354,7 +375,7 @@ def doc(session: nox.Session) -> None:
     with changelog_rst.open(encoding="utf-8") as fh_in:
         lines = fh_in.readlines()
 
-    out_lines = []
+    out_lines: List[str] = []
     iter_lines = iter(lines)
     for line in iter_lines:
         if line.startswith("------------"):
@@ -405,13 +426,16 @@ def tests(session: nox.Session) -> None:
     session.log("Print tool versions")
     session.run("python", "--version")
     # Use full path to executable
-    session.env["CC"] = shutil.which(session.env["CC"]).replace(os.path.sep, "/")
+    session.env["CC"] = str(shutil.which(session.env["CC"])).replace(os.path.sep, "/")
     session.run(session.env["CC"], "--version", external=True)
-    session.env["CXX"] = shutil.which(session.env["CXX"]).replace(os.path.sep, "/")
+    session.env["CXX"] = str(shutil.which(session.env["CXX"])).replace(os.path.sep, "/")
     session.run(session.env["CXX"], "--version", external=True)
-    session.env["GCOV"] = shutil.which(
-        session.env["CC"].replace("clang", "llvm-cov").replace("gcc", "gcov")
+    session.env["GCOV"] = str(
+        shutil.which(
+            session.env["CC"].replace("clang", "llvm-cov").replace("gcc", "gcov")
+        )
     ).replace(os.path.sep, "/")
+
     session.run(session.env["GCOV"], "--version", external=True)
     if "llvm-cov" in session.env["GCOV"]:
         session.env["GCOV"] += " gcov"
@@ -458,7 +482,7 @@ def check_wheel(session: nox.Session) -> None:
     session.install("wheel", "twine")
     with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
-        session.install(list(Path().glob("*.whl"))[0])
+        session.install(str(list(Path().glob("*.whl"))[0]))
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
@@ -490,7 +514,7 @@ def get_executable_name() -> Path:
     else:
         platform_suffix = "linux"
     return Path(
-        f"gcovr-{run_path(GCOVR_VERSION_PY)['__version__']}-{platform_suffix}-{platform.machine().lower()}{suffix}"
+        f"gcovr-{run_path(str(GCOVR_VERSION_PY))['__version__']}-{platform_suffix}-{platform.machine().lower()}{suffix}"
     )
 
 
@@ -569,7 +593,11 @@ def html2jpeg(session: nox.Session):
                 "bedrockio/export-html",
             ]
         ).strip()
-        defer.callback(subprocess.run, ["docker", "stop", container_id])
+
+        def docker_stop():
+            subprocess.run(["docker", "stop", container_id], check=False)  # nosec # We run on several system and do not know the full path
+
+        defer.callback(docker_stop)
         url = f"http://localhost:{port}/1/screenshot"
         time.sleep(5.0)  # nosemgrep # We need to wait here until server is started.
 

@@ -153,7 +153,7 @@ def argument_parser_setup(parser: ArgumentParser, default_group):
 
 def parse_config_into_dict(
     config_entry_source: Iterable[ConfigEntry],
-    all_options: Iterable[GcovrConfigOption] = None,
+    all_options: Optional[Iterable[GcovrConfigOption]] = None,
 ) -> Dict[str, Any]:
     """Parse a config file and save the configuration in a dictionary."""
     cfg_dict: Dict[str, Any] = {}
@@ -161,22 +161,21 @@ def parse_config_into_dict(
     if all_options is None:
         all_options = GCOVR_CONFIG_OPTIONS
 
-    options_lookup = {}
-    for option in all_options:
-        if option.config_keys is not None:
-            for config_key in option.config_keys:
-                options_lookup[config_key] = option
-
     for cfg_entry in config_entry_source:
-        try:
-            option: GcovrConfigOption = options_lookup[cfg_entry.key]
-        except KeyError:
+        for option in all_options:
+            if option.config_keys is not None:
+                if cfg_entry.key in option.config_keys:
+                    value = _get_value_from_config_entry(cfg_entry, option)
+                    _assign_value_to_dict(
+                        cfg_dict,
+                        value,
+                        option,
+                        cfg_entry_key=cfg_entry.key,
+                        is_single_value=True,
+                    )
+                    break
+        else:
             raise cfg_entry.error("unknown config option") from None
-
-        value = _get_value_from_config_entry(cfg_entry, option)
-        _assign_value_to_dict(
-            cfg_dict, value, option, cfg_entry_key=cfg_entry.key, is_single_value=True
-        )
 
     return cfg_dict
 
@@ -281,7 +280,7 @@ def _assign_value_to_dict(
     value: Any,
     option: GcovrConfigOption,
     is_single_value: bool,
-    cfg_entry_key: str = None,
+    cfg_entry_key: Optional[str] = None,
 ) -> None:
     if option.action == "append" or option.nargs == "*":
         append_target = namespace.setdefault(option.name, [])
@@ -295,9 +294,13 @@ def _assign_value_to_dict(
         namespace[option.name] = value
         return
 
-    if issubclass(option.action, GcovrConfigOptionAction):
-        option.action(option.flags, option.name)(
-            None, namespace, value, config=cfg_entry_key
+    if not isinstance(option.action, str) and issubclass(
+        option.action, GcovrConfigOptionAction
+    ):
+        option.action(option.flags, option.name).store_config_key(
+            namespace,
+            value,
+            config=cfg_entry_key,
         )
         return
 

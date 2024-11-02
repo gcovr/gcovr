@@ -23,11 +23,10 @@ import re
 import sys
 
 from argparse import ArgumentParser
-from typing import Iterable
+from typing import Any, Dict
 import traceback
 
 from .configuration import (
-    ConfigEntry,
     argument_parser_setup,
     config_entries_from_dict,
     merge_options_and_set_defaults,
@@ -182,7 +181,7 @@ def find_config_name(root: str, filename: str):
     return None
 
 
-def load_config(partial_options) -> Iterable[ConfigEntry]:
+def load_config(partial_options) -> Dict[str, Any]:
     """Load a config file if configured or found by default names"""
     filename = getattr(partial_options, "config", None)
     if filename is not None:
@@ -360,7 +359,7 @@ def main(args=None):
 
     LOGGER.info("Reading coverage data...")
     try:
-        covdata: CovData = gcovr_formats.read_reports(options)
+        covdata = gcovr_formats.read_reports(options)
     except Exception:  # pylint: disable=broad-exception-caught
         LOGGER.error(f"Error occurred while reading reports:\n{traceback.format_exc()}")
         sys.exit(EXIT_READ_ERROR)

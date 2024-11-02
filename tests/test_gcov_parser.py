@@ -23,6 +23,7 @@ import re
 import time
 import textwrap
 from threading import Event
+from typing import List
 from unittest import mock
 
 import pytest
@@ -842,7 +843,7 @@ def test_noncode_lines():
     """
 
     def get_line_status(
-        lines: list,
+        lines: List[str],
         *,
         exclude_function_lines: bool = False,
         exclude_noncode_lines: bool = False,

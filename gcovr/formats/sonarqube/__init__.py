@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import List
+from typing import List, Union
 
 from ...coverage import CovData
 from ...formats.base import BaseHandler
@@ -28,7 +28,7 @@ class SonarqubeHandler(BaseHandler):
     """Class to handle Sonarqube format."""
 
     @classmethod
-    def get_options(cls) -> List[GcovrConfigOption]:
+    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
         return [
             GcovrConfigOption(
                 "sonarqube",

@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import List
+from typing import List, Optional, Union
 
 from ..options import GcovrConfigOption, Options
 from ..coverage import CovData
@@ -27,7 +27,7 @@ class BaseHandler:
     """Base class for a format handler."""
 
     @classmethod
-    def get_options(cls) -> List[GcovrConfigOption]:
+    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
         """Get the options of the format handler"""
         raise AssertionError("Function 'get_options' not implemented.")
 
@@ -57,7 +57,7 @@ class BaseHandler:
     def validate_options(self) -> None:
         """Validation of command line options"""
 
-    def read_report(self) -> CovData:
+    def read_report(self) -> Optional[CovData]:
         """Read a report in the format of the handler"""
         raise AssertionError("Function 'read_report' not implemented.")
 

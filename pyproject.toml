@@ -26,6 +26,9 @@ extension-pkg-allow-list = [
     "gcovr"
 ]
 
+[tool.mypy]
+disable_error_code = "attr-defined"
+
 [tool.ruff]
 exclude = [
     ".git",
