@@ -404,7 +404,6 @@ def tests(session: nox.Session) -> None:
     set_environment(session)
     session.log("Print tool versions")
     session.run("python", "--version")
-    session.run("gcovr", "--version")
     # Use full path to executable
     session.env["CC"] = shutil.which(session.env["CC"]).replace(os.path.sep, "/")
     session.run(session.env["CC"], "--version", external=True)
