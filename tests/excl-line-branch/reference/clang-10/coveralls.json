@@ -4,31 +4,10 @@
     "service_job_id": "id",
     "service_number": "number",
     "service_pull_request": "pr",
-    "git": {
-        "head": {
-            "id": "ff90a95121c7a2a72a05da03027401a718334253",
-            "author_name": "Spacetown",
-            "author_email": "40258682+spacetown@users.noreply.github.com",
-            "committer_name": "Spacetown",
-            "committer_email": "40258682+spacetown@users.noreply.github.com",
-            "message": "Remove sorting in JSON output files"
-        },
-        "branch": "branch",
-        "remotes": [
-            {
-                "name": "origin",
-                "url": "https://github.com/Spacetown/gcovr.git"
-            },
-            {
-                "name": "upstream",
-                "url": "https://github.com/gcovr/gcovr"
-            }
-        ]
-    },
     "source_files": [
         {
             "name": "main.cpp",
-            "source_digest": "74860102d61efa7bb5a068579d0bfe40",
+            "source_digest": "cd30d47dece5663b7a84e38c9344b4ab",
             "coverage": [
                 null,
                 null,
@@ -37,7 +16,7 @@
                 null,
                 null,
                 1,
-                1,
+                2,
                 1,
                 1,
                 null,
@@ -79,8 +58,6 @@
                 6,
                 5,
                 5,
-                null,
-                null,
                 null,
                 null,
                 null,

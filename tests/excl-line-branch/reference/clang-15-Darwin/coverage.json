@@ -6,13 +6,13 @@
             "lines": [
                 {
                     "line_number": 7,
-                    "count": 2,
+                    "count": 3,
                     "branches": [],
-                    "gcovr/md5": "f0d54fc3718423907ffe35d82be9e65c"
+                    "gcovr/md5": "7d2f282a8746c23f7f938eb7b5592e06"
                 },
                 {
                     "line_number": 8,
-                    "count": 2,
+                    "count": 3,
                     "branches": [],
                     "gcovr/md5": "5efee26ba06711f9395b3c3bc7a9d94a"
                 },
@@ -270,44 +270,30 @@
                     "line_number": 55,
                     "count": 0,
                     "branches": [],
-                    "gcovr/md5": "2d5e1e2ac7529e31e605e9849fcff3cc",
+                    "gcovr/md5": "01d76a240d1ff39c4acd167e4a0f0805",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 56,
                     "count": 0,
                     "branches": [],
-                    "gcovr/md5": "65dc4e5f2615e265e1dbe349aa2f5858",
+                    "gcovr/md5": "5703f441b323e4ec7b1b87ef3b386cb9",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 57,
                     "count": 0,
                     "branches": [],
-                    "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3",
-                    "gcovr/excluded": true
-                },
-                {
-                    "line_number": 58,
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "5703f441b323e4ec7b1b87ef3b386cb9",
-                    "gcovr/excluded": true
-                },
-                {
-                    "line_number": 59,
-                    "count": 0,
-                    "branches": [],
                     "gcovr/md5": "a90dacea889bc9c99fe5a3b7b5d65d25"
                 },
                 {
-                    "line_number": 61,
+                    "line_number": 59,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 },
                 {
-                    "line_number": 62,
+                    "line_number": 60,
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "9e7ce02d034587718cd3b6c29d789ef0"
@@ -343,7 +329,7 @@
                     "demangled_name": "main",
                     "lineno": 46,
                     "execution_count": 1,
-                    "blocks_percent": 36.0
+                    "blocks_percent": 42.0
                 }
             ]
         }

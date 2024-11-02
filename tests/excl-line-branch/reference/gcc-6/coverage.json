@@ -8,7 +8,7 @@
                     "line_number": 7,
                     "count": 1,
                     "branches": [],
-                    "gcovr/md5": "f0d54fc3718423907ffe35d82be9e65c"
+                    "gcovr/md5": "7d2f282a8746c23f7f938eb7b5592e06"
                 },
                 {
                     "line_number": 8,
@@ -235,13 +235,13 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 61,
+                    "line_number": 59,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 },
                 {
-                    "line_number": 62,
+                    "line_number": 60,
                     "count": 4,
                     "branches": [],
                     "gcovr/md5": "9e7ce02d034587718cd3b6c29d789ef0"
