@@ -23,10 +23,12 @@ from typing import Tuple, Optional
 from ...options import Options
 
 from ...utils import presentable_filename, open_text_for_writing
-from ...coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
+from ...coverage import CoverageContainer, CoverageStat, SummarizedStats, sort_coverage
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce gcovr csv report"""
 
     # Open output without translation of line endings.

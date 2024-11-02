@@ -39,7 +39,7 @@ from pygments.lexers import get_lexer_for_filename
 from ...coverage import (
     BranchCoverage,
     CallCoverage,
-    CovData,
+    CoverageContainer,
     CoverageStat,
     DecisionCoverage,
     DecisionCoverageConditional,
@@ -277,8 +277,8 @@ class RootInfo:
             "." if self.directory == "" else force_unix_separator(str(self.directory))
         )
 
-    def set_coverage(self, covdata: CovData) -> None:
-        """Update this RootInfo with a summary of the CovData."""
+    def set_coverage(self, covdata: CoverageContainer) -> None:
+        """Update this RootInfo with a summary of the CoverageContainer."""
         stats = SummarizedStats.from_covdata(covdata)
         self.lines = dict_from_stat(stats.line, self.line_coverage_class, 0.0)
         self.functions = dict_from_stat(stats.function, self.coverage_class)
@@ -307,7 +307,9 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """Write the HTML report"""
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
@@ -503,7 +505,7 @@ def write_root_page(
     options,
     root_info: RootInfo,
     output_file: str,
-    covdata: CovData,
+    covdata: CoverageContainer,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
@@ -533,7 +535,7 @@ def write_source_pages(
     options,
     root_info: RootInfo,
     functions_output_file: str,
-    covdata: CovData,
+    covdata: CoverageContainer,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
@@ -623,7 +625,7 @@ def write_single_page(
     options,
     root_info: RootInfo,
     output_file: str,
-    covdata: CovData,
+    covdata: CoverageContainer,
     subdirs: Dict[str, DirectoryCoverage],
     sorted_keys: List[str],
     cdata_fname: Dict[str, str],

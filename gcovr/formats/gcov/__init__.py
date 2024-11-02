@@ -21,7 +21,7 @@ from multiprocessing import cpu_count
 import os
 from typing import List, Union
 
-from ...coverage import CovData
+from ...coverage import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import FilterOption, GcovrConfigOption, relative_path
 
@@ -222,7 +222,7 @@ class GcovHandler(BaseHandler):
                 "\tThe specified directory does not exist."
             )
 
-    def read_report(self) -> CovData:
+    def read_report(self) -> CoverageContainer:
         from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         return read_report(self.options)

@@ -22,7 +22,7 @@ from typing import List, Union
 from ...options import GcovrConfigOption, OutputOrDefault
 from ...formats.base import BaseHandler
 
-from ...coverage import CovData
+from ...coverage import CoverageContainer
 
 
 class CloverHandler(BaseHandler):
@@ -65,7 +65,7 @@ class CloverHandler(BaseHandler):
             ),
         ]
 
-    def write_report(self, covdata: CovData, output_file: str) -> None:
+    def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_report(covdata, output_file, self.options)

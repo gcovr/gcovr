@@ -28,10 +28,12 @@ from lxml import etree  # nosec # We only write XML files
 from ...options import Options
 
 from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
-from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
+from ...coverage import CoverageContainer, CoverageStat, LineCoverage, SummarizedStats
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce an XML report in the JaCoCo format"""
 
     root_elem = etree.Element("report")

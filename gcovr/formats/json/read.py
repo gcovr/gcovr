@@ -27,7 +27,7 @@ from . import versions
 from ...coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CovData,
+    CoverageContainer,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
@@ -56,12 +56,13 @@ LOGGER = logging.getLogger("gcovr")
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def read_report(options: Options) -> Optional[CovData]:
+def read_report(options: Options) -> CoverageContainer:
     """merge a coverage from multiple reports in the format
     partially compatible with gcov JSON output"""
 
+    covdata = CoverageContainer()
     if len(options.json_add_tracefile) == 0:
-        return None
+        return covdata
 
     datafiles = set()
 
@@ -76,7 +77,6 @@ def read_report(options: Options) -> Optional[CovData]:
         for trace_file in trace_files:
             datafiles.add(os.path.normpath(trace_file))
 
-    covdata: CovData = {}
     for data_source_filename in datafiles:
         LOGGER.debug(f"Processing JSON file: {data_source_filename}")
 

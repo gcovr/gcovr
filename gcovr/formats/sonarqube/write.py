@@ -22,10 +22,12 @@ from lxml import etree  # nosec # We only write XML files
 from ...options import Options
 
 from ...utils import open_binary_for_writing, presentable_filename
-from ...coverage import CovData
+from ...coverage import CoverageContainer
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce an XML report in the SonarQube generic coverage format"""
 
     root = etree.Element("coverage")

@@ -27,7 +27,7 @@ from ...utils import (
     open_text_for_writing,
 )
 from ...coverage import (
-    CovData,
+    CoverageContainer,
     CoverageStat,
     FileCoverage,
     SummarizedStats,
@@ -43,7 +43,9 @@ UN_COVERED_SEPARATOR = "   "
 LINE_WIDTH = 78
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce the classic gcovr text report"""
 
     with open_text_for_writing(output_file, "coverage.txt") as fh:
@@ -97,7 +99,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         fh.write("-" * LINE_WIDTH + "\n")
 
 
-def write_summary_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_summary_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """Print a small report to the standard output.
     Output the percentage, covered and total lines and branches.
     """

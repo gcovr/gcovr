@@ -60,7 +60,7 @@ _T = TypeVar("_T")
 
 
 def sort_coverage(
-    covdata: Union[Dict[str, FileCoverage], Dict[str, DirectoryCoverage]],
+    covdata: Union[CoverageContainer, Dict[str, DirectoryCoverage]],
     sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
     sort_reverse: bool,
     by_metric: Literal["line", "branch", "decision"],
@@ -672,7 +672,42 @@ class FileCoverage:
         return CoverageStat(covered, total)
 
 
-CovData = Dict[str, FileCoverage]
+class CoverageContainer:
+    """Coverage container holding all the coverage data."""
+
+    def __init__(self: CoverageContainer):
+        self.data: Dict[str, FileCoverage] = {}
+
+    def __setitem__(self, filename: str, item: FileCoverage):
+        self.data[filename] = item
+
+    def __getitem__(self, filename):
+        return self.data[filename]
+
+    def __len__(self):
+        return len(self.data)
+
+    def __contains__(self, filename: str):
+        return filename in self.data
+
+    def __iter__(self):
+        return iter(self.data)
+
+    def keys(self):
+        """Get the filenames."""
+        return self.data.keys()
+
+    def values(self):
+        """Get the file coverage data objects."""
+        return self.data.values()
+
+    def items(self):
+        """Get the file coverage data items."""
+        return self.data.items()
+
+    def clear(self):
+        """Clear the data."""
+        return self.data.clear()
 
 
 class DirectoryCoverage:
@@ -683,7 +718,7 @@ class DirectoryCoverage:
     def __init__(self, dirname: str) -> None:
         self.dirname: str = dirname
         self.parent_dirname: Optional[str] = None
-        self.children: Union[CovData, CovDataDirectories] = {}
+        self.children: Union[CoverageContainer, CovDataDirectories] = {}
         self.stats: SummarizedStats = SummarizedStats.new_empty()
 
     @staticmethod
@@ -704,7 +739,7 @@ class DirectoryCoverage:
 
     @staticmethod
     def from_covdata(
-        covdata: CovData, sorted_keys: Iterable, root_filter: re.Pattern
+        covdata: CoverageContainer, sorted_keys: Iterable, root_filter: re.Pattern
     ) -> CovDataDirectories:
         r"""Add a file coverage item to the directory structure and accumulate stats.
 
@@ -766,7 +801,7 @@ class DirectoryCoverage:
                     # Add orphan value to the parent
                     subdirs[str(parent_dirname)].children[orphan_key] = orphan_value  # type: ignore [assignment]
                     # and remove the current one.
-                    subdirs[str(parent_dirname)].children.pop(dirname)
+                    subdirs[str(parent_dirname)].children.pop(dirname)  # type: ignore [union-attr]
                     # Mark the key for removal.
                     collapse_dirs.add(dirname)
 
@@ -820,7 +855,7 @@ class SummarizedStats:
         )
 
     @staticmethod
-    def from_covdata(covdata: CovData) -> SummarizedStats:
+    def from_covdata(covdata: CoverageContainer) -> SummarizedStats:
         """Create a coverage statistic from a coverage data object."""
         stats = SummarizedStats.new_empty()
         for filecov in covdata.values():

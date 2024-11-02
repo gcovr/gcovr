@@ -32,7 +32,7 @@ from ...utils import (
 from ...coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CovData,
+    CoverageContainer,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
@@ -69,7 +69,9 @@ def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
         write_json(gcovr_json_dict, fh)
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     r"""produce an JSON report in the format partially
     compatible with gcov JSON output"""
 
@@ -158,7 +160,7 @@ def _summary_from_stats(
     return json_dict
 
 
-def _json_from_files(files: CovData, options) -> list:
+def _json_from_files(files: CoverageContainer, options) -> list:
     return [_json_from_file(files[key], options) for key in sorted(files)]
 
 
