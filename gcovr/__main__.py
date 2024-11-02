@@ -23,11 +23,10 @@ import re
 import sys
 
 from argparse import ArgumentParser
-from typing import Any, Dict, Iterable
+from typing import Any, Dict
 import traceback
 
 from .configuration import (
-    ConfigEntry,
     argument_parser_setup,
     config_entries_from_dict,
     merge_options_and_set_defaults,

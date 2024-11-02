@@ -904,7 +904,7 @@ def run_gcov_and_process_files(
             else:
                 if ignore_output_errors:
                     active_gcov_files = set(
-                        [f for f in active_gcov_files if os.path.exists(f)]
+                        f for f in active_gcov_files if os.path.exists(f)
                     )
 
                 # Process *.gcov files

@@ -595,7 +595,7 @@ def html2jpeg(session: nox.Session):
         ).strip()
 
         def docker_stop():
-            subprocess.run(["docker", "stop", container_id])
+            subprocess.run(["docker", "stop", container_id], check=False)  # nosec # We run on several system and do not know the full path
 
         defer.callback(docker_stop)
         url = f"http://localhost:{port}/1/screenshot"
