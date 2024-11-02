@@ -1,17 +1,17 @@
 {
-    "run_at": "2024-02-25 21:07:16 UTC",
+    "run_at": "2024-10-13 08:38:16 UTC",
     "service_name": "gcovr-test-suite",
     "service_job_id": "id",
     "service_number": "number",
     "service_pull_request": "pr",
     "git": {
         "head": {
-            "id": "325e0683ac89d5fa26225ef68c69302308102102",
+            "id": "3de5a205b8d1807a2bf9005e60b23791479122eb",
             "author_name": "Michael F\u00f6rderer",
             "author_email": "40258682+Spacetown@users.noreply.github.com",
             "committer_name": "GitHub",
             "committer_email": "noreply@github.com",
-            "message": "Merge 002a9419975c909643ddfa1f6f70f13c1fb9f540 into d2544096fd5b5fe2bced6019c5d9592bb4f6aa58"
+            "message": "Merge d8333d42e461a261e0997a14ea30a7a39c481a59 into be355b4dfa3f8920a98cf3b2cc2167f0d239d617"
         },
         "branch": "branch",
         "remotes": [
@@ -24,7 +24,7 @@
     "source_files": [
         {
             "name": "main.cpp",
-            "source_digest": "74860102d61efa7bb5a068579d0bfe40",
+            "source_digest": "cd30d47dece5663b7a84e38c9344b4ab",
             "coverage": [
                 null,
                 null,
@@ -32,8 +32,8 @@
                 null,
                 null,
                 null,
-                2,
-                2,
+                3,
+                3,
                 2,
                 2,
                 null,
@@ -75,8 +75,6 @@
                 6,
                 5,
                 5,
-                null,
-                null,
                 null,
                 null,
                 null,

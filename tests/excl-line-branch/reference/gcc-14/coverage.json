@@ -10,7 +10,7 @@
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
-                    "gcovr/md5": "f0d54fc3718423907ffe35d82be9e65c"
+                    "gcovr/md5": "7d2f282a8746c23f7f938eb7b5592e06"
                 },
                 {
                     "line_number": 8,
@@ -389,7 +389,7 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 61,
+                    "line_number": 59,
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
@@ -464,7 +464,7 @@
                     "blocks_percent": 100.0,
                     "pos": [
                         "46:5",
-                        "62:1"
+                        "60:1"
                     ]
                 }
             ]
