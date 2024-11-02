@@ -56,10 +56,14 @@ Suspicious hit counts
 _____________________
 
 A bug in gcov can produce very high hit values (see `gcov issue_suspicious_hits`_) which are not accepted by default.
-A suspicious value is assumed if the counter is 2^32 or greater.
+A suspicious value is assumed if the counter is greater than the value of :option:`--gcov-suspicious-hits-threshold`.
 This behavior can be changed by using the value ``--gcov-ignore-parse-errors=suspicious_hits.warn`` or
 ``--gcov-ignore-parse-errors=suspicious_hits.warn_once_per_file``. The first form warns on every line
 with a suspicious value the second one only once per processed file and adds a summary with the overall
 issues in the file.
+
+.. versionadded:: NEXT
+
+    The threshold for detection of suspicious hits can be configured with :option:`--gcov-suspicious-hits-threshold`.
 
 .. _gcov issue_suspicious_hits: https://github.com/gcovr/gcovr/issues/898
