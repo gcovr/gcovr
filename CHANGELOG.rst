@@ -26,6 +26,7 @@ Bug fixes and small improvements:
 - Fix crash on Windows when trying to fix the case of the files. (:issue:`1000`)
 - Fix LCOV report. Excluded lines where added with a count of 0. (:issue:`1012`)
 - Fix line exclusion not clearing all child coverage data. (:issue:`1018`)
+- Fix summary stats in ``JaCoCo`` report. (:issue:`1022`)
 
 Documentation:
 

@@ -34,8 +34,6 @@ from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
 def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     """produce an XML report in the JaCoCo format"""
 
-    stats = SummarizedStats.from_covdata(covdata)
-
     root_elem = etree.Element("report")
 
     # Generate the coverage output (on a per-package basis)
@@ -85,6 +83,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         package_elem.append(_counter_element("BRANCH", package_data.stats.branch))
         package_elem.set("name", package_name.replace("/", "."))
 
+    stats = SummarizedStats.from_covdata(covdata)
     root_elem.append(_counter_element("LINE", stats.line))
     root_elem.append(_counter_element("BRANCH", stats.branch))
 

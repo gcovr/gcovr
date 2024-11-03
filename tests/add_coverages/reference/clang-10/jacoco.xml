@@ -35,6 +35,6 @@
     <counter type="LINE" missed="0" covered="12"/>
     <counter type="BRANCH" missed="0" covered="0"/>
   </package>
-  <counter type="LINE" missed="0" covered="4"/>
+  <counter type="LINE" missed="0" covered="12"/>
   <counter type="BRANCH" missed="0" covered="0"/>
 </report>
