@@ -63,7 +63,7 @@ def write_report(
             if linecov.is_reportable:
                 lines_elem.append(_line_element(linecov))
 
-        stats = SummarizedStats.from_file(filecov)
+        stats = filecov.stats
 
         class_name = fname.replace(".", "_")
         class_elem.set("name", class_name)
@@ -85,7 +85,7 @@ def write_report(
         package_elem.append(_counter_element("BRANCH", package_data.stats.branch))
         package_elem.set("name", package_name.replace("/", "."))
 
-    stats = SummarizedStats.from_covdata(covdata)
+    stats = covdata.stats
     root_elem.append(_counter_element("LINE", stats.line))
     root_elem.append(_counter_element("BRANCH", stats.branch))
 

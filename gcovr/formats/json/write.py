@@ -85,7 +85,9 @@ def write_report(
     )
 
 
-def write_summary_report(covdata, output_file: str, options: Options):
+def write_summary_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+):
     """Produce gcovr JSON summary report"""
 
     json_dict: Dict[str, Any] = {}
@@ -114,16 +116,12 @@ def write_summary_report(covdata, output_file: str, options: Options):
         files.append(
             {
                 "filename": filename,
-                **_summary_from_stats(
-                    SummarizedStats.from_file(covdata[key]), None, options
-                ),
+                **_summary_from_stats(covdata[key].stats, None, options),
             }
         )
 
     # Footer & summary
-    json_dict.update(
-        _summary_from_stats(SummarizedStats.from_covdata(covdata), 0.0, options)
-    )
+    json_dict.update(_summary_from_stats(covdata.stats, 0.0, options))
 
     _write_json_result(
         json_dict, output_file, "summary_coverage.json", options.json_summary_pretty

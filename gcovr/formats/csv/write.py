@@ -23,7 +23,7 @@ from typing import Tuple, Optional
 from ...options import Options
 
 from ...utils import presentable_filename, open_text_for_writing
-from ...coverage import CoverageContainer, CoverageStat, SummarizedStats, sort_coverage
+from ...coverage import CoverageContainer, CoverageStat, sort_coverage
 
 
 def write_report(
@@ -59,7 +59,7 @@ def write_report(
         )
         for key in keys:
             filename = presentable_filename(covdata[key].filename, options.root_filter)
-            stats = SummarizedStats.from_file(covdata[key])
+            stats = covdata[key].stats
             writer.writerow(
                 [
                     filename,

@@ -599,6 +599,18 @@ class FileCoverage:
 
         return filecov
 
+    @property
+    def stats(self) -> SummarizedStats:
+        """Create a coverage statistic of a file coverage object."""
+        return SummarizedStats(
+            line=self.line_coverage(),
+            branch=self.branch_coverage(),
+            condition=self.condition_coverage(),
+            decision=self.decision_coverage(),
+            function=self.function_coverage(),
+            call=self.call_coverage(),
+        )
+
     def function_coverage(self) -> CoverageStat:
         """Return the function coverage statistic of the file."""
         total = 0
@@ -709,6 +721,14 @@ class CoverageContainer:
         """Clear the data."""
         return self.data.clear()
 
+    @property
+    def stats(self) -> SummarizedStats:
+        """Create a coverage statistic from a coverage data object."""
+        stats = SummarizedStats.new_empty()
+        for filecov in self.values():
+            stats += filecov.stats
+        return stats
+
 
 class DirectoryCoverage:
     """Represent coverage information about a directory."""
@@ -767,7 +787,7 @@ class DirectoryCoverage:
                 if dirname not in subdirs:
                     subdirs[dirname] = DirectoryCoverage(dirname)
                 subdirs[dirname].children[dircov.filename] = dircov  # type: ignore [assignment]
-                subdirs[dirname].stats += SummarizedStats.from_file(filecov)
+                subdirs[dirname].stats += filecov.stats
                 dircov = subdirs[dirname]
 
         collapse_dirs = set()
@@ -852,26 +872,6 @@ class SummarizedStats:
             decision=DecisionCoverageStat.new_empty(),
             function=CoverageStat.new_empty(),
             call=CoverageStat.new_empty(),
-        )
-
-    @staticmethod
-    def from_covdata(covdata: CoverageContainer) -> SummarizedStats:
-        """Create a coverage statistic from a coverage data object."""
-        stats = SummarizedStats.new_empty()
-        for filecov in covdata.values():
-            stats += SummarizedStats.from_file(filecov)
-        return stats
-
-    @staticmethod
-    def from_file(filecov: FileCoverage) -> SummarizedStats:
-        """Create a coverage statistic of a file coverage object."""
-        return SummarizedStats(
-            line=filecov.line_coverage(),
-            branch=filecov.branch_coverage(),
-            condition=filecov.condition_coverage(),
-            decision=filecov.decision_coverage(),
-            function=filecov.function_coverage(),
-            call=filecov.call_coverage(),
         )
 
     def __iadd__(self, other: SummarizedStats) -> SummarizedStats:

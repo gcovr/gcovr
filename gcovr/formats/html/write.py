@@ -49,7 +49,6 @@ from ...coverage import (
     DirectoryCoverage,
     FileCoverage,
     LineCoverage,
-    SummarizedStats,
     sort_coverage,
 )
 from ...options import Options
@@ -279,7 +278,7 @@ class RootInfo:
 
     def set_coverage(self, covdata: CoverageContainer) -> None:
         """Update this RootInfo with a summary of the CoverageContainer."""
-        stats = SummarizedStats.from_covdata(covdata)
+        stats = covdata.stats
         self.lines = dict_from_stat(stats.line, self.line_coverage_class, 0.0)
         self.functions = dict_from_stat(stats.function, self.coverage_class)
         self.branches = dict_from_stat(stats.branch, self.branch_coverage_class)
@@ -711,11 +710,7 @@ def get_coverage_data(
             coverage, medium_threshold_branch, high_threshold_branch
         )
 
-    stats = (
-        cdata.stats
-        if isinstance(cdata, DirectoryCoverage)
-        else SummarizedStats.from_file(cdata)
-    )
+    stats = cdata.stats
 
     lines = {
         "total": stats.line.total,
@@ -861,9 +856,7 @@ def get_file_data(
             f_data["blocks"] = f_cdata.blocks[lineno]
             f_data["excluded"] = f_cdata.excluded[lineno]
             if f_cdata.name is not None:
-                function_stats = SummarizedStats.from_file(
-                    cdata.filter_for_function(f_cdata)
-                )
+                function_stats = cdata.filter_for_function(f_cdata).stats
                 f_data["line_coverage"] = function_stats.line.percent_or(100)
                 f_data["branch_coverage"] = function_stats.branch.percent_or("-")
                 f_data["condition_coverage"] = function_stats.condition.percent_or("-")

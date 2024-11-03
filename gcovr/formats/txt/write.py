@@ -30,7 +30,6 @@ from ...coverage import (
     CoverageContainer,
     CoverageStat,
     FileCoverage,
-    SummarizedStats,
     sort_coverage,
 )
 
@@ -114,8 +113,7 @@ def write_summary_report(
             total = stat.total
             fh.write(f"{name}: {percent:0.1f}% ({covered} out of {total})\n")
 
-        stats = SummarizedStats.from_covdata(covdata)
-
+        stats = covdata.stats
         print_stat("lines", stats.line)
         print_stat("functions", stats.function)
         print_stat("branches", stats.branch)

@@ -42,7 +42,7 @@ from .utils import (
     update_logging,
 )
 from .version import __version__
-from .coverage import CoverageContainer, SummarizedStats
+from .coverage import CoverageContainer
 
 # formats
 from . import formats as gcovr_formats
@@ -77,7 +77,7 @@ def fail_under(
     threshold_function,
 ):
     """Fail depending on the coverage result."""
-    stats = SummarizedStats.from_covdata(covdata)
+    stats = covdata.stats
 
     line_nok = False
     if threshold_line > 0.0:
