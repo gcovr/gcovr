@@ -102,6 +102,19 @@ class GcovHandler(BaseHandler):
                 action="append",
             ),
             GcovrConfigOption(
+                "gcov_suspicious_hits_threshold",
+                ["--gcov-suspicious-hits-threshold"],
+                config="gcov-suspicious-hits-threshold",
+                group="gcov_options",
+                help=(
+                    "Set the threshold for detecting suspicious hits "
+                    "in gcov output files. "
+                    "Set to 0 to turn the detection of."
+                ),
+                type=int,
+                default=2**32,
+            ),
+            GcovrConfigOption(
                 "gcov_filter",
                 ["--gcov-filter"],
                 group="filter_options",

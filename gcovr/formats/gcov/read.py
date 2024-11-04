@@ -318,7 +318,9 @@ def process_gcov_data(
         lines = fh_in.read().splitlines()
 
     # Find the source file
-    metadata = parse_metadata(lines)
+    metadata = parse_metadata(
+        lines, suspicious_hits_threshold=options.gcov_suspicious_hits_threshold
+    )
     source = metadata.get("Source")
     if source is None:
         raise RuntimeError("Unexpected value 'None' for metadata 'Source'.")
@@ -351,6 +353,7 @@ def process_gcov_data(
         filename=key,
         data_filename=gcda_fname or data_fname,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
+        suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
     )
 
     LOGGER.debug(f"Apply exclusions for {fname}")

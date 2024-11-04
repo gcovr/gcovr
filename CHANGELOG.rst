@@ -17,6 +17,7 @@ New features and notable changes:
 - Add option to generate LCOV format produced by version 1.x of LCOV tool. (:issue:`1001`)
 - Extend logging for data merge errors with info about the data sources. (:issue:`1010`)
 - Add condition coverage merge mode option :option:`--merge-mode-conditions` (:issue:`1009`)
+- Add :option:`--gcov-suspicious-hits-threshold` to configure the value for detecting suspicious hits in GCOV files. (:issue:`1021`)
 
 Bug fixes and small improvements:
 
