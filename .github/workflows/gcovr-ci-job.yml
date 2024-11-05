@@ -44,7 +44,7 @@ jobs:
       FORCE_COLOR: "1"
       NOX_CONTAINER_ARGUMENTS: ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
       GENERATE_DOCUMENTATION: ${{ (!inputs.container && (! startsWith(inputs.python-version,'pypy')) && (! startsWith(inputs.os,'windows-')) && (inputs.python-version != '3.8')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10')) }}
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
