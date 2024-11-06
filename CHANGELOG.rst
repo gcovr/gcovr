@@ -42,6 +42,7 @@ Internal changes:
 - Align variable names across the files. (:issue:`1015`)
 - Rework exclusion handling to keep information about excluded coverage. (:issue:`1016`)
 - Add ``mypy`` for testing code. (:issue:`1019`)
+- Add a container class for the coverage data. (:issue:`1023`)
 
 8.2 (13 October 2024)
 ---------------------
