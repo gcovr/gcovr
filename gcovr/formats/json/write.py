@@ -42,7 +42,6 @@ from ...coverage import (
     LineCoverage,
     CallCoverage,
     SummarizedStats,
-    sort_coverage,
 )
 
 from . import versions
@@ -101,14 +100,13 @@ def write_summary_report(
     json_dict["files"] = files
 
     # Data
-    keys = sort_coverage(
-        covdata,
+    sorted_keys = covdata.sort_coverage(
         sort_key=options.sort_key,
         sort_reverse=options.sort_reverse,
         by_metric="branch" if options.sort_branches else "line",
     )
 
-    for key in keys:
+    for key in sorted_keys:
         filename = presentable_filename(covdata[key].filename, options.root_filter)
         if options.json_base:
             filename = "/".join([options.json_base, filename])

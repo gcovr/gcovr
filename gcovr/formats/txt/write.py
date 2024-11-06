@@ -30,7 +30,6 @@ from ...coverage import (
     CoverageContainer,
     CoverageStat,
     FileCoverage,
-    sort_coverage,
 )
 
 # Widths of the various columns
@@ -79,15 +78,14 @@ def write_report(
         fh.write("-" * LINE_WIDTH + "\n")
 
         # Data
-        keys = sort_coverage(
-            covdata,
+        sorted_keys = covdata.sort_coverage(
             sort_key=options.sort_key,
             sort_reverse=options.sort_reverse,
             by_metric=options.txt_metric,
         )
 
         total_stat = CoverageStat.new_empty()
-        for key in keys:
+        for key in sorted_keys:
             (stat, txt) = _summarize_file_coverage(covdata[key], options)
             total_stat += stat
             fh.write(txt + "\n")
