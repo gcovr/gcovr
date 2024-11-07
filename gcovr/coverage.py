@@ -693,10 +693,6 @@ class CoverageContainer:
         self.data: Dict[str, FileCoverage] = {}
         self.directories: List[CoverageContainerDirectory] = []
 
-    def __setitem__(self, key: str, item: FileCoverage):
-        self.data[key] = item
-        self.directories.clear()
-
     def __getitem__(self, key: str):
         return self.data[key]
 
@@ -709,10 +705,6 @@ class CoverageContainer:
     def __iter__(self):
         return iter(self.data)
 
-    def keys(self):
-        """Get the keys."""
-        return self.data.keys()
-
     def values(self):
         """Get the file coverage data objects."""
         return self.data.values()
@@ -720,11 +712,6 @@ class CoverageContainer:
     def items(self):
         """Get the file coverage data items."""
         return self.data.items()
-
-    def clear(self):
-        """Clear the data."""
-        self.data.clear()
-        self.directories.clear()
 
     @property
     def stats(self) -> SummarizedStats:
@@ -869,16 +856,6 @@ class CoverageContainerDirectory:
 
     def __len__(self):
         return len(self.data)
-
-    def __contains__(self, key: str):
-        return key in self.data
-
-    def __iter__(self):
-        return iter(self.data)
-
-    def keys(self):
-        """Get the keys."""
-        return self.data.keys()
 
     def values(self):
         """Get the file coverage data objects."""

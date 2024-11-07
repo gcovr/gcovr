@@ -228,10 +228,12 @@ def merge_covdata(
     left: CoverageContainer, right: CoverageContainer, options: MergeOptions
 ) -> CoverageContainer:
     """
-    Merge CoverageContainer information.
+    Merge CoverageContainer information and clear directory statistics.
 
     Do not use 'left' or 'right' objects afterwards!
     """
+    left.directories.clear()
+    right.directories.clear()
     left.data = _merge_dict(left.data, right.data, merge_file, options, None)
     return left
 
@@ -241,7 +243,8 @@ def insert_file_coverage(
     file: FileCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> FileCoverage:
-    """Insert FileCoverage into CoverageContainer."""
+    """Insert FileCoverage into CoverageContainer and clear directory statistics."""
+    target.directories.clear()
     return _insert_coverage_item(
         target.data, file.filename, file, merge_file, options, None
     )
