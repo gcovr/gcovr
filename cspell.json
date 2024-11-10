@@ -126,6 +126,7 @@
         "sonarqube",
         "sourceline",
         "stylesheet",
+        "tomli",
         "Traceback",
         "tracefile",
         "unfixable",

@@ -72,7 +72,6 @@ ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")
 
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr", "tests"]
 DEFAULT_LINT_ARGUMENTS = [
-    "setup.py",
     "noxfile.py",
     "scripts",
     "admin",
@@ -93,8 +92,6 @@ GCOVR_VERSION_PY = Path(__file__).parent / "gcovr" / "version.py"
 GCOVR_CHANGELOG_RST = Path(__file__).parent / "CHANGELOG.rst"
 
 nox.options.sessions = ["qa"]
-# Inject the timestamp into setup.py
-os.environ["TIMESTAMP"] = str(int(time.time()))
 
 
 def get_gcc_versions() -> Tuple[str, str]:
@@ -482,6 +479,7 @@ def check_wheel(session: nox.Session) -> None:
     session.install("wheel", "twine")
     with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
+        session.run("pip", "uninstall", "--yes", "gcovr")
         session.install(str(list(Path().glob("*.whl"))[0]))
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)

@@ -7,6 +7,9 @@ __pycache__
 # User virtual environment
 /.venv/
 
+# Version is updated from hatch-vcs
+gcovr/version.py
+
 # Packages
 /gcovr.egg
 /gcovr.egg-info
