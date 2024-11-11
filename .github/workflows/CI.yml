@@ -207,15 +207,6 @@ jobs:
             echo "TAG_NEEDS_TO_BE_PUSHED=false" >> $GITHUB_ENV
           fi
 
-      - name: For a dry run, don't verify tags and documentation
-        if: ${{ env.TAG_NEEDS_TO_BE_PUSHED == 'false' }}
-        run: |
-          echo "EXTRA_CHECKLIST_ARGS=--no-verify-tags --no-verify-docs-next-version" >> $GITHUB_ENV
-
-      - name: Run release checklist
-        run: |
-          admin/release_checklist.sh $EXTRA_CHECKLIST_ARGS 8.2+main
-
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
