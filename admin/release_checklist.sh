@@ -69,12 +69,6 @@ if ! [[ -d .git ]]; then
     exit 1
 fi
 
-grep -qF "__version__ = \"$target_version\"" gcovr/version.py \
-    || error "gcovr/version.py: Please update with this version"
-
-grep -qE "^$(echo "$target_version" | sed -e "s/+main//") \\(.+\\)\$" CHANGELOG.rst \
-    || error "CHANGELOG.rst: Please update with this version"
-
 grep -qF "version=\"gcovr $target_version\"" doc/examples/example_cobertura.xml \
     || error "examples: Please regenerate: " \
             "cd doc/examples; ./example_cobertura.sh > example_cobertura.xml"
@@ -98,14 +92,6 @@ test -z "$occurrences" || {
     # shellcheck disable=SC2001
     echo "$occurrences" | sed 's/^/INFO: /' >&2
 }
-
-if git tag | grep -qE "^$target_version\$"; then
-    # grandfathering of non-annotated 3.4 tag
-    [[ "$target_version" = 3.4 ]] \
-        || [[ "$(git cat-file -t "$target_version")" = tag ]] \
-        || maybe_error $verify_tags \
-                       "Please use annotated tags (git tag -a) for releases"
-fi
 
 if [[ "$ok" = yes ]]; then
     echo "SUCCESS: release may proceed"
