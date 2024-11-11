@@ -20,10 +20,6 @@ on:
         type: string
         description: 'The Python version to use'
         required: false  # Only needed if not in container
-      upload-dist:
-        type: boolean
-        description: 'Upload the distribution'
-        default: false
       upload-app:
         type: boolean
         description: 'Upload the standalone application'
@@ -87,6 +83,22 @@ jobs:
           # Set the CC environment
           echo "CC=${{ inputs.gcc }}" >> $GITHUB_ENV
 
+      - name: Create new tag without pushing
+        run: |
+          # Create the new tag, this is needed to get the correct name of the apps
+          if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
+            # Get the version
+            GcovrVersion="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
+
+            # Set git user info
+            git config --global user.email "noreply@gcovr.com"
+            git config --global user.name "gcovr authors"
+
+            # Create the tag and print the output. Do not push.
+            git tag -a "$GcovrVersion" -m "$GcovrVersion ($(date -I))"
+            git tag --list -n "$GcovrVersion"
+          fi
+
       - name: Expose GitHub Runtime for Docker cache
         uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4
 
@@ -148,13 +160,6 @@ jobs:
       - name: Build and check the wheel
         run: |
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
-
-      - name: Upload distribution
-        if: ${{ inputs.upload-dist == true }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/**
 
       - name: Build and check standalone application
         if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}
