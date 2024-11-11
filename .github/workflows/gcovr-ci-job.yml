@@ -24,10 +24,6 @@ on:
         type: boolean
         description: 'Upload the standalone application'
         default: false
-      upload-release-notes:
-        type: boolean
-        description: 'Upload the release notes generated from markdown'
-        default: false
 
 defaults:
   run:
@@ -149,13 +145,6 @@ jobs:
             exit 1
           fi
           exit 0
-
-      - name: Upload release notes
-        if: ${{ inputs.upload-release-notes == true && (env.GENERATE_DOCUMENTATION == 'true') }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-notes
-          path: doc/build/release_notes.md
 
       - name: Build and check the wheel
         run: |
