@@ -229,7 +229,7 @@ Path                    Description
 ``/gcovr/templates/``   HTML report templates
 ``/tests/``             unit tests + integration test corpus
 ``/noxfile.py``         Definition of tests tasks
-``/setup.py``           Python package configuration
+``/pyproject.toml``     Python package and tool configuration
 ``/doc/``               documentation
 ``/doc/sources/``       user guide + website
 ``/doc/examples/``      runnable examples for the user guide
