@@ -162,6 +162,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 75
+          fetch-tags: true
 
       - name: Set up Python
         uses: "./.github/actions/setup-python"
@@ -173,11 +176,6 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install nox requests
-
-        # Need to prevent creation of an existing tag
-      - name: Fetch all tags
-        run: |
-          git fetch --force --tags --depth=1
 
       - name: Create new tag
         run: |

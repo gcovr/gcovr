@@ -39,6 +39,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 75
+          fetch-tags: true
 
       - name: Set up Runner
         if: ${{ !inputs.container }}
@@ -95,13 +98,13 @@ jobs:
             git tag --list -n "$GcovrVersion"
           fi
 
-      - name: Expose GitHub Runtime for Docker cache
-        uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4
-
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install nox requests
+
+      - name: Expose GitHub Runtime for Docker cache
+        uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4
 
       - name: Build Docker
         if: ${{ inputs.container }}
