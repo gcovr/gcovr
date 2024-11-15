@@ -122,6 +122,7 @@
         "pywin32",
         "Quickstart",
         "realpath",
+        "sdist",
         "setuptools",
         "sonarqube",
         "sourceline",

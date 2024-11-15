@@ -68,6 +68,11 @@ Documentation = "https://gcovr.com"
 Github = "https://github.com/gcovr/gcovr"
 Issues = "https://github.com/gcovr/gcovr/issues"
 
+[tool.hatch.build.targets.sdist]
+include = [
+  "gcovr/",
+]
+
 [tool.hatch.metadata.hooks.fancy-pypi-readme]
 content-type = "text/x-rst"
 
