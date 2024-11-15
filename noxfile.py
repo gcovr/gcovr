@@ -356,6 +356,12 @@ def doc(session: nox.Session) -> None:
     for line in iter_lines:
         if line.startswith("------------"):
             next(iter_lines)
+            version = get_gcovr_version()
+            out_lines += [
+                f"{version}\n",
+                f"{'-' * len(version)}\n",
+                "\n",
+            ]
             break
         if (line.rstrip())[:-1] == ":":
             raise RuntimeError(f"Found section start before release ID: {line}")
