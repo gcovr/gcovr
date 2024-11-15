@@ -94,8 +94,12 @@ nox.options.sessions = ["qa"]
 
 
 def get_gcovr_version() -> str:
-    """Get the current GCOVR version."""
-    return run_path(str(Path(__file__).parent / "gcovr" / "version.py"))["__version__"]
+    """Get the current GCOVR version without the date."""
+    return re.sub(
+        r"\.d\d+$",
+        "",
+        run_path(str(Path(__file__).parent / "gcovr" / "version.py"))["__version__"],
+    )
 
 
 def get_gcc_versions() -> Tuple[str, str]:
