@@ -197,14 +197,6 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install nox requests
 
-      - name: Generate documentation
-        run: |
-          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session doc
-
-      - name: Set release notes as job summary
-        run: |
-          cat doc/build/release_notes.md >> $GITHUB_STEP_SUMMARY
-
       - name: Build and check the wheel
         run: |
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
@@ -214,6 +206,14 @@ jobs:
         with:
           name: dist
           path: dist/**
+
+      - name: Generate documentation
+        run: |
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session doc
+
+      - name: Set release notes as job summary
+        run: |
+          cat doc/build/release_notes.md >> $GITHUB_STEP_SUMMARY
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
