@@ -20,17 +20,9 @@ on:
         type: string
         description: 'The Python version to use'
         required: false  # Only needed if not in container
-      upload-dist:
-        type: boolean
-        description: 'Upload the distribution'
-        default: false
       upload-app:
         type: boolean
         description: 'Upload the standalone application'
-        default: false
-      upload-release-notes:
-        type: boolean
-        description: 'Upload the release notes generated from markdown'
         default: false
 
 defaults:
@@ -44,9 +36,12 @@ jobs:
       FORCE_COLOR: "1"
       NOX_CONTAINER_ARGUMENTS: ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
       GENERATE_DOCUMENTATION: ${{ (!inputs.container && (! startsWith(inputs.python-version,'pypy')) && (! startsWith(inputs.os,'windows-')) && (inputs.python-version != '3.8')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10')) }}
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 75
+          fetch-tags: true
 
       - name: Set up Runner
         if: ${{ !inputs.container }}
@@ -87,13 +82,29 @@ jobs:
           # Set the CC environment
           echo "CC=${{ inputs.gcc }}" >> $GITHUB_ENV
 
-      - name: Expose GitHub Runtime for Docker cache
-        uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4
+          echo "NEW_RELEASE=$(if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then echo 'true' ; else echo 'false' ; fi)" >> $GITHUB_ENV
+
+      - name: Create new tag without pushing to get the correct name of the apps
+        if: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && env.NEW_RELEASE == 'true' }}
+        run: |
+          # Get the version
+          GcovrVersion="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
+
+          # Set git user info
+          git config --global user.email "noreply@gcovr.com"
+          git config --global user.name "gcovr authors"
+
+          # Create the tag and print the output. Do not push.
+          git tag -a "$GcovrVersion" -m "$GcovrVersion ($(date -I))"
+          git tag --list -n "$GcovrVersion"
 
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install nox requests
+
+      - name: Expose GitHub Runtime for Docker cache
+        uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4
 
       - name: Build Docker
         if: ${{ inputs.container }}
@@ -138,23 +149,9 @@ jobs:
           fi
           exit 0
 
-      - name: Upload release notes
-        if: ${{ inputs.upload-release-notes == true && (env.GENERATE_DOCUMENTATION == 'true') }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-notes
-          path: doc/build/release_notes.md
-
       - name: Build and check the wheel
         run: |
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
-
-      - name: Upload distribution
-        if: ${{ inputs.upload-dist == true }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/**
 
       - name: Build and check standalone application
         if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}

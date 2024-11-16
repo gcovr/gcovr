@@ -72,7 +72,6 @@ ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")
 
 DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr", "tests"]
 DEFAULT_LINT_ARGUMENTS = [
-    "setup.py",
     "noxfile.py",
     "scripts",
     "admin",
@@ -89,12 +88,18 @@ OUTPUT_FORMATS = [
 ]
 
 CI_RUN = "GITHUB_ACTION" in os.environ
-GCOVR_VERSION_PY = Path(__file__).parent / "gcovr" / "version.py"
 GCOVR_CHANGELOG_RST = Path(__file__).parent / "CHANGELOG.rst"
 
 nox.options.sessions = ["qa"]
-# Inject the timestamp into setup.py
-os.environ["TIMESTAMP"] = str(int(time.time()))
+
+
+def get_gcovr_version() -> str:
+    """Get the current GCOVR version without the date."""
+    return re.sub(
+        r"\.d\d+$",
+        "",
+        run_path(str(Path(__file__).parent / "gcovr" / "version.py"))["__version__"],
+    )
 
 
 def get_gcc_versions() -> Tuple[str, str]:
@@ -160,63 +165,38 @@ def set_environment(session: nox.Session, cc: Optional[str] = None) -> None:
         session.env["CC_REFERENCE"] = cc_reference
 
 
-@nox.session(python=False)
+@nox.session()
 def prepare_release(session: nox.Session) -> None:
     """Prepare the release"""
-    new_lines = []
-    lines = iter(GCOVR_VERSION_PY.read_text().splitlines())
-    for line in lines:
-        if line.startswith("__version__"):
-            major, minor = line.split(" = ", maxsplit=1)[1].replace('"', "").split(".")
-            if not minor.endswith("+main"):
-                session.error("Session only allowed for development iteration")
-            session.log("Is this a major release (1) or a minor release (2)?")
-            release_type = input()
-            if release_type == "1":
-                major = str(int(major) + 1)
-                minor = "0"
-            elif release_type == "2":
-                minor = str(int(minor.replace("+main", "")) + 1)
-            else:
-                session.error(f"Invalid input {release_type!r}")
-
-            new_lines.append(f'__version__ = "{major}.{minor}"')
-            break
-        new_lines.append(line)
+    session.install("-e", ".")
+    version = get_gcovr_version()
+    parts = version.split(".", maxsplit=2)
+    if len(parts) == 2:
+        session.error("Session only allowed for development iteration")
+    major, minor = parts[0:2]
+    session.log("Is this a major release (1) or a minor release (2)?")
+    release_type = input()
+    if release_type == "1":
+        major = str(int(major) + 1)
+        minor = "0"
+    elif release_type == "2":
+        # hatchling has already set the correct version
+        pass
     else:
-        session.error("Version line not found")
+        session.error(f"Invalid input {release_type!r}")
 
-    new_lines += list(lines)
-
-    GCOVR_VERSION_PY.write_text("\n".join(new_lines))
-    session.notify("bump_version")
-    session.notify("html2jpeg")
+    session.run("python", "admin/bump_version.py", f"{major}.{minor}")
+    html2jpeg(session)
 
 
-@nox.session(python=False)
+@nox.session()
 def prepare_next_iteration(session: nox.Session) -> None:
     """Prepare the next iteration"""
-    new_lines = []
-    lines = iter(GCOVR_VERSION_PY.read_text().splitlines())
-    for line in lines:
-        if line.startswith("__version__"):
-            major, minor = line.split(" = ", maxsplit=1)[1].replace('"', "").split(".")
-            if minor.endswith("+main"):
-                session.error("Session only allowed after a release")
-            new_lines.append(f'__version__ = "{major}.{minor}+main"')
-            break
-        new_lines.append(line)
-    else:
-        session.error(f"Version line not found in {GCOVR_VERSION_PY.name}")
-
-    new_lines += list(lines)
-
-    GCOVR_VERSION_PY.write_text("\n".join(new_lines))
-
+    session.install("-e", ".")
     new_lines = []
     lines = iter(GCOVR_CHANGELOG_RST.read_text().splitlines())
     for line in lines:
-        if line.startswith(f"{major}.{minor} ("):
+        if re.match(r"^\d+\.\d+ \(", line):
             new_lines.append(
                 textwrap.dedent(
                     """\
@@ -237,8 +217,11 @@ def prepare_next_iteration(session: nox.Session) -> None:
                     """
                 )
             )
+            last_version = line.split(" ", maxsplit=1)[0]
             new_lines.append(line)
             break
+        if line == "Next Release":
+            session.error("Next release can only be prepared after a released version")
         new_lines.append(line)
     else:
         session.error(f"Version line not found in {GCOVR_CHANGELOG_RST.name}")
@@ -246,15 +229,8 @@ def prepare_next_iteration(session: nox.Session) -> None:
 
     GCOVR_CHANGELOG_RST.write_text("\n".join(new_lines))
 
-    session.notify("bump_version")
+    session.run("python", "admin/bump_version.py", f"{last_version}+main")
     session.notify("html2jpeg")
-
-
-@nox.session
-def bump_version(session: nox.Session) -> None:
-    """Bump the new version"""
-    session.install("-e", ".")
-    session.run("python", "admin/bump_version.py")
 
 
 @nox.session(python=False)
@@ -338,7 +314,7 @@ def mypy(session: nox.Session) -> None:
 def doc(session: nox.Session) -> None:
     """Generate the documentation."""
     if sys.version_info < (3, 9):
-        session.error("Documentation needs at least python 3.9.")
+        session.error("Documentation needs at least python 3.9")
 
     session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
@@ -372,6 +348,12 @@ def doc(session: nox.Session) -> None:
     for line in iter_lines:
         if line.startswith("------------"):
             next(iter_lines)
+            version = get_gcovr_version()
+            out_lines += [
+                f"{version}\n",
+                f"{'-' * len(version)}\n",
+                "\n",
+            ]
             break
         if (line.rstrip())[:-1] == ":":
             raise RuntimeError(f"Found section start before release ID: {line}")
@@ -474,6 +456,7 @@ def check_wheel(session: nox.Session) -> None:
     session.install("wheel", "twine")
     with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
+        session.run("pip", "uninstall", "--yes", "gcovr")
         session.install(str(list(Path().glob("*.whl"))[0]))
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
@@ -506,7 +489,7 @@ def get_executable_name() -> Path:
     else:
         platform_suffix = "linux"
     return Path(
-        f"gcovr-{run_path(str(GCOVR_VERSION_PY))['__version__']}-{platform_suffix}-{platform.machine().lower()}{suffix}"
+        f"gcovr-{get_gcovr_version()}-{platform_suffix}-{platform.machine().lower()}{suffix}"
     )
 
 

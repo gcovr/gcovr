@@ -24,8 +24,12 @@ from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
 
-from ...version import __version__
-from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
+from ...utils import (
+    force_unix_separator,
+    get_version_for_report,
+    open_binary_for_writing,
+    presentable_filename,
+)
 from ...coverage import CoverageContainer, CoverageStat, LineCoverage, SummarizedStats
 
 
@@ -45,7 +49,7 @@ def write_report(
     root_elem.set("branches-valid", str(stats.branch.total))
     root_elem.set("complexity", "0.0")
     root_elem.set("timestamp", str(int(options.timestamp.timestamp())))
-    root_elem.set("version", f"gcovr {__version__}")
+    root_elem.set("version", f"gcovr {get_version_for_report()}")
 
     # Generate the <sources> element: this is either the root directory
     # (specified by --root), or the CWD.

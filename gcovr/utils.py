@@ -28,6 +28,8 @@ import sys
 from contextlib import contextmanager
 from colorlog import ColoredFormatter
 
+from .version import __version__
+
 LOGGER = logging.getLogger("gcovr")
 DEFAULT_LOGGING_HANDLER = logging.StreamHandler(sys.stderr)
 
@@ -38,6 +40,8 @@ COLOR_LOG_FORMAT = f"%(log_color)s{LOG_FORMAT}"
 COLOR_LOG_FORMAT_THREADS = f"%(log_color)s{LOG_FORMAT_THREADS}"
 
 MD5_KWARGS = {"usedforsecurity": False} if sys.version_info >= (3, 9) else {}
+
+REGEX_VERSION_POSTFIX = re.compile(r"(.+)\.dev.+$")
 
 
 class LoopChecker:
@@ -99,6 +103,15 @@ def fix_case_of_path(path: str):
         LOGGER.warning(f"Can not fix case of path because {rest} not found.")
 
     return path.replace("\\", "/")
+
+
+def get_version_for_report() -> str:
+    """Get the printable version for the report."""
+    version = __version__
+    if match := REGEX_VERSION_POSTFIX.match(version):
+        major, minor = match.group(1).split(".")
+        version = f"{major}.{int(minor)-1}+main"
+    return version
 
 
 def search_file(

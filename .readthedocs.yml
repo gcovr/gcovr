@@ -11,6 +11,12 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
+  jobs:
+    # Run a build to get the version.py created.
+    post_create_environment:
+      - pip install build
+      - python -m build
+
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
