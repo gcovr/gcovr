@@ -8,7 +8,7 @@
         "/.gitbugtraq",
         "/AUTHORS.txt",
         "/doc/source/conf.py",
-        "/gcovr/formats/html/github/primer.css",
+        "/src/gcovr/formats/html/github/primer.css",
         "/tests/*.dtd",
         "/tests/*.xsd",
         "/**/reference/**",

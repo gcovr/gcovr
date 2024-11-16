@@ -47,6 +47,7 @@ Internal changes:
 - Add ``mypy`` for testing code. (:issue:`1019`)
 - Add a container class for the coverage data. (:issue:`1023`)
 - Replace setup.py with hatchling. (:issue:`1026`)
+- Move gcovr to ``src`` directory. (:issue:`1027`)
 
 8.2 (13 October 2024)
 ---------------------
