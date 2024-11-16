@@ -179,7 +179,7 @@ Install newest stable ``gcovr`` release from PyPI:
 
     pip install gcovr
 
-Install development version from GitHub:
+Install development version from GitHub (needs at least version `21.3` of pip):
 
 .. code:: bash
 

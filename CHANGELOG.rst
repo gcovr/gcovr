@@ -10,6 +10,9 @@ Known bugs:
 
 Breaking changes:
 
+- Replace setup.py with hatchling. To install from source at least version `21.3` of pip is needed. (:issue:`1026`)
+
+
 New features and notable changes:
 
 - Add condition coverage to text summary report. (:issue:`985`)
@@ -42,6 +45,7 @@ Internal changes:
 - Align variable names across the files. (:issue:`1015`)
 - Rework exclusion handling to keep information about excluded coverage. (:issue:`1016`)
 - Add ``mypy`` for testing code. (:issue:`1019`)
+- Replace setup.py with hatchling. (:issue:`1026`)
 
 8.2 (13 October 2024)
 ---------------------

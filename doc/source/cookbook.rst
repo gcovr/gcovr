@@ -26,7 +26,7 @@ program.
 As with a normal C project,
 we have to compile our code with coverage instrumentation.
 Here, we ``export CFLAGS="--coverage"``
-and then run ``python3 setup.py build_ext``.
+and then run ``python3 -m build build_ext``.
 
 Unfortunately, ``build_ext`` can rebuild a source file
 even if the current object file is up to date.
@@ -56,7 +56,7 @@ A shell session might look like this:
     rm -rf build/lib.*
 
     # rebuild extensions
-    python3 setup.py build_ext --inplace  # possibly --force
+    python3 -m build build_ext
 
     # run test command i.e. pytest
 

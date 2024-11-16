@@ -58,9 +58,9 @@ from ...utils import (
     commonpath,
     force_unix_separator,
     get_md5_hexdigest,
+    get_version_for_report,
     open_text_for_writing,
 )
-from ...version import __version__
 
 LOGGER = logging.getLogger("gcovr")
 PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
@@ -255,7 +255,7 @@ class RootInfo:
         self.relative_anchors = options.html_relative_anchors
         self.single_page = options.html_single_page
 
-        self.version = __version__
+        self.version = get_version_for_report()
         self.head = options.html_title
         self.date = options.timestamp.isoformat(sep=" ", timespec="seconds")
         self.encoding = options.html_encoding

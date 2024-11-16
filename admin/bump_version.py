@@ -24,18 +24,15 @@ import os
 import logging
 import re
 import subprocess  # nosec # Commands are trusted.
+import sys
 import time
-from typing import List
-
-import gcovr.version
+from typing import Callable, List
 
 DATE = subprocess.check_output(  # nosec # We run on several system and do not know the full path
     ["git", "log", "-1", "--format=format:%ad", "--date=short"],
     universal_newlines=True,
 )
 YEAR = DATE[:4]
-VERSION = gcovr.version.__version__
-READTHEDOCS_VERSION = "main" if "+" in VERSION else VERSION
 COPYRIGHT = [
     f"Copyright (c) 2013-{YEAR} the gcovr authors",
     "Copyright (c) 2013 Sandia Corporation.",
@@ -48,7 +45,12 @@ HEADER_END = (
 )
 
 
-def get_copyright_header(comment_char: str = "#"):
+def get_read_the_docs_version(version: str) -> str:
+    """Get the version to use for ReadTheDocs."""
+    return "main" if ".dev" in version else version
+
+
+def get_copyright_header(version: str, comment_char: str = "#"):
     """Get the content of the copyright header."""
     yield (
         comment_char
@@ -57,9 +59,9 @@ def get_copyright_header(comment_char: str = "#"):
     yield comment_char
     yield (
         comment_char
-        + f" This file is part of gcovr {VERSION}, a parsing and reporting tool for gcov."
+        + f" This file is part of gcovr {version}, a parsing and reporting tool for gcov."
     )
-    yield comment_char + f" https://gcovr.com/en/{READTHEDOCS_VERSION}"
+    yield comment_char + f" https://gcovr.com/en/{get_read_the_docs_version(version)}"
     yield comment_char
     yield (
         comment_char
@@ -75,7 +77,9 @@ def get_copyright_header(comment_char: str = "#"):
     yield comment_char + HEADER_END
 
 
-def add_copyright_header_to_python_file(_filename: str, lines: List[str]):
+def add_copyright_header_to_python_file(
+    _filename: str, lines: List[str], version: str
+) -> List[str]:
     """Add the copyright header to the python file."""
     # Empty file should be kept empty
     if len(lines) == 0:
@@ -94,7 +98,7 @@ def add_copyright_header_to_python_file(_filename: str, lines: List[str]):
     new_lines.append("")
 
     # Add license information
-    new_lines.extend(get_copyright_header())
+    new_lines.extend(get_copyright_header(version))
 
     iter_lines = iter(lines)
 
@@ -121,7 +125,9 @@ def add_copyright_header_to_python_file(_filename: str, lines: List[str]):
     return new_lines
 
 
-def update_copyright_string(filename: str, lines: List[str]):
+def update_copyright_string(
+    filename: str, lines: List[str], _version: str
+) -> List[str]:
     """Update the copyright."""
     new_lines = []
 
@@ -148,7 +154,9 @@ def update_copyright_string(filename: str, lines: List[str]):
     return new_lines
 
 
-def update_call_of_release_checklist(filename: str, lines: List[str]):
+def update_call_of_release_checklist(
+    filename: str, lines: List[str], version: str
+) -> List[str]:
     """Update the release checklist."""
     new_lines = []
 
@@ -156,7 +164,7 @@ def update_call_of_release_checklist(filename: str, lines: List[str]):
     iter_lines = iter(lines)
     for line in iter_lines:
         if call_release_checklist in line:
-            line = re.sub(r"\d+\.\d+(?:\+main)?$", VERSION, line)
+            line = re.sub(r"\d+\.\d+(?:\+main)?$", version, line)
             new_lines.append(line)
             break
         new_lines.append(line)
@@ -170,7 +178,7 @@ def update_call_of_release_checklist(filename: str, lines: List[str]):
     return new_lines
 
 
-def update_changelog(filename: str, lines: List[str]):
+def update_changelog(filename: str, lines: List[str], version: str) -> List[str]:
     """Update the version in the CHANGELOG."""
     new_lines = []
 
@@ -187,7 +195,7 @@ def update_changelog(filename: str, lines: List[str]):
     iter_lines = iter(lines)
     for line in iter_lines:
         if line == next_release:
-            line = f"{VERSION} ({time.strftime('%d %B %Y')})"
+            line = f"{version} ({time.strftime('%d %B %Y')})"
             new_lines.extend([line, "-" * len(line)])
             iter_lines.__next__()  # pylint: disable=unnecessary-dunder-call
             break
@@ -200,7 +208,7 @@ def update_changelog(filename: str, lines: List[str]):
     return new_lines
 
 
-def update_documentation(_filename: str, lines: List[str]):
+def update_documentation(_filename: str, lines: List[str], version: str) -> List[str]:
     """Update the references to the next version in the documentation."""
     new_lines = []
 
@@ -208,7 +216,7 @@ def update_documentation(_filename: str, lines: List[str]):
         if "NEXT" in line:
             line = re.sub(
                 r"(\.\. (?:versionadded|versionchanged|deprecated|versionremoved):: )NEXT",
-                r"\g<1>" + VERSION,
+                r"\g<1>" + version,
                 line,
             )
         new_lines.append(line)
@@ -216,15 +224,15 @@ def update_documentation(_filename: str, lines: List[str]):
     return new_lines
 
 
-def update_reference_data(_filename: str, lines: List[str]):
+def update_reference_data(_filename: str, lines: List[str], version: str) -> List[str]:
     """Update the version in the reference data."""
     new_lines = []
 
     def replace_html_version(matches) -> str:
-        return f"{matches.group(1)}{READTHEDOCS_VERSION}{matches.group(2)}{VERSION}{matches.group(3)}"
+        return f"{matches.group(1)}{get_read_the_docs_version(version)}{matches.group(2)}{version}{matches.group(3)}"
 
     def replace_xml_version(matches) -> str:
-        return f"{matches.group(1)}{VERSION}{matches.group(2)}"
+        return f"{matches.group(1)}{version}{matches.group(2)}"
 
     for line in lines:
         if "Generated by: " in line:
@@ -244,7 +252,7 @@ def update_reference_data(_filename: str, lines: List[str]):
     return new_lines
 
 
-def update_license(filename: str, lines: List[str]):
+def update_license(filename: str, lines: List[str], _version: str) -> List[str]:
     """Update the license file."""
     new_lines = [
         "BSD 3-Clause License",
@@ -268,7 +276,9 @@ def update_license(filename: str, lines: List[str]):
     return new_lines
 
 
-def update_source_date_epoch(filename: str, lines: List[str]):
+def update_source_date_epoch(
+    filename: str, lines: List[str], _version: str
+) -> List[str]:
     """Update the timestamp in the test."""
     new_lines = []
 
@@ -290,7 +300,7 @@ def update_source_date_epoch(filename: str, lines: List[str]):
     return new_lines
 
 
-def main():
+def main(version: str):
     """Main entry point."""
     for root, dirs, files in os.walk(".", topdown=True):
 
@@ -300,10 +310,10 @@ def main():
         dirs[:] = [directory for directory in dirs if not skip_dir(directory)]
 
         for filename in files:
-            handlers = []
+            handlers: List[Callable[[str, List[str], str], List[str]]] = []
             _, extension = os.path.splitext(filename)
             fullname = os.path.join(root, filename)
-            if filename.endswith(".py"):
+            if filename.endswith(".py") and filename not in ["version.py"]:
                 handlers.append(add_copyright_header_to_python_file)
             if filename == "__main__.py":
                 handlers.append(update_copyright_string)
@@ -320,7 +330,7 @@ def main():
             ):
                 handlers.append(update_reference_data)
 
-            if not VERSION.endswith("+main"):
+            if not version.endswith("+main"):
                 if filename == "CHANGELOG.rst":
                     handlers.append(update_changelog)
                 if filename.endswith(".rst"):
@@ -333,7 +343,7 @@ def main():
                     lines
                 )  # use a copy because of the compare at the end
                 for handler in handlers:
-                    new_lines = handler(fullname, new_lines)
+                    new_lines = handler(fullname, new_lines, version)
                 if new_lines != lines:
                     logging.info(f"Modifying {fullname}")
                     with open(fullname, "w", encoding="utf-8") as f:
@@ -342,4 +352,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(*sys.argv[1:])
