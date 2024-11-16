@@ -505,7 +505,7 @@ def test_multiple_output_formats_to_stdout(caplog):
             "--sonarqube",
             "--txt",
             "--root",
-            "gcovr",
+            "src/gcovr",
         ],
     )
     for index, text_fragments in enumerate(
@@ -546,7 +546,7 @@ def test_multiple_output_formats_to_stdout_1(caplog):
             "-o",
             "-",
             "--root",
-            "gcovr",
+            "src/gcovr",
         ],
     )
     for index, text_fragments in enumerate(

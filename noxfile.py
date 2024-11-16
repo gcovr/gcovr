@@ -70,7 +70,7 @@ ALL_COMPILER_VERSIONS_NEWEST_FIRST = [
 ALL_GCC_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("gcc-")]
 ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")]
 
-DEFAULT_TEST_DIRECTORIES = ["doc", "gcovr", "tests"]
+DEFAULT_TEST_DIRECTORIES = ["doc", "src", "tests"]
 DEFAULT_LINT_ARGUMENTS = [
     "noxfile.py",
     "scripts",
@@ -98,7 +98,9 @@ def get_gcovr_version() -> str:
     return re.sub(
         r"\.d\d+$",
         "",
-        run_path(str(Path(__file__).parent / "gcovr" / "version.py"))["__version__"],
+        run_path(str(Path(__file__).parent / "src" / "gcovr" / "version.py"))[
+            "__version__"
+        ],
     )
 
 

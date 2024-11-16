@@ -46,6 +46,7 @@ Internal changes:
 - Rework exclusion handling to keep information about excluded coverage. (:issue:`1016`)
 - Add ``mypy`` for testing code. (:issue:`1019`)
 - Replace setup.py with hatchling. (:issue:`1026`)
+- Move gcovr to ``src`` directory. (:issue:`1027`)
 
 8.2 (13 October 2024)
 ---------------------

@@ -220,20 +220,19 @@ Tip: If you have problems getting everything set up, consider looking at these f
 Project Structure
 -----------------
 
-======================= =======================================================
-Path                    Description
-======================= =======================================================
-``/``                   project root
-``/gcovr/``             the gcovr source code (Python module)
-``/gcovr/__main__.py``  command line interface + top-level behavior
-``/gcovr/templates/``   HTML report templates
-``/tests/``             unit tests + integration test corpus
-``/noxfile.py``         Definition of tests tasks
-``/pyproject.toml``     Python package and tool configuration
-``/doc/``               documentation
-``/doc/sources/``       user guide + website
-``/doc/examples/``      runnable examples for the user guide
-======================= =======================================================
+=========================== =======================================================
+Path                        Description
+=========================== =======================================================
+``/``                       project root
+``/src/``                   the gcovr source code (Python module)
+``/src/gcovr/__main__.py``  command line interface + top-level behavior
+``/tests/``                 unit tests + integration test corpus
+``/noxfile.py``             Definition of tests tasks
+``/pyproject.toml``         Python package and tool configuration
+``/doc/``                   documentation
+``/doc/sources/``           user guide + website
+``/doc/examples/``          runnable examples for the user guide
+=========================== =======================================================
 
 The program entrypoint and command line interface is in ``gcovr/__main__.py``.
 The coverage data is parsed in the ``gcovr.formats.gcov`` module.

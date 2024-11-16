@@ -55,7 +55,7 @@ gcovr/format_version: string
 
   Current version is:
 
-  .. include:: ../../../gcovr/formats/json/versions.py
+  .. include:: ../../../src/gcovr/formats/json/versions.py
       :start-after: # BEGIN version
       :end-before: # END version
 
@@ -426,7 +426,7 @@ gcovr/summary_format_version: string
 
   Current version is:
 
-  .. include:: ../../../gcovr/formats/json/versions.py
+  .. include:: ../../../src/gcovr/formats/json/versions.py
       :start-after: # BEGIN summary version
       :end-before: # END summary version
 

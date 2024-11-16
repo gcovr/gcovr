@@ -8,7 +8,7 @@ __pycache__
 /.venv/
 
 # Version is updated from hatch-vcs
-gcovr/version.py
+src/gcovr/version.py
 
 # Packages
 /gcovr.egg

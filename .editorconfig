@@ -27,5 +27,5 @@ indent_size = 2
 end_of_line = lf
 
 # for the web templates, use more compact indent
-[gcovr/templates/*]
+[src/gcovr/formats/html/*/*]
 indent_size = 2
