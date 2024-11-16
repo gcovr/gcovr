@@ -3,7 +3,7 @@
 
 # explicitly allow certain code files, build files config files, and documentation
 !*.py
-!gcovr/**.py
+!src/
 !doc/**.py
 !admin
 !**/Makefile
@@ -13,12 +13,9 @@
 !*.cfg
 !**/requirements.txt
 
-# explicitly allow resources
-!gcovr/templates
-
 # explicitly allow tests
 !doc/examples
-!tests
+!tests/
 
 # always ignore these files
 **/__pycache__
