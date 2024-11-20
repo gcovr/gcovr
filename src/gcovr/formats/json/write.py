@@ -32,7 +32,7 @@ from ...utils import (
 from ...coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CovData,
+    CoverageContainer,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
@@ -42,7 +42,6 @@ from ...coverage import (
     LineCoverage,
     CallCoverage,
     SummarizedStats,
-    sort_coverage,
 )
 
 from . import versions
@@ -69,7 +68,9 @@ def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
         write_json(gcovr_json_dict, fh)
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     r"""produce an JSON report in the format partially
     compatible with gcov JSON output"""
 
@@ -83,7 +84,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     )
 
 
-def write_summary_report(covdata, output_file: str, options: Options):
+def write_summary_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+):
     """Produce gcovr JSON summary report"""
 
     json_dict: Dict[str, Any] = {}
@@ -97,14 +100,13 @@ def write_summary_report(covdata, output_file: str, options: Options):
     json_dict["files"] = files
 
     # Data
-    keys = sort_coverage(
-        covdata,
+    sorted_keys = covdata.sort_coverage(
         sort_key=options.sort_key,
         sort_reverse=options.sort_reverse,
         by_metric="branch" if options.sort_branches else "line",
     )
 
-    for key in keys:
+    for key in sorted_keys:
         filename = presentable_filename(covdata[key].filename, options.root_filter)
         if options.json_base:
             filename = "/".join([options.json_base, filename])
@@ -112,16 +114,12 @@ def write_summary_report(covdata, output_file: str, options: Options):
         files.append(
             {
                 "filename": filename,
-                **_summary_from_stats(
-                    SummarizedStats.from_file(covdata[key]), None, options
-                ),
+                **_summary_from_stats(covdata[key].stats, None, options),
             }
         )
 
     # Footer & summary
-    json_dict.update(
-        _summary_from_stats(SummarizedStats.from_covdata(covdata), 0.0, options)
-    )
+    json_dict.update(_summary_from_stats(covdata.stats, 0.0, options))
 
     _write_json_result(
         json_dict, output_file, "summary_coverage.json", options.json_summary_pretty
@@ -158,7 +156,7 @@ def _summary_from_stats(
     return json_dict
 
 
-def _json_from_files(files: CovData, options) -> list:
+def _json_from_files(files: CoverageContainer, options) -> list:
     return [_json_from_file(files[key], options) for key in sorted(files)]
 
 

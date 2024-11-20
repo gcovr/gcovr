@@ -23,18 +23,19 @@ from typing import Tuple, Optional
 from ...options import Options
 
 from ...utils import presentable_filename, open_text_for_writing
-from ...coverage import CovData, CoverageStat, SummarizedStats, sort_coverage
+from ...coverage import CoverageContainer, CoverageStat
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce gcovr csv report"""
 
     # Open output without translation of line endings.
     # The CSV writer uses as default line endings "\r\n" (according to
     # https://datatracker.ietf.org/doc/html/rfc4180)
     with open_text_for_writing(output_file, "coverage.csv", newline="") as fh:
-        keys = sort_coverage(
-            covdata,
+        sorted_keys = covdata.sort_coverage(
             sort_key=options.sort_key,
             sort_reverse=options.sort_reverse,
             by_metric="branch" if options.sort_branches else "line",
@@ -55,9 +56,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
                 "function_percent",
             )
         )
-        for key in keys:
+        for key in sorted_keys:
             filename = presentable_filename(covdata[key].filename, options.root_filter)
-            stats = SummarizedStats.from_file(covdata[key])
+            stats = covdata[key].stats
             writer.writerow(
                 [
                     filename,

@@ -303,20 +303,12 @@ def pylint(session: nox.Session) -> None:
 @nox.session
 def mypy(session: nox.Session) -> None:
     """Run mypy command."""
-    session.install("mypy", "nox", "requests", "pytest")
-    session.install(
-        "types-pywin32",
-        "lxml-stubs",
-        "types-Pygments",
-        "types-requests",
-        "types-colorama",
-        "yaxmldiff",
-    )
+    session.install("mypy", "nox", "requests", "pytest", "yaxmldiff")
     session.install("-e", ".")
     if session.posargs:
         args = session.posargs
     else:
-        args = DEFAULT_LINT_ARGUMENTS
+        args = ["--install-types", "--non-interactive", *DEFAULT_LINT_ARGUMENTS]
     session.run("mypy", *args)
 
 

@@ -30,13 +30,15 @@ from ...utils import (
     open_binary_for_writing,
     presentable_filename,
 )
-from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
+from ...coverage import CoverageContainer, CoverageStat, LineCoverage, SummarizedStats
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce an XML report in the Cobertura format"""
 
-    stats = SummarizedStats.from_covdata(covdata)
+    stats = covdata.stats
 
     root_elem = etree.Element("coverage")
     root_elem.set("line-rate", _rate(stats.line))
@@ -79,7 +81,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         for functioncov in filecov.functions.values():
             if functioncov.name is not None:
                 filtered_filecov = filecov.filter_for_function(functioncov)
-                function_stats = SummarizedStats.from_file(filtered_filecov)
+                function_stats = filtered_filecov.stats
                 name = functioncov.demangled_name
                 if "(" in name:
                     name = name.split("(", maxsplit=1)[0]
@@ -103,7 +105,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             if linecov.is_reportable:
                 lines_elem.append(_line_element(linecov))
 
-        stats = SummarizedStats.from_file(filecov)
+        stats = filecov.stats
 
         class_name = fname.replace(".", "_")
         class_elem.set("name", class_name)

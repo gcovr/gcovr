@@ -28,10 +28,12 @@ from lxml import etree  # nosec # We only write XML files
 from ...options import Options
 
 from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
-from ...coverage import CovData, CoverageStat, LineCoverage, SummarizedStats
+from ...coverage import CoverageContainer, CoverageStat, LineCoverage, SummarizedStats
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce an XML report in the JaCoCo format"""
 
     root_elem = etree.Element("report")
@@ -61,7 +63,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             if linecov.is_reportable:
                 lines_elem.append(_line_element(linecov))
 
-        stats = SummarizedStats.from_file(filecov)
+        stats = filecov.stats
 
         class_name = fname.replace(".", "_")
         class_elem.set("name", class_name)
@@ -83,7 +85,7 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         package_elem.append(_counter_element("BRANCH", package_data.stats.branch))
         package_elem.set("name", package_name.replace("/", "."))
 
-    stats = SummarizedStats.from_covdata(covdata)
+    stats = covdata.stats
     root_elem.append(_counter_element("LINE", stats.line))
     root_elem.append(_counter_element("BRANCH", stats.branch))
 

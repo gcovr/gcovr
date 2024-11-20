@@ -27,11 +27,9 @@ from ...utils import (
     open_text_for_writing,
 )
 from ...coverage import (
-    CovData,
+    CoverageContainer,
     CoverageStat,
     FileCoverage,
-    SummarizedStats,
-    sort_coverage,
 )
 
 # Widths of the various columns
@@ -43,7 +41,9 @@ UN_COVERED_SEPARATOR = "   "
 LINE_WIDTH = 78
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce the classic gcovr text report"""
 
     with open_text_for_writing(output_file, "coverage.txt") as fh:
@@ -78,15 +78,14 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         fh.write("-" * LINE_WIDTH + "\n")
 
         # Data
-        keys = sort_coverage(
-            covdata,
+        sorted_keys = covdata.sort_coverage(
             sort_key=options.sort_key,
             sort_reverse=options.sort_reverse,
             by_metric=options.txt_metric,
         )
 
         total_stat = CoverageStat.new_empty()
-        for key in keys:
+        for key in sorted_keys:
             (stat, txt) = _summarize_file_coverage(covdata[key], options)
             total_stat += stat
             fh.write(txt + "\n")
@@ -97,7 +96,9 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
         fh.write("-" * LINE_WIDTH + "\n")
 
 
-def write_summary_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_summary_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """Print a small report to the standard output.
     Output the percentage, covered and total lines and branches.
     """
@@ -110,8 +111,7 @@ def write_summary_report(covdata: CovData, output_file: str, options: Options) -
             total = stat.total
             fh.write(f"{name}: {percent:0.1f}% ({covered} out of {total})\n")
 
-        stats = SummarizedStats.from_covdata(covdata)
-
+        stats = covdata.stats
         print_stat("lines", stats.line)
         print_stat("functions", stats.function)
         print_stat("branches", stats.branch)

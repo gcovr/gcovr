@@ -17,9 +17,9 @@
 #
 # ****************************************************************************
 
-from typing import List, Optional, Union
+from typing import List, Union
 
-from ...coverage import CovData
+from ...coverage import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
 
@@ -69,12 +69,12 @@ class CoberturaHandler(BaseHandler):
             ),
         ]
 
-    def read_report(self) -> Optional[CovData]:
+    def read_report(self) -> CoverageContainer:
         from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         return read_report(self.options)
 
-    def write_report(self, covdata: CovData, output_file: str) -> None:
+    def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
         write_report(covdata, output_file, self.options)

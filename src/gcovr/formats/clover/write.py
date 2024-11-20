@@ -32,12 +32,14 @@ from ...utils import (
     open_binary_for_writing,
     presentable_filename,
 )
-from ...coverage import CovData, LineCoverage
+from ...coverage import CoverageContainer, LineCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
 
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """produce an XML report in the Cobertura format"""
 
     timestamp = str(int(options.timestamp.timestamp()))

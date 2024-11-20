@@ -39,18 +39,16 @@ from pygments.lexers import get_lexer_for_filename
 from ...coverage import (
     BranchCoverage,
     CallCoverage,
-    CovData,
+    CoverageContainer,
+    CoverageContainerDirectory,
     CoverageStat,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageStat,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
-    DirectoryCoverage,
     FileCoverage,
     LineCoverage,
-    SummarizedStats,
-    sort_coverage,
 )
 from ...options import Options
 from ...utils import (
@@ -277,9 +275,9 @@ class RootInfo:
             "." if self.directory == "" else force_unix_separator(str(self.directory))
         )
 
-    def set_coverage(self, covdata: CovData) -> None:
-        """Update this RootInfo with a summary of the CovData."""
-        stats = SummarizedStats.from_covdata(covdata)
+    def set_coverage(self, covdata: CoverageContainer) -> None:
+        """Update this RootInfo with a summary of the CoverageContainer."""
+        stats = covdata.stats
         self.lines = dict_from_stat(stats.line, self.line_coverage_class, 0.0)
         self.functions = dict_from_stat(stats.function, self.coverage_class)
         self.branches = dict_from_stat(stats.branch, self.branch_coverage_class)
@@ -307,7 +305,9 @@ class RootInfo:
 #
 # Produce an HTML report
 #
-def write_report(covdata: CovData, output_file: str, options: Options) -> None:
+def write_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
     """Write the HTML report"""
     css_data = CssRenderer.render(options)
     medium_threshold = options.html_medium_threshold
@@ -391,23 +391,19 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
     # source_dirs = set()
     files = []
     filtered_fname = ""
-    sorted_keys = sort_coverage(
-        covdata,
+    sorted_keys = covdata.sort_coverage(
         sort_key=options.sort_key,
         sort_reverse=options.sort_reverse,
         by_metric="branch" if options.sort_branches else "line",
         filename_uses_relative_pathname=True,
     )
 
-    subdirs = {}
     if options.html_nested:
-        subdirs = DirectoryCoverage.from_covdata(
-            covdata, sorted_keys, options.root_filter
-        )
+        covdata.populate_directories(sorted_keys, options.root_filter)
 
     cdata_fname: Dict[str, str] = {}
     cdata_sourcefile: Dict[str, Optional[str]] = {}
-    for f in sorted_keys + list(subdirs.keys()):
+    for f in sorted_keys + [v.dirname for v in covdata.directories]:
         filtered_fname = options.root_filter.sub("", f)
         if filtered_fname != "":
             files.append(filtered_fname)
@@ -457,7 +453,6 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             root_info,
             output_file,
             covdata,
-            subdirs,
             sorted_keys,
             cdata_fname,
             cdata_sourcefile,
@@ -468,8 +463,8 @@ def write_report(covdata: CovData, output_file: str, options: Options) -> None:
             write_directory_pages(
                 options,
                 root_info,
-                subdirs,
                 output_file,
+                covdata,
                 cdata_fname,
                 cdata_sourcefile,
                 data,
@@ -503,7 +498,7 @@ def write_root_page(
     options,
     root_info: RootInfo,
     output_file: str,
-    covdata: CovData,
+    covdata: CoverageContainer,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
@@ -533,7 +528,7 @@ def write_source_pages(
     options,
     root_info: RootInfo,
     functions_output_file: str,
-    covdata: CovData,
+    covdata: CoverageContainer,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
@@ -583,19 +578,20 @@ def write_source_pages(
 def write_directory_pages(
     options,
     root_info: RootInfo,
-    subdirs: Dict[str, DirectoryCoverage],
     output_file: str,
+    covdata: CoverageContainer,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
 ) -> None:
     """Write a page for each directory."""
-    root_key = DirectoryCoverage.directory_root(subdirs)
+    # The first directory is the shortest one --> This is the root dir
+    root_key = next(iter(sorted([d.dirname for d in covdata.directories])))
 
     directory_data = {}
-    for directory, cdata in subdirs.items():
+    for dircov in covdata.directories:
         directory_data = get_directory_data(
-            options, root_info, cdata_fname, cdata_sourcefile, cdata
+            options, root_info, cdata_fname, cdata_sourcefile, dircov
         )
         html_string = (
             templates(options)
@@ -603,13 +599,13 @@ def write_directory_pages(
             .render(**data, **directory_data)
         )
         filename = None
-        if directory in [root_key, ""]:
+        if dircov.dirname in [root_key, ""]:
             filename = output_file
-        elif directory in cdata_sourcefile:
-            filename = cdata_sourcefile[directory]
+        elif dircov.dirname in cdata_sourcefile:
+            filename = cdata_sourcefile[dircov.dirname]
         else:
             LOGGER.warning(
-                f"There's a subdirectory {directory!r} that there's no source files within it"
+                f"There's a subdirectory {dircov.dirname!r} that there's no source files within it"
             )
 
         if filename:
@@ -623,8 +619,7 @@ def write_single_page(
     options,
     root_info: RootInfo,
     output_file: str,
-    covdata: CovData,
-    subdirs: Dict[str, DirectoryCoverage],
+    covdata: CoverageContainer,
     sorted_keys: List[str],
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, Any],
@@ -653,7 +648,7 @@ def write_single_page(
         )
     directories: List[Dict[str, Any]] = [{"entries": all_files}]
     if root_info.single_page == "js-enabled":
-        for _, dircov in subdirs.items():
+        for dircov in covdata.directories:
             directories.append(
                 get_directory_data(
                     options, root_info, cdata_fname, cdata_sourcefile, dircov
@@ -685,7 +680,7 @@ def write_single_page(
 
 def get_coverage_data(
     root_info,
-    cdata: Union[DirectoryCoverage, FileCoverage],
+    cdata: Union[CoverageContainerDirectory, FileCoverage],
     link_report: str,
     cdata_fname: str,
 ) -> Dict[str, Any]:
@@ -709,11 +704,7 @@ def get_coverage_data(
             coverage, medium_threshold_branch, high_threshold_branch
         )
 
-    stats = (
-        cdata.stats
-        if isinstance(cdata, DirectoryCoverage)
-        else SummarizedStats.from_file(cdata)
-    )
+    stats = cdata.stats
 
     lines = {
         "total": stats.line.total,
@@ -784,20 +775,21 @@ def get_directory_data(
     root_info: RootInfo,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, str],
-    cdata: DirectoryCoverage,
+    covdata_dir: CoverageContainerDirectory,
 ) -> Dict[str, Any]:
     """Get the data for a directory to generate the HTML"""
-    relative_path = cdata_fname[cdata.dirname]
+    relative_path = cdata_fname[covdata_dir.dirname]
     if relative_path == ".":
         relative_path = ""
     directory_data: Dict[str, Any] = {
         "dirname": (
-            cdata_sourcefile[cdata.dirname] if cdata_fname[cdata.dirname] else "/"
-        ),  # f"/{relative_path}"
+            cdata_sourcefile[covdata_dir.dirname]
+            if cdata_fname[covdata_dir.dirname]
+            else "/"
+        ),
     }
 
-    sorted_files = sort_coverage(
-        cdata.children,
+    sorted_keys = covdata_dir.sort_coverage(
         sort_key=options.sort_key,
         sort_reverse=options.sort_reverse,
         by_metric="branch" if options.sort_branches else "line",
@@ -805,13 +797,12 @@ def get_directory_data(
     )
 
     files = []
-    for key in sorted_files:
-        fname = cdata.children[key].filename
-
+    for key in sorted_keys:
+        fname = covdata_dir[key].filename
         files.append(
             get_coverage_data(
                 root_info,
-                cdata.children[key],
+                covdata_dir[key],
                 cdata_sourcefile[fname],
                 cdata_fname[fname],
             )
@@ -859,9 +850,7 @@ def get_file_data(
             f_data["blocks"] = f_cdata.blocks[lineno]
             f_data["excluded"] = f_cdata.excluded[lineno]
             if f_cdata.name is not None:
-                function_stats = SummarizedStats.from_file(
-                    cdata.filter_for_function(f_cdata)
-                )
+                function_stats = cdata.filter_for_function(f_cdata).stats
                 f_data["line_coverage"] = function_stats.line.percent_or(100)
                 f_data["branch_coverage"] = function_stats.branch.percent_or("-")
                 f_data["condition_coverage"] = function_stats.condition.percent_or("-")

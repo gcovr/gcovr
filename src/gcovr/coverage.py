@@ -60,7 +60,10 @@ _T = TypeVar("_T")
 
 
 def sort_coverage(
-    covdata: Union[Dict[str, FileCoverage], Dict[str, DirectoryCoverage]],
+    covdata: Union[
+        Dict[str, FileCoverage],
+        Dict[str, Union[FileCoverage, CoverageContainerDirectory]],
+    ],
     sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
     sort_reverse: bool,
     by_metric: Literal["line", "branch", "decision"],
@@ -563,7 +566,7 @@ class LineCoverage:
 class FileCoverage:
     """Represent coverage information about a file."""
 
-    __slots__ = "filename", "functions", "lines", "parent_dirname", "data_sources"
+    __slots__ = "filename", "functions", "lines", "data_sources"
 
     def __init__(
         self, filename: str, data_source: Optional[Union[str, Set[str]]]
@@ -571,7 +574,6 @@ class FileCoverage:
         self.filename: str = filename
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
-        self.parent_dirname: Optional[str] = None
         self.data_sources: Set[str] = (
             set([])
             if data_source is None
@@ -598,6 +600,18 @@ class FileCoverage:
         }
 
         return filecov
+
+    @property
+    def stats(self) -> SummarizedStats:
+        """Create a coverage statistic of a file coverage object."""
+        return SummarizedStats(
+            line=self.line_coverage(),
+            branch=self.branch_coverage(),
+            condition=self.condition_coverage(),
+            decision=self.decision_coverage(),
+            function=self.function_coverage(),
+            call=self.call_coverage(),
+        )
 
     def function_coverage(self) -> CoverageStat:
         """Return the function coverage statistic of the file."""
@@ -672,113 +686,205 @@ class FileCoverage:
         return CoverageStat(covered, total)
 
 
-CovData = Dict[str, FileCoverage]
+class CoverageContainer:
+    """Coverage container holding all the coverage data."""
 
+    def __init__(self: CoverageContainer):
+        self.data: Dict[str, FileCoverage] = {}
+        self.directories: List[CoverageContainerDirectory] = []
 
-class DirectoryCoverage:
-    """Represent coverage information about a directory."""
+    def __getitem__(self, key: str):
+        return self.data[key]
 
-    __slots__ = "dirname", "parent_dirname", "children", "stats"
+    def __len__(self):
+        return len(self.data)
 
-    def __init__(self, dirname: str) -> None:
-        self.dirname: str = dirname
-        self.parent_dirname: Optional[str] = None
-        self.children: Union[CovData, CovDataDirectories] = {}
-        self.stats: SummarizedStats = SummarizedStats.new_empty()
+    def __contains__(self, key: str):
+        return key in self.data
+
+    def __iter__(self):
+        return iter(self.data)
+
+    def values(self):
+        """Get the file coverage data objects."""
+        return self.data.values()
+
+    def items(self):
+        """Get the file coverage data items."""
+        return self.data.items()
+
+    @property
+    def stats(self) -> SummarizedStats:
+        """Create a coverage statistic from a coverage data object."""
+        stats = SummarizedStats.new_empty()
+        for filecov in self.values():
+            stats += filecov.stats
+        return stats
+
+    def sort_coverage(
+        self,
+        sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
+        sort_reverse: bool,
+        by_metric: Literal["line", "branch", "decision"],
+        filename_uses_relative_pathname: bool = False,
+    ) -> List[str]:
+        """Sort the coverage data"""
+        return sort_coverage(
+            self.data,
+            sort_key,
+            sort_reverse,
+            by_metric,
+            filename_uses_relative_pathname,
+        )
 
     @staticmethod
-    def _get_dirname(filename: str, root_filter: re.Pattern):
-        filename = filename.replace("\\", os.sep).replace("/", os.sep).rstrip(os.sep)
-        dirname = os.path.dirname(filename)
-        if root_filter.search(dirname + os.sep) and dirname != filename:
-            return dirname + os.sep
-        return None
+    def _get_dirname(filename: str):
+        """Get the directory name with a trailing path separator.
 
-    @staticmethod
-    def directory_root(subdirs: CovDataDirectories) -> str:
-        """Get the root directory."""
-        if not subdirs:
-            return os.sep
-        # The first directory is the shortest one --> This is the root dir
-        return next(iter(sorted(subdirs.keys())))
+        >>> import os
+        >>> CoverageContainer._get_dirname("bar/foobar.cpp".replace("/", os.sep)).replace(os.sep, "/")
+        'bar/'
+        >>> CoverageContainer._get_dirname("/foo/bar/A/B.cpp".replace("/", os.sep)).replace(os.sep, "/")
+        '/foo/bar/A/'
+        >>> CoverageContainer._get_dirname(os.sep) is None
+        True
+        """
+        if filename == os.sep:
+            return None
+        return os.path.dirname(filename.rstrip(os.sep)) + os.sep
 
-    @staticmethod
-    def from_covdata(
-        covdata: CovData, sorted_keys: Iterable, root_filter: re.Pattern
-    ) -> CovDataDirectories:
-        r"""Add a file coverage item to the directory structure and accumulate stats.
+    def populate_directories(
+        self, sorted_keys: Iterable, root_filter: re.Pattern
+    ) -> None:
+        r"""Populate the list of directories and add accumulated stats.
 
-        This recursive function will accumulate statistics such that every directory
+        This function will accumulate statistics such that every directory
         above it will know the statistics associated with all files deep within a
         directory structure.
 
         Args:
-            covdata: The file coverage statistics to get the directory coverage from
             sorted_keys: The sorted keys for covdata
             root_filter: Information about the filter used with the root directory
         """
 
-        dirname_root = None
-        subdirs: CovDataDirectories = {}
+        # Get the directory coverage
+        subdirs: Dict[str, CoverageContainerDirectory] = {}
         for key in sorted_keys:
-            filecov = covdata[key]
-            dircov: Union[FileCoverage, DirectoryCoverage] = filecov
-            while True:
-                dirname = DirectoryCoverage._get_dirname(dircov.filename, root_filter)
-                if dirname is None:
-                    dirname_root = dircov.filename
-                    break
-                dircov.parent_dirname = dirname
+            filecov = self[key]
+            dircov: Optional[CoverageContainerDirectory] = None
+            dirname = (
+                os.path.dirname(filecov.filename)
+                .replace("\\", os.sep)
+                .replace("/", os.sep)
+                .rstrip(os.sep)
+            ) + os.sep
+            while root_filter.search(dirname + os.sep) and dirname is not None:
                 if dirname not in subdirs:
-                    subdirs[dirname] = DirectoryCoverage(dirname)
-                subdirs[dirname].children[dircov.filename] = dircov  # type: ignore [assignment]
-                subdirs[dirname].stats += SummarizedStats.from_file(filecov)
-                dircov = subdirs[dirname]
-
-        collapse_dirs = set()
-        for dirname, covdata_directory in subdirs.items():
-            if (
-                isinstance(covdata_directory, DirectoryCoverage)
-                and len(covdata_directory.children) == 1
-            ):
-                parent_dirname = covdata_directory.parent_dirname
-                # Get the key and value of the only child
-                orphan_key = next(iter(covdata_directory.children))
-                orphan_value = covdata_directory.children[orphan_key]
-                # Change the parent key
-                orphan_value.parent_dirname = parent_dirname
-                if dirname == dirname_root:
-                    # The only child is not a File object
-                    if not isinstance(orphan_value, FileCoverage):
-                        # Replace the children with the orphan ones
-                        covdata_directory.children = orphan_value.children
-                        # Change the parent key of each new child element
-                        for (
-                            new_child_key,
-                            new_child_value,
-                        ) in covdata_directory.children.items():
-                            new_child_value.parent_dirname = dirname
-                            if isinstance(new_child_value, DirectoryCoverage):
-                                subdirs[new_child_key].parent_dirname = dirname
-                        # Mark the key for removal.
-                        collapse_dirs.add(orphan_key)
+                    subdirs[dirname] = CoverageContainerDirectory(dirname)
+                if dircov is None:
+                    subdirs[dirname][filecov.filename] = filecov
                 else:
-                    # Add orphan value to the parent
-                    subdirs[str(parent_dirname)].children[orphan_key] = orphan_value  # type: ignore [assignment]
-                    # and remove the current one.
-                    subdirs[str(parent_dirname)].children.pop(dirname)
-                    # Mark the key for removal.
-                    collapse_dirs.add(dirname)
+                    subdirs[dirname].data[dircov.filename] = dircov
+                    subdirs[dircov.filename].parent_dirname = dirname
+                subdirs[dirname].stats += filecov.stats
+                dircov = subdirs[dirname]
+                dirname = CoverageContainer._get_dirname(dirname)
 
-        for dirname in collapse_dirs:
+        # Replace directories where only one sub container is available
+        # with the content this sub container
+        LOGGER.debug(
+            "Replace directories with only one sub element with the content of this."
+        )
+        subdirs_to_remove = set()
+        for dirname, covdata_dir in subdirs.items():
+            # There is exact one element, replace current element with referenced element
+            if len(covdata_dir) == 1:
+                # Get the orphan item
+                orphan_key, orphan_value = next(iter(covdata_dir.items()))
+                # The only child is a File object
+                if isinstance(orphan_value, FileCoverage):
+                    # Replace the reference to ourself with our content
+                    if covdata_dir.parent_dirname is not None:
+                        LOGGER.debug(
+                            f"Move {orphan_key} to {covdata_dir.parent_dirname}."
+                        )
+                        parent_covdata_dir = subdirs[covdata_dir.parent_dirname]
+                        parent_covdata_dir[orphan_key] = orphan_value
+                        del parent_covdata_dir[dirname]
+                        subdirs_to_remove.add(dirname)
+                else:
+                    LOGGER.debug(
+                        f"Move content of {orphan_value.dirname} to {dirname}."
+                    )
+                    # Replace the children with the orphan ones
+                    covdata_dir.data = orphan_value.data
+                    # Change the parent key of each new child element
+                    for new_child_value in covdata_dir.values():
+                        if isinstance(new_child_value, CoverageContainerDirectory):
+                            new_child_value.parent_dirname = dirname
+                    # Mark the key for removal.
+                    subdirs_to_remove.add(orphan_key)
+
+        for dirname in subdirs_to_remove:
             del subdirs[dirname]
 
-        return subdirs
+        self.directories = list(subdirs.values())
+
+
+class CoverageContainerDirectory:
+    """Represent coverage information about a directory."""
+
+    __slots__ = "dirname", "parent_dirname", "data", "stats"
+
+    def __init__(self, dirname: str) -> None:
+        super().__init__()
+        self.dirname: str = dirname
+        self.parent_dirname: Optional[str] = None
+        self.data: Dict[str, Union[FileCoverage, CoverageContainerDirectory]] = {}
+        self.stats: SummarizedStats = SummarizedStats.new_empty()
+
+    def __setitem__(
+        self, key: str, item: Union[FileCoverage, CoverageContainerDirectory]
+    ):
+        self.data[key] = item
+
+    def __getitem__(self, key: str):
+        return self.data[key]
+
+    def __delitem__(self, key: str):
+        del self.data[key]
+
+    def __len__(self):
+        return len(self.data)
+
+    def values(self):
+        """Get the file coverage data objects."""
+        return self.data.values()
+
+    def items(self):
+        """Get the file coverage data items."""
+        return self.data.items()
 
     @property
     def filename(self) -> str:
         """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage"""
         return self.dirname
+
+    def sort_coverage(
+        self,
+        sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
+        sort_reverse: bool,
+        by_metric: Literal["line", "branch", "decision"],
+        filename_uses_relative_pathname: bool = False,
+    ) -> List[str]:
+        """Sort the coverage data"""
+        return sort_coverage(
+            self.data,
+            sort_key,
+            sort_reverse,
+            by_metric,
+            filename_uses_relative_pathname,
+        )
 
     def line_coverage(self) -> CoverageStat:
         """A simple wrapper function necessary for sort_coverage()."""
@@ -791,9 +897,6 @@ class DirectoryCoverage:
     def decision_coverage(self) -> DecisionCoverageStat:
         """A simple wrapper function necessary for sort_coverage()."""
         return self.stats.decision
-
-
-CovDataDirectories = Dict[str, DirectoryCoverage]
 
 
 @dataclass
@@ -817,26 +920,6 @@ class SummarizedStats:
             decision=DecisionCoverageStat.new_empty(),
             function=CoverageStat.new_empty(),
             call=CoverageStat.new_empty(),
-        )
-
-    @staticmethod
-    def from_covdata(covdata: CovData) -> SummarizedStats:
-        """Create a coverage statistic from a coverage data object."""
-        stats = SummarizedStats.new_empty()
-        for filecov in covdata.values():
-            stats += SummarizedStats.from_file(filecov)
-        return stats
-
-    @staticmethod
-    def from_file(filecov: FileCoverage) -> SummarizedStats:
-        """Create a coverage statistic of a file coverage object."""
-        return SummarizedStats(
-            line=filecov.line_coverage(),
-            branch=filecov.branch_coverage(),
-            condition=filecov.condition_coverage(),
-            decision=filecov.decision_coverage(),
-            function=filecov.function_coverage(),
-            call=filecov.call_coverage(),
         )
 
     def __iadd__(self, other: SummarizedStats) -> SummarizedStats:

@@ -20,9 +20,10 @@
 import logging
 from typing import Callable, List, Optional, Tuple
 
-from ..coverage import CovData, FileCoverage
+from ..coverage import CoverageContainer, FileCoverage
 from ..merging import (
     get_merge_mode_from_options,
+    merge_covdata,
     insert_file_coverage,
 )
 from ..options import GcovrConfigOption, Options, OutputOrDefault
@@ -84,11 +85,15 @@ def validate_options(options) -> None:
         handler(options).validate_options()
 
 
-def read_reports(options) -> CovData:
+def read_reports(options) -> CoverageContainer:
     """Read the reports from the given locations."""
     if options.json_add_tracefile or options.cobertura_add_tracefile:
-        covdata: CovData = JsonHandler(options).read_report() or {}
-        covdata.update(CoberturaHandler(options).read_report() or {})
+        covdata = JsonHandler(options).read_report()
+        covdata = merge_covdata(
+            covdata,
+            CoberturaHandler(options).read_report(),
+            get_merge_mode_from_options(options),
+        )
     else:
         covdata = GcovHandler(options).read_report()
 
@@ -114,12 +119,12 @@ def read_reports(options) -> CovData:
     return covdata
 
 
-def write_reports(covdata: CovData, options: Options):
+def write_reports(covdata: CoverageContainer, options: Options):
     """Write the reports to the given locations."""
     generators: List[
         Tuple[
             List[Optional[OutputOrDefault]],
-            Callable[[CovData, str], None],
+            Callable[[CoverageContainer, str], None],
             Callable[[], None],
         ]
     ] = []

@@ -42,7 +42,7 @@ from .utils import (
     update_logging,
 )
 from .version import __version__
-from .coverage import CovData, SummarizedStats
+from .coverage import CoverageContainer
 
 # formats
 from . import formats as gcovr_formats
@@ -70,14 +70,14 @@ EXIT_WRITE_ERROR = 128
 # Exits with status 2 if below threshold
 #
 def fail_under(
-    covdata: CovData,
+    covdata: CoverageContainer,
     threshold_line,
     threshold_branch,
     threshold_decision,
     threshold_function,
 ):
     """Fail depending on the coverage result."""
-    stats = SummarizedStats.from_covdata(covdata)
+    stats = covdata.stats
 
     line_nok = False
     if threshold_line > 0.0:

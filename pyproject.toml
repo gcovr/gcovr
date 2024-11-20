@@ -130,6 +130,8 @@ extension-pkg-allow-list = [
 ]
 
 [tool.mypy]
+# disallow_incomplete_defs = true
+# check_untyped_defs = true
 disable_error_code = "attr-defined"
 
 [tool.ruff]

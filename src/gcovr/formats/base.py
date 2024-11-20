@@ -17,10 +17,10 @@
 #
 # ****************************************************************************
 
-from typing import List, Optional, Union
+from typing import List, Union
 
 from ..options import GcovrConfigOption, Options
-from ..coverage import CovData
+from ..coverage import CoverageContainer
 
 
 class BaseHandler:
@@ -57,14 +57,16 @@ class BaseHandler:
     def validate_options(self) -> None:
         """Validation of command line options"""
 
-    def read_report(self) -> Optional[CovData]:
+    def read_report(self) -> CoverageContainer:
         """Read a report in the format of the handler"""
         raise AssertionError("Function 'read_report' not implemented.")
 
-    def write_report(self, covdata: CovData, output_file: str) -> None:
+    def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         """Write a report in the format of the handler"""
         raise AssertionError("Function 'write_report' not implemented.")
 
-    def write_summary_report(self, covdata: CovData, output_file: str) -> None:
+    def write_summary_report(
+        self, covdata: CoverageContainer, output_file: str
+    ) -> None:
         """Write a summary report in the format of the handler"""
         raise AssertionError("Function 'write_summary_report' not implemented.")

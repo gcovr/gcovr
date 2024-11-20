@@ -32,7 +32,7 @@ from .workers import Workers, locked_directory
 from ...coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CovData,
+    CoverageContainer,
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
@@ -75,7 +75,7 @@ output_error_re = re.compile(
 unknown_cla_re = re.compile(r"Unknown command line argument")
 
 
-def read_report(options: Options) -> CovData:
+def read_report(options: Options) -> CoverageContainer:
     """Read data from GCOV output."""
     datafiles = set()
 
@@ -98,7 +98,7 @@ def read_report(options: Options) -> CovData:
     # Get coverage data
     with Workers(
         options.gcov_parallel,
-        lambda: {"covdata": {}, "to_erase": set(), "options": options},
+        lambda: {"covdata": CoverageContainer(), "to_erase": set(), "options": options},
     ) as pool:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
         for file_ in sorted(datafiles):
@@ -106,7 +106,7 @@ def read_report(options: Options) -> CovData:
         contexts = pool.wait()
 
     to_erase = set()
-    covdata: CovData = {}
+    covdata = CoverageContainer()
     for context in contexts:
         covdata = merge_covdata(
             covdata, context["covdata"], get_merge_mode_from_options(options)
@@ -186,7 +186,9 @@ def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str
 #
 # Process a single gcov datafile
 #
-def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
+def process_gcov_json_data(
+    data_fname: str, covdata: CoverageContainer, options
+) -> None:
     """Process a GCOV JSON output."""
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json.loads(fh_in.read())
@@ -307,7 +309,7 @@ def process_gcov_json_data(data_fname: str, covdata: CovData, options) -> None:
 def process_gcov_data(
     data_fname: str,
     gcda_fname: Optional[str],
-    covdata: CovData,
+    covdata: CoverageContainer,
     options: Options,
     current_dir: Optional[str] = None,
 ) -> None:
@@ -488,7 +490,7 @@ def guess_source_file_name_heuristics(  # pylint: disable=too-many-return-statem
 
 
 def process_datafile(
-    filename: str, covdata: CovData, options: Options, to_erase: Set[str]
+    filename: str, covdata: CoverageContainer, options: Options, to_erase: Set[str]
 ) -> None:
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
@@ -838,7 +840,7 @@ class GcovProgram:
 
 def run_gcov_and_process_files(
     abs_filename: str,
-    covdata: CovData,
+    covdata: CoverageContainer,
     options: Options,
     error: Callable[[str], None],
     chdir: str,
@@ -986,7 +988,7 @@ def select_gcov_files_from_stdout(
 #  Process Already existing gcov files
 #
 def process_existing_gcov_file(
-    filename: str, covdata: CovData, options: Options, to_erase: Set[str]
+    filename: str, covdata: CoverageContainer, options: Options, to_erase: Set[str]
 ) -> None:
     """Process an existing GCOV filename."""
     if is_file_excluded(filename, options.gcov_filter, options.gcov_exclude):

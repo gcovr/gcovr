@@ -54,7 +54,7 @@ from typing import Callable, Optional, TypeVar, Dict
 from .coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CovData,
+    CoverageContainer,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
@@ -224,22 +224,30 @@ def _insert_coverage_item(
     return merged_item
 
 
-def merge_covdata(left: CovData, right: CovData, options: MergeOptions) -> CovData:
+def merge_covdata(
+    left: CoverageContainer, right: CoverageContainer, options: MergeOptions
+) -> CoverageContainer:
     """
-    Merge CovData information.
+    Merge CoverageContainer information and clear directory statistics.
 
     Do not use 'left' or 'right' objects afterwards!
     """
-    return _merge_dict(left, right, merge_file, options, None)
+    left.directories.clear()
+    right.directories.clear()
+    left.data = _merge_dict(left.data, right.data, merge_file, options, None)
+    return left
 
 
 def insert_file_coverage(
-    target: CovData,
+    target: CoverageContainer,
     file: FileCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> FileCoverage:
-    """Insert FileCoverage into CovData."""
-    return _insert_coverage_item(target, file.filename, file, merge_file, options, None)
+    """Insert FileCoverage into CoverageContainer and clear directory statistics."""
+    target.directories.clear()
+    return _insert_coverage_item(
+        target.data, file.filename, file, merge_file, options, None
+    )
 
 
 def merge_file(

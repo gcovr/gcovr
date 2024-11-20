@@ -20,13 +20,12 @@
 import logging
 import os
 from glob import glob
-from typing import Optional
 from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
 from ...coverage import (
     BranchCoverage,
-    CovData,
+    CoverageContainer,
     FileCoverage,
     LineCoverage,
 )
@@ -44,12 +43,13 @@ LOGGER = logging.getLogger("gcovr")
 #
 #  Get coverage from already existing gcovr JSON files
 #
-def read_report(options: Options) -> Optional[CovData]:
+def read_report(options: Options) -> CoverageContainer:
     """merge a coverage from multiple reports in the format
     compatible with Cobertura"""
 
+    covdata = CoverageContainer()
     if len(options.cobertura_add_tracefile) == 0:
-        return None
+        return covdata
 
     datafiles = set()
 
@@ -64,7 +64,6 @@ def read_report(options: Options) -> Optional[CovData]:
         for trace_file in trace_files:
             datafiles.add(os.path.normpath(trace_file))
 
-    covdata: CovData = {}
     for data_source_filename in datafiles:
         LOGGER.debug(f"Processing XML file: {data_source_filename}")
 
