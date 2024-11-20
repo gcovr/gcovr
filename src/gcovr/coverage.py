@@ -39,6 +39,7 @@ import logging
 import os
 import re
 from typing import (
+    ItemsView,
     List,
     Dict,
     Iterable,
@@ -48,8 +49,8 @@ from typing import (
     TypeVar,
     Union,
     Literal,
+    ValuesView,
 )
-
 from dataclasses import dataclass
 
 from .utils import commonpath, force_unix_separator
@@ -693,23 +694,23 @@ class CoverageContainer:
         self.data: Dict[str, FileCoverage] = {}
         self.directories: List[CoverageContainerDirectory] = []
 
-    def __getitem__(self, key: str):
+    def __getitem__(self, key: str) -> FileCoverage:
         return self.data[key]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.data)
 
-    def __contains__(self, key: str):
+    def __contains__(self, key: str) -> bool:
         return key in self.data
 
-    def __iter__(self):
+    def __iter__(self):  # -> Iterator[str]:
         return iter(self.data)
 
-    def values(self):
+    def values(self) -> ValuesView[FileCoverage]:
         """Get the file coverage data objects."""
         return self.data.values()
 
-    def items(self):
+    def items(self) -> ItemsView[str, FileCoverage]:
         """Get the file coverage data items."""
         return self.data.items()
 
@@ -738,7 +739,7 @@ class CoverageContainer:
         )
 
     @staticmethod
-    def _get_dirname(filename: str):
+    def _get_dirname(filename: str) -> Optional[str]:
         """Get the directory name with a trailing path separator.
 
         >>> import os
@@ -751,7 +752,7 @@ class CoverageContainer:
         """
         if filename == os.sep:
             return None
-        return os.path.dirname(filename.rstrip(os.sep)) + os.sep
+        return str(os.path.dirname(filename.rstrip(os.sep))) + os.sep
 
     def populate_directories(
         self, sorted_keys: Iterable, root_filter: re.Pattern
@@ -772,13 +773,13 @@ class CoverageContainer:
         for key in sorted_keys:
             filecov = self[key]
             dircov: Optional[CoverageContainerDirectory] = None
-            dirname = (
+            dirname: Optional[str] = (
                 os.path.dirname(filecov.filename)
                 .replace("\\", os.sep)
                 .replace("/", os.sep)
                 .rstrip(os.sep)
             ) + os.sep
-            while root_filter.search(dirname + os.sep) and dirname is not None:
+            while dirname is not None and root_filter.search(dirname + os.sep):
                 if dirname not in subdirs:
                     subdirs[dirname] = CoverageContainerDirectory(dirname)
                 if dircov is None:
@@ -845,23 +846,23 @@ class CoverageContainerDirectory:
 
     def __setitem__(
         self, key: str, item: Union[FileCoverage, CoverageContainerDirectory]
-    ):
+    ) -> None:
         self.data[key] = item
 
-    def __getitem__(self, key: str):
+    def __getitem__(self, key: str) -> Union[FileCoverage, CoverageContainerDirectory]:
         return self.data[key]
 
-    def __delitem__(self, key: str):
+    def __delitem__(self, key: str) -> None:
         del self.data[key]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.data)
 
-    def values(self):
+    def values(self) -> ValuesView[Union[FileCoverage, CoverageContainerDirectory]]:
         """Get the file coverage data objects."""
         return self.data.values()
 
-    def items(self):
+    def items(self) -> ItemsView[str, Union[FileCoverage, CoverageContainerDirectory]]:
         """Get the file coverage data items."""
         return self.data.items()
 

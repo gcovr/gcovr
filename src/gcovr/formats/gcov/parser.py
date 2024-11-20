@@ -230,7 +230,7 @@ class NegativeHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line, ignore_parse_errors: set, persistent_states: dict
+        line: str, ignore_parse_errors: set, persistent_states: dict
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -266,7 +266,7 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line, ignore_parse_errors: set, persistent_states: dict
+        line: str, ignore_parse_errors: set, persistent_states: dict
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(

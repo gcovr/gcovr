@@ -72,7 +72,9 @@ def locked_directory(dir_):
         locked_directory_global_object.done(dir_)
 
 
-def worker(queue: Queue, context: Callable[[], Dict[str, Any]], pool: "Workers"):
+def worker(
+    queue: Queue, context: Callable[[], Dict[str, Any]], pool: "Workers"
+) -> None:
     """
     Run work items from the queue until the sentinel
     None value is hit

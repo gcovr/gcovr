@@ -545,7 +545,7 @@ def check_bundled_app(session: nox.Session) -> None:
 
 
 @nox.session()
-def html2jpeg(session: nox.Session):
+def html2jpeg(session: nox.Session) -> None:
     """Create JPEGs from HTML for documentation"""
     session.install("requests")
 
@@ -879,7 +879,7 @@ def import_reference(session: nox.Session) -> None:
             "Please provide the ZIP files to import. Usage: nox -s import_reference -- file.zip"
         )
 
-    def extract(fh_zip: zipfile.ZipFile):
+    def extract(fh_zip: zipfile.ZipFile) -> None:
         for entry in fh_zip.filelist:
             session.log(fh_zip.extract(entry, "tests"))
 

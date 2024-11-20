@@ -138,7 +138,7 @@ class Filter:
         flags = re.IGNORECASE if is_fs_case_insensitive() else 0
         self.pattern = re.compile(pattern, flags)
 
-    def match(self, path: str):
+    def match(self, path: str) -> bool:
         """Return True if the given path (always with /) matches the regular expression."""
         os_independent_path = force_unix_separator(path)
         if self.pattern.match(os_independent_path):
@@ -153,7 +153,7 @@ class Filter:
 class AbsoluteFilter(Filter):
     """Class for a filename filter which matches against the real path of a file."""
 
-    def match(self, path: str):
+    def match(self, path: str) -> bool:
         """Return True if the given path with all symlinks resolved matches the filter."""
         path = os.path.realpath(path)
         return super().match(path)
@@ -166,7 +166,7 @@ class RelativeFilter(Filter):
         super().__init__(pattern)
         self.root = os.path.realpath(root)
 
-    def match(self, path: str):
+    def match(self, path: str) -> bool:
         """Return True if the given path with all symlinks resolved matches the filter."""
         path = os.path.realpath(path)
 
@@ -176,7 +176,7 @@ class RelativeFilter(Filter):
             path_drive, _ = os.path.splitdrive(path)
             root_drive, _ = os.path.splitdrive(self.root)
             if path_drive != root_drive:
-                return None
+                return False
 
         relpath = os.path.relpath(path, self.root)
         return super().match(relpath)
@@ -204,7 +204,7 @@ class DirectoryPrefixFilter(Filter):
         pattern = re.escape(f"{os_independent_path}/")
         super().__init__(pattern)
 
-    def match(self, path: str):
+    def match(self, path: str) -> bool:
         """Return True if the given path matches the filter."""
         path = os.path.normpath(path)
         return super().match(path)

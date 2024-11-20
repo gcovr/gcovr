@@ -105,7 +105,7 @@ def write_summary_report(
 
     with open_text_for_writing(output_file, "coverage.txt") as fh:
 
-        def print_stat(name: str, stat: CoverageStat):
+        def print_stat(name: str, stat: CoverageStat) -> None:
             percent = stat.percent_or(0.0)
             covered = stat.covered
             total = stat.total
@@ -123,7 +123,9 @@ def write_summary_report(
             print_stat("calls", stats.call)
 
 
-def _summarize_file_coverage(coverage: FileCoverage, options):
+def _summarize_file_coverage(
+    coverage: FileCoverage, options: Options
+) -> Tuple[CoverageStat, str]:
     filename = presentable_filename(coverage.filename, root_filter=options.root_filter)
 
     if options.txt_report_covered:

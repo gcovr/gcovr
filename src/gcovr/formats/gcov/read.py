@@ -25,7 +25,7 @@ import re
 import shlex
 import subprocess  # nosec # Commands are trusted.
 from threading import Lock
-from typing import Callable, List, Optional, Set, Tuple
+from typing import Any, Callable, List, Optional, Set, Tuple
 
 from .parser import parse_metadata, parse_coverage
 from .workers import Workers, locked_directory
@@ -37,7 +37,7 @@ from ...coverage import (
     FunctionCoverage,
     LineCoverage,
 )
-from ...exclusions import apply_all_exclusions
+from ...exclusions import ExclusionOptions, apply_all_exclusions
 from ...decision_analysis import DecisionParser
 from ...merging import (
     MergeOptions,
@@ -187,7 +187,7 @@ def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str
 # Process a single gcov datafile
 #
 def process_gcov_json_data(
-    data_fname: str, covdata: CoverageContainer, options
+    data_fname: str, covdata: CoverageContainer, options: Options
 ) -> None:
     """Process a GCOV JSON output."""
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
@@ -293,7 +293,11 @@ def process_gcov_json_data(
             for line in source_lines
         ]
         LOGGER.debug(f"Apply exclusions for {fname}")
-        apply_all_exclusions(file_cov, lines=encoded_source_lines, options=options)
+        apply_all_exclusions(
+            file_cov,
+            lines=encoded_source_lines,
+            options=ExclusionOptions(**options.__dict__),
+        )
 
         if options.show_decision:
             decision_parser = DecisionParser(file_cov, encoded_source_lines)
@@ -763,7 +767,7 @@ class GcovProgram:
         """Get the default options for GCOV."""
         return GcovProgram.__default_options
 
-    def __get_gcov_process(self, args: List[str], **kwargs) -> subprocess.Popen:
+    def __get_gcov_process(self, args: List[str], **kwargs: Any) -> subprocess.Popen:
         # NB: Currently, we will only parse English output
         env = kwargs.pop("env") if "env" in kwargs else dict(os.environ)
         env["LC_ALL"] = "C"
@@ -783,7 +787,7 @@ class GcovProgram:
             **kwargs,
         )
 
-    def run_with_args(self, args: List[str], **kwargs) -> Tuple[str, str]:
+    def run_with_args(self, args: List[str], **kwargs: Any) -> Tuple[str, str]:
         """Run the gcov program.
 
         >>> import platform

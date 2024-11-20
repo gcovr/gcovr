@@ -112,7 +112,7 @@ def apply_all_exclusions(
         remove_calls(filecov)
 
 
-def remove_calls(filecov: FileCoverage):
+def remove_calls(filecov: FileCoverage) -> None:
     """Remove the information about calls."""
 
     # Clear the calls of each line.
@@ -120,7 +120,7 @@ def remove_calls(filecov: FileCoverage):
         linecov.calls.clear()
 
 
-def remove_internal_functions(filecov: FileCoverage):
+def remove_internal_functions(filecov: FileCoverage) -> None:
     """Remove compiler-generated functions, e.g. for static initialization."""
 
     # Get all the keys first because we want to remove some of them which will else result in an error.

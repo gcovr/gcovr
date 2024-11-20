@@ -846,7 +846,7 @@ def test_noncode_lines():
         *,
         exclude_function_lines: bool = False,
         exclude_noncode_lines: bool = False,
-    ):
+    ) -> str:
         filecov, source = parse_coverage(
             lines,
             filename="example.cpp",

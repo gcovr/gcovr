@@ -187,7 +187,9 @@ def write_report(
     _write_coveralls_result(json_dict, output_file, options.coveralls_pretty)
 
 
-def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]:
+def _make_source_file(
+    coverage_details: FileCoverage, options: Options
+) -> Dict[str, Any]:
     # Object with Coveralls file details
     source_file: Dict[str, Any] = {}
 

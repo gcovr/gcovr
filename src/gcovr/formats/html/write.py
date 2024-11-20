@@ -39,6 +39,7 @@ from pygments.lexers import get_lexer_for_filename
 from ...coverage import (
     BranchCoverage,
     CallCoverage,
+    ConditionCoverage,
     CoverageContainer,
     CoverageContainerDirectory,
     CoverageStat,
@@ -210,7 +211,7 @@ class PygmentsHighlighting:
 
 
 @Lazy
-def get_formatter(options):
+def get_formatter(options: Options) -> Union[PygmentsHighlighting, NullHighlighting]:
     """Get the formatter for the selected theme."""
     highlight_style = (
         templates(options)
@@ -224,7 +225,9 @@ def get_formatter(options):
     )
 
 
-def coverage_to_class(coverage, medium_threshold, high_threshold) -> str:
+def coverage_to_class(
+    coverage: Optional[float], medium_threshold: float, high_threshold: float
+) -> str:
     """Get the coverage class depending on the threshold."""
     if coverage is None:
         return "coverage-unknown"
@@ -240,7 +243,7 @@ def coverage_to_class(coverage, medium_threshold, high_threshold) -> str:
 class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
-    def __init__(self, options) -> None:
+    def __init__(self, options: Options) -> None:
         self.medium_threshold = options.html_medium_threshold
         self.high_threshold = options.html_high_threshold
         self.medium_threshold_line = options.html_medium_threshold_line
@@ -257,7 +260,7 @@ class RootInfo:
         self.head = options.html_title
         self.date = options.timestamp.isoformat(sep=" ", timespec="seconds")
         self.encoding = options.html_encoding
-        self.directory = None
+        self.directory = ""
         self.branches: Dict[str, Any] = {}
         self.conditions: Dict[str, Any] = {}
         self.decisions: Dict[str, Any] = {}
@@ -265,7 +268,7 @@ class RootInfo:
         self.functions: Dict[str, Any] = {}
         self.lines: Dict[str, Any] = {}
 
-    def set_directory(self, directory) -> None:
+    def set_directory(self, directory: str) -> None:
         """Set the directory for the report."""
         self.directory = directory
 
@@ -285,19 +288,19 @@ class RootInfo:
         self.decisions = dict_from_stat(stats.decision, self.coverage_class)
         self.calls = dict_from_stat(stats.call, self.coverage_class)
 
-    def line_coverage_class(self, coverage) -> str:
+    def line_coverage_class(self, coverage: Optional[float]) -> str:
         """Get the coverage class for the line."""
         return coverage_to_class(
             coverage, self.medium_threshold_line, self.high_threshold_line
         )
 
-    def branch_coverage_class(self, coverage) -> str:
+    def branch_coverage_class(self, coverage: Optional[float]) -> str:
         """Get the coverage class for the branch."""
         return coverage_to_class(
             coverage, self.medium_threshold_branch, self.high_threshold_branch
         )
 
-    def coverage_class(self, coverage) -> str:
+    def coverage_class(self, coverage: Optional[float]) -> str:
         """Get the coverage class for all other types."""
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
@@ -433,7 +436,7 @@ def write_report(
     else:
         directory, _ = os.path.split(filtered_fname)
         if directory != "":
-            root_directory = directory + os.sep
+            root_directory = str(directory) + os.sep
 
     root_info.set_directory(root_directory)
 
@@ -495,7 +498,7 @@ def write_report(
 
 
 def write_root_page(
-    options,
+    options: Options,
     root_info: RootInfo,
     output_file: str,
     covdata: CoverageContainer,
@@ -525,7 +528,7 @@ def write_root_page(
 
 
 def write_source_pages(
-    options,
+    options: Options,
     root_info: RootInfo,
     functions_output_file: str,
     covdata: CoverageContainer,
@@ -576,7 +579,7 @@ def write_source_pages(
 
 
 def write_directory_pages(
-    options,
+    options: Options,
     root_info: RootInfo,
     output_file: str,
     covdata: CoverageContainer,
@@ -616,7 +619,7 @@ def write_directory_pages(
 
 
 def write_single_page(
-    options,
+    options: Options,
     root_info: RootInfo,
     output_file: str,
     covdata: CoverageContainer,
@@ -679,7 +682,7 @@ def write_single_page(
 
 
 def get_coverage_data(
-    root_info,
+    root_info: RootInfo,
     cdata: Union[CoverageContainerDirectory, FileCoverage],
     link_report: str,
     cdata_fname: str,
@@ -693,13 +696,13 @@ def get_coverage_data(
     medium_threshold_branch = root_info.medium_threshold_branch
     high_threshold_branch = root_info.high_threshold_branch
 
-    def coverage_class(coverage) -> str:
+    def coverage_class(coverage: Optional[float]) -> str:
         return coverage_to_class(coverage, medium_threshold, high_threshold)
 
-    def line_coverage_class(coverage) -> str:
+    def line_coverage_class(coverage: Optional[float]) -> str:
         return coverage_to_class(coverage, medium_threshold_line, high_threshold_line)
 
-    def branch_coverage_class(coverage) -> str:
+    def branch_coverage_class(coverage: Optional[float]) -> str:
         return coverage_to_class(
             coverage, medium_threshold_branch, high_threshold_branch
         )
@@ -771,7 +774,7 @@ def get_coverage_data(
 
 
 def get_directory_data(
-    options,
+    options: Options,
     root_info: RootInfo,
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, str],
@@ -814,7 +817,7 @@ def get_directory_data(
 
 
 def get_file_data(
-    options,
+    options: Options,
     root_info: RootInfo,
     filename: str,
     cdata_fname: Dict[str, str],
@@ -996,7 +999,9 @@ def source_row_branch(branches: Dict[int, BranchCoverage]) -> Optional[Dict[str,
     }
 
 
-def source_row_condition(conditions) -> Optional[Dict[str, Any]]:
+def source_row_condition(
+    conditions: Dict[int, ConditionCoverage],
+) -> Optional[Dict[str, Any]]:
     """Get condition information for a row."""
     if not conditions:
         return None

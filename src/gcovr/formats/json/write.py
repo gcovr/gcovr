@@ -21,7 +21,7 @@ import json
 import logging
 import os
 import functools
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from ...options import Options
 
@@ -86,7 +86,7 @@ def write_report(
 
 def write_summary_report(
     covdata: CoverageContainer, output_file: str, options: Options
-):
+) -> None:
     """Produce gcovr JSON summary report"""
 
     json_dict: Dict[str, Any] = {}
@@ -127,7 +127,7 @@ def write_summary_report(
 
 
 def _summary_from_stats(
-    stats: SummarizedStats, default, options: Options
+    stats: SummarizedStats, default: Optional[float], options: Options
 ) -> Dict[str, Any]:
     json_dict: Dict[str, Any] = {}
 
@@ -156,11 +156,13 @@ def _summary_from_stats(
     return json_dict
 
 
-def _json_from_files(files: CoverageContainer, options) -> list:
+def _json_from_files(
+    files: CoverageContainer, options: Options
+) -> List[Dict[str, Any]]:
     return [_json_from_file(files[key], options) for key in sorted(files)]
 
 
-def _json_from_file(file: FileCoverage, options) -> dict:
+def _json_from_file(file: FileCoverage, options: Options) -> Dict[str, Any]:
     filename = presentable_filename(file.filename, options.root_filter)
     if options.json_base:
         filename = "/".join([options.json_base, filename])

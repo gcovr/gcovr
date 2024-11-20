@@ -20,7 +20,7 @@
 # cspell:ignore getpreferredencoding getfixture caplog
 
 from __future__ import annotations
-from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
+from argparse import _ArgumentGroup, ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 import logging
@@ -99,7 +99,9 @@ def source_date_epoch() -> Optional[datetime.datetime]:
     return None
 
 
-def argument_parser_setup(parser: ArgumentParser, default_group):
+def argument_parser_setup(
+    parser: ArgumentParser, default_group: _ArgumentGroup
+) -> None:
     r"""Add all options and groups to the given argparse parser."""
 
     # setup option groups
@@ -184,7 +186,7 @@ def _get_value_from_config_entry(
     cfg_entry: ConfigEntry,
     option: GcovrConfigOption,
 ) -> Any:
-    def get_boolean(silent_error: bool = False):
+    def get_boolean(silent_error: bool = False) -> Optional[bool]:
         try:
             return cfg_entry.value_as_bool
         except ValueError:
@@ -817,7 +819,7 @@ def parse_config_file(
     test.cfg: 7: optional = spaces
     """
 
-    def error(pattern: str, *args, **kwargs):
+    def error(pattern: str, *args: object, **kwargs: object) -> SyntaxError:
         # pylint: disable=cell-var-from-loop
         message = pattern.format(*args, **kwargs)
         message += f"\non this line: {line}"
@@ -944,7 +946,7 @@ class ConfigEntry:
             return False
         raise self.error('boolean option must be "yes" or "no"')
 
-    def error(self, pattern: str, *args, **kwargs) -> ValueError:
+    def error(self, pattern: str, *args: object, **kwargs: object) -> ValueError:
         r"""
         Format but NOT RAISE a ValueError.
 
