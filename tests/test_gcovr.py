@@ -24,6 +24,7 @@ import glob
 import logging
 import os
 import platform
+from typing import Dict, List, Optional, Set
 import pytest
 import re
 import shutil
@@ -207,7 +208,7 @@ def assert_equals(reference_file, reference, test_file, test, encoding):
                 test.encode()
             )
 
-        diff_out = compare_xml(reference, test)
+        diff_out: Optional[str] = compare_xml(reference, test)
         if diff_out is None:
             return
 
@@ -215,7 +216,7 @@ def assert_equals(reference_file, reference, test_file, test, encoding):
             f"-- {reference_file}\n++ {test_file}\n{diff_out}"  # pragma: no cover
         )
     else:
-        diff_out = list(
+        diff_lines: list[str] = list(
             difflib.unified_diff(
                 reference.splitlines(keepends=True),
                 test.splitlines(keepends=True),
@@ -224,10 +225,10 @@ def assert_equals(reference_file, reference, test_file, test, encoding):
             )
         )
 
-        diff_is_empty = len(diff_out) == 0
+        diff_is_empty = len(diff_lines) == 0
         if diff_is_empty:
             return
-        diff_out = "".join(diff_out)  # pragma: no cover
+        diff_out = "".join(diff_lines)  # pragma: no cover
 
     raise AssertionError(diff_out)  # pragma: no cover
 
@@ -439,19 +440,18 @@ def pytest_generate_tests(metafunc):
     )
 
 
-def parse_makefile_for_available_targets(path):
-    targets = {}
+def parse_makefile_for_available_targets(path: str) -> Dict[str, Set[str]]:
+    targets: Dict[str, Set[str]] = {}
     with open(path, encoding="utf-8") as makefile:
         for line in makefile:
-            m = re.match(r"^(\w[\w -]*):([\s\w.-]*)$", line)
-            if m:
+            if m := re.match(r"^(\w[\w -]*):([\s\w.-]*)$", line):
                 deps = m.group(2).split()
                 for target in m.group(1).split():
                     targets.setdefault(target, set()).update(deps)
     return targets
 
 
-def generate_reference_data(output_pattern):  # pragma: no cover
+def generate_reference_data(output_pattern: List[str]) -> None:  # pragma: no cover
     for pattern in output_pattern:
         for generated_file in glob.glob(pattern):
             reference_file = os.path.join(REFERENCE_DIRS[0], generated_file)
@@ -554,7 +554,8 @@ def test_build(
 
     encoding = "utf8"
     if format == "html" and name.startswith("html-encoding-"):
-        encoding = re.match("^html-encoding-(.*)$", name).group(1)
+        if m := re.match("^html-encoding-(.*)$", name):
+            encoding = m.group(1)
 
     os.chdir(os.path.join(basedir, name))
     make_options = ["-j", "4"]
@@ -565,7 +566,7 @@ def test_build(
     if generate_reference:  # pragma: no cover
         generate_reference_data(output_pattern)
 
-    whole_diff_output = []
+    whole_diff_output: List[str] = []
     for test_file, reference_file in find_reference_files(output_pattern):
         with open(test_file, newline="", encoding=encoding) as f:
             test_scrubbed = scrub(f.read())

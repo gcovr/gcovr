@@ -91,7 +91,10 @@ def configure_logging() -> None:
                 super().__init__(fmt=LOG_FORMAT)
 
             def format(self, record):
-                if record.levelno in ci_logging_prefixes:
+                if (
+                    ci_logging_prefixes is not None
+                    and record.levelno in ci_logging_prefixes
+                ):
                     result = (
                         f"{ci_logging_prefixes[record.levelno]}{super().format(record)}"
                     )

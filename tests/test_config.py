@@ -225,7 +225,7 @@ def test_option_choice():
             "testopt",
             ["--testopt"],
             type=int,
-            choices=(1, 3, 5),
+            choices=[1, 3, 5],
             help="for unit tests only",
         ),
     ]

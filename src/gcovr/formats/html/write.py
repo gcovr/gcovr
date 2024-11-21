@@ -24,6 +24,7 @@ import os
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from jinja2 import (
+    BaseLoader,
     Environment,
     ChoiceLoader,
     FileSystemLoader,
@@ -103,7 +104,7 @@ def get_theme_color(html_theme: str) -> str:
 def templates(options):
     """Get the Jinja2 environment for the templates."""
     # As default use the package loader
-    loader = PackageLoader(
+    loader: BaseLoader = PackageLoader(
         "gcovr.formats.html",
         package_path=get_theme_name(options.html_theme),
     )

@@ -33,7 +33,7 @@ from gcovr.formats.gcov.parser import (
     parse_coverage,
     UnknownLineType,
 )
-from gcovr.utils import configure_logging
+from gcovr.logging import configure_logging
 from gcovr.formats.gcov.workers import Workers
 from gcovr.exclusions import ExclusionOptions, apply_all_exclusions
 
@@ -901,7 +901,9 @@ def test_noncode_lines():
     assert get_line_status(["#####: 32:}"], exclude_noncode_lines=True) == "noncode"
 
 
-def check_and_raise(number, mutable, exc_raised, queue_full):
+def check_and_raise(
+    number: int, mutable: List[None], exc_raised: Event, queue_full: Event
+) -> None:
     queue_full.wait()
     if number == 0:
         raise AssertionError("Number == 0")
@@ -911,7 +913,7 @@ def check_and_raise(number, mutable, exc_raised, queue_full):
 
 @pytest.mark.parametrize("threads", [1, 2, 4, 8])
 def test_pathologic_threads(threads):
-    mutable = []
+    mutable: List[None] = []
     queue_full = Event()
     exc_raised = Event()
     with pytest.raises(RuntimeError) as exc_info:
@@ -937,7 +939,7 @@ def test_pathologic_threads(threads):
             # Queue should be drained and exception raised
             exc_raised.set()
             pool.wait()
-            assert pool.workers is None, "Workers are removed."
+            assert pool.size() == 0, "Workers are removed."
             assert len(pool.exceptions) == 1, "One traceback available."
 
     # Outer level catches correct exception

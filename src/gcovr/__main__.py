@@ -330,7 +330,7 @@ def main(args=None):
                 LOGGER.debug(f" - {f}")
 
     except re.error as e:
-        LOGGER.error(f"Error setting up filter '{e.pattern}': {e}")
+        LOGGER.error(f"Error setting up filter '{str(e.pattern)}': {e}")
         sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.exclude_lines_by_pattern:

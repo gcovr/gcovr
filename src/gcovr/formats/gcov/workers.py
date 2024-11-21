@@ -104,7 +104,7 @@ class Workers:
         self.lock = RLock()
         self.exceptions: List[str] = []
         self.contexts = [context() for _ in range(0, number)]
-        self.workers = [
+        self.workers: List[Thread] = [
             Thread(target=worker, args=(self.q, c, self)) for c in self.contexts
         ]
         for w in self.workers:
@@ -165,7 +165,7 @@ class Workers:
             # Allow interrupts in Thread.join
             while w.is_alive():
                 w.join(timeout=1)
-        self.workers = None
+        self.workers = []
 
         for traceback in self.exceptions:
             LOGGER.error(traceback)
@@ -180,7 +180,7 @@ class Workers:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.workers is not None:
+        if self.size() != 0:
             raise AssertionError(
                 "Sanity check, you must call wait on the contextmanager to get the context of the workers."
             )
