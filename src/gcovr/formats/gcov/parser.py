@@ -230,7 +230,7 @@ class NegativeHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set, persistent_states: dict
+        line: str, ignore_parse_errors: Set[str], persistent_states: Dict[str, Any]
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -266,7 +266,7 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set, persistent_states: dict
+        line: str, ignore_parse_errors: Set[str], persistent_states: Dict[str, Any]
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -613,8 +613,8 @@ def _report_lines_with_errors(
 def _parse_line(
     line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    ignore_parse_errors: Optional[set] = None,
-    persistent_states: Optional[dict] = None,
+    ignore_parse_errors: Optional[Set[str]] = None,
+    persistent_states: Optional[Dict[str, Any]] = None,
 ) -> _Line:
     """
     Categorize/parse individual lines without further processing.
@@ -737,7 +737,7 @@ def _parse_line(
     """
     # pylint: disable=too-many-branches
     if ignore_parse_errors is None:
-        ignore_parse_errors = set([])
+        ignore_parse_errors = set()
     if persistent_states is None:
         persistent_states = {}
 
@@ -853,13 +853,13 @@ def _parse_line(
 def _parse_tag_line(
     line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    ignore_parse_errors: Optional[set] = None,
-    persistent_states: Optional[dict] = None,
+    ignore_parse_errors: Optional[Set[str]] = None,
+    persistent_states: Optional[Dict[str, Any]] = None,
 ) -> Optional[_Line]:
     """A tag line is any gcov line that starts in the first column."""
     # pylint: disable=too-many-return-statements
     if ignore_parse_errors is None:
-        ignore_parse_errors = set([])
+        ignore_parse_errors = set()
     if persistent_states is None:
         persistent_states = {}
 

@@ -57,7 +57,7 @@ class ExclusionOptions:
     """
 
     respect_exclusion_markers: bool = True
-    exclude_functions: List[re.Pattern] = field(default_factory=lambda: [])
+    exclude_functions: List[re.Pattern[str]] = field(default_factory=lambda: [])
     exclude_lines_by_pattern: Optional[str] = None
     exclude_branches_by_pattern: Optional[str] = None
     exclude_pattern_prefix: str = "PREFIX"
@@ -176,7 +176,7 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
                 linecov.branches.pop(branch_id)
 
 
-def remove_functions(filecov: FileCoverage, patterns: List[re.Pattern]) -> None:
+def remove_functions(filecov: FileCoverage, patterns: List[re.Pattern[str]]) -> None:
     """Remove matching functions"""
     if filecov.functions:
         functions_by_line: FunctionListByLine = get_functions_by_line(filecov)

@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 from hashlib import md5
-from typing import Callable, Iterator, List
+from typing import Any, Callable, Iterator, List, Optional, Set, Tuple
 import logging
 import os
 import functools
@@ -39,10 +39,10 @@ REGEX_VERSION_POSTFIX = re.compile(r"(.+)\.dev.+$")
 class LoopChecker:
     """Class for checking if a directory was already scanned."""
 
-    def __init__(self):
-        self._seen = set()
+    def __init__(self) -> None:
+        self._seen: Set[Tuple[int, int]] = set()
 
-    def already_visited(self, path):
+    def already_visited(self, path: str) -> bool:
         """Check if the path was already checked."""
         st = os.stat(path)
         key = (st.st_dev, st.st_ino)
@@ -54,7 +54,7 @@ class LoopChecker:
 
 
 @functools.lru_cache(maxsize=1)
-def is_fs_case_insensitive():
+def is_fs_case_insensitive() -> bool:
     """Check if the file system is case insensitive."""
     cwd = os.getcwd()
     # Guessing if file system is case insensitive.
@@ -107,7 +107,7 @@ def get_version_for_report() -> str:
 
 
 def search_file(
-    predicate: Callable[[str], bool], path: str, exclude_dirs: List[re.Pattern]
+    predicate: Callable[[str], bool], path: str, exclude_dirs: List[re.Pattern[str]]
 ) -> Iterator[str]:
     """
     Given a search path, recursively descend to find files that satisfy a
@@ -193,7 +193,9 @@ def commonpath(files: List[str]) -> str:
 
 
 def is_file_excluded(
-    filename: str, include_filters: List[re.Pattern], exclude_filters: List[re.Pattern]
+    filename: str,
+    include_filters: List[re.Pattern[str]],
+    exclude_filters: List[re.Pattern[str]],
 ) -> bool:
     """Apply inclusion/exclusion filters to filename.
 
@@ -227,12 +229,18 @@ def is_file_excluded(
 
 
 @contextmanager
-def open_text_for_writing(filename=None, default_filename=None, **kwargs):
+def open_text_for_writing(
+    filename: Optional[str], default_filename: Optional[str] = None, **kwargs: Any
+) -> Iterator[Any]:
     """Context manager to open and close a file for text writing.
 
     Stdout is used if `filename` is None or '-'.
     """
     if filename is not None and filename.endswith(os.sep):
+        if default_filename is None:
+            raise AssertionError(
+                "If filename is a directory a default filename is mandatory."
+            )
         filename += default_filename
 
     if filename is not None and filename != "-":
@@ -243,7 +251,11 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
 
 
 @contextmanager
-def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
+def open_binary_for_writing(
+    filename: Optional[str],
+    default_filename: str,
+    **kwargs: Any,
+) -> Iterator[Any]:
     """Context manager to open and close a file for binary writing.
 
     Stdout is used if `filename` is None or '-'.
@@ -260,10 +272,10 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
 
 
 @contextmanager
-def chdir(dir_):
+def chdir(directory: str) -> Iterator[None]:
     """Context for doing something in a locked directory."""
     current_dir = os.getcwd()
-    os.chdir(dir_)
+    os.chdir(directory)
     try:
         yield
     finally:
@@ -275,7 +287,7 @@ def force_unix_separator(path: str) -> str:
     return path.replace("\\", "/")
 
 
-def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
+def presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
     """mangle a filename so that it is suitable for a report"""
 
     normalized = root_filter.sub("", filename)

@@ -40,6 +40,7 @@ import os
 import re
 from typing import (
     ItemsView,
+    Iterator,
     List,
     Dict,
     Iterable,
@@ -84,8 +85,8 @@ def sort_coverage(
 
     basedir = commonpath(list(covdata.keys()))
 
-    def key_filename(key: str) -> List[str]:
-        def convert_to_int_if_possible(text):
+    def key_filename(key: str) -> List[Union[int, str]]:
+        def convert_to_int_if_possible(text: str) -> Union[int, str]:
             return int(text) if text.isdigit() else text
 
         key = (
@@ -576,7 +577,7 @@ class FileCoverage:
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
         self.data_sources: Set[str] = (
-            set([])
+            set()
             if data_source is None
             else set([data_source] if isinstance(data_source, str) else data_source)
         )
@@ -690,7 +691,7 @@ class FileCoverage:
 class CoverageContainer:
     """Coverage container holding all the coverage data."""
 
-    def __init__(self: CoverageContainer):
+    def __init__(self: CoverageContainer) -> None:
         self.data: Dict[str, FileCoverage] = {}
         self.directories: List[CoverageContainerDirectory] = []
 
@@ -703,7 +704,7 @@ class CoverageContainer:
     def __contains__(self, key: str) -> bool:
         return key in self.data
 
-    def __iter__(self):  # -> Iterator[str]:
+    def __iter__(self) -> Iterator[str]:
         return iter(self.data)
 
     def values(self) -> ValuesView[FileCoverage]:
@@ -755,7 +756,7 @@ class CoverageContainer:
         return str(os.path.dirname(filename.rstrip(os.sep))) + os.sep
 
     def populate_directories(
-        self, sorted_keys: Iterable, root_filter: re.Pattern
+        self, sorted_keys: Iterable[str], root_filter: re.Pattern[str]
     ) -> None:
         r"""Populate the list of directories and add accumulated stats.
 

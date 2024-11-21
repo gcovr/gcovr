@@ -49,7 +49,7 @@ def write_report(
         # TN:<test name>
         fh.write(f"TN:{options.lcov_test_name}\n")
 
-        def postfix():
+        def postfix() -> str:
             return f"_{lineno}" if len(linenos) > 1 else ""
 
         for key in keys:

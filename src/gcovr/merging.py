@@ -51,6 +51,8 @@ which may not be the same as the input value.
 from dataclasses import dataclass, field
 import logging
 from typing import Callable, Optional, TypeVar, Dict
+
+from .options import Options
 from .coverage import (
     BranchCoverage,
     ConditionCoverage,
@@ -127,7 +129,7 @@ class MergeOptions:
 DEFAULT_MERGE_OPTIONS = MergeOptions()
 
 
-def get_merge_mode_from_options(options):
+def get_merge_mode_from_options(options: Options) -> MergeOptions:
     """Get the function merge mode."""
     merge_opts = MergeOptions()
     if options.merge_mode_functions == "strict":

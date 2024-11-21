@@ -72,7 +72,7 @@ def _prepare_decision_string(code: str) -> str:
     return " " + code.lstrip().strip()
 
 
-def _get_delta_braces(code):
+def _get_delta_braces(code: str) -> int:
     prepared_string = _prepare_decision_string(code)
     return prepared_string.count("(") - prepared_string.count(")")
 
@@ -160,7 +160,7 @@ class DecisionParser:
             The encoding of the source files
     """
 
-    def __init__(self, coverage: FileCoverage, lines: List[str]):
+    def __init__(self, coverage: FileCoverage, lines: List[str]) -> None:
         self.coverage: FileCoverage = coverage
         self.lines: List[str] = lines
 
@@ -171,7 +171,7 @@ class DecisionParser:
         self.last_decision_line: int = 0
         self.decision_analysis_open_brackets: int = 0
 
-    def parse_all_lines(self):
+    def parse_all_lines(self) -> None:
         """Parse the decisions of the file."""
         LOGGER.debug("Starting the decision analysis")
 

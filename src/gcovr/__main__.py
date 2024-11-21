@@ -23,7 +23,7 @@ import re
 import sys
 
 from argparse import ArgumentParser, Namespace
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 import traceback
 
 from .configuration import (
@@ -134,7 +134,7 @@ def fail_under(
         sys.exit(exit_code)
 
 
-def create_argument_parser():
+def create_argument_parser() -> ArgumentParser:
     """Create the argument parser."""
 
     parser = ArgumentParser(add_help=False)
@@ -209,7 +209,7 @@ def load_config(partial_options: Namespace) -> Dict[str, Any]:
     return {}
 
 
-def main(args=None):
+def main(args: List[str]) -> None:
     """The main entry point of GCOVR."""
     configure_logging()
     parser = create_argument_parser()
@@ -389,4 +389,4 @@ def main(args=None):
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

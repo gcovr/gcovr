@@ -87,10 +87,10 @@ def configure_logging() -> None:
         class CiFormatter(logging.Formatter):
             """Formatter to format messages to be captured in Azure"""
 
-            def __init__(self):
+            def __init__(self) -> None:
                 super().__init__(fmt=LOG_FORMAT)
 
-            def format(self, record):
+            def format(self, record: logging.LogRecord) -> str:
                 if (
                     ci_logging_prefixes is not None
                     and record.levelno in ci_logging_prefixes

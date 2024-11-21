@@ -121,7 +121,7 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def find_existing_gcov_files(
-    search_path: str, exclude_dirs: List[re.Pattern]
+    search_path: str, exclude_dirs: List[re.Pattern[str]]
 ) -> List[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
@@ -141,7 +141,7 @@ def find_existing_gcov_files(
     return gcov_files
 
 
-def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern]) -> List[str]:
+def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern[str]]) -> List[str]:
     """Find .gcda and .gcno files under the given search path.
 
     The .gcno files will *only* produce uncovered results.
@@ -643,16 +643,16 @@ class GcovProgram:
     class LockContext:
         """Context handler for locking a section in multithreaded executions."""
 
-        def __init__(self, lock: Lock):
+        def __init__(self, lock: Lock) -> None:
             self.lock = lock
 
-        def __enter__(self):
+        def __enter__(self) -> None:
             self.lock.acquire()
 
-        def __exit__(self, *_):
+        def __exit__(self, *_: Any) -> None:
             self.lock.release()
 
-    def __init__(self, cmd: str, options: Options):
+    def __init__(self, cmd: str, options: Options) -> None:
         with GcovProgram.LockContext(GcovProgram.__lock):
             GcovProgram.__use_json_format_if_available = options.exclude_calls
             if not GcovProgram.__cmd:
@@ -767,7 +767,9 @@ class GcovProgram:
         """Get the default options for GCOV."""
         return GcovProgram.__default_options
 
-    def __get_gcov_process(self, args: List[str], **kwargs: Any) -> subprocess.Popen:
+    def __get_gcov_process(
+        self, args: List[str], **kwargs: Any
+    ) -> subprocess.Popen[str]:
         # NB: Currently, we will only parse English output
         env = kwargs.pop("env") if "env" in kwargs else dict(os.environ)
         env["LC_ALL"] = "C"
@@ -965,11 +967,14 @@ def run_gcov_and_process_files(
 
 
 def select_gcov_files_from_stdout(
-    out: str, gcov_filter: List[re.Pattern], gcov_exclude: List[re.Pattern], chdir: str
+    out: str,
+    gcov_filter: List[re.Pattern[str]],
+    gcov_exclude: List[re.Pattern[str]],
+    chdir: str,
 ) -> Tuple[Set[str], Set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""
-    active_files = set([])
-    all_files = set([])
+    active_files = set()
+    all_files = set()
 
     for line in out.splitlines():
         found = output_re.search(line.strip())

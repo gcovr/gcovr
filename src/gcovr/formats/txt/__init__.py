@@ -55,7 +55,7 @@ class TxtHandler(BaseHandler):
                 config="txt-metric",
                 group="output_options",
                 help=("The metric type to report."),
-                choices=["line", "branch", "decision"],
+                choices=("line", "branch", "decision"),
                 default="line",
             ),
             GcovrConfigOption(

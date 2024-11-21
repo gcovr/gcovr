@@ -37,6 +37,7 @@ from .options import (
     GcovrConfigOption,
     GcovrConfigOptionAction,
     GcovrDeprecatedConfigOptionAction,
+    NonEmptyFilterOption,
     Options,
     OutputOrDefault,
     check_input_file,
@@ -563,7 +564,7 @@ GCOVR_CONFIG_OPTIONS = [
             "The secondary sort key (if values are identical) is always the filename (ascending order). "
             "For CSV, HTML, JSON, LCOV and text report."
         ),
-        choices=["filename", "uncovered-number", "uncovered-percent"],
+        choices=("filename", "uncovered-number", "uncovered-percent"),
         default="filename",
     ),
     GcovrConfigOption(
@@ -645,7 +646,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Can be specified multiple times."
         ),
         action="append",
-        type=FilterOption.NonEmpty,
+        type=NonEmptyFilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -653,13 +654,13 @@ GCOVR_CONFIG_OPTIONS = [
         ["--merge-mode-functions"],
         metavar="MERGE_MODE",
         group="gcov_options",
-        choices=[
+        choices=(
             "strict",
             "merge-use-line-0",
             "merge-use-line-min",
             "merge-use-line-max",
             "separate",
-        ],
+        ),
         default="strict",
         help=(
             "The merge mode for functions coverage from different gcov files for same sourcefile. "
@@ -671,10 +672,10 @@ GCOVR_CONFIG_OPTIONS = [
         ["--merge-mode-conditions"],
         metavar="MERGE_MODE",
         group="gcov_options",
-        choices=[
+        choices=(
             "strict",
             "fold",
-        ],
+        ),
         default="strict",
         help=(
             "The merge mode for condition coverage from different gcov files for same sourcefile. "
@@ -908,7 +909,7 @@ class ConfigEntry:
     lineno: Optional[int] = None
     """Line of the entry in the config file, for error messages."""
 
-    def __str__(self):
+    def __str__(self) -> str:
         r"""
         Display the config entry.
 

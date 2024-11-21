@@ -24,7 +24,15 @@ import glob
 import logging
 import os
 import platform
-from typing import Dict, List, Optional, Set
+from typing import (
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Tuple,
+)
 import pytest
 import re
 import shutil
@@ -58,10 +66,9 @@ for var in [
 # Override language for input files
 env["LANG"] = "C.UTF-8"
 
-basedir = os.path.split(os.path.abspath(__file__))[0]
-
 skip_clean = None
 
+BASE_DIRECTORY = os.path.split(os.path.abspath(__file__))[0]
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 
 CC = os.path.split(env["CC"])[1]
@@ -181,7 +188,7 @@ def scrub_coveralls(contents: str) -> str:
     return contents
 
 
-def find_tests(basedir):
+def find_tests(basedir: str) -> Iterable[str]:
     for f in sorted(os.listdir(basedir)):
         if not os.path.isdir(os.path.join(basedir, f)):
             continue
@@ -190,25 +197,27 @@ def find_tests(basedir):
         yield f
 
 
-def assert_equals(reference_file, reference, test_file, test, encoding):
+def assert_equals(
+    reference_file: str, reference: str, test_file: str, test: str, encoding: str
+) -> None:
     _, extension = os.path.splitext(reference_file)
     if extension in [".html", ".xml"]:
         if extension == ".html":
-            reference = etree.fromstring(  # nosec # We parse our reference files here
+            el_reference = etree.fromstring(  # nosec # We parse our reference files here
                 reference.encode(), etree.HTMLParser(encoding=encoding)
             )
-            test = etree.fromstring(  # nosec # We parse our test files here
+            el_test = etree.fromstring(  # nosec # We parse our test files here
                 test.encode(), etree.HTMLParser(encoding=encoding)
             )
         else:
-            reference = etree.fromstring(  # nosec # We parse our reference files here
+            el_reference = etree.fromstring(  # nosec # We parse our reference files here
                 reference.encode()
             )
-            test = etree.fromstring(  # nosec # We parse our test files here
+            el_test = etree.fromstring(  # nosec # We parse our test files here
                 test.encode()
             )
 
-        diff_out: Optional[str] = compare_xml(reference, test)
+        diff_out: Optional[str] = compare_xml(el_reference, el_test)
         if diff_out is None:
             return
 
@@ -233,7 +242,7 @@ def assert_equals(reference_file, reference, test_file, test, encoding):
     raise AssertionError(diff_out)  # pragma: no cover
 
 
-def run(cmd, cwd=None):
+def run(cmd: List[str], cwd: Optional[str] = None) -> bool:
     sys.stdout.write(f"STDOUT - START {cmd}\n")
     returncode = subprocess.call(  # nosec # We execute our tests here
         cmd, stderr=subprocess.STDOUT, env=env, cwd=cwd
@@ -242,8 +251,8 @@ def run(cmd, cwd=None):
     return returncode == 0
 
 
-def find_reference_files(output_pattern):
-    seen_files = set([])
+def find_reference_files(output_pattern: List[str]) -> Iterable[Tuple[str, str]]:
+    seen_files = set()
     for reference_dir in REFERENCE_DIRS:
         for pattern in output_pattern:
             if os.path.isdir(reference_dir):
@@ -255,8 +264,8 @@ def find_reference_files(output_pattern):
 
 
 @pytest.fixture(scope="module")
-def compiled(request, name):
-    path = os.path.join(basedir, name)
+def compiled(request: pytest.FixtureRequest, name: str) -> Iterable[str]:
+    path = os.path.join(BASE_DIRECTORY, name)
     assert run(["make", "clean"], cwd=path)
     assert run(["make", "all"], cwd=path)
     yield name
@@ -282,10 +291,10 @@ KNOWN_FORMATS = [
 ]
 
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     """generate a list of all available integration tests."""
 
-    global skip_clean
+    global skip_clean  # pylint: disable=global-statement
     skip_clean = metafunc.config.getoption("skip_clean")
     generate_reference = metafunc.config.getoption("generate_reference")
     update_reference = metafunc.config.getoption("update_reference")
@@ -294,13 +303,13 @@ def pytest_generate_tests(metafunc):
     collected_params = []
 
     if archive_differences:  # pragma: no cover
-        diffs_zip = os.path.join(basedir, "diff.zip")
+        diffs_zip = os.path.join(BASE_DIRECTORY, "diff.zip")
         # Create an empty ZIP
         zipfile.ZipFile(diffs_zip, mode="w").close()
 
-    for name in find_tests(basedir):
+    for name in find_tests(BASE_DIRECTORY):
         targets = parse_makefile_for_available_targets(
-            os.path.join(basedir, name, "Makefile")
+            os.path.join(BASE_DIRECTORY, name, "Makefile")
         )
 
         # check that the "run" target lists no unknown formats
@@ -308,18 +317,14 @@ def pytest_generate_tests(metafunc):
         unknown_formats = target_run.difference(KNOWN_FORMATS)
         if unknown_formats:  # pragma: no cover
             raise ValueError(
-                "{}/Makefile target 'run' references unknown format {}".format(
-                    name, unknown_formats
-                )
+                f"{name}/Makefile target 'run' references unknown format {unknown_formats}"
             )
 
         # check that all "run" targets are actually available
         unresolved_prerequisite = target_run.difference(targets)
         if unresolved_prerequisite:  # pragma: no cover
             raise ValueError(
-                "{}/Makefile target 'run' has unresolved prerequisite {}".format(
-                    name, unresolved_prerequisite
-                )
+                f"{name}/Makefile target 'run' has unresolved prerequisite {unresolved_prerequisite}"
             )
 
         # check that all available known formats are also listed in the "run" target
@@ -328,9 +333,7 @@ def pytest_generate_tests(metafunc):
         )
         if unreferenced_formats:  # pragma: no cover
             raise ValueError(
-                "{}/Makefile target 'run' doesn't reference available target {}".format(
-                    name, unreferenced_formats
-                )
+                f"{name}/Makefile target 'run' doesn't reference available target {unreferenced_formats}"
             )
 
         for current_format in KNOWN_FORMATS:
@@ -463,7 +466,9 @@ def generate_reference_data(output_pattern: List[str]) -> None:  # pragma: no co
                 shutil.copyfile(generated_file, reference_file)
 
 
-def update_reference_data(reference_file, content, encoding):  # pragma: no cover
+def update_reference_data(  # pragma: no cover
+    reference_file: str, content: str, encoding: str
+) -> str:
     os.makedirs(REFERENCE_DIRS[0], exist_ok=True)
     reference_file = os.path.join(REFERENCE_DIRS[0], os.path.basename(reference_file))
 
@@ -473,7 +478,9 @@ def update_reference_data(reference_file, content, encoding):  # pragma: no cove
     return reference_file
 
 
-def archive_difference_data(name, test_file, reference_file):  # pragma: no cover
+def archive_difference_data(  # pragma: no cover
+    name: str, test_file: str, reference_file: str
+) -> None:
     diffs_zip = os.path.join("..", "diff.zip")
     reference_file_zip = os.path.join(
         name, REFERENCE_DIRS[0], os.path.basename(reference_file)
@@ -485,9 +492,13 @@ def archive_difference_data(name, test_file, reference_file):  # pragma: no cove
         )
 
 
-def remove_duplicate_data(
-    encoding, scrub, coverage, test_file, reference_file
-):  # pragma: no cover
+def remove_duplicate_data(  # pragma: no cover
+    encoding: str,
+    scrub: Callable[[str], str],
+    coverage: str,
+    test_file: str,
+    reference_file: str,
+) -> None:
     # Loop over the other coverage data
     for reference_dir in REFERENCE_DIRS:  # pragma: no cover
         other_reference_file = os.path.join(reference_dir, test_file)
@@ -541,13 +552,13 @@ OUTPUT_PATTERN = dict(
 
 
 def test_build(
-    compiled,
-    format,
-    available_targets,
-    generate_reference,
-    update_reference,
-    archive_differences,
-):
+    compiled: str,
+    format: str,
+    available_targets: str,
+    generate_reference: bool,
+    update_reference: bool,
+    archive_differences: bool,
+) -> None:
     name = compiled
     scrub = SCRUBBERS[format]
     output_pattern = OUTPUT_PATTERN[format]
@@ -557,7 +568,7 @@ def test_build(
         if m := re.match("^html-encoding-(.*)$", name):
             encoding = m.group(1)
 
-    os.chdir(os.path.join(basedir, name))
+    os.chdir(os.path.join(BASE_DIRECTORY, name))
     make_options = ["-j", "4"]
     if not IS_MACOS:
         make_options.append("--output-sync=target")
@@ -609,4 +620,4 @@ def test_build(
     if "clean-each" in available_targets:  # pragma: no cover
         assert run(["make", "clean-each"])
 
-    os.chdir(basedir)
+    os.chdir(BASE_DIRECTORY)

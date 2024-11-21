@@ -20,7 +20,10 @@
 # cspell:ignore addoption
 
 
-def pytest_addoption(parser):  # pragma: no cover
+from argparse import ArgumentParser
+
+
+def pytest_addoption(parser: ArgumentParser) -> None:  # pragma: no cover
     parser.addoption(
         "--generate_reference", action="store_true", help="Generate the reference"
     )

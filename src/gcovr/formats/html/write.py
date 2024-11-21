@@ -19,6 +19,7 @@
 
 # cspell:ignore xmlcharrefreplace
 
+import functools
 import logging
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -30,6 +31,7 @@ from jinja2 import (
     FileSystemLoader,
     FunctionLoader,
     PackageLoader,
+    Template,
 )
 from markupsafe import Markup
 import pygments
@@ -62,27 +64,9 @@ from ...utils import (
     open_text_for_writing,
 )
 
+
 LOGGER = logging.getLogger("gcovr")
 PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
-
-
-class Lazy:
-    """Class for lazy loading and caching the result."""
-
-    def __init__(self, fn):
-        def load(*args):
-            result = fn(*args)
-
-            def reuse_value(*_):
-                return result
-
-            self.get = reuse_value
-            return result
-
-        self.get = load
-
-    def __call__(self, *args):
-        return self.get(*args)
 
 
 # html_theme string is <theme_directory>.<color> or only <color> (if only color use default)
@@ -97,11 +81,8 @@ def get_theme_color(html_theme: str) -> str:
     return html_theme.split(".")[1] if "." in html_theme else html_theme
 
 
-# Loading Jinja and preparing the environment is fairly costly.
-# Only do this work if templates are actually used.
-# This speeds up text and XML output.
-@Lazy
-def templates(options):
+@functools.lru_cache(maxsize=1)
+def templates(options: Options) -> Environment:
     """Get the Jinja2 environment for the templates."""
     # As default use the package loader
     loader: BaseLoader = PackageLoader(
@@ -121,11 +102,11 @@ def templates(options):
     )
 
 
-@Lazy
-def user_templates():
+@functools.lru_cache(maxsize=1)
+def user_templates() -> Environment:
     """Get the Jinja2 environment for the user templates."""
 
-    def load_user_template(template):
+    def load_user_template(template: str) -> Optional[str]:
         contents = None
         try:
             with open(template, "rb") as f:
@@ -148,7 +129,7 @@ class CssRenderer:
     """Class for rendering the CSS template with Jinja2."""
 
     @staticmethod
-    def __load_css_template(options):
+    def __load_css_template(options: Options) -> Template:
         """Load the CSS template."""
         if options.html_css is not None:
             template_path = os.path.relpath(options.html_css)
@@ -157,7 +138,7 @@ class CssRenderer:
         return templates(options).get_template("style.css")
 
     @staticmethod
-    def render(options):
+    def render(options: Options) -> str:
         """Get the rendered CSS content."""
         template = CssRenderer.__load_css_template(options)
         return template.render(
@@ -168,12 +149,12 @@ class CssRenderer:
 class NullHighlighting:
     """Class if no syntax highlighting is available for the given file."""
 
-    def get_css(self):
+    def get_css(self) -> str:
         """Get the empty CSS."""
         return ""
 
     @staticmethod
-    def highlighter_for_file(_):
+    def highlighter_for_file(_: str) -> Callable[[str], List[str]]:
         """Get the default highlighter which only returns the content as raw text lines."""
         return lambda code: [line.rstrip() for line in code.split("\n")]
 
@@ -181,37 +162,38 @@ class NullHighlighting:
 class PygmentsHighlighting:
     """Class for syntax highlighting in report."""
 
-    def __init__(self, style: str):
+    def __init__(self, style: str) -> None:
         self.formatter = None
         try:
             self.formatter = HtmlFormatter(nowrap=True, style=style)
         except ImportError as e:  # pragma: no cover
             LOGGER.warning(f"No syntax highlighting available: {str(e)}")
 
-    def get_css(self):
+    def get_css(self) -> str:
         """Get the CSS for the syntax highlighting."""
         if self.formatter is None:  # pragma: no cover
             return ""
         return (
-            "\n\n/* pygments syntax highlighting */\n" + self.formatter.get_style_defs()
+            f"\n\n/* pygments syntax highlighting */\n{self.formatter.get_style_defs()}"
         )
 
-    def highlighter_for_file(self, filename):
+    def highlighter_for_file(self, filename: str) -> Callable[[str], List[str]]:
         """Get the highlighter for the given filename."""
         if self.formatter is None:  # pragma: no cover
             return NullHighlighting.highlighter_for_file(filename)
 
         try:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)
+            formatter = self.formatter
             return lambda code: [
                 Markup(line.rstrip())
-                for line in pygments.highlight(code, lexer, self.formatter).split("\n")
+                for line in pygments.highlight(code, lexer, formatter).split("\n")
             ]
         except pygments.util.ClassNotFound:  # pragma: no cover
             return NullHighlighting.highlighter_for_file(filename)
 
 
-@Lazy
+@functools.lru_cache(maxsize=1)
 def get_formatter(options: Options) -> Union[PygmentsHighlighting, NullHighlighting]:
     """Get the formatter for the selected theme."""
     highlight_style = (
