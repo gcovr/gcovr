@@ -37,7 +37,10 @@ from ...coverage import (
     FunctionCoverage,
     LineCoverage,
 )
-from ...exclusions import ExclusionOptions, apply_all_exclusions
+from ...exclusions import (
+    apply_all_exclusions,
+    get_exclusion_options_from_options,
+)
 from ...decision_analysis import DecisionParser
 from ...merging import (
     MergeOptions,
@@ -298,7 +301,7 @@ def process_gcov_json_data(
         apply_all_exclusions(
             file_cov,
             lines=encoded_source_lines,
-            options=ExclusionOptions(**options.__dict__),
+            options=get_exclusion_options_from_options(options),
         )
 
         if options.show_decision:

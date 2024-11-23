@@ -31,6 +31,8 @@ import re
 from typing import List, Optional
 import logging
 
+from ..options import Options
+
 from .utils import (
     make_is_in_any_range_inclusive,
     apply_exclusion_ranges,
@@ -67,6 +69,28 @@ class ExclusionOptions:
     exclude_internal_functions: bool = False
     exclude_noncode_lines: bool = False
     exclude_calls: bool = True
+
+
+def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
+    """Get the exclusion options."""
+
+    exclusion_options = ExclusionOptions()
+
+    exclusion_options.respect_exclusion_markers = options.respect_exclusion_markers
+    exclusion_options.exclude_functions = options.exclude_functions
+    exclusion_options.exclude_lines_by_pattern = options.exclude_lines_by_pattern
+    exclusion_options.exclude_branches_by_pattern = options.exclude_branches_by_pattern
+    exclusion_options.exclude_pattern_prefix = options.exclude_pattern_prefix
+    exclusion_options.exclude_throw_branches = options.exclude_throw_branches
+    exclusion_options.exclude_unreachable_branches = (
+        options.exclude_unreachable_branches
+    )
+    exclusion_options.exclude_function_lines = options.exclude_function_lines
+    exclusion_options.exclude_internal_functions = options.exclude_internal_functions
+    exclusion_options.exclude_noncode_lines = options.exclude_noncode_lines
+    exclusion_options.exclude_calls = options.exclude_calls
+
+    return exclusion_options
 
 
 def apply_all_exclusions(
