@@ -121,7 +121,7 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def find_existing_gcov_files(
-    search_path: str, exclude_dirs: List[re.Pattern[str]]
+    search_path: str, exclude_dirs: List["re.Pattern[str]"]
 ) -> List[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
@@ -141,7 +141,9 @@ def find_existing_gcov_files(
     return gcov_files
 
 
-def find_datafiles(search_path: str, exclude_dirs: List[re.Pattern[str]]) -> List[str]:
+def find_datafiles(
+    search_path: str, exclude_dirs: List["re.Pattern[str]"]
+) -> List[str]:
     """Find .gcda and .gcno files under the given search path.
 
     The .gcno files will *only* produce uncovered results.
@@ -769,7 +771,7 @@ class GcovProgram:
 
     def __get_gcov_process(
         self, args: List[str], **kwargs: Any
-    ) -> subprocess.Popen[str]:
+    ) -> "subprocess.Popen[str]":
         # NB: Currently, we will only parse English output
         env = kwargs.pop("env") if "env" in kwargs else dict(os.environ)
         env["LC_ALL"] = "C"
@@ -968,8 +970,8 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str,
-    gcov_filter: List[re.Pattern[str]],
-    gcov_exclude: List[re.Pattern[str]],
+    gcov_filter: List["re.Pattern[str]"],
+    gcov_exclude: List["re.Pattern[str]"],
     chdir: str,
 ) -> Tuple[Set[str], Set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""

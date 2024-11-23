@@ -76,7 +76,7 @@ QueueContent = Optional[Tuple[Callable[[str], None], Tuple[Any], Dict[str, Any]]
 
 
 def worker(
-    queue: Queue[QueueContent], context: Callable[[], Dict[str, Any]], pool: "Workers"
+    queue: "Queue[QueueContent]", context: Callable[[], Dict[str, Any]], pool: "Workers"
 ) -> None:
     """
     Run work items from the queue until the sentinel
@@ -107,7 +107,7 @@ class Workers:
     def __init__(self, number: int, context: Callable[[], Dict[str, Any]]) -> None:
         if number < 1:
             raise AssertionError("At least one executer is needed.")
-        self.q: Queue[QueueContent] = Queue()
+        self.q: "Queue[QueueContent]" = Queue()
         self.lock = RLock()
         self.exceptions: List[str] = []
         self.contexts = [context() for _ in range(0, number)]

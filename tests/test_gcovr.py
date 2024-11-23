@@ -225,7 +225,7 @@ def assert_equals(
             f"-- {reference_file}\n++ {test_file}\n{diff_out}"  # pragma: no cover
         )
     else:
-        diff_lines: list[str] = list(
+        diff_lines: List[str] = list(
             difflib.unified_diff(
                 reference.splitlines(keepends=True),
                 test.splitlines(keepends=True),

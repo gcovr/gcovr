@@ -107,7 +107,7 @@ def get_version_for_report() -> str:
 
 
 def search_file(
-    predicate: Callable[[str], bool], path: str, exclude_dirs: List[re.Pattern[str]]
+    predicate: Callable[[str], bool], path: str, exclude_dirs: List["re.Pattern[str]"]
 ) -> Iterator[str]:
     """
     Given a search path, recursively descend to find files that satisfy a
@@ -194,8 +194,8 @@ def commonpath(files: List[str]) -> str:
 
 def is_file_excluded(
     filename: str,
-    include_filters: List[re.Pattern[str]],
-    exclude_filters: List[re.Pattern[str]],
+    include_filters: List["re.Pattern[str]"],
+    exclude_filters: List["re.Pattern[str]"],
 ) -> bool:
     """Apply inclusion/exclusion filters to filename.
 

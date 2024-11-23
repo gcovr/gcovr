@@ -58,7 +58,7 @@ def capture(capsys: pytest.CaptureFixture[str], args: List[str]) -> CaptureObjec
 # The LogCaptureObject class holds the capture method result
 class LogCaptureObject:
     def __init__(
-        self, record_tuples: List[tuple[str, int, str]], exception: Optional[SystemExit]
+        self, record_tuples: List[Tuple[str, int, str]], exception: Optional[SystemExit]
     ) -> None:
         self.record_tuples = record_tuples
         self.exception = exception
