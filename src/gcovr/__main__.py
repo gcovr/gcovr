@@ -209,7 +209,7 @@ def load_config(partial_options: Namespace) -> Dict[str, Any]:
     return {}
 
 
-def main(args: List[str]) -> None:
+def main(args: Optional[List[str]] = None) -> int:
     """The main entry point of GCOVR."""
     configure_logging()
     parser = create_argument_parser()
@@ -387,6 +387,8 @@ def main(args: List[str]) -> None:
             options.fail_under_function,
         )
 
+    return 0
+
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    sys.exit(main())
