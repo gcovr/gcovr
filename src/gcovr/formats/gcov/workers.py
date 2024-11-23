@@ -76,7 +76,7 @@ QueueContent = Optional[Tuple[Callable[[str], None], Tuple[Any], Dict[str, Any]]
 
 
 def worker(
-    queue: "Queue[QueueContent]", context: Callable[[], Dict[str, Any]], pool: "Workers"
+    queue: "Queue[QueueContent]", context: Dict[str, Any], pool: "Workers"
 ) -> None:
     """
     Run work items from the queue until the sentinel
@@ -90,7 +90,7 @@ def worker(
         args: Tuple[str]
         kwargs: Dict[str, Any]
         work, args, kwargs = entry
-        kwargs.update(context())
+        kwargs.update(context)
         try:
             work(*args, **kwargs)
         except:  # noqa: E722 # pylint: disable=bare-except
