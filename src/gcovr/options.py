@@ -167,7 +167,7 @@ class RelativeFilter(Filter):
         if platform.system() == "Windows":
             path_drive, _ = os.path.splitdrive(path)
             root_drive, _ = os.path.splitdrive(self.root)
-            if path_drive != root_drive:
+            if path_drive != root_drive:  # pragma: no cover
                 return False
 
         relpath = os.path.relpath(path, self.root)
