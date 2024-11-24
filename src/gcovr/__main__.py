@@ -23,7 +23,7 @@ import re
 import sys
 
 from argparse import ArgumentParser, Namespace
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, NoReturn, Optional
 import traceback
 
 from .configuration import (
@@ -52,7 +52,6 @@ if sys.version_info >= (3, 11):
 else:
     import tomli as tomllib
 
-
 LOGGER = logging.getLogger("gcovr")
 
 
@@ -66,78 +65,97 @@ EXIT_READ_ERROR = 64
 EXIT_WRITE_ERROR = 128
 
 
+class GcovrArgumentError(Exception):
+    """Exception thrown by GcovrArgumentParser"""
+
+
+class GcovrArgumentParser(ArgumentParser):
+    """Argument parser which raises an exception instead of calling sys.exit."""
+
+    def error(self, message: str) -> NoReturn:
+        """Raise an exception with the given message."""
+        raise GcovrArgumentError(f"gcovr: error: {message}")
+
+
 #
 # Exits with status 2 if below threshold
 #
-def fail_under(
+def get_exit_code(
     covdata: CoverageContainer,
     threshold_line: float,
     threshold_branch: float,
     threshold_decision: float,
     threshold_function: float,
-) -> None:
+) -> int:
     """Fail depending on the coverage result."""
-    stats = covdata.stats
-
-    line_nok = False
-    if threshold_line > 0.0:
-        # If there are no lines, mark as uncovered
-        # (indicates no data at all, likely an error).
-        percent_lines = stats.line.percent_or(0.0)
-
-        if percent_lines < threshold_line:
-            line_nok = True
-            LOGGER.error(
-                f"failed minimum line coverage (got {percent_lines}%, minimum {threshold_line}%)"
-            )
-
-    branch_nok = False
-    if threshold_branch > 0.0:
-        # Allow data with no branches.
-        percent_branches = stats.branch.percent_or(100.0)
-        if percent_branches < threshold_branch:
-            branch_nok = True
-            LOGGER.error(
-                f"failed minimum branch coverage (got {percent_branches}%, minimum {threshold_branch}%)"
-            )
-
-    decision_nok = False
-    if threshold_decision > 0.0:
-        # Allow data with no decisions.
-        percent_decision = stats.decision.percent_or(100.0)
-        if percent_decision < threshold_decision:
-            decision_nok = True
-            LOGGER.error(
-                f"failed minimum decision coverage (got {percent_decision}%, minimum {threshold_decision}%)"
-            )
-
-    function_nok = False
-    if threshold_function > 0.0:
-        # Allow data with no functions.
-        percent_function = stats.function.percent_or(100.0)
-        if percent_function < threshold_function:
-            function_nok = True
-            LOGGER.error(
-                f"failed minimum function coverage (got {percent_function}%, minimum {threshold_function}%)"
-            )
-
     exit_code = 0
-    if line_nok:
-        exit_code |= EXIT_LINE_NOK
-    if branch_nok:
-        exit_code |= EXIT_BRANCH_NOK
-    if decision_nok:
-        exit_code |= EXIT_DECISION_NOK
-    if function_nok:
-        exit_code |= EXIT_FUNCTION_NOK
-    if exit_code != 0:
-        sys.exit(exit_code)
+
+    if (
+        threshold_line > 0.0
+        or threshold_branch > 0.0
+        or threshold_decision > 0.0
+        or threshold_function > 0.0
+    ):
+        stats = covdata.stats
+
+        line_nok = False
+        if threshold_line > 0.0:
+            # If there are no lines, mark as uncovered
+            # (indicates no data at all, likely an error).
+            percent_lines = stats.line.percent_or(0.0)
+
+            if percent_lines < threshold_line:
+                line_nok = True
+                LOGGER.error(
+                    f"failed minimum line coverage (got {percent_lines}%, minimum {threshold_line}%)"
+                )
+
+        branch_nok = False
+        if threshold_branch > 0.0:
+            # Allow data with no branches.
+            percent_branches = stats.branch.percent_or(100.0)
+            if percent_branches < threshold_branch:
+                branch_nok = True
+                LOGGER.error(
+                    f"failed minimum branch coverage (got {percent_branches}%, minimum {threshold_branch}%)"
+                )
+
+        decision_nok = False
+        if threshold_decision > 0.0:
+            # Allow data with no decisions.
+            percent_decision = stats.decision.percent_or(100.0)
+            if percent_decision < threshold_decision:
+                decision_nok = True
+                LOGGER.error(
+                    f"failed minimum decision coverage (got {percent_decision}%, minimum {threshold_decision}%)"
+                )
+
+        function_nok = False
+        if threshold_function > 0.0:
+            # Allow data with no functions.
+            percent_function = stats.function.percent_or(100.0)
+            if percent_function < threshold_function:
+                function_nok = True
+                LOGGER.error(
+                    f"failed minimum function coverage (got {percent_function}%, minimum {threshold_function}%)"
+                )
+
+        if line_nok:
+            exit_code |= EXIT_LINE_NOK
+        if branch_nok:
+            exit_code |= EXIT_BRANCH_NOK
+        if decision_nok:
+            exit_code |= EXIT_DECISION_NOK
+        if function_nok:
+            exit_code |= EXIT_FUNCTION_NOK
+
+    return exit_code
 
 
-def create_argument_parser() -> ArgumentParser:
+def create_argument_parser() -> GcovrArgumentParser:
     """Create the argument parser."""
 
-    parser = ArgumentParser(add_help=False)
+    parser = GcovrArgumentParser(add_help=False)
     parser.usage = "gcovr [options] [search_paths...]"
     parser.description = (
         "A utility to run gcov and summarize the coverage in simple reports."
@@ -209,15 +227,24 @@ def load_config(partial_options: Namespace) -> Dict[str, Any]:
     return {}
 
 
-def main(args: Optional[List[str]] = None) -> int:
+def main(args: Optional[List[str]] = None) -> int:  # pylint: disable=too-many-return-statements
     """The main entry point of GCOVR."""
     configure_logging()
-    parser = create_argument_parser()
-    cli_options = parser.parse_args(args=args)
+    try:
+        parser = create_argument_parser()
+        cli_options = parser.parse_args(args=args)
+    except SystemExit as e:
+        if e.code != 0:
+            raise AssertionError("Sanity check failed, exitcode must be 0.") from e
+        return 0
+
+    except GcovrArgumentError as e:
+        sys.stderr.write(str(e))
+        return EXIT_CMDLINE_ERROR
 
     if cli_options.version:
         sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
-        sys.exit(EXIT_SUCCESS)
+        return EXIT_SUCCESS
 
     # load the config
     cfg_options = load_config(cli_options)
@@ -233,11 +260,11 @@ def main(args: Optional[List[str]] = None) -> int:
         LOGGER.error(
             "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
         )
-        sys.exit(EXIT_CMDLINE_ERROR)
+        return EXIT_CMDLINE_ERROR
 
     if options.html_title == "":
         LOGGER.error("an empty --html-title= is not allowed.")
-        sys.exit(EXIT_CMDLINE_ERROR)
+        return EXIT_CMDLINE_ERROR
 
     for postfix in ["", "line", "branch"]:
         key_medium = "html_medium_threshold"
@@ -250,7 +277,7 @@ def main(args: Optional[List[str]] = None) -> int:
 
         if getattr(options, key_medium) == 0:
             LOGGER.error(f"value of {option_medium}= should not be zero.")
-            sys.exit(EXIT_CMDLINE_ERROR)
+            return EXIT_CMDLINE_ERROR
 
         # Inherit the defaults from the global coverage values if not set
         if postfix:
@@ -276,13 +303,13 @@ def main(args: Optional[List[str]] = None) -> int:
                 f"value of {option_medium}={getattr(options, key_medium)} should be\n"
                 f"lower than or equal to the value of {option_high}={getattr(options, key_high)}."
             )
-            sys.exit(EXIT_CMDLINE_ERROR)
+            return EXIT_CMDLINE_ERROR
 
     try:
         gcovr_formats.validate_options(options)
     except RuntimeError as exc:
         LOGGER.error(str(exc))
-        sys.exit(EXIT_CMDLINE_ERROR)
+        return EXIT_CMDLINE_ERROR
 
     options.starting_dir = os.path.abspath(os.getcwd())
     options.root_dir = os.path.abspath(options.root)
@@ -331,7 +358,7 @@ def main(args: Optional[List[str]] = None) -> int:
 
     except re.error as e:
         LOGGER.error(f"Error setting up filter '{str(e.pattern)}': {e}")
-        sys.exit(EXIT_CMDLINE_ERROR)
+        return EXIT_CMDLINE_ERROR
 
     if options.exclude_lines_by_pattern:
         try:
@@ -341,7 +368,7 @@ def main(args: Optional[List[str]] = None) -> int:
                 "--exclude-lines-by-pattern: "
                 f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
             )
-            sys.exit(EXIT_CMDLINE_ERROR)
+            return EXIT_CMDLINE_ERROR
 
     if options.exclude_branches_by_pattern:
         try:
@@ -351,18 +378,18 @@ def main(args: Optional[List[str]] = None) -> int:
                 "--exclude-branches-by-pattern: "
                 f"Invalid regular expression: {repr(options.exclude_branches_by_pattern)}, error: {e}"
             )
-            sys.exit(EXIT_CMDLINE_ERROR)
+            return EXIT_CMDLINE_ERROR
 
     if options.fail_under_decision > 0.0 and not options.show_decision:
         LOGGER.error("--fail-under-decision need also option --decision.")
-        sys.exit(EXIT_CMDLINE_ERROR)
+        return EXIT_CMDLINE_ERROR
 
     LOGGER.info("Reading coverage data...")
     try:
         covdata = gcovr_formats.read_reports(options)
     except Exception:  # pylint: disable=broad-exception-caught
         LOGGER.error(f"Error occurred while reading reports:\n{traceback.format_exc()}")
-        sys.exit(EXIT_READ_ERROR)
+        return EXIT_READ_ERROR
 
     LOGGER.info("Writing coverage report...")
     try:
@@ -371,23 +398,15 @@ def main(args: Optional[List[str]] = None) -> int:
         LOGGER.error(
             f"Error occurred while printing reports:\n{traceback.format_exc()}"
         )
-        sys.exit(EXIT_WRITE_ERROR)
+        return EXIT_WRITE_ERROR
 
-    if (
-        options.fail_under_line > 0.0
-        or options.fail_under_branch > 0.0
-        or options.fail_under_decision > 0.0
-        or options.fail_under_function > 0.0
-    ):
-        fail_under(
-            covdata,
-            options.fail_under_line,
-            options.fail_under_branch,
-            options.fail_under_decision,
-            options.fail_under_function,
-        )
-
-    return 0
+    return get_exit_code(
+        covdata,
+        options.fail_under_line,
+        options.fail_under_branch,
+        options.fail_under_decision,
+        options.fail_under_function,
+    )
 
 
 if __name__ == "__main__":
