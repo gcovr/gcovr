@@ -156,7 +156,6 @@ disallow_incomplete_defs = false
 
 [tool.ruff]
 exclude = [
-    ".git",
     "__pycache__",
     "tests/cmake_gtest/build/_deps",
     "src/gcovr/version.py",
