@@ -357,7 +357,7 @@ def main(args: Optional[List[str]] = None) -> int:  # pylint: disable=too-many-r
                 LOGGER.debug(f" - {f}")
 
     except re.error as e:
-        LOGGER.error(f"Error setting up filter '{str(e.pattern)}': {e}")
+        LOGGER.error(f"Error setting up filter '{e.pattern!s}': {e}")
         return EXIT_CMDLINE_ERROR
 
     if options.exclude_lines_by_pattern:
