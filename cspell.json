@@ -59,6 +59,7 @@
         "Devcontainers",
         "dircov",
         "distutils",
+        "elif",
         "epub",
         "ERRORLEVEL",
         "filecov",

@@ -29,12 +29,37 @@ apt-get install -y sudo \
 
 # Install Python 3.8 as the default "python3" executable on older linux distribution
 apt install -y python3-setuptools
-if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" ]; then
+if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
+  # cspell:disable
+  apt install -y wget \
+                 build-essential \
+                 checkinstall \
+                 libreadline-gplv2-dev \
+                 libncursesw5-dev \
+                 libssl-dev \
+                 libsqlite3-dev \
+                 tk-dev \
+                 libgdbm-dev \
+                 libc6-dev \
+                 libbz2-dev \
+                 libffi-dev \
+                 zlib1g-dev
+  # cspell:enable
+  cd /tmp
+  PythonVersion=3.9.20
+  wget https://www.python.org/ftp/python/$PythonVersion/Python-$PythonVersion.tgz
+  tar xzf Python-$PythonVersion.tgz
+  cd Python-$PythonVersion
+  ./configure --enable-optimizations
+  # cspell:ignore altinstall
+  make altinstall
+  update-alternatives --install /usr/local/bin/python3 python3 /usr/local/bin/python3.9 10
+elif [ "$DOCKER_OS" = "ubuntu:20.04" ]; then
   apt install -y software-properties-common
   add-apt-repository ppa:deadsnakes/ppa
   apt-get update
-  apt install -y python3.8-dev python3.8-venv python3.8
-  update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 10
+  apt install -y python3.9-dev python3.9-venv python3.9
+  update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 10
 else
   apt-get install -y \
     python3-venv \
@@ -60,6 +85,9 @@ if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" -o "$DOCKER_
 else
   apt-get install -y python3-pip python3-nox python3-requests
 fi
+
+# cspell:ignore autoremove
+apt-get autoremove -y
 EOS
 
 ENV \
