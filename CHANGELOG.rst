@@ -12,7 +12,6 @@ Breaking changes:
 
 - Replace setup.py with hatchling. To install from source at least version `21.3` of pip is needed. (:issue:`1026`)
 
-
 New features and notable changes:
 
 - Add condition coverage to text summary report. (:issue:`985`)
@@ -48,7 +47,13 @@ Internal changes:
 - Add a container class for the coverage data. (:issue:`1023`)
 - Replace setup.py with hatchling. (:issue:`1026`)
 - Move gcovr to ``src`` directory. (:issue:`1027`)
-- Activate options ``disallow_incomplete_defs``, ``check_untyped_defs`` and ``strict`` in ``mypy``. (:issue:`1028`)
+- Activate options ``disallow_incomplete_defs``, ``check_untyped_defs``, ``warn_unused_configs``,
+  ``disallow_any_generics``, ``disallow_subclassing_any``, ``disallow_untyped_calls``, ``disallow_untyped_defs``,
+  ``disallow_incomplete_defs``, ``check_untyped_defs``, ``disallow_untyped_decorators``, ``warn_redundant_casts``,
+  ``warn_unused_ignores``, ``warn_return_any``, ``no_implicit_reexport``, ``strict_equality``, ``extra_checks``
+  in ``mypy``. (:issue:`1028`, :issue:`1029`)
+- The main routine doesn't call ``sys.exit`` on it's own, we always return the exit code. (:issue:`1029`)
+
 
 8.2 (13 October 2024)
 ---------------------
