@@ -59,7 +59,7 @@ CurrentDrive = os.getcwd()[0:1]
     ],
 )
 @pytest.mark.skipif(platform.system() != "Windows", reason="only for Windows")
-def test_windows_make_short_source_filename(outfile, source_filename):
+def test_windows_make_short_source_filename(outfile: str, source_filename: str) -> None:
     outfile = outfile.replace("C:", CurrentDrive)
     source_filename = source_filename.replace("C:", CurrentDrive)
 

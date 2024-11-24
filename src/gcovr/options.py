@@ -19,12 +19,12 @@
 
 from __future__ import annotations
 from abc import abstractmethod
-from argparse import ArgumentTypeError
+from argparse import ArgumentParser, ArgumentTypeError, Namespace
 import argparse
 import logging
 import platform
 import re
-from typing import Any, List, Optional, Type, Union, Callable
+from typing import Any, Dict, List, Optional, Tuple, Type, Union, Callable
 import os
 
 from .utils import force_unix_separator, is_fs_case_insensitive
@@ -88,13 +88,11 @@ def relative_path(value: str, basedir: Optional[str] = None) -> str:
 class FilterOption:
     """Argparse type for filter options."""
 
-    NonEmpty: Type[NonEmptyFilterOption]
-
-    def __init__(self, regex, path_context=None):
+    def __init__(self, regex: str, path_context: Optional[str] = None) -> None:
         self.regex = regex
         self.path_context = os.getcwd() if path_context is None else path_context
 
-    def build_filter(self):
+    def build_filter(self) -> Filter:
         """Return the filter object depending on the given RegEx."""
         # Try to detect unintended backslashes and warn.
         # Later, the regex engine may or may not raise a syntax error.
@@ -108,12 +106,9 @@ class FilterOption:
             LOGGER.warning(f"your filter : {self.regex}")
             LOGGER.warning(f"did you mean: {suggestion}")
 
-        isabs = self.regex.startswith("/")
-        if not isabs and (platform.system() == "Windows"):
-            # Starts with a drive letter
-            isabs = re.match(r"^[A-Za-z]:/", self.regex)
-
-        if isabs:
+        if self.regex.startswith("/") or (
+            (platform.system() == "Windows") and re.match(r"^[A-Za-z]:/", self.regex)
+        ):
             return AbsoluteFilter(self.regex)
 
         return RelativeFilter(self.path_context, self.regex)
@@ -122,23 +117,20 @@ class FilterOption:
 class NonEmptyFilterOption(FilterOption):
     """Argparse type to check filters."""
 
-    def __init__(self, regex, path_context=None):
+    def __init__(self, regex: str, path_context: Optional[str] = None) -> None:
         if not regex:
             raise ArgumentTypeError("filter cannot be empty")
         super().__init__(regex, path_context)
 
 
-FilterOption.NonEmpty = NonEmptyFilterOption
-
-
 class Filter:
     """Base class for a filename filter."""
 
-    def __init__(self, pattern: str):
+    def __init__(self, pattern: str) -> None:
         flags = re.IGNORECASE if is_fs_case_insensitive() else 0
         self.pattern = re.compile(pattern, flags)
 
-    def match(self, path: str):
+    def match(self, path: str) -> bool:
         """Return True if the given path (always with /) matches the regular expression."""
         os_independent_path = force_unix_separator(path)
         if self.pattern.match(os_independent_path):
@@ -146,14 +138,14 @@ class Filter:
             return True
         return False
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{type(self).__name__}({self.pattern.pattern})"
 
 
 class AbsoluteFilter(Filter):
     """Class for a filename filter which matches against the real path of a file."""
 
-    def match(self, path: str):
+    def match(self, path: str) -> bool:
         """Return True if the given path with all symlinks resolved matches the filter."""
         path = os.path.realpath(path)
         return super().match(path)
@@ -162,11 +154,11 @@ class AbsoluteFilter(Filter):
 class RelativeFilter(Filter):
     """Class for a filename filter which matches against the relative paths of a file."""
 
-    def __init__(self, root: str, pattern: str):
+    def __init__(self, root: str, pattern: str) -> None:
         super().__init__(pattern)
         self.root = os.path.realpath(root)
 
-    def match(self, path: str):
+    def match(self, path: str) -> bool:
         """Return True if the given path with all symlinks resolved matches the filter."""
         path = os.path.realpath(path)
 
@@ -175,23 +167,23 @@ class RelativeFilter(Filter):
         if platform.system() == "Windows":
             path_drive, _ = os.path.splitdrive(path)
             root_drive, _ = os.path.splitdrive(self.root)
-            if path_drive != root_drive:
-                return None
+            if path_drive != root_drive:  # pragma: no cover
+                return False
 
         relpath = os.path.relpath(path, self.root)
         return super().match(relpath)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"RelativeFilter({self.pattern.pattern} root={self.root})"
 
 
 class AlwaysMatchFilter(Filter):
     """Class for a filter which matches for all files."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("")
 
-    def match(self, path):
+    def match(self, path: str) -> bool:
         """Return always True."""
         return True
 
@@ -199,12 +191,12 @@ class AlwaysMatchFilter(Filter):
 class DirectoryPrefixFilter(Filter):
     """Class for a filename filter which matches for all files in a directory."""
 
-    def __init__(self, directory):
+    def __init__(self, directory: str) -> None:
         os_independent_path = force_unix_separator(directory)
         pattern = re.escape(f"{os_independent_path}/")
         super().__init__(pattern)
 
-    def match(self, path: str):
+    def match(self, path: str) -> bool:
         """Return True if the given path matches the filter."""
         path = os.path.normpath(path)
         return super().match(path)
@@ -222,7 +214,7 @@ class OutputOrDefault:
         self.value = value
         self._check_output_and_make_abspath(os.getcwd() if basedir is None else basedir)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         name = self.__class__.__name__
         value = self.value
         return f"{name}({value!r})"
@@ -309,10 +301,10 @@ class OutputOrDefault:
         return default
 
 
-class Options:  # type: ignore [attr-defined]
+class Options:
     """Wrapper for holding the configuration."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         self.__dict__.update(kwargs)
 
     def get(self, name: str) -> Any:
@@ -324,24 +316,34 @@ class GcovrConfigOptionAction(argparse.Action):  # pylint: disable=abstract-meth
     """Abstract class to be detect our own actions."""
 
     @abstractmethod
-    def store_config_key(self, namespace, values, config):
+    def store_config_key(
+        self, namespace: Dict[str, Any], values: Any, config: Optional[str]
+    ) -> None:
         """Method to store a configuration key."""
 
 
 class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     """Argparse action for deprecated options to map on new option with a deprecation warning."""
 
-    def __init__(self, option_strings, dest, **kwargs):
+    def __init__(self, option_strings: List[str], dest: str, **kwargs: Any) -> None:
         super().__init__(option_strings, dest, **kwargs)
 
-    def __call__(self, parser, namespace, values, option_string=None):
+    def __call__(
+        self,
+        parser: ArgumentParser,
+        namespace: Namespace,
+        values: Any,
+        option_string: Optional[str] = None,
+    ) -> None:
         """Used by argparse to store the values."""
         LOGGER.warning(
             f"Deprecated option {option_string} used, please use '{self.option} {self.value}' instead."
         )
         setattr(namespace, self.dest, self.value)
 
-    def store_config_key(self, namespace, values, config):
+    def store_config_key(
+        self, namespace: Dict[str, Any], values: Any, config: Optional[str]
+    ) -> None:
         LOGGER.warning(
             f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
         )
@@ -423,7 +425,7 @@ class GcovrConfigOption:
         *,
         help: str,
         action: Union[str, Type[GcovrConfigOptionAction]] = "store",
-        choices: Optional[list] = None,
+        choices: Optional[Union[Tuple[int, ...], Tuple[str, ...]]] = None,
         const: Any = None,
         const_negate: Any = None,
         config: Union[str, bool] = True,
@@ -433,7 +435,7 @@ class GcovrConfigOption:
         nargs: Union[int, str, None] = None,
         positional: bool = False,
         required: bool = False,
-        type: Optional[Callable[[str], Any]] = None,
+        type: Optional[Union[Callable[[str], Any], Type[FilterOption]]] = None,
     ) -> None:
         if flags is None:
             flags = []
@@ -512,7 +514,7 @@ class GcovrConfigOption:
         # format the help
         self.help = help.format(**self.__dict__)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         r"""String representation of instance.
 
         >>> GcovrConfigOption('foo', ['-f', '--foo'], help="foo text.")

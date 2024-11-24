@@ -545,7 +545,7 @@ def check_bundled_app(session: nox.Session) -> None:
 
 
 @nox.session()
-def html2jpeg(session: nox.Session):
+def html2jpeg(session: nox.Session) -> None:
     """Create JPEGs from HTML for documentation"""
     session.install("requests")
 
@@ -571,15 +571,15 @@ def html2jpeg(session: nox.Session):
             ]
         ).strip()
 
-        def docker_stop():
+        def docker_stop() -> None:
             subprocess.run(["docker", "stop", container_id], check=False)  # nosec # We run on several system and do not know the full path
 
         defer.callback(docker_stop)
         url = f"http://localhost:{port}/1/screenshot"
         time.sleep(5.0)  # nosemgrep # We need to wait here until server is started.
 
-        def screenshot(html, jpeg, size):
-            def read_file(file):
+        def screenshot(html: str, jpeg: str, size: Tuple[int, int]) -> None:
+            def read_file(file: str) -> str:
                 with open(file, encoding="utf-8") as fh_in:
                     return " ".join(fh_in.readlines()).replace("\n", "")
 
@@ -610,42 +610,42 @@ def html2jpeg(session: nox.Session):
         screenshot(
             "doc/examples/example_html.html",
             "doc/images/screenshot-html.jpeg",
-            [800, 290],
+            (800, 290),
         )
         screenshot(
             "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html",
             "doc/images/screenshot-html-details.example.cpp.jpeg",
-            [800, 600],
+            (800, 600),
         )
         screenshot(
             "tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-green-src.jpeg",
-            [800, 290],
+            (800, 290),
         )
         screenshot(
             "tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-blue-src.jpeg",
-            [800, 290],
+            (800, 290),
         )
         screenshot(
             "tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
-            [800, 500],
+            (800, 500),
         )
         screenshot(
             "tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-blue-src.jpeg",
-            [800, 500],
+            (800, 500),
         )
         screenshot(
             "tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-green-src.jpeg",
-            [800, 500],
+            (800, 500),
         )
         screenshot(
             "tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
-            [800, 500],
+            (800, 500),
         )
 
 
@@ -879,7 +879,7 @@ def import_reference(session: nox.Session) -> None:
             "Please provide the ZIP files to import. Usage: nox -s import_reference -- file.zip"
         )
 
-    def extract(fh_zip: zipfile.ZipFile):
+    def extract(fh_zip: zipfile.ZipFile) -> None:
         for entry in fh_zip.filelist:
             session.log(fh_zip.extract(entry, "tests"))
 

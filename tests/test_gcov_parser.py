@@ -27,15 +27,16 @@ from unittest import mock
 
 import pytest
 
+from gcovr.coverage import FileCoverage
+from gcovr.exclusions import ExclusionOptions, apply_all_exclusions
 from gcovr.formats.gcov.parser import (
     NegativeHits,
     SuspiciousHits,
     parse_coverage,
     UnknownLineType,
 )
-from gcovr.utils import configure_logging
 from gcovr.formats.gcov.workers import Workers
-from gcovr.exclusions import ExclusionOptions, apply_all_exclusions
+from gcovr.logging import configure_logging
 
 configure_logging()
 
@@ -302,7 +303,7 @@ GCOV_8_EXCLUDE_THROW_BRANCHES = dict(
 
 
 @pytest.mark.parametrize("source_filename", sorted(GCOV_8_SOURCES))
-def test_gcov_8(capsys, source_filename):
+def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> None:
     """Verify support for GCC 8 .gcov files.
 
     GCC 8 introduces two changes:
@@ -347,17 +348,17 @@ def test_gcov_8(capsys, source_filename):
     assert (out, err) == ("", "")
 
 
-def contains_phrases(string, *phrases):
+def contains_phrases(string: str, *phrases: str) -> bool:
     phrase_re = re.compile(".*".join(re.escape(p) for p in phrases), flags=re.DOTALL)
     return bool(phrase_re.search(string))
 
 
 @pytest.mark.parametrize("ignore_errors", [True, False])
-def test_unknown_tags(caplog, ignore_errors):
+def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> None:
     source = r"bananas 7 times 3"
     lines = source.splitlines()
 
-    def run_the_parser():
+    def run_the_parser() -> FileCoverage:
         coverage, _ = parse_coverage(
             filename="foo.c",
             lines=lines,
@@ -399,7 +400,7 @@ def test_unknown_tags(caplog, ignore_errors):
         assert "Exiting" in message[2]
 
 
-def test_pathologic_codeline(caplog):
+def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
     source = r": 7:xxx"
     lines = source.splitlines()
 
@@ -436,7 +437,7 @@ def test_pathologic_codeline(caplog):
     assert contains_phrases(message[2], *error_phrases)
 
 
-def test_exception_during_coverage_processing(caplog):
+def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) -> None:
     """
     This cannot happen during normal processing, but as a defense against
     unexpected changes to the format the ``--gcov-ignore-parse-errors`` option
@@ -492,7 +493,7 @@ def test_exception_during_coverage_processing(caplog):
     assert contains_phrases(message[2], *error_phrases)
 
 
-def test_trailing_function_tag():
+def test_trailing_function_tag() -> None:
     """
     This cannot occur in real gcov, but the parser should be robust enough to
     handle it.
@@ -528,7 +529,7 @@ def test_trailing_function_tag():
         "exclude_unreachable_branches,exclude_throw_branches",
     ],
 )
-def test_branch_exclusion(flags):
+def test_branch_exclusion(flags: str) -> None:
     """
     On some lines, branch coverage may be discarded.
     """
@@ -576,7 +577,7 @@ def test_branch_exclusion(flags):
     assert covered_branches == expected_covered_branches
 
 
-def test_negative_branch_count():
+def test_negative_branch_count() -> None:
     """
     A exception shall be raised.
     """
@@ -607,7 +608,9 @@ def test_negative_branch_count():
         "negative_hits.warn_once_per_file",
     ],
 )
-def test_negative_line_count_ignored(caplog, flag):
+def test_negative_line_count_ignored(
+    caplog: pytest.LogCaptureFixture, flag: str
+) -> None:
     """
     A exception shall be raised.
     """
@@ -648,7 +651,7 @@ def test_negative_line_count_ignored(caplog, flag):
         assert len(messages) == number_of_warnings
 
 
-def test_negative_branch_count_ignored():
+def test_negative_branch_count_ignored() -> None:
     """
     A exception shall be raised.
     """
@@ -668,7 +671,7 @@ def test_negative_branch_count_ignored():
         coverage, _ = parse_coverage(
             source.splitlines(),
             filename="example.cpp",
-            ignore_parse_errors=set([]),
+            ignore_parse_errors=set(),
         )
 
     coverage, _ = parse_coverage(
@@ -687,7 +690,7 @@ def test_negative_branch_count_ignored():
     assert covered_branches == {1, 3}
 
 
-def test_suspicious_branch_count():
+def test_suspicious_branch_count() -> None:
     """
     A exception shall be raised.
     """
@@ -704,7 +707,7 @@ def test_suspicious_branch_count():
         parse_coverage(
             source.splitlines(),
             filename="example.cpp",
-            ignore_parse_errors=set([]),
+            ignore_parse_errors=set(),
         )
 
 
@@ -715,7 +718,9 @@ def test_suspicious_branch_count():
         "suspicious_hits.warn_once_per_file",
     ],
 )
-def test_suspicious_line_count_ignored(caplog, flag):
+def test_suspicious_line_count_ignored(
+    caplog: pytest.LogCaptureFixture, flag: str
+) -> None:
     """
     A exception shall be raised.
     """
@@ -756,7 +761,7 @@ def test_suspicious_line_count_ignored(caplog, flag):
         assert len(messages) == number_of_warnings
 
 
-def test_suspicious_branch_count_ignored():
+def test_suspicious_branch_count_ignored() -> None:
     """
     A exception shall be raised.
     """
@@ -776,7 +781,7 @@ def test_suspicious_branch_count_ignored():
         coverage, _ = parse_coverage(
             source.splitlines(),
             filename="example.cpp",
-            ignore_parse_errors=set([]),
+            ignore_parse_errors=set(),
         )
 
     coverage, _ = parse_coverage(
@@ -796,7 +801,7 @@ def test_suspicious_branch_count_ignored():
 
 
 @pytest.mark.parametrize("flags", ["none", "exclude_internal_functions"])
-def test_function_exclusion(flags):
+def test_function_exclusion(flags: str) -> None:
     """
     Compiler-generated function names can be excluded.
     """
@@ -830,7 +835,7 @@ def test_function_exclusion(flags):
     assert list(coverage.functions.keys()) == expected_functions
 
 
-def test_noncode_lines():
+def test_noncode_lines() -> None:
     """
     Verify how noncode status is used.
 
@@ -846,7 +851,7 @@ def test_noncode_lines():
         *,
         exclude_function_lines: bool = False,
         exclude_noncode_lines: bool = False,
-    ):
+    ) -> str:
         filecov, source = parse_coverage(
             lines,
             filename="example.cpp",
@@ -901,7 +906,9 @@ def test_noncode_lines():
     assert get_line_status(["#####: 32:}"], exclude_noncode_lines=True) == "noncode"
 
 
-def check_and_raise(number, mutable, exc_raised, queue_full):
+def check_and_raise(
+    number: int, mutable: List[None], exc_raised: Event, queue_full: Event
+) -> None:
     queue_full.wait()
     if number == 0:
         raise AssertionError("Number == 0")
@@ -910,8 +917,8 @@ def check_and_raise(number, mutable, exc_raised, queue_full):
 
 
 @pytest.mark.parametrize("threads", [1, 2, 4, 8])
-def test_pathologic_threads(threads):
-    mutable = []
+def test_pathologic_threads(threads: int) -> None:
+    mutable: List[None] = []
     queue_full = Event()
     exc_raised = Event()
     with pytest.raises(RuntimeError) as exc_info:
@@ -937,7 +944,7 @@ def test_pathologic_threads(threads):
             # Queue should be drained and exception raised
             exc_raised.set()
             pool.wait()
-            assert pool.workers is None, "Workers are removed."
+            assert pool.size() == 0, "Workers are removed."
             assert len(pool.exceptions) == 1, "One traceback available."
 
     # Outer level catches correct exception

@@ -19,25 +19,17 @@
 
 from __future__ import annotations
 from hashlib import md5
-from typing import Callable, List
+from typing import Any, Callable, Iterator, List, Optional, Set, Tuple
 import logging
 import os
 import functools
 import re
 import sys
 from contextlib import contextmanager
-from colorlog import ColoredFormatter
 
 from .version import __version__
 
 LOGGER = logging.getLogger("gcovr")
-DEFAULT_LOGGING_HANDLER = logging.StreamHandler(sys.stderr)
-
-
-LOG_FORMAT = "(%(levelname)s) %(message)s"
-LOG_FORMAT_THREADS = "(%(levelname)s) - %(threadName)s - %(message)s"
-COLOR_LOG_FORMAT = f"%(log_color)s{LOG_FORMAT}"
-COLOR_LOG_FORMAT_THREADS = f"%(log_color)s{LOG_FORMAT_THREADS}"
 
 MD5_KWARGS = {"usedforsecurity": False} if sys.version_info >= (3, 9) else {}
 
@@ -47,10 +39,10 @@ REGEX_VERSION_POSTFIX = re.compile(r"(.+)\.dev.+$")
 class LoopChecker:
     """Class for checking if a directory was already scanned."""
 
-    def __init__(self):
-        self._seen = set()
+    def __init__(self) -> None:
+        self._seen: Set[Tuple[int, int]] = set()
 
-    def already_visited(self, path):
+    def already_visited(self, path: str) -> bool:
         """Check if the path was already checked."""
         st = os.stat(path)
         key = (st.st_dev, st.st_ino)
@@ -62,7 +54,7 @@ class LoopChecker:
 
 
 @functools.lru_cache(maxsize=1)
-def is_fs_case_insensitive():
+def is_fs_case_insensitive() -> bool:
     """Check if the file system is case insensitive."""
     cwd = os.getcwd()
     # Guessing if file system is case insensitive.
@@ -80,7 +72,7 @@ def is_fs_case_insensitive():
 
 
 @functools.lru_cache(maxsize=None)
-def fix_case_of_path(path: str):
+def fix_case_of_path(path: str) -> str:
     """Fix casing of filenames for cas insensitive file systems."""
     rest, cur = os.path.split(path)
     # e.g path = ".." happens if original path is like "../dir/subdir/file.cpp"
@@ -115,8 +107,8 @@ def get_version_for_report() -> str:
 
 
 def search_file(
-    predicate: Callable[[str], bool], path: str, exclude_dirs: List[re.Pattern]
-):
+    predicate: Callable[[str], bool], path: str, exclude_dirs: List["re.Pattern[str]"]
+) -> Iterator[str]:
     """
     Given a search path, recursively descend to find files that satisfy a
     predicate.
@@ -145,7 +137,7 @@ def search_file(
                 yield os.path.abspath(os.path.join(root, name))
 
 
-def commonpath(files):
+def commonpath(files: List[str]) -> str:
     r"""Find the common prefix of all files.
 
     This differs from the standard library os.path.commonpath():
@@ -169,7 +161,7 @@ def commonpath(files):
         return ""
 
     if len(files) == 1:
-        prefix_path = os.path.dirname(os.path.realpath(files[0]))
+        prefix_path = str(os.path.dirname(os.path.realpath(files[0])))
     else:
         split_paths = [os.path.realpath(path).split(os.path.sep) for path in files]
         # We only have to compare the lexicographically minimum and maximum
@@ -201,7 +193,9 @@ def commonpath(files):
 
 
 def is_file_excluded(
-    filename: str, include_filters: List[re.Pattern], exclude_filters: List[re.Pattern]
+    filename: str,
+    include_filters: List["re.Pattern[str]"],
+    exclude_filters: List["re.Pattern[str]"],
 ) -> bool:
     """Apply inclusion/exclusion filters to filename.
 
@@ -234,100 +228,19 @@ def is_file_excluded(
     return False
 
 
-def __colored_formatter(options=None) -> ColoredFormatter:
-    """Configure the colored logging formatter."""
-    if options is not None:
-        log_format = (
-            COLOR_LOG_FORMAT_THREADS if options.gcov_parallel > 1 else COLOR_LOG_FORMAT
-        )
-        force_color = getattr(options, "force_color", False)
-        no_color = getattr(options, "no_color", False)
-    else:
-        log_format = COLOR_LOG_FORMAT
-        force_color = False
-        no_color = False
-
-    return ColoredFormatter(
-        log_format,
-        datefmt=None,
-        reset=True,
-        log_colors={
-            "DEBUG": "cyan",
-            "INFO": "blue",
-            "WARNING": "yellow",
-            "ERROR": "red",
-            "CRITICAL": "red,bg_white",
-        },
-        secondary_log_colors={},
-        style="%",
-        force_color=force_color,
-        no_color=no_color,
-        stream=sys.stderr,
-    )
-
-
-def configure_logging() -> None:
-    """Configure the logging module."""
-    DEFAULT_LOGGING_HANDLER.setFormatter(__colored_formatter())
-    logging.basicConfig(level=logging.INFO, handlers=[DEFAULT_LOGGING_HANDLER])
-    ci_logging_prefixes = None
-    if "TF_BUILD" in os.environ:
-        ci_logging_prefixes = {
-            logging.WARNING: "##vso[task.logissue type=warning]",
-            logging.ERROR: "##vso[task.logissue type=error]",
-        }
-    elif "GITHUB_ACTIONS" in os.environ:
-        ci_logging_prefixes = {
-            logging.WARNING: "::warning::",
-            logging.ERROR: "::error::",
-        }
-
-    if ci_logging_prefixes is not None:
-
-        class CiFormatter(logging.Formatter):
-            """Formatter to format messages to be captured in Azure"""
-
-            def __init__(self):
-                super().__init__(fmt=LOG_FORMAT)
-
-            def format(self, record):
-                if record.levelno in ci_logging_prefixes:
-                    result = (
-                        f"{ci_logging_prefixes[record.levelno]}{super().format(record)}"
-                    )
-                else:
-                    result = ""
-
-                return result
-
-        handler = logging.StreamHandler(sys.stderr)
-        handler.setFormatter(CiFormatter())
-        logging.getLogger().addHandler(handler)
-
-    def exception_hook(exc_type, exc_value, exc_traceback) -> None:
-        logging.exception(
-            "Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback)
-        )
-
-    sys.excepthook = exception_hook
-
-
-def update_logging(options) -> None:
-    """Update the logger configuration depending on the options."""
-    if options.verbose:
-        LOGGER.setLevel(logging.DEBUG)
-
-    # Update the formatter of the default logger depending on options
-    DEFAULT_LOGGING_HANDLER.setFormatter(__colored_formatter(options))
-
-
 @contextmanager
-def open_text_for_writing(filename=None, default_filename=None, **kwargs):
+def open_text_for_writing(
+    filename: Optional[str], default_filename: Optional[str] = None, **kwargs: Any
+) -> Iterator[Any]:
     """Context manager to open and close a file for text writing.
 
     Stdout is used if `filename` is None or '-'.
     """
     if filename is not None and filename.endswith(os.sep):
+        if default_filename is None:
+            raise AssertionError(
+                "If filename is a directory a default filename is mandatory."
+            )
         filename += default_filename
 
     if filename is not None and filename != "-":
@@ -338,7 +251,11 @@ def open_text_for_writing(filename=None, default_filename=None, **kwargs):
 
 
 @contextmanager
-def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
+def open_binary_for_writing(
+    filename: Optional[str],
+    default_filename: str,
+    **kwargs: Any,
+) -> Iterator[Any]:
     """Context manager to open and close a file for binary writing.
 
     Stdout is used if `filename` is None or '-'.
@@ -355,10 +272,10 @@ def open_binary_for_writing(filename=None, default_filename=None, **kwargs):
 
 
 @contextmanager
-def chdir(dir_):
+def chdir(directory: str) -> Iterator[None]:
     """Context for doing something in a locked directory."""
     current_dir = os.getcwd()
-    os.chdir(dir_)
+    os.chdir(directory)
     try:
         yield
     finally:
@@ -370,7 +287,7 @@ def force_unix_separator(path: str) -> str:
     return path.replace("\\", "/")
 
 
-def presentable_filename(filename: str, root_filter: re.Pattern) -> str:
+def presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
     """mangle a filename so that it is suitable for a report"""
 
     normalized = root_filter.sub("", filename)

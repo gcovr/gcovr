@@ -21,7 +21,7 @@ import json
 import logging
 import os
 from glob import glob
-from typing import Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 from . import versions
 from ...coverage import (
@@ -113,7 +113,7 @@ def read_report(options: Options) -> CoverageContainer:
     return covdata
 
 
-def _function_from_json(json_function: dict) -> FunctionCoverage:
+def _function_from_json(json_function: Dict[str, Any]) -> FunctionCoverage:
     start: Optional[Tuple[int, int]] = None
     end: Optional[Tuple[int, int]] = None
     if "pos" in json_function:
@@ -133,7 +133,7 @@ def _function_from_json(json_function: dict) -> FunctionCoverage:
     )
 
 
-def _line_from_json(json_line: dict) -> LineCoverage:
+def _line_from_json(json_line: Dict[str, Any]) -> LineCoverage:
     linecov = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
@@ -163,7 +163,7 @@ def _line_from_json(json_line: dict) -> LineCoverage:
     return linecov
 
 
-def _branch_from_json(json_branch: dict) -> BranchCoverage:
+def _branch_from_json(json_branch: Dict[str, Any]) -> BranchCoverage:
     return BranchCoverage(
         blockno=json_branch["blockno"],
         count=json_branch["count"],
@@ -174,7 +174,7 @@ def _branch_from_json(json_branch: dict) -> BranchCoverage:
     )
 
 
-def _condition_from_json(json_condition: dict) -> ConditionCoverage:
+def _condition_from_json(json_condition: Dict[str, Any]) -> ConditionCoverage:
     return ConditionCoverage(
         count=json_condition["count"],
         covered=json_condition["covered"],
@@ -183,11 +183,13 @@ def _condition_from_json(json_condition: dict) -> ConditionCoverage:
     )
 
 
-def _call_from_json(json_call: dict) -> CallCoverage:
+def _call_from_json(json_call: Dict[str, Any]) -> CallCoverage:
     return CallCoverage(callno=json_call["callno"], covered=json_call["covered"])
 
 
-def _decision_from_json(json_decision: Optional[dict]) -> Optional[DecisionCoverage]:
+def _decision_from_json(
+    json_decision: Optional[Dict[str, Any]],
+) -> Optional[DecisionCoverage]:
     if json_decision is None:
         return None
 

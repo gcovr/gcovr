@@ -22,8 +22,8 @@ import os
 import re
 import sys
 
-from argparse import ArgumentParser
-from typing import Any, Dict
+from argparse import ArgumentParser, Namespace
+from typing import Any, Dict, List, Optional
 import traceback
 
 from .configuration import (
@@ -33,16 +33,16 @@ from .configuration import (
     parse_config_file,
     parse_config_into_dict,
 )
+from .coverage import CoverageContainer
+from .logging import (
+    configure_logging,
+    update_logging,
+)
 from .options import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
 )
-from .utils import (
-    configure_logging,
-    update_logging,
-)
 from .version import __version__
-from .coverage import CoverageContainer
 
 # formats
 from . import formats as gcovr_formats
@@ -71,11 +71,11 @@ EXIT_WRITE_ERROR = 128
 #
 def fail_under(
     covdata: CoverageContainer,
-    threshold_line,
-    threshold_branch,
-    threshold_decision,
-    threshold_function,
-):
+    threshold_line: float,
+    threshold_branch: float,
+    threshold_decision: float,
+    threshold_function: float,
+) -> None:
     """Fail depending on the coverage result."""
     stats = covdata.stats
 
@@ -134,7 +134,7 @@ def fail_under(
         sys.exit(exit_code)
 
 
-def create_argument_parser():
+def create_argument_parser() -> ArgumentParser:
     """Create the argument parser."""
 
     parser = ArgumentParser(add_help=False)
@@ -170,7 +170,7 @@ COPYRIGHT = (
 )
 
 
-def find_config_name(root: str, filename: str):
+def find_config_name(root: str, filename: str) -> Optional[str]:
     """Find the configuration to use."""
     if root:
         filename = os.path.join(root, filename)
@@ -181,7 +181,7 @@ def find_config_name(root: str, filename: str):
     return None
 
 
-def load_config(partial_options) -> Dict[str, Any]:
+def load_config(partial_options: Namespace) -> Dict[str, Any]:
     """Load a config file if configured or found by default names"""
     filename = getattr(partial_options, "config", None)
     if filename is not None:
@@ -209,7 +209,7 @@ def load_config(partial_options) -> Dict[str, Any]:
     return {}
 
 
-def main(args=None):
+def main(args: Optional[List[str]] = None) -> int:
     """The main entry point of GCOVR."""
     configure_logging()
     parser = create_argument_parser()
@@ -330,7 +330,7 @@ def main(args=None):
                 LOGGER.debug(f" - {f}")
 
     except re.error as e:
-        LOGGER.error(f"Error setting up filter '{e.pattern}': {e}")
+        LOGGER.error(f"Error setting up filter '{str(e.pattern)}': {e}")
         sys.exit(EXIT_CMDLINE_ERROR)
 
     if options.exclude_lines_by_pattern:
@@ -387,6 +387,8 @@ def main(args=None):
             options.fail_under_function,
         )
 
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -31,6 +31,8 @@ import re
 from typing import List, Optional
 import logging
 
+from ..options import Options
+
 from .utils import (
     make_is_in_any_range_inclusive,
     apply_exclusion_ranges,
@@ -57,7 +59,7 @@ class ExclusionOptions:
     """
 
     respect_exclusion_markers: bool = True
-    exclude_functions: List[re.Pattern] = field(default_factory=lambda: [])
+    exclude_functions: List["re.Pattern[str]"] = field(default_factory=lambda: [])
     exclude_lines_by_pattern: Optional[str] = None
     exclude_branches_by_pattern: Optional[str] = None
     exclude_pattern_prefix: str = "PREFIX"
@@ -67,6 +69,28 @@ class ExclusionOptions:
     exclude_internal_functions: bool = False
     exclude_noncode_lines: bool = False
     exclude_calls: bool = True
+
+
+def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
+    """Get the exclusion options."""
+
+    exclusion_options = ExclusionOptions()
+
+    exclusion_options.respect_exclusion_markers = options.respect_exclusion_markers
+    exclusion_options.exclude_functions = options.exclude_functions
+    exclusion_options.exclude_lines_by_pattern = options.exclude_lines_by_pattern
+    exclusion_options.exclude_branches_by_pattern = options.exclude_branches_by_pattern
+    exclusion_options.exclude_pattern_prefix = options.exclude_pattern_prefix
+    exclusion_options.exclude_throw_branches = options.exclude_throw_branches
+    exclusion_options.exclude_unreachable_branches = (
+        options.exclude_unreachable_branches
+    )
+    exclusion_options.exclude_function_lines = options.exclude_function_lines
+    exclusion_options.exclude_internal_functions = options.exclude_internal_functions
+    exclusion_options.exclude_noncode_lines = options.exclude_noncode_lines
+    exclusion_options.exclude_calls = options.exclude_calls
+
+    return exclusion_options
 
 
 def apply_all_exclusions(
@@ -112,7 +136,7 @@ def apply_all_exclusions(
         remove_calls(filecov)
 
 
-def remove_calls(filecov: FileCoverage):
+def remove_calls(filecov: FileCoverage) -> None:
     """Remove the information about calls."""
 
     # Clear the calls of each line.
@@ -120,7 +144,7 @@ def remove_calls(filecov: FileCoverage):
         linecov.calls.clear()
 
 
-def remove_internal_functions(filecov: FileCoverage):
+def remove_internal_functions(filecov: FileCoverage) -> None:
     """Remove compiler-generated functions, e.g. for static initialization."""
 
     # Get all the keys first because we want to remove some of them which will else result in an error.
@@ -176,7 +200,7 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
                 linecov.branches.pop(branch_id)
 
 
-def remove_functions(filecov: FileCoverage, patterns: List[re.Pattern]) -> None:
+def remove_functions(filecov: FileCoverage, patterns: List["re.Pattern[str]"]) -> None:
     """Remove matching functions"""
     if filecov.functions:
         functions_by_line: FunctionListByLine = get_functions_by_line(filecov)

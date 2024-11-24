@@ -36,7 +36,9 @@ from ...coverage import CoverageContainer, FileCoverage
 PRETTY_JSON_INDENT = 4
 
 
-def _write_coveralls_result(gcovr_json_dict, output_file, pretty):
+def _write_coveralls_result(
+    gcovr_json_dict: Dict[str, Any], output_file: str, pretty: bool
+) -> None:
     r"""helper utility to output json format dictionary to a file/STDOUT"""
     write_json = json.dump
 
@@ -140,7 +142,11 @@ def write_report(
         else None
     )
 
-    def run_git_cmd(*args):
+    def run_git_cmd(*args: str) -> str:
+        if git is None:
+            raise AssertionError(
+                "Sanity check failed. Function must only be executed if git is found."
+            )
         process = subprocess.run(  # nosec # We execute git
             [git] + list(args),
             stdout=subprocess.PIPE,
@@ -150,7 +156,7 @@ def write_report(
         )
         return process.stdout.rstrip()
 
-    def run_git_log_cmd(arg):
+    def run_git_log_cmd(arg: str) -> str:
         return run_git_cmd("--no-pager", "log", "-1", f"--pretty=format:{arg}")
 
     if git and "true" in run_git_cmd("rev-parse", "--is-inside-work-tree"):
@@ -187,7 +193,9 @@ def write_report(
     _write_coveralls_result(json_dict, output_file, options.coveralls_pretty)
 
 
-def _make_source_file(coverage_details: FileCoverage, options) -> Dict[str, Any]:
+def _make_source_file(
+    coverage_details: FileCoverage, options: Options
+) -> Dict[str, Any]:
     # Object with Coveralls file details
     source_file: Dict[str, Any] = {}
 

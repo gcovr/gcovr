@@ -31,14 +31,14 @@ from ...options import (
 
 
 LOGGER = logging.getLogger("gcovr")
-THEMES = [
+THEMES = (
     "green",
     "blue",
     "github.blue",
     "github.green",
     "github.dark-green",
     "github.dark-blue",
-]
+)
 
 
 class HtmlHandler(BaseHandler):
@@ -277,7 +277,7 @@ class HtmlHandler(BaseHandler):
                 "html_single_page",
                 ["--html-single-page"],
                 group="output_options",
-                choices=["static", "js-enabled"],
+                choices=("static", "js-enabled"),
                 nargs="?",
                 const="js-enabled",
                 default=None,

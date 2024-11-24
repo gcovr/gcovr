@@ -22,11 +22,13 @@
 
 import io
 import re
+from typing import Any, Iterable, List, Optional, Tuple, Union
 
 import pytest
 
 from gcovr.configuration import (
     GCOVR_CONFIG_OPTIONS,
+    ConfigEntry,
     GcovrConfigOption,
     merge_options_and_set_defaults,
     parse_config_file,
@@ -34,14 +36,14 @@ from gcovr.configuration import (
 )
 
 
-def run_cfg_test(contents, filename="test.cfg"):
+def run_cfg_test(contents: str, filename: str = "test.cfg") -> Iterable[ConfigEntry]:
     r"""Helper to parse a config file from a string."""
 
     open_file = io.StringIO(contents)
     return parse_config_file(open_file, filename=filename)
 
 
-def test_entries_cannot_have_leading_whitespace():
+def test_entries_cannot_have_leading_whitespace() -> None:
     r"""
     Leading whitespace is forbidden
     in case that will be used for multi-line values,
@@ -54,7 +56,7 @@ def test_entries_cannot_have_leading_whitespace():
         list(run_cfg_test(cfg))
 
 
-def test_line_must_have_key_and_value():  # pylint: disable=missing-docstring
+def test_line_must_have_key_and_value() -> None:  # pylint: disable=missing-docstring
     cfg = "must have key and value"
     error = 'test.cfg: 1: expected "key = value" entry\n' "on this line: " + cfg
     with pytest.raises(SyntaxError, match=error):
@@ -74,19 +76,17 @@ def test_line_must_have_key_and_value():  # pylint: disable=missing-docstring
         ("variable substitution", "key = $var"),
     ],
 )
-def test_reserved_config_file_syntax(name, cfg):
+def test_reserved_config_file_syntax(name: str, cfg: str) -> None:
     r"""
     Check that some syntax is reserved,
     in case the config file format will be expanded in the future.
     """
-    error = re.compile(
-        r"test.cfg: 1: {name} .* is reserved".format(name=re.escape(name))
-    )
+    error = re.compile(rf"test.cfg: 1: {re.escape(name)} .* is reserved")
     with pytest.raises(SyntaxError, match=error):
         list(run_cfg_test(cfg))
 
 
-def test_unknown_keys():
+def test_unknown_keys() -> None:
     r"""
     Check that unknown keys always generate an error.
 
@@ -144,7 +144,9 @@ def test_unknown_keys():
     ],
     ids=lambda test_spec: test_spec[0],
 )
-def test_option_with_boolean_values(test_spec):
+def test_option_with_boolean_values(
+    test_spec: Tuple[str, str, str, Union[bool, int], Union[bool, int], bool],
+) -> None:
     r"""
     Boolean values need special consideration.
 
@@ -199,13 +201,13 @@ def test_option_with_boolean_values(test_spec):
 
     # if set to "no", nothing the default is explicitly set
     options = parse_config_into_dict(
-        run_cfg_test("{key} = no".format(key=key)), all_options=all_options
+        run_cfg_test(f"{key} = no"), all_options=all_options
     )
     assert options[target] == when_no
 
     # if set to "yes", the value is set
     options = parse_config_into_dict(
-        run_cfg_test("{key} = yes".format(key=key)), all_options=all_options
+        run_cfg_test(f"{key} = yes"), all_options=all_options
     )
     assert options[target] == when_yes
 
@@ -215,11 +217,11 @@ def test_option_with_boolean_values(test_spec):
     # if set to an illegal value, an error is raised
     with pytest.raises(ValueError, match="test.cfg: 1: .*: boolean option"):
         parse_config_into_dict(
-            run_cfg_test("{key} = garbage".format(key=key)), all_options=all_options
+            run_cfg_test(f"{key} = garbage"), all_options=all_options
         )
 
 
-def test_option_choice():
+def test_option_choice() -> None:
     all_options = GCOVR_CONFIG_OPTIONS + [
         GcovrConfigOption(
             "testopt",
@@ -233,22 +235,22 @@ def test_option_choice():
     # all of these should pass:
     for value in (1, 3, 5):
         options = parse_config_into_dict(
-            run_cfg_test("testopt = {value}".format(value=value)),
+            run_cfg_test(f"testopt = {value}"),
             all_options=all_options,
         )
         assert options["testopt"] == value
 
     # all of these should fail:
     for value in (0, 2, 4, 6):
-        error = "must be one of (1, 3, 5) but got {}".format(value)
+        error = f"must be one of (1, 3, 5) but got {value}"
         with pytest.raises(ValueError, match=re.escape(error)):
             parse_config_into_dict(
-                run_cfg_test("testopt = {value}".format(value=value)),
+                run_cfg_test(f"testopt = {value}"),
                 all_options=all_options,
             )
 
 
-def test_nargs_optional_value():
+def test_nargs_optional_value() -> None:
     all_options = GCOVR_CONFIG_OPTIONS + [
         GcovrConfigOption(
             "testopt",
@@ -269,7 +271,7 @@ def test_nargs_optional_value():
     assert options["testopt"] == 3
 
 
-def test_option_that_appends():
+def test_option_that_appends() -> None:
     all_options = GCOVR_CONFIG_OPTIONS + [
         GcovrConfigOption(
             "testopt", config="testopt", action="append", help="for unit tests only"
@@ -294,7 +296,7 @@ def test_option_that_appends():
     assert options["testopt"] == ["foo", "bar", "qux"]
 
 
-def test_option_validation():
+def test_option_validation() -> None:
     # when OK
     options = parse_config_into_dict(run_cfg_test("html-medium-threshold = 50%"))
     assert options["html_medium_threshold"] == 50.0
@@ -312,7 +314,7 @@ class Ref:
     This is useful to represent the presence of a value that may be None.
     """
 
-    def __init__(self, value):
+    def __init__(self, value: Union[str, List[str]]) -> None:
         self.value = value
 
 
@@ -327,7 +329,9 @@ class Ref:
     ],
     ids=lambda test_spec: test_spec[0],
 )
-def test_namespace_merging_overwriting(test_spec):
+def test_namespace_merging_overwriting(
+    test_spec: Tuple[str, List[Any], Optional[str]],
+) -> None:
     _, input_values, result = test_spec
 
     all_options = GCOVR_CONFIG_OPTIONS + [
@@ -360,7 +364,9 @@ def test_namespace_merging_overwriting(test_spec):
     ],
     ids=lambda test_spec: test_spec[0],
 )
-def test_namespace_merging_appending(test_spec):
+def test_namespace_merging_appending(
+    test_spec: Tuple[str, List[Any], Optional[List[str]]],
+) -> None:
     _, input_values, result = test_spec
 
     all_options = GCOVR_CONFIG_OPTIONS + [

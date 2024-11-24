@@ -26,7 +26,7 @@ import re
 import subprocess  # nosec # Commands are trusted.
 import sys
 import time
-from typing import Callable, List
+from typing import Callable, Iterator, List
 
 DATE = subprocess.check_output(  # nosec # We run on several system and do not know the full path
     ["git", "log", "-1", "--format=format:%ad", "--date=short"],
@@ -50,7 +50,7 @@ def get_read_the_docs_version(version: str) -> str:
     return "main" if ".dev" in version else version
 
 
-def get_copyright_header(version: str, comment_char: str = "#"):
+def get_copyright_header(version: str, comment_char: str = "#") -> Iterator[str]:
     """Get the content of the copyright header."""
     yield (
         comment_char
@@ -228,10 +228,10 @@ def update_reference_data(_filename: str, lines: List[str], version: str) -> Lis
     """Update the version in the reference data."""
     new_lines = []
 
-    def replace_html_version(matches) -> str:
+    def replace_html_version(matches: "re.Match[str]") -> str:
         return f"{matches.group(1)}{get_read_the_docs_version(version)}{matches.group(2)}{version}{matches.group(3)}"
 
-    def replace_xml_version(matches) -> str:
+    def replace_xml_version(matches: "re.Match[str]") -> str:
         return f"{matches.group(1)}{version}{matches.group(2)}"
 
     for line in lines:
@@ -300,7 +300,7 @@ def update_source_date_epoch(
     return new_lines
 
 
-def main(version: str):
+def main(version: str) -> None:
     """Main entry point."""
     for root, dirs, files in os.walk(".", topdown=True):
 

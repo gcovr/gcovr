@@ -23,7 +23,12 @@ from typing import List, Union
 
 from ...coverage import CoverageContainer
 from ...formats.base import BaseHandler
-from ...options import FilterOption, GcovrConfigOption, relative_path
+from ...options import (
+    FilterOption,
+    GcovrConfigOption,
+    NonEmptyFilterOption,
+    relative_path,
+)
 
 
 class GcovHandler(BaseHandler):
@@ -60,12 +65,12 @@ class GcovHandler(BaseHandler):
                 "gcov_ignore_errors",
                 ["--gcov-ignore-errors"],
                 group="gcov_options",
-                choices=[
+                choices=(
                     "all",
                     "source_not_found",
                     "output_error",
                     "no_working_dir_found",
-                ],
+                ),
                 nargs="?",
                 const="all",
                 default=None,
@@ -82,13 +87,13 @@ class GcovHandler(BaseHandler):
                 "gcov_ignore_parse_errors",
                 ["--gcov-ignore-parse-errors"],
                 group="gcov_options",
-                choices=[
+                choices=(
                     "all",
                     "negative_hits.warn",
                     "negative_hits.warn_once_per_file",
                     "suspicious_hits.warn",
                     "suspicious_hits.warn_once_per_file",
-                ],
+                ),
                 nargs="?",
                 const="all",
                 default=None,
@@ -148,7 +153,7 @@ class GcovHandler(BaseHandler):
                     "Can be specified multiple times."
                 ),
                 action="append",
-                type=FilterOption.NonEmpty,
+                type=NonEmptyFilterOption,
                 default=[],
             ),
             GcovrConfigOption(

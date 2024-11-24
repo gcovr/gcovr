@@ -31,7 +31,7 @@ class BaseHandler:
         """Get the options of the format handler"""
         raise AssertionError("Function 'get_options' not implemented.")
 
-    def __init__(self, options: Options):
+    def __init__(self, options: Options) -> None:
         global_options = [
             "output",
             "timestamp",

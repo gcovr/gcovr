@@ -35,14 +35,16 @@ data_dirname = os.path.dirname(os.path.abspath(__file__))
 class Example:
     """Class holding data for an example."""
 
-    def __init__(self, name, output_format, script, baseline):
+    def __init__(
+        self, name: str, output_format: str, script: str, baseline: str
+    ) -> None:
         self.name = name
         self.format = output_format
         self.script = script
         self.baseline = baseline
 
-    def __str__(self):
-        return os.path.basename(self.baseline)
+    def __str__(self) -> str:
+        return str(os.path.basename(self.baseline))
 
 
 def is_compiler(actual: str, *expected: str) -> bool:
@@ -73,7 +75,7 @@ def find_test_cases() -> Iterator[Example]:
     reason="Only for gcc",
 )
 @pytest.mark.parametrize("example", find_test_cases(), ids=str)
-def test_example(example):
+def test_example(example: Example) -> None:
     """The test generated out of an example."""
     cmd = example.script
     baseline_file = example.baseline
@@ -97,7 +99,7 @@ def test_example(example):
     os.chdir(start_dirname)
 
 
-def test_timestamps_example():
+def test_timestamps_example() -> None:
     """Run the timestamp example."""
     subprocess.check_call(  # nosec # We run on several system and do not know the full path
         ["sh", "example_timestamps.sh"], cwd=data_dirname

@@ -67,7 +67,7 @@ def get_options() -> List[GcovrConfigOption]:
     ]
 
 
-def validate_options(options) -> None:
+def validate_options(options: Options) -> None:
     """Validate the command line options of the format handlers."""
     for handler in [
         GcovHandler,
@@ -85,7 +85,7 @@ def validate_options(options) -> None:
         handler(options).validate_options()
 
 
-def read_reports(options) -> CoverageContainer:
+def read_reports(options: Options) -> CoverageContainer:
     """Read the reports from the given locations."""
     if options.json_add_tracefile or options.cobertura_add_tracefile:
         covdata = JsonHandler(options).read_report()
@@ -119,7 +119,7 @@ def read_reports(options) -> CoverageContainer:
     return covdata
 
 
-def write_reports(covdata: CoverageContainer, options: Options):
+def write_reports(covdata: CoverageContainer, options: Options) -> None:
     """Write the reports to the given locations."""
     generators: List[
         Tuple[

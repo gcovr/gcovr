@@ -48,6 +48,7 @@ Internal changes:
 - Add a container class for the coverage data. (:issue:`1023`)
 - Replace setup.py with hatchling. (:issue:`1026`)
 - Move gcovr to ``src`` directory. (:issue:`1027`)
+- Activate options ``disallow_incomplete_defs``, ``check_untyped_defs`` and ``strict`` in ``mypy``. (:issue:`1028`)
 
 8.2 (13 October 2024)
 ---------------------

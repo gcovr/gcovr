@@ -20,7 +20,7 @@
 # cspell:ignore getpreferredencoding getfixture caplog
 
 from __future__ import annotations
-from argparse import ArgumentParser, ArgumentTypeError, SUPPRESS
+from argparse import _ArgumentGroup, ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 import logging
@@ -37,6 +37,7 @@ from .options import (
     GcovrConfigOption,
     GcovrConfigOptionAction,
     GcovrDeprecatedConfigOptionAction,
+    NonEmptyFilterOption,
     Options,
     OutputOrDefault,
     check_input_file,
@@ -99,7 +100,9 @@ def source_date_epoch() -> Optional[datetime.datetime]:
     return None
 
 
-def argument_parser_setup(parser: ArgumentParser, default_group):
+def argument_parser_setup(
+    parser: ArgumentParser, default_group: _ArgumentGroup
+) -> None:
     r"""Add all options and groups to the given argparse parser."""
 
     # setup option groups
@@ -184,7 +187,7 @@ def _get_value_from_config_entry(
     cfg_entry: ConfigEntry,
     option: GcovrConfigOption,
 ) -> Any:
-    def get_boolean(silent_error: bool = False):
+    def get_boolean(silent_error: bool = False) -> Optional[bool]:
         try:
             return cfg_entry.value_as_bool
         except ValueError:
@@ -561,7 +564,7 @@ GCOVR_CONFIG_OPTIONS = [
             "The secondary sort key (if values are identical) is always the filename (ascending order). "
             "For CSV, HTML, JSON, LCOV and text report."
         ),
-        choices=["filename", "uncovered-number", "uncovered-percent"],
+        choices=("filename", "uncovered-number", "uncovered-percent"),
         default="filename",
     ),
     GcovrConfigOption(
@@ -643,7 +646,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Can be specified multiple times."
         ),
         action="append",
-        type=FilterOption.NonEmpty,
+        type=NonEmptyFilterOption,
         default=[],
     ),
     GcovrConfigOption(
@@ -651,13 +654,13 @@ GCOVR_CONFIG_OPTIONS = [
         ["--merge-mode-functions"],
         metavar="MERGE_MODE",
         group="gcov_options",
-        choices=[
+        choices=(
             "strict",
             "merge-use-line-0",
             "merge-use-line-min",
             "merge-use-line-max",
             "separate",
-        ],
+        ),
         default="strict",
         help=(
             "The merge mode for functions coverage from different gcov files for same sourcefile. "
@@ -669,10 +672,10 @@ GCOVR_CONFIG_OPTIONS = [
         ["--merge-mode-conditions"],
         metavar="MERGE_MODE",
         group="gcov_options",
-        choices=[
+        choices=(
             "strict",
             "fold",
-        ],
+        ),
         default="strict",
         help=(
             "The merge mode for condition coverage from different gcov files for same sourcefile. "
@@ -817,7 +820,7 @@ def parse_config_file(
     test.cfg: 7: optional = spaces
     """
 
-    def error(pattern: str, *args, **kwargs):
+    def error(pattern: str, *args: object, **kwargs: object) -> SyntaxError:
         # pylint: disable=cell-var-from-loop
         message = pattern.format(*args, **kwargs)
         message += f"\non this line: {line}"
@@ -906,7 +909,7 @@ class ConfigEntry:
     lineno: Optional[int] = None
     """Line of the entry in the config file, for error messages."""
 
-    def __str__(self):
+    def __str__(self) -> str:
         r"""
         Display the config entry.
 
@@ -944,7 +947,7 @@ class ConfigEntry:
             return False
         raise self.error('boolean option must be "yes" or "no"')
 
-    def error(self, pattern: str, *args, **kwargs) -> ValueError:
+    def error(self, pattern: str, *args: object, **kwargs: object) -> ValueError:
         r"""
         Format but NOT RAISE a ValueError.
 

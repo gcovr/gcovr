@@ -21,7 +21,7 @@ import json
 import logging
 import os
 import functools
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from ...options import Options
 
@@ -51,7 +51,12 @@ LOGGER = logging.getLogger("gcovr")
 PRETTY_JSON_INDENT = 4
 
 
-def _write_json_result(gcovr_json_dict, output_file, default_filename, pretty):
+def _write_json_result(
+    gcovr_json_dict: Dict[str, Any],
+    output_file: str,
+    default_filename: str,
+    pretty: bool,
+) -> None:
     r"""helper utility to output json format dictionary to a file/STDOUT"""
     write_json = json.dump
 
@@ -86,7 +91,7 @@ def write_report(
 
 def write_summary_report(
     covdata: CoverageContainer, output_file: str, options: Options
-):
+) -> None:
     """Produce gcovr JSON summary report"""
 
     json_dict: Dict[str, Any] = {}
@@ -127,7 +132,7 @@ def write_summary_report(
 
 
 def _summary_from_stats(
-    stats: SummarizedStats, default, options: Options
+    stats: SummarizedStats, default: Optional[float], options: Options
 ) -> Dict[str, Any]:
     json_dict: Dict[str, Any] = {}
 
@@ -156,11 +161,13 @@ def _summary_from_stats(
     return json_dict
 
 
-def _json_from_files(files: CoverageContainer, options) -> list:
+def _json_from_files(
+    files: CoverageContainer, options: Options
+) -> List[Dict[str, Any]]:
     return [_json_from_file(files[key], options) for key in sorted(files)]
 
 
-def _json_from_file(file: FileCoverage, options) -> dict:
+def _json_from_file(file: FileCoverage, options: Options) -> Dict[str, Any]:
     filename = presentable_filename(file.filename, options.root_filter)
     if options.json_base:
         filename = "/".join([options.json_base, filename])
@@ -179,11 +186,11 @@ def _json_from_file(file: FileCoverage, options) -> dict:
     return json_file
 
 
-def _json_from_lines(lines: Dict[int, LineCoverage]) -> list:
+def _json_from_lines(lines: Dict[int, LineCoverage]) -> List[Dict[str, Any]]:
     return [_json_from_line(lines[no]) for no in sorted(lines)]
 
 
-def _json_from_line(linecov: LineCoverage) -> dict:
+def _json_from_line(linecov: LineCoverage) -> Dict[str, Any]:
     json_line: Dict[str, Any] = {
         "line_number": linecov.lineno,
     }
@@ -211,11 +218,11 @@ def _json_from_line(linecov: LineCoverage) -> dict:
     return json_line
 
 
-def _json_from_branches(branches: Dict[int, BranchCoverage]) -> list:
+def _json_from_branches(branches: Dict[int, BranchCoverage]) -> List[Dict[str, Any]]:
     return [_json_from_branch(branches[no]) for no in sorted(branches)]
 
 
-def _json_from_branch(branchcov: BranchCoverage) -> dict:
+def _json_from_branch(branchcov: BranchCoverage) -> Dict[str, Any]:
     json_branch = {
         "blockno": branchcov.blockno,
         "count": branchcov.count,
@@ -230,11 +237,13 @@ def _json_from_branch(branchcov: BranchCoverage) -> dict:
     return json_branch
 
 
-def _json_from_conditions(conditions: Dict[int, ConditionCoverage]) -> list:
+def _json_from_conditions(
+    conditions: Dict[int, ConditionCoverage],
+) -> List[Dict[str, Any]]:
     return [_json_from_condition(conditions[no]) for no in sorted(conditions)]
 
 
-def _json_from_condition(conditioncov: ConditionCoverage) -> dict:
+def _json_from_condition(conditioncov: ConditionCoverage) -> Dict[str, Any]:
     json_condition = {
         "count": conditioncov.count,
         "covered": conditioncov.covered,
@@ -245,7 +254,7 @@ def _json_from_condition(conditioncov: ConditionCoverage) -> dict:
     return json_condition
 
 
-def _json_from_decision(decisioncov: DecisionCoverage) -> dict:
+def _json_from_decision(decisioncov: DecisionCoverage) -> Dict[str, Any]:
     if isinstance(decisioncov, DecisionCoverageUncheckable):
         return {"type": "uncheckable"}
 
@@ -265,21 +274,23 @@ def _json_from_decision(decisioncov: DecisionCoverage) -> dict:
     raise AssertionError(f"Unknown decision type: {decisioncov!r}")
 
 
-def _json_from_calls(calls: Dict[int, CallCoverage]) -> list:
+def _json_from_calls(calls: Dict[int, CallCoverage]) -> List[Dict[str, Any]]:
     return [_json_from_call(calls[no]) for no in sorted(calls)]
 
 
-def _json_from_call(callcov: CallCoverage) -> dict:
+def _json_from_call(callcov: CallCoverage) -> Dict[str, Any]:
     return {"callno": callcov.callno, "covered": callcov.covered}
 
 
-def _json_from_functions(functions: Dict[str, FunctionCoverage]) -> list:
+def _json_from_functions(
+    functions: Dict[str, FunctionCoverage],
+) -> List[Dict[str, Any]]:
     return [
         f for name in sorted(functions) for f in _json_from_function(functions[name])
     ]
 
 
-def _json_from_function(functioncov: FunctionCoverage) -> list:
+def _json_from_function(functioncov: FunctionCoverage) -> List[Dict[str, Any]]:
     json_functions = []
     for lineno, count in functioncov.count.items():
         json_function: Dict[str, Any] = {}
