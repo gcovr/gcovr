@@ -308,7 +308,7 @@ def mypy(session: nox.Session) -> None:
     if session.posargs:
         args = session.posargs
     else:
-        args = ["--install-types", "--non-interactive", *DEFAULT_LINT_ARGUMENTS]
+        args = ["--install-types", "--non-interactive", "."]
     session.run("mypy", *args)
 
 

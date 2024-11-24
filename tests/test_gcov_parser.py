@@ -303,7 +303,7 @@ GCOV_8_EXCLUDE_THROW_BRANCHES = dict(
 
 
 @pytest.mark.parametrize("source_filename", sorted(GCOV_8_SOURCES))
-def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> None:
+def test_gcov_8(capsys, source_filename: str) -> None:
     """Verify support for GCC 8 .gcov files.
 
     GCC 8 introduces two changes:
@@ -354,7 +354,7 @@ def contains_phrases(string: str, *phrases: str) -> bool:
 
 
 @pytest.mark.parametrize("ignore_errors", [True, False])
-def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> None:
+def test_unknown_tags(caplog, ignore_errors: bool) -> None:
     source = r"bananas 7 times 3"
     lines = source.splitlines()
 
@@ -400,7 +400,7 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
         assert "Exiting" in message[2]
 
 
-def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
+def test_pathologic_codeline(caplog) -> None:
     source = r": 7:xxx"
     lines = source.splitlines()
 
@@ -437,7 +437,7 @@ def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
     assert contains_phrases(message[2], *error_phrases)
 
 
-def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) -> None:
+def test_exception_during_coverage_processing(caplog) -> None:
     """
     This cannot happen during normal processing, but as a defense against
     unexpected changes to the format the ``--gcov-ignore-parse-errors`` option
@@ -608,9 +608,7 @@ def test_negative_branch_count() -> None:
         "negative_hits.warn_once_per_file",
     ],
 )
-def test_negative_line_count_ignored(
-    caplog: pytest.LogCaptureFixture, flag: str
-) -> None:
+def test_negative_line_count_ignored(caplog, flag: str) -> None:
     """
     A exception shall be raised.
     """
@@ -718,9 +716,7 @@ def test_suspicious_branch_count() -> None:
         "suspicious_hits.warn_once_per_file",
     ],
 )
-def test_suspicious_line_count_ignored(
-    caplog: pytest.LogCaptureFixture, flag: str
-) -> None:
+def test_suspicious_line_count_ignored(caplog, flag: str) -> None:
     """
     A exception shall be raised.
     """

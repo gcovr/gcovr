@@ -40,7 +40,7 @@ class CaptureObject:
         self.exitcode = exitcode
 
 
-def capture(capsys: pytest.CaptureFixture[str], args: List[str]) -> CaptureObject:
+def capture(capsys, args: List[str]) -> CaptureObject:
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = main(args)
@@ -57,49 +57,49 @@ class LogCaptureObject:
         self.exitcode = exitcode
 
 
-def log_capture(caplog: pytest.LogCaptureFixture, args: List[str]) -> LogCaptureObject:
+def log_capture(caplog, args: List[str]) -> LogCaptureObject:
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = main(args)
     return LogCaptureObject(caplog.record_tuples, e)
 
 
-def test_version(capsys: pytest.CaptureFixture[str]) -> None:
+def test_version(capsys) -> None:
     c = capture(capsys, ["--version"])
     assert c.err == ""
     assert c.out.startswith(f"gcovr {__version__}")
     assert c.exitcode == 0
 
 
-def test_help(capsys: pytest.CaptureFixture[str]) -> None:
+def test_help(capsys) -> None:
     c = capture(capsys, ["-h"])
     assert c.err == ""
     assert c.out.startswith("usage: gcovr [options]")
     assert c.exitcode == 0
 
 
-def test_empty_root(capsys: pytest.CaptureFixture[str]) -> None:
+def test_empty_root(capsys) -> None:
     c = capture(capsys, ["-r", ""])
     assert c.out == ""
     assert "argument -r/--root: Should not be set to an empty string." in c.err
     assert c.exitcode != 0
 
 
-def test_empty_exclude(capsys: pytest.CaptureFixture[str]) -> None:
+def test_empty_exclude(capsys) -> None:
     c = capture(capsys, ["--exclude", ""])
     assert c.out == ""
     assert "filter cannot be empty" in c.err
     assert c.exitcode != 0
 
 
-def test_empty_exclude_directories(capsys: pytest.CaptureFixture[str]) -> None:
+def test_empty_exclude_directories(capsys) -> None:
     c = capture(capsys, ["--gcov-exclude-directories", ""])
     assert c.out == ""
     assert "filter cannot be empty" in c.err
     assert c.exitcode != 0
 
 
-def test_empty_objdir(capsys: pytest.CaptureFixture[str]) -> None:
+def test_empty_objdir(capsys) -> None:
     c = capture(capsys, ["--gcov-object-directory", ""])
     assert c.out == ""
     assert (
@@ -109,7 +109,7 @@ def test_empty_objdir(capsys: pytest.CaptureFixture[str]) -> None:
     assert c.exitcode != 0
 
 
-def test_invalid_objdir(caplog: pytest.LogCaptureFixture) -> None:
+def test_invalid_objdir(caplog) -> None:
     c = log_capture(caplog, ["--gcov-object-directory", "not-existing-dir"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -117,105 +117,99 @@ def test_invalid_objdir(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode == 1
 
 
-def helper_test_non_existing_directory_output(
-    capsys: pytest.CaptureFixture[str], option: str
-) -> None:
+def helper_test_non_existing_directory_output(capsys, option: str) -> None:
     c = capture(capsys, [option, "not-existing-dir/file.txt"])
     assert c.out == ""
     assert "Could not create output file 'not-existing-dir/file.txt': " in c.err
     assert c.exitcode != 0
 
 
-def test_non_existing_directory_output(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_output(capsys) -> None:
     helper_test_non_existing_directory_output(capsys, "--output")
 
 
-def test_non_existing_directory_txt(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_txt(capsys) -> None:
     helper_test_non_existing_directory_output(capsys, "--txt")
 
 
-def test_non_existing_directory_xml(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_xml(capsys) -> None:
     helper_test_non_existing_directory_output(capsys, "--xml")
 
 
-def test_non_existing_directory_html(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_html(capsys) -> None:
     helper_test_non_existing_directory_output(capsys, "--html")
 
 
 def test_non_existing_directory_html_details(
-    capsys: pytest.CaptureFixture[str],
+    capsys,
 ) -> None:
     helper_test_non_existing_directory_output(capsys, "--html-details")
 
 
-def test_non_existing_directory_html_nested(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_html_nested(capsys) -> None:
     helper_test_non_existing_directory_output(capsys, "--html-nested")
 
 
-def test_non_existing_directory_sonarqube(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_sonarqube(capsys) -> None:
     helper_test_non_existing_directory_output(capsys, "--sonarqube")
 
 
-def test_non_existing_directory_json(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_json(capsys) -> None:
     helper_test_non_existing_directory_output(capsys, "--json")
 
 
-def test_non_existing_directory_csv(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_csv(capsys) -> None:
     helper_test_non_existing_directory_output(capsys, "--csv")
 
 
-def helper_test_non_existing_directory_2_output(
-    capsys: pytest.CaptureFixture[str], option: str
-) -> None:
+def helper_test_non_existing_directory_2_output(capsys, option: str) -> None:
     c = capture(capsys, [option, "not-existing-dir/subdir/"])
     assert c.out == ""
     assert "Could not create output directory 'not-existing-dir/subdir/': " in c.err
     assert c.exitcode != 0
 
 
-def test_non_existing_directory_2_output(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_2_output(capsys) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--output")
 
 
-def test_non_existing_directory_2_txt(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_2_txt(capsys) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--txt")
 
 
-def test_non_existing_directory_2_xml(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_2_xml(capsys) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--xml")
 
 
-def test_non_existing_directory_2_html(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_2_html(capsys) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--html")
 
 
 def test_non_existing_directory_2_html_details(
-    capsys: pytest.CaptureFixture[str],
+    capsys,
 ) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--html-details")
 
 
 def test_non_existing_directory_2_html_nested(
-    capsys: pytest.CaptureFixture[str],
+    capsys,
 ) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--html-nested")
 
 
-def test_non_existing_directory_2_sonarqube(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_2_sonarqube(capsys) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--sonarqube")
 
 
-def test_non_existing_directory_2_json(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_2_json(capsys) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--json")
 
 
-def test_non_existing_directory_2_csv(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_existing_directory_2_csv(capsys) -> None:
     helper_test_non_existing_directory_2_output(capsys, "--csv")
 
 
-def helper_test_non_writable_directory_output(
-    capsys: pytest.CaptureFixture[str], option: str
-) -> None:
+def helper_test_non_writable_directory_output(capsys, option: str) -> None:
     c = capture(capsys, [option, "/file.txt"])
     assert c.out == ""
     assert "Could not create output file '/file.txt': " in c.err
@@ -223,53 +217,53 @@ def helper_test_non_writable_directory_output(
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_output(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_writable_directory_output(capsys) -> None:
     helper_test_non_writable_directory_output(capsys, "--output")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_txt(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_writable_directory_txt(capsys) -> None:
     helper_test_non_writable_directory_output(capsys, "--txt")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_xml(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_writable_directory_xml(capsys) -> None:
     helper_test_non_writable_directory_output(capsys, "--xml")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_html(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_writable_directory_html(capsys) -> None:
     helper_test_non_writable_directory_output(capsys, "--html")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_html_details(
-    capsys: pytest.CaptureFixture[str],
+    capsys,
 ) -> None:
     helper_test_non_writable_directory_output(capsys, "--html-details")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_html_nested(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_writable_directory_html_nested(capsys) -> None:
     helper_test_non_writable_directory_output(capsys, "--html-nested")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_sonarqube(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_writable_directory_sonarqube(capsys) -> None:
     helper_test_non_writable_directory_output(capsys, "--sonarqube")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_json(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_writable_directory_json(capsys) -> None:
     helper_test_non_writable_directory_output(capsys, "--json")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_csv(capsys: pytest.CaptureFixture[str]) -> None:
+def test_non_writable_directory_csv(capsys) -> None:
     helper_test_non_writable_directory_output(capsys, "--csv")
 
 
-def test_stdout_no_html_self_contained(caplog: pytest.LogCaptureFixture) -> None:
+def test_stdout_no_html_self_contained(caplog) -> None:
     c = log_capture(caplog, ["--output", "-", "--no-html-self-contained"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -277,7 +271,7 @@ def test_stdout_no_html_self_contained(caplog: pytest.LogCaptureFixture) -> None
     assert c.exitcode != 0
 
 
-def test_no_output_html_details(caplog: pytest.LogCaptureFixture) -> None:
+def test_no_output_html_details(caplog) -> None:
     c = log_capture(caplog, ["--html-details"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -288,7 +282,7 @@ def test_no_output_html_details(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_stdout_html_details(caplog: pytest.LogCaptureFixture) -> None:
+def test_stdout_html_details(caplog) -> None:
     c = log_capture(caplog, ["--html-details", "-"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -299,7 +293,7 @@ def test_stdout_html_details(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_no_output_html_nested(caplog: pytest.LogCaptureFixture) -> None:
+def test_no_output_html_nested(caplog) -> None:
     c = log_capture(caplog, ["--html-nested"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -310,7 +304,7 @@ def test_no_output_html_nested(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_stdout_html_nested(caplog: pytest.LogCaptureFixture) -> None:
+def test_stdout_html_nested(caplog) -> None:
     c = log_capture(caplog, ["--html-nested", "-"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -321,7 +315,7 @@ def test_stdout_html_nested(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_html_details_and_html_nested(caplog: pytest.LogCaptureFixture) -> None:
+def test_html_details_and_html_nested(caplog) -> None:
     c = log_capture(caplog, ["--output", "x", "--html-details", "--html-nested"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -330,7 +324,7 @@ def test_html_details_and_html_nested(caplog: pytest.LogCaptureFixture) -> None:
 
 
 def test_html_single_page_without_html_details_or_html_nested(
-    caplog: pytest.LogCaptureFixture,
+    caplog,
 ) -> None:
     c = log_capture(caplog, ["--output", "x", "--html-single-page"])
     message = c.record_tuples[0]
@@ -351,9 +345,7 @@ def test_html_single_page_without_html_details_or_html_nested(
         "--fail-under-function",
     ],
 )
-def test_failed_under_threshold_nan(
-    option: str, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_failed_under_threshold_nan(option: str, capsys) -> None:
     c = capture(capsys, [option, "nan"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
@@ -369,9 +361,7 @@ def test_failed_under_threshold_nan(
         "--fail-under-function",
     ],
 )
-def test_failed_under_threshold_negative(
-    option: str, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_failed_under_threshold_negative(option: str, capsys) -> None:
     c = capture(capsys, [option, "-0.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
@@ -387,9 +377,7 @@ def test_failed_under_threshold_negative(
         "--fail-under-function",
     ],
 )
-def test_failed_under_threshold_100_1(
-    option: str, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_failed_under_threshold_100_1(option: str, capsys) -> None:
     c = capture(capsys, [option, "100.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
@@ -397,7 +385,7 @@ def test_failed_under_threshold_100_1(
 
 
 def test_failed_under_decision_without_active_decision(
-    caplog: pytest.LogCaptureFixture,
+    caplog,
 ) -> None:
     c = log_capture(caplog, ["--fail-under-decision", "90"])
     message0 = c.record_tuples[0]
@@ -406,7 +394,7 @@ def test_failed_under_decision_without_active_decision(
     assert c.exitcode != 0
 
 
-def test_filter_backslashes_are_detected(caplog: pytest.LogCaptureFixture) -> None:
+def test_filter_backslashes_are_detected(caplog) -> None:
     # gcov-exclude all to prevent any coverage data from being found
     c = log_capture(
         caplog,
@@ -428,7 +416,7 @@ def test_filter_backslashes_are_detected(caplog: pytest.LogCaptureFixture) -> No
     )
 
 
-def test_html_css_not_exists(capsys: pytest.CaptureFixture[str]) -> None:
+def test_html_css_not_exists(capsys) -> None:
     c = capture(capsys, ["--html-css", "/File/does/not/\texist"])
     assert c.out == ""
     assert (
@@ -441,7 +429,7 @@ def test_html_css_not_exists(capsys: pytest.CaptureFixture[str]) -> None:
     assert c.exitcode != 0
 
 
-def test_html_title_empty_string(caplog: pytest.LogCaptureFixture) -> None:
+def test_html_title_empty_string(caplog) -> None:
     c = log_capture(caplog, ["--html-title", ""])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -449,21 +437,21 @@ def test_html_title_empty_string(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_html_medium_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
+def test_html_medium_threshold_nan(capsys) -> None:
     c = capture(capsys, ["--html-medium-threshold", "nan"])
     assert c.out == ""
     assert "--html-medium-threshold: nan not in range [0.0, 100.0]" in c.err
     assert c.exitcode != 0
 
 
-def test_html_medium_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
+def test_html_medium_threshold_negative(capsys) -> None:
     c = capture(capsys, ["--html-medium-threshold", "-0.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exitcode != 0
 
 
-def test_html_medium_threshold_zero(caplog: pytest.LogCaptureFixture) -> None:
+def test_html_medium_threshold_zero(caplog) -> None:
     c = log_capture(caplog, ["--html-medium-threshold", "0.0"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -471,14 +459,14 @@ def test_html_medium_threshold_zero(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_html_high_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
+def test_html_high_threshold_nan(capsys) -> None:
     c = capture(capsys, ["--html-high-threshold", "nan"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exitcode != 0
 
 
-def test_html_high_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
+def test_html_high_threshold_negative(capsys) -> None:
     c = capture(capsys, ["--html-high-threshold", "-0.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
@@ -486,7 +474,7 @@ def test_html_high_threshold_negative(capsys: pytest.CaptureFixture[str]) -> Non
 
 
 def test_html_medium_threshold_gt_html_high_threshold(
-    caplog: pytest.LogCaptureFixture,
+    caplog,
 ) -> None:
     c = log_capture(
         caplog, ["--html-medium-threshold", "60", "--html-high-threshold", "50"]
@@ -500,7 +488,7 @@ def test_html_medium_threshold_gt_html_high_threshold(
     assert c.exitcode != 0
 
 
-def test_html_tab_size_zero(caplog: pytest.LogCaptureFixture) -> None:
+def test_html_tab_size_zero(caplog) -> None:
     c = log_capture(caplog, ["--html-tab-size", "0"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -508,7 +496,7 @@ def test_html_tab_size_zero(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_multiple_output_formats_to_stdout(caplog: pytest.LogCaptureFixture) -> None:
+def test_multiple_output_formats_to_stdout(caplog) -> None:
     c = log_capture(
         caplog,
         [
@@ -547,7 +535,7 @@ def test_multiple_output_formats_to_stdout(caplog: pytest.LogCaptureFixture) -> 
     assert c.exitcode == 0
 
 
-def test_multiple_output_formats_to_stdout_1(caplog: pytest.LogCaptureFixture) -> None:
+def test_multiple_output_formats_to_stdout_1(caplog) -> None:
     c = log_capture(
         caplog,
         [
@@ -588,7 +576,7 @@ def test_multiple_output_formats_to_stdout_1(caplog: pytest.LogCaptureFixture) -
     assert c.exitcode == 0
 
 
-def test_no_self_contained_without_file(caplog: pytest.LogCaptureFixture) -> None:
+def test_no_self_contained_without_file(caplog) -> None:
     c = log_capture(caplog, ["--no-html-self-contained", "--html"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -599,9 +587,7 @@ def test_no_self_contained_without_file(caplog: pytest.LogCaptureFixture) -> Non
     assert c.exitcode != 0
 
 
-def test_html_injection_via_json(
-    capsys: pytest.CaptureFixture[str], tmp_path: Path
-) -> None:
+def test_html_injection_via_json(capsys, tmp_path: Path) -> None:
     import json
     import markupsafe
 
@@ -695,7 +681,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
                 assert filecov.lines[line].branches[branch_idx].count == branch_count
 
 
-def test_invalid_cobertura_file(caplog: pytest.LogCaptureFixture) -> None:
+def test_invalid_cobertura_file(caplog) -> None:
     c = log_capture(caplog, ["--cobertura-add-tracefile", "/*.FileDoesNotExist.*"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -706,9 +692,7 @@ def test_invalid_cobertura_file(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_import_corrupt_cobertura_file(
-    caplog: pytest.LogCaptureFixture, tmp_path: Path
-) -> None:
+def test_import_corrupt_cobertura_file(caplog, tmp_path: Path) -> None:
     xml_data = "Invalid XML content"
     tempfile = tmp_path / "corrupt_cobertura.xml"
     with tempfile.open("w+") as fp:
@@ -721,9 +705,7 @@ def test_import_corrupt_cobertura_file(
     assert c.exitcode != 0
 
 
-def test_import_cobertura_file_with_invalid_line(
-    caplog: pytest.LogCaptureFixture, tmp_path: Path
-) -> None:
+def test_import_cobertura_file_with_invalid_line(caplog, tmp_path: Path) -> None:
     xml_data = """<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 7.1">
@@ -759,7 +741,7 @@ def test_import_cobertura_file_with_invalid_line(
     assert c.exitcode != 0
 
 
-def test_exclude_lines_by_pattern(caplog: pytest.LogCaptureFixture) -> None:
+def test_exclude_lines_by_pattern(caplog) -> None:
     c = log_capture(caplog, ["--exclude-lines-by-pattern", "example.**"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -769,7 +751,7 @@ def test_exclude_lines_by_pattern(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_exclude_branches_by_pattern(caplog: pytest.LogCaptureFixture) -> None:
+def test_exclude_branches_by_pattern(caplog) -> None:
     c = log_capture(caplog, ["--exclude-branches-by-pattern", "example.**"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
@@ -779,7 +761,7 @@ def test_exclude_branches_by_pattern(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_invalid_timestamp(capsys: pytest.CaptureFixture[str]) -> None:
+def test_invalid_timestamp(capsys) -> None:
     c = capture(capsys, ["--timestamp=foo"])
     assert c.out == ""
     assert "argument --timestamp: unknown timestamp format: 'foo'" in c.err
@@ -787,7 +769,7 @@ def test_invalid_timestamp(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_sort_branch_and_not_uncovered_or_percent(
-    caplog: pytest.LogCaptureFixture,
+    caplog,
 ) -> None:
     c = log_capture(caplog, ["--sort-branches"])
     message = c.record_tuples[0]
@@ -809,9 +791,7 @@ def test_sort_branch_and_not_uncovered_or_percent(
     ],
     ids=lambda option: option[0],
 )
-def test_deprecated_option(
-    caplog: pytest.LogCaptureFixture, option: Tuple[str, str]
-) -> None:
+def test_deprecated_option(caplog, option: Tuple[str, str]) -> None:
     c = log_capture(caplog, [option[0]])
     message = c.record_tuples[0]
     assert message[1] == logging.WARNING

@@ -103,6 +103,9 @@ __version__ = {version!r}
 """
 
 [tool.pylint]
+ignore-paths = [
+    "tests/*",
+]
 fail-under = 9.99
 disable = [
     "unknown-option-value",  # This is because we are testing with several versions
@@ -120,9 +123,6 @@ disable = [
     "too-many-positional-arguments",
     "too-many-instance-attributes",
     "R0801"  # Similar lines
-]
-ignore-paths = [
-    "tests/*"
 ]
 extension-pkg-allow-list = [
     "lxml",
@@ -145,6 +145,14 @@ no_implicit_reexport = true
 strict_equality = true
 extra_checks = true
 disable_error_code = "attr-defined"
+exclude = [
+    "build/.*"
+]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
 
 [tool.ruff]
 exclude = [
