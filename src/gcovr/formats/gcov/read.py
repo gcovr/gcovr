@@ -25,7 +25,7 @@ import re
 import shlex
 import subprocess  # nosec # Commands are trusted.
 from threading import Lock
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Optional
 
 from .parser import parse_metadata, parse_coverage
 from .workers import Workers, locked_directory
@@ -124,8 +124,8 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def find_existing_gcov_files(
-    search_path: str, exclude_dirs: List["re.Pattern[str]"]
-) -> List[str]:
+    search_path: str, exclude_dirs: list["re.Pattern[str]"]
+) -> list[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
         LOGGER.debug(f"Using given file {search_path}")
@@ -145,8 +145,8 @@ def find_existing_gcov_files(
 
 
 def find_datafiles(
-    search_path: str, exclude_dirs: List["re.Pattern[str]"]
-) -> List[str]:
+    search_path: str, exclude_dirs: list["re.Pattern[str]"]
+) -> list[str]:
     """Find .gcda and .gcno files under the given search path.
 
     The .gcno files will *only* produce uncovered results.
@@ -547,7 +547,7 @@ def process_datafile(
         os.path.sep, "/"
     )  # gcov requires posix style path
 
-    errors: List[str] = []
+    errors = list[str]()
 
     potential_wd = []
 
@@ -606,7 +606,7 @@ def process_datafile(
 
 def find_potential_working_directories_via_objdir(
     abs_filename: str, objdir: str, error: Callable[[str], None]
-) -> List[str]:
+) -> list[str]:
     """Find the potential working directories."""
     # absolute path - just return the objdir
     if os.path.isabs(objdir):
@@ -638,9 +638,9 @@ class GcovProgram:
 
     __lock = Lock()
     __cmd: str = ""
-    __cmd_split: List[str] = []
-    __default_options: List[str] = []
-    __exitcode_to_ignore: List[int] = [0]
+    __cmd_split = list[str]()
+    __default_options = list[str]()
+    __exitcode_to_ignore = list[int]([0])
     __use_json_format_if_available: bool = True
     __help_output: str = ""
     __version_output: str = ""
@@ -768,12 +768,12 @@ class GcovProgram:
 
         return False
 
-    def get_default_options(self) -> List[str]:
+    def get_default_options(self) -> list[str]:
         """Get the default options for GCOV."""
         return GcovProgram.__default_options
 
     def __get_gcov_process(
-        self, args: List[str], **kwargs: Any
+        self, args: list[str], **kwargs: Any
     ) -> "subprocess.Popen[str]":
         # NB: Currently, we will only parse English output
         env = kwargs.pop("env") if "env" in kwargs else dict(os.environ)
@@ -794,7 +794,7 @@ class GcovProgram:
             **kwargs,
         )
 
-    def run_with_args(self, args: List[str], **kwargs: Any) -> tuple[str, str]:
+    def run_with_args(self, args: list[str], **kwargs: Any) -> tuple[str, str]:
         """Run the gcov program.
 
         >>> import platform
@@ -973,8 +973,8 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str,
-    gcov_filter: List["re.Pattern[str]"],
-    gcov_exclude: List["re.Pattern[str]"],
+    gcov_filter: list["re.Pattern[str]"],
+    gcov_exclude: list["re.Pattern[str]"],
     chdir: str,
 ) -> tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""

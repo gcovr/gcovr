@@ -28,7 +28,6 @@ from typing import (
     Callable,
     Dict,
     Iterable,
-    List,
     Optional,
 )
 import pytest
@@ -223,7 +222,7 @@ def assert_equals(
             f"-- {reference_file}\n++ {test_file}\n{diff_out}"  # pragma: no cover
         )
     else:
-        diff_lines: List[str] = list(
+        diff_lines = list[str](
             difflib.unified_diff(
                 reference.splitlines(keepends=True),
                 test.splitlines(keepends=True),
@@ -240,7 +239,7 @@ def assert_equals(
     raise AssertionError(diff_out)  # pragma: no cover
 
 
-def run(cmd: List[str], cwd: Optional[str] = None) -> bool:
+def run(cmd: list[str], cwd: Optional[str] = None) -> bool:
     sys.stdout.write(f"STDOUT - START {cmd}\n")
     returncode = subprocess.call(  # nosec # We execute our tests here
         cmd, stderr=subprocess.STDOUT, env=env, cwd=cwd
@@ -249,7 +248,7 @@ def run(cmd: List[str], cwd: Optional[str] = None) -> bool:
     return returncode == 0
 
 
-def find_reference_files(output_pattern: List[str]) -> Iterable[tuple[str, str]]:
+def find_reference_files(output_pattern: list[str]) -> Iterable[tuple[str, str]]:
     seen_files = set()
     for reference_dir in REFERENCE_DIRS:
         for pattern in output_pattern:
@@ -452,7 +451,7 @@ def parse_makefile_for_available_targets(path: str) -> Dict[str, set[str]]:
     return targets
 
 
-def generate_reference_data(output_pattern: List[str]) -> None:  # pragma: no cover
+def generate_reference_data(output_pattern: list[str]) -> None:  # pragma: no cover
     for pattern in output_pattern:
         for generated_file in glob.glob(pattern):
             reference_file = os.path.join(REFERENCE_DIRS[0], generated_file)
@@ -575,7 +574,7 @@ def test_build(
     if generate_reference:  # pragma: no cover
         generate_reference_data(output_pattern)
 
-    whole_diff_output: List[str] = []
+    whole_diff_output = list[str]()
     for test_file, reference_file in find_reference_files(output_pattern):
         with open(test_file, newline="", encoding=encoding) as f:
             test_scrubbed = scrub(f.read())

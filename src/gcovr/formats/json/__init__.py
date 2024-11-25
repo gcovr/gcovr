@@ -19,7 +19,7 @@
 
 import logging
 import os
-from typing import List, Union
+from typing import Union
 
 from ...coverage import CoverageContainer
 from ...formats.base import BaseHandler
@@ -33,7 +33,7 @@ class JsonHandler(BaseHandler):
     """Class to handle own JSON tracefile format."""
 
     @classmethod
-    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
+    def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
             # Global options used for output
             "verbose",

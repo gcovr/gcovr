@@ -32,7 +32,7 @@
 from datetime import datetime
 import os
 import sys
-from typing import Dict, List
+from typing import Dict
 
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..", "src")))
 import gcovr.version  # noqa # pylint: disable=wrong-import-position
@@ -91,7 +91,7 @@ language = "en"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns: List[str] = []
+exclude_patterns = list[str]()
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"

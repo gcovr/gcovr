@@ -23,7 +23,7 @@ from threading import Thread, Condition, RLock
 from traceback import format_exception
 from contextlib import contextmanager
 from queue import Queue, Empty
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, Optional
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -109,11 +109,11 @@ class Workers:
             raise AssertionError("At least one executer is needed.")
         self.q: "Queue[QueueContent]" = Queue()
         self.lock = RLock()
-        self.exceptions: List[str] = []
+        self.exceptions = list[str]()
         self.contexts = [context() for _ in range(0, number)]
-        self.workers: List[Thread] = [
-            Thread(target=worker, args=(self.q, c, self)) for c in self.contexts
-        ]
+        self.workers = list[Thread](
+            [Thread(target=worker, args=(self.q, c, self)) for c in self.contexts]
+        )
         for w in self.workers:
             w.start()
 
@@ -163,7 +163,7 @@ class Workers:
         """
         return len(self.workers)
 
-    def wait(self) -> List[Dict[str, Any]]:
+    def wait(self) -> list[Dict[str, Any]]:
         """
         Wait until all work is complete
         """

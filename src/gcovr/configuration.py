@@ -24,7 +24,7 @@ from argparse import _ArgumentGroup, ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 import logging
-from typing import Iterable, Any, List, Optional, Callable, TextIO, Dict
+from typing import Iterable, Any, Optional, Callable, TextIO, Dict
 from dataclasses import dataclass
 import datetime
 import os
@@ -311,8 +311,8 @@ def _assign_value_to_dict(
 
 
 def merge_options_and_set_defaults(
-    partial_namespaces: List[Dict[str, Any]],
-    all_options: Optional[List[GcovrConfigOption]] = None,
+    partial_namespaces: list[Dict[str, Any]],
+    all_options: Optional[list[GcovrConfigOption]] = None,
 ) -> Options:
     """Merge all options into the namespace and set the default values for unused options."""
     if not partial_namespaces:

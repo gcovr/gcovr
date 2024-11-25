@@ -41,7 +41,6 @@ import re
 from typing import (
     ItemsView,
     Iterator,
-    List,
     Dict,
     Iterable,
     Optional,
@@ -68,7 +67,7 @@ def sort_coverage(
     sort_reverse: bool,
     by_metric: Literal["line", "branch", "decision"],
     filename_uses_relative_pathname: bool = False,
-) -> List[str]:
+) -> list[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
@@ -83,7 +82,7 @@ def sort_coverage(
 
     basedir = commonpath(list(covdata.keys()))
 
-    def key_filename(key: str) -> List[Union[int, str]]:
+    def key_filename(key: str) -> list[Union[int, str]]:
         def convert_to_int_if_possible(text: str) -> Union[int, str]:
             return int(text) if text.isdigit() else text
 
@@ -256,9 +255,9 @@ class ConditionCoverage:
             The number of the call.
         covered (int):
             Whether the call was performed.
-        not_covered_true List[int]:
+        not_covered_true list[int]:
             The conditions which were not true.
-        not_covered_false List[int]:
+        not_covered_false list[int]:
             The conditions which were not false.
         excluded (bool, optional):
             Whether the condition is excluded.
@@ -270,8 +269,8 @@ class ConditionCoverage:
         self,
         count: int,
         covered: int,
-        not_covered_true: List[int],
-        not_covered_false: List[int],
+        not_covered_true: list[int],
+        not_covered_false: list[int],
         excluded: Optional[bool] = False,
     ) -> None:
         if count < 0:
@@ -444,7 +443,7 @@ class LineCoverage:
         lineno: int,
         count: int,
         function_name: Optional[str] = None,
-        block_ids: Optional[List[int]] = None,
+        block_ids: Optional[list[int]] = None,
         md5: Optional[str] = None,
         excluded: bool = False,
     ) -> None:
@@ -456,7 +455,7 @@ class LineCoverage:
         self.lineno: int = lineno
         self.count: int = count
         self.function_name: Optional[str] = function_name
-        self.block_ids: Optional[List[int]] = block_ids
+        self.block_ids: Optional[list[int]] = block_ids
         self.md5: Optional[str] = md5
         self.excluded: bool = excluded
         self.branches: Dict[int, BranchCoverage] = {}
@@ -693,7 +692,7 @@ class CoverageContainer:
 
     def __init__(self: CoverageContainer) -> None:
         self.data: Dict[str, FileCoverage] = {}
-        self.directories: List[CoverageContainerDirectory] = []
+        self.directories = list[CoverageContainerDirectory]()
 
     def __getitem__(self, key: str) -> FileCoverage:
         return self.data[key]
@@ -729,7 +728,7 @@ class CoverageContainer:
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "decision"],
         filename_uses_relative_pathname: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """Sort the coverage data"""
         return sort_coverage(
             self.data,
@@ -878,7 +877,7 @@ class CoverageContainerDirectory:
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "decision"],
         filename_uses_relative_pathname: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """Sort the coverage data"""
         return sort_coverage(
             self.data,

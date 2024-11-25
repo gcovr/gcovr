@@ -18,7 +18,7 @@
 # ****************************************************************************
 
 import logging
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 
 from ..coverage import CoverageContainer, FileCoverage
 from ..merging import (
@@ -46,7 +46,7 @@ from .txt import TxtHandler
 LOGGER = logging.getLogger("gcovr")
 
 
-def get_options() -> List[GcovrConfigOption]:
+def get_options() -> list[GcovrConfigOption]:
     """Get the list of all options from the format handlers."""
     return [
         o
@@ -121,9 +121,9 @@ def read_reports(options: Options) -> CoverageContainer:
 
 def write_reports(covdata: CoverageContainer, options: Options) -> None:
     """Write the reports to the given locations."""
-    generators: List[
+    generators: list[
         tuple[
-            List[Optional[OutputOrDefault]],
+            list[Optional[OutputOrDefault]],
             Callable[[CoverageContainer, str], None],
             Callable[[], None],
         ]

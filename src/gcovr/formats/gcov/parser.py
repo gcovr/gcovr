@@ -43,7 +43,6 @@ from typing import (
     Any,
     Dict,
     Iterable,
-    List,
     NamedTuple,
     Optional,
     Pattern,
@@ -286,7 +285,7 @@ class SuspiciousHits(Exception):
 
 
 def parse_metadata(
-    lines: List[str], *, suspicious_hits_threshold: int = SUSPICIOUS_COUNTER
+    lines: list[str], *, suspicious_hits_threshold: int = SUSPICIOUS_COUNTER
 ) -> Dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
@@ -337,13 +336,13 @@ _LineWithError = tuple[str, Exception]
 
 
 def parse_coverage(
-    lines: List[str],
+    lines: list[str],
     *,
     filename: str,
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     data_filename: Optional[str] = None,  # Only for tests
-) -> tuple[FileCoverage, List[str]]:
+) -> tuple[FileCoverage, list[str]]:
     """
     Extract coverage data from a gcov report.
 
@@ -363,8 +362,8 @@ def parse_coverage(
         Any exceptions during parsing, unless ignore_parse_errors is set.
     """
 
-    lines_with_errors: List[_LineWithError] = []
-    tokenized_lines: List[tuple[_Line, str]] = []
+    lines_with_errors = list[_LineWithError]()
+    tokenized_lines = list[tuple[_Line, str]]()
     persistent_states: Dict[str, Any] = {}
     for raw_line in lines:
         # empty lines shouldn't occur in reality, but are common in testing
@@ -442,7 +441,7 @@ def parse_coverage(
     return coverage, src_lines
 
 
-def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
+def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
     source_token_lines = [line for line in tokens if isinstance(line, _SourceLine)]
 
     src_lines = [""] * max((line.lineno for line in source_token_lines), default=0)
@@ -453,7 +452,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
 
 
 class _ParserState(NamedTuple):
-    deferred_functions: List[_FunctionLine] = []
+    deferred_functions: list[_FunctionLine] = []
     lineno: int = 0
     blockno: Optional[int] = None
     line_contents: str = ""
@@ -570,7 +569,7 @@ def _gather_coverage_from_line(
 
 
 def _report_lines_with_errors(
-    lines_with_errors: List[_LineWithError],
+    lines_with_errors: list[_LineWithError],
     *,
     filename: str,
     ignore_parse_errors: Optional[set[str]],

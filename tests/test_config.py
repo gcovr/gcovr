@@ -22,7 +22,7 @@
 
 import io
 import re
-from typing import Any, Iterable, List, Optional, Union
+from typing import Any, Iterable, Optional, Union
 
 import pytest
 
@@ -314,7 +314,7 @@ class Ref:
     This is useful to represent the presence of a value that may be None.
     """
 
-    def __init__(self, value: Union[str, List[str]]) -> None:
+    def __init__(self, value: Union[str, list[str]]) -> None:
         self.value = value
 
 
@@ -330,7 +330,7 @@ class Ref:
     ids=lambda test_spec: test_spec[0],
 )
 def test_namespace_merging_overwriting(
-    test_spec: tuple[str, List[Any], Optional[str]],
+    test_spec: tuple[str, list[Any], Optional[str]],
 ) -> None:
     _, input_values, result = test_spec
 
@@ -365,7 +365,7 @@ def test_namespace_merging_overwriting(
     ids=lambda test_spec: test_spec[0],
 )
 def test_namespace_merging_appending(
-    test_spec: tuple[str, List[Any], Optional[List[str]]],
+    test_spec: tuple[str, list[Any], Optional[list[str]]],
 ) -> None:
     _, input_values, result = test_spec
 

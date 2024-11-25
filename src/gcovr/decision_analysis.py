@@ -21,7 +21,6 @@
 
 import logging
 import re
-from typing import List
 
 from .coverage import (
     DecisionCoverageUncheckable,
@@ -160,9 +159,9 @@ class DecisionParser:
             The encoding of the source files
     """
 
-    def __init__(self, coverage: FileCoverage, lines: List[str]) -> None:
-        self.coverage: FileCoverage = coverage
-        self.lines: List[str] = lines
+    def __init__(self, coverage: FileCoverage, lines: list[str]) -> None:
+        self.coverage = coverage
+        self.lines = lines
 
         # status variables for decision analysis
         self.decision_analysis_active: bool = (

@@ -29,7 +29,7 @@ import socket
 import sys
 import textwrap
 import time
-from typing import List, Optional
+from typing import Optional
 import shutil
 import subprocess  # nosec # Commands are trusted.
 import zipfile
@@ -342,7 +342,7 @@ def doc(session: nox.Session) -> None:
     with changelog_rst.open(encoding="utf-8") as fh_in:
         lines = fh_in.readlines()
 
-    out_lines: List[str] = []
+    out_lines = list[str]()
     iter_lines = iter(lines)
     for line in iter_lines:
         if line.startswith("------------"):

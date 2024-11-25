@@ -18,7 +18,7 @@
 # ****************************************************************************
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 from gcovr.__main__ import main
 from gcovr.version import __version__
 from gcovr.formats.json.versions import JSON_FORMAT_VERSION
@@ -41,7 +41,7 @@ class CaptureObject:
         self.exception = exception
 
 
-def capture(capsys: pytest.CaptureFixture[str], args: List[str]) -> CaptureObject:
+def capture(capsys: pytest.CaptureFixture[str], args: list[str]) -> CaptureObject:
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = None
@@ -58,13 +58,13 @@ def capture(capsys: pytest.CaptureFixture[str], args: List[str]) -> CaptureObjec
 # The LogCaptureObject class holds the capture method result
 class LogCaptureObject:
     def __init__(
-        self, record_tuples: List[tuple[str, int, str]], exception: Optional[SystemExit]
+        self, record_tuples: list[tuple[str, int, str]], exception: Optional[SystemExit]
     ) -> None:
         self.record_tuples = record_tuples
         self.exception = exception
 
 
-def log_capture(caplog: pytest.LogCaptureFixture, args: List[str]) -> LogCaptureObject:
+def log_capture(caplog: pytest.LogCaptureFixture, args: list[str]) -> LogCaptureObject:
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = None

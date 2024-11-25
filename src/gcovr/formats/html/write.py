@@ -22,7 +22,7 @@
 import functools
 import logging
 import os
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union
 
 from jinja2 import (
     BaseLoader,
@@ -154,7 +154,7 @@ class NullHighlighting:
         return ""
 
     @staticmethod
-    def highlighter_for_file(_: str) -> Callable[[str], List[str]]:
+    def highlighter_for_file(_: str) -> Callable[[str], list[str]]:
         """Get the default highlighter which only returns the content as raw text lines."""
         return lambda code: [line.rstrip() for line in code.split("\n")]
 
@@ -177,7 +177,7 @@ class PygmentsHighlighting:
             f"\n\n/* pygments syntax highlighting */\n{self.formatter.get_style_defs()}"
         )
 
-    def highlighter_for_file(self, filename: str) -> Callable[[str], List[str]]:
+    def highlighter_for_file(self, filename: str) -> Callable[[str], list[str]]:
         """Get the highlighter for the given filename."""
         if self.formatter is None:  # pragma: no cover
             return NullHighlighting.highlighter_for_file(filename)
@@ -488,7 +488,7 @@ def write_root_page(
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
-    sorted_keys: List[str],
+    sorted_keys: list[str],
 ) -> None:
     """Generate the root HTML file that contains the high level report."""
     files = []
@@ -606,7 +606,7 @@ def write_single_page(
     root_info: RootInfo,
     output_file: str,
     covdata: CoverageContainer,
-    sorted_keys: List[str],
+    sorted_keys: list[str],
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, Any],
     data: Dict[str, Any],
@@ -632,7 +632,7 @@ def write_single_page(
                 root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
             )
         )
-    directories: List[Dict[str, Any]] = [{"entries": all_files}]
+    directories = list[Dict[str, Any]]([{"entries": all_files}])
     if root_info.single_page == "js-enabled":
         for dircov in covdata.directories:
             directories.append(
@@ -1023,7 +1023,7 @@ def source_row_decision(
     if decision is None:
         return None
 
-    items: List[Dict[str, Any]] = []
+    items = list[Dict[str, Any]]()
 
     if isinstance(decision, DecisionCoverageUncheckable):
         items.append(

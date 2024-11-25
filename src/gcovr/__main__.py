@@ -23,7 +23,7 @@ import re
 import sys
 
 from argparse import ArgumentParser, Namespace
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 import traceback
 
 from .configuration import (
@@ -209,7 +209,7 @@ def load_config(partial_options: Namespace) -> Dict[str, Any]:
     return {}
 
 
-def main(args: Optional[List[str]] = None) -> int:
+def main(args: Optional[list[str]] = None) -> int:
     """The main entry point of GCOVR."""
     configure_logging()
     parser = create_argument_parser()

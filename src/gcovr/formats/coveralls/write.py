@@ -26,7 +26,7 @@ import os
 import re
 import shutil
 import subprocess  # nosec # Commands are trusted.
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from ...options import Options
 
@@ -217,7 +217,7 @@ def _make_source_file(
         total_line_count = len(contents.splitlines())
 
     # Initialize coverage array and load with line coverage data
-    coverage: List[Optional[int]] = []
+    coverage = list[Optional[int]]()
     source_file["coverage"] = coverage
     # source_file['branches'] = []
     for lineno, linecov in coverage_details.lines.items():
@@ -244,6 +244,6 @@ def _make_source_file(
     return source_file
 
 
-def _extend_with_none(target: List[Optional[int]], wanted_len: int) -> None:
+def _extend_with_none(target: list[Optional[int]], wanted_len: int) -> None:
     current_len = len(target)
     target.extend(None for _ in range(current_len, wanted_len))

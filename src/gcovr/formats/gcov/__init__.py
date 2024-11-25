@@ -19,7 +19,7 @@
 
 from multiprocessing import cpu_count
 import os
-from typing import List, Union
+from typing import Union
 
 from ...coverage import CoverageContainer
 from ...formats.base import BaseHandler
@@ -35,7 +35,7 @@ class GcovHandler(BaseHandler):
     """Class to handle GCOV intermediate format."""
 
     @classmethod
-    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
+    def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
             # Global options needed for report
             "show_decision",
