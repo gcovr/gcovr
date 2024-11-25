@@ -24,7 +24,7 @@ import argparse
 import logging
 import platform
 import re
-from typing import Any, Dict, List, Optional, Tuple, Type, Union, Callable
+from typing import Any, Dict, List, Optional, Type, Union, Callable
 import os
 
 from .utils import force_unix_separator, is_fs_case_insensitive
@@ -425,7 +425,7 @@ class GcovrConfigOption:
         *,
         help: str,
         action: Union[str, Type[GcovrConfigOptionAction]] = "store",
-        choices: Optional[Union[Tuple[int, ...], Tuple[str, ...]]] = None,
+        choices: Optional[Union[tuple[int, ...], tuple[str, ...]]] = None,
         const: Any = None,
         const_negate: Any = None,
         config: Union[str, bool] = True,

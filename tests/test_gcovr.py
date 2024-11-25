@@ -30,7 +30,6 @@ from typing import (
     Iterable,
     List,
     Optional,
-    Tuple,
 )
 import pytest
 import re
@@ -250,7 +249,7 @@ def run(cmd: List[str], cwd: Optional[str] = None) -> bool:
     return returncode == 0
 
 
-def find_reference_files(output_pattern: List[str]) -> Iterable[Tuple[str, str]]:
+def find_reference_files(output_pattern: List[str]) -> Iterable[tuple[str, str]]:
     seen_files = set()
     for reference_dir in REFERENCE_DIRS:
         for pattern in output_pattern:

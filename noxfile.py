@@ -29,7 +29,7 @@ import socket
 import sys
 import textwrap
 import time
-from typing import List, Optional, Tuple
+from typing import List, Optional
 import shutil
 import subprocess  # nosec # Commands are trusted.
 import zipfile
@@ -104,7 +104,7 @@ def get_gcovr_version() -> str:
     )
 
 
-def get_gcc_versions() -> Tuple[str, str]:
+def get_gcc_versions() -> tuple[str, str]:
     """Get the gcc version from the environment or from the output of the executable."""
     # If the user explicitly set CC variable, use that directly without checks.
     cc = os.environ.get("CC")
@@ -575,7 +575,7 @@ def html2jpeg(session: nox.Session) -> None:
         url = f"http://localhost:{port}/1/screenshot"
         time.sleep(5.0)  # nosemgrep # We need to wait here until server is started.
 
-        def screenshot(html: str, jpeg: str, size: Tuple[int, int]) -> None:
+        def screenshot(html: str, jpeg: str, size: tuple[int, int]) -> None:
             def read_file(file: str) -> str:
                 with open(file, encoding="utf-8") as fh_in:
                     return " ".join(fh_in.readlines()).replace("\n", "")

@@ -22,7 +22,7 @@
 import functools
 import logging
 import os
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from jinja2 import (
     BaseLoader,
@@ -806,7 +806,7 @@ def get_file_data(
     cdata_fname: Dict[str, str],
     cdata_sourcefile: Dict[str, str],
     cdata: FileCoverage,
-) -> Tuple[Dict[str, Any], Dict[Tuple[str, str, int], Dict[str, Any]], bool]:
+) -> tuple[Dict[str, Any], Dict[tuple[str, str, int], Dict[str, Any]], bool]:
     """Get the data for a file to generate the HTML"""
     formatter = get_formatter(options)
 
@@ -821,7 +821,7 @@ def get_file_data(
             root_info, cdata, cdata_sourcefile[filename], cdata_fname[filename]
         )
     )
-    functions: Dict[Tuple[str, str, int], Dict[str, Any]] = {}
+    functions: Dict[tuple[str, str, int], Dict[str, Any]] = {}
     # Only use demangled names (containing a brace)
     for f_cdata in sorted(
         cdata.functions.values(), key=lambda f_cdata: f_cdata.demangled_name

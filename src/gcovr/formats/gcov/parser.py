@@ -47,7 +47,6 @@ from typing import (
     NamedTuple,
     Optional,
     Pattern,
-    Tuple,
     Union,
 )
 
@@ -334,7 +333,7 @@ def parse_metadata(
     return collected
 
 
-_LineWithError = Tuple[str, Exception]
+_LineWithError = tuple[str, Exception]
 
 
 def parse_coverage(
@@ -344,7 +343,7 @@ def parse_coverage(
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     data_filename: Optional[str] = None,  # Only for tests
-) -> Tuple[FileCoverage, List[str]]:
+) -> tuple[FileCoverage, List[str]]:
     """
     Extract coverage data from a gcov report.
 
@@ -365,7 +364,7 @@ def parse_coverage(
     """
 
     lines_with_errors: List[_LineWithError] = []
-    tokenized_lines: List[Tuple[_Line, str]] = []
+    tokenized_lines: List[tuple[_Line, str]] = []
     persistent_states: Dict[str, Any] = {}
     for raw_line in lines:
         # empty lines shouldn't occur in reality, but are common in testing

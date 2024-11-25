@@ -21,7 +21,7 @@ import json
 import logging
 import os
 from glob import glob
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
 
 from . import versions
 from ...coverage import (
@@ -114,8 +114,8 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def _function_from_json(json_function: Dict[str, Any]) -> FunctionCoverage:
-    start: Optional[Tuple[int, int]] = None
-    end: Optional[Tuple[int, int]] = None
+    start: Optional[tuple[int, int]] = None
+    end: Optional[tuple[int, int]] = None
     if "pos" in json_function:
         start_l_c = json_function["pos"][0].split(":", maxsplit=1)
         start = (int(start_l_c[0]), int(start_l_c[1]))

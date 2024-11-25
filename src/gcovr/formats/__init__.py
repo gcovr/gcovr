@@ -18,7 +18,7 @@
 # ****************************************************************************
 
 import logging
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Optional
 
 from ..coverage import CoverageContainer, FileCoverage
 from ..merging import (
@@ -122,7 +122,7 @@ def read_reports(options: Options) -> CoverageContainer:
 def write_reports(covdata: CoverageContainer, options: Options) -> None:
     """Write the reports to the given locations."""
     generators: List[
-        Tuple[
+        tuple[
             List[Optional[OutputOrDefault]],
             Callable[[CoverageContainer, str], None],
             Callable[[], None],

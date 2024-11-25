@@ -45,7 +45,6 @@ from typing import (
     Dict,
     Iterable,
     Optional,
-    Tuple,
     TypeVar,
     Union,
     Literal,
@@ -384,8 +383,8 @@ class FunctionCoverage:
         lineno: int,
         count: int,
         blocks: float,
-        start: Optional[Tuple[int, int]] = None,
-        end: Optional[Tuple[int, int]] = None,
+        start: Optional[tuple[int, int]] = None,
+        end: Optional[tuple[int, int]] = None,
         excluded: bool = False,
     ) -> None:
         if count < 0:
@@ -395,10 +394,10 @@ class FunctionCoverage:
         self.count: Dict[int, int] = {lineno: count}
         self.blocks: Dict[int, float] = {lineno: blocks}
         self.excluded: Dict[int, bool] = {lineno: excluded}
-        self.start: Optional[Dict[int, Tuple[int, int]]] = (
+        self.start: Optional[Dict[int, tuple[int, int]]] = (
             None if start is None else {lineno: start}
         )
-        self.end: Optional[Dict[int, Tuple[int, int]]] = (
+        self.end: Optional[Dict[int, tuple[int, int]]] = (
             None if end is None else {lineno: end}
         )
 

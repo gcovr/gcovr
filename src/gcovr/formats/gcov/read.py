@@ -25,7 +25,7 @@ import re
 import shlex
 import subprocess  # nosec # Commands are trusted.
 from threading import Lock
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional
 
 from .parser import parse_metadata, parse_coverage
 from .workers import Workers, locked_directory
@@ -794,7 +794,7 @@ class GcovProgram:
             **kwargs,
         )
 
-    def run_with_args(self, args: List[str], **kwargs: Any) -> Tuple[str, str]:
+    def run_with_args(self, args: List[str], **kwargs: Any) -> tuple[str, str]:
         """Run the gcov program.
 
         >>> import platform
@@ -976,7 +976,7 @@ def select_gcov_files_from_stdout(
     gcov_filter: List["re.Pattern[str]"],
     gcov_exclude: List["re.Pattern[str]"],
     chdir: str,
-) -> Tuple[set[str], set[str]]:
+) -> tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""
     active_files = set()
     all_files = set()

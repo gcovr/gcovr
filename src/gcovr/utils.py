@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 from hashlib import md5
-from typing import Any, Callable, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Iterator, List, Optional
 import logging
 import os
 import functools
@@ -38,7 +38,7 @@ class LoopChecker:
     """Class for checking if a directory was already scanned."""
 
     def __init__(self) -> None:
-        self._seen = set[Tuple[int, int]]()
+        self._seen = set[tuple[int, int]]()
 
     def already_visited(self, path: str) -> bool:
         """Check if the path was already checked."""

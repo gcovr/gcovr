@@ -21,7 +21,7 @@
 Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
 """
 
-from typing import Dict, List, Optional, Tuple, Callable
+from typing import Dict, List, Optional, Callable
 import logging
 import re
 
@@ -225,8 +225,8 @@ def _process_exclusion_marker(
     exclude_word: str,
     warnings: _ExclusionRangeWarnings,
     functions_by_line: FunctionListByLine,
-    exclude_ranges: List[Tuple[int, int]],
-    exclusion_stack: List[Tuple[str, int]],
+    exclude_ranges: List[tuple[int, int]],
+    exclusion_stack: List[tuple[str, int]],
 ) -> None:
     """
     Process the exclusion marker.
@@ -280,7 +280,7 @@ def _find_excluded_ranges(
     exclude_lines_by_custom_pattern: Optional[str] = None,
     exclude_branches_by_custom_pattern: Optional[str] = None,
     filecov: FileCoverage,
-) -> Tuple[ExclusionPredicate, ExclusionPredicate]:
+) -> tuple[ExclusionPredicate, ExclusionPredicate]:
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
 
@@ -335,8 +335,8 @@ def _find_excluded_ranges(
         excl_pattern_compiled = re.compile(excl_pattern)
 
         # possibly overlapping inclusive (closed) ranges that describe exclusions regions
-        exclude_ranges: List[Tuple[int, int]] = []
-        exclusion_stack: List[Tuple[str, int]] = []
+        exclude_ranges: List[tuple[int, int]] = []
+        exclusion_stack: List[tuple[str, int]] = []
 
         for lineno, code in enumerate(lines, 1):
             if _EXCLUDE_FLAG in code:

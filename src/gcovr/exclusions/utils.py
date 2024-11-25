@@ -20,7 +20,7 @@
 """Utils for exclusion of lines and branches"""
 
 import logging
-from typing import Callable, Dict, Iterable, List, Optional, Tuple
+from typing import Callable, Dict, Iterable, List, Optional
 
 from ..coverage import FileCoverage, FunctionCoverage
 
@@ -71,7 +71,7 @@ def get_functions_by_line(filecov: FileCoverage) -> FunctionListByLine:
 
 def get_function_exclude_ranges(
     filename: str, lineno: int, columnno: int, *, functions_by_line: FunctionListByLine
-) -> List[Tuple[int, int]]:
+) -> List[tuple[int, int]]:
     """Get the exclude range for a given function."""
     exclude_ranges = []
     if functions_by_line:
@@ -161,7 +161,7 @@ def apply_exclusion_ranges(
 
 
 def make_is_in_any_range_inclusive(
-    ranges: List[Tuple[int, int]],
+    ranges: List[tuple[int, int]],
 ) -> ExclusionPredicate:
     """
     Create a function to check whether an input is in any range (inclusive).
@@ -212,7 +212,7 @@ def make_is_in_any_range_inclusive(
     return is_in_any_range
 
 
-def _lines_from_sparse(sparse: Iterable[Tuple[int, str]]) -> List[str]:
+def _lines_from_sparse(sparse: Iterable[tuple[int, str]]) -> List[str]:
     """
     Convert lineno–source tuples to a flat list, useful for tests.
 

@@ -23,7 +23,7 @@ from threading import Thread, Condition, RLock
 from traceback import format_exception
 from contextlib import contextmanager
 from queue import Queue, Empty
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -72,7 +72,7 @@ def locked_directory(directory: str) -> Iterator[None]:
         locked_directory_global_object.done(directory)
 
 
-QueueContent = Optional[Tuple[Callable[[str], None], Tuple[Any], Dict[str, Any]]]
+QueueContent = Optional[tuple[Callable[[str], None], tuple[Any], Dict[str, Any]]]
 
 
 def worker(
@@ -87,7 +87,7 @@ def worker(
         if entry is None:
             break
         work: Callable[[str], None]
-        args: Tuple[str]
+        args: tuple[str]
         kwargs: Dict[str, Any]
         work, args, kwargs = entry
         kwargs.update(context)
