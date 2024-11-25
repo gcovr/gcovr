@@ -25,7 +25,7 @@ import re
 import shlex
 import subprocess  # nosec # Commands are trusted.
 from threading import Lock
-from typing import Any, Callable, List, Optional, Set, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 from .parser import parse_metadata, parse_coverage
 from .workers import Workers, locked_directory
@@ -499,7 +499,7 @@ def guess_source_file_name_heuristics(  # pylint: disable=too-many-return-statem
 
 
 def process_datafile(
-    filename: str, covdata: CoverageContainer, options: Options, to_erase: Set[str]
+    filename: str, covdata: CoverageContainer, options: Options, to_erase: set[str]
 ) -> None:
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
@@ -976,7 +976,7 @@ def select_gcov_files_from_stdout(
     gcov_filter: List["re.Pattern[str]"],
     gcov_exclude: List["re.Pattern[str]"],
     chdir: str,
-) -> Tuple[Set[str], Set[str]]:
+) -> Tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""
     active_files = set()
     all_files = set()
@@ -1002,7 +1002,7 @@ def select_gcov_files_from_stdout(
 #  Process Already existing gcov files
 #
 def process_existing_gcov_file(
-    filename: str, covdata: CoverageContainer, options: Options, to_erase: Set[str]
+    filename: str, covdata: CoverageContainer, options: Options, to_erase: set[str]
 ) -> None:
     """Process an existing GCOV filename."""
     if is_file_excluded(filename, options.gcov_filter, options.gcov_exclude):

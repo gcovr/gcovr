@@ -30,7 +30,6 @@ from typing import (
     Iterable,
     List,
     Optional,
-    Set,
     Tuple,
 )
 import pytest
@@ -443,8 +442,8 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     )
 
 
-def parse_makefile_for_available_targets(path: str) -> Dict[str, Set[str]]:
-    targets: Dict[str, Set[str]] = {}
+def parse_makefile_for_available_targets(path: str) -> Dict[str, set[str]]:
+    targets: Dict[str, set[str]] = {}
     with open(path, encoding="utf-8") as makefile:
         for line in makefile:
             if m := re.match(r"^(\w[\w -]*):([\s\w.-]*)$", line):

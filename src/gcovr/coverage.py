@@ -45,7 +45,6 @@ from typing import (
     Dict,
     Iterable,
     Optional,
-    Set,
     Tuple,
     TypeVar,
     Union,
@@ -571,15 +570,17 @@ class FileCoverage:
     __slots__ = "filename", "functions", "lines", "data_sources"
 
     def __init__(
-        self, filename: str, data_source: Optional[Union[str, Set[str]]]
+        self, filename: str, data_source: Optional[Union[str, set[str]]]
     ) -> None:
         self.filename: str = filename
         self.functions: Dict[str, FunctionCoverage] = {}
         self.lines: Dict[int, LineCoverage] = {}
-        self.data_sources: Set[str] = (
-            set()
+        self.data_sources = (
+            set[str]()
             if data_source is None
-            else set([data_source] if isinstance(data_source, str) else data_source)
+            else set[str](
+                [data_source] if isinstance(data_source, str) else data_source
+            )
         )
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:

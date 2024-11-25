@@ -23,7 +23,7 @@ from threading import Thread, Condition, RLock
 from traceback import format_exception
 from contextlib import contextmanager
 from queue import Queue, Empty
-from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -34,7 +34,7 @@ class LockedDirectories:
     """
 
     def __init__(self) -> None:
-        self.dirs: Set[str] = set()
+        self.dirs = set[str]()
         self.cv = Condition()
 
     def run_in(self, directory: str) -> None:

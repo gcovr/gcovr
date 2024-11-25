@@ -47,7 +47,6 @@ from typing import (
     NamedTuple,
     Optional,
     Pattern,
-    Set,
     Tuple,
     Union,
 )
@@ -230,7 +229,7 @@ class NegativeHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: Set[str], persistent_states: Dict[str, Any]
+        line: str, ignore_parse_errors: set[str], persistent_states: Dict[str, Any]
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -266,7 +265,7 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: Set[str], persistent_states: Dict[str, Any]
+        line: str, ignore_parse_errors: set[str], persistent_states: Dict[str, Any]
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -342,7 +341,7 @@ def parse_coverage(
     lines: List[str],
     *,
     filename: str,
-    ignore_parse_errors: Optional[Set[str]],
+    ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     data_filename: Optional[str] = None,  # Only for tests
 ) -> Tuple[FileCoverage, List[str]]:
@@ -575,7 +574,7 @@ def _report_lines_with_errors(
     lines_with_errors: List[_LineWithError],
     *,
     filename: str,
-    ignore_parse_errors: Optional[Set[str]],
+    ignore_parse_errors: Optional[set[str]],
 ) -> None:
     """Log warnings and potentially re-throw exceptions"""
 
@@ -613,7 +612,7 @@ def _report_lines_with_errors(
 def _parse_line(
     line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    ignore_parse_errors: Optional[Set[str]] = None,
+    ignore_parse_errors: Optional[set[str]] = None,
     persistent_states: Optional[Dict[str, Any]] = None,
 ) -> _Line:
     """
@@ -853,7 +852,7 @@ def _parse_line(
 def _parse_tag_line(  # pylint: disable=too-many-return-statements
     line: str,
     suspicious_hits_threshold: int,
-    ignore_parse_errors: Set[str],
+    ignore_parse_errors: set[str],
     persistent_states: Dict[str, Any],
 ) -> Optional[_Line]:
     """A tag line is any gcov line that starts in the first column."""
