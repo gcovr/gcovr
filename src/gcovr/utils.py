@@ -31,8 +31,6 @@ from .version import __version__
 
 LOGGER = logging.getLogger("gcovr")
 
-MD5_KWARGS = {"usedforsecurity": False} if sys.version_info >= (3, 9) else {}
-
 REGEX_VERSION_POSTFIX = re.compile(r"(.+)\.dev.+$")
 
 
@@ -306,4 +304,4 @@ def presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
 
 def get_md5_hexdigest(data: bytes) -> str:
     """Get the MD5 digest of the given bytes."""
-    return md5(data, **MD5_KWARGS).hexdigest()  # nosec # Not used for security
+    return md5(data, usedforsecurity=False).hexdigest()  # nosec # Not used for security

@@ -315,9 +315,6 @@ def mypy(session: nox.Session) -> None:
 @nox.session
 def doc(session: nox.Session) -> None:
     """Generate the documentation."""
-    if sys.version_info < (3, 9):
-        session.error("Documentation needs at least python 3.9")
-
     session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
 
