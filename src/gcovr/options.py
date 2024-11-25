@@ -24,7 +24,7 @@ import argparse
 import logging
 import platform
 import re
-from typing import Any, Dict, Optional, Type, Union, Callable
+from typing import Any, Optional, Type, Union, Callable
 import os
 
 from .utils import force_unix_separator, is_fs_case_insensitive
@@ -317,7 +317,7 @@ class GcovrConfigOptionAction(argparse.Action):  # pylint: disable=abstract-meth
 
     @abstractmethod
     def store_config_key(
-        self, namespace: Dict[str, Any], values: Any, config: Optional[str]
+        self, namespace: dict[str, Any], values: Any, config: Optional[str]
     ) -> None:
         """Method to store a configuration key."""
 
@@ -342,7 +342,7 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
         setattr(namespace, self.dest, self.value)
 
     def store_config_key(
-        self, namespace: Dict[str, Any], values: Any, config: Optional[str]
+        self, namespace: dict[str, Any], values: Any, config: Optional[str]
     ) -> None:
         LOGGER.warning(
             f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."

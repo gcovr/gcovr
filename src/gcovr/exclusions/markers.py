@@ -21,7 +21,7 @@
 Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
 """
 
-from typing import Dict, Optional, Callable
+from typing import Optional, Callable
 import logging
 import re
 
@@ -43,7 +43,7 @@ _EXCLUDE_PATTERN_POSTFIXES = ["LINE", "START", "STOP", "FUNCTION"]
 _EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX = "SOURCE"
 
 ExclusionPredicate = Callable[[int], bool]
-FunctionListByLine = Dict[int, list[FunctionCoverage]]
+FunctionListByLine = dict[int, list[FunctionCoverage]]
 
 
 def apply_exclusion_markers(

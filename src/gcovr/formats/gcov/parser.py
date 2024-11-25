@@ -41,7 +41,6 @@ import re
 
 from typing import (
     Any,
-    Dict,
     Iterable,
     NamedTuple,
     Optional,
@@ -227,7 +226,7 @@ class NegativeHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: Dict[str, Any]
+        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -263,7 +262,7 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: Dict[str, Any]
+        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -286,7 +285,7 @@ class SuspiciousHits(Exception):
 
 def parse_metadata(
     lines: list[str], *, suspicious_hits_threshold: int = SUSPICIOUS_COUNTER
-) -> Dict[str, Optional[str]]:
+) -> dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
 
@@ -364,7 +363,7 @@ def parse_coverage(
 
     lines_with_errors = list[_LineWithError]()
     tokenized_lines = list[tuple[_Line, str]]()
-    persistent_states: Dict[str, Any] = {}
+    persistent_states = dict[str, Any]()
     for raw_line in lines:
         # empty lines shouldn't occur in reality, but are common in testing
         if not raw_line:
@@ -611,7 +610,7 @@ def _parse_line(
     line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     ignore_parse_errors: Optional[set[str]] = None,
-    persistent_states: Optional[Dict[str, Any]] = None,
+    persistent_states: Optional[dict[str, Any]] = None,
 ) -> _Line:
     """
     Categorize/parse individual lines without further processing.
@@ -851,7 +850,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
     line: str,
     suspicious_hits_threshold: int,
     ignore_parse_errors: set[str],
-    persistent_states: Dict[str, Any],
+    persistent_states: dict[str, Any],
 ) -> Optional[_Line]:
     """A tag line is any gcov line that starts in the first column."""
 

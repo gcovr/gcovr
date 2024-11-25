@@ -20,14 +20,14 @@
 """Utils for exclusion of lines and branches"""
 
 import logging
-from typing import Callable, Dict, Iterable, Optional
+from typing import Callable, Iterable, Optional
 
 from ..coverage import FileCoverage, FunctionCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
 ExclusionPredicate = Callable[[int], bool]
-FunctionListByLine = Dict[int, list[FunctionCoverage]]
+FunctionListByLine = dict[int, list[FunctionCoverage]]
 
 
 def function_exclude_not_supported(

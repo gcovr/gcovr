@@ -23,7 +23,7 @@ import re
 import sys
 
 from argparse import ArgumentParser, Namespace
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 import traceback
 
 from .configuration import (
@@ -181,7 +181,7 @@ def find_config_name(root: str, filename: str) -> Optional[str]:
     return None
 
 
-def load_config(partial_options: Namespace) -> Dict[str, Any]:
+def load_config(partial_options: Namespace) -> dict[str, Any]:
     """Load a config file if configured or found by default names"""
     filename = getattr(partial_options, "config", None)
     if filename is not None:

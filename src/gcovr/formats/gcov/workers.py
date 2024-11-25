@@ -23,7 +23,7 @@ from threading import Thread, Condition, RLock
 from traceback import format_exception
 from contextlib import contextmanager
 from queue import Queue, Empty
-from typing import Any, Callable, Dict, Iterator, Optional
+from typing import Any, Callable, Iterator, Optional
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -72,11 +72,11 @@ def locked_directory(directory: str) -> Iterator[None]:
         locked_directory_global_object.done(directory)
 
 
-QueueContent = Optional[tuple[Callable[[str], None], tuple[Any], Dict[str, Any]]]
+QueueContent = Optional[tuple[Callable[[str], None], tuple[Any], dict[str, Any]]]
 
 
 def worker(
-    queue: "Queue[QueueContent]", context: Dict[str, Any], pool: "Workers"
+    queue: "Queue[QueueContent]", context: dict[str, Any], pool: "Workers"
 ) -> None:
     """
     Run work items from the queue until the sentinel
@@ -88,7 +88,7 @@ def worker(
             break
         work: Callable[[str], None]
         args: tuple[str]
-        kwargs: Dict[str, Any]
+        kwargs: dict[str, Any]
         work, args, kwargs = entry
         kwargs.update(context)
         try:
@@ -104,7 +104,7 @@ class Workers:
     add method and will run until work is complete
     """
 
-    def __init__(self, number: int, context: Callable[[], Dict[str, Any]]) -> None:
+    def __init__(self, number: int, context: Callable[[], dict[str, Any]]) -> None:
         if number < 1:
             raise AssertionError("At least one executer is needed.")
         self.q: "Queue[QueueContent]" = Queue()
@@ -163,7 +163,7 @@ class Workers:
         """
         return len(self.workers)
 
-    def wait(self) -> list[Dict[str, Any]]:
+    def wait(self) -> list[dict[str, Any]]:
         """
         Wait until all work is complete
         """
