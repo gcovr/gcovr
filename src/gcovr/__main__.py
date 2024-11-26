@@ -350,9 +350,11 @@ def main(args: Optional[List[str]] = None) -> int:  # pylint: disable=too-many-r
         try:
             re.compile(options.exclude_lines_by_pattern)
         except re.error as e:
+            # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
+            # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
             LOGGER.error(
                 "--exclude-lines-by-pattern: "
-                f"Invalid regular expression: {repr(options.exclude_lines_by_pattern)}, error: {e}"
+                f"Invalid regular expression: {options.exclude_lines_by_pattern!s}, error: {e}"
             )
             return EXIT_CMDLINE_ERROR
 
