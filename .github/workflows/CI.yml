@@ -135,6 +135,7 @@ jobs:
           - os: macos-15
             gcc: gcc
             python-version: '3.13'
+            upload-app: true
 
 
   docker:
