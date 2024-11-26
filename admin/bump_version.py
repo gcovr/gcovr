@@ -228,10 +228,10 @@ def update_reference_data(_filename: str, lines: list[str], version: str) -> lis
     """Update the version in the reference data."""
     new_lines = []
 
-    def replace_html_version(matches: "re.Match[str]") -> str:
+    def replace_html_version(matches: re.Match[str]) -> str:
         return f"{matches.group(1)}{get_read_the_docs_version(version)}{matches.group(2)}{version}{matches.group(3)}"
 
-    def replace_xml_version(matches: "re.Match[str]") -> str:
+    def replace_xml_version(matches: re.Match[str]) -> str:
         return f"{matches.group(1)}{version}{matches.group(2)}"
 
     for line in lines:

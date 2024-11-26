@@ -124,7 +124,7 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def find_existing_gcov_files(
-    search_path: str, exclude_dirs: list["re.Pattern[str]"]
+    search_path: str, exclude_dirs: list[re.Pattern[str]]
 ) -> list[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
@@ -144,9 +144,7 @@ def find_existing_gcov_files(
     return gcov_files
 
 
-def find_datafiles(
-    search_path: str, exclude_dirs: list["re.Pattern[str]"]
-) -> list[str]:
+def find_datafiles(search_path: str, exclude_dirs: list[re.Pattern[str]]) -> list[str]:
     """Find .gcda and .gcno files under the given search path.
 
     The .gcno files will *only* produce uncovered results.
@@ -973,8 +971,8 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str,
-    gcov_filter: list["re.Pattern[str]"],
-    gcov_exclude: list["re.Pattern[str]"],
+    gcov_filter: list[re.Pattern[str]],
+    gcov_exclude: list[re.Pattern[str]],
     chdir: str,
 ) -> tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""

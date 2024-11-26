@@ -219,7 +219,6 @@ def main(args: Optional[list[str]] = None) -> int:
         sys.stderr.write(f"gcovr: error: {e.message}\n")
         sys.exit(EXIT_CMDLINE_ERROR)
 
-
     if cli_options.version:
         sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
         sys.exit(EXIT_SUCCESS)
