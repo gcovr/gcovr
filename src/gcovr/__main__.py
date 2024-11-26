@@ -216,7 +216,7 @@ def main(args: Optional[list[str]] = None) -> int:
         parser = create_argument_parser()
         cli_options = parser.parse_args(args=args)
     except ArgumentError as e:
-        sys.stderr.write(f"gcovr: error: {e.message}\n")
+        sys.stderr.write(f"gcovr: error: {e}\n")
         sys.exit(EXIT_CMDLINE_ERROR)
 
     if cli_options.version:
