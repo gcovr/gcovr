@@ -154,7 +154,7 @@ jobs:
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
 
       - name: Build and check standalone application
-        if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}
+        if: ${{ !startsWith(inputs.python-version,'pypy') }}
         run: |
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session bundle_app
 

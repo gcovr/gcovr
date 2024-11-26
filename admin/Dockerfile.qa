@@ -15,7 +15,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
 # Install base requirements
-apt-get install -y sudo \
+apt-get install -y software-properties-common \
+                   sudo \
                    make \
                    cmake \
                    $CC \
@@ -27,8 +28,6 @@ apt-get install -y sudo \
                    curl \
                    gnupg
 
-# Install Python 3.9 as the default "python3" executable on older linux distribution
-apt install -y python3-setuptools
 if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
   # cspell:disable
   apt install -y wget \
@@ -50,7 +49,7 @@ if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
   wget https://www.python.org/ftp/python/$PythonVersion/Python-$PythonVersion.tgz
   tar xzf Python-$PythonVersion.tgz
   cd Python-$PythonVersion
-  ./configure --enable-optimizations
+  ./configure --enable-optimizations --enable-shared --prefix=/usr/local LDFLAGS=-Wl,-rpath=/usr/local/lib
   # cspell:ignore altinstall
   make altinstall
   update-alternatives --install /usr/local/bin/python3 python3 /usr/local/bin/python3.9 10
@@ -61,9 +60,11 @@ elif [ "$DOCKER_OS" = "ubuntu:20.04" ]; then
   apt install -y python3.9-dev python3.9-venv python3.9
   update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 10
 else
+  add-apt-repository ppa:deadsnakes/ppa
   apt-get install -y \
-    python3-venv \
-    $(if [ "$DOCKER_OS" = "ubuntu:22.04" ]; then echo "python3-dev"; else echo "python3-full"; fi)
+    python3.13-venv \
+    python3.13-dev
+  update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 10
 fi
 python3 --version
 
