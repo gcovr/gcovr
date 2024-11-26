@@ -27,7 +27,7 @@ apt-get install -y sudo \
                    curl \
                    gnupg
 
-# Install Python 3.8 as the default "python3" executable on older linux distribution
+# Install Python 3.9 as the default "python3" executable on older linux distribution
 apt install -y python3-setuptools
 if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
   # cspell:disable
