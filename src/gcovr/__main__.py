@@ -23,7 +23,7 @@ import re
 import sys
 
 from argparse import ArgumentParser, Namespace
-from typing import Any, Dict, List, NoReturn, Optional
+from typing import Any, Dict, List, Optional
 import traceback
 
 from .configuration import (
@@ -63,18 +63,6 @@ EXIT_DECISION_NOK = 8
 EXIT_FUNCTION_NOK = 16
 EXIT_READ_ERROR = 64
 EXIT_WRITE_ERROR = 128
-
-
-class GcovrArgumentError(Exception):
-    """Exception thrown by GcovrArgumentParser"""
-
-
-class GcovrArgumentParser(ArgumentParser):
-    """Argument parser which raises an exception instead of calling sys.exit."""
-
-    def error(self, message: str) -> NoReturn:
-        """Raise an exception with the given message."""
-        raise GcovrArgumentError(f"gcovr: error: {message}")
 
 
 #
@@ -152,10 +140,10 @@ def get_exit_code(
     return exit_code
 
 
-def create_argument_parser() -> GcovrArgumentParser:
+def create_argument_parser() -> ArgumentParser:
     """Create the argument parser."""
 
-    parser = GcovrArgumentParser(add_help=False)
+    parser = ArgumentParser(add_help=False)
     parser.usage = "gcovr [options] [search_paths...]"
     parser.description = (
         "A utility to run gcov and summarize the coverage in simple reports."
@@ -234,13 +222,11 @@ def main(args: Optional[List[str]] = None) -> int:  # pylint: disable=too-many-r
         parser = create_argument_parser()
         cli_options = parser.parse_args(args=args)
     except SystemExit as e:
+        if e.code == 2:
+            return EXIT_CMDLINE_ERROR
         if e.code != 0:
             raise AssertionError("Sanity check failed, exitcode must be 0.") from e
         return 0
-
-    except GcovrArgumentError as e:
-        sys.stderr.write(str(e))
-        return EXIT_CMDLINE_ERROR
 
     if cli_options.version:
         sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")
