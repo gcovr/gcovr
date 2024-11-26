@@ -56,7 +56,7 @@ jobs:
           npm install -g cspell@latest
       - name: Run spellchecker
         run: |
-          cspell --show-suggestions
+          cspell --config cspell.json --color --show-suggestions '**'
 
   upload-lcov:
     runs-on: ubuntu-22.04
