@@ -31,7 +31,6 @@ apt-get install -y software-properties-common \
 if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
   # cspell:disable
   apt install -y wget \
-                 build-essential \
                  checkinstall \
                  libreadline-gplv2-dev \
                  libncursesw5-dev \
@@ -49,6 +48,7 @@ if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
   wget https://www.python.org/ftp/python/$PythonVersion/Python-$PythonVersion.tgz
   tar xzf Python-$PythonVersion.tgz
   cd Python-$PythonVersion
+  # cspell:ignore rpath
   ./configure --enable-optimizations --enable-shared --prefix=/usr/local LDFLAGS=-Wl,-rpath=/usr/local/lib
   # cspell:ignore altinstall
   make altinstall
