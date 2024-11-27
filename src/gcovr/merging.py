@@ -50,7 +50,7 @@ which may not be the same as the input value.
 
 from dataclasses import dataclass, field
 import logging
-from typing import Callable, Optional, TypeVar, Dict
+from typing import Callable, Optional, TypeVar
 
 from .options import Options
 from .coverage import (
@@ -160,12 +160,12 @@ _T = TypeVar("_T")
 
 
 def _merge_dict(
-    left: Dict[_Key, _T],
-    right: Dict[_Key, _T],
+    left: dict[_Key, _T],
+    right: dict[_Key, _T],
     merge_item: Callable[[_T, _T, MergeOptions, Optional[str]], _T],
     options: MergeOptions,
     context: Optional[str],
-) -> Dict[_Key, _T]:
+) -> dict[_Key, _T]:
     """
     Helper function to merge items in a dictionary.
 
@@ -194,7 +194,7 @@ def _merge_dict(
 
 
 def _insert_coverage_item(
-    target_dict: Dict[_Key, _T],
+    target_dict: dict[_Key, _T],
     key: _Key,
     new_item: _T,
     merge_item: Callable[[_T, _T, MergeOptions, Optional[str]], _T],

@@ -18,7 +18,7 @@
 # ****************************************************************************
 
 import csv
-from typing import Tuple, Optional
+from typing import Optional
 
 from ...options import Options
 
@@ -69,7 +69,7 @@ def write_report(
             )
 
 
-def _stat_tuple(stat: CoverageStat) -> Tuple[int, int, Optional[float]]:
+def _stat_tuple(stat: CoverageStat) -> tuple[int, int, Optional[float]]:
     """creates tuple (total, covered, ratio) with ratio in range 0..1 incl"""
     percent = stat.percent
     if percent is not None:

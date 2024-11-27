@@ -41,12 +41,8 @@ import re
 from typing import (
     ItemsView,
     Iterator,
-    List,
-    Dict,
     Iterable,
     Optional,
-    Set,
-    Tuple,
     TypeVar,
     Union,
     Literal,
@@ -63,14 +59,14 @@ _T = TypeVar("_T")
 
 def sort_coverage(
     covdata: Union[
-        Dict[str, FileCoverage],
-        Dict[str, Union[FileCoverage, CoverageContainerDirectory]],
+        dict[str, FileCoverage],
+        dict[str, Union[FileCoverage, CoverageContainerDirectory]],
     ],
     sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
     sort_reverse: bool,
     by_metric: Literal["line", "branch", "decision"],
     filename_uses_relative_pathname: bool = False,
-) -> List[str]:
+) -> list[str]:
     """Sort a coverage dict.
 
     covdata (dict): the coverage dictionary
@@ -85,7 +81,7 @@ def sort_coverage(
 
     basedir = commonpath(list(covdata.keys()))
 
-    def key_filename(key: str) -> List[Union[int, str]]:
+    def key_filename(key: str) -> list[Union[int, str]]:
         def convert_to_int_if_possible(text: str) -> Union[int, str]:
             return int(text) if text.isdigit() else text
 
@@ -258,9 +254,9 @@ class ConditionCoverage:
             The number of the call.
         covered (int):
             Whether the call was performed.
-        not_covered_true List[int]:
+        not_covered_true list[int]:
             The conditions which were not true.
-        not_covered_false List[int]:
+        not_covered_false list[int]:
             The conditions which were not false.
         excluded (bool, optional):
             Whether the condition is excluded.
@@ -272,8 +268,8 @@ class ConditionCoverage:
         self,
         count: int,
         covered: int,
-        not_covered_true: List[int],
-        not_covered_false: List[int],
+        not_covered_true: list[int],
+        not_covered_false: list[int],
         excluded: Optional[bool] = False,
     ) -> None:
         if count < 0:
@@ -385,21 +381,21 @@ class FunctionCoverage:
         lineno: int,
         count: int,
         blocks: float,
-        start: Optional[Tuple[int, int]] = None,
-        end: Optional[Tuple[int, int]] = None,
+        start: Optional[tuple[int, int]] = None,
+        end: Optional[tuple[int, int]] = None,
         excluded: bool = False,
     ) -> None:
         if count < 0:
             raise AssertionError("count must not be a negative value.")
         self.name = name
         self.demangled_name = demangled_name
-        self.count: Dict[int, int] = {lineno: count}
-        self.blocks: Dict[int, float] = {lineno: blocks}
-        self.excluded: Dict[int, bool] = {lineno: excluded}
-        self.start: Optional[Dict[int, Tuple[int, int]]] = (
+        self.count = dict[int, int]({lineno: count})
+        self.blocks = dict[int, float]({lineno: blocks})
+        self.excluded = dict[int, bool]({lineno: excluded})
+        self.start: Optional[dict[int, tuple[int, int]]] = (
             None if start is None else {lineno: start}
         )
-        self.end: Optional[Dict[int, Tuple[int, int]]] = (
+        self.end: Optional[dict[int, tuple[int, int]]] = (
             None if end is None else {lineno: end}
         )
 
@@ -446,7 +442,7 @@ class LineCoverage:
         lineno: int,
         count: int,
         function_name: Optional[str] = None,
-        block_ids: Optional[List[int]] = None,
+        block_ids: Optional[list[int]] = None,
         md5: Optional[str] = None,
         excluded: bool = False,
     ) -> None:
@@ -458,13 +454,13 @@ class LineCoverage:
         self.lineno: int = lineno
         self.count: int = count
         self.function_name: Optional[str] = function_name
-        self.block_ids: Optional[List[int]] = block_ids
+        self.block_ids: Optional[list[int]] = block_ids
         self.md5: Optional[str] = md5
         self.excluded: bool = excluded
-        self.branches: Dict[int, BranchCoverage] = {}
-        self.conditions: Dict[int, ConditionCoverage] = {}
+        self.branches = dict[int, BranchCoverage]()
+        self.conditions = dict[int, ConditionCoverage]()
         self.decision: Optional[DecisionCoverage] = None
-        self.calls: Dict[int, CallCoverage] = {}
+        self.calls = dict[int, CallCoverage]()
 
     @property
     def is_excluded(self) -> bool:
@@ -571,15 +567,17 @@ class FileCoverage:
     __slots__ = "filename", "functions", "lines", "data_sources"
 
     def __init__(
-        self, filename: str, data_source: Optional[Union[str, Set[str]]]
+        self, filename: str, data_source: Optional[Union[str, set[str]]]
     ) -> None:
         self.filename: str = filename
-        self.functions: Dict[str, FunctionCoverage] = {}
-        self.lines: Dict[int, LineCoverage] = {}
-        self.data_sources: Set[str] = (
-            set()
+        self.functions = dict[str, FunctionCoverage]()
+        self.lines = dict[int, LineCoverage]()
+        self.data_sources = (
+            set[str]()
             if data_source is None
-            else set([data_source] if isinstance(data_source, str) else data_source)
+            else set[str](
+                [data_source] if isinstance(data_source, str) else data_source
+            )
         )
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
@@ -692,8 +690,8 @@ class CoverageContainer:
     """Coverage container holding all the coverage data."""
 
     def __init__(self: CoverageContainer) -> None:
-        self.data: Dict[str, FileCoverage] = {}
-        self.directories: List[CoverageContainerDirectory] = []
+        self.data = dict[str, FileCoverage]()
+        self.directories = list[CoverageContainerDirectory]()
 
     def __getitem__(self, key: str) -> FileCoverage:
         return self.data[key]
@@ -729,7 +727,7 @@ class CoverageContainer:
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "decision"],
         filename_uses_relative_pathname: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """Sort the coverage data"""
         return sort_coverage(
             self.data,
@@ -770,7 +768,7 @@ class CoverageContainer:
         """
 
         # Get the directory coverage
-        subdirs: Dict[str, CoverageContainerDirectory] = {}
+        subdirs = dict[str, CoverageContainerDirectory]()
         for key in sorted_keys:
             filecov = self[key]
             dircov: Optional[CoverageContainerDirectory] = None
@@ -842,7 +840,7 @@ class CoverageContainerDirectory:
         super().__init__()
         self.dirname: str = dirname
         self.parent_dirname: Optional[str] = None
-        self.data: Dict[str, Union[FileCoverage, CoverageContainerDirectory]] = {}
+        self.data = dict[str, Union[FileCoverage, CoverageContainerDirectory]]()
         self.stats: SummarizedStats = SummarizedStats.new_empty()
 
     def __setitem__(
@@ -878,7 +876,7 @@ class CoverageContainerDirectory:
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "decision"],
         filename_uses_relative_pathname: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """Sort the coverage data"""
         return sort_coverage(
             self.data,

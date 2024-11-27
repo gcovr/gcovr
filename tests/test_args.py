@@ -18,7 +18,8 @@
 # ****************************************************************************
 
 from pathlib import Path
-from typing import List, Optional, Tuple
+import platform
+from typing import Optional
 from gcovr.__main__ import main
 from gcovr.version import __version__
 from gcovr.formats.json.versions import JSON_FORMAT_VERSION
@@ -41,7 +42,7 @@ class CaptureObject:
         self.exception = exception
 
 
-def capture(capsys: pytest.CaptureFixture[str], args: List[str]) -> CaptureObject:
+def capture(capsys: pytest.CaptureFixture[str], args: list[str]) -> CaptureObject:
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = None
@@ -58,13 +59,13 @@ def capture(capsys: pytest.CaptureFixture[str], args: List[str]) -> CaptureObjec
 # The LogCaptureObject class holds the capture method result
 class LogCaptureObject:
     def __init__(
-        self, record_tuples: List[Tuple[str, int, str]], exception: Optional[SystemExit]
+        self, record_tuples: list[tuple[str, int, str]], exception: Optional[SystemExit]
     ) -> None:
         self.record_tuples = record_tuples
         self.exception = exception
 
 
-def log_capture(caplog: pytest.LogCaptureFixture, args: List[str]) -> LogCaptureObject:
+def log_capture(caplog: pytest.LogCaptureFixture, args: list[str]) -> LogCaptureObject:
     """The capture method calls the main method and captures its output/error
     streams and exit code."""
     e = None
@@ -443,10 +444,18 @@ def test_filter_backslashes_are_detected(caplog: pytest.LogCaptureFixture) -> No
 
 def test_html_css_not_exists(capsys: pytest.CaptureFixture[str]) -> None:
     c = capture(capsys, ["--html-css", "/File/does/not/\texist"])
+    if platform.system() == "Windows":
+        pattern = r"\\\\File\\\\does\\\\not\\\\\\texist"
+        # Starting with 3.13 a path starting with a leading (back)slash isn't considered
+        # as absolute anymore by os.path.isabs and we add the current working directory
+        if sys.version_info >= (3, 13):
+            pattern = rf"[A-Z]:(?:\\\\[^\\]+)*?{pattern}"
+    else:
+        pattern = r"/File/does/not/\\texist"
     assert c.out == ""
     assert (
         re.search(
-            r"Should be a file that already exists: '[/\\]+File[/\\]+does[/\\]+not[/\\]+\\texist'",
+            rf"Should be a file that already exists: '{pattern}'",
             c.err,
         )
         is not None
@@ -823,7 +832,7 @@ def test_sort_branch_and_not_uncovered_or_percent(
     ids=lambda option: option[0],
 )
 def test_deprecated_option(
-    caplog: pytest.LogCaptureFixture, option: Tuple[str, str]
+    caplog: pytest.LogCaptureFixture, option: tuple[str, str]
 ) -> None:
     c = log_capture(caplog, [option[0]])
     message = c.record_tuples[0]

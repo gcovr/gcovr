@@ -22,8 +22,8 @@ import os
 import re
 import sys
 
-from argparse import ArgumentParser, Namespace
-from typing import Any, Dict, List, Optional
+from argparse import ArgumentError, ArgumentParser, Namespace
+from typing import Any, Optional
 import traceback
 
 from .configuration import (
@@ -137,7 +137,7 @@ def fail_under(
 def create_argument_parser() -> ArgumentParser:
     """Create the argument parser."""
 
-    parser = ArgumentParser(add_help=False)
+    parser = ArgumentParser(add_help=False, exit_on_error=False)
     parser.usage = "gcovr [options] [search_paths...]"
     parser.description = (
         "A utility to run gcov and summarize the coverage in simple reports."
@@ -181,7 +181,7 @@ def find_config_name(root: str, filename: str) -> Optional[str]:
     return None
 
 
-def load_config(partial_options: Namespace) -> Dict[str, Any]:
+def load_config(partial_options: Namespace) -> dict[str, Any]:
     """Load a config file if configured or found by default names"""
     filename = getattr(partial_options, "config", None)
     if filename is not None:
@@ -209,11 +209,15 @@ def load_config(partial_options: Namespace) -> Dict[str, Any]:
     return {}
 
 
-def main(args: Optional[List[str]] = None) -> int:
+def main(args: Optional[list[str]] = None) -> int:
     """The main entry point of GCOVR."""
     configure_logging()
-    parser = create_argument_parser()
-    cli_options = parser.parse_args(args=args)
+    try:
+        parser = create_argument_parser()
+        cli_options = parser.parse_args(args=args)
+    except ArgumentError as e:
+        sys.stderr.write(f"gcovr: error: {e}\n")
+        sys.exit(EXIT_CMDLINE_ERROR)
 
     if cli_options.version:
         sys.stdout.write(f"gcovr {__version__}\n\n{COPYRIGHT}")

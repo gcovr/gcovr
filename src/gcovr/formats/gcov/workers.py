@@ -23,7 +23,7 @@ from threading import Thread, Condition, RLock
 from traceback import format_exception
 from contextlib import contextmanager
 from queue import Queue, Empty
-from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any, Callable, Iterator, Optional
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -34,7 +34,7 @@ class LockedDirectories:
     """
 
     def __init__(self) -> None:
-        self.dirs: Set[str] = set()
+        self.dirs = set[str]()
         self.cv = Condition()
 
     def run_in(self, directory: str) -> None:
@@ -72,11 +72,11 @@ def locked_directory(directory: str) -> Iterator[None]:
         locked_directory_global_object.done(directory)
 
 
-QueueContent = Optional[Tuple[Callable[[str], None], Tuple[Any], Dict[str, Any]]]
+QueueContent = Optional[tuple[Callable[[str], None], tuple[Any], dict[str, Any]]]
 
 
 def worker(
-    queue: "Queue[QueueContent]", context: Dict[str, Any], pool: "Workers"
+    queue: "Queue[QueueContent]", context: dict[str, Any], pool: "Workers"
 ) -> None:
     """
     Run work items from the queue until the sentinel
@@ -87,8 +87,8 @@ def worker(
         if entry is None:
             break
         work: Callable[[str], None]
-        args: Tuple[str]
-        kwargs: Dict[str, Any]
+        args: tuple[str]
+        kwargs: dict[str, Any]
         work, args, kwargs = entry
         kwargs.update(context)
         try:
@@ -104,16 +104,16 @@ class Workers:
     add method and will run until work is complete
     """
 
-    def __init__(self, number: int, context: Callable[[], Dict[str, Any]]) -> None:
+    def __init__(self, number: int, context: Callable[[], dict[str, Any]]) -> None:
         if number < 1:
             raise AssertionError("At least one executer is needed.")
         self.q: "Queue[QueueContent]" = Queue()
         self.lock = RLock()
-        self.exceptions: List[str] = []
+        self.exceptions = list[str]()
         self.contexts = [context() for _ in range(0, number)]
-        self.workers: List[Thread] = [
-            Thread(target=worker, args=(self.q, c, self)) for c in self.contexts
-        ]
+        self.workers = list[Thread](
+            [Thread(target=worker, args=(self.q, c, self)) for c in self.contexts]
+        )
         for w in self.workers:
             w.start()
 
@@ -163,7 +163,7 @@ class Workers:
         """
         return len(self.workers)
 
-    def wait(self) -> List[Dict[str, Any]]:
+    def wait(self) -> list[dict[str, Any]]:
         """
         Wait until all work is complete
         """

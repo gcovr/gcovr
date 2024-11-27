@@ -56,7 +56,7 @@ jobs:
           npm install -g cspell@latest
       - name: Run spellchecker
         run: |
-          cspell --show-suggestions
+          cspell --config cspell.json --color --show-suggestions '**'
 
   upload-lcov:
     runs-on: ubuntu-22.04
@@ -85,7 +85,7 @@ jobs:
     #
     # OS: Linux, Windows
     # Compiler: GCC-5 to GCC-14, Clang-10 to CLANG-16
-    # Python: 3.8 -- 3.12, pypy3
+    # Python: 3.9 -- 3.12, pypy3
     #
     # Instead of testing all combinations, we try to achieve full coverage
     # across each axis. The main test matrix just represents the Python axis on
@@ -97,7 +97,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         gcc: [gcc-8]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', 'pypy-3.8']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', 'pypy-3.10']
 
         include:
 
@@ -108,33 +108,34 @@ jobs:
             python-version: '3.9'
           - os: ubuntu-22.04
             gcc: gcc-11
-            python-version: '3.12'
+            python-version: '3.13'
             upload-app: true
 
           # Test minimum and maximum Python version on Windows.
           - os: windows-2019
             gcc: gcc
-            python-version: '3.8'
+            python-version: '3.9'
           - os: windows-2019
             gcc: gcc
-            python-version: '3.12'
+            python-version: '3.13'
             upload-app: true
 
           # Test minimum and maximum Python version on Mac OS.
           - os: macos-13
             gcc: gcc
-            python-version: '3.12'
+            python-version: '3.13'
             upload-app: true
           - os: macos-14
             gcc: gcc
             python-version: '3.9'
           - os: macos-14
             gcc: gcc-13
-            python-version: '3.12'
+            python-version: '3.13'
             upload-app: true
           - os: macos-15
             gcc: gcc
-            python-version: '3.12'
+            python-version: '3.13'
+            upload-app: true
 
 
   docker:

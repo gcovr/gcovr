@@ -21,7 +21,7 @@
 Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
 """
 
-from typing import Dict, List, Optional, Tuple, Callable
+from typing import Optional, Callable
 import logging
 import re
 
@@ -43,13 +43,13 @@ _EXCLUDE_PATTERN_POSTFIXES = ["LINE", "START", "STOP", "FUNCTION"]
 _EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX = "SOURCE"
 
 ExclusionPredicate = Callable[[int], bool]
-FunctionListByLine = Dict[int, List[FunctionCoverage]]
+FunctionListByLine = dict[int, list[FunctionCoverage]]
 
 
 def apply_exclusion_markers(
     filecov: FileCoverage,
     *,
-    lines: List[str],
+    lines: list[str],
     exclude_lines_by_pattern: Optional[str],
     exclude_branches_by_pattern: Optional[str],
     exclude_pattern_prefix: str,
@@ -93,7 +93,7 @@ def apply_exclusion_markers(
 
 
 def _process_exclude_branch_source(
-    lines: List[str],
+    lines: list[str],
     *,
     exclude_pattern_prefix: str,
     filecov: FileCoverage,
@@ -225,8 +225,8 @@ def _process_exclusion_marker(
     exclude_word: str,
     warnings: _ExclusionRangeWarnings,
     functions_by_line: FunctionListByLine,
-    exclude_ranges: List[Tuple[int, int]],
-    exclusion_stack: List[Tuple[str, int]],
+    exclude_ranges: list[tuple[int, int]],
+    exclusion_stack: list[tuple[str, int]],
 ) -> None:
     """
     Process the exclusion marker.
@@ -273,14 +273,14 @@ def _process_exclusion_marker(
 
 
 def _find_excluded_ranges(
-    lines: List[str],
+    lines: list[str],
     *,
     warnings: _ExclusionRangeWarnings,
     exclude_pattern_prefix: str,
     exclude_lines_by_custom_pattern: Optional[str] = None,
     exclude_branches_by_custom_pattern: Optional[str] = None,
     filecov: FileCoverage,
-) -> Tuple[ExclusionPredicate, ExclusionPredicate]:
+) -> tuple[ExclusionPredicate, ExclusionPredicate]:
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
 
@@ -335,8 +335,8 @@ def _find_excluded_ranges(
         excl_pattern_compiled = re.compile(excl_pattern)
 
         # possibly overlapping inclusive (closed) ranges that describe exclusions regions
-        exclude_ranges: List[Tuple[int, int]] = []
-        exclusion_stack: List[Tuple[str, int]] = []
+        exclude_ranges = list[tuple[int, int]]()
+        exclusion_stack = list[tuple[str, int]]()
 
         for lineno, code in enumerate(lines, 1):
             if _EXCLUDE_FLAG in code:

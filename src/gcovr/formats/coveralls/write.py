@@ -26,7 +26,7 @@ import os
 import re
 import shutil
 import subprocess  # nosec # Commands are trusted.
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from ...options import Options
 
@@ -37,7 +37,7 @@ PRETTY_JSON_INDENT = 4
 
 
 def _write_coveralls_result(
-    gcovr_json_dict: Dict[str, Any], output_file: str, pretty: bool
+    gcovr_json_dict: dict[str, Any], output_file: str, pretty: bool
 ) -> None:
     r"""helper utility to output json format dictionary to a file/STDOUT"""
     write_json = json.dump
@@ -67,7 +67,7 @@ def write_report(
     """
 
     # Create object to collect coverage data
-    json_dict: Dict[str, Any] = {}
+    json_dict = dict[str, Any]()
 
     # Capture timestamp
     timestamp: datetime.datetime = options.timestamp.astimezone(datetime.timezone.utc)
@@ -195,9 +195,9 @@ def write_report(
 
 def _make_source_file(
     coverage_details: FileCoverage, options: Options
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     # Object with Coveralls file details
-    source_file: Dict[str, Any] = {}
+    source_file = dict[str, Any]()
 
     # Isolate relative file path
     relative_file_path = presentable_filename(
@@ -217,7 +217,7 @@ def _make_source_file(
         total_line_count = len(contents.splitlines())
 
     # Initialize coverage array and load with line coverage data
-    coverage: List[Optional[int]] = []
+    coverage = list[Optional[int]]()
     source_file["coverage"] = coverage
     # source_file['branches'] = []
     for lineno, linecov in coverage_details.lines.items():
@@ -244,6 +244,6 @@ def _make_source_file(
     return source_file
 
 
-def _extend_with_none(target: List[Optional[int]], wanted_len: int) -> None:
+def _extend_with_none(target: list[Optional[int]], wanted_len: int) -> None:
     current_len = len(target)
     target.extend(None for _ in range(current_len, wanted_len))

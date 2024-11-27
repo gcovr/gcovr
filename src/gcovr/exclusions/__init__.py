@@ -28,7 +28,7 @@ via ``apply_all_exclusions()``, which is configured via the usual options object
 
 from dataclasses import dataclass, field
 import re
-from typing import List, Optional
+from typing import Optional
 import logging
 
 from ..options import Options
@@ -59,7 +59,7 @@ class ExclusionOptions:
     """
 
     respect_exclusion_markers: bool = True
-    exclude_functions: List["re.Pattern[str]"] = field(default_factory=lambda: [])
+    exclude_functions: list[re.Pattern[str]] = field(default_factory=lambda: [])
     exclude_lines_by_pattern: Optional[str] = None
     exclude_branches_by_pattern: Optional[str] = None
     exclude_pattern_prefix: str = "PREFIX"
@@ -96,7 +96,7 @@ def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
 def apply_all_exclusions(
     filecov: FileCoverage,
     *,
-    lines: List[str],
+    lines: list[str],
     options: ExclusionOptions,
 ) -> None:
     """
@@ -200,7 +200,7 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
                 linecov.branches.pop(branch_id)
 
 
-def remove_functions(filecov: FileCoverage, patterns: List["re.Pattern[str]"]) -> None:
+def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> None:
     """Remove matching functions"""
     if filecov.functions:
         functions_by_line: FunctionListByLine = get_functions_by_line(filecov)

@@ -35,7 +35,7 @@ jobs:
     env:
       FORCE_COLOR: "1"
       NOX_CONTAINER_ARGUMENTS: ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
-      GENERATE_DOCUMENTATION: ${{ (!inputs.container && (! startsWith(inputs.python-version,'pypy')) && (! startsWith(inputs.os,'windows-')) && (inputs.python-version != '3.8')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10')) }}
+      GENERATE_DOCUMENTATION: ${{ inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10') }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -70,10 +70,10 @@ jobs:
             esac
           else
             case "${{ inputs.os }}/${{ inputs.gcc }}/${{ inputs.python-version }}" in
-              ubuntu-22.04/gcc-11/3.12) USE_COVERAGE=true ;;
-              windows-2019/gcc/3.12)    USE_COVERAGE=true ;;
-              macos-14/gcc-13/3.12)     USE_COVERAGE=true ;;
-              macos-15/gcc/3.9)         USE_COVERAGE=true ;;
+              ubuntu-22.04/gcc-11/3.13) USE_COVERAGE=true ;;
+              windows-2019/gcc/3.13)    USE_COVERAGE=true ;;
+              macos-14/gcc-13/3.9)      USE_COVERAGE=true ;;
+              macos-15/gcc/3.13)        USE_COVERAGE=true ;;
               *)                        USE_COVERAGE=false ;;
             esac
           fi
@@ -154,7 +154,7 @@ jobs:
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
 
       - name: Build and check standalone application
-        if: ${{ (!inputs.container && !startsWith(inputs.python-version,'pypy')) || (inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6')) }}
+        if: ${{ !startsWith(inputs.python-version,'pypy') }}
         run: |
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session bundle_app
 

@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import List, Union
+from typing import Union
 
 from ...coverage import CoverageContainer
 from ...formats.base import BaseHandler
@@ -28,7 +28,7 @@ class JaCoCoHandler(BaseHandler):
     """Class to handle JaCoCo format."""
 
     @classmethod
-    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
+    def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
             GcovrConfigOption(
                 "jacoco",

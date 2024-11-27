@@ -20,6 +20,7 @@
     "dictionaryDefinitions": [],
     "dictionaries": [],
     "enableGlobDot": true,
+    "useGitignore": true,
     "words": [
         "autoprogram",
         "bazel",
@@ -59,6 +60,7 @@
         "Devcontainers",
         "dircov",
         "distutils",
+        "elif",
         "epub",
         "ERRORLEVEL",
         "filecov",

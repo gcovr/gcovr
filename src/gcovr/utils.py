@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 from hashlib import md5
-from typing import Any, Callable, Iterator, List, Optional, Set, Tuple
+from typing import Any, Callable, Iterator, Optional
 import logging
 import os
 import functools
@@ -31,8 +31,6 @@ from .version import __version__
 
 LOGGER = logging.getLogger("gcovr")
 
-MD5_KWARGS = {"usedforsecurity": False} if sys.version_info >= (3, 9) else {}
-
 REGEX_VERSION_POSTFIX = re.compile(r"(.+)\.dev.+$")
 
 
@@ -40,7 +38,7 @@ class LoopChecker:
     """Class for checking if a directory was already scanned."""
 
     def __init__(self) -> None:
-        self._seen: Set[Tuple[int, int]] = set()
+        self._seen = set[tuple[int, int]]()
 
     def already_visited(self, path: str) -> bool:
         """Check if the path was already checked."""
@@ -107,7 +105,7 @@ def get_version_for_report() -> str:
 
 
 def search_file(
-    predicate: Callable[[str], bool], path: str, exclude_dirs: List["re.Pattern[str]"]
+    predicate: Callable[[str], bool], path: str, exclude_dirs: list[re.Pattern[str]]
 ) -> Iterator[str]:
     """
     Given a search path, recursively descend to find files that satisfy a
@@ -137,7 +135,7 @@ def search_file(
                 yield os.path.abspath(os.path.join(root, name))
 
 
-def commonpath(files: List[str]) -> str:
+def commonpath(files: list[str]) -> str:
     r"""Find the common prefix of all files.
 
     This differs from the standard library os.path.commonpath():
@@ -194,8 +192,8 @@ def commonpath(files: List[str]) -> str:
 
 def is_file_excluded(
     filename: str,
-    include_filters: List["re.Pattern[str]"],
-    exclude_filters: List["re.Pattern[str]"],
+    include_filters: list[re.Pattern[str]],
+    exclude_filters: list[re.Pattern[str]],
 ) -> bool:
     """Apply inclusion/exclusion filters to filename.
 
@@ -306,4 +304,4 @@ def presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
 
 def get_md5_hexdigest(data: bytes) -> str:
     """Get the MD5 digest of the given bytes."""
-    return md5(data, **MD5_KWARGS).hexdigest()  # nosec # Not used for security
+    return md5(data, usedforsecurity=False).hexdigest()  # nosec # Not used for security

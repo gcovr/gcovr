@@ -233,10 +233,10 @@ count: int
 covered: int
   Number of covered condition outcomes in this expression.
 
-not_covered_false: List[int]
+not_covered_false: list[int]
   Terms, by index, not seen as false in this expression.
 
-not_covered_true: List[int]
+not_covered_true: list[int]
   Terms, by index, not seen as true in this expression.
 
 .. _json_format_decision:
