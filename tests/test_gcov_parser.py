@@ -22,7 +22,6 @@ import logging
 import re
 import textwrap
 from threading import Event
-from typing import List
 from unittest import mock
 
 import pytest
@@ -843,7 +842,7 @@ def test_noncode_lines() -> None:
     """
 
     def get_line_status(
-        lines: List[str],
+        lines: list[str],
         *,
         exclude_function_lines: bool = False,
         exclude_noncode_lines: bool = False,
@@ -903,7 +902,7 @@ def test_noncode_lines() -> None:
 
 
 def check_and_raise(
-    number: int, mutable: List[None], exc_raised: Event, queue_full: Event
+    number: int, mutable: list[None], exc_raised: Event, queue_full: Event
 ) -> None:
     queue_full.wait()
     if number == 0:
@@ -914,7 +913,7 @@ def check_and_raise(
 
 @pytest.mark.parametrize("threads", [1, 2, 4, 8])
 def test_pathologic_threads(threads: int) -> None:
-    mutable: List[None] = []
+    mutable = list[None]()
     queue_full = Event()
     exc_raised = Event()
     with pytest.raises(RuntimeError) as exc_info:

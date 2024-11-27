@@ -41,14 +41,10 @@ import re
 
 from typing import (
     Any,
-    Dict,
     Iterable,
-    List,
     NamedTuple,
     Optional,
     Pattern,
-    Set,
-    Tuple,
     Union,
 )
 
@@ -230,7 +226,7 @@ class NegativeHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: Set[str], persistent_states: Dict[str, Any]
+        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -266,7 +262,7 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: Set[str], persistent_states: Dict[str, Any]
+        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
     ) -> None:
         """Raise exception if not ignored by options"""
         if ignore_parse_errors is not None and any(
@@ -288,8 +284,8 @@ class SuspiciousHits(Exception):
 
 
 def parse_metadata(
-    lines: List[str], *, suspicious_hits_threshold: int = SUSPICIOUS_COUNTER
-) -> Dict[str, Optional[str]]:
+    lines: list[str], *, suspicious_hits_threshold: int = SUSPICIOUS_COUNTER
+) -> dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
 
@@ -335,17 +331,17 @@ def parse_metadata(
     return collected
 
 
-_LineWithError = Tuple[str, Exception]
+_LineWithError = tuple[str, Exception]
 
 
 def parse_coverage(
-    lines: List[str],
+    lines: list[str],
     *,
     filename: str,
-    ignore_parse_errors: Optional[Set[str]],
+    ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     data_filename: Optional[str] = None,  # Only for tests
-) -> Tuple[FileCoverage, List[str]]:
+) -> tuple[FileCoverage, list[str]]:
     """
     Extract coverage data from a gcov report.
 
@@ -365,9 +361,9 @@ def parse_coverage(
         Any exceptions during parsing, unless ignore_parse_errors is set.
     """
 
-    lines_with_errors: List[_LineWithError] = []
-    tokenized_lines: List[Tuple[_Line, str]] = []
-    persistent_states: Dict[str, Any] = {}
+    lines_with_errors = list[_LineWithError]()
+    tokenized_lines = list[tuple[_Line, str]]()
+    persistent_states = dict[str, Any]()
     for raw_line in lines:
         # empty lines shouldn't occur in reality, but are common in testing
         if not raw_line:
@@ -444,7 +440,7 @@ def parse_coverage(
     return coverage, src_lines
 
 
-def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
+def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
     source_token_lines = [line for line in tokens if isinstance(line, _SourceLine)]
 
     src_lines = [""] * max((line.lineno for line in source_token_lines), default=0)
@@ -455,7 +451,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> List[str]:
 
 
 class _ParserState(NamedTuple):
-    deferred_functions: List[_FunctionLine] = []
+    deferred_functions: list[_FunctionLine] = []
     lineno: int = 0
     blockno: Optional[int] = None
     line_contents: str = ""
@@ -572,10 +568,10 @@ def _gather_coverage_from_line(
 
 
 def _report_lines_with_errors(
-    lines_with_errors: List[_LineWithError],
+    lines_with_errors: list[_LineWithError],
     *,
     filename: str,
-    ignore_parse_errors: Optional[Set[str]],
+    ignore_parse_errors: Optional[set[str]],
 ) -> None:
     """Log warnings and potentially re-throw exceptions"""
 
@@ -613,8 +609,8 @@ def _report_lines_with_errors(
 def _parse_line(
     line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    ignore_parse_errors: Optional[Set[str]] = None,
-    persistent_states: Optional[Dict[str, Any]] = None,
+    ignore_parse_errors: Optional[set[str]] = None,
+    persistent_states: Optional[dict[str, Any]] = None,
 ) -> _Line:
     """
     Categorize/parse individual lines without further processing.
@@ -853,8 +849,8 @@ def _parse_line(
 def _parse_tag_line(  # pylint: disable=too-many-return-statements
     line: str,
     suspicious_hits_threshold: int,
-    ignore_parse_errors: Set[str],
-    persistent_states: Dict[str, Any],
+    ignore_parse_errors: set[str],
+    persistent_states: dict[str, Any],
 ) -> Optional[_Line]:
     """A tag line is any gcov line that starts in the first column."""
 

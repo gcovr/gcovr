@@ -22,7 +22,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import logging
-from typing import Dict
 from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
@@ -57,7 +56,7 @@ def write_report(
     project_data = ProjectData(0, 0, 0, 0)
 
     # Generate the coverage output (on a per-package basis)
-    packages: Dict[str, PackageData] = {}
+    packages = dict[str, PackageData]()
 
     for f in sorted(covdata):
         data = covdata[f]
@@ -182,7 +181,7 @@ class ProjectData:
 class PackageData:
     """Data class for the package data."""
 
-    files_xml: Dict[str, etree._Element]
+    files_xml: dict[str, etree._Element]
     loc: int
     ncloc: int
     covered_elements: int

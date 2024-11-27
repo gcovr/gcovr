@@ -11,6 +11,7 @@ Known bugs:
 Breaking changes:
 
 - Replace setup.py with hatchling. To install from source at least version `21.3` of pip is needed. (:issue:`1026`)
+- Drop support for Python 3.8. (:issue:`1030`)
 
 New features and notable changes:
 
@@ -52,7 +53,6 @@ Internal changes:
   ``disallow_incomplete_defs``, ``check_untyped_defs``, ``disallow_untyped_decorators``, ``warn_redundant_casts``,
   ``warn_unused_ignores``, ``warn_return_any``, ``no_implicit_reexport``, ``strict_equality``, ``extra_checks``
   in ``mypy``. (:issue:`1028`, :issue:`1029`)
-- The main routine doesn't call ``sys.exit`` on it's own, we always return the exit code. (:issue:`1029`)
 
 
 8.2 (13 October 2024)

@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import Iterable, Tuple
+from typing import Iterable
 
 from ...options import Options
 
@@ -125,7 +125,7 @@ def write_summary_report(
 
 def _summarize_file_coverage(
     coverage: FileCoverage, options: Options
-) -> Tuple[CoverageStat, str]:
+) -> tuple[CoverageStat, str]:
     filename = presentable_filename(coverage.filename, root_filter=options.root_filter)
 
     if options.txt_report_covered:
@@ -255,7 +255,7 @@ def _uncovered_branches_str(filecov: FileCoverage) -> str:
     return ",".join(str(lineno) for lineno in uncovered_lines)
 
 
-def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[Tuple[int, int]]:
+def _find_consecutive_ranges(items: Iterable[int]) -> Iterable[tuple[int, int]]:
     first = last = None
     for item in items:
         if last is None:

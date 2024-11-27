@@ -26,7 +26,7 @@ import re
 import subprocess  # nosec # Commands are trusted.
 import sys
 import time
-from typing import Callable, Iterator, List
+from typing import Callable, Iterator
 
 DATE = subprocess.check_output(  # nosec # We run on several system and do not know the full path
     ["git", "log", "-1", "--format=format:%ad", "--date=short"],
@@ -78,8 +78,8 @@ def get_copyright_header(version: str, comment_char: str = "#") -> Iterator[str]
 
 
 def add_copyright_header_to_python_file(
-    _filename: str, lines: List[str], version: str
-) -> List[str]:
+    _filename: str, lines: list[str], version: str
+) -> list[str]:
     """Add the copyright header to the python file."""
     # Empty file should be kept empty
     if len(lines) == 0:
@@ -126,8 +126,8 @@ def add_copyright_header_to_python_file(
 
 
 def update_copyright_string(
-    filename: str, lines: List[str], _version: str
-) -> List[str]:
+    filename: str, lines: list[str], _version: str
+) -> list[str]:
     """Update the copyright."""
     new_lines = []
 
@@ -155,8 +155,8 @@ def update_copyright_string(
 
 
 def update_call_of_release_checklist(
-    filename: str, lines: List[str], version: str
-) -> List[str]:
+    filename: str, lines: list[str], version: str
+) -> list[str]:
     """Update the release checklist."""
     new_lines = []
 
@@ -178,7 +178,7 @@ def update_call_of_release_checklist(
     return new_lines
 
 
-def update_changelog(filename: str, lines: List[str], version: str) -> List[str]:
+def update_changelog(filename: str, lines: list[str], version: str) -> list[str]:
     """Update the version in the CHANGELOG."""
     new_lines = []
 
@@ -208,7 +208,7 @@ def update_changelog(filename: str, lines: List[str], version: str) -> List[str]
     return new_lines
 
 
-def update_documentation(_filename: str, lines: List[str], version: str) -> List[str]:
+def update_documentation(_filename: str, lines: list[str], version: str) -> list[str]:
     """Update the references to the next version in the documentation."""
     new_lines = []
 
@@ -224,14 +224,14 @@ def update_documentation(_filename: str, lines: List[str], version: str) -> List
     return new_lines
 
 
-def update_reference_data(_filename: str, lines: List[str], version: str) -> List[str]:
+def update_reference_data(_filename: str, lines: list[str], version: str) -> list[str]:
     """Update the version in the reference data."""
     new_lines = []
 
-    def replace_html_version(matches: "re.Match[str]") -> str:
+    def replace_html_version(matches: re.Match[str]) -> str:
         return f"{matches.group(1)}{get_read_the_docs_version(version)}{matches.group(2)}{version}{matches.group(3)}"
 
-    def replace_xml_version(matches: "re.Match[str]") -> str:
+    def replace_xml_version(matches: re.Match[str]) -> str:
         return f"{matches.group(1)}{version}{matches.group(2)}"
 
     for line in lines:
@@ -252,7 +252,7 @@ def update_reference_data(_filename: str, lines: List[str], version: str) -> Lis
     return new_lines
 
 
-def update_license(filename: str, lines: List[str], _version: str) -> List[str]:
+def update_license(filename: str, lines: list[str], _version: str) -> list[str]:
     """Update the license file."""
     new_lines = [
         "BSD 3-Clause License",
@@ -277,8 +277,8 @@ def update_license(filename: str, lines: List[str], _version: str) -> List[str]:
 
 
 def update_source_date_epoch(
-    filename: str, lines: List[str], _version: str
-) -> List[str]:
+    filename: str, lines: list[str], _version: str
+) -> list[str]:
     """Update the timestamp in the test."""
     new_lines = []
 
@@ -310,7 +310,7 @@ def main(version: str) -> None:
         dirs[:] = [directory for directory in dirs if not skip_dir(directory)]
 
         for filename in files:
-            handlers: List[Callable[[str, List[str], str], List[str]]] = []
+            handlers = list[Callable[[str, list[str], str], list[str]]]()
             _, extension = os.path.splitext(filename)
             fullname = os.path.join(root, filename)
             if filename.endswith(".py") and filename not in ["version.py"]:

@@ -24,7 +24,7 @@ from argparse import _ArgumentGroup, ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
 import logging
-from typing import Iterable, Any, List, Optional, Callable, TextIO, Dict
+from typing import Iterable, Any, Optional, Callable, TextIO
 from dataclasses import dataclass
 import datetime
 import os
@@ -118,13 +118,15 @@ def argument_parser_setup(
     for opt in GCOVR_CONFIG_OPTIONS:
         group = default_group if opt.group is None else groups[opt.group]
 
-        kwargs: Dict[str, Any] = {
-            "action": opt.action,
-            "const": opt.const,
-            "default": SUPPRESS,  # default will be assigned manually
-            "help": opt.help,
-            "metavar": opt.metavar,
-        }
+        kwargs = dict[str, Any](
+            {
+                "action": opt.action,
+                "const": opt.const,
+                "default": SUPPRESS,  # default will be assigned manually
+                "help": opt.help,
+                "metavar": opt.metavar,
+            }
+        )
 
         # To avoid store_const problems, optionally set choices, nargs, type:
         if opt.choices is not None:
@@ -157,9 +159,9 @@ def argument_parser_setup(
 def parse_config_into_dict(
     config_entry_source: Iterable[ConfigEntry],
     all_options: Optional[Iterable[GcovrConfigOption]] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Parse a config file and save the configuration in a dictionary."""
-    cfg_dict: Dict[str, Any] = {}
+    cfg_dict = dict[str, Any]()
 
     if all_options is None:
         all_options = GCOVR_CONFIG_OPTIONS
@@ -279,7 +281,7 @@ def _get_converter_function(
 
 
 def _assign_value_to_dict(
-    namespace: Dict[str, Any],
+    namespace: dict[str, Any],
     value: Any,
     option: GcovrConfigOption,
     is_single_value: bool,
@@ -311,8 +313,8 @@ def _assign_value_to_dict(
 
 
 def merge_options_and_set_defaults(
-    partial_namespaces: List[Dict[str, Any]],
-    all_options: Optional[List[GcovrConfigOption]] = None,
+    partial_namespaces: list[dict[str, Any]],
+    all_options: Optional[list[GcovrConfigOption]] = None,
 ) -> Options:
     """Merge all options into the namespace and set the default values for unused options."""
     if not partial_namespaces:
@@ -321,7 +323,7 @@ def merge_options_and_set_defaults(
     if all_options is None:
         all_options = GCOVR_CONFIG_OPTIONS
 
-    target: Dict[str, Any] = {}
+    target = dict[str, Any]()
     for namespace in partial_namespaces:
         for option in all_options:
             if option.name not in namespace:
@@ -861,7 +863,7 @@ def parse_config_file(
 
 
 def config_entries_from_dict(
-    config: Dict[str, Any],
+    config: dict[str, Any],
     filename: str,
 ) -> Iterable[ConfigEntry]:
     r"""

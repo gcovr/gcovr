@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import List, Union
+from typing import Union
 
 from ...coverage import CoverageContainer
 from ...formats.base import BaseHandler
@@ -28,7 +28,7 @@ class CoberturaHandler(BaseHandler):
     """Class to handle Cobertura format."""
 
     @classmethod
-    def get_options(cls) -> List[Union[GcovrConfigOption, str]]:
+    def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
             # Global options used for merging.
             "merge_mode_functions",

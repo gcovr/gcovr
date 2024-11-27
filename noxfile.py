@@ -29,7 +29,7 @@ import socket
 import sys
 import textwrap
 import time
-from typing import List, Optional, Tuple
+from typing import Optional
 import shutil
 import subprocess  # nosec # Commands are trusted.
 import zipfile
@@ -104,7 +104,7 @@ def get_gcovr_version() -> str:
     )
 
 
-def get_gcc_versions() -> Tuple[str, str]:
+def get_gcc_versions() -> tuple[str, str]:
     """Get the gcc version from the environment or from the output of the executable."""
     # If the user explicitly set CC variable, use that directly without checks.
     cc = os.environ.get("CC")
@@ -315,9 +315,6 @@ def mypy(session: nox.Session) -> None:
 @nox.session
 def doc(session: nox.Session) -> None:
     """Generate the documentation."""
-    if sys.version_info < (3, 9):
-        session.error("Documentation needs at least python 3.9")
-
     session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
 
@@ -345,7 +342,7 @@ def doc(session: nox.Session) -> None:
     with changelog_rst.open(encoding="utf-8") as fh_in:
         lines = fh_in.readlines()
 
-    out_lines: List[str] = []
+    out_lines = list[str]()
     iter_lines = iter(lines)
     for line in iter_lines:
         if line.startswith("------------"):
@@ -498,9 +495,7 @@ def get_executable_name() -> Path:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    session.install(
-        "pyinstaller~=6.8.0" if platform.system() == "Darwin" else "pyinstaller~=5.13.2"
-    )
+    session.install("pyinstaller~=6.11.1")
     # This is needed if the virtual env is reused
     session.run("pip", "uninstall", "gcovr")
     # Do not install interactive to get the module resolved
@@ -578,7 +573,7 @@ def html2jpeg(session: nox.Session) -> None:
         url = f"http://localhost:{port}/1/screenshot"
         time.sleep(5.0)  # nosemgrep # We need to wait here until server is started.
 
-        def screenshot(html: str, jpeg: str, size: Tuple[int, int]) -> None:
+        def screenshot(html: str, jpeg: str, size: tuple[int, int]) -> None:
             def read_file(file: str) -> str:
                 with open(file, encoding="utf-8") as fh_in:
                     return " ".join(fh_in.readlines()).replace("\n", "")
@@ -657,9 +652,7 @@ def docker_container_os(session: nox.Session) -> str:
         return "ubuntu:20.04"
     if session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
         return "ubuntu:22.04"
-    if session.env["CC"] in ["gcc-12", "gcc-13"]:
-        return "ubuntu:23.04"
-    if session.env["CC"] in ["gcc-14", "clang-16"]:
+    if session.env["CC"] in ["gcc-12", "gcc-13", "gcc-14", "clang-16"]:
         return "ubuntu:24.04"
 
     raise RuntimeError(f"No container image defined for {session.env['CC']}")

@@ -22,7 +22,7 @@
 import functools
 import logging
 import os
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 from jinja2 import (
     BaseLoader,
@@ -154,7 +154,7 @@ class NullHighlighting:
         return ""
 
     @staticmethod
-    def highlighter_for_file(_: str) -> Callable[[str], List[str]]:
+    def highlighter_for_file(_: str) -> Callable[[str], list[str]]:
         """Get the default highlighter which only returns the content as raw text lines."""
         return lambda code: [line.rstrip() for line in code.split("\n")]
 
@@ -177,7 +177,7 @@ class PygmentsHighlighting:
             f"\n\n/* pygments syntax highlighting */\n{self.formatter.get_style_defs()}"
         )
 
-    def highlighter_for_file(self, filename: str) -> Callable[[str], List[str]]:
+    def highlighter_for_file(self, filename: str) -> Callable[[str], list[str]]:
         """Get the highlighter for the given filename."""
         if self.formatter is None:  # pragma: no cover
             return NullHighlighting.highlighter_for_file(filename)
@@ -244,12 +244,12 @@ class RootInfo:
         self.date = options.timestamp.isoformat(sep=" ", timespec="seconds")
         self.encoding = options.html_encoding
         self.directory = ""
-        self.branches: Dict[str, Any] = {}
-        self.conditions: Dict[str, Any] = {}
-        self.decisions: Dict[str, Any] = {}
-        self.calls: Dict[str, Any] = {}
-        self.functions: Dict[str, Any] = {}
-        self.lines: Dict[str, Any] = {}
+        self.branches = dict[str, Any]()
+        self.conditions = dict[str, Any]()
+        self.decisions = dict[str, Any]()
+        self.calls = dict[str, Any]()
+        self.functions = dict[str, Any]()
+        self.lines = dict[str, Any]()
 
     def set_directory(self, directory: str) -> None:
         """Set the directory for the report."""
@@ -305,7 +305,7 @@ def write_report(
     exclude_calls = options.exclude_calls
     show_decision = options.show_decision
 
-    data: Dict[str, Any] = {}
+    data = dict[str, Any]()
     root_info = RootInfo(options)
     data["info"] = root_info
 
@@ -387,8 +387,8 @@ def write_report(
     if options.html_nested:
         covdata.populate_directories(sorted_keys, options.root_filter)
 
-    cdata_fname: Dict[str, str] = {}
-    cdata_sourcefile: Dict[str, Optional[str]] = {}
+    cdata_fname = dict[str, str]()
+    cdata_sourcefile = dict[str, Optional[str]]()
     for f in sorted_keys + [v.dirname for v in covdata.directories]:
         filtered_fname = options.root_filter.sub("", f)
         if filtered_fname != "":
@@ -485,10 +485,10 @@ def write_root_page(
     root_info: RootInfo,
     output_file: str,
     covdata: CoverageContainer,
-    cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, Any],
-    data: Dict[str, Any],
-    sorted_keys: List[str],
+    cdata_fname: dict[str, str],
+    cdata_sourcefile: dict[str, Any],
+    data: dict[str, Any],
+    sorted_keys: list[str],
 ) -> None:
     """Generate the root HTML file that contains the high level report."""
     files = []
@@ -515,9 +515,9 @@ def write_source_pages(
     root_info: RootInfo,
     functions_output_file: str,
     covdata: CoverageContainer,
-    cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, Any],
-    data: Dict[str, Any],
+    cdata_fname: dict[str, str],
+    cdata_sourcefile: dict[str, Any],
+    data: dict[str, Any],
 ) -> None:
     """Write a page for each source file."""
     error_no_files_not_found = 0
@@ -566,9 +566,9 @@ def write_directory_pages(
     root_info: RootInfo,
     output_file: str,
     covdata: CoverageContainer,
-    cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, Any],
-    data: Dict[str, Any],
+    cdata_fname: dict[str, str],
+    cdata_sourcefile: dict[str, Any],
+    data: dict[str, Any],
 ) -> None:
     """Write a page for each directory."""
     # The first directory is the shortest one --> This is the root dir
@@ -606,10 +606,10 @@ def write_single_page(
     root_info: RootInfo,
     output_file: str,
     covdata: CoverageContainer,
-    sorted_keys: List[str],
-    cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, Any],
-    data: Dict[str, Any],
+    sorted_keys: list[str],
+    cdata_fname: dict[str, str],
+    cdata_sourcefile: dict[str, Any],
+    data: dict[str, Any],
 ) -> None:
     """Write a single page HTML report."""
     error_no_files_not_found = 0
@@ -632,7 +632,7 @@ def write_single_page(
                 root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
             )
         )
-    directories: List[Dict[str, Any]] = [{"entries": all_files}]
+    directories = list[dict[str, Any]]([{"entries": all_files}])
     if root_info.single_page == "js-enabled":
         for dircov in covdata.directories:
             directories.append(
@@ -669,7 +669,7 @@ def get_coverage_data(
     cdata: Union[CoverageContainerDirectory, FileCoverage],
     link_report: str,
     cdata_fname: str,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Get the coverage data"""
 
     medium_threshold = root_info.medium_threshold
@@ -759,21 +759,23 @@ def get_coverage_data(
 def get_directory_data(
     options: Options,
     root_info: RootInfo,
-    cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, str],
+    cdata_fname: dict[str, str],
+    cdata_sourcefile: dict[str, str],
     covdata_dir: CoverageContainerDirectory,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Get the data for a directory to generate the HTML"""
     relative_path = cdata_fname[covdata_dir.dirname]
     if relative_path == ".":
         relative_path = ""
-    directory_data: Dict[str, Any] = {
-        "dirname": (
-            cdata_sourcefile[covdata_dir.dirname]
-            if cdata_fname[covdata_dir.dirname]
-            else "/"
-        ),
-    }
+    directory_data = dict[str, Any](
+        {
+            "dirname": (
+                cdata_sourcefile[covdata_dir.dirname]
+                if cdata_fname[covdata_dir.dirname]
+                else "/"
+            ),
+        }
+    )
 
     sorted_keys = covdata_dir.sort_coverage(
         sort_key=options.sort_key,
@@ -803,31 +805,33 @@ def get_file_data(
     options: Options,
     root_info: RootInfo,
     filename: str,
-    cdata_fname: Dict[str, str],
-    cdata_sourcefile: Dict[str, str],
+    cdata_fname: dict[str, str],
+    cdata_sourcefile: dict[str, str],
     cdata: FileCoverage,
-) -> Tuple[Dict[str, Any], Dict[Tuple[str, str, int], Dict[str, Any]], bool]:
+) -> tuple[dict[str, Any], dict[tuple[str, str, int], dict[str, Any]], bool]:
     """Get the data for a file to generate the HTML"""
     formatter = get_formatter(options)
 
-    file_data: Dict[str, Any] = {
-        "filename": cdata_fname[filename],
-        "html_filename": os.path.basename(cdata_sourcefile[filename]),
-        "source_lines": [],
-        "function_list": [],
-    }
+    file_data = dict[str, Any](
+        {
+            "filename": cdata_fname[filename],
+            "html_filename": os.path.basename(cdata_sourcefile[filename]),
+            "source_lines": [],
+            "function_list": [],
+        }
+    )
     file_data.update(
         get_coverage_data(
             root_info, cdata, cdata_sourcefile[filename], cdata_fname[filename]
         )
     )
-    functions: Dict[Tuple[str, str, int], Dict[str, Any]] = {}
+    functions = dict[tuple[str, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
     for f_cdata in sorted(
         cdata.functions.values(), key=lambda f_cdata: f_cdata.demangled_name
     ):
         for lineno in sorted(f_cdata.count.keys()):
-            f_data: Dict[str, Any] = {}
+            f_data = dict[str, Any]()
             f_data["name"] = f_cdata.demangled_name
             f_data["filename"] = cdata_fname[filename]
             f_data["html_filename"] = os.path.basename(cdata_sourcefile[filename])
@@ -896,7 +900,7 @@ def dict_from_stat(
     stat: Union[CoverageStat, DecisionCoverageStat],
     coverage_class: Callable[[Optional[float]], str],
     default: Optional[float] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Get a dictionary from the stats."""
     coverage_default = "-" if default is None else default
     data = {
@@ -914,7 +918,7 @@ def dict_from_stat(
 
 def source_row(
     lineno: int, source: str, linecov: Optional[LineCoverage]
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Get information for a row"""
     linebranch = None
     linecondition = None
@@ -951,7 +955,7 @@ def source_row(
     }
 
 
-def source_row_branch(branches: Dict[int, BranchCoverage]) -> Optional[Dict[str, Any]]:
+def source_row_branch(branches: dict[int, BranchCoverage]) -> Optional[dict[str, Any]]:
     """Get branch information for a row"""
     if not branches:
         return None
@@ -983,8 +987,8 @@ def source_row_branch(branches: Dict[int, BranchCoverage]) -> Optional[Dict[str,
 
 
 def source_row_condition(
-    conditions: Dict[int, ConditionCoverage],
-) -> Optional[Dict[str, Any]]:
+    conditions: dict[int, ConditionCoverage],
+) -> Optional[dict[str, Any]]:
     """Get condition information for a row."""
     if not conditions:
         return None
@@ -1018,12 +1022,12 @@ def source_row_condition(
 
 def source_row_decision(
     decision: Optional[DecisionCoverage],
-) -> Optional[Dict[str, Any]]:
+) -> Optional[dict[str, Any]]:
     """Get decision information for a row"""
     if decision is None:
         return None
 
-    items: List[Dict[str, Any]] = []
+    items = list[dict[str, Any]]()
 
     if isinstance(decision, DecisionCoverageUncheckable):
         items.append(
@@ -1068,7 +1072,7 @@ def source_row_decision(
     }
 
 
-def source_row_call(callcov: Dict[int, CallCoverage]) -> Optional[Dict[str, Any]]:
+def source_row_call(callcov: dict[int, CallCoverage]) -> Optional[dict[str, Any]]:
     """Get call information for a source row."""
     if not callcov:
         return None

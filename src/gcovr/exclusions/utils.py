@@ -20,14 +20,14 @@
 """Utils for exclusion of lines and branches"""
 
 import logging
-from typing import Callable, Dict, Iterable, List, Optional, Tuple
+from typing import Callable, Iterable, Optional
 
 from ..coverage import FileCoverage, FunctionCoverage
 
 LOGGER = logging.getLogger("gcovr")
 
 ExclusionPredicate = Callable[[int], bool]
-FunctionListByLine = Dict[int, List[FunctionCoverage]]
+FunctionListByLine = dict[int, list[FunctionCoverage]]
 
 
 def function_exclude_not_supported(
@@ -71,7 +71,7 @@ def get_functions_by_line(filecov: FileCoverage) -> FunctionListByLine:
 
 def get_function_exclude_ranges(
     filename: str, lineno: int, columnno: int, *, functions_by_line: FunctionListByLine
-) -> List[Tuple[int, int]]:
+) -> list[tuple[int, int]]:
     """Get the exclude range for a given function."""
     exclude_ranges = []
     if functions_by_line:
@@ -161,7 +161,7 @@ def apply_exclusion_ranges(
 
 
 def make_is_in_any_range_inclusive(
-    ranges: List[Tuple[int, int]],
+    ranges: list[tuple[int, int]],
 ) -> ExclusionPredicate:
     """
     Create a function to check whether an input is in any range (inclusive).
@@ -212,14 +212,14 @@ def make_is_in_any_range_inclusive(
     return is_in_any_range
 
 
-def _lines_from_sparse(sparse: Iterable[Tuple[int, str]]) -> List[str]:
+def _lines_from_sparse(sparse: Iterable[tuple[int, str]]) -> list[str]:
     """
     Convert lineno–source tuples to a flat list, useful for tests.
 
     >>> _lines_from_sparse([(3, 'foo'), (2, 'bar'), (3, 'foo2')])
     ['', 'bar', 'foo2']
     """
-    lines: List[str] = []
+    lines = list[str]()
     for lineno, source in sparse:
         lines.extend("" for _ in range(len(lines), lineno))
         lines[lineno - 1] = source

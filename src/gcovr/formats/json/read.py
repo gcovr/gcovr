@@ -21,7 +21,7 @@ import json
 import logging
 import os
 from glob import glob
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Optional
 
 from . import versions
 from ...coverage import (
@@ -113,9 +113,9 @@ def read_report(options: Options) -> CoverageContainer:
     return covdata
 
 
-def _function_from_json(json_function: Dict[str, Any]) -> FunctionCoverage:
-    start: Optional[Tuple[int, int]] = None
-    end: Optional[Tuple[int, int]] = None
+def _function_from_json(json_function: dict[str, Any]) -> FunctionCoverage:
+    start: Optional[tuple[int, int]] = None
+    end: Optional[tuple[int, int]] = None
     if "pos" in json_function:
         start_l_c = json_function["pos"][0].split(":", maxsplit=1)
         start = (int(start_l_c[0]), int(start_l_c[1]))
@@ -133,7 +133,7 @@ def _function_from_json(json_function: Dict[str, Any]) -> FunctionCoverage:
     )
 
 
-def _line_from_json(json_line: Dict[str, Any]) -> LineCoverage:
+def _line_from_json(json_line: dict[str, Any]) -> LineCoverage:
     linecov = LineCoverage(
         json_line["line_number"],
         count=json_line["count"],
@@ -163,7 +163,7 @@ def _line_from_json(json_line: Dict[str, Any]) -> LineCoverage:
     return linecov
 
 
-def _branch_from_json(json_branch: Dict[str, Any]) -> BranchCoverage:
+def _branch_from_json(json_branch: dict[str, Any]) -> BranchCoverage:
     return BranchCoverage(
         blockno=json_branch["blockno"],
         count=json_branch["count"],
@@ -174,7 +174,7 @@ def _branch_from_json(json_branch: Dict[str, Any]) -> BranchCoverage:
     )
 
 
-def _condition_from_json(json_condition: Dict[str, Any]) -> ConditionCoverage:
+def _condition_from_json(json_condition: dict[str, Any]) -> ConditionCoverage:
     return ConditionCoverage(
         count=json_condition["count"],
         covered=json_condition["covered"],
@@ -183,12 +183,12 @@ def _condition_from_json(json_condition: Dict[str, Any]) -> ConditionCoverage:
     )
 
 
-def _call_from_json(json_call: Dict[str, Any]) -> CallCoverage:
+def _call_from_json(json_call: dict[str, Any]) -> CallCoverage:
     return CallCoverage(callno=json_call["callno"], covered=json_call["covered"])
 
 
 def _decision_from_json(
-    json_decision: Optional[Dict[str, Any]],
+    json_decision: Optional[dict[str, Any]],
 ) -> Optional[DecisionCoverage]:
     if json_decision is None:
         return None

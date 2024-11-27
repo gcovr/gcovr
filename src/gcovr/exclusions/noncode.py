@@ -21,7 +21,6 @@
 Heuristics for ignoring data on lines that don't look like actual code.
 """
 
-from typing import List
 import re
 import logging
 
@@ -34,7 +33,7 @@ _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
 
 
-def remove_unreachable_branches(filecov: FileCoverage, *, lines: List[str]) -> None:
+def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> None:
     """Remove branches on lines that look like they don't contain useful code."""
     for linecov in filecov.lines.values():
         if not linecov.branches:
@@ -52,7 +51,7 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: List[str]) -> N
         linecov.branches = {}
 
 
-def remove_noncode_lines(filecov: FileCoverage, *, lines: List[str]) -> None:
+def remove_noncode_lines(filecov: FileCoverage, *, lines: list[str]) -> None:
     """Remove lines that look like non-code."""
     # iterate over a shallow copy
     for linecov in list(filecov.lines.values()):

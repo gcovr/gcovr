@@ -24,7 +24,7 @@ import argparse
 import logging
 import platform
 import re
-from typing import Any, Dict, List, Optional, Tuple, Type, Union, Callable
+from typing import Any, Optional, Type, Union, Callable
 import os
 
 from .utils import force_unix_separator, is_fs_case_insensitive
@@ -262,7 +262,7 @@ class OutputOrDefault:
     @classmethod
     def choose(
         cls,
-        choices: List[Optional[OutputOrDefault]],
+        choices: list[Optional[OutputOrDefault]],
         default: Optional[OutputOrDefault] = None,
     ) -> Optional[OutputOrDefault]:
         """select the first choice that contains a value
@@ -317,7 +317,7 @@ class GcovrConfigOptionAction(argparse.Action):  # pylint: disable=abstract-meth
 
     @abstractmethod
     def store_config_key(
-        self, namespace: Dict[str, Any], values: Any, config: Optional[str]
+        self, namespace: dict[str, Any], values: Any, config: Optional[str]
     ) -> None:
         """Method to store a configuration key."""
 
@@ -325,7 +325,7 @@ class GcovrConfigOptionAction(argparse.Action):  # pylint: disable=abstract-meth
 class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     """Argparse action for deprecated options to map on new option with a deprecation warning."""
 
-    def __init__(self, option_strings: List[str], dest: str, **kwargs: Any) -> None:
+    def __init__(self, option_strings: list[str], dest: str, **kwargs: Any) -> None:
         super().__init__(option_strings, dest, **kwargs)
 
     def __call__(
@@ -342,7 +342,7 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
         setattr(namespace, self.dest, self.value)
 
     def store_config_key(
-        self, namespace: Dict[str, Any], values: Any, config: Optional[str]
+        self, namespace: dict[str, Any], values: Any, config: Optional[str]
     ) -> None:
         LOGGER.warning(
             f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
@@ -421,11 +421,11 @@ class GcovrConfigOption:
     def __init__(
         self,
         name: str,
-        flags: Optional[List[str]] = None,
+        flags: Optional[list[str]] = None,
         *,
         help: str,
         action: Union[str, Type[GcovrConfigOptionAction]] = "store",
-        choices: Optional[Union[Tuple[int, ...], Tuple[str, ...]]] = None,
+        choices: Optional[Union[tuple[int, ...], tuple[str, ...]]] = None,
         const: Any = None,
         const_negate: Any = None,
         config: Union[str, bool] = True,
@@ -451,7 +451,7 @@ class GcovrConfigOption:
                 "Option must be named, positional, or config argument."
             )
 
-        negate: List[str] = []
+        negate = list[str]()
         if flags and const_negate is not None:
             negate = ["--no-" + f[2:] for f in flags if f.startswith("--")]
             if not negate:
@@ -534,8 +534,8 @@ class GcovrConfigOption:
 def _derive_configuration_key(
     config: Union[str, bool],
     *,
-    flags: List[str],
-) -> Optional[List[str]]:
+    flags: list[str],
+) -> Optional[list[str]]:
     if config is True:
         config_keys = []
         for flag in flags:
