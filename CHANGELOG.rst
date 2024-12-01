@@ -44,15 +44,11 @@ Internal changes:
 - Add ``pylint`` for testing code. (:issue:`1014`)
 - Align variable names across the files. (:issue:`1015`)
 - Rework exclusion handling to keep information about excluded coverage. (:issue:`1016`)
-- Add ``mypy`` for testing code. (:issue:`1019`)
+- Add ``mypy`` (using strict configuration) for testing code. (:issue:`1019`, :issue:`1028`, :issue:`1029`)
 - Add a container class for the coverage data. (:issue:`1023`)
 - Replace setup.py with hatchling. (:issue:`1026`)
 - Move gcovr to ``src`` directory. (:issue:`1027`)
-- Activate options ``disallow_incomplete_defs``, ``check_untyped_defs``, ``warn_unused_configs``,
-  ``disallow_any_generics``, ``disallow_subclassing_any``, ``disallow_untyped_calls``, ``disallow_untyped_defs``,
-  ``disallow_incomplete_defs``, ``check_untyped_defs``, ``disallow_untyped_decorators``, ``warn_redundant_casts``,
-  ``warn_unused_ignores``, ``warn_return_any``, ``no_implicit_reexport``, ``strict_equality``, ``extra_checks``
-  in ``mypy``. (:issue:`1028`, :issue:`1029`)
+- The main routine doesn't call ``sys.exit`` on it's own, we always return the exit code. (:issue:`1029`)
 
 
 8.2 (13 October 2024)
