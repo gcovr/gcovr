@@ -106,6 +106,9 @@ __version__ = {version!r}
 """
 
 [tool.pylint]
+ignore-paths = [
+    "tests/*",
+]
 fail-under = 9.99
 disable = [
     "unknown-option-value",  # This is because we are testing with several versions
@@ -124,23 +127,33 @@ disable = [
     "too-many-instance-attributes",
     "R0801"  # Similar lines
 ]
-ignore-paths = [
-    "tests/*"
-]
 extension-pkg-allow-list = [
     "lxml",
     "gcovr"
 ]
 
 [tool.mypy]
-strict = true
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
+disallow_untyped_decorators = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+no_implicit_reexport = true
+strict_equality = true
+extra_checks = true
 disable_error_code = "attr-defined"
+exclude = [
+    "build/.*"
+]
 
 [tool.ruff]
 exclude = [
-    ".git",
     "__pycache__",
     "tests/cmake_gtest/build/_deps",
     "src/gcovr/version.py",

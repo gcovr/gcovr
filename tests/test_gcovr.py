@@ -260,7 +260,7 @@ def find_reference_files(output_pattern: list[str]) -> Iterable[tuple[str, str]]
 
 
 @pytest.fixture(scope="module")
-def compiled(request: pytest.FixtureRequest, name: str) -> Iterable[str]:
+def compiled(name: str) -> Iterable[str]:
     path = os.path.join(BASE_DIRECTORY, name)
     assert run(["make", "clean"], cwd=path)
     assert run(["make", "all"], cwd=path)
@@ -432,7 +432,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
             )
 
     metafunc.parametrize(
-        "name, format, available_targets, generate_reference, update_reference, archive_differences",
+        "name, current_format, available_targets, generate_reference, update_reference, archive_differences",
         collected_params,
         indirect=False,
         scope="module",
@@ -549,18 +549,18 @@ OUTPUT_PATTERN = dict(
 
 def test_build(
     compiled: str,
-    format: str,
+    current_format: str,
     available_targets: str,
     generate_reference: bool,
     update_reference: bool,
     archive_differences: bool,
 ) -> None:
     name = compiled
-    scrub = SCRUBBERS[format]
-    output_pattern = OUTPUT_PATTERN[format]
+    scrub = SCRUBBERS[current_format]
+    output_pattern = OUTPUT_PATTERN[current_format]
 
     encoding = "utf8"
-    if format == "html" and name.startswith("html-encoding-"):
+    if current_format == "html" and name.startswith("html-encoding-"):
         if m := re.match("^html-encoding-(.*)$", name):
             encoding = m.group(1)
 
@@ -568,7 +568,7 @@ def test_build(
     make_options = ["-j", "4"]
     if not IS_MACOS:
         make_options.append("--output-sync=target")
-    assert run(["make", *make_options, format])
+    assert run(["make", *make_options, current_format])
 
     if generate_reference:  # pragma: no cover
         generate_reference_data(output_pattern)

@@ -689,7 +689,7 @@ class FileCoverage:
 class CoverageContainer:
     """Coverage container holding all the coverage data."""
 
-    def __init__(self: CoverageContainer) -> None:
+    def __init__(self) -> None:
         self.data = dict[str, FileCoverage]()
         self.directories = list[CoverageContainerDirectory]()
 

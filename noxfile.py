@@ -260,7 +260,7 @@ def ruff_check(session: nox.Session) -> None:
     if session.posargs:
         args = session.posargs
     else:
-        args = DEFAULT_LINT_ARGUMENTS
+        args = ["."]
     session.run("ruff", "check", *args)
 
 
@@ -271,7 +271,7 @@ def ruff_format(session: nox.Session) -> None:
     if session.posargs:
         args = session.posargs
     else:
-        args = ["--diff", *DEFAULT_LINT_ARGUMENTS]
+        args = ["--diff", "."]
     session.run("ruff", "format", *args)
 
 
@@ -308,7 +308,7 @@ def mypy(session: nox.Session) -> None:
     if session.posargs:
         args = session.posargs
     else:
-        args = ["--install-types", "--non-interactive", *DEFAULT_LINT_ARGUMENTS]
+        args = ["--install-types", "--non-interactive", "."]
     session.run("mypy", *args)
 
 

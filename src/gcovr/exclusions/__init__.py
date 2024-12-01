@@ -74,23 +74,19 @@ class ExclusionOptions:
 def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
     """Get the exclusion options."""
 
-    exclusion_options = ExclusionOptions()
-
-    exclusion_options.respect_exclusion_markers = options.respect_exclusion_markers
-    exclusion_options.exclude_functions = options.exclude_functions
-    exclusion_options.exclude_lines_by_pattern = options.exclude_lines_by_pattern
-    exclusion_options.exclude_branches_by_pattern = options.exclude_branches_by_pattern
-    exclusion_options.exclude_pattern_prefix = options.exclude_pattern_prefix
-    exclusion_options.exclude_throw_branches = options.exclude_throw_branches
-    exclusion_options.exclude_unreachable_branches = (
-        options.exclude_unreachable_branches
+    return ExclusionOptions(
+        respect_exclusion_markers=options.respect_exclusion_markers,
+        exclude_functions=options.exclude_functions,
+        exclude_lines_by_pattern=options.exclude_lines_by_pattern,
+        exclude_branches_by_pattern=options.exclude_branches_by_pattern,
+        exclude_pattern_prefix=options.exclude_pattern_prefix,
+        exclude_throw_branches=options.exclude_throw_branches,
+        exclude_unreachable_branches=(options.exclude_unreachable_branches),
+        exclude_function_lines=options.exclude_function_lines,
+        exclude_internal_functions=options.exclude_internal_functions,
+        exclude_noncode_lines=options.exclude_noncode_lines,
+        exclude_calls=options.exclude_calls,
     )
-    exclusion_options.exclude_function_lines = options.exclude_function_lines
-    exclusion_options.exclude_internal_functions = options.exclude_internal_functions
-    exclusion_options.exclude_noncode_lines = options.exclude_noncode_lines
-    exclusion_options.exclude_calls = options.exclude_calls
-
-    return exclusion_options
 
 
 def apply_all_exclusions(
