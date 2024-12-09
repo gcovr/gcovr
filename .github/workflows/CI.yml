@@ -58,18 +58,23 @@ jobs:
         run: |
           cspell --config cspell.json --color --show-suggestions '**'
 
-  upload-lcov:
+  upload-coverage:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Upload LCOV coverage
         uses: actions/upload-artifact@v4
         with:
-          name: "coverage"
+          name: "coverage-lcov"
           path: ./tests/nested/reference/gcc-5/*.*
+      - name: Upload Coveralls coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: "coverage-coveralls"
+          path: ./tests/nested2/reference/gcc-5/*.*
 
   host:
-    needs: [changelog-check, spell-check, upload-lcov]
+    needs: [changelog-check, spell-check, upload-coverage]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       os: ${{ matrix.os }}
@@ -139,7 +144,7 @@ jobs:
 
 
   docker:
-    needs: [changelog-check, spell-check, upload-lcov]
+    needs: [changelog-check, spell-check, upload-coverage]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       container: true
