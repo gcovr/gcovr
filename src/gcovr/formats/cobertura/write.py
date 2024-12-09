@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
+import os
 from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
@@ -129,7 +130,7 @@ def write_report(
 
     # Populate the <sources> element: this is the root directory
     etree.SubElement(sources, "source").text = force_unix_separator(
-        options.root.strip()
+        os.path.abspath(options.root)
     )
 
     with open_binary_for_writing(output_file, "cobertura.xml") as fh:
