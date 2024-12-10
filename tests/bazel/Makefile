@@ -19,6 +19,8 @@ BAZEL_COVERAGE_OPTIONS += --config=clang-gcov
 else
 endif
 
+export USE_BAZEL_VERSION := 7.4.1
+
 all:
 	$(info BASE_OS=$(BASE_OS))
 	$(info IS_WINDOWS=$(IS_WINDOWS))
