@@ -41,6 +41,7 @@ from ...exclusions import (
     apply_all_exclusions,
     get_exclusion_options_from_options,
 )
+from ...filter import Filter, is_file_excluded
 from ...decision_analysis import DecisionParser
 from ...merging import (
     MergeOptions,
@@ -56,7 +57,6 @@ from ...merging import (
 )
 from ...options import Options
 from ...utils import (
-    is_file_excluded,
     search_file,
     commonpath,
     is_fs_case_insensitive,
@@ -971,8 +971,8 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str,
-    gcov_filter: list[re.Pattern[str]],
-    gcov_exclude: list[re.Pattern[str]],
+    gcov_filter: list[Filter],
+    gcov_exclude: list[Filter],
     chdir: str,
 ) -> tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""

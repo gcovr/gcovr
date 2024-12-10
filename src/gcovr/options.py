@@ -27,7 +27,7 @@ import re
 from typing import Any, Optional, Type, Union, Callable
 import os
 
-from .utils import force_unix_separator, is_fs_case_insensitive
+from .filter import AbsoluteFilter, Filter, RelativeFilter
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -121,85 +121,6 @@ class NonEmptyFilterOption(FilterOption):
         if not regex:
             raise ArgumentTypeError("filter cannot be empty")
         super().__init__(regex, path_context)
-
-
-class Filter:
-    """Base class for a filename filter."""
-
-    def __init__(self, pattern: str) -> None:
-        flags = re.IGNORECASE if is_fs_case_insensitive() else 0
-        self.pattern = re.compile(pattern, flags)
-
-    def match(self, path: str) -> bool:
-        """Return True if the given path (always with /) matches the regular expression."""
-        os_independent_path = force_unix_separator(path)
-        if self.pattern.match(os_independent_path):
-            LOGGER.debug(f"  Filter {self} matched for path {os_independent_path}.")
-            return True
-        return False
-
-    def __str__(self) -> str:
-        return f"{type(self).__name__}({self.pattern.pattern})"
-
-
-class AbsoluteFilter(Filter):
-    """Class for a filename filter which matches against the real path of a file."""
-
-    def match(self, path: str) -> bool:
-        """Return True if the given path with all symlinks resolved matches the filter."""
-        path = os.path.realpath(path)
-        return super().match(path)
-
-
-class RelativeFilter(Filter):
-    """Class for a filename filter which matches against the relative paths of a file."""
-
-    def __init__(self, root: str, pattern: str) -> None:
-        super().__init__(pattern)
-        self.root = os.path.realpath(root)
-
-    def match(self, path: str) -> bool:
-        """Return True if the given path with all symlinks resolved matches the filter."""
-        path = os.path.realpath(path)
-
-        # On Windows, a relative path can never cross drive boundaries.
-        # If so, the relative filter cannot match.
-        if platform.system() == "Windows":
-            path_drive, _ = os.path.splitdrive(path)
-            root_drive, _ = os.path.splitdrive(self.root)
-            if path_drive != root_drive:  # pragma: no cover
-                return False
-
-        relpath = os.path.relpath(path, self.root)
-        return super().match(relpath)
-
-    def __str__(self) -> str:
-        return f"RelativeFilter({self.pattern.pattern} root={self.root})"
-
-
-class AlwaysMatchFilter(Filter):
-    """Class for a filter which matches for all files."""
-
-    def __init__(self) -> None:
-        super().__init__("")
-
-    def match(self, path: str) -> bool:
-        """Return always True."""
-        return True
-
-
-class DirectoryPrefixFilter(Filter):
-    """Class for a filename filter which matches for all files in a directory."""
-
-    def __init__(self, directory: str) -> None:
-        os_independent_path = force_unix_separator(directory)
-        pattern = re.escape(f"{os_independent_path}/")
-        super().__init__(pattern)
-
-    def match(self, path: str) -> bool:
-        """Return True if the given path matches the filter."""
-        path = os.path.normpath(path)
-        return super().match(path)
 
 
 class OutputOrDefault:

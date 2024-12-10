@@ -21,13 +21,14 @@ import logging
 from typing import Callable, Optional
 
 from ..coverage import CoverageContainer, FileCoverage
+from ..filter import is_file_excluded
 from ..merging import (
     get_merge_mode_from_options,
     merge_covdata,
     insert_file_coverage,
 )
 from ..options import GcovrConfigOption, Options, OutputOrDefault
-from ..utils import search_file, is_file_excluded
+from ..utils import search_file
 
 
 # the handler
