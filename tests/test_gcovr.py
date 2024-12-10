@@ -122,7 +122,7 @@ RE_XML_ATTR_VERSION = re.compile(r'version="[^"]*"')
 
 RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
 
-RE_LCOV_PATH = re.compile(r"(SF:).+?/(tests/.+?)$", flags=re.MULTILINE)
+RE_LCOV_PATH = re.compile(r"(SF:).+?/((?:tests|doc)/.+?)$", flags=re.MULTILINE)
 
 RE_COBERTURA_SOURCE_DIR = re.compile(r"(<source>).+?/(tests/.+?</source>)")
 
