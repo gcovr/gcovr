@@ -639,17 +639,17 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
     from gcovr.formats import read_reports
     from gcovr.configuration import merge_options_and_set_defaults
 
-    testfile = "/path/to/source/code.cpp"
+    testfile = "code.cpp"
     xml_data = f"""<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 7.1">
   <sources>
-    <source>.</source>
+    <source>{tmp_path}</source>
   </sources>
   <packages>
     <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">
       <classes>
-        <class name="code_cpp" filename="{testfile}" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+        <class name="code_cpp" filename="code.cpp" line-rate="0.9" branch-rate="0.75" complexity="0.0">
           <methods/>
           <lines>
             <line number="3" hits="3" branch="false"/>
@@ -677,7 +677,6 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
   </packages>
 </coverage>
     """
-    testfile = os.path.abspath(testfile)
     tempfile = tmp_path / "valid_cobertura.xml"
     with tempfile.open("w+") as fp:
         fp.write(xml_data)
@@ -688,6 +687,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
     )
     covdata = read_reports(opts)
     assert covdata is not None
+    testfile = os.path.join(tmp_path, testfile)
     assert testfile in covdata
     filecov = covdata[testfile]
     assert len(filecov.lines) == 10
