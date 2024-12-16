@@ -2,7 +2,7 @@
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.6808510638297872" branch-rate="0.4" lines-covered="32" lines-valid="47" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="1728808696" version="gcovr 8.2+main">
   <sources>
-    <source>/gcovr/tests/linked</source>
+     <source>tests/linked</source>
   </sources>
   <packages>
     <package name="subdir.A" line-rate="0.5517241379310345" branch-rate="0.3333333333333333" complexity="0.0">
