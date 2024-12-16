@@ -62,16 +62,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Upload LCOV coverage
+      - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
-          name: "coverage-lcov"
+          name: "coverage"
           path: ./tests/nested/reference/gcc-5/*.*
-      - name: Upload Coveralls coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: "coverage-coveralls"
-          path: ./tests/nested2/reference/gcc-5/*.*
 
   host:
     needs: [changelog-check, spell-check, upload-coverage]
