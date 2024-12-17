@@ -6,12 +6,12 @@
     "service_pull_request": "pr",
     "git": {
         "head": {
-            "id": "3de5a205b8d1807a2bf9005e60b23791479122eb",
+            "id": "7169178d498ea44b79d0c4bc99e0d41089ac3434",
             "author_name": "Michael F\u00f6rderer",
             "author_email": "40258682+Spacetown@users.noreply.github.com",
             "committer_name": "GitHub",
             "committer_email": "noreply@github.com",
-            "message": "Merge d8333d42e461a261e0997a14ea30a7a39c481a59 into be355b4dfa3f8920a98cf3b2cc2167f0d239d617"
+            "message": "Merge efa793b8e98e3b6d11f8c5e59873976a2c4926ef into ff222ff4cca9b084248f2938f45880a8e984777d"
         },
         "branch": "branch",
         "remotes": [
@@ -23,8 +23,8 @@
     },
     "source_files": [
         {
-            "name": "main.cpp",
-            "source_digest": "cd30d47dece5663b7a84e38c9344b4ab",
+            "name": "tests/excl-line-branch/bar.cpp",
+            "source_digest": "7c2adb8c2d04277ae316f0bc581968cc",
             "coverage": [
                 null,
                 null,
@@ -32,14 +32,25 @@
                 null,
                 null,
                 null,
-                3,
-                3,
-                2,
-                2,
                 null,
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0
+            ]
+        },
+        {
+            "name": "tests/excl-line-branch/foo.cpp",
+            "source_digest": "3d3327303c689440297b037f75ff9f29",
+            "coverage": [
                 null,
                 5,
                 5,
@@ -61,14 +72,29 @@
                 null,
                 null,
                 1,
-                5,
+                5
+            ]
+        },
+        {
+            "name": "tests/excl-line-branch/main.cpp",
+            "source_digest": "5f51924059b39181646c5b2d21604f3b",
+            "coverage": [
                 null,
                 null,
                 null,
                 null,
                 null,
                 null,
-                0,
+                null,
+                null,
+                null,
+                3,
+                3,
+                2,
+                2,
+                null,
+                null,
+                null,
                 null,
                 null,
                 1,

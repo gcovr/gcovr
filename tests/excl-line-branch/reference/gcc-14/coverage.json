@@ -2,45 +2,71 @@
     "gcovr/format_version": "0.10",
     "files": [
         {
-            "file": "main.cpp",
+            "file": "tests/excl-line-branch/bar.cpp",
             "lines": [
                 {
-                    "line_number": 7,
-                    "function_name": "_ZN3BarC2Ev",
-                    "count": 1,
+                    "line_number": 14,
+                    "function_name": "_Z3bari",
+                    "count": 0,
                     "branches": [],
                     "block_ids": [],
-                    "gcovr/md5": "7d2f282a8746c23f7f938eb7b5592e06"
+                    "gcovr/md5": "3c9c1937d90004711fa6cda5e218dc87",
+                    "gcovr/excluded": true
                 },
                 {
-                    "line_number": 8,
-                    "function_name": "_ZN3BarC2Ev",
-                    "count": 1,
-                    "branches": [],
-                    "block_ids": [],
-                    "gcovr/md5": "5efee26ba06711f9395b3c3bc7a9d94a"
-                },
-                {
-                    "line_number": 9,
-                    "function_name": "_ZN3BarD0Ev",
-                    "count": 1,
-                    "branches": [],
-                    "block_ids": [],
-                    "gcovr/md5": "ef89afadbfb397fa2428716379142419"
-                },
-                {
-                    "line_number": 10,
-                    "function_name": "_ZN3BarD0Ev",
-                    "count": 1,
+                    "line_number": 15,
+                    "function_name": "_Z3bari",
+                    "count": 0,
                     "branches": [],
                     "block_ids": [
-                        2,
-                        3
+                        2
                     ],
-                    "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
+                    "gcovr/excluded": true
                 },
                 {
                     "line_number": 16,
+                    "function_name": "_Z3bari",
+                    "count": 0,
+                    "branches": [],
+                    "block_ids": [
+                        3
+                    ],
+                    "gcovr/md5": "4071653b480e72354bcfb2b2e78f92fd",
+                    "gcovr/excluded": true
+                },
+                {
+                    "line_number": 18,
+                    "function_name": "_Z3bari",
+                    "count": 0,
+                    "branches": [],
+                    "block_ids": [
+                        4
+                    ],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
+                    "gcovr/excluded": true
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_Z3bari",
+                    "demangled_name": "bar(int)",
+                    "lineno": 14,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0,
+                    "gcovr/excluded": true,
+                    "pos": [
+                        "14:5",
+                        "19:1"
+                    ]
+                }
+            ]
+        },
+        {
+            "file": "tests/excl-line-branch/foo.cpp",
+            "lines": [
+                {
+                    "line_number": 2,
                     "function_name": "_Z3fooi",
                     "count": 5,
                     "branches": [],
@@ -48,7 +74,7 @@
                     "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31"
                 },
                 {
-                    "line_number": 17,
+                    "line_number": 3,
                     "function_name": "_Z3fooi",
                     "count": 5,
                     "branches": [
@@ -96,7 +122,7 @@
                     "gcovr/md5": "69d7cb531f90045147347c360a0d81d2"
                 },
                 {
-                    "line_number": 18,
+                    "line_number": 4,
                     "function_name": "_Z3fooi",
                     "count": 2,
                     "branches": [],
@@ -106,7 +132,7 @@
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
                 },
                 {
-                    "line_number": 19,
+                    "line_number": 5,
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
@@ -118,7 +144,7 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 20,
+                    "line_number": 6,
                     "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
@@ -128,7 +154,7 @@
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
                 },
                 {
-                    "line_number": 21,
+                    "line_number": 7,
                     "function_name": "_Z3fooi",
                     "count": 2,
                     "branches": [
@@ -163,7 +189,7 @@
                     "gcovr/md5": "189a346e59b4b9eb1653c629e9e00396"
                 },
                 {
-                    "line_number": 22,
+                    "line_number": 8,
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
@@ -173,7 +199,7 @@
                     "gcovr/md5": "30947b981b8563f1d1a6690c87ba3db6"
                 },
                 {
-                    "line_number": 23,
+                    "line_number": 9,
                     "function_name": "_Z3fooi",
                     "count": 2,
                     "branches": [
@@ -208,7 +234,7 @@
                     "gcovr/md5": "d4dfe4cbc7a957b4db133508a4597ed6"
                 },
                 {
-                    "line_number": 24,
+                    "line_number": 10,
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
@@ -218,7 +244,7 @@
                     "gcovr/md5": "3b131baf29a59cf4c789f42a8cb54194"
                 },
                 {
-                    "line_number": 28,
+                    "line_number": 14,
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
@@ -229,7 +255,7 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 29,
+                    "line_number": 15,
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
@@ -240,7 +266,7 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 30,
+                    "line_number": 16,
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
@@ -251,7 +277,7 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 31,
+                    "line_number": 17,
                     "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
@@ -262,7 +288,7 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 35,
+                    "line_number": 21,
                     "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
@@ -270,51 +296,62 @@
                         16
                     ],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
-                },
+                }
+            ],
+            "functions": [
                 {
-                    "line_number": 38,
-                    "function_name": "_Z3bari",
-                    "count": 0,
+                    "name": "_Z3fooi",
+                    "demangled_name": "foo(int)",
+                    "lineno": 2,
+                    "execution_count": 5,
+                    "blocks_percent": 81.2,
+                    "pos": [
+                        "2:5",
+                        "22:1"
+                    ]
+                }
+            ]
+        },
+        {
+            "file": "tests/excl-line-branch/main.cpp",
+            "lines": [
+                {
+                    "line_number": 10,
+                    "function_name": "_ZN3BarC2Ev",
+                    "count": 1,
                     "branches": [],
                     "block_ids": [],
-                    "gcovr/md5": "3c9c1937d90004711fa6cda5e218dc87",
-                    "gcovr/excluded": true
+                    "gcovr/md5": "7d2f282a8746c23f7f938eb7b5592e06"
                 },
                 {
-                    "line_number": 39,
-                    "function_name": "_Z3bari",
-                    "count": 0,
+                    "line_number": 11,
+                    "function_name": "_ZN3BarC2Ev",
+                    "count": 1,
                     "branches": [],
-                    "block_ids": [
-                        2
-                    ],
-                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
-                    "gcovr/excluded": true
+                    "block_ids": [],
+                    "gcovr/md5": "5efee26ba06711f9395b3c3bc7a9d94a"
                 },
                 {
-                    "line_number": 40,
-                    "function_name": "_Z3bari",
-                    "count": 0,
+                    "line_number": 12,
+                    "function_name": "_ZN3BarD0Ev",
+                    "count": 1,
+                    "branches": [],
+                    "block_ids": [],
+                    "gcovr/md5": "ef89afadbfb397fa2428716379142419"
+                },
+                {
+                    "line_number": 13,
+                    "function_name": "_ZN3BarD0Ev",
+                    "count": 1,
                     "branches": [],
                     "block_ids": [
+                        2,
                         3
                     ],
-                    "gcovr/md5": "4071653b480e72354bcfb2b2e78f92fd",
-                    "gcovr/excluded": true
+                    "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
                 },
                 {
-                    "line_number": 42,
-                    "function_name": "_Z3bari",
-                    "count": 0,
-                    "branches": [],
-                    "block_ids": [
-                        4
-                    ],
-                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
-                    "gcovr/excluded": true
-                },
-                {
-                    "line_number": 46,
+                    "line_number": 19,
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
@@ -322,7 +359,7 @@
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
-                    "line_number": 47,
+                    "line_number": 20,
                     "function_name": "main",
                     "count": 6,
                     "branches": [
@@ -357,7 +394,7 @@
                     "gcovr/md5": "3aac4e3adb4400cb9a56145130946d99"
                 },
                 {
-                    "line_number": 48,
+                    "line_number": 21,
                     "function_name": "main",
                     "count": 5,
                     "branches": [],
@@ -367,7 +404,7 @@
                     "gcovr/md5": "ce31d2067628e009ca3ca41fc3d5f044"
                 },
                 {
-                    "line_number": 52,
+                    "line_number": 25,
                     "function_name": "main",
                     "count": 0,
                     "branches": [],
@@ -378,7 +415,7 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 53,
+                    "line_number": 26,
                     "function_name": "main",
                     "count": 0,
                     "branches": [],
@@ -389,7 +426,7 @@
                     "gcovr/excluded": true
                 },
                 {
-                    "line_number": 59,
+                    "line_number": 32,
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
@@ -401,70 +438,47 @@
             ],
             "functions": [
                 {
-                    "name": "_Z3bari",
-                    "demangled_name": "bar(int)",
-                    "lineno": 38,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0,
-                    "gcovr/excluded": true,
-                    "pos": [
-                        "38:5",
-                        "43:1"
-                    ]
-                },
-                {
-                    "name": "_Z3fooi",
-                    "demangled_name": "foo(int)",
-                    "lineno": 16,
-                    "execution_count": 5,
-                    "blocks_percent": 81.2,
-                    "pos": [
-                        "16:5",
-                        "36:1"
-                    ]
-                },
-                {
                     "name": "_ZN3BarC2Ev",
                     "demangled_name": "Bar::Bar()",
-                    "lineno": 7,
+                    "lineno": 10,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [
-                        "7:5",
-                        "8:6"
+                        "10:5",
+                        "11:6"
                     ]
                 },
                 {
                     "name": "_ZN3BarD0Ev",
                     "demangled_name": "Bar::~Bar()",
-                    "lineno": 9,
+                    "lineno": 12,
                     "execution_count": 0,
                     "blocks_percent": 0.0,
                     "pos": [
-                        "9:13",
-                        "10:6"
+                        "12:13",
+                        "13:6"
                     ]
                 },
                 {
                     "name": "_ZN3BarD2Ev",
                     "demangled_name": "Bar::~Bar()",
-                    "lineno": 9,
+                    "lineno": 12,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [
-                        "9:13",
-                        "10:6"
+                        "12:13",
+                        "13:6"
                     ]
                 },
                 {
                     "name": "main",
                     "demangled_name": "main",
-                    "lineno": 46,
+                    "lineno": 19,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [
-                        "46:5",
-                        "60:1"
+                        "19:5",
+                        "33:1"
                     ]
                 }
             ]

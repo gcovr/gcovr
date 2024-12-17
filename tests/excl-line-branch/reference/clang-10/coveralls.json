@@ -6,8 +6,8 @@
     "service_pull_request": "pr",
     "source_files": [
         {
-            "name": "main.cpp",
-            "source_digest": "cd30d47dece5663b7a84e38c9344b4ab",
+            "name": "tests/excl-line-branch/bar.cpp",
+            "source_digest": "7c2adb8c2d04277ae316f0bc581968cc",
             "coverage": [
                 null,
                 null,
@@ -15,14 +15,25 @@
                 null,
                 null,
                 null,
-                1,
-                2,
-                1,
-                1,
                 null,
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0
+            ]
+        },
+        {
+            "name": "tests/excl-line-branch/foo.cpp",
+            "source_digest": "3d3327303c689440297b037f75ff9f29",
+            "coverage": [
                 null,
                 5,
                 5,
@@ -44,14 +55,29 @@
                 null,
                 null,
                 1,
-                5,
+                5
+            ]
+        },
+        {
+            "name": "tests/excl-line-branch/main.cpp",
+            "source_digest": "5f51924059b39181646c5b2d21604f3b",
+            "coverage": [
                 null,
                 null,
                 null,
                 null,
                 null,
                 null,
-                0,
+                null,
+                null,
+                null,
+                1,
+                2,
+                1,
+                1,
+                null,
+                null,
+                null,
                 null,
                 null,
                 1,
