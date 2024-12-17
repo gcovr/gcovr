@@ -122,9 +122,9 @@ RE_XML_ATTR_VERSION = re.compile(r'version="[^"]*"')
 
 RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
 
-RE_LCOV_PATH = re.compile(r"(SF:).+?/((?:tests|doc)/.+?)$", flags=re.MULTILINE)
+RE_LCOV_PATH = re.compile(r"(SF:)(?:.:)?/.+?((?:tests|doc)/.+?)?$", flags=re.MULTILINE)
 
-RE_COBERTURA_SOURCE_DIR = re.compile(r"(<source>).+?/(tests/.+?</source>)")
+RE_COBERTURA_SOURCE_DIR = re.compile(r"(<source>)(?:.:)?/.+?((?:tests/.+?)?</source>)")
 
 RE_COVERALLS_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at)": "[^"]*"')
 RE_COVERALLS_GIT = re.compile(

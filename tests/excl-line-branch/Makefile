@@ -1,43 +1,44 @@
+TEST_DIRECTORY := $(abspath $(dir $(MAKEFILE_LIST)))
 include $(dir $(MAKEFILE_LIST))../common.mk
 
 all:
-	$(CXX) $(CXXFLAGS) main.cpp -o testcase
+	$(CXX) $(CXXFLAGS) main.cpp foo.cpp bar.cpp -o testcase
 
-run: json txt lcov clover cobertura html sonarqube jacoco json_summary coveralls
+run: json json_summary txt lcov clover cobertura html sonarqube jacoco coveralls html
 
 coverage.json:
 	./testcase
-	$(GCOVR) --exclude-unreachable-branches --json-pretty --json $@
+	cd ../.. ; $(GCOVR) --exclude-unreachable-branches --json-pretty --json $(TEST_DIRECTORY)/$@ $(TEST_DIRECTORY)
 
 json: coverage.json
 
-txt: coverage.json
-	$(GCOVR) -a $< -b -o coverage.txt
-
-lcov: coverage.json
-	$(GCOVR) -a $< -b --lcov coverage.lcov
-
-clover: coverage.json
-	$(GCOVR) -a $< -b --clover-pretty --clover clover.xml
-
-cobertura: coverage.json
-	$(GCOVR) -a $< -b --cobertura-pretty --cobertura cobertura.xml
-
-html: coverage.json
-	$(GCOVR) -a $< -b --html-details -o coverage.html
-
-sonarqube: coverage.json
-	$(GCOVR) -a $< -b --sonarqube sonarqube.xml
-
-jacoco: coverage.json
-	$(GCOVR) -a $< -b --jacoco jacoco.xml
-
-coveralls: coverage.json
-	$(GCOVR) -a $< -b --coveralls-pretty --coveralls coveralls.json
-
 json_summary:
 	./testcase
-	$(GCOVR) --exclude-unreachable-branches -b -d --json-summary-pretty -o summary_coverage.json
+	cd ../.. ; $(GCOVR) --exclude-unreachable-branches -b -d --json-summary-pretty -o $(TEST_DIRECTORY)/summary_coverage.json $(TEST_DIRECTORY)
+
+txt: coverage.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b -o $(TEST_DIRECTORY)/coverage.txt
+
+lcov: coverage.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --lcov $(TEST_DIRECTORY)/coverage.lcov
+
+clover: coverage.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --clover-pretty --clover $(TEST_DIRECTORY)/clover.xml
+
+cobertura: coverage.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --cobertura-pretty --cobertura $(TEST_DIRECTORY)/cobertura.xml
+
+html: coverage.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --html-details -o $(TEST_DIRECTORY)/coverage.html
+
+sonarqube: coverage.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --sonarqube $(TEST_DIRECTORY)/sonarqube.xml
+
+jacoco: coverage.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --jacoco $(TEST_DIRECTORY)/jacoco.xml
+
+coveralls: coverage.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --coveralls-pretty --coveralls $(TEST_DIRECTORY)/coveralls.json
 
 clean:
 	rm -f testcase

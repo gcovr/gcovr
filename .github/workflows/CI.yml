@@ -52,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install spellchecker
-        run:
+        run: |
           npm install -g cspell@latest
       - name: Run spellchecker
         run: |
@@ -62,11 +62,17 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+      - name: Copy coverage reports
+        run: |
+          mkdir -p /tmp/coverage-upload
+          rm -rf /tmp/coverage-upload/*
+          cp --target-directory=/tmp/coverage-upload ./tests/excl-line-branch/reference/gcc-5/*.*
+          cp --target-directory=/tmp/coverage-upload --force ./tests/excl-line-branch/reference/gcc-14/*.*
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
           name: "coverage"
-          path: ./tests/nested/reference/gcc-5/*.*
+          path: /tmp/coverage-upload/*.*
 
   host:
     needs: [changelog-check, spell-check, upload-coverage]
