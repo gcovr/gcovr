@@ -17,7 +17,6 @@
 #
 # ****************************************************************************
 
-from __future__ import annotations
 from hashlib import md5
 from typing import Any, Callable, Iterator, Optional
 import logging
@@ -188,42 +187,6 @@ def commonpath(files: list[str]) -> str:
         )
         LOGGER.debug(f"Common relative prefix path is {prefix_path!r}")
     return prefix_path
-
-
-def is_file_excluded(
-    filename: str,
-    include_filters: list[re.Pattern[str]],
-    exclude_filters: list[re.Pattern[str]],
-) -> bool:
-    """Apply inclusion/exclusion filters to filename.
-
-    The include_filters are tested against
-    the given (relative) filename.
-    The exclude_filters are tested against
-    the stripped, given (relative), and absolute filenames.
-
-    filename (str): the file path to match, should be relative
-    include_filters (list of regex): ANY of these filters must match
-    exclude_filters (list of regex): NONE of these filters must match
-
-    returns:
-        True when filename is not matching a include filter or matches an exclude filter.
-    """
-
-    LOGGER.debug(f"Check if {filename} is included...")
-    if not any(f.match(filename) for f in include_filters):
-        LOGGER.debug("  No filter matched.")
-        return True
-
-    if not exclude_filters:
-        return False
-
-    LOGGER.debug("Check for exclusion...")
-    if any(f.match(filename) for f in exclude_filters):
-        return True
-
-    LOGGER.debug("  No filter matched.")
-    return False
 
 
 @contextmanager

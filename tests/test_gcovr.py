@@ -117,12 +117,14 @@ RE_DECIMAL = re.compile(r"(\d+\.\d+)")
 
 RE_CRLF = re.compile(r"\r\n")
 
-RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
-
-RE_LCOV_PATH = re.compile(r"(SF:).+?/(tests/.+?)$", flags=re.MULTILINE)
-
 RE_XML_ATTR_TIMESTAMP = re.compile(r'(timestamp|generated|clover)="[^"]*"')
 RE_XML_ATTR_VERSION = re.compile(r'version="[^"]*"')
+
+RE_TXT_WHITESPACE = re.compile(r"[ ]+$", flags=re.MULTILINE)
+
+RE_LCOV_PATH = re.compile(r"(SF:)(?:.:)?/.+?((?:tests|doc)/.+?)?$", flags=re.MULTILINE)
+
+RE_COBERTURA_SOURCE_DIR = re.compile(r"(<source>)(?:.:)?/.+?((?:tests/.+?)?</source>)")
 
 RE_COVERALLS_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token|run_at)": "[^"]*"')
 RE_COVERALLS_GIT = re.compile(
@@ -173,6 +175,12 @@ def scrub_html(contents: str) -> str:
     contents = RE_HTML_HEADER_DATE.sub(r"<\1>\g<2>0000-00-00 00:00:00</\1>", contents)
     contents = RE_HTML_FOOTER_VERSION.sub(r"\1main\2main\3", contents)
     contents = force_unix_separator(contents)
+    return contents
+
+
+def scrub_cobertura(contents: str) -> str:
+    contents = scrub_xml(contents)
+    contents = RE_COBERTURA_SOURCE_DIR.sub(r"\1\2", contents)
     return contents
 
 
@@ -523,7 +531,7 @@ SCRUBBERS = dict(
     csv=scrub_csv,
     # Other formats
     clover=scrub_xml,
-    cobertura=scrub_xml,
+    cobertura=scrub_cobertura,
     coveralls=scrub_coveralls,
     jacoco=scrub_xml,
     lcov=scrub_lcov,

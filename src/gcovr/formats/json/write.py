@@ -26,6 +26,7 @@ from typing import Any, Optional
 from ...options import Options
 
 from ...utils import (
+    force_unix_separator,
     presentable_filename,
     open_text_for_writing,
 )
@@ -96,9 +97,11 @@ def write_summary_report(
 
     json_dict = dict[str, Any]()
 
-    json_dict["root"] = os.path.relpath(
-        options.root,
-        os.getcwd() if output_file == "-" else os.path.dirname(output_file),
+    json_dict["root"] = force_unix_separator(
+        os.path.relpath(
+            options.root,
+            os.getcwd() if output_file == "-" else os.path.dirname(output_file),
+        )
     )
     json_dict["gcovr/summary_format_version"] = versions.JSON_SUMMARY_FORMAT_VERSION
     files = list[dict[str, Any]]()

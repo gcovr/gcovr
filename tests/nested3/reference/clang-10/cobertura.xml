@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.67568" branch-rate="0.4" lines-covered="25" lines-valid="37" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="" version="gcovr 8.2+main">
+<coverage line-rate="0.6756756756756757" branch-rate="0.4" lines-covered="25" lines-valid="37" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="1728808696" version="gcovr 8.2+main">
   <sources>
-    <source>subdir</source>
+     <source>tests/nested3/subdir</source>
   </sources>
   <packages>
-    <package name="A" line-rate="0.54545" branch-rate="0.33333" complexity="0.0">
+    <package name="A" line-rate="0.5454545454545454" branch-rate="0.3333333333333333" complexity="0.0">
       <classes>
         <class name="file1_cpp" filename="A/file1.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
           <methods/>

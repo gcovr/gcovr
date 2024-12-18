@@ -19,7 +19,6 @@
 
 # cspell:ignore sourcefilename
 
-from __future__ import annotations
 from dataclasses import dataclass
 import os
 from lxml import etree  # nosec # We only write XML files

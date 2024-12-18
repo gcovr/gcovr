@@ -38,7 +38,7 @@ from .logging import (
     configure_logging,
     update_logging,
 )
-from .options import (
+from .filter import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
 )

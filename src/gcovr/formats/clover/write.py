@@ -19,7 +19,6 @@
 
 # cspell:ignore ncloc coveredelements coveredconditionals coveredstatements coveredmethods
 
-from __future__ import annotations
 from dataclasses import dataclass
 import logging
 from lxml import etree  # nosec # We only write XML files

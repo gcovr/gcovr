@@ -2,52 +2,62 @@
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.77273" branch-rate="0.8" lines-covered="17" lines-valid="22" branches-covered="8" branches-valid="10" complexity="0.0" timestamp="0" version="gcovr main">
   <sources>
-    <source>.</source>
+    <source>/gcovr</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.77273" branch-rate="0.8" complexity="0.0">
+    <package name="tests.excl-line-branch" line-rate="0.77273" branch-rate="0.8" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="0.77273" branch-rate="0.8" complexity="0.0">
+        <class name="bar_cpp" filename="tests/excl-line-branch/bar.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
           <methods/>
           <lines>
-            <line number="7" hits="1" branch="false"/>
-            <line number="8" hits="2" branch="false"/>
-            <line number="9" hits="1" branch="false"/>
+            <line number="19" hits="0" branch="false"/>
+          </lines>
+        </class>
+        <class name="foo_cpp" filename="tests/excl-line-branch/foo.cpp" line-rate="0.8" branch-rate="0.75" complexity="0.0">
+          <methods/>
+          <lines>
+            <line number="2" hits="5" branch="false"/>
+            <line number="3" hits="5" branch="true" condition-coverage="100% (4/4)">
+              <conditions>
+                <condition number="0" type="jump" coverage="100%"/>
+              </conditions>
+            </line>
+            <line number="4" hits="2" branch="false"/>
+            <line number="6" hits="1" branch="false"/>
+            <line number="7" hits="2" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="8" hits="0" branch="false"/>
+            <line number="9" hits="2" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="10" hits="0" branch="false"/>
+            <line number="21" hits="1" branch="false"/>
+            <line number="22" hits="5" branch="false"/>
+          </lines>
+        </class>
+        <class name="main_cpp" filename="tests/excl-line-branch/main.cpp" line-rate="0.81818" branch-rate="1.0" complexity="0.0">
+          <methods/>
+          <lines>
             <line number="10" hits="1" branch="false"/>
-            <line number="16" hits="5" branch="false"/>
-            <line number="17" hits="5" branch="true" condition-coverage="100% (4/4)">
+            <line number="11" hits="2" branch="false"/>
+            <line number="12" hits="1" branch="false"/>
+            <line number="13" hits="1" branch="false"/>
+            <line number="19" hits="1" branch="false"/>
+            <line number="20" hits="6" branch="true" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="100%"/>
               </conditions>
             </line>
-            <line number="18" hits="2" branch="false"/>
-            <line number="20" hits="1" branch="false"/>
-            <line number="21" hits="2" branch="true" condition-coverage="50% (1/2)">
-              <conditions>
-                <condition number="0" type="jump" coverage="50%"/>
-              </conditions>
-            </line>
-            <line number="22" hits="0" branch="false"/>
-            <line number="23" hits="2" branch="true" condition-coverage="50% (1/2)">
-              <conditions>
-                <condition number="0" type="jump" coverage="50%"/>
-              </conditions>
-            </line>
-            <line number="24" hits="0" branch="false"/>
-            <line number="35" hits="1" branch="false"/>
-            <line number="36" hits="5" branch="false"/>
-            <line number="43" hits="0" branch="false"/>
-            <line number="46" hits="1" branch="false"/>
-            <line number="47" hits="6" branch="true" condition-coverage="100% (2/2)">
-              <conditions>
-                <condition number="0" type="jump" coverage="100%"/>
-              </conditions>
-            </line>
-            <line number="48" hits="5" branch="false"/>
-            <line number="49" hits="5" branch="false"/>
-            <line number="57" hits="0" branch="false"/>
-            <line number="59" hits="1" branch="false"/>
-            <line number="60" hits="0" branch="false"/>
+            <line number="21" hits="5" branch="false"/>
+            <line number="22" hits="5" branch="false"/>
+            <line number="30" hits="0" branch="false"/>
+            <line number="32" hits="1" branch="false"/>
+            <line number="33" hits="0" branch="false"/>
           </lines>
         </class>
       </classes>

@@ -37,6 +37,7 @@ from ...coverage import (
     LineCoverage,
     CallCoverage,
 )
+from ...filter import is_file_excluded
 from ...merging import (
     get_merge_mode_from_options,
     insert_branch_coverage,
@@ -48,7 +49,6 @@ from ...merging import (
     insert_call_coverage,
 )
 from ...options import Options
-from ...utils import is_file_excluded
 
 LOGGER = logging.getLogger("gcovr")
 

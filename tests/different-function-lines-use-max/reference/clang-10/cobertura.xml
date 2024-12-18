@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.88889" branch-rate="0.5" lines-covered="8" lines-valid="9" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="" version="gcovr 8.2+main">
+<coverage line-rate="0.8888888888888888" branch-rate="0.5" lines-covered="8" lines-valid="9" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1728808696" version="gcovr 8.2+main">
   <sources>
-    <source>.</source>
+     <source>tests/different-function-lines-use-max</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.88889" branch-rate="0.5" complexity="0.0">
+    <package name="" line-rate="0.8888888888888888" branch-rate="0.5" complexity="0.0">
       <classes>
-        <class name="func_h" filename="func.h" line-rate="0.83333" branch-rate="0.5" complexity="0.0">
+        <class name="func_h" filename="func.h" line-rate="0.8333333333333334" branch-rate="0.5" complexity="0.0">
           <methods/>
           <lines>
             <line number="3" hits="1" branch="false"/>

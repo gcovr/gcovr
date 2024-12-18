@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.83333" branch-rate="0.5" lines-covered="5" lines-valid="6" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="" version="gcovr 8.2+main">
+<coverage line-rate="0.83333" branch-rate="0.5" lines-covered="5" lines-valid="6" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="0" version="gcovr main">
   <sources>
-    <source>.</source>
+    <source>tests/filter-relative-lib/project</source>
   </sources>
   <packages>
     <package name="relevant-library.src" line-rate="1.0" branch-rate="1.0" complexity="0.0">

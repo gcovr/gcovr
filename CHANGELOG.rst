@@ -31,6 +31,7 @@ Bug fixes and small improvements:
 - Fix LCOV report. Excluded lines where added with a count of 0. (:issue:`1012`)
 - Fix line exclusion not clearing all child coverage data. (:issue:`1018`)
 - Fix summary stats in ``JaCoCo`` report. (:issue:`1022`)
+- Fix path issue when reading/writing ``Coveralls`` report. (:issue:`1037`)
 
 Documentation:
 

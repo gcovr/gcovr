@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 8.2+main">
+<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="1728808696" version="gcovr 8.2+main">
   <sources>
-    <source>.</source>
+     <source>tests/cmake_gtest</source>
   </sources>
   <packages>
     <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">

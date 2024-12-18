@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.75" branch-rate="0.5" lines-covered="12" lines-valid="16" branches-covered="2" branches-valid="4" complexity="0.0" timestamp="1708895236" version="gcovr 8.2+main">
+<coverage line-rate="0.75" branch-rate="0.5" lines-covered="12" lines-valid="16" branches-covered="2" branches-valid="4" complexity="0.0" timestamp="1728808696" version="gcovr 8.2+main">
   <sources>
-    <source>.</source>
+    <source>/Users/runner/work/gcovr/gcovr/tests/excl-function</source>
   </sources>
   <packages>
     <package name="" line-rate="0.75" branch-rate="0.5" complexity="0.0">

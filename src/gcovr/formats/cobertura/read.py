@@ -22,20 +22,20 @@ import os
 from glob import glob
 from lxml import etree  # nosec # We only write XML files
 
-from ...options import Options
 from ...coverage import (
     BranchCoverage,
     CoverageContainer,
     FileCoverage,
     LineCoverage,
 )
+from ...filter import is_file_excluded
 from ...merging import (
     get_merge_mode_from_options,
     insert_branch_coverage,
     insert_file_coverage,
     insert_line_coverage,
 )
-from ...utils import is_file_excluded
+from ...options import Options
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -72,6 +72,13 @@ def read_report(options: Options) -> CoverageContainer:
         except Exception as e:
             raise RuntimeError(f"Bad --cobertura-add-tracefile option.\n{e}") from None
 
+        source_elem = root.find("./sources/source")
+        if source_elem is None:
+            raise AssertionError(
+                f"No source directory defined in file {data_source_filename}"
+            )
+        source_dir = str(source_elem.text)
+
         gcovr_file: etree._Element
         for gcovr_file in root.xpath("./packages//class"):  # type: ignore [assignment, union-attr]
             filename = gcovr_file.get("filename")
@@ -81,15 +88,11 @@ def read_report(options: Options) -> CoverageContainer:
                 )
                 continue
 
-            file_path = os.path.join(
-                os.path.abspath(options.root),
-                str(os.path.normpath(filename)),
-            )
-
-            if is_file_excluded(file_path, options.filter, options.exclude):
+            filename = str(os.path.normpath(os.path.join(source_dir, filename)))
+            if is_file_excluded(filename, options.filter, options.exclude):
                 continue
 
-            filecov = FileCoverage(file_path, data_source_filename)
+            filecov = FileCoverage(filename, data_source_filename)
             merge_options = get_merge_mode_from_options(options)
             xml_line: etree._Element
             for xml_line in gcovr_file.xpath("./lines//line"):  # type: ignore [assignment, union-attr]

@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.66667" branch-rate="0.4" lines-covered="28" lines-valid="42" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="0" version="gcovr 8.2+main">
+<coverage line-rate="0.66667" branch-rate="0.4" lines-covered="28" lines-valid="42" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="0" version="gcovr main">
   <sources>
-    <source>subdir</source>
+    <source>tests/threaded/subdir</source>
   </sources>
   <packages>
     <package name="A" line-rate="0.53846" branch-rate="0.33333" complexity="0.0">
