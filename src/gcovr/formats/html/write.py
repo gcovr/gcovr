@@ -212,7 +212,7 @@ def coverage_to_class(
     coverage: Optional[float], medium_threshold: float, high_threshold: float
 ) -> str:
     """Get the coverage class depending on the threshold."""
-    if coverage in [None, "-"]:
+    if coverage is None:
         return "coverage-unknown"
     if coverage == 0:
         return "coverage-none"
@@ -692,14 +692,17 @@ def get_coverage_data(
 
     stats = cdata.stats
 
-    line_coverage = stats.line.percent_or(
-        100.0 if isinstance(cdata, FileCoverage) and cdata.lines else "-"
-    )
     lines = {
         "total": stats.line.total,
         "exec": stats.line.covered,
-        "coverage": line_coverage,
-        "class": line_coverage_class(line_coverage),
+        "coverage": stats.line.percent_or(
+            100.0 if isinstance(cdata, FileCoverage) and cdata.lines else "-"
+        ),
+        "class": line_coverage_class(
+            stats.line.percent_or(
+                100.0 if isinstance(cdata, FileCoverage) and cdata.lines else None
+            )
+        ),
     }
 
     branches = {
