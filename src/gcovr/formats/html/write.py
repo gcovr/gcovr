@@ -212,7 +212,7 @@ def coverage_to_class(
     coverage: Optional[float], medium_threshold: float, high_threshold: float
 ) -> str:
     """Get the coverage class depending on the threshold."""
-    if coverage is None:
+    if coverage in [None, "-"]:
         return "coverage-unknown"
     if coverage == 0:
         return "coverage-none"
@@ -692,11 +692,14 @@ def get_coverage_data(
 
     stats = cdata.stats
 
+    line_coverage = stats.line.percent_or(
+        100.0 if isinstance(cdata, FileCoverage) and cdata.lines else "-"
+    )
     lines = {
         "total": stats.line.total,
         "exec": stats.line.covered,
-        "coverage": stats.line.percent_or(100.0),
-        "class": line_coverage_class(stats.line.percent_or(100.0)),
+        "coverage": line_coverage,
+        "class": line_coverage_class(line_coverage),
     }
 
     branches = {
@@ -841,7 +844,7 @@ def get_file_data(
             f_data["excluded"] = f_cdata.excluded[lineno]
             if f_cdata.name is not None:
                 function_stats = cdata.filter_for_function(f_cdata).stats
-                f_data["line_coverage"] = function_stats.line.percent_or(100)
+                f_data["line_coverage"] = function_stats.line.percent_or(100.0)
                 f_data["branch_coverage"] = function_stats.branch.percent_or("-")
                 f_data["condition_coverage"] = function_stats.condition.percent_or("-")
 
