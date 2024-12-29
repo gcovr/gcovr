@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.10",
+    "gcovr/format_version": "0.11",
     "files": [
         {
             "file": "src/main.cpp",
@@ -15,25 +15,25 @@
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 2,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         },
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 2,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -58,37 +58,37 @@
                     "count": 6,
                     "branches": [
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 2,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 2,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": null,
+                            "source_block_id": null,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false

@@ -19,7 +19,7 @@
 
 JSON_FORMAT_VERSION = (
     # BEGIN version
-    "0.10"
+    "0.11"
     # END version
 )
 JSON_SUMMARY_FORMAT_VERSION = (

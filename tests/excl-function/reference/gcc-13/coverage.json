@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.10",
+    "gcovr/format_version": "0.11",
     "files": [
         {
             "file": "main.cpp",
@@ -15,13 +15,13 @@
                     "count": 1,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -58,13 +58,13 @@
                     "count": 1,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
@@ -95,19 +95,19 @@
                     "count": 88,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 17,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -120,19 +120,19 @@
                     "count": 47,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 17,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -157,25 +157,25 @@
                     "count": 44,
                     "branches": [
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
                         },
                         {
-                            "blockno": 3,
+                            "source_block_id": 3,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 3,
+                            "source_block_id": 3,
                             "count": 16,
                             "fallthrough": false,
                             "throw": false
@@ -194,13 +194,13 @@
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -219,13 +219,13 @@
                     "count": 41,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 16,
                             "fallthrough": false,
                             "throw": false
@@ -268,13 +268,13 @@
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -293,13 +293,13 @@
                     "count": 41,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 16,
                             "fallthrough": false,
                             "throw": false
@@ -324,13 +324,13 @@
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true
@@ -349,13 +349,13 @@
                     "count": 18,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 18,
                             "fallthrough": false,
                             "throw": false

@@ -140,7 +140,7 @@ class BranchCoverage:
     r"""Represent coverage information about a branch.
 
     Args:
-        blockno (int):
+        source_block_id (int):
             The block number.
         count (int):
             Number of times this branch was followed.
@@ -148,52 +148,52 @@ class BranchCoverage:
             Whether this is a fallthrough branch. False if unknown.
         throw (bool, optional):
             Whether this is an exception-handling branch. False if unknown.
-        destination_blockno (int, optional):
+        destination_block_id (int, optional):
             The destination block of the branch. None if unknown.
         excluded (bool, optional):
             Whether the branch is excluded.
     """
 
-    first_undefined_blockno: bool = True
+    first_undefined_source_block_id: bool = True
 
     __slots__ = (
-        "blockno",
+        "source_block_id",
         "count",
         "fallthrough",
         "throw",
-        "destination_blockno",
+        "destination_block_id",
         "excluded",
     )
 
     def __init__(
         self,
-        blockno: Optional[int],
+        source_block_id: Optional[int],
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
-        destination_blockno: Optional[int] = None,
+        destination_block_id: Optional[int] = None,
         excluded: Optional[bool] = None,
     ) -> None:
         if count < 0:
             raise AssertionError("count must not be a negative value.")
 
-        self.blockno = blockno
+        self.source_block_id = source_block_id
         self.count = count
         self.fallthrough = fallthrough
         self.throw = throw
-        self.destination_blockno = destination_blockno
+        self.destination_block_id = destination_block_id
         self.excluded = excluded
 
     @property
-    def blockno_or_0(self) -> int:
+    def source_block_id_or_0(self) -> int:
         """Get a valid block number (0) if there was no definition in GCOV file."""
-        if self.blockno is None:
-            self.blockno = 0
-            if BranchCoverage.first_undefined_blockno:
-                BranchCoverage.first_undefined_blockno = False
+        if self.source_block_id is None:
+            self.source_block_id = 0
+            if BranchCoverage.first_undefined_source_block_id:
+                BranchCoverage.first_undefined_source_block_id = False
                 LOGGER.info("No block number defined, assuming 0 for all undefined")
 
-        return self.blockno
+        return self.source_block_id
 
     @property
     def is_excluded(self) -> bool:

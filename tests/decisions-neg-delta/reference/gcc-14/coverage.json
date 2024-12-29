@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.10",
+    "gcovr/format_version": "0.11",
     "files": [
         {
             "file": "main.cpp",
@@ -18,18 +18,18 @@
                     "count": 1,
                     "branches": [
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
-                            "destination_blockno": 3
+                            "destination_block_id": 3
                         },
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
-                            "destination_blockno": 15
+                            "destination_block_id": 15
                         }
                     ],
                     "conditions": [
@@ -58,18 +58,18 @@
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": 5,
+                            "source_block_id": 5,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
-                            "destination_blockno": 6
+                            "destination_block_id": 6
                         },
                         {
-                            "blockno": 5,
+                            "source_block_id": 5,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
-                            "destination_blockno": 16
+                            "destination_block_id": 16
                         }
                     ],
                     "block_ids": [
@@ -86,18 +86,18 @@
                     "count": 3,
                     "branches": [
                         {
-                            "blockno": 12,
+                            "source_block_id": 12,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
-                            "destination_blockno": 9
+                            "destination_block_id": 9
                         },
                         {
-                            "blockno": 12,
+                            "source_block_id": 12,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
-                            "destination_blockno": 13
+                            "destination_block_id": 13
                         }
                     ],
                     "conditions": [
@@ -157,18 +157,18 @@
                     "count": 1,
                     "branches": [
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
-                            "destination_blockno": 3
+                            "destination_block_id": 3
                         },
                         {
-                            "blockno": 2,
+                            "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
-                            "destination_blockno": 5
+                            "destination_block_id": 5
                         }
                     ],
                     "block_ids": [

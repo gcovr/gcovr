@@ -137,7 +137,7 @@ class _BlockLine(NamedTuple):
 
     hits: int
     lineno: int
-    blockno: int
+    block_id: int
     extra_info: _ExtraInfo
 
 
@@ -453,7 +453,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
 class _ParserState(NamedTuple):
     deferred_functions: list[_FunctionLine] = []
     lineno: int = 0
-    blockno: Optional[int] = None
+    block_id: Optional[int] = None
     line_contents: str = ""
     is_recovering: bool = False
 
@@ -503,7 +503,7 @@ def _gather_coverage_from_line(
         return _ParserState(
             lineno=line.lineno,
             line_contents=line.source_code,
-            blockno=state.blockno,
+            block_id=state.block_id,
         )
 
     elif state.is_recovering:
@@ -525,7 +525,7 @@ def _gather_coverage_from_line(
                 linecov,
                 branchno,
                 BranchCoverage(
-                    blockno=state.blockno,
+                    source_block_id=state.block_id,
                     count=hits,
                     fallthrough=(annotation == "fallthrough"),
                     throw=(annotation == "throw"),
@@ -558,8 +558,8 @@ def _gather_coverage_from_line(
         return state
 
     elif isinstance(line, _BlockLine):
-        _, _, blockno, _ = line
-        return state._replace(blockno=blockno)
+        _, _, block_id, _ = line
+        return state._replace(block_id=block_id)
 
     elif isinstance(line, (_UnconditionalLine,)):
         return state
@@ -711,17 +711,17 @@ def _parse_line(
 
     Example: can parse block line:
     >>> _parse_line('     1: 32-block  0')
-    _BlockLine(hits=1, lineno=32, blockno=0, extra_info=NONE)
+    _BlockLine(hits=1, lineno=32, block_id=0, extra_info=NONE)
     >>> _parse_line(' %%%%%: 33-block  1')
-    _BlockLine(hits=0, lineno=33, blockno=1, extra_info=NONE)
+    _BlockLine(hits=0, lineno=33, block_id=1, extra_info=NONE)
     >>> _parse_line(' $$$$$: 33-block  1')
-    _BlockLine(hits=0, lineno=33, blockno=1, extra_info=EXCEPTION_ONLY)
+    _BlockLine(hits=0, lineno=33, block_id=1, extra_info=EXCEPTION_ONLY)
     >>> _parse_line(' %%%%%:10000-block  0')  # see https://github.com/gcovr/gcovr/issues/882
-    _BlockLine(hits=0, lineno=10000, blockno=0, extra_info=NONE)
+    _BlockLine(hits=0, lineno=10000, block_id=0, extra_info=NONE)
     >>> _parse_line('     -1: 32-block  0', ignore_parse_errors=set(['negative_hits.warn']))
-    _BlockLine(hits=0, lineno=32, blockno=0, extra_info=NONE)
+    _BlockLine(hits=0, lineno=32, block_id=0, extra_info=NONE)
     >>> _parse_line('     4294967296: 32-block  0', ignore_parse_errors=set(['suspicious_hits.warn']))
-    _BlockLine(hits=0, lineno=32, blockno=0, extra_info=NONE)
+    _BlockLine(hits=0, lineno=32, block_id=0, extra_info=NONE)
     >>> _parse_line('     1: 9-block with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.UnknownLineType:      1: 9-block with some unknown format
@@ -805,7 +805,7 @@ def _parse_line(
     if "-block " in line:
         match = _RE_BLOCK_LINE.match(line)
         if match is not None:
-            hits_str, lineno, blockno = match.groups()
+            hits_str, lineno, block_id = match.groups()
 
             if hits_str == "%%%%%":
                 hits = 0
@@ -829,7 +829,7 @@ def _parse_line(
                 )
                 hits = 0
 
-            return _BlockLine(hits, int(lineno), int(blockno), extra_info)
+            return _BlockLine(hits, int(lineno), int(block_id), extra_info)
 
     # SPECIALIZATION NAME
     #
