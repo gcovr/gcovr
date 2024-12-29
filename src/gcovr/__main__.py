@@ -373,6 +373,12 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         LOGGER.error("--fail-under-decision need also option --decision.")
         return EXIT_CMDLINE_ERROR
 
+    if options.show_decision:
+        LOGGER.info(
+            "Attention, the decision analysis is experimental. "
+            "It uses a fragile heuristic and depends on the code format."
+        )
+
     LOGGER.info("Reading coverage data...")
     try:
         covdata = gcovr_formats.read_reports(options)
