@@ -165,11 +165,11 @@ def _line_from_json(json_line: dict[str, Any]) -> LineCoverage:
 
 def _branch_from_json(json_branch: dict[str, Any]) -> BranchCoverage:
     return BranchCoverage(
-        blockno=json_branch["blockno"],
+        source_block_id=json_branch["source_block_id"],
         count=json_branch["count"],
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
-        destination_blockno=json_branch.get("destination_blockno"),
+        destination_block_id=json_branch.get("destination_block_id"),
         excluded=json_branch.get("gcovr/excluded"),
     )
 

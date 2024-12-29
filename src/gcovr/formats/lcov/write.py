@@ -97,7 +97,7 @@ def write_report(
                             branch_hits += 1
                         # BRDA:<line_number>,[<exception>]<block>,<branch>,<taken>
                         fh.write(
-                            f"BRDA:{lineno},{'e' if branchcov.throw else ''}{branchcov.blockno_or_0},{branchno},{branchcov.count if branchcov.count else '-'}\n"
+                            f"BRDA:{lineno},{'e' if branchcov.throw else ''}{branchcov.source_block_id_or_0},{branchno},{branchcov.count if branchcov.count else '-'}\n"
                         )
 
             # BRF:<number of branches found>

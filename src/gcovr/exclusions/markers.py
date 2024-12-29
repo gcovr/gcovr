@@ -136,7 +136,7 @@ def _process_exclude_branch_source(
                                 cur_branchno,
                                 cur_branchcov,
                             ) in cur_linecov.branches.items():
-                                if cur_branchcov.destination_blockno in block_ids:
+                                if cur_branchcov.destination_block_id in block_ids:
                                     LOGGER.debug(
                                         f"Source branch exclusion at {location} is excluding branch {cur_branchno} of line {cur_lineno}"
                                     )

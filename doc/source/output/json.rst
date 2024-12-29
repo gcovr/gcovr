@@ -190,7 +190,8 @@ Each **branch** provides information about a branch on that line::
       "count": count,
       "fallthrough": fallthrough,
       "throw": throw,
-      "destination_blockno": number
+      "source_block_id": number,
+      "destination_block_id": number
     }
 
 This exactly matches the GCC gcov format.
@@ -204,12 +205,21 @@ fallthrough: boolean
 throw: boolean
   Whether this is an exception-only branch.
 
-destination_blockno: int
+source_block_id: int
+  The source block of this branch.
+
+destination_block_id: int
   The destination block of this branch.
   Only available if ``gcov`` JSON format is used.
 
 .. versionadded:: 8.0
    Added ``destination_blockno`` field.
+
+.. versionadded:: NEXT
+   Added ``source_block_id`` field.
+
+.. versionchanged:: NEXT
+   Renamed ``destination_blockno`` to ``destination_block_id`` field.
 
 .. _json_format_condition:
 

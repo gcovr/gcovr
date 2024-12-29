@@ -229,13 +229,13 @@ def _json_from_branches(branches: dict[int, BranchCoverage]) -> list[dict[str, A
 
 def _json_from_branch(branchcov: BranchCoverage) -> dict[str, Any]:
     json_branch = {
-        "blockno": branchcov.blockno,
+        "source_block_id": branchcov.source_block_id,
         "count": branchcov.count,
         "fallthrough": branchcov.fallthrough,
         "throw": branchcov.throw,
     }
-    if branchcov.destination_blockno is not None:
-        json_branch["destination_blockno"] = branchcov.destination_blockno
+    if branchcov.destination_block_id is not None:
+        json_branch["destination_block_id"] = branchcov.destination_block_id
     if branchcov.excluded is not None:
         json_branch["gcovr/excluded"] = branchcov.excluded
 

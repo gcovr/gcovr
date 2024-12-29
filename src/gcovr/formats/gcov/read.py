@@ -253,7 +253,7 @@ def process_gcov_json_data(
                         branch["count"],
                         fallthrough=branch["fallthrough"],
                         throw=branch["throw"],
-                        destination_blockno=branch["destination_block_id"],
+                        destination_block_id=branch["destination_block_id"],
                     ),
                 )
             for index, condition in enumerate(line.get("conditions", [])):

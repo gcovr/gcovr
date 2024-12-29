@@ -141,8 +141,8 @@ def _line_from_xml(filename: str, xml_line: etree._Element) -> LineCoverage:
     return linecov
 
 
-def _branch_from_json(blockno: int, is_covered: bool) -> BranchCoverage:
+def _branch_from_json(block_id: int, is_covered: bool) -> BranchCoverage:
     return BranchCoverage(
-        blockno=blockno,
+        source_block_id=block_id,
         count=1 if is_covered else 0,
     )
