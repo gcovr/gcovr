@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.10",
+    "gcovr/format_version": "0.11",
     "files": [
         {
             "file": "main.cpp",
@@ -9,13 +9,13 @@
                     "count": 1,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false

@@ -525,7 +525,7 @@ def _gather_coverage_from_line(
                 linecov,
                 branchno,
                 BranchCoverage(
-                    block_id=state.block_id,
+                    source_block_id=state.block_id,
                     count=hits,
                     fallthrough=(annotation == "fallthrough"),
                     throw=(annotation == "throw"),

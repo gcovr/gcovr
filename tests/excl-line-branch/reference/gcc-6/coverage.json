@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.10",
+    "gcovr/format_version": "0.11",
     "files": [
         {
             "file": "tests/excl-line-branch/bar.cpp",
@@ -57,25 +57,25 @@
                     "count": 5,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 4,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 3,
                             "fallthrough": false,
                             "throw": false
@@ -107,13 +107,13 @@
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false
@@ -132,13 +132,13 @@
                     "count": 2,
                     "branches": [
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 0,
+                            "source_block_id": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false
@@ -234,13 +234,13 @@
                     "count": 6,
                     "branches": [
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 5,
                             "fallthrough": true,
                             "throw": false
                         },
                         {
-                            "blockno": 1,
+                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false
