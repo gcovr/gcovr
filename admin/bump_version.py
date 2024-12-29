@@ -154,30 +154,6 @@ def update_copyright_string(
     return new_lines
 
 
-def update_call_of_release_checklist(
-    filename: str, lines: list[str], version: str
-) -> list[str]:
-    """Update the release checklist."""
-    new_lines = []
-
-    call_release_checklist = "admin/release_checklist.sh"
-    iter_lines = iter(lines)
-    for line in iter_lines:
-        if call_release_checklist in line:
-            line = re.sub(r"\d+\.\d+(?:\+main)?$", version, line)
-            new_lines.append(line)
-            break
-        new_lines.append(line)
-    else:
-        raise RuntimeError(
-            f"Call of {call_release_checklist!r} not found in {filename!r}."
-        )
-
-    new_lines.extend(iter_lines)
-
-    return new_lines
-
-
 def update_changelog(filename: str, lines: list[str], version: str) -> list[str]:
     """Update the version in the CHANGELOG."""
     new_lines = []
@@ -317,16 +293,14 @@ def main(version: str) -> None:
                 handlers.append(add_copyright_header_to_python_file)
             if filename == "__main__.py":
                 handlers.append(update_copyright_string)
-            if filename == "CI.yml":
-                handlers.append(update_call_of_release_checklist)
             if filename == "LICENSE.txt":
                 handlers.append(update_license)
             if filename == "test_gcovr.py":
                 handlers.append(update_source_date_epoch)
             if (
-                ("reference" in fullname or "examples" in fullname)
+                extension in [".xml", ".html"]
+                and ("reference" in fullname or "examples" in fullname)
                 and "html-encoding-" not in fullname
-                and extension in [".xml", ".html"]
             ):
                 handlers.append(update_reference_data)
 
