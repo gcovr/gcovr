@@ -18,6 +18,9 @@
                 {% endif %}
                 <th class="p-2">Exec</th>
                 <th class="p-2 text-left" style="width: 100%;">Source</th>
+                {% if USE_BLOCK_IDS %}
+                <th class="p-2" style="white-space: nowrap;">Block IDs</th>
+                {% endif %}
             </tr>
             {% if info.single_page %}
             {%  set anchor_prefix = html_filename + "|" %}
@@ -33,12 +36,17 @@
                         <summary>{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             {% for branch in row.linebranch.branches %}
-                            {% if branch.excluded %}
-                            <div class="color-excluded-branch">&ndash; Branch {{branch.name}} excluded.</div>
-                            {% elif branch.taken %}
-                            <div class="color-taken-branch">&check; Branch {{branch.name}} taken {{branch.count}} times.</div>
+                            {% if branch.source_block_id %}
+                            {%  set block_info = " (%d &rightarrow; %d)" | format(branch.source_block_id, branch.destination_block_id) | safe %}
                             {% else %}
-                            <div class="color-fg-danger">&cross; Branch {{branch.name}} not taken.</div>
+                            {%  set block_info = "" %}
+                            {% endif %}
+                            {% if branch.excluded %}
+                            <div class="color-excluded-branch">&ndash; Branch {{branch.name}}{{block_info}} excluded.</div>
+                            {% elif branch.taken %}
+                            <div class="color-taken-branch">&check; Branch {{branch.name}}{{block_info}} taken {{branch.count}} times.</div>
+                            {% else %}
+                            <div class="color-fg-danger">&cross; Branch {{branch.name}}{{block_info}} not taken.</div>
                             {% endif%}
                             {% endfor %}
                         </div>
@@ -108,6 +116,9 @@
                 {% endif %}
                 <td class="src {{row.covclass}} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
                 <td class="src {{row.covclass}}">{{row.source}}</td>
+                {% if USE_BLOCK_IDS %}
+                <td class="text-right src linenos">{{row.block_ids | join(', ')}}</td>
+                {% endif %}
             </tr>
             {% endfor %}
 

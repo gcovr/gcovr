@@ -90,6 +90,7 @@
         "lcov",
         "LDFLAGS",
         "levelname",
+        "lineblockids",
         "linebranch",
         "linecall",
         "linecondition",
