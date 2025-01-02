@@ -41,7 +41,9 @@
       {% endif %}
     </th>
     <td>
+      {% if row.lines.coverage != "-" %}
       <meter class="{{row.lines.class}}" min="0" max="100" value="{{row.lines.coverage}}" title="{{row.lines.coverage}}%">{{row.lines.coverage}}</meter>
+      {% endif %}
     </td>
     <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}%</td>
     <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>
