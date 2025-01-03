@@ -695,8 +695,14 @@ def get_coverage_data(
     lines = {
         "total": stats.line.total,
         "exec": stats.line.covered,
-        "coverage": stats.line.percent_or(100.0),
-        "class": line_coverage_class(stats.line.percent_or(100.0)),
+        "coverage": stats.line.percent_or(
+            100.0 if isinstance(cdata, FileCoverage) and cdata.lines else "-"
+        ),
+        "class": line_coverage_class(
+            stats.line.percent_or(
+                100.0 if isinstance(cdata, FileCoverage) and cdata.lines else None
+            )
+        ),
     }
 
     branches = {
@@ -841,7 +847,7 @@ def get_file_data(
             f_data["excluded"] = f_cdata.excluded[lineno]
             if f_cdata.name is not None:
                 function_stats = cdata.filter_for_function(f_cdata).stats
-                f_data["line_coverage"] = function_stats.line.percent_or(100)
+                f_data["line_coverage"] = function_stats.line.percent_or(100.0)
                 f_data["branch_coverage"] = function_stats.branch.percent_or("-")
                 f_data["condition_coverage"] = function_stats.condition.percent_or("-")
 
