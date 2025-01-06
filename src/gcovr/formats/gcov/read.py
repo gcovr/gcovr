@@ -27,46 +27,35 @@ import subprocess  # nosec # Commands are trusted.
 from threading import Lock
 from typing import Any, Callable, Optional
 
-from .parser import parse_metadata, parse_coverage
-from .workers import Workers, locked_directory
-from ...coverage import (
-    BranchCoverage,
-    ConditionCoverage,
-    CoverageContainer,
-    FileCoverage,
-    FunctionCoverage,
-    LineCoverage,
-)
+from ...coverage import CoverageContainer
+from ...decision_analysis import DecisionParser
 from ...exclusions import (
     apply_all_exclusions,
     get_exclusion_options_from_options,
 )
 from ...filter import Filter, is_file_excluded
-from ...decision_analysis import DecisionParser
 from ...merging import (
-    MergeOptions,
-    FUNCTION_MAX_LINE_MERGE_OPTIONS,
     GcovrMergeAssertionError,
-    insert_branch_coverage,
-    insert_condition_coverage,
-    insert_function_coverage,
-    insert_line_coverage,
-    merge_covdata,
     get_merge_mode_from_options,
     insert_file_coverage,
+    merge_covdata,
 )
 from ...options import Options
 from ...utils import (
-    search_file,
     commonpath,
-    is_fs_case_insensitive,
     fix_case_of_path,
-    get_md5_hexdigest,
+    is_fs_case_insensitive,
+    search_file,
 )
-
+from .parser import (
+    GCOV_JSON_VERSION,
+    parse_coverage,
+    parse_gcov_json_coverage,
+    parse_metadata,
+)
+from .workers import Workers, locked_directory
 
 LOGGER = logging.getLogger("gcovr")
-GCOV_JSON_VERSION = "2"
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_error_re = re.compile(
@@ -193,121 +182,79 @@ def process_gcov_json_data(
     data_fname: str, covdata: CoverageContainer, options: Options
 ) -> None:
     """Process a GCOV JSON output."""
+
+    ignore_parse_errors = options.gcov_ignore_parse_errors
+    suspicious_hits_threshold = options.gcov_suspicious_hits_threshold
+
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json.loads(fh_in.read())
 
-    # Check format version because the file can be created external
-    if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
-        raise RuntimeError(
-            f"Got wrong JSON format version {gcov_json_data['format_version']}, expected {GCOV_JSON_VERSION}"
-        )
-
-    for file in gcov_json_data["files"]:
-        fname = os.path.normpath(
-            os.path.join(gcov_json_data["current_working_directory"], file["file"])
-        )
-        LOGGER.debug(f"Parsing coverage data for file {fname}")
-
-        if is_file_excluded(fname, options.filter, options.exclude):
-            continue
-
-        if file["file"] == "<stdin>":
-            message = f"Got sourcefile {file['file']}, using empty lines."
-            LOGGER.info(message)
-            source_lines = [b"" for _ in range(file["lines"][-1]["line_number"])]
-            source_lines[0] = f"/* {message} */".encode()
-        else:
-            with open(fname, "rb") as fh_in:
-                source_lines = fh_in.read().splitlines()
-            lines = len(source_lines)
-            max_line_from_cdata = (
-                file["lines"][-1]["line_number"] if file["lines"] else 1
+        # Check format version because the file can be created external
+        if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
+            raise RuntimeError(
+                f"Got wrong JSON format version {gcov_json_data['format_version']}, expected {GCOV_JSON_VERSION}"
             )
-            if lines < max_line_from_cdata:
-                LOGGER.warning(
-                    f"File {fname} has {lines} line(s) but coverage data has {max_line_from_cdata} line(s)."
-                )
-                # Python ranges are exclusive. We want to iterate over all lines, including
-                # that last line. Thus, we have to add a +1 to include that line.
-                for _ in range(lines, max_line_from_cdata):
-                    source_lines.append(b"/*EOF*/")
 
-        file_cov = FileCoverage(fname, data_fname)
-        for line in file["lines"]:
-            line_cov = insert_line_coverage(
-                file_cov,
-                LineCoverage(
-                    line["line_number"],
-                    count=line["count"],
-                    function_name=line.get("function_name"),
-                    block_ids=line["block_ids"],
-                    md5=get_md5_hexdigest(source_lines[line["line_number"] - 1]),
-                ),
+        for file in gcov_json_data["files"]:
+            source_lines: list[bytes] = []
+            fname = os.path.normpath(
+                os.path.join(gcov_json_data["current_working_directory"], file["file"])
             )
-            for index, branch in enumerate(line["branches"]):
-                insert_branch_coverage(
-                    line_cov,
-                    index,
-                    BranchCoverage(
-                        branch["source_block_id"],
-                        branch["count"],
-                        fallthrough=branch["fallthrough"],
-                        throw=branch["throw"],
-                        destination_block_id=branch["destination_block_id"],
-                    ),
-                )
-            for index, condition in enumerate(line.get("conditions", [])):
-                insert_condition_coverage(
-                    line_cov,
-                    index,
-                    ConditionCoverage(
-                        condition["count"],
-                        condition["covered"],
-                        condition["not_covered_true"],
-                        condition["not_covered_false"],
-                    ),
-                )
-        for function in file["functions"]:
-            # Use 100% only if covered == total.
-            if function["blocks_executed"] == function["blocks"]:
-                blocks = 100.0
+            LOGGER.debug(f"Parsing coverage data for file {fname}")
+
+            if is_file_excluded(fname, options.filter, options.exclude):
+                continue
+
+            if file["file"] == "<stdin>":
+                message = f"Got sourcefile {file['file']}, using empty lines."
+                LOGGER.info(message)
+                source_lines = [b"" for _ in range(file["lines"][-1]["line_number"])]
+                source_lines[0] = f"/* {message} */".encode()
             else:
-                # There is at least one uncovered item.
-                # Round to 1 decimal and clamp to max 99.9%.
-                ratio = function["blocks_executed"] / function["blocks"]
-                blocks = min(99.9, round(ratio * 100.0, 1))
+                with open(fname, "rb") as fh_in2:
+                    source_lines = fh_in2.read().splitlines()
+                lines = len(source_lines)
+                max_line_from_cdata = (
+                    file["lines"][-1]["line_number"] if file["lines"] else 1
+                )
+                if lines < max_line_from_cdata:
+                    LOGGER.warning(
+                        f"File {fname} has {lines} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                    )
+                    # Python ranges are exclusive. We want to iterate over all lines, including
+                    # that last line. Thus, we have to add a +1 to include that line.
+                    for _ in range(lines, max_line_from_cdata):
+                        source_lines.append(b"/*EOF*/")
 
-            insert_function_coverage(
-                file_cov,
-                FunctionCoverage(
-                    function["name"],
-                    function["demangled_name"],
-                    lineno=function["start_line"],
-                    count=function["execution_count"],
-                    blocks=blocks,
-                    start=(function["start_line"], function["start_column"]),
-                    end=(function["end_line"], function["end_column"]),
-                ),
-                MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+            encoded_source_lines = [
+                line.decode(options.source_encoding, errors="replace")
+                for line in source_lines
+            ]
+
+            file_cov = parse_gcov_json_coverage(
+                file,
+                fname,
+                encoded_source_lines,
+                data_fname,
+                ignore_parse_errors,
+                suspicious_hits_threshold,
             )
 
-        encoded_source_lines = [
-            line.decode(options.source_encoding, errors="replace")
-            for line in source_lines
-        ]
-        LOGGER.debug(f"Apply exclusions for {fname}")
-        apply_all_exclusions(
-            file_cov,
-            lines=encoded_source_lines,
-            options=get_exclusion_options_from_options(options),
-        )
+            LOGGER.debug(f"Apply exclusions for {fname}")
+            apply_all_exclusions(
+                file_cov,
+                lines=encoded_source_lines,
+                options=get_exclusion_options_from_options(options),
+            )
 
-        if options.show_decision:
-            decision_parser = DecisionParser(file_cov, encoded_source_lines)
-            decision_parser.parse_all_lines()
+            if options.show_decision:
+                decision_parser = DecisionParser(file_cov, encoded_source_lines)
+                decision_parser.parse_all_lines()
 
-        LOGGER.debug(f"Merge coverage data for {fname}")
-        insert_file_coverage(covdata, file_cov, get_merge_mode_from_options(options))
+            LOGGER.debug(f"Merge coverage data for {fname}")
+            insert_file_coverage(
+                covdata, file_cov, get_merge_mode_from_options(options)
+            )
 
 
 #

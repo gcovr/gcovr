@@ -32,6 +32,7 @@ from gcovr.formats.gcov.parser import (
     NegativeHits,
     SuspiciousHits,
     parse_coverage,
+    parse_gcov_json_coverage,
     UnknownLineType,
 )
 from gcovr.formats.gcov.workers import Workers
@@ -598,6 +599,152 @@ def test_negative_branch_count() -> None:
             filename="example.cpp",
             ignore_parse_errors=None,
         )
+
+
+def test_negative_branch_count_json() -> None:
+    """
+    A exception shall be raised.
+    """
+
+    source = {
+        "functions": [],
+        "lines": [
+            {
+                "line_number": 1,
+                "count": 0,
+                "function_name": "func",
+                "block_ids": [1],
+                "branches": [
+                    {
+                        "source_block_id": 1,
+                        "count": 1,
+                        "fallthrough": False,
+                        "throw": False,
+                        "destination_block_id": 2,
+                    },
+                    {
+                        "source_block_id": 1,
+                        "count": -1,
+                        "fallthrough": False,
+                        "throw": False,
+                        "destination_block_id": 2,
+                    },
+                ],
+            },
+        ],
+    }
+
+    with pytest.raises(NegativeHits):
+        parse_gcov_json_coverage(
+            source,
+            filename="example.cpp",
+            source_lines=[""],
+            data_source="example.gcov.json.gz",
+            ignore_parse_errors=set(),
+        )
+
+
+@pytest.mark.parametrize(
+    "flag",
+    [
+        "negative_hits.warn",
+        "negative_hits.warn_once_per_file",
+    ],
+)
+def test_negative_branch_count_ignored_json(
+    caplog: pytest.LogCaptureFixture, flag: str
+) -> None:
+    """
+    A exception shall be raised.
+    """
+
+    source = {
+        "functions": [],
+        "lines": [
+            {
+                "line_number": 1,
+                "count": 1,
+                "function_name": "func",
+                "block_ids": [1],
+                "branches": [
+                    {
+                        "source_block_id": 1,
+                        "count": 1,
+                        "fallthrough": False,
+                        "throw": False,
+                        "destination_block_id": 2,
+                    },
+                ],
+            },
+            {
+                "line_number": 2,
+                "count": 1,
+                "function_name": "func",
+                "block_ids": [2],
+                "branches": [
+                    {
+                        "source_block_id": 2,
+                        "count": -1,
+                        "fallthrough": False,
+                        "throw": False,
+                        "destination_block_id": 3,
+                    },
+                ],
+            },
+            {
+                "line_number": 3,
+                "count": 1,
+                "function_name": "func",
+                "block_ids": [3],
+                "branches": [
+                    {
+                        "source_block_id": 3,
+                        "count": 1,
+                        "fallthrough": False,
+                        "throw": False,
+                        "destination_block_id": 3,
+                    },
+                ],
+            },
+            {
+                "line_number": 4,
+                "count": 1,
+                "function_name": "func",
+                "block_ids": [4],
+                "branches": [
+                    {
+                        "source_block_id": 4,
+                        "count": -1,
+                        "fallthrough": False,
+                        "throw": False,
+                        "destination_block_id": 5,
+                    },
+                ],
+            },
+        ],
+    }
+
+    parse_gcov_json_coverage(
+        source,
+        filename="example.cpp",
+        source_lines=["line1", "line2", "line3", "line4"],
+        data_source="example.gcov.json.gz",
+        ignore_parse_errors=set([flag]),
+    )
+
+    number_of_warnings = 2 if flag == "negative_hits.warn" else 1
+    messages = caplog.record_tuples
+    for index in range(0, number_of_warnings):
+        message = messages[index]
+        assert message[1] == logging.WARNING
+        assert message[2].startswith("Ignoring negative hits in line ")
+
+    if number_of_warnings == 1:
+        message = messages[number_of_warnings]
+        assert message[1] == logging.WARNING
+        assert message[2] == "Ignored 2 negative hits overall."
+    else:
+        assert len(messages) == number_of_warnings
 
 
 @pytest.mark.parametrize(
