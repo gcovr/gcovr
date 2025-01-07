@@ -21,7 +21,7 @@
 Handle parsing of the textual ``.gcov`` file format.
 
 Other modules should only use the following items:
-`parse_metadata()`, `parse_coverage()`, `UnknownLineType`.
+`parse_metadata()`, `parse_text_coverage()`, `UnknownLineType`.
 
 The behavior of this parser was informed by the following sources:
 
@@ -49,27 +49,24 @@ from typing import (
 
 from gcovr.utils import get_md5_hexdigest
 
-from ...coverage import (
+from ....coverage import (
     BranchCoverage,
     CallCoverage,
-    ConditionCoverage,
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
 )
-from ...merging import (
+from ....merging import (
     FUNCTION_MAX_LINE_MERGE_OPTIONS,
     MergeOptions,
     insert_branch_coverage,
     insert_call_coverage,
     insert_function_coverage,
-    insert_condition_coverage,
     insert_line_coverage,
 )
+from .common import SUSPICIOUS_COUNTER
 
 LOGGER = logging.getLogger("gcovr")
-SUSPICIOUS_COUNTER = 2**32
-GCOV_JSON_VERSION = "2"
 
 
 def _line_pattern(pattern: str) -> Pattern[str]:
@@ -335,7 +332,7 @@ def parse_metadata(
 _LineWithError = tuple[str, Exception]
 
 
-def parse_coverage(
+def parse_text_coverage(
     lines: list[str],
     *,
     filename: str,
@@ -1002,130 +999,3 @@ def _float_from_gcov_percent(formatted: str) -> float:
         raise AssertionError(f"Number must end with %, got {formatted}")
 
     return float(formatted[:-1])
-
-
-def parse_gcov_json_coverage(
-    gcov_file_node: dict[str, Any],
-    filename: str,
-    source_lines: list[str],
-    data_source: Optional[Union[str, set[str]]],
-    ignore_parse_errors: set[str],
-    suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-) -> FileCoverage:
-    """
-    Extract coverage data from a json gcov report.
-
-    Logging:
-    Parse problems are reported as warnings.
-    Coverage exclusion decisions are reported as verbose messages.
-
-    Arguments:
-        gcov_file_node: one of the "files" node in the gcov json format
-        filename: for error reports
-        source_lines: decoded source code lines, for reporting
-        data_source: source of this node, for reporting
-        ignore_parse_errors: which errors should be converted to warnings
-
-    Returns:
-        The coverage data
-
-    Raises:
-        Any exceptions during parsing, unless ignore_parse_errors is set.
-    """
-    persistent_states = dict[str, Any]()
-
-    def check_hits(hits: int, line: str) -> int:
-        if hits < 0:
-            NegativeHits.raise_if_not_ignored(
-                line, ignore_parse_errors, persistent_states
-            )
-            hits = 0
-
-        if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
-            SuspiciousHits.raise_if_not_ignored(
-                line, ignore_parse_errors, persistent_states
-            )
-            hits = 0
-
-        return hits
-
-    file_cov = FileCoverage(filename, data_source)
-    for line in gcov_file_node["lines"]:
-        line_cov = insert_line_coverage(
-            file_cov,
-            LineCoverage(
-                line["line_number"],
-                count=check_hits(line["count"], source_lines[line["line_number"] - 1]),
-                function_name=line.get("function_name"),
-                block_ids=line["block_ids"],
-                md5=get_md5_hexdigest(
-                    source_lines[line["line_number"] - 1].encode("utf-8")
-                ),
-            ),
-        )
-        for index, branch in enumerate(line["branches"]):
-            insert_branch_coverage(
-                line_cov,
-                index,
-                BranchCoverage(
-                    branch["source_block_id"],
-                    check_hits(branch["count"], source_lines[line["line_number"] - 1]),
-                    fallthrough=branch["fallthrough"],
-                    throw=branch["throw"],
-                    destination_block_id=branch["destination_block_id"],
-                ),
-            )
-        for index, condition in enumerate(line.get("conditions", [])):
-            insert_condition_coverage(
-                line_cov,
-                index,
-                ConditionCoverage(
-                    check_hits(
-                        condition["count"], source_lines[line["line_number"] - 1]
-                    ),
-                    condition["covered"],
-                    condition["not_covered_true"],
-                    condition["not_covered_false"],
-                ),
-            )
-    for function in gcov_file_node["functions"]:
-        # Use 100% only if covered == total.
-        if function["blocks_executed"] == function["blocks"]:
-            blocks = 100.0
-        else:
-            # There is at least one uncovered item.
-            # Round to 1 decimal and clamp to max 99.9%.
-            ratio = function["blocks_executed"] / function["blocks"]
-            blocks = min(99.9, round(ratio * 100.0, 1))
-
-        insert_function_coverage(
-            file_cov,
-            FunctionCoverage(
-                function["name"],
-                function["demangled_name"],
-                lineno=function["start_line"],
-                count=function["execution_count"],
-                blocks=blocks,
-                start=(function["start_line"], function["start_column"]),
-                end=(function["end_line"], function["end_column"]),
-            ),
-            MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
-        )
-
-    if (
-        "negative_hits.warn_once_per_file" in persistent_states
-        and persistent_states["negative_hits.warn_once_per_file"] > 1
-    ):
-        LOGGER.warning(
-            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} negative hits overall."
-        )
-
-    if (
-        "suspicious_hits.warn_once_per_file" in persistent_states
-        and persistent_states["suspicious_hits.warn_once_per_file"] > 1
-    ):
-        LOGGER.warning(
-            f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
-        )
-
-    return file_cov

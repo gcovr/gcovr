@@ -47,11 +47,13 @@ from ...utils import (
     is_fs_case_insensitive,
     search_file,
 )
-from .parser import (
+from .parser.json import (
     GCOV_JSON_VERSION,
-    parse_coverage,
-    parse_gcov_json_coverage,
+    parse_json_coverage,
+)
+from .parser.text import (
     parse_metadata,
+    parse_text_coverage,
 )
 from .workers import Workers, locked_directory
 
@@ -183,84 +185,39 @@ def process_gcov_json_data(
 ) -> None:
     """Process a GCOV JSON output."""
 
-    ignore_parse_errors = options.gcov_ignore_parse_errors
-    suspicious_hits_threshold = options.gcov_suspicious_hits_threshold
-
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json.loads(fh_in.read())
 
-        # Check format version because the file can be created external
-        if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
-            raise RuntimeError(
-                f"Got wrong JSON format version {gcov_json_data['format_version']}, expected {GCOV_JSON_VERSION}"
-            )
+    coverage = parse_json_coverage(
+        gcov_json_data,
+        data_fname,
+        options.filter,
+        options.exclude,
+        options.gcov_ignore_parse_errors,
+        options.gcov_suspicious_hits_threshold,
+        options.source_encoding,
+    )
 
-        for file in gcov_json_data["files"]:
-            source_lines: list[bytes] = []
-            fname = os.path.normpath(
-                os.path.join(gcov_json_data["current_working_directory"], file["file"])
-            )
-            LOGGER.debug(f"Parsing coverage data for file {fname}")
+    for file_cov, source_lines in coverage:
+        LOGGER.debug(f"Apply exclusions for {file_cov.filename}")
+        apply_all_exclusions(
+            file_cov,
+            lines=source_lines,
+            options=get_exclusion_options_from_options(options),
+        )
 
-            if is_file_excluded(fname, options.filter, options.exclude):
-                continue
+        if options.show_decision:
+            decision_parser = DecisionParser(file_cov, source_lines)
+            decision_parser.parse_all_lines()
 
-            if file["file"] == "<stdin>":
-                message = f"Got sourcefile {file['file']}, using empty lines."
-                LOGGER.info(message)
-                source_lines = [b"" for _ in range(file["lines"][-1]["line_number"])]
-                source_lines[0] = f"/* {message} */".encode()
-            else:
-                with open(fname, "rb") as fh_in2:
-                    source_lines = fh_in2.read().splitlines()
-                lines = len(source_lines)
-                max_line_from_cdata = (
-                    file["lines"][-1]["line_number"] if file["lines"] else 1
-                )
-                if lines < max_line_from_cdata:
-                    LOGGER.warning(
-                        f"File {fname} has {lines} line(s) but coverage data has {max_line_from_cdata} line(s)."
-                    )
-                    # Python ranges are exclusive. We want to iterate over all lines, including
-                    # that last line. Thus, we have to add a +1 to include that line.
-                    for _ in range(lines, max_line_from_cdata):
-                        source_lines.append(b"/*EOF*/")
-
-            encoded_source_lines = [
-                line.decode(options.source_encoding, errors="replace")
-                for line in source_lines
-            ]
-
-            file_cov = parse_gcov_json_coverage(
-                file,
-                fname,
-                encoded_source_lines,
-                data_fname,
-                ignore_parse_errors,
-                suspicious_hits_threshold,
-            )
-
-            LOGGER.debug(f"Apply exclusions for {fname}")
-            apply_all_exclusions(
-                file_cov,
-                lines=encoded_source_lines,
-                options=get_exclusion_options_from_options(options),
-            )
-
-            if options.show_decision:
-                decision_parser = DecisionParser(file_cov, encoded_source_lines)
-                decision_parser.parse_all_lines()
-
-            LOGGER.debug(f"Merge coverage data for {fname}")
-            insert_file_coverage(
-                covdata, file_cov, get_merge_mode_from_options(options)
-            )
+        LOGGER.debug(f"Merge coverage data for {file_cov.filename}")
+        insert_file_coverage(covdata, file_cov, get_merge_mode_from_options(options))
 
 
 #
 # Process a single gcov datafile
 #
-def process_gcov_data(
+def process_gcov_text_data(
     data_fname: str,
     gcda_fname: Optional[str],
     covdata: CoverageContainer,
@@ -304,7 +261,7 @@ def process_gcov_data(
     LOGGER.debug(f"Parsing coverage data for file {fname}")
     key = os.path.normpath(fname)
 
-    coverage, source_lines = parse_coverage(
+    coverage, source_lines = parse_text_coverage(
         lines,
         filename=key,
         data_filename=gcda_fname or data_fname,
@@ -876,7 +833,7 @@ def run_gcov_and_process_files(
                         )
 
                     if gcov_filename.endswith(".gcov"):
-                        process_gcov_data(
+                        process_gcov_text_data(
                             gcov_filename, filename, covdata, options, chdir
                         )
                     elif gcov_filename.endswith(".gcov.json.gz"):
@@ -954,7 +911,7 @@ def process_existing_gcov_file(
         LOGGER.debug(f"Excluding gcov file: {filename}")
 
     if filename.endswith(".gcov"):
-        process_gcov_data(filename, None, covdata, options)
+        process_gcov_text_data(filename, None, covdata, options)
     elif filename.endswith(".gcov.json.gz"):
         process_gcov_json_data(filename, covdata, options)
     else:  # pragma: no cover

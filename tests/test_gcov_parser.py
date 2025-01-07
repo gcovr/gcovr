@@ -28,15 +28,18 @@ import pytest
 
 from gcovr.coverage import FileCoverage
 from gcovr.exclusions import ExclusionOptions, apply_all_exclusions
-from gcovr.formats.gcov.parser import (
+from gcovr.formats.gcov.parser.common import (
     NegativeHits,
     SuspiciousHits,
-    parse_coverage,
-    parse_gcov_json_coverage,
+)
+from gcovr.formats.gcov.parser.json import parse_json_coverage
+from gcovr.formats.gcov.parser.text import (
     UnknownLineType,
+    parse_text_coverage,
 )
 from gcovr.formats.gcov.workers import Workers
 from gcovr.logging import configure_logging
+from gcovr.filter import AlwaysMatchFilter
 
 configure_logging()
 
@@ -317,7 +320,7 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
     expected_uncovered_lines = GCOV_8_EXPECTED_UNCOVERED_LINES[source_filename]
     expected_uncovered_branches = GCOV_8_EXPECTED_UNCOVERED_BRANCHES[source_filename]
 
-    coverage, lines = parse_coverage(
+    coverage, lines = parse_text_coverage(
         filename="tmp.cpp",
         lines=lines,
         ignore_parse_errors=None,
@@ -359,7 +362,7 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
     lines = source.splitlines()
 
     def run_the_parser() -> FileCoverage:
-        coverage, _ = parse_coverage(
+        coverage, _ = parse_text_coverage(
             filename="foo.c",
             lines=lines,
             ignore_parse_errors=set(["all"]) if ignore_errors else None,
@@ -405,7 +408,7 @@ def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
     lines = source.splitlines()
 
     with pytest.raises(UnknownLineType):
-        parse_coverage(
+        parse_text_coverage(
             filename="foo.c",
             lines=lines,
             ignore_parse_errors=None,
@@ -458,7 +461,7 @@ def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) 
     with mock.patch("gcovr.formats.gcov.parser.insert_function_coverage") as m:
         m.side_effect = AssertionError("totally broken")
         with pytest.raises(AssertionError) as ex_info:
-            parse_coverage(
+            parse_text_coverage(
                 lines,
                 filename="test.cpp",
                 ignore_parse_errors=None,
@@ -506,7 +509,7 @@ def test_trailing_function_tag() -> None:
     """
     )
 
-    coverage, _ = parse_coverage(
+    coverage, _ = parse_text_coverage(
         source.splitlines(),
         filename="test.cpp",
         ignore_parse_errors=None,
@@ -553,7 +556,7 @@ def test_branch_exclusion(flags: str) -> None:
     if "exclude_unreachable_branches" in flags:
         expected_covered_branches -= {2, 4}
 
-    coverage, lines = parse_coverage(
+    coverage, lines = parse_text_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=None,
@@ -594,7 +597,7 @@ def test_negative_branch_count() -> None:
     )
 
     with pytest.raises(NegativeHits):
-        parse_coverage(
+        parse_text_coverage(
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=None,
@@ -607,39 +610,46 @@ def test_negative_branch_count_json() -> None:
     """
 
     source = {
-        "functions": [],
-        "lines": [
+        "format_version": "2",
+        "current_working_directory": "",
+        "files": [
             {
-                "line_number": 1,
-                "count": 0,
-                "function_name": "func",
-                "block_ids": [1],
-                "branches": [
+                "file": "<stdin>",
+                "functions": [],
+                "lines": [
                     {
-                        "source_block_id": 1,
-                        "count": 1,
-                        "fallthrough": False,
-                        "throw": False,
-                        "destination_block_id": 2,
-                    },
-                    {
-                        "source_block_id": 1,
-                        "count": -1,
-                        "fallthrough": False,
-                        "throw": False,
-                        "destination_block_id": 2,
+                        "line_number": 1,
+                        "count": 0,
+                        "function_name": "func",
+                        "block_ids": [1],
+                        "branches": [
+                            {
+                                "source_block_id": 1,
+                                "count": 1,
+                                "fallthrough": False,
+                                "throw": False,
+                                "destination_block_id": 2,
+                            },
+                            {
+                                "source_block_id": 1,
+                                "count": -1,
+                                "fallthrough": False,
+                                "throw": False,
+                                "destination_block_id": 2,
+                            },
+                        ],
                     },
                 ],
-            },
+            }
         ],
     }
 
     with pytest.raises(NegativeHits):
-        parse_gcov_json_coverage(
+        parse_json_coverage(
             source,
-            filename="example.cpp",
-            source_lines=[""],
             data_source="example.gcov.json.gz",
+            include_filters=[AlwaysMatchFilter()],
+            exclude_filters=[],
             ignore_parse_errors=set(),
         )
 
@@ -659,76 +669,83 @@ def test_negative_branch_count_ignored_json(
     """
 
     source = {
-        "functions": [],
-        "lines": [
+        "format_version": "2",
+        "current_working_directory": "",
+        "files": [
             {
-                "line_number": 1,
-                "count": 1,
-                "function_name": "func",
-                "block_ids": [1],
-                "branches": [
+                "file": "<stdin>",
+                "functions": [],
+                "lines": [
                     {
-                        "source_block_id": 1,
+                        "line_number": 1,
                         "count": 1,
-                        "fallthrough": False,
-                        "throw": False,
-                        "destination_block_id": 2,
+                        "function_name": "func",
+                        "block_ids": [1],
+                        "branches": [
+                            {
+                                "source_block_id": 1,
+                                "count": 1,
+                                "fallthrough": False,
+                                "throw": False,
+                                "destination_block_id": 2,
+                            },
+                        ],
                     },
-                ],
-            },
-            {
-                "line_number": 2,
-                "count": 1,
-                "function_name": "func",
-                "block_ids": [2],
-                "branches": [
                     {
-                        "source_block_id": 2,
-                        "count": -1,
-                        "fallthrough": False,
-                        "throw": False,
-                        "destination_block_id": 3,
-                    },
-                ],
-            },
-            {
-                "line_number": 3,
-                "count": 1,
-                "function_name": "func",
-                "block_ids": [3],
-                "branches": [
-                    {
-                        "source_block_id": 3,
+                        "line_number": 2,
                         "count": 1,
-                        "fallthrough": False,
-                        "throw": False,
-                        "destination_block_id": 3,
+                        "function_name": "func",
+                        "block_ids": [2],
+                        "branches": [
+                            {
+                                "source_block_id": 2,
+                                "count": -1,
+                                "fallthrough": False,
+                                "throw": False,
+                                "destination_block_id": 3,
+                            },
+                        ],
                     },
-                ],
-            },
-            {
-                "line_number": 4,
-                "count": 1,
-                "function_name": "func",
-                "block_ids": [4],
-                "branches": [
                     {
-                        "source_block_id": 4,
-                        "count": -1,
-                        "fallthrough": False,
-                        "throw": False,
-                        "destination_block_id": 5,
+                        "line_number": 3,
+                        "count": 1,
+                        "function_name": "func",
+                        "block_ids": [3],
+                        "branches": [
+                            {
+                                "source_block_id": 3,
+                                "count": 1,
+                                "fallthrough": False,
+                                "throw": False,
+                                "destination_block_id": 3,
+                            },
+                        ],
+                    },
+                    {
+                        "line_number": 4,
+                        "count": 1,
+                        "function_name": "func",
+                        "block_ids": [4],
+                        "branches": [
+                            {
+                                "source_block_id": 4,
+                                "count": -1,
+                                "fallthrough": False,
+                                "throw": False,
+                                "destination_block_id": 5,
+                            },
+                        ],
                     },
                 ],
             },
         ],
     }
 
-    parse_gcov_json_coverage(
+    parse_json_coverage(
         source,
-        filename="example.cpp",
-        source_lines=["line1", "line2", "line3", "line4"],
         data_source="example.gcov.json.gz",
+        include_filters=[AlwaysMatchFilter()],
+        exclude_filters=[],
         ignore_parse_errors=set([flag]),
     )
 
@@ -770,7 +787,7 @@ def test_negative_line_count_ignored(
         """
     )
 
-    coverage, _ = parse_coverage(
+    coverage, _ = parse_text_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set([flag]),
@@ -814,13 +831,13 @@ def test_negative_branch_count_ignored() -> None:
     )
 
     with pytest.raises(NegativeHits):
-        coverage, _ = parse_coverage(
+        coverage, _ = parse_text_coverage(
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=set(),
         )
 
-    coverage, _ = parse_coverage(
+    coverage, _ = parse_text_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set(["negative_hits.warn_once_per_file"]),
@@ -850,7 +867,7 @@ def test_suspicious_branch_count() -> None:
     )
 
     with pytest.raises(SuspiciousHits):
-        parse_coverage(
+        parse_text_coverage(
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=set(),
@@ -880,7 +897,7 @@ def test_suspicious_line_count_ignored(
         """
     )
 
-    coverage, _ = parse_coverage(
+    coverage, _ = parse_text_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set([flag]),
@@ -924,13 +941,13 @@ def test_suspicious_branch_count_ignored() -> None:
     )
 
     with pytest.raises(SuspiciousHits):
-        coverage, _ = parse_coverage(
+        coverage, _ = parse_text_coverage(
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=set(),
         )
 
-    coverage, _ = parse_coverage(
+    coverage, _ = parse_text_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set(["suspicious_hits.warn_once_per_file"]),
@@ -964,7 +981,7 @@ def test_function_exclusion(flags: str) -> None:
     else:
         expected_functions = ["__foo"]
 
-    coverage, lines = parse_coverage(
+    coverage, lines = parse_text_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=None,
@@ -998,7 +1015,7 @@ def test_noncode_lines() -> None:
         exclude_function_lines: bool = False,
         exclude_noncode_lines: bool = False,
     ) -> str:
-        filecov, source = parse_coverage(
+        filecov, source = parse_text_coverage(
             lines,
             filename="example.cpp",
             ignore_parse_errors=None,
