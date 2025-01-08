@@ -27,14 +27,6 @@ LOGGER = logging.getLogger("gcovr")
 SUSPICIOUS_COUNTER = 2**32
 
 
-class UnknownLineType(Exception):
-    """Used by `_parse_line()` to signal that no known line type matched."""
-
-    def __init__(self, line: str) -> None:
-        super().__init__(line)
-        self.line = line
-
-
 class NegativeHits(Exception):
     """Used to signal that a negative count value was found."""
 
@@ -148,3 +140,32 @@ class SuspiciousHits(Exception):
                     persistent_states["suspicious_hits.warn_once_per_file"] = 1
         else:
             raise SuspiciousHits(line)
+
+
+def check_hits(
+    hits: int,
+    line: str,
+    ignore_parse_errors: set[str],
+    suspicious_hits_threshold: int,
+    persistent_states: dict[str, Any],
+) -> int:
+    """
+    Check if hits count is negative or suspicous, if the issue is ignored returns 0
+    >>> check_hits(1, "", {}, 10, {})
+    1
+    >>> check_hits(-1, "", {"all"}, 10, {})
+    0
+    >>> check_hits(1000, "", {"all"}, 10, {})
+    0
+    """
+    if hits < 0:
+        NegativeHits.raise_if_not_ignored(line, ignore_parse_errors, persistent_states)
+        hits = 0
+
+    if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
+        SuspiciousHits.raise_if_not_ignored(
+            line, ignore_parse_errors, persistent_states
+        )
+        hits = 0
+
+    return hits

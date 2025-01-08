@@ -17,8 +17,6 @@
 #
 # ****************************************************************************
 
-import gzip
-import json
 import logging
 import os
 import re
@@ -47,13 +45,9 @@ from ...utils import (
     is_fs_case_insensitive,
     search_file,
 )
-from .parser.json import (
-    GCOV_JSON_VERSION,
-    parse_json_coverage,
-)
-from .parser.text import (
-    parse_metadata,
-    parse_text_coverage,
+from .parser import (
+    json,
+    text,
 )
 from .workers import Workers, locked_directory
 
@@ -185,17 +179,13 @@ def process_gcov_json_data(
 ) -> None:
     """Process a GCOV JSON output."""
 
-    with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
-        gcov_json_data = json.loads(fh_in.read())
-
-    coverage = parse_json_coverage(
-        gcov_json_data,
-        data_fname,
-        options.filter,
-        options.exclude,
-        options.gcov_ignore_parse_errors,
-        options.gcov_suspicious_hits_threshold,
-        options.source_encoding,
+    coverage = json.parse_coverage(
+        data_source=data_fname,
+        include_filters=options.filter,
+        exclude_filters=options.exclude,
+        ignore_parse_errors=options.gcov_ignore_parse_errors,
+        suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
+        source_encoding=options.source_encoding,
     )
 
     for file_cov, source_lines in coverage:
@@ -231,7 +221,7 @@ def process_gcov_text_data(
         lines = fh_in.read().splitlines()
 
     # Find the source file
-    metadata = parse_metadata(
+    metadata = text.parse_metadata(
         lines, suspicious_hits_threshold=options.gcov_suspicious_hits_threshold
     )
     source = metadata.get("Source")
@@ -261,7 +251,7 @@ def process_gcov_text_data(
     LOGGER.debug(f"Parsing coverage data for file {fname}")
     key = os.path.normpath(fname)
 
-    coverage, source_lines = parse_text_coverage(
+    coverage, source_lines = text.parse_coverage(
         lines,
         filename=key,
         data_filename=gcda_fname or data_fname,
@@ -587,7 +577,7 @@ class GcovProgram:
                     and self.__check_gcov_help_content("--json-format")
                 ):
                     if self.__check_gcov_version_content(
-                        f"JSON format version: {GCOV_JSON_VERSION}"
+                        f"JSON format version: {json.GCOV_JSON_VERSION}"
                     ):
                         LOGGER.debug("GCOV capabilities: JSON format available.")
                         GcovProgram.__default_options.append("--json-format")

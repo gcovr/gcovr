@@ -21,7 +21,7 @@
 Handle parsing of the json ``.gcov.json.gz`` file format.
 
 Other modules should only use the following items:
-`parse_json_coverage()`, `parse_json_file_node()`
+`parse_coverage()`
 
 The behavior of this parser was informed by the following sources:
 
@@ -33,6 +33,8 @@ The behavior of this parser was informed by the following sources:
 """
 # pylint: disable=too-many-lines
 
+import gzip
+import json
 import logging
 import os
 from locale import getpreferredencoding
@@ -62,8 +64,7 @@ from ....merging import (
 )
 from .common import (
     SUSPICIOUS_COUNTER,
-    NegativeHits,
-    SuspiciousHits,
+    check_hits,
 )
 
 GCOV_JSON_VERSION = "2"
@@ -71,18 +72,30 @@ LOGGER = logging.getLogger("gcovr")
 DEFAULT_SOURCE_ENCODING = getpreferredencoding()
 
 
-def parse_json_coverage(
-    gcov_json_data: dict[str, Any],
-    data_source: str,
+def parse_coverage(
     include_filters: list[Filter],
     exclude_filters: list[Filter],
     ignore_parse_errors: Optional[set[str]],
+    data_source: Optional[str] = None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
+    gcov_json_data: Optional[dict[str, Any]] = None,
 ) -> list[tuple[FileCoverage, list[str]]]:
     """Process a GCOV JSON output."""
 
-    file_covs = []
+    if gcov_json_data is None and data_source is None:
+        raise RuntimeError(
+            "Need at least one of gcov_json_data or data_source to parse"
+        )
+
+    if gcov_json_data is None and data_source is not None:
+        with gzip.open(data_source, "rt", encoding="UTF-8") as fh_in:
+            gcov_json_data = json.loads(fh_in.read())
+
+    file_covs = list[tuple[FileCoverage, list[str]]]()
+
+    if gcov_json_data is None:
+        return file_covs
 
     # Check format version because the file can be created external
     if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
@@ -171,28 +184,19 @@ def _parse_file_node(
     if ignore_parse_errors is None:
         ignore_parse_errors = set()
 
-    def check_hits(hits: int, line: str) -> int:
-        if hits < 0:
-            NegativeHits.raise_if_not_ignored(
-                line, ignore_parse_errors, persistent_states
-            )
-            hits = 0
-
-        if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
-            SuspiciousHits.raise_if_not_ignored(
-                line, ignore_parse_errors, persistent_states
-            )
-            hits = 0
-
-        return hits
-
     file_cov = FileCoverage(filename, data_source)
     for line in gcov_file_node["lines"]:
         line_cov = insert_line_coverage(
             file_cov,
             LineCoverage(
                 line["line_number"],
-                count=check_hits(line["count"], source_lines[line["line_number"] - 1]),
+                count=check_hits(
+                    line["count"],
+                    source_lines[line["line_number"] - 1],
+                    ignore_parse_errors,
+                    suspicious_hits_threshold,
+                    persistent_states,
+                ),
                 function_name=line.get("function_name"),
                 block_ids=line["block_ids"],
                 md5=get_md5_hexdigest(
@@ -206,7 +210,13 @@ def _parse_file_node(
                 index,
                 BranchCoverage(
                     branch["source_block_id"],
-                    check_hits(branch["count"], source_lines[line["line_number"] - 1]),
+                    check_hits(
+                        branch["count"],
+                        source_lines[line["line_number"] - 1],
+                        ignore_parse_errors,
+                        suspicious_hits_threshold,
+                        persistent_states,
+                    ),
                     fallthrough=branch["fallthrough"],
                     throw=branch["throw"],
                     destination_block_id=branch["destination_block_id"],
@@ -218,7 +228,11 @@ def _parse_file_node(
                 index,
                 ConditionCoverage(
                     check_hits(
-                        condition["count"], source_lines[line["line_number"] - 1]
+                        condition["count"],
+                        source_lines[line["line_number"] - 1],
+                        ignore_parse_errors,
+                        suspicious_hits_threshold,
+                        persistent_states,
                     ),
                     condition["covered"],
                     condition["not_covered_true"],
