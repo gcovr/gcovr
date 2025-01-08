@@ -41,7 +41,7 @@ configure_logging()
 
 
 # This example is taken from the GCC 8 Gcov documentation:
-# <https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html>
+# <https://gcc.gnu.org/onlinedocs/gcc-8.1.0/gcc/Invoking-Gcov.html>
 GCOV_8_EXAMPLE = r"""
         -:    0:Source:tmp.cpp
         -:    0:Graph:tmp.gcno
@@ -188,7 +188,7 @@ call    4 never executed
 # cspell:enable
 
 # This example is taken from the GCC 8 Gcov documentation:
-# <https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html>
+# <https://gcc.gnu.org/onlinedocs/gcc-8.1.0/gcc/Invoking-Gcov.html>
 # And modified so that the un-hit for line 7 comes after the
 # hit.
 GCOV_8_EXAMPLE_2 = r"""

@@ -63,7 +63,7 @@ The :option:`--html-theme<gcovr --html-theme>` option controls the theme and col
 
 .. figure:: ../../images/screenshot-html-default-green-src.jpeg
     :align: center
-    
+
     :option:`--html-theme green<gcovr --html-theme>`, :option:`--html-theme default.green<gcovr --html-theme>`
 
 .. figure:: ../../images/screenshot-html-default-blue-src.jpeg
@@ -95,8 +95,8 @@ The :option:`--html-template-dir<gcovr --html-template-dir>` option allows you t
 alternate directory with Jinja2 templates to fully customize the HTML output in detail.
 If a template is missing from this directory the original is used. It is advised that you
 start by copying the part you want to modify from
-`the existing default theme templates <https://github.com/gcovr/gcovr/tree/main/gcovr/formats/html/default>`_
-or `the existing github theme templates <https://github.com/gcovr/gcovr/tree/main/gcovr/formats/html/github>`_.
+`the existing default theme templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/default>`_
+or `the existing github theme templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/github>`_.
 Keep in mind the template context data that is passed to these templates *MAY* change
 between release versions.
 

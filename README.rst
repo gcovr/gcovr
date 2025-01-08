@@ -85,7 +85,7 @@ text summaries and XML reports.
 .. _gcov: https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
 .. _coverage.py: https://coverage.readthedocs.io/en/stable/
 .. _clover: https://bitbucket.org/atlassian/clover/src/master/
-.. _cobertura: http://cobertura.sourceforge.net/
+.. _cobertura: https://github.com/cobertura/cobertura/
 .. _coveralls: https://coveralls.io/
 .. _jacoco: https://www.eclemma.org/jacoco/
 .. _lcov: https://github.com/linux-test-project/lcov

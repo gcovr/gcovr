@@ -32,7 +32,7 @@ Lcov also supports various trace file manipulation functions
 such as merging trace files from different test runs.
 You can learn more at the `lcov website`_ or the `lcov GitHub repository`_.
 
-.. _lcov website: http://ltp.sourceforge.net/coverage/lcov.php
+.. _lcov website: https://github.com/linux-test-project/lcov
 .. _lcov GitHub repository: https://github.com/linux-test-project/lcov
 
 
