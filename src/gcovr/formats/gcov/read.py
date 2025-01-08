@@ -17,6 +17,8 @@
 #
 # ****************************************************************************
 
+import gzip
+import json
 import logging
 import os
 import re
@@ -179,8 +181,11 @@ def process_gcov_json_data(
 ) -> None:
     """Process a GCOV JSON output."""
 
+    with gzip.open(data_source, "rt", encoding="UTF-8") as fh_in:
+        gcov_json_data = json.loads(fh_in.read())
+
     coverage = json.parse_coverage(
-        data_source=data_fname,
+        gcov_json_data=gcov_json_data,
         include_filters=options.filter,
         exclude_filters=options.exclude,
         ignore_parse_errors=options.gcov_ignore_parse_errors,

@@ -30,8 +30,6 @@ The behavior of this parser was informed by the following sources:
 """
 # pylint: disable=too-many-lines
 
-import gzip
-import json
 import logging
 import os
 from locale import getpreferredencoding
@@ -70,29 +68,17 @@ DEFAULT_SOURCE_ENCODING = getpreferredencoding()
 
 
 def parse_coverage(
+    gcov_json_data: dict[str, Any],
     include_filters: list[Filter],
     exclude_filters: list[Filter],
     ignore_parse_errors: Optional[set[str]],
     data_source: Optional[str] = None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
-    gcov_json_data: Optional[dict[str, Any]] = None,
 ) -> list[tuple[FileCoverage, list[str]]]:
     """Process a GCOV JSON output."""
 
-    if gcov_json_data is None and data_source is None:
-        raise RuntimeError(
-            "Need at least one of gcov_json_data or data_source to parse"
-        )
-
-    if gcov_json_data is None and data_source is not None:
-        with gzip.open(data_source, "rt", encoding="UTF-8") as fh_in:
-            gcov_json_data = json.loads(fh_in.read())
-
     file_covs = list[tuple[FileCoverage, list[str]]]()
-
-    if gcov_json_data is None:
-        return file_covs
 
     # Check format version because the file can be created external
     if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
