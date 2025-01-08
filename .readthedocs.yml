@@ -12,6 +12,9 @@ build:
   tools:
     python: "3.11"
   jobs:
+    # Un-shallow the clone to get the correct version
+    post_checkout:
+      - git fetch --unshallow || true
     # Run a build to get the version.py created.
     post_create_environment:
       - pip install build
