@@ -27,9 +27,6 @@ The behavior of this parser was informed by the following sources:
 
 * the *Invoking Gcov* section in the GCC manual (version 11)
   <https://gcc.gnu.org/onlinedocs/gcc-14.1.0/gcc/Invoking-Gcov.html>
-* the ``gcov.c`` source code in GCC
-  (especially for understanding the exact number format)
-  <https://github.com/gcc-mirror/gcc/blob/releases/gcc-14.1.0/gcc/gcov.cc>
 """
 # pylint: disable=too-many-lines
 
