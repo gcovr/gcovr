@@ -26,7 +26,11 @@ apt-get install -y software-properties-common \
                    git \
                    apt-transport-https \
                    curl \
-                   gnupg
+                   gnupg \
+                   latexmk \
+                   texlive-fonts-recommended \
+                   texlive-latex-recommended \
+                   texlive-latex-extra
 
 if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
   # cspell:disable

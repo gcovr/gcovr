@@ -331,11 +331,40 @@ def doc(session: nox.Session) -> None:
     with session.chdir("doc"):
         with open("examples/gcovr.out", "w", encoding="utf-8") as fh_out:
             session.run("gcovr", "-h", stdout=fh_out)
-        session.run("sphinx-build", "-M", "html", "source", "build", "-W")
+        for builder in ("linkcheck", "html", "latex", "epub"):
+            session.run(
+                "sphinx-build",
+                "-b",
+                builder,
+                "-d",
+                "build/doctrees",
+                "-D",
+                "language=en",
+                "-W",
+                "source",
+                f"build/{builder}",
+            )
+            if builder == "latex" and GCOVR_ISOLATED_TEST:
+                with session.chdir("build/latex"):
+                    session.run(
+                        "latexmk",
+                        "-r",
+                        "latexmkrc",
+                        "-pdf",
+                        "-f",
+                        "-dvi-",
+                        "-ps-",
+                        "-jobname=gcovr",
+                        "-interaction=nonstopmode",
+                        external=True,
+                        success_codes=[12],  # To ignore the unicode error
+                    )
+                    if not Path("gcovr.pdf").exists():
+                        session.error("PDF not generated.")
 
-    # Ensure that the README builds fine as a standalone document.
-    readme_html = session.create_tmp() + "/README.html"
-    session.run("rst2html5.py", "--strict", "README.rst", readme_html)
+        # Ensure that the README builds fine as a standalone document.
+        readme_html = "build/README.html"
+        session.run("rst2html5.py", "--strict", "../README.rst", readme_html)
 
     session.log("Create release_notes.md out of CHANGELOG.rst...")
     changelog_rst = Path("CHANGELOG.rst")

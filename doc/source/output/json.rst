@@ -37,7 +37,7 @@ Field names use ``snake_case``.
 Gcovr-specific fields are prefixed with ``gcovr/...``.
 
 The GCC gcov JSON format is documented at
-`<https://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html#Invoking-Gcov>`_.
+`<https://gcc.gnu.org/onlinedocs/gcc-14.1.0/gcc/Invoking-Gcov.html>`_.
 
 The **top level** of the file looks like the following::
 

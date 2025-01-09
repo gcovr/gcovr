@@ -63,7 +63,7 @@ The :option:`--html-theme<gcovr --html-theme>` option controls the theme and col
 
 .. figure:: ../../images/screenshot-html-default-green-src.jpeg
     :align: center
-    
+
     :option:`--html-theme green<gcovr --html-theme>`, :option:`--html-theme default.green<gcovr --html-theme>`
 
 .. figure:: ../../images/screenshot-html-default-blue-src.jpeg

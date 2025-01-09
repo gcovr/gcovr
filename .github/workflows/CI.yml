@@ -206,7 +206,7 @@ jobs:
 
       - name: Build and check the wheel
         run: |
-          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
+          nox --non-interactive --session build_wheel
 
       - name: Upload distribution
         uses: actions/upload-artifact@v4
@@ -216,7 +216,7 @@ jobs:
 
       - name: Generate documentation
         run: |
-          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session doc
+          nox --non-interactive --session doc
 
       - name: Set release notes as job summary
         run: |
