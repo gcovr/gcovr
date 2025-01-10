@@ -150,7 +150,7 @@ def check_hits(
     persistent_states: dict[str, Any],
 ) -> int:
     """
-    Check if hits count is negative or suspicous, if the issue is ignored returns 0
+    Check if hits count is negative or suspicious, if the issue is ignored returns 0
     >>> check_hits(1, "", {}, 10, {})
     1
     >>> check_hits(-1, "", {"all"}, 10, {})

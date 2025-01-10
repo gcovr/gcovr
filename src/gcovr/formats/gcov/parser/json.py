@@ -29,6 +29,7 @@ The behavior of this parser was informed by the following sources:
   <https://gcc.gnu.org/onlinedocs/gcc-14.1.0/gcc/Invoking-Gcov.html>
 """
 # pylint: disable=too-many-lines
+# cspell:ignore getpreferredencoding
 
 import logging
 import os
@@ -78,7 +79,7 @@ def parse_coverage(
 ) -> list[tuple[FileCoverage, list[str]]]:
     """Process a GCOV JSON output."""
 
-    file_covs = list[tuple[FileCoverage, list[str]]]()
+    files_coverage = list[tuple[FileCoverage, list[str]]]()
 
     # Check format version because the file can be created external
     if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
@@ -130,9 +131,9 @@ def parse_coverage(
             suspicious_hits_threshold,
         )
 
-        file_covs.append((file_cov, encoded_source_lines))
+        files_coverage.append((file_cov, encoded_source_lines))
 
-    return file_covs
+    return files_coverage
 
 
 def _parse_file_node(
