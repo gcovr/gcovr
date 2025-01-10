@@ -457,7 +457,7 @@ def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) 
     )
     lines = source.splitlines()
 
-    with mock.patch("gcovr.formats.gcov.parser.insert_function_coverage") as m:
+    with mock.patch("gcovr.formats.gcov.parser.text.insert_function_coverage") as m:
         m.side_effect = AssertionError("totally broken")
         with pytest.raises(AssertionError) as ex_info:
             text.parse_coverage(
