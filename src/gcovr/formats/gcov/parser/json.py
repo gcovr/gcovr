@@ -123,12 +123,12 @@ def parse_coverage(
         ]
 
         file_cov = _parse_file_node(
-            file,
-            fname,
-            encoded_source_lines,
-            data_source,
-            ignore_parse_errors,
-            suspicious_hits_threshold,
+            gcov_file_node=file,
+            filename=fname,
+            source_lines=encoded_source_lines,
+            data_source=data_source,
+            ignore_parse_errors=ignore_parse_errors,
+            suspicious_hits_threshold=suspicious_hits_threshold,
         )
 
         files_coverage.append((file_cov, encoded_source_lines))

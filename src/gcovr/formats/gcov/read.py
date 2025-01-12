@@ -191,6 +191,7 @@ def process_gcov_json_data(
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
+        data_source=data_source,
     )
 
     for file_cov, source_lines in coverage:
