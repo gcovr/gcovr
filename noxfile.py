@@ -158,10 +158,15 @@ def set_environment(session: nox.Session, cc: Optional[str] = None) -> None:
         cc, cc_reference = get_gcc_versions()
     else:
         cc_reference = cc
+
+    cc_path, cc_file = os.path.split(cc)
+
     session.env["GCOVR_TEST_SUITE"] = "1"
-    session.env["CC"] = cc
+    session.env["CC"] = os.path.join(cc_path, cc_file)
     session.env["CFLAGS"] = "--this_flag_does_not_exist"
-    session.env["CXX"] = cc.replace("clang", "clang++").replace("gcc", "g++")
+    session.env["CXX"] = os.path.join(
+        cc_path, cc_file.replace("clang", "clang++").replace("gcc", "g++")
+    )
     session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
     if cc_reference is not None:
         session.env["CC_REFERENCE"] = cc_reference
@@ -432,9 +437,12 @@ def tests(session: nox.Session) -> None:
     session.run(session.env["CC"], "--version", external=True)
     session.env["CXX"] = str(shutil.which(session.env["CXX"])).replace(os.path.sep, "/")
     session.run(session.env["CXX"], "--version", external=True)
+    cc_path, cc_file = os.path.split(session.env["CC"])
     session.env["GCOV"] = str(
         shutil.which(
-            session.env["CC"].replace("clang", "llvm-cov").replace("gcc", "gcov")
+            os.path.join(
+                cc_path, cc_file.replace("clang", "llvm-cov").replace("gcc", "gcov")
+            )
         )
     ).replace(os.path.sep, "/")
 

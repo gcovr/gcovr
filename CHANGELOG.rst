@@ -33,6 +33,7 @@ Bug fixes and small improvements:
 - Fix line exclusion not clearing all child coverage data. (:issue:`1018`)
 - Fix summary stats in ``JaCoCo`` report. (:issue:`1022`)
 - Fix path issue when reading/writing ``Coveralls`` report. (:issue:`1037`)
+- Fix issue with negative counters in GCOV JSON export. (:issue:`1048`)
 
 Documentation:
 

@@ -21,7 +21,7 @@
 Handle parsing of the textual ``.gcov`` file format.
 
 Other modules should only use the following items:
-`parse_metadata()`, `parse_coverage()`, `UnknownLineType`.
+`parse_metadata()`, `parse_coverage()`
 
 The behavior of this parser was informed by the following sources:
 
@@ -38,7 +38,6 @@ The behavior of this parser was informed by the following sources:
 import enum
 import logging
 import re
-
 from typing import (
     Any,
     Iterable,
@@ -50,25 +49,27 @@ from typing import (
 
 from gcovr.utils import get_md5_hexdigest
 
-from ...coverage import (
+from ....coverage import (
     BranchCoverage,
+    CallCoverage,
     FileCoverage,
     FunctionCoverage,
-    CallCoverage,
     LineCoverage,
 )
-from ...merging import (
-    MergeOptions,
+from ....merging import (
     FUNCTION_MAX_LINE_MERGE_OPTIONS,
+    MergeOptions,
     insert_branch_coverage,
+    insert_call_coverage,
     insert_function_coverage,
     insert_line_coverage,
-    insert_call_coverage,
+)
+from .common import (
+    SUSPICIOUS_COUNTER,
+    check_hits,
 )
 
-
 LOGGER = logging.getLogger("gcovr")
-SUSPICIOUS_COUNTER = 2**32
 
 
 def _line_pattern(pattern: str) -> Pattern[str]:
@@ -210,77 +211,6 @@ class UnknownLineType(Exception):
     def __init__(self, line: str) -> None:
         super().__init__(line)
         self.line = line
-
-
-class NegativeHits(Exception):
-    """Used to signal that a negative count value was found."""
-
-    def __init__(self, line: str) -> None:
-        super().__init__(
-            f"Got negative hit value in gcov line {line!r} caused by a\n"
-            "bug in gcov tool, see\n"
-            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
-            "--gcov-ignore-parse-errors with a value of negative_hits.warn,\n"
-            "or negative_hits.warn_once_per_file."
-        )
-
-    @staticmethod
-    def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
-    ) -> None:
-        """Raise exception if not ignored by options"""
-        if ignore_parse_errors is not None and any(
-            v in ignore_parse_errors
-            for v in [
-                "all",
-                "negative_hits.warn",
-                "negative_hits.warn_once_per_file",
-            ]
-        ):
-            if "negative_hits.warn_once_per_file" in persistent_states:
-                persistent_states["negative_hits.warn_once_per_file"] += 1
-            else:
-                LOGGER.warning(f"Ignoring negative hits in line {line!r}.")
-                if "negative_hits.warn_once_per_file" in ignore_parse_errors:
-                    persistent_states["negative_hits.warn_once_per_file"] = 1
-        else:
-            raise NegativeHits(line)
-
-
-class SuspiciousHits(Exception):
-    """Used to signal that a negative count value was found."""
-
-    def __init__(self, line: str) -> None:
-        super().__init__(
-            f"Got suspicious hit value in gcov line {line!r} caused by a\n"
-            "bug in gcov tool, see\n"
-            "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
-            "--gcov-ignore-parse-errors with a value of suspicious_hits.warn,\n"
-            "or suspicious_hits.warn_once_per_file or change the threshold\n"
-            "for the detection with option --gcov-suspicious-hits-threshold."
-        )
-
-    @staticmethod
-    def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
-    ) -> None:
-        """Raise exception if not ignored by options"""
-        if ignore_parse_errors is not None and any(
-            v in ignore_parse_errors
-            for v in [
-                "all",
-                "suspicious_hits.warn",
-                "suspicious_hits.warn_once_per_file",
-            ]
-        ):
-            if "suspicious_hits.warn_once_per_file" in persistent_states:
-                persistent_states["suspicious_hits.warn_once_per_file"] += 1
-            else:
-                LOGGER.warning(f"Ignoring suspicious hits in line {line!r}.")
-                if "suspicious_hits.warn_once_per_file" in ignore_parse_errors:
-                    persistent_states["suspicious_hits.warn_once_per_file"] = 1
-        else:
-            raise SuspiciousHits(line)
 
 
 def parse_metadata(
@@ -658,7 +588,7 @@ def _parse_line(
     _BranchLine(branchno=0, hits=0, annotation='fallthrough')
     >>> _parse_line('branch 2 with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.UnknownLineType: branch 2 with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineType: branch 2 with some unknown format
 
     Example: can parse call tags:
     >>> _parse_line('call  0 never executed')
@@ -669,7 +599,7 @@ def _parse_line(
     _CallLine(callno=17, returned=9)
     >>> _parse_line('call 2 with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.UnknownLineType: call 2 with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineType: call 2 with some unknown format
 
     Example: can parse unconditional branches
     >>> _parse_line('unconditional 1 taken 17')
@@ -682,7 +612,7 @@ def _parse_line(
     _UnconditionalLine(branchno=3, hits=0)
     >>> _parse_line('unconditional with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.UnknownLineType: unconditional with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineType: unconditional with some unknown format
 
     Example: can parse function tags:
     >>> _parse_line('function foo called 2 returned 1 blocks executed 85%')
@@ -693,7 +623,7 @@ def _parse_line(
     _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
     >>> _parse_line('function foo with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.UnknownLineType: function foo with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineType: function foo with some unknown format
 
     Example: can parse template specialization markers:
     >>> _parse_line('------------------')
@@ -704,10 +634,10 @@ def _parse_line(
     _SpecializationNameLine(name='Foo<bar>::baz()')
     >>> _parse_line(' foo:')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.UnknownLineType:  foo:
+    gcovr.formats.gcov.parser.text.UnknownLineType:  foo:
     >>> _parse_line(':')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.UnknownLineType: :
+    gcovr.formats.gcov.parser.text.UnknownLineType: :
 
     Example: can parse block line:
     >>> _parse_line('     1: 32-block  0')
@@ -724,12 +654,12 @@ def _parse_line(
     _BlockLine(hits=0, lineno=32, block_id=0, extra_info=NONE)
     >>> _parse_line('     1: 9-block with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.UnknownLineType:      1: 9-block with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineType:      1: 9-block with some unknown format
 
     Example: will reject garbage:
     >>> _parse_line('nonexistent_tag foo bar')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.UnknownLineType: nonexistent_tag foo bar
+    gcovr.formats.gcov.parser.text.UnknownLineType: nonexistent_tag foo bar
     """
     # pylint: disable=too-many-branches
     if ignore_parse_errors is None:
@@ -785,17 +715,13 @@ def _parse_line(
             hits = _int_from_gcov_unit(hits_str)
             extra_info = _ExtraInfo.NONE
 
-        if hits < 0:
-            NegativeHits.raise_if_not_ignored(
-                line, ignore_parse_errors, persistent_states
-            )
-            hits = 0
-
-        if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
-            SuspiciousHits.raise_if_not_ignored(
-                line, ignore_parse_errors, persistent_states
-            )
-            hits = 0
+        hits = check_hits(
+            hits,
+            line,
+            ignore_parse_errors,
+            suspicious_hits_threshold,
+            persistent_states,
+        )
 
         return _SourceLine(hits, int(lineno), source_code, extra_info)
 
@@ -817,17 +743,13 @@ def _parse_line(
                 hits = _int_from_gcov_unit(hits_str)
                 extra_info = _ExtraInfo.NONE
 
-            if hits < 0:
-                NegativeHits.raise_if_not_ignored(
-                    line, ignore_parse_errors, persistent_states
-                )
-                hits = 0
-
-            if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
-                SuspiciousHits.raise_if_not_ignored(
-                    line, ignore_parse_errors, persistent_states
-                )
-                hits = 0
+            hits = check_hits(
+                hits,
+                line,
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            )
 
             return _BlockLine(hits, int(lineno), int(block_id), extra_info)
 
@@ -873,17 +795,13 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
             branch_id, taken_str, annotation = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
 
-            if hits < 0:
-                NegativeHits.raise_if_not_ignored(
-                    line, ignore_parse_errors, persistent_states
-                )
-                hits = 0
-
-            if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
-                SuspiciousHits.raise_if_not_ignored(
-                    line, ignore_parse_errors, persistent_states
-                )
-                hits = 0
+            hits = check_hits(
+                hits,
+                line,
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            )
 
             return _BranchLine(int(branch_id), hits, annotation)
 
@@ -910,17 +828,13 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
             branch_id, taken_str = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
 
-            if hits < 0:
-                NegativeHits.raise_if_not_ignored(
-                    line, ignore_parse_errors, persistent_states
-                )
-                hits = 0
-
-            if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
-                SuspiciousHits.raise_if_not_ignored(
-                    line, ignore_parse_errors, persistent_states
-                )
-                hits = 0
+            hits = check_hits(
+                hits,
+                line,
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            )
 
             return _UnconditionalLine(int(branch_id), hits)
 
