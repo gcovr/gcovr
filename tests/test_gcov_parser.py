@@ -646,7 +646,7 @@ def test_negative_branch_count_json() -> None:
     with pytest.raises(NegativeHits):
         json.parse_coverage(
             gcov_json_data=source,
-            data_source="example.gcov.json.gz",
+            data_fname="example.gcov.json.gz",
             include_filters=[AlwaysMatchFilter()],
             exclude_filters=[],
             ignore_parse_errors=set(),
@@ -742,7 +742,7 @@ def test_negative_branch_count_ignored_json(
 
     json.parse_coverage(
         gcov_json_data=source,
-        data_source="example.gcov.json.gz",
+        data_fname="example.gcov.json.gz",
         include_filters=[AlwaysMatchFilter()],
         exclude_filters=[],
         ignore_parse_errors=set([flag]),

@@ -73,7 +73,7 @@ def parse_coverage(
     include_filters: list[Filter],
     exclude_filters: list[Filter],
     ignore_parse_errors: Optional[set[str]],
-    data_source: Optional[str] = None,
+    data_fname: Optional[str] = None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
 ) -> list[tuple[FileCoverage, list[str]]]:
@@ -126,7 +126,7 @@ def parse_coverage(
             gcov_file_node=file,
             filename=fname,
             source_lines=encoded_source_lines,
-            data_source=data_source,
+            data_fname=data_fname,
             ignore_parse_errors=ignore_parse_errors,
             suspicious_hits_threshold=suspicious_hits_threshold,
         )
@@ -140,7 +140,7 @@ def _parse_file_node(
     gcov_file_node: dict[str, Any],
     filename: str,
     source_lines: list[str],
-    data_source: Optional[Union[str, set[str]]],
+    data_fname: Optional[Union[str, set[str]]],
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
 ) -> FileCoverage:
@@ -155,7 +155,7 @@ def _parse_file_node(
         gcov_file_node: one of the "files" node in the gcov json format
         filename: for error reports
         source_lines: decoded source code lines, for reporting
-        data_source: source of this node, for reporting
+        data_fname: source of this node, for reporting
         ignore_parse_errors: which errors should be converted to warnings
 
     Returns:
@@ -168,7 +168,7 @@ def _parse_file_node(
     if ignore_parse_errors is None:
         ignore_parse_errors = set()
 
-    file_cov = FileCoverage(filename, data_source)
+    file_cov = FileCoverage(filename, data_fname)
     for line in gcov_file_node["lines"]:
         line_cov = insert_line_coverage(
             file_cov,

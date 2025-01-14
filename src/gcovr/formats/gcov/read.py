@@ -177,11 +177,11 @@ def find_datafiles(search_path: str, exclude_dirs: list[re.Pattern[str]]) -> lis
 # Process a single gcov datafile
 #
 def process_gcov_json_data(
-    data_source: str, covdata: CoverageContainer, options: Options
+    data_fname: str, covdata: CoverageContainer, options: Options
 ) -> None:
     """Process a GCOV JSON output."""
 
-    with gzip.open(data_source, "rt", encoding="UTF-8") as fh_in:
+    with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json_loads(fh_in.read())
 
     coverage = json.parse_coverage(
@@ -191,7 +191,7 @@ def process_gcov_json_data(
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
-        data_source=data_source,
+        data_fname=data_fname,
     )
 
     for file_cov, source_lines in coverage:
