@@ -103,6 +103,17 @@ See also: `Gcov and Optimization`_ in the GCC documentation.
 Despite these approaches,
 100% branch coverage will be impossible for most programs.
 
+With the :option:`gcovr --decisions` option,
+gcovr parses the source code to extract a metric for decision coverage.
+This metric can be interpreted as the branch coverage on C/C++-Level.
+While the feature is not always able to detect the decisions reliably
+when the code is written very compact (uncheckable decisions will be marked).
+
+Decision coverage may be an acceptable bandaid for C++ code bases, and may be
+especially useful for optimistic aggregate metrics (e.g. file-level coverage
+percentages and for quality gates using the --fail-under feature). However,
+100% "decision" coverage may still leave substantial uncovered control flow.
+
 .. _Godbolt Compiler Explorer: https://godbolt.org/
 .. _Gcov and Optimization: https://gcc.gnu.org/onlinedocs/gcc/Gcov-and-Optimization.html
 
