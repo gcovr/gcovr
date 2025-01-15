@@ -96,6 +96,7 @@
                 <th class="p-2">Decision</th>
                 <th class="p-2">Exec</th>
                 <th class="p-2 text-left" style="width: 100%;">Source</th>
+                <th class="p-2" style="white-space: nowrap;">Block IDs</th>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l1" href="#l1">1</a></td>
@@ -107,6 +108,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdexcept&gt;</span><span class="cp"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l2" href="#l2">2</a></td>
@@ -118,6 +120,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l3" href="#l3">3</a></td>
@@ -129,6 +132,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function_that_may_throw</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l4" href="#l4">4</a></td>
@@ -136,8 +140,8 @@
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 0 taken 1 times.</div>
-                            <div class="color-taken-branch">&check; Branch 1 taken 2 times.</div>
+                            <div class="color-taken-branch">&check; Branch 0 (2 &rightarrow; 3) taken 1 times.</div>
+                            <div class="color-taken-branch">&check; Branch 1 (2 &rightarrow; 6) taken 2 times.</div>
                         </div>
                     </details>
                 </td>
@@ -161,6 +165,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos">2</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l5" href="#l5">5</a></td>
@@ -168,8 +173,8 @@
                     <details class="normal details-overlay">
                         <summary>1/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 0 taken 1 times.</div>
-                            <div class="color-fg-danger">&cross; Branch 1 not taken.</div>
+                            <div class="color-taken-branch">&check; Branch 0 (4 &rightarrow; 5) taken 1 times.</div>
+                            <div class="color-fg-danger">&cross; Branch 1 (4 &rightarrow; 8) not taken.</div>
                         </div>
                     </details>
                 </td>
@@ -179,6 +184,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;the error&quot;</span><span class="p">);</span><span class="w"></span></td>
+                <td class="text-right src linenos">3, 4, 5, 8</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l6" href="#l6">6</a></td>
@@ -190,6 +196,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l7" href="#l7">7</a></td>
@@ -201,6 +208,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span><span class="w"></span></td>
+                <td class="text-right src linenos">6, 7</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l8" href="#l8">8</a></td>
@@ -212,6 +220,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l9" href="#l9">9</a></td>
@@ -223,6 +232,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l10" href="#l10">10</a></td>
@@ -234,6 +244,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l11" href="#l11">11</a></td>
@@ -245,6 +256,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="k">struct</span><span class="w"> </span><span class="nc">RAII</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l12" href="#l12">12</a></td>
@@ -256,6 +268,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">;</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l13" href="#l13">13</a></td>
@@ -267,6 +280,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l14" href="#l14">14</a></td>
@@ -278,6 +292,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="n">RAII</span><span class="p">(</span><span class="kt">bool</span><span class="p">);</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l15" href="#l15">15</a></td>
@@ -289,6 +304,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="o">~</span><span class="n">RAII</span><span class="p">();</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l16" href="#l16">16</a></td>
@@ -300,6 +316,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">method_that_may_throw</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l17" href="#l17">17</a></td>
@@ -311,6 +328,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">die</span><span class="p">);</span><span class="w"></span></td>
+                <td class="text-right src linenos">2, 3</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l18" href="#l18">18</a></td>
@@ -322,6 +340,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l19" href="#l19">19</a></td>
@@ -333,6 +352,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">};</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l20" href="#l20">20</a></td>
@@ -344,6 +364,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l21" href="#l21">21</a></td>
@@ -355,6 +376,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="n">RAII</span><span class="o">::</span><span class="n">RAII</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="n">die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l22" href="#l22">22</a></td>
@@ -366,6 +388,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="n">RAII</span><span class="o">::~</span><span class="n">RAII</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l23" href="#l23">23</a></td>
@@ -377,6 +400,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l24" href="#l24">24</a></td>
@@ -388,6 +412,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l25" href="#l25">25</a></td>
@@ -399,6 +424,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l26" href="#l26">26</a></td>
@@ -410,6 +436,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l27" href="#l27">27</a></td>
@@ -421,6 +448,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l28" href="#l28">28</a></td>
@@ -428,8 +456,8 @@
                     <details class="normal details-overlay">
                         <summary>1/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-fg-danger">&cross; Branch 0 not taken.</div>
-                            <div class="color-taken-branch">&check; Branch 1 taken 1 times.</div>
+                            <div class="color-fg-danger">&cross; Branch 0 (2 &rightarrow; 3) not taken.</div>
+                            <div class="color-taken-branch">&check; Branch 1 (2 &rightarrow; 10) taken 1 times.</div>
                         </div>
                     </details>
                 </td>
@@ -439,6 +467,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">        </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
+                <td class="text-right src linenos">2</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l29" href="#l29">29</a></td>
@@ -446,8 +475,8 @@
                     <details class="normal details-overlay">
                         <summary>1/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-fg-danger">&cross; Branch 0 not taken.</div>
-                            <div class="color-taken-branch">&check; Branch 1 taken 1 times.</div>
+                            <div class="color-fg-danger">&cross; Branch 0 (10 &rightarrow; 11) not taken.</div>
+                            <div class="color-taken-branch">&check; Branch 1 (10 &rightarrow; 12) taken 1 times.</div>
                         </div>
                     </details>
                 </td>
@@ -457,6 +486,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos">10, 12</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l30" href="#l30">30</a></td>
@@ -468,6 +498,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l31" href="#l31">31</a></td>
@@ -479,6 +510,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+                <td class="text-right src linenos">13</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l32" href="#l32">32</a></td>
@@ -490,6 +522,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l33" href="#l33">33</a></td>
@@ -501,6 +534,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="c1">// GCOV_EXCL_START</span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l34" href="#l34">34</a></td>
@@ -512,6 +546,7 @@
                 </td>
                 <td class="src excludedLine pr-2 pl-2 color-fg-muted text-right">&minus;</td>
                 <td class="src excludedLine"><span class="w">    </span><span class="n">RAII</span><span class="w"> </span><span class="n">raii</span><span class="p">(</span><span class="n">die_again</span><span class="p">);</span><span class="w"></span></td>
+                <td class="text-right src linenos">3</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l35" href="#l35">35</a></td>
@@ -523,6 +558,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="c1">// GCOV_EXCL_STOP</span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l36" href="#l36">36</a></td>
@@ -534,6 +570,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l37" href="#l37">37</a></td>
@@ -545,6 +582,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l38" href="#l38">38</a></td>
@@ -552,8 +590,8 @@
                     <details class="normal details-overlay">
                         <summary>1/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 0 taken 1 times.</div>
-                            <div class="color-fg-danger">&cross; Branch 1 not taken.</div>
+                            <div class="color-taken-branch">&check; Branch 0 (4 &rightarrow; 5) taken 1 times.</div>
+                            <div class="color-fg-danger">&cross; Branch 1 (4 &rightarrow; 14) not taken.</div>
                         </div>
                     </details>
                 </td>
@@ -563,6 +601,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">        </span><span class="n">raii</span><span class="p">.</span><span class="n">method_that_may_throw</span><span class="p">();</span><span class="w"></span></td>
+                <td class="text-right src linenos">4</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l39" href="#l39">39</a></td>
@@ -574,6 +613,7 @@
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
                 <td class="src uncoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos">14, 16</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l40" href="#l40">40</a></td>
@@ -585,6 +625,7 @@
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
                 <td class="src uncoveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l41" href="#l41">41</a></td>
@@ -596,6 +637,7 @@
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
                 <td class="src uncoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+                <td class="text-right src linenos">17</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l42" href="#l42">42</a></td>
@@ -607,6 +649,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l43" href="#l43">43</a></td>
@@ -614,8 +657,8 @@
                     <details class="normal details-overlay">
                         <summary>1/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 0 taken 1 times.</div>
-                            <div class="color-fg-danger">&cross; Branch 1 not taken.</div>
+                            <div class="color-taken-branch">&check; Branch 0 (5 &rightarrow; 6) taken 1 times.</div>
+                            <div class="color-fg-danger">&cross; Branch 1 (5 &rightarrow; 18) not taken.</div>
                         </div>
                     </details>
                 </td>
@@ -625,6 +668,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">    </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
+                <td class="text-right src linenos">5</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
@@ -636,6 +680,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
@@ -647,6 +692,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+                <td class="text-right src linenos">6</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
@@ -658,6 +704,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
+                <td class="text-right src linenos">7, 18</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
@@ -669,6 +716,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
@@ -680,6 +728,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
@@ -691,6 +740,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
@@ -702,6 +752,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="n">argc</span><span class="p">);</span><span class="w"></span></td>
+                <td class="text-right src linenos">2, 3</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>
@@ -713,6 +764,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="text-right src linenos"></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l52" href="#l52">52</a></td>
@@ -724,6 +776,7 @@
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
+                <td class="text-right src linenos"></td>
             </tr>
 
         </table>
@@ -732,7 +785,7 @@
           <hr/>
         </main>
         <footer class="text-center">
-          Generated by: <a href="http://gcovr.com/en/main">GCOVR (Version 8.2+main)</a>
+          Generated by: <a href="http://gcovr.com/en/main">GCOVR (Version main)</a>
         </footer>
       </div>
     </div>
