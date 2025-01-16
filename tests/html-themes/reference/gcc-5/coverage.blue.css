@@ -372,7 +372,7 @@ span.excludedLine
 .linebranchContents, .lineconditionContents, .linedecisionContents, .linecallContents
 {
     font-family: sans-serif;
-    font-size: small;
+    font-size: medium;
     text-align: left;
     position: absolute;
     width: 15em;
