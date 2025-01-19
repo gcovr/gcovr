@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.7" branch-rate="0.5" lines-covered="14" lines-valid="20" branches-covered="3" branches-valid="6" complexity="0.0" timestamp="1728808696" version="gcovr 8.2+main">
+<coverage line-rate="0.7" branch-rate="0.5" lines-covered="14" lines-valid="20" branches-covered="3" branches-valid="6" complexity="0.0" timestamp="1728808696" version="gcovr 8.3">
   <sources>
      <source>tests/no-markers</source>
   </sources>

@@ -275,7 +275,7 @@ the :ref:`structure of integration tests <integration tests>`,
 how to :ref:`run and filter tests <run tests>`,
 and how to :ref:`run tests with Docker <docker tests>`.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.3
    black is replaced by ruff.
 
 .. versionchanged:: 5.2

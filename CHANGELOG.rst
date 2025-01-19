@@ -3,8 +3,8 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
-Next Release
-------------
+8.3 (19 January 2025)
+---------------------
 
 Known bugs:
 

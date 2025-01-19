@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.875" branch-rate="0.5" lines-covered="7" lines-valid="8" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1728808696" version="gcovr 8.2+main">
+<coverage line-rate="0.875" branch-rate="0.5" lines-covered="7" lines-valid="8" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1728808696" version="gcovr 8.3">
   <sources>
      <source>tests/filter-relative</source>
   </sources>

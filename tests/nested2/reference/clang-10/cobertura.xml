@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.6153846153846154" branch-rate="0.4" lines-covered="24" lines-valid="39" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="1728808696" version="gcovr 8.2+main">
+<coverage line-rate="0.6153846153846154" branch-rate="0.4" lines-covered="24" lines-valid="39" branches-covered="4" branches-valid="10" complexity="0.0" timestamp="1728808696" version="gcovr 8.3">
   <sources>
      <source>tests/nested2/subdir</source>
   </sources>
