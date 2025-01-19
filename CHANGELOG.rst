@@ -22,6 +22,7 @@ New features and notable changes:
 - Add condition coverage merge mode option :option:`--merge-mode-conditions` (:issue:`1009`)
 - Add :option:`--gcov-suspicious-hits-threshold` to configure the value for detecting suspicious hits in GCOV files. (:issue:`1021`)
 - Renamed JSON element ``destination_blockno`` to ``destination_block_id``. (:issue:`1045`)
+- Add :option:`--html-block-ids` to show the block ids of the lines and branches in HTML report. (:issue:`1055`)
 
 Bug fixes and small improvements:
 

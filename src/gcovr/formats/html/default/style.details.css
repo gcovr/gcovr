@@ -28,30 +28,41 @@ span.excludedLine
     background-color: var(--excluded_color) !important;
 }
 
-.linebranch, .linecondition, .linedecision, .linecall, .linecount
+.linebranch, .linecondition, .linedecision, .linecall, .linecount, .lineblockids
 {
     font-family: monospace;
     border-right: 1px gray solid;
     background-color: lightgray;
+    white-space: nowrap;
+}
+.linebranch, .linecondition, .linedecision, .linecall
+{
+    text-align: left;
+}
+.linecount
+{
     text-align: right;
 }
-
 
 .linebranchDetails, .lineconditionDetails, .linedecisionDetails, .linecallDetails
 {
     position: relative;
 }
+
 .linebranchSummary, .lineconditionSummary, .linedecisionSummary, .linecallSummary
 {
     cursor: help;
+    white-space: nowrap;
 }
+
 .linebranchContents, .lineconditionContents, .linedecisionContents, .linecallContents
 {
-    font-family: sans-serif;
-    font-size: small;
+    font-family: monospace;
+    font-size: medium;
     text-align: left;
+    white-space: nowrap;
     position: absolute;
-    width: 15em;
+    width: 18em;
     padding: 1em;
     background: white;
     border: solid gray 1px;

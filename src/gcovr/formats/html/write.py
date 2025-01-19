@@ -325,6 +325,7 @@ def write_report(
     data["EXCLUDE_CONDITIONS"] = not any(
         filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
     )
+    data["USE_BLOCK_IDS"] = options.html_block_ids
     data["COVERAGE_MED"] = medium_threshold
     data["COVERAGE_HIGH"] = high_threshold
     data["LINE_COVERAGE_MED"] = medium_threshold_line
@@ -875,7 +876,9 @@ def get_file_data(
                 ctr = 0
                 for ctr, line in enumerate(lines, 1):
                     file_data["source_lines"].append(
-                        source_row(ctr, line, cdata.lines.get(ctr))
+                        source_row(
+                            ctr, line, cdata.lines.get(ctr), options.html_block_ids
+                        )
                     )
                 if ctr < max_line_from_cdata:
                     LOGGER.warning(
@@ -896,6 +899,7 @@ def get_file_data(
                         ctr,
                         file_info if ctr == 1 else "",
                         cdata.lines.get(ctr),
+                        options.html_block_ids,
                     )
                 )
 
@@ -923,7 +927,7 @@ def dict_from_stat(
 
 
 def source_row(
-    lineno: int, source: str, linecov: Optional[LineCoverage]
+    lineno: int, source: str, linecov: Optional[LineCoverage], html_block_ids: bool
 ) -> dict[str, Any]:
     """Get information for a row"""
     linebranch = None
@@ -951,6 +955,9 @@ def source_row(
         linecall = source_row_call(linecov.calls)
     return {
         "lineno": lineno,
+        "block_ids": []
+        if linecov is None or not html_block_ids
+        else linecov.block_ids or [],
         "source": source,
         "covclass": covclass,
         "linebranch": linebranch,
@@ -984,6 +991,9 @@ def source_row_branch(branches: dict[int, BranchCoverage]) -> Optional[dict[str,
                 "excluded": branchcov.excluded,
             }
         )
+        if branchcov.destination_block_id is not None:
+            items[-1]["source_block_id"] = branchcov.source_block_id
+            items[-1]["destination_block_id"] = branchcov.destination_block_id
 
     return {
         "taken": taken,

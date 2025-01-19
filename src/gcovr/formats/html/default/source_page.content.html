@@ -14,7 +14,10 @@
       <th align="right">Call</th>
       {% endif %}
       <th align="right">Exec</th>
-      <th align="left">Source</th>
+      <th align="left" style="width: 100%;">Source</th>
+      {% if USE_BLOCK_IDS %}
+      <th align="right">Block IDs</th>
+      {% endif %}
     </tr>
     {% if info.single_page %}
     {%  set anchor_prefix = html_filename + "|" %}
@@ -30,12 +33,17 @@
           <summary class="linebranchSummary">{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
           <div class="linebranchContents">
             {% for branch in row.linebranch.branches %}
-            {% if branch.excluded %}
-            <div class="excludedBranch">&ndash; Branch {{branch.name}} excluded.</div>
-            {% elif branch.taken %}
-            <div class="takenBranch">&check; Branch {{branch.name}} taken {{branch.count}} times.</div>
+            {% if branch.source_block_id %}
+            {%  set block_info = " (%d&rightarrow;%d)" | format(branch.source_block_id, branch.destination_block_id) | safe %}
             {% else %}
-            <div class="notTakenBranch">&cross; Branch {{branch.name}} not taken.</div>
+            {%  set block_info = "" %}
+            {% endif %}
+            {% if branch.excluded %}
+            <div class="excludedBranch">&ndash; Branch {{branch.name}}{{block_info}} excluded.</div>
+            {% elif branch.taken %}
+            <div class="takenBranch">&check; Branch {{branch.name}}{{block_info}} taken {{branch.count}} times.</div>
+            {% else %}
+            <div class="notTakenBranch">&cross; Branch {{branch.name}}{{block_info}} not taken.</div>
             {% endif%}
             {% endfor %}
           </div>
@@ -104,6 +112,9 @@
       {% endif %}
       <td class="linecount {{row.covclass}}">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
       <td class="src {{row.covclass}}">{{row.source}}</td>
+      {% if USE_BLOCK_IDS %}
+      <td class="lineblockids">{{row.block_ids | join(', ')}}</td>
+      {% endif %}
     </tr>
     {% endfor %}
   </table>

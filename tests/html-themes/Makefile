@@ -7,8 +7,8 @@ run: html
 
 html:
 	./testcase
-	$(GCOVR) --html-details --html-theme green -o coverage.green.html
-	$(GCOVR) --html-details --html-theme blue -o coverage.blue.html
+	$(GCOVR) --html-details --html-block-ids --html-theme green -o coverage.green.html
+	$(GCOVR) --html-details --html-block-ids --html-theme blue -o coverage.blue.html
 
 clean:
 	rm -f testcase

@@ -95,12 +95,21 @@ class HtmlHandler(BaseHandler):
                 const=OutputOrDefault(None),
             ),
             GcovrConfigOption(
+                "html_block_ids",
+                ["--html-block-ids"],
+                group="output_options",
+                help=(
+                    "Add the block ids to the HTML report for debugging the branch coverage."
+                ),
+                action="store_true",
+            ),
+            GcovrConfigOption(
                 "html_template_dir",
                 ["--html-template-dir"],
                 group="output_options",
                 metavar="OUTPUT",
                 help=(
-                    "Override the default Jinja2 template directory for the HTML report. "
+                    "Override the default Jinja2 template directory for the HTML report."
                 ),
             ),
             GcovrConfigOption(
