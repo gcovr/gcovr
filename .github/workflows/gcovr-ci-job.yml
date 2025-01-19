@@ -118,6 +118,13 @@ jobs:
       - name: Test with pytest
         run: |
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session tests --  --archive_differences
+          # There must not be any modifications to get the correct versions later
+          Status=$(git status --porcelain)
+          if [ -n "$Status" ] ; then
+            echo "Following files are modified:"
+            echo "$Status"
+            exit 1
+          fi
 
       - name: Upload pytest test results
         if: ${{ failure() }}
