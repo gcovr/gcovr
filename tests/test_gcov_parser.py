@@ -2,12 +2,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.2+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/main
+# This file is part of gcovr 8.3, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/8.3
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2024 the gcovr authors
+# Copyright (c) 2013-2025 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.

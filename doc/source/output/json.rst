@@ -215,10 +215,10 @@ destination_block_id: int
 .. versionadded:: 8.0
    Added ``destination_blockno`` field.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.3
    Added ``source_block_id`` field.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.3
    Renamed ``destination_blockno`` to ``destination_block_id`` field.
 
 .. _json_format_condition:

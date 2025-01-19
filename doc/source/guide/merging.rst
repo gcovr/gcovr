@@ -53,6 +53,6 @@ With the :option:`--merge-mode-conditions` you can change this:
    The :option:`gcovr --json-base` option.
    The :option:`gcovr --merge-mode-functions` option.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.3
 
     The :option:`gcovr --merge-mode-conditions` option.

@@ -62,7 +62,7 @@ This behavior can be changed by using the value ``--gcov-ignore-parse-errors=sus
 with a suspicious value the second one only once per processed file and adds a summary with the overall
 issues in the file.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.3
 
     The threshold for detection of suspicious hits can be configured with :option:`--gcov-suspicious-hits-threshold`.
 

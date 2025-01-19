@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.85714" branch-rate="0.5" lines-covered="6" lines-valid="7" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="0" version="gcovr main">
+<coverage line-rate="0.85714" branch-rate="0.5" lines-covered="6" lines-valid="7" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="0" version="gcovr 8.3">
   <sources>
     <source>tests/filter-relative-lib-from-unfiltered-tracefile/project</source>
   </sources>
