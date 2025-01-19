@@ -52,3 +52,4 @@ endif
 clean:
 	rm -rf bazel-*
 	rm -f coverage*.json MODULE.bazel.lock
+	bazel clean --expunge

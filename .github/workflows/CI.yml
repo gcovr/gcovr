@@ -243,7 +243,7 @@ jobs:
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
         with:
           tag_name: ${{ env.GCOVR_VERSION }}
-          body_path: release_notes.md
+          body_path: doc/build/release_notes.md
           files: build/*
 
       - name: Publish to PyPi
