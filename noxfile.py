@@ -26,7 +26,6 @@ import platform
 import re
 from runpy import run_path
 import socket
-import sys
 import textwrap
 import time
 from typing import Optional
@@ -295,8 +294,6 @@ def bandit(session: nox.Session) -> None:
 def pylint(session: nox.Session) -> None:
     """Run pylint command."""
     session.install("pylint<4.0.0", "nox", "requests", "pytest")
-    if sys.version_info >= (3, 12):
-        session.install("setuptools")
     session.install("-e", ".")
     if session.posargs:
         args = session.posargs
