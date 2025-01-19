@@ -220,7 +220,13 @@ jobs:
 
       - name: Set release notes as job summary
         run: |
-          cat doc/build/release_notes.md >> $GITHUB_STEP_SUMMARY
+          (
+            echo '''
+            # $GcovrVersion
+
+            '''
+            cat doc/build/release_notes.md
+          ) >> $GITHUB_STEP_SUMMARY
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
