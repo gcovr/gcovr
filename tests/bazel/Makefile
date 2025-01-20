@@ -50,6 +50,6 @@ else
 endif
 
 clean:
+	rm -f *.gc*
 	rm -rf bazel-*
 	rm -f coverage*.json MODULE.bazel.lock
-	bazel clean --expunge

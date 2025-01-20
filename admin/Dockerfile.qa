@@ -79,9 +79,6 @@ if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" -o "$DOCKER_
   # Installing pip is a bit more complicated though:
   # * `apt install python3-pip` -> pulls in >100MB of unneeded stuff
   # * `get-pip.py` script -> depends on distutils standard library module, removed by Debian
-  #
-  # Solution: install python3-setuptools (includes Python 3.6),
-  # then use the get-pip script from Python 3.7.
   curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
   python3 get-pip.py
   rm get-pip.py

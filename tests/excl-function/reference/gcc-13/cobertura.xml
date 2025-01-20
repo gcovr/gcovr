@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.92857" branch-rate="0.65385" lines-covered="39" lines-valid="42" branches-covered="17" branches-valid="26" complexity="0.0" timestamp="0" version="gcovr 8.3">
+<coverage line-rate="0.92857" branch-rate="0.65385" lines-covered="39" lines-valid="42" branches-covered="17" branches-valid="26" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/excl-function</source>
   </sources>

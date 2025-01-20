@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.52273" branch-rate="1.0" lines-covered="23" lines-valid="44" branches-covered="0" branches-valid="0" complexity="0.0" timestamp="0" version="gcovr 8.3">
+<coverage line-rate="0.52273" branch-rate="1.0" lines-covered="23" lines-valid="44" branches-covered="0" branches-valid="0" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/coexisting_object_directories-from_build_dir-without_search_dir</source>
   </sources>

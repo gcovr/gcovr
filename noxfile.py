@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.3, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/8.3
+# This file is part of gcovr 8.3+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -26,7 +26,6 @@ import platform
 import re
 from runpy import run_path
 import socket
-import sys
 import textwrap
 import time
 from typing import Optional
@@ -295,8 +294,6 @@ def bandit(session: nox.Session) -> None:
 def pylint(session: nox.Session) -> None:
     """Run pylint command."""
     session.install("pylint<4.0.0", "nox", "requests", "pytest")
-    if sys.version_info >= (3, 12):
-        session.install("setuptools")
     session.install("-e", ".")
     if session.posargs:
         args = session.posargs
@@ -381,12 +378,6 @@ def doc(session: nox.Session) -> None:
     for line in iter_lines:
         if line.startswith("------------"):
             next(iter_lines)
-            version = get_gcovr_version()
-            out_lines += [
-                f"{version}\n",
-                f"{'-' * len(version)}\n",
-                "\n",
-            ]
             break
         if (line.rstrip())[:-1] == ":":
             raise RuntimeError(f"Found section start before release ID: {line}")

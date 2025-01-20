@@ -118,6 +118,13 @@ jobs:
       - name: Test with pytest
         run: |
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session tests --  --archive_differences
+          # There must not be any modifications to get the correct versions later
+          Status=$(git status --porcelain)
+          if [ -n "$Status" ] ; then
+            echo "Following files are modified:"
+            echo "$Status"
+            exit 1
+          fi
 
       - name: Upload pytest test results
         if: ${{ failure() }}
@@ -139,7 +146,7 @@ jobs:
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session doc || exit 1
 
           # Check if files are modified (outdated screenshots)
-          Status=$(git status --porcelain | grep -F '.jpeg' || exit 0)
+          Status=$(git status --porcelain)
           if [ -n "$Status" ] ; then
             echo "Following files are modified:"
             echo "$Status"
@@ -151,15 +158,11 @@ jobs:
 
       - name: Build and check the wheel
         run: |
-          git clean -fdx || echo "Ignoring exit code of clean command"
-          git reset --hard || echo "Ignoring exit code of reset command"
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
 
       - name: Build and check standalone application
         if: ${{ !startsWith(inputs.python-version,'pypy') }}
         run: |
-          git clean -fdx || echo "Ignoring exit code of clean command"
-          git reset --hard || echo "Ignoring exit code of reset command"
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session bundle_app
 
       - name: Upload app bundle artifacts

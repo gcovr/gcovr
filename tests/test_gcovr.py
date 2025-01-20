@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.3, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/8.3
+# This file is part of gcovr 8.3+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -46,7 +46,7 @@ python_interpreter = force_unix_separator(
     sys.executable
 )  # use forward slash on windows as well
 env = os.environ
-env["SOURCE_DATE_EPOCH"] = "1737314390"
+env["SOURCE_DATE_EPOCH"] = "1737404287"
 env["GCOVR"] = python_interpreter + " -m gcovr"
 for var in [
     "CPATH",
@@ -66,6 +66,8 @@ skip_clean = None
 
 BASE_DIRECTORY = os.path.split(os.path.abspath(__file__))[0]
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
+
+ARCHIVE_DIFFERENCES_FILE = os.path.join(BASE_DIRECTORY, "diff.zip")
 
 CC = os.path.split(env["CC"])[1]
 
@@ -307,9 +309,8 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     collected_params = []
 
     if archive_differences:  # pragma: no cover
-        diffs_zip = os.path.join(BASE_DIRECTORY, "diff.zip")
-        # Create an empty ZIP
-        zipfile.ZipFile(diffs_zip, mode="w").close()
+        if os.path.exists(ARCHIVE_DIFFERENCES_FILE):
+            os.unlink(ARCHIVE_DIFFERENCES_FILE)
 
     for name in find_tests(BASE_DIRECTORY):
         targets = parse_makefile_for_available_targets(
@@ -485,11 +486,10 @@ def update_reference_data(  # pragma: no cover
 def archive_difference_data(  # pragma: no cover
     name: str, test_file: str, reference_file: str
 ) -> None:
-    diffs_zip = os.path.join("..", "diff.zip")
     reference_file_zip = os.path.join(
         name, REFERENCE_DIRS[0], os.path.basename(reference_file)
     )
-    with zipfile.ZipFile(diffs_zip, mode="a") as f:
+    with zipfile.ZipFile(ARCHIVE_DIFFERENCES_FILE, mode="a") as f:
         f.write(
             test_file,
             reference_file_zip.replace(os.path.sep, "/"),
