@@ -106,6 +106,23 @@ SEPARATE_FUNCTION_MERGE_OPTIONS = MergeFunctionOptions(
 
 
 @dataclass
+class MergeFunctionNameOptions:
+    """Data class to store the function name merge options."""
+
+    ignore_function_name: bool = False
+    ignore_function_name_single_definition: bool = False
+
+
+FUNCTION_NAME_STRICT_MERGE_OPTIONS = MergeFunctionNameOptions()
+FUNCTION_NAME_IGNORE_SINGLE_DEFINITION_MERGE_OPTIONS = MergeFunctionNameOptions(
+    ignore_function_name_single_definition=True,
+)
+FUNCTION_NAME_IGNORE_MERGE_OPTIONS = MergeFunctionNameOptions(
+    ignore_function_name=True,
+)
+
+
+@dataclass
 class MergeConditionOptions:
     """Data class to store the condition merge options."""
 
@@ -123,6 +140,9 @@ class MergeOptions:
     """Data class to store the merge options."""
 
     func_opts: MergeFunctionOptions = field(default_factory=MergeFunctionOptions)
+    func_name_opts: MergeFunctionNameOptions = field(
+        default_factory=MergeFunctionNameOptions
+    )
     cond_opts: MergeConditionOptions = field(default_factory=MergeConditionOptions)
 
 
@@ -144,6 +164,15 @@ def get_merge_mode_from_options(options: Options) -> MergeOptions:
         merge_opts.func_opts = SEPARATE_FUNCTION_MERGE_OPTIONS
     else:
         raise AssertionError("Sanity check: Unknown functions merge mode.")
+
+    if options.merge_mode_function_names == "strict":
+        merge_opts.func_name_opts = FUNCTION_NAME_STRICT_MERGE_OPTIONS
+    elif options.merge_mode_function_names == "ignore-single-definition":
+        merge_opts.func_name_opts = FUNCTION_NAME_IGNORE_SINGLE_DEFINITION_MERGE_OPTIONS
+    elif options.merge_mode_function_names == "ignore-names":
+        merge_opts.func_name_opts = FUNCTION_NAME_IGNORE_MERGE_OPTIONS
+    else:
+        raise AssertionError("Sanity check: Unknown function names merge mode.")
 
     if options.merge_mode_conditions == "strict":
         merge_opts.cond_opts = CONDITION_STRICT_MERGE_OPTIONS
@@ -242,13 +271,13 @@ def merge_covdata(
 
 def insert_file_coverage(
     target: CoverageContainer,
-    file: FileCoverage,
+    filecov: FileCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> FileCoverage:
     """Insert FileCoverage into CoverageContainer and clear directory statistics."""
     target.directories.clear()
     return _insert_coverage_item(
-        target.data, file.filename, file, merge_file, options, None
+        target.data, filecov.filename, filecov, merge_file, options, None
     )
 
 
@@ -347,14 +376,14 @@ def merge_line(
 
 def insert_function_coverage(
     filecov: FileCoverage,
-    function: FunctionCoverage,
+    functioncov: FunctionCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> FunctionCoverage:
     """Insert FunctionCoverage into FileCoverage"""
     return _insert_coverage_item(
         filecov.functions,
-        function.name or function.demangled_name,
-        function,
+        functioncov.key,
+        functioncov,
         merge_function,
         options,
         filecov.filename,
@@ -382,15 +411,40 @@ def merge_function(
       - ``options.func_opts.merge_function_use_line_max``
       - ``options.func_opts.separate_function``
     """
-    if left.demangled_name != right.demangled_name:
-        raise AssertionError("Function demangled name must be equal.")
-    if left.name != right.name:
-        raise AssertionError("Function name must be equal.")
+    if left.demangled_name is not None and right.demangled_name is not None:
+        if (
+            not options.func_name_opts.ignore_function_name
+            and left.demangled_name != right.demangled_name
+        ):
+            raise AssertionError(
+                f"Demangled name must be equal, got {left.demangled_name} and {right.demangled_name}."
+            )
+    elif left.demangled_name is not None or right.demangled_name is not None:
+        if right.demangled_name is not None:
+            left.demangled_name = right.demangled_name
+        if not options.func_name_opts.ignore_function_name_single_definition:
+            raise AssertionError(
+                f"Demangled function name {left.demangled_name} only defined in one file."
+            )
+
+    if left.name is not None and right.name is not None:
+        if not options.func_name_opts.ignore_function_name and left.name != right.name:
+            raise AssertionError(
+                f"Mangled name must be equal, got {left.name} and {right.name}."
+            )
+    elif left.name is not None or right.name is not None:
+        if right.name is not None:
+            left.name = right.name
+        if not options.func_name_opts.ignore_function_name_single_definition:
+            raise AssertionError(
+                f"Mangled function name {left.name} only defined in one file."
+            )
+
     if not options.func_opts.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
             raise GcovrMergeAssertionError(
-                f"Got function {right.demangled_name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                f"Got function {right.demangled_name or right.name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                 "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."
             )
@@ -598,11 +652,11 @@ def merge_condition(
 
 def insert_decision_coverage(
     target: LineCoverage,
-    decision: Optional[DecisionCoverage],
+    decisioncov: Optional[DecisionCoverage],
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> Optional[DecisionCoverage]:
     """Insert DecisionCoverage into LineCoverage."""
-    target.decision = merge_decision(target.decision, decision, options, None)
+    target.decision = merge_decision(target.decision, decisioncov, options, None)
     return target.decision
 
 
@@ -661,12 +715,12 @@ def merge_decision(  # pylint: disable=too-many-return-statements
 
 def insert_call_coverage(
     target: LineCoverage,
-    call: CallCoverage,
+    callcov: CallCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> CallCoverage:
     """Insert BranchCoverage into LineCoverage."""
     return _insert_coverage_item(
-        target.calls, call.callno, call, merge_call, options, None
+        target.calls, callcov.callno, callcov, merge_call, options, None
     )
 
 

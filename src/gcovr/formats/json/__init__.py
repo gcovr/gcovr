@@ -39,6 +39,7 @@ class JsonHandler(BaseHandler):
             "verbose",
             # Global options used for merging.
             "merge_mode_functions",
+            "merge_mode_function_names",
             "merge_mode_conditions",
             "show_decision",
             # Local options
