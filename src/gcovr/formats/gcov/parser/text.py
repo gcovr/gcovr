@@ -270,6 +270,7 @@ def parse_coverage(
     filename: str,
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
+    demangled_names_supported: bool = True,
     data_filename: Optional[str] = None,  # Only for tests
 ) -> tuple[FileCoverage, list[str]]:
     """
@@ -338,6 +339,7 @@ def parse_coverage(
                 state,
                 line,
                 coverage=coverage,
+                demangled_names_supported=demangled_names_supported,
             )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
@@ -349,12 +351,12 @@ def parse_coverage(
         name, count, blocks = function
         insert_function_coverage(
             coverage,
-            FunctionCoverage(
-                None,
+            _get_functioncov_instance(
                 name,
                 lineno=state.lineno + 1,
                 count=count,
                 blocks=blocks,
+                demangled_names_supported=demangled_names_supported,
             ),
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
         )
@@ -368,6 +370,23 @@ def parse_coverage(
     src_lines = _reconstruct_source_code(line for line, _ in tokenized_lines)
 
     return coverage, src_lines
+
+
+def _get_functioncov_instance(
+    name: str,
+    *,
+    lineno: int,
+    count: int,
+    blocks: float,
+    demangled_names_supported: bool,
+) -> FunctionCoverage:
+    """Check if the function name is mangled or not and return the tuple for FileCoverage class."""
+    if demangled_names_supported:
+        names = [None, name]
+    else:
+        names = [name, None]
+
+    return FunctionCoverage(*names, lineno=lineno, count=count, blocks=blocks)
 
 
 def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
@@ -393,12 +412,13 @@ def _gather_coverage_from_line(
     line: _Line,
     *,
     coverage: FileCoverage,
+    demangled_names_supported: bool,
 ) -> _ParserState:
     """
     Interpret a Line, updating the FileCoverage, and transitioning ParserState.
 
     The function handles all possible Line variants, and dies otherwise:
-    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=...)
+    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=..., demangled_names_supported=...)
     Traceback (most recent call last):
     AssertionError: Unexpected line type: 'illegal line type'
     """
@@ -423,10 +443,15 @@ def _gather_coverage_from_line(
         # handle deferred functions
         for function in state.deferred_functions:
             name, count, blocks = function
-
             insert_function_coverage(
                 coverage,
-                FunctionCoverage(None, name, lineno=lineno, count=count, blocks=blocks),
+                _get_functioncov_instance(
+                    name,
+                    lineno=lineno,
+                    count=count,
+                    blocks=blocks,
+                    demangled_names_supported=demangled_names_supported,
+                ),
                 MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
             )
 

@@ -263,6 +263,9 @@ def process_gcov_text_data(
         data_filename=gcda_fname or data_fname,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
+        demangled_names_supported=GcovProgram(
+            options.gcov_cmd, options
+        ).demangled_names_supported(),
     )
 
     LOGGER.debug(f"Apply exclusions for {fname}")
@@ -540,6 +543,7 @@ class GcovProgram:
     __default_options = list[str]()
     __exitcode_to_ignore = list[int]([0])
     __use_json_format_if_available: bool = True
+    __demangled_names_supported: bool = False
     __help_output: str = ""
     __version_output: str = ""
 
@@ -555,9 +559,10 @@ class GcovProgram:
         def __exit__(self, *_: Any) -> None:
             self.lock.release()
 
-    def __init__(self, cmd: str, options: Options) -> None:
+    def __init__(self, cmd: str, options: Optional[Options]) -> None:
         with GcovProgram.LockContext(GcovProgram.__lock):
-            GcovProgram.__use_json_format_if_available = options.exclude_calls
+            if options is not None:
+                GcovProgram.__use_json_format_if_available = options.exclude_calls
             if not GcovProgram.__cmd:
                 GcovProgram.__cmd = cmd
                 # If the first element of cmd - the executable name - has embedded spaces
@@ -600,6 +605,7 @@ class GcovProgram:
                 if self.__check_gcov_help_content("--demangled-names"):
                     LOGGER.debug("GCOV capabilities: Demangled names available.")
                     GcovProgram.__default_options.append("--demangled-names")
+                    GcovProgram.__demangled_names_supported = True
 
                 if self.__check_gcov_help_content("--hash-filenames"):
                     LOGGER.debug("GCOV capabilities: Hashing of filenames available.")
@@ -616,6 +622,11 @@ class GcovProgram:
 
                 if not self.__check_gcov_help_content("LLVM"):
                     GcovProgram.__exitcode_to_ignore.append(6)  # WRITE GCOV ERROR
+
+    def demangled_names_supported(self) -> bool:
+        """Return True if demangled names are supported by gcov."""
+        self.identify_and_cache_capabilities()
+        return GcovProgram.__demangled_names_supported
 
     def __get_help_output(self) -> str:
         if not GcovProgram.__help_output:

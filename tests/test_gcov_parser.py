@@ -519,6 +519,8 @@ def test_trailing_function_tag() -> None:
     assert list(filecov.count.keys()) == [3]  # previous lineno + 1
     assert filecov.name is None
     assert filecov.demangled_name == "example"
+    assert filecov.name_or_demangled_name == "example"
+    assert filecov.demangled_name_or_name == "example"
     assert filecov.count[3] == 17  # number of calls
 
 

@@ -376,7 +376,7 @@ class FunctionCoverage:
     def __init__(
         self,
         name: Optional[str],
-        demangled_name: str,
+        demangled_name: Optional[str],
         *,
         lineno: int,
         count: int,
@@ -398,6 +398,21 @@ class FunctionCoverage:
         self.end: Optional[dict[int, tuple[int, int]]] = (
             None if end is None else {lineno: end}
         )
+
+    @property
+    def key(self) -> str:
+        """Return the key used for the function dictionary."""
+        return self.demangled_name_or_name
+
+    @property
+    def name_or_demangled_name(self) -> str:
+        """Get the mangled name if defined, else the demangled name."""
+        return str(self.name or self.demangled_name)
+
+    @property
+    def demangled_name_or_name(self) -> str:
+        """Get the demangled name if defined, else the mangled name."""
+        return str(self.demangled_name or self.name)
 
 
 class LineCoverage:
@@ -580,18 +595,22 @@ class FileCoverage:
             )
         )
 
+    def is_function_stats_possible(self) -> bool:
+        """Return true if function coverage statistics are possible."""
+        return any(linecov.function_name for linecov in self.lines.values())
+
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function"""
-        if functioncov.name not in self.functions:
-            raise AssertionError(
-                f"Function {functioncov.name} must be in filtered file coverage object."
-            )
         if functioncov.name is None:
             raise AssertionError(
                 "Data for filtering is missing. Need supported GCOV JSON format to get the information."
             )
+        if functioncov.key not in self.functions:
+            raise AssertionError(
+                f"Function {functioncov.key} must be in filtered file coverage object."
+            )
         filecov = FileCoverage(self.filename, self.data_sources)
-        filecov.functions[functioncov.name] = functioncov
+        filecov.functions[functioncov.key] = functioncov
 
         filecov.lines = {
             lineno: linecov
