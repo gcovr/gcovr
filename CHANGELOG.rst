@@ -10,7 +10,11 @@ Known bugs:
 
 Breaking changes:
 
+- Function properties ``name`` and ``demangled_name`` in JSON are changed. Both properties are only available for ``gcc-14``. (:issue:`1059`)
+
 New features and notable changes:
+
+- Add :option:`--merge-mode-function-names` to support merging of JSON trace files from ``gcc-14`` with older versions. (:issue:`1059`)
 
 Bug fixes and small improvements:
 
