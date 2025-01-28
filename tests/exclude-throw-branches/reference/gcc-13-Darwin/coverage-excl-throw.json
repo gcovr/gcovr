@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "main.cpp",
@@ -248,6 +248,7 @@
                     "blocks_percent": 63.0
                 },
                 {
+                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 47,
                     "execution_count": 3,

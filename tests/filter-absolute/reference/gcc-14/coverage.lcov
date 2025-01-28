@@ -1,8 +1,8 @@
 TN:GCOVR report
 SF:tests/filter-absolute/main.cpp
 VER:aa3e0bff9ee1c3840efb1be8065bab01
-FN:5,_Z3fooi
-FNDA:1,_Z3fooi
+FN:5,foo(int)
+FNDA:1,foo(int)
 FN:14,main
 FNDA:1,main
 FNF:2

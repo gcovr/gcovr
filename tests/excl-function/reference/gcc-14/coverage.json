@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "main.cpp",
@@ -549,40 +549,6 @@
             ],
             "functions": [
                 {
-                    "name": "_Z13sort_excludedv",
-                    "demangled_name": "sort_excluded()",
-                    "lineno": 44,
-                    "execution_count": 1,
-                    "blocks_percent": 92.3,
-                    "pos": [
-                        "44:6",
-                        "46:1"
-                    ]
-                },
-                {
-                    "name": "_Z18sort_excluded_bothv",
-                    "demangled_name": "sort_excluded_both()",
-                    "lineno": 66,
-                    "execution_count": 0,
-                    "blocks_percent": 100.0,
-                    "gcovr/excluded": true,
-                    "pos": [
-                        "66:6",
-                        "91:1"
-                    ]
-                },
-                {
-                    "name": "_Z20sort_lambda_excludedv",
-                    "demangled_name": "sort_lambda_excluded()",
-                    "lineno": 48,
-                    "execution_count": 1,
-                    "blocks_percent": 92.3,
-                    "pos": [
-                        "48:6",
-                        "64:1"
-                    ]
-                },
-                {
                     "name": "_Z3bari",
                     "demangled_name": "bar(int)",
                     "lineno": 19,
@@ -607,14 +573,25 @@
                     ]
                 },
                 {
-                    "name": "_ZZ13sort_excludedvENKUliiE0_clEii",
-                    "demangled_name": "sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "lineno": 45,
-                    "execution_count": 41,
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 95,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [
-                        "45:4",
-                        "45:4"
+                        "95:5",
+                        "104:1"
+                    ]
+                },
+                {
+                    "name": "_Z13sort_excludedv",
+                    "demangled_name": "sort_excluded()",
+                    "lineno": 44,
+                    "execution_count": 1,
+                    "blocks_percent": 92.3,
+                    "pos": [
+                        "44:6",
+                        "46:1"
                     ]
                 },
                 {
@@ -629,15 +606,26 @@
                     ]
                 },
                 {
-                    "name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
-                    "demangled_name": "sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "lineno": 84,
+                    "name": "_ZZ13sort_excludedvENKUliiE0_clEii",
+                    "demangled_name": "sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
+                    "lineno": 45,
+                    "execution_count": 41,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "45:4",
+                        "45:4"
+                    ]
+                },
+                {
+                    "name": "_Z18sort_excluded_bothv",
+                    "demangled_name": "sort_excluded_both()",
+                    "lineno": 66,
                     "execution_count": 0,
-                    "blocks_percent": 75.0,
+                    "blocks_percent": 100.0,
                     "gcovr/excluded": true,
                     "pos": [
-                        "84:7",
-                        "89:7"
+                        "66:6",
+                        "91:1"
                     ]
                 },
                 {
@@ -653,15 +641,26 @@
                     ]
                 },
                 {
-                    "name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
-                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "lineno": 57,
+                    "name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
+                    "demangled_name": "sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const",
+                    "lineno": 84,
                     "execution_count": 0,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 75.0,
                     "gcovr/excluded": true,
                     "pos": [
-                        "57:7",
-                        "62:7"
+                        "84:7",
+                        "89:7"
+                    ]
+                },
+                {
+                    "name": "_Z20sort_lambda_excludedv",
+                    "demangled_name": "sort_lambda_excluded()",
+                    "lineno": 48,
+                    "execution_count": 1,
+                    "blocks_percent": 92.3,
+                    "pos": [
+                        "48:6",
+                        "64:1"
                     ]
                 },
                 {
@@ -676,14 +675,15 @@
                     ]
                 },
                 {
-                    "name": "main",
-                    "demangled_name": "main",
-                    "lineno": 95,
-                    "execution_count": 1,
+                    "name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
+                    "lineno": 57,
+                    "execution_count": 0,
                     "blocks_percent": 100.0,
+                    "gcovr/excluded": true,
                     "pos": [
-                        "95:5",
-                        "104:1"
+                        "57:7",
+                        "62:7"
                     ]
                 }
             ],
