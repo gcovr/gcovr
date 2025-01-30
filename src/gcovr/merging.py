@@ -417,27 +417,31 @@ def merge_function(
             and left.demangled_name != right.demangled_name
         ):
             raise AssertionError(
-                f"Demangled name must be equal, got {left.demangled_name} and {right.demangled_name}."
+                f"Demangled name must be equal, got {left.demangled_name} and {right.demangled_name}. "
+                "This can be ignored by --merge-mode-function-names=ignore-name."
             )
     elif left.demangled_name is not None or right.demangled_name is not None:
         if right.demangled_name is not None:
             left.demangled_name = right.demangled_name
         if not options.func_name_opts.ignore_function_name_single_definition:
             raise AssertionError(
-                f"Demangled function name {left.demangled_name} only defined in one file."
+                f"Demangled function name {left.demangled_name} only defined in one file. "
+                "This can be ignored by --merge-mode-function-names=ignore-single-definition."
             )
 
     if left.name is not None and right.name is not None:
         if not options.func_name_opts.ignore_function_name and left.name != right.name:
             raise AssertionError(
-                f"Mangled name must be equal, got {left.name} and {right.name}."
+                f"Mangled name must be equal, got {left.name} and {right.name}. "
+                "This can be ignored by --merge-mode-function-names=ignore-name."
             )
     elif left.name is not None or right.name is not None:
         if right.name is not None:
             left.name = right.name
         if not options.func_name_opts.ignore_function_name_single_definition:
             raise AssertionError(
-                f"Mangled function name {left.name} only defined in one file."
+                f"Mangled function name {left.name} only defined in one file. "
+                "This can be ignored by --merge-mode-function-names=ignore-single-definition."
             )
 
     if not options.func_opts.ignore_function_lineno:
