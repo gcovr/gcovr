@@ -99,7 +99,6 @@
             ],
             "functions": [
                 {
-                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 4,
                     "execution_count": 2,

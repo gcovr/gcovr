@@ -141,7 +141,6 @@
                     "blocks_percent": 75.0
                 },
                 {
-                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 95,
                     "execution_count": 1,
