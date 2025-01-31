@@ -402,7 +402,7 @@ class FunctionCoverage:
     @property
     def key(self) -> str:
         """Return the key used for the function dictionary."""
-        return self.demangled_name_or_name
+        return self.name_or_demangled_name
 
     @property
     def name_or_demangled_name(self) -> str:
