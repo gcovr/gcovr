@@ -411,44 +411,37 @@ def merge_function(
       - ``options.func_opts.merge_function_use_line_max``
       - ``options.func_opts.separate_function``
     """
-    if left.demangled_name is not None and right.demangled_name is not None:
-        if (
-            not options.func_name_opts.ignore_function_name
-            and left.demangled_name != right.demangled_name
-        ):
-            raise AssertionError(
-                f"Demangled name must be equal, got {left.demangled_name} and {right.demangled_name}. "
-                "This can be ignored by --merge-mode-function-names=ignore-name."
-            )
-    elif left.demangled_name is not None or right.demangled_name is not None:
-        if right.demangled_name is not None:
-            left.demangled_name = right.demangled_name
-        if not options.func_name_opts.ignore_function_name_single_definition:
-            raise AssertionError(
-                f"Demangled function name {left.demangled_name} only defined in one file. "
-                "This can be ignored by --merge-mode-function-names=ignore-single-definition."
-            )
 
-    if left.name is not None and right.name is not None:
-        if not options.func_name_opts.ignore_function_name and left.name != right.name:
-            raise AssertionError(
-                f"Mangled name must be equal, got {left.name} and {right.name}. "
-                "This can be ignored by --merge-mode-function-names=ignore-name."
-            )
-    elif left.name is not None or right.name is not None:
-        if right.name is not None:
-            left.name = right.name
-        if not options.func_name_opts.ignore_function_name_single_definition:
-            raise AssertionError(
-                f"Mangled function name {left.name} only defined in one file. "
-                "This can be ignored by --merge-mode-function-names=ignore-single-definition."
-            )
+    def _merge_function_check_name(
+        data_name: str,
+        message_name: str,
+    ) -> None:
+        """Check if the names are the same in left and right, raises an GcovrMergeAssertion if not"""
+        if left.get(data_name) is not None and right.get(data_name) is not None:
+            if not options.func_name_opts.ignore_function_name and left.get(
+                data_name
+            ) != right.get(data_name):
+                raise GcovrMergeAssertionError(
+                    f"{message_name} name in {context} must be {left.get(data_name)}, got {right.get(data_name)}. "
+                    "This can be ignored by --merge-mode-function-names=ignore-name."
+                )
+        elif left.get(data_name) is not None or right.get(data_name) is not None:
+            if right.get(data_name) is not None:
+                left.set(data_name, right.get(data_name))
+            if not options.func_name_opts.ignore_function_name_single_definition:
+                raise GcovrMergeAssertionError(
+                    f"{message_name} function name {left.get(data_name)} only defined in one file. "
+                    "This can be ignored by --merge-mode-function-names=ignore-single-definition."
+                )
+
+    _merge_function_check_name("name", "Mangled")
+    _merge_function_check_name("demangled_name", "Demangled")
 
     if not options.func_opts.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
             raise GcovrMergeAssertionError(
-                f"Got function {right.demangled_name or right.name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                f"Got function {right.demangled_name_or_name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                 "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."
             )
