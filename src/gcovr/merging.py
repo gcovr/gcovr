@@ -50,6 +50,7 @@ which may not be the same as the input value.
 
 from dataclasses import dataclass, field
 import logging
+import re
 from typing import Callable, Optional, TypeVar
 
 from .options import Options
@@ -69,6 +70,7 @@ from .coverage import (
 
 
 LOGGER = logging.getLogger("gcovr")
+REGEX_VIRTUAL_DESTRUCTORS = re.compile(r"^.+D[012]Ev$")
 
 
 class GcovrMergeAssertionError(AssertionError):
@@ -406,27 +408,41 @@ def merge_function(
       - ``options.func_opts.separate_function``
     """
 
-    def _merge_function_check_name(
-        data_name: str,
+    def _helper_check_and_merge_name(
+        getter: Callable[[FunctionCoverage], Optional[str]],
+        setter: Callable[[FunctionCoverage, Optional[str]], None],
         message_name: str,
     ) -> None:
         """Check if the names are the same in left and right, raises an GcovrMergeAssertion if not"""
-        if left.get(data_name) is not None and right.get(data_name) is not None:
-            if left.get(data_name) != right.get(data_name):
+        if getter(left) is not None and getter(right) is not None:
+            if getter(left) != getter(right):
                 raise GcovrMergeAssertionError(
-                    f"{message_name} name in {context} must be {left.get(data_name)}, got {right.get(data_name)}."
+                    f"{message_name} name in {context} must be {getter(left)}, got {getter(right)}."
                 )
-        elif left.get(data_name) is not None or right.get(data_name) is not None:
-            if right.get(data_name) is not None:
-                left.set(data_name, right.get(data_name))
+        elif getter(left) is not None or getter(right) is not None:
+            if getter(right) is not None:
+                setter(left, getter(right))
             if not options.func_name_opts.ignore_function_name_single_definition:
                 raise GcovrMergeAssertionError(
-                    f"{message_name} function name {left.get(data_name)} only defined in one file. "
+                    f"{message_name} function name {getter(left)} only defined in one file. "
                     "This can be ignored by --merge-mode-function-names=ignore-single-definition."
                 )
 
-    _merge_function_check_name("name", "Mangled")
-    _merge_function_check_name("demangled_name", "Demangled")
+    def setter_name(elem: FunctionCoverage, value: Optional[str]) -> None:
+        """Setter for the name"""
+        elem.name = value
+
+    def setter_demangled_name(elem: FunctionCoverage, value: Optional[str]) -> None:
+        """Setter for the name"""
+        elem.demangled_name = value
+
+    # Only merge if we do not have a mangled name or the mangled name is not a virtual destructor.
+    # See comment https://github.com/gcovr/gcovr/pull/1059#issuecomment-2631549943
+    if left.name is None or not REGEX_VIRTUAL_DESTRUCTORS.fullmatch(left.name):
+        _helper_check_and_merge_name(lambda elem: elem.name, setter_name, "Mangled")
+    _helper_check_and_merge_name(
+        lambda elem: elem.demangled_name, setter_demangled_name, "Demangled"
+    )
 
     if not options.func_opts.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
