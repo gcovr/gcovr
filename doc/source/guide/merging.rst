@@ -48,7 +48,6 @@ With the :option:`--merge-mode-function-names` you can change this:
 
 - ``strict``: Abort if same (de)mangled name is only defined in one file or is different (old behavior).
 - ``ignore-single-definition``: Allow the case of a function name (demangled or not) only being present in one file.
-- ``ignore-name``: Allow different function names, keep the name which was read first.
 
 If you have differing number of conditions on the same line, the default behavior is to abort.
 With the :option:`--merge-mode-conditions` you can change this:

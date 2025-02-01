@@ -109,16 +109,12 @@ SEPARATE_FUNCTION_MERGE_OPTIONS = MergeFunctionOptions(
 class MergeFunctionNameOptions:
     """Data class to store the function name merge options."""
 
-    ignore_function_name: bool = False
     ignore_function_name_single_definition: bool = False
 
 
 FUNCTION_NAME_STRICT_MERGE_OPTIONS = MergeFunctionNameOptions()
 FUNCTION_NAME_IGNORE_SINGLE_DEFINITION_MERGE_OPTIONS = MergeFunctionNameOptions(
     ignore_function_name_single_definition=True,
-)
-FUNCTION_NAME_IGNORE_MERGE_OPTIONS = MergeFunctionNameOptions(
-    ignore_function_name=True,
 )
 
 
@@ -169,8 +165,6 @@ def get_merge_mode_from_options(options: Options) -> MergeOptions:
         merge_opts.func_name_opts = FUNCTION_NAME_STRICT_MERGE_OPTIONS
     elif options.merge_mode_function_names == "ignore-single-definition":
         merge_opts.func_name_opts = FUNCTION_NAME_IGNORE_SINGLE_DEFINITION_MERGE_OPTIONS
-    elif options.merge_mode_function_names == "ignore-names":
-        merge_opts.func_name_opts = FUNCTION_NAME_IGNORE_MERGE_OPTIONS
     else:
         raise AssertionError("Sanity check: Unknown function names merge mode.")
 
@@ -418,12 +412,9 @@ def merge_function(
     ) -> None:
         """Check if the names are the same in left and right, raises an GcovrMergeAssertion if not"""
         if left.get(data_name) is not None and right.get(data_name) is not None:
-            if not options.func_name_opts.ignore_function_name and left.get(
-                data_name
-            ) != right.get(data_name):
+            if left.get(data_name) != right.get(data_name):
                 raise GcovrMergeAssertionError(
-                    f"{message_name} name in {context} must be {left.get(data_name)}, got {right.get(data_name)}. "
-                    "This can be ignored by --merge-mode-function-names=ignore-name."
+                    f"{message_name} name in {context} must be {left.get(data_name)}, got {right.get(data_name)}."
                 )
         elif left.get(data_name) is not None or right.get(data_name) is not None:
             if right.get(data_name) is not None:

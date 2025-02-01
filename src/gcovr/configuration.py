@@ -677,7 +677,6 @@ GCOVR_CONFIG_OPTIONS = [
         choices=(
             "strict",
             "ignore-single-definition",
-            "ignore-name",
         ),
         default="strict",
         help=(
