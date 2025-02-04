@@ -3,7 +3,7 @@
     "gcovr/summary_format_version": "0.6",
     "files": [
         {
-            "filename": "test/dir/main.cpp",
+            "filename": "main.cpp",
             "line_total": 23,
             "line_covered": 23,
             "line_percent": 100.0,

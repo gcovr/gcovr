@@ -2,65 +2,91 @@
     "gcovr/format_version": "0.12",
     "files": [
         {
-            "file": "main.cpp",
+            "file": "test/dir/main.cpp",
             "lines": [
                 {
                     "line_number": 8,
-                    "count": 6,
+                    "count": 14,
                     "branches": [],
                     "gcovr/md5": "601116bb7f972822f71830e1433951bd"
                 },
                 {
                     "line_number": 9,
-                    "count": 6,
+                    "count": 14,
                     "branches": [],
                     "gcovr/md5": "23a5c121332ac44640e8a8aadd465d80"
                 },
                 {
                     "line_number": 10,
-                    "count": 12,
+                    "count": 8,
                     "branches": [],
                     "gcovr/md5": "1d6ff0e31f80fb5f58616ac936759cdf"
                 },
                 {
                     "line_number": 11,
-                    "count": 12,
-                    "branches": [],
+                    "count": 8,
+                    "branches": [
+                        {
+                            "source_block_id": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
                     "gcovr/md5": "6ff8c4c52524beaaa32dc23869cf6627"
                 },
                 {
                     "line_number": 22,
-                    "count": 4,
+                    "count": 10,
                     "branches": [],
                     "gcovr/md5": "2598ea30dbb711a590a1617919c5cfba"
                 },
                 {
                     "line_number": 23,
-                    "count": 4,
+                    "count": 10,
                     "branches": [],
                     "gcovr/md5": "23a5c121332ac44640e8a8aadd465d80"
                 },
                 {
                     "line_number": 24,
-                    "count": 8,
+                    "count": 6,
                     "branches": [],
                     "gcovr/md5": "0ccb106e6d18dd8e9dcd60c0ed8182fc"
                 },
                 {
                     "line_number": 25,
-                    "count": 8,
-                    "branches": [],
+                    "count": 6,
+                    "branches": [
+                        {
+                            "source_block_id": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
                     "gcovr/md5": "6ff8c4c52524beaaa32dc23869cf6627"
                 },
                 {
                     "line_number": 36,
-                    "count": 2,
+                    "count": 6,
                     "branches": [],
                     "gcovr/md5": "5e4fd23a42f87556b2a43f098251e8c7"
                 },
                 {
                     "line_number": 37,
-                    "count": 2,
+                    "count": 6,
                     "branches": [],
                     "gcovr/md5": "23a5c121332ac44640e8a8aadd465d80"
                 },
@@ -73,7 +99,20 @@
                 {
                     "line_number": 39,
                     "count": 4,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "source_block_id": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
                     "gcovr/md5": "6ff8c4c52524beaaa32dc23869cf6627"
                 },
                 {
@@ -84,8 +123,21 @@
                 },
                 {
                     "line_number": 47,
-                    "count": 4,
-                    "branches": [],
+                    "count": 2,
+                    "branches": [
+                        {
+                            "source_block_id": 0,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
                     "gcovr/md5": "7889012628b20062a6750840f5e81ec7"
                 },
                 {
@@ -93,48 +145,61 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 1,
-                            "count": 2,
-                            "fallthrough": true,
-                            "throw": false
-                        },
-                        {
-                            "source_block_id": 1,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true
-                        },
-                        {
                             "source_block_id": 0,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 0,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 2,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
                         }
                     ],
                     "gcovr/md5": "5336964c912a66290b6604e90b172abb"
                 },
                 {
                     "line_number": 49,
-                    "count": 4,
-                    "branches": [],
+                    "count": 2,
+                    "branches": [
+                        {
+                            "source_block_id": 0,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
                     "gcovr/md5": "3a47500e65c552706f582f1293cf2a18"
                 },
                 {
@@ -142,40 +207,40 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 1,
-                            "count": 2,
-                            "fallthrough": true,
-                            "throw": false
-                        },
-                        {
-                            "source_block_id": 1,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true
-                        },
-                        {
                             "source_block_id": 0,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 0,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 2,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
                         }
                     ],
                     "gcovr/md5": "e957e4f8902c1c42f540dc8c31b14c16"
@@ -187,46 +252,59 @@
                         {
                             "source_block_id": 0,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 0,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 2,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         }
                     ],
                     "gcovr/md5": "4e29cd99a75408f6184cd5f2da17bf4b"
                 },
                 {
                     "line_number": 52,
-                    "count": 4,
-                    "branches": [],
+                    "count": 2,
+                    "branches": [
+                        {
+                            "source_block_id": 0,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
                     "gcovr/md5": "b8ca8f7bb408d9ed3293ae26eaa9573c"
                 },
                 {
@@ -234,40 +312,40 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 2,
-                            "count": 2,
-                            "fallthrough": true,
-                            "throw": false
-                        },
-                        {
-                            "source_block_id": 2,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true
-                        },
-                        {
                             "source_block_id": 0,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 0,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 2,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
                         }
                     ],
                     "gcovr/md5": "a73247510c9604c43ca8cfeb1cbe1e5c"
@@ -279,38 +357,38 @@
                         {
                             "source_block_id": 0,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 0,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 2,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         }
                     ],
                     "gcovr/md5": "f199d76205e3f206214ea2c7f1d273b1"
@@ -322,38 +400,38 @@
                         {
                             "source_block_id": 0,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 0,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         },
                         {
                             "source_block_id": 2,
                             "count": 2,
-                            "fallthrough": true,
+                            "fallthrough": false,
                             "throw": false
                         },
                         {
                             "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true
+                            "throw": false
                         }
                     ],
                     "gcovr/md5": "7eaf42f0e8e357e2dfa91b4013c3750d"
@@ -387,10 +465,35 @@
                     "gcovr/excluded": true
                 },
                 {
+                    "line_number": 60,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "source_block_id": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "source_block_id": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "a90dacea889bc9c99fe5a3b7b5d65d25"
+                },
+                {
                     "line_number": 62,
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
+                },
+                {
+                    "line_number": 63,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "9e7ce02d034587718cd3b6c29d789ef0"
                 }
             ],
             "functions": [
@@ -398,42 +501,42 @@
                     "demangled_name": "main",
                     "lineno": 45,
                     "execution_count": 2,
-                    "blocks_percent": 62.0
+                    "blocks_percent": 57.0
                 },
                 {
                     "demangled_name": "ns1::Bar1::Bar1()",
                     "lineno": 8,
-                    "execution_count": 6,
+                    "execution_count": 8,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns1::Bar1::~Bar1()",
                     "lineno": 10,
-                    "execution_count": 6,
+                    "execution_count": 8,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns2::Bar2::Bar2()",
                     "lineno": 22,
-                    "execution_count": 4,
+                    "execution_count": 6,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns2::Bar2::~Bar2()",
                     "lineno": 24,
-                    "execution_count": 4,
+                    "execution_count": 6,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns3::Bar3::Bar3()",
                     "lineno": 36,
-                    "execution_count": 2,
+                    "execution_count": 4,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns3::Bar3::~Bar3()",
                     "lineno": 38,
-                    "execution_count": 2,
+                    "execution_count": 4,
                     "blocks_percent": 100.0
                 }
             ]

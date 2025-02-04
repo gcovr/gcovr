@@ -3,16 +3,16 @@
     "gcovr/summary_format_version": "0.6",
     "files": [
         {
-            "filename": "main.cpp",
+            "filename": "test/dir/main.cpp",
             "line_total": 25,
             "line_covered": 23,
             "line_percent": 92.0,
             "function_total": 7,
             "function_covered": 7,
             "function_percent": 100.0,
-            "branch_total": 44,
+            "branch_total": 50,
             "branch_covered": 21,
-            "branch_percent": 47.7
+            "branch_percent": 42.0
         }
     ],
     "line_total": 25,
@@ -21,7 +21,7 @@
     "function_total": 7,
     "function_covered": 7,
     "function_percent": 100.0,
-    "branch_total": 44,
+    "branch_total": 50,
     "branch_covered": 21,
-    "branch_percent": 47.7
+    "branch_percent": 42.0
 }
