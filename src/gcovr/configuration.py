@@ -680,7 +680,7 @@ GCOVR_CONFIG_OPTIONS = [
         ),
         default="strict",
         help=(
-            "The merge mode for function names from different gcov files for same sourcefile. "
+            "The merge mode for the same function names from different gcov files for same sourcefile. "
             "Default is '{default!s}'."
         ),
     ),
