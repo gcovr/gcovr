@@ -2,7 +2,7 @@
     "gcovr/format_version": "0.12",
     "files": [
         {
-            "file": "test/dir/main.cpp",
+            "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 8,
