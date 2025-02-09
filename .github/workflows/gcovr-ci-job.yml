@@ -43,6 +43,10 @@ jobs:
           fetch-depth: 75
           fetch-tags: true
 
+      - name: Workaround because fetch-tags doesn't work with git 2.48 in the GH actions
+        run: |
+          git fetch --tags
+
       - name: Set up Runner
         if: ${{ !inputs.container }}
         uses: "./.github/actions/setup-runner"
@@ -82,21 +86,22 @@ jobs:
           # Set the CC environment
           echo "CC=${{ inputs.gcc }}" >> $GITHUB_ENV
 
-          echo "NEW_RELEASE=$(if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then echo 'true' ; else echo 'false' ; fi)" >> $GITHUB_ENV
+          if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
+            echo "GCOVR_VERSION=$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)" >> $GITHUB_ENV
+          else
+            echo "GCOVR_VERSION=" >> $GITHUB_ENV
+          fi
 
       - name: Create new tag without pushing to get the correct name of the apps
-        if: ${{ (github.repository == 'gcovr/gcovr') && env.NEW_RELEASE == 'true' }}
+        if: ${{ (github.repository == 'gcovr/gcovr') && env.GCOVR_VERSION != '' }}
         run: |
-          # Get the version
-          GcovrVersion="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
-
           # Set git user info
           git config --global user.email "noreply@gcovr.com"
           git config --global user.name "gcovr authors"
 
           # Create the tag and print the output. Do not push.
-          git tag -a "$GcovrVersion" -m "$GcovrVersion ($(date -I))"
-          git tag --list -n "$GcovrVersion"
+          git tag -a "$GCOVR_VERSION" -m "$GCOVR_VERSION ($(date -I))"
+          git tag --list -n "$GCOVR_VERSION"
 
       - name: Install dependencies
         run: |
@@ -119,10 +124,9 @@ jobs:
         run: |
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session tests --  --archive_differences
           # There must not be any modifications to get the correct versions later
-          Status=$(git status --porcelain)
-          if [ -n "$Status" ] ; then
+          if [ -n "$(git status --porcelain)" ] ; then
             echo "Following files are modified:"
-            echo "$Status"
+            git diff
             exit 1
           fi
 
@@ -146,10 +150,8 @@ jobs:
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session doc || exit 1
 
           # Check if files are modified (outdated screenshots)
-          Status=$(git status --porcelain)
-          if [ -n "$Status" ] ; then
-            echo "Following files are modified:"
-            echo "$Status"
+          if [ -n "$(git status --porcelain)" ] ; then
+            git diff
 
             echo "Please regenerate the screenshots!"
             exit 1
