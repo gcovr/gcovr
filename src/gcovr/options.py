@@ -265,9 +265,10 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     def store_config_key(
         self, namespace: dict[str, Any], values: Any, config: Optional[str]
     ) -> None:
-        LOGGER.warning(
-            f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
-        )
+        if config is not None:
+            LOGGER.warning(
+                f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
+            )
         namespace[self.dest] = values
 
 

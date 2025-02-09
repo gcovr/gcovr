@@ -424,22 +424,24 @@ def tests(session: nox.Session) -> None:
     session.log("Print tool versions")
     session.run("python", "--version")
     # Use full path to executable
-    session.env["CC"] = str(shutil.which(session.env["CC"])).replace(os.path.sep, "/")
-    session.run(session.env["CC"], "--version", external=True)
-    session.env["CXX"] = str(shutil.which(session.env["CXX"])).replace(os.path.sep, "/")
-    session.run(session.env["CXX"], "--version", external=True)
-    cc_path, cc_file = os.path.split(session.env["CC"])
-    session.env["GCOV"] = str(
+    cc = str(session.env["CC"])
+    session.env["CC"] = str(shutil.which(cc)).replace(os.path.sep, "/")
+    session.run(cc, "--version", external=True)
+    cxx = str(session.env["CXX"])
+    session.env["CXX"] = str(shutil.which(cxx)).replace(os.path.sep, "/")
+    session.run(cxx, "--version", external=True)
+    cc_path, cc_file = os.path.split(cc)
+    gcov = str(
         shutil.which(
             os.path.join(
                 cc_path, cc_file.replace("clang", "llvm-cov").replace("gcc", "gcov")
             )
         )
     ).replace(os.path.sep, "/")
-
-    session.run(session.env["GCOV"], "--version", external=True)
-    if "llvm-cov" in session.env["GCOV"]:
-        session.env["GCOV"] += " gcov"
+    session.run(gcov, "--version", external=True)
+    if "llvm-cov" in gcov:
+        gcov += " gcov"
+    session.env["GCOV"] = gcov
     session.log(f"Using reference data for {session.env['CC_REFERENCE']}")
 
     with session.chdir("tests"):

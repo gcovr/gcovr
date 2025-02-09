@@ -14,6 +14,9 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Fix warning ``Deprecated config key None used, please use 'txt-metric=branch' instead.``
+  if ``txt-metric="branch"`` is used in config file. (:issue:`1066`)
+
 Documentation:
 
 Internal changes:
