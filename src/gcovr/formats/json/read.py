@@ -123,7 +123,7 @@ def _function_from_json(json_function: dict[str, Any]) -> FunctionCoverage:
         end = (int(end_l_c[0]), int(end_l_c[1]))
     return FunctionCoverage(
         json_function.get("name"),
-        json_function["demangled_name"],
+        json_function.get("demangled_name"),
         lineno=json_function["lineno"],
         count=json_function["execution_count"],
         blocks=json_function["blocks_percent"],

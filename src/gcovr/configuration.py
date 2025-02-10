@@ -670,6 +670,21 @@ GCOVR_CONFIG_OPTIONS = [
         ),
     ),
     GcovrConfigOption(
+        "merge_mode_function_names",
+        ["--merge-mode-function-names"],
+        metavar="MERGE_MODE",
+        group="gcov_options",
+        choices=(
+            "strict",
+            "ignore-single-definition",
+        ),
+        default="strict",
+        help=(
+            "The merge mode for the same function names from different gcov files for same sourcefile. "
+            "Default is '{default!s}'."
+        ),
+    ),
+    GcovrConfigOption(
         "merge_mode_conditions",
         ["--merge-mode-conditions"],
         metavar="MERGE_MODE",

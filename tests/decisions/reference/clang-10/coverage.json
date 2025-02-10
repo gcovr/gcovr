@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "main.cpp",
@@ -2023,205 +2023,205 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_Z12checkElseIf1i",
+                    "name": "_Z12checkElseIf1i",
                     "lineno": 140,
                     "execution_count": 1,
                     "blocks_percent": 57.0
                 },
                 {
-                    "demangled_name": "_Z12checkElseIf2i",
+                    "name": "_Z12checkElseIf2i",
                     "lineno": 156,
                     "execution_count": 1,
                     "blocks_percent": 71.0
                 },
                 {
-                    "demangled_name": "_Z12checkElseIf3i",
+                    "name": "_Z12checkElseIf3i",
                     "lineno": 172,
                     "execution_count": 1,
                     "blocks_percent": 71.0
                 },
                 {
-                    "demangled_name": "_Z12checkForLoopi",
+                    "name": "_Z12checkForLoopi",
                     "lineno": 293,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z12checkSwitch1i",
+                    "name": "_Z12checkSwitch1i",
                     "lineno": 188,
                     "execution_count": 1,
                     "blocks_percent": 66.0
                 },
                 {
-                    "demangled_name": "_Z12checkSwitch2i",
+                    "name": "_Z12checkSwitch2i",
                     "lineno": 209,
                     "execution_count": 1,
                     "blocks_percent": 66.0
                 },
                 {
-                    "demangled_name": "_Z12checkSwitch3i",
+                    "name": "_Z12checkSwitch3i",
                     "lineno": 225,
                     "execution_count": 1,
                     "blocks_percent": 66.0
                 },
                 {
-                    "demangled_name": "_Z14checkEqualTruei",
+                    "name": "_Z14checkEqualTruei",
                     "lineno": 68,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z14checkWhileLoopi",
+                    "name": "_Z14checkWhileLoopi",
                     "lineno": 313,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z15checkBiggerBothi",
+                    "name": "_Z15checkBiggerBothi",
                     "lineno": 32,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z15checkBiggerTruei",
+                    "name": "_Z15checkBiggerTruei",
                     "lineno": 8,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z15checkEqualFalsei",
+                    "name": "_Z15checkEqualFalsei",
                     "lineno": 80,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z16checkBiggerFalsei",
+                    "name": "_Z16checkBiggerFalsei",
                     "lineno": 20,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z16checkComplexTruei",
+                    "name": "_Z16checkComplexTruei",
                     "lineno": 116,
                     "execution_count": 1,
                     "blocks_percent": 85.0
                 },
                 {
-                    "demangled_name": "_Z16checkDoWhileLoopi",
+                    "name": "_Z16checkDoWhileLoopi",
                     "lineno": 327,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z16checkInterpreteri",
+                    "name": "_Z16checkInterpreteri",
                     "lineno": 341,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z16checkSmallerTruei",
+                    "name": "_Z16checkSmallerTruei",
                     "lineno": 44,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z16verify_issue_679b",
+                    "name": "_Z16verify_issue_679b",
                     "lineno": 365,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z17checkComplexFalsei",
+                    "name": "_Z17checkComplexFalsei",
                     "lineno": 128,
                     "execution_count": 1,
                     "blocks_percent": 71.0
                 },
                 {
-                    "demangled_name": "_Z17checkNotEqualTruei",
+                    "name": "_Z17checkNotEqualTruei",
                     "lineno": 92,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z17checkSmallerFalsei",
+                    "name": "_Z17checkSmallerFalsei",
                     "lineno": 56,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z17checkSplittedTruei",
+                    "name": "_Z17checkSplittedTruei",
                     "lineno": 281,
                     "execution_count": 1,
                     "blocks_percent": 71.0
                 },
                 {
-                    "demangled_name": "_Z17checkTernary1Truei",
+                    "name": "_Z17checkTernary1Truei",
                     "lineno": 261,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z17checkTernary2Truei",
+                    "name": "_Z17checkTernary2Truei",
                     "lineno": 271,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z18checkNotEqualFalsei",
+                    "name": "_Z18checkNotEqualFalsei",
                     "lineno": 104,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z18checkSplittedFalsei",
+                    "name": "_Z18checkSplittedFalsei",
                     "lineno": 287,
                     "execution_count": 1,
                     "blocks_percent": 57.0
                 },
                 {
-                    "demangled_name": "_Z18checkTernary1Falsei",
+                    "name": "_Z18checkTernary1Falsei",
                     "lineno": 266,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z18checkTernary2Falsei",
+                    "name": "_Z18checkTernary2Falsei",
                     "lineno": 276,
                     "execution_count": 1,
                     "blocks_percent": 75.0
                 },
                 {
-                    "demangled_name": "_Z19checkComplexForLoopi",
+                    "name": "_Z19checkComplexForLoopi",
                     "lineno": 303,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_Z23checkCompactBranch1Truei",
+                    "name": "_Z23checkCompactBranch1Truei",
                     "lineno": 241,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z23checkCompactBranch2Truei",
+                    "name": "_Z23checkCompactBranch2Truei",
                     "lineno": 251,
                     "execution_count": 1,
                     "blocks_percent": 83.0
                 },
                 {
-                    "demangled_name": "_Z24checkCompactBranch1Falsei",
+                    "name": "_Z24checkCompactBranch1Falsei",
                     "lineno": 246,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "_Z24checkCompactBranch2Falsei",
+                    "name": "_Z24checkCompactBranch2Falsei",
                     "lineno": 256,
                     "execution_count": 1,
                     "blocks_percent": 66.0
                 },
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 372,
                     "execution_count": 1,
                     "blocks_percent": 60.0
@@ -2274,13 +2274,13 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_ZN18SwitchTestIssue78311checkSwitchEv",
+                    "name": "_ZN18SwitchTestIssue78311checkSwitchEv",
                     "lineno": 7,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN18SwitchTestIssue783C2Ev",
+                    "name": "_ZN18SwitchTestIssue783C2Ev",
                     "lineno": 5,
                     "execution_count": 1,
                     "blocks_percent": 60.0
@@ -2381,13 +2381,13 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
                     "lineno": 17,
                     "execution_count": 1,
                     "blocks_percent": 57.0
                 },
                 {
-                    "demangled_name": "_ZN18SwitchTestIssue783D2Ev",
+                    "name": "_ZN18SwitchTestIssue783D2Ev",
                     "lineno": 14,
                     "execution_count": 1,
                     "blocks_percent": 100.0

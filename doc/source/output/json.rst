@@ -337,13 +337,14 @@ Each **function** entry describes a line in the source file::
     }
 
 name: string
-  The name of the function. If legacy ``gcov`` text output is used it contains
-  the demangled name if supported by the ``gcov`` tool except for clang-10 where
-  the mangled name is used.
-  If ``gcov`` JSON format is used it always contains the mangled name.
+  The mangled name of the function if this is available. If legacy ``gcov`` text
+  output is used this property or ``demangled_name`` is set.
+  If ``gcov`` JSON format is used it is always defined.
 
 demangled_name: string
-  Only available if GCOV JSON format is used it always contains the demangled name.
+  The demangled name of the function if this is available. If legacy ``gcov`` text
+  output is used this property or ``name`` is set.
+  If ``gcov`` JSON format is used it is always defined.
 
 lineno: int
   The line number (1-based) where this function was defined.
@@ -366,6 +367,9 @@ gcovr/excluded: boolean
   May be absent if false.
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
+
+.. versionchanged:: NEXT
+   ``name`` and ``demangled_name`` are only set if available. ``name`` will never contain a demangled name.
 
 .. versionadded:: 8.0
    Added ``pos`` field.

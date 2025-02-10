@@ -1,8 +1,8 @@
 TN:GCOVR report
 SF:tests/oos/src/file1.cpp
 VER:c0c40a304aa484837f88262f6239aa83
-FN:2,_Z3barv
-FNDA:1,_Z3barv
+FN:2,bar()
+FNDA:1,bar()
 FNF:1
 FNH:1
 BRF:0
@@ -14,8 +14,8 @@ LF:2
 end_of_record
 SF:tests/oos/src/main.cpp
 VER:aa3e0bff9ee1c3840efb1be8065bab01
-FN:5,_Z3fooi
-FNDA:1,_Z3fooi
+FN:5,foo(int)
+FNDA:1,foo(int)
 FN:14,main
 FNDA:1,main
 FNF:2

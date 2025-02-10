@@ -10,7 +10,13 @@ Known bugs:
 
 Breaking changes:
 
+- Meaning of function properties ``name`` and ``demangled_name`` in JSON are changed.
+  Both properties are available since gcc-14 . (:issue:`1059`)
+
 New features and notable changes:
+
+- Add :option:`--merge-mode-function-names` to support merging of JSON trace files generated from gcov JSON report
+  (available since gcc-14) with older gcov text reports. (:issue:`1059`)
 
 Bug fixes and small improvements:
 

@@ -301,9 +301,10 @@ def _json_from_function(functioncov: FunctionCoverage) -> list[dict[str, Any]]:
         json_function = dict[str, Any]()
         if functioncov.name is not None:
             json_function["name"] = functioncov.name
+        if functioncov.demangled_name is not None:
+            json_function["demangled_name"] = functioncov.demangled_name
         json_function.update(
             {
-                "demangled_name": functioncov.demangled_name,
                 "lineno": lineno,
                 "execution_count": count,
                 "blocks_percent": functioncov.blocks[lineno],

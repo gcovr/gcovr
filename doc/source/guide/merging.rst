@@ -42,6 +42,15 @@ With the :option:`--merge-mode-functions` you can change this:
 - ``merge-use-line-max``: Allow same function on different lines, in this case use maximum line.
 - ``separate``: Allow same function on different lines. Instead of merging keep the functions separate.
 
+If you have the mangled or demangled name only defined in some files (if you mix reports generated using
+``gcc-14`` and older ``gcc`` versions) the mangled names could only be present in one input file but not
+the other. When combining the reports, the default behavior is to detect the situation where the names
+do no match.
+With the :option:`--merge-mode-function-names` you can change this behavior:
+
+- ``strict``: Abort if a (de)mangled name is only defined in one file or they differ (old behavior).
+- ``ignore-single-definition``: Allow the case of a function (de)mangled name only being present in one file.
+
 If you have differing number of conditions on the same line, the default behavior is to abort.
 With the :option:`--merge-mode-conditions` you can change this:
 

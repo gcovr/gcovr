@@ -833,21 +833,24 @@ def get_file_data(
         )
     )
     functions = dict[tuple[str, str, int], dict[str, Any]]()
-    # Only use demangled names (containing a brace)
-    for f_cdata in sorted(
-        cdata.functions.values(), key=lambda f_cdata: f_cdata.demangled_name
+
+    is_function_stats_possible = cdata.is_function_stats_possible()
+    for functioncov in sorted(
+        cdata.functions.values(),
+        key=lambda functioncov: str(functioncov.key).casefold(),
     ):
-        for lineno in sorted(f_cdata.count.keys()):
+        for lineno in sorted(functioncov.count.keys()):
             f_data = dict[str, Any]()
-            f_data["name"] = f_cdata.demangled_name
+            # Prefer demangled names (containing a brace)
+            f_data["name"] = functioncov.demangled_name_or_name
             f_data["filename"] = cdata_fname[filename]
             f_data["html_filename"] = os.path.basename(cdata_sourcefile[filename])
             f_data["line"] = lineno
-            f_data["count"] = f_cdata.count[lineno]
-            f_data["blocks"] = f_cdata.blocks[lineno]
-            f_data["excluded"] = f_cdata.excluded[lineno]
-            if f_cdata.name is not None:
-                function_stats = cdata.filter_for_function(f_cdata).stats
+            f_data["count"] = functioncov.count[lineno]
+            f_data["blocks"] = functioncov.blocks[lineno]
+            f_data["excluded"] = functioncov.excluded[lineno]
+            if is_function_stats_possible:
+                function_stats = cdata.filter_for_function(functioncov).stats
                 f_data["line_coverage"] = function_stats.line.percent_or(100.0)
                 f_data["branch_coverage"] = function_stats.branch.percent_or("-")
                 f_data["condition_coverage"] = function_stats.condition.percent_or("-")
@@ -855,7 +858,7 @@ def get_file_data(
             file_data["function_list"].append(f_data)
             functions[
                 (
-                    f_cdata.name or f_cdata.demangled_name,
+                    functioncov.demangled_name_or_name.casefold(),
                     str(f_data["filename"]),
                     int(f_data["line"]),
                 )

@@ -33,6 +33,7 @@ class CloverHandler(BaseHandler):
         return [
             # Global options used for merging.
             "merge_mode_functions",
+            "merge_mode_function_names",
             "merge_mode_conditions",
             # Local options
             GcovrConfigOption(

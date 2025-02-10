@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 import os
+import re
 from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
@@ -77,14 +78,15 @@ def write_report(
         # The Cobertura DTD requires a methods section, which isn't
         # trivial to get from gcov (so we will leave it blank)
         methods_elem = etree.SubElement(class_elem, "methods")
-        for functioncov in filecov.functions.values():
-            if functioncov.name is not None:
+        if filecov.is_function_stats_possible():
+            for functioncov in filecov.functions.values():
                 filtered_filecov = filecov.filter_for_function(functioncov)
                 function_stats = filtered_filecov.stats
-                name = functioncov.demangled_name
-                if "(" in name:
-                    name = name.split("(", maxsplit=1)[0]
-                    signature = functioncov.demangled_name[len(name) :]
+                name = str(functioncov.demangled_name)
+                matches = re.match(r"(.+?)(\(.*\))", name)
+                if matches:
+                    name = matches.group(1)
+                    signature = matches.group(2)
                 else:
                     signature = "()"
                 method_elem = etree.SubElement(methods_elem, "method")

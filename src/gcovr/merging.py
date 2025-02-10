@@ -50,6 +50,7 @@ which may not be the same as the input value.
 
 from dataclasses import dataclass, field
 import logging
+import re
 from typing import Callable, Optional, TypeVar
 
 from .options import Options
@@ -69,6 +70,7 @@ from .coverage import (
 
 
 LOGGER = logging.getLogger("gcovr")
+REGEX_VIRTUAL_DESTRUCTORS = re.compile(r"^.+D[012]Ev$")
 
 
 class GcovrMergeAssertionError(AssertionError):
@@ -106,6 +108,19 @@ SEPARATE_FUNCTION_MERGE_OPTIONS = MergeFunctionOptions(
 
 
 @dataclass
+class MergeFunctionNameOptions:
+    """Data class to store the function name merge options."""
+
+    ignore_function_name_single_definition: bool = False
+
+
+FUNCTION_NAME_STRICT_MERGE_OPTIONS = MergeFunctionNameOptions()
+FUNCTION_NAME_IGNORE_SINGLE_DEFINITION_MERGE_OPTIONS = MergeFunctionNameOptions(
+    ignore_function_name_single_definition=True,
+)
+
+
+@dataclass
 class MergeConditionOptions:
     """Data class to store the condition merge options."""
 
@@ -123,6 +138,9 @@ class MergeOptions:
     """Data class to store the merge options."""
 
     func_opts: MergeFunctionOptions = field(default_factory=MergeFunctionOptions)
+    func_name_opts: MergeFunctionNameOptions = field(
+        default_factory=MergeFunctionNameOptions
+    )
     cond_opts: MergeConditionOptions = field(default_factory=MergeConditionOptions)
 
 
@@ -144,6 +162,13 @@ def get_merge_mode_from_options(options: Options) -> MergeOptions:
         merge_opts.func_opts = SEPARATE_FUNCTION_MERGE_OPTIONS
     else:
         raise AssertionError("Sanity check: Unknown functions merge mode.")
+
+    if options.merge_mode_function_names == "strict":
+        merge_opts.func_name_opts = FUNCTION_NAME_STRICT_MERGE_OPTIONS
+    elif options.merge_mode_function_names == "ignore-single-definition":
+        merge_opts.func_name_opts = FUNCTION_NAME_IGNORE_SINGLE_DEFINITION_MERGE_OPTIONS
+    else:
+        raise AssertionError("Sanity check: Unknown function names merge mode.")
 
     if options.merge_mode_conditions == "strict":
         merge_opts.cond_opts = CONDITION_STRICT_MERGE_OPTIONS
@@ -242,13 +267,13 @@ def merge_covdata(
 
 def insert_file_coverage(
     target: CoverageContainer,
-    file: FileCoverage,
+    filecov: FileCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> FileCoverage:
     """Insert FileCoverage into CoverageContainer and clear directory statistics."""
     target.directories.clear()
     return _insert_coverage_item(
-        target.data, file.filename, file, merge_file, options, None
+        target.data, filecov.filename, filecov, merge_file, options, None
     )
 
 
@@ -347,14 +372,14 @@ def merge_line(
 
 def insert_function_coverage(
     filecov: FileCoverage,
-    function: FunctionCoverage,
+    functioncov: FunctionCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> FunctionCoverage:
     """Insert FunctionCoverage into FileCoverage"""
     return _insert_coverage_item(
         filecov.functions,
-        function.name or function.demangled_name,
-        function,
+        functioncov.key,
+        functioncov,
         merge_function,
         options,
         filecov.filename,
@@ -382,15 +407,48 @@ def merge_function(
       - ``options.func_opts.merge_function_use_line_max``
       - ``options.func_opts.separate_function``
     """
-    if left.demangled_name != right.demangled_name:
-        raise AssertionError("Function demangled name must be equal.")
-    if left.name != right.name:
-        raise AssertionError("Function name must be equal.")
+
+    def _helper_check_and_merge_name(
+        getter: Callable[[FunctionCoverage], Optional[str]],
+        setter: Callable[[FunctionCoverage, Optional[str]], None],
+        message_name: str,
+    ) -> None:
+        """Check if the names are the same in left and right, raises an GcovrMergeAssertion if not"""
+        if getter(left) is not None and getter(right) is not None:
+            if getter(left) != getter(right):
+                raise GcovrMergeAssertionError(
+                    f"{message_name} name in {context} must be {getter(left)}, got {getter(right)}."
+                )
+        elif getter(left) is not None or getter(right) is not None:
+            if getter(right) is not None:
+                setter(left, getter(right))
+            if not options.func_name_opts.ignore_function_name_single_definition:
+                raise GcovrMergeAssertionError(
+                    f"{message_name} function name {getter(left)} only defined in one file. "
+                    "This can be ignored by --merge-mode-function-names=ignore-single-definition."
+                )
+
+    def setter_name(elem: FunctionCoverage, value: Optional[str]) -> None:
+        """Setter for the name"""
+        elem.name = value
+
+    def setter_demangled_name(elem: FunctionCoverage, value: Optional[str]) -> None:
+        """Setter for the name"""
+        elem.demangled_name = value
+
+    # Only merge if we do not have a mangled name or the mangled name is not a virtual destructor.
+    # See comment https://github.com/gcovr/gcovr/pull/1059#issuecomment-2631549943
+    if left.name is None or not REGEX_VIRTUAL_DESTRUCTORS.fullmatch(left.name):
+        _helper_check_and_merge_name(lambda elem: elem.name, setter_name, "Mangled")
+    _helper_check_and_merge_name(
+        lambda elem: elem.demangled_name, setter_demangled_name, "Demangled"
+    )
+
     if not options.func_opts.ignore_function_lineno:
         if left.count.keys() != right.count.keys():
             lines = sorted(set([*left.count.keys(), *right.count.keys()]))
             raise GcovrMergeAssertionError(
-                f"Got function {right.demangled_name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                f"Got function {right.demangled_name_or_name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                 "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                 "\tThe available values for MERGE_MODE are described in the documentation."
             )
@@ -598,11 +656,11 @@ def merge_condition(
 
 def insert_decision_coverage(
     target: LineCoverage,
-    decision: Optional[DecisionCoverage],
+    decisioncov: Optional[DecisionCoverage],
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> Optional[DecisionCoverage]:
     """Insert DecisionCoverage into LineCoverage."""
-    target.decision = merge_decision(target.decision, decision, options, None)
+    target.decision = merge_decision(target.decision, decisioncov, options, None)
     return target.decision
 
 
@@ -661,12 +719,12 @@ def merge_decision(  # pylint: disable=too-many-return-statements
 
 def insert_call_coverage(
     target: LineCoverage,
-    call: CallCoverage,
+    callcov: CallCoverage,
     options: MergeOptions = DEFAULT_MERGE_OPTIONS,
 ) -> CallCoverage:
     """Insert BranchCoverage into LineCoverage."""
     return _insert_coverage_item(
-        target.calls, call.callno, call, merge_call, options, None
+        target.calls, callcov.callno, callcov, merge_call, options, None
     )
 
 
