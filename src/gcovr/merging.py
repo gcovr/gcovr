@@ -52,11 +52,9 @@ from dataclasses import dataclass, field
 import logging
 from typing import Callable, Optional, TypeVar
 
-from .options import Options
-from .coverage import (
+from .data_model.coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CoverageContainer,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
@@ -66,6 +64,8 @@ from .coverage import (
     LineCoverage,
     CallCoverage,
 )
+from .data_model.container import CoverageContainer
+from .options import Options
 
 
 LOGGER = logging.getLogger("gcovr")

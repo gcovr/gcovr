@@ -19,10 +19,9 @@
 
 from typing import Union
 
-from ...options import GcovrConfigOption, OutputOrDefault
+from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
-
-from ...coverage import CoverageContainer
+from ...options import GcovrConfigOption, OutputOrDefault
 
 
 class CsvHandler(BaseHandler):

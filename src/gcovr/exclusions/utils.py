@@ -22,7 +22,7 @@
 import logging
 from typing import Callable, Iterable, Optional
 
-from ..coverage import FileCoverage, FunctionCoverage
+from ..data_model.coverage import FileCoverage, FunctionCoverage
 
 LOGGER = logging.getLogger("gcovr")
 

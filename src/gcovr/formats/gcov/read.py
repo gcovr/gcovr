@@ -27,7 +27,7 @@ import subprocess  # nosec # Commands are trusted.
 from threading import Lock
 from typing import Any, Callable, Optional
 
-from ...coverage import CoverageContainer
+from ...data_model.container import CoverageContainer
 from ...decision_analysis import DecisionParser
 from ...exclusions import (
     apply_all_exclusions,

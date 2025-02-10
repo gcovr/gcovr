@@ -23,10 +23,11 @@ from dataclasses import dataclass
 import os
 from lxml import etree  # nosec # We only write XML files
 
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import LineCoverage
+from ...data_model.stats import CoverageStat, SummarizedStats
 from ...options import Options
-
 from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
-from ...coverage import CoverageContainer, CoverageStat, LineCoverage, SummarizedStats
 
 
 def write_report(

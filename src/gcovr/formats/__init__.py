@@ -20,7 +20,8 @@
 import logging
 from typing import Callable, Optional
 
-from ..coverage import CoverageContainer, FileCoverage
+from ..data_model.coverage import FileCoverage
+from ..data_model.container import CoverageContainer
 from ..filter import is_file_excluded
 from ..merging import (
     get_merge_mode_from_options,

@@ -26,7 +26,7 @@ from unittest import mock
 
 import pytest
 
-from gcovr.coverage import FileCoverage
+from gcovr.data_model.coverage import FileCoverage
 from gcovr.exclusions import ExclusionOptions, apply_all_exclusions
 from gcovr.filter import AlwaysMatchFilter
 from gcovr.formats.gcov.parser import (

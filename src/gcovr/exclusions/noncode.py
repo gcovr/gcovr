@@ -24,7 +24,7 @@ Heuristics for ignoring data on lines that don't look like actual code.
 import re
 import logging
 
-from ..coverage import FileCoverage
+from ..data_model.coverage import FileCoverage
 
 
 LOGGER = logging.getLogger("gcovr")

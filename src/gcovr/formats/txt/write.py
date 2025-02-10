@@ -19,17 +19,14 @@
 
 from typing import Iterable
 
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import FileCoverage
+from ...data_model.stats import CoverageStat
 from ...options import Options
-
 from ...utils import (
     force_unix_separator,
     presentable_filename,
     open_text_for_writing,
-)
-from ...coverage import (
-    CoverageContainer,
-    CoverageStat,
-    FileCoverage,
 )
 
 # Widths of the various columns

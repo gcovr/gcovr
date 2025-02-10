@@ -20,10 +20,10 @@
 import csv
 from typing import Optional
 
+from ...data_model.container import CoverageContainer
+from ...data_model.stats import CoverageStat
 from ...options import Options
-
 from ...utils import presentable_filename, open_text_for_writing
-from ...coverage import CoverageContainer, CoverageStat
 
 
 def write_report(

@@ -24,10 +24,10 @@ from glob import glob
 from typing import Any, Optional
 
 from . import versions
-from ...coverage import (
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CoverageContainer,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,

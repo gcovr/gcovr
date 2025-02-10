@@ -33,7 +33,7 @@ from .configuration import (
     parse_config_file,
     parse_config_into_dict,
 )
-from .coverage import CoverageContainer
+from .data_model.container import CoverageContainer
 from .logging import (
     configure_logging,
     update_logging,

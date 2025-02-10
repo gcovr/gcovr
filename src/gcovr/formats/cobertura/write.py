@@ -29,7 +29,9 @@ from ...utils import (
     open_binary_for_writing,
     presentable_filename,
 )
-from ...coverage import CoverageContainer, CoverageStat, LineCoverage, SummarizedStats
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import LineCoverage
+from ...data_model.stats import CoverageStat, SummarizedStats
 
 
 def write_report(

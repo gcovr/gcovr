@@ -22,9 +22,9 @@ import os
 from glob import glob
 from lxml import etree  # nosec # We only write XML files
 
-from ...coverage import (
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import (
     BranchCoverage,
-    CoverageContainer,
     FileCoverage,
     LineCoverage,
 )

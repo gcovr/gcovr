@@ -49,7 +49,7 @@ from typing import (
 
 from gcovr.utils import get_md5_hexdigest
 
-from ....coverage import (
+from ....data_model.coverage import (
     BranchCoverage,
     CallCoverage,
     FileCoverage,
