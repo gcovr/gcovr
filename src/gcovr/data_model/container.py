@@ -23,6 +23,10 @@ import os
 import re
 from typing import ItemsView, Iterable, Iterator, Literal, Optional, Union, ValuesView
 
+from .coverage_dict import CoverageDict
+
+from .merging import MergeOptions
+
 from ..utils import commonpath, force_unix_separator
 
 from .coverage import FileCoverage
@@ -115,7 +119,7 @@ class CoverageContainer:
     """Coverage container holding all the coverage data."""
 
     def __init__(self) -> None:
-        self.data = dict[str, FileCoverage]()
+        self.data = CoverageDict[str, FileCoverage]()
         self.directories = list[CoverageContainerDirectory]()
 
     def __getitem__(self, key: str) -> FileCoverage:
@@ -137,6 +141,29 @@ class CoverageContainer:
     def items(self) -> ItemsView[str, FileCoverage]:
         """Get the file coverage data items."""
         return self.data.items()
+
+    def merge(self, other: CoverageContainer, options: MergeOptions) -> None:
+        """
+        Merge CoverageContainer information and clear directory statistics.
+
+        Do not use 'other' objects afterwards!
+        """
+        self.directories.clear()
+        other.directories.clear()
+        self.data.merge(other.data, options, None)
+
+    def insert_file_coverage(
+        self, filecov: FileCoverage, options: MergeOptions
+    ) -> FileCoverage:
+        """Add a file coverage item."""
+        self.directories.clear()
+        key = filecov.filename
+        if key in self.data:
+            self.data[key].merge(filecov, options, None)
+        else:
+            self.data[key] = filecov
+
+        return filecov
 
     @property
     def stats(self) -> SummarizedStats:
@@ -265,7 +292,7 @@ class CoverageContainerDirectory:
         super().__init__()
         self.dirname: str = dirname
         self.parent_dirname: Optional[str] = None
-        self.data = dict[str, Union[FileCoverage, CoverageContainerDirectory]]()
+        self.data = CoverageDict[str, Union[FileCoverage, CoverageContainerDirectory]]()
         self.stats: SummarizedStats = SummarizedStats.new_empty()
 
     def __setitem__(
@@ -289,6 +316,14 @@ class CoverageContainerDirectory:
     def items(self) -> ItemsView[str, Union[FileCoverage, CoverageContainerDirectory]]:
         """Get the file coverage data items."""
         return self.data.items()
+
+    def merge(self, other: CoverageContainerDirectory, options: MergeOptions) -> None:
+        """
+        Merge CoverageContainerDirectory information and clear directory statistics.
+
+        Do not use 'other' objects afterwards!
+        """
+        self.data.merge(other.data, options, None)
 
     @property
     def filename(self) -> str:
