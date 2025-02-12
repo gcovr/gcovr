@@ -21,6 +21,8 @@ Documentation:
 
 Internal changes:
 
+- Refactor internal data model. (:issue:`1067`)
+
 8.3 (19 January 2025)
 ---------------------
 
