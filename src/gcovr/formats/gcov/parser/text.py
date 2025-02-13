@@ -396,6 +396,8 @@ def _gather_coverage_from_line(
     # pylint: disable=too-many-return-statements,too-many-branches
     # pylint: disable=no-else-return  # make life easier for type checkers
 
+    linecov: Optional[LineCoverage]
+
     if isinstance(line, _SourceLine):
         raw_count, lineno, source_code, extra_info = line
 
@@ -463,7 +465,7 @@ def _gather_coverage_from_line(
     # ignore unused line types, such as specialization sections
     elif isinstance(line, _CallLine):
         callno, returned = line
-        linecov: LineCoverage = filecov.lines[state.lineno]  # must already exist
+        linecov = filecov.lines[state.lineno]  # must already exist
 
         linecov.insert_call_coverage(
             CallCoverage(

@@ -246,7 +246,7 @@ class ConditionCoverage:
         other: ConditionCoverage,
         options: MergeOptions,
         context: Optional[str],
-    ) -> ConditionCoverage:
+    ) -> None:
         """
         Merge ConditionCoverage information.
 
@@ -430,10 +430,12 @@ class FunctionCoverage:
         self.blocks = CoverageDict[int, float]({lineno: blocks})
         self.excluded = CoverageDict[int, bool]({lineno: excluded})
         self.start: Optional[CoverageDict[int, tuple[int, int]]] = (
-            None if start is None else {lineno: start}
+            None
+            if start is None
+            else CoverageDict[int, tuple[int, int]]({lineno: start})
         )
         self.end: Optional[CoverageDict[int, tuple[int, int]]] = (
-            None if end is None else {lineno: end}
+            None if end is None else CoverageDict[int, tuple[int, int]]({lineno: end})
         )
 
     def merge(
@@ -491,12 +493,12 @@ class FunctionCoverage:
                     self.excluded[lineno] = excluded
             if other.start is not None:
                 if self.start is None:
-                    self.start = {}
+                    self.start = CoverageDict[int, tuple[int, int]]()
                 for lineno, start in other.start.items():
                     self.start[lineno] = start
             if other.end is not None:
                 if self.end is None:
-                    self.end = {}
+                    self.end = CoverageDict[int, tuple[int, int]]()
                 for lineno, end in other.end.items():
                     self.end[lineno] = end
             return self
@@ -515,20 +517,28 @@ class FunctionCoverage:
             raise AssertionError("Sanity check, unknown merge mode")
 
         # Overwrite data with the sum at the desired line
-        self.count = {lineno: sum(self.count.values()) + sum(other.count.values())}
+        self.count = CoverageDict[int, int](
+            {lineno: sum(self.count.values()) + sum(other.count.values())}
+        )
         # or the max value at the desired line
-        self.blocks = {lineno: max(*self.blocks.values(), *other.blocks.values())}
+        self.blocks = CoverageDict[int, float](
+            {lineno: max(*self.blocks.values(), *other.blocks.values())}
+        )
         # or the logical or of all values
-        self.excluded = {
-            lineno: any(self.excluded.values()) or any(other.excluded.values())
-        }
+        self.excluded = CoverageDict[int, bool](
+            {lineno: any(self.excluded.values()) or any(other.excluded.values())}
+        )
 
         if self.start is not None and other.start is not None:
             # or the minimum start
-            self.start = {lineno: min(*self.start.values(), *other.start.values())}
+            self.start = CoverageDict[int, tuple[int, int]](
+                {lineno: min(*self.start.values(), *other.start.values())}
+            )
         if self.end is not None and other.end is not None:
             # or the maximum end
-            self.end = {lineno: max(*self.end.values(), *other.end.values())}
+            self.end = CoverageDict[int, tuple[int, int]](
+                {lineno: max(*self.end.values(), *other.end.values())}
+            )
 
         return self
 
@@ -629,7 +639,7 @@ class LineCoverage:
 
     def __merge_decision(  # pylint: disable=too-many-return-statements
         self,
-        decisioncov: DecisionCoverage,
+        decisioncov: Optional[DecisionCoverage],
     ) -> None:
         """Merge DecisionCoverage information.
 
@@ -696,7 +706,7 @@ class LineCoverage:
 
     def insert_decision_coverage(
         self,
-        decisioncov: DecisionCoverage,
+        decisioncov: Optional[DecisionCoverage],
     ) -> None:
         """Add a condition coverage item, merge if needed."""
         self.__merge_decision(decisioncov)
@@ -908,11 +918,13 @@ class FileCoverage:
         filecov = FileCoverage(self.filename, self.data_sources)
         filecov.functions[functioncov.name] = functioncov
 
-        filecov.lines = {
-            lineno: linecov
-            for lineno, linecov in self.lines.items()
-            if linecov.function_name == functioncov.name
-        }
+        filecov.lines = CoverageDict[int, LineCoverage](
+            {
+                lineno: linecov
+                for lineno, linecov in self.lines.items()
+                if linecov.function_name == functioncov.name
+            }
+        )
 
         return filecov
 

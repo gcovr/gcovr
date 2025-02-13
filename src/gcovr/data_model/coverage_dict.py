@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 import logging
-from typing import Optional, TypeVar, TypedDict
+from typing import Optional, TypeVar
 
 from .merging import MergeOptions
 
@@ -34,7 +34,7 @@ class CoverageDict(dict[_Key, _T]):
 
     def merge(
         self,
-        other: CoverageDict,
+        other: CoverageDict[_Key, _T],
         options: MergeOptions,
         context: Optional[str],
     ) -> None:

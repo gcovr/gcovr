@@ -201,7 +201,7 @@ def process_gcov_json_data(
             decision_parser.parse_all_lines()
 
         LOGGER.debug(f"Merge coverage data for {filecov.filename}")
-        covdata.merge(filecov, merge_options)
+        covdata.insert_file_coverage(filecov, merge_options)
 
 
 #
