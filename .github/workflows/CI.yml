@@ -101,17 +101,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04]
-        gcc: [gcc-8]
+        os: [ubuntu-22.04]
+        gcc: [gcc-11]
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', 'pypy-3.10']
 
         include:
 
           # Test additional compilers with Linux.
           # Note that all compiler versions are also handled via Docker.
-          - os: ubuntu-20.04
-            gcc: gcc-9
-            python-version: '3.9'
           - os: ubuntu-22.04
             gcc: gcc-11
             python-version: '3.13'
