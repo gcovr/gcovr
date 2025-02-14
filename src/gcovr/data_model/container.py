@@ -36,86 +36,88 @@ from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 LOGGER = logging.getLogger("gcovr")
 
 
-def sort_coverage(
-    covdata: Union[
-        dict[str, FileCoverage],
-        dict[str, Union[FileCoverage, CoverageContainerDirectory]],
-    ],
-    sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
-    sort_reverse: bool,
-    by_metric: Literal["line", "branch", "decision"],
-    filename_uses_relative_pathname: bool = False,
-) -> list[str]:
-    """Sort a coverage dict.
+class ContainerBase:
+    """Base class for coverage containers"""
 
-    covdata (dict): the coverage dictionary
-    sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
-    sort_reverse (bool): reverse order if True
-    by_metric ("line", "branch", "decision"): select the metric to sort
-    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
-        relative path, but not for other formats.
+    def sort_coverage(
+        self,
+        sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
+        sort_reverse: bool,
+        by_metric: Literal["line", "branch", "decision"],
+        filename_uses_relative_pathname: bool = False,
+    ) -> list[str]:
+        """Sort a coverage dict.
 
-    returns: the sorted keys
-    """
+        covdata (dict): the coverage dictionary
+        sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
+        sort_reverse (bool): reverse order if True
+        by_metric ("line", "branch", "decision"): select the metric to sort
+        filename_uses_relative_pathname (bool): for html, we break down a pathname to the
+            relative path, but not for other formats.
 
-    basedir = commonpath(list(covdata.keys()))
+        returns: the sorted keys
+        """
 
-    def key_filename(key: str) -> list[Union[int, str]]:
-        def convert_to_int_if_possible(text: str) -> Union[int, str]:
-            return int(text) if text.isdigit() else text
+        basedir = commonpath(list(self.data.keys()))
 
-        key = (
-            force_unix_separator(
-                os.path.relpath(os.path.realpath(key), os.path.realpath(basedir))
+        def key_filename(key: str) -> list[Union[int, str]]:
+            def convert_to_int_if_possible(text: str) -> Union[int, str]:
+                return int(text) if text.isdigit() else text
+
+            key = (
+                force_unix_separator(
+                    os.path.relpath(os.path.realpath(key), os.path.realpath(basedir))
+                )
+                if filename_uses_relative_pathname
+                else key
+            ).casefold()
+
+            return [
+                convert_to_int_if_possible(part) for part in re.split(r"([0-9]+)", key)
+            ]
+
+        def coverage_stat(key: str) -> CoverageStat:
+            cov: Union[FileCoverage, CoverageContainerDirectory] = self.data[key]
+            if by_metric == "branch":
+                return cov.branch_coverage()
+            if by_metric == "decision":
+                return cov.decision_coverage().to_coverage_stat
+            return cov.line_coverage()
+
+        def key_num_uncovered(key: str) -> int:
+            stat = coverage_stat(key)
+            uncovered = stat.total - stat.covered
+            return uncovered
+
+        def key_percent_uncovered(key: str) -> float:
+            stat = coverage_stat(key)
+            covered = stat.covered
+            total = stat.total
+
+            # No branches are always put directly after (or before when reversed)
+            # files with 100% coverage (by assigning such files 110% coverage)
+            return covered / total if total > 0 else 1.1
+
+        if sort_key == "uncovered-number":
+            # First sort filename alphabetical and then by the requested key
+            return sorted(
+                sorted(self.data, key=key_filename),
+                key=key_num_uncovered,
+                reverse=sort_reverse,
             )
-            if filename_uses_relative_pathname
-            else key
-        ).casefold()
+        if sort_key == "uncovered-percent":
+            # First sort filename alphabetical and then by the requested key
+            return sorted(
+                sorted(self.data, key=key_filename),
+                key=key_percent_uncovered,
+                reverse=sort_reverse,
+            )
 
-        return [convert_to_int_if_possible(part) for part in re.split(r"([0-9]+)", key)]
-
-    def coverage_stat(key: str) -> CoverageStat:
-        cov = covdata[key]
-        if by_metric == "branch":
-            return cov.branch_coverage()
-        if by_metric == "decision":
-            return cov.decision_coverage().to_coverage_stat
-        return cov.line_coverage()
-
-    def key_num_uncovered(key: str) -> int:
-        stat = coverage_stat(key)
-        uncovered = stat.total - stat.covered
-        return uncovered
-
-    def key_percent_uncovered(key: str) -> float:
-        stat = coverage_stat(key)
-        covered = stat.covered
-        total = stat.total
-
-        # No branches are always put directly after (or before when reversed)
-        # files with 100% coverage (by assigning such files 110% coverage)
-        return covered / total if total > 0 else 1.1
-
-    if sort_key == "uncovered-number":
-        # First sort filename alphabetical and then by the requested key
-        return sorted(
-            sorted(covdata, key=key_filename),
-            key=key_num_uncovered,
-            reverse=sort_reverse,
-        )
-    if sort_key == "uncovered-percent":
-        # First sort filename alphabetical and then by the requested key
-        return sorted(
-            sorted(covdata, key=key_filename),
-            key=key_percent_uncovered,
-            reverse=sort_reverse,
-        )
-
-    # By default, we sort by filename alphabetically
-    return sorted(covdata, key=key_filename, reverse=sort_reverse)
+        # By default, we sort by filename alphabetically
+        return sorted(self.data, key=key_filename, reverse=sort_reverse)
 
 
-class CoverageContainer:
+class CoverageContainer(ContainerBase):
     """Coverage container holding all the coverage data."""
 
     def __init__(self) -> None:
@@ -172,22 +174,6 @@ class CoverageContainer:
         for filecov in self.values():
             stats += filecov.stats
         return stats
-
-    def sort_coverage(
-        self,
-        sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
-        sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
-        filename_uses_relative_pathname: bool = False,
-    ) -> list[str]:
-        """Sort the coverage data"""
-        return sort_coverage(
-            self.data,
-            sort_key,
-            sort_reverse,
-            by_metric,
-            filename_uses_relative_pathname,
-        )
 
     @staticmethod
     def _get_dirname(filename: str) -> Optional[str]:
@@ -283,13 +269,12 @@ class CoverageContainer:
         self.directories = list(subdirs.values())
 
 
-class CoverageContainerDirectory:
+class CoverageContainerDirectory(ContainerBase):
     """Represent coverage information about a directory."""
 
     __slots__ = "dirname", "parent_dirname", "data", "stats"
 
     def __init__(self, dirname: str) -> None:
-        super().__init__()
         self.dirname: str = dirname
         self.parent_dirname: Optional[str] = None
         self.data = CoverageDict[str, Union[FileCoverage, CoverageContainerDirectory]]()
@@ -329,22 +314,6 @@ class CoverageContainerDirectory:
     def filename(self) -> str:
         """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage"""
         return self.dirname
-
-    def sort_coverage(
-        self,
-        sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
-        sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
-        filename_uses_relative_pathname: bool = False,
-    ) -> list[str]:
-        """Sort the coverage data"""
-        return sort_coverage(
-            self.data,
-            sort_key,
-            sort_reverse,
-            by_metric,
-            filename_uses_relative_pathname,
-        )
 
     def line_coverage(self) -> CoverageStat:
         """A simple wrapper function necessary for sort_coverage()."""

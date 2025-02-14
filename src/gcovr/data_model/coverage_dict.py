@@ -47,7 +47,5 @@ class CoverageDict(dict[_Key, _T]):
                 self[key] = item
 
         # At this point, "self" contains all merged items.
-        # The caller should access neither the "self" nor "other" objects.
-        # While we can't prevent use of the "self" object since we want to return it,
-        # we can clear the contents of the "other" object.
+        # The caller should access "other" objects therefore we clear it.
         other.clear()
