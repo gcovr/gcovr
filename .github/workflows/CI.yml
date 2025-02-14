@@ -91,7 +91,7 @@ jobs:
     #
     # OS: Linux, Windows
     # Compiler: GCC-5 to GCC-14, Clang-10 to CLANG-16
-    # Python: 3.9 -- 3.12, pypy3
+    # Python: 3.9 -- 3.13, pypy3
     #
     # Instead of testing all combinations, we try to achieve full coverage
     # across each axis. The main test matrix just represents the Python axis on
