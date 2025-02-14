@@ -40,11 +40,19 @@ class CoverageDict(dict[_Key, _T]):
     ) -> None:
         """Helper function to merge items in a dictionary."""
 
-        for key, item in other.items():
-            if key in self:
-                self[key].merge(item, options, context)
-            else:
+        # Ensure that "self" is the larger dict,
+        # so that fewer items have to be checked for merging.
+        # FIXME: This needs to be changed, result should be independent of the order
+        if len(self) < len(other):
+            other.merge(self, options, context)
+            for key, item in other.items():
                 self[key] = item
+        else:
+            for key, item in other.items():
+                if key in self:
+                    self[key].merge(item, options, context)
+                else:
+                    self[key] = item
 
         # At this point, "self" contains all merged items.
         # The caller should access "other" objects therefore we clear it.
