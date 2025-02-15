@@ -32,7 +32,7 @@ from .utils import (
     get_functions_by_line,
 )
 
-from ..coverage import FileCoverage, FunctionCoverage
+from ..data_model.coverage import FileCoverage, FunctionCoverage
 
 LOGGER = logging.getLogger("gcovr")
 

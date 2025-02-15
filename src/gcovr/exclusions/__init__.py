@@ -41,7 +41,7 @@ from .utils import (
     get_functions_by_line,
 )
 
-from ..coverage import FileCoverage
+from ..data_model.coverage import FileCoverage
 from .markers import ExclusionPredicate, FunctionListByLine, apply_exclusion_markers
 from .noncode import remove_unreachable_branches, remove_noncode_lines
 

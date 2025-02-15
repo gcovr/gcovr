@@ -47,27 +47,19 @@ from typing import (
     Union,
 )
 
-from gcovr.utils import get_md5_hexdigest
-
-from ....coverage import (
+from .common import (
+    SUSPICIOUS_COUNTER,
+    check_hits,
+)
+from ....utils import get_md5_hexdigest
+from ....data_model.coverage import (
     BranchCoverage,
     CallCoverage,
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
 )
-from ....merging import (
-    FUNCTION_MAX_LINE_MERGE_OPTIONS,
-    MergeOptions,
-    insert_branch_coverage,
-    insert_call_coverage,
-    insert_function_coverage,
-    insert_line_coverage,
-)
-from .common import (
-    SUSPICIOUS_COUNTER,
-    check_hits,
-)
+from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -330,14 +322,14 @@ def parse_coverage(
             f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
         )
 
-    coverage = FileCoverage(filename, data_filename)
+    filecov = FileCoverage(filename, data_filename)
     state = _ParserState()
     for line, raw_line in tokenized_lines:
         try:
             state = _gather_coverage_from_line(
                 state,
                 line,
-                coverage=coverage,
+                filecov=filecov,
             )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
@@ -347,8 +339,7 @@ def parse_coverage(
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
         name, count, blocks = function
-        insert_function_coverage(
-            coverage,
+        filecov.insert_function_coverage(
             FunctionCoverage(
                 None,
                 name,
@@ -367,7 +358,7 @@ def parse_coverage(
 
     src_lines = _reconstruct_source_code(line for line, _ in tokenized_lines)
 
-    return coverage, src_lines
+    return filecov, src_lines
 
 
 def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
@@ -392,18 +383,20 @@ def _gather_coverage_from_line(
     state: _ParserState,
     line: _Line,
     *,
-    coverage: FileCoverage,
+    filecov: FileCoverage,
 ) -> _ParserState:
     """
     Interpret a Line, updating the FileCoverage, and transitioning ParserState.
 
     The function handles all possible Line variants, and dies otherwise:
-    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", coverage=...)
+    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", filecov=...)
     Traceback (most recent call last):
     AssertionError: Unexpected line type: 'illegal line type'
     """
     # pylint: disable=too-many-return-statements,too-many-branches
     # pylint: disable=no-else-return  # make life easier for type checkers
+
+    linecov: Optional[LineCoverage]
 
     if isinstance(line, _SourceLine):
         raw_count, lineno, source_code, extra_info = line
@@ -411,8 +404,7 @@ def _gather_coverage_from_line(
         is_noncode = extra_info & _ExtraInfo.NONCODE
 
         if not is_noncode:
-            insert_line_coverage(
-                coverage,
+            filecov.insert_line_coverage(
                 LineCoverage(
                     lineno,
                     count=raw_count,
@@ -424,8 +416,7 @@ def _gather_coverage_from_line(
         for function in state.deferred_functions:
             name, count, blocks = function
 
-            insert_function_coverage(
-                coverage,
+            filecov.insert_function_coverage(
                 FunctionCoverage(None, name, lineno=lineno, count=count, blocks=blocks),
                 MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
             )
@@ -448,11 +439,10 @@ def _gather_coverage_from_line(
         branchno, hits, annotation = line
 
         # linecov won't exist if it was considered noncode
-        linecov = coverage.lines.get(state.lineno)
+        linecov = filecov.lines.get(state.lineno)
 
         if linecov:
-            insert_branch_coverage(
-                linecov,
+            linecov.insert_branch_coverage(
                 branchno,
                 BranchCoverage(
                     source_block_id=state.block_id,
@@ -475,10 +465,9 @@ def _gather_coverage_from_line(
     # ignore unused line types, such as specialization sections
     elif isinstance(line, _CallLine):
         callno, returned = line
-        linecov = coverage.lines[state.lineno]  # must already exist
+        linecov = filecov.lines[state.lineno]  # must already exist
 
-        insert_call_coverage(
-            linecov,
+        linecov.insert_call_coverage(
             CallCoverage(
                 callno=callno,
                 covered=(returned > 0),

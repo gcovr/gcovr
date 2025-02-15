@@ -19,8 +19,8 @@
 
 from typing import Union
 
+from ..data_model.container import CoverageContainer
 from ..options import GcovrConfigOption, Options
-from ..coverage import CoverageContainer
 
 
 class BaseHandler:

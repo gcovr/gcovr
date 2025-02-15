@@ -28,10 +28,10 @@ import shutil
 import subprocess  # nosec # Commands are trusted.
 from typing import Any, Optional
 
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import FileCoverage
 from ...options import Options
-
 from ...utils import get_md5_hexdigest, presentable_filename, open_text_for_writing
-from ...coverage import CoverageContainer, FileCoverage
 
 PRETTY_JSON_INDENT = 4
 

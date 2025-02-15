@@ -22,19 +22,14 @@ import os
 from glob import glob
 from lxml import etree  # nosec # We only write XML files
 
-from ...coverage import (
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import (
     BranchCoverage,
-    CoverageContainer,
     FileCoverage,
     LineCoverage,
 )
+from ...data_model.merging import get_merge_mode_from_options
 from ...filter import is_file_excluded
-from ...merging import (
-    get_merge_mode_from_options,
-    insert_branch_coverage,
-    insert_file_coverage,
-    insert_line_coverage,
-)
 from ...options import Options
 
 LOGGER = logging.getLogger("gcovr")
@@ -96,11 +91,11 @@ def read_report(options: Options) -> CoverageContainer:
             merge_options = get_merge_mode_from_options(options)
             xml_line: etree._Element
             for xml_line in gcovr_file.xpath("./lines//line"):  # type: ignore [assignment, union-attr]
-                insert_line_coverage(
-                    filecov, _line_from_xml(data_source_filename, xml_line)
+                filecov.insert_line_coverage(
+                    _line_from_xml(data_source_filename, xml_line)
                 )
 
-            insert_file_coverage(covdata, filecov, merge_options)
+            covdata.insert_file_coverage(filecov, merge_options)
 
     return covdata
 
@@ -130,8 +125,8 @@ def _line_from_xml(filename: str, xml_line: etree._Element) -> LineCoverage:
         try:
             [covered, total] = branch_msg[branch_msg.rfind("(") + 1 : -1].split("/")
             for i in range(int(total)):
-                insert_branch_coverage(
-                    linecov, i, _branch_from_json(i, i < int(covered))
+                linecov.insert_branch_coverage(
+                    i, _branch_from_json(i, i < int(covered))
                 )
         except AssertionError:  # pragma: no cover
             LOGGER.warning(

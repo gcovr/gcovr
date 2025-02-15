@@ -24,7 +24,7 @@ Heuristics for ignoring data on lines that don't look like actual code.
 import re
 import logging
 
-from ..coverage import FileCoverage
+from ..data_model.coverage import FileCoverage
 
 
 LOGGER = logging.getLogger("gcovr")
@@ -48,7 +48,7 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> N
             filecov.filename,
         )
 
-        linecov.branches = {}
+        linecov.branches.clear()
 
 
 def remove_noncode_lines(filecov: FileCoverage, *, lines: list[str]) -> None:

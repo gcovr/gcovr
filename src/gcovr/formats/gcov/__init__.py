@@ -21,7 +21,7 @@ from multiprocessing import cpu_count
 import os
 from typing import Union
 
-from ...coverage import CoverageContainer
+from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import (
     FilterOption,

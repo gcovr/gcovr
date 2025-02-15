@@ -36,104 +36,13 @@ report aggregated metrics/percentages.
 
 from __future__ import annotations
 import logging
-import os
-import re
-from typing import (
-    ItemsView,
-    Iterator,
-    Iterable,
-    Optional,
-    TypeVar,
-    Union,
-    Literal,
-    ValuesView,
-)
-from dataclasses import dataclass
+from typing import Optional, Union
 
-from .utils import commonpath, force_unix_separator
+from .coverage_dict import CoverageDict
+from .merging import DEFAULT_MERGE_OPTIONS, GcovrMergeAssertionError, MergeOptions
+from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
 LOGGER = logging.getLogger("gcovr")
-
-_T = TypeVar("_T")
-
-
-def sort_coverage(
-    covdata: Union[
-        dict[str, FileCoverage],
-        dict[str, Union[FileCoverage, CoverageContainerDirectory]],
-    ],
-    sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
-    sort_reverse: bool,
-    by_metric: Literal["line", "branch", "decision"],
-    filename_uses_relative_pathname: bool = False,
-) -> list[str]:
-    """Sort a coverage dict.
-
-    covdata (dict): the coverage dictionary
-    sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
-    sort_reverse (bool): reverse order if True
-    by_metric ("line", "branch", "decision"): select the metric to sort
-    filename_uses_relative_pathname (bool): for html, we break down a pathname to the
-        relative path, but not for other formats.
-
-    returns: the sorted keys
-    """
-
-    basedir = commonpath(list(covdata.keys()))
-
-    def key_filename(key: str) -> list[Union[int, str]]:
-        def convert_to_int_if_possible(text: str) -> Union[int, str]:
-            return int(text) if text.isdigit() else text
-
-        key = (
-            force_unix_separator(
-                os.path.relpath(os.path.realpath(key), os.path.realpath(basedir))
-            )
-            if filename_uses_relative_pathname
-            else key
-        ).casefold()
-
-        return [convert_to_int_if_possible(part) for part in re.split(r"([0-9]+)", key)]
-
-    def coverage_stat(key: str) -> CoverageStat:
-        cov = covdata[key]
-        if by_metric == "branch":
-            return cov.branch_coverage()
-        if by_metric == "decision":
-            return cov.decision_coverage().to_coverage_stat
-        return cov.line_coverage()
-
-    def key_num_uncovered(key: str) -> int:
-        stat = coverage_stat(key)
-        uncovered = stat.total - stat.covered
-        return uncovered
-
-    def key_percent_uncovered(key: str) -> float:
-        stat = coverage_stat(key)
-        covered = stat.covered
-        total = stat.total
-
-        # No branches are always put directly after (or before when reversed)
-        # files with 100% coverage (by assigning such files 110% coverage)
-        return covered / total if total > 0 else 1.1
-
-    if sort_key == "uncovered-number":
-        # First sort filename alphabetical and then by the requested key
-        return sorted(
-            sorted(covdata, key=key_filename),
-            key=key_num_uncovered,
-            reverse=sort_reverse,
-        )
-    if sort_key == "uncovered-percent":
-        # First sort filename alphabetical and then by the requested key
-        return sorted(
-            sorted(covdata, key=key_filename),
-            key=key_percent_uncovered,
-            reverse=sort_reverse,
-        )
-
-    # By default, we sort by filename alphabetically
-    return sorted(covdata, key=key_filename, reverse=sort_reverse)
 
 
 class BranchCoverage:
@@ -183,6 +92,38 @@ class BranchCoverage:
         self.throw = throw
         self.destination_block_id = destination_block_id
         self.excluded = excluded
+
+    def merge(
+        self,
+        other: BranchCoverage,
+        _options: MergeOptions,
+        _context: Optional[str],
+    ) -> None:
+        """
+        Merge BranchCoverage information.
+
+        Do not use 'other' objects afterwards!
+
+            Examples:
+        >>> left = BranchCoverage(1, 2)
+        >>> right = BranchCoverage(1, 3, False, True)
+        >>> right.excluded = True
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS, None)
+        >>> left.count
+        5
+        >>> left.fallthrough
+        False
+        >>> left.throw
+        True
+        >>> left.excluded
+        True
+        """
+
+        self.count += other.count
+        self.fallthrough |= other.fallthrough
+        self.throw |= other.throw
+        if self.excluded is True or other.excluded is True:
+            self.excluded = True
 
     @property
     def source_block_id_or_0(self) -> int:
@@ -235,6 +176,24 @@ class CallCoverage:
         self.covered = covered
         self.excluded = excluded
 
+    def merge(
+        self,
+        other: CallCoverage,
+        _options: MergeOptions,
+        context: Optional[str],
+    ) -> CallCoverage:
+        """
+        Merge CallCoverage information.
+
+        Do not use 'left' or 'right' objects afterwards!
+        """
+        if self.callno != other.callno:
+            raise AssertionError(
+                f"Call number must be equal, got {self.callno} and {other.callno} while merging {context}."
+            )
+        self.covered |= other.covered
+        return self
+
     @property
     def is_reportable(self) -> bool:
         """Return True if the call is reportable."""
@@ -281,6 +240,84 @@ class ConditionCoverage:
         self.not_covered_true = not_covered_true
         self.not_covered_false = not_covered_false
         self.excluded = excluded
+
+    def merge(
+        self,
+        other: ConditionCoverage,
+        options: MergeOptions,
+        context: Optional[str],
+    ) -> None:
+        """
+        Merge ConditionCoverage information.
+
+        Do not use 'other' objects afterwards!
+
+        Examples:
+        >>> left = ConditionCoverage(4, 2, [1, 2], [])
+        >>> right = ConditionCoverage(4, 3, [2], [1, 3])
+        >>> left.merge(None, DEFAULT_MERGE_OPTIONS, None)
+        >>> left.count
+        4
+        >>> left.covered
+        2
+        >>> left.not_covered_true
+        [1, 2]
+        >>> left.not_covered_false
+        []
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS, None)
+        >>> left.count
+        4
+        >>> left.covered
+        3
+        >>> left.not_covered_true
+        [2]
+        >>> left.not_covered_false
+        []
+
+        If ``options.cond_opts.merge_condition_fold`` is set,
+        the two condition coverage lists can have differing counts.
+        The conditions are shrunk to match the lowest count
+        """
+
+        if other is not None:
+            if self.count != other.count:
+                if options.cond_opts.merge_condition_fold:
+                    LOGGER.warning(
+                        f"Condition counts are not equal, got {other.count} and expected {self.count}. "
+                        f"Reducing to {min(self.count, other.count)}."
+                    )
+                    if self.count > other.count:
+                        self.not_covered_true = self.not_covered_true[
+                            : len(other.not_covered_true)
+                        ]
+                        self.not_covered_false = self.not_covered_false[
+                            : len(other.not_covered_false)
+                        ]
+                        self.count = other.count
+                    else:
+                        other.not_covered_true = other.not_covered_true[
+                            : len(self.not_covered_true)
+                        ]
+                        other.not_covered_false = other.not_covered_false[
+                            : len(self.not_covered_false)
+                        ]
+                        other.count = self.count
+                else:
+                    raise AssertionError(
+                        f"The number of conditions must be equal, got {other.count} and expected {self.count} while merging {context}.\n"
+                        "\tYou can run gcovr with --merge-mode-conditions=MERGE_MODE.\n"
+                        "\tThe available values for MERGE_MODE are described in the documentation."
+                    )
+
+            self.not_covered_false = sorted(
+                list(set(self.not_covered_false) & set(other.not_covered_false))
+            )
+            self.not_covered_true = sorted(
+                list(set(self.not_covered_true) & set(other.not_covered_true))
+            )
+            self.covered = (
+                self.count - len(self.not_covered_false) - len(self.not_covered_true)
+            )
 
 
 class DecisionCoverageUncheckable:
@@ -389,15 +426,121 @@ class FunctionCoverage:
             raise AssertionError("count must not be a negative value.")
         self.name = name
         self.demangled_name = demangled_name
-        self.count = dict[int, int]({lineno: count})
-        self.blocks = dict[int, float]({lineno: blocks})
-        self.excluded = dict[int, bool]({lineno: excluded})
-        self.start: Optional[dict[int, tuple[int, int]]] = (
-            None if start is None else {lineno: start}
+        self.count = CoverageDict[int, int]({lineno: count})
+        self.blocks = CoverageDict[int, float]({lineno: blocks})
+        self.excluded = CoverageDict[int, bool]({lineno: excluded})
+        self.start: Optional[CoverageDict[int, tuple[int, int]]] = (
+            None
+            if start is None
+            else CoverageDict[int, tuple[int, int]]({lineno: start})
         )
-        self.end: Optional[dict[int, tuple[int, int]]] = (
-            None if end is None else {lineno: end}
+        self.end: Optional[CoverageDict[int, tuple[int, int]]] = (
+            None if end is None else CoverageDict[int, tuple[int, int]]({lineno: end})
         )
+
+    def merge(
+        self,
+        other: FunctionCoverage,
+        options: MergeOptions,
+        context: Optional[str],
+    ) -> FunctionCoverage:
+        """
+        Merge FunctionCoverage information.
+
+        Do not use 'left' or 'right' objects afterwards!
+
+        Precondition: both objects must have same name and lineno.
+
+        If ``options.func_opts.ignore_function_lineno`` is set,
+        the two function coverage objects can have differing line numbers.
+        With following flags the merge mode can be defined:
+        - ``options.func_opts.merge_function_use_line_zero``
+        - ``options.func_opts.merge_function_use_line_min``
+        - ``options.func_opts.merge_function_use_line_max``
+        - ``options.func_opts.separate_function``
+        """
+        if self.demangled_name != other.demangled_name:
+            raise AssertionError("Function demangled name must be equal.")
+        if self.name != other.name:
+            raise AssertionError("Function name must be equal.")
+        if not options.func_opts.ignore_function_lineno:
+            if self.count.keys() != other.count.keys():
+                lines = sorted(set([*self.count.keys(), *other.count.keys()]))
+                raise GcovrMergeAssertionError(
+                    f"Got function {other.demangled_name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                    "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
+                    "\tThe available values for MERGE_MODE are described in the documentation."
+                )
+
+        # keep distinct counts for each line number
+        if options.func_opts.separate_function:
+            for lineno, count in sorted(other.count.items()):
+                try:
+                    self.count[lineno] += count
+                except KeyError:
+                    self.count[lineno] = count
+            for lineno, blocks in other.blocks.items():
+                try:
+                    # Take the maximum value for this line
+                    if self.blocks[lineno] < blocks:
+                        self.blocks[lineno] = blocks
+                except KeyError:
+                    self.blocks[lineno] = blocks
+            for lineno, excluded in other.excluded.items():
+                try:
+                    self.excluded[lineno] |= excluded
+                except KeyError:
+                    self.excluded[lineno] = excluded
+            if other.start is not None:
+                if self.start is None:
+                    self.start = CoverageDict[int, tuple[int, int]]()
+                for lineno, start in other.start.items():
+                    self.start[lineno] = start
+            if other.end is not None:
+                if self.end is None:
+                    self.end = CoverageDict[int, tuple[int, int]]()
+                for lineno, end in other.end.items():
+                    self.end[lineno] = end
+            return self
+
+        right_lineno = list(other.count.keys())[0]
+        # merge all counts into an entry for a single line number
+        if right_lineno in self.count:
+            lineno = right_lineno
+        elif options.func_opts.merge_function_use_line_zero:
+            lineno = 0
+        elif options.func_opts.merge_function_use_line_min:
+            lineno = min(*self.count.keys(), *other.count.keys())
+        elif options.func_opts.merge_function_use_line_max:
+            lineno = max(*self.count.keys(), *other.count.keys())
+        else:
+            raise AssertionError("Sanity check, unknown merge mode")
+
+        # Overwrite data with the sum at the desired line
+        self.count = CoverageDict[int, int](
+            {lineno: sum(self.count.values()) + sum(other.count.values())}
+        )
+        # or the max value at the desired line
+        self.blocks = CoverageDict[int, float](
+            {lineno: max(*self.blocks.values(), *other.blocks.values())}
+        )
+        # or the logical or of all values
+        self.excluded = CoverageDict[int, bool](
+            {lineno: any(self.excluded.values()) or any(other.excluded.values())}
+        )
+
+        if self.start is not None and other.start is not None:
+            # or the minimum start
+            self.start = CoverageDict[int, tuple[int, int]](
+                {lineno: min(*self.start.values(), *other.start.values())}
+            )
+        if self.end is not None and other.end is not None:
+            # or the maximum end
+            self.end = CoverageDict[int, tuple[int, int]](
+                {lineno: max(*self.end.values(), *other.end.values())}
+            )
+
+        return self
 
 
 class LineCoverage:
@@ -457,10 +600,128 @@ class LineCoverage:
         self.block_ids: Optional[list[int]] = block_ids
         self.md5: Optional[str] = md5
         self.excluded: bool = excluded
-        self.branches = dict[int, BranchCoverage]()
-        self.conditions = dict[int, ConditionCoverage]()
+        self.branches = CoverageDict[int, BranchCoverage]()
+        self.conditions = CoverageDict[int, ConditionCoverage]()
         self.decision: Optional[DecisionCoverage] = None
-        self.calls = dict[int, CallCoverage]()
+        self.calls = CoverageDict[int, CallCoverage]()
+
+    def merge(
+        self,
+        other: LineCoverage,
+        options: MergeOptions,
+        context: Optional[str],
+    ) -> LineCoverage:
+        """
+        Merge LineCoverage information.
+
+        Do not use 'left' or 'right' objects afterwards!
+
+        Precondition: both objects must have same lineno.
+        """
+        context = f"{context}:{self.lineno}"
+        if self.lineno != other.lineno:
+            raise AssertionError("Line number must be equal.")
+        # If both checksums exists compare them if only one exists, use it.
+        if self.md5 is not None and other.md5 is not None:
+            if self.md5 != other.md5:
+                raise AssertionError(f"MD5 checksum of {context} must be equal.")
+        elif other.md5 is not None:
+            self.md5 = other.md5
+
+        self.count += other.count
+        self.excluded |= other.excluded
+        self.branches.merge(other.branches, options, context)
+        self.conditions.merge(other.conditions, options, context)
+        self.__merge_decision(other.decision)
+        self.calls.merge(other.calls, options, context)
+
+        return self
+
+    def __merge_decision(  # pylint: disable=too-many-return-statements
+        self,
+        decisioncov: Optional[DecisionCoverage],
+    ) -> None:
+        """Merge DecisionCoverage information.
+
+        The DecisionCoverage has different states:
+
+        - None (no known decision)
+        - Uncheckable (there was a decision, but it can't be analyzed properly)
+        - Conditional
+        - Switch
+
+        If there is a conflict between different types, Uncheckable will be returned.
+        """
+
+        # The DecisionCoverage classes have long names, so abbreviate them here:
+        Conditional = DecisionCoverageConditional
+        Switch = DecisionCoverageSwitch
+        Uncheckable = DecisionCoverageUncheckable
+
+        # If decision coverage is not know for one side, return the other.
+        if self.decision is None:
+            self.decision = decisioncov
+        elif decisioncov is None:
+            self.decision = Uncheckable()
+        # If any decision is Uncheckable, the result is Uncheckable.
+        elif isinstance(self.decision, Uncheckable) or isinstance(
+            decisioncov, Uncheckable
+        ):
+            self.decision = Uncheckable()
+        # Merge Conditional decisions.
+        elif isinstance(self.decision, Conditional) and isinstance(
+            decisioncov, Conditional
+        ):
+            self.decision.count_true += decisioncov.count_true
+            self.decision.count_false += decisioncov.count_false
+        # Merge Switch decisions.
+        elif isinstance(self.decision, Switch) and isinstance(decisioncov, Switch):
+            self.decision.count += decisioncov.count
+        else:
+            self.decision = Uncheckable()
+
+    def insert_branch_coverage(
+        self,
+        key: int,
+        branchcov: BranchCoverage,
+        options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    ) -> None:
+        """Add a branch coverage item, merge if needed."""
+        if key in self.branches:
+            self.branches[key].merge(branchcov, options, None)
+        else:
+            self.branches[key] = branchcov
+
+    def insert_condition_coverage(
+        self,
+        key: int,
+        conditioncov: ConditionCoverage,
+        options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    ) -> None:
+        """Add a condition coverage item, merge if needed."""
+        if key in self.conditions:
+            self.conditions[key].merge(conditioncov, options, None)
+        else:
+            self.conditions[key] = conditioncov
+
+    def insert_decision_coverage(
+        self,
+        decisioncov: Optional[DecisionCoverage],
+    ) -> None:
+        """Add a condition coverage item, merge if needed."""
+        self.__merge_decision(decisioncov)
+
+    def insert_call_coverage(
+        self,
+        callcov: CallCoverage,
+        options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    ) -> None:
+        """Add a branch coverage item, merge if needed."""
+        key = callcov.callno
+        if key in self.calls:
+            self.calls[key].merge(callcov, options, None)
+        else:
+            self.calls[key] = callcov
 
     @property
     def is_excluded(self) -> bool:
@@ -570,8 +831,8 @@ class FileCoverage:
         self, filename: str, data_source: Optional[Union[str, set[str]]]
     ) -> None:
         self.filename: str = filename
-        self.functions = dict[str, FunctionCoverage]()
-        self.lines = dict[int, LineCoverage]()
+        self.functions = CoverageDict[str, FunctionCoverage]()
+        self.lines = CoverageDict[int, LineCoverage]()
         self.data_sources = (
             set[str]()
             if data_source is None
@@ -579,6 +840,70 @@ class FileCoverage:
                 [data_source] if isinstance(data_source, str) else data_source
             )
         )
+
+    def merge(
+        self,
+        other: FileCoverage,
+        options: MergeOptions,
+        context: Optional[str],
+    ) -> None:
+        """
+        Merge FileCoverage information.
+
+        Do not use 'other' objects afterwards!
+
+        Precondition: both objects have same filename.
+        """
+
+        if self.filename != other.filename:
+            raise AssertionError("Filename must be equal")
+        if context is not None:
+            raise AssertionError("For a file the context must not be set.")
+
+        try:
+            self.lines.merge(other.lines, options, self.filename)
+            self.functions.merge(other.functions, options, self.filename)
+            if other.data_sources:
+                self.data_sources.update(other.data_sources)
+        except AssertionError as exc:
+            message = [str(exc)]
+            if other.data_sources:
+                message += (
+                    "GCOV source files of merge source is/are:",
+                    *[f"\t{e}" for e in sorted(other.data_sources)],
+                )
+            if self.data_sources:
+                message += (
+                    "and of merge target is/are:",
+                    *[f"\t{e}" for e in sorted(self.data_sources)],
+                )
+            raise AssertionError("\n".join(message)) from None
+
+    def insert_line_coverage(
+        self,
+        linecov: LineCoverage,
+        options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    ) -> LineCoverage:
+        """Add a line coverage item, merge if needed."""
+        key = linecov.lineno
+        if key in self.lines:
+            self.lines[key].merge(linecov, options, None)
+        else:
+            self.lines[key] = linecov
+
+        return self.lines[key]
+
+    def insert_function_coverage(
+        self,
+        functioncov: FunctionCoverage,
+        options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+    ) -> None:
+        """Add a function coverage item, merge if needed."""
+        key = functioncov.name or functioncov.demangled_name
+        if key in self.functions:
+            self.functions[key].merge(functioncov, options, self.filename)
+        else:
+            self.functions[key] = functioncov
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function"""
@@ -593,11 +918,13 @@ class FileCoverage:
         filecov = FileCoverage(self.filename, self.data_sources)
         filecov.functions[functioncov.name] = functioncov
 
-        filecov.lines = {
-            lineno: linecov
-            for lineno, linecov in self.lines.items()
-            if linecov.function_name == functioncov.name
-        }
+        filecov.lines = CoverageDict[int, LineCoverage](
+            {
+                lineno: linecov
+                for lineno, linecov in self.lines.items()
+                if linecov.function_name == functioncov.name
+            }
+        )
 
         return filecov
 
@@ -684,338 +1011,3 @@ class FileCoverage:
                             covered += 1
 
         return CoverageStat(covered, total)
-
-
-class CoverageContainer:
-    """Coverage container holding all the coverage data."""
-
-    def __init__(self) -> None:
-        self.data = dict[str, FileCoverage]()
-        self.directories = list[CoverageContainerDirectory]()
-
-    def __getitem__(self, key: str) -> FileCoverage:
-        return self.data[key]
-
-    def __len__(self) -> int:
-        return len(self.data)
-
-    def __contains__(self, key: str) -> bool:
-        return key in self.data
-
-    def __iter__(self) -> Iterator[str]:
-        return iter(self.data)
-
-    def values(self) -> ValuesView[FileCoverage]:
-        """Get the file coverage data objects."""
-        return self.data.values()
-
-    def items(self) -> ItemsView[str, FileCoverage]:
-        """Get the file coverage data items."""
-        return self.data.items()
-
-    @property
-    def stats(self) -> SummarizedStats:
-        """Create a coverage statistic from a coverage data object."""
-        stats = SummarizedStats.new_empty()
-        for filecov in self.values():
-            stats += filecov.stats
-        return stats
-
-    def sort_coverage(
-        self,
-        sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
-        sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
-        filename_uses_relative_pathname: bool = False,
-    ) -> list[str]:
-        """Sort the coverage data"""
-        return sort_coverage(
-            self.data,
-            sort_key,
-            sort_reverse,
-            by_metric,
-            filename_uses_relative_pathname,
-        )
-
-    @staticmethod
-    def _get_dirname(filename: str) -> Optional[str]:
-        """Get the directory name with a trailing path separator.
-
-        >>> import os
-        >>> CoverageContainer._get_dirname("bar/foobar.cpp".replace("/", os.sep)).replace(os.sep, "/")
-        'bar/'
-        >>> CoverageContainer._get_dirname("/foo/bar/A/B.cpp".replace("/", os.sep)).replace(os.sep, "/")
-        '/foo/bar/A/'
-        >>> CoverageContainer._get_dirname(os.sep) is None
-        True
-        """
-        if filename == os.sep:
-            return None
-        return str(os.path.dirname(filename.rstrip(os.sep))) + os.sep
-
-    def populate_directories(
-        self, sorted_keys: Iterable[str], root_filter: re.Pattern[str]
-    ) -> None:
-        r"""Populate the list of directories and add accumulated stats.
-
-        This function will accumulate statistics such that every directory
-        above it will know the statistics associated with all files deep within a
-        directory structure.
-
-        Args:
-            sorted_keys: The sorted keys for covdata
-            root_filter: Information about the filter used with the root directory
-        """
-
-        # Get the directory coverage
-        subdirs = dict[str, CoverageContainerDirectory]()
-        for key in sorted_keys:
-            filecov = self[key]
-            dircov: Optional[CoverageContainerDirectory] = None
-            dirname: Optional[str] = (
-                os.path.dirname(filecov.filename)
-                .replace("\\", os.sep)
-                .replace("/", os.sep)
-                .rstrip(os.sep)
-            ) + os.sep
-            while dirname is not None and root_filter.search(dirname + os.sep):
-                if dirname not in subdirs:
-                    subdirs[dirname] = CoverageContainerDirectory(dirname)
-                if dircov is None:
-                    subdirs[dirname][filecov.filename] = filecov
-                else:
-                    subdirs[dirname].data[dircov.filename] = dircov
-                    subdirs[dircov.filename].parent_dirname = dirname
-                subdirs[dirname].stats += filecov.stats
-                dircov = subdirs[dirname]
-                dirname = CoverageContainer._get_dirname(dirname)
-
-        # Replace directories where only one sub container is available
-        # with the content this sub container
-        LOGGER.debug(
-            "Replace directories with only one sub element with the content of this."
-        )
-        subdirs_to_remove = set()
-        for dirname, covdata_dir in subdirs.items():
-            # There is exact one element, replace current element with referenced element
-            if len(covdata_dir) == 1:
-                # Get the orphan item
-                orphan_key, orphan_value = next(iter(covdata_dir.items()))
-                # The only child is a File object
-                if isinstance(orphan_value, FileCoverage):
-                    # Replace the reference to ourself with our content
-                    if covdata_dir.parent_dirname is not None:
-                        LOGGER.debug(
-                            f"Move {orphan_key} to {covdata_dir.parent_dirname}."
-                        )
-                        parent_covdata_dir = subdirs[covdata_dir.parent_dirname]
-                        parent_covdata_dir[orphan_key] = orphan_value
-                        del parent_covdata_dir[dirname]
-                        subdirs_to_remove.add(dirname)
-                else:
-                    LOGGER.debug(
-                        f"Move content of {orphan_value.dirname} to {dirname}."
-                    )
-                    # Replace the children with the orphan ones
-                    covdata_dir.data = orphan_value.data
-                    # Change the parent key of each new child element
-                    for new_child_value in covdata_dir.values():
-                        if isinstance(new_child_value, CoverageContainerDirectory):
-                            new_child_value.parent_dirname = dirname
-                    # Mark the key for removal.
-                    subdirs_to_remove.add(orphan_key)
-
-        for dirname in subdirs_to_remove:
-            del subdirs[dirname]
-
-        self.directories = list(subdirs.values())
-
-
-class CoverageContainerDirectory:
-    """Represent coverage information about a directory."""
-
-    __slots__ = "dirname", "parent_dirname", "data", "stats"
-
-    def __init__(self, dirname: str) -> None:
-        super().__init__()
-        self.dirname: str = dirname
-        self.parent_dirname: Optional[str] = None
-        self.data = dict[str, Union[FileCoverage, CoverageContainerDirectory]]()
-        self.stats: SummarizedStats = SummarizedStats.new_empty()
-
-    def __setitem__(
-        self, key: str, item: Union[FileCoverage, CoverageContainerDirectory]
-    ) -> None:
-        self.data[key] = item
-
-    def __getitem__(self, key: str) -> Union[FileCoverage, CoverageContainerDirectory]:
-        return self.data[key]
-
-    def __delitem__(self, key: str) -> None:
-        del self.data[key]
-
-    def __len__(self) -> int:
-        return len(self.data)
-
-    def values(self) -> ValuesView[Union[FileCoverage, CoverageContainerDirectory]]:
-        """Get the file coverage data objects."""
-        return self.data.values()
-
-    def items(self) -> ItemsView[str, Union[FileCoverage, CoverageContainerDirectory]]:
-        """Get the file coverage data items."""
-        return self.data.items()
-
-    @property
-    def filename(self) -> str:
-        """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage"""
-        return self.dirname
-
-    def sort_coverage(
-        self,
-        sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
-        sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
-        filename_uses_relative_pathname: bool = False,
-    ) -> list[str]:
-        """Sort the coverage data"""
-        return sort_coverage(
-            self.data,
-            sort_key,
-            sort_reverse,
-            by_metric,
-            filename_uses_relative_pathname,
-        )
-
-    def line_coverage(self) -> CoverageStat:
-        """A simple wrapper function necessary for sort_coverage()."""
-        return self.stats.line
-
-    def branch_coverage(self) -> CoverageStat:
-        """A simple wrapper function necessary for sort_coverage()."""
-        return self.stats.branch
-
-    def decision_coverage(self) -> DecisionCoverageStat:
-        """A simple wrapper function necessary for sort_coverage()."""
-        return self.stats.decision
-
-
-@dataclass
-class SummarizedStats:
-    """Data class for the summarized coverage statistics."""
-
-    line: CoverageStat
-    branch: CoverageStat
-    condition: CoverageStat
-    decision: DecisionCoverageStat
-    function: CoverageStat
-    call: CoverageStat
-
-    @staticmethod
-    def new_empty() -> SummarizedStats:
-        """Create a empty coverage statistic."""
-        return SummarizedStats(
-            line=CoverageStat.new_empty(),
-            branch=CoverageStat.new_empty(),
-            condition=CoverageStat.new_empty(),
-            decision=DecisionCoverageStat.new_empty(),
-            function=CoverageStat.new_empty(),
-            call=CoverageStat.new_empty(),
-        )
-
-    def __iadd__(self, other: SummarizedStats) -> SummarizedStats:
-        self.line += other.line
-        self.branch += other.branch
-        self.condition += other.condition
-        self.decision += other.decision
-        self.function += other.function
-        self.call += other.call
-        return self
-
-
-@dataclass
-class CoverageStat:
-    """A single coverage metric, e.g. the line coverage percentage of a file."""
-
-    covered: int
-    """How many elements were covered."""
-
-    total: int
-    """How many elements there were in total."""
-
-    @staticmethod
-    def new_empty() -> CoverageStat:
-        """Create a empty coverage statistic."""
-        return CoverageStat(0, 0)
-
-    @property
-    def percent(self) -> Optional[float]:
-        """Percentage of covered elements, equivalent to ``self.percent_or(None)``"""
-        return self.percent_or(None)
-
-    def percent_or(self, default: _T) -> Union[float, _T]:
-        """Percentage of covered elements.
-
-        Coverage is truncated to one decimal:
-        >>> CoverageStat(1234, 10000).percent_or("default")
-        12.3
-
-        Coverage is capped at 99.9% unless everything is covered:
-        >>> CoverageStat(9999, 10000).percent_or("default")
-        99.9
-        >>> CoverageStat(10000, 10000).percent_or("default")
-        100.0
-
-        If there are no elements, percentage is NaN and the default will be returned:
-        >>> CoverageStat(0, 0).percent_or("default")
-        'default'
-        """
-        if not self.total:
-            return default
-
-        # Return 100% only if covered == total.
-        if self.covered == self.total:
-            return 100.0
-
-        # There is at least one uncovered item.
-        # Round to 1 decimal and clamp to max 99.9%.
-        ratio = self.covered / self.total
-        return min(99.9, round(ratio * 100.0, 1))
-
-    def __iadd__(self, other: CoverageStat) -> CoverageStat:
-        self.covered += other.covered
-        self.total += other.total
-        return self
-
-
-@dataclass
-class DecisionCoverageStat:
-    """A CoverageStat for decision coverage (accounts for Uncheckable cases)."""
-
-    covered: int
-    uncheckable: int
-    total: int
-
-    @classmethod
-    def new_empty(cls) -> DecisionCoverageStat:
-        """Create a empty decision coverage statistic."""
-        return cls(0, 0, 0)
-
-    @property
-    def to_coverage_stat(self) -> CoverageStat:
-        """Convert a decision coverage statistic to a coverage statistic."""
-        return CoverageStat(covered=self.covered, total=self.total)
-
-    @property
-    def percent(self) -> Optional[float]:
-        """Return the percent value of the coverage."""
-        return self.to_coverage_stat.percent
-
-    def percent_or(self, default: _T) -> Union[float, _T]:
-        """Return the percent value of the coverage or the given default if no coverage is present."""
-        return self.to_coverage_stat.percent_or(default)
-
-    def __iadd__(self, other: DecisionCoverageStat) -> DecisionCoverageStat:
-        self.covered += other.covered
-        self.uncheckable += other.uncheckable
-        self.total += other.total
-        return self

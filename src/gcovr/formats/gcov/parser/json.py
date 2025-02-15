@@ -42,22 +42,15 @@ from typing import (
 
 from gcovr.utils import get_md5_hexdigest
 
-from ....coverage import (
+from ....data_model.coverage import (
     BranchCoverage,
     ConditionCoverage,
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
 )
+from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 from ....filter import Filter, is_file_excluded
-from ....merging import (
-    FUNCTION_MAX_LINE_MERGE_OPTIONS,
-    MergeOptions,
-    insert_branch_coverage,
-    insert_condition_coverage,
-    insert_function_coverage,
-    insert_line_coverage,
-)
 from .common import (
     SUSPICIOUS_COUNTER,
     check_hits,
@@ -122,7 +115,7 @@ def parse_coverage(
             line.decode(source_encoding, errors="replace") for line in source_lines
         ]
 
-        file_cov = _parse_file_node(
+        filecov = _parse_file_node(
             gcov_file_node=file,
             filename=fname,
             source_lines=encoded_source_lines,
@@ -131,7 +124,7 @@ def parse_coverage(
             suspicious_hits_threshold=suspicious_hits_threshold,
         )
 
-        files_coverage.append((file_cov, encoded_source_lines))
+        files_coverage.append((filecov, encoded_source_lines))
 
     return files_coverage
 
@@ -168,10 +161,9 @@ def _parse_file_node(
     if ignore_parse_errors is None:
         ignore_parse_errors = set()
 
-    file_cov = FileCoverage(filename, data_fname)
+    filecov = FileCoverage(filename, data_fname)
     for line in gcov_file_node["lines"]:
-        line_cov = insert_line_coverage(
-            file_cov,
+        linecov: LineCoverage = filecov.insert_line_coverage(
             LineCoverage(
                 line["line_number"],
                 count=check_hits(
@@ -189,8 +181,7 @@ def _parse_file_node(
             ),
         )
         for index, branch in enumerate(line["branches"]):
-            insert_branch_coverage(
-                line_cov,
+            linecov.insert_branch_coverage(
                 index,
                 BranchCoverage(
                     branch["source_block_id"],
@@ -207,8 +198,7 @@ def _parse_file_node(
                 ),
             )
         for index, condition in enumerate(line.get("conditions", [])):
-            insert_condition_coverage(
-                line_cov,
+            linecov.insert_condition_coverage(
                 index,
                 ConditionCoverage(
                     check_hits(
@@ -233,8 +223,7 @@ def _parse_file_node(
             ratio = function["blocks_executed"] / function["blocks"]
             blocks = min(99.9, round(ratio * 100.0, 1))
 
-        insert_function_coverage(
-            file_cov,
+        filecov.insert_function_coverage(
             FunctionCoverage(
                 function["name"],
                 function["demangled_name"],
@@ -263,4 +252,4 @@ def _parse_file_node(
             f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
         )
 
-    return file_cov
+    return filecov

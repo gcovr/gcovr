@@ -39,21 +39,19 @@ from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_lexer_for_filename
 
 
-from ...coverage import (
+from ...data_model.container import CoverageContainer, CoverageContainerDirectory
+from ...data_model.coverage import (
     BranchCoverage,
     CallCoverage,
     ConditionCoverage,
-    CoverageContainer,
-    CoverageContainerDirectory,
-    CoverageStat,
     DecisionCoverage,
     DecisionCoverageConditional,
-    DecisionCoverageStat,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
     FileCoverage,
     LineCoverage,
 )
+from ...data_model.coverage import CoverageStat, DecisionCoverageStat
 from ...options import Options
 from ...utils import (
     chdir,

@@ -24,10 +24,10 @@ from glob import glob
 from typing import Any, Optional
 
 from . import versions
-from ...coverage import (
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CoverageContainer,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
@@ -37,17 +37,8 @@ from ...coverage import (
     LineCoverage,
     CallCoverage,
 )
+from ...data_model.merging import get_merge_mode_from_options
 from ...filter import is_file_excluded
-from ...merging import (
-    get_merge_mode_from_options,
-    insert_branch_coverage,
-    insert_condition_coverage,
-    insert_decision_coverage,
-    insert_file_coverage,
-    insert_function_coverage,
-    insert_line_coverage,
-    insert_call_coverage,
-)
 from ...options import Options
 
 LOGGER = logging.getLogger("gcovr")
@@ -102,13 +93,13 @@ def read_report(options: Options) -> CoverageContainer:
             )
             merge_options = get_merge_mode_from_options(options)
             for json_function in gcovr_file["functions"]:
-                insert_function_coverage(
-                    filecov, _function_from_json(json_function), merge_options
+                filecov.insert_function_coverage(
+                    _function_from_json(json_function), merge_options
                 )
             for json_line in gcovr_file["lines"]:
-                insert_line_coverage(filecov, _line_from_json(json_line))
+                filecov.insert_line_coverage(_line_from_json(json_line), merge_options)
 
-            insert_file_coverage(covdata, filecov, merge_options)
+            covdata.insert_file_coverage(filecov, merge_options)
 
     return covdata
 
@@ -144,21 +135,21 @@ def _line_from_json(json_line: dict[str, Any]) -> LineCoverage:
     )
 
     for branchno, json_branch in enumerate(json_line["branches"]):
-        insert_branch_coverage(linecov, branchno, _branch_from_json(json_branch))
+        linecov.insert_branch_coverage(branchno, _branch_from_json(json_branch))
 
     if "conditions" in json_line:
         for conditionno, json_branch in enumerate(json_line["conditions"]):
-            insert_condition_coverage(
-                linecov, conditionno, _condition_from_json(json_branch)
+            linecov.insert_condition_coverage(
+                conditionno, _condition_from_json(json_branch)
             )
 
-    insert_decision_coverage(
-        linecov, _decision_from_json(json_line.get("gcovr/decision"))
+    linecov.insert_decision_coverage(
+        _decision_from_json(json_line.get("gcovr/decision"))
     )
 
     if "gcovr/calls" in json_line:
         for json_call in json_line["gcovr/calls"]:
-            insert_call_coverage(linecov, _call_from_json(json_call))
+            linecov.insert_call_coverage(_call_from_json(json_call))
 
     return linecov
 

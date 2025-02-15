@@ -21,7 +21,7 @@ import logging
 import os
 from typing import Union
 
-from ...coverage import CoverageContainer
+from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
 from ...utils import force_unix_separator

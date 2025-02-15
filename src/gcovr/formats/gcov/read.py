@@ -27,19 +27,14 @@ import subprocess  # nosec # Commands are trusted.
 from threading import Lock
 from typing import Any, Callable, Optional
 
-from ...coverage import CoverageContainer
+from ...data_model.container import CoverageContainer
+from ...data_model.merging import GcovrMergeAssertionError, get_merge_mode_from_options
 from ...decision_analysis import DecisionParser
 from ...exclusions import (
     apply_all_exclusions,
     get_exclusion_options_from_options,
 )
 from ...filter import Filter, is_file_excluded
-from ...merging import (
-    GcovrMergeAssertionError,
-    get_merge_mode_from_options,
-    insert_file_coverage,
-    merge_covdata,
-)
 from ...options import Options
 from ...utils import (
     commonpath,
@@ -98,9 +93,7 @@ def read_report(options: Options) -> CoverageContainer:
     to_erase = set()
     covdata = CoverageContainer()
     for context in contexts:
-        covdata = merge_covdata(
-            covdata, context["covdata"], get_merge_mode_from_options(options)
-        )
+        covdata.merge(context["covdata"], get_merge_mode_from_options(options))
         to_erase.update(context["to_erase"])
 
     for filepath in to_erase:
@@ -194,20 +187,21 @@ def process_gcov_json_data(
         data_fname=data_fname,
     )
 
-    for file_cov, source_lines in coverage:
-        LOGGER.debug(f"Apply exclusions for {file_cov.filename}")
+    merge_options = get_merge_mode_from_options(options)
+    for filecov, source_lines in coverage:
+        LOGGER.debug(f"Apply exclusions for {filecov.filename}")
         apply_all_exclusions(
-            file_cov,
+            filecov,
             lines=source_lines,
             options=get_exclusion_options_from_options(options),
         )
 
         if options.show_decision:
-            decision_parser = DecisionParser(file_cov, source_lines)
+            decision_parser = DecisionParser(filecov, source_lines)
             decision_parser.parse_all_lines()
 
-        LOGGER.debug(f"Merge coverage data for {file_cov.filename}")
-        insert_file_coverage(covdata, file_cov, get_merge_mode_from_options(options))
+        LOGGER.debug(f"Merge coverage data for {filecov.filename}")
+        covdata.insert_file_coverage(filecov, merge_options)
 
 
 #
@@ -257,7 +251,7 @@ def process_gcov_text_data(
     LOGGER.debug(f"Parsing coverage data for file {fname}")
     key = os.path.normpath(fname)
 
-    coverage, source_lines = text.parse_coverage(
+    filecov, source_lines = text.parse_coverage(
         lines,
         filename=key,
         data_filename=gcda_fname or data_fname,
@@ -266,14 +260,14 @@ def process_gcov_text_data(
     )
 
     LOGGER.debug(f"Apply exclusions for {fname}")
-    apply_all_exclusions(coverage, lines=source_lines, options=options)  # type: ignore [arg-type]
+    apply_all_exclusions(filecov, lines=source_lines, options=options)  # type: ignore [arg-type]
 
     if options.show_decision:
-        decision_parser = DecisionParser(coverage, source_lines)
+        decision_parser = DecisionParser(filecov, source_lines)
         decision_parser.parse_all_lines()
 
     LOGGER.debug(f"Merge coverage data for {fname}")
-    insert_file_coverage(covdata, coverage, get_merge_mode_from_options(options))
+    covdata.insert_file_coverage(filecov, get_merge_mode_from_options(options))
 
 
 def guess_source_file_name(

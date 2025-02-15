@@ -19,10 +19,9 @@
 
 from lxml import etree  # nosec # We only write XML files
 
+from ...data_model.container import CoverageContainer
 from ...options import Options
-
 from ...utils import open_binary_for_writing, presentable_filename
-from ...coverage import CoverageContainer
 
 
 def write_report(

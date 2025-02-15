@@ -20,13 +20,10 @@
 import logging
 from typing import Callable, Optional
 
-from ..coverage import CoverageContainer, FileCoverage
+from ..data_model.coverage import FileCoverage
+from ..data_model.container import CoverageContainer
+from ..data_model.merging import get_merge_mode_from_options
 from ..filter import is_file_excluded
-from ..merging import (
-    get_merge_mode_from_options,
-    merge_covdata,
-    insert_file_coverage,
-)
 from ..options import GcovrConfigOption, Options, OutputOrDefault
 from ..utils import search_file
 
@@ -90,8 +87,7 @@ def read_reports(options: Options) -> CoverageContainer:
     """Read the reports from the given locations."""
     if options.json_add_tracefile or options.cobertura_add_tracefile:
         covdata = JsonHandler(options).read_report()
-        covdata = merge_covdata(
-            covdata,
+        covdata.merge(
             CoberturaHandler(options).read_report(),
             get_merge_mode_from_options(options),
         )
@@ -111,10 +107,10 @@ def read_reports(options: Options) -> CoverageContainer:
                 if is_file_excluded(fname, options.filter, options.exclude):
                     continue
 
-                file_cov = FileCoverage(fname, None)
+                filecov = FileCoverage(fname, None)
                 LOGGER.debug(f"Merge empty coverage data for {fname}")
-                insert_file_coverage(
-                    covdata, file_cov, get_merge_mode_from_options(options)
+                covdata.insert_file_coverage(
+                    filecov, get_merge_mode_from_options(options)
                 )
 
     return covdata

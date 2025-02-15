@@ -23,17 +23,10 @@ import os
 import functools
 from typing import Any, Optional
 
-from ...options import Options
-
-from ...utils import (
-    force_unix_separator,
-    presentable_filename,
-    open_text_for_writing,
-)
-from ...coverage import (
+from ...data_model.container import CoverageContainer
+from ...data_model.coverage import (
     BranchCoverage,
     ConditionCoverage,
-    CoverageContainer,
     DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
@@ -42,7 +35,13 @@ from ...coverage import (
     FunctionCoverage,
     LineCoverage,
     CallCoverage,
-    SummarizedStats,
+)
+from ...data_model.stats import SummarizedStats
+from ...options import Options
+from ...utils import (
+    force_unix_separator,
+    presentable_filename,
+    open_text_for_writing,
 )
 
 from . import versions

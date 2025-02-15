@@ -22,7 +22,7 @@
 import logging
 import re
 
-from .coverage import (
+from .data_model.coverage import (
     DecisionCoverageUncheckable,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
