@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 import os
+import re
 from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
@@ -83,10 +84,11 @@ def write_report(
             if functioncov.name is not None:
                 filtered_filecov = filecov.filter_for_function(functioncov)
                 function_stats = filtered_filecov.stats
-                name = functioncov.demangled_name
-                if "(" in name:
-                    name = name.split("(", maxsplit=1)[0]
-                    signature = functioncov.demangled_name[len(name) :]
+                name = str(functioncov.demangled_name)
+                matches = re.match(r"(.+?)(\(.*\))", name)
+                if matches:
+                    name = matches.group(1)
+                    signature = matches.group(2)
                 else:
                     signature = "()"
                 method_elem = etree.SubElement(methods_elem, "method")

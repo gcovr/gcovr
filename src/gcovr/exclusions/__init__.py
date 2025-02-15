@@ -146,7 +146,7 @@ def remove_internal_functions(filecov: FileCoverage) -> None:
     # Get all the keys first because we want to remove some of them which will else result in an error.
     for key in list(filecov.functions.keys()):
         functioncov = filecov.functions[key]
-        if _function_can_be_excluded(functioncov.demangled_name):
+        if _function_can_be_excluded(str(functioncov.demangled_name)):
             LOGGER.debug(
                 "Ignoring symbol %s in line %s in file %s",
                 functioncov.demangled_name,
@@ -205,7 +205,7 @@ def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> 
         for lineno, functions in functions_by_line.items():
             for function in functions:
                 for pattern in patterns:
-                    if pattern.fullmatch(function.demangled_name):
+                    if pattern.fullmatch(str(function.demangled_name)):
                         if function.start is None or function.start[lineno] is None:
                             function_exclude_not_supported()
                         else:

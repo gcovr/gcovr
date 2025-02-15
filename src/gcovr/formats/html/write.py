@@ -832,9 +832,7 @@ def get_file_data(
     )
     functions = dict[tuple[str, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
-    for f_cdata in sorted(
-        cdata.functions.values(), key=lambda f_cdata: f_cdata.demangled_name
-    ):
+    for f_cdata in sorted(cdata.functions.values(), key=lambda f_cdata: f_cdata.key):
         for lineno in sorted(f_cdata.count.keys()):
             f_data = dict[str, Any]()
             f_data["name"] = f_cdata.demangled_name
@@ -853,7 +851,7 @@ def get_file_data(
             file_data["function_list"].append(f_data)
             functions[
                 (
-                    f_cdata.name or f_cdata.demangled_name,
+                    f_cdata.key,
                     str(f_data["filename"]),
                     int(f_data["line"]),
                 )

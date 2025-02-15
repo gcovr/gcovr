@@ -36,7 +36,7 @@ report aggregated metrics/percentages.
 
 from __future__ import annotations
 import logging
-from typing import Optional, Union
+from typing import Callable, Optional, TypeVar, Union
 
 from .coverage_dict import CoverageDict
 from .merging import DEFAULT_MERGE_OPTIONS, GcovrMergeAssertionError, MergeOptions
@@ -44,8 +44,33 @@ from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
 LOGGER = logging.getLogger("gcovr")
 
+_T = TypeVar("_T")
 
-class BranchCoverage:
+
+class CoverageBase:
+    """Base class for coverage information."""
+
+    def _merge_property(
+        self,
+        other: CoverageBase,
+        context: Optional[str],
+        msg: str,
+        getter: Callable[[CoverageBase], _T],
+    ) -> Optional[_T]:
+        """Assert that the property given by name is defined the same if defined twice. Return the value of the property."""
+
+        left = getter(self)
+        right = getter(other)
+        if left is not None and right is not None:
+            if left != right:
+                raise AssertionError(
+                    f"{msg} must be equal, got {left} and {right} while merging {context}."
+                )
+
+        return left or right
+
+
+class BranchCoverage(CoverageBase):
     r"""Represent coverage information about a branch.
 
     Args:
@@ -97,7 +122,7 @@ class BranchCoverage:
         self,
         other: BranchCoverage,
         _options: MergeOptions,
-        _context: Optional[str],
+        context: Optional[str],
     ) -> None:
         """
         Merge BranchCoverage information.
@@ -150,59 +175,6 @@ class BranchCoverage:
     def is_covered(self) -> bool:
         """Return True if the branch is covered."""
         return self.is_reportable and self.count > 0
-
-
-class CallCoverage:
-    r"""Represent coverage information about a call.
-
-    Args:
-        callno (int):
-            The number of the call.
-        covered (bool):
-            Whether the call was performed.
-        excluded (bool, optional):
-            Whether the call is excluded.
-    """
-
-    __slots__ = "callno", "covered", "excluded"
-
-    def __init__(
-        self,
-        callno: int,
-        covered: bool,
-        excluded: Optional[bool] = False,
-    ) -> None:
-        self.callno = callno
-        self.covered = covered
-        self.excluded = excluded
-
-    def merge(
-        self,
-        other: CallCoverage,
-        _options: MergeOptions,
-        context: Optional[str],
-    ) -> CallCoverage:
-        """
-        Merge CallCoverage information.
-
-        Do not use 'left' or 'right' objects afterwards!
-        """
-        if self.callno != other.callno:
-            raise AssertionError(
-                f"Call number must be equal, got {self.callno} and {other.callno} while merging {context}."
-            )
-        self.covered |= other.covered
-        return self
-
-    @property
-    def is_reportable(self) -> bool:
-        """Return True if the call is reportable."""
-        return not self.excluded
-
-    @property
-    def is_covered(self) -> bool:
-        """Return True if the call is covered."""
-        return self.is_reportable and self.covered
 
 
 class ConditionCoverage:
@@ -375,7 +347,60 @@ DecisionCoverage = Union[
 ]
 
 
-class FunctionCoverage:
+class CallCoverage:
+    r"""Represent coverage information about a call.
+
+    Args:
+        callno (int):
+            The number of the call.
+        covered (bool):
+            Whether the call was performed.
+        excluded (bool, optional):
+            Whether the call is excluded.
+    """
+
+    __slots__ = "callno", "covered", "excluded"
+
+    def __init__(
+        self,
+        callno: int,
+        covered: bool,
+        excluded: Optional[bool] = False,
+    ) -> None:
+        self.callno = callno
+        self.covered = covered
+        self.excluded = excluded
+
+    def merge(
+        self,
+        other: CallCoverage,
+        _options: MergeOptions,
+        context: Optional[str],
+    ) -> CallCoverage:
+        """
+        Merge CallCoverage information.
+
+        Do not use 'left' or 'right' objects afterwards!
+        """
+        if self.callno != other.callno:
+            raise AssertionError(
+                f"Call number must be equal, got {self.callno} and {other.callno} while merging {context}."
+            )
+        self.covered |= other.covered
+        return self
+
+    @property
+    def is_reportable(self) -> bool:
+        """Return True if the call is reportable."""
+        return not self.excluded
+
+    @property
+    def is_covered(self) -> bool:
+        """Return True if the call is covered."""
+        return self.is_reportable and self.covered
+
+
+class FunctionCoverage(CoverageBase):
     r"""Represent coverage information about a function.
 
     The counter is stored as dictionary with the line as key to be able
@@ -413,7 +438,7 @@ class FunctionCoverage:
     def __init__(
         self,
         name: Optional[str],
-        demangled_name: str,
+        demangled_name: Optional[str],
         *,
         lineno: int,
         count: int,
@@ -438,6 +463,11 @@ class FunctionCoverage:
             None if end is None else CoverageDict[int, tuple[int, int]]({lineno: end})
         )
 
+    @property
+    def key(self) -> str:
+        """Get the key for the dict."""
+        return str(self.name or self.demangled_name)
+
     def merge(
         self,
         other: FunctionCoverage,
@@ -459,10 +489,12 @@ class FunctionCoverage:
         - ``options.func_opts.merge_function_use_line_max``
         - ``options.func_opts.separate_function``
         """
-        if self.demangled_name != other.demangled_name:
-            raise AssertionError("Function demangled name must be equal.")
-        if self.name != other.name:
-            raise AssertionError("Function name must be equal.")
+        self.name = self._merge_property(
+            other, context, "Function mangled name", lambda x: x.name
+        )
+        self.demangled_name = self._merge_property(
+            other, context, "Function demangled name", lambda x: x.demangled_name
+        )
         if not options.func_opts.ignore_function_lineno:
             if self.count.keys() != other.count.keys():
                 lines = sorted(set([*self.count.keys(), *other.count.keys()]))
@@ -543,7 +575,7 @@ class FunctionCoverage:
         return self
 
 
-class LineCoverage:
+class LineCoverage(CoverageBase):
     r"""Represent coverage information about a line.
 
     Each line is either *excluded* or *reportable*.
@@ -621,12 +653,7 @@ class LineCoverage:
         context = f"{context}:{self.lineno}"
         if self.lineno != other.lineno:
             raise AssertionError("Line number must be equal.")
-        # If both checksums exists compare them if only one exists, use it.
-        if self.md5 is not None and other.md5 is not None:
-            if self.md5 != other.md5:
-                raise AssertionError(f"MD5 checksum of {context} must be equal.")
-        elif other.md5 is not None:
-            self.md5 = other.md5
+        self.md5 = self._merge_property(other, context, "MD5 checksum", lambda x: x.md5)
 
         self.count += other.count
         self.excluded |= other.excluded
@@ -899,7 +926,7 @@ class FileCoverage:
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
     ) -> None:
         """Add a function coverage item, merge if needed."""
-        key = functioncov.name or functioncov.demangled_name
+        key = functioncov.key
         if key in self.functions:
             self.functions[key].merge(functioncov, options, self.filename)
         else:
