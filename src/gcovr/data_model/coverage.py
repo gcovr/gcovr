@@ -144,6 +144,12 @@ class BranchCoverage(CoverageBase):
         True
         """
 
+        self.source_block_id = self._merge_property(
+            other, context, "Source block ID", lambda x: x.source_block_id
+        )
+        self.destination_block_id = self._merge_property(
+            other, context, "Destination block ID", lambda x: x.destination_block_id
+        )
         self.count += other.count
         self.fallthrough |= other.fallthrough
         self.throw |= other.throw
@@ -245,10 +251,6 @@ class ConditionCoverage:
         [2]
         >>> left.not_covered_false
         []
-
-        If ``options.cond_opts.merge_condition_fold`` is set,
-        the two condition coverage lists can have differing counts.
-        The conditions are shrunk to match the lowest count
         """
 
         if other is not None:
@@ -914,7 +916,7 @@ class FileCoverage:
         """Add a line coverage item, merge if needed."""
         key = linecov.lineno
         if key in self.lines:
-            self.lines[key].merge(linecov, options, None)
+            self.lines[key].merge(linecov, options, self.filename)
         else:
             self.lines[key] = linecov
 

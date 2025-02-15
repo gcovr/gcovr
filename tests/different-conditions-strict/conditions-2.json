@@ -1,8 +1,8 @@
 {
     "format_version": "2",
     "gcc_version": "14.2.0",
-    "current_working_directory": "$__PWD__$/build2",
-    "data_file": "$__PWD__$/build2/testcase-main.gcda",
+    "current_working_directory": "$__PWD__$/build1",
+    "data_file": "$__PWD__$/build1/testcase-main.gcda",
     "files": [
         {
             "file": "../main.c",
@@ -14,7 +14,7 @@
                     "start_column": 5,
                     "end_line": 9,
                     "end_column": 1,
-                    "blocks": 4,
+                    "blocks": 5,
                     "blocks_executed": 3,
                     "execution_count": 1
                 },
@@ -45,9 +45,10 @@
                     "line_number": 4,
                     "function_name": "foo",
                     "count": 1,
-                    "unexecuted_block": false,
+                    "unexecuted_block": true,
                     "block_ids": [
-                        2
+                        2,
+                        3
                     ],
                     "branches": [
                         {
@@ -62,18 +63,35 @@
                             "throw": false,
                             "fallthrough": false,
                             "source_block_id": 2,
+                            "destination_block_id": 5
+                        },
+                        {
+                            "count": 0,
+                            "throw": false,
+                            "fallthrough": true,
+                            "source_block_id": 3,
                             "destination_block_id": 4
+                        },
+                        {
+                            "count": 0,
+                            "throw": false,
+                            "fallthrough": false,
+                            "source_block_id": 3,
+                            "destination_block_id": 5
                         }
                     ],
                     "calls": [],
                     "conditions": [
                         {
-                            "count": 2,
+                            "count": 4,
                             "covered": 1,
                             "not_covered_true": [
-                                0
+                                0,
+                                1
                             ],
-                            "not_covered_false": []
+                            "not_covered_false": [
+                                1
+                            ]
                         }
                     ]
                 },
@@ -83,7 +101,7 @@
                     "count": 0,
                     "unexecuted_block": true,
                     "block_ids": [
-                        3
+                        4
                     ],
                     "branches": [],
                     "calls": [],
@@ -95,7 +113,7 @@
                     "count": 1,
                     "unexecuted_block": false,
                     "block_ids": [
-                        4
+                        5
                     ],
                     "branches": [],
                     "calls": [],

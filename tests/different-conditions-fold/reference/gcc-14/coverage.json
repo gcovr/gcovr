@@ -135,8 +135,8 @@
                 }
             ],
             "gcovr/data_sources": [
-                "conditions-2.gcov.json.gz",
-                "conditions-4.gcov.json.gz"
+                "conditions-1.gcov.json.gz",
+                "conditions-2.gcov.json.gz"
             ]
         }
     ]
