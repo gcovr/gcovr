@@ -255,33 +255,9 @@ class ConditionCoverage:
 
         if other is not None:
             if self.count != other.count:
-                if options.cond_opts.merge_condition_fold:
-                    LOGGER.warning(
-                        f"Condition counts are not equal, got {other.count} and expected {self.count}. "
-                        f"Reducing to {min(self.count, other.count)}."
-                    )
-                    if self.count > other.count:
-                        self.not_covered_true = self.not_covered_true[
-                            : len(other.not_covered_true)
-                        ]
-                        self.not_covered_false = self.not_covered_false[
-                            : len(other.not_covered_false)
-                        ]
-                        self.count = other.count
-                    else:
-                        other.not_covered_true = other.not_covered_true[
-                            : len(self.not_covered_true)
-                        ]
-                        other.not_covered_false = other.not_covered_false[
-                            : len(self.not_covered_false)
-                        ]
-                        other.count = self.count
-                else:
-                    raise AssertionError(
-                        f"The number of conditions must be equal, got {other.count} and expected {self.count} while merging {context}.\n"
-                        "\tYou can run gcovr with --merge-mode-conditions=MERGE_MODE.\n"
-                        "\tThe available values for MERGE_MODE are described in the documentation."
-                    )
+                raise AssertionError(
+                    f"The number of conditions must be equal, got {other.count} and expected {self.count} while merging {context}."
+                )
 
             self.not_covered_false = sorted(
                 list(set(self.not_covered_false) & set(other.not_covered_false))
