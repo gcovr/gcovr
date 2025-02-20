@@ -135,7 +135,7 @@ def _line_from_json(json_line: dict[str, Any]) -> LineCoverage:
     )
 
     for branchno, json_branch in enumerate(json_line["branches"]):
-        linecov.insert_branch_coverage(branchno, _branch_from_json(json_branch))
+        linecov.insert_branch_coverage(_branch_from_json(branchno, json_branch))
 
     if "conditions" in json_line:
         for conditionno, json_branch in enumerate(json_line["conditions"]):
@@ -154,10 +154,11 @@ def _line_from_json(json_line: dict[str, Any]) -> LineCoverage:
     return linecov
 
 
-def _branch_from_json(json_branch: dict[str, Any]) -> BranchCoverage:
+def _branch_from_json(branchno: int, json_branch: dict[str, Any]) -> BranchCoverage:
     return BranchCoverage(
+        branchno,
+        json_branch["count"],
         source_block_id=json_branch["source_block_id"],
-        count=json_branch["count"],
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
         destination_block_id=json_branch.get("destination_block_id"),
@@ -191,9 +192,10 @@ def _decision_from_json(
 
     if decision_type == "conditional":
         return DecisionCoverageConditional(
-            json_decision["count_true"], json_decision["count_false"]
+            count_true=json_decision["count_true"],
+            count_false=json_decision["count_false"],
         )
     if decision_type == "switch":
-        return DecisionCoverageSwitch(json_decision["count"])
+        return DecisionCoverageSwitch(count=json_decision["count"])
 
     raise AssertionError(f"Unknown decision type: {decision_type!r}")

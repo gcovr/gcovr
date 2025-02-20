@@ -19,13 +19,15 @@
 
 from __future__ import annotations
 import logging
-from typing import Optional, TypeVar
+from typing import Optional, Tuple, TypeVar
 
 from .merging import MergeOptions
 
 LOGGER = logging.getLogger("gcovr")
 
-_Key = TypeVar("_Key", int, str)
+LinesKeyType = Tuple[int, str]
+BranchesKeyType = Tuple[int, int, int]
+_Key = TypeVar("_Key", int, str, LinesKeyType, BranchesKeyType)
 _T = TypeVar("_T")
 
 

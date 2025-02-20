@@ -286,16 +286,16 @@ GCOV_8_SOURCES = dict(
 )
 
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
-    gcov_8_example=[33],
-    gcov_8_exclude_throw=[33],
-    nautilus_example=[51, 52, 54],
-    gcov_8_example_2=[33],
+    gcov_8_example=[7, 8, 33],
+    gcov_8_exclude_throw=[7, 8, 33],
+    nautilus_example=[51, 51, 51, 52, 54],
+    gcov_8_example_2=[7, 8, 33],
 )
 
 GCOV_8_EXPECTED_UNCOVERED_BRANCHES = dict(
     gcov_8_example=[21, 23, 24, 30, 32, 33, 35],
     gcov_8_exclude_throw=[30, 32, 33],
-    nautilus_example=[51],
+    nautilus_example=[51, 51],
     gcov_8_example_2=[21, 23, 24, 30, 32, 33, 35],
 )
 
@@ -551,11 +551,11 @@ def test_branch_exclusion(flags: str) -> None:
         """
     )
 
-    expected_covered_branches = {1, 2, 3, 4}
+    expected_covered_branches = {(1, 0, 0), (2, 0, 0), (3, 0, 0), (4, 0, 0)}
     if "exclude_throw_branches" in flags:
-        expected_covered_branches -= {3, 4}
+        expected_covered_branches -= {(3, 0, 0), (4, 0, 0)}
     if "exclude_unreachable_branches" in flags:
-        expected_covered_branches -= {2, 4}
+        expected_covered_branches -= {(2, 0, 0), (4, 0, 0)}
 
     coverage, lines = text.parse_coverage(
         source.splitlines(),
@@ -851,7 +851,7 @@ def test_negative_branch_count_ignored() -> None:
         if linecov.branches[branchcov].is_covered
     }
 
-    assert covered_branches == {1, 3}
+    assert covered_branches == {(1, 0, 0), (3, 0, 0)}
 
 
 def test_suspicious_branch_count() -> None:
@@ -961,7 +961,7 @@ def test_suspicious_branch_count_ignored() -> None:
         if linecov.branches[branchcov].is_covered
     }
 
-    assert covered_branches == {1, 3}
+    assert covered_branches == {(1, 0, 0), (3, 0, 0)}
 
 
 @pytest.mark.parametrize("flags", ["none", "exclude_internal_functions"])

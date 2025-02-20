@@ -25,6 +25,8 @@ from typing import Any, Optional
 
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import (
+    BranchesKeyType,
+    LinesKeyType,
     BranchCoverage,
     ConditionCoverage,
     DecisionCoverage,
@@ -188,7 +190,7 @@ def _json_from_file(file: FileCoverage, options: Options) -> dict[str, Any]:
     return json_file
 
 
-def _json_from_lines(lines: dict[int, LineCoverage]) -> list[dict[str, Any]]:
+def _json_from_lines(lines: dict[LinesKeyType, LineCoverage]) -> list[dict[str, Any]]:
     return [_json_from_line(lines[no]) for no in sorted(lines)]
 
 
@@ -222,7 +224,9 @@ def _json_from_line(linecov: LineCoverage) -> dict[str, Any]:
     return json_line
 
 
-def _json_from_branches(branches: dict[int, BranchCoverage]) -> list[dict[str, Any]]:
+def _json_from_branches(
+    branches: dict[BranchesKeyType, BranchCoverage],
+) -> list[dict[str, Any]]:
     return [_json_from_branch(branches[no]) for no in sorted(branches)]
 
 

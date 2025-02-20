@@ -220,10 +220,10 @@ def _make_source_file(
     coverage = list[Optional[int]]()
     source_file["coverage"] = coverage
     # source_file['branches'] = []
-    for lineno, linecov in coverage_details.lines.items():
+    for linecov in coverage_details.lines.values():
         # Comment lines are not collected in `covdata`, but must
         # be reported to coveralls (fill missing lines)
-        _extend_with_none(coverage, lineno - 1)
+        _extend_with_none(coverage, linecov.lineno - 1)
 
         coverage.append(linecov.count if linecov.is_reportable else None)
 

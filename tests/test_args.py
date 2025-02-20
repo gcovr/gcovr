@@ -697,11 +697,14 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
         (16, 0, None),
         (13, 2, [1, 0]),
     ]:
-        assert filecov.lines[line].count == count
+        assert filecov.lines[(line, "")].count == count
         if branches is not None:
-            assert len(filecov.lines[line].branches) == len(branches)
+            assert len(filecov.lines[(line, "")].branches) == len(branches)
             for branch_idx, branch_count in enumerate(branches):
-                assert filecov.lines[line].branches[branch_idx].count == branch_count
+                assert (
+                    filecov.lines[(line, "")].branches[(branch_idx, 0, 0)].count
+                    == branch_count
+                )
 
 
 def test_invalid_cobertura_file(caplog: pytest.LogCaptureFixture) -> None:

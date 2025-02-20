@@ -182,9 +182,8 @@ def _parse_file_node(
         )
         for index, branch in enumerate(line["branches"]):
             linecov.insert_branch_coverage(
-                index,
                 BranchCoverage(
-                    branch["source_block_id"],
+                    index,
                     check_hits(
                         branch["count"],
                         source_lines[line["line_number"] - 1],
@@ -192,6 +191,7 @@ def _parse_file_node(
                         suspicious_hits_threshold,
                         persistent_states,
                     ),
+                    source_block_id=branch["source_block_id"],
                     fallthrough=branch["fallthrough"],
                     throw=branch["throw"],
                     destination_block_id=branch["destination_block_id"],
@@ -201,16 +201,16 @@ def _parse_file_node(
             linecov.insert_condition_coverage(
                 index,
                 ConditionCoverage(
-                    check_hits(
+                    count=check_hits(
                         condition["count"],
                         source_lines[line["line_number"] - 1],
                         ignore_parse_errors,
                         suspicious_hits_threshold,
                         persistent_states,
                     ),
-                    condition["covered"],
-                    condition["not_covered_true"],
-                    condition["not_covered_false"],
+                    covered=condition["covered"],
+                    not_covered_true=condition["not_covered_true"],
+                    not_covered_false=condition["not_covered_false"],
                 ),
             )
     for function in gcov_file_node["functions"]:
