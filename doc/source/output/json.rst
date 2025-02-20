@@ -115,8 +115,10 @@ line_number: int
   The 1-based line number to which this entry relates.
 
 function_name: str
-  Only available if ``gcov`` JSON format is used it contains the name
-  of the function to which the line belongs to. Can be missing for a
+  Contains the mangled name of the function to which the line belongs to.
+  If ``gcov`` JSON format is used it is always the mangled name. If the
+  legacy ``gcov`` text format is used it contains the demangled name if
+  supported by ``gcov``, else the mangled name. Can be missing for a
   line with an inlined statement.
 
 count: int

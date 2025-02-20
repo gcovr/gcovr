@@ -36,9 +36,9 @@ report aggregated metrics/percentages.
 
 from __future__ import annotations
 import logging
-from typing import Callable, Optional, TypeVar, Union
+from typing import Callable, List, Optional, Tuple, TypeVar, Union
 
-from .coverage_dict import CoverageDict
+from .coverage_dict import BranchesKeyType, CoverageDict, LinesKeyType
 from .merging import DEFAULT_MERGE_OPTIONS, GcovrMergeAssertionError, MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
@@ -74,10 +74,12 @@ class BranchCoverage(CoverageBase):
     r"""Represent coverage information about a branch.
 
     Args:
-        source_block_id (int):
-            The block number.
+        branchno (int):
+            The branch number.
         count (int):
             Number of times this branch was followed.
+        source_block_id (int, optional):
+            The block number.
         fallthrough (bool, optional):
             Whether this is a fallthrough branch. False if unknown.
         throw (bool, optional):
@@ -91,8 +93,9 @@ class BranchCoverage(CoverageBase):
     first_undefined_source_block_id: bool = True
 
     __slots__ = (
-        "source_block_id",
+        "branchno",
         "count",
+        "source_block_id",
         "fallthrough",
         "throw",
         "destination_block_id",
@@ -101,8 +104,10 @@ class BranchCoverage(CoverageBase):
 
     def __init__(
         self,
-        source_block_id: Optional[int],
+        branchno: int,
         count: int,
+        *,
+        source_block_id: Optional[int] = None,
         fallthrough: bool = False,
         throw: bool = False,
         destination_block_id: Optional[int] = None,
@@ -111,8 +116,9 @@ class BranchCoverage(CoverageBase):
         if count < 0:
             raise AssertionError("count must not be a negative value.")
 
-        self.source_block_id = source_block_id
+        self.branchno = branchno
         self.count = count
+        self.source_block_id = source_block_id
         self.fallthrough = fallthrough
         self.throw = throw
         self.destination_block_id = destination_block_id
@@ -130,8 +136,13 @@ class BranchCoverage(CoverageBase):
         Do not use 'other' objects afterwards!
 
             Examples:
-        >>> left = BranchCoverage(1, 2)
-        >>> right = BranchCoverage(1, 3, False, True)
+        >>> left = BranchCoverage(0, 1, source_block_id=2)
+        >>> right = BranchCoverage(0, 1, source_block_id=3)
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS, None)
+        Traceback (most recent call last):
+          ...
+        AssertionError: Source block ID must be equal, got 2 and 3 while merging None.
+        >>> right = BranchCoverage(0, 4, source_block_id=2, fallthrough=False, throw=True)
         >>> right.excluded = True
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS, None)
         >>> left.count
@@ -155,6 +166,15 @@ class BranchCoverage(CoverageBase):
         self.throw |= other.throw
         if self.excluded is True or other.excluded is True:
             self.excluded = True
+
+    @property
+    def key(self) -> BranchesKeyType:
+        """Get the key used for the dictionary to unique identify the line coverage."""
+        return (
+            self.branchno,
+            self.source_block_id or 0,
+            self.destination_block_id or 0,
+        )
 
     @property
     def source_block_id_or_0(self) -> int:
@@ -203,6 +223,7 @@ class ConditionCoverage:
 
     def __init__(
         self,
+        *,
         count: int,
         covered: int,
         not_covered_true: list[int],
@@ -222,7 +243,7 @@ class ConditionCoverage:
     def merge(
         self,
         other: ConditionCoverage,
-        options: MergeOptions,
+        _options: MergeOptions,
         context: Optional[str],
     ) -> None:
         """
@@ -231,8 +252,8 @@ class ConditionCoverage:
         Do not use 'other' objects afterwards!
 
         Examples:
-        >>> left = ConditionCoverage(4, 2, [1, 2], [])
-        >>> right = ConditionCoverage(4, 3, [2], [1, 3])
+        >>> left = ConditionCoverage(count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
+        >>> right = ConditionCoverage(count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
         >>> left.merge(None, DEFAULT_MERGE_OPTIONS, None)
         >>> left.count
         4
@@ -293,7 +314,7 @@ class DecisionCoverageConditional:
 
     __slots__ = "count_true", "count_false"
 
-    def __init__(self, count_true: int, count_false: int) -> None:
+    def __init__(self, *, count_true: int, count_false: int) -> None:
         if count_true < 0:
             raise AssertionError("count_true must not be a negative value.")
         self.count_true = count_true
@@ -312,7 +333,7 @@ class DecisionCoverageSwitch:
 
     __slots__ = ("count",)
 
-    def __init__(self, count: int) -> None:
+    def __init__(self, *, count: int) -> None:
         if count < 0:
             raise AssertionError("count must not be a negative value.")
         self.count = count
@@ -341,6 +362,7 @@ class CallCoverage:
 
     def __init__(
         self,
+        *,
         callno: int,
         covered: bool,
         excluded: Optional[bool] = False,
@@ -567,7 +589,7 @@ class LineCoverage(CoverageBase):
             The line number.
         count (int):
             How often this line was executed at least partially.
-        function_name (str, optional):
+        function_name (str):
             Mangled name of the function the line belongs to.
         block_ids (*int, optional):
             List of block ids in this line
@@ -594,7 +616,7 @@ class LineCoverage(CoverageBase):
         self,
         lineno: int,
         count: int,
-        function_name: Optional[str] = None,
+        function_name: Optional[str],
         block_ids: Optional[list[int]] = None,
         md5: Optional[str] = None,
         excluded: bool = False,
@@ -610,10 +632,15 @@ class LineCoverage(CoverageBase):
         self.block_ids: Optional[list[int]] = block_ids
         self.md5: Optional[str] = md5
         self.excluded: bool = excluded
-        self.branches = CoverageDict[int, BranchCoverage]()
+        self.branches = CoverageDict[BranchesKeyType, BranchCoverage]()
         self.conditions = CoverageDict[int, ConditionCoverage]()
         self.decision: Optional[DecisionCoverage] = None
         self.calls = CoverageDict[int, CallCoverage]()
+
+    @property
+    def key(self) -> LinesKeyType:
+        """Get the key used for the dictionary to unique identify the line coverage."""
+        return (self.lineno, "" if self.function_name is None else self.function_name)
 
     def merge(
         self,
@@ -687,11 +714,11 @@ class LineCoverage(CoverageBase):
 
     def insert_branch_coverage(
         self,
-        key: int,
         branchcov: BranchCoverage,
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
     ) -> None:
         """Add a branch coverage item, merge if needed."""
+        key = branchcov.key
         if key in self.branches:
             self.branches[key].merge(branchcov, options, None)
         else:
@@ -830,14 +857,16 @@ class LineCoverage(CoverageBase):
 class FileCoverage:
     """Represent coverage information about a file."""
 
-    __slots__ = "filename", "functions", "lines", "data_sources"
+    __slots__ = "filename", "functions", "lines", "lines_keys_by_lineno", "data_sources"
 
     def __init__(
         self, filename: str, data_source: Optional[Union[str, set[str]]]
     ) -> None:
         self.filename: str = filename
         self.functions = CoverageDict[str, FunctionCoverage]()
-        self.lines = CoverageDict[int, LineCoverage]()
+        self.lines = CoverageDict[LinesKeyType, LineCoverage]()
+        self.lines_keys_by_lineno: dict[int, List[LinesKeyType]] = {}
+
         self.data_sources = (
             set[str]()
             if data_source is None
@@ -890,11 +919,14 @@ class FileCoverage:
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
     ) -> LineCoverage:
         """Add a line coverage item, merge if needed."""
-        key = linecov.lineno
+        key = linecov.key
         if key in self.lines:
             self.lines[key].merge(linecov, options, self.filename)
         else:
             self.lines[key] = linecov
+            if linecov.lineno not in self.lines_keys_by_lineno:
+                self.lines_keys_by_lineno[linecov.lineno] = []
+            self.lines_keys_by_lineno[linecov.lineno].append(key)
 
         return self.lines[key]
 
@@ -912,22 +944,19 @@ class FileCoverage:
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function"""
-        if functioncov.name not in self.functions:
+        if functioncov.key not in self.functions:
             raise AssertionError(
-                f"Function {functioncov.name} must be in filtered file coverage object."
-            )
-        if functioncov.name is None:
-            raise AssertionError(
-                "Data for filtering is missing. Need supported GCOV JSON format to get the information."
+                f"Function {functioncov.key} must be in filtered file coverage object."
             )
         filecov = FileCoverage(self.filename, self.data_sources)
-        filecov.functions[functioncov.name] = functioncov
+        filecov.functions[functioncov.key] = functioncov
 
-        filecov.lines = CoverageDict[int, LineCoverage](
+        filecov.lines = CoverageDict[Tuple[int, str], LineCoverage](
             {
-                lineno: linecov
-                for lineno, linecov in self.lines.items()
-                if linecov.function_name == functioncov.name
+                key: linecov
+                for key, linecov in self.lines.items()
+                if linecov.function_name
+                == (functioncov.name or functioncov.demangled_name)
             }
         )
 

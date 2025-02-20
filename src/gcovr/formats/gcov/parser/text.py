@@ -58,6 +58,7 @@ from ....data_model.coverage import (
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
+    LinesKeyType,
 )
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 
@@ -343,7 +344,7 @@ def parse_coverage(
             FunctionCoverage(
                 None,
                 name,
-                lineno=state.lineno + 1,
+                lineno=filecov.lines[state.linecov_key].lineno + 1,
                 count=count,
                 blocks=blocks,
             ),
@@ -373,7 +374,8 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
 
 class _ParserState(NamedTuple):
     deferred_functions: list[_FunctionLine] = []
-    lineno: int = 0
+    function_name: Optional[str] = None
+    linecov_key: LinesKeyType = (0, "")
     block_id: Optional[int] = None
     line_contents: str = ""
     is_recovering: bool = False
@@ -402,16 +404,16 @@ def _gather_coverage_from_line(
         raw_count, lineno, source_code, extra_info = line
 
         is_noncode = extra_info & _ExtraInfo.NONCODE
-
+        linecov = None
         if not is_noncode:
-            filecov.insert_line_coverage(
+            linecov = filecov.insert_line_coverage(
                 LineCoverage(
                     lineno,
                     count=raw_count,
+                    function_name=state.function_name,
                     md5=get_md5_hexdigest(source_code.encode("utf-8")),
                 ),
             )
-
         # handle deferred functions
         for function in state.deferred_functions:
             name, count, blocks = function
@@ -422,7 +424,8 @@ def _gather_coverage_from_line(
             )
 
         return _ParserState(
-            lineno=line.lineno,
+            function_name=state.function_name,
+            linecov_key=state.linecov_key if linecov is None else linecov.key,
             line_contents=line.source_code,
             block_id=state.block_id,
         )
@@ -433,20 +436,23 @@ def _gather_coverage_from_line(
     elif isinstance(line, _FunctionLine):
         # Defer handling of the function tag until the next source line.
         # This is important to get correct line number information.
-        return state._replace(deferred_functions=[*state.deferred_functions, line])
+        return state._replace(
+            deferred_functions=[*state.deferred_functions, line],
+            function_name=line.name,
+        )
 
     elif isinstance(line, _BranchLine):
         branchno, hits, annotation = line
 
         # linecov won't exist if it was considered noncode
-        linecov = filecov.lines.get(state.lineno)
+        linecov = filecov.lines.get(state.linecov_key)
 
         if linecov:
             linecov.insert_branch_coverage(
-                branchno,
                 BranchCoverage(
+                    branchno,
+                    hits,
                     source_block_id=state.block_id,
-                    count=hits,
                     fallthrough=(annotation == "fallthrough"),
                     throw=(annotation == "throw"),
                 ),
@@ -465,7 +471,7 @@ def _gather_coverage_from_line(
     # ignore unused line types, such as specialization sections
     elif isinstance(line, _CallLine):
         callno, returned = line
-        linecov = filecov.lines[state.lineno]  # must already exist
+        linecov = filecov.lines[state.linecov_key]  # must already exist
 
         linecov.insert_call_coverage(
             CallCoverage(

@@ -179,21 +179,21 @@ def remove_function_lines(filecov: FileCoverage) -> None:
     )
     for linecov in list(filecov.lines.values()):
         if linecov.lineno in known_function_lines:
-            filecov.lines.pop(linecov.lineno)
+            filecov.lines.pop(linecov.key)
 
 
 def remove_throw_branches(filecov: FileCoverage) -> None:
     """Remove branches annotated as "throw"."""
     for linecov in filecov.lines.values():
         # iterate over shallow copy
-        for branch_id, branchcov in list(linecov.branches.items()):
+        for branchcov in list(linecov.branches.values()):
             if branchcov.throw:
                 LOGGER.debug(
                     "Excluding unreachable branch on line %d file %s: detected as exception-only code",
                     linecov.lineno,
                     filecov.filename,
                 )
-                linecov.branches.pop(branch_id)
+                linecov.branches.pop(branchcov.key)
 
 
 def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> None:
