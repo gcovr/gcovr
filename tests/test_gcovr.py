@@ -593,7 +593,7 @@ def test_build(
             reference_scrubbed = test_scrubbed
         else:
             with open(reference_file, newline="", encoding=encoding) as f:
-                reference_scrubbed = scrub(f.read())
+                reference_scrubbed = f.read()
 
         try:
             assert_equals(
