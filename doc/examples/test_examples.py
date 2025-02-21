@@ -85,7 +85,7 @@ def test_example(example: Example) -> None:
         baseline_file, newline="", encoding="utf-8"
     ) as f:
         baseline = f.read()
-        if baseline is not None:
+        if scrub is not None:
             baseline = scrub(baseline)
 
     start_dirname = os.getcwd()
@@ -95,7 +95,7 @@ def test_example(example: Example) -> None:
         baseline_file, newline="", encoding="utf-8"
     ) as f:
         current = f.read()
-        if current is not None:
+        if scrub is not None:
             current = scrub(current)
 
     assert_equals(baseline_file, baseline, "<STDOUT>", current, encoding="utf8")
