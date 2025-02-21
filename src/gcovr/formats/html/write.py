@@ -185,7 +185,7 @@ class PygmentsHighlighting:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)
             formatter = self.formatter
             return lambda code: [
-                Markup(line.rstrip())
+                Markup(line.rstrip())  # nosec
                 for line in pygments.highlight(code, lexer, formatter).split("\n")
             ]
         except pygments.util.ClassNotFound:  # pragma: no cover
