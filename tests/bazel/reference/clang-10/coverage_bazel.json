@@ -6,12 +6,14 @@
             "lines": [
                 {
                     "line_number": 4,
+                    "function_name": "foo",
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "69fb94284e99eab36821cf19f0ac3b2f"
                 },
                 {
                     "line_number": 5,
+                    "function_name": "foo",
                     "count": 2,
                     "branches": [
                         {
@@ -31,18 +33,21 @@
                 },
                 {
                     "line_number": 6,
+                    "function_name": "foo",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "5d1e6f3017f24bee35e821720c83e4d7"
                 },
                 {
                     "line_number": 9,
+                    "function_name": "foo",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "4071653b480e72354bcfb2b2e78f92fd"
                 },
                 {
                     "line_number": 10,
+                    "function_name": "foo",
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
@@ -62,12 +67,14 @@
             "lines": [
                 {
                     "line_number": 4,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
                 },
                 {
                     "line_number": 5,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [
                         {
