@@ -9,6 +9,12 @@ Next Release
 Known bugs:
 
 Breaking changes:
+- Improve data model to have several coverage information per line. (:issue:`1069`)
+
+  - Option ``--merge-mode-conditions`` is removed.
+  - Property ``function_name`` for a line in JSON report is now always set.
+  - JSON report can now have several entries per line also with legacy text parser.
+  - Cobertura and HTML report now contain function coverage also for older GCC versions.
 
 New features and notable changes:
 
@@ -39,7 +45,7 @@ New features and notable changes:
 - Add :option:`--include` to search files in search paths which should be added to report. (:issue:`998`, :issue:`1044`)
 - Add option to generate LCOV format produced by version 1.x of LCOV tool. (:issue:`1001`)
 - Extend logging for data merge errors with info about the data sources. (:issue:`1010`)
-- Add condition coverage merge mode option :option:`--merge-mode-conditions` (:issue:`1009`)
+- Add condition coverage merge mode option ``--merge-mode-conditions``. (:issue:`1009`)
 - Add :option:`--gcov-suspicious-hits-threshold` to configure the value for detecting suspicious hits in GCOV files. (:issue:`1021`)
 - Renamed JSON element ``destination_blockno`` to ``destination_block_id``. (:issue:`1045`)
 - Add :option:`--html-block-ids` to show the block ids of the lines and branches in HTML report. (:issue:`1055`)

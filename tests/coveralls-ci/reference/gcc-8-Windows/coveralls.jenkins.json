@@ -1,0 +1,20 @@
+{
+    "run_at": "2025-01-20 20:18:07 UTC",
+    "service_name": "jenkins-ci",
+    "service_job_id": "JOB_NAME",
+    "service_number": "BUILD_ID",
+    "service_pull_request": "123",
+    "commit_sha": "GIT_COMMIT",
+    "source_files": [
+        {
+            "name": "main.cpp",
+            "source_digest": "931745ec4387e9df02e2c3590b65f863",
+            "coverage": [
+                null,
+                1,
+                1,
+                null
+            ]
+        }
+    ]
+}

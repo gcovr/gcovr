@@ -113,21 +113,48 @@
                 {
                     "line_number": 44,
                     "function_name": "_Z13sort_excludedv",
-                    "count": 44,
+                    "count": 3,
                     "branches": [
                         {
                             "source_block_id": 6,
-                            "count": 26,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "destination_block_id": 7
                         },
                         {
                             "source_block_id": 6,
-                            "count": 16,
+                            "count": 0,
                             "fallthrough": false,
                             "throw": true,
                             "destination_block_id": 13
+                        }
+                    ],
+                    "block_ids": [
+                        2,
+                        4,
+                        6
+                    ],
+                    "gcovr/md5": "f016c358cdf0f308f07a7505c148cf65"
+                },
+                {
+                    "line_number": 44,
+                    "function_name": "_ZZ13sort_excludedvENKUliiE_clEii",
+                    "count": 41,
+                    "branches": [
+                        {
+                            "source_block_id": 2,
+                            "count": 25,
+                            "fallthrough": true,
+                            "throw": false,
+                            "destination_block_id": 3
+                        },
+                        {
+                            "source_block_id": 2,
+                            "count": 16,
+                            "fallthrough": false,
+                            "throw": false,
+                            "destination_block_id": 4
                         }
                     ],
                     "conditions": [
@@ -140,29 +167,56 @@
                     ],
                     "block_ids": [
                         2,
-                        4,
-                        6
+                        3,
+                        4
                     ],
                     "gcovr/md5": "f016c358cdf0f308f07a7505c148cf65"
                 },
                 {
                     "line_number": 45,
                     "function_name": "_Z13sort_excludedv",
-                    "count": 44,
+                    "count": 3,
                     "branches": [
                         {
                             "source_block_id": 11,
-                            "count": 26,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "destination_block_id": 12
                         },
                         {
                             "source_block_id": 11,
-                            "count": 16,
+                            "count": 0,
                             "fallthrough": false,
                             "throw": true,
                             "destination_block_id": 14
+                        }
+                    ],
+                    "block_ids": [
+                        7,
+                        9,
+                        11
+                    ],
+                    "gcovr/md5": "0e23f483ee2d1c8ae8a72f3ad0cb806c"
+                },
+                {
+                    "line_number": 45,
+                    "function_name": "_ZZ13sort_excludedvENKUliiE0_clEii",
+                    "count": 41,
+                    "branches": [
+                        {
+                            "source_block_id": 2,
+                            "count": 25,
+                            "fallthrough": true,
+                            "throw": false,
+                            "destination_block_id": 3
+                        },
+                        {
+                            "source_block_id": 2,
+                            "count": 16,
+                            "fallthrough": false,
+                            "throw": false,
+                            "destination_block_id": 4
                         }
                     ],
                     "conditions": [
@@ -174,9 +228,9 @@
                         }
                     ],
                     "block_ids": [
-                        7,
-                        9,
-                        11
+                        2,
+                        3,
+                        4
                     ],
                     "gcovr/md5": "0e23f483ee2d1c8ae8a72f3ad0cb806c"
                 },

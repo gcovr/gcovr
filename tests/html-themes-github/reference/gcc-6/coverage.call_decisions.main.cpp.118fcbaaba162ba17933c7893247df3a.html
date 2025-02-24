@@ -26,7 +26,7 @@
                 <span>.</span>
             </div>
             <div>File: main.cpp</div>
-            <div>Date: 0000-00-00 00:00:00</div>
+            <div>Date: 2025-01-20 20:18:07+00:00</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -67,14 +67,16 @@
     <tr class="text-left">
       <th class="css-truncate css-truncate-target">Function (Line)</th>
       <th>Call count</th>
+      <th>Line coverage</th>
+      <th>Branch coverage</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l21">RAII::RAII(bool) (line 21)</a></td><td>called 1 time</td><td>100.0%</td></tr>
-    <tr><td><a href="#l16">RAII::method_that_may_throw() const (line 16)</a></td><td>called 1 time</td><td>100.0%</td></tr>
-    <tr><td><a href="#l22">RAII::~RAII() (line 22)</a></td><td>called 1 time</td><td>100.0%</td></tr>
-    <tr><td><a href="#l3">function_that_may_throw(bool) (line 3)</a></td><td>called 3 times</td><td>88.0%</td></tr>
-    <tr><td><a href="#l24">function_with_catchers(int) (line 24)</a></td><td>called 1 time</td><td>63.0%</td></tr>
-    <tr><td><a href="#l49">main (line 49)</a></td><td>called 1 time</td><td>100.0%</td></tr>
+    <tr><td><a href="#l21">RAII::RAII(bool) (line 21)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l16">RAII::method_that_may_throw() const (line 16)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l22">RAII::~RAII() (line 22)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l3">function_that_may_throw(bool) (line 3)</a></td><td>called 3 times</td><td>100.0%</td><td>75.0%</td><td>88.0%</td></tr>
+    <tr><td><a href="#l24">function_with_catchers(int) (line 24)</a></td><td>called 1 time</td><td>80.0%</td><td>37.5%</td><td>63.0%</td></tr>
+    <tr><td><a href="#l49">main (line 49)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
   </table>
 </details>
 </div>
@@ -126,10 +128,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function_that_may_throw</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l4" href="#l4">4</a></td>
@@ -148,15 +155,19 @@
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-taken-decision">&check; Decision 'true' taken 1 times.</div>
                             <div class="color-taken-decision">&check; Decision 'false' taken 2 times.</div>
-
                         </div>
                     </details>
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l5" href="#l5">5</a></td>
@@ -173,7 +184,7 @@
                 </td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
-                        <summary>2/4</summary>
+                      <summary>2/4</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-invoked-call">&check; Call 0 invoked.</div>
                             <div class="color-invoked-call">&check; Call 1 invoked.</div>
@@ -184,7 +195,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;the error&quot;</span><span class="p">);</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l6" href="#l6">6</a></td>
@@ -205,10 +216,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l8" href="#l8">8</a></td>
@@ -313,10 +329,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">method_that_may_throw</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l17" href="#l17">17</a></td>
@@ -326,7 +347,7 @@
                 </td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
-                        <summary>1/1</summary>
+                      <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-invoked-call">&check; Call 0 invoked.</div>
                         </div>
@@ -334,7 +355,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">die</span><span class="p">);</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l18" href="#l18">18</a></td>
@@ -379,10 +400,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="n">RAII</span><span class="o">::</span><span class="n">RAII</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="n">die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l22" href="#l22">22</a></td>
@@ -391,10 +417,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="n">RAII</span><span class="o">::~</span><span class="n">RAII</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l23" href="#l23">23</a></td>
@@ -415,10 +446,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l25" href="#l25">25</a></td>
@@ -427,10 +463,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l26" href="#l26">26</a></td>
@@ -471,7 +512,7 @@
                 </td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
-                        <summary>1/1</summary>
+                      <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-invoked-call">&check; Call 0 invoked.</div>
                         </div>
@@ -479,7 +520,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">        </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l29" href="#l29">29</a></td>
@@ -496,7 +537,7 @@
                 </td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
-                        <summary>2/2</summary>
+                      <summary>2/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-invoked-call">&check; Call 0 invoked.</div>
                             <div class="color-invoked-call">&check; Call 1 invoked.</div>
@@ -505,7 +546,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l30" href="#l30">30</a></td>
@@ -514,10 +555,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l31" href="#l31">31</a></td>
@@ -562,10 +608,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src excludedLine pr-2 pl-2 color-fg-muted text-right">&minus;</td>
                 <td class="src excludedLine"><span class="w">    </span><span class="n">RAII</span><span class="w"> </span><span class="n">raii</span><span class="p">(</span><span class="n">die_again</span><span class="p">);</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l35" href="#l35">35</a></td>
@@ -618,7 +669,7 @@
                 </td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
-                        <summary>1/1</summary>
+                      <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-invoked-call">&check; Call 0 invoked.</div>
                         </div>
@@ -626,7 +677,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">        </span><span class="n">raii</span><span class="p">.</span><span class="n">method_that_may_throw</span><span class="p">();</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l39" href="#l39">39</a></td>
@@ -636,7 +687,7 @@
                 </td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
-                        <summary>0/2</summary>
+                      <summary>0/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-fg-danger">&cross; Call 0 not invoked.</div>
                             <div class="color-fg-danger">&cross; Call 1 not invoked.</div>
@@ -645,7 +696,7 @@
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
                 <td class="src uncoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l40" href="#l40">40</a></td>
@@ -654,10 +705,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
                 <td class="src uncoveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l41" href="#l41">41</a></td>
@@ -698,7 +754,7 @@
                 </td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
-                        <summary>1/1</summary>
+                      <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-invoked-call">&check; Call 0 invoked.</div>
                         </div>
@@ -706,7 +762,7 @@
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src partialCoveredLine"><span class="w">    </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
@@ -727,10 +783,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
@@ -775,10 +836,15 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                      <summary>0/0</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
@@ -788,7 +854,7 @@
                 </td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
-                        <summary>1/1</summary>
+                      <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-invoked-call">&check; Call 0 invoked.</div>
                         </div>
@@ -796,7 +862,7 @@
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="n">argc</span><span class="p">);</span><span class="w"></span></td>
-                <td class="text-right src linenos"></td>
+                <td class="text-right src linenos">[]</td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>

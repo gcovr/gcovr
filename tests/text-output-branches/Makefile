@@ -7,7 +7,7 @@ run: txt
 
 txt:
 	./testcase
-	$(GCOVR) -d --branches --txt coverage.txt
+	$(GCOVR) -d --txt-metric branch --txt coverage.txt
 
 clean:
 	rm -f testcase

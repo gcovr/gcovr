@@ -8,7 +8,21 @@
     <package name=".subdir.A" line-rate="0.66667" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file1_cpp" filename=".subdir/A/file1.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="foo" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="1" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="0" branch="false"/>
+                <line number="6" hits="1" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="1" hits="1" branch="false"/>
             <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -22,7 +36,23 @@
           </lines>
         </class>
         <class name="file2_cpp" filename=".subdir/A/file2.cpp" line-rate="0.57143" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="1" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+                <line number="5" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="bar_" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="8" hits="0" branch="false"/>
+                <line number="10" hits="0" branch="false"/>
+                <line number="11" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="1" hits="1" branch="false"/>
             <line number="3" hits="1" branch="false"/>
@@ -34,7 +64,23 @@
           </lines>
         </class>
         <class name="file3_cpp" filename=".subdir/A/file3.cpp" line-rate="0.57143" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="four_bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="1" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+                <line number="5" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="four_bar_" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="8" hits="0" branch="false"/>
+                <line number="10" hits="0" branch="false"/>
+                <line number="11" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="1" hits="1" branch="false"/>
             <line number="3" hits="1" branch="false"/>
@@ -46,7 +92,21 @@
           </lines>
         </class>
         <class name="file4_cpp" filename=".subdir/A/file4.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="foobar" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="1" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="1" branch="false"/>
+                <line number="6" hits="0" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="1" hits="1" branch="false"/>
             <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -64,7 +124,21 @@
     <package name=".subdir.A.C" line-rate="0.8" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file5_cpp" filename=".subdir/A/C/file5.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="foo5" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="1" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="0" branch="false"/>
+                <line number="6" hits="1" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="1" hits="1" branch="false"/>
             <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -82,7 +156,21 @@
     <package name=".subdir.A.C.D" line-rate="0.8" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file6_cpp" filename=".subdir/A/C/D/file6.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="foo6" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="1" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="0" branch="false"/>
+                <line number="6" hits="1" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="1" hits="1" branch="false"/>
             <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -100,7 +188,20 @@
     <package name=".subdir.B" line-rate="1.0" branch-rate="1.0" complexity="0.0">
       <classes>
         <class name="main_cpp" filename=".subdir/B/main.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="11" hits="1" branch="false"/>
+                <line number="12" hits="1" branch="false"/>
+                <line number="13" hits="1" branch="false"/>
+                <line number="14" hits="1" branch="false"/>
+                <line number="15" hits="1" branch="false"/>
+                <line number="16" hits="1" branch="false"/>
+                <line number="17" hits="1" branch="false"/>
+                <line number="19" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="11" hits="1" branch="false"/>
             <line number="12" hits="1" branch="false"/>

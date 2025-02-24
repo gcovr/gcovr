@@ -2,20 +2,48 @@
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.9" branch-rate="0.5" lines-covered="9" lines-valid="10" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
-     <source>tests/oos2/src</source>
+    <source>tests/oos2/src</source>
   </sources>
   <packages>
     <package name="" line-rate="0.9" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="file1_cpp" filename="file1.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="_Z3barv" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="1" branch="false"/>
             <line number="4" hits="1" branch="false"/>
           </lines>
         </class>
         <class name="main_cpp" filename="main.cpp" line-rate="0.875" branch-rate="0.5" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="_Z3fooi" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="5" hits="1" branch="false"/>
+                <line number="6" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="7" hits="0" branch="false"/>
+                <line number="9" hits="1" branch="false"/>
+                <line number="11" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="14" hits="1" branch="false"/>
+                <line number="15" hits="1" branch="false"/>
+                <line number="17" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="5" hits="1" branch="false"/>
             <line number="6" hits="1" branch="true" condition-coverage="50% (1/2)">

@@ -8,7 +8,15 @@
     <package name="source" line-rate="0.60526" branch-rate="1.0" complexity="0.0">
       <classes>
         <class name="fn_00_cpp" filename="source/fn_00.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_00" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="1" branch="false"/>
             <line number="3" hits="1" branch="false"/>
@@ -16,7 +24,15 @@
           </lines>
         </class>
         <class name="fn_01_cpp" filename="source/fn_01.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_01" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="1" branch="false"/>
             <line number="3" hits="1" branch="false"/>
@@ -24,7 +40,15 @@
           </lines>
         </class>
         <class name="fn_02_cpp" filename="source/fn_02.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_02" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="1" branch="false"/>
             <line number="3" hits="1" branch="false"/>
@@ -32,7 +56,15 @@
           </lines>
         </class>
         <class name="fn_03_cpp" filename="source/fn_03.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_03" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="1" branch="false"/>
             <line number="3" hits="1" branch="false"/>
@@ -40,7 +72,15 @@
           </lines>
         </class>
         <class name="fn_04_cpp" filename="source/fn_04.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_04" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="1" branch="false"/>
             <line number="3" hits="1" branch="false"/>
@@ -48,7 +88,15 @@
           </lines>
         </class>
         <class name="fn_05_cpp" filename="source/fn_05.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_05" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="0" branch="false"/>
+                <line number="3" hits="0" branch="false"/>
+                <line number="4" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="0" branch="false"/>
             <line number="3" hits="0" branch="false"/>
@@ -56,7 +104,15 @@
           </lines>
         </class>
         <class name="fn_06_cpp" filename="source/fn_06.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_06" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="0" branch="false"/>
+                <line number="3" hits="0" branch="false"/>
+                <line number="4" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="0" branch="false"/>
             <line number="3" hits="0" branch="false"/>
@@ -64,7 +120,15 @@
           </lines>
         </class>
         <class name="fn_07_cpp" filename="source/fn_07.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_07" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="0" branch="false"/>
+                <line number="3" hits="0" branch="false"/>
+                <line number="4" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="0" branch="false"/>
             <line number="3" hits="0" branch="false"/>
@@ -72,7 +136,15 @@
           </lines>
         </class>
         <class name="fn_08_cpp" filename="source/fn_08.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_08" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="0" branch="false"/>
+                <line number="3" hits="0" branch="false"/>
+                <line number="4" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="0" branch="false"/>
             <line number="3" hits="0" branch="false"/>
@@ -80,7 +152,15 @@
           </lines>
         </class>
         <class name="fn_09_cpp" filename="source/fn_09.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="fn_09" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="0" branch="false"/>
+                <line number="3" hits="0" branch="false"/>
+                <line number="4" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="0" branch="false"/>
             <line number="3" hits="0" branch="false"/>
@@ -88,7 +168,20 @@
           </lines>
         </class>
         <class name="main_cpp" filename="source/main.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="2" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+                <line number="6" hits="1" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+                <line number="10" hits="1" branch="false"/>
+                <line number="12" hits="1" branch="false"/>
+                <line number="14" hits="1" branch="false"/>
+                <line number="28" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="2" hits="1" branch="false"/>
             <line number="4" hits="1" branch="false"/>
