@@ -12,6 +12,7 @@
                 },
                 {
                     "line_number": 7,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -31,6 +32,7 @@
                 },
                 {
                     "line_number": 8,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "684c0700241bf282a1f4fcb24ed267ac"

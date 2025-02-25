@@ -1,30 +1,9 @@
 {
-    "run_at": "",
+    "run_at": "2025-01-20 20:18:07 UTC",
     "service_name": "gcovr-test-suite",
     "service_job_id": "id",
     "service_number": "number",
     "service_pull_request": "pr",
-    "git": {
-        "head": {
-            "id": "ff90a95121c7a2a72a05da03027401a718334253",
-            "author_name": "Spacetown",
-            "author_email": "40258682+spacetown@users.noreply.github.com",
-            "committer_name": "Spacetown",
-            "committer_email": "40258682+spacetown@users.noreply.github.com",
-            "message": "Remove sorting in JSON output files"
-        },
-        "branch": "branch",
-        "remotes": [
-            {
-                "name": "origin",
-                "url": "https://github.com/Spacetown/gcovr.git"
-            },
-            {
-                "name": "upstream",
-                "url": "https://github.com/gcovr/gcovr"
-            }
-        ]
-    },
     "source_files": [
         {
             "name": "subdir/A/C/D/File6.cpp",
