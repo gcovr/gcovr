@@ -6,12 +6,14 @@
             "lines": [
                 {
                     "line_number": 8,
+                    "function_name": "checkBiggerTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "6787aacdd04e18ff50f22cb09af64959"
                 },
                 {
                     "line_number": 10,
+                    "function_name": "checkBiggerTrue(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -36,24 +38,28 @@
                 },
                 {
                     "line_number": 12,
+                    "function_name": "checkBiggerTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 16,
+                    "function_name": "checkBiggerTrue(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 20,
+                    "function_name": "checkBiggerFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "260f9a095d49eb9dd2c2fa021674d079"
                 },
                 {
                     "line_number": 22,
+                    "function_name": "checkBiggerFalse(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -78,24 +84,28 @@
                 },
                 {
                     "line_number": 24,
+                    "function_name": "checkBiggerFalse(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 28,
+                    "function_name": "checkBiggerFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 32,
+                    "function_name": "checkBiggerBoth(int)",
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "b848ba6f16ad8e8b5c12256d5aecd684"
                 },
                 {
                     "line_number": 34,
+                    "function_name": "checkBiggerBoth(int)",
                     "count": 2,
                     "branches": [
                         {
@@ -120,24 +130,28 @@
                 },
                 {
                     "line_number": 36,
+                    "function_name": "checkBiggerBoth(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 40,
+                    "function_name": "checkBiggerBoth(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 44,
+                    "function_name": "checkSmallerTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "37d231dfe6f9f10d7281467eacbd00ed"
                 },
                 {
                     "line_number": 46,
+                    "function_name": "checkSmallerTrue(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -162,24 +176,28 @@
                 },
                 {
                     "line_number": 48,
+                    "function_name": "checkSmallerTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 52,
+                    "function_name": "checkSmallerTrue(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 56,
+                    "function_name": "checkSmallerFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "e308518e2f82e0e2d7b68dfafb8d005f"
                 },
                 {
                     "line_number": 58,
+                    "function_name": "checkSmallerFalse(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -204,24 +222,28 @@
                 },
                 {
                     "line_number": 60,
+                    "function_name": "checkSmallerFalse(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 64,
+                    "function_name": "checkSmallerFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 68,
+                    "function_name": "checkEqualTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "e877d9ef2d646c713eb69df3d1ae1b87"
                 },
                 {
                     "line_number": 70,
+                    "function_name": "checkEqualTrue(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -246,24 +268,28 @@
                 },
                 {
                     "line_number": 72,
+                    "function_name": "checkEqualTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 76,
+                    "function_name": "checkEqualTrue(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 80,
+                    "function_name": "checkEqualFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "32156227fa301e21b7798267f1d41fe9"
                 },
                 {
                     "line_number": 82,
+                    "function_name": "checkEqualFalse(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -288,24 +314,28 @@
                 },
                 {
                     "line_number": 84,
+                    "function_name": "checkEqualFalse(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 88,
+                    "function_name": "checkEqualFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 92,
+                    "function_name": "checkNotEqualTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "1b839eefb1c215aed886395e851c20db"
                 },
                 {
                     "line_number": 94,
+                    "function_name": "checkNotEqualTrue(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -330,24 +360,28 @@
                 },
                 {
                     "line_number": 96,
+                    "function_name": "checkNotEqualTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 100,
+                    "function_name": "checkNotEqualTrue(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 104,
+                    "function_name": "checkNotEqualFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "aedcd800a4eccc0d565b3361b4b7a4fe"
                 },
                 {
                     "line_number": 106,
+                    "function_name": "checkNotEqualFalse(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -372,24 +406,28 @@
                 },
                 {
                     "line_number": 108,
+                    "function_name": "checkNotEqualFalse(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 112,
+                    "function_name": "checkNotEqualFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 116,
+                    "function_name": "checkComplexTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "42e96b0366090f26436c9bf59b01660b"
                 },
                 {
                     "line_number": 118,
+                    "function_name": "checkComplexTrue(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -438,24 +476,28 @@
                 },
                 {
                     "line_number": 120,
+                    "function_name": "checkComplexTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 124,
+                    "function_name": "checkComplexTrue(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 128,
+                    "function_name": "checkComplexFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "afc37d67b5def9e06b8c1ba2a081c0b9"
                 },
                 {
                     "line_number": 130,
+                    "function_name": "checkComplexFalse(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -504,24 +546,28 @@
                 },
                 {
                     "line_number": 132,
+                    "function_name": "checkComplexFalse(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 136,
+                    "function_name": "checkComplexFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 140,
+                    "function_name": "checkElseIf1(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "9cca3668005168d0e054caf95cd8948c"
                 },
                 {
                     "line_number": 142,
+                    "function_name": "checkElseIf1(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -546,12 +592,14 @@
                 },
                 {
                     "line_number": 144,
+                    "function_name": "checkElseIf1(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 146,
+                    "function_name": "checkElseIf1(int)",
                     "count": 0,
                     "branches": [
                         {
@@ -576,24 +624,28 @@
                 },
                 {
                     "line_number": 148,
+                    "function_name": "checkElseIf1(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 152,
+                    "function_name": "checkElseIf1(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 156,
+                    "function_name": "checkElseIf2(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "ef8de72a20f145f62aca999f152f0034"
                 },
                 {
                     "line_number": 158,
+                    "function_name": "checkElseIf2(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -618,12 +670,14 @@
                 },
                 {
                     "line_number": 160,
+                    "function_name": "checkElseIf2(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 162,
+                    "function_name": "checkElseIf2(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -648,24 +702,28 @@
                 },
                 {
                     "line_number": 164,
+                    "function_name": "checkElseIf2(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 168,
+                    "function_name": "checkElseIf2(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 172,
+                    "function_name": "checkElseIf3(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "ef28e06cf701eb5dee133164631e1de5"
                 },
                 {
                     "line_number": 174,
+                    "function_name": "checkElseIf3(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -690,12 +748,14 @@
                 },
                 {
                     "line_number": 176,
+                    "function_name": "checkElseIf3(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 178,
+                    "function_name": "checkElseIf3(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -720,24 +780,28 @@
                 },
                 {
                     "line_number": 180,
+                    "function_name": "checkElseIf3(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 184,
+                    "function_name": "checkElseIf3(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 188,
+                    "function_name": "checkSwitch1(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "779fed7d2f7ce06627a9f4f67dedfe5f"
                 },
                 {
                     "line_number": 190,
+                    "function_name": "checkSwitch1(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -763,6 +827,7 @@
                 },
                 {
                     "line_number": 192,
+                    "function_name": "checkSwitch1(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c55ac16d79ecde6ccafa6981a9351947",
@@ -773,6 +838,7 @@
                 },
                 {
                     "line_number": 194,
+                    "function_name": "checkSwitch1(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
@@ -783,12 +849,14 @@
                 },
                 {
                     "line_number": 196,
+                    "function_name": "checkSwitch1(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 200,
+                    "function_name": "checkSwitch1(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
@@ -799,18 +867,21 @@
                 },
                 {
                     "line_number": 202,
+                    "function_name": "checkSwitch1(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 209,
+                    "function_name": "checkSwitch2(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "b27839bf103fdd94b8d5f7c0fec7d676"
                 },
                 {
                     "line_number": 211,
+                    "function_name": "checkSwitch2(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -836,6 +907,7 @@
                 },
                 {
                     "line_number": 213,
+                    "function_name": "checkSwitch2(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "4e16c5488167f241ab1487a55fdbe6d1",
@@ -846,12 +918,14 @@
                 },
                 {
                     "line_number": 214,
+                    "function_name": "checkSwitch2(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 216,
+                    "function_name": "checkSwitch2(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
@@ -862,12 +936,14 @@
                 },
                 {
                     "line_number": 217,
+                    "function_name": "checkSwitch2(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 219,
+                    "function_name": "checkSwitch2(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
@@ -878,18 +954,21 @@
                 },
                 {
                     "line_number": 220,
+                    "function_name": "checkSwitch2(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 225,
+                    "function_name": "checkSwitch3(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "e1b1c7d843f820d35f09c2df667c15ef"
                 },
                 {
                     "line_number": 227,
+                    "function_name": "checkSwitch3(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -915,6 +994,7 @@
                 },
                 {
                     "line_number": 229,
+                    "function_name": "checkSwitch3(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "4e16c5488167f241ab1487a55fdbe6d1",
@@ -925,12 +1005,14 @@
                 },
                 {
                     "line_number": 230,
+                    "function_name": "checkSwitch3(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 232,
+                    "function_name": "checkSwitch3(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9",
@@ -941,12 +1023,14 @@
                 },
                 {
                     "line_number": 233,
+                    "function_name": "checkSwitch3(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 235,
+                    "function_name": "checkSwitch3(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2",
@@ -957,18 +1041,21 @@
                 },
                 {
                     "line_number": 236,
+                    "function_name": "checkSwitch3(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
                 },
                 {
                     "line_number": 241,
+                    "function_name": "checkCompactBranch1True(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "dbdb1200cd98fca90a93dfb7f426bfa6"
                 },
                 {
                     "line_number": 243,
+                    "function_name": "checkCompactBranch1True(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -993,12 +1080,14 @@
                 },
                 {
                     "line_number": 246,
+                    "function_name": "checkCompactBranch1False(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "880e53e4a12d09f7cd28d27076b2e586"
                 },
                 {
                     "line_number": 248,
+                    "function_name": "checkCompactBranch1False(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -1023,12 +1112,14 @@
                 },
                 {
                     "line_number": 251,
+                    "function_name": "checkCompactBranch2True(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "768bcd7c52e4ebd1157dc298740c4c75"
                 },
                 {
                     "line_number": 253,
+                    "function_name": "checkCompactBranch2True(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -1063,12 +1154,14 @@
                 },
                 {
                     "line_number": 256,
+                    "function_name": "checkCompactBranch2False(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "04774800e109bfa6463950e63def9f9b"
                 },
                 {
                     "line_number": 258,
+                    "function_name": "checkCompactBranch2False(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -1103,36 +1196,42 @@
                 },
                 {
                     "line_number": 261,
+                    "function_name": "checkTernary1True(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "b2ce0dd6c936dc2090ed5fce103cab77"
                 },
                 {
                     "line_number": 263,
+                    "function_name": "checkTernary1True(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "e5687ce2bfb55e6b964d04780a002b51"
                 },
                 {
                     "line_number": 266,
+                    "function_name": "checkTernary1False(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "50d4f07d1fecada716d18177c9a504a1"
                 },
                 {
                     "line_number": 268,
+                    "function_name": "checkTernary1False(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "e5687ce2bfb55e6b964d04780a002b51"
                 },
                 {
                     "line_number": 271,
+                    "function_name": "checkTernary2True(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "38133a7c12b812e2590432cbc63041c5"
                 },
                 {
                     "line_number": 273,
+                    "function_name": "checkTernary2True(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -1164,12 +1263,14 @@
                 },
                 {
                     "line_number": 276,
+                    "function_name": "checkTernary2False(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "a3e296dc69cd28202a38f73b2d4b57a9"
                 },
                 {
                     "line_number": 278,
+                    "function_name": "checkTernary2False(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -1201,12 +1302,14 @@
                 },
                 {
                     "line_number": 281,
+                    "function_name": "checkSplittedTrue(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "6ac44ad7a9bb32da82b5b8765cff4f39"
                 },
                 {
                     "line_number": 283,
+                    "function_name": "checkSplittedTrue(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -1243,18 +1346,21 @@
                 },
                 {
                     "line_number": 284,
+                    "function_name": "checkSplittedTrue(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "645924eb3b07dbb34295edeaa6442673"
                 },
                 {
                     "line_number": 287,
+                    "function_name": "checkSplittedFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "6eeb264bc8f8dfd0ea2ce376187a54bf"
                 },
                 {
                     "line_number": 289,
+                    "function_name": "checkSplittedFalse(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -1291,24 +1397,28 @@
                 },
                 {
                     "line_number": 290,
+                    "function_name": "checkSplittedFalse(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "645924eb3b07dbb34295edeaa6442673"
                 },
                 {
                     "line_number": 293,
+                    "function_name": "checkForLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "a5ed42af8f8896d1af443379712e5a5f"
                 },
                 {
                     "line_number": 295,
+                    "function_name": "checkForLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "4060985ba945597cd1f528d1880b4999"
                 },
                 {
                     "line_number": 296,
+                    "function_name": "checkForLoop(int)",
                     "count": 6,
                     "branches": [
                         {
@@ -1333,30 +1443,35 @@
                 },
                 {
                     "line_number": 298,
+                    "function_name": "checkForLoop(int)",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "55d711b351fb023f321f67130eacc2e8"
                 },
                 {
                     "line_number": 300,
+                    "function_name": "checkForLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "043b84861b98adf987e1231784d5af52"
                 },
                 {
                     "line_number": 303,
+                    "function_name": "checkComplexForLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "6452493326f1adb6dbb8e661240f0725"
                 },
                 {
                     "line_number": 305,
+                    "function_name": "checkComplexForLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "4060985ba945597cd1f528d1880b4999"
                 },
                 {
                     "line_number": 306,
+                    "function_name": "checkComplexForLoop(int)",
                     "count": 6,
                     "branches": [
                         {
@@ -1391,36 +1506,42 @@
                 },
                 {
                     "line_number": 308,
+                    "function_name": "checkComplexForLoop(int)",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "55d711b351fb023f321f67130eacc2e8"
                 },
                 {
                     "line_number": 310,
+                    "function_name": "checkComplexForLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "043b84861b98adf987e1231784d5af52"
                 },
                 {
                     "line_number": 313,
+                    "function_name": "checkWhileLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "f4b8e72891cf996cb8da3195b075336a"
                 },
                 {
                     "line_number": 315,
+                    "function_name": "checkWhileLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "4060985ba945597cd1f528d1880b4999"
                 },
                 {
                     "line_number": 316,
+                    "function_name": "checkWhileLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d0a5dc4bd59ad4730f939048c07e34b3"
                 },
                 {
                     "line_number": 318,
+                    "function_name": "checkWhileLoop(int)",
                     "count": 6,
                     "branches": [
                         {
@@ -1445,54 +1566,63 @@
                 },
                 {
                     "line_number": 320,
+                    "function_name": "checkWhileLoop(int)",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "ff85af6301d128a7daa567a0a0390e91"
                 },
                 {
                     "line_number": 321,
+                    "function_name": "checkWhileLoop(int)",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "55d711b351fb023f321f67130eacc2e8"
                 },
                 {
                     "line_number": 324,
+                    "function_name": "checkWhileLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "043b84861b98adf987e1231784d5af52"
                 },
                 {
                     "line_number": 327,
+                    "function_name": "checkDoWhileLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "cbafffe2e47d8b1805f93607e5a668c0"
                 },
                 {
                     "line_number": 329,
+                    "function_name": "checkDoWhileLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "4060985ba945597cd1f528d1880b4999"
                 },
                 {
                     "line_number": 330,
+                    "function_name": "checkDoWhileLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d0a5dc4bd59ad4730f939048c07e34b3"
                 },
                 {
                     "line_number": 334,
+                    "function_name": "checkDoWhileLoop(int)",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "ff85af6301d128a7daa567a0a0390e91"
                 },
                 {
                     "line_number": 335,
+                    "function_name": "checkDoWhileLoop(int)",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "55d711b351fb023f321f67130eacc2e8"
                 },
                 {
                     "line_number": 336,
+                    "function_name": "checkDoWhileLoop(int)",
                     "count": 5,
                     "branches": [
                         {
@@ -1517,66 +1647,77 @@
                 },
                 {
                     "line_number": 338,
+                    "function_name": "checkDoWhileLoop(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "043b84861b98adf987e1231784d5af52"
                 },
                 {
                     "line_number": 341,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "f8b4513731a14f4d9805082c72c433f7"
                 },
                 {
                     "line_number": 343,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "928c0e79786bd7f4e271f1b810308475"
                 },
                 {
                     "line_number": 344,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "527a8f31bcf6609350fead60576d6bce"
                 },
                 {
                     "line_number": 346,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "0e9387f55399ceee62583ce672cc1370"
                 },
                 {
                     "line_number": 348,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "9c196756bc02433fb578f76c2e8ca85f"
                 },
                 {
                     "line_number": 351,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "9aaae14be89d538995df72937d38b87e"
                 },
                 {
                     "line_number": 352,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "527a8f31bcf6609350fead60576d6bce"
                 },
                 {
                     "line_number": 354,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "3a8920632809f93dd1e65c2c9dc778ef"
                 },
                 {
                     "line_number": 355,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "527a8f31bcf6609350fead60576d6bce"
                 },
                 {
                     "line_number": 357,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [
                         {
@@ -1601,24 +1742,28 @@
                 },
                 {
                     "line_number": 359,
+                    "function_name": "checkInterpreter(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
                 },
                 {
                     "line_number": 362,
+                    "function_name": "checkInterpreter(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "645924eb3b07dbb34295edeaa6442673"
                 },
                 {
                     "line_number": 365,
+                    "function_name": "verify_issue_679(bool)",
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "78cbf5dc7f0e6f7d02476603c791b3fd"
                 },
                 {
                     "line_number": 366,
+                    "function_name": "verify_issue_679(bool)",
                     "count": 2,
                     "branches": [
                         {
@@ -1643,6 +1788,7 @@
                 },
                 {
                     "line_number": 367,
+                    "function_name": "verify_issue_679(bool)",
                     "count": 11,
                     "branches": [
                         {
@@ -1667,126 +1813,147 @@
                 },
                 {
                     "line_number": 370,
+                    "function_name": "verify_issue_679(bool)",
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
                 },
                 {
                     "line_number": 372,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "8e855b46bd5f3510eb5ca2bf348886b1"
                 },
                 {
                     "line_number": 374,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "3cc5c7379c991f20593f9e60cdff92e3"
                 },
                 {
                     "line_number": 375,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "b3aee9744dd3c8c21ee7958a20c812b8"
                 },
                 {
                     "line_number": 376,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "92645afa29c10f35a9cff34bb1055444"
                 },
                 {
                     "line_number": 377,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "a01db9b27704d7c9d491dc2c4f8f9eb3"
                 },
                 {
                     "line_number": 379,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "15d893e7d4568dd18290c2ad0f4bf4bb"
                 },
                 {
                     "line_number": 380,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "a9f40f5247afa5eafcf9d73780a49d14"
                 },
                 {
                     "line_number": 382,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "ab7cc9c5a6a1b8bacbce76dc0b953556"
                 },
                 {
                     "line_number": 383,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "4637d80dd004526f2eff906696f203ee"
                 },
                 {
                     "line_number": 385,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d0539d8a5f62a39e677f88e292e9596f"
                 },
                 {
                     "line_number": 386,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "435dd23a0ad476b42e5e97c11ee07c59"
                 },
                 {
                     "line_number": 388,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c5422996dc66f19290c22c6f15ce9975"
                 },
                 {
                     "line_number": 389,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "e7110dd34c53922142313c2e26ddc0ac"
                 },
                 {
                     "line_number": 391,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "92007538956d002a31e280c7b6484fd3"
                 },
                 {
                     "line_number": 392,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "3a5aa177c25976ed9a7fef7147852155"
                 },
                 {
                     "line_number": 393,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "3ca06b2d4a93036239b05f0ec57838e2"
                 },
                 {
                     "line_number": 395,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "90e3bdbd267998fffc247854eafb7fab"
                 },
                 {
                     "line_number": 396,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "2218abcab99d7f157fb8a725c709eff8"
                 },
                 {
                     "line_number": 397,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "b47672a79f6c622ed3f76d76eca245b0"
                 },
                 {
                     "line_number": 400,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [
                         {
@@ -1806,108 +1973,126 @@
                 },
                 {
                     "line_number": 403,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "bf47c01ac22ec690a031557d2549af78"
                 },
                 {
                     "line_number": 404,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "5c2e91ce4cb9f01e5d9c593325852c79"
                 },
                 {
                     "line_number": 406,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "98a7a749633438d8c3fbce5f6e0e4dbe"
                 },
                 {
                     "line_number": 407,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "3d07f757c579cdcb84199581ac590035"
                 },
                 {
                     "line_number": 409,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "417d286a6a330312ff021a41177652df"
                 },
                 {
                     "line_number": 410,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "6fca1b917c3eb34dafaf42c5b2fba108"
                 },
                 {
                     "line_number": 412,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "a07e47adac4b00d46e8d03e1b3b4f074"
                 },
                 {
                     "line_number": 413,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "5c4ad7fb65100111dee2989629b891db"
                 },
                 {
                     "line_number": 415,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "a2aa66642aa1d34c0b30c431c5ab39f6"
                 },
                 {
                     "line_number": 416,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "7dfc1dbe5e1957dc175f75bc052779a4"
                 },
                 {
                     "line_number": 418,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "9267e0de8997916348249ed2da14f25b"
                 },
                 {
                     "line_number": 419,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "33cef5a3aa96b6891c77909242530dca"
                 },
                 {
                     "line_number": 420,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "5f8093ff079edf5092bf9c7103ea702b"
                 },
                 {
                     "line_number": 421,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "dafda76cddea8476c38f1d88673abb9d"
                 },
                 {
                     "line_number": 423,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "2df255f12bacc5d1208535956b261df8"
                 },
                 {
                     "line_number": 425,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "3f3d124026146a196f8bbd3d3b64601c"
                 },
                 {
                     "line_number": 426,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "8ca7cc4fbe5ff42bfbc97665e2fd738d"
                 },
                 {
                     "line_number": 428,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "7483dc5d2ba8642b2a3fed7915b6f508"
@@ -2128,6 +2313,7 @@
             "lines": [
                 {
                     "line_number": 5,
+                    "function_name": "SwitchTestIssue783::SwitchTestIssue783()",
                     "count": 1,
                     "branches": [
                         {
@@ -2147,18 +2333,21 @@
                 },
                 {
                     "line_number": 7,
+                    "function_name": "SwitchTestIssue783::checkSwitch()",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "8047128d0af317bb6db2334074f87249"
                 },
                 {
                     "line_number": 8,
+                    "function_name": "SwitchTestIssue783::checkSwitch()",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "71141f5f8e2b02f7d299dc009098f134"
                 },
                 {
                     "line_number": 9,
+                    "function_name": "SwitchTestIssue783::checkSwitch()",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
@@ -2187,12 +2376,14 @@
             "lines": [
                 {
                     "line_number": 17,
+                    "function_name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d23ee0504026734c593c30a7231387ed"
                 },
                 {
                     "line_number": 18,
+                    "function_name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)",
                     "count": 1,
                     "branches": [
                         {
@@ -2224,6 +2415,7 @@
                 },
                 {
                     "line_number": 19,
+                    "function_name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "90473f043e847e68da8d588d72e3de20",
@@ -2234,6 +2426,7 @@
                 },
                 {
                     "line_number": 20,
+                    "function_name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "3020e494435c1480987210ff58a9cee4",
@@ -2244,6 +2437,7 @@
                 },
                 {
                     "line_number": 21,
+                    "function_name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "69a9613ffc070fae51be672517d8d38a",
@@ -2254,6 +2448,7 @@
                 },
                 {
                     "line_number": 23,
+                    "function_name": "SwitchTestIssue783::doSomething(EnumNamespace::SomeEnum)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "10768d314ff01a06ad913aa6ed6ece64"

@@ -28,7 +28,7 @@
                 <div class="mr-2" style="margin: auto;">{{info.branches.exec}}/{{info.branches.total}}</div>
                 <div class="Label--minw"><span class="{{info.branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.branches.coverage}}%</span></div>
             </div>
-            {% if not EXCLUDE_CONDITIONS %}
+            {% if not EXCLUDE_CONDITION_COVERAGE %}
             <div class="d-flex">
                 <div class="mr-2">Conditions:</div>
                 <div class="mr-2" style="margin: auto;">{{info.conditions.exec}}/{{info.conditions.total}}</div>

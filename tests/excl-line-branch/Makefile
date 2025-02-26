@@ -14,31 +14,31 @@ json: coverage.json
 
 json_summary:
 	./testcase
-	cd ../.. ; $(GCOVR) --exclude-unreachable-branches -b -d --json-summary-pretty -o $(TEST_DIRECTORY)/summary_coverage.json $(TEST_DIRECTORY)
+	cd ../.. ; $(GCOVR) --exclude-unreachable-branches -d --json-summary-pretty -o $(TEST_DIRECTORY)/summary_coverage.json $(TEST_DIRECTORY)
 
 txt: coverage.json
-	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b -o $(TEST_DIRECTORY)/coverage.txt
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< --txt-metric branch -o $(TEST_DIRECTORY)/coverage.txt
 
 lcov: coverage.json
-	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --lcov $(TEST_DIRECTORY)/coverage.lcov
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< --lcov $(TEST_DIRECTORY)/coverage.lcov
 
 clover: coverage.json
-	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --clover-pretty --clover $(TEST_DIRECTORY)/clover.xml
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< --clover-pretty --clover $(TEST_DIRECTORY)/clover.xml
 
 cobertura: coverage.json
-	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --cobertura-pretty --cobertura $(TEST_DIRECTORY)/cobertura.xml
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< --cobertura-pretty --cobertura $(TEST_DIRECTORY)/cobertura.xml
 
 html: coverage.json
-	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --html-details -o $(TEST_DIRECTORY)/coverage.html
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< --html-details -o $(TEST_DIRECTORY)/coverage.html
 
 sonarqube: coverage.json
-	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --sonarqube $(TEST_DIRECTORY)/sonarqube.xml
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< --sonarqube $(TEST_DIRECTORY)/sonarqube.xml
 
 jacoco: coverage.json
-	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --jacoco $(TEST_DIRECTORY)/jacoco.xml
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< --jacoco $(TEST_DIRECTORY)/jacoco.xml
 
 coveralls: coverage.json
-	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< -b --coveralls-pretty --coveralls $(TEST_DIRECTORY)/coveralls.json
+	cd ../.. ; $(GCOVR) -a $(TEST_DIRECTORY)/$< --coveralls-pretty --coveralls $(TEST_DIRECTORY)/coveralls.json
 
 clean:
 	rm -f testcase

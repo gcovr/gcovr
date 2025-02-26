@@ -4,7 +4,7 @@
     <tr>
       <th align="right">Line</th>
       <th align="right">Branch</th>
-      {% if not EXCLUDE_CONDITIONS %}
+      {% if not EXCLUDE_CONDITION_COVERAGE %}
       <th align="right">Condition</th>
       {% endif %}
       {% if SHOW_DECISION %}
@@ -28,11 +28,12 @@
     <tr class="source-line">
       <td class="lineno"><a id="{{ anchor_prefix }}l{{row.lineno}}" href="#{{ anchor_prefix }}l{{row.lineno}}">{{row.lineno}}</a></td>
       <td class="linebranch">
-        {% if row.linebranch %}
+        {% if row.line_branches %}
         <details class="linebranchDetails">
-          <summary class="linebranchSummary">{{row.linebranch.taken}}/{{row.linebranch.total}}</summary>
+          <summary class="linebranchSummary">{{row.line_branches | sum(attribute='taken')}}/{{row.line_branches | sum(attribute='total')}}</summary>
           <div class="linebranchContents">
-            {% for branch in row.linebranch.branches %}
+            {% for linebranch in row.line_branches %}
+            {% for branch in linebranch.branches %}
             {% if branch.source_block_id %}
             {%  set block_info = " (%d&rightarrow;%d)" | format(branch.source_block_id, branch.destination_block_id) | safe %}
             {% else %}
@@ -44,47 +45,61 @@
             <div class="takenBranch">&check; Branch {{branch.name}}{{block_info}} taken {{branch.count}} times.</div>
             {% else %}
             <div class="notTakenBranch">&cross; Branch {{branch.name}}{{block_info}} not taken.</div>
-            {% endif%}
+            {% endif %}
+            {% endfor %}
+            {% if loop.length > 1 and not loop.last %}
+            <hr />
+            {% endif %}
             {% endfor %}
           </div>
         </details>
         {% endif %}
       </td>
-      {% if not EXCLUDE_CONDITIONS %}
+      {% if not EXCLUDE_CONDITION_COVERAGE %}
       <td class="linecondition">
-        {% if row.linecondition %}
+        {% if row.line_conditions %}
           <details class="lineconditionDetails">
-          <summary class="lineconditionSummary">{{row.linecondition.covered}}/{{row.linecondition.count}}</summary>
-          <div class="lineconditionContents">
-            {% for condition in row.linecondition.condition %}
-            {% if condition.not_covered_true and condition.not_covered_false %}
-            <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Not covered.</div>
-            {% elif condition.not_covered_true %}
-            <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}True not covered.</div>
-            {% elif condition.not_covered_false %}
-            <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}False not covered.</div>
-            {% else %}
-            <div class="takenCondition">&check; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Fully covered.</div>
-            {% endif%}
-            {% endfor %}
-          </div>
-         </details>
+            <summary class="lineconditionSummary">{{row.line_conditions | sum(attribute='covered') }}/{{row.line_conditions | sum(attribute='count')}}</summary>
+            <div class="lineconditionContents">
+              {% for linecondition in row.line_conditions %}
+              {% for condition in linecondition.condition %}
+              {% if condition.not_covered_true and condition.not_covered_false %}
+              <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Not covered.</div>
+              {% elif condition.not_covered_true %}
+              <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}True not covered.</div>
+              {% elif condition.not_covered_false %}
+              <div class="notTakenCondition">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}False not covered.</div>
+              {% else %}
+              <div class="takenCondition">&check; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Fully covered.</div>
+              {% endif%}
+              {% endfor %}
+              {% if loop.length > 1 and not loop.last %}
+              <hr />
+              {% endif %}
+              {% endfor %}
+            </div>
+            </details>
         {% endif %}
       </td>
       {% endif %}
       {% if SHOW_DECISION %}
       <td class="linedecision">
-        {% if row.linedecision %}
+        {% if row.line_decisions %}
         <details class="linedecisionDetails">
-          <summary class="linedecisionSummary">{{row.linedecision.taken}}/{{row.linedecision.total}}</summary>
+          <summary class="linedecisionSummary">{{row.line_decisions | sum(attribute='taken')}}/{{row.line_decisions | sum(attribute='total')}}</summary>
           <div class="linedecisionContents">
-            {% for decision in row.linedecision.decisions %}
+            {% for linedecision in row.line_decisions %}
+            {% for decision in linedecision.decisions %}
             {% if decision.uncheckable %}
             <div class="uncheckedDecision">? Decision couldn't be analyzed.</div>
             {% elif decision.taken %}
             <div class="takenDecision">&check; Decision '{{decision.name}}' taken {{decision.count}} times.</div>
             {% else %}
             <div class="notTakenDecision">&cross; Decision '{{decision.name}}' not taken.</div>
+            {% endif %}
+            {% endfor %}
+            {% if loop.length > 1 and not loop.last %}
+            <hr />
             {% endif %}
             {% endfor %}
           </div>
@@ -94,26 +109,31 @@
       {% endif %}
       {% if not EXCLUDE_CALLS %}
       <td class="linecall">
-        {% if row.linecall %}
+        {% if row.line_calls %}
           <details class="linecallDetails">
-          <summary class="linecallSummary">{{row.linecall.invoked}}/{{row.linecall.total}}</summary>
+          <summary class="linecallSummary">{{row.line_calls | sum(attribute='invoked')}}/{{row.line_calls | sum(attribute='total')}}</summary>
           <div class="linecallContents">
-            {% for call in row.linecall.calls %}
+            {% for linecall in row.line_calls %}
+            {% for call in linecall.calls %}
             {% if call.invoked %}
             <div class="takenBranch">&check; Call {{call.name}} invoked.</div>
             {% else %}
             <div class="notTakenBranch">&cross; Call {{call.name}} not invoked.</div>
             {% endif%}
             {% endfor %}
+            {% if loop.length > 1 and not loop.last %}
+            <hr />
+            {% endif %}
+            {% endfor %}
           </div>
-         </details>
-        {% endif %}
+          {% endif %}
+        </details>
       </td>
       {% endif %}
       <td class="linecount {{row.covclass}}">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
       <td class="src {{row.covclass}}">{{row.source}}</td>
       {% if USE_BLOCK_IDS %}
-      <td class="lineblockids">{{row.block_ids | join(', ')}}</td>
+      <td class="lineblockids">{% if row.block_ids %}{{row.block_ids | join(', ')}}{% endif %}</td>
       {% endif %}
     </tr>
     {% endfor %}

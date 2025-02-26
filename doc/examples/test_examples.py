@@ -84,7 +84,9 @@ def test_example(example: Example) -> None:
     with open(  # nosemgrep # It's intended to use the local
         baseline_file, newline="", encoding="utf-8"
     ) as f:
-        baseline = scrub(f.read())
+        baseline = f.read()
+        if scrub is not None:
+            baseline = scrub(baseline)
 
     start_dirname = os.getcwd()
     os.chdir(data_dirname)
@@ -92,8 +94,9 @@ def test_example(example: Example) -> None:
     with open(  # nosemgrep # It's intended to use the local
         baseline_file, newline="", encoding="utf-8"
     ) as f:
-        current = scrub(f.read())
-    current = scrub(current)
+        current = f.read()
+        if scrub is not None:
+            current = scrub(current)
 
     assert_equals(baseline_file, baseline, "<STDOUT>", current, encoding="utf8")
     os.chdir(start_dirname)

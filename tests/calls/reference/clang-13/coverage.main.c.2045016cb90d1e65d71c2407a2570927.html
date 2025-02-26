@@ -26,7 +26,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>0000-00-00 00:00:00</td>
+      <td>2025-01-20 20:18:07+00:00</td>
     </tr>
   </table>
 </div>
@@ -74,12 +74,14 @@
     <tr>
       <th>Function (Line)</th>
       <th>Call count</th>
+      <th>Line coverage</th>
+      <th>Branch coverage</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l3">function1() (line 3)</a></td><td>called 33 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l9">function2() (line 9)</a></td><td>called 27 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l15">function3(int) (line 15)</a></td><td>not called</td><td>0.0%</td></tr>
-    <tr><td><a href="#l21">main (line 21)</a></td><td>called 3 times</td><td>73.0%</td></tr>
+    <tr><td><a href="#l3">function1() (line 3)</a></td><td>called 33 times</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l9">function2() (line 9)</a></td><td>called 27 times</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l15">function3(int) (line 15)</a></td><td>not called</td><td>0.0%</td><td>-%</td><td>0.0%</td></tr>
+    <tr><td><a href="#l21">main (line 21)</a></td><td>called 3 times</td><td>79.2%</td><td>68.8%</td><td>73.0%</td></tr>
   </table>
 </details>
 
@@ -99,6 +101,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span></td>
@@ -108,6 +111,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "></td>
@@ -117,6 +121,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">33</td>
       <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"></span></td>
@@ -126,6 +135,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">{</span><span class="w"></span></td>
@@ -135,15 +145,25 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">33</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Inside function()</span><span class="se">/n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Inside function()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l6" href="#l6">6</a></td>
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">33</td>
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
@@ -153,6 +173,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">}</span><span class="w"></span></td>
@@ -162,6 +183,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "></td>
@@ -171,6 +193,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">27</td>
       <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function2</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"></span></td>
@@ -180,6 +207,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">{</span><span class="w"></span></td>
@@ -189,15 +217,25 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">27</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Inside function2()</span><span class="se">/n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Inside function2()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l12" href="#l12">12</a></td>
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">27</td>
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
@@ -207,6 +245,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">}</span><span class="w"></span></td>
@@ -216,6 +255,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "></td>
@@ -225,6 +265,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
       <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function3</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"></span></td>
@@ -234,6 +279,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">{</span><span class="w"></span></td>
@@ -243,15 +289,25 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Inside function3()</span><span class="se">/n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Inside function3()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l18" href="#l18">18</a></td>
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
       <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
@@ -261,6 +317,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">}</span><span class="w"></span></td>
@@ -270,6 +327,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "></td>
@@ -279,6 +337,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">3</td>
       <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"></span></td>
@@ -288,6 +351,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">{</span><span class="w"></span></td>
@@ -297,15 +361,25 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">3</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;test</span><span class="se">/n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;test</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l24" href="#l24">24</a></td>
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">3</td>
       <td class="src coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
@@ -315,6 +389,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">3</td>
       <td class="src coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
@@ -324,6 +403,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">3</td>
       <td class="src coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
@@ -333,6 +417,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "></td>
@@ -349,6 +434,11 @@
         </details>
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">9</td>
       <td class="src coveredLine"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
@@ -365,6 +455,11 @@
         </details>
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">24</td>
       <td class="src coveredLine"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
@@ -374,6 +469,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">18</td>
       <td class="src coveredLine"><span class="w">            </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
@@ -392,6 +492,11 @@
         </details>
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">18</td>
       <td class="src coveredLine"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
@@ -401,6 +506,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">9</td>
       <td class="src coveredLine"><span class="w">                </span><span class="n">function2</span><span class="p">();</span><span class="w"></span></td>
@@ -410,6 +520,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">9</td>
       <td class="src coveredLine"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
@@ -419,6 +534,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">9</td>
       <td class="src coveredLine"><span class="w">                </span><span class="n">function1</span><span class="p">();</span><span class="w"></span></td>
@@ -428,6 +548,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="w">            </span><span class="p">}</span><span class="w"></span></td>
@@ -444,6 +565,11 @@
         </details>
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount partialCoveredLine">12</td>
       <td class="src partialCoveredLine"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
@@ -453,6 +579,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="w">                </span><span class="c1">// Never called</span></td>
@@ -462,6 +589,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
       <td class="src uncoveredLine"><span class="w">                </span><span class="n">function3</span><span class="p">(</span><span class="n">function2</span><span class="p">());</span><span class="w"></span></td>
@@ -471,6 +603,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
       <td class="src uncoveredLine"><span class="w">                </span><span class="n">function2</span><span class="p">();</span><span class="w"></span></td>
@@ -480,6 +617,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
       <td class="src uncoveredLine"><span class="w">            </span><span class="p">}</span><span class="w"></span></td>
@@ -489,6 +631,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">12</td>
       <td class="src coveredLine"><span class="w">            </span><span class="n">function2</span><span class="p">();</span><span class="w"></span></td>
@@ -498,6 +645,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">12</td>
       <td class="src coveredLine"><span class="w">            </span><span class="n">function2</span><span class="p">();</span><span class="w"></span></td>
@@ -507,6 +659,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="w">            </span><span class="c1">//    called                not called            called                not called</span></td>
@@ -527,6 +680,11 @@
         </details>
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount partialCoveredLine">12</td>
       <td class="src partialCoveredLine"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(((</span><span class="n">function1</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">function2</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">((</span><span class="n">function1</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">function2</span><span class="p">()</span><span class="o">!=</span><span class="mi">1</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
@@ -536,6 +694,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="w">                </span><span class="c1">// never called</span></td>
@@ -545,6 +704,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
       <td class="src uncoveredLine"><span class="w">                </span><span class="n">function2</span><span class="p">();</span><span class="w"></span></td>
@@ -554,6 +718,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
       <td class="src uncoveredLine"><span class="w">            </span><span class="p">}</span><span class="w"></span></td>
@@ -563,6 +732,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">12</td>
       <td class="src coveredLine"><span class="w">        </span><span class="p">}</span><span class="w"></span></td>
@@ -572,6 +746,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">6</td>
       <td class="src coveredLine"><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
@@ -581,6 +760,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "></td>
@@ -590,6 +770,11 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+          <details class="linecallDetails">
+          <summary class="linecallSummary">0/0</summary>
+          <div class="linecallContents">
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">3</td>
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
@@ -599,6 +784,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">}</span><span class="w"></span></td>
@@ -608,6 +794,7 @@
       <td class="linebranch">
       </td>
       <td class="linecall">
+        </details>
       </td>
       <td class="linecount "></td>
       <td class="src "></td>

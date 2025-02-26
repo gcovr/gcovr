@@ -670,21 +670,6 @@ GCOVR_CONFIG_OPTIONS = [
         ),
     ),
     GcovrConfigOption(
-        "merge_mode_conditions",
-        ["--merge-mode-conditions"],
-        metavar="MERGE_MODE",
-        group="gcov_options",
-        choices=(
-            "strict",
-            "fold",
-        ),
-        default="strict",
-        help=(
-            "The merge mode for condition coverage from different gcov files for same sourcefile. "
-            "Default is '{default!s}'."
-        ),
-    ),
-    GcovrConfigOption(
         "exclude_internal_functions",
         ["--include-internal-functions"],
         group="gcov_options",

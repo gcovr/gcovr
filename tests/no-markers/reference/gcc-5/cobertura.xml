@@ -8,7 +8,49 @@
     <package name="" line-rate="0.83333" branch-rate="0.5" complexity="0.0">
       <classes>
         <class name="main_cpp" filename="main.cpp" line-rate="0.83333" branch-rate="0.5" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="foo" signature="(int)" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="5" hits="0" branch="false"/>
+                <line number="7" hits="1" branch="false"/>
+                <line number="10" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="11" hits="0" branch="false"/>
+                <line number="13" hits="1" branch="false"/>
+                <line number="16" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="bar" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="18" hits="1" branch="false"/>
+                <line number="19" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="20" hits="0" branch="false"/>
+                <line number="22" hits="1" branch="false"/>
+                <line number="24" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="26" hits="1" branch="false"/>
+                <line number="27" hits="1" branch="false"/>
+                <line number="28" hits="1" branch="false"/>
+                <line number="29" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="3" hits="1" branch="false"/>
             <line number="4" hits="1" branch="true" condition-coverage="50% (1/2)">

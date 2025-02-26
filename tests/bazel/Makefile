@@ -52,4 +52,4 @@ endif
 clean:
 	rm -f *.gc*
 	rm -rf bazel-*
-	rm -f coverage*.json MODULE.bazel.lock
+	rm -f coverage*.json MODULE.bazel.lock ../lib.pic\#\#*.gcov.json.gz ../../lib.pic\#\#*.gcov.json.gz
