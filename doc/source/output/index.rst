@@ -12,6 +12,7 @@ that are documented on the following pages.
    html
    csv
    json
+   markdown
    clover
    cobertura
    coveralls
