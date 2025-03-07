@@ -36,6 +36,7 @@ gcovr
 .. |abstract-guide-csv| replace:: :ref:`csv_output`
 .. |abstract-guide-json| replace:: :ref:`json_output`
 .. |abstract-guide-json-summary| replace:: :ref:`json_output`
+.. |abstract-guide-markdown| replace:: :ref:`markdown_output`
 .. |abstract-guide-markdown-summary| replace:: :ref:`markdown_output`
 
 .. |abstract-guide-clover| replace:: :ref:`clover_output`

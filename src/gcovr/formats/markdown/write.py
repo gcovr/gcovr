@@ -29,23 +29,23 @@ from ...utils import (
 
 SUMMARY_TEMPLATE = """# Test coverage
 ## 📂 Overall coverage
-||Coverage|
-|-|-|
-|**Lines**|{line_badge} {line_covered}/{line_total} ({line_percent}%)|
-|**Functions**|{function_badge} {function_covered}/{function_total} ({function_percent}%)|
-|**Branches**|{branch_badge} {branch_covered}/{branch_total} ({branch_percent}%)|
+|               | Coverage                                                                   |
+|---------------|----------------------------------------------------------------------------|
+| **Lines**     | {line_badge} {line_covered}/{line_total} ({line_percent}%)                 |
+| **Functions** | {function_badge} {function_covered}/{function_total} ({function_percent}%) |
+| **Branches**  | {branch_badge} {branch_covered}/{branch_total} ({branch_percent}%)         |
 """
 
 FILE_HEADER = """## 📄 File coverage
-|File|Lines|Functions|Branches|
-|-|-|-|-|
+| File | Lines | Functions | Branches |
+|------|-------|-----------|----------|
 """
 
 FILE_TEMPLATE = (
-    "|**`{filename}`**|"
-    "{line_badge} {line_covered}/{line_total} ({line_percent}%)|"
-    "{function_badge} {function_covered}/{function_total} ({function_percent}%)|"
-    "{branch_badge} {branch_covered}/{branch_total} ({branch_percent}%)|\n"
+    "| **`{filename}`**"
+    " | {line_badge} {line_covered}/{line_total} ({line_percent}%)"
+    " | {function_badge} {function_covered}/{function_total} ({function_percent}%)"
+    " | {branch_badge} {branch_covered}/{branch_total} ({branch_percent}%) |\n"
 )
 
 

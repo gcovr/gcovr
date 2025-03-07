@@ -64,31 +64,31 @@ class MarkdownHandler(BaseHandler):
             ),
             GcovrConfigOption(
                 "md_medium_threshold",
-                ["--md-medium-threshold"],
+                ["--markdown-medium-threshold"],
                 group="output_options",
                 type=check_percentage,
                 metavar="MEDIUM",
                 help=(
                     "If the coverage is below MEDIUM, the value is marked "
-                    "as low coverage in the HTML report. "
+                    "as low coverage in the markdown report. "
                     "MEDIUM has to be lower than or equal to value of --md-high-threshold "
                     "and greater than 0. "
-                    "If MEDIUM is equal to value of --md-high-threshold the report has "
+                    "If MEDIUM is equal to value of --markdown-high-threshold the report has "
                     "only high and low coverage. Default is {default!s}."
                 ),
                 default=75.0,
             ),
             GcovrConfigOption(
                 "md_high_threshold",
-                ["--md-high-threshold"],
+                ["--markdown-high-threshold"],
                 group="output_options",
                 type=check_percentage,
                 metavar="HIGH",
                 help=(
                     "If the coverage is below HIGH, the value is marked "
-                    "as medium coverage in the HTML report. "
-                    "HIGH has to be greater than or equal to value of --md-medium-threshold. "
-                    "If HIGH is equal to value of --md-medium-threshold the report has "
+                    "as medium coverage in the markdown report. "
+                    "HIGH has to be greater than or equal to value of --markdown-medium-threshold. "
+                    "If HIGH is equal to value of --markdown-medium-threshold the report has "
                     "only high and low coverage. Default is {default!s}."
                 ),
                 default=90.0,

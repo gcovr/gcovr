@@ -51,6 +51,10 @@ The ``gcovr`` command can produce different kinds of coverage reports:
      - |abstract-guide-json-summary|
      - JSON summary coverage report
 
+   * - |abstract-option-markdown|
+     - |abstract-guide-markdown|
+     - Markdown coverage report
+
    * - |abstract-option-markdown-summary|
      - |abstract-guide-markdown-summary|
      - Markdown summary coverage report

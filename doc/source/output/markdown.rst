@@ -4,9 +4,9 @@
 Markdown Output
 ===============
 
-.. versionadded:: 9.0
+.. versionadded:: NEXT
 
-The ``gcovr`` command can lso generate Markdown output using
+The ``gcovr`` command can also generate Markdown output using
 the :option:`--markdown<gcovr --markdown>` option::
 
     gcovr --markdown coverage.md
