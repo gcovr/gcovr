@@ -26,27 +26,36 @@ from ...utils import (
     presentable_filename,
     open_text_for_writing,
 )
-
-SUMMARY_TEMPLATE = """# Test coverage
-## 📂 Overall coverage
-|               | Coverage                                                                   |
-|---------------|----------------------------------------------------------------------------|
-| **Lines**     | {line_badge} {line_covered}/{line_total} ({line_percent}%)                 |
-| **Functions** | {function_badge} {function_covered}/{function_total} ({function_percent}%) |
-| **Branches**  | {branch_badge} {branch_covered}/{branch_total} ({branch_percent}%)         |
-"""
-
-FILE_HEADER = """## 📄 File coverage
-| File | Lines | Functions | Branches |
-|------|-------|-----------|----------|
-"""
-
-FILE_TEMPLATE = (
-    "| **`{filename}`**"
-    " | {line_badge} {line_covered}/{line_total} ({line_percent}%)"
-    " | {function_badge} {function_covered}/{function_total} ({function_percent}%)"
-    " | {branch_badge} {branch_covered}/{branch_total} ({branch_percent}%) |\n"
+from jinja2 import (
+    BaseLoader,
+    Environment,
+    ChoiceLoader,
+    FileSystemLoader,
+    FunctionLoader,
+    PackageLoader,
+    Template,
 )
+
+
+# markdown_theme string is <theme_directory>.<color> or only <color> (if only color use default)
+# examples: github.green github.blue or blue or green
+def get_theme_name(theme: str) -> str:
+    """Get the theme name without the color."""
+    return theme.split(".")[0] if "." in theme else "default"
+
+
+def templates(options: Options) -> Environment:
+    loader: BaseLoader = PackageLoader(
+        "gcovr.formats.markdown",
+        package_path=get_theme_name(options.markdown_theme),
+    )
+
+    return Environment(
+        loader=loader,
+        autoescape=True,
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
 
 
 def write_report(
@@ -54,10 +63,11 @@ def write_report(
 ) -> None:
     """produce the gcovr report in markdown"""
 
+    data = {"info": {"summary": options.markdown_summary is not None}}
+
     with open_text_for_writing(output_file, "coverage.md") as fh:
         summary = _summary_from_stats(covdata.stats, options)
-        fh.write(SUMMARY_TEMPLATE.format(**summary))
-        fh.write(FILE_HEADER)
+        data["info"].update(summary)
 
         # Data
         sorted_keys = covdata.sort_coverage(
@@ -66,32 +76,26 @@ def write_report(
             by_metric="branch" if options.sort_branches else "line",
         )
 
+        data["entries"] = list()
         for key in sorted_keys:
             summary = _summary_from_stats(covdata[key].stats, options)
             summary["filename"] = presentable_filename(
                 covdata[key].filename, options.root_filter
             )
-            fh.write(FILE_TEMPLATE.format(**summary))
+            data["entries"].append(summary)
+
+        markdown_string = (
+            templates(options).get_template("report_template.md").render(**data)
+        )
+        fh.write(markdown_string)
 
 
-def write_summary_report(
-    covdata: CoverageContainer, output_file: str, options: Options
-) -> None:
-    """produce the gcovr summary report in markdown"""
-
-    with open_text_for_writing(output_file, "coverage.md") as fh:
-        summary = _summary_from_stats(covdata.stats, options)
-        fh.write(SUMMARY_TEMPLATE.format(**summary))
-
-
-def _coverage_to_badge(
-    coverage: Optional[float], medium_threshold: float, high_threshold: float
-) -> str:
+def _coverage_to_badge(coverage: Optional[float], options: Options) -> str:
     if coverage is None:
         return "⚫"
-    elif coverage >= high_threshold:
-        return "🟢"
-    elif coverage >= medium_threshold:
+    elif coverage >= options.md_high_threshold:
+        return "🔵" if options.markdown_theme == "blue" else "🟢"
+    elif coverage >= options.md_medium_threshold:
         return "🟡"
     else:
         return "🔴"
@@ -100,15 +104,9 @@ def _coverage_to_badge(
 def _summary_from_stats(stats: SummarizedStats, options: Options) -> dict[str, Any]:
     summary = dict[str, Any]()
 
-    summary["line_badge"] = _coverage_to_badge(
-        stats.line.percent, options.md_medium_threshold, options.md_high_threshold
-    )
-    summary["function_badge"] = _coverage_to_badge(
-        stats.function.percent, options.md_medium_threshold, options.md_high_threshold
-    )
-    summary["branch_badge"] = _coverage_to_badge(
-        stats.branch.percent, options.md_medium_threshold, options.md_high_threshold
-    )
+    summary["line_badge"] = _coverage_to_badge(stats.line.percent, options)
+    summary["function_badge"] = _coverage_to_badge(stats.function.percent, options)
+    summary["branch_badge"] = _coverage_to_badge(stats.branch.percent, options)
     summary["line_covered"] = stats.line.covered
     summary["line_total"] = stats.line.total
     summary["line_percent"] = stats.line.percent_or(0.0)

@@ -25,6 +25,10 @@ from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault, check_percentage
 
 LOGGER = logging.getLogger("gcovr")
+THEMES = (
+    "green",
+    "blue",
+)
 
 
 class MarkdownHandler(BaseHandler):
@@ -61,6 +65,19 @@ class MarkdownHandler(BaseHandler):
                 type=OutputOrDefault,
                 default=None,
                 const=OutputOrDefault(None),
+            ),
+            GcovrConfigOption(
+                "markdown_theme",
+                ["--markdown-theme"],
+                group="output_options",
+                type=str,
+                choices=THEMES,
+                metavar="THEME",
+                help=(
+                    "Override the default color theme for the Markdown report. "
+                    "Default is {default!s}."
+                ),
+                default=THEMES[0],
             ),
             GcovrConfigOption(
                 "md_medium_threshold",

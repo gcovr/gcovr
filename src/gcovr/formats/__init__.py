@@ -253,7 +253,7 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
         generators.append(
             (
                 [options.markdown_summary],
-                MarkdownHandler(options).write_summary_report,
+                MarkdownHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "Markdown summary output skipped - "
                     "consider providing an output file with `--markdown-summary=OUTPUT`."
