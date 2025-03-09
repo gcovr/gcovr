@@ -51,6 +51,14 @@ The ``gcovr`` command can produce different kinds of coverage reports:
      - |abstract-guide-json-summary|
      - JSON summary coverage report
 
+   * - |abstract-option-markdown|
+     - |abstract-guide-markdown|
+     - Markdown coverage report
+
+   * - |abstract-option-markdown-summary|
+     - |abstract-guide-markdown-summary|
+     - Markdown summary coverage report
+
    * - |abstract-option-clover|
      - |abstract-guide-clover|
      - machine readable XML reports in Clover_ format
@@ -105,6 +113,8 @@ text summaries and XML reports.
 .. |abstract-option-csv| replace:: ``--csv``
 .. |abstract-option-json| replace:: ``--json``
 .. |abstract-option-json-summary| replace:: ``--json-summary``
+.. |abstract-option-markdown| replace:: ``--markdown``
+.. |abstract-option-markdown-summary| replace:: ``--markdown-summary``
 
 .. |abstract-option-clover| replace:: ``--clover``
 .. |abstract-option-cobertura| replace:: ``--cobertura``
@@ -120,6 +130,8 @@ text summaries and XML reports.
 .. |abstract-guide-csv| replace:: `CSV Output <https://gcovr.com/en/stable/output/csv.html>`__
 .. |abstract-guide-json| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
 .. |abstract-guide-json-summary| replace:: `JSON Output <https://gcovr.com/en/stable/output/json.html>`__
+.. |abstract-guide-markdown| replace:: `Markdown Output <https://gcovr.com/en/stable/output/markdown.html>`__
+.. |abstract-guide-markdown-summary| replace:: `Markdown Output <https://gcovr.com/en/stable/output/markdown.html>`__
 
 .. |abstract-guide-clover| replace:: `Clover XML Output <https://gcovr.com/en/stable/output/clover.html>`__
 .. |abstract-guide-cobertura| replace:: `Cobertura XML Output <https://gcovr.com/en/stable/output/cobertura.html>`__
