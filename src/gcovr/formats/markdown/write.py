@@ -90,12 +90,17 @@ def write_report(
         fh.write(markdown_string)
 
 
-def _coverage_to_badge(coverage: Optional[float], options: Options) -> str:
+def _coverage_to_badge(
+    coverage: Optional[float],
+    medium_threshold: float,
+    high_threshold: float,
+    theme: str,
+) -> str:
     if coverage is None:
         return "⚫"
-    elif coverage >= options.md_high_threshold:
-        return "🔵" if options.markdown_theme == "blue" else "🟢"
-    elif coverage >= options.md_medium_threshold:
+    elif coverage >= high_threshold:
+        return "🔵" if theme == "blue" else "🟢"
+    elif coverage >= medium_threshold:
         return "🟡"
     else:
         return "🔴"
@@ -104,9 +109,24 @@ def _coverage_to_badge(coverage: Optional[float], options: Options) -> str:
 def _summary_from_stats(stats: SummarizedStats, options: Options) -> dict[str, Any]:
     summary = dict[str, Any]()
 
-    summary["line_badge"] = _coverage_to_badge(stats.line.percent, options)
-    summary["function_badge"] = _coverage_to_badge(stats.function.percent, options)
-    summary["branch_badge"] = _coverage_to_badge(stats.branch.percent, options)
+    summary["line_badge"] = _coverage_to_badge(
+        stats.line.percent,
+        options.medium_threshold_line,
+        options.high_threshold_line,
+        options.markdown_theme,
+    )
+    summary["function_badge"] = _coverage_to_badge(
+        stats.function.percent,
+        options.medium_threshold,
+        options.high_threshold,
+        options.markdown_theme,
+    )
+    summary["branch_badge"] = _coverage_to_badge(
+        stats.branch.percent,
+        options.medium_threshold_branch,
+        options.high_threshold_branch,
+        options.markdown_theme,
+    )
     summary["line_covered"] = stats.line.covered
     summary["line_total"] = stats.line.total
     summary["line_percent"] = stats.line.percent_or(0.0)

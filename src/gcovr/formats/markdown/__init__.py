@@ -38,8 +38,12 @@ class MarkdownHandler(BaseHandler):
     def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
             # Global options needed for report
-            "exclude_calls",
-            "show_decision",  # Only for summary report
+            "medium_threshold",
+            "high_threshold",
+            "medium_threshold_branch",
+            "high_threshold_branch",
+            "medium_threshold_line",
+            "high_threshold_line",
             # Local options
             GcovrConfigOption(
                 "markdown",
@@ -78,37 +82,6 @@ class MarkdownHandler(BaseHandler):
                     "Default is {default!s}."
                 ),
                 default=THEMES[0],
-            ),
-            GcovrConfigOption(
-                "md_medium_threshold",
-                ["--markdown-medium-threshold"],
-                group="output_options",
-                type=check_percentage,
-                metavar="MEDIUM",
-                help=(
-                    "If the coverage is below MEDIUM, the value is marked "
-                    "as low coverage in the markdown report. "
-                    "MEDIUM has to be lower than or equal to value of --md-high-threshold "
-                    "and greater than 0. "
-                    "If MEDIUM is equal to value of --markdown-high-threshold the report has "
-                    "only high and low coverage. Default is {default!s}."
-                ),
-                default=75.0,
-            ),
-            GcovrConfigOption(
-                "md_high_threshold",
-                ["--markdown-high-threshold"],
-                group="output_options",
-                type=check_percentage,
-                metavar="HIGH",
-                help=(
-                    "If the coverage is below HIGH, the value is marked "
-                    "as medium coverage in the markdown report. "
-                    "HIGH has to be greater than or equal to value of --markdown-medium-threshold. "
-                    "If HIGH is equal to value of --markdown-medium-threshold the report has "
-                    "only high and low coverage. Default is {default!s}."
-                ),
-                default=90.0,
             ),
         ]
 

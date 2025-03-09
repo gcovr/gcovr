@@ -225,12 +225,12 @@ class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
     def __init__(self, options: Options) -> None:
-        self.medium_threshold = options.html_medium_threshold
-        self.high_threshold = options.html_high_threshold
-        self.medium_threshold_line = options.html_medium_threshold_line
-        self.high_threshold_line = options.html_high_threshold_line
-        self.medium_threshold_branch = options.html_medium_threshold_branch
-        self.high_threshold_branch = options.html_high_threshold_branch
+        self.medium_threshold = options.medium_threshold
+        self.high_threshold = options.high_threshold
+        self.medium_threshold_line = options.medium_threshold_line
+        self.high_threshold_line = options.high_threshold_line
+        self.medium_threshold_branch = options.medium_threshold_branch
+        self.high_threshold_branch = options.high_threshold_branch
         self.link_function_list = (options.html_details or options.html_nested) and (
             options.html_single_page != "static"
         )
@@ -294,12 +294,12 @@ def write_report(
 ) -> None:
     """Write the HTML report"""
     css_data = CssRenderer.render(options)
-    medium_threshold = options.html_medium_threshold
-    high_threshold = options.html_high_threshold
-    medium_threshold_line = options.html_medium_threshold_line
-    high_threshold_line = options.html_high_threshold_line
-    medium_threshold_branch = options.html_medium_threshold_branch
-    high_threshold_branch = options.html_high_threshold_branch
+    medium_threshold = options.medium_threshold
+    high_threshold = options.high_threshold
+    medium_threshold_line = options.medium_threshold_line
+    high_threshold_line = options.high_threshold_line
+    medium_threshold_branch = options.medium_threshold_branch
+    high_threshold_branch = options.high_threshold_branch
     exclude_calls = options.exclude_calls
     show_decision = options.show_decision
 
