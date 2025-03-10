@@ -161,10 +161,10 @@ class DecisionParser:
             The encoding of the source files
     """
 
-    def __init__(self, coverage: FileCoverage, lines: list[str]) -> None:
+    def __init__(self, filecov: FileCoverage, lines: list[str]) -> None:
         # If there are several line coverage definitions for the same line we ignore all of them
         self.linecov_by_line: dict[int, Optional[LineCoverage]] = {}
-        for linecov in coverage.lines.values():
+        for linecov in filecov.lines.values():
             if linecov.lineno in self.linecov_by_line:
                 self.linecov_by_line[linecov.lineno] = None
             else:

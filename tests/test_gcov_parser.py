@@ -319,14 +319,14 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
     expected_uncovered_lines = GCOV_8_EXPECTED_UNCOVERED_LINES[source_filename]
     expected_uncovered_branches = GCOV_8_EXPECTED_UNCOVERED_BRANCHES[source_filename]
 
-    coverage, lines = text.parse_coverage(
+    filecov, lines = text.parse_coverage(
         filename="tmp.cpp",
         lines=lines,
         ignore_parse_errors=None,
     )
 
     apply_all_exclusions(
-        coverage,
+        filecov,
         lines=lines,
         options=ExclusionOptions(
             exclude_throw_branches=GCOV_8_EXCLUDE_THROW_BRANCHES.get(
@@ -336,11 +336,11 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
     )
 
     uncovered_lines = [
-        linecov.lineno for linecov in coverage.lines.values() if linecov.is_uncovered
+        linecov.lineno for linecov in filecov.lines.values() if linecov.is_uncovered
     ]
     uncovered_branches = [
         linecov.lineno
-        for linecov in coverage.lines.values()
+        for linecov in filecov.lines.values()
         if linecov.has_uncovered_branch
     ]
     assert uncovered_lines == expected_uncovered_lines
@@ -369,23 +369,21 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
         return coverage
 
     if ignore_errors:
-        coverage = run_the_parser()
+        filecov = run_the_parser()
 
         uncovered_lines = [
-            linecov.lineno
-            for linecov in coverage.lines.values()
-            if linecov.is_uncovered
+            linecov.lineno for linecov in filecov.lines.values() if linecov.is_uncovered
         ]
         uncovered_branches = [
             linecov.lineno
-            for linecov in coverage.lines.values()
+            for linecov in filecov.lines.values()
             if linecov.has_uncovered_branch
         ]
         assert uncovered_lines == []
         assert uncovered_branches == []
     else:
         with pytest.raises(text.UnknownLineType):
-            coverage = run_the_parser()
+            filecov = run_the_parser()
 
     messages = caplog.record_tuples
     message0 = messages[0]
@@ -557,14 +555,14 @@ def test_branch_exclusion(flags: str) -> None:
     if "exclude_unreachable_branches" in flags:
         expected_covered_branches -= {(2, 0, 0), (4, 0, 0)}
 
-    coverage, lines = text.parse_coverage(
+    filecov, lines = text.parse_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=None,
     )
 
     apply_all_exclusions(
-        coverage,
+        filecov,
         lines=lines,
         options=ExclusionOptions(
             exclude_throw_branches=("exclude_throw_branches" in flags),
@@ -574,7 +572,7 @@ def test_branch_exclusion(flags: str) -> None:
 
     covered_branches = {
         branch
-        for linecov in coverage.lines.values()
+        for linecov in filecov.lines.values()
         for branch in linecov.branches.keys()
     }
 
@@ -788,14 +786,14 @@ def test_negative_line_count_ignored(
         """
     )
 
-    coverage, _ = text.parse_coverage(
+    filecov, _ = text.parse_coverage(
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set([flag]),
     )
 
     covered_lines = {
-        linecov.lineno for linecov in coverage.lines.values() if linecov.is_covered
+        linecov.lineno for linecov in filecov.lines.values() if linecov.is_covered
     }
 
     assert covered_lines == {1, 3}
