@@ -26,7 +26,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>0000-00-00 00:00:00</td>
+      <td>2025-01-20 20:18:07+00:00</td>
     </tr>
   </table>
 </div>
@@ -40,8 +40,8 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>14</td>
-      <td>14</td>
+      <td>16</td>
+      <td>16</td>
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
@@ -52,9 +52,9 @@
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>8</td>
       <td>10</td>
-      <td class="coverage-medium">80.0%</td>
+      <td>14</td>
+      <td class="coverage-low">71.4%</td>
     </tr>
     <tr>
       <th scope="row">Conditions:</th>
@@ -79,18 +79,18 @@
       <th>Condition coverage</th>
       <th>Block coverage</th>
     </tr>
+    <tr><td><a href="#l44">sort_excluded() (line 44)</a></td><td>called 1 time</td><td>100.0%</td><td>50.0%</td><td>-%</td><td>92.3%</td></tr>
+    <tr><td><a href="#l66">sort_excluded_both() (line 66)</a></td><td>excluded</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l48">sort_lambda_excluded() (line 48)</a></td><td>called 1 time</td><td>100.0%</td><td>50.0%</td><td>-%</td><td>92.3%</td></tr>
     <tr><td><a href="#l19">bar(int) (line 19)</a></td><td>excluded</td><td>100.0%</td><td>-%</td><td>-%</td><td>80.0%</td></tr>
     <tr><td><a href="#l9">foo(int) (line 9)</a></td><td>excluded</td><td>100.0%</td><td>-%</td><td>-%</td><td>80.0%</td></tr>
-    <tr><td><a href="#l95">main (line 95)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
-    <tr><td><a href="#l44">sort_excluded() (line 44)</a></td><td>called 1 time</td><td>100.0%</td><td>100.0%</td><td>100.0%</td><td>92.3%</td></tr>
-    <tr><td><a href="#l44">sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const (line 44)</a></td><td>called 41 times</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
-    <tr><td><a href="#l45">sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const (line 45)</a></td><td>called 41 times</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
-    <tr><td><a href="#l66">sort_excluded_both() (line 66)</a></td><td>excluded</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
-    <tr><td><a href="#l73">sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const (line 73)</a></td><td>excluded</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l45">sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const (line 45)</a></td><td>called 41 times</td><td>100.0%</td><td>100.0%</td><td>100.0%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l44">sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const (line 44)</a></td><td>called 41 times</td><td>100.0%</td><td>100.0%</td><td>100.0%</td><td>100.0%</td></tr>
     <tr><td><a href="#l84">sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const (line 84)</a></td><td>excluded</td><td>100.0%</td><td>-%</td><td>-%</td><td>75.0%</td></tr>
-    <tr><td><a href="#l48">sort_lambda_excluded() (line 48)</a></td><td>called 1 time</td><td>100.0%</td><td>50.0%</td><td>-%</td><td>92.3%</td></tr>
-    <tr><td><a href="#l50">sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const (line 50)</a></td><td>called 41 times</td><td>100.0%</td><td>75.0%</td><td>100.0%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l73">sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const (line 73)</a></td><td>excluded</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
     <tr><td><a href="#l57">sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const (line 57)</a></td><td>excluded</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l50">sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const (line 50)</a></td><td>called 41 times</td><td>100.0%</td><td>75.0%</td><td>100.0%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l95">main (line 95)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
   </table>
 </details>
 
@@ -364,7 +364,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#define LAMBDA_SORT /</span></td>
+      <td class="src "><span class="cp">#define LAMBDA_SORT \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l30" href="#l30">30</a></td>
@@ -373,7 +373,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">   { /</span></td>
+      <td class="src "><span class="cp">   { \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l31" href="#l31">31</a></td>
@@ -382,7 +382,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">      std::array&lt;int, 10&gt; arr = { 0, 9, 1, 8, 2, 7, 3, 6, 4, 5 }; /</span></td>
+      <td class="src "><span class="cp">      std::array&lt;int, 10&gt; arr = { 0, 9, 1, 8, 2, 7, 3, 6, 4, 5 }; \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l32" href="#l32">32</a></td>
@@ -391,7 +391,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">      std::sort( /</span></td>
+      <td class="src "><span class="cp">      std::sort( \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l33" href="#l33">33</a></td>
@@ -400,7 +400,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">         std::begin(arr), /</span></td>
+      <td class="src "><span class="cp">         std::begin(arr), \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l34" href="#l34">34</a></td>
@@ -409,7 +409,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">         std::end(arr), /</span></td>
+      <td class="src "><span class="cp">         std::end(arr), \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l35" href="#l35">35</a></td>
@@ -418,7 +418,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">         [](int a, int b) { /</span></td>
+      <td class="src "><span class="cp">         [](int a, int b) { \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l36" href="#l36">36</a></td>
@@ -427,7 +427,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">            if (a &gt; b) /</span></td>
+      <td class="src "><span class="cp">            if (a &gt; b) \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l37" href="#l37">37</a></td>
@@ -436,7 +436,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">               return true; /</span></td>
+      <td class="src "><span class="cp">               return true; \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l38" href="#l38">38</a></td>
@@ -445,7 +445,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">            return false; /</span></td>
+      <td class="src "><span class="cp">            return false; \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l39" href="#l39">39</a></td>
@@ -454,7 +454,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">         } /</span></td>
+      <td class="src "><span class="cp">         } \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l40" href="#l40">40</a></td>
@@ -463,7 +463,7 @@
       <td class="linecondition">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">      ); /</span></td>
+      <td class="src "><span class="cp">      ); \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l41" href="#l41">41</a></td>
@@ -496,45 +496,51 @@
       <td class="lineno"><a id="l44" href="#l44">44</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
-          <summary class="linebranchSummary">2/2</summary>
+          <summary class="linebranchSummary">3/4</summary>
           <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 0 (6&rightarrow;7) taken 26 times.</div>
-            <div class="takenBranch">&check; Branch 1 (6&rightarrow;13) taken 16 times.</div>
+            <div class="takenBranch">&check; Branch 0 (6&rightarrow;7) taken 1 times.</div>
+            <div class="notTakenBranch">&cross; Branch 1 (6&rightarrow;13) not taken.</div>
+            <hr />
+            <div class="takenBranch">&check; Branch 0 (2&rightarrow;3) taken 25 times.</div>
+            <div class="takenBranch">&check; Branch 1 (2&rightarrow;4) taken 16 times.</div>
           </div>
         </details>
       </td>
       <td class="linecondition">
           <details class="lineconditionDetails">
-          <summary class="lineconditionSummary">2/2</summary>
-          <div class="lineconditionContents">
-            <div class="takenCondition">&check; Fully covered.</div>
-          </div>
-         </details>
+            <summary class="lineconditionSummary">2/2</summary>
+            <div class="lineconditionContents">
+              <div class="takenCondition">&check; Fully covered.</div>
+            </div>
+            </details>
       </td>
-      <td class="linecount coveredLine">44</td>
-      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">sort_excluded</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="cm">/* GCOVR_EXCL_FUNCTION */</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">LAMBDA_SORT</span><span class="w"> </span><span class="cm">/* THIS is not excluded*/</span><span class="w"></span></td>
+      <td class="linecount partialCoveredLine">44</td>
+      <td class="src partialCoveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">sort_excluded</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="cm">/* GCOVR_EXCL_FUNCTION */</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">LAMBDA_SORT</span><span class="w"> </span><span class="cm">/* THIS is not excluded*/</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l45" href="#l45">45</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
-          <summary class="linebranchSummary">2/2</summary>
+          <summary class="linebranchSummary">3/4</summary>
           <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 0 (11&rightarrow;12) taken 26 times.</div>
-            <div class="takenBranch">&check; Branch 1 (11&rightarrow;14) taken 16 times.</div>
+            <div class="takenBranch">&check; Branch 0 (11&rightarrow;12) taken 1 times.</div>
+            <div class="notTakenBranch">&cross; Branch 1 (11&rightarrow;14) not taken.</div>
+            <hr />
+            <div class="takenBranch">&check; Branch 0 (2&rightarrow;3) taken 25 times.</div>
+            <div class="takenBranch">&check; Branch 1 (2&rightarrow;4) taken 16 times.</div>
           </div>
         </details>
       </td>
       <td class="linecondition">
           <details class="lineconditionDetails">
-          <summary class="lineconditionSummary">2/2</summary>
-          <div class="lineconditionContents">
-            <div class="takenCondition">&check; Fully covered.</div>
-          </div>
-         </details>
+            <summary class="lineconditionSummary">2/2</summary>
+            <div class="lineconditionContents">
+              <div class="takenCondition">&check; Fully covered.</div>
+            </div>
+            </details>
       </td>
-      <td class="linecount coveredLine">44</td>
-      <td class="src coveredLine"><span class="w">   </span><span class="n">LAMBDA_SORT</span><span class="w"></span></td>
+      <td class="linecount partialCoveredLine">44</td>
+      <td class="src partialCoveredLine"><span class="w">   </span><span class="n">LAMBDA_SORT</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l46" href="#l46">46</a></td>
@@ -587,11 +593,11 @@
       </td>
       <td class="linecondition">
           <details class="lineconditionDetails">
-          <summary class="lineconditionSummary">2/2</summary>
-          <div class="lineconditionContents">
-            <div class="takenCondition">&check; Fully covered.</div>
-          </div>
-         </details>
+            <summary class="lineconditionSummary">2/2</summary>
+            <div class="lineconditionContents">
+              <div class="takenCondition">&check; Fully covered.</div>
+            </div>
+            </details>
       </td>
       <td class="linecount partialCoveredLine">44</td>
       <td class="src partialCoveredLine"><span class="w">   </span><span class="n">LAMBDA_SORT</span><span class="w"> </span><span class="c1">// GCOVR_EXCL_FUNCTION not working because after function definition</span></td>

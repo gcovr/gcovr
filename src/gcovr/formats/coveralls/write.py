@@ -193,24 +193,22 @@ def write_report(
     _write_coveralls_result(json_dict, output_file, options.coveralls_pretty)
 
 
-def _make_source_file(
-    coverage_details: FileCoverage, options: Options
-) -> dict[str, Any]:
+def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]:
     # Object with Coveralls file details
     source_file = dict[str, Any]()
 
     # Isolate relative file path
     relative_file_path = presentable_filename(
-        coverage_details.filename,
+        filecov.filename,
         root_filter=options.root_filter,
     )
     source_file["name"] = relative_file_path
 
     # Generate md5 hash of file contents
-    if coverage_details.filename.endswith("<stdin>"):
+    if filecov.filename.endswith("<stdin>"):
         total_line_count = None
     else:
-        with open(coverage_details.filename, "rb") as file_handle:
+        with open(filecov.filename, "rb") as file_handle:
             contents = file_handle.read()
 
         source_file["source_digest"] = get_md5_hexdigest(contents)
@@ -220,10 +218,10 @@ def _make_source_file(
     coverage = list[Optional[int]]()
     source_file["coverage"] = coverage
     # source_file['branches'] = []
-    for lineno, linecov in coverage_details.lines.items():
+    for linecov in filecov.lines.values():
         # Comment lines are not collected in `covdata`, but must
         # be reported to coveralls (fill missing lines)
-        _extend_with_none(coverage, lineno - 1)
+        _extend_with_none(coverage, linecov.lineno - 1)
 
         coverage.append(linecov.count if linecov.is_reportable else None)
 

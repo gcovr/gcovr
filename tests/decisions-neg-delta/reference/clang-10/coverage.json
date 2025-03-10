@@ -6,12 +6,14 @@
             "lines": [
                 {
                     "line_number": 5,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "8304260594bce9b34610dec9e5a4e877"
                 },
                 {
                     "line_number": 6,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [
                         {
@@ -36,6 +38,7 @@
                 },
                 {
                     "line_number": 7,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [
                         {
@@ -55,6 +58,7 @@
                 },
                 {
                     "line_number": 8,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 3,
                     "branches": [
                         {
@@ -79,30 +83,35 @@
                 },
                 {
                     "line_number": 10,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
                 },
                 {
                     "line_number": 11,
+                    "function_name": "_ZN3Foo4workEi",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9"
                 },
                 {
                     "line_number": 14,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "853b69efca6192aad15b1a4363e38a64"
                 },
                 {
                     "line_number": 16,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "24293cd6780e791208b4517af39d0960"
                 },
                 {
                     "line_number": 17,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"

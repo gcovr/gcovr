@@ -334,6 +334,14 @@
                 {
                     "line_number": 12,
                     "function_name": "_ZN3BarD0Ev",
+                    "count": 0,
+                    "branches": [],
+                    "block_ids": [],
+                    "gcovr/md5": "ef89afadbfb397fa2428716379142419"
+                },
+                {
+                    "line_number": 12,
+                    "function_name": "_ZN3BarD2Ev",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -342,12 +350,20 @@
                 {
                     "line_number": 13,
                     "function_name": "_ZN3BarD0Ev",
-                    "count": 1,
+                    "count": 0,
                     "branches": [],
                     "block_ids": [
                         2,
                         3
                     ],
+                    "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
+                },
+                {
+                    "line_number": 13,
+                    "function_name": "_ZN3BarD2Ev",
+                    "count": 1,
+                    "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
                 },
                 {

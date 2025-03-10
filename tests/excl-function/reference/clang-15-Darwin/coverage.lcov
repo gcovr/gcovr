@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:/Users/runner/work/gcovr/gcovr/tests/excl-function/main.cpp
+SF:tests/excl-function/main.cpp
 VER:1c290a863c4be067f27e2a61b6458b9e
 FN:19,bar(int)
 FNDA:1,bar(int)

@@ -42,6 +42,7 @@ from pygments.lexers import get_lexer_for_filename
 from ...data_model.container import CoverageContainer, CoverageContainerDirectory
 from ...data_model.coverage import (
     BranchCoverage,
+    BranchesKeyType,
     CallCoverage,
     ConditionCoverage,
     DecisionCoverage,
@@ -184,7 +185,7 @@ class PygmentsHighlighting:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)
             formatter = self.formatter
             return lambda code: [
-                Markup(line.rstrip())
+                Markup(line.rstrip())  # nosec
                 for line in pygments.highlight(code, lexer, formatter).split("\n")
             ]
         except pygments.util.ClassNotFound:  # pragma: no cover
@@ -309,18 +310,7 @@ def write_report(
 
     data["SHOW_DECISION"] = show_decision
     data["EXCLUDE_CALLS"] = exclude_calls
-    data["EXCLUDE_FUNCTION_COVERAGE"] = not any(
-        filter(
-            lambda filecov: any(  # type: ignore [arg-type]
-                filter(
-                    lambda linecov: linecov.function_name is not None,  # type: ignore [arg-type]
-                    filecov.lines.values(),
-                )
-            ),
-            covdata.values(),
-        )
-    )
-    data["EXCLUDE_CONDITIONS"] = not any(
+    data["EXCLUDE_CONDITION_COVERAGE"] = not any(
         filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
     )
     data["USE_BLOCK_IDS"] = options.html_block_ids
@@ -832,9 +822,7 @@ def get_file_data(
     )
     functions = dict[tuple[str, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
-    for f_cdata in sorted(
-        cdata.functions.values(), key=lambda f_cdata: f_cdata.demangled_name
-    ):
+    for f_cdata in sorted(cdata.functions.values(), key=lambda f_cdata: f_cdata.key):
         for lineno in sorted(f_cdata.count.keys()):
             f_data = dict[str, Any]()
             f_data["name"] = f_cdata.demangled_name
@@ -844,23 +832,28 @@ def get_file_data(
             f_data["count"] = f_cdata.count[lineno]
             f_data["blocks"] = f_cdata.blocks[lineno]
             f_data["excluded"] = f_cdata.excluded[lineno]
-            if f_cdata.name is not None:
-                function_stats = cdata.filter_for_function(f_cdata).stats
-                f_data["line_coverage"] = function_stats.line.percent_or(100.0)
-                f_data["branch_coverage"] = function_stats.branch.percent_or("-")
-                f_data["condition_coverage"] = function_stats.condition.percent_or("-")
+            function_stats = cdata.filter_for_function(f_cdata).stats
+            f_data["line_coverage"] = function_stats.line.percent_or(100.0)
+            f_data["branch_coverage"] = function_stats.branch.percent_or("-")
+            f_data["condition_coverage"] = function_stats.condition.percent_or("-")
 
             file_data["function_list"].append(f_data)
             functions[
                 (
-                    f_cdata.name or f_cdata.demangled_name,
+                    f_cdata.key,
                     str(f_data["filename"]),
                     int(f_data["line"]),
                 )
             ] = f_data
 
+    lines_by_lineno: dict[int, list[LineCoverage]] = {}
+    for linecov in cdata.lines.values():
+        if linecov.lineno not in lines_by_lineno:
+            lines_by_lineno[linecov.lineno] = []
+        lines_by_lineno[linecov.lineno].append(linecov)
+
     with chdir(options.root_dir):
-        max_line_from_cdata = max(cdata.lines.keys(), default=0)
+        max_line_from_cdata = max(lines_by_lineno.keys(), default=0)
         try:
             file_not_found = True
             with open(
@@ -875,7 +868,7 @@ def get_file_data(
                 for ctr, line in enumerate(lines, 1):
                     file_data["source_lines"].append(
                         source_row(
-                            ctr, line, cdata.lines.get(ctr), options.html_block_ids
+                            ctr, line, lines_by_lineno.get(ctr), options.html_block_ids
                         )
                     )
                 if ctr < max_line_from_cdata:
@@ -896,7 +889,7 @@ def get_file_data(
                     source_row(
                         ctr,
                         file_info if ctr == 1 else "",
-                        cdata.lines.get(ctr),
+                        lines_by_lineno.get(ctr),
                         options.html_block_ids,
                     )
                 )
@@ -925,57 +918,75 @@ def dict_from_stat(
 
 
 def source_row(
-    lineno: int, source: str, linecov: Optional[LineCoverage], html_block_ids: bool
+    lineno: int,
+    source: str,
+    linecov_list: Optional[list[LineCoverage]],
+    html_block_ids: bool,
 ) -> dict[str, Any]:
     """Get information for a row"""
-    linebranch = None
-    linecondition = None
-    linedecision = None
-    linecall = None
+    line_branches = None
+    line_conditions = None
+    line_decisions = None
+    line_calls = None
     linecount: Union[str, int] = ""
     covclass = ""
-    if linecov:
-        if linecov.is_excluded:
+    if linecov_list:
+        if all(linecov.is_excluded for linecov in linecov_list):
             covclass = "excludedLine"
-        elif linecov.is_covered:
-            linebranch = source_row_branch(linecov.branches)
+        elif all(linecov.is_uncovered for linecov in linecov_list):
+            covclass = "uncoveredLine"
+        else:
+            line_branches = [
+                source_row_branch(linecov.branches)
+                for linecov in linecov_list
+                if linecov.branches
+            ]
             covclass = (
                 "coveredLine"
-                if linebranch is None or linebranch["taken"] == linebranch["total"]
+                if all(
+                    linebranch is None or linebranch["taken"] == linebranch["total"]
+                    for linebranch in line_branches
+                )
                 else "partialCoveredLine"
             )
-            linecondition = source_row_condition(linecov.conditions)
-            linedecision = source_row_decision(linecov.decision)
-            linecount = linecov.count
-        elif linecov.is_uncovered:
-            covclass = "uncoveredLine"
-            linedecision = source_row_decision(linecov.decision)
-        linecall = source_row_call(linecov.calls)
+            line_conditions = [
+                source_row_condition(linecov.conditions)
+                for linecov in linecov_list
+                if linecov.conditions
+            ]
+            line_decisions = [
+                source_row_decision(linecov.decision)
+                for linecov in linecov_list
+                if linecov.decision
+            ]
+            linecount = sum(linecov.count for linecov in linecov_list)
+        line_calls = [source_row_call(linecov.calls) for linecov in linecov_list]
     return {
         "lineno": lineno,
         "block_ids": []
-        if linecov is None or not html_block_ids
-        else linecov.block_ids or [],
+        if linecov_list is None
+        or not html_block_ids
+        or all(linecov is None for linecov in linecov_list)
+        else [linecov.block_ids for linecov in linecov_list if linecov.block_ids],
         "source": source,
         "covclass": covclass,
-        "linebranch": linebranch,
-        "linecondition": linecondition,
-        "linedecision": linedecision,
-        "linecall": linecall,
+        "line_branches": line_branches,
+        "line_conditions": line_conditions,
+        "line_decisions": line_decisions,
+        "line_calls": line_calls,
         "linecount": linecount,
     }
 
 
-def source_row_branch(branches: dict[int, BranchCoverage]) -> Optional[dict[str, Any]]:
+def source_row_branch(
+    branches: dict[BranchesKeyType, BranchCoverage],
+) -> dict[str, Any]:
     """Get branch information for a row"""
-    if not branches:
-        return None
-
     taken = 0
     total = 0
     items = []
 
-    for branchno, branchcov in branches.items():
+    for branchcov in branches.values():
         if branchcov.is_covered:
             taken += 1
         if branchcov.excluded:
@@ -983,7 +994,7 @@ def source_row_branch(branches: dict[int, BranchCoverage]) -> Optional[dict[str,
         total += 1
         items.append(
             {
-                "name": branchno,
+                "name": branchcov.branchno,
                 "taken": branchcov.is_covered,
                 "count": branchcov.count,
                 "excluded": branchcov.excluded,
@@ -1002,10 +1013,8 @@ def source_row_branch(branches: dict[int, BranchCoverage]) -> Optional[dict[str,
 
 def source_row_condition(
     conditions: dict[int, ConditionCoverage],
-) -> Optional[dict[str, Any]]:
+) -> dict[str, Any]:
     """Get condition information for a row."""
-    if not conditions:
-        return None
 
     count = 0
     covered = 0
@@ -1036,12 +1045,10 @@ def source_row_condition(
 
 def source_row_decision(
     decision: Optional[DecisionCoverage],
-) -> Optional[dict[str, Any]]:
+) -> dict[str, Any]:
     """Get decision information for a row"""
-    if decision is None:
-        return None
 
-    items = list[dict[str, Any]]()
+    items: list[dict[str, Any]] = []
 
     if isinstance(decision, DecisionCoverageUncheckable):
         items.append(
@@ -1086,11 +1093,8 @@ def source_row_decision(
     }
 
 
-def source_row_call(callcov: dict[int, CallCoverage]) -> Optional[dict[str, Any]]:
+def source_row_call(callcov: dict[int, CallCoverage]) -> dict[str, Any]:
     """Get call information for a source row."""
-    if not callcov:
-        return None
-
     invoked = 0
     total = 0
     items = []

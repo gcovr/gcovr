@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:/Users/runner/work/gcovr/gcovr/tests/noncode/main.cpp
+SF:tests/noncode/main.cpp
 VER:37c3797ca3d3da31375c29c07adf94cc
 FN:4,main
 FNDA:2,main

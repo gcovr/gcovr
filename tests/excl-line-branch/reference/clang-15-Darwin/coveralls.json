@@ -1,26 +1,9 @@
 {
-    "run_at": "2024-10-13 08:38:16 UTC",
+    "run_at": "2025-01-20 20:18:07 UTC",
     "service_name": "gcovr-test-suite",
     "service_job_id": "id",
     "service_number": "number",
     "service_pull_request": "pr",
-    "git": {
-        "head": {
-            "id": "7169178d498ea44b79d0c4bc99e0d41089ac3434",
-            "author_name": "Michael F\u00f6rderer",
-            "author_email": "40258682+Spacetown@users.noreply.github.com",
-            "committer_name": "GitHub",
-            "committer_email": "noreply@github.com",
-            "message": "Merge efa793b8e98e3b6d11f8c5e59873976a2c4926ef into ff222ff4cca9b084248f2938f45880a8e984777d"
-        },
-        "branch": "branch",
-        "remotes": [
-            {
-                "name": "origin",
-                "url": "https://github.com/gcovr/gcovr"
-            }
-        ]
-    },
     "source_files": [
         {
             "name": "tests/excl-line-branch/bar.cpp",
