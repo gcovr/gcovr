@@ -26,7 +26,6 @@ from ...options import (
     GcovrConfigOption,
     OutputOrDefault,
     check_input_file,
-    check_percentage,
 )
 
 

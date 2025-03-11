@@ -497,9 +497,7 @@ def test_high_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
 def test_medium_threshold_gt_high_threshold(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    c = log_capture(
-        caplog, ["--medium-threshold", "60", "--high-threshold", "50"]
-    )
+    c = log_capture(caplog, ["--medium-threshold", "60", "--high-threshold", "50"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert (

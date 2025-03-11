@@ -19,35 +19,25 @@
 
 from typing import Any, Optional
 
+from jinja2 import (
+    Environment,
+    PackageLoader,
+)
+
 from ...data_model.container import CoverageContainer
 from ...data_model.stats import SummarizedStats
 from ...options import Options
 from ...utils import (
-    presentable_filename,
     open_text_for_writing,
-)
-from jinja2 import (
-    BaseLoader,
-    Environment,
-    ChoiceLoader,
-    FileSystemLoader,
-    FunctionLoader,
-    PackageLoader,
-    Template,
+    presentable_filename,
 )
 
 
-# markdown_theme string is <theme_directory>.<color> or only <color> (if only color use default)
-# examples: github.green github.blue or blue or green
-def get_theme_name(theme: str) -> str:
-    """Get the theme name without the color."""
-    return theme.split(".")[0] if "." in theme else "default"
-
-
-def templates(options: Options) -> Environment:
-    loader: BaseLoader = PackageLoader(
+def templates() -> Environment:
+    """Get the template environment."""
+    loader: PackageLoader = PackageLoader(
         "gcovr.formats.markdown",
-        package_path=get_theme_name(options.markdown_theme),
+        package_path="default",
     )
 
     return Environment(
@@ -65,7 +55,7 @@ def write_report(
     data = {
         "heading": options.markdown_heading,
         "heading_level": options.markdown_heading_level,
-        "summary": _summary_from_stats(covdata.stats, options)
+        "summary": _summary_from_stats(covdata.stats, options),
     }
 
     sorted_keys = covdata.sort_coverage(
@@ -73,7 +63,7 @@ def write_report(
         sort_reverse=options.sort_reverse,
         by_metric="branch" if options.sort_branches else "line",
     )
-    data["entries"] = list()
+    data["entries"] = list[dict[str, Any]]()
     for key in sorted_keys:
         summary = _summary_from_stats(covdata[key].stats, options)
         summary["filename"] = presentable_filename(
@@ -81,12 +71,11 @@ def write_report(
         )
         data["entries"].append(summary)
 
-    markdown_string = (
-        templates(options).get_template("report_template.md.j2").render(**data)
-    )
+    markdown_string = templates().get_template("report_template.md.j2").render(**data)
 
     with open_text_for_writing(output_file, "coverage.md") as fh:
         fh.write(markdown_string)
+
 
 def write_summary_report(
     covdata: CoverageContainer, output_file: str, options: Options
@@ -95,15 +84,14 @@ def write_summary_report(
     data = {
         "heading": options.markdown_heading,
         "heading_level": options.markdown_heading_level,
-        "summary": _summary_from_stats(covdata.stats, options)
+        "summary": _summary_from_stats(covdata.stats, options),
     }
 
-    markdown_string = (
-        templates(options).get_template("report_template.md.j2").render(**data)
-    )
+    markdown_string = templates().get_template("report_template.md.j2").render(**data)
 
     with open_text_for_writing(output_file, "coverage.md") as fh:
         fh.write(markdown_string)
+
 
 def _coverage_to_badge(
     coverage: Optional[float],
