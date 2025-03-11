@@ -1,6 +1,6 @@
-# {{heading}}
+# {{- '#' * (heading_level - 1) }} {{heading}}
 
-## 📂 Overall coverage
+## {{- '#' * (heading_level - 1) }} 📂 Overall coverage
 
 | Metric        | Coverage |
 |---------------|----------|
@@ -9,7 +9,7 @@
 | **Branches**  | {{summary.branch_badge}} {{summary.branch_covered}}/{{summary.branch_total}} ({{summary.branch_percent}}%) |
 {% if entries %}
 
-## 📄 File coverage
+## {{- '#' * (heading_level - 1) }} 📄 File coverage
 
 | File                   | Lines | Functions | Branches |
 |------------------------|-------|-----------|----------|

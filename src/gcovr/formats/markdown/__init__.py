@@ -95,7 +95,24 @@ class MarkdownHandler(BaseHandler):
                 ),
                 default="GCC Code Coverage Report",
             ),
+            GcovrConfigOption(
+                "markdown_heading_level",
+                ["--markdown-heading-level"],
+                group="output_options",
+                type=int,
+                metavar="INT",
+                help=(
+                    "Override the default heading level of the Markdown report. "
+                    "This is usefule if the report is embedded in another markdown file. "
+                    "Default is {default!s}."
+                ),
+                default=1,
+            ),
         ]
+
+    def validate_options(self) -> None:
+        if self.options.markdown_heading_level < 1:
+            raise RuntimeError("The markdown heading level must not be less than 0.")
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
