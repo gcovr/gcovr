@@ -61,27 +61,25 @@ def templates(options: Options) -> Environment:
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """produce the gcovr report in markdown"""
-
+    """Produce the gcovr report in markdown."""
     data = {
         "heading": options.markdown_heading,
         "heading_level": options.markdown_heading_level,
         "summary": _summary_from_stats(covdata.stats, options)
     }
 
-    if not options.markdown_summary:
-        sorted_keys = covdata.sort_coverage(
-            sort_key=options.sort_key,
-            sort_reverse=options.sort_reverse,
-            by_metric="branch" if options.sort_branches else "line",
+    sorted_keys = covdata.sort_coverage(
+        sort_key=options.sort_key,
+        sort_reverse=options.sort_reverse,
+        by_metric="branch" if options.sort_branches else "line",
+    )
+    data["entries"] = list()
+    for key in sorted_keys:
+        summary = _summary_from_stats(covdata[key].stats, options)
+        summary["filename"] = presentable_filename(
+            covdata[key].filename, options.root_filter
         )
-        data["entries"] = list()
-        for key in sorted_keys:
-            summary = _summary_from_stats(covdata[key].stats, options)
-            summary["filename"] = presentable_filename(
-                covdata[key].filename, options.root_filter
-            )
-            data["entries"].append(summary)
+        data["entries"].append(summary)
 
     markdown_string = (
         templates(options).get_template("report_template.md.j2").render(**data)
@@ -90,6 +88,22 @@ def write_report(
     with open_text_for_writing(output_file, "coverage.md") as fh:
         fh.write(markdown_string)
 
+def write_summary_report(
+    covdata: CoverageContainer, output_file: str, options: Options
+) -> None:
+    """Produce the gcovr summary report in markdown."""
+    data = {
+        "heading": options.markdown_heading,
+        "heading_level": options.markdown_heading_level,
+        "summary": _summary_from_stats(covdata.stats, options)
+    }
+
+    markdown_string = (
+        templates(options).get_template("report_template.md.j2").render(**data)
+    )
+
+    with open_text_for_writing(output_file, "coverage.md") as fh:
+        fh.write(markdown_string)
 
 def _coverage_to_badge(
     coverage: Optional[float],
@@ -99,12 +113,12 @@ def _coverage_to_badge(
 ) -> str:
     if coverage is None:
         return "⚫"
-    elif coverage >= high_threshold:
+    if coverage >= high_threshold:
         return "🔵" if theme == "blue" else "🟢"
-    elif coverage >= medium_threshold:
+    if coverage >= medium_threshold:
         return "🟡"
-    else:
-        return "🔴"
+
+    return "🔴"
 
 
 def _summary_from_stats(stats: SummarizedStats, options: Options) -> dict[str, Any]:
