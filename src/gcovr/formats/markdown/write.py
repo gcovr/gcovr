@@ -84,7 +84,7 @@ def write_report(
         data["entries"].append(summary)
 
     markdown_string = (
-        templates(options).get_template("report_template.md").render(**data)
+        templates(options).get_template("report_template.md.j2").render(**data)
     )
 
     with open_text_for_writing(output_file, "coverage.md") as fh:
