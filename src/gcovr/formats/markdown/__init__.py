@@ -83,6 +83,18 @@ class MarkdownHandler(BaseHandler):
                 ),
                 default=THEMES[0],
             ),
+            GcovrConfigOption(
+                "markdown_heading",
+                ["--markdown-heading"],
+                group="output_options",
+                type=str,
+                metavar="TEXT",
+                help=(
+                    "Override the default heading of the Markdown report. "
+                    "Default is {default!s}."
+                ),
+                default="GCC Code Coverage Report",
+            ),
         ]
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:

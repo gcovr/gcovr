@@ -63,7 +63,10 @@ def write_report(
 ) -> None:
     """produce the gcovr report in markdown"""
 
-    data = {"summary": _summary_from_stats(covdata.stats, options)}
+    data = {
+        "heading": options.markdown_heading,
+        "summary": _summary_from_stats(covdata.stats, options)
+    }
 
     if not options.markdown_summary:
         sorted_keys = covdata.sort_coverage(
