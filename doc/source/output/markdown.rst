@@ -23,11 +23,7 @@ Markdown Summary Output
 The :option:`--markdown-summary<gcovr --markdown-summary>` option outputs coverage summary,
 without file information.
 
-
-Markdown Theme
---------------
-
-The :option:`--markdown-theme<gcovr --markdown-theme>` option controls the theme and color of the markdown report.
+The :option:`--markdown-theme<gcovr --markdown-theme>` option controls the color theme of the markdown report.
 
     :option:`--markdown-theme green<gcovr --markdown-theme>`, :option:`--markdown-theme default.green<gcovr --markdown-theme>`
 
