@@ -63,25 +63,21 @@ def write_report(
 ) -> None:
     """produce the gcovr report in markdown"""
 
-    data = {"info": {"summary": options.markdown_summary is not None}}
+    data = {"summary": _summary_from_stats(covdata.stats, options)}
 
-    summary = _summary_from_stats(covdata.stats, options)
-    data["info"].update(summary)
-
-    # Data
-    sorted_keys = covdata.sort_coverage(
-        sort_key=options.sort_key,
-        sort_reverse=options.sort_reverse,
-        by_metric="branch" if options.sort_branches else "line",
-    )
-
-    data["entries"] = list()
-    for key in sorted_keys:
-        summary = _summary_from_stats(covdata[key].stats, options)
-        summary["filename"] = presentable_filename(
-            covdata[key].filename, options.root_filter
+    if not options.markdown_summary:
+        sorted_keys = covdata.sort_coverage(
+            sort_key=options.sort_key,
+            sort_reverse=options.sort_reverse,
+            by_metric="branch" if options.sort_branches else "line",
         )
-        data["entries"].append(summary)
+        data["entries"] = list()
+        for key in sorted_keys:
+            summary = _summary_from_stats(covdata[key].stats, options)
+            summary["filename"] = presentable_filename(
+                covdata[key].filename, options.root_filter
+            )
+            data["entries"].append(summary)
 
     markdown_string = (
         templates(options).get_template("report_template.md.j2").render(**data)
