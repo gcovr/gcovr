@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "tests/excl-line-branch/bar.cpp",
@@ -63,28 +63,28 @@
                     "count": 5,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 4,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         },
                         {
-                            "source_block_id": 1,
                             "count": 3,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         }
                     ],
                     "gcovr/md5": "69d7cb531f90045147347c360a0d81d2"
@@ -117,16 +117,16 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 2,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "189a346e59b4b9eb1653c629e9e00396"
@@ -144,16 +144,16 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 2,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "d4dfe4cbc7a957b4db133508a4597ed6"
@@ -272,16 +272,16 @@
                     "count": 6,
                     "branches": [
                         {
-                            "source_block_id": 1,
                             "count": 5,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         },
                         {
-                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         }
                     ],
                     "gcovr/md5": "3aac4e3adb4400cb9a56145130946d99"

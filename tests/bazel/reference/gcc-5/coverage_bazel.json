@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "lib.c",
@@ -17,16 +17,16 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "bcb3b1b99a21a2a65ea96effd8a8bb89"
@@ -78,28 +78,28 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 2,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 2
                         },
                         {
-                            "source_block_id": 2,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 2
                         },
                         {
-                            "source_block_id": 2,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 2
                         },
                         {
-                            "source_block_id": 2,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 2
                         }
                     ],
                     "gcovr/md5": "96f3bff1e93bc1ebe1bd098ac20dfee2"

@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "main.cpp",
@@ -17,16 +17,16 @@
                     "count": 3,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 2,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "f1c16e761686c59998ef88898ddcf738"
@@ -37,16 +37,16 @@
                     "count": 1,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         }
                     ],
                     "gcovr/md5": "d26e4bf5b3a230f06c5ec2907ffd527f"
@@ -106,10 +106,10 @@
                     "count": 1,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "5a6f4ad904c70428b558a7a76150d268"
@@ -120,16 +120,16 @@
                     "count": 1,
                     "branches": [
                         {
-                            "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         },
                         {
-                            "source_block_id": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         }
                     ],
                     "gcovr/md5": "8bd26b074ddb624b2d0e8d2f2c97f8c6"
@@ -147,28 +147,28 @@
                     "count": 3,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         },
                         {
-                            "source_block_id": 4,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 4
                         },
                         {
-                            "source_block_id": 4,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 4
                         }
                     ],
                     "gcovr/md5": "f7782e4bee449335d6d76a39cd6b4386"
@@ -179,10 +179,10 @@
                     "count": 1,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "dbb01c8aa62038c92932ae1b8c744627"
@@ -207,10 +207,10 @@
                     "count": 1,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "86a6b5fc13347758e61c6df5731198f2"

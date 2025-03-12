@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "main.cpp",
@@ -18,17 +18,17 @@
                     "count": 9,
                     "branches": [
                         {
-                            "source_block_id": 2,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 2,
                             "destination_block_id": 3
                         },
                         {
-                            "source_block_id": 2,
                             "count": 6,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 2,
                             "destination_block_id": 6
                         }
                     ],
@@ -51,10 +51,10 @@
                     "count": 3,
                     "branches": [
                         {
-                            "source_block_id": 4,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 4,
                             "destination_block_id": 5
                         }
                     ],
@@ -134,10 +134,10 @@
                     "count": 3,
                     "branches": [
                         {
-                            "source_block_id": 2,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 2,
                             "destination_block_id": 3
                         }
                     ],
@@ -152,17 +152,17 @@
                     "count": 3,
                     "branches": [
                         {
-                            "source_block_id": 10,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 10,
                             "destination_block_id": 11
                         },
                         {
-                            "source_block_id": 10,
                             "count": 3,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 10,
                             "destination_block_id": 12
                         }
                     ],
@@ -196,10 +196,10 @@
                     "count": 3,
                     "branches": [
                         {
-                            "source_block_id": 3,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 3,
                             "destination_block_id": 4
                         }
                     ],
@@ -214,10 +214,10 @@
                     "count": 3,
                     "branches": [
                         {
-                            "source_block_id": 4,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 4,
                             "destination_block_id": 5
                         }
                     ],
@@ -232,17 +232,17 @@
                     "count": 0,
                     "branches": [
                         {
-                            "source_block_id": 14,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 14,
                             "destination_block_id": 15
                         },
                         {
-                            "source_block_id": 14,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 14,
                             "destination_block_id": 16
                         }
                     ],
@@ -276,10 +276,10 @@
                     "count": 3,
                     "branches": [
                         {
-                            "source_block_id": 5,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 5,
                             "destination_block_id": 6
                         }
                     ],
