@@ -710,6 +710,8 @@ def _parse_line(
             ignore_parse_errors,
             suspicious_hits_threshold,
             persistent_states,
+            filename,
+            state.lineno,
         )
 
         return _SourceLine(hits, int(lineno), source_code, extra_info)
@@ -738,6 +740,8 @@ def _parse_line(
                 ignore_parse_errors,
                 suspicious_hits_threshold,
                 persistent_states,
+                filename,
+                state.lineno,
             )
 
             return _BlockLine(hits, int(lineno), int(block_id), extra_info)
@@ -790,6 +794,8 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 ignore_parse_errors,
                 suspicious_hits_threshold,
                 persistent_states,
+                filename,
+                state.lineno,
             )
 
             return _BranchLine(int(branch_id), hits, annotation)
@@ -823,6 +829,8 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 ignore_parse_errors,
                 suspicious_hits_threshold,
                 persistent_states,
+                filename,
+                state.lineno,
             )
 
             return _UnconditionalLine(int(branch_id), hits)
