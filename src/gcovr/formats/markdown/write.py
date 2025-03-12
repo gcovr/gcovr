@@ -53,7 +53,7 @@ def write_report(
 ) -> None:
     """Produce the gcovr report in markdown."""
     data = {
-        "heading": options.markdown_heading,
+        "title": options.markdown_title,
         "heading_level": options.markdown_heading_level,
         "summary": _summary_from_stats(covdata.stats, options),
     }
@@ -82,7 +82,7 @@ def write_summary_report(
 ) -> None:
     """Produce the gcovr summary report in markdown."""
     data = {
-        "heading": options.markdown_heading,
+        "title": options.markdown_title,
         "heading_level": options.markdown_heading_level,
         "summary": _summary_from_stats(covdata.stats, options),
     }

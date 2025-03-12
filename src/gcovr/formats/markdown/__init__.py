@@ -84,13 +84,13 @@ class MarkdownHandler(BaseHandler):
                 default=THEMES[0],
             ),
             GcovrConfigOption(
-                "markdown_heading",
-                ["--markdown-heading"],
+                "markdown_title",
+                ["--markdown-title"],
                 group="output_options",
                 type=str,
                 metavar="TEXT",
                 help=(
-                    "Override the default heading of the Markdown report. "
+                    "Override the default title of the Markdown report. "
                     "Default is {default!s}."
                 ),
                 default="GCC Code Coverage Report",
