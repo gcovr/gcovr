@@ -103,7 +103,7 @@ class MarkdownHandler(BaseHandler):
                 metavar="INT",
                 help=(
                     "Override the default heading level of the Markdown report. "
-                    "This is usefule if the report is embedded in another markdown file. "
+                    "This is useful if the report is embedded in another markdown file. "
                     "Default is {default!s}."
                 ),
                 default=1,
