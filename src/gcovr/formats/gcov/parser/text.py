@@ -527,6 +527,7 @@ def _report_lines_with_errors(
 
 def _parse_line(
     line: str,
+    filename: str = "",
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     ignore_parse_errors: Optional[set[str]] = None,
     persistent_states: Optional[dict[str, Any]] = None,
@@ -711,7 +712,7 @@ def _parse_line(
             suspicious_hits_threshold,
             persistent_states,
             filename,
-            state.lineno,
+            lineno,
         )
 
         return _SourceLine(hits, int(lineno), source_code, extra_info)
@@ -741,7 +742,7 @@ def _parse_line(
                 suspicious_hits_threshold,
                 persistent_states,
                 filename,
-                state.lineno,
+                lineno,
             )
 
             return _BlockLine(hits, int(lineno), int(block_id), extra_info)
@@ -763,6 +764,7 @@ def _parse_line(
 
 def _parse_tag_line(  # pylint: disable=too-many-return-statements
     line: str,
+    filename: str,
     suspicious_hits_threshold: int,
     ignore_parse_errors: set[str],
     persistent_states: dict[str, Any],
@@ -795,7 +797,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 suspicious_hits_threshold,
                 persistent_states,
                 filename,
-                state.lineno,
+                lineno = "",
             )
 
             return _BranchLine(int(branch_id), hits, annotation)
@@ -830,7 +832,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 suspicious_hits_threshold,
                 persistent_states,
                 filename,
-                state.lineno,
+                lineno = "",
             )
 
             return _UnconditionalLine(int(branch_id), hits)
