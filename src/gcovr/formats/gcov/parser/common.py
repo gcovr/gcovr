@@ -100,7 +100,7 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
+        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any], filename: str, lineno: int
     ) -> None:
         """
         Raise exception if not ignored by options
@@ -154,11 +154,11 @@ def check_hits(
 ) -> int:
     """
     Check if hits count is negative or suspicious, if the issue is ignored returns 0
-    >>> check_hits(1, "", {}, 10, {})
+    >>> check_hits(1, "", {}, 10, {}, "", 5)
     1
-    >>> check_hits(-1, "", {"all"}, 10, {})
+    >>> check_hits(-1, "", {"all"}, 10, {}, "", 5)
     0
-    >>> check_hits(1000, "", {"all"}, 10, {})
+    >>> check_hits(1000, "", {"all"}, 10, {}, "", 5)
     0
     """
     if hits < 0:
