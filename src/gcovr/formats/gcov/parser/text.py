@@ -236,7 +236,7 @@ def parse_metadata(
         if not line:
             continue
 
-        parsed_line = _parse_line(line, suspicious_hits_threshold)
+        parsed_line = _parse_line(line, "", suspicious_hits_threshold)
 
         if isinstance(parsed_line, _MetadataLine):
             key, value = parsed_line
@@ -296,6 +296,7 @@ def parse_coverage(
                 (
                     _parse_line(
                         raw_line,
+                        filename,
                         suspicious_hits_threshold,
                         ignore_parse_errors,
                         persistent_states,
@@ -658,7 +659,7 @@ def _parse_line(
         persistent_states = {}
 
     tag = _parse_tag_line(
-        line, suspicious_hits_threshold, ignore_parse_errors, persistent_states
+        line, filename, suspicious_hits_threshold, ignore_parse_errors, persistent_states
     )
     if tag is not None:
         return tag
