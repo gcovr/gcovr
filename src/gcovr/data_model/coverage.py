@@ -36,7 +36,7 @@ report aggregated metrics/percentages.
 
 from __future__ import annotations
 import logging
-from typing import Callable, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Callable, List, NoReturn, Optional, TypeVar, Union
 
 from .coverage_dict import BranchesKeyType, CoverageDict, LinesKeyType
 from .merging import DEFAULT_MERGE_OPTIONS, GcovrMergeAssertionError, MergeOptions
@@ -50,10 +50,49 @@ _T = TypeVar("_T")
 class CoverageBase:
     """Base class for coverage information."""
 
+    __slots__ = ("data_sources",)
+
+    def __init__(
+        self, data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]]
+    ) -> None:
+        if isinstance(data_source, str):
+            self.data_sources = set[tuple[str, ...]]([(data_source,)])
+        elif isinstance(data_source, tuple):
+            self.data_sources = set[tuple[str, ...]]([data_source])
+        else:
+            self.data_sources = data_source
+
+    def raise_merge_error(self, msg: str, other: Any) -> NoReturn:
+        """Get the exception with message extended with context."""
+        raise GcovrMergeAssertionError(
+            "\n".join(
+                [
+                    msg,
+                    "GCOV data file of merge source is:"
+                    if len(other.data_sources) == 1
+                    else "GCOV data files of merge source are:",
+                    *[f"   {' -> '.join(e)}" for e in sorted(other.data_sources)],
+                    f"and of merge target {'is' if len(self.data_sources) == 1 else 'are'}:",
+                    *[f"   {' -> '.join(e)}" for e in sorted(self.data_sources)],
+                ]
+            )
+        )
+
+    def raise_error(self, msg: str) -> NoReturn:
+        """Get the exception with message extended with context."""
+        raise GcovrMergeAssertionError(
+            "\n".join(
+                [
+                    msg,
+                    f"GCOV data file{' is' if len(self.data_sources) == 1 else 's are'} of merge source:",
+                    *[f"   {' -> '.join(e)}" for e in sorted(self.data_sources)],
+                ]
+            )
+        )
+
     def _merge_property(
         self,
         other: CoverageBase,
-        context: Optional[str],
         msg: str,
         getter: Callable[[CoverageBase], _T],
     ) -> Optional[_T]:
@@ -63,8 +102,8 @@ class CoverageBase:
         right = getter(other)
         if left is not None and right is not None:
             if left != right:
-                raise AssertionError(
-                    f"{msg} must be equal, got {left} and {right} while merging {context}."
+                self.raise_merge_error(
+                    f"{msg} must be equal, got {left} and {right}.", other
                 )
 
         return left or right
@@ -104,17 +143,19 @@ class BranchCoverage(CoverageBase):
 
     def __init__(
         self,
+        data_source: Union[str, set[tuple[str, ...]]],
+        *,
         branchno: int,
         count: int,
-        *,
         source_block_id: Optional[int] = None,
         fallthrough: bool = False,
         throw: bool = False,
         destination_block_id: Optional[int] = None,
         excluded: Optional[bool] = None,
     ) -> None:
+        super().__init__(data_source)
         if count < 0:
-            raise AssertionError("count must not be a negative value.")
+            self.raise_error("count must not be a negative value.")
 
         self.branchno = branchno
         self.count = count
@@ -128,7 +169,6 @@ class BranchCoverage(CoverageBase):
         self,
         other: BranchCoverage,
         _options: MergeOptions,
-        context: Optional[str],
     ) -> None:
         """
         Merge BranchCoverage information.
@@ -136,15 +176,19 @@ class BranchCoverage(CoverageBase):
         Do not use 'other' objects afterwards!
 
             Examples:
-        >>> left = BranchCoverage(0, 1, source_block_id=2)
-        >>> right = BranchCoverage(0, 1, source_block_id=3)
-        >>> left.merge(right, DEFAULT_MERGE_OPTIONS, None)
+        >>> left = BranchCoverage("left", branchno=0, count=1, source_block_id=2)
+        >>> right = BranchCoverage("right", branchno=0, count=1, source_block_id=3)
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        AssertionError: Source block ID must be equal, got 2 and 3 while merging None.
-        >>> right = BranchCoverage(0, 4, source_block_id=2, fallthrough=False, throw=True)
+        gcovr.data_model.merging.GcovrMergeAssertionError: Source block ID must be equal, got 2 and 3.
+        GCOV data file of merge source is:
+           right
+        and of merge target is:
+           left
+        >>> right = BranchCoverage("-", branchno=0, count=4, source_block_id=2, fallthrough=False, throw=True)
         >>> right.excluded = True
-        >>> left.merge(right, DEFAULT_MERGE_OPTIONS, None)
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         >>> left.count
         5
         >>> left.fallthrough
@@ -156,10 +200,10 @@ class BranchCoverage(CoverageBase):
         """
 
         self.source_block_id = self._merge_property(
-            other, context, "Source block ID", lambda x: x.source_block_id
+            other, "Source block ID", lambda x: x.source_block_id
         )
         self.destination_block_id = self._merge_property(
-            other, context, "Destination block ID", lambda x: x.destination_block_id
+            other, "Destination block ID", lambda x: x.destination_block_id
         )
         self.count += other.count
         self.fallthrough |= other.fallthrough
@@ -203,7 +247,7 @@ class BranchCoverage(CoverageBase):
         return self.is_reportable and self.count > 0
 
 
-class ConditionCoverage:
+class ConditionCoverage(CoverageBase):
     r"""Represent coverage information about a condition.
 
     Args:
@@ -223,6 +267,7 @@ class ConditionCoverage:
 
     def __init__(
         self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
         count: int,
         covered: int,
@@ -230,10 +275,12 @@ class ConditionCoverage:
         not_covered_false: list[int],
         excluded: Optional[bool] = False,
     ) -> None:
+        super().__init__(data_source)
         if count < 0:
-            raise AssertionError("count must not be a negative value.")
+            self.raise_error("count must not be a negative value.")
         if count < covered:
-            raise AssertionError("count must not be less than covered.")
+            self.raise_error("count must not be less than covered.")
+
         self.count = count
         self.covered = covered
         self.not_covered_true = not_covered_true
@@ -244,7 +291,6 @@ class ConditionCoverage:
         self,
         other: ConditionCoverage,
         _options: MergeOptions,
-        context: Optional[str],
     ) -> None:
         """
         Merge ConditionCoverage information.
@@ -252,9 +298,9 @@ class ConditionCoverage:
         Do not use 'other' objects afterwards!
 
         Examples:
-        >>> left = ConditionCoverage(count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
-        >>> right = ConditionCoverage(count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
-        >>> left.merge(None, DEFAULT_MERGE_OPTIONS, None)
+        >>> left = ConditionCoverage("-", count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
+        >>> right = ConditionCoverage("-", count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
+        >>> left.merge(None, DEFAULT_MERGE_OPTIONS)
         >>> left.count
         4
         >>> left.covered
@@ -263,7 +309,7 @@ class ConditionCoverage:
         [1, 2]
         >>> left.not_covered_false
         []
-        >>> left.merge(right, DEFAULT_MERGE_OPTIONS, None)
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         >>> left.count
         4
         >>> left.covered
@@ -276,8 +322,8 @@ class ConditionCoverage:
 
         if other is not None:
             if self.count != other.count:
-                raise AssertionError(
-                    f"The number of conditions must be equal, got {other.count} and expected {self.count} while merging {context}."
+                self.raise_error(
+                    f"The number of conditions must be equal, got {other.count} and expected {self.count}."
                 )
 
             self.not_covered_false = sorted(
@@ -291,16 +337,13 @@ class ConditionCoverage:
             )
 
 
-class DecisionCoverageUncheckable:
+class DecisionCoverageUncheckable(CoverageBase):
     r"""Represent coverage information about a decision."""
 
     __slots__ = ()
 
-    def __init__(self) -> None:
-        pass
 
-
-class DecisionCoverageConditional:
+class DecisionCoverageConditional(CoverageBase):
     r"""Represent coverage information about a decision.
 
     Args:
@@ -314,16 +357,23 @@ class DecisionCoverageConditional:
 
     __slots__ = "count_true", "count_false"
 
-    def __init__(self, *, count_true: int, count_false: int) -> None:
+    def __init__(
+        self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        *,
+        count_true: int,
+        count_false: int,
+    ) -> None:
+        super().__init__(data_source)
         if count_true < 0:
-            raise AssertionError("count_true must not be a negative value.")
+            self.raise_error("count_true must not be a negative value.")
         self.count_true = count_true
         if count_false < 0:
-            raise AssertionError("count_true must not be a negative value.")
+            self.raise_error("count_true must not be a negative value.")
         self.count_false = count_false
 
 
-class DecisionCoverageSwitch:
+class DecisionCoverageSwitch(CoverageBase):
     r"""Represent coverage information about a decision.
 
     Args:
@@ -333,9 +383,15 @@ class DecisionCoverageSwitch:
 
     __slots__ = ("count",)
 
-    def __init__(self, *, count: int) -> None:
+    def __init__(
+        self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        *,
+        count: int,
+    ) -> None:
+        super().__init__(data_source)
         if count < 0:
-            raise AssertionError("count must not be a negative value.")
+            self.raise_error("count must not be a negative value.")
         self.count = count
 
 
@@ -346,7 +402,7 @@ DecisionCoverage = Union[
 ]
 
 
-class CallCoverage:
+class CallCoverage(CoverageBase):
     r"""Represent coverage information about a call.
 
     Args:
@@ -362,11 +418,13 @@ class CallCoverage:
 
     def __init__(
         self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
         callno: int,
         covered: bool,
         excluded: Optional[bool] = False,
     ) -> None:
+        super().__init__(data_source)
         self.callno = callno
         self.covered = covered
         self.excluded = excluded
@@ -375,7 +433,6 @@ class CallCoverage:
         self,
         other: CallCoverage,
         _options: MergeOptions,
-        context: Optional[str],
     ) -> CallCoverage:
         """
         Merge CallCoverage information.
@@ -383,8 +440,8 @@ class CallCoverage:
         Do not use 'left' or 'right' objects afterwards!
         """
         if self.callno != other.callno:
-            raise AssertionError(
-                f"Call number must be equal, got {self.callno} and {other.callno} while merging {context}."
+            self.raise_error(
+                f"Call number must be equal, got {self.callno} and {other.callno}."
             )
         self.covered |= other.covered
         return self
@@ -437,9 +494,10 @@ class FunctionCoverage(CoverageBase):
 
     def __init__(
         self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        *,
         name: Optional[str],
         demangled_name: Optional[str],
-        *,
         lineno: int,
         count: int,
         blocks: float,
@@ -447,8 +505,9 @@ class FunctionCoverage(CoverageBase):
         end: Optional[tuple[int, int]] = None,
         excluded: bool = False,
     ) -> None:
+        super().__init__(data_source)
         if count < 0:
-            raise AssertionError("count must not be a negative value.")
+            self.raise_error("count must not be a negative value.")
         self.name = name
         self.demangled_name = demangled_name
         self.count = CoverageDict[int, int]({lineno: count})
@@ -472,7 +531,6 @@ class FunctionCoverage(CoverageBase):
         self,
         other: FunctionCoverage,
         options: MergeOptions,
-        context: Optional[str],
     ) -> FunctionCoverage:
         """
         Merge FunctionCoverage information.
@@ -490,18 +548,19 @@ class FunctionCoverage(CoverageBase):
         - ``options.func_opts.separate_function``
         """
         self.name = self._merge_property(
-            other, context, "Function mangled name", lambda x: x.name
+            other, "Function mangled name", lambda x: x.name
         )
         self.demangled_name = self._merge_property(
-            other, context, "Function demangled name", lambda x: x.demangled_name
+            other, "Function demangled name", lambda x: x.demangled_name
         )
         if not options.func_opts.ignore_function_lineno:
             if self.count.keys() != other.count.keys():
                 lines = sorted(set([*self.count.keys(), *other.count.keys()]))
-                raise GcovrMergeAssertionError(
-                    f"Got function {other.demangled_name} in {context} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                self.raise_merge_error(
+                    f"Got function {self.demangled_name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                     "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
-                    "\tThe available values for MERGE_MODE are described in the documentation."
+                    "\tThe available values for MERGE_MODE are described in the documentation.",
+                    other,
                 )
 
         # keep distinct counts for each line number
@@ -614,6 +673,8 @@ class LineCoverage(CoverageBase):
 
     def __init__(
         self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        *,
         lineno: int,
         count: int,
         function_name: Optional[str],
@@ -621,10 +682,11 @@ class LineCoverage(CoverageBase):
         md5: Optional[str] = None,
         excluded: bool = False,
     ) -> None:
+        super().__init__(data_source)
         if lineno <= 0:
-            raise AssertionError("Line number must be a positive value.")
+            self.raise_error("Line number must be a positive value.")
         if count < 0:
-            raise AssertionError("count must not be a negative value.")
+            self.raise_error("count must not be a negative value.")
 
         self.lineno: int = lineno
         self.count: int = count
@@ -646,7 +708,6 @@ class LineCoverage(CoverageBase):
         self,
         other: LineCoverage,
         options: MergeOptions,
-        context: Optional[str],
     ) -> LineCoverage:
         """
         Merge LineCoverage information.
@@ -655,17 +716,16 @@ class LineCoverage(CoverageBase):
 
         Precondition: both objects must have same lineno.
         """
-        context = f"{context}:{self.lineno}"
         if self.lineno != other.lineno:
-            raise AssertionError("Line number must be equal.")
-        self.md5 = self._merge_property(other, context, "MD5 checksum", lambda x: x.md5)
+            self.raise_merge_error("Line number must be equal.", other)
+        self.md5 = self._merge_property(other, "MD5 checksum", lambda x: x.md5)
 
         self.count += other.count
         self.excluded |= other.excluded
-        self.branches.merge(other.branches, options, context)
-        self.conditions.merge(other.conditions, options, context)
+        self.branches.merge(other.branches, options)
+        self.conditions.merge(other.conditions, options)
         self.__merge_decision(other.decision)
-        self.calls.merge(other.calls, options, context)
+        self.calls.merge(other.calls, options)
 
         return self
 
@@ -693,24 +753,27 @@ class LineCoverage(CoverageBase):
         # If decision coverage is not know for one side, return the other.
         if self.decision is None:
             self.decision = decisioncov
-        elif decisioncov is None:
-            self.decision = Uncheckable()
-        # If any decision is Uncheckable, the result is Uncheckable.
-        elif isinstance(self.decision, Uncheckable) or isinstance(
-            decisioncov, Uncheckable
-        ):
-            self.decision = Uncheckable()
-        # Merge Conditional decisions.
-        elif isinstance(self.decision, Conditional) and isinstance(
-            decisioncov, Conditional
-        ):
-            self.decision.count_true += decisioncov.count_true
-            self.decision.count_false += decisioncov.count_false
-        # Merge Switch decisions.
-        elif isinstance(self.decision, Switch) and isinstance(decisioncov, Switch):
-            self.decision.count += decisioncov.count
-        else:
-            self.decision = Uncheckable()
+        elif decisioncov is not None:
+            # If any decision is Uncheckable, the result is Uncheckable.
+            if isinstance(self.decision, Uncheckable) or isinstance(
+                decisioncov, Uncheckable
+            ):
+                self.decision = Uncheckable(
+                    set[tuple[str, ...]](*self.data_sources, *decisioncov.data_sources)
+                )
+            # Merge Conditional decisions.
+            elif isinstance(self.decision, Conditional) and isinstance(
+                decisioncov, Conditional
+            ):
+                self.decision.count_true += decisioncov.count_true
+                self.decision.count_false += decisioncov.count_false
+            # Merge Switch decisions.
+            elif isinstance(self.decision, Switch) and isinstance(decisioncov, Switch):
+                self.decision.count += decisioncov.count
+            else:
+                self.decision = Uncheckable(
+                    set[tuple[str, ...]](*self.data_sources, *decisioncov.data_sources)
+                )
 
     def insert_branch_coverage(
         self,
@@ -720,7 +783,7 @@ class LineCoverage(CoverageBase):
         """Add a branch coverage item, merge if needed."""
         key = branchcov.key
         if key in self.branches:
-            self.branches[key].merge(branchcov, options, None)
+            self.branches[key].merge(branchcov, options)
         else:
             self.branches[key] = branchcov
 
@@ -732,7 +795,7 @@ class LineCoverage(CoverageBase):
     ) -> None:
         """Add a condition coverage item, merge if needed."""
         if key in self.conditions:
-            self.conditions[key].merge(conditioncov, options, None)
+            self.conditions[key].merge(conditioncov, options)
         else:
             self.conditions[key] = conditioncov
 
@@ -751,7 +814,7 @@ class LineCoverage(CoverageBase):
         """Add a branch coverage item, merge if needed."""
         key = callcov.callno
         if key in self.calls:
-            self.calls[key].merge(callcov, options, None)
+            self.calls[key].merge(callcov, options)
         else:
             self.calls[key] = callcov
 
@@ -854,32 +917,27 @@ class LineCoverage(CoverageBase):
         raise AssertionError(f"Unknown decision type: {self.decision!r}")
 
 
-class FileCoverage:
+class FileCoverage(CoverageBase):
     """Represent coverage information about a file."""
 
-    __slots__ = "filename", "functions", "lines", "lines_keys_by_lineno", "data_sources"
+    __slots__ = "filename", "functions", "lines", "lines_keys_by_lineno"
 
     def __init__(
-        self, filename: str, data_source: Optional[Union[str, set[str]]]
+        self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        *,
+        filename: str,
     ) -> None:
+        super().__init__(data_source)
         self.filename: str = filename
         self.functions = CoverageDict[str, FunctionCoverage]()
         self.lines = CoverageDict[LinesKeyType, LineCoverage]()
         self.lines_keys_by_lineno: dict[int, List[LinesKeyType]] = {}
 
-        self.data_sources = (
-            set[str]()
-            if data_source is None
-            else set[str](
-                [data_source] if isinstance(data_source, str) else data_source
-            )
-        )
-
     def merge(
         self,
         other: FileCoverage,
         options: MergeOptions,
-        context: Optional[str],
     ) -> None:
         """
         Merge FileCoverage information.
@@ -890,28 +948,12 @@ class FileCoverage:
         """
 
         if self.filename != other.filename:
-            raise AssertionError("Filename must be equal")
-        if context is not None:
-            raise AssertionError("For a file the context must not be set.")
+            self.raise_error("Filename must be equal")
 
-        try:
-            self.lines.merge(other.lines, options, self.filename)
-            self.functions.merge(other.functions, options, self.filename)
-            if other.data_sources:
-                self.data_sources.update(other.data_sources)
-        except AssertionError as exc:
-            message = [str(exc)]
-            if other.data_sources:
-                message += (
-                    "GCOV source files of merge source is/are:",
-                    *[f"\t{e}" for e in sorted(other.data_sources)],
-                )
-            if self.data_sources:
-                message += (
-                    "and of merge target is/are:",
-                    *[f"\t{e}" for e in sorted(self.data_sources)],
-                )
-            raise AssertionError("\n".join(message)) from None
+        self.lines.merge(other.lines, options)
+        self.functions.merge(other.functions, options)
+        if other.data_sources:
+            self.data_sources.update(other.data_sources)
 
     def insert_line_coverage(
         self,
@@ -921,7 +963,7 @@ class FileCoverage:
         """Add a line coverage item, merge if needed."""
         key = linecov.key
         if key in self.lines:
-            self.lines[key].merge(linecov, options, self.filename)
+            self.lines[key].merge(linecov, options)
         else:
             self.lines[key] = linecov
             if linecov.lineno not in self.lines_keys_by_lineno:
@@ -938,20 +980,20 @@ class FileCoverage:
         """Add a function coverage item, merge if needed."""
         key = functioncov.key
         if key in self.functions:
-            self.functions[key].merge(functioncov, options, self.filename)
+            self.functions[key].merge(functioncov, options)
         else:
             self.functions[key] = functioncov
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function"""
         if functioncov.key not in self.functions:
-            raise AssertionError(
+            self.raise_error(
                 f"Function {functioncov.key} must be in filtered file coverage object."
             )
-        filecov = FileCoverage(self.filename, self.data_sources)
+        filecov = FileCoverage(self.data_sources, filename=self.filename)
         filecov.functions[functioncov.key] = functioncov
 
-        filecov.lines = CoverageDict[Tuple[int, str], LineCoverage](
+        filecov.lines = CoverageDict[tuple[int, str], LineCoverage](
             {
                 key: linecov
                 for key, linecov in self.lines.items()

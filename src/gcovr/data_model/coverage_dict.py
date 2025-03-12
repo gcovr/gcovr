@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 import logging
-from typing import Optional, Tuple, TypeVar
+from typing import Tuple, TypeVar
 
 from .merging import MergeOptions
 
@@ -38,7 +38,6 @@ class CoverageDict(dict[_Key, _T]):
         self,
         other: CoverageDict[_Key, _T],
         options: MergeOptions,
-        context: Optional[str],
     ) -> None:
         """Helper function to merge items in a dictionary."""
 
@@ -46,13 +45,13 @@ class CoverageDict(dict[_Key, _T]):
         # so that fewer items have to be checked for merging.
         # FIXME: This needs to be changed, result should be independent of the order
         if len(self) < len(other):
-            other.merge(self, options, context)
+            other.merge(self, options)
             for key, item in other.items():
                 self[key] = item
         else:
             for key, item in other.items():
                 if key in self:
-                    self[key].merge(item, options, context)
+                    self[key].merge(item, options)
                 else:
                     self[key] = item
 

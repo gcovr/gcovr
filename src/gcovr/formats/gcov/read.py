@@ -178,13 +178,13 @@ def process_gcov_json_data(
         gcov_json_data = json_loads(fh_in.read())
 
     coverage = json.parse_coverage(
+        data_fname,
         gcov_json_data=gcov_json_data,
         include_filters=options.filter,
         exclude_filters=options.exclude,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
-        data_fname=data_fname,
     )
 
     merge_options = get_merge_mode_from_options(options)
@@ -252,9 +252,9 @@ def process_gcov_text_data(
     key = os.path.normpath(fname)
 
     filecov, source_lines = text.parse_coverage(
+        (gcda_fname, data_fname) if gcda_fname else data_fname,
         lines,
         filename=key,
-        data_filename=gcda_fname or data_fname,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
     )

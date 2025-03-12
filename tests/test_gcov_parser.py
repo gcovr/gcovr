@@ -320,6 +320,7 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
     expected_uncovered_branches = GCOV_8_EXPECTED_UNCOVERED_BRANCHES[source_filename]
 
     filecov, lines = text.parse_coverage(
+        "",
         filename="tmp.cpp",
         lines=lines,
         ignore_parse_errors=None,
@@ -362,6 +363,7 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
 
     def run_the_parser() -> FileCoverage:
         coverage, _ = text.parse_coverage(
+            "",
             filename="foo.c",
             lines=lines,
             ignore_parse_errors=set(["all"]) if ignore_errors else None,
@@ -406,6 +408,7 @@ def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
 
     with pytest.raises(text.UnknownLineType):
         text.parse_coverage(
+            "",
             filename="foo.c",
             lines=lines,
             ignore_parse_errors=None,
@@ -461,6 +464,7 @@ def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) 
         m.side_effect = AssertionError("totally broken")
         with pytest.raises(AssertionError) as ex_info:
             text.parse_coverage(
+                "",
                 lines,
                 filename="test.cpp",
                 ignore_parse_errors=None,
@@ -509,6 +513,7 @@ def test_trailing_function_tag() -> None:
     )
 
     coverage, _ = text.parse_coverage(
+        "",
         source.splitlines(),
         filename="test.cpp",
         ignore_parse_errors=None,
@@ -556,6 +561,7 @@ def test_branch_exclusion(flags: str) -> None:
         expected_covered_branches -= {(2, 0, 0), (4, 0, 0)}
 
     filecov, lines = text.parse_coverage(
+        "",
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=None,
@@ -597,6 +603,7 @@ def test_negative_branch_count() -> None:
 
     with pytest.raises(NegativeHits):
         text.parse_coverage(
+            "",
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=None,
@@ -645,8 +652,8 @@ def test_negative_branch_count_json() -> None:
 
     with pytest.raises(NegativeHits):
         json.parse_coverage(
+            "example.gcov.json.gz",
             gcov_json_data=source,
-            data_fname="example.gcov.json.gz",
             include_filters=[AlwaysMatchFilter()],
             exclude_filters=[],
             ignore_parse_errors=set(),
@@ -787,6 +794,7 @@ def test_negative_line_count_ignored(
     )
 
     filecov, _ = text.parse_coverage(
+        "",
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set([flag]),
@@ -831,12 +839,14 @@ def test_negative_branch_count_ignored() -> None:
 
     with pytest.raises(NegativeHits):
         coverage, _ = text.parse_coverage(
+            "",
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=set(),
         )
 
     coverage, _ = text.parse_coverage(
+        "",
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set(["negative_hits.warn_once_per_file"]),
@@ -867,6 +877,7 @@ def test_suspicious_branch_count() -> None:
 
     with pytest.raises(SuspiciousHits):
         text.parse_coverage(
+            "",
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=set(),
@@ -897,6 +908,7 @@ def test_suspicious_line_count_ignored(
     )
 
     coverage, _ = text.parse_coverage(
+        "",
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set([flag]),
@@ -941,12 +953,14 @@ def test_suspicious_branch_count_ignored() -> None:
 
     with pytest.raises(SuspiciousHits):
         coverage, _ = text.parse_coverage(
+            "",
             source.splitlines(),
             filename="example.cpp",
             ignore_parse_errors=set(),
         )
 
     coverage, _ = text.parse_coverage(
+        "",
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=set(["suspicious_hits.warn_once_per_file"]),
@@ -981,6 +995,7 @@ def test_function_exclusion(flags: str) -> None:
         expected_functions = ["__foo"]
 
     coverage, lines = text.parse_coverage(
+        "",
         source.splitlines(),
         filename="example.cpp",
         ignore_parse_errors=None,
@@ -1015,6 +1030,7 @@ def test_noncode_lines() -> None:
         exclude_noncode_lines: bool = False,
     ) -> str:
         filecov, source = text.parse_coverage(
+            "",
             lines,
             filename="example.cpp",
             ignore_parse_errors=None,

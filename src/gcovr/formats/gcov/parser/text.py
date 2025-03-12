@@ -258,12 +258,12 @@ _LineWithError = tuple[str, Exception]
 
 
 def parse_coverage(
+    data_filename: Union[str, tuple[str, ...]],
     lines: list[str],
     *,
     filename: str,
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    data_filename: Optional[str] = None,  # Only for tests
 ) -> tuple[FileCoverage, list[str]]:
     """
     Extract coverage data from a gcov report.
@@ -323,7 +323,7 @@ def parse_coverage(
             f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
         )
 
-    filecov = FileCoverage(filename, data_filename)
+    filecov = FileCoverage(data_filename, filename=filename)
     state = _ParserState()
     for line, raw_line in tokenized_lines:
         try:
@@ -342,8 +342,9 @@ def parse_coverage(
         name, count, blocks = function
         filecov.insert_function_coverage(
             FunctionCoverage(
-                None,
-                name,
+                str(data_filename),
+                name=None,
+                demangled_name=name,
                 lineno=filecov.lines[state.linecov_key].lineno + 1,
                 count=count,
                 blocks=blocks,
@@ -408,7 +409,8 @@ def _gather_coverage_from_line(
         if not is_noncode:
             linecov = filecov.insert_line_coverage(
                 LineCoverage(
-                    lineno,
+                    filecov.data_sources,
+                    lineno=lineno,
                     count=raw_count,
                     function_name=state.function_name,
                     md5=get_md5_hexdigest(source_code.encode("utf-8")),
@@ -419,7 +421,14 @@ def _gather_coverage_from_line(
             name, count, blocks = function
 
             filecov.insert_function_coverage(
-                FunctionCoverage(None, name, lineno=lineno, count=count, blocks=blocks),
+                FunctionCoverage(
+                    filecov.data_sources,
+                    name=None,
+                    demangled_name=name,
+                    lineno=lineno,
+                    count=count,
+                    blocks=blocks,
+                ),
                 MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
             )
 
@@ -450,8 +459,9 @@ def _gather_coverage_from_line(
         if linecov:
             linecov.insert_branch_coverage(
                 BranchCoverage(
-                    branchno,
-                    hits,
+                    filecov.data_sources,
+                    branchno=branchno,
+                    count=hits,
                     source_block_id=state.block_id,
                     fallthrough=(annotation == "fallthrough"),
                     throw=(annotation == "throw"),
@@ -475,6 +485,7 @@ def _gather_coverage_from_line(
 
         linecov.insert_call_coverage(
             CallCoverage(
+                filecov.data_sources,
                 callno=callno,
                 covered=(returned > 0),
             ),

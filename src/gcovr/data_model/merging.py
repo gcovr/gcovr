@@ -118,3 +118,7 @@ def get_merge_mode_from_options(options: Options) -> MergeOptions:
         raise AssertionError("Sanity check: Unknown functions merge mode.")
 
     return merge_opts
+
+
+class MergeError(AssertionError):
+    """Internal exception which is extended with the context."""

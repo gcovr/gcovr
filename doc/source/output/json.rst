@@ -72,7 +72,7 @@ Each **file** entry contains coverage data for one source file::
     {
         "file": filename,
         "lines": [line],
-        "functions": [function]
+        "functions": [function],
         "gcovr/data_sources": [data_sources]
     }
 
@@ -90,6 +90,9 @@ functions: list
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
+.. versionchanged:: 8.3
+   The ``gcovr/data_sources`` is added.
 
 .. _json_format_line:
 
@@ -109,6 +112,7 @@ Each **line** entry contains coverage data for one line::
         "gcovr/excluded": excluded,
         "gcovr/decision": decision
         "gcovr/calls": calls,
+        "gcovr/data_sources": [data_sources]
     }
 
 line_number: int
@@ -152,6 +156,11 @@ gcovr/calls: object
   Absent if there is no call to report.
   Requires that :option:`--calls <gcovr --calls>` coverage analysis was enabled.
 
+gcovr/data_sources: list
+  A list of files from which the coverage object was populated.
+  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
+
 If there is no line entry for a source code line,
 it either means that the compiler did not generate any code for that line,
 or that gcovr ignored this coverage data due to heuristics.
@@ -161,6 +170,9 @@ The line entry should be interpreted as follows:
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
+
+.. versionchanged:: NEXT
+   The ``gcovr/data_sources`` is added.
 
 .. versionchanged:: 8.0
    The ``conditions`` is added.
@@ -193,7 +205,8 @@ Each **branch** provides information about a branch on that line::
       "fallthrough": fallthrough,
       "throw": throw,
       "source_block_id": number,
-      "destination_block_id": number
+      "destination_block_id": number,
+      "gcovr/data_sources": [data_sources]
     }
 
 This exactly matches the GCC gcov format.
@@ -213,6 +226,13 @@ source_block_id: int
 destination_block_id: int
   The destination block of this branch.
   Only available if ``gcov`` JSON format is used.
+
+gcovr/data_sources: list
+  A list of files from which the coverage object was populated.
+  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
+.. versionchanged:: NEXT
+   The ``gcovr/data_sources`` is added.
 
 .. versionadded:: 8.0
    Added ``destination_blockno`` field.
@@ -234,7 +254,8 @@ Each **condition** provides information about a condition on that line::
       "count": count,
       "covered": covered,
       "not_covered_false": not_covered_false,
-      "not_covered_true": not_covered_true
+      "not_covered_true": not_covered_true,
+      "gcovr/data_sources": [data_sources]
     }
 
 This exactly matches the GCC gcov format.
@@ -251,6 +272,13 @@ not_covered_false: list[int]
 not_covered_true: list[int]
   Terms, by index, not seen as true in this expression.
 
+gcovr/data_sources: list
+  A list of files from which the coverage object was populated.
+  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
+.. versionchanged:: NEXT
+   The ``gcovr/data_sources`` is added.
+
 .. _json_format_decision:
 
 Decision entries
@@ -259,18 +287,21 @@ Decision entries
 Each **decision** summarizes the line's branch coverage data::
 
     {
-      "type": "uncheckable"
+      "type": "uncheckable",
+      "gcovr/data_sources": [data_sources]
     }
 
     {
       "type": "conditional",
       "count_true": count_true,
-      "count_false": count_false
+      "count_false": count_false,
+      "gcovr/data_sources": [data_sources]
     }
 
     {
       "type": "switch",
-      "count": count
+      "count": count,
+      "gcovr/data_sources": [data_sources]
     }
 
 type: string
@@ -300,6 +331,13 @@ type: "switch"
   count: int
     How often this case was taken.
 
+gcovr/data_sources: list
+  A list of files from which the coverage object was populated.
+  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
+.. versionchanged:: NEXT
+   The ``gcovr/data_sources`` is added.
+
 .. _json_format_call:
 
 Call entries
@@ -309,7 +347,8 @@ Each **call** provides information about a call on that line::
 
     {
       "callno": callno,
-      "covered": covered
+      "covered": covered,
+      "gcovr/data_sources": [data_sources]
     }
 
 callno: int
@@ -317,6 +356,13 @@ callno: int
 
 covered: boolean
   Whether this call was covered.
+
+gcovr/data_sources: list
+  A list of files from which the coverage object was populated.
+  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
+.. versionchanged:: NEXT
+   The ``gcovr/data_sources`` is added.
 
 .. _json_format_function:
 
@@ -335,7 +381,8 @@ Each **function** entry describes a line in the source file::
         "<start line>:<start column>",
         "<end line>:<end column>"
       ]
-      "gcovr/excluded": excluded
+      "gcovr/excluded": excluded,
+      "gcovr/data_sources": [data_sources]
     }
 
 name: string
@@ -367,7 +414,14 @@ gcovr/excluded: boolean
   in particular with :ref:`exclusion markers`.
   May be absent if false.
 
+gcovr/data_sources: list
+  A list of files from which the coverage object was populated.
+  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
+
+.. versionchanged:: NEXT
+   The ``gcovr/data_sources`` is added.
 
 .. versionadded:: 8.0
    Added ``pos`` field.

@@ -107,7 +107,7 @@ def read_reports(options: Options) -> CoverageContainer:
                 if is_file_excluded(fname, options.filter, options.exclude):
                     continue
 
-                filecov = FileCoverage(fname, None)
+                filecov = FileCoverage("option --include", filename=fname)
                 LOGGER.debug(f"Merge empty coverage data for {fname}")
                 covdata.insert_file_coverage(
                     filecov, get_merge_mode_from_options(options)
