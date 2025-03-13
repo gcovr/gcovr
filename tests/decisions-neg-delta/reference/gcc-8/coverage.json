@@ -1,0 +1,268 @@
+{
+    "gcovr/format_version": "0.12",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 5,
+                    "function_name": "Foo::work(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "8304260594bce9b34610dec9e5a4e877",
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "line_number": 6,
+                    "function_name": "Foo::work(int)",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        }
+                    ],
+                    "gcovr/md5": "1aedbc743aca5457e63d15ff98c7c6b0",
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                            ]
+                        ]
+                    },
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "line_number": 7,
+                    "function_name": "Foo::work(int)",
+                    "count": 2,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        }
+                    ],
+                    "gcovr/md5": "531c09b5b187d2a095229382a14585af",
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "line_number": 8,
+                    "function_name": "Foo::work(int)",
+                    "count": 3,
+                    "branches": [
+                        {
+                            "count": 2,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        }
+                    ],
+                    "gcovr/md5": "7b25e7042a6c283ef5ff4184aa8a5bbd",
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 2,
+                        "count_false": 1,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                            ]
+                        ]
+                    },
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "line_number": 11,
+                    "function_name": "Foo::work(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9",
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "line_number": 14,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "853b69efca6192aad15b1a4363e38a64",
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "line_number": 16,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        }
+                    ],
+                    "gcovr/md5": "24293cd6780e791208b4517af39d0960",
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "line_number": 17,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                }
+            ],
+            "functions": [
+                {
+                    "demangled_name": "Foo::work(int)",
+                    "lineno": 5,
+                    "execution_count": 1,
+                    "blocks_percent": 82.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "main",
+                    "lineno": 14,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                }
+            ],
+            "gcovr/data_sources": [
+                [
+                    "main.gcda",
+                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                ]
+            ]
+        }
+    ]
+}

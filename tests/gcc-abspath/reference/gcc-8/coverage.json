@@ -1,23 +1,26 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "subfolder/main.c",
             "lines": [
                 {
                     "line_number": 3,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 4,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "ad2135afdb23d647f015857eac53de75"
                 },
                 {
                     "line_number": 5,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"

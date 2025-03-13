@@ -59,19 +59,17 @@ def read_report(options: Options) -> CoverageContainer:
         for trace_file in trace_files:
             datafiles.add(os.path.normpath(trace_file))
 
-    for data_source_filename in datafiles:
-        LOGGER.debug(f"Processing XML file: {data_source_filename}")
+    for data_source in datafiles:
+        LOGGER.debug(f"Processing XML file: {data_source}")
 
         try:
-            root: etree._Element = etree.parse(data_source_filename).getroot()  # nosec # We parse the file given by the user
+            root: etree._Element = etree.parse(data_source).getroot()  # nosec # We parse the file given by the user
         except Exception as e:
             raise RuntimeError(f"Bad --cobertura-add-tracefile option.\n{e}") from None
 
         source_elem = root.find("./sources/source")
         if source_elem is None:
-            raise AssertionError(
-                f"No source directory defined in file {data_source_filename}"
-            )
+            raise AssertionError(f"No source directory defined in file {data_source}")
         source_dir = str(source_elem.text)
 
         gcovr_file: etree._Element
@@ -79,7 +77,7 @@ def read_report(options: Options) -> CoverageContainer:
             filename = gcovr_file.get("filename")
             if filename is None:  # pragma: no cover
                 LOGGER.warning(
-                    f"Missing filename attribute in class element at {data_source_filename}:{gcovr_file.sourceline}"
+                    f"Missing filename attribute in class element at {data_source}:{gcovr_file.sourceline}"
                 )
                 continue
 
@@ -87,12 +85,13 @@ def read_report(options: Options) -> CoverageContainer:
             if is_file_excluded(filename, options.filter, options.exclude):
                 continue
 
-            filecov = FileCoverage(filename, data_source_filename)
+            filecov = FileCoverage(data_source, filename=filename)
             merge_options = get_merge_mode_from_options(options)
             xml_line: etree._Element
             for xml_line in gcovr_file.xpath("./lines//line"):  # type: ignore [assignment, union-attr]
                 filecov.insert_line_coverage(
-                    _line_from_xml(data_source_filename, xml_line)
+                    _line_from_xml(data_source, xml_line),
+                    merge_options,
                 )
 
             covdata.insert_file_coverage(filecov, merge_options)
@@ -100,7 +99,7 @@ def read_report(options: Options) -> CoverageContainer:
     return covdata
 
 
-def _line_from_xml(filename: str, xml_line: etree._Element) -> LineCoverage:
+def _line_from_xml(data_source: str, xml_line: etree._Element) -> LineCoverage:
     try:
         lineno = int(xml_line.get("number", ""))
     except Exception:  # pragma: no cover
@@ -119,25 +118,28 @@ def _line_from_xml(filename: str, xml_line: etree._Element) -> LineCoverage:
 
     is_branch = xml_line.get("branch") == "true"
     branch_msg = xml_line.get("condition-coverage")
-    linecov = LineCoverage(lineno, count=count)
+    linecov = LineCoverage(data_source, lineno=lineno, count=count, function_name=None)
 
     if is_branch and branch_msg is not None:
         try:
             [covered, total] = branch_msg[branch_msg.rfind("(") + 1 : -1].split("/")
             for i in range(int(total)):
                 linecov.insert_branch_coverage(
-                    i, _branch_from_json(i, i < int(covered))
+                    _branch_from_json(data_source, i, i < int(covered))
                 )
-        except AssertionError:  # pragma: no cover
+        except AssertionError as exc:  # pragma: no cover
             LOGGER.warning(
-                f"Invalid branch information for line {linecov.lineno} in file {filename}"
+                f"Invalid branch information for line {linecov.lineno}: {exc}"
             )
 
     return linecov
 
 
-def _branch_from_json(block_id: int, is_covered: bool) -> BranchCoverage:
+def _branch_from_json(
+    data_source: str, branchno: int, is_covered: bool
+) -> BranchCoverage:
     return BranchCoverage(
-        source_block_id=block_id,
+        data_source,
+        branchno=branchno,
         count=1 if is_covered else 0,
     )

@@ -1,42 +1,46 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 4,
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31"
                 },
                 {
                     "line_number": 5,
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
                 },
                 {
                     "line_number": 7,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "7941e88bbc29e13c47185370feeea41a"
                 },
                 {
                     "line_number": 11,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "7941e88bbc29e13c47185370feeea41a",
@@ -44,6 +48,7 @@
                 },
                 {
                     "line_number": 14,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "0b070cd9a90e53516ae557a8958afe6d",
@@ -51,18 +56,21 @@
                 },
                 {
                     "line_number": 15,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "8ee1e28d6ff96a2f778a09108eb5e98c"
                 },
                 {
                     "line_number": 18,
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "bf5be2a3bc0ecc42e120b71a7eebd727"
                 },
                 {
                     "line_number": 22,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "bf5be2a3bc0ecc42e120b71a7eebd727",
@@ -70,6 +78,7 @@
                 },
                 {
                     "line_number": 25,
+                    "function_name": "_Z3fooi",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "24c0af48fef8b1ec52c142d48f748106",
@@ -77,30 +86,35 @@
                 },
                 {
                     "line_number": 26,
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "e28c6c49d3acebcbddfd7e7e642d7bc5"
                 },
                 {
                     "line_number": 28,
+                    "function_name": "_Z3fooi",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
                 },
                 {
                     "line_number": 31,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 32,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c18608b3fe9a00042c41d97d382d1e07"
                 },
                 {
                     "line_number": 34,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"

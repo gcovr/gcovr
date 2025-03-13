@@ -1,11 +1,12 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "tests/excl-line-branch/bar.cpp",
             "lines": [
                 {
                     "line_number": 14,
+                    "function_name": "bar(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "3c9c1937d90004711fa6cda5e218dc87",
@@ -13,6 +14,7 @@
                 },
                 {
                     "line_number": 15,
+                    "function_name": "bar(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
@@ -20,6 +22,7 @@
                 },
                 {
                     "line_number": 16,
+                    "function_name": "bar(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "4071653b480e72354bcfb2b2e78f92fd",
@@ -27,6 +30,7 @@
                 },
                 {
                     "line_number": 18,
+                    "function_name": "bar(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
@@ -48,49 +52,53 @@
             "lines": [
                 {
                     "line_number": 2,
+                    "function_name": "foo(int)",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31"
                 },
                 {
                     "line_number": 3,
+                    "function_name": "foo(int)",
                     "count": 5,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 4,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         },
                         {
-                            "source_block_id": 1,
                             "count": 3,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         }
                     ],
                     "gcovr/md5": "69d7cb531f90045147347c360a0d81d2"
                 },
                 {
                     "line_number": 4,
+                    "function_name": "foo(int)",
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
                 },
                 {
                     "line_number": 5,
+                    "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "7418c3752af701f88bc8f790f4793a6d",
@@ -98,62 +106,68 @@
                 },
                 {
                     "line_number": 6,
+                    "function_name": "foo(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
                 },
                 {
                     "line_number": 7,
+                    "function_name": "foo(int)",
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 2,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "189a346e59b4b9eb1653c629e9e00396"
                 },
                 {
                     "line_number": 8,
+                    "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "30947b981b8563f1d1a6690c87ba3db6"
                 },
                 {
                     "line_number": 9,
+                    "function_name": "foo(int)",
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 0,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         },
                         {
-                            "source_block_id": 0,
                             "count": 2,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0
                         }
                     ],
                     "gcovr/md5": "d4dfe4cbc7a957b4db133508a4597ed6"
                 },
                 {
                     "line_number": 10,
+                    "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "3b131baf29a59cf4c789f42a8cb54194"
                 },
                 {
                     "line_number": 14,
+                    "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "1d470a2a37dd4a537d80ee9c575b61a2",
@@ -161,6 +175,7 @@
                 },
                 {
                     "line_number": 15,
+                    "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
@@ -168,6 +183,7 @@
                 },
                 {
                     "line_number": 16,
+                    "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "b18752f044690130643d37bc530cd788",
@@ -175,6 +191,7 @@
                 },
                 {
                     "line_number": 17,
+                    "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
@@ -182,6 +199,7 @@
                 },
                 {
                     "line_number": 21,
+                    "function_name": "foo(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
@@ -201,61 +219,83 @@
             "lines": [
                 {
                     "line_number": 10,
+                    "function_name": "Bar::Bar()",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "7d2f282a8746c23f7f938eb7b5592e06"
                 },
                 {
                     "line_number": 11,
+                    "function_name": "Bar::Bar()",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "5efee26ba06711f9395b3c3bc7a9d94a"
                 },
                 {
                     "line_number": 12,
-                    "count": 2,
+                    "function_name": "Bar::Bar()",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "ef89afadbfb397fa2428716379142419"
+                },
+                {
+                    "line_number": 12,
+                    "function_name": "Bar::~Bar()",
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "ef89afadbfb397fa2428716379142419"
                 },
                 {
                     "line_number": 13,
-                    "count": 2,
+                    "function_name": "Bar::Bar()",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
+                },
+                {
+                    "line_number": 13,
+                    "function_name": "Bar::~Bar()",
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
                 },
                 {
                     "line_number": 19,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 20,
+                    "function_name": "main",
                     "count": 6,
                     "branches": [
                         {
-                            "source_block_id": 1,
                             "count": 5,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         },
                         {
-                            "source_block_id": 1,
                             "count": 1,
                             "fallthrough": true,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 1
                         }
                     ],
                     "gcovr/md5": "3aac4e3adb4400cb9a56145130946d99"
                 },
                 {
                     "line_number": 21,
+                    "function_name": "main",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "ce31d2067628e009ca3ca41fc3d5f044"
                 },
                 {
                     "line_number": 25,
+                    "function_name": "main",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "1c65a24caffdcb0e7b6493034a21dc55",
@@ -263,6 +303,7 @@
                 },
                 {
                     "line_number": 26,
+                    "function_name": "main",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "f619ca2743f98bae7db1d75919cfc0bc",
@@ -270,6 +311,7 @@
                 },
                 {
                     "line_number": 32,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"

@@ -92,24 +92,10 @@ SEPARATE_FUNCTION_MERGE_OPTIONS = MergeFunctionOptions(
 
 
 @dataclass
-class MergeConditionOptions:
-    """Data class to store the condition merge options."""
-
-    merge_condition_fold: bool = False
-
-
-CONDITION_STRICT_MERGE_OPTIONS = MergeConditionOptions()
-CONDITION_FOLD_MERGE_OPTIONS = MergeConditionOptions(
-    merge_condition_fold=True,
-)
-
-
-@dataclass
 class MergeOptions:
     """Data class to store the merge options."""
 
     func_opts: MergeFunctionOptions = field(default_factory=MergeFunctionOptions)
-    cond_opts: MergeConditionOptions = field(default_factory=MergeConditionOptions)
 
 
 DEFAULT_MERGE_OPTIONS = MergeOptions()
@@ -131,11 +117,8 @@ def get_merge_mode_from_options(options: Options) -> MergeOptions:
     else:
         raise AssertionError("Sanity check: Unknown functions merge mode.")
 
-    if options.merge_mode_conditions == "strict":
-        merge_opts.cond_opts = CONDITION_STRICT_MERGE_OPTIONS
-    elif options.merge_mode_conditions == "fold":
-        merge_opts.cond_opts = CONDITION_FOLD_MERGE_OPTIONS
-    else:
-        raise AssertionError("Sanity check: Unknown conditions merge mode.")
-
     return merge_opts
+
+
+class MergeError(AssertionError):
+    """Internal exception which is extended with the context."""

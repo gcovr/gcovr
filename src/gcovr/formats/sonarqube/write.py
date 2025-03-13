@@ -39,10 +39,10 @@ def write_report(
         file_node = etree.Element("file")
         file_node.set("path", filename)
 
-        for lineno, linecov in data.lines.items():
+        for linecov in data.lines.values():
             if linecov.is_reportable:
                 line_node = etree.Element("lineToCover")
-                line_node.set("lineNumber", str(lineno))
+                line_node.set("lineNumber", str(linecov.lineno))
                 line_node.set("covered", "true" if linecov.is_covered else "false")
 
                 if linecov.branches:

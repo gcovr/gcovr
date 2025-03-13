@@ -26,7 +26,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>0000-00-00 00:00:00</td>
+      <td>2025-01-20 20:18:07+00:00</td>
     </tr>
   </table>
 </div>
@@ -40,9 +40,9 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>39</td>
-      <td>42</td>
-      <td class="coverage-high">92.9%</td>
+      <td>43</td>
+      <td>46</td>
+      <td class="coverage-high">93.5%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
@@ -68,19 +68,21 @@
     <tr>
       <th>Function (Line)</th>
       <th>Call count</th>
+      <th>Line coverage</th>
+      <th>Branch coverage</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l19">bar(int) (line 19)</a></td><td>called 1 time</td><td>80.0%</td></tr>
-    <tr><td><a href="#l9">foo(int) (line 9)</a></td><td>called 1 time</td><td>80.0%</td></tr>
-    <tr><td><a href="#l95">main (line 95)</a></td><td>called 1 time</td><td>100.0%</td></tr>
-    <tr><td><a href="#l44">sort_excluded() (line 44)</a></td><td>called 1 time</td><td>89.0%</td></tr>
-    <tr><td><a href="#l44">sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const (line 44)</a></td><td>called 41 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l66">sort_excluded_both() (line 66)</a></td><td>called 1 time</td><td>100.0%</td></tr>
-    <tr><td><a href="#l73">sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const (line 73)</a></td><td>called 41 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l84">sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const (line 84)</a></td><td>called 18 times</td><td>75.0%</td></tr>
-    <tr><td><a href="#l48">sort_lambda_excluded() (line 48)</a></td><td>called 1 time</td><td>89.0%</td></tr>
-    <tr><td><a href="#l50">sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const (line 50)</a></td><td>called 41 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l57">sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const (line 57)</a></td><td>called 41 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l19">bar(int) (line 19)</a></td><td>called 1 time</td><td>87.5%</td><td>75.0%</td><td>80.0%</td></tr>
+    <tr><td><a href="#l9">foo(int) (line 9)</a></td><td>called 1 time</td><td>80.0%</td><td>50.0%</td><td>80.0%</td></tr>
+    <tr><td><a href="#l95">main (line 95)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l44">sort_excluded() (line 44)</a></td><td>called 1 time</td><td>100.0%</td><td>50.0%</td><td>89.0%</td></tr>
+    <tr><td><a href="#l44">sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const (line 44)</a></td><td>called 41 times</td><td>100.0%</td><td>100.0%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l66">sort_excluded_both() (line 66)</a></td><td>called 1 time</td><td>100.0%</td><td>50.0%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l73">sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const (line 73)</a></td><td>called 41 times</td><td>100.0%</td><td>75.0%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l84">sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const (line 84)</a></td><td>called 18 times</td><td>80.0%</td><td>50.0%</td><td>75.0%</td></tr>
+    <tr><td><a href="#l48">sort_lambda_excluded() (line 48)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>89.0%</td></tr>
+    <tr><td><a href="#l50">sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const (line 50)</a></td><td>called 41 times</td><td>100.0%</td><td>66.7%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l57">sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const (line 57)</a></td><td>called 41 times</td><td>100.0%</td><td>100.0%</td><td>100.0%</td></tr>
   </table>
 </details>
 
@@ -309,84 +311,84 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#define LAMBDA_SORT /</span></td>
+      <td class="src "><span class="cp">#define LAMBDA_SORT \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l30" href="#l30">30</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">   { /</span></td>
+      <td class="src "><span class="cp">   { \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l31" href="#l31">31</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">      std::array&lt;int, 10&gt; arr = { 0, 9, 1, 8, 2, 7, 3, 6, 4, 5 }; /</span></td>
+      <td class="src "><span class="cp">      std::array&lt;int, 10&gt; arr = { 0, 9, 1, 8, 2, 7, 3, 6, 4, 5 }; \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l32" href="#l32">32</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">      std::sort( /</span></td>
+      <td class="src "><span class="cp">      std::sort( \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l33" href="#l33">33</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">         std::begin(arr), /</span></td>
+      <td class="src "><span class="cp">         std::begin(arr), \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l34" href="#l34">34</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">         std::end(arr), /</span></td>
+      <td class="src "><span class="cp">         std::end(arr), \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l35" href="#l35">35</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">         [](int a, int b) { /</span></td>
+      <td class="src "><span class="cp">         [](int a, int b) { \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l36" href="#l36">36</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">            if (a &gt; b) /</span></td>
+      <td class="src "><span class="cp">            if (a &gt; b) \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l37" href="#l37">37</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">               return true; /</span></td>
+      <td class="src "><span class="cp">               return true; \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l38" href="#l38">38</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">            return false; /</span></td>
+      <td class="src "><span class="cp">            return false; \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l39" href="#l39">39</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">         } /</span></td>
+      <td class="src "><span class="cp">         } \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l40" href="#l40">40</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">      ); /</span></td>
+      <td class="src "><span class="cp">      ); \</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l41" href="#l41">41</a></td>
@@ -415,10 +417,11 @@
         <details class="linebranchDetails">
           <summary class="linebranchSummary">3/4</summary>
           <div class="linebranchContents">
+            <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+            <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
+            <hr />
             <div class="takenBranch">&check; Branch 0 taken 25 times.</div>
             <div class="takenBranch">&check; Branch 1 taken 16 times.</div>
-            <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
-            <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
           </div>
         </details>
       </td>
@@ -433,8 +436,9 @@
           <div class="linebranchContents">
             <div class="takenBranch">&check; Branch 0 taken 25 times.</div>
             <div class="takenBranch">&check; Branch 1 taken 16 times.</div>
-            <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
-            <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+            <hr />
+            <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+            <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
           </div>
         </details>
       </td>

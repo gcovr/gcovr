@@ -57,7 +57,7 @@ def remove_noncode_lines(filecov: FileCoverage, *, lines: list[str]) -> None:
     for linecov in list(filecov.lines.values()):
         source_code = lines[linecov.lineno - 1]
         if linecov.count == 0 and _is_non_code(source_code):
-            filecov.lines.pop(linecov.lineno)
+            filecov.lines.pop(linecov.key)
 
 
 def _line_can_contain_branches(code: str) -> bool:

@@ -1,24 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="1.0" branch-rate="0.8" lines-covered="14" lines-valid="14" branches-covered="8" branches-valid="10" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="1.0" branch-rate="0.71429" lines-covered="16" lines-valid="16" branches-covered="10" branches-valid="14" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/excl-function</source>
   </sources>
   <packages>
-    <package name="" line-rate="1.0" branch-rate="0.8" complexity="0.0">
+    <package name="" line-rate="1.0" branch-rate="0.71429" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.8" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.71429" complexity="0.0">
           <methods>
-            <method name="sort_excluded" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="sort_excluded" signature="()" line-rate="1.0" branch-rate="0.5" complexity="0.0">
               <lines>
-                <line number="44" hits="44" branch="true" condition-coverage="100% (2/2)">
+                <line number="44" hits="3" branch="true" condition-coverage="50% (1/2)">
                   <conditions>
-                    <condition number="0" type="jump" coverage="100%"/>
+                    <condition number="0" type="jump" coverage="50%"/>
                   </conditions>
                 </line>
-                <line number="45" hits="44" branch="true" condition-coverage="100% (2/2)">
+                <line number="45" hits="3" branch="true" condition-coverage="50% (1/2)">
                   <conditions>
-                    <condition number="0" type="jump" coverage="100%"/>
+                    <condition number="0" type="jump" coverage="50%"/>
                   </conditions>
                 </line>
               </lines>
@@ -44,22 +44,34 @@
             <method name="foo" signature="(int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="sort_excluded" signature="()::{lambda(int, int)#2}::operator()(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="sort_excluded" signature="()::{lambda(int, int)#2}::operator()(int, int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="45" hits="41" branch="true" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="100%"/>
+                  </conditions>
+                </line>
+              </lines>
+            </method>
+            <method name="sort_excluded" signature="()::{lambda(int, int)#1}::operator()(int, int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="44" hits="41" branch="true" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="100%"/>
+                  </conditions>
+                </line>
+              </lines>
+            </method>
+            <method name="sort_excluded_both" signature="()::{lambda(int, int)#2}::operator()(int, int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="sort_excluded" signature="()::{lambda(int, int)#1}::operator()(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="sort_excluded_both" signature="()::{lambda(int, int)#1}::operator()(int, int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="sort_excluded_both" signature="()::{lambda(int, int)#2}::operator()(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="sort_lambda_excluded" signature="()::{lambda(int, int)#2}::operator()(int, int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="sort_excluded_both" signature="()::{lambda(int, int)#1}::operator()(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
-            <method name="sort_lambda_excluded" signature="()::{lambda(int, int)#2}::operator()(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
-            <method name="sort_lambda_excluded" signature="()::{lambda(int, int)#1}::operator()(int, int) const" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+            <method name="sort_lambda_excluded" signature="()::{lambda(int, int)#1}::operator()(int, int)" line-rate="1.0" branch-rate="0.75" complexity="0.0">
               <lines>
                 <line number="50" hits="44" branch="true" condition-coverage="75% (3/4)">
                   <conditions>
@@ -81,12 +93,22 @@
             </method>
           </methods>
           <lines>
-            <line number="44" hits="44" branch="true" condition-coverage="100% (2/2)">
+            <line number="44" hits="3" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="44" hits="41" branch="true" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="100%"/>
               </conditions>
             </line>
-            <line number="45" hits="44" branch="true" condition-coverage="100% (2/2)">
+            <line number="45" hits="3" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="45" hits="41" branch="true" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="100%"/>
               </conditions>

@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 import os
+import re
 from lxml import etree  # nosec # We only write XML files
 
 from ...options import Options
@@ -80,25 +81,25 @@ def write_report(
         # trivial to get from gcov (so we will leave it blank)
         methods_elem = etree.SubElement(class_elem, "methods")
         for functioncov in filecov.functions.values():
-            if functioncov.name is not None:
-                filtered_filecov = filecov.filter_for_function(functioncov)
-                function_stats = filtered_filecov.stats
-                name = functioncov.demangled_name
-                if "(" in name:
-                    name = name.split("(", maxsplit=1)[0]
-                    signature = functioncov.demangled_name[len(name) :]
-                else:
-                    signature = "()"
-                method_elem = etree.SubElement(methods_elem, "method")
-                method_elem.set("name", name)
-                method_elem.set("signature", signature)
-                method_elem.set("line-rate", _rate(function_stats.line))
-                method_elem.set("branch-rate", _rate(function_stats.branch))
-                method_elem.set("complexity", "0.0")
-                lines_elem = etree.SubElement(method_elem, "lines")
-                for linecov in filtered_filecov.lines.values():
-                    if linecov.is_reportable:
-                        lines_elem.append(_line_element(linecov))
+            filtered_filecov = filecov.filter_for_function(functioncov)
+            function_stats = filtered_filecov.stats
+            name = str(functioncov.demangled_name)
+            matches = re.match(r"(.+?)(\(.*\))", name)
+            if matches:
+                name = matches.group(1)
+                signature = matches.group(2)
+            else:
+                signature = "()"
+            method_elem = etree.SubElement(methods_elem, "method")
+            method_elem.set("name", name)
+            method_elem.set("signature", signature)
+            method_elem.set("line-rate", _rate(function_stats.line))
+            method_elem.set("branch-rate", _rate(function_stats.branch))
+            method_elem.set("complexity", "0.0")
+            lines_elem = etree.SubElement(method_elem, "lines")
+            for linecov in filtered_filecov.lines.values():
+                if linecov.is_reportable:
+                    lines_elem.append(_line_element(linecov))
 
         lines_elem = etree.SubElement(class_elem, "lines")
 
