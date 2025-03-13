@@ -212,8 +212,8 @@ is needed.
 
 Tip: If you have problems getting everything set up, consider looking at these files:
 
--   for Linux: ``.github/workflows/test.yml`` and ``admin/Dockerfile.qa``
--   for Windows: ``.github/workflows/test.yml``
+-   for Linux: ``.github/workflows/gcovr-ci-job.yml`` and ``admin/Dockerfile.qa``
+-   for Windows: ``.github/workflows/gcovr-ci-job.yml``
 
 .. _project structure:
 

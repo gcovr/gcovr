@@ -34,11 +34,7 @@ The behavior of this parser was informed by the following sources:
 import logging
 import os
 from locale import getpreferredencoding
-from typing import (
-    Any,
-    Optional,
-    Union,
-)
+from typing import Any, Optional
 
 from gcovr.utils import get_md5_hexdigest
 
@@ -62,11 +58,11 @@ DEFAULT_SOURCE_ENCODING = getpreferredencoding()
 
 
 def parse_coverage(
+    data_fname: str,
     gcov_json_data: dict[str, Any],
     include_filters: list[Filter],
     exclude_filters: list[Filter],
     ignore_parse_errors: Optional[set[str]],
-    data_fname: Optional[str] = None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
 ) -> list[tuple[FileCoverage, list[str]]]:
@@ -116,10 +112,10 @@ def parse_coverage(
         ]
 
         filecov = _parse_file_node(
+            data_fname,
             gcov_file_node=file,
             filename=fname,
             source_lines=encoded_source_lines,
-            data_fname=data_fname,
             ignore_parse_errors=ignore_parse_errors,
             suspicious_hits_threshold=suspicious_hits_threshold,
         )
@@ -130,10 +126,10 @@ def parse_coverage(
 
 
 def _parse_file_node(
+    data_fname: str,
     gcov_file_node: dict[str, Any],
     filename: str,
     source_lines: list[str],
-    data_fname: Optional[Union[str, set[str]]],
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
 ) -> FileCoverage:
@@ -161,11 +157,12 @@ def _parse_file_node(
     if ignore_parse_errors is None:
         ignore_parse_errors = set()
 
-    filecov = FileCoverage(filename, data_fname)
+    filecov = FileCoverage(data_fname, filename=filename)
     for line in gcov_file_node["lines"]:
         linecov: LineCoverage = filecov.insert_line_coverage(
             LineCoverage(
-                line["line_number"],
+                str(data_fname),
+                lineno=line["line_number"],
                 count=check_hits(
                     line["count"],
                     source_lines[line["line_number"] - 1],
@@ -178,20 +175,21 @@ def _parse_file_node(
                 md5=get_md5_hexdigest(
                     source_lines[line["line_number"] - 1].encode("utf-8")
                 ),
-            ),
+            )
         )
         for index, branch in enumerate(line["branches"]):
             linecov.insert_branch_coverage(
-                index,
                 BranchCoverage(
-                    branch["source_block_id"],
-                    check_hits(
+                    str(data_fname),
+                    branchno=index,
+                    count=check_hits(
                         branch["count"],
                         source_lines[line["line_number"] - 1],
                         ignore_parse_errors,
                         suspicious_hits_threshold,
                         persistent_states,
                     ),
+                    source_block_id=branch["source_block_id"],
                     fallthrough=branch["fallthrough"],
                     throw=branch["throw"],
                     destination_block_id=branch["destination_block_id"],
@@ -201,16 +199,17 @@ def _parse_file_node(
             linecov.insert_condition_coverage(
                 index,
                 ConditionCoverage(
-                    check_hits(
+                    str(data_fname),
+                    count=check_hits(
                         condition["count"],
                         source_lines[line["line_number"] - 1],
                         ignore_parse_errors,
                         suspicious_hits_threshold,
                         persistent_states,
                     ),
-                    condition["covered"],
-                    condition["not_covered_true"],
-                    condition["not_covered_false"],
+                    covered=condition["covered"],
+                    not_covered_true=condition["not_covered_true"],
+                    not_covered_false=condition["not_covered_false"],
                 ),
             )
     for function in gcov_file_node["functions"]:
@@ -225,8 +224,9 @@ def _parse_file_node(
 
         filecov.insert_function_coverage(
             FunctionCoverage(
-                function["name"],
-                function["demangled_name"],
+                str(data_fname),
+                name=function["name"],
+                demangled_name=function["demangled_name"],
                 lineno=function["start_line"],
                 count=function["execution_count"],
                 blocks=blocks,

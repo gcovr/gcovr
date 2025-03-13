@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "tests/excl-line-branch/bar.cpp",
@@ -54,11 +54,11 @@
                     "lineno": 14,
                     "execution_count": 0,
                     "blocks_percent": 0.0,
-                    "gcovr/excluded": true,
                     "pos": [
                         "14:5",
                         "19:1"
-                    ]
+                    ],
+                    "gcovr/excluded": true
                 }
             ]
         },
@@ -79,31 +79,31 @@
                     "count": 5,
                     "branches": [
                         {
-                            "source_block_id": 2,
                             "count": 4,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 2,
                             "destination_block_id": 3
                         },
                         {
-                            "source_block_id": 2,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 2,
                             "destination_block_id": 4
                         },
                         {
-                            "source_block_id": 3,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 3,
                             "destination_block_id": 4
                         },
                         {
-                            "source_block_id": 3,
                             "count": 3,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 3,
                             "destination_block_id": 5
                         }
                     ],
@@ -159,17 +159,17 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 8,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 8,
                             "destination_block_id": 9
                         },
                         {
-                            "source_block_id": 8,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 8,
                             "destination_block_id": 10
                         }
                     ],
@@ -204,17 +204,17 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 10,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 10,
                             "destination_block_id": 11
                         },
                         {
-                            "source_block_id": 10,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 10,
                             "destination_block_id": 12
                         }
                     ],
@@ -334,6 +334,14 @@
                 {
                     "line_number": 12,
                     "function_name": "_ZN3BarD0Ev",
+                    "count": 0,
+                    "branches": [],
+                    "block_ids": [],
+                    "gcovr/md5": "ef89afadbfb397fa2428716379142419"
+                },
+                {
+                    "line_number": 12,
+                    "function_name": "_ZN3BarD2Ev",
                     "count": 1,
                     "branches": [],
                     "block_ids": [],
@@ -342,12 +350,20 @@
                 {
                     "line_number": 13,
                     "function_name": "_ZN3BarD0Ev",
-                    "count": 1,
+                    "count": 0,
                     "branches": [],
                     "block_ids": [
                         2,
                         3
                     ],
+                    "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
+                },
+                {
+                    "line_number": 13,
+                    "function_name": "_ZN3BarD2Ev",
+                    "count": 1,
+                    "branches": [],
+                    "block_ids": [],
                     "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
                 },
                 {
@@ -364,17 +380,17 @@
                     "count": 6,
                     "branches": [
                         {
-                            "source_block_id": 5,
                             "count": 5,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 5,
                             "destination_block_id": 3
                         },
                         {
-                            "source_block_id": 5,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 5,
                             "destination_block_id": 6
                         }
                     ],

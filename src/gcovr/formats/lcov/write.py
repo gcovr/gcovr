@@ -88,15 +88,15 @@ def write_report(
 
             branches = 0
             branch_hits = 0
-            for lineno, linecov in filecov.lines.items():
+            for linecov in filecov.lines.values():
                 if linecov.is_reportable:
                     branches += len(linecov.branches)
-                    for branchno, branchcov in linecov.branches.items():
+                    for branchcov in linecov.branches.values():
                         if branchcov.count:
                             branch_hits += 1
                         # BRDA:<line_number>,[<exception>]<block>,<branch>,<taken>
                         fh.write(
-                            f"BRDA:{lineno},{'e' if branchcov.throw else ''}{branchcov.source_block_id_or_0},{branchno},{branchcov.count if branchcov.count else '-'}\n"
+                            f"BRDA:{linecov.lineno},{'e' if branchcov.throw else ''}{branchcov.source_block_id_or_0},{branchcov.branchno},{branchcov.count if branchcov.count else '-'}\n"
                         )
 
             # BRF:<number of branches found>
@@ -105,12 +105,12 @@ def write_report(
             fh.write(f"BRH:{branch_hits}\n")
 
             lines_covered = 0
-            for lineno, linecov in filecov.lines.items():
+            for linecov in filecov.lines.values():
                 if linecov.is_reportable:
                     if linecov.count:
                         lines_covered += 1
                     # DA:<line number>,<execution count>[,<checksum>]
-                    fh.write(f"DA:{lineno},{linecov.count},{linecov.md5}\n")
+                    fh.write(f"DA:{linecov.lineno},{linecov.count},{linecov.md5}\n")
 
             stats = filecov.stats
             # LH:<number of lines with a non\-zero execution count>

@@ -23,8 +23,8 @@
     "useGitignore": true,
     "words": [
         "autoprogram",
-        "bazel",
         "bandaid",
+        "bazel",
         "bdist",
         "blockno",
         "branchcov",

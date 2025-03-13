@@ -68,10 +68,10 @@ def read_report(options: Options) -> CoverageContainer:
         for trace_file in trace_files:
             datafiles.add(os.path.normpath(trace_file))
 
-    for data_source_filename in datafiles:
-        LOGGER.debug(f"Processing JSON file: {data_source_filename}")
+    for data_source in datafiles:
+        LOGGER.debug(f"Processing JSON file: {data_source}")
 
-        with open(data_source_filename, encoding="utf-8") as json_file:
+        with open(data_source, encoding="utf-8") as json_file:
             gcovr_json_data = json.load(json_file)
 
         version = str(gcovr_json_data["gcovr/format_version"])
@@ -89,22 +89,29 @@ def read_report(options: Options) -> CoverageContainer:
                 continue
 
             filecov = FileCoverage(
-                file_path, gcovr_file.get("gcovr/data_sources", data_source_filename)
+                gcovr_file.get("gcovr/data_sources", data_source),
+                filename=file_path,
             )
             merge_options = get_merge_mode_from_options(options)
             for json_function in gcovr_file["functions"]:
                 filecov.insert_function_coverage(
-                    _function_from_json(json_function), merge_options
+                    _function_from_json(data_source, json_function),
+                    merge_options,
                 )
             for json_line in gcovr_file["lines"]:
-                filecov.insert_line_coverage(_line_from_json(json_line), merge_options)
+                filecov.insert_line_coverage(
+                    _line_from_json(data_source, json_line),
+                    merge_options,
+                )
 
             covdata.insert_file_coverage(filecov, merge_options)
 
     return covdata
 
 
-def _function_from_json(json_function: dict[str, Any]) -> FunctionCoverage:
+def _function_from_json(
+    data_source: str, json_function: dict[str, Any]
+) -> FunctionCoverage:
     start: Optional[tuple[int, int]] = None
     end: Optional[tuple[int, int]] = None
     if "pos" in json_function:
@@ -113,8 +120,9 @@ def _function_from_json(json_function: dict[str, Any]) -> FunctionCoverage:
         end_l_c = json_function["pos"][1].split(":", maxsplit=1)
         end = (int(end_l_c[0]), int(end_l_c[1]))
     return FunctionCoverage(
-        json_function.get("name"),
-        json_function["demangled_name"],
+        json_function.get("gcovr/data_sources", data_source),
+        name=json_function.get("name"),
+        demangled_name=json_function["demangled_name"],
         lineno=json_function["lineno"],
         count=json_function["execution_count"],
         blocks=json_function["blocks_percent"],
@@ -124,9 +132,10 @@ def _function_from_json(json_function: dict[str, Any]) -> FunctionCoverage:
     )
 
 
-def _line_from_json(json_line: dict[str, Any]) -> LineCoverage:
+def _line_from_json(data_source: str, json_line: dict[str, Any]) -> LineCoverage:
     linecov = LineCoverage(
-        json_line["line_number"],
+        json_line.get("gcovr/data_sources", data_source),
+        lineno=json_line["line_number"],
         count=json_line["count"],
         function_name=json_line.get("function_name"),
         block_ids=json_line.get("block_ids"),
@@ -135,29 +144,36 @@ def _line_from_json(json_line: dict[str, Any]) -> LineCoverage:
     )
 
     for branchno, json_branch in enumerate(json_line["branches"]):
-        linecov.insert_branch_coverage(branchno, _branch_from_json(json_branch))
+        linecov.insert_branch_coverage(
+            _branch_from_json(data_source, branchno, json_branch)
+        )
 
     if "conditions" in json_line:
         for conditionno, json_branch in enumerate(json_line["conditions"]):
             linecov.insert_condition_coverage(
-                conditionno, _condition_from_json(json_branch)
+                conditionno,
+                _condition_from_json(data_source, json_branch),
             )
 
     linecov.insert_decision_coverage(
-        _decision_from_json(json_line.get("gcovr/decision"))
+        _decision_from_json(data_source, json_line.get("gcovr/decision"))
     )
 
     if "gcovr/calls" in json_line:
         for json_call in json_line["gcovr/calls"]:
-            linecov.insert_call_coverage(_call_from_json(json_call))
+            linecov.insert_call_coverage(_call_from_json(data_source, json_call))
 
     return linecov
 
 
-def _branch_from_json(json_branch: dict[str, Any]) -> BranchCoverage:
+def _branch_from_json(
+    data_source: str, branchno: int, json_branch: dict[str, Any]
+) -> BranchCoverage:
     return BranchCoverage(
-        source_block_id=json_branch["source_block_id"],
+        json_branch.get("gcovr/data_sources", data_source),
+        branchno=branchno,
         count=json_branch["count"],
+        source_block_id=json_branch.get("source_block_id"),
         fallthrough=json_branch["fallthrough"],
         throw=json_branch["throw"],
         destination_block_id=json_branch.get("destination_block_id"),
@@ -165,8 +181,11 @@ def _branch_from_json(json_branch: dict[str, Any]) -> BranchCoverage:
     )
 
 
-def _condition_from_json(json_condition: dict[str, Any]) -> ConditionCoverage:
+def _condition_from_json(
+    data_source: str, json_condition: dict[str, Any]
+) -> ConditionCoverage:
     return ConditionCoverage(
+        json_condition.get("gcovr/data_sources", data_source),
         count=json_condition["count"],
         covered=json_condition["covered"],
         not_covered_false=json_condition["not_covered_false"],
@@ -174,11 +193,16 @@ def _condition_from_json(json_condition: dict[str, Any]) -> ConditionCoverage:
     )
 
 
-def _call_from_json(json_call: dict[str, Any]) -> CallCoverage:
-    return CallCoverage(callno=json_call["callno"], covered=json_call["covered"])
+def _call_from_json(data_source: str, json_call: dict[str, Any]) -> CallCoverage:
+    return CallCoverage(
+        json_call.get("gcovr/data_sources", data_source),
+        callno=json_call["callno"],
+        covered=json_call["covered"],
+    )
 
 
 def _decision_from_json(
+    data_source: str,
     json_decision: Optional[dict[str, Any]],
 ) -> Optional[DecisionCoverage]:
     if json_decision is None:
@@ -187,13 +211,20 @@ def _decision_from_json(
     decision_type = json_decision["type"]
 
     if decision_type == "uncheckable":
-        return DecisionCoverageUncheckable()
+        return DecisionCoverageUncheckable(
+            json_decision.get("gcovr/data_sources", data_source)
+        )
 
     if decision_type == "conditional":
         return DecisionCoverageConditional(
-            json_decision["count_true"], json_decision["count_false"]
+            json_decision.get("gcovr/data_sources", data_source),
+            count_true=json_decision["count_true"],
+            count_false=json_decision["count_false"],
         )
     if decision_type == "switch":
-        return DecisionCoverageSwitch(json_decision["count"])
+        return DecisionCoverageSwitch(
+            json_decision.get("gcovr/data_sources", data_source),
+            count=json_decision["count"],
+        )
 
     raise AssertionError(f"Unknown decision type: {decision_type!r}")
