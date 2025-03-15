@@ -109,7 +109,7 @@ def user_templates() -> Environment:
         contents = None
         try:
             with open(template, "rb") as f:
-                contents = f.read().decode("utf-8")
+                contents = f.read().decode("UTF-8")
         # This exception can only occur if the file gets inaccessible while gcovr is running.
         except FileNotFoundError:  # pragma: no cover
             pass
@@ -1136,7 +1136,7 @@ def _make_short_source_filename(output_file: str, filename: str) -> str:
             (
                 output_prefix,
                 os.path.basename(filename),
-                get_md5_hexdigest(filename.encode("utf-8")),
+                get_md5_hexdigest(filename.encode("UTF-8")),
             )
         )
         + output_suffix

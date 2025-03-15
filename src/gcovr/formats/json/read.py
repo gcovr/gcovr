@@ -71,7 +71,7 @@ def read_report(options: Options) -> CoverageContainer:
     for data_source in datafiles:
         LOGGER.debug(f"Processing JSON file: {data_source}")
 
-        with open(data_source, encoding="utf-8") as json_file:
+        with open(data_source, encoding="UTF-8") as json_file:
             gcovr_json_data = json.load(json_file)
 
         version = str(gcovr_json_data["gcovr/format_version"])

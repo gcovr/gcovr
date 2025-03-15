@@ -73,7 +73,7 @@ def write_report(
 
     markdown_string = templates().get_template("report_template.md.j2").render(**data)
 
-    with open_text_for_writing(output_file, "coverage.md") as fh:
+    with open_text_for_writing(output_file, "coverage.md", encoding="UTF-8") as fh:
         fh.write(markdown_string)
 
 
@@ -89,7 +89,7 @@ def write_summary_report(
 
     markdown_string = templates().get_template("report_template.md.j2").render(**data)
 
-    with open_text_for_writing(output_file, "coverage.md") as fh:
+    with open_text_for_writing(output_file, "coverage.md", encoding="UTF-8") as fh:
         fh.write(markdown_string)
 
 

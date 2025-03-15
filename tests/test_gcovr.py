@@ -426,7 +426,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
 
 def parse_makefile_for_available_targets(path: str) -> dict[str, set[str]]:
     targets = dict[str, set[str]]()
-    with open(path, encoding="utf-8") as makefile:
+    with open(path, encoding="UTF-8") as makefile:
         for line in makefile:
             if m := re.match(r"^(\w[\w -]*):([\s\w.-]*)$", line):
                 deps = m.group(2).split()
