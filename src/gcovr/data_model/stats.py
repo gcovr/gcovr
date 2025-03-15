@@ -26,6 +26,8 @@ from typing import (
 )
 from dataclasses import dataclass
 
+from ..options import Options
+
 LOGGER = logging.getLogger("gcovr")
 
 _T = TypeVar("_T")
@@ -62,6 +64,43 @@ class SummarizedStats:
         self.function += other.function
         self.call += other.call
         return self
+
+    def serialize(
+        self, default_percent: _T, options: Options
+    ) -> dict[str, Union[int, float, _T]]:
+        """Serialize the object."""
+        data_dict = dict[str, Union[int, float, _T]](
+            {
+                "line_total": self.line.total,
+                "line_covered": self.line.covered,
+                "line_percent": self.line.percent_or(default_percent),
+                "function_total": self.function.total,
+                "function_covered": self.function.covered,
+                "function_percent": self.function.percent_or(default_percent),
+                "branch_total": self.branch.total,
+                "branch_covered": self.branch.covered,
+                "branch_percent": self.branch.percent_or(default_percent),
+            }
+        )
+        if self.condition.total != 0:
+            data_dict.update(
+                {
+                    "condition_total": self.condition.total,
+                    "condition_covered": self.condition.covered,
+                    "condition_percent": self.condition.percent_or(default_percent),
+                }
+            )
+
+        if options.show_decision:
+            data_dict.update(
+                {
+                    "decision_total": self.decision.total,
+                    "decision_covered": self.decision.covered,
+                    "decision_percent": self.decision.percent_or(default_percent),
+                }
+            )
+
+        return data_dict
 
 
 @dataclass

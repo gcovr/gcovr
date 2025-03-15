@@ -21,7 +21,18 @@ from __future__ import annotations
 import logging
 import os
 import re
-from typing import ItemsView, Iterable, Iterator, Literal, Optional, Union, ValuesView
+from typing import (
+    Any,
+    ItemsView,
+    Iterable,
+    Iterator,
+    Literal,
+    Optional,
+    Union,
+    ValuesView,
+)
+
+from ..options import Options
 
 from .coverage_dict import CoverageDict
 
@@ -143,6 +154,10 @@ class CoverageContainer(ContainerBase):
     def items(self) -> ItemsView[str, FileCoverage]:
         """Get the file coverage data items."""
         return self.data.items()
+
+    def serialize(self, options: Options) -> list[dict[str, Any]]:
+        """Serialize the object."""
+        return [value.serialize(options) for _, value in sorted(self.items())]
 
     def merge(self, other: CoverageContainer, options: MergeOptions) -> None:
         """
