@@ -36,7 +36,7 @@ txt:
 
 md:
 	./testcase
-	$(GCOVR) -d --markdown-heading "Coverage report" --markdown-heading-level 2 --markdown coverage.md --markdown-summary coverage_summary.md
+	$(GCOVR) -d --markdown-title "Coverage report" --markdown-heading-level 2 --markdown coverage.md --markdown-summary coverage_summary.md
 
 clover:
 	./testcase
