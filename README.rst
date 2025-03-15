@@ -1,6 +1,10 @@
 gcovr
 =====
 
+.. image:: https://api.codacy.com/project/badge/Grade/d44ad734f9464070a4f3aa1f458aead6
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/gh/gcovr/gcovr?utm_source=github.com&utm_medium=referral&utm_content=gcovr/gcovr&utm_campaign=Badge_Grade
+
 generate GCC code coverage reports
 
 `website and documentation <website_>`__ • bugtracker_ • `GitHub <repo_>`__
