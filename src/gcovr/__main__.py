@@ -263,7 +263,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         option_high = f"--{key_high.replace('_', '-')}"
 
         if getattr(options, key_medium) == 0:
-            LOGGER.error(f"value of {option_medium}= should not be zero.")
+            LOGGER.error(f"value of {option_medium} should not be zero.")
             return EXIT_CMDLINE_ERROR
 
         # Inherit the defaults from the global coverage values if not set

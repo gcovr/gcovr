@@ -461,7 +461,10 @@ def test_html_title_empty_string(caplog: pytest.LogCaptureFixture) -> None:
 def test_medium_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
     c = capture(capsys, ["--medium-threshold", "nan"])
     assert c.out == ""
-    assert "--medium-threshold: nan not in range [0.0, 100.0]" in c.err
+    assert (
+        "--medium-threshold/--html-medium-threshold: nan not in range [0.0, 100.0]"
+        in c.err
+    )
     assert c.exitcode != 0
 
 
@@ -476,7 +479,7 @@ def test_medium_threshold_zero(caplog: pytest.LogCaptureFixture) -> None:
     c = log_capture(caplog, ["--medium-threshold", "0.0"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "value of --medium-threshold= should not be zero."
+    assert message[2] == "value of --medium-threshold should not be zero."
     assert c.exitcode != 0
 
 
