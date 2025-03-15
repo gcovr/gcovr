@@ -254,8 +254,8 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         return EXIT_CMDLINE_ERROR
 
     for postfix in ["", "line", "branch"]:
-        key_medium = "html_medium_threshold"
-        key_high = "html_high_threshold"
+        key_medium = "medium_threshold"
+        key_high = "high_threshold"
         if postfix:
             key_medium += f"_{postfix}"
             key_high += f"_{postfix}"
@@ -263,7 +263,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         option_high = f"--{key_high.replace('_', '-')}"
 
         if getattr(options, key_medium) == 0:
-            LOGGER.error(f"value of {option_medium}= should not be zero.")
+            LOGGER.error(f"value of {option_medium} should not be zero.")
             return EXIT_CMDLINE_ERROR
 
         # Inherit the defaults from the global coverage values if not set
@@ -272,18 +272,18 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
                 setattr(
                     options,
                     key_medium,
-                    options.html_medium_threshold,
+                    options.medium_threshold,
                 )
                 # To get the correct option in the error message below.
-                option_medium = "--html-medium-threshold"
+                option_medium = "--medium-threshold"
             if getattr(options, key_high) is None:
                 setattr(
                     options,
                     key_high,
-                    options.html_high_threshold,
+                    options.high_threshold,
                 )
                 # To get the correct option in the error message below.
-                option_medium = "--html-high-threshold"
+                option_medium = "--high-threshold"
 
         if getattr(options, key_medium) > getattr(options, key_high):
             LOGGER.error(

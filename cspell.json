@@ -197,7 +197,9 @@
         // Defines in command line
         " -D[^ ]+",
         // GH actions
-        "uses: [^\\s]+/[^\\s]+@[^\\s]+"
+        "uses: [^\\s]+/[^\\s]+@[^\\s]+",
+        // Jinja2 instructions
+        "\\{%\\s*[^\\s]+\\s*%\\}"
     ],
     "import": [],
     "languageSettings": [

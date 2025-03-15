@@ -258,6 +258,7 @@ def compiled(name: str) -> Iterable[str]:
 KNOWN_FORMATS = [
     # Own formats
     "txt",
+    "md",
     "html",
     "json",
     "json_summary",
@@ -508,6 +509,7 @@ def remove_duplicate_data(  # pragma: no cover
 SCRUBBERS = dict[str, Optional[Callable[[str], str]]](
     # Own formats
     txt=scrub_txt,
+    md=None,
     html=None,
     json=None,
     json_summary=None,
@@ -526,6 +528,7 @@ FORMATS_TO_SKIP_LINEBREAK_TRANSFORMATION = ("csv",)
 OUTPUT_PATTERN = dict(
     # Own formats
     txt=["coverage*.txt"],
+    md=["coverage*.md"],
     html=["coverage*.html", "coverage*.css"],
     json=["coverage*.json"],
     json_summary=["summary_coverage*.json"],

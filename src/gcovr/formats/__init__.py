@@ -38,6 +38,7 @@ from .html import HtmlHandler
 from .jacoco import JaCoCoHandler
 from .json import JsonHandler
 from .lcov import LcovHandler
+from .markdown import MarkdownHandler
 from .sonarqube import SonarqubeHandler
 from .txt import TxtHandler
 
@@ -58,6 +59,7 @@ def get_options() -> list[GcovrConfigOption]:
             *JaCoCoHandler.get_options(),
             *JsonHandler.get_options(),
             *LcovHandler.get_options(),
+            *MarkdownHandler.get_options(),
             *SonarqubeHandler.get_options(),
             *TxtHandler.get_options(),
         ]
@@ -77,6 +79,7 @@ def validate_options(options: Options) -> None:
         JaCoCoHandler,
         JsonHandler,
         LcovHandler,
+        MarkdownHandler,
         SonarqubeHandler,
         TxtHandler,
     ]:
@@ -230,6 +233,30 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
                 lambda: LOGGER.warning(
                     "LCOV output skipped - "
                     "consider providing an output file with `--lcov=OUTPUT`."
+                ),
+            )
+        )
+
+    if options.markdown:
+        generators.append(
+            (
+                [options.markdown],
+                MarkdownHandler(options).write_report,
+                lambda: LOGGER.warning(
+                    "Markdown output skipped - "
+                    "consider providing an output file with `--markdown=OUTPUT`."
+                ),
+            )
+        )
+
+    if options.markdown_summary:
+        generators.append(
+            (
+                [options.markdown_summary],
+                MarkdownHandler(options).write_summary_report,
+                lambda: LOGGER.warning(
+                    "Markdown summary output skipped - "
+                    "consider providing an output file with `--markdown-summary=OUTPUT`."
                 ),
             )
         )

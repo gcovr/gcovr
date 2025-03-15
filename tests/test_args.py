@@ -458,53 +458,54 @@ def test_html_title_empty_string(caplog: pytest.LogCaptureFixture) -> None:
     assert c.exitcode != 0
 
 
-def test_html_medium_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--html-medium-threshold", "nan"])
+def test_medium_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
+    c = capture(capsys, ["--medium-threshold", "nan"])
     assert c.out == ""
-    assert "--html-medium-threshold: nan not in range [0.0, 100.0]" in c.err
+    assert (
+        "--medium-threshold/--html-medium-threshold: nan not in range [0.0, 100.0]"
+        in c.err
+    )
     assert c.exitcode != 0
 
 
-def test_html_medium_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--html-medium-threshold", "-0.1"])
+def test_medium_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
+    c = capture(capsys, ["--medium-threshold", "-0.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exitcode != 0
 
 
-def test_html_medium_threshold_zero(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--html-medium-threshold", "0.0"])
+def test_medium_threshold_zero(caplog: pytest.LogCaptureFixture) -> None:
+    c = log_capture(caplog, ["--medium-threshold", "0.0"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "value of --html-medium-threshold= should not be zero."
+    assert message[2] == "value of --medium-threshold should not be zero."
     assert c.exitcode != 0
 
 
-def test_html_high_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--html-high-threshold", "nan"])
+def test_high_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
+    c = capture(capsys, ["--high-threshold", "nan"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exitcode != 0
 
 
-def test_html_high_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--html-high-threshold", "-0.1"])
+def test_high_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
+    c = capture(capsys, ["--high-threshold", "-0.1"])
     assert c.out == ""
     assert "not in range [0.0, 100.0]" in c.err
     assert c.exitcode != 0
 
 
-def test_html_medium_threshold_gt_html_high_threshold(
+def test_medium_threshold_gt_high_threshold(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    c = log_capture(
-        caplog, ["--html-medium-threshold", "60", "--html-high-threshold", "50"]
-    )
+    c = log_capture(caplog, ["--medium-threshold", "60", "--high-threshold", "50"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert (
         message[2]
-        == "value of --html-medium-threshold=60.0 should be\nlower than or equal to the value of --html-high-threshold=50.0."
+        == "value of --medium-threshold=60.0 should be\nlower than or equal to the value of --high-threshold=50.0."
     )
     assert c.exitcode != 0
 
