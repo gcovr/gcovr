@@ -258,6 +258,7 @@ def compiled(name: str) -> Iterable[str]:
 KNOWN_FORMATS = [
     # Own formats
     "txt",
+    "md",
     "html",
     "json",
     "json_summary",
@@ -425,7 +426,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
 
 def parse_makefile_for_available_targets(path: str) -> dict[str, set[str]]:
     targets = dict[str, set[str]]()
-    with open(path, encoding="utf-8") as makefile:
+    with open(path, encoding="UTF-8") as makefile:
         for line in makefile:
             if m := re.match(r"^(\w[\w -]*):([\s\w.-]*)$", line):
                 deps = m.group(2).split()
@@ -508,6 +509,7 @@ def remove_duplicate_data(  # pragma: no cover
 SCRUBBERS = dict[str, Optional[Callable[[str], str]]](
     # Own formats
     txt=scrub_txt,
+    md=None,
     html=None,
     json=None,
     json_summary=None,
@@ -526,6 +528,7 @@ FORMATS_TO_SKIP_LINEBREAK_TRANSFORMATION = ("csv",)
 OUTPUT_PATTERN = dict(
     # Own formats
     txt=["coverage*.txt"],
+    md=["coverage*.md"],
     html=["coverage*.html", "coverage*.css"],
     json=["coverage*.json"],
     json_summary=["summary_coverage*.json"],

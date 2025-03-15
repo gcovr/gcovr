@@ -109,7 +109,7 @@ def user_templates() -> Environment:
         contents = None
         try:
             with open(template, "rb") as f:
-                contents = f.read().decode("utf-8")
+                contents = f.read().decode("UTF-8")
         # This exception can only occur if the file gets inaccessible while gcovr is running.
         except FileNotFoundError:  # pragma: no cover
             pass
@@ -226,12 +226,12 @@ class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
     def __init__(self, options: Options) -> None:
-        self.medium_threshold = options.html_medium_threshold
-        self.high_threshold = options.html_high_threshold
-        self.medium_threshold_line = options.html_medium_threshold_line
-        self.high_threshold_line = options.html_high_threshold_line
-        self.medium_threshold_branch = options.html_medium_threshold_branch
-        self.high_threshold_branch = options.html_high_threshold_branch
+        self.medium_threshold = options.medium_threshold
+        self.high_threshold = options.high_threshold
+        self.medium_threshold_line = options.medium_threshold_line
+        self.high_threshold_line = options.high_threshold_line
+        self.medium_threshold_branch = options.medium_threshold_branch
+        self.high_threshold_branch = options.high_threshold_branch
         self.link_function_list = (options.html_details or options.html_nested) and (
             options.html_single_page != "static"
         )
@@ -295,12 +295,12 @@ def write_report(
 ) -> None:
     """Write the HTML report"""
     css_data = CssRenderer.render(options)
-    medium_threshold = options.html_medium_threshold
-    high_threshold = options.html_high_threshold
-    medium_threshold_line = options.html_medium_threshold_line
-    high_threshold_line = options.html_high_threshold_line
-    medium_threshold_branch = options.html_medium_threshold_branch
-    high_threshold_branch = options.html_high_threshold_branch
+    medium_threshold = options.medium_threshold
+    high_threshold = options.high_threshold
+    medium_threshold_line = options.medium_threshold_line
+    high_threshold_line = options.high_threshold_line
+    medium_threshold_branch = options.medium_threshold_branch
+    high_threshold_branch = options.high_threshold_branch
     exclude_calls = options.exclude_calls
     show_decision = options.show_decision
 
@@ -1136,7 +1136,7 @@ def _make_short_source_filename(output_file: str, filename: str) -> str:
             (
                 output_prefix,
                 os.path.basename(filename),
-                get_md5_hexdigest(filename.encode("utf-8")),
+                get_md5_hexdigest(filename.encode("UTF-8")),
             )
         )
         + output_suffix

@@ -173,7 +173,7 @@ def _parse_file_node(
                 function_name=line.get("function_name"),
                 block_ids=line["block_ids"],
                 md5=get_md5_hexdigest(
-                    source_lines[line["line_number"] - 1].encode("utf-8")
+                    source_lines[line["line_number"] - 1].encode("UTF-8")
                 ),
             )
         )

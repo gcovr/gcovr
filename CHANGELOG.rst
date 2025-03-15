@@ -18,6 +18,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add support for Markdown output format. (:issue:`1072`)
+
 Bug fixes and small improvements:
 
 - Fix warning ``Deprecated config key None used, please use 'txt-metric=branch' instead.``

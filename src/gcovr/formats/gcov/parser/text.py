@@ -413,7 +413,7 @@ def _gather_coverage_from_line(
                     lineno=lineno,
                     count=raw_count,
                     function_name=state.function_name,
-                    md5=get_md5_hexdigest(source_code.encode("utf-8")),
+                    md5=get_md5_hexdigest(source_code.encode("UTF-8")),
                 ),
             )
         # handle deferred functions

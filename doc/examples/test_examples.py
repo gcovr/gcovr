@@ -82,7 +82,7 @@ def test_example(example: Example) -> None:
     scrub = SCRUBBERS[example.format]
     # Read old file
     with open(  # nosemgrep # It's intended to use the local
-        baseline_file, newline="", encoding="utf-8"
+        baseline_file, newline="", encoding="UTF-8"
     ) as f:
         baseline = f.read()
         if scrub is not None:
@@ -92,7 +92,7 @@ def test_example(example: Example) -> None:
     os.chdir(data_dirname)
     subprocess.run(cmd, check=True)  # nosec # The command is not a user input
     with open(  # nosemgrep # It's intended to use the local
-        baseline_file, newline="", encoding="utf-8"
+        baseline_file, newline="", encoding="UTF-8"
     ) as f:
         current = f.read()
         if scrub is not None:
