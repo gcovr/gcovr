@@ -349,7 +349,7 @@ def main(version: str, for_file: str = None) -> None:
                     handlers.append(update_documentation)
 
             if handlers:
-                with open(fullname, encoding="utf-8") as f:
+                with open(fullname, encoding="UTF-8") as f:
                     lines = list(line.rstrip() for line in f)
                 new_lines = copy.copy(
                     lines
@@ -358,7 +358,7 @@ def main(version: str, for_file: str = None) -> None:
                     new_lines = handler(fullname, new_lines, version)
                 if new_lines != lines:
                     logging.info(f"Modifying {fullname}")
-                    with open(fullname, "w", encoding="utf-8") as f:
+                    with open(fullname, "w", encoding="UTF-8") as f:
                         for line in new_lines:
                             f.write(line + "\n")
 

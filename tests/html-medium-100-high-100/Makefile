@@ -7,7 +7,7 @@ run: html
 
 html:
 	./testcase
-	$(GCOVR) -d --html-details --html-medium-threshold=100.0 --html-high-threshold=100.0 -o coverage.html
+	$(GCOVR) -d --html-details --medium-threshold=100.0 --high-threshold=100.0 -o coverage.html
 
 clean:
 	rm -f testcase

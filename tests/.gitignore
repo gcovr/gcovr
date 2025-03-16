@@ -1,6 +1,7 @@
 # Ignore output files
 coverage.log
 coverage*.txt
+coverage*.md
 *.html
 *.css
 coverage*.json

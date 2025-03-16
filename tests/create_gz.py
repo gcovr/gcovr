@@ -24,8 +24,8 @@ import sys
 
 def main(json_file: str, json_gz_file: str) -> None:
     """Main entry point."""
-    with pathlib.Path(json_file).open("rt", encoding="utf-8") as fh_in:
-        with gzip.open(json_gz_file, "wt", encoding="utf-8") as fh_out:
+    with pathlib.Path(json_file).open("rt", encoding="UTF-8") as fh_in:
+        with gzip.open(json_gz_file, "wt", encoding="UTF-8") as fh_out:
             fh_out.write(
                 fh_in.read().replace("$__PWD__$", pathlib.Path.cwd().as_posix())
             )
