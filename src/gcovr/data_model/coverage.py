@@ -85,6 +85,9 @@ from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
 LOGGER = logging.getLogger("gcovr")
 
+GCOVR_DATA_SOURCES = "gcovr/data_sources"
+GCOVR_EXCLUDED = "gcovr/excluded"
+
 _T = TypeVar("_T")
 
 
@@ -229,7 +232,7 @@ class BranchCoverage(CoverageBase):
         if self.destination_block_id is not None:
             data_dict["destination_block_id"] = self.destination_block_id
         if self.excluded:
-            data_dict["gcovr/excluded"] = True
+            data_dict[GCOVR_EXCLUDED] = True
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -240,14 +243,14 @@ class BranchCoverage(CoverageBase):
     ) -> BranchCoverage:
         """Deserialize the object."""
         return BranchCoverage(
-            data_dict.get("gcovr/data_sources", data_source),
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
             branchno=branchno,
             count=data_dict["count"],
             source_block_id=data_dict.get("source_block_id"),
             fallthrough=data_dict["fallthrough"],
             throw=data_dict["throw"],
             destination_block_id=data_dict.get("destination_block_id"),
-            excluded=data_dict.get("gcovr/excluded", False),
+            excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
     def merge(
@@ -395,7 +398,7 @@ class ConditionCoverage(CoverageBase):
             "not_covered_true": self.not_covered_true,
         }
         if self.excluded:
-            data_dict["gcovr/excluded"] = True
+            data_dict[GCOVR_EXCLUDED] = True
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -406,13 +409,13 @@ class ConditionCoverage(CoverageBase):
     ) -> ConditionCoverage:
         """Deserialize the object."""
         return ConditionCoverage(
-            data_dict.get("gcovr/data_sources", data_source),
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
             conditionno=conditionno,
             count=data_dict["count"],
             covered=data_dict["covered"],
             not_covered_false=data_dict["not_covered_false"],
             not_covered_true=data_dict["not_covered_true"],
-            excluded=data_dict.get("gcovr/excluded", False),
+            excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
     def merge(
@@ -496,7 +499,7 @@ class DecisionCoverageUncheckable(CoverageBase):
     ) -> DecisionCoverageUncheckable:
         """Deserialize the object."""
         return DecisionCoverageUncheckable(
-            data_dict.get("gcovr/data_sources", data_source)
+            data_dict.get(GCOVR_DATA_SOURCES, data_source)
         )
 
     def merge(self, other: DecisionCoverageUncheckable) -> None:
@@ -559,7 +562,7 @@ class DecisionCoverageConditional(CoverageBase):
     ) -> DecisionCoverageConditional:
         """Deserialize the object."""
         return DecisionCoverageConditional(
-            data_dict.get("gcovr/data_sources", data_source),
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
             count_true=data_dict["count_true"],
             count_false=data_dict["count_false"],
         )
@@ -617,7 +620,7 @@ class DecisionCoverageSwitch(CoverageBase):
     ) -> DecisionCoverageSwitch:
         """Deserialize the object."""
         return DecisionCoverageSwitch(
-            data_dict.get("gcovr/data_sources", data_source),
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
             count=data_dict["count"],
         )
 
@@ -677,7 +680,7 @@ class CallCoverage(CoverageBase):
             }
         )
         if self.excluded:
-            data_dict["gcovr/excluded"] = True
+            data_dict[GCOVR_EXCLUDED] = True
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -686,10 +689,10 @@ class CallCoverage(CoverageBase):
     def deserialize(cls, data_source: str, data_dict: dict[str, Any]) -> CallCoverage:
         """Deserialize the object."""
         return CallCoverage(
-            data_dict.get("gcovr/data_sources", data_source),
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
             callno=data_dict["callno"],
             covered=data_dict["covered"],
-            excluded=data_dict.get("gcovr/excluded", False),
+            excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
     def merge(
@@ -820,7 +823,7 @@ class FunctionCoverage(CoverageBase):
                     ":".join([str(e) for e in self.end[lineno]]),
                 )
             if self.excluded[lineno]:
-                data_dict["gcovr/excluded"] = True
+                data_dict[GCOVR_EXCLUDED] = True
             data_dict.update(get_data_source(self))
             data_dict_list.append(data_dict)
 
@@ -840,7 +843,7 @@ class FunctionCoverage(CoverageBase):
             end = (int(end_l_c[0]), int(end_l_c[1]))
 
         return FunctionCoverage(
-            data_dict.get("gcovr/data_sources", data_source),
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
             name=data_dict.get("name"),
             demangled_name=data_dict["demangled_name"],
             lineno=data_dict["lineno"],
@@ -848,7 +851,7 @@ class FunctionCoverage(CoverageBase):
             blocks=data_dict["blocks_percent"],
             start=start,
             end=end,
-            excluded=data_dict.get("gcovr/excluded", False),
+            excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
     def merge(
@@ -1057,7 +1060,7 @@ class LineCoverage(CoverageBase):
         if self.md5:
             data_dict["gcovr/md5"] = self.md5
         if self.excluded:
-            data_dict["gcovr/excluded"] = True
+            data_dict[GCOVR_EXCLUDED] = True
         if self.decision is not None:
             data_dict["gcovr/decision"] = self.decision.serialize(get_data_source)
         if len(self.calls) > 0:
@@ -1073,13 +1076,13 @@ class LineCoverage(CoverageBase):
     def deserialize(cls, data_source: str, data_dict: dict[str, Any]) -> LineCoverage:
         """Deserialize the object."""
         linecov = LineCoverage(
-            data_dict.get("gcovr/data_sources", data_source),
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
             lineno=data_dict["line_number"],
             count=data_dict["count"],
             function_name=data_dict.get("function_name"),
             block_ids=data_dict.get("block_ids"),
             md5=data_dict.get("gcovr/md5"),
-            excluded=data_dict.get("gcovr/excluded", False),
+            excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
         for branchno, data_dict_branch in enumerate(data_dict["branches"]):
@@ -1373,7 +1376,7 @@ class FileCoverage(CoverageBase):
             def get_data_source(cov: CoverageBase) -> dict[str, Any]:
                 """Return the printable data sources."""
                 return {
-                    "gcovr/data_sources": [
+                    GCOVR_DATA_SOURCES: [
                         [
                             presentable_filename(filename, options.root_filter)
                             for filename in data_source
@@ -1423,7 +1426,7 @@ class FileCoverage(CoverageBase):
             return None
 
         filecov = FileCoverage(
-            data_dict.get("gcovr/data_sources", data_source),
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
             filename=filename,
         )
         for data_dict_function in data_dict["functions"]:

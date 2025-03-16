@@ -55,7 +55,7 @@ gcovr/format_version: string
 
   Current version is:
 
-  .. include:: ../../../src/gcovr/formats/json/versions.py
+  .. include:: ../../../src/gcovr/data_model/version.py
       :start-after: # BEGIN version
       :end-before: # END version
 
@@ -510,12 +510,12 @@ gcovr/summary_format_version: string
 
   Current version is:
 
-  .. include:: ../../../src/gcovr/formats/json/versions.py
+  .. include:: ../../../src/gcovr/formats/json/write.py
       :start-after: # BEGIN summary version
       :end-before: # END summary version
 
 files: list
-  Unordered list of :ref:`file summary entries <json_summary_format_file>`.
+  List of :ref:`file summary entries <json_summary_format_file>`.
 
 root: string
   Path to the gcovr root directory, useful for reconstructing the absolute path of source files.

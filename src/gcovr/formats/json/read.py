@@ -22,7 +22,7 @@ import logging
 import os
 from glob import glob
 
-from . import versions
+from ...data_model import version
 from ...data_model.container import CoverageContainer
 from ...data_model.merging import get_merge_mode_from_options
 from ...options import Options
@@ -58,10 +58,10 @@ def read_report(options: Options) -> CoverageContainer:
             with open(data_source, encoding="utf-8") as json_file:
                 gcovr_json_data = json.load(json_file)
 
-            version = str(gcovr_json_data["gcovr/format_version"])
-            if version != versions.JSON_FORMAT_VERSION:
+            format_version = str(gcovr_json_data["gcovr/format_version"])
+            if format_version != version.FORMAT_VERSION:
                 raise AssertionError(
-                    f"Wrong format version, got {version} expected {versions.JSON_FORMAT_VERSION}."
+                    f"Wrong format version, got {format_version} expected {version.FORMAT_VERSION}."
                 )
 
             covdata.merge(

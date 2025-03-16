@@ -31,11 +31,18 @@ from ...utils import (
     open_text_for_writing,
 )
 
-from . import versions
+from ...data_model import version
 
 LOGGER = logging.getLogger("gcovr")
 
 PRETTY_JSON_INDENT = 4
+
+SUMMARY_FORMAT_VERSION = (
+    # BEGIN summary version
+    "0.6"
+    # END summary version
+)
+KEY_SUMMARY_FORMAT_VERSION = "gcovr/summary_format_version"
 
 
 def _write_json_result(
@@ -67,7 +74,7 @@ def write_report(
 
     _write_json_result(
         {
-            "gcovr/format_version": versions.JSON_FORMAT_VERSION,
+            "gcovr/format_version": version.FORMAT_VERSION,
             "files": covdata.serialize(options),
         },
         output_file,
@@ -89,7 +96,7 @@ def write_summary_report(
             os.getcwd() if output_file == "-" else os.path.dirname(output_file),
         )
     )
-    json_dict["gcovr/summary_format_version"] = versions.JSON_SUMMARY_FORMAT_VERSION
+    json_dict["gcovr/summary_format_version"] = SUMMARY_FORMAT_VERSION
     files = list[dict[str, Any]]()
     json_dict["files"] = files
 
