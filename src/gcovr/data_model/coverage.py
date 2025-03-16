@@ -197,7 +197,7 @@ class BranchCoverage(CoverageBase):
         throw: bool = False,
         source_block_id: Optional[int] = None,
         destination_block_id: Optional[int] = None,
-        excluded: Optional[bool] = None,
+        excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
         if count < 0:
@@ -228,8 +228,8 @@ class BranchCoverage(CoverageBase):
             data_dict["source_block_id"] = self.source_block_id
         if self.destination_block_id is not None:
             data_dict["destination_block_id"] = self.destination_block_id
-        if self.excluded is not None:
-            data_dict["gcovr/excluded"] = self.excluded
+        if self.excluded:
+            data_dict["gcovr/excluded"] = True
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -247,7 +247,7 @@ class BranchCoverage(CoverageBase):
             fallthrough=data_dict["fallthrough"],
             throw=data_dict["throw"],
             destination_block_id=data_dict.get("destination_block_id"),
-            excluded=data_dict.get("gcovr/excluded"),
+            excluded=data_dict.get("gcovr/excluded", False),
         )
 
     def merge(
@@ -294,8 +294,7 @@ class BranchCoverage(CoverageBase):
         self.destination_block_id = self._merge_property(
             other, "Destination block ID", lambda x: x.destination_block_id
         )
-        if self.excluded is True or other.excluded is True:
-            self.excluded = True
+        self.excluded |= other.excluded
 
     @property
     def key(self) -> BranchesKeyType:
@@ -320,7 +319,7 @@ class BranchCoverage(CoverageBase):
     @property
     def is_excluded(self) -> bool:
         """Return True if the branch is excluded."""
-        return False if self.excluded is None else self.excluded
+        return self.excluded
 
     @property
     def is_reportable(self) -> bool:
@@ -369,7 +368,7 @@ class ConditionCoverage(CoverageBase):
         covered: int,
         not_covered_true: list[int],
         not_covered_false: list[int],
-        excluded: Optional[bool] = False,
+        excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
         if count < 0:
@@ -395,6 +394,8 @@ class ConditionCoverage(CoverageBase):
             "not_covered_false": self.not_covered_false,
             "not_covered_true": self.not_covered_true,
         }
+        if self.excluded:
+            data_dict["gcovr/excluded"] = True
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -411,6 +412,7 @@ class ConditionCoverage(CoverageBase):
             covered=data_dict["covered"],
             not_covered_false=data_dict["not_covered_false"],
             not_covered_true=data_dict["not_covered_true"],
+            excluded=data_dict.get("gcovr/excluded", False),
         )
 
     def merge(
@@ -656,7 +658,7 @@ class CallCoverage(CoverageBase):
         *,
         callno: int,
         covered: bool,
-        excluded: Optional[bool] = False,
+        excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
         self.callno = callno
@@ -674,6 +676,8 @@ class CallCoverage(CoverageBase):
                 "covered": self.covered,
             }
         )
+        if self.excluded:
+            data_dict["gcovr/excluded"] = True
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -685,6 +689,7 @@ class CallCoverage(CoverageBase):
             data_dict.get("gcovr/data_sources", data_source),
             callno=data_dict["callno"],
             covered=data_dict["covered"],
+            excluded=data_dict.get("gcovr/excluded", False),
         )
 
     def merge(
@@ -1007,12 +1012,12 @@ class LineCoverage(CoverageBase):
         if count < 0:
             self.raise_error("count must not be a negative value.")
 
-        self.lineno: int = lineno
-        self.count: int = count
-        self.function_name: Optional[str] = function_name
-        self.block_ids: Optional[list[int]] = block_ids
-        self.md5: Optional[str] = md5
-        self.excluded: bool = excluded
+        self.lineno = lineno
+        self.count = count
+        self.function_name = function_name
+        self.block_ids = block_ids
+        self.md5 = md5
+        self.excluded = excluded
         self.branches = CoverageDict[BranchesKeyType, BranchCoverage]()
         self.conditions = CoverageDict[int, ConditionCoverage]()
         self.decision: Optional[DecisionCoverage] = None

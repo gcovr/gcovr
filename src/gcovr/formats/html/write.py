@@ -1000,7 +1000,10 @@ def source_row_branch(
                 "excluded": branchcov.excluded,
             }
         )
-        if branchcov.destination_block_id is not None:
+        if (
+            branchcov.source_block_id is not None
+            and branchcov.destination_block_id is not None
+        ):
             items[-1]["source_block_id"] = branchcov.source_block_id
             items[-1]["destination_block_id"] = branchcov.destination_block_id
 
