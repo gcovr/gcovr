@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.12",
+    "gcovr/format_version": "0.13",
     "files": [
         {
             "file": "func.h",
