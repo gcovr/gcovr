@@ -26,7 +26,7 @@ import re
 import subprocess  # nosec # Commands are trusted.
 import sys
 import time
-from typing import Callable, Iterator
+from typing import Callable, Iterator, Optional
 
 SOURCE_DATE_EPOCH = str(int(time.time()))
 DATE = subprocess.check_output(  # nosec # We run on several system and do not know the full path
@@ -310,7 +310,7 @@ def update_source_date_epoch(
     return new_lines
 
 
-def main(version: str, for_file: str = None) -> None:
+def main(version: str, for_file: Optional[str] = None) -> None:
     """Main entry point."""
     for root, dirs, files in os.walk(".", topdown=True):
 
