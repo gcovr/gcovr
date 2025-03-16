@@ -206,6 +206,8 @@ def prepare_next_iteration(session: nox.Session) -> None:
             new_lines.append(
                 textwrap.dedent(
                     """\
+                    .. _next_release:
+
                     Next Release
                     ------------
 
