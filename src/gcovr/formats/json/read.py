@@ -143,16 +143,15 @@ def _line_from_json(data_source: str, json_line: dict[str, Any]) -> LineCoverage
         excluded=json_line.get("gcovr/excluded", False),
     )
 
-    for branchno, json_branch in enumerate(json_line["branches"]):
+    for branchno, json_condition in enumerate(json_line["branches"]):
         linecov.insert_branch_coverage(
-            _branch_from_json(data_source, branchno, json_branch)
+            _branch_from_json(data_source, branchno, json_condition)
         )
 
     if "conditions" in json_line:
-        for conditionno, json_branch in enumerate(json_line["conditions"]):
+        for conditionno, json_condition in enumerate(json_line["conditions"]):
             linecov.insert_condition_coverage(
-                conditionno,
-                _condition_from_json(data_source, json_branch),
+                _condition_from_json(data_source, conditionno, json_condition),
             )
 
     linecov.insert_decision_coverage(
@@ -182,10 +181,11 @@ def _branch_from_json(
 
 
 def _condition_from_json(
-    data_source: str, json_condition: dict[str, Any]
+    data_source: str, conditionno: int, json_condition: dict[str, Any]
 ) -> ConditionCoverage:
     return ConditionCoverage(
         json_condition.get("gcovr/data_sources", data_source),
+        conditionno=conditionno,
         count=json_condition["count"],
         covered=json_condition["covered"],
         not_covered_false=json_condition["not_covered_false"],

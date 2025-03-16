@@ -65,11 +65,11 @@ which may not be the same as the input value.
 """
 
 from __future__ import annotations
+from abc import abstractmethod
 import logging
 from typing import Any, Callable, List, NoReturn, Optional, TypeVar, Union
 
 from ..utils import presentable_filename
-
 from ..options import Options
 
 from .coverage_dict import BranchesKeyType, CoverageDict, LinesKeyType
@@ -141,6 +141,11 @@ class CoverageBase:
                 )
 
         return left or right
+
+    @property
+    @abstractmethod
+    def key(self) -> Any:
+        """Get the key used for the dictionary to unique identify the coverage object."""
 
 
 class BranchCoverage(CoverageBase):
@@ -271,7 +276,7 @@ class BranchCoverage(CoverageBase):
 
     @property
     def key(self) -> BranchesKeyType:
-        """Get the key used for the dictionary to unique identify the line coverage."""
+        """Get the key used for the dictionary to unique identify the coverage object."""
         return (
             self.branchno,
             self.source_block_id or 0,
@@ -309,10 +314,12 @@ class ConditionCoverage(CoverageBase):
     r"""Represent coverage information about a condition.
 
     Args:
+        conditionno (int):
+            The number of the condition.
         count (int):
-            The number of the call.
+            Number of condition outcomes in this expression.
         covered (int):
-            Whether the call was performed.
+            Number of covered condition outcomes in this expression.
         not_covered_true list[int]:
             The conditions which were not true.
         not_covered_false list[int]:
@@ -321,12 +328,20 @@ class ConditionCoverage(CoverageBase):
             Whether the condition is excluded.
     """
 
-    __slots__ = "count", "covered", "not_covered_true", "not_covered_false", "excluded"
+    __slots__ = (
+        "conditionno",
+        "count",
+        "covered",
+        "not_covered_true",
+        "not_covered_false",
+        "excluded",
+    )
 
     def __init__(
         self,
         data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
+        conditionno: int,
         count: int,
         covered: int,
         not_covered_true: list[int],
@@ -339,6 +354,7 @@ class ConditionCoverage(CoverageBase):
         if count < covered:
             self.raise_error("count must not be less than covered.")
 
+        self.conditionno = conditionno
         self.count = count
         self.covered = covered
         self.not_covered_true = not_covered_true
@@ -371,17 +387,18 @@ class ConditionCoverage(CoverageBase):
         Do not use 'other' objects afterwards!
 
         Examples:
-        >>> left = ConditionCoverage("-", count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
-        >>> right = ConditionCoverage("-", count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
-        >>> left.merge(None, DEFAULT_MERGE_OPTIONS)
-        >>> left.count
-        4
-        >>> left.covered
-        2
-        >>> left.not_covered_true
-        [1, 2]
-        >>> left.not_covered_false
-        []
+        >>> left = ConditionCoverage("left", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
+        >>> right = ConditionCoverage("right", conditionno=2, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.merging.GcovrMergeAssertionError: The condition number must be equal, got 2 and expected 1.
+        GCOV data file of merge source is:
+           right
+        and of merge target is:
+           left
+        >>> left = ConditionCoverage("left", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
+        >>> right = ConditionCoverage("right", conditionno=1, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         >>> left.count
         4
@@ -392,22 +409,31 @@ class ConditionCoverage(CoverageBase):
         >>> left.not_covered_false
         []
         """
+        if self.conditionno != other.conditionno:
+            self.raise_merge_error(
+                f"The condition number must be equal, got {other.conditionno} and expected {self.conditionno}.",
+                other,
+            )
+        if self.count != other.count:
+            self.raise_merge_error(
+                f"The number of conditions must be equal, got {other.count} and expected {self.count}.",
+                other,
+            )
 
-        if other is not None:
-            if self.count != other.count:
-                self.raise_error(
-                    f"The number of conditions must be equal, got {other.count} and expected {self.count}."
-                )
+        self.not_covered_false = sorted(
+            list(set(self.not_covered_false) & set(other.not_covered_false))
+        )
+        self.not_covered_true = sorted(
+            list(set(self.not_covered_true) & set(other.not_covered_true))
+        )
+        self.covered = (
+            self.count - len(self.not_covered_false) - len(self.not_covered_true)
+        )
 
-            self.not_covered_false = sorted(
-                list(set(self.not_covered_false) & set(other.not_covered_false))
-            )
-            self.not_covered_true = sorted(
-                list(set(self.not_covered_true) & set(other.not_covered_true))
-            )
-            self.covered = (
-                self.count - len(self.not_covered_false) - len(self.not_covered_true)
-            )
+    @property
+    def key(self) -> int:
+        """Get the key used for the dictionary to unique identify the coverage object."""
+        return self.conditionno
 
 
 class DecisionCoverageUncheckable(CoverageBase):
@@ -427,6 +453,11 @@ class DecisionCoverageUncheckable(CoverageBase):
 
     def merge(self, other: DecisionCoverageUncheckable) -> None:
         """Merge the decision coverage."""
+
+    @property
+    def key(self) -> NoReturn:
+        """Get the key used for the dictionary to unique identify the coverage object."""
+        raise NotImplementedError("Function not implemented for decision objects.")
 
 
 class DecisionCoverageConditional(CoverageBase):
@@ -479,6 +510,11 @@ class DecisionCoverageConditional(CoverageBase):
         self.decision.count_true += other.count_true
         self.decision.count_false += other.count_false
 
+    @property
+    def key(self) -> NoReturn:
+        """Get the key used for the dictionary to unique identify the coverage object."""
+        raise NotImplementedError("Function not implemented for decision objects.")
+
 
 class DecisionCoverageSwitch(CoverageBase):
     r"""Represent coverage information about a decision.
@@ -519,6 +555,11 @@ class DecisionCoverageSwitch(CoverageBase):
     def merge(self, other: DecisionCoverageSwitch) -> None:
         """Merge the decision coverage."""
         self.decision.count += other.count
+
+    @property
+    def key(self) -> NoReturn:
+        """Get the key used for the dictionary to unique identify the coverage object."""
+        raise NotImplementedError("Function not implemented for decision objects.")
 
 
 DecisionCoverage = Union[
@@ -586,6 +627,11 @@ class CallCoverage(CoverageBase):
             )
         self.covered |= other.covered
         return self
+
+    @property
+    def key(self) -> int:
+        """Get the key used for the dictionary to unique identify the coverage object."""
+        return self.callno
 
     @property
     def is_reportable(self) -> bool:
@@ -871,11 +917,6 @@ class LineCoverage(CoverageBase):
         self.decision: Optional[DecisionCoverage] = None
         self.calls = CoverageDict[int, CallCoverage]()
 
-    @property
-    def key(self) -> LinesKeyType:
-        """Get the key used for the dictionary to unique identify the line coverage."""
-        return (self.lineno, "" if self.function_name is None else self.function_name)
-
     def serialize(
         self,
         get_data_source: Callable[[CoverageBase], dict[str, Any]],
@@ -936,6 +977,8 @@ class LineCoverage(CoverageBase):
         """
         if self.lineno != other.lineno:
             self.raise_merge_error("Line number must be equal.", other)
+        if self.function_name != other.function_name:
+            self.raise_merge_error("Function name must be equal.", other)
         self.md5 = self._merge_property(other, "MD5 checksum", lambda x: x.md5)
 
         self.count += other.count
@@ -990,11 +1033,11 @@ class LineCoverage(CoverageBase):
 
     def insert_condition_coverage(
         self,
-        key: int,
         conditioncov: ConditionCoverage,
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
     ) -> None:
         """Add a condition coverage item, merge if needed."""
+        key = conditioncov.key
         if key in self.conditions:
             self.conditions[key].merge(conditioncov, options)
         else:
@@ -1013,11 +1056,16 @@ class LineCoverage(CoverageBase):
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
     ) -> None:
         """Add a branch coverage item, merge if needed."""
-        key = callcov.callno
+        key = callcov.key
         if key in self.calls:
             self.calls[key].merge(callcov, options)
         else:
             self.calls[key] = callcov
+
+    @property
+    def key(self) -> LinesKeyType:
+        """Get the key used for the dictionary to unique identify the coverage object."""
+        return (self.lineno, "" if self.function_name is None else self.function_name)
 
     @property
     def is_excluded(self) -> bool:
@@ -1156,6 +1204,66 @@ class FileCoverage(CoverageBase):
         if other.data_sources:
             self.data_sources.update(other.data_sources)
 
+    def serialize(self, options: Options) -> dict[str, Any]:
+        """Serialize the object."""
+        # Only write data in verbose mode
+        if options.verbose:
+
+            def get_data_source(cov: CoverageBase) -> dict[str, Any]:
+                """Return the printable data sources."""
+                return {
+                    "gcovr/data_sources": [
+                        [
+                            presentable_filename(filename, options.root_filter)
+                            for filename in data_source
+                        ]
+                        for data_source in sorted(cov.data_sources)
+                    ]
+                }
+        else:
+
+            def get_data_source(cov: CoverageBase) -> dict[str, Any]:  # pylint: disable=unused-argument
+                """Stub if not running in verbose mode."""
+                return {}
+
+        filename = presentable_filename(self.filename, options.root_filter)
+        if options.json_base:
+            filename = "/".join([options.json_base, filename])
+        data_dict = {
+            "file": filename,
+            "lines": [
+                line.serialize(get_data_source)
+                for _, line in sorted(self.lines.items())
+            ],
+            "functions": [
+                f
+                for _, function in sorted(self.functions.items())
+                for f in function.serialize(get_data_source)
+            ],
+        }
+        data_dict.update(get_data_source(self))
+
+        return data_dict
+
+    @property
+    def key(self) -> NoReturn:
+        """Get the key used for the dictionary to unique identify the coverage object."""
+        raise NotImplementedError(
+            "Function not implemented for file coverage object, use property 'filename' instead."
+        )
+
+    @property
+    def stats(self) -> SummarizedStats:
+        """Create a coverage statistic of a file coverage object."""
+        return SummarizedStats(
+            line=self.line_coverage(),
+            branch=self.branch_coverage(),
+            condition=self.condition_coverage(),
+            decision=self.decision_coverage(),
+            function=self.function_coverage(),
+            call=self.call_coverage(),
+        )
+
     def insert_line_coverage(
         self,
         linecov: LineCoverage,
@@ -1204,59 +1312,6 @@ class FileCoverage(CoverageBase):
         )
 
         return filecov
-
-    @property
-    def stats(self) -> SummarizedStats:
-        """Create a coverage statistic of a file coverage object."""
-        return SummarizedStats(
-            line=self.line_coverage(),
-            branch=self.branch_coverage(),
-            condition=self.condition_coverage(),
-            decision=self.decision_coverage(),
-            function=self.function_coverage(),
-            call=self.call_coverage(),
-        )
-
-    def serialize(self, options: Options) -> dict[str, Any]:
-        """Serialize the object."""
-        # Only write data in verbose mode
-        if options.verbose:
-
-            def get_data_source(cov: CoverageBase) -> dict[str, Any]:
-                """Return the printable data sources."""
-                return {
-                    "gcovr/data_sources": [
-                        [
-                            presentable_filename(filename, options.root_filter)
-                            for filename in data_source
-                        ]
-                        for data_source in sorted(cov.data_sources)
-                    ]
-                }
-        else:
-
-            def get_data_source(cov: CoverageBase) -> dict[str, Any]:  # pylint: disable=unused-argument
-                """Stub if not running in verbose mode."""
-                return {}
-
-        filename = presentable_filename(self.filename, options.root_filter)
-        if options.json_base:
-            filename = "/".join([options.json_base, filename])
-        data_dict = {
-            "file": filename,
-            "lines": [
-                line.serialize(get_data_source)
-                for _, line in sorted(self.lines.items())
-            ],
-            "functions": [
-                f
-                for _, function in sorted(self.functions.items())
-                for f in function.serialize(get_data_source)
-            ],
-        }
-        data_dict.update(get_data_source(self))
-
-        return data_dict
 
     def function_coverage(self) -> CoverageStat:
         """Return the function coverage statistic of the file."""

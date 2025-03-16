@@ -197,9 +197,9 @@ def _parse_file_node(
             )
         for index, condition in enumerate(line.get("conditions", [])):
             linecov.insert_condition_coverage(
-                index,
                 ConditionCoverage(
                     str(data_fname),
+                    conditionno=index,
                     count=check_hits(
                         condition["count"],
                         source_lines[line["line_number"] - 1],

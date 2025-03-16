@@ -33,15 +33,11 @@ from typing import (
 )
 
 from ..options import Options
-
-from .coverage_dict import CoverageDict
-
-from .merging import MergeOptions
-
 from ..utils import commonpath, force_unix_separator
 
 from .coverage import FileCoverage
-
+from .coverage_dict import CoverageDict
+from .merging import MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
 LOGGER = logging.getLogger("gcovr")
