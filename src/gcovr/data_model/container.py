@@ -155,6 +155,29 @@ class CoverageContainer(ContainerBase):
         """Serialize the object."""
         return [value.serialize(options) for _, value in sorted(self.items())]
 
+    @classmethod
+    def deserialize(
+        cls,
+        data_source: str,
+        data_dicts_files: list[dict[str, Any]],
+        options: Options,
+        merge_options: MergeOptions,
+    ) -> CoverageContainer:
+        """Serialize the object."""
+        covdata = CoverageContainer()
+        for gcovr_file in data_dicts_files:
+            if (
+                filecov := FileCoverage.deserialize(
+                    data_source, gcovr_file, merge_options, options
+                )
+            ) is not None:
+                covdata.insert_file_coverage(
+                    filecov,
+                    merge_options,
+                )
+
+        return covdata
+
     def merge(self, other: CoverageContainer, options: MergeOptions) -> None:
         """
         Merge CoverageContainer information and clear directory statistics.
