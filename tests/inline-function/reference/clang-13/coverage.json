@@ -1,29 +1,33 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "main.cpp",
             "lines": [
                 {
                     "line_number": 3,
+                    "function_name": "foo(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "32df9302a7ee38d84865122ca1a8713f"
                 },
                 {
                     "line_number": 4,
+                    "function_name": "foo(int)",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
                 },
                 {
                     "line_number": 7,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
                 },
                 {
                     "line_number": 8,
+                    "function_name": "main",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "684c0700241bf282a1f4fcb24ed267ac"

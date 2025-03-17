@@ -112,35 +112,33 @@ def _process_exclude_branch_source(
             for prefix, match in excl_pattern_compiled.findall(code):
                 columnno += len(prefix)
                 location = f"{filecov.filename}:{lineno}:{columnno}"
-                if lineno in filecov.lines:
-                    if (
-                        filecov.lines[lineno].function_name is None
-                        or filecov.lines[lineno].block_ids is None
-                    ):
-                        LOGGER.warning(
-                            f"Source branch exclusion at {location} needs at least gcc-14 with supported JSON format."
-                        )
-                    elif not filecov.lines[lineno].block_ids:
-                        LOGGER.error(
-                            f"Source branch exclusion at {location} found but no block ids defined at this line."
-                        )
-                    else:
-                        function_name = filecov.lines[lineno].function_name
-                        block_ids = filecov.lines[lineno].block_ids or []
-                        # Check the lines which belong to the function
-                        for cur_lineno, cur_linecov in filecov.lines.items():
-                            if cur_linecov.function_name != function_name:
-                                continue
-                            # Exclude the branch where the destination is one of the blocks of the line with the marker
-                            for (
-                                cur_branchno,
-                                cur_branchcov,
-                            ) in cur_linecov.branches.items():
-                                if cur_branchcov.destination_block_id in block_ids:
-                                    LOGGER.debug(
-                                        f"Source branch exclusion at {location} is excluding branch {cur_branchno} of line {cur_lineno}"
-                                    )
-                                    cur_branchcov.excluded = True
+                if lineno in filecov.lines_keys_by_lineno:
+                    for key in filecov.lines_keys_by_lineno[lineno]:
+                        if (
+                            filecov.lines[key].function_name is None
+                            or filecov.lines[key].block_ids is None
+                        ):
+                            LOGGER.warning(
+                                f"Source branch exclusion at {location} needs at least gcc-14 with supported JSON format."
+                            )
+                        elif not filecov.lines[key].block_ids:
+                            LOGGER.error(
+                                f"Source branch exclusion at {location} found but no block ids defined at this line."
+                            )
+                        else:
+                            function_name = filecov.lines[key].function_name
+                            block_ids = filecov.lines[key].block_ids or []
+                            # Check the lines which belong to the function
+                            for cur_linecov in filecov.lines.values():
+                                if cur_linecov.function_name != function_name:
+                                    continue
+                                # Exclude the branch where the destination is one of the blocks of the line with the marker
+                                for cur_branchcov in cur_linecov.branches.values():
+                                    if cur_branchcov.destination_block_id in block_ids:
+                                        LOGGER.debug(
+                                            f"Source branch exclusion at {location} is excluding branch {cur_branchcov.branchno} of line {cur_linecov.lineno}"
+                                        )
+                                        cur_branchcov.excluded = True
                 else:
                     LOGGER.error(
                         f"Found marker for source branch exclusion at {location} without coverage information"
@@ -164,7 +162,7 @@ class _ExclusionRangeWarnings:
     >>> caplog = getfixture("caplog")
     >>> caplog.clear()
     >>> _ = apply_exclusion_markers(  # doctest: +NORMALIZE_WHITESPACE
-    ...     FileCoverage("example.cpp", None),
+    ...     FileCoverage("", filename="example.cpp"),
     ...     lines=source.strip().splitlines(),
     ...     exclude_lines_by_pattern=None,
     ...     exclude_branches_by_pattern=None,

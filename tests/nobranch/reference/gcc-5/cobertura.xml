@@ -8,7 +8,14 @@
     <package name="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
       <classes>
         <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-          <methods/>
+          <methods>
+            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="1" hits="1" branch="false"/>
+                <line number="2" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
           <lines>
             <line number="1" hits="1" branch="false"/>
             <line number="2" hits="1" branch="false"/>

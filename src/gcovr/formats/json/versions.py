@@ -19,7 +19,7 @@
 
 JSON_FORMAT_VERSION = (
     # BEGIN version
-    "0.11"
+    "0.12"
     # END version
 )
 JSON_SUMMARY_FORMAT_VERSION = (
@@ -27,3 +27,7 @@ JSON_SUMMARY_FORMAT_VERSION = (
     "0.6"
     # END summary version
 )
+
+KEY_SUMMARY_FORMAT_VERSION = "gcovr/summary_format_version"
+
+GCOVR_DATA_SOURCES = "gcovr/data_sources"

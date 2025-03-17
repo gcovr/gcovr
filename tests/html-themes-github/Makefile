@@ -14,7 +14,7 @@ html:
 	$(GCOVR) --html-details --html-block-ids --html-theme github.green -o coverage.calls.html --calls
 	$(GCOVR) --html-details --html-block-ids --html-theme github.green -o coverage.decisions.html --decisions
 	$(GCOVR) --html-details --html-block-ids --html-theme github.green -o coverage.call_decisions.html --decisions --calls
-	$(GCOVR) --html-details --html-block-ids --html-theme github.green -o coverage.legend.html --html-high-threshold-branch 85 --html-high-threshold-line 76
+	$(GCOVR) --html-details --html-block-ids --html-theme github.green -o coverage.legend.html --high-threshold-branch 85 --high-threshold-line 76
 
 clean:
 	rm -f testcase

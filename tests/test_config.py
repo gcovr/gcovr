@@ -298,13 +298,13 @@ def test_option_that_appends() -> None:
 
 def test_option_validation() -> None:
     # when OK
-    options = parse_config_into_dict(run_cfg_test("html-medium-threshold = 50%"))
-    assert options["html_medium_threshold"] == 50.0
+    options = parse_config_into_dict(run_cfg_test("medium-threshold = 50%"))
+    assert options["medium_threshold"] == 50.0
 
     # when error
-    error = "^test.cfg: 1: html-medium-threshold: 123 not in range"
+    error = "^test.cfg: 1: medium-threshold: 123 not in range"
     with pytest.raises(ValueError, match=error):
-        parse_config_into_dict(run_cfg_test("html-medium-threshold = 123%"))
+        parse_config_into_dict(run_cfg_test("medium-threshold = 123%"))
 
 
 class Ref:

@@ -19,6 +19,8 @@ gcovr
 .. |abstract-option-csv| replace:: :option:`--csv`
 .. |abstract-option-json| replace:: :option:`--json`
 .. |abstract-option-json-summary| replace:: :option:`--json-summary`
+.. |abstract-option-markdown| replace:: :option:`--markdown`
+.. |abstract-option-markdown-summary| replace:: :option:`--markdown-summary`
 
 .. |abstract-option-clover| replace:: :option:`--clover`
 .. |abstract-option-cobertura| replace:: :option:`--cobertura`
@@ -34,6 +36,8 @@ gcovr
 .. |abstract-guide-csv| replace:: :ref:`csv_output`
 .. |abstract-guide-json| replace:: :ref:`json_output`
 .. |abstract-guide-json-summary| replace:: :ref:`json_output`
+.. |abstract-guide-markdown| replace:: :ref:`markdown_output`
+.. |abstract-guide-markdown-summary| replace:: :ref:`markdown_output`
 
 .. |abstract-guide-clover| replace:: :ref:`clover_output`
 .. |abstract-guide-cobertura| replace:: :ref:`cobertura_output`

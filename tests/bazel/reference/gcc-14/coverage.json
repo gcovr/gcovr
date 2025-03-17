@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.11",
+    "gcovr/format_version": "0.12",
     "files": [
         {
             "file": "lib.c",
@@ -18,17 +18,17 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 2,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 2,
                             "destination_block_id": 3
                         },
                         {
-                            "source_block_id": 2,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 2,
                             "destination_block_id": 4
                         }
                     ],
@@ -100,31 +100,31 @@
                     "count": 2,
                     "branches": [
                         {
-                            "source_block_id": 3,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 3,
                             "destination_block_id": 4
                         },
                         {
-                            "source_block_id": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 3,
                             "destination_block_id": 7
                         },
                         {
-                            "source_block_id": 5,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
+                            "source_block_id": 5,
                             "destination_block_id": 6
                         },
                         {
-                            "source_block_id": 5,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
+                            "source_block_id": 5,
                             "destination_block_id": 7
                         }
                     ],

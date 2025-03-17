@@ -152,7 +152,7 @@ class CoverageContainer(ContainerBase):
         """
         self.directories.clear()
         other.directories.clear()
-        self.data.merge(other.data, options, None)
+        self.data.merge(other.data, options)
 
     def insert_file_coverage(
         self, filecov: FileCoverage, options: MergeOptions
@@ -161,7 +161,7 @@ class CoverageContainer(ContainerBase):
         self.directories.clear()
         key = filecov.filename
         if key in self.data:
-            self.data[key].merge(filecov, options, None)
+            self.data[key].merge(filecov, options)
         else:
             self.data[key] = filecov
 
@@ -308,7 +308,7 @@ class CoverageContainerDirectory(ContainerBase):
 
         Do not use 'other' objects afterwards!
         """
-        self.data.merge(other.data, options, None)
+        self.data.merge(other.data, options)
 
     @property
     def filename(self) -> str:

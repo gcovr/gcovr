@@ -331,7 +331,7 @@ def doc(session: nox.Session) -> None:
 
     # Build the Sphinx documentation
     with session.chdir("doc"):
-        with open("examples/gcovr.out", "w", encoding="utf-8") as fh_out:
+        with open("examples/gcovr.out", "w", encoding="UTF-8") as fh_out:
             session.run("gcovr", "-h", stdout=fh_out)
         for builder in ("linkcheck", "html", "latex", "epub"):
             session.run(
@@ -370,7 +370,7 @@ def doc(session: nox.Session) -> None:
 
     session.log("Create release_notes.md out of CHANGELOG.rst...")
     changelog_rst = Path("CHANGELOG.rst")
-    with changelog_rst.open(encoding="utf-8") as fh_in:
+    with changelog_rst.open(encoding="UTF-8") as fh_in:
         lines = fh_in.readlines()
 
     out_lines = list[str]()
@@ -397,7 +397,7 @@ def doc(session: nox.Session) -> None:
         raise RuntimeError(f"End of release changes not found in {changelog_rst}.")
 
     release_notes_md = Path() / "doc" / "build" / "release_notes.md"
-    with release_notes_md.open("w", encoding="utf-8") as fh_out:
+    with release_notes_md.open("w", encoding="UTF-8") as fh_out:
         fh_out.writelines(out_lines)
 
 
@@ -605,7 +605,7 @@ def html2jpeg(session: nox.Session) -> None:
 
         def screenshot(html: str, jpeg: str, size: tuple[int, int]) -> None:
             def read_file(file: str) -> str:
-                with open(file, encoding="utf-8") as fh_in:
+                with open(file, encoding="UTF-8") as fh_in:
                     return " ".join(fh_in.readlines()).replace("\n", "")
 
             content = re.sub(
