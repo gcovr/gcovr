@@ -42,7 +42,11 @@ class NegativeHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any], filename: str, lineno: int
+        line: str,
+        ignore_parse_errors: set[str],
+        persistent_states: dict[str, Any],
+        filename: str,
+        lineno: int,
     ) -> None:
         """
         Raise exception if not ignored by options
@@ -78,7 +82,9 @@ class NegativeHits(Exception):
             if "negative_hits.warn_once_per_file" in persistent_states:
                 persistent_states["negative_hits.warn_once_per_file"] += 1
             else:
-                LOGGER.warning(f"Ignoring negative hits in {os.path.basename(filename)}, line {lineno}: {line!r}.")
+                LOGGER.warning(
+                    f"Ignoring negative hits in {os.path.basename(filename)}, line {lineno}: {line!r}."
+                )
                 if "negative_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["negative_hits.warn_once_per_file"] = 1
         else:
@@ -100,7 +106,11 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any], filename: str, lineno: int
+        line: str,
+        ignore_parse_errors: set[str],
+        persistent_states: dict[str, Any],
+        filename: str,
+        lineno: int,
     ) -> None:
         """
         Raise exception if not ignored by options
@@ -136,7 +146,9 @@ class SuspiciousHits(Exception):
             if "suspicious_hits.warn_once_per_file" in persistent_states:
                 persistent_states["suspicious_hits.warn_once_per_file"] += 1
             else:
-                LOGGER.warning(f"Ignoring suspicious hits in {os.path.basename(filename)}, line {lineno}: {line!r}.")
+                LOGGER.warning(
+                    f"Ignoring suspicious hits in {os.path.basename(filename)}, line {lineno}: {line!r}."
+                )
                 if "suspicious_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["suspicious_hits.warn_once_per_file"] = 1
         else:
@@ -162,7 +174,9 @@ def check_hits(
     0
     """
     if hits < 0:
-        NegativeHits.raise_if_not_ignored(line, ignore_parse_errors, persistent_states, filename, lineno)
+        NegativeHits.raise_if_not_ignored(
+            line, ignore_parse_errors, persistent_states, filename, lineno
+        )
         hits = 0
 
     if suspicious_hits_threshold != 0 and hits >= suspicious_hits_threshold:
