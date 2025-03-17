@@ -51,7 +51,7 @@ class NegativeHits(Exception):
         """
         Raise exception if not ignored by options
         >>> state = dict()
-        >>> NegativeHits.raise_if_not_ignored("code", None, state)
+        >>> NegativeHits.raise_if_not_ignored("code", None, state, "file.cpp", "1")
         Traceback (most recent call last):
             ...
         gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in gcov line 'code' caused by a
@@ -59,14 +59,14 @@ class NegativeHits(Exception):
         https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
         --gcov-ignore-parse-errors with a value of negative_hits.warn,
         or negative_hits.warn_once_per_file.
-        >>> NegativeHits.raise_if_not_ignored("code", {"all"}, state)
+        >>> NegativeHits.raise_if_not_ignored("code", {"all"}, state, "file.cpp", "1")
         >>> state.get("negative_hits.warn_once_per_file")
-        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn"}, state)
+        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn"}, state, "file.cpp", "1")
         >>> state.get("negative_hits.warn_once_per_file")
-        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn_once_per_file"}, state)
+        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn_once_per_file"}, state, "file.cpp", "1")
         >>> state.get("negative_hits.warn_once_per_file")
         1
-        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn_once_per_file"}, state)
+        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn_once_per_file"}, state, "file.cpp", "1")
         >>> state.get("negative_hits.warn_once_per_file")
         2
         """
@@ -115,7 +115,7 @@ class SuspiciousHits(Exception):
         """
         Raise exception if not ignored by options
         >>> state = dict()
-        >>> SuspiciousHits.raise_if_not_ignored("code", None, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", None, state, "file.cpp", "1")
         Traceback (most recent call last):
             ...
         gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in gcov line 'code' caused by a
@@ -124,14 +124,14 @@ class SuspiciousHits(Exception):
         --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
         or suspicious_hits.warn_once_per_file or change the threshold
         for the detection with option --gcov-suspicious-hits-threshold.
-        >>> SuspiciousHits.raise_if_not_ignored("code", {"all"}, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"all"}, state, "file.cpp", "1")
         >>> state.get("suspicious_hits.warn_once_per_file")
-        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn"}, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn"}, state, "file.cpp", "1")
         >>> state.get("suspicious_hits.warn_once_per_file")
-        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state, "file.cpp", "1")
         >>> state.get("suspicious_hits.warn_once_per_file")
         1
-        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state, "file.cpp", "1")
         >>> state.get("suspicious_hits.warn_once_per_file")
         2
         """
@@ -166,11 +166,28 @@ def check_hits(
 ) -> int:
     """
     Check if hits count is negative or suspicious, if the issue is ignored returns 0
-    >>> check_hits(1, "", {}, 10, {}, "", 5)
+    >>> check_hits(1, "code", {}, 10, {}, "", 5)
     1
-    >>> check_hits(-1, "", {"all"}, 10, {}, "", 5)
+    >>> check_hits(-1, "code", {}, 10, {}, "", 5)
+    Traceback (most recent call last):
+        ...
+    gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in gcov line 'code' caused by a
+    bug in gcov tool, see
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
+    --gcov-ignore-parse-errors with a value of negative_hits.warn,
+    or negative_hits.warn_once_per_file.
+    >>> check_hits(1000, "code", {}, 10, {}, "", 5)
+    Traceback (most recent call last):
+        ...
+    gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in gcov line 'code' caused by a
+    bug in gcov tool, see
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
+    --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
+    or suspicious_hits.warn_once_per_file or change the threshold
+    for the detection with option --gcov-suspicious-hits-threshold.
+    >>> check_hits(-1, "code", {"all"}, 10, {}, "", 5)
     0
-    >>> check_hits(1000, "", {"all"}, 10, {}, "", 5)
+    >>> check_hits(1000, "code", {"all"}, 10, {}, "", 5)
     0
     """
     if hits < 0:
