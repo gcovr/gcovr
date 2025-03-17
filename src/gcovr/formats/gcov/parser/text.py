@@ -545,7 +545,7 @@ def _report_lines_with_errors(
 
 def _parse_line(
     filename: str = "",
-    line: str,
+    line: str = "",
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     ignore_parse_errors: Optional[set[str]] = None,
     persistent_states: Optional[dict[str, Any]] = None,
