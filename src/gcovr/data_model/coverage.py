@@ -1049,12 +1049,10 @@ class LineCoverage(CoverageBase):
             }
         )
         if self.conditions:
-            data_dict["conditions"] = (
-                [
-                    conditioncov.serialize(get_data_source)
-                    for _, conditioncov in sorted(self.conditions.items())
-                ],
-            )
+            data_dict["conditions"] = [
+                conditioncov.serialize(get_data_source)
+                for _, conditioncov in sorted(self.conditions.items())
+            ]
         if self.block_ids is not None:
             data_dict["block_ids"] = self.block_ids
         if self.md5:
