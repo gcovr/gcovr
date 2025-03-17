@@ -46,7 +46,7 @@ class NegativeHits(Exception):
         ignore_parse_errors: set[str],
         persistent_states: dict[str, Any],
         filename: str,
-        lineno: int,
+        lineno: str,
     ) -> None:
         """
         Raise exception if not ignored by options
@@ -110,7 +110,7 @@ class SuspiciousHits(Exception):
         ignore_parse_errors: set[str],
         persistent_states: dict[str, Any],
         filename: str,
-        lineno: int,
+        lineno: str,
     ) -> None:
         """
         Raise exception if not ignored by options
@@ -162,7 +162,7 @@ def check_hits(
     suspicious_hits_threshold: int,
     persistent_states: dict[str, Any],
     filename: str,
-    lineno: int,
+    lineno: str,
 ) -> int:
     """
     Check if hits count is negative or suspicious, if the issue is ignored returns 0

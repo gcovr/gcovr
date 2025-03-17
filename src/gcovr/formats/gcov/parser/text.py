@@ -819,7 +819,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 suspicious_hits_threshold,
                 persistent_states,
                 filename,
-                lineno=0,
+                lineno="",
             )
 
             return _BranchLine(int(branch_id), hits, annotation)
@@ -854,7 +854,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 suspicious_hits_threshold,
                 persistent_states,
                 filename,
-                lineno=0,
+                lineno="",
             )
 
             return _UnconditionalLine(int(branch_id), hits)
