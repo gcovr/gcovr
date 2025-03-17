@@ -237,7 +237,7 @@ def parse_metadata(
         if not line:
             continue
 
-        parsed_line = _parse_line(line, "", suspicious_hits_threshold)
+        parsed_line = _parse_line("", line, suspicious_hits_threshold)
 
         if isinstance(parsed_line, _MetadataLine):
             key, value = parsed_line
@@ -296,8 +296,8 @@ def parse_coverage(
             tokenized_lines.append(
                 (
                     _parse_line(
-                        raw_line,
                         filename,
+                        raw_line,
                         suspicious_hits_threshold,
                         ignore_parse_errors,
                         persistent_states,
@@ -544,8 +544,8 @@ def _report_lines_with_errors(
 
 
 def _parse_line(
-    line: str,
     filename: str = "",
+    line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     ignore_parse_errors: Optional[set[str]] = None,
     persistent_states: Optional[dict[str, Any]] = None,
@@ -676,7 +676,7 @@ def _parse_line(
         persistent_states = {}
 
     tag = _parse_tag_line(
-        line, filename, suspicious_hits_threshold, ignore_parse_errors, persistent_states
+        filename, line, suspicious_hits_threshold, ignore_parse_errors, persistent_states
     )
     if tag is not None:
         return tag
@@ -781,8 +781,8 @@ def _parse_line(
 
 
 def _parse_tag_line(  # pylint: disable=too-many-return-statements
-    line: str,
     filename: str,
+    line: str,
     suspicious_hits_threshold: int,
     ignore_parse_errors: set[str],
     persistent_states: dict[str, Any],
