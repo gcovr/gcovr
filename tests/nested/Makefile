@@ -21,7 +21,7 @@ txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt
 
 md: coverage.json
-	$(GCOVR) -r subdir -a $< --markdown coverage.md --markdown-summary coverage_summary.md
+	$(GCOVR) -r subdir -a $< --markdown coverage.md --markdown-summary coverage_summary.md --markdown-file-link "http://link/to/file/{file}"
 
 lcov: coverage.json
 	$(GCOVR) -r subdir -a $< --lcov coverage.lcov --lcov-format-1.x
