@@ -19,6 +19,6 @@
 
 FORMAT_VERSION = (
     # BEGIN version
-    "0.13"
+    "0.12"
     # END version
 )
