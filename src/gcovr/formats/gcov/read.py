@@ -222,7 +222,9 @@ def process_gcov_text_data(
 
     # Find the source file
     metadata = text.parse_metadata(
-        lines, suspicious_hits_threshold=options.gcov_suspicious_hits_threshold
+        data_fname,
+        lines,
+        suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
     )
     source = metadata.get("Source")
     if source is None:

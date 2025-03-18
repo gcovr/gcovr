@@ -207,13 +207,16 @@ class UnknownLineType(Exception):
 
 
 def parse_metadata(
-    lines: list[str], *, suspicious_hits_threshold: int = SUSPICIOUS_COUNTER
+    filename: str,
+    lines: list[str],
+    *,
+    suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
 ) -> dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
 
     Example:
-    >>> parse_metadata('''
+    >>> parse_metadata("file", '''
     ...   -: 0:Foo:bar
     ...   -: 0:Key:123
     ... '''.splitlines())
@@ -222,9 +225,9 @@ def parse_metadata(
     RuntimeError: Missing key 'Source' in metadata. GCOV data was >>
       -: 0:Foo:bar
       -: 0:Key:123<< End of GCOV data
-    >>> parse_metadata('-: 0:Source: file \n -: 0:Foo: bar \n -: 0:Key: 123 '.splitlines())
+    >>> parse_metadata("file", '-: 0:Source: file \n -: 0:Foo: bar \n -: 0:Key: 123 '.splitlines())
     {'Source': 'file', 'Foo': 'bar', 'Key': '123'}
-    >>> parse_metadata('''
+    >>> parse_metadata("file", '''
     ...   -: 0:Source:file
     ...   -: 0:Foo:bar
     ...   -: 0:Key
@@ -237,7 +240,7 @@ def parse_metadata(
         if not line:
             continue
 
-        parsed_line = _parse_line("", line, suspicious_hits_threshold)
+        parsed_line = _parse_line(filename, line, suspicious_hits_threshold)
 
         if isinstance(parsed_line, _MetadataLine):
             key, value = parsed_line
