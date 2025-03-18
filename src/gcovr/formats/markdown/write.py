@@ -55,6 +55,7 @@ def write_report(
     data = {
         "title": options.markdown_title,
         "heading_level": options.markdown_heading_level,
+        "file_link": options.markdown_file_link,
         "summary": _summary_from_stats(covdata.stats, options),
     }
 

@@ -108,6 +108,17 @@ class MarkdownHandler(BaseHandler):
                 ),
                 default=1,
             ),
+            GcovrConfigOption(
+                "markdown_file_link",
+                ["--markdown-file-link"],
+                group="output_options",
+                type=str,
+                metavar="TEXT",
+                help=(
+                    "Link the files using given URL by replacing {{file}} with the current file."
+                ),
+                default=None,
+            ),
         ]
 
     def validate_options(self) -> None:

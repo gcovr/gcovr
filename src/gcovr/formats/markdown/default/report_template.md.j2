@@ -14,6 +14,6 @@
 | File                   | Lines | Functions | Branches |
 |------------------------|-------|-----------|----------|
 {% for row in entries %}
-| **`{{row.filename}}`** | {{row.line_badge}} {{row.line_covered}}/{{row.line_total}} ({{row.line_percent}}%) | {{row.function_badge}} {{row.function_covered}}/{{row.function_total}} ({{row.function_percent}}%) | {{row.branch_badge}} {{row.branch_covered}}/{{row.branch_total}} ({{row.branch_percent}}%) |
+| **{% if (file_link) %}[{% endif %}`{{row.filename}}`{% if (file_link) %}]({{ file_link | replace('{file}', row.filename) }}){% endif %}** | {{row.line_badge}} {{row.line_covered}}/{{row.line_total}} ({{row.line_percent}}%) | {{row.function_badge}} {{row.function_covered}}/{{row.function_total}} ({{row.function_percent}}%) | {{row.branch_badge}} {{row.branch_covered}}/{{row.branch_total}} ({{row.branch_percent}}%) |
 {% endfor %}
 {% endif %}
