@@ -19,7 +19,6 @@
 
 # pylint: disable=too-many-lines
 
-import os
 import logging
 from typing import Any
 
@@ -46,12 +45,12 @@ class NegativeHits(Exception):
         ignore_parse_errors: set[str],
         persistent_states: dict[str, Any],
         filename: str,
-        lineno: str,
+        lineno: int,
     ) -> None:
         """
         Raise exception if not ignored by options
         >>> state = dict()
-        >>> NegativeHits.raise_if_not_ignored("code", None, state, "file.cpp", "1")
+        >>> NegativeHits.raise_if_not_ignored("code", None, state, "file", 1)
         Traceback (most recent call last):
             ...
         gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in gcov line 'code' caused by a
@@ -59,14 +58,14 @@ class NegativeHits(Exception):
         https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
         --gcov-ignore-parse-errors with a value of negative_hits.warn,
         or negative_hits.warn_once_per_file.
-        >>> NegativeHits.raise_if_not_ignored("code", {"all"}, state, "file.cpp", "1")
+        >>> NegativeHits.raise_if_not_ignored("code", {"all"}, state, "file", 1)
         >>> state.get("negative_hits.warn_once_per_file")
-        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn"}, state, "file.cpp", "1")
+        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn"}, state, "file", 1)
         >>> state.get("negative_hits.warn_once_per_file")
-        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn_once_per_file"}, state, "file.cpp", "1")
+        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn_once_per_file"}, state, "file", 1)
         >>> state.get("negative_hits.warn_once_per_file")
         1
-        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn_once_per_file"}, state, "file.cpp", "1")
+        >>> NegativeHits.raise_if_not_ignored("code", {"negative_hits.warn_once_per_file"}, state, "file", 1)
         >>> state.get("negative_hits.warn_once_per_file")
         2
         """
@@ -83,7 +82,7 @@ class NegativeHits(Exception):
                 persistent_states["negative_hits.warn_once_per_file"] += 1
             else:
                 LOGGER.warning(
-                    f"Ignoring negative hits in {os.path.basename(filename)}, line {lineno}: {line!r}."
+                    f"Ignoring negative hits in {filename}, line {lineno}: {line!r}."
                 )
                 if "negative_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["negative_hits.warn_once_per_file"] = 1
@@ -110,12 +109,12 @@ class SuspiciousHits(Exception):
         ignore_parse_errors: set[str],
         persistent_states: dict[str, Any],
         filename: str,
-        lineno: str,
+        lineno: int,
     ) -> None:
         """
         Raise exception if not ignored by options
         >>> state = dict()
-        >>> SuspiciousHits.raise_if_not_ignored("code", None, state, "file.cpp", "1")
+        >>> SuspiciousHits.raise_if_not_ignored("code", None, state, "file", 1)
         Traceback (most recent call last):
             ...
         gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in gcov line 'code' caused by a
@@ -124,14 +123,14 @@ class SuspiciousHits(Exception):
         --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
         or suspicious_hits.warn_once_per_file or change the threshold
         for the detection with option --gcov-suspicious-hits-threshold.
-        >>> SuspiciousHits.raise_if_not_ignored("code", {"all"}, state, "file.cpp", "1")
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"all"}, state, "file", 1)
         >>> state.get("suspicious_hits.warn_once_per_file")
-        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn"}, state, "file.cpp", "1")
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn"}, state, "file", 1)
         >>> state.get("suspicious_hits.warn_once_per_file")
-        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state, "file.cpp", "1")
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state, "file", 1)
         >>> state.get("suspicious_hits.warn_once_per_file")
         1
-        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state, "file.cpp", "1")
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state, "file", 1)
         >>> state.get("suspicious_hits.warn_once_per_file")
         2
         """
@@ -147,7 +146,7 @@ class SuspiciousHits(Exception):
                 persistent_states["suspicious_hits.warn_once_per_file"] += 1
             else:
                 LOGGER.warning(
-                    f"Ignoring suspicious hits in {os.path.basename(filename)}, line {lineno}: {line!r}."
+                    f"Ignoring suspicious hits in {filename}, line {lineno}: {line!r}."
                 )
                 if "suspicious_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["suspicious_hits.warn_once_per_file"] = 1
@@ -162,7 +161,7 @@ def check_hits(
     suspicious_hits_threshold: int,
     persistent_states: dict[str, Any],
     filename: str,
-    lineno: str,
+    lineno: int,
 ) -> int:
     """
     Check if hits count is negative or suspicious, if the issue is ignored returns 0
