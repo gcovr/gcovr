@@ -160,14 +160,12 @@ def check_hits(
     ignore_parse_errors: set[str],
     suspicious_hits_threshold: int,
     persistent_states: dict[str, Any],
-    filename: str,
-    lineno: int,
 ) -> int:
     """
     Check if hits count is negative or suspicious, if the issue is ignored returns 0
-    >>> check_hits(1, "code", {}, 10, {}, "", 5)
+    >>> check_hits(1, "code", {}, 10, {"reading_line": ("file", 5)})
     1
-    >>> check_hits(-1, "code", {}, 10, {}, "", 5)
+    >>> check_hits(-1, "code", {}, 10, {"reading_line": ("file", 5)})
     Traceback (most recent call last):
         ...
     gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in gcov line 'code' caused by a
@@ -175,7 +173,7 @@ def check_hits(
     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
     --gcov-ignore-parse-errors with a value of negative_hits.warn,
     or negative_hits.warn_once_per_file.
-    >>> check_hits(1000, "code", {}, 10, {}, "", 5)
+    >>> check_hits(1000, "code", {}, 10, {"reading_line": ("file", 5)})
     Traceback (most recent call last):
         ...
     gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in gcov line 'code' caused by a
@@ -184,11 +182,14 @@ def check_hits(
     --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
     or suspicious_hits.warn_once_per_file or change the threshold
     for the detection with option --gcov-suspicious-hits-threshold.
-    >>> check_hits(-1, "code", {"all"}, 10, {}, "", 5)
+    >>> check_hits(-1, "code", {"all"}, 10, {"reading_line": ("file", 5)})
     0
-    >>> check_hits(1000, "code", {"all"}, 10, {}, "", 5)
+    >>> check_hits(1000, "code", {"all"}, 10, {"reading_line": ("file", 5)})
     0
     """
+    filename = persistent_states["reading_line"][0]
+    lineno = persistent_states["reading_line"][1]
+
     if hits < 0:
         NegativeHits.raise_if_not_ignored(
             filename, lineno, line, ignore_parse_errors, persistent_states

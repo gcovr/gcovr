@@ -677,6 +677,8 @@ def _parse_line(
         ignore_parse_errors = set()
     if persistent_states is None:
         persistent_states = {}
+    if "reading_line" not in persistent_states:
+        persistent_states["reading_line"] = (filename, 0)
 
     tag = _parse_tag_line(
         filename,
@@ -704,6 +706,7 @@ def _parse_line(
     match = _RE_SOURCE_LINE.fullmatch(line)
     if match is not None:
         hits_str, lineno, source_code = match.groups()
+        persistent_states["reading_line"] = (filename, int(lineno))
 
         # METADATA (key, value)
         if hits_str == "-" and lineno == "0":
@@ -736,8 +739,6 @@ def _parse_line(
             ignore_parse_errors,
             suspicious_hits_threshold,
             persistent_states,
-            filename,
-            int(lineno),
         )
 
         return _SourceLine(hits, int(lineno), source_code, extra_info)
@@ -749,6 +750,7 @@ def _parse_line(
         match = _RE_BLOCK_LINE.match(line)
         if match is not None:
             hits_str, lineno, block_id = match.groups()
+            persistent_states["reading_line"] = (filename, int(lineno))
 
             if hits_str == "%%%%%":
                 hits = 0
@@ -766,8 +768,6 @@ def _parse_line(
                 ignore_parse_errors,
                 suspicious_hits_threshold,
                 persistent_states,
-                filename,
-                int(lineno),
             )
 
             return _BlockLine(hits, int(lineno), int(block_id), extra_info)
@@ -821,8 +821,6 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 ignore_parse_errors,
                 suspicious_hits_threshold,
                 persistent_states,
-                filename,
-                lineno=0,
             )
 
             return _BranchLine(int(branch_id), hits, annotation)
@@ -856,8 +854,6 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 ignore_parse_errors,
                 suspicious_hits_threshold,
                 persistent_states,
-                filename,
-                lineno=0,
             )
 
             return _UnconditionalLine(int(branch_id), hits)

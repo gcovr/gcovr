@@ -154,11 +154,14 @@ def _parse_file_node(
         Any exceptions during parsing, unless ignore_parse_errors is set.
     """
     persistent_states = dict[str, Any]()
+    persistent_states["reading_line"] = (filename, 0)
+
     if ignore_parse_errors is None:
         ignore_parse_errors = set()
 
     filecov = FileCoverage(data_fname, filename=filename)
     for line in gcov_file_node["lines"]:
+        persistent_states["reading_line"] = (filename, line["line_number"])
         linecov: LineCoverage = filecov.insert_line_coverage(
             LineCoverage(
                 str(data_fname),
@@ -169,8 +172,6 @@ def _parse_file_node(
                     ignore_parse_errors,
                     suspicious_hits_threshold,
                     persistent_states,
-                    filename,
-                    line["line_number"],
                 ),
                 function_name=line.get("function_name"),
                 block_ids=line["block_ids"],
@@ -190,8 +191,6 @@ def _parse_file_node(
                         ignore_parse_errors,
                         suspicious_hits_threshold,
                         persistent_states,
-                        filename,
-                        line["line_number"],
                     ),
                     source_block_id=branch["source_block_id"],
                     fallthrough=branch["fallthrough"],
@@ -210,8 +209,6 @@ def _parse_file_node(
                         ignore_parse_errors,
                         suspicious_hits_threshold,
                         persistent_states,
-                        filename,
-                        line["line_number"],
                     ),
                     covered=condition["covered"],
                     not_covered_true=condition["not_covered_true"],
