@@ -23,11 +23,7 @@ from ...data_model.container import CoverageContainer
 from ...data_model.coverage import FileCoverage
 from ...data_model.stats import CoverageStat
 from ...options import Options
-from ...utils import (
-    force_unix_separator,
-    presentable_filename,
-    open_text_for_writing,
-)
+from ...utils import force_unix_separator, open_text_for_writing
 
 # Widths of the various columns
 COL_FILE_WIDTH = 40
@@ -121,32 +117,32 @@ def write_summary_report(
 
 
 def _summarize_file_coverage(
-    coverage: FileCoverage, options: Options
+    filecov: FileCoverage, options: Options
 ) -> tuple[CoverageStat, str]:
-    filename = presentable_filename(coverage.filename, root_filter=options.root_filter)
+    filename = filecov.presentable_filename(options.root_filter)
 
     if options.txt_report_covered:
         if options.txt_metric == "branch":
-            stat = coverage.branch_coverage()
-            covered_lines = _covered_branches_str(coverage)
+            stat = filecov.branch_coverage()
+            covered_lines = _covered_branches_str(filecov)
         elif options.txt_metric == "decision":
-            stat = coverage.decision_coverage().to_coverage_stat
-            covered_lines = _covered_decisions_str(coverage)
+            stat = filecov.decision_coverage().to_coverage_stat
+            covered_lines = _covered_decisions_str(filecov)
         else:
-            stat = coverage.line_coverage()
-            covered_lines = _covered_lines_str(coverage)
+            stat = filecov.line_coverage()
+            covered_lines = _covered_lines_str(filecov)
 
         return stat, _format_line(filename, stat, covered_lines)
 
     if options.txt_metric == "branch":
-        stat = coverage.branch_coverage()
-        uncovered_lines = _uncovered_branches_str(coverage)
+        stat = filecov.branch_coverage()
+        uncovered_lines = _uncovered_branches_str(filecov)
     elif options.txt_metric == "decision":
-        stat = coverage.decision_coverage().to_coverage_stat
-        uncovered_lines = _uncovered_decisions_str(coverage)
+        stat = filecov.decision_coverage().to_coverage_stat
+        uncovered_lines = _uncovered_decisions_str(filecov)
     else:
-        stat = coverage.line_coverage()
-        uncovered_lines = _uncovered_lines_str(coverage)
+        stat = filecov.line_coverage()
+        uncovered_lines = _uncovered_lines_str(filecov)
 
     return stat, _format_line(filename, stat, uncovered_lines)
 

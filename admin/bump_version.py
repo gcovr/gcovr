@@ -26,7 +26,7 @@ import re
 import subprocess  # nosec # Commands are trusted.
 import sys
 import time
-from typing import Callable, Iterator
+from typing import Callable, Iterator, Optional
 
 SOURCE_DATE_EPOCH = str(int(time.time()))
 DATE = subprocess.check_output(  # nosec # We run on several system and do not know the full path
@@ -163,13 +163,30 @@ def update_changelog(filename: str, lines: list[str], version: str) -> list[str]
     # because the minus must have the same length than the
     # headline to have valid RST.
     # We change:
+    #    .. _next_release:
+    #
     #    Next Release
     #    ------------
     # to:
+    #    .. _release_x_y:
+    #
     #    x.y (Day Month Year)
     #    --------------------
-    next_release = "Next Release"
     iter_lines = iter(lines)
+
+    next_release_link_target = ".. _next_release:"
+    next_release_link_id = f"release_{version.replace('.', '_')}"
+    for line in iter_lines:
+        if line == next_release_link_target:
+            new_lines.append(f".. _{next_release_link_id}:")
+            break
+        new_lines.append(line)
+    else:
+        raise RuntimeError(
+            f"Call of {next_release_link_target!r} not found in {filename!r}."
+        )
+
+    next_release = "Next Release"
     for line in iter_lines:
         if line == next_release:
             line = f"{version} ({time.strftime('%d %B %Y')})"
@@ -180,7 +197,13 @@ def update_changelog(filename: str, lines: list[str], version: str) -> list[str]
     else:
         raise RuntimeError(f"Call of {next_release!r} not found in {filename!r}.")
 
-    new_lines.extend(iter_lines)
+    next_release_link_regex = re.compile(r":ref:`Next release <next_release>`")
+    for line in iter_lines:
+        new_lines.append(
+            next_release_link_regex.sub(
+                f":ref:`{version} <{next_release_link_id}>`", line
+            )
+        )
 
     return new_lines
 
@@ -287,7 +310,7 @@ def update_source_date_epoch(
     return new_lines
 
 
-def main(version: str) -> None:
+def main(version: str, for_file: Optional[str] = None) -> None:
     """Main entry point."""
     for root, dirs, files in os.walk(".", topdown=True):
 
@@ -300,6 +323,10 @@ def main(version: str) -> None:
             handlers = list[Callable[[str, list[str], str], list[str]]]()
             _, extension = os.path.splitext(filename)
             fullname = os.path.join(root, filename)
+            if for_file is not None and for_file != os.path.abspath(fullname):
+                if filename == "CHANGELOG.rst":
+                    print(fullname)
+                continue
             if filename.endswith(".py") and filename not in ["version.py"]:
                 handlers.append(add_copyright_header_to_python_file)
             if filename == "__main__.py":

@@ -27,10 +27,7 @@ from jinja2 import (
 from ...data_model.container import CoverageContainer
 from ...data_model.stats import SummarizedStats
 from ...options import Options
-from ...utils import (
-    open_text_for_writing,
-    presentable_filename,
-)
+from ...utils import open_text_for_writing
 
 
 def templates() -> Environment:
@@ -67,9 +64,7 @@ def write_report(
     data["entries"] = list[dict[str, Any]]()
     for key in sorted_keys:
         summary = _summary_from_stats(covdata[key].stats, options)
-        summary["filename"] = presentable_filename(
-            covdata[key].filename, options.root_filter
-        )
+        summary["filename"] = covdata[key].presentable_filename(options.root_filter)
         data["entries"].append(summary)
 
     markdown_string = templates().get_template("report_template.md.j2").render(**data)

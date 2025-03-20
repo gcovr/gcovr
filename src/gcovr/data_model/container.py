@@ -21,16 +21,23 @@ from __future__ import annotations
 import logging
 import os
 import re
-from typing import ItemsView, Iterable, Iterator, Literal, Optional, Union, ValuesView
+from typing import (
+    Any,
+    ItemsView,
+    Iterable,
+    Iterator,
+    Literal,
+    Optional,
+    Union,
+    ValuesView,
+)
 
-from .coverage_dict import CoverageDict
-
-from .merging import MergeOptions
-
+from ..options import Options
 from ..utils import commonpath, force_unix_separator
 
 from .coverage import FileCoverage
-
+from .coverage_dict import CoverageDict
+from .merging import MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
 LOGGER = logging.getLogger("gcovr")
@@ -143,6 +150,33 @@ class CoverageContainer(ContainerBase):
     def items(self) -> ItemsView[str, FileCoverage]:
         """Get the file coverage data items."""
         return self.data.items()
+
+    def serialize(self, options: Options) -> list[dict[str, Any]]:
+        """Serialize the object."""
+        return [value.serialize(options) for _, value in sorted(self.items())]
+
+    @classmethod
+    def deserialize(
+        cls,
+        data_source: str,
+        data_dicts_files: list[dict[str, Any]],
+        options: Options,
+        merge_options: MergeOptions,
+    ) -> CoverageContainer:
+        """Serialize the object."""
+        covdata = CoverageContainer()
+        for gcovr_file in data_dicts_files:
+            if (
+                filecov := FileCoverage.deserialize(
+                    data_source, gcovr_file, merge_options, options
+                )
+            ) is not None:
+                covdata.insert_file_coverage(
+                    filecov,
+                    merge_options,
+                )
+
+        return covdata
 
     def merge(self, other: CoverageContainer, options: MergeOptions) -> None:
         """

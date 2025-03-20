@@ -22,7 +22,7 @@ import platform
 import sys
 from gcovr.__main__ import main
 from gcovr.version import __version__
-from gcovr.formats.json.versions import JSON_FORMAT_VERSION
+from gcovr.data_model.version import FORMAT_VERSION
 
 import logging
 import pytest
@@ -617,7 +617,7 @@ def test_html_injection_via_json(
 
     script = '<script>alert("pwned")</script>'
     json_data = {
-        "gcovr/format_version": JSON_FORMAT_VERSION,
+        "gcovr/format_version": FORMAT_VERSION,
         "files": [
             {"file": script, "functions": [], "lines": []},
             {"file": "other", "functions": [], "lines": []},

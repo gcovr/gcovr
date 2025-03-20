@@ -17,36 +17,6 @@
 #
 # ****************************************************************************
 
-"""
-Merge coverage data.
-
-All of these merging function have the signature
-``merge(T, T) -> T``.
-That is, they take two coverage data items and combine them,
-returning the combined coverage.
-This may change the input objects, so that they should be used afterwards.
-
-In a mathematical sense, all of these ``merge()`` functions
-must behave somewhat like an addition operator:
-
-* commutative: order of arguments must not matter,
-  so that ``merge(a, b)`` must match ``merge(a, b)``.
-* associative: order of merging must not matter,
-  so that ``merge(a, merge(b, c))`` must match ``merge(merge(a, b), c)``.
-* identity element: there must be an empty element,
-  so that ``merge(a, empty)`` and ``merge(empty, a)`` and ``a`` all match.
-  However, the empty state might be implied by “parent dict does not contain an entry”,
-  or must contain matching information like the same line number.
-
-The insertion functions insert a single coverage item into a larger structure,
-for example inserting BranchCoverage into a LineCoverage object.
-The target/parent structure is updated in-place,
-otherwise this has equivalent semantics to merging.
-In particular, if there already is coverage data in the target with the same ID,
-then the contents are merged.
-The insertion functions return the coverage structure that is saved in the target,
-which may not be the same as the input value.
-"""
 
 from dataclasses import dataclass, field
 import logging

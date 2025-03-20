@@ -26,11 +26,7 @@ from lxml import etree  # nosec # We only write XML files
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import LineCoverage
 from ...options import Options
-from ...utils import (
-    get_md5_hexdigest,
-    open_binary_for_writing,
-    presentable_filename,
-)
+from ...utils import get_md5_hexdigest, write_xml_output
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -42,11 +38,11 @@ def write_report(
 
     timestamp = str(int(options.timestamp.timestamp()))
 
-    root = etree.Element("coverage")
-    root.set("clover", timestamp)
-    root.set("generated", timestamp)
+    root_elem = etree.Element("coverage")
+    root_elem.set("clover", timestamp)
+    root_elem.set("generated", timestamp)
 
-    project_elem = etree.SubElement(root, "project")
+    project_elem = etree.SubElement(root_elem, "project")
     if options.clover_project:
         project_elem.set("name", options.clover_project)
     project_elem.set("timestamp", timestamp)
@@ -57,9 +53,9 @@ def write_report(
     # Generate the coverage output (on a per-package basis)
     packages = dict[str, PackageData]()
 
-    for f in sorted(covdata):
-        data = covdata[f]
-        filename = presentable_filename(f, root_filter=options.root_filter)
+    for fname in sorted(covdata):
+        filecov = covdata[fname]
+        filename = filecov.presentable_filename(options.root_filter)
         if "/" in filename:
             directory, fname = filename.rsplit("/", 1)
         else:
@@ -80,7 +76,7 @@ def write_report(
         loc = 0
         ncloc = 0
         covered_elements = 0
-        for linecov in data.lines.values():
+        for linecov in filecov.lines.values():
             loc = linecov.lineno
             if linecov.is_reportable:
                 ncloc += 1
@@ -135,7 +131,7 @@ def write_report(
         package_elem.set("name", package_name.replace("/", "."))
 
     # WTH is this needed???
-    testproject_elem = etree.SubElement(root, "testproject")
+    testproject_elem = etree.SubElement(root_elem, "testproject")
     testproject_elem.set("timestamp", timestamp)
     testproject_metrics = _metrics_element()
     testproject_elem.append(testproject_metrics)
@@ -154,16 +150,13 @@ def write_report(
     class_metrics = _metrics_element()
     class_elem.append(class_metrics)
 
-    with open_binary_for_writing(output_file, "clover.xml") as fh:
-        fh.write(
-            etree.tostring(
-                root,
-                pretty_print=options.clover_pretty,
-                encoding="UTF-8",
-                xml_declaration=True,
-                # doctype="<!DOCTYPE coverage SYSTEM 'https://bitbucket.org/atlassian/clover/raw/a688248db8ae15eb7158947b7ba275c9ffbaf008/etc/schema/clover.xsd'>",
-            )
-        )
+    write_xml_output(
+        root_elem,
+        pretty=options.clover_pretty,
+        filename=output_file,
+        default_filename="clover.xml",
+        # doctype="<!DOCTYPE coverage SYSTEM 'https://bitbucket.org/atlassian/clover/raw/a688248db8ae15eb7158947b7ba275c9ffbaf008/etc/schema/clover.xsd'>",
+    )
 
 
 @dataclass

@@ -55,7 +55,7 @@ gcovr/format_version: string
 
   Current version is:
 
-  .. include:: ../../../src/gcovr/formats/json/versions.py
+  .. include:: ../../../src/gcovr/data_model/version.py
       :start-after: # BEGIN version
       :end-before: # END version
 
@@ -110,7 +110,7 @@ Each **line** entry contains coverage data for one line::
         "conditions", conditions
         "gcovr/md5": md5,
         "gcovr/excluded": excluded,
-        "gcovr/decision": decision
+        "gcovr/decision": decision,
         "gcovr/calls": calls,
         "gcovr/data_sources": [data_sources]
     }
@@ -255,6 +255,7 @@ Each **condition** provides information about a condition on that line::
       "covered": covered,
       "not_covered_false": not_covered_false,
       "not_covered_true": not_covered_true,
+      "gcovr/excluded": excluded,
       "gcovr/data_sources": [data_sources]
     }
 
@@ -272,9 +273,17 @@ not_covered_false: list[int]
 not_covered_true: list[int]
   Terms, by index, not seen as true in this expression.
 
+gcovr/excluded: boolean
+  True if coverage data for this line was explicitly excluded,
+  in particular with :ref:`exclusion markers`.
+  May be absent if false.
+
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
+.. versionchanged:: NEXT
+   New ``gcovr/excluded`` field.
 
 .. versionchanged:: NEXT
    The ``gcovr/data_sources`` is added.
@@ -348,6 +357,7 @@ Each **call** provides information about a call on that line::
     {
       "callno": callno,
       "covered": covered,
+      "gcovr/excluded": excluded,
       "gcovr/data_sources": [data_sources]
     }
 
@@ -357,9 +367,17 @@ callno: int
 covered: boolean
   Whether this call was covered.
 
+gcovr/excluded: boolean
+  True if coverage data for this line was explicitly excluded,
+  in particular with :ref:`exclusion markers`.
+  May be absent if false.
+
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+
+.. versionchanged:: NEXT
+   New ``gcovr/excluded`` field.
 
 .. versionchanged:: NEXT
    The ``gcovr/data_sources`` is added.
@@ -492,12 +510,12 @@ gcovr/summary_format_version: string
 
   Current version is:
 
-  .. include:: ../../../src/gcovr/formats/json/versions.py
+  .. include:: ../../../src/gcovr/formats/json/write.py
       :start-after: # BEGIN summary version
       :end-before: # END summary version
 
 files: list
-  Unordered list of :ref:`file summary entries <json_summary_format_file>`.
+  List of :ref:`file summary entries <json_summary_format_file>`.
 
 root: string
   Path to the gcovr root directory, useful for reconstructing the absolute path of source files.

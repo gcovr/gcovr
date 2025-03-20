@@ -3,12 +3,15 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
+.. _next_release:
+
 Next Release
 ------------
 
 Known bugs:
 
 Breaking changes:
+
 - Improve data model to have several coverage information per line. (:issue:`1069`)
 
   - Option ``--merge-mode-conditions`` is removed.
@@ -26,17 +29,27 @@ Bug fixes and small improvements:
 
 - Fix warning ``Deprecated config key None used, please use 'txt-metric=branch' instead.``
   if ``txt-metric="branch"`` is used in config file. (:issue:`1066`)
+- Add ``excluded`` property for conditions and calls to the JSON report. (:issue:`1078`)
 
 Documentation:
 
 Internal changes:
 
-- Refactor internal data model. (:issue:`1067`)
+- Refactor internal data model:
+
+  - Add merge functionality to coverage objects instead of an own file. (:issue:`1067`)
+  - Move data serialization and deserialization from JSON report to coverage classes. (:issue:`1078`)
+
+.. _release_8_3:
 
 8.3 (19 January 2025)
 ---------------------
 
 Known bugs:
+
+- Log message ``Deprecated config key None used, please use 'txt-metric=branch' instead.`` is shown
+  even if the mentioned key is used. :issue:`1060` and :issue:`1064`, fixed in :ref:`Next release <next_release>`.
+- JSON report doesn't contain ``excluded`` property for conditions and calls. Fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -63,7 +76,7 @@ Bug fixes and small improvements:
 - Fix LCOV report. Excluded lines where added with a count of 0. (:issue:`1012`)
 - Fix line exclusion not clearing all child coverage data. (:issue:`1018`)
 - Fix summary stats in ``JaCoCo`` report. (:issue:`1022`)
-- Fix path issue when reading/writing ``Coveralls`` report. (:issue:`1037`)
+- Fix path issue when reading/writing ``Cobertura`` report. (:issue:`1037`)
 - Fix issue with negative counters in GCOV JSON export. (:issue:`1048`)
 
 Documentation:
@@ -90,6 +103,12 @@ Internal changes:
 
 Known bugs:
 
+- Excluded lines are added with a count of 0 to LCOV report. :issue:`1012`, fixed with :ref:`8.3 <release_8_3>`.
+- Negative counters in GCOV JSON export are not handled correct. :issue:`1049`, fixed in :ref:`8.3 <release_8_3>`.
+- Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
+- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
+  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
+
 Breaking changes:
 
 New features and notable changes:
@@ -102,10 +121,17 @@ Documentation:
 
 Internal changes:
 
+.. _release_8_1:
+
 8.1 (13 October 2024)
 ---------------------
 
 Known bugs:
+
+- Negative counters in GCOV JSON export are not handled correct. :issue:`1049`, fixed in :ref:`8.3 <release_8_3>`.
+- Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
+- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
+  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
 
 Breaking changes:
 
@@ -127,7 +153,11 @@ Internal changes:
 
 Known bugs:
 
-- Exclusion of internal function not working. (:issue:`984`)
+- Exclusion of internal function not working. (:issue:`984`), fixed in :ref:`8.1 <release_8_1>`.
+- Negative counters in GCOV JSON export are not handled correct. :issue:`1049`, fixed in :ref:`8.3 <release_8_3>`.
+- Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
+- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
+  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
 
 Breaking changes:
 
@@ -200,6 +230,9 @@ Fix tagging issue of 7.1, no functional change.
 
 Known bugs:
 
+- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
+  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
+
 Breaking changes:
 
 New features and notable changes:
@@ -229,6 +262,9 @@ Internal changes:
 ---------------------
 
 Known bugs:
+
+- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
+  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
 
 Breaking changes:
 
@@ -291,7 +327,7 @@ Bug fixes and small improvements:
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
 - Fix ``TypeError`` during decision analysis. (:issue:`784`)
 - Use relative paths if possible when running ``gcov``. (:issue:`820`)
-- Respect :option`--merge-mode-functions`when merging coverage data. (:issue:`844`)
+- Respect :option:`--merge-mode-functions` when merging coverage data. (:issue:`844`)
 
 Documentation:
 
@@ -327,6 +363,8 @@ Internal changes:
 -------------------
 
 Known bugs:
+
+- Source root path in ``Cobertura`` report is not written correct. :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
 
 Breaking changes:
 

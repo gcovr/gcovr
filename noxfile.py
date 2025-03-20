@@ -206,6 +206,8 @@ def prepare_next_iteration(session: nox.Session) -> None:
             new_lines.append(
                 textwrap.dedent(
                     """\
+                    .. _next_release:
+
                     Next Release
                     ------------
 
@@ -390,8 +392,16 @@ def doc(session: nox.Session) -> None:
         line, _ = re.subn(r"``", r"`", line)
         line, _ = re.subn(r":(?:option|ref):", r"", line)
         line, _ = re.subn(r":issue:`(\d+)`", r"#\1", line)
-        if line.strip().startswith("- ") and out_lines[-1].rstrip() == "":
+        # Remove the empty lines around sub lists
+        if (
+            line.strip().startswith("- ")
+            and out_lines[-1].rstrip() == ""
+            and out_lines[-2].startswith("- ")
+        ):
             out_lines.pop()
+        # Skip lines with link targets
+        elif line.startswith(".. ") and line.rstrip().endswith(":"):
+            continue
         out_lines.append(line)
     else:
         raise RuntimeError(f"End of release changes not found in {changelog_rst}.")

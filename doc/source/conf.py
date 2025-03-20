@@ -34,7 +34,6 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..", "src")))
 import gcovr.version  # noqa # pylint: disable=wrong-import-position
-import gcovr.formats.json.versions  # noqa # pylint: disable=wrong-import-position
 
 # -- Project information -----------------------------------------------------
 
