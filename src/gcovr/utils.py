@@ -286,23 +286,6 @@ def force_unix_separator(path: str) -> str:
     return path.replace("\\", "/")
 
 
-def presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
-    """mangle a filename so that it is suitable for a report"""
-
-    normalized = root_filter.sub("", filename)
-    if filename.endswith(normalized):
-        # remove any slashes between the removed prefix and the normalized name
-        if filename != normalized:
-            while normalized.startswith(os.path.sep):
-                normalized = normalized[len(os.path.sep) :]
-    else:
-        # Do no truncation if the filter does not start matching
-        # at the beginning of the string
-        normalized = filename
-
-    return force_unix_separator(normalized)
-
-
 def get_md5_hexdigest(data: bytes) -> str:
     """Get the MD5 digest of the given bytes."""
     return md5(data, usedforsecurity=False).hexdigest()  # nosec # Not used for security

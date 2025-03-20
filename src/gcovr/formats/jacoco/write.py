@@ -27,7 +27,7 @@ from ...data_model.container import CoverageContainer
 from ...data_model.coverage import LineCoverage
 from ...data_model.stats import CoverageStat, SummarizedStats
 from ...options import Options
-from ...utils import force_unix_separator, presentable_filename, write_xml_output
+from ...utils import force_unix_separator, write_xml_output
 
 
 def write_report(
@@ -42,7 +42,7 @@ def write_report(
 
     for fname in sorted(covdata):
         filecov = covdata[fname]
-        filename = presentable_filename(fname, root_filter=options.root_filter)
+        filename = filecov.presentable_filename(options.root_filter)
         if "/" in filename:
             directory, fname = filename.rsplit("/", 1)
         else:

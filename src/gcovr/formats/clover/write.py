@@ -26,7 +26,7 @@ from lxml import etree  # nosec # We only write XML files
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import LineCoverage
 from ...options import Options
-from ...utils import get_md5_hexdigest, presentable_filename, write_xml_output
+from ...utils import get_md5_hexdigest, write_xml_output
 
 LOGGER = logging.getLogger("gcovr")
 
@@ -53,9 +53,9 @@ def write_report(
     # Generate the coverage output (on a per-package basis)
     packages = dict[str, PackageData]()
 
-    for f in sorted(covdata):
-        data = covdata[f]
-        filename = presentable_filename(f, root_filter=options.root_filter)
+    for fname in sorted(covdata):
+        filecov = covdata[fname]
+        filename = filecov.presentable_filename(options.root_filter)
         if "/" in filename:
             directory, fname = filename.rsplit("/", 1)
         else:
@@ -76,7 +76,7 @@ def write_report(
         loc = 0
         ncloc = 0
         covered_elements = 0
-        for linecov in data.lines.values():
+        for linecov in filecov.lines.values():
             loc = linecov.lineno
             if linecov.is_reportable:
                 ncloc += 1

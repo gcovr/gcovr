@@ -68,11 +68,12 @@ from __future__ import annotations
 from abc import abstractmethod
 import logging
 import os
+import re
 from typing import Any, Callable, List, NoReturn, Optional, TypeVar, Union
 
 from ..filter import is_file_excluded
 
-from ..utils import presentable_filename
+from ..utils import force_unix_separator
 from ..options import Options
 
 from .coverage_dict import BranchesKeyType, CoverageDict, LinesKeyType
@@ -89,6 +90,23 @@ GCOVR_DATA_SOURCES = "gcovr/data_sources"
 GCOVR_EXCLUDED = "gcovr/excluded"
 
 _T = TypeVar("_T")
+
+
+def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
+    """Mangle a filename so that it is suitable for a report."""
+
+    normalized = root_filter.sub("", filename)
+    if filename.endswith(normalized):
+        # remove any slashes between the removed prefix and the normalized name
+        if filename != normalized:
+            while normalized.startswith(os.path.sep):
+                normalized = normalized[len(os.path.sep) :]
+    else:
+        # Do no truncation if the filter does not start matching
+        # at the beginning of the string
+        normalized = filename
+
+    return force_unix_separator(normalized)
 
 
 class CoverageBase:
@@ -1349,6 +1367,10 @@ class FileCoverage(CoverageBase):
         self.lines = CoverageDict[LinesKeyType, LineCoverage]()
         self.lines_keys_by_lineno: dict[int, List[LinesKeyType]] = {}
 
+    def presentable_filename(self, root_filter: re.Pattern[str]) -> str:
+        """Mangle a filename so that it is suitable for a report."""
+        return _presentable_filename(self.filename, root_filter)
+
     def merge(
         self,
         other: FileCoverage,
@@ -1380,7 +1402,7 @@ class FileCoverage(CoverageBase):
                 return {
                     GCOVR_DATA_SOURCES: [
                         [
-                            presentable_filename(filename, options.root_filter)
+                            _presentable_filename(filename, options.root_filter)
                             for filename in data_source
                         ]
                         for data_source in sorted(cov.data_sources)
@@ -1392,7 +1414,7 @@ class FileCoverage(CoverageBase):
                 """Stub if not running in verbose mode."""
                 return {}
 
-        filename = presentable_filename(self.filename, options.root_filter)
+        filename = self.presentable_filename(options.root_filter)
         if options.json_base:
             filename = "/".join([options.json_base, filename])
         data_dict = {

@@ -23,7 +23,7 @@ from typing import Any
 
 from ...data_model.container import CoverageContainer
 from ...options import Options
-from ...utils import force_unix_separator, presentable_filename, write_json_output
+from ...utils import force_unix_separator, write_json_output
 
 from ...data_model import version
 
@@ -77,7 +77,7 @@ def write_summary_report(
     )
 
     for key in sorted_keys:
-        filename = presentable_filename(covdata[key].filename, options.root_filter)
+        filename = covdata[key].presentable_filename(options.root_filter)
         if options.json_base:
             filename = "/".join([options.json_base, filename])
 

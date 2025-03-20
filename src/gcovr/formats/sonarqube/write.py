@@ -21,7 +21,7 @@ from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
 from ...options import Options
-from ...utils import open_binary_for_writing, presentable_filename, write_xml_output
+from ...utils import write_xml_output
 
 
 def write_report(
@@ -32,14 +32,14 @@ def write_report(
     root_elem = etree.Element("coverage")
     root_elem.set("version", "1")
 
-    for f in sorted(covdata):
-        data = covdata[f]
-        filename = presentable_filename(f, root_filter=options.root_filter)
+    for fname in sorted(covdata):
+        filecov = covdata[fname]
+        filename = filecov.presentable_filename(options.root_filter)
 
         file_node = etree.Element("file")
         file_node.set("path", filename)
 
-        for linecov in data.lines.values():
+        for linecov in filecov.lines.values():
             if linecov.is_reportable:
                 line_node = etree.Element("lineToCover")
                 line_node.set("lineNumber", str(linecov.lineno))
@@ -53,7 +53,6 @@ def write_report(
                 file_node.append(line_node)
 
         root_elem.append(file_node)
-
 
     write_xml_output(
         root_elem,
