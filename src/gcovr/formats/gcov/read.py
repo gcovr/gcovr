@@ -86,8 +86,8 @@ def read_report(options: Options) -> CoverageContainer:
         lambda: {"covdata": CoverageContainer(), "to_erase": set(), "options": options},
     ) as pool:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
-        for file_ in sorted(datafiles):
-            pool.add(process_file, file_)
+        for filename in sorted(datafiles):
+            pool.add(process_file, filename)
         contexts = pool.wait()
 
     to_erase = set()

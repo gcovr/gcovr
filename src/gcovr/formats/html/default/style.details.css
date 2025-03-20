@@ -85,6 +85,11 @@ span.excludedLine
     color: var(--notTakenBranch_color) !important;
 }
 
+.excludedCondition
+{
+    color: var(--takenCondition_color) !important;
+}
+
 .takenCondition
 {
     color: var(--takenCondition_color) !important;
@@ -108,6 +113,11 @@ span.excludedLine
 .uncheckedDecision
 {
     color: var(--uncheckedDecision_color) !important;
+}
+
+.excludedCall
+{
+    color: var(--invokedCall_color) !important;
 }
 
 .invokedCall
