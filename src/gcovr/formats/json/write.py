@@ -17,25 +17,17 @@
 #
 # ****************************************************************************
 
-import json
 import logging
 import os
-import functools
 from typing import Any
 
 from ...data_model.container import CoverageContainer
 from ...options import Options
-from ...utils import (
-    force_unix_separator,
-    presentable_filename,
-    open_text_for_writing,
-)
+from ...utils import force_unix_separator, presentable_filename, write_json_output
 
 from ...data_model import version
 
 LOGGER = logging.getLogger("gcovr")
-
-PRETTY_JSON_INDENT = 4
 
 SUMMARY_FORMAT_VERSION = (
     # BEGIN summary version
@@ -45,41 +37,18 @@ SUMMARY_FORMAT_VERSION = (
 KEY_SUMMARY_FORMAT_VERSION = "gcovr/summary_format_version"
 
 
-def _write_json_result(
-    gcovr_json_dict: dict[str, Any],
-    output_file: str,
-    default_filename: str,
-    pretty: bool,
-) -> None:
-    """Helper utility to output json format dictionary to a file/STDOUT."""
-    write_json = json.dump
-
-    if pretty:
-        write_json = functools.partial(
-            write_json,
-            indent=PRETTY_JSON_INDENT,
-            separators=(",", ": "),
-        )
-    else:
-        write_json = functools.partial(write_json)
-
-    with open_text_for_writing(output_file, default_filename) as fh:
-        write_json(gcovr_json_dict, fh)
-
-
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
     """Produce an JSON report in the format partially compatible with gcov JSON output."""
-
-    _write_json_result(
+    write_json_output(
         {
             "gcovr/format_version": version.FORMAT_VERSION,
             "files": covdata.serialize(options),
         },
-        output_file,
-        "coverage.json",
-        options.json_pretty,
+        pretty=options.json_pretty,
+        filename=output_file,
+        default_filename="coverage.json",
     )
 
 
@@ -122,6 +91,9 @@ def write_summary_report(
     # Footer & summary
     json_dict.update(covdata.stats.serialize(0.0, options))
 
-    _write_json_result(
-        json_dict, output_file, "summary_coverage.json", options.json_summary_pretty
+    write_json_output(
+        json_dict,
+        pretty=options.json_summary_pretty,
+        filename=output_file,
+        default_filename="summary_coverage.json",
     )

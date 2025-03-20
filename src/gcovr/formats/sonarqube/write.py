@@ -21,7 +21,7 @@ from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
 from ...options import Options
-from ...utils import open_binary_for_writing, presentable_filename
+from ...utils import open_binary_for_writing, presentable_filename, write_xml_output
 
 
 def write_report(
@@ -29,8 +29,8 @@ def write_report(
 ) -> None:
     """produce an XML report in the SonarQube generic coverage format"""
 
-    root = etree.Element("coverage")
-    root.set("version", "1")
+    root_elem = etree.Element("coverage")
+    root_elem.set("version", "1")
 
     for f in sorted(covdata):
         data = covdata[f]
@@ -52,7 +52,13 @@ def write_report(
 
                 file_node.append(line_node)
 
-        root.append(file_node)
+        root_elem.append(file_node)
 
-    with open_binary_for_writing(output_file, "sonarqube.xml") as fh:
-        fh.write(etree.tostring(root, encoding="UTF-8", xml_declaration=True))
+
+    write_xml_output(
+        root_elem,
+        pretty=False,
+        filename=output_file,
+        default_filename="sonarqube.xml",
+        doctype="<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>",
+    )

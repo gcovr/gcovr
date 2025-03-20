@@ -27,8 +27,8 @@ from ...options import Options
 from ...utils import (
     force_unix_separator,
     get_version_for_report,
-    open_binary_for_writing,
     presentable_filename,
+    write_xml_output,
 )
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import LineCoverage
@@ -135,16 +135,13 @@ def write_report(
         os.path.abspath(options.root)
     )
 
-    with open_binary_for_writing(output_file, "cobertura.xml") as fh:
-        fh.write(
-            etree.tostring(
-                root_elem,
-                pretty_print=options.cobertura_pretty,
-                encoding="UTF-8",
-                xml_declaration=True,
-                doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>",
-            )
-        )
+    write_xml_output(
+        root_elem,
+        pretty=options.cobertura_pretty,
+        filename=output_file,
+        default_filename="cobertura.xml",
+        doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>",
+    )
 
 
 @dataclass

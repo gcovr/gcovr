@@ -78,4 +78,4 @@ clean:
 	rm -f testcase
 	rm -f fail_under.stderr
 	rm -f *.gc*
-	rm -f coverage.txt jacoco.xml clover.xml coverage*.html coverage*.css cobertura.xml sonarqube.xml coverage.json summary_coverage.json coveralls.json
+	rm -f coverage*.md coverage.txt jacoco.xml clover.xml coverage*.html coverage*.css cobertura.xml sonarqube.xml coverage.json summary_coverage.json coveralls.json

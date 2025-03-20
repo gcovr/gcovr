@@ -19,9 +19,7 @@
 
 from __future__ import absolute_import
 
-import json
 import datetime
-import functools
 import os
 import re
 import shutil
@@ -31,28 +29,7 @@ from typing import Any, Optional
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import FileCoverage
 from ...options import Options
-from ...utils import get_md5_hexdigest, presentable_filename, open_text_for_writing
-
-PRETTY_JSON_INDENT = 4
-
-
-def _write_coveralls_result(
-    gcovr_json_dict: dict[str, Any], output_file: str, pretty: bool
-) -> None:
-    r"""helper utility to output json format dictionary to a file/STDOUT"""
-    write_json = json.dump
-
-    if pretty:
-        write_json = functools.partial(
-            write_json,
-            indent=PRETTY_JSON_INDENT,
-            separators=(",", ": "),
-        )
-    else:
-        write_json = functools.partial(write_json)
-
-    with open_text_for_writing(output_file, "coveralls.json") as fh:
-        write_json(gcovr_json_dict, fh)
+from ...utils import get_md5_hexdigest, presentable_filename, write_json_output
 
 
 def write_report(
@@ -190,7 +167,12 @@ def write_report(
         # File data has been compiled
         json_dict["source_files"].append(_make_source_file(covdata[file_path], options))
 
-    _write_coveralls_result(json_dict, output_file, options.coveralls_pretty)
+    write_json_output(
+        json_dict,
+        pretty=options.coveralls_pretty,
+        filename=output_file,
+        default_filename="coveralls.json",
+    )
 
 
 def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]:

@@ -27,7 +27,7 @@ from ...data_model.container import CoverageContainer
 from ...data_model.coverage import LineCoverage
 from ...data_model.stats import CoverageStat, SummarizedStats
 from ...options import Options
-from ...utils import force_unix_separator, open_binary_for_writing, presentable_filename
+from ...utils import force_unix_separator, presentable_filename, write_xml_output
 
 
 def write_report(
@@ -88,16 +88,13 @@ def write_report(
     root_elem.append(_counter_element("LINE", stats.line))
     root_elem.append(_counter_element("BRANCH", stats.branch))
 
-    with open_binary_for_writing(output_file, "jacoco.xml") as fh:
-        fh.write(
-            etree.tostring(
-                root_elem,
-                pretty_print=options.jacoco_pretty,
-                encoding="UTF-8",
-                xml_declaration=True,
-                doctype="<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>",
-            )
-        )
+    write_xml_output(
+        root_elem,
+        pretty=options.jacoco_pretty,
+        filename=output_file,
+        default_filename="jacoco.xml",
+        doctype="<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>",
+    )
 
 
 @dataclass

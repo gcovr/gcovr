@@ -18,6 +18,7 @@
 # ****************************************************************************
 
 from hashlib import md5
+import json
 from typing import Any, Callable, Iterator, Optional
 import logging
 import os
@@ -25,12 +26,14 @@ import functools
 import re
 import sys
 from contextlib import contextmanager
+from lxml import etree  # nosec # We only write XML files
 
 from .version import __version__
 
 LOGGER = logging.getLogger("gcovr")
 
 REGEX_VERSION_POSTFIX = re.compile(r"(.+)\.dev.+$")
+PRETTY_JSON_INDENT = 4
 
 
 class LoopChecker:
@@ -230,6 +233,41 @@ def open_binary_for_writing(
             yield fh_out
     else:
         yield sys.stdout.buffer
+
+
+def write_json_output(
+    json_dict: dict[str, Any],
+    *,
+    pretty: bool,
+    filename: Optional[str],
+    default_filename: str,
+    **kwargs: Any,
+) -> None:
+    """Helper function to output JSON format dictionary to a file/STDOUT"""
+    with open_text_for_writing(filename, default_filename, **kwargs) as fh:
+        json.dump(json_dict, fh, indent=PRETTY_JSON_INDENT if pretty else None)
+
+
+def write_xml_output(
+    root: Any,
+    *,
+    doctype: Optional[str] = None,
+    pretty: bool,
+    filename: Optional[str],
+    default_filename: str,
+    **kwargs: Any,
+) -> None:
+    """Helper function to output XML format dictionary to a file/STDOUT"""
+    with open_binary_for_writing(filename, default_filename, **kwargs) as fh:
+        fh.write(
+            etree.tostring(
+                root,
+                pretty_print=pretty,
+                encoding="UTF-8",
+                xml_declaration=True,
+                doctype=doctype,  # type: ignore [arg-type]
+            )
+        )
 
 
 @contextmanager
