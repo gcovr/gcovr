@@ -207,13 +207,16 @@ class UnknownLineType(Exception):
 
 
 def parse_metadata(
-    lines: list[str], *, suspicious_hits_threshold: int = SUSPICIOUS_COUNTER
+    filename: str,
+    lines: list[str],
+    *,
+    suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
 ) -> dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
 
     Example:
-    >>> parse_metadata('''
+    >>> parse_metadata("file", '''
     ...   -: 0:Foo:bar
     ...   -: 0:Key:123
     ... '''.splitlines())
@@ -222,9 +225,9 @@ def parse_metadata(
     RuntimeError: Missing key 'Source' in metadata. GCOV data was >>
       -: 0:Foo:bar
       -: 0:Key:123<< End of GCOV data
-    >>> parse_metadata('-: 0:Source: file \n -: 0:Foo: bar \n -: 0:Key: 123 '.splitlines())
+    >>> parse_metadata("file", '-: 0:Source: file \n -: 0:Foo: bar \n -: 0:Key: 123 '.splitlines())
     {'Source': 'file', 'Foo': 'bar', 'Key': '123'}
-    >>> parse_metadata('''
+    >>> parse_metadata("file", '''
     ...   -: 0:Source:file
     ...   -: 0:Foo:bar
     ...   -: 0:Key
@@ -237,7 +240,7 @@ def parse_metadata(
         if not line:
             continue
 
-        parsed_line = _parse_line(line, suspicious_hits_threshold)
+        parsed_line = _parse_line(filename, line, suspicious_hits_threshold)
 
         if isinstance(parsed_line, _MetadataLine):
             key, value = parsed_line
@@ -296,6 +299,7 @@ def parse_coverage(
             tokenized_lines.append(
                 (
                     _parse_line(
+                        filename,
                         raw_line,
                         suspicious_hits_threshold,
                         ignore_parse_errors,
@@ -543,6 +547,7 @@ def _report_lines_with_errors(
 
 
 def _parse_line(
+    filename: str,
     line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     ignore_parse_errors: Optional[set[str]] = None,
@@ -552,118 +557,118 @@ def _parse_line(
     Categorize/parse individual lines without further processing.
 
     Example: can parse code line:
-    >>> _parse_line('     -: 13:struct Foo{};')
+    >>> _parse_line("file", '     -: 13:struct Foo{};')
     _SourceLine(hits=0, lineno=13, source_code='struct Foo{};', extra_info=NONCODE)
-    >>> _parse_line('    12: 13:foo += 1;  ')
+    >>> _parse_line("file", '    12: 13:foo += 1;  ')
     _SourceLine(hits=12, lineno=13, source_code='foo += 1;  ', extra_info=NONE)
-    >>> _parse_line(' #####: 13:foo += 1;')
+    >>> _parse_line("file", ' #####: 13:foo += 1;')
     _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=NONE)
-    >>> _parse_line(' #####:10000:foo += 1;')  # see https://github.com/gcovr/gcovr/issues/882
+    >>> _parse_line("file", ' #####:10000:foo += 1;')  # see https://github.com/gcovr/gcovr/issues/882
     _SourceLine(hits=0, lineno=10000, source_code='foo += 1;', extra_info=NONE)
-    >>> _parse_line(' =====: 13:foo += 1;')
+    >>> _parse_line("file", ' =====: 13:foo += 1;')
     _SourceLine(hits=0, lineno=13, source_code='foo += 1;', extra_info=EXCEPTION_ONLY)
-    >>> _parse_line('   12*: 13:cond ? f() : g();')
+    >>> _parse_line("file", '   12*: 13:cond ? f() : g();')
     _SourceLine(hits=12, lineno=13, source_code='cond ? f() : g();', extra_info=PARTIAL)
-    >>> _parse_line(' 1.7k*: 13:foo();')
+    >>> _parse_line("file", ' 1.7k*: 13:foo();')
     _SourceLine(hits=1700, lineno=13, source_code='foo();', extra_info=PARTIAL)
 
     Example: can parse metadata line:
-    >>> _parse_line('  -: 0:Foo:bar baz')
+    >>> _parse_line("file", '  -: 0:Foo:bar baz')
     _MetadataLine(key='Foo', value='bar baz')
-    >>> _parse_line('  -: 0:Some key:2')  # coerce numbers
+    >>> _parse_line("file", '  -: 0:Some key:2')  # coerce numbers
     _MetadataLine(key='Some key', value='2')
 
     Example: can parse branch tags:
-    >>> _parse_line('branch 3 taken 15%')
+    >>> _parse_line("file", 'branch 3 taken 15%')
     _BranchLine(branchno=3, hits=1, annotation=None)
-    >>> _parse_line('branch 3 taken 0%')
+    >>> _parse_line("file", 'branch 3 taken 0%')
     _BranchLine(branchno=3, hits=0, annotation=None)
-    >>> _parse_line('branch 3 taken 123')
+    >>> _parse_line("file", 'branch 3 taken 123')
     _BranchLine(branchno=3, hits=123, annotation=None)
-    >>> _parse_line('branch 3 taken -1', ignore_parse_errors=("negative_hits.warn",))
+    >>> _parse_line("file", 'branch 3 taken -1', ignore_parse_errors=("negative_hits.warn",))
     _BranchLine(branchno=3, hits=0, annotation=None)
-    >>> _parse_line('branch 3 taken 4294967296', ignore_parse_errors=("suspicious_hits.warn",))
+    >>> _parse_line("file", 'branch 3 taken 4294967296', ignore_parse_errors=("suspicious_hits.warn",))
     _BranchLine(branchno=3, hits=0, annotation=None)
-    >>> _parse_line('branch 7 taken 3% (fallthrough)')
+    >>> _parse_line("file", 'branch 7 taken 3% (fallthrough)')
     _BranchLine(branchno=7, hits=1, annotation='fallthrough')
-    >>> _parse_line('branch 17 taken 99% (throw)')
+    >>> _parse_line("file", 'branch 17 taken 99% (throw)')
     _BranchLine(branchno=17, hits=1, annotation='throw')
-    >>> _parse_line('branch  0 never executed')
+    >>> _parse_line("file", 'branch  0 never executed')
     _BranchLine(branchno=0, hits=0, annotation=None)
-    >>> _parse_line('branch  0 never executed (fallthrough)')
+    >>> _parse_line("file", 'branch  0 never executed (fallthrough)')
     _BranchLine(branchno=0, hits=0, annotation='fallthrough')
-    >>> _parse_line('branch 2 with some unknown format')
+    >>> _parse_line("file", 'branch 2 with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType: branch 2 with some unknown format
 
     Example: can parse call tags:
-    >>> _parse_line('call  0 never executed')
+    >>> _parse_line("file", 'call  0 never executed')
     _CallLine(callno=0, returned=0)
-    >>> _parse_line('call  17 returned 50%')
+    >>> _parse_line("file", 'call  17 returned 50%')
     _CallLine(callno=17, returned=1)
-    >>> _parse_line('call  17 returned 9')
+    >>> _parse_line("file", 'call  17 returned 9')
     _CallLine(callno=17, returned=9)
-    >>> _parse_line('call 2 with some unknown format')
+    >>> _parse_line("file", 'call 2 with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType: call 2 with some unknown format
 
     Example: can parse unconditional branches
-    >>> _parse_line('unconditional 1 taken 17')
+    >>> _parse_line("file", 'unconditional 1 taken 17')
     _UnconditionalLine(branchno=1, hits=17)
-    >>> _parse_line('unconditional 2 taken -1', ignore_parse_errors=set(['negative_hits.warn']))
+    >>> _parse_line("file", 'unconditional 2 taken -1', ignore_parse_errors=set(['negative_hits.warn']))
     _UnconditionalLine(branchno=2, hits=0)
-    >>> _parse_line('unconditional 2 taken 4294967296', ignore_parse_errors=set(['suspicious_hits.warn']))
+    >>> _parse_line("file", 'unconditional 2 taken 4294967296', ignore_parse_errors=set(['suspicious_hits.warn']))
     _UnconditionalLine(branchno=2, hits=0)
-    >>> _parse_line('unconditional 3 never executed')
+    >>> _parse_line("file", 'unconditional 3 never executed')
     _UnconditionalLine(branchno=3, hits=0)
-    >>> _parse_line('unconditional with some unknown format')
+    >>> _parse_line("file", 'unconditional with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType: unconditional with some unknown format
 
     Example: can parse function tags:
-    >>> _parse_line('function foo called 2 returned 1 blocks executed 85%')
+    >>> _parse_line("file", 'function foo called 2 returned 1 blocks executed 85%')
     _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
-    >>> _parse_line('function foo called 2 returned 50% blocks executed 85%')
+    >>> _parse_line("file", 'function foo called 2 returned 50% blocks executed 85%')
     _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
-    >>> _parse_line('function foo called 2 returned 100% blocks executed 85%')
+    >>> _parse_line("file", 'function foo called 2 returned 100% blocks executed 85%')
     _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
-    >>> _parse_line('function foo with some unknown format')
+    >>> _parse_line("file", 'function foo with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType: function foo with some unknown format
 
     Example: can parse template specialization markers:
-    >>> _parse_line('------------------')
+    >>> _parse_line("file", '------------------')
     _SpecializationMarkerLine()
 
     Example: can parse template specialization names:
-    >>> _parse_line('Foo<bar>::baz():')
+    >>> _parse_line("file", 'Foo<bar>::baz():')
     _SpecializationNameLine(name='Foo<bar>::baz()')
-    >>> _parse_line(' foo:')
+    >>> _parse_line("file", ' foo:')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType:  foo:
-    >>> _parse_line(':')
+    >>> _parse_line("file", ':')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType: :
 
     Example: can parse block line:
-    >>> _parse_line('     1: 32-block  0')
+    >>> _parse_line("file", '     1: 32-block  0')
     _BlockLine(hits=1, lineno=32, block_id=0, extra_info=NONE)
-    >>> _parse_line(' %%%%%: 33-block  1')
+    >>> _parse_line("file", ' %%%%%: 33-block  1')
     _BlockLine(hits=0, lineno=33, block_id=1, extra_info=NONE)
-    >>> _parse_line(' $$$$$: 33-block  1')
+    >>> _parse_line("file", ' $$$$$: 33-block  1')
     _BlockLine(hits=0, lineno=33, block_id=1, extra_info=EXCEPTION_ONLY)
-    >>> _parse_line(' %%%%%:10000-block  0')  # see https://github.com/gcovr/gcovr/issues/882
+    >>> _parse_line("file", ' %%%%%:10000-block  0')  # see https://github.com/gcovr/gcovr/issues/882
     _BlockLine(hits=0, lineno=10000, block_id=0, extra_info=NONE)
-    >>> _parse_line('     -1: 32-block  0', ignore_parse_errors=set(['negative_hits.warn']))
+    >>> _parse_line("file", '     -1: 32-block  0', ignore_parse_errors=set(['negative_hits.warn']))
     _BlockLine(hits=0, lineno=32, block_id=0, extra_info=NONE)
-    >>> _parse_line('     4294967296: 32-block  0', ignore_parse_errors=set(['suspicious_hits.warn']))
+    >>> _parse_line("file", '     4294967296: 32-block  0', ignore_parse_errors=set(['suspicious_hits.warn']))
     _BlockLine(hits=0, lineno=32, block_id=0, extra_info=NONE)
-    >>> _parse_line('     1: 9-block with some unknown format')
+    >>> _parse_line("file", '     1: 9-block with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType:      1: 9-block with some unknown format
 
     Example: will reject garbage:
-    >>> _parse_line('nonexistent_tag foo bar')
+    >>> _parse_line("file", 'nonexistent_tag foo bar')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType: nonexistent_tag foo bar
     """
@@ -671,10 +676,13 @@ def _parse_line(
     if ignore_parse_errors is None:
         ignore_parse_errors = set()
     if persistent_states is None:
-        persistent_states = {}
+        persistent_states = {"location": (filename, 0)}
 
     tag = _parse_tag_line(
-        line, suspicious_hits_threshold, ignore_parse_errors, persistent_states
+        line,
+        suspicious_hits_threshold,
+        ignore_parse_errors,
+        persistent_states,
     )
     if tag is not None:
         return tag
@@ -695,6 +703,7 @@ def _parse_line(
     match = _RE_SOURCE_LINE.fullmatch(line)
     if match is not None:
         hits_str, lineno, source_code = match.groups()
+        persistent_states.update(location=(filename, int(lineno)))
 
         # METADATA (key, value)
         if hits_str == "-" and lineno == "0":
@@ -738,6 +747,7 @@ def _parse_line(
         match = _RE_BLOCK_LINE.match(line)
         if match is not None:
             hits_str, lineno, block_id = match.groups()
+            persistent_states.update(location=(filename, int(lineno)))
 
             if hits_str == "%%%%%":
                 hits = 0
