@@ -679,7 +679,6 @@ def _parse_line(
         persistent_states = {"location": (filename, 0)}
 
     tag = _parse_tag_line(
-        filename,
         line,
         suspicious_hits_threshold,
         ignore_parse_errors,
@@ -704,7 +703,7 @@ def _parse_line(
     match = _RE_SOURCE_LINE.fullmatch(line)
     if match is not None:
         hits_str, lineno, source_code = match.groups()
-        persistent_states.update("location": (filename, int(lineno)))
+        persistent_states.update(location=(filename, int(lineno)))
 
         # METADATA (key, value)
         if hits_str == "-" and lineno == "0":
@@ -748,7 +747,7 @@ def _parse_line(
         match = _RE_BLOCK_LINE.match(line)
         if match is not None:
             hits_str, lineno, block_id = match.groups()
-            persistent_states.update("location": (filename, int(lineno)))
+            persistent_states.update(location=(filename, int(lineno)))
 
             if hits_str == "%%%%%":
                 hits = 0
@@ -786,7 +785,6 @@ def _parse_line(
 
 
 def _parse_tag_line(  # pylint: disable=too-many-return-statements
-    filename: str,
     line: str,
     suspicious_hits_threshold: int,
     ignore_parse_errors: set[str],

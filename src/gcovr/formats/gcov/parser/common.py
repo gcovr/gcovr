@@ -41,11 +41,11 @@ class NegativeHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any],
+        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
     ) -> None:
         """
         Raise exception if not ignored by options
-        >>> state = dict()
+        >>> state = dict(location=("file", 5))
         >>> NegativeHits.raise_if_not_ignored("code", None, state)
         Traceback (most recent call last):
             ...
@@ -78,7 +78,7 @@ class NegativeHits(Exception):
                 persistent_states["negative_hits.warn_once_per_file"] += 1
             else:
                 LOGGER.warning(
-                    f"Ignoring negative hits in {':'.join(persistent_states['location'])}: {line!r}."
+                    f"Ignoring negative hits in {':'.join(str(item) for item in persistent_states['location'])}: {line!r}."
                 )
                 if "negative_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["negative_hits.warn_once_per_file"] = 1
@@ -101,12 +101,12 @@ class SuspiciousHits(Exception):
 
     @staticmethod
     def raise_if_not_ignored(
-        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any],
+        line: str, ignore_parse_errors: set[str], persistent_states: dict[str, Any]
     ) -> None:
         """
         Raise exception if not ignored by options
-        >>> state = dict()
-        >>> SuspiciousHits.raise_if_not_ignored("file", 1, "code", None, state)
+        >>> state = dict(location=("file", 5))
+        >>> SuspiciousHits.raise_if_not_ignored("code", None, state)
         Traceback (most recent call last):
             ...
         gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in gcov line 'code' caused by a
@@ -115,14 +115,14 @@ class SuspiciousHits(Exception):
         --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
         or suspicious_hits.warn_once_per_file or change the threshold
         for the detection with option --gcov-suspicious-hits-threshold.
-        >>> SuspiciousHits.raise_if_not_ignored("file", 1, "code", {"all"}, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"all"}, state)
         >>> state.get("suspicious_hits.warn_once_per_file")
-        >>> SuspiciousHits.raise_if_not_ignored("file", 1, "code", {"suspicious_hits.warn"}, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn"}, state)
         >>> state.get("suspicious_hits.warn_once_per_file")
-        >>> SuspiciousHits.raise_if_not_ignored("file", 1, "code", {"suspicious_hits.warn_once_per_file"}, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state)
         >>> state.get("suspicious_hits.warn_once_per_file")
         1
-        >>> SuspiciousHits.raise_if_not_ignored("file", 1, "code", {"suspicious_hits.warn_once_per_file"}, state)
+        >>> SuspiciousHits.raise_if_not_ignored("code", {"suspicious_hits.warn_once_per_file"}, state)
         >>> state.get("suspicious_hits.warn_once_per_file")
         2
         """
@@ -138,7 +138,7 @@ class SuspiciousHits(Exception):
                 persistent_states["suspicious_hits.warn_once_per_file"] += 1
             else:
                 LOGGER.warning(
-                    f"Ignoring suspicious hits in {{':'.join(persistent_states['location'])}}: {line!r}."
+                    f"Ignoring suspicious hits in {':'.join(str(item) for item in persistent_states['location'])}: {line!r}."
                 )
                 if "suspicious_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["suspicious_hits.warn_once_per_file"] = 1
@@ -155,9 +155,9 @@ def check_hits(
 ) -> int:
     """
     Check if hits count is negative or suspicious, if the issue is ignored returns 0
-    >>> check_hits(1, "code", {}, 10, {"reading_line": ("file", 5)})
+    >>> check_hits(1, "code", {}, 10, {"location": ("file", 5)})
     1
-    >>> check_hits(-1, "code", {}, 10, {"reading_line": ("file", 5)})
+    >>> check_hits(-1, "code", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
         ...
     gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in gcov line 'code' caused by a
@@ -165,7 +165,7 @@ def check_hits(
     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
     --gcov-ignore-parse-errors with a value of negative_hits.warn,
     or negative_hits.warn_once_per_file.
-    >>> check_hits(1000, "code", {}, 10, {"reading_line": ("file", 5)})
+    >>> check_hits(1000, "code", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
         ...
     gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in gcov line 'code' caused by a
@@ -174,7 +174,7 @@ def check_hits(
     --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
     or suspicious_hits.warn_once_per_file or change the threshold
     for the detection with option --gcov-suspicious-hits-threshold.
-    >>> check_hits(-1, "code", {"all"}, 10, {"reading_line": ("file", 5)})
+    >>> check_hits(-1, "code", {"all"}, 10, {"location": ("file", 5)})
     0
     >>> check_hits(1000, "code", {"all"}, 10, {"location": ("file", 5)})
     0
