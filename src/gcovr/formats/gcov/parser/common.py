@@ -155,7 +155,7 @@ def check_hits(
 ) -> int:
     """
     Check if hits count is negative or suspicious, if the issue is ignored returns 0
-    >>> check_hits(1, "code", {}, 10, {"location": ("file", 5)})
+    >>> check_hits(1, "code", {}, 10, {})
     1
     >>> check_hits(-1, "code", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
@@ -176,7 +176,7 @@ def check_hits(
     for the detection with option --gcov-suspicious-hits-threshold.
     >>> check_hits(-1, "code", {"all"}, 10, {"location": ("file", 5)})
     0
-    >>> check_hits(1000, "code", {"all"}, 10, {"location": ("file", 5)})
+    >>> check_hits(1000, "code", {"all"}, 10, {})
     0
     """
     if hits < 0:
