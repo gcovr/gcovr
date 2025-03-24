@@ -20,6 +20,7 @@ insert_final_newline = false
 
 [*.xml]
 indent_size = 2
+insert_final_newline = false
 
 [*.sh]
 # Declare that the script files will always have LF line endings on checkout.
