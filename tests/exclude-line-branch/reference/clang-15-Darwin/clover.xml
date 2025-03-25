@@ -6,14 +6,14 @@
       <metrics complexity="0" elements="22" coveredelements="17" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="3" files="3" loc="74" ncloc="22"/>
       <file name="bar.cpp" path="tests/exclude-line-branch/bar.cpp">
         <metrics complexity="0" elements="1" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="19" ncloc="1"/>
-        <class name="id$1ddca1b75d47f0b58e83f6bcdebdda25">
+        <class name="id$30d81ad9e42c138b168191676f5c4a81">
           <metrics complexity="0" elements="1" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="19" type="stmt" count="0"/>
       </file>
       <file name="foo.cpp" path="tests/exclude-line-branch/foo.cpp">
         <metrics complexity="0" elements="10" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="22" ncloc="10"/>
-        <class name="id$84c68251d99effee135061eb10391ec8">
+        <class name="id$5d862f9aaa0eedd39c029cb519ae0804">
           <metrics complexity="0" elements="10" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="2" type="stmt" count="5"/>
@@ -29,7 +29,7 @@
       </file>
       <file name="main.cpp" path="tests/exclude-line-branch/main.cpp">
         <metrics complexity="0" elements="11" coveredelements="9" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="33" ncloc="11"/>
-        <class name="id$a801c397191c3c330f07bc7e092524bb">
+        <class name="id$cd06c50bef061db9600a967b359dfe11">
           <metrics complexity="0" elements="11" coveredelements="9" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="10" type="stmt" count="3"/>
