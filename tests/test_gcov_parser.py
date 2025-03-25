@@ -760,7 +760,9 @@ def test_negative_branch_count_ignored_json(
     for index in range(0, number_of_warnings):
         message = messages[index]
         assert message[1] == logging.WARNING
-        assert message[2].startswith("Ignoring negative hits in line ")
+        assert message[2].startswith(
+            f"Ignoring negative hits in <stdin>:{2 if index == 0 else 4}: "
+        )
 
     if number_of_warnings == 1:
         message = messages[number_of_warnings]
@@ -811,7 +813,9 @@ def test_negative_line_count_ignored(
     for index in range(0, number_of_warnings):
         message = messages[index]
         assert message[1] == logging.WARNING
-        assert message[2].startswith("Ignoring negative hits in line ")
+        assert message[2].startswith(
+            f"Ignoring negative hits in example.cpp:{2 if index == 0 else 4}: "
+        )
 
     if number_of_warnings == 1:
         message = messages[number_of_warnings]
@@ -925,7 +929,9 @@ def test_suspicious_line_count_ignored(
     for index in range(0, number_of_warnings):
         message = messages[index]
         assert message[1] == logging.WARNING
-        assert message[2].startswith("Ignoring suspicious hits in line ")
+        assert message[2].startswith(
+            f"Ignoring suspicious hits in example.cpp:{2 if index == 0 else 4}: "
+        )
 
     if number_of_warnings == 1:
         message = messages[number_of_warnings]

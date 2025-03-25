@@ -22,6 +22,7 @@ Breaking changes:
 New features and notable changes:
 
 - Add support for Markdown output format. (:issue:`1072`)
+- Add filename and line number in warning logs. (:issue:`1075`)
 
   - Add option :option:`--markdown-file-link` to link files in markdown report. (:issue:`1079`)
 
