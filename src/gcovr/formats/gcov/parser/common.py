@@ -32,7 +32,7 @@ class NegativeHits(Exception):
 
     def __init__(self, line: str, persistent_states: dict[str, Any]) -> None:
         super().__init__(
-            f"Got negative hit value in {':'.join(str(item) for item in persistent_states['location'])}: {line!r}"
+            f"Got negative hit value in {':'.join(str(item) for item in persistent_states['location'])}: {line!r}\n"
             "This is caused by a bug in gcov tool, see\n"
             "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
             "--gcov-ignore-parse-errors with a value of negative_hits.warn,\n"
@@ -49,7 +49,7 @@ class NegativeHits(Exception):
         >>> NegativeHits.raise_if_not_ignored("code", None, state)
         Traceback (most recent call last):
             ...
-        gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in file:5: code
+        gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in file:5: 'code'
         This is caused by a bug in gcov tool, see
         https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
         --gcov-ignore-parse-errors with a value of negative_hits.warn,
@@ -109,7 +109,7 @@ class SuspiciousHits(Exception):
         >>> SuspiciousHits.raise_if_not_ignored("code", None, state)
         Traceback (most recent call last):
             ...
-        gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in file:5: code
+        gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in file:5: 'code'
         This is caused by a bug in gcov tool, see
         https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
         --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
@@ -160,7 +160,7 @@ def check_hits(
     >>> check_hits(-1, "code", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
         ...
-    gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in file:5: code
+    gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in file:5: 'code'
     This is caused by a bug in gcov tool, see
     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
     --gcov-ignore-parse-errors with a value of negative_hits.warn,
@@ -168,7 +168,7 @@ def check_hits(
     >>> check_hits(1000, "code", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
         ...
-    gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in file:5: code
+    gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in file:5: 'code'
     This is caused by a bug in gcov tool, see
     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
     --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
@@ -176,7 +176,7 @@ def check_hits(
     for the detection with option --gcov-suspicious-hits-threshold.
     >>> check_hits(-1, "code", {"all"}, 10, {"location": ("file", 5)})
     0
-    >>> check_hits(1000, "code", {"all"}, 10, {})
+    >>> check_hits(1000, "code", {"all"}, 10, {"location": ("file", 5)})
     0
     """
     if hits < 0:
