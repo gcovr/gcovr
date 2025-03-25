@@ -110,7 +110,7 @@ class SuspiciousHits(Exception):
         Traceback (most recent call last):
             ...
         gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in file:5: code
-        This is a bug in gcov tool, see
+        This is caused by a bug in gcov tool, see
         https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
         --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
         or suspicious_hits.warn_once_per_file or change the threshold
