@@ -76,7 +76,13 @@ from ..filter import is_file_excluded
 from ..utils import force_unix_separator
 from ..options import Options
 
-from .coverage_dict import BranchesKeyType, CoverageDict, LinesKeyType
+from .coverage_dict import (
+    BranchesKeyType,
+    ConditionsKeyType,
+    CallsKeyType,
+    CoverageDict,
+    LinesKeyType,
+)
 from .merging import (
     DEFAULT_MERGE_OPTIONS,
     GcovrMergeAssertionError,
@@ -494,9 +500,9 @@ class ConditionCoverage(CoverageBase):
         self.excluded |= other.excluded
 
     @property
-    def key(self) -> int:
+    def key(self) -> ConditionsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return self.conditionno
+        return (self.conditionno, self.count)
 
     @property
     def is_excluded(self) -> bool:
@@ -756,7 +762,7 @@ class CallCoverage(CoverageBase):
         return self
 
     @property
-    def key(self) -> int:
+    def key(self) -> CallsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
         return self.callno
 
@@ -1070,9 +1076,9 @@ class LineCoverage(CoverageBase):
         self.md5 = md5
         self.excluded = excluded
         self.branches = CoverageDict[BranchesKeyType, BranchCoverage]()
-        self.conditions = CoverageDict[int, ConditionCoverage]()
+        self.conditions = CoverageDict[ConditionsKeyType, ConditionCoverage]()
         self.decision: Optional[DecisionCoverage] = None
-        self.calls = CoverageDict[int, CallCoverage]()
+        self.calls = CoverageDict[CallsKeyType, CallCoverage]()
 
     def serialize(
         self,

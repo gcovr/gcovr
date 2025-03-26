@@ -41,9 +41,11 @@ from pygments.lexers import get_lexer_for_filename
 
 from ...data_model.container import CoverageContainer, CoverageContainerDirectory
 from ...data_model.coverage import (
-    BranchCoverage,
     BranchesKeyType,
+    BranchCoverage,
+    CallsKeyType,
     CallCoverage,
+    ConditionsKeyType,
     ConditionCoverage,
     DecisionCoverage,
     DecisionCoverageConditional,
@@ -1014,7 +1016,7 @@ def source_row_branch(
 
 
 def source_row_condition(
-    conditions: dict[int, ConditionCoverage],
+    conditions: dict[ConditionsKeyType, ConditionCoverage],
 ) -> dict[str, Any]:
     """Get condition information for a row."""
 
@@ -1097,7 +1099,7 @@ def source_row_decision(
     }
 
 
-def source_row_call(calls: dict[int, CallCoverage]) -> dict[str, Any]:
+def source_row_call(calls: dict[CallsKeyType, CallCoverage]) -> dict[str, Any]:
     """Get call information for a source row."""
     invoked = 0
     total = 0
