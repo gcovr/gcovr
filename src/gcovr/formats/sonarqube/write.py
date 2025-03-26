@@ -59,5 +59,4 @@ def write_report(
         pretty=False,
         filename=output_file,
         default_filename="sonarqube.xml",
-        doctype="<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>",
     )
