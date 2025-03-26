@@ -15,7 +15,6 @@ This User Guide provides the following sections:
    guide/gcov_parser
    output/index
    guide/multiple-outputs
-   guide/merging
    guide/filters
    guide/configuration
    guide/exclusion-markers

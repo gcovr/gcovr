@@ -66,8 +66,8 @@ jobs:
         run: |
           mkdir -p /tmp/coverage-upload
           rm -rf /tmp/coverage-upload/*
-          cp --target-directory=/tmp/coverage-upload ./tests/excl-line-branch/reference/gcc-5/*.*
-          cp --target-directory=/tmp/coverage-upload --force ./tests/excl-line-branch/reference/gcc-14/*.*
+          cp --target-directory=/tmp/coverage-upload ./tests/exclude-line-branch/reference/gcc-5/*.*
+          cp --target-directory=/tmp/coverage-upload --force ./tests/exclude-line-branch/reference/gcc-14/*.*
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:

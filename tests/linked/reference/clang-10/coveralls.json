@@ -112,7 +112,7 @@
         },
         {
             "name": "subdir/B/main.cpp",
-            "source_digest": "c95232e53ac0253b638414c18fd6ba6c",
+            "source_digest": "af92b84abd5c314bf9e75ddc12d7abc8",
             "coverage": [
                 null,
                 null,

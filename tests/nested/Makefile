@@ -11,11 +11,13 @@ all:
 	$(CXX) $(CXXFLAGS) -c subdir/B/main.cpp -o subdir/B/main.o
 	$(CXX) $(CXXFLAGS) subdir/A/file1.o subdir/A/File2.o subdir/A/file3.o subdir/A/File4.o subdir/A/C/file5.o subdir/A/C/D/File6.o subdir/A/file7.o subdir/B/main.o -o subdir/testcase
 
-run: txt md lcov clover cobertura html sonarqube jacoco coveralls
+run: json txt md lcov clover cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./subdir/testcase
-	$(GCOVR) -r subdir --json-pretty --json $@
+	$(GCOVR) -r subdir --gcov-keep --json-pretty --json $@
+
+json: coverage.json
 
 txt: coverage.json
 	$(GCOVR) -r subdir -a $< -o coverage.txt

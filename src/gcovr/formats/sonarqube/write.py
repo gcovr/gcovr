@@ -32,8 +32,7 @@ def write_report(
     root_elem = etree.Element("coverage")
     root_elem.set("version", "1")
 
-    for fname in sorted(covdata):
-        filecov = covdata[fname]
+    for _, filecov in sorted(covdata.items()):
         filename = filecov.presentable_filename(options.root_filter)
 
         file_node = etree.Element("file")
@@ -59,5 +58,4 @@ def write_report(
         pretty=False,
         filename=output_file,
         default_filename="sonarqube.xml",
-        doctype="<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>",
     )

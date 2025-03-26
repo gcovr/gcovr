@@ -76,7 +76,13 @@ from ..filter import is_file_excluded
 from ..utils import force_unix_separator
 from ..options import Options
 
-from .coverage_dict import BranchesKeyType, CoverageDict, LinesKeyType
+from .coverage_dict import (
+    BranchesKeyType,
+    ConditionsKeyType,
+    CallsKeyType,
+    CoverageDict,
+    LinesKeyType,
+)
 from .merging import (
     DEFAULT_MERGE_OPTIONS,
     GcovrMergeAssertionError,
@@ -415,9 +421,8 @@ class ConditionCoverage(CoverageBase):
             "not_covered_false": self.not_covered_false,
             "not_covered_true": self.not_covered_true,
         }
-        # Fix in separate PR:
-        # if self.excluded:
-        #     data_dict[GCOVR_EXCLUDED] = True
+        if self.excluded:
+            data_dict[GCOVR_EXCLUDED] = True
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -434,8 +439,7 @@ class ConditionCoverage(CoverageBase):
             covered=data_dict["covered"],
             not_covered_false=data_dict["not_covered_false"],
             not_covered_true=data_dict["not_covered_true"],
-            # Fix in separate PR:
-            # excluded=data_dict.get(GCOVR_EXCLUDED, False),
+            excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
     def merge(
@@ -460,7 +464,7 @@ class ConditionCoverage(CoverageBase):
         and of merge target is:
            left
         >>> left = ConditionCoverage("left", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
-        >>> right = ConditionCoverage("right", conditionno=1, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
+        >>> right = ConditionCoverage("right", conditionno=1, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3], excluded=True)
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         >>> left.count
         4
@@ -470,6 +474,8 @@ class ConditionCoverage(CoverageBase):
         [2]
         >>> left.not_covered_false
         []
+        >>> left.excluded
+        True
         """
         if self.conditionno != other.conditionno:
             self.raise_merge_error(
@@ -491,11 +497,32 @@ class ConditionCoverage(CoverageBase):
         self.covered = (
             self.count - len(self.not_covered_false) - len(self.not_covered_true)
         )
+        self.excluded |= other.excluded
 
     @property
-    def key(self) -> int:
+    def key(self) -> ConditionsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return self.conditionno
+        return (self.conditionno, self.count)
+
+    @property
+    def is_excluded(self) -> bool:
+        """Return True if the branch is excluded."""
+        return self.excluded
+
+    @property
+    def is_reportable(self) -> bool:
+        """Return True if the branch is reportable."""
+        return not self.excluded
+
+    @property
+    def is_covered(self) -> bool:
+        """Return True if the condition is covered."""
+        return self.is_reportable and self.covered > 0
+
+    @property
+    def is_fully_covered(self) -> bool:
+        """Return True if the condition is covered."""
+        return self.is_reportable and self.covered == self.count
 
 
 class DecisionCoverageUncheckable(CoverageBase):
@@ -699,9 +726,8 @@ class CallCoverage(CoverageBase):
                 "covered": self.covered,
             }
         )
-        # Fix in separate PR:
-        # if self.excluded:
-        #     data_dict[GCOVR_EXCLUDED] = True
+        if self.excluded:
+            data_dict[GCOVR_EXCLUDED] = True
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -713,8 +739,7 @@ class CallCoverage(CoverageBase):
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
             callno=data_dict["callno"],
             covered=data_dict["covered"],
-            # Fix in separate PR:
-            # excluded=data_dict.get(GCOVR_EXCLUDED, False),
+            excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
     def merge(
@@ -732,12 +757,19 @@ class CallCoverage(CoverageBase):
                 f"Call number must be equal, got {self.callno} and {other.callno}."
             )
         self.covered |= other.covered
+        self.excluded |= other.excluded
+
         return self
 
     @property
-    def key(self) -> int:
+    def key(self) -> CallsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
         return self.callno
+
+    @property
+    def is_excluded(self) -> bool:
+        """Return True if the call is excluded."""
+        return self.excluded
 
     @property
     def is_reportable(self) -> bool:
@@ -814,11 +846,6 @@ class FunctionCoverage(CoverageBase):
         self.end: Optional[CoverageDict[int, tuple[int, int]]] = (
             None if end is None else CoverageDict[int, tuple[int, int]]({lineno: end})
         )
-
-    @property
-    def key(self) -> str:
-        """Get the key for the dict."""
-        return str(self.name or self.demangled_name)
 
     def serialize(
         self,
@@ -982,6 +1009,11 @@ class FunctionCoverage(CoverageBase):
 
         return self
 
+    @property
+    def key(self) -> str:
+        """Get the key for the dict."""
+        return str(self.name or self.demangled_name)
+
 
 class LineCoverage(CoverageBase):
     r"""Represent coverage information about a line.
@@ -1044,9 +1076,9 @@ class LineCoverage(CoverageBase):
         self.md5 = md5
         self.excluded = excluded
         self.branches = CoverageDict[BranchesKeyType, BranchCoverage]()
-        self.conditions = CoverageDict[int, ConditionCoverage]()
+        self.conditions = CoverageDict[ConditionsKeyType, ConditionCoverage]()
         self.decision: Optional[DecisionCoverage] = None
-        self.calls = CoverageDict[int, CallCoverage]()
+        self.calls = CoverageDict[CallsKeyType, CallCoverage]()
 
     def serialize(
         self,
@@ -1321,8 +1353,9 @@ class LineCoverage(CoverageBase):
         total = 0
         covered = 0
         for condition in self.conditions.values():
-            total += condition.count
-            covered += condition.covered
+            if condition.is_reportable:
+                total += condition.count
+                covered += condition.covered
         return CoverageStat(covered=covered, total=total)
 
     def decision_coverage(self) -> DecisionCoverageStat:

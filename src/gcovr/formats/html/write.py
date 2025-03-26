@@ -41,9 +41,11 @@ from pygments.lexers import get_lexer_for_filename
 
 from ...data_model.container import CoverageContainer, CoverageContainerDirectory
 from ...data_model.coverage import (
-    BranchCoverage,
     BranchesKeyType,
+    BranchCoverage,
+    CallsKeyType,
     CallCoverage,
+    ConditionsKeyType,
     ConditionCoverage,
     DecisionCoverage,
     DecisionCoverageConditional,
@@ -987,17 +989,16 @@ def source_row_branch(
     items = []
 
     for branchcov in branches.values():
+        if branchcov.is_reportable:
+            total += 1
         if branchcov.is_covered:
             taken += 1
-        if branchcov.excluded:
-            total -= 1
-        total += 1
         items.append(
             {
                 "name": branchcov.branchno,
                 "taken": branchcov.is_covered,
                 "count": branchcov.count,
-                "excluded": branchcov.excluded,
+                "excluded": branchcov.is_excluded,
             }
         )
         if (
@@ -1015,7 +1016,7 @@ def source_row_branch(
 
 
 def source_row_condition(
-    conditions: dict[int, ConditionCoverage],
+    conditions: dict[ConditionsKeyType, ConditionCoverage],
 ) -> dict[str, Any]:
     """Get condition information for a row."""
 
@@ -1023,19 +1024,21 @@ def source_row_condition(
     covered = 0
     items = []
 
-    for condition_id in sorted(conditions):
-        prefix = f"{condition_id}-" if len(conditions) > 1 else ""
-        condition = conditions[condition_id]
-        count += condition.count
-        covered += condition.covered
-        for index in range(0, condition.count // 2):
+    for conditioncov in sorted(conditions.values(), key=lambda x: x.conditionno):
+        if conditioncov.is_reportable:
+            count += conditioncov.count
+        if conditioncov.is_covered:
+            covered += conditioncov.covered
+        prefix = f"{conditioncov.conditionno}-" if len(conditions) > 1 else ""
+        for index in range(0, conditioncov.count // 2):
             items.append(
                 {
                     "name": None
-                    if condition.count == 2 and prefix == ""
+                    if conditioncov.count == 2 and prefix == ""
                     else f"{prefix}{index}",
-                    "not_covered_true": index in condition.not_covered_true,
-                    "not_covered_false": index in condition.not_covered_false,
+                    "not_covered_true": index in conditioncov.not_covered_true,
+                    "not_covered_false": index in conditioncov.not_covered_false,
+                    "excluded": conditioncov.is_excluded,
                 }
             )
 
@@ -1096,21 +1099,22 @@ def source_row_decision(
     }
 
 
-def source_row_call(callcov: dict[int, CallCoverage]) -> dict[str, Any]:
+def source_row_call(calls: dict[CallsKeyType, CallCoverage]) -> dict[str, Any]:
     """Get call information for a source row."""
     invoked = 0
     total = 0
     items = []
 
-    for call_id in sorted(callcov):
-        call = callcov[call_id]
-        if call.is_covered:
+    for callcov in sorted(calls.values(), key=lambda x: x.callno):
+        if callcov.is_reportable:
+            total += 1
+        if callcov.is_covered:
             invoked += 1
-        total += 1
         items.append(
             {
-                "invoked": call.is_covered,
-                "name": call_id,
+                "name": callcov.callno,
+                "invoked": callcov.is_covered,
+                "excluded": callcov.is_excluded,
             }
         )
 

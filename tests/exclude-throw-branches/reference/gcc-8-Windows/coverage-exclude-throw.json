@@ -1,0 +1,236 @@
+{
+    "gcovr/format_version": "0.13",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 3,
+                    "function_name": "function_that_may_throw(bool)",
+                    "count": 3,
+                    "branches": [],
+                    "gcovr/md5": "95d1f88633ca0dbcbab62305b659fe88"
+                },
+                {
+                    "line_number": 4,
+                    "function_name": "function_that_may_throw(bool)",
+                    "count": 3,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "f1c16e761686c59998ef88898ddcf738"
+                },
+                {
+                    "line_number": 5,
+                    "function_name": "function_that_may_throw(bool)",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "d26e4bf5b3a230f06c5ec2907ffd527f"
+                },
+                {
+                    "line_number": 7,
+                    "function_name": "function_that_may_throw(bool)",
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "ee85d675410f109e2d3eddab85483347"
+                },
+                {
+                    "line_number": 16,
+                    "function_name": "RAII::method_that_may_throw() const",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "e2c02e3566aa1a73f358de2244df1935"
+                },
+                {
+                    "line_number": 17,
+                    "function_name": "RAII::method_that_may_throw() const",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d878f58d4aaeb95c1c667c31c90688c1"
+                },
+                {
+                    "line_number": 21,
+                    "function_name": "RAII::RAII(bool)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "a9149bece4ba61466af8f39f07c24214"
+                },
+                {
+                    "line_number": 22,
+                    "function_name": "RAII::~RAII()",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "9a6e11629f107016984da48f9ffc0b61"
+                },
+                {
+                    "line_number": 24,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "43b9e3afb361c713b2fc61da8962a5ac"
+                },
+                {
+                    "line_number": 25,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "7690831deb3ffc5bea8ae7ce2d9aedd1"
+                },
+                {
+                    "line_number": 28,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "5a6f4ad904c70428b558a7a76150d268"
+                },
+                {
+                    "line_number": 29,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "8bd26b074ddb624b2d0e8d2f2c97f8c6"
+                },
+                {
+                    "line_number": 30,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "7a50cda8507facd2dd1cea0710b6794e"
+                },
+                {
+                    "line_number": 33,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "f7782e4bee449335d6d76a39cd6b4386"
+                },
+                {
+                    "line_number": 36,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        }
+                    ],
+                    "gcovr/md5": "dbb01c8aa62038c92932ae1b8c744627"
+                },
+                {
+                    "line_number": 37,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "8bd26b074ddb624b2d0e8d2f2c97f8c6"
+                },
+                {
+                    "line_number": 38,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "430d88bc33efb4bea3225d844dfe292a"
+                },
+                {
+                    "line_number": 41,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "count": 1,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "86a6b5fc13347758e61c6df5731198f2"
+                },
+                {
+                    "line_number": 43,
+                    "function_name": "function_with_catchers(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "02abc18c3b46fbd7cfee6bbcd0986b79"
+                },
+                {
+                    "line_number": 47,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
+                },
+                {
+                    "line_number": 48,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "465384b8aa76a99e807191be0bfffc08"
+                }
+            ],
+            "functions": [
+                {
+                    "demangled_name": "RAII::RAII(bool)",
+                    "lineno": 21,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
+                },
+                {
+                    "demangled_name": "RAII::method_that_may_throw() const",
+                    "lineno": 16,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
+                },
+                {
+                    "demangled_name": "RAII::~RAII()",
+                    "lineno": 22,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
+                },
+                {
+                    "demangled_name": "function_that_may_throw(bool)",
+                    "lineno": 3,
+                    "execution_count": 3,
+                    "blocks_percent": 88.0
+                },
+                {
+                    "demangled_name": "function_with_catchers(int)",
+                    "lineno": 24,
+                    "execution_count": 1,
+                    "blocks_percent": 63.0
+                },
+                {
+                    "demangled_name": "main",
+                    "lineno": 47,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
+                }
+            ]
+        }
+    ]
+}

@@ -1,20 +1,22 @@
 
+.. program::  gcovr
+
 .. _json_output:
 
 JSON Output
 ===========
 
 The ``gcovr`` command can also generate a JSON output using
-the :option:`--json<gcovr --json>` and :option:`--json-pretty<gcovr --json-pretty>`
+the :option:`--json` and :option:`--json-pretty`
 options::
 
     gcovr --json coverage.json
 
-The :option:`--json-pretty<gcovr --json-pretty>` option generates an indented
+The :option:`--json-pretty` option generates an indented
 JSON output that is easier to read.
 
 If you just need a summary of the coverage information, similar to the tabulated
-text based output, you can use :option:`--json-summary<gcovr --json-summary>`
+text based output, you can use :option:`--json-summary`
 instead (see :ref:`json_summary_output`).
 
 Multiple JSON files can be merged into the coverage data
@@ -73,7 +75,7 @@ Each **file** entry contains coverage data for one source file::
         "file": filename,
         "lines": [line],
         "functions": [function],
-        "gcovr/data_sources": [data_sources]
+        "gcovr/data_sources": [data_source]
     }
 
 file: string
@@ -82,14 +84,14 @@ file: string
   the path will be relative.
 
 lines: list
-  An unordered list of :ref:`line <json_format_line>` coverage entries.
+  An ordered list of :ref:`line <json_format_line>` coverage entries.
 
 functions: list
-  An unordered list of :ref:`function <json_format_function>` entries.
+  An ordered list of :ref:`function <json_format_function>` entries.
 
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
-  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+  This entry is only available if :option:`--verbose` is given.
 
 .. versionchanged:: 8.3
    The ``gcovr/data_sources`` is added.
@@ -106,14 +108,16 @@ Each **line** entry contains coverage data for one line::
         "function_name": function_name,
         "count": count,
         "branches": [branch],
-        "block_ids", block_ids,
-        "conditions", conditions
+        "block_ids", [block_id],
+        "conditions", [condition]
         "gcovr/md5": md5,
         "gcovr/excluded": excluded,
         "gcovr/decision": decision,
         "gcovr/calls": calls,
-        "gcovr/data_sources": [data_sources]
+        "gcovr/data_sources": [data_source]
     }
+
+The ordering and merge key is ``(line_number, function_name)``.
 
 line_number: int
   The 1-based line number to which this entry relates.
@@ -129,13 +133,13 @@ count: int
   How often this line was executed.
 
 branches: list
-  A list of :ref:`branch <json_format_branch>` coverage entries.
+  An ordered list of :ref:`branch <json_format_branch>` coverage entries.
 
 conditions: list
-  Only available if GCOV JSON format is used it contains a list
+  Only available if GCOV JSON format is used it contains an ordered list
   of :ref:`branch <json_format_condition>` coverage entries.
 
-block_ids: list[int]:
+block_ids: list
   The list of block ids defined in this line.
 
 gcovr/md5: str
@@ -149,16 +153,16 @@ gcovr/excluded: boolean
 gcovr/decision: object
   The :ref:`decision <json_format_decision>` entry for this line, if any.
   Absent if there is no decision to report.
-  Requires that :option:`--decisions <gcovr --decisions>` coverage analysis was enabled.
+  Requires that :option:`--decisions` coverage analysis was enabled.
 
 gcovr/calls: object
   The :ref:`call <json_format_call>` for this line, if any.
   Absent if there is no call to report.
-  Requires that :option:`--calls <gcovr --calls>` coverage analysis was enabled.
+  Requires that :option:`--calls` coverage analysis was enabled.
 
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
-  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+  This entry is only available if :option:`--verbose` is given.
 
 
 If there is no line entry for a source code line,
@@ -206,8 +210,10 @@ Each **branch** provides information about a branch on that line::
       "throw": throw,
       "source_block_id": number,
       "destination_block_id": number,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_source]
     }
+
+The ordering and merge key is ``(branch_number, source_block_id, destination_block_id)``.
 
 This exactly matches the GCC gcov format.
 
@@ -229,7 +235,7 @@ destination_block_id: int
 
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
-  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+  This entry is only available if :option:`--verbose` is given.
 
 .. versionchanged:: NEXT
    The ``gcovr/data_sources`` is added.
@@ -256,8 +262,10 @@ Each **condition** provides information about a condition on that line::
       "not_covered_false": not_covered_false,
       "not_covered_true": not_covered_true,
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_source]
     }
+
+The ordering and merge key is ``(condition_number, count)``.
 
 This exactly matches the GCC gcov format.
 
@@ -280,7 +288,7 @@ gcovr/excluded: boolean
 
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
-  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+  This entry is only available if :option:`--verbose` is given.
 
 .. versionchanged:: NEXT
    New ``gcovr/excluded`` field.
@@ -297,20 +305,20 @@ Each **decision** summarizes the line's branch coverage data::
 
     {
       "type": "uncheckable",
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_source]
     }
 
     {
       "type": "conditional",
       "count_true": count_true,
       "count_false": count_false,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_source]
     }
 
     {
       "type": "switch",
       "count": count,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_source]
     }
 
 type: string
@@ -342,7 +350,7 @@ type: "switch"
 
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
-  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+  This entry is only available if :option:`--verbose` is given.
 
 .. versionchanged:: NEXT
    The ``gcovr/data_sources`` is added.
@@ -358,8 +366,10 @@ Each **call** provides information about a call on that line::
       "callno": callno,
       "covered": covered,
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_source]
     }
+
+The ordering and merge key is ``call_number``.
 
 callno: int
   The number of the call.
@@ -374,7 +384,7 @@ gcovr/excluded: boolean
 
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
-  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+  This entry is only available if :option:`--verbose` is given.
 
 .. versionchanged:: NEXT
    New ``gcovr/excluded`` field.
@@ -400,8 +410,10 @@ Each **function** entry describes a line in the source file::
         "<end line>:<end column>"
       ]
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_source]
     }
+
+The ordering and merge key is ``function_name``.
 
 name: string
   The name of the function. If legacy ``gcov`` text output is used it contains
@@ -434,7 +446,7 @@ gcovr/excluded: boolean
 
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
-  This entry is only available if :option:`--verbose <gcovr --verbose>` is given.
+  This entry is only available if :option:`--verbose` is given.
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
@@ -457,17 +469,69 @@ gcovr/data_sources: list
 .. versionadded:: 6.0
    New ``gcovr/excluded`` field.
 
+.. _merging_coverage:
+
+JSON Format merging
+-------------------
+
+You can merge coverage data from multiple runs with :option:`--json-add-tracefile`.
+
+For each run, generate :ref:`JSON output <json_output>`:
+
+.. code-block:: bash
+
+    ...  # compile and run first test case
+    gcovr ... --json run-1.json
+    ...  # compile and run second test case
+    gcovr ... --json run-2.json
+
+
+Next, merge the json files and generate the desired report::
+
+    gcovr --json-add-tracefile run-1.json --json-add-tracefile run-2.json --html-details coverage.html
+
+You can also use unix style wildcards to merge the json files without
+duplicating :option:`--json-add-tracefile`. With this option
+you have to place your pathnames with wildcards in double quotation marks::
+
+    gcovr --json-add-tracefile "run-*.json" --html-details coverage.html
+
+If you want to merge coverage reports generated in different :option:`--root` directories you
+can use the :option:`--json-base` to get the same root directory for all reports.
+
+If you have same function names defined on different line the default behavior is to abort.
+With the :option:`--merge-mode-functions` you can change this:
+
+- ``strict``: Abort if same function is defined on a different line (old behavior).
+- ``merge-use-line-0``: Allow same function on different lines, in this case use line 0.
+- ``merge-use-line-min``: Allow same function on different lines, in this case the minimum line.
+- ``merge-use-line-max``: Allow same function on different lines, in this case use maximum line.
+- ``separate``: Allow same function on different lines. Instead of merging keep the functions separate.
+
+.. versionremoved:: NEXT
+
+    Removed the option ``--merge-mode-conditions`` option.
+
+.. versionadded:: 8.3
+
+    The ``--merge-mode-conditions`` option.
+
+.. versionadded:: 6.0
+
+   The :option:`gcovr --json-base` option.
+   The :option:`gcovr --merge-mode-functions` option.
+
 .. _json_summary_output:
 
 JSON Summary Output
 -------------------
 
-The :option:`--json-summary<gcovr --json-summary>` option output coverage summary
+The :option:`--json-summary` option output coverage summary
 in a machine-readable format for additional post processing.
-The format corresponds to the normal JSON output :option:`--json<gcovr --json>` option,
+The format corresponds to the normal JSON output :option:`--json` option,
 but without line-level details
 and with added aggregated statistics.
-The :option:`--json-summary-pretty<gcovr --json-summary-pretty>` option
+The :option:`--json-summary-pretty` option
 generates an indented JSON summary output that is easier to read.
 Consider the following command:
 
@@ -482,8 +546,8 @@ This generates an indented JSON summary:
     :code: json
 
 .. versionadded:: 5.0
-   Added :option:`--json-summary<gcovr --json-summary>`
-   and :option:`--json-summary-pretty<gcovr --json-summary-pretty>`.
+   Added :option:`--json-summary`
+   and :option:`--json-summary-pretty`.
 
 .. json_summary_format:
 
