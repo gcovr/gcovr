@@ -220,7 +220,9 @@ def _parse_file_node(
                 CallCoverage(
                     str(data_fname),
                     callno=index,
-                    covered=call["returned"] > 0,
+                    source_block_id=call["source_block_id"],
+                    destination_block_id=call["destination_block_id"],
+                    returned=call["returned"],
                 ),
             )
 

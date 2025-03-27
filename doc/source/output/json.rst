@@ -363,19 +363,25 @@ Call entries
 Each **call** provides information about a call on that line::
 
     {
-      "callno": callno,
-      "covered": covered,
+      "source_block_id": source_block_id,
+      "destination_block_id": destination_block_id,
+      "returned": returned,
       "gcovr/excluded": excluded,
       "gcovr/data_sources": [data_source]
     }
 
 The ordering and merge key is ``call_number``.
 
-callno: int
-  The number of the call.
+This exactly matches the GCC gcov format.
 
-covered: boolean
-  Whether this call was covered.
+source_block_id: int
+  The source block number of the call.
+
+destination_block_id: int
+  Only available if ``gcov`` JSON format is used.
+
+returned: int
+  How often this call returned, if the value is 0 the call is uncovered.
 
 gcovr/excluded: boolean
   True if coverage data for this line was explicitly excluded,
@@ -385,6 +391,9 @@ gcovr/excluded: boolean
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
+
+.. versionchanged:: NEXT
+   New ``returned`` field is replacing the field ``covered``.
 
 .. versionchanged:: NEXT
    New ``gcovr/excluded`` field.
