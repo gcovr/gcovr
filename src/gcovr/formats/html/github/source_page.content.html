@@ -13,7 +13,7 @@
                 {% if SHOW_DECISION %}
                 <th class="p-2">Decision</th>
                 {% endif %}
-                {% if not EXCLUDE_CALLS %}
+                {% if SHOW_CALLS %}
                 <th class="p-2">Call</th>
                 {% endif %}
                 <th class="p-2">Exec</th>
@@ -112,7 +112,7 @@
                     {% endif %}
                 </td>
                 {% endif %}
-                {% if not EXCLUDE_CALLS %}
+                {% if SHOW_CALLS %}
                 <td class="text-right src linenos ws-unset">
                     {% if row.line_calls %}
                     <details class="normal details-overlay">

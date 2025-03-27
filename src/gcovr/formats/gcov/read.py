@@ -549,7 +549,7 @@ class GcovProgram:
 
     def __init__(self, cmd: str, options: Options) -> None:
         with GcovProgram.LockContext(GcovProgram.__lock):
-            GcovProgram.__use_json_format_if_available = options.exclude_calls
+            GcovProgram.__use_json_format_if_available = not options.show_calls
             if not GcovProgram.__cmd:
                 GcovProgram.__cmd = cmd
                 # If the first element of cmd - the executable name - has embedded spaces

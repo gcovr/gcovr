@@ -10,7 +10,7 @@
   {% if SHOW_DECISION %}
   <colgroup span="2"/>
   {% endif %}
-  {% if not EXCLUDE_CALLS %}
+  {% if SHOW_CALLS %}
   <colgroup span="2"/>
   {% endif %}
 
@@ -25,7 +25,7 @@
     {% if SHOW_DECISION %}
     <th scope="colgroup" colspan=2>Decisions</th>
     {% endif %}
-    {% if not EXCLUDE_CALLS %}
+    {% if SHOW_CALLS %}
     <th scope="colgroup" colspan=2>Calls</th>
     {% endif %}
   </tr>
@@ -59,7 +59,7 @@
     <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.coverage}}%</td>
     <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.exec}} / {{row.decisions.total}}</td>
     {% endif %}
-    {% if not EXCLUDE_CALLS %}
+    {% if SHOW_CALLS %}
     <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.calls.coverage}}%</td>
     <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.calls.exec}} / {{row.calls.total}}</td>
     {% endif %}

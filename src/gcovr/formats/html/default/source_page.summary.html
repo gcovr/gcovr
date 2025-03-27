@@ -63,7 +63,7 @@
       <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
     </tr>
     {% endif %}
-    {% if not EXCLUDE_CALLS %}
+    {% if SHOW_CALLS %}
     <tr>
       <th scope="row">Calls:</th>
       <td>{{calls.exec}}</td>

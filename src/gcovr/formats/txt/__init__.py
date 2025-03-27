@@ -46,7 +46,7 @@ class TxtHandler(BaseHandler):
     def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
             # Global options needed for report
-            "exclude_calls",
+            "show_calls",
             "show_decision",  # Only for summary report
             # Local options
             GcovrConfigOption(
