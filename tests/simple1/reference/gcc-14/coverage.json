@@ -101,7 +101,13 @@
                     "block_ids": [
                         2
                     ],
-                    "gcovr/md5": "63a5debf41301fd02d9a35ac94ce77eb"
+                    "gcovr/md5": "63a5debf41301fd02d9a35ac94ce77eb",
+                    "gcovr/calls": [
+                        {
+                            "callno": 0,
+                            "covered": true
+                        }
+                    ]
                 },
                 {
                     "line_number": 21,
@@ -146,7 +152,13 @@
                     "block_ids": [
                         4
                     ],
-                    "gcovr/md5": "0c83f378d1eda6b258d0e7a718f9da96"
+                    "gcovr/md5": "0c83f378d1eda6b258d0e7a718f9da96",
+                    "gcovr/calls": [
+                        {
+                            "callno": 0,
+                            "covered": false
+                        }
+                    ]
                 },
                 {
                     "line_number": 28,
