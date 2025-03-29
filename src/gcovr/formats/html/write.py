@@ -296,7 +296,7 @@ def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
     """Write the HTML report"""
-    css_data = CssRenderer.render(options)
+    css_data = CssRenderer.render(options).strip()
     medium_threshold = options.medium_threshold
     high_threshold = options.high_threshold
     medium_threshold_line = options.medium_threshold_line
@@ -353,6 +353,7 @@ def write_report(
         css_output = os.path.splitext(output_file)[0] + ".css"
         with open_text_for_writing(css_output) as f:
             f.write(css_data)
+            f.write("\n")
 
         if options.html_relative_anchors:
             css_link = os.path.basename(css_output)
