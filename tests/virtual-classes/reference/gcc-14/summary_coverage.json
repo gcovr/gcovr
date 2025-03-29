@@ -7,9 +7,9 @@
             "line_total": 30,
             "line_covered": 23,
             "line_percent": 76.7,
-            "function_total": 10,
+            "function_total": 7,
             "function_covered": 7,
-            "function_percent": 70.0,
+            "function_percent": 100.0,
             "branch_total": 36,
             "branch_covered": 18,
             "branch_percent": 50.0
@@ -18,9 +18,9 @@
     "line_total": 30,
     "line_covered": 23,
     "line_percent": 76.7,
-    "function_total": 10,
+    "function_total": 7,
     "function_covered": 7,
-    "function_percent": 70.0,
+    "function_percent": 100.0,
     "branch_total": 36,
     "branch_covered": 18,
     "branch_percent": 50.0

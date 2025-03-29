@@ -95,6 +95,8 @@ LOGGER = logging.getLogger("gcovr")
 GCOVR_DATA_SOURCES = "gcovr/data_sources"
 GCOVR_EXCLUDED = "gcovr/excluded"
 
+REGEX_VIRTUAL_DESTRUCTORS = re.compile(r".+D[012]Ev")
+
 _T = TypeVar("_T")
 
 
@@ -958,9 +960,10 @@ class FunctionCoverage(CoverageBase):
         - ``options.func_opts.merge_function_use_line_max``
         - ``options.func_opts.separate_function``
         """
-        self.name = self._merge_property(
-            other, "Function mangled name", lambda x: x.name
-        )
+        if self.name is None or not REGEX_VIRTUAL_DESTRUCTORS.fullmatch(self.name):
+            self.name = self._merge_property(
+                other, "Function mangled name", lambda x: x.name
+            )
         self.demangled_name = self._merge_property(
             other, "Function demangled name", lambda x: x.demangled_name
         )
@@ -1047,7 +1050,7 @@ class FunctionCoverage(CoverageBase):
     @property
     def key(self) -> str:
         """Get the key for the dict."""
-        return str(self.name or self.demangled_name)
+        return str(self.demangled_name or self.name)
 
 
 class LineCoverage(CoverageBase):
