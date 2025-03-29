@@ -78,7 +78,7 @@ def write_report(
             filtered_filecov = filecov.filter_for_function(functioncov)
             function_stats = filtered_filecov.stats
             name = str(functioncov.demangled_name)
-            matches = re.match(r"(.+?)(\(.*\))", name)
+            matches = re.fullmatch(r"([^\(]+(?:\([^\)]+\))*)(\(.*\)[^\)]*)", name)
             if matches:
                 name = matches.group(1)
                 signature = matches.group(2)
