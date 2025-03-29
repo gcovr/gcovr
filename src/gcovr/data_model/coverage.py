@@ -557,6 +557,15 @@ class DecisionCoverageUncheckable(CoverageBase):
         """Get the key used for the dictionary to unique identify the coverage object."""
         raise NotImplementedError("Function not implemented for decision objects.")
 
+    @property
+    def is_covered(self) -> bool:
+        """Return true if the decision is covered."""
+        return True
+
+    def coverage(self) -> DecisionCoverageStat:
+        """Get the coverage stat."""
+        return DecisionCoverageStat(0, 1, 2)  # TODO should it be uncheckable=2?
+
 
 class DecisionCoverageConditional(CoverageBase):
     r"""Represent coverage information about a decision.
@@ -616,13 +625,27 @@ class DecisionCoverageConditional(CoverageBase):
 
     def merge(self, other: DecisionCoverageConditional) -> None:
         """Merge the decision coverage."""
-        self.decision.count_true += other.count_true
-        self.decision.count_false += other.count_false
+        self.count_true += other.count_true
+        self.count_false += other.count_false
 
     @property
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
         raise NotImplementedError("Function not implemented for decision objects.")
+
+    @property
+    def is_covered(self) -> bool:
+        """Return true if the decision is covered."""
+        return not (self.count_true == 0 or self.count_false == 0)
+
+    def coverage(self) -> DecisionCoverageStat:
+        """Get the coverage stat."""
+        covered = 0
+        if self.count_true > 0:
+            covered += 1
+        if self.count_false > 0:
+            covered += 1
+        return DecisionCoverageStat(covered, 0, 2)
 
 
 class DecisionCoverageSwitch(CoverageBase):
@@ -673,12 +696,24 @@ class DecisionCoverageSwitch(CoverageBase):
 
     def merge(self, other: DecisionCoverageSwitch) -> None:
         """Merge the decision coverage."""
-        self.decision.count += other.count
+        self.count += other.count
 
     @property
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
         raise NotImplementedError("Function not implemented for decision objects.")
+
+    @property
+    def is_covered(self) -> bool:
+        """Return true if the decision is covered."""
+        return self.count != 0
+
+    def coverage(self) -> DecisionCoverageStat:
+        """Get the coverage stat."""
+        covered = 0
+        if self.count > 0:
+            covered += 1
+        return DecisionCoverageStat(covered, 0, 1)
 
 
 DecisionCoverage = Union[
@@ -1317,16 +1352,7 @@ class LineCoverage(CoverageBase):
         if self.decision is None:
             return False
 
-        if isinstance(self.decision, DecisionCoverageUncheckable):
-            return False
-
-        if isinstance(self.decision, DecisionCoverageConditional):
-            return self.decision.count_true == 0 or self.decision.count_false == 0
-
-        if isinstance(self.decision, DecisionCoverageSwitch):
-            return self.decision.count == 0
-
-        raise AssertionError(f"Unknown decision type: {self.decision!r}")
+        return not self.decision.is_covered
 
     def exclude(self) -> None:
         """Exclude line from coverage statistic."""
@@ -1363,24 +1389,7 @@ class LineCoverage(CoverageBase):
         if self.decision is None:
             return DecisionCoverageStat(0, 0, 0)
 
-        if isinstance(self.decision, DecisionCoverageUncheckable):
-            return DecisionCoverageStat(0, 1, 2)  # TODO should it be uncheckable=2?
-
-        if isinstance(self.decision, DecisionCoverageConditional):
-            covered = 0
-            if self.decision.count_true > 0:
-                covered += 1
-            if self.decision.count_false > 0:
-                covered += 1
-            return DecisionCoverageStat(covered, 0, 2)
-
-        if isinstance(self.decision, DecisionCoverageSwitch):
-            covered = 0
-            if self.decision.count > 0:
-                covered += 1
-            return DecisionCoverageStat(covered, 0, 1)
-
-        raise AssertionError(f"Unknown decision type: {self.decision!r}")
+        return self.decision.coverage()
 
 
 class FileCoverage(CoverageBase):

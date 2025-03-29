@@ -153,7 +153,7 @@ def _parse_file_node(
     Raises:
         Any exceptions during parsing, unless ignore_parse_errors is set.
     """
-    persistent_states: dict[str, Any] = dict(location=(filename, 0))
+    persistent_states: dict[str, Any] = {"location": (filename, 0)}
 
     if ignore_parse_errors is None:
         ignore_parse_errors = set()
