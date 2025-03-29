@@ -31,6 +31,7 @@ Bug fixes and small improvements:
 - Fix warning ``Deprecated config key None used, please use 'txt-metric=branch' instead.``
   if ``txt-metric="branch"`` is used in config file. (:issue:`1066`)
 - Add ``excluded`` property for conditions and calls to the JSON report. (:issue:`1080`)
+- Fix duplicate destructors and wrong const overload functions in Cobertura report, (:issue:`1085`)
 
 Documentation:
 
@@ -51,6 +52,8 @@ Known bugs:
 - Log message ``Deprecated config key None used, please use 'txt-metric=branch' instead.`` is shown
   even if the mentioned key is used. :issue:`1060` and :issue:`1064`, fixed in :ref:`Next release <next_release>`.
 - JSON report doesn't contain ``excluded`` property for conditions and calls. Fixed in :ref:`Next release <next_release>`.
+- Cobertura report contains multiple functions with same name for virtual destructors and const overloads.
+  Fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
