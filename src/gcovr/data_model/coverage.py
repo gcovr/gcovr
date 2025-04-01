@@ -876,6 +876,12 @@ class FunctionCoverage(CoverageBase):
         if count < 0:
             self.raise_data_error("count must not be a negative value.")
         self.name = name
+        # Normalize constructors and destructors
+        if self.name is not None:
+            if REGEX_VIRTUAL_CONSTRUCTORS.fullmatch(self.name):
+                self.name = REGEX_VIRTUAL_CONSTRUCTORS.sub(r"\g<1>1\g<2>", self.name)
+            elif REGEX_VIRTUAL_DESTRUCTORS.fullmatch(self.name):
+                self.name = REGEX_VIRTUAL_DESTRUCTORS.sub(r"\g<1>0\g<2>", self.name)
         self.demangled_name = demangled_name
         self.count = CoverageDict[int, int]({lineno: count})
         self.blocks = CoverageDict[int, float]({lineno: blocks})
@@ -965,15 +971,9 @@ class FunctionCoverage(CoverageBase):
         - ``options.func_opts.merge_function_use_line_max``
         - ``options.func_opts.separate_function``
         """
-        if self.name is None:
-            self.name = self._merge_property(
-                other, "Function mangled name", lambda x: x.name
-            )
-        else:
-            if REGEX_VIRTUAL_CONSTRUCTORS.match(self.name):
-                self.name = REGEX_VIRTUAL_CONSTRUCTORS.sub(r"\g<1>1\g<2>", self.name)
-            elif REGEX_VIRTUAL_DESTRUCTORS.fullmatch(self.name):
-                self.name = REGEX_VIRTUAL_DESTRUCTORS.sub(r"\g<1>0\g<2>", self.name)
+        self.name = self._merge_property(
+            other, "Function mangled name", lambda x: x.name
+        )
         self.demangled_name = self._merge_property(
             other, "Function demangled name", lambda x: x.demangled_name
         )
