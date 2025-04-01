@@ -831,10 +831,14 @@ class FunctionCoverage(CoverageBase):
     to merge function coverage in different ways
 
     Args:
-        name (str):
-            The mangled name of the function, None if not available.
+        mangled_name (str):
+            The mangled name of the function. If demangled_name is None and
+            the name contains a brace it's used as demangled_name. This is needed
+            to support existing GCOV text output where we do not know if the
+            option --demanglednames was used for generation. If it contains a brace
+            the demangled name must be None.
         demangled_name (str):
-            The demangled name (signature) of the functions.
+            The demangled name of the functions.
         lineno (int):
             The line number.
         count (int):
@@ -850,7 +854,7 @@ class FunctionCoverage(CoverageBase):
     """
 
     __slots__ = (
-        "name",
+        "mangled_name",
         "demangled_name",
         "count",
         "blocks",
@@ -863,7 +867,7 @@ class FunctionCoverage(CoverageBase):
         self,
         data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
-        name: Optional[str],
+        mangled_name: Optional[str],
         demangled_name: Optional[str],
         lineno: int,
         count: int,
@@ -875,13 +879,28 @@ class FunctionCoverage(CoverageBase):
         super().__init__(data_source)
         if count < 0:
             self.raise_data_error("count must not be a negative value.")
-        self.name = name
-        # Normalize constructors and destructors
-        if self.name is not None:
-            if REGEX_VIRTUAL_CONSTRUCTORS.fullmatch(self.name):
-                self.name = REGEX_VIRTUAL_CONSTRUCTORS.sub(r"\g<1>1\g<2>", self.name)
-            elif REGEX_VIRTUAL_DESTRUCTORS.fullmatch(self.name):
-                self.name = REGEX_VIRTUAL_DESTRUCTORS.sub(r"\g<1>0\g<2>", self.name)
+        if mangled_name is not None:
+            # Normalize constructors and destructors
+            if REGEX_VIRTUAL_CONSTRUCTORS.fullmatch(mangled_name):
+                mangled_name = REGEX_VIRTUAL_CONSTRUCTORS.sub(
+                    r"\g<1>1\g<2>", mangled_name
+                )
+            elif REGEX_VIRTUAL_DESTRUCTORS.fullmatch(mangled_name):
+                mangled_name = REGEX_VIRTUAL_DESTRUCTORS.sub(
+                    r"\g<1>0\g<2>", mangled_name
+                )
+
+            # main is always demangled to main
+            if mangled_name == "main" and demangled_name is None:
+                demangled_name = "main"
+            # We have a demangled name as name -> demangled_name must be None and we need to change the values
+            elif "(" in mangled_name:
+                if demangled_name is not None:
+                    self.raise_data_error(
+                        f"If 'name' contains a demangled name (got '{mangled_name}') the 'demangled_name' must be None (got {demangled_name})."
+                    )
+                mangled_name, demangled_name = (None, mangled_name)
+        self.mangled_name = mangled_name
         self.demangled_name = demangled_name
         self.count = CoverageDict[int, int]({lineno: count})
         self.blocks = CoverageDict[int, float]({lineno: blocks})
@@ -903,8 +922,8 @@ class FunctionCoverage(CoverageBase):
         data_dict_list = list[dict[str, Any]]()
         for lineno, count in self.count.items():
             data_dict = dict[str, Any]()
-            if self.name is not None:
-                data_dict["name"] = self.name
+            if self.mangled_name is not None:
+                data_dict["name"] = self.mangled_name
             if self.demangled_name is not None:
                 data_dict["demangled_name"] = self.demangled_name
             data_dict.update(
@@ -941,8 +960,8 @@ class FunctionCoverage(CoverageBase):
 
         return FunctionCoverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            name=data_dict.get("name"),
-            demangled_name=data_dict["demangled_name"],
+            mangled_name=data_dict.get("name"),
+            demangled_name=data_dict.get("demangled_name"),
             lineno=data_dict["lineno"],
             count=data_dict["execution_count"],
             blocks=data_dict["blocks_percent"],
@@ -971,8 +990,8 @@ class FunctionCoverage(CoverageBase):
         - ``options.func_opts.merge_function_use_line_max``
         - ``options.func_opts.separate_function``
         """
-        self.name = self._merge_property(
-            other, "Function mangled name", lambda x: x.name
+        self.mangled_name = self._merge_property(
+            other, "Function mangled name", lambda x: x.mangled_name
         )
         self.demangled_name = self._merge_property(
             other, "Function demangled name", lambda x: x.demangled_name
@@ -981,7 +1000,7 @@ class FunctionCoverage(CoverageBase):
             if self.count.keys() != other.count.keys():
                 lines = sorted(set([*self.count.keys(), *other.count.keys()]))
                 self.raise_merge_error(
-                    f"Got function {self.demangled_name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                    f"Got function {self.name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                     "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                     "\tThe available values for MERGE_MODE are described in the documentation.",
                     other,
@@ -1060,7 +1079,16 @@ class FunctionCoverage(CoverageBase):
     @property
     def key(self) -> str:
         """Get the key for the dict."""
-        return str(self.demangled_name or self.name)
+        return self.name
+
+    @property
+    def name(self) -> str:
+        """Get the function name. This is the demangled name if present, else the mangled name."""
+        return str(self.demangled_name or self.mangled_name)
+
+    def is_function(self, name: Optional[str]) -> bool:
+        """Is the name one of the function."""
+        return name is not None and (name in (self.mangled_name, self.demangled_name))
 
 
 class LineCoverage(CoverageBase):
@@ -1582,8 +1610,7 @@ class FileCoverage(CoverageBase):
             {
                 key: linecov
                 for key, linecov in self.lines.items()
-                if linecov.function_name
-                == (functioncov.name or functioncov.demangled_name)
+                if functioncov.is_function(linecov.function_name)
             }
         )
 

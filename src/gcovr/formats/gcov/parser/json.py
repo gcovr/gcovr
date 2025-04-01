@@ -227,7 +227,7 @@ def _parse_file_node(
         filecov.insert_function_coverage(
             FunctionCoverage(
                 str(data_fname),
-                name=function["name"],
+                mangled_name=function["name"],
                 demangled_name=function["demangled_name"],
                 lineno=function["start_line"],
                 count=function["execution_count"],

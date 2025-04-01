@@ -347,8 +347,8 @@ def parse_coverage(
         filecov.insert_function_coverage(
             FunctionCoverage(
                 str(data_filename),
-                name=None,
-                demangled_name=name,
+                mangled_name=name,
+                demangled_name=None,
                 lineno=filecov.lines[state.linecov_key].lineno + 1,
                 count=count,
                 blocks=blocks,
@@ -427,8 +427,8 @@ def _gather_coverage_from_line(
             filecov.insert_function_coverage(
                 FunctionCoverage(
                     filecov.data_sources,
-                    name=None,
-                    demangled_name=name,
+                    mangled_name=name,
+                    demangled_name=None,
                     lineno=lineno,
                     count=count,
                     blocks=blocks,
