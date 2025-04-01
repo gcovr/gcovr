@@ -83,11 +83,7 @@ from .coverage_dict import (
     CoverageDict,
     LinesKeyType,
 )
-from .merging import (
-    DEFAULT_MERGE_OPTIONS,
-    GcovrMergeAssertionError,
-    MergeOptions,
-)
+from .merging import DEFAULT_MERGE_OPTIONS, MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
 LOGGER = logging.getLogger("gcovr")
@@ -99,6 +95,14 @@ REGEX_VIRTUAL_CONSTRUCTORS = re.compile(r"(.+C)[123](Ev)$")
 REGEX_VIRTUAL_DESTRUCTORS = re.compile(r"(.+D)[012](Ev)$")
 
 _T = TypeVar("_T")
+
+
+class GcovrDataAssertionError(AssertionError):
+    """Exception for data merge errors."""
+
+
+class GcovrMergeAssertionError(AssertionError):
+    """Exception for data merge errors."""
 
 
 def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
@@ -149,9 +153,9 @@ class CoverageBase:
             )
         )
 
-    def raise_error(self, msg: str) -> NoReturn:
+    def raise_data_error(self, msg: str) -> NoReturn:
         """Get the exception with message extended with context."""
-        raise GcovrMergeAssertionError(
+        raise GcovrDataAssertionError(
             "\n".join(
                 [
                     msg,
@@ -231,7 +235,7 @@ class BranchCoverage(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         if count < 0:
-            self.raise_error("count must not be a negative value.")
+            self.raise_data_error("count must not be a negative value.")
 
         self.branchno = branchno
         self.count = count
@@ -296,7 +300,7 @@ class BranchCoverage(CoverageBase):
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.merging.GcovrMergeAssertionError: Source block ID must be equal, got 2 and 3.
+        gcovr.data_model.coverage.GcovrMergeAssertionError: Source block ID must be equal, got 2 and 3.
         GCOV data file of merge source is:
            right
         and of merge target is:
@@ -402,9 +406,9 @@ class ConditionCoverage(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         if count < 0:
-            self.raise_error("count must not be a negative value.")
+            self.raise_data_error("count must not be a negative value.")
         if count < covered:
-            self.raise_error("count must not be less than covered.")
+            self.raise_data_error("count must not be less than covered.")
 
         self.conditionno = conditionno
         self.count = count
@@ -461,7 +465,7 @@ class ConditionCoverage(CoverageBase):
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.merging.GcovrMergeAssertionError: The condition number must be equal, got 2 and expected 1.
+        gcovr.data_model.coverage.GcovrMergeAssertionError: The condition number must be equal, got 2 and expected 1.
         GCOV data file of merge source is:
            right
         and of merge target is:
@@ -593,10 +597,10 @@ class DecisionCoverageConditional(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         if count_true < 0:
-            self.raise_error("count_true must not be a negative value.")
+            self.raise_data_error("count_true must not be a negative value.")
         self.count_true = count_true
         if count_false < 0:
-            self.raise_error("count_true must not be a negative value.")
+            self.raise_data_error("count_true must not be a negative value.")
         self.count_false = count_false
 
     def serialize(
@@ -669,7 +673,7 @@ class DecisionCoverageSwitch(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         if count < 0:
-            self.raise_error("count must not be a negative value.")
+            self.raise_data_error("count must not be a negative value.")
         self.count = count
 
     def serialize(
@@ -791,7 +795,7 @@ class CallCoverage(CoverageBase):
         Do not use 'left' or 'right' objects afterwards!
         """
         if self.callno != other.callno:
-            self.raise_error(
+            self.raise_data_error(
                 f"Call number must be equal, got {self.callno} and {other.callno}."
             )
         self.covered |= other.covered
@@ -870,7 +874,7 @@ class FunctionCoverage(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         if count < 0:
-            self.raise_error("count must not be a negative value.")
+            self.raise_data_error("count must not be a negative value.")
         self.name = name
         self.demangled_name = demangled_name
         self.count = CoverageDict[int, int]({lineno: count})
@@ -1109,9 +1113,9 @@ class LineCoverage(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         if lineno <= 0:
-            self.raise_error("Line number must be a positive value.")
+            self.raise_data_error("Line number must be a positive value.")
         if count < 0:
-            self.raise_error("count must not be a negative value.")
+            self.raise_data_error("count must not be a negative value.")
 
         self.lineno = lineno
         self.count = count
@@ -1436,7 +1440,7 @@ class FileCoverage(CoverageBase):
         """
 
         if self.filename != other.filename:
-            self.raise_error("Filename must be equal")
+            self.raise_data_error("Filename must be equal")
 
         self.lines.merge(other.lines, options)
         self.functions.merge(other.functions, options)
@@ -1568,7 +1572,7 @@ class FileCoverage(CoverageBase):
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function"""
         if functioncov.key not in self.functions:
-            self.raise_error(
+            self.raise_data_error(
                 f"Function {functioncov.key} must be in filtered file coverage object."
             )
         filecov = FileCoverage(self.data_sources, filename=self.filename)
