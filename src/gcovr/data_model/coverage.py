@@ -1090,6 +1090,27 @@ class FunctionCoverage(CoverageBase):
         """Is the name one of the function."""
         return name is not None and (name in (self.mangled_name, self.demangled_name))
 
+    @property
+    def name_and_signature(self) -> tuple[str, str]:
+        """Get a tuple with function name and signature."""
+        if self.demangled_name is None or self.demangled_name == "main":
+            return (str(self.name), "()")
+
+        open_brackets, close_brackets = (0, 0)
+        signature = ""
+        for part in reversed(self.demangled_name.split("(")):
+            signature = f"({part}{signature}"
+            open_brackets += 1
+            close_brackets += len(re.findall(r"(\))", part))
+            if open_brackets == close_brackets:
+                break
+        else:
+            self.raise_data_error(
+                f"Can't split function {self.demangled_name!r} into name and signature."
+            )
+
+        return (self.demangled_name[: -len(signature)], signature)
+
 
 class LineCoverage(CoverageBase):
     r"""Represent coverage information about a line.
