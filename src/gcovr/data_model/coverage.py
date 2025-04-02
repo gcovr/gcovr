@@ -1093,7 +1093,7 @@ class FunctionCoverage(CoverageBase):
     @property
     def name_and_signature(self) -> tuple[str, str]:
         """Get a tuple with function name and signature."""
-        if self.demangled_name is None or self.demangled_name == "main":
+        if self.demangled_name is None or "(" not in self.demangled_name:
             return (str(self.name), "()")
 
         open_brackets, close_brackets = (0, 0)
