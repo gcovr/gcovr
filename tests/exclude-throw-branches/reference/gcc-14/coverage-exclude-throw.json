@@ -353,7 +353,7 @@
                     ]
                 },
                 {
-                    "name": "_ZN4RAIID0Ev",
+                    "name": "_ZN4RAIID2Ev",
                     "demangled_name": "RAII::~RAII()",
                     "lineno": 22,
                     "execution_count": 3,

@@ -488,7 +488,7 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN3ns14Bar1C1Ev",
+                    "name": "_ZN3ns14Bar1C2Ev",
                     "lineno": 8,
                     "execution_count": 6,
                     "blocks_percent": 100.0
@@ -496,11 +496,17 @@
                 {
                     "name": "_ZN3ns14Bar1D0Ev",
                     "lineno": 10,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0
+                },
+                {
+                    "name": "_ZN3ns14Bar1D2Ev",
+                    "lineno": 10,
                     "execution_count": 6,
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "_ZN3ns24Bar2C1Ev",
+                    "name": "_ZN3ns24Bar2C2Ev",
                     "lineno": 24,
                     "execution_count": 4,
                     "blocks_percent": 100.0
@@ -508,17 +514,29 @@
                 {
                     "name": "_ZN3ns24Bar2D0Ev",
                     "lineno": 26,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0
+                },
+                {
+                    "name": "_ZN3ns24Bar2D2Ev",
+                    "lineno": 26,
                     "execution_count": 4,
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "_ZN3ns34Bar3C1Ev",
+                    "name": "_ZN3ns34Bar3C2Ev",
                     "lineno": 40,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
                     "name": "_ZN3ns34Bar3D0Ev",
+                    "lineno": 42,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0
+                },
+                {
+                    "name": "_ZN3ns34Bar3D2Ev",
                     "lineno": 42,
                     "execution_count": 2,
                     "blocks_percent": 100.0

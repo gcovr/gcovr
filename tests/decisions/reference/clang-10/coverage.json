@@ -4774,7 +4774,7 @@
                     ]
                 },
                 {
-                    "name": "_ZN18SwitchTestIssue783C1Ev",
+                    "name": "_ZN18SwitchTestIssue783C2Ev",
                     "lineno": 5,
                     "execution_count": 1,
                     "blocks_percent": 60.0,
@@ -4998,7 +4998,7 @@
                     ]
                 },
                 {
-                    "name": "_ZN18SwitchTestIssue783D0Ev",
+                    "name": "_ZN18SwitchTestIssue783D2Ev",
                     "lineno": 14,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

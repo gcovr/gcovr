@@ -5451,7 +5451,7 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN18SwitchTestIssue783C1Ev",
+                    "name": "_ZN18SwitchTestIssue783C2Ev",
                     "demangled_name": "SwitchTestIssue783::SwitchTestIssue783()",
                     "lineno": 5,
                     "execution_count": 1,

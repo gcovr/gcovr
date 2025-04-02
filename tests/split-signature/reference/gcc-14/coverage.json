@@ -182,7 +182,7 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN12_GLOBAL__N_13BarC1Ev",
+                    "name": "_ZN12_GLOBAL__N_13BarC2Ev",
                     "demangled_name": "(anonymous namespace)::Bar::Bar()",
                     "lineno": 8,
                     "execution_count": 2,
@@ -204,7 +204,7 @@
                     ]
                 },
                 {
-                    "name": "_ZN12_GLOBAL__N_13BarD0Ev",
+                    "name": "_ZN12_GLOBAL__N_13BarD2Ev",
                     "demangled_name": "(anonymous namespace)::Bar::~Bar()",
                     "lineno": 10,
                     "execution_count": 2,

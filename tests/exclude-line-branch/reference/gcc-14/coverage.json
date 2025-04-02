@@ -454,7 +454,7 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN3BarC1Ev",
+                    "name": "_ZN3BarC2Ev",
                     "demangled_name": "Bar::Bar()",
                     "lineno": 10,
                     "execution_count": 1,

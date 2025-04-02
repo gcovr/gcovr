@@ -304,7 +304,7 @@
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "_ZN4RAIID0Ev",
+                    "name": "_ZN4RAIID2Ev",
                     "lineno": 22,
                     "execution_count": 1,
                     "blocks_percent": 100.0

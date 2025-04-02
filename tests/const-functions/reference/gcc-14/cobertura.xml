@@ -10,7 +10,10 @@
         <class name="main_cpp" filename="main.cpp" line-rate="0.89474" branch-rate="0.5" complexity="0.0">
           <methods>
             <method name="Bar::Bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
+              <lines>
+                <line number="6" hits="2" branch="false"/>
+                <line number="7" hits="2" branch="false"/>
+              </lines>
             </method>
             <method name="Bar::~Bar" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
               <lines>
