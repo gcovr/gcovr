@@ -4319,6 +4319,7 @@
                     ]
                 },
                 {
+                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 372,
                     "execution_count": 1,

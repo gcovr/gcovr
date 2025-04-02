@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="1.0" branch-rate="0.47917" lines-covered="24" lines-valid="24" branches-covered="23" branches-valid="48" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="1.0" branch-rate="0.47727" lines-covered="23" lines-valid="23" branches-covered="21" branches-valid="44" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/virtual-classes</source>
   </sources>
   <packages>
-    <package name="" line-rate="1.0" branch-rate="0.47917" complexity="0.0">
+    <package name="" line-rate="1.0" branch-rate="0.47727" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.47917" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.47727" complexity="0.0">
           <methods>
             <method name="ns1::Bar1::Bar1" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
@@ -165,11 +165,6 @@
               </conditions>
             </line>
             <line number="68" hits="1" branch="false"/>
-            <line number="69" hits="4" branch="true" condition-coverage="50% (2/4)">
-              <conditions>
-                <condition number="0" type="jump" coverage="50%"/>
-              </conditions>
-            </line>
           </lines>
         </class>
       </classes>

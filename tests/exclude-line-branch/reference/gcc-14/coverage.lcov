@@ -1,8 +1,8 @@
 TN:GCOVR report
 SF:tests/exclude-line-branch/bar.cpp
 VER:7c2adb8c2d04277ae316f0bc581968cc
-FN:14,_Z3bari
-FNDA:0,_Z3bari
+FN:14,bar(int)
+FNDA:0,bar(int)
 FNF:1
 FNH:0
 BRF:0
@@ -12,8 +12,8 @@ LF:0
 end_of_record
 SF:tests/exclude-line-branch/foo.cpp
 VER:3d3327303c689440297b037f75ff9f29
-FN:2,_Z3fooi
-FNDA:5,_Z3fooi
+FN:2,foo(int)
+FNDA:5,foo(int)
 FNF:1
 FNH:1
 BRDA:3,2,0,4
@@ -40,15 +40,13 @@ LF:9
 end_of_record
 SF:tests/exclude-line-branch/main.cpp
 VER:5f51924059b39181646c5b2d21604f3b
-FN:10,_ZN3BarC2Ev
-FNDA:1,_ZN3BarC2Ev
-FN:12,_ZN3BarD0Ev
-FNDA:0,_ZN3BarD0Ev
-FN:12,_ZN3BarD2Ev
-FNDA:1,_ZN3BarD2Ev
+FN:10,Bar::Bar()
+FNDA:1,Bar::Bar()
+FN:12,Bar::~Bar()
+FNDA:1,Bar::~Bar()
 FN:19,main
 FNDA:1,main
-FNF:4
+FNF:3
 FNH:3
 BRDA:20,5,0,5
 BRDA:20,5,1,1

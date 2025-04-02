@@ -1,30 +1,30 @@
 TN:GCOVR report
 SF:tests/exclude-function/main.cpp
 VER:1c290a863c4be067f27e2a61b6458b9e
-FN:44,_Z13sort_excludedv
-FNDA:1,_Z13sort_excludedv
-FN:66,_Z18sort_excluded_bothv
-FNDA:0,_Z18sort_excluded_bothv
-FN:48,_Z20sort_lambda_excludedv
-FNDA:1,_Z20sort_lambda_excludedv
-FN:19,_Z3bari
-FNDA:0,_Z3bari
-FN:9,_Z3fooi
-FNDA:0,_Z3fooi
-FN:45,_ZZ13sort_excludedvENKUliiE0_clEii
-FNDA:41,_ZZ13sort_excludedvENKUliiE0_clEii
-FN:44,_ZZ13sort_excludedvENKUliiE_clEii
-FNDA:41,_ZZ13sort_excludedvENKUliiE_clEii
-FN:84,_ZZ18sort_excluded_bothvENKUliiE0_clEii
-FNDA:0,_ZZ18sort_excluded_bothvENKUliiE0_clEii
-FN:73,_ZZ18sort_excluded_bothvENKUliiE_clEii
-FNDA:0,_ZZ18sort_excluded_bothvENKUliiE_clEii
-FN:57,_ZZ20sort_lambda_excludedvENKUliiE0_clEii
-FNDA:0,_ZZ20sort_lambda_excludedvENKUliiE0_clEii
-FN:50,_ZZ20sort_lambda_excludedvENKUliiE_clEii
-FNDA:41,_ZZ20sort_lambda_excludedvENKUliiE_clEii
+FN:19,bar(int)
+FNDA:0,bar(int)
+FN:9,foo(int)
+FNDA:0,foo(int)
 FN:95,main
 FNDA:1,main
+FN:44,sort_excluded()
+FNDA:1,sort_excluded()
+FN:44,sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const
+FNDA:41,sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const
+FN:45,sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const
+FNDA:41,sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const
+FN:66,sort_excluded_both()
+FNDA:0,sort_excluded_both()
+FN:73,sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const
+FNDA:0,sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const
+FN:84,sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const
+FNDA:0,sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const
+FN:48,sort_lambda_excluded()
+FNDA:1,sort_lambda_excluded()
+FN:50,sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const
+FNDA:41,sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const
+FN:57,sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const
+FNDA:0,sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const
 FNF:12
 FNH:6
 BRDA:44,6,0,1

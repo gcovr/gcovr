@@ -165,36 +165,31 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_ZN3Bar3fooEv",
+                    "name": "_ZN3Bar3fooEv",
                     "lineno": 15,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN3BarC2Ev",
+                    "name": "_ZN3BarC1Ev",
                     "lineno": 6,
                     "execution_count": 4,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN3BarD0Ev",
-                    "lineno": 8,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0
-                },
-                {
-                    "demangled_name": "_ZN3BarD2Ev",
+                    "name": "_ZN3BarD0Ev",
                     "lineno": 8,
                     "execution_count": 4,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZNK3Bar3fooEv",
+                    "name": "_ZNK3Bar3fooEv",
                     "lineno": 11,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
+                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 24,
                     "execution_count": 2,

@@ -374,6 +374,7 @@
                     ]
                 },
                 {
+                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 19,
                     "execution_count": 1,

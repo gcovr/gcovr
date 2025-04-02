@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <coverage clover="1737404287" generated="1737404287">
   <project timestamp="1737404287">
-    <metrics complexity="0" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="1" classes="1" files="1" loc="29" ncloc="12"/>
+    <metrics complexity="0" elements="11" coveredelements="7" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="1" classes="1" files="1" loc="29" ncloc="11"/>
     <package name="root">
-      <metrics complexity="0" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="29" ncloc="12"/>
+      <metrics complexity="0" elements="11" coveredelements="7" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="29" ncloc="11"/>
       <file name="main.cpp" path="main.cpp">
-        <metrics complexity="0" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="29" ncloc="12"/>
+        <metrics complexity="0" elements="11" coveredelements="7" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="29" ncloc="11"/>
         <class name="id$118fcbaaba162ba17933c7893247df3a">
-          <metrics complexity="0" elements="12" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+          <metrics complexity="0" elements="11" coveredelements="7" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="3" type="stmt" count="0"/>
         <line num="4" type="stmt" count="0"/>
@@ -20,7 +20,6 @@
         <line num="21" type="stmt" count="1"/>
         <line num="25" type="stmt" count="0"/>
         <line num="28" type="stmt" count="1"/>
-        <line num="29" type="stmt" count="4"/>
       </file>
     </package>
   </project>

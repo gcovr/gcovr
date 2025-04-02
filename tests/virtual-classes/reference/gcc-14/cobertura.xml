@@ -10,10 +10,7 @@
         <class name="main_cpp" filename="main.cpp" line-rate="0.76667" branch-rate="0.5" complexity="0.0">
           <methods>
             <method name="ns1::Bar1::Bar1" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="8" hits="3" branch="false"/>
-                <line number="9" hits="3" branch="false"/>
-              </lines>
+              <lines/>
             </method>
             <method name="ns1::Bar1::~Bar1" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
               <lines>
@@ -22,10 +19,7 @@
               </lines>
             </method>
             <method name="ns2::Bar2::Bar2" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="24" hits="2" branch="false"/>
-                <line number="25" hits="2" branch="false"/>
-              </lines>
+              <lines/>
             </method>
             <method name="ns2::Bar2::~Bar2" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
               <lines>
@@ -34,10 +28,7 @@
               </lines>
             </method>
             <method name="ns3::Bar3::Bar3" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="40" hits="1" branch="false"/>
-                <line number="41" hits="1" branch="false"/>
-              </lines>
+              <lines/>
             </method>
             <method name="ns3::Bar3::~Bar3" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
               <lines>

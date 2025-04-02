@@ -40,6 +40,7 @@
             ],
             "functions": [
                 {
+                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 7,
                     "execution_count": 1,

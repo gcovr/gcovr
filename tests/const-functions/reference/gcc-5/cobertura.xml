@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="1.0" branch-rate="0.5" lines-covered="17" lines-valid="17" branches-covered="5" branches-valid="10" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="1.0" branch-rate="0.5" lines-covered="16" lines-valid="16" branches-covered="3" branches-valid="6" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/const-functions</source>
   </sources>
@@ -87,11 +87,6 @@
               </conditions>
             </line>
             <line number="30" hits="1" branch="false"/>
-            <line number="31" hits="4" branch="true" condition-coverage="50% (2/4)">
-              <conditions>
-                <condition number="0" type="jump" coverage="50%"/>
-              </conditions>
-            </line>
           </lines>
         </class>
       </classes>

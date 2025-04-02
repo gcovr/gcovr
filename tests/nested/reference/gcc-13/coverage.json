@@ -494,6 +494,7 @@
             ],
             "functions": [
                 {
+                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 12,
                     "execution_count": 1,

@@ -488,60 +488,43 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_ZN3ns14Bar1C2Ev",
+                    "name": "_ZN3ns14Bar1C1Ev",
                     "lineno": 8,
                     "execution_count": 6,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN3ns14Bar1D0Ev",
-                    "lineno": 10,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0
-                },
-                {
-                    "demangled_name": "_ZN3ns14Bar1D2Ev",
+                    "name": "_ZN3ns14Bar1D0Ev",
                     "lineno": 10,
                     "execution_count": 6,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN3ns24Bar2C2Ev",
+                    "name": "_ZN3ns24Bar2C1Ev",
                     "lineno": 24,
                     "execution_count": 4,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN3ns24Bar2D0Ev",
-                    "lineno": 26,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0
-                },
-                {
-                    "demangled_name": "_ZN3ns24Bar2D2Ev",
+                    "name": "_ZN3ns24Bar2D0Ev",
                     "lineno": 26,
                     "execution_count": 4,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN3ns34Bar3C2Ev",
+                    "name": "_ZN3ns34Bar3C1Ev",
                     "lineno": 40,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN3ns34Bar3D0Ev",
-                    "lineno": 42,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0
-                },
-                {
-                    "demangled_name": "_ZN3ns34Bar3D2Ev",
+                    "name": "_ZN3ns34Bar3D0Ev",
                     "lineno": 42,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
+                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 51,
                     "execution_count": 2,

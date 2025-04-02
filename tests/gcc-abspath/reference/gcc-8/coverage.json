@@ -28,6 +28,7 @@
             ],
             "functions": [
                 {
+                    "name": "main",
                     "demangled_name": "main",
                     "lineno": 3,
                     "execution_count": 1,

@@ -27,14 +27,13 @@
         <line nr="60" mb="3" cb="3"/>
         <line nr="61" mb="3" cb="3"/>
         <line nr="68"/>
-        <line nr="69" mb="2" cb="2"/>
       </lines>
-      <counter type="LINE" missed="1" covered="23"/>
-      <counter type="BRANCH" missed="22" covered="20"/>
+      <counter type="LINE" missed="1" covered="22"/>
+      <counter type="BRANCH" missed="20" covered="18"/>
     </class>
-    <counter type="LINE" missed="1" covered="23"/>
-    <counter type="BRANCH" missed="22" covered="20"/>
+    <counter type="LINE" missed="1" covered="22"/>
+    <counter type="BRANCH" missed="20" covered="18"/>
   </package>
-  <counter type="LINE" missed="1" covered="23"/>
-  <counter type="BRANCH" missed="22" covered="20"/>
+  <counter type="LINE" missed="1" covered="22"/>
+  <counter type="BRANCH" missed="20" covered="18"/>
 </report>

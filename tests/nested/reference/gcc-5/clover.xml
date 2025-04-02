@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <coverage clover="1737404287" generated="1737404287">
   <project name="Test project" timestamp="1737404287">
-    <metrics complexity="0" elements="43" coveredelements="29" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="4" classes="8" files="8" loc="73" ncloc="43"/>
+    <metrics complexity="0" elements="42" coveredelements="28" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="4" classes="8" files="8" loc="73" ncloc="42"/>
     <package name="A">
       <metrics complexity="0" elements="26" coveredelements="14" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="5" files="5" loc="40" ncloc="26"/>
       <file name="File2.cpp" path="A/File2.cpp">
@@ -88,11 +88,11 @@
       </file>
     </package>
     <package name="B">
-      <metrics complexity="0" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="21" ncloc="9"/>
+      <metrics complexity="0" elements="8" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="21" ncloc="8"/>
       <file name="main.cpp" path="B/main.cpp">
-        <metrics complexity="0" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="21" ncloc="9"/>
+        <metrics complexity="0" elements="8" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="21" ncloc="8"/>
         <class name="id$9ddfb860fa969e91a7bb17e903455bce">
-          <metrics complexity="0" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+          <metrics complexity="0" elements="8" coveredelements="8" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="12" type="stmt" count="1"/>
         <line num="13" type="stmt" count="1"/>
@@ -102,7 +102,6 @@
         <line num="17" type="stmt" count="1"/>
         <line num="18" type="stmt" count="1"/>
         <line num="20" type="stmt" count="1"/>
-        <line num="21" type="stmt" count="4"/>
       </file>
     </package>
   </project>

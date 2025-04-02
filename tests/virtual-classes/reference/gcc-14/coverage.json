@@ -621,7 +621,7 @@
                     ]
                 },
                 {
-                    "name": "_ZN3ns14Bar1C2Ev",
+                    "name": "_ZN3ns14Bar1C1Ev",
                     "demangled_name": "ns1::Bar1::Bar1()",
                     "lineno": 8,
                     "execution_count": 6,
@@ -643,7 +643,7 @@
                     ]
                 },
                 {
-                    "name": "_ZN3ns24Bar2C2Ev",
+                    "name": "_ZN3ns24Bar2C1Ev",
                     "demangled_name": "ns2::Bar2::Bar2()",
                     "lineno": 24,
                     "execution_count": 4,
@@ -665,7 +665,7 @@
                     ]
                 },
                 {
-                    "name": "_ZN3ns34Bar3C2Ev",
+                    "name": "_ZN3ns34Bar3C1Ev",
                     "demangled_name": "ns3::Bar3::Bar3()",
                     "lineno": 40,
                     "execution_count": 2,
