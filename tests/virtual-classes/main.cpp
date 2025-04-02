@@ -6,14 +6,14 @@ namespace ns1
   {
     public:
       Bar1() : m_bar_1(1)
-      { ++m_counter; }
+      { ++m_counter_bar1; }
       virtual ~Bar1()
-      { --m_counter; } // possible compiler-generated destruction code - auto-detected and excluded
+      { --m_counter_bar1; } // possible compiler-generated destruction code - auto-detected and excluded
 
       int m_bar_1;
-      static int m_counter;
+      static int m_counter_bar1;
   };
-  int Bar1::m_counter = 0;
+  int Bar1::m_counter_bar1 = 0;
 }
 
 namespace ns2
@@ -22,14 +22,14 @@ namespace ns2
   {
     public:
       Bar2() : m_bar_2(2)
-      { ++m_counter; }
+      { ++m_counter_bar2; }
       virtual ~Bar2()
-      { --m_counter; } // possible compiler-generated destruction code - auto-detected and excluded
+      { --m_counter_bar2; } // possible compiler-generated destruction code - auto-detected and excluded
 
       int m_bar_2;
-      static int m_counter;
+      static int m_counter_bar2;
   };
-  int Bar2::m_counter = 0;
+  int Bar2::m_counter_bar2 = 0;
 }
 
 namespace ns3
@@ -38,14 +38,14 @@ namespace ns3
   {
     public:
       Bar3() : m_bar_3(3)
-      { ++m_counter; }
+      { ++m_counter_bar3; }
       virtual ~Bar3()
-      { --m_counter; } // possible compiler-generated destruction code - auto-detected and excluded
+      { --m_counter_bar3; } // possible compiler-generated destruction code - auto-detected and excluded
 
       int m_bar_3;
-      static int m_counter;
+      static int m_counter_bar3;
   };
-  int Bar3::m_counter = 0;
+  int Bar3::m_counter_bar3 = 0;
 }
 
 int main(int argc, char* argv[]) {
