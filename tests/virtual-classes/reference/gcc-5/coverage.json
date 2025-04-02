@@ -483,7 +483,6 @@
             "functions": [
                 {
                     "name": "main",
-                    "demangled_name": "main",
                     "lineno": 51,
                     "execution_count": 2,
                     "blocks_percent": 62.0

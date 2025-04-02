@@ -280,7 +280,6 @@
                 },
                 {
                     "name": "main",
-                    "demangled_name": "main",
                     "lineno": 47,
                     "execution_count": 3,
                     "blocks_percent": 100.0

@@ -9,7 +9,7 @@
       <classes>
         <class name="func_h" filename="func.h" line-rate="0.83333" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="_Z3fooi" signature="()" line-rate="0.83333" branch-rate="0.5" complexity="0.0">
+            <method name="_Z3fooi" signature="" line-rate="0.83333" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="3" hits="1" branch="false"/>
                 <line number="5" hits="1" branch="false"/>
@@ -39,7 +39,7 @@
         </class>
         <class name="main_c" filename="main.c" line-rate="1.0" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="5" hits="2" branch="false"/>
                 <line number="6" hits="2" branch="false"/>

@@ -27,7 +27,7 @@
       <classes>
         <class name="main_cpp" filename="src/main.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="main" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="main" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="4" hits="1" branch="false"/>
                 <line number="6" hits="1" branch="true" condition-coverage="50% (1/2)">

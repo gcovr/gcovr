@@ -9,7 +9,7 @@
       <classes>
         <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="3" hits="1" branch="false"/>
                 <line number="5" hits="1" branch="false"/>
@@ -27,7 +27,7 @@
         </class>
         <class name="update-data_c" filename="update-data.c" line-rate="1.0" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="update_data" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="update_data" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="3" hits="1" branch="false"/>
                 <line number="5" hits="1" branch="false"/>
@@ -41,7 +41,7 @@
         </class>
         <class name="update-data_h" filename="update-data.h" line-rate="0.85714" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="_ZL16called_from_bothi" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="_ZL16called_from_bothi" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="17" hits="1" branch="false"/>
                 <line number="19" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -54,13 +54,13 @@
                 <line number="25" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="_ZL16called_from_mainv" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_ZL16called_from_mainv" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="7" hits="1" branch="false"/>
                 <line number="9" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="called_from_both" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="called_from_both" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="17" hits="1" branch="false"/>
                 <line number="19" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -73,7 +73,7 @@
                 <line number="25" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="called_from_update_data" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="called_from_update_data" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="12" hits="1" branch="false"/>
                 <line number="14" hits="1" branch="false"/>

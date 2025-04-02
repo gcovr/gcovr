@@ -234,7 +234,6 @@
                 },
                 {
                     "name": "main",
-                    "demangled_name": "main",
                     "lineno": 14,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

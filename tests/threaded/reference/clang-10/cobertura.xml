@@ -9,7 +9,7 @@
       <classes>
         <class name="file1_cpp" filename="A/file1.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="_Z3fooi" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="_Z3fooi" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="1" hits="1" branch="false"/>
                 <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -37,7 +37,7 @@
         </class>
         <class name="file2_cpp" filename="A/file2.cpp" line-rate="0.57143" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="_Z3barv" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_Z3barv" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="1" hits="1" branch="false"/>
                 <line number="3" hits="1" branch="false"/>
@@ -45,7 +45,7 @@
                 <line number="5" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="_Z4bar_v" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+            <method name="_Z4bar_v" signature="" line-rate="0.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="8" hits="0" branch="false"/>
                 <line number="10" hits="0" branch="false"/>
@@ -65,7 +65,7 @@
         </class>
         <class name="file3_cpp" filename="A/file3.cpp" line-rate="0.4" branch-rate="0.0" complexity="0.0">
           <methods>
-            <method name="_Z8four_barv" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_Z8four_barv" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="1" hits="1" branch="false"/>
                 <line number="3" hits="1" branch="false"/>
@@ -73,7 +73,7 @@
                 <line number="5" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="_Z9four_bar_v" signature="()" line-rate="0.0" branch-rate="0.0" complexity="0.0">
+            <method name="_Z9four_bar_v" signature="" line-rate="0.0" branch-rate="0.0" complexity="0.0">
               <lines>
                 <line number="8" hits="0" branch="false"/>
                 <line number="10" hits="0" branch="false"/>
@@ -107,7 +107,7 @@
         </class>
         <class name="file4_cpp" filename="A/file4.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="_Z6foobari" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="_Z6foobari" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="1" hits="1" branch="false"/>
                 <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -135,7 +135,7 @@
         </class>
         <class name="file7_cpp" filename="A/file7.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="_Z9uncoveredv" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+            <method name="_Z9uncoveredv" signature="" line-rate="0.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="1" hits="0" branch="false"/>
                 <line number="3" hits="0" branch="false"/>
@@ -153,7 +153,7 @@
       <classes>
         <class name="file5_cpp" filename="A/C/file5.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="_Z4foo5i" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="_Z4foo5i" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="1" hits="1" branch="false"/>
                 <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -185,7 +185,7 @@
       <classes>
         <class name="file6_cpp" filename="A/C/D/file6.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="_Z4foo6i" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="_Z4foo6i" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="1" hits="1" branch="false"/>
                 <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -217,7 +217,7 @@
       <classes>
         <class name="main_cpp" filename="B/main.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="12" hits="1" branch="false"/>
                 <line number="13" hits="1" branch="false"/>

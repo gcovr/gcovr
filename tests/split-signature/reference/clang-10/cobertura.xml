@@ -9,20 +9,20 @@
       <classes>
         <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="_ZN12_GLOBAL__N_13BarC1Ev" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_ZN12_GLOBAL__N_13BarC1Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="_ZN12_GLOBAL__N_13BarD0Ev" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_ZN12_GLOBAL__N_13BarD0Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="_ZNK12_GLOBAL__N_13Bar3fooEv" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_ZNK12_GLOBAL__N_13Bar3fooEv" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="13" hits="1" branch="false"/>
                 <line number="15" hits="1" branch="false"/>
                 <line number="16" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="_ZN12_GLOBAL__N_13fooEv" signature="()" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+            <method name="_ZN12_GLOBAL__N_13fooEv" signature="" line-rate="1.0" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="21" hits="1" branch="false"/>
                 <line number="23" hits="1" branch="false"/>
@@ -34,19 +34,19 @@
                 <line number="25" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="bar" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="29" hits="1" branch="false"/>
                 <line number="31" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="_Z7bar_cppv" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_Z7bar_cppv" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="34" hits="1" branch="false"/>
                 <line number="36" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="39" hits="1" branch="false"/>
                 <line number="40" hits="1" branch="false"/>

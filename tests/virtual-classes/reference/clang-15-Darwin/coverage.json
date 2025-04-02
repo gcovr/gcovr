@@ -16,7 +16,7 @@
                     "function_name": "ns1::Bar1::Bar1()",
                     "count": 14,
                     "branches": [],
-                    "gcovr/md5": "b20d7920aa6de3f1a390ee018de33538"
+                    "gcovr/md5": "78c3860abebb28f3bf72e51c4621fef3"
                 },
                 {
                     "line_number": 10,
@@ -43,7 +43,7 @@
                             "source_block_id": 1
                         }
                     ],
-                    "gcovr/md5": "bc19c0b2cff85ea51d4b2bdf5ca8f7ad"
+                    "gcovr/md5": "060565ea354b7bca4b553bac6c4740ed"
                 },
                 {
                     "line_number": 24,
@@ -57,7 +57,7 @@
                     "function_name": "ns2::Bar2::Bar2()",
                     "count": 10,
                     "branches": [],
-                    "gcovr/md5": "b20d7920aa6de3f1a390ee018de33538"
+                    "gcovr/md5": "82188094c000f89d4df0eee592868072"
                 },
                 {
                     "line_number": 26,
@@ -84,7 +84,7 @@
                             "source_block_id": 1
                         }
                     ],
-                    "gcovr/md5": "bc19c0b2cff85ea51d4b2bdf5ca8f7ad"
+                    "gcovr/md5": "0fe98953f15971380c96945eb7c57f18"
                 },
                 {
                     "line_number": 40,
@@ -98,7 +98,7 @@
                     "function_name": "ns3::Bar3::Bar3()",
                     "count": 6,
                     "branches": [],
-                    "gcovr/md5": "b20d7920aa6de3f1a390ee018de33538"
+                    "gcovr/md5": "a18e41118e36e1ef68607175dc1b592f"
                 },
                 {
                     "line_number": 42,
@@ -125,7 +125,7 @@
                             "source_block_id": 1
                         }
                     ],
-                    "gcovr/md5": "bc19c0b2cff85ea51d4b2bdf5ca8f7ad"
+                    "gcovr/md5": "345e9b1d29966e451401206797f7ad22"
                 },
                 {
                     "line_number": 51,
@@ -528,7 +528,6 @@
             "functions": [
                 {
                     "name": "main",
-                    "demangled_name": "main",
                     "lineno": 51,
                     "execution_count": 2,
                     "blocks_percent": 57.0
