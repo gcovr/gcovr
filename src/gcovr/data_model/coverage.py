@@ -890,11 +890,8 @@ class FunctionCoverage(CoverageBase):
                     r"\g<1>0\g<2>", mangled_name
                 )
 
-            # main is always demangled to main
-            if mangled_name == "main" and demangled_name is None:
-                demangled_name = "main"
             # We have a demangled name as name -> demangled_name must be None and we need to change the values
-            elif "(" in mangled_name:
+            if "(" in mangled_name:
                 if demangled_name is not None:
                     self.raise_data_error(
                         f"If 'name' contains a demangled name (got '{mangled_name}') the 'demangled_name' must be None (got {demangled_name})."
@@ -1092,9 +1089,12 @@ class FunctionCoverage(CoverageBase):
 
     @property
     def name_and_signature(self) -> tuple[str, str]:
-        """Get a tuple with function name and signature."""
-        if self.demangled_name is None or "(" not in self.demangled_name:
-            return (str(self.name), "()")
+        """Get a tuple with function name and signature, if signature is un."""
+        if self.demangled_name is None:
+            return (str(self.name), "")
+
+        if "(" not in self.demangled_name:
+            return (str(self.demangled_name), "")
 
         open_brackets, close_brackets = (0, 0)
         signature = ""
