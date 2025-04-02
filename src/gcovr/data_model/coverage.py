@@ -91,9 +91,6 @@ LOGGER = logging.getLogger("gcovr")
 GCOVR_DATA_SOURCES = "gcovr/data_sources"
 GCOVR_EXCLUDED = "gcovr/excluded"
 
-REGEX_VIRTUAL_CONSTRUCTORS = re.compile(r"(.+C)[123](Ev)$")
-REGEX_VIRTUAL_DESTRUCTORS = re.compile(r"(.+D)[012](Ev)$")
-
 _T = TypeVar("_T")
 
 
@@ -880,16 +877,6 @@ class FunctionCoverage(CoverageBase):
         if count < 0:
             self.raise_data_error("count must not be a negative value.")
         if mangled_name is not None:
-            # Normalize constructors and destructors
-            if REGEX_VIRTUAL_CONSTRUCTORS.fullmatch(mangled_name):
-                mangled_name = REGEX_VIRTUAL_CONSTRUCTORS.sub(
-                    r"\g<1>1\g<2>", mangled_name
-                )
-            elif REGEX_VIRTUAL_DESTRUCTORS.fullmatch(mangled_name):
-                mangled_name = REGEX_VIRTUAL_DESTRUCTORS.sub(
-                    r"\g<1>0\g<2>", mangled_name
-                )
-
             # We have a demangled name as name -> demangled_name must be None and we need to change the values
             if "(" in mangled_name:
                 if demangled_name is not None:
@@ -987,12 +974,33 @@ class FunctionCoverage(CoverageBase):
         - ``options.func_opts.merge_function_use_line_max``
         - ``options.func_opts.separate_function``
         """
-        self.mangled_name = self._merge_property(
-            other, "Function mangled name", lambda x: x.mangled_name
-        )
         self.demangled_name = self._merge_property(
             other, "Function demangled name", lambda x: x.demangled_name
         )
+        # If we have a demangled name use the first mangled name
+        # For virtual constructors/destructors several mangled functions map to the same demangled name,
+        # see https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangling-special-ctor-dtor:
+        # <ctor-dtor-name> ::= C1                     # complete object constructor
+        #                  ::= C2                     # base object constructor
+        #                  ::= C3                     # complete object allocating constructor
+        #                  ::= CI1 <base class type>  # complete object inheriting constructor
+        #                  ::= CI2 <base class type>  # base object inheriting constructor
+        #                  ::= D0                     # deleting destructor
+        #                  ::= D1                     # complete object destructor
+        #                  ::= D2                     # base object destructor
+        if self.demangled_name is not None:
+            if self.mangled_name is None:
+                self.mangled_name = other.mangled_name
+            elif (
+                other.mangled_name is not None
+                and other.mangled_name < self.mangled_name
+            ):
+                self.mangled_name = other.mangled_name
+        # If we do not have mangled names the mangled name must be the same.
+        else:
+            self.mangled_name = self._merge_property(
+                other, "Function mangled name", lambda x: x.mangled_name
+            )
         if not options.func_opts.ignore_function_lineno:
             if self.count.keys() != other.count.keys():
                 lines = sorted(set([*self.count.keys(), *other.count.keys()]))
