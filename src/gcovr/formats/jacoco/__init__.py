@@ -51,6 +51,14 @@ class JaCoCoHandler(BaseHandler):
                 help=("Pretty-print the JaCoCo XML report. Implies --jacoco."),
                 action="store_true",
             ),
+            GcovrConfigOption(
+                "jacoco_report_name",
+                ["--jacoco-report-name"],
+                group="output_options",
+                metavar="NAME",
+                help="The name used for the JaCoCo report. Default is '{default!s}'.",
+                default="GCOVR report",
+            ),
         ]
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:

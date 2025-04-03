@@ -33,6 +33,7 @@ Bug fixes and small improvements:
 - Add ``excluded`` property for conditions and calls to the JSON report. (:issue:`1080`)
 - Remove the fixed width of the HTML details which leads to text overflows. (:issue:`1086`)
 - Fix duplicate constructors, destructors and wrong const overload functions in Cobertura report, (:issue:`1085`)
+- Fix ``JaCoCo`` report to follow the DTD. (:issue:`1089`)
 
 Documentation:
 
@@ -55,6 +56,7 @@ Known bugs:
 - JSON report doesn't contain ``excluded`` property for conditions and calls. Fixed in :ref:`Next release <next_release>`.
 - Cobertura report contains multiple functions with same name for virtual destructors and const overloads.
   Fixed in :ref:`Next release <next_release>`.
+- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -113,6 +115,7 @@ Known bugs:
 - Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
   :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
+- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -137,6 +140,7 @@ Known bugs:
 - Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
   :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
+- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -163,6 +167,7 @@ Known bugs:
 - Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
   :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
+- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -237,6 +242,7 @@ Known bugs:
 
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
   :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
+- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -270,6 +276,7 @@ Known bugs:
 
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
   :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
+- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
