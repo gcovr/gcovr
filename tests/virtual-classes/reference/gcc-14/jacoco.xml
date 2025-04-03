@@ -1,46 +1,51 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>
-<report>
+<!DOCTYPE report SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>
+<report name="GCOVR report">
   <package name="">
-    <class name="main_cpp" sourcefilename="./main.cpp">
-      <lines>
-        <line nr="8"/>
-        <line nr="9"/>
-        <line nr="10"/>
-        <line nr="11"/>
-        <line nr="10"/>
-        <line nr="11"/>
-        <line nr="24"/>
-        <line nr="25"/>
-        <line nr="26"/>
-        <line nr="27"/>
-        <line nr="26"/>
-        <line nr="27"/>
-        <line nr="40"/>
-        <line nr="41"/>
-        <line nr="42"/>
-        <line nr="43"/>
-        <line nr="42"/>
-        <line nr="43"/>
-        <line nr="51"/>
-        <line nr="53"/>
-        <line nr="54" mb="3" cb="3"/>
-        <line nr="55"/>
-        <line nr="56" mb="3" cb="3"/>
-        <line nr="57" mb="3" cb="3"/>
-        <line nr="58"/>
-        <line nr="59" mb="3" cb="3"/>
-        <line nr="60" mb="3" cb="3"/>
-        <line nr="61" mb="3" cb="3"/>
-        <line nr="66"/>
-        <line nr="68"/>
-      </lines>
+    <sourcefile name="main.cpp">
+      <line nr="8"/>
+      <line nr="9"/>
+      <line nr="10"/>
+      <line nr="11"/>
+      <line nr="10"/>
+      <line nr="11"/>
+      <line nr="24"/>
+      <line nr="25"/>
+      <line nr="26"/>
+      <line nr="27"/>
+      <line nr="26"/>
+      <line nr="27"/>
+      <line nr="40"/>
+      <line nr="41"/>
+      <line nr="42"/>
+      <line nr="43"/>
+      <line nr="42"/>
+      <line nr="43"/>
+      <line nr="51"/>
+      <line nr="53"/>
+      <line nr="54" mb="3" cb="3"/>
+      <line nr="55"/>
+      <line nr="56" mb="3" cb="3"/>
+      <line nr="57" mb="3" cb="3"/>
+      <line nr="58"/>
+      <line nr="59" mb="3" cb="3"/>
+      <line nr="60" mb="3" cb="3"/>
+      <line nr="61" mb="3" cb="3"/>
+      <line nr="62"/>
+      <line nr="63"/>
+      <line nr="64"/>
+      <line nr="65"/>
+      <line nr="66"/>
+      <line nr="68"/>
       <counter type="LINE" missed="7" covered="23"/>
       <counter type="BRANCH" missed="18" covered="18"/>
-    </class>
+      <counter type="METHOD" missed="0" covered="7"/>
+    </sourcefile>
     <counter type="LINE" missed="7" covered="23"/>
     <counter type="BRANCH" missed="18" covered="18"/>
+    <counter type="METHOD" missed="0" covered="7"/>
   </package>
   <counter type="LINE" missed="7" covered="23"/>
   <counter type="BRANCH" missed="18" covered="18"/>
+  <counter type="METHOD" missed="0" covered="7"/>
 </report>
