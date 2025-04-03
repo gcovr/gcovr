@@ -28,7 +28,7 @@ from threading import Lock
 from typing import Any, Callable, Optional
 
 from ...data_model.container import CoverageContainer
-from ...data_model.merging import GcovrMergeAssertionError, get_merge_mode_from_options
+from ...data_model.merging import get_merge_mode_from_options
 from ...decision_analysis import DecisionParser
 from ...exclusions import (
     apply_all_exclusions,
@@ -462,31 +462,27 @@ def process_datafile(
             potential_wd.append(wd)
             wd = os.path.dirname(wd)
 
-    try:
-        for wd in potential_wd:
-            done = run_gcov_and_process_files(
-                abs_filename,
-                covdata,
-                options=options,
-                error=errors.append,
-                chdir=wd,
-            )
+    for wd in potential_wd:
+        done = run_gcov_and_process_files(
+            abs_filename,
+            covdata,
+            options=options,
+            error=errors.append,
+            chdir=wd,
+        )
 
-            if options.gcov_delete:
-                if not abs_filename.endswith("gcno"):
-                    to_erase.add(abs_filename)
+        if options.gcov_delete:
+            if not abs_filename.endswith("gcno"):
+                to_erase.add(abs_filename)
 
-            if done:
-                return
-    # This exception fails fast
-    except GcovrMergeAssertionError as exc:
-        errors += str(exc).split("\n")
+        if done:
+            return
 
     errors_output = "\n\t".join(errors)
     errors_output = (
         f"GCOV produced the following errors processing {filename}:\n"
         f"\t{errors_output}\n"
-        "\t(gcovr could not infer a working directory that resolved it.)\n"
+        "\t(GCOVR could not infer a working directory that resolved it.)\n"
         "To ignore this error use option --gcov-ignore-errors=no_working_dir_found."
     )
     LOGGER.error(errors_output)

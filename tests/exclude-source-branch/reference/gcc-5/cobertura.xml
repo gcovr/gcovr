@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.69231" branch-rate="0.46667" lines-covered="9" lines-valid="13" branches-covered="7" branches-valid="15" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="0.66667" branch-rate="0.45455" lines-covered="8" lines-valid="12" branches-covered="5" branches-valid="11" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/exclude-source-branch</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.69231" branch-rate="0.46667" complexity="0.0">
+    <package name="" line-rate="0.66667" branch-rate="0.45455" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="0.69231" branch-rate="0.46667" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="0.66667" branch-rate="0.45455" complexity="0.0">
           <methods>
             <method name="foo" signature="(int)" line-rate="0.57143" branch-rate="0.4" complexity="0.0">
               <lines>
@@ -24,7 +24,7 @@
                 <line number="15" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="main" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="main" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="19" hits="1" branch="false"/>
                 <line number="20" hits="1" branch="true" condition-coverage="50% (3/6)">
@@ -59,11 +59,6 @@
             <line number="21" hits="1" branch="false"/>
             <line number="24" hits="0" branch="false"/>
             <line number="27" hits="1" branch="false"/>
-            <line number="28" hits="4" branch="true" condition-coverage="50% (2/4)">
-              <conditions>
-                <condition number="0" type="jump" coverage="50%"/>
-              </conditions>
-            </line>
           </lines>
         </class>
       </classes>

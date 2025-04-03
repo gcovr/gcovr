@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="1.0" branch-rate="0.5" lines-covered="29" lines-valid="29" branches-covered="18" branches-valid="36" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+  <sources>
+    <source>tests/virtual-classes</source>
+  </sources>
+  <packages>
+    <package name="" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+      <classes>
+        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+          <methods>
+            <method name="ns1::Bar1::Bar1" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="8" hits="3" branch="false"/>
+                <line number="9" hits="3" branch="false"/>
+                <line number="10" hits="3" branch="false"/>
+                <line number="11" hits="3" branch="false"/>
+              </lines>
+            </method>
+            <method name="ns1::Bar1::~Bar1" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="10" hits="3" branch="false"/>
+                <line number="11" hits="3" branch="false"/>
+              </lines>
+            </method>
+            <method name="ns2::Bar2::Bar2" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="24" hits="2" branch="false"/>
+                <line number="25" hits="2" branch="false"/>
+                <line number="26" hits="2" branch="false"/>
+                <line number="27" hits="2" branch="false"/>
+              </lines>
+            </method>
+            <method name="ns2::Bar2::~Bar2" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="26" hits="2" branch="false"/>
+                <line number="27" hits="2" branch="false"/>
+              </lines>
+            </method>
+            <method name="ns3::Bar3::Bar3" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="40" hits="1" branch="false"/>
+                <line number="41" hits="1" branch="false"/>
+                <line number="42" hits="1" branch="false"/>
+                <line number="43" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="ns3::Bar3::~Bar3" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="42" hits="1" branch="false"/>
+                <line number="43" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="main" signature="" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="51" hits="1" branch="false"/>
+                <line number="53" hits="2" branch="false"/>
+                <line number="54" hits="1" branch="true" condition-coverage="50% (3/6)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="55" hits="2" branch="false"/>
+                <line number="56" hits="1" branch="true" condition-coverage="50% (3/6)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="57" hits="1" branch="true" condition-coverage="50% (3/6)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="58" hits="2" branch="false"/>
+                <line number="59" hits="1" branch="true" condition-coverage="50% (3/6)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="60" hits="1" branch="true" condition-coverage="50% (3/6)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="61" hits="1" branch="true" condition-coverage="50% (3/6)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="68" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="8" hits="3" branch="false"/>
+            <line number="9" hits="3" branch="false"/>
+            <line number="10" hits="3" branch="false"/>
+            <line number="11" hits="3" branch="false"/>
+            <line number="10" hits="3" branch="false"/>
+            <line number="11" hits="3" branch="false"/>
+            <line number="24" hits="2" branch="false"/>
+            <line number="25" hits="2" branch="false"/>
+            <line number="26" hits="2" branch="false"/>
+            <line number="27" hits="2" branch="false"/>
+            <line number="26" hits="2" branch="false"/>
+            <line number="27" hits="2" branch="false"/>
+            <line number="40" hits="1" branch="false"/>
+            <line number="41" hits="1" branch="false"/>
+            <line number="42" hits="1" branch="false"/>
+            <line number="43" hits="1" branch="false"/>
+            <line number="42" hits="1" branch="false"/>
+            <line number="43" hits="1" branch="false"/>
+            <line number="51" hits="1" branch="false"/>
+            <line number="53" hits="2" branch="false"/>
+            <line number="54" hits="1" branch="true" condition-coverage="50% (3/6)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="55" hits="2" branch="false"/>
+            <line number="56" hits="1" branch="true" condition-coverage="50% (3/6)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="57" hits="1" branch="true" condition-coverage="50% (3/6)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="58" hits="2" branch="false"/>
+            <line number="59" hits="1" branch="true" condition-coverage="50% (3/6)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="60" hits="1" branch="true" condition-coverage="50% (3/6)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="61" hits="1" branch="true" condition-coverage="50% (3/6)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="68" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

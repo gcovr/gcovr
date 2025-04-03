@@ -468,17 +468,6 @@
                     "name": "_ZN3BarD0Ev",
                     "demangled_name": "Bar::~Bar()",
                     "lineno": 12,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0,
-                    "pos": [
-                        "12:13",
-                        "13:6"
-                    ]
-                },
-                {
-                    "name": "_ZN3BarD2Ev",
-                    "demangled_name": "Bar::~Bar()",
-                    "lineno": 12,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [

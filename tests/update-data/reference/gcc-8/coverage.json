@@ -59,7 +59,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -110,7 +110,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "update_data",
+                    "name": "update_data",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -304,7 +304,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "called_from_both",
+                    "name": "called_from_both",
                     "lineno": 17,
                     "execution_count": 2,
                     "blocks_percent": 75.0,
@@ -320,7 +320,7 @@
                     ]
                 },
                 {
-                    "demangled_name": "called_from_main",
+                    "name": "called_from_main",
                     "lineno": 7,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
@@ -336,7 +336,7 @@
                     ]
                 },
                 {
-                    "demangled_name": "called_from_update_data",
+                    "name": "called_from_update_data",
                     "lineno": 12,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

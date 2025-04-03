@@ -331,28 +331,6 @@
             ],
             "functions": [
                 {
-                    "name": "_Z22function_with_catchersi",
-                    "demangled_name": "function_with_catchers(int)",
-                    "lineno": 24,
-                    "execution_count": 3,
-                    "blocks_percent": 63.2,
-                    "pos": [
-                        "24:5",
-                        "44:1"
-                    ]
-                },
-                {
-                    "name": "_Z23function_that_may_throwb",
-                    "demangled_name": "function_that_may_throw(bool)",
-                    "lineno": 3,
-                    "execution_count": 9,
-                    "blocks_percent": 87.5,
-                    "pos": [
-                        "3:5",
-                        "9:1"
-                    ]
-                },
-                {
                     "name": "_ZN4RAIIC2Eb",
                     "demangled_name": "RAII::RAII(bool)",
                     "lineno": 21,
@@ -361,6 +339,17 @@
                     "pos": [
                         "21:1",
                         "21:33"
+                    ]
+                },
+                {
+                    "name": "_ZNK4RAII21method_that_may_throwEv",
+                    "demangled_name": "RAII::method_that_may_throw() const",
+                    "lineno": 16,
+                    "execution_count": 3,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "16:9",
+                        "18:5"
                     ]
                 },
                 {
@@ -375,14 +364,25 @@
                     ]
                 },
                 {
-                    "name": "_ZNK4RAII21method_that_may_throwEv",
-                    "demangled_name": "RAII::method_that_may_throw() const",
-                    "lineno": 16,
-                    "execution_count": 3,
-                    "blocks_percent": 100.0,
+                    "name": "_Z23function_that_may_throwb",
+                    "demangled_name": "function_that_may_throw(bool)",
+                    "lineno": 3,
+                    "execution_count": 9,
+                    "blocks_percent": 87.5,
                     "pos": [
-                        "16:9",
-                        "18:5"
+                        "3:5",
+                        "9:1"
+                    ]
+                },
+                {
+                    "name": "_Z22function_with_catchersi",
+                    "demangled_name": "function_with_catchers(int)",
+                    "lineno": 24,
+                    "execution_count": 3,
+                    "blocks_percent": 63.2,
+                    "pos": [
+                        "24:5",
+                        "44:1"
                     ]
                 },
                 {

@@ -123,7 +123,7 @@ line_number: int
   The 1-based line number to which this entry relates.
 
 function_name: str
-  Contains the mangled name of the function to which the line belongs to.
+  Contains the name of the function to which the line belongs to.
   If ``gcov`` JSON format is used it is always the mangled name. If the
   legacy ``gcov`` text format is used it contains the demangled name if
   supported by ``gcov``, else the mangled name. Can be missing for a
@@ -416,13 +416,12 @@ Each **function** entry describes a line in the source file::
 The ordering and merge key is ``function_name``.
 
 name: string
-  The name of the function. If legacy ``gcov`` text output is used it contains
-  the demangled name if supported by the ``gcov`` tool except for clang-10 where
-  the mangled name is used.
-  If ``gcov`` JSON format is used it always contains the mangled name.
+  The mangled name of the function if present. Is missing if GCOV text format is
+  used and GCOV tool supports demangled names.
 
 demangled_name: string
-  Only available if GCOV JSON format is used it always contains the demangled name.
+  The demangled name of the function if present. Is missing if GCOV text format is
+  used and GCOV tool doesn't support demangled names.
 
 lineno: int
   The line number (1-based) where this function was defined.

@@ -101,20 +101,20 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_Z3barv",
+                    "name": "_Z3barv",
                     "lineno": 20,
                     "execution_count": 0,
                     "blocks_percent": 100.0,
                     "gcovr/excluded": true
                 },
                 {
-                    "demangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
                     "lineno": 4,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 25,
                     "execution_count": 1,
                     "blocks_percent": 100.0

@@ -46,7 +46,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_Z3bari",
+                    "name": "_Z3bari",
                     "lineno": 14,
                     "execution_count": 0,
                     "blocks_percent": 0.0,
@@ -221,7 +221,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
                     "lineno": 2,
                     "execution_count": 5,
                     "blocks_percent": 85.0
@@ -364,25 +364,25 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_ZN3BarC2Ev",
+                    "name": "_ZN3BarC2Ev",
                     "lineno": 10,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "_ZN3BarD0Ev",
+                    "name": "_ZN3BarD0Ev",
                     "lineno": 12,
                     "execution_count": 0,
                     "blocks_percent": 0.0
                 },
                 {
-                    "demangled_name": "_ZN3BarD2Ev",
+                    "name": "_ZN3BarD2Ev",
                     "lineno": 12,
                     "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 19,
                     "execution_count": 1,
                     "blocks_percent": 42.0

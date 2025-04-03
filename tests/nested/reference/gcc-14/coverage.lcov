@@ -1,7 +1,7 @@
 TN:GCOVR report
 SF:tests/nested/subdir/A/C/D/File6.cpp
-FN:1,_Z4foo6i
-FNDA:1,_Z4foo6i
+FN:1,foo6(int)
+FNDA:1,foo6(int)
 FNF:1
 FNH:1
 BRDA:3,2,0,-
@@ -16,8 +16,8 @@ LH:3
 LF:4
 end_of_record
 SF:tests/nested/subdir/A/C/file5.cpp
-FN:1,_Z4foo5i
-FNDA:1,_Z4foo5i
+FN:1,foo5(int)
+FNDA:1,foo5(int)
 FNF:1
 FNH:1
 BRDA:3,2,0,-
@@ -32,8 +32,8 @@ LH:3
 LF:4
 end_of_record
 SF:tests/nested/subdir/A/file1.cpp
-FN:1,_Z3fooi
-FNDA:1,_Z3fooi
+FN:1,foo(int)
+FNDA:1,foo(int)
 FNF:1
 FNH:1
 BRDA:3,2,0,-
@@ -48,10 +48,10 @@ LH:3
 LF:4
 end_of_record
 SF:tests/nested/subdir/A/File2.cpp
-FN:1,_Z3barv
-FNDA:1,_Z3barv
-FN:8,_Z4bar_v
-FNDA:0,_Z4bar_v
+FN:1,bar()
+FNDA:1,bar()
+FN:8,bar_()
+FNDA:0,bar_()
 FNF:2
 FNH:1
 BRF:0
@@ -67,10 +67,10 @@ LH:4
 LF:7
 end_of_record
 SF:tests/nested/subdir/A/file3.cpp
-FN:1,_Z8four_barv
-FNDA:1,_Z8four_barv
-FN:8,_Z9four_bar_v
-FNDA:0,_Z9four_bar_v
+FN:1,four_bar()
+FNDA:1,four_bar()
+FN:8,four_bar_()
+FNDA:0,four_bar_()
 FNF:2
 FNH:1
 BRDA:11,2,0,-
@@ -90,8 +90,8 @@ LH:4
 LF:9
 end_of_record
 SF:tests/nested/subdir/A/File4.cpp
-FN:1,_Z6foobari
-FNDA:1,_Z6foobari
+FN:1,foobar(int)
+FNDA:1,foobar(int)
 FNF:1
 FNH:1
 BRDA:3,2,0,1
@@ -106,8 +106,8 @@ LH:3
 LF:4
 end_of_record
 SF:tests/nested/subdir/A/file7.cpp
-FN:1,_Z9uncoveredv
-FNDA:0,_Z9uncoveredv
+FN:1,uncovered()
+FNDA:0,uncovered()
 FNF:1
 FNH:0
 BRF:0

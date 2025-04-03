@@ -161,17 +161,6 @@
             ],
             "functions": [
                 {
-                    "name": "_Z10not_calledv",
-                    "demangled_name": "not_called()",
-                    "lineno": 3,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0,
-                    "pos": [
-                        "3:5",
-                        "5:1"
-                    ]
-                },
-                {
                     "name": "_Z3fooi",
                     "demangled_name": "foo(int)",
                     "lineno": 7,
@@ -191,6 +180,17 @@
                     "pos": [
                         "16:5",
                         "29:1"
+                    ]
+                },
+                {
+                    "name": "_Z10not_calledv",
+                    "demangled_name": "not_called()",
+                    "lineno": 3,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0,
+                    "pos": [
+                        "3:5",
+                        "5:1"
                     ]
                 }
             ]

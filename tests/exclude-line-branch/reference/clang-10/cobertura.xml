@@ -9,7 +9,7 @@
       <classes>
         <class name="bar_cpp" filename="tests/exclude-line-branch/bar.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="_Z3bari" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+            <method name="_Z3bari" signature="" line-rate="0.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="19" hits="0" branch="false"/>
               </lines>
@@ -21,7 +21,7 @@
         </class>
         <class name="foo_cpp" filename="tests/exclude-line-branch/foo.cpp" line-rate="0.8" branch-rate="0.75" complexity="0.0">
           <methods>
-            <method name="_Z3fooi" signature="()" line-rate="0.8" branch-rate="0.75" complexity="0.0">
+            <method name="_Z3fooi" signature="" line-rate="0.8" branch-rate="0.75" complexity="0.0">
               <lines>
                 <line number="2" hits="5" branch="false"/>
                 <line number="3" hits="5" branch="true" condition-coverage="100% (4/4)">
@@ -75,22 +75,22 @@
         </class>
         <class name="main_cpp" filename="tests/exclude-line-branch/main.cpp" line-rate="0.81818" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="_ZN3BarC2Ev" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_ZN3BarC2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="10" hits="1" branch="false"/>
                 <line number="11" hits="2" branch="false"/>
               </lines>
             </method>
-            <method name="_ZN3BarD0Ev" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_ZN3BarD0Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="12" hits="1" branch="false"/>
                 <line number="13" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="_ZN3BarD2Ev" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="_ZN3BarD2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="main" signature="()" line-rate="0.71429" branch-rate="1.0" complexity="0.0">
+            <method name="main" signature="" line-rate="0.71429" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="19" hits="1" branch="false"/>
                 <line number="20" hits="6" branch="true" condition-coverage="100% (2/2)">

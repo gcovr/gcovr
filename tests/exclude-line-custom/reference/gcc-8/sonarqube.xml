@@ -1,2 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<coverage version="1"><file path="main.cpp"><lineToCover lineNumber="4" covered="true"/><lineToCover lineNumber="5" covered="true" branchesToCover="2" coveredBranches="1"/><lineToCover lineNumber="7" covered="false"/><lineToCover lineNumber="15" covered="false"/><lineToCover lineNumber="18" covered="true"/><lineToCover lineNumber="26" covered="true"/><lineToCover lineNumber="31" covered="true"/><lineToCover lineNumber="32" covered="true"/><lineToCover lineNumber="34" covered="true"/></file></coverage>

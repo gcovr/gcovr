@@ -35,7 +35,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_Z3barv",
+                    "name": "_Z3barv",
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0
@@ -76,7 +76,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_Z3foov",
+                    "name": "_Z3foov",
                     "lineno": 1,
                     "execution_count": 1,
                     "blocks_percent": 100.0
@@ -117,7 +117,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 10,
                     "execution_count": 2,
                     "blocks_percent": 100.0

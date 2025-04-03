@@ -9,13 +9,13 @@
       <classes>
         <class name="main_cpp" filename="main.cpp" line-rate="0.61538" branch-rate="0.5" complexity="0.0">
           <methods>
-            <method name="_Z10not_calledv" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+            <method name="_Z10not_calledv" signature="" line-rate="0.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="3" hits="0" branch="false"/>
                 <line number="4" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="_Z3fooi" signature="()" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="_Z3fooi" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="7" hits="1" branch="false"/>
                 <line number="8" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -28,7 +28,7 @@
                 <line number="13" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="main" signature="()" line-rate="0.66667" branch-rate="0.5" complexity="0.0">
+            <method name="main" signature="" line-rate="0.66667" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="16" hits="1" branch="false"/>
                 <line number="17" hits="1" branch="false"/>

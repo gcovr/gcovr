@@ -297,9 +297,10 @@
                 {
                     "line_number": 33,
                     "function_name": "__static_initialization_and_destruction_0(int, int)",
-                    "count": 4,
+                    "count": 0,
                     "branches": [],
-                    "gcovr/md5": "9e7ce02d034587718cd3b6c29d789ef0"
+                    "gcovr/md5": "9e7ce02d034587718cd3b6c29d789ef0",
+                    "gcovr/excluded": true
                 }
             ],
             "functions": [
@@ -316,7 +317,7 @@
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 19,
                     "execution_count": 1,
                     "blocks_percent": 100.0

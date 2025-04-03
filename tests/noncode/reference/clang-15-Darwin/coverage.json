@@ -133,7 +133,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 4,
                     "execution_count": 2,
                     "blocks_percent": 33.0,

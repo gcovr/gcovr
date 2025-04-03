@@ -27,10 +27,6 @@ from ..options import Options
 LOGGER = logging.getLogger("gcovr")
 
 
-class GcovrMergeAssertionError(AssertionError):
-    """Exception for data merge errors."""
-
-
 @dataclass
 class MergeFunctionOptions:
     """Data class to store the function merge options."""
@@ -88,7 +84,3 @@ def get_merge_mode_from_options(options: Options) -> MergeOptions:
         raise AssertionError("Sanity check: Unknown functions merge mode.")
 
     return merge_opts
-
-
-class MergeError(AssertionError):
-    """Internal exception which is extended with the context."""

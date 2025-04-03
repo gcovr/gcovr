@@ -110,13 +110,13 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_Z3fooi",
+                    "name": "_Z3fooi",
                     "lineno": 4,
                     "execution_count": 1,
                     "blocks_percent": 80.0
                 },
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 13,
                     "execution_count": 1,
                     "blocks_percent": 75.0

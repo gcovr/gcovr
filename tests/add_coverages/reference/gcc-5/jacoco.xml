@@ -28,14 +28,13 @@
         <line nr="12"/>
         <line nr="15"/>
         <line nr="18"/>
-        <line nr="19" mb="2" cb="2"/>
       </lines>
-      <counter type="LINE" missed="0" covered="5"/>
-      <counter type="BRANCH" missed="2" covered="2"/>
+      <counter type="LINE" missed="0" covered="4"/>
+      <counter type="BRANCH" missed="0" covered="0"/>
     </class>
-    <counter type="LINE" missed="0" covered="13"/>
-    <counter type="BRANCH" missed="2" covered="2"/>
+    <counter type="LINE" missed="0" covered="12"/>
+    <counter type="BRANCH" missed="0" covered="0"/>
   </package>
-  <counter type="LINE" missed="0" covered="13"/>
-  <counter type="BRANCH" missed="2" covered="2"/>
+  <counter type="LINE" missed="0" covered="12"/>
+  <counter type="BRANCH" missed="0" covered="0"/>
 </report>

@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.86667" branch-rate="0.5" lines-covered="13" lines-valid="15" branches-covered="4" branches-valid="8" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="0.85714" branch-rate="0.5" lines-covered="12" lines-valid="14" branches-covered="2" branches-valid="4" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/exclude-function</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.86667" branch-rate="0.5" complexity="0.0">
+    <package name="" line-rate="0.85714" branch-rate="0.5" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="0.86667" branch-rate="0.5" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="0.85714" branch-rate="0.5" complexity="0.0">
           <methods>
             <method name="bar" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
@@ -35,7 +35,7 @@
                 <line number="16" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="95" hits="1" branch="false"/>
                 <line number="96" hits="1" branch="false"/>
@@ -67,11 +67,6 @@
             <line number="96" hits="1" branch="false"/>
             <line number="97" hits="1" branch="false"/>
             <line number="103" hits="1" branch="false"/>
-            <line number="104" hits="4" branch="true" condition-coverage="50% (2/4)">
-              <conditions>
-                <condition number="0" type="jump" coverage="50%"/>
-              </conditions>
-            </line>
           </lines>
         </class>
       </classes>

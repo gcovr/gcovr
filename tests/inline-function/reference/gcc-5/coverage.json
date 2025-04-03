@@ -40,7 +40,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 7,
                     "execution_count": 1,
                     "blocks_percent": 83.0

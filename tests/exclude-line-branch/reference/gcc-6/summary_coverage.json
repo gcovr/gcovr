@@ -28,9 +28,9 @@
         },
         {
             "filename": "tests/exclude-line-branch/main.cpp",
-            "line_total": 9,
-            "line_covered": 8,
-            "line_percent": 88.9,
+            "line_total": 8,
+            "line_covered": 7,
+            "line_percent": 87.5,
             "function_total": 3,
             "function_covered": 3,
             "function_percent": 100.0,
@@ -39,9 +39,9 @@
             "branch_percent": 100.0
         }
     ],
-    "line_total": 18,
-    "line_covered": 15,
-    "line_percent": 83.3,
+    "line_total": 17,
+    "line_covered": 14,
+    "line_percent": 82.4,
     "function_total": 4,
     "function_covered": 4,
     "function_percent": 100.0,

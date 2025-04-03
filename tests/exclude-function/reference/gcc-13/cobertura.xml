@@ -42,7 +42,7 @@
                 <line number="16" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="95" hits="1" branch="false"/>
                 <line number="96" hits="1" branch="false"/>
@@ -68,7 +68,7 @@
                 <line number="46" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="sort_excluded" signature="()::{lambda(int, int)#1}::operator()(int, int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="sort_excluded()::{lambda(int, int)#1}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="44" hits="41" branch="true" condition-coverage="100% (2/2)">
                   <conditions>
@@ -88,7 +88,7 @@
                 </line>
               </lines>
             </method>
-            <method name="sort_excluded_both" signature="()::{lambda(int, int)#1}::operator()(int, int)" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+            <method name="sort_excluded_both()::{lambda(int, int)#1}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="0.75" complexity="0.0">
               <lines>
                 <line number="73" hits="41" branch="false"/>
                 <line number="74" hits="41" branch="true" condition-coverage="100% (2/2)">
@@ -105,7 +105,7 @@
                 </line>
               </lines>
             </method>
-            <method name="sort_excluded_both" signature="()::{lambda(int, int)#2}::operator()(int, int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+            <method name="sort_excluded_both()::{lambda(int, int)#2}::operator()" signature="(int, int) const" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="84" hits="18" branch="false"/>
                 <line number="85" hits="18" branch="true" condition-coverage="50% (1/2)">
@@ -123,7 +123,7 @@
                 <line number="48" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="sort_lambda_excluded" signature="()::{lambda(int, int)#1}::operator()(int, int)" line-rate="1.0" branch-rate="0.66667" complexity="0.0">
+            <method name="sort_lambda_excluded()::{lambda(int, int)#1}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="0.66667" complexity="0.0">
               <lines>
                 <line number="50" hits="44" branch="true" condition-coverage="75% (3/4)">
                   <conditions>
@@ -138,7 +138,7 @@
                 </line>
               </lines>
             </method>
-            <method name="sort_lambda_excluded" signature="()::{lambda(int, int)#2}::operator()(int, int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+            <method name="sort_lambda_excluded()::{lambda(int, int)#2}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="57" hits="41" branch="false"/>
                 <line number="58" hits="41" branch="true" condition-coverage="100% (2/2)">

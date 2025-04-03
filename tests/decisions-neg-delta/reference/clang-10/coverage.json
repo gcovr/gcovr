@@ -221,7 +221,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "_ZN3Foo4workEi",
+                    "name": "_ZN3Foo4workEi",
                     "lineno": 5,
                     "execution_count": 1,
                     "blocks_percent": 81.0,
@@ -233,7 +233,7 @@
                     ]
                 },
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 14,
                     "execution_count": 1,
                     "blocks_percent": 100.0,

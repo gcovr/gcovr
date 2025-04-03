@@ -55,7 +55,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "foo",
+                    "name": "foo",
                     "lineno": 4,
                     "execution_count": 0,
                     "blocks_percent": 0.0
@@ -95,7 +95,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 4,
                     "execution_count": 0,
                     "blocks_percent": 0.0

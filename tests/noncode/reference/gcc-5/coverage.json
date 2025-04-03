@@ -108,82 +108,10 @@
                 {
                     "line_number": 12,
                     "function_name": "__static_initialization_and_destruction_0(int, int)",
-                    "count": 4,
-                    "branches": [
-                        {
-                            "count": 1,
-                            "fallthrough": true,
-                            "throw": false,
-                            "source_block_id": 3,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "main.cpp.gcov"
-                                ]
-                            ]
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false,
-                            "source_block_id": 3,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "main.cpp.gcov"
-                                ]
-                            ]
-                        },
-                        {
-                            "count": 1,
-                            "fallthrough": true,
-                            "throw": false,
-                            "source_block_id": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "main.cpp.gcov"
-                                ]
-                            ]
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false,
-                            "source_block_id": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "main.cpp.gcov"
-                                ]
-                            ]
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false,
-                            "source_block_id": 6,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "main.cpp.gcov"
-                                ]
-                            ]
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false,
-                            "source_block_id": 6,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "main.cpp.gcov"
-                                ]
-                            ]
-                        }
-                    ],
+                    "count": 0,
+                    "branches": [],
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
+                    "gcovr/excluded": true,
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -194,7 +122,7 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "main",
+                    "name": "main",
                     "lineno": 4,
                     "execution_count": 1,
                     "blocks_percent": 44.0,
