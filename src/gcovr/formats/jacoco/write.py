@@ -17,17 +17,13 @@
 #
 # ****************************************************************************
 
-# cspell:ignore sourcefilename
-
 from dataclasses import dataclass
-import os
 from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
-from ...data_model.coverage import LineCoverage
 from ...data_model.stats import CoverageStat, SummarizedStats
 from ...options import Options
-from ...utils import force_unix_separator, write_xml_output
+from ...utils import write_xml_output
 
 
 def write_report(
@@ -36,6 +32,7 @@ def write_report(
     """produce an XML report in the JaCoCo format"""
 
     root_elem = etree.Element("report")
+    root_elem.set("name", options.jacoco_report_name)
 
     # Generate the coverage output (on a per-package basis)
     packages = dict[str, PackageData]()
@@ -54,45 +51,40 @@ def write_report(
                 SummarizedStats.new_empty(),
             ),
         )
-        class_elem = etree.Element("class")
-        lines_elem = etree.SubElement(class_elem, "lines")
+        source_elem = etree.Element("sourcefile")
+        source_elem.set("name", fname)
 
         for linecov in filecov.lines.values():
+            line_elem = etree.SubElement(source_elem, "line")
+            line_elem.set("nr", str(linecov.lineno))
             if linecov.is_reportable:
-                lines_elem.append(_line_element(linecov))
+                stat = linecov.branch_coverage()
+                if stat.total:
+                    line_elem.set("mb", str(stat.total - stat.covered))
+                    line_elem.set("cb", str(stat.covered))
 
-        stats = filecov.stats
+        filecov_stats = filecov.stats
+        add_counters(source_elem, filecov_stats)
 
-        class_name = fname.replace(".", "_")
-        class_elem.set("name", class_name)
-        class_elem.set(
-            "sourcefilename", force_unix_separator(os.path.join(options.root, filename))
-        )
-        class_elem.append(_counter_element("LINE", stats.line))
-        class_elem.append(_counter_element("BRANCH", stats.branch))
-
-        package_data.classes_xml[class_name] = class_elem
-        package_data.stats += stats
+        package_data.sources[fname] = source_elem
+        package_data.stats += filecov_stats
 
     for package_name in sorted(packages):
         package_data = packages[package_name]
         package_elem = etree.SubElement(root_elem, "package")
-        for class_name in sorted(package_data.classes_xml):
-            package_elem.append(package_data.classes_xml[class_name])
-        package_elem.append(_counter_element("LINE", package_data.stats.line))
-        package_elem.append(_counter_element("BRANCH", package_data.stats.branch))
         package_elem.set("name", package_name.replace("/", "."))
+        for source in sorted(package_data.sources):
+            package_elem.append(package_data.sources[source])
+        add_counters(package_elem, package_data.stats)
 
-    stats = covdata.stats
-    root_elem.append(_counter_element("LINE", stats.line))
-    root_elem.append(_counter_element("BRANCH", stats.branch))
+    add_counters(root_elem, covdata.stats)
 
     write_xml_output(
         root_elem,
         pretty=options.jacoco_pretty,
         filename=output_file,
         default_filename="jacoco.xml",
-        doctype="<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>",
+        doctype="<!DOCTYPE report SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>",
     )
 
 
@@ -100,28 +92,20 @@ def write_report(
 class PackageData:
     """Class holding package information."""
 
-    classes_xml: dict[str, etree._Element]
+    sources: dict[str, etree._Element]
     stats: SummarizedStats
 
 
-def _counter_element(element_type: str, stat: CoverageStat) -> etree._Element:
-    """format a CoverageStat as a string in range 0.0 to 1.0 inclusive"""
-    counter_elem = etree.Element("counter")
-    counter_elem.set("type", element_type)
-    counter_elem.set("missed", str(stat.total - stat.covered))
-    counter_elem.set("covered", str(stat.covered))
+def add_counters(elem: etree._Element, stats: SummarizedStats) -> None:
+    """Add the counter elements for the given stats."""
 
-    return counter_elem
+    def add_counter_element(element_type: str, stat: CoverageStat) -> None:
+        """Add one stat element."""
+        counter_elem = etree.SubElement(elem, "counter")
+        counter_elem.set("type", element_type)
+        counter_elem.set("missed", str(stat.total - stat.covered))
+        counter_elem.set("covered", str(stat.covered))
 
-
-def _line_element(linecov: LineCoverage) -> etree._Element:
-    stat = linecov.branch_coverage()
-
-    line_elem = etree.Element("line")
-    line_elem.set("nr", str(linecov.lineno))
-
-    if stat.total:
-        line_elem.set("mb", str(stat.total - stat.covered))
-        line_elem.set("cb", str(stat.covered))
-
-    return line_elem
+    add_counter_element("LINE", stats.line)
+    add_counter_element("BRANCH", stats.branch)
+    add_counter_element("METHOD", stats.function)

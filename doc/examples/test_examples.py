@@ -59,12 +59,12 @@ def find_test_cases() -> Iterator[Example]:
     for script in glob.glob(data_dirname + "/*.sh"):
         basename = os.path.basename(script)
         name, _ = os.path.splitext(basename)
-        for output_format in ["txt", "cobertura", "csv", "json", "html"]:
+        for output_format in ["txt", "cobertura", "csv", "jacoco", "json", "html"]:
             if output_format in ("html", "cobertura") and is_compiler(
                 os.getenv("CC", "None"), "gcc-5", "gcc-6", "gcc-14"
             ):
                 continue
-            baseline = f"{data_dirname}/{name}.{'xml' if output_format == 'cobertura' else output_format}"
+            baseline = f"{data_dirname}/{name}.{'xml' if output_format in ['cobertura', 'jacoco'] else output_format}"
             if not os.path.exists(baseline):
                 continue
             yield Example(name, output_format, script, baseline)

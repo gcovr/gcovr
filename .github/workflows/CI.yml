@@ -58,6 +58,7 @@ jobs:
         run: |
           cspell --config cspell.json --color --show-suggestions '**'
 
+
   upload-coverage:
     runs-on: ubuntu-22.04
     steps:
@@ -154,9 +155,38 @@ jobs:
       matrix:
         gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12, gcc-13, gcc-14, clang-10, clang-13, clang-14, clang-15, clang-16]
 
+  validate-reports:
+    needs: [changelog-check, spell-check, upload-coverage]
+
+    runs-on: ubuntu-22.04
+    env:
+      FORCE_COLOR: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install libxml2
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt-get install -y \
+            libxml2-utils
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install nox requests
+
+      - name: Run validation
+        run: |
+          nox --non-interactive --session validate_reports
+
 
   deployment:
-    needs: [host, docker]
+    needs: [host, docker, validate-reports]
 
     runs-on: ubuntu-22.04
     permissions:

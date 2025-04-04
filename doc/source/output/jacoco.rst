@@ -9,7 +9,15 @@ The ``gcovr`` command can generate a
 JaCoCo XML output using the :option:`--jacoco`
 and :option:`--jacoco-pretty` options:
 
-    gcovr --jacoco jacoco.xml
+.. include:: ../../examples/example_jacoco.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an XML summary of the lines executed:
+
+.. include:: ../../examples/example_jacoco.xml
+    :code: xml
 
 This XML format is described in the
 `JaCoCo XML <https://www.jacoco.org/jacoco/trunk/coverage/report.dtd>`__

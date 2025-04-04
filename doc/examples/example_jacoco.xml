@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE report SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>
+<report name="GCOVR report">
+  <package name="">
+    <sourcefile name="example.cpp">
+      <line nr="3"/>
+      <line nr="5" mb="1" cb="1"/>
+      <line nr="7"/>
+      <line nr="11"/>
+      <line nr="15"/>
+      <line nr="17"/>
+      <line nr="19"/>
+      <counter type="LINE" missed="1" covered="6"/>
+      <counter type="BRANCH" missed="1" covered="1"/>
+      <counter type="METHOD" missed="0" covered="2"/>
+    </sourcefile>
+    <counter type="LINE" missed="1" covered="6"/>
+    <counter type="BRANCH" missed="1" covered="1"/>
+    <counter type="METHOD" missed="0" covered="2"/>
+  </package>
+  <counter type="LINE" missed="1" covered="6"/>
+  <counter type="BRANCH" missed="1" covered="1"/>
+  <counter type="METHOD" missed="0" covered="2"/>
+</report>

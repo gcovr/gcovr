@@ -1,40 +1,40 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE coverage SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>
-<report>
+<!DOCTYPE report SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>
+<report name="GCOVR report">
   <package name="">
-    <class name="bar_cpp" sourcefilename="./bar.cpp">
-      <lines>
-        <line nr="1"/>
-        <line nr="3"/>
-        <line nr="4"/>
-        <line nr="5"/>
-      </lines>
+    <sourcefile name="bar.cpp">
+      <line nr="1"/>
+      <line nr="3"/>
+      <line nr="4"/>
+      <line nr="5"/>
       <counter type="LINE" missed="0" covered="4"/>
       <counter type="BRANCH" missed="0" covered="0"/>
-    </class>
-    <class name="foo_cpp" sourcefilename="./foo.cpp">
-      <lines>
-        <line nr="1"/>
-        <line nr="3"/>
-        <line nr="4"/>
-        <line nr="5"/>
-      </lines>
+      <counter type="METHOD" missed="0" covered="1"/>
+    </sourcefile>
+    <sourcefile name="foo.cpp">
+      <line nr="1"/>
+      <line nr="3"/>
+      <line nr="4"/>
+      <line nr="5"/>
       <counter type="LINE" missed="0" covered="4"/>
       <counter type="BRANCH" missed="0" covered="0"/>
-    </class>
-    <class name="main_cpp" sourcefilename="./main.cpp">
-      <lines>
-        <line nr="10"/>
-        <line nr="12"/>
-        <line nr="15"/>
-        <line nr="18"/>
-      </lines>
+      <counter type="METHOD" missed="0" covered="1"/>
+    </sourcefile>
+    <sourcefile name="main.cpp">
+      <line nr="10"/>
+      <line nr="12"/>
+      <line nr="15"/>
+      <line nr="18"/>
+      <line nr="19"/>
       <counter type="LINE" missed="0" covered="4"/>
       <counter type="BRANCH" missed="0" covered="0"/>
-    </class>
+      <counter type="METHOD" missed="0" covered="1"/>
+    </sourcefile>
     <counter type="LINE" missed="0" covered="12"/>
     <counter type="BRANCH" missed="0" covered="0"/>
+    <counter type="METHOD" missed="0" covered="3"/>
   </package>
   <counter type="LINE" missed="0" covered="12"/>
   <counter type="BRANCH" missed="0" covered="0"/>
+  <counter type="METHOD" missed="0" covered="3"/>
 </report>
