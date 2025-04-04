@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copied from
+https://docs.sonarsource.com/sonarqube-server/2025.2/analyzing-source-code/test-coverage/generic-test-data/#generic-test-coverage -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="coverage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="file" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="lineToCover" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="lineNumber" type="xs:positiveInteger" use="required" />
+                  <xs:attribute name="covered" type="xs:boolean" use="required" />
+                  <xs:attribute name="branchesToCover" type="xs:nonNegativeInteger" />
+                  <xs:attribute name="coveredBranches" type="xs:nonNegativeInteger" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="path" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:positiveInteger" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
