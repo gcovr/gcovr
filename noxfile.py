@@ -477,6 +477,37 @@ def tests(session: nox.Session) -> None:
                 session.run("coverage", "html")
 
 
+@nox.session(python=False)
+def validate_reports(session: nox.Session) -> None:
+    """Validate the generated reports where a schema is available."""
+
+    def run_xmllint(file: Path, schema: Path) -> None:
+        command = ["xmllint", "--noout"]
+        command += (
+            ["--nonet", "--dtdvalid"] if schema.suffix == ".dtd" else ["--schema"]
+        )
+        command += [str(schema), str(file)]
+        out = ""
+        try:
+            out = str(session.run(*command, silent=True, external=True))
+        except nox.command.CommandFailed as e:
+            session.error(f"{e}\n{out}")
+
+    for test_directory in [Path(p) for p in ("tests", "doc/examples")]:
+        cobertura_dtd = Path("tests") / "cobertura.coverage-04.dtd"
+        for file in test_directory.rglob("*cobertura*.xml"):
+            run_xmllint(file, cobertura_dtd)
+        jacoco_dtd = Path("tests") / "JaCoCo.report.dtd"
+        for file in test_directory.rglob("*jacoco*.xml"):
+            run_xmllint(file, jacoco_dtd)
+        clover_schema = Path("tests") / "clover.xsd"
+        for file in test_directory.rglob("*clover*.xml"):
+            run_xmllint(file, clover_schema)
+        sonarqube_schema = Path("tests") / "sonar-generic-coverage.xsd"
+        for file in test_directory.rglob("*sonarqube*.xml"):
+            run_xmllint(file, sonarqube_schema)
+
+
 @nox.session
 def build_wheel(session: nox.Session) -> None:
     """Build a wheel."""
