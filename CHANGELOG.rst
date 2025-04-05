@@ -34,6 +34,7 @@ Bug fixes and small improvements:
 - Remove the fixed width of the HTML details which leads to text overflows. (:issue:`1086`)
 - Fix duplicate constructors, destructors and wrong const overload functions in Cobertura report, (:issue:`1085`)
 - Fix ``JaCoCo`` report to follow the DTD. (:issue:`1089`)
+- Do not use option ``--calls`` as exclusion filter. (:issue:`1090`)
 
 Documentation:
 
