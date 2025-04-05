@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "main.cpp",
@@ -30,6 +30,16 @@
                     "function_name": "Bar::~Bar()",
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
                 },
                 {
@@ -44,6 +54,20 @@
                     "function_name": "Bar::foo() const",
                     "count": 2,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "ab1117040294bf9c2b68b8aba4e7c3a7"
                 },
                 {
@@ -65,6 +89,20 @@
                     "function_name": "Bar::foo()",
                     "count": 2,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "18a2ea0c62241309997b08ebde8d2ff3"
                 },
                 {
@@ -86,6 +124,20 @@
                     "function_name": "main",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "681198dce72298bd1499c17456d58ebf"
                 },
                 {
@@ -93,6 +145,20 @@
                     "function_name": "main",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "d16e31203ab985189993947b70134bee"
                 },
                 {
@@ -113,6 +179,12 @@
                             "source_block_id": 1
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "426df3762971fc92b44b6fbe977b54c0"
                 },
                 {
@@ -131,6 +203,12 @@
                             "fallthrough": false,
                             "throw": true,
                             "source_block_id": 0
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
                         }
                     ],
                     "gcovr/md5": "1c58ebd1fa62ed5c8e36eeea1396340f"

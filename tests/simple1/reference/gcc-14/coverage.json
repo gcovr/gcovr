@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "test/dir/main.cpp",
@@ -101,13 +101,14 @@
                     "block_ids": [
                         2
                     ],
-                    "gcovr/md5": "63a5debf41301fd02d9a35ac94ce77eb",
-                    "gcovr/calls": [
+                    "calls": [
                         {
-                            "callno": 0,
-                            "covered": true
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 1
                         }
-                    ]
+                    ],
+                    "gcovr/md5": "63a5debf41301fd02d9a35ac94ce77eb"
                 },
                 {
                     "line_number": 21,
@@ -152,13 +153,14 @@
                     "block_ids": [
                         4
                     ],
-                    "gcovr/md5": "0c83f378d1eda6b258d0e7a718f9da96",
-                    "gcovr/calls": [
+                    "calls": [
                         {
-                            "callno": 0,
-                            "covered": false
+                            "source_block_id": 4,
+                            "destination_block_id": 1,
+                            "returned": 0
                         }
-                    ]
+                    ],
+                    "gcovr/md5": "0c83f378d1eda6b258d0e7a718f9da96"
                 },
                 {
                     "line_number": 28,

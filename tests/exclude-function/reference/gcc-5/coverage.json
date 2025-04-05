@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "main.cpp",
@@ -202,6 +202,18 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "666f8f06d06141336f41aebe519a6ea3",
                     "gcovr/data_sources": [
                         [
@@ -215,6 +227,18 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "4afe9620b96896879f660418c6ebe038",
                     "gcovr/data_sources": [
                         [

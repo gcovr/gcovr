@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "main.cpp",
@@ -56,6 +56,18 @@
                         3,
                         4
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 3,
+                            "destination_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 4,
+                            "destination_block_id": 1,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "89f41aa2034ee1a649c881db918f21e3"
                 },
                 {
@@ -66,6 +78,18 @@
                     "block_ids": [
                         5,
                         6
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 5,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 6,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        }
                     ],
                     "gcovr/md5": "a19418b9987a4c14c00c52394588f7a0"
                 },
@@ -113,6 +137,18 @@
                         8,
                         9
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 8,
+                            "destination_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 9,
+                            "destination_block_id": 1,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "0b2fbaaf039f484e5e4dc8d1a3d62368"
                 },
                 {
@@ -123,6 +159,18 @@
                     "block_ids": [
                         10,
                         11
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 10,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 11,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        }
                     ],
                     "gcovr/md5": "a19418b9987a4c14c00c52394588f7a0"
                 },
@@ -186,6 +234,18 @@
                         3,
                         4
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 3,
+                            "destination_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 4,
+                            "destination_block_id": 1,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "0b2fbaaf039f484e5e4dc8d1a3d62368"
                 },
                 {
@@ -196,6 +256,18 @@
                     "block_ids": [
                         5,
                         6
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 5,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 6,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        }
                     ],
                     "gcovr/md5": "a19418b9987a4c14c00c52394588f7a0"
                 },
@@ -223,6 +295,13 @@
                     "block_ids": [
                         2
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "12808cce914b7254afa3cb2f5d32ff17"
                 },
                 {
@@ -232,6 +311,13 @@
                     "branches": [],
                     "block_ids": [
                         3
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 3,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        }
                     ],
                     "gcovr/md5": "09b194e45a7a7208fec0c967f468e5bf"
                 },

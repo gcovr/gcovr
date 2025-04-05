@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "main.cpp",
@@ -54,6 +54,23 @@
                         3,
                         4
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 3,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 4,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "f7b703e8cd6b1f3cc2d2ce6e752d73fb"
                 },
                 {
@@ -82,6 +99,13 @@
                     "block_ids": [
                         2
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "4266678a417dc4903d9cf236dbb12034"
                 },
                 {
@@ -109,6 +133,13 @@
                         4,
                         7
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 3,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "66f12633d5a7eca9fdde0e1b7272565f"
                 },
                 {
@@ -119,6 +150,18 @@
                     "block_ids": [
                         5,
                         8
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 5,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 8,
+                            "destination_block_id": 1,
+                            "returned": 0
+                        }
                     ],
                     "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9"
                 },
@@ -139,6 +182,13 @@
                         2,
                         3
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "905b733c12d828acb6d6d4193f874fd0"
                 },
                 {
@@ -158,6 +208,13 @@
                         2,
                         3
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "9dd2d45dcd78fcf24e26368e4f420be7"
                 },
                 {
@@ -176,6 +233,13 @@
                     "block_ids": [
                         2,
                         3
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 2
+                        }
                     ],
                     "gcovr/md5": "506b460b78d3b5b014a801d7778d319f"
                 }

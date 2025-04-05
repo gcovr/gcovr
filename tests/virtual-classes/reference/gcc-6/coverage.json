@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "main.cpp",
@@ -30,6 +30,16 @@
                     "function_name": "ns1::Bar1::~Bar1()",
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "060565ea354b7bca4b553bac6c4740ed"
                 },
                 {
@@ -37,6 +47,12 @@
                     "function_name": "ns2::Bar2::Bar2()",
                     "count": 8,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 1,
+                            "returned": 4
+                        }
+                    ],
                     "gcovr/md5": "2598ea30dbb711a590a1617919c5cfba"
                 },
                 {
@@ -58,6 +74,20 @@
                     "function_name": "ns2::Bar2::~Bar2()",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 4
+                        }
+                    ],
                     "gcovr/md5": "0fe98953f15971380c96945eb7c57f18"
                 },
                 {
@@ -65,6 +95,12 @@
                     "function_name": "ns3::Bar3::Bar3()",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "5e4fd23a42f87556b2a43f098251e8c7"
                 },
                 {
@@ -86,6 +122,20 @@
                     "function_name": "ns3::Bar3::~Bar3()",
                     "count": 2,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "345e9b1d29966e451401206797f7ad22"
                 },
                 {
@@ -111,6 +161,24 @@
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 3
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 4,
+                            "returned": 0
                         }
                     ],
                     "gcovr/md5": "7889012628b20062a6750840f5e81ec7"
@@ -157,6 +225,20 @@
                             "source_block_id": 1
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 4,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "5336964c912a66290b6604e90b172abb"
                 },
                 {
@@ -164,6 +246,20 @@
                     "function_name": "main",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "3a47500e65c552706f582f1293cf2a18"
                 },
                 {
@@ -206,6 +302,20 @@
                             "fallthrough": false,
                             "throw": true,
                             "source_block_id": 1
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
                         }
                     ],
                     "gcovr/md5": "e957e4f8902c1c42f540dc8c31b14c16"
@@ -252,6 +362,20 @@
                             "source_block_id": 2
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 2,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "4e29cd99a75408f6184cd5f2da17bf4b"
                 },
                 {
@@ -259,6 +383,20 @@
                     "function_name": "main",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "b8ca8f7bb408d9ed3293ae26eaa9573c"
                 },
                 {
@@ -301,6 +439,20 @@
                             "fallthrough": false,
                             "throw": true,
                             "source_block_id": 1
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
                         }
                     ],
                     "gcovr/md5": "a73247510c9604c43ca8cfeb1cbe1e5c"
@@ -347,6 +499,20 @@
                             "source_block_id": 2
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 2,
+                            "returned": 2
+                        }
+                    ],
                     "gcovr/md5": "f199d76205e3f206214ea2c7f1d273b1"
                 },
                 {
@@ -389,6 +555,20 @@
                             "fallthrough": false,
                             "throw": true,
                             "source_block_id": 2
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 2
+                        },
+                        {
+                            "source_block_id": 2,
+                            "returned": 2
                         }
                     ],
                     "gcovr/md5": "7eaf42f0e8e357e2dfa91b4013c3750d"

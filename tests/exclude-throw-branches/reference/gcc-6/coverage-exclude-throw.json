@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "main.cpp",
@@ -43,6 +43,24 @@
                             "source_block_id": 0
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "d26e4bf5b3a230f06c5ec2907ffd527f"
                 },
                 {
@@ -64,6 +82,12 @@
                     "function_name": "RAII::method_that_may_throw() const",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "d878f58d4aaeb95c1c667c31c90688c1"
                 },
                 {
@@ -106,6 +130,12 @@
                             "source_block_id": 0
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "5a6f4ad904c70428b558a7a76150d268"
                 },
                 {
@@ -124,6 +154,16 @@
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "8bd26b074ddb624b2d0e8d2f2c97f8c6"
@@ -159,6 +199,20 @@
                             "source_block_id": 3
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 5,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "f7782e4bee449335d6d76a39cd6b4386"
                 },
                 {
@@ -173,6 +227,12 @@
                             "source_block_id": 0
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "dbb01c8aa62038c92932ae1b8c744627"
                 },
                 {
@@ -180,6 +240,16 @@
                     "function_name": "function_with_catchers(int)",
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 0
+                        }
+                    ],
                     "gcovr/md5": "8bd26b074ddb624b2d0e8d2f2c97f8c6"
                 },
                 {
@@ -199,6 +269,12 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "86a6b5fc13347758e61c6df5731198f2"
@@ -222,6 +298,12 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "465384b8aa76a99e807191be0bfffc08"
                 }
             ],

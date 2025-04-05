@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "A/C/D/File6.cpp",
@@ -422,6 +422,12 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "c18608b3fe9a00042c41d97d382d1e07"
                 },
                 {
@@ -429,6 +435,12 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "a16b1758a01395f320d0ffe89a85defc"
                 },
                 {
@@ -436,6 +448,12 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2"
                 },
                 {
@@ -443,6 +461,12 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "ac4921f7e0ce489b8e00d83bb18e8474"
                 },
                 {
@@ -450,6 +474,12 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "537738ff9ea76bce1fbf48f1f7ec6a56"
                 },
                 {
@@ -480,6 +510,12 @@
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 1,
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "f90eb0eeac70fb4b03a86e93faf9c751"
