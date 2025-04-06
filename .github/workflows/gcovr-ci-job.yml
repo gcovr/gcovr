@@ -33,6 +33,7 @@ jobs:
   gcovr-ci-job:
     runs-on: ${{ inputs.container && 'ubuntu-22.04' || inputs.os }}
     env:
+      SPHINX_SKIP_CHECK_LINKS: "True"
       FORCE_COLOR: "1"
       NOX_CONTAINER_ARGUMENTS: ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
       GENERATE_DOCUMENTATION: ${{ inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10') }}

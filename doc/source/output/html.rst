@@ -103,7 +103,7 @@ between release versions.
 Note that you do not have to copy every single template and can copy and edit only the
 templates you wish to customize.
 
-.. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+.. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP
 
 .. versionadded:: 7.0
    Added :option:`--html-template-dir<gcovr --html-template-dir>`

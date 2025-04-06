@@ -41,7 +41,7 @@ Before we invoke the ``build_ext`` step, we first ``export CC="ccache gcc"``.
 Ccache works well but isn't absolutely perfect,
 see the `ccache manual`_ for caveats.
 
-.. _ccache manual: https://ccache.samba.org/manual/latest.html#_caveats
+.. _ccache manual: https://ccache.dev/manual/latest.html
 
 A shell session might look like this:
 

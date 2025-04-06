@@ -91,7 +91,7 @@ The development of gcovr was motivated by the need for
 text summaries and XML reports.
 
 .. _gcov: https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
-.. _coverage.py: https://coverage.readthedocs.io/en/stable/
+.. _coverage.py: https://coverage.readthedocs.io/
 .. _clover: https://bitbucket.org/atlassian/clover/src/master/
 .. _cobertura: https://github.com/cobertura/cobertura/
 .. _coveralls: https://coveralls.io/
