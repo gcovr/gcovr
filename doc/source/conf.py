@@ -200,7 +200,6 @@ todo_include_todos = True
 extlinks = {"issue": ("https://github.com/gcovr/gcovr/issues/%s", "#%s")}
 
 # -- linkcheck extenstion ------------------------------------------
-
 linkcheck_anchors_ignore_for_url = [r"https://github.com/.+/blob/.+"]
 linkcheck_ignore = [r"https://github.com/gcovr/gcovr/issues/\d+"]
 
