@@ -112,7 +112,7 @@ def write_summary_report(
             print_stat("conditions", stats.condition)
         if options.show_decision:
             print_stat("decisions", stats.decision.to_coverage_stat)
-        if not options.exclude_calls:
+        if options.show_calls:
             print_stat("calls", stats.call)
 
 

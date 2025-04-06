@@ -303,7 +303,7 @@ def write_report(
     high_threshold_line = options.high_threshold_line
     medium_threshold_branch = options.medium_threshold_branch
     high_threshold_branch = options.high_threshold_branch
-    exclude_calls = options.exclude_calls
+    show_calls = options.show_calls
     show_decision = options.show_decision
 
     data = dict[str, Any]()
@@ -311,7 +311,7 @@ def write_report(
     data["info"] = root_info
 
     data["SHOW_DECISION"] = show_decision
-    data["EXCLUDE_CALLS"] = exclude_calls
+    data["SHOW_CALLS"] = show_calls
     data["EXCLUDE_CONDITION_COVERAGE"] = not any(
         filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
     )

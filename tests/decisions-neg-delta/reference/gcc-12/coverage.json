@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "main.cpp",
@@ -96,6 +96,48 @@
                             ]
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 2,
+                            "returned": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "531c09b5b187d2a095229382a14585af",
                     "gcovr/data_sources": [
                         [
@@ -134,6 +176,58 @@
                             ]
                         }
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 4,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 4,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 2,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 1,
+                            "returned": 3,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "7b25e7042a6c283ef5ff4184aa8a5bbd",
                     "gcovr/decision": {
                         "type": "conditional",
@@ -158,6 +252,18 @@
                     "function_name": "Foo::work(int)",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3",
                     "gcovr/data_sources": [
                         [
@@ -214,6 +320,18 @@
                             "fallthrough": false,
                             "throw": true,
                             "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                                ]
+                            ]
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1,
                             "gcovr/data_sources": [
                                 [
                                     "testcase-main.gcda",

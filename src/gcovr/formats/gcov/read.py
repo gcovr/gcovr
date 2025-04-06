@@ -531,7 +531,6 @@ class GcovProgram:
     __cmd_split = list[str]()
     __default_options = list[str]()
     __exitcode_to_ignore = list[int]([0])
-    __use_json_format_if_available: bool = True
     __help_output: str = ""
     __version_output: str = ""
 
@@ -547,9 +546,8 @@ class GcovProgram:
         def __exit__(self, *_: Any) -> None:
             self.lock.release()
 
-    def __init__(self, cmd: str, options: Options) -> None:
+    def __init__(self, cmd: str) -> None:
         with GcovProgram.LockContext(GcovProgram.__lock):
-            GcovProgram.__use_json_format_if_available = options.exclude_calls
             if not GcovProgram.__cmd:
                 GcovProgram.__cmd = cmd
                 # If the first element of cmd - the executable name - has embedded spaces
@@ -570,10 +568,7 @@ class GcovProgram:
                     "--all-blocks",
                 ]
 
-                if (
-                    GcovProgram.__use_json_format_if_available
-                    and self.__check_gcov_help_content("--json-format")
-                ):
+                if self.__check_gcov_help_content("--json-format"):
                     if self.__check_gcov_version_content(
                         f"JSON format version: {json.GCOV_JSON_VERSION}"
                     ):
@@ -751,7 +746,7 @@ def run_gcov_and_process_files(
     out = None
     err = None
     try:
-        gcov_cmd = GcovProgram(options.gcov_cmd, options)
+        gcov_cmd = GcovProgram(options.gcov_cmd)
         gcov_cmd.identify_and_cache_capabilities()
 
         # ATTENTION:

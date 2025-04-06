@@ -68,7 +68,6 @@ class ExclusionOptions:
     exclude_function_lines: bool = False
     exclude_internal_functions: bool = False
     exclude_noncode_lines: bool = False
-    exclude_calls: bool = True
 
 
 def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
@@ -85,7 +84,6 @@ def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
         exclude_function_lines=options.exclude_function_lines,
         exclude_internal_functions=options.exclude_internal_functions,
         exclude_noncode_lines=options.exclude_noncode_lines,
-        exclude_calls=options.exclude_calls,
     )
 
 
@@ -127,17 +125,6 @@ def apply_all_exclusions(
 
     if options.exclude_internal_functions:
         remove_internal_functions(filecov)
-
-    if options.exclude_calls:
-        remove_calls(filecov)
-
-
-def remove_calls(filecov: FileCoverage) -> None:
-    """Remove the information about calls."""
-
-    # Clear the calls of each line.
-    for linecov in filecov.lines.values():
-        linecov.calls.clear()
 
 
 def remove_internal_functions(filecov: FileCoverage) -> None:

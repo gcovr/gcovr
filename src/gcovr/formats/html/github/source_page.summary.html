@@ -43,7 +43,7 @@
                 <div class="Label--minw"><span class="{{decisions.class}} IssueLabel color-fg-on-emphasis mr-1">{{decisions.coverage}}%</span></div>
             </div>
             {% endif %}
-            {% if not EXCLUDE_CALLS %}
+            {% if SHOW_CALLS %}
             <div class="d-flex">
                 <div class="mr-2">Calls:</div>
                 <div class="mr-2" style="margin: auto;">{{calls.exec}}/{{calls.total}}</div>

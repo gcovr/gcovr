@@ -167,7 +167,7 @@ class CoverageBase:
         other: CoverageBase,
         msg: str,
         getter: Callable[[CoverageBase], _T],
-    ) -> Optional[_T]:
+    ) -> _T:
         """Assert that the property given by name is defined the same if defined twice. Return the value of the property."""
 
         left = getter(self)
@@ -733,25 +733,39 @@ class CallCoverage(CoverageBase):
     Args:
         callno (int):
             The number of the call.
-        covered (bool):
-            Whether the call was performed.
+        source_block_id (int):
+            The block number.
+        destination_block_id (int, optional):
+            The destination block of the branch. None if unknown.
+        returned (int):
+            How often the function call returned.
         excluded (bool, optional):
             Whether the call is excluded.
     """
 
-    __slots__ = "callno", "covered", "excluded"
+    __slots__ = (
+        "callno",
+        "source_block_id",
+        "destination_block_id",
+        "returned",
+        "excluded",
+    )
 
     def __init__(
         self,
         data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
         callno: int,
-        covered: bool,
+        source_block_id: int,
+        destination_block_id: Optional[int],
+        returned: int,
         excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
         self.callno = callno
-        self.covered = covered
+        self.source_block_id = source_block_id
+        self.destination_block_id = destination_block_id
+        self.returned = returned
         self.excluded = excluded
 
     def serialize(
@@ -761,10 +775,12 @@ class CallCoverage(CoverageBase):
         """Serialize the object."""
         data_dict = dict[str, Any](
             {
-                "callno": self.callno,
-                "covered": self.covered,
+                "source_block_id": self.source_block_id,
             }
         )
+        if self.destination_block_id is not None:
+            data_dict["destination_block_id"] = self.destination_block_id
+        data_dict["returned"] = self.returned
         if self.excluded:
             data_dict[GCOVR_EXCLUDED] = True
         data_dict.update(get_data_source(self))
@@ -777,7 +793,9 @@ class CallCoverage(CoverageBase):
         return CallCoverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
             callno=data_dict["callno"],
-            covered=data_dict["covered"],
+            returned=data_dict["returned"],
+            source_block_id=data_dict["source_block_id"],
+            destination_block_id=data_dict.get("destination_block_id"),
             excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
@@ -795,7 +813,13 @@ class CallCoverage(CoverageBase):
             self.raise_data_error(
                 f"Call number must be equal, got {self.callno} and {other.callno}."
             )
-        self.covered |= other.covered
+        self.returned += other.returned
+        self.source_block_id = self._merge_property(
+            other, "Source block ID", lambda x: x.source_block_id
+        )
+        self.destination_block_id = self._merge_property(
+            other, "Destination block ID", lambda x: x.destination_block_id
+        )
         self.excluded |= other.excluded
 
         return self
@@ -818,7 +842,7 @@ class CallCoverage(CoverageBase):
     @property
     def is_covered(self) -> bool:
         """Return True if the call is covered."""
-        return self.is_reportable and self.covered
+        return self.is_reportable and self.returned != 0
 
 
 class FunctionCoverage(CoverageBase):
@@ -1214,17 +1238,17 @@ class LineCoverage(CoverageBase):
             ]
         if self.block_ids is not None:
             data_dict["block_ids"] = self.block_ids
+        if len(self.calls) > 0:
+            data_dict["calls"] = [
+                callcov.serialize(get_data_source)
+                for _, callcov in sorted(self.calls.items())
+            ]
         if self.md5:
             data_dict["gcovr/md5"] = self.md5
         if self.excluded:
             data_dict[GCOVR_EXCLUDED] = True
         if self.decision is not None:
             data_dict["gcovr/decision"] = self.decision.serialize(get_data_source)
-        if len(self.calls) > 0:
-            data_dict["gcovr/calls"] = [
-                callcov.serialize(get_data_source)
-                for _, callcov in sorted(self.calls.items())
-            ]
         data_dict.update(get_data_source(self))
 
         return data_dict

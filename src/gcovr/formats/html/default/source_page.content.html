@@ -10,7 +10,7 @@
       {% if SHOW_DECISION %}
       <th align="right">Decision</th>
       {% endif %}
-      {% if not EXCLUDE_CALLS %}
+      {% if SHOW_CALLS %}
       <th align="right">Call</th>
       {% endif %}
       <th align="right">Exec</th>
@@ -109,7 +109,7 @@
         {% endif %}
       </td>
       {% endif %}
-      {% if not EXCLUDE_CALLS %}
+      {% if SHOW_CALLS %}
       <td class="linecall">
         {% if row.line_calls %}
           <details class="linecallDetails">

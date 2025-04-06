@@ -491,7 +491,9 @@ def _gather_coverage_from_line(
             CallCoverage(
                 filecov.data_sources,
                 callno=callno,
-                covered=(returned > 0),
+                source_block_id=state.block_id,  # type: ignore [arg-type]
+                destination_block_id=None,
+                returned=returned,
             ),
         )
 

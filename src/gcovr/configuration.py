@@ -623,11 +623,11 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
-        "exclude_calls",
+        "show_calls",
         ["--calls"],
         group="output_options",
         help="Report the calls coverage. For HTML and the summary report.",
-        action="store_false",
+        action="store_true",
     ),
     GcovrConfigOption(
         "sort_branches",

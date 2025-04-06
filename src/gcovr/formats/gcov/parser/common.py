@@ -45,7 +45,7 @@ class NegativeHits(Exception):
     ) -> None:
         """
         Raise exception if not ignored by options
-        >>> state = dict(location=("file", 5))
+        >>> state = {"location": ("file", 5)}
         >>> NegativeHits.raise_if_not_ignored("code with space", None, state)
         Traceback (most recent call last):
             ...

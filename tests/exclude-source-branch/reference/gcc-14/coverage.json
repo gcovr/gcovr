@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.13",
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "main.cpp",
@@ -336,6 +336,28 @@
                         7,
                         8
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main##6e9fd37b639b30af821538d3e2c6d4a6.gcov.json.gz"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 4,
+                            "destination_block_id": 1,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main##6e9fd37b639b30af821538d3e2c6d4a6.gcov.json.gz"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "6062586c70805c0b5ba0188b4261aa8f",
                     "gcovr/data_sources": [
                         [
@@ -352,6 +374,28 @@
                         9,
                         10
                     ],
+                    "calls": [
+                        {
+                            "source_block_id": 9,
+                            "destination_block_id": 1,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main##6e9fd37b639b30af821538d3e2c6d4a6.gcov.json.gz"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 10,
+                            "destination_block_id": 1,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main##6e9fd37b639b30af821538d3e2c6d4a6.gcov.json.gz"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "08770eaa1cf66e1aa1474b46fccbcbba",
                     "gcovr/data_sources": [
                         [
@@ -367,6 +411,28 @@
                     "block_ids": [
                         11,
                         12
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 11,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main##6e9fd37b639b30af821538d3e2c6d4a6.gcov.json.gz"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 12,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main##6e9fd37b639b30af821538d3e2c6d4a6.gcov.json.gz"
+                                ]
+                            ]
+                        }
                     ],
                     "gcovr/md5": "d015ff958fad6b368cc84408e7ff74a6",
                     "gcovr/data_sources": [

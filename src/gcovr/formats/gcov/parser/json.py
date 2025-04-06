@@ -40,6 +40,7 @@ from gcovr.utils import get_md5_hexdigest
 
 from ....data_model.coverage import (
     BranchCoverage,
+    CallCoverage,
     ConditionCoverage,
     FileCoverage,
     FunctionCoverage,
@@ -161,7 +162,7 @@ def _parse_file_node(
     filecov = FileCoverage(data_fname, filename=filename)
     for line in gcov_file_node["lines"]:
         persistent_states.update(location=(filename, line["line_number"]))
-        linecov: LineCoverage = filecov.insert_line_coverage(
+        linecov = filecov.insert_line_coverage(
             LineCoverage(
                 str(data_fname),
                 lineno=line["line_number"],
@@ -214,6 +215,17 @@ def _parse_file_node(
                     not_covered_false=condition["not_covered_false"],
                 ),
             )
+        for index, call in enumerate(line.get("calls", [])):
+            linecov.insert_call_coverage(
+                CallCoverage(
+                    str(data_fname),
+                    callno=index,
+                    source_block_id=call["source_block_id"],
+                    destination_block_id=call["destination_block_id"],
+                    returned=call["returned"],
+                ),
+            )
+
     for function in gcov_file_node["functions"]:
         # Use 100% only if covered == total.
         if function["blocks_executed"] == function["blocks"]:

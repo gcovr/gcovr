@@ -40,7 +40,6 @@ class GcovHandler(BaseHandler):
             # Global options needed for report
             "show_decision",
             # Global options used for merging end exclusion processing.
-            "exclude_calls",
             "exclude_noncode_lines",
             "exclude_throw_branches",
             "exclude_unreachable_branches",

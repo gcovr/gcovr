@@ -47,7 +47,7 @@ class HtmlHandler(BaseHandler):
     def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
             # Global options needed for report
-            "exclude_calls",
+            "show_calls",
             "show_decision",
             "medium_threshold",
             "high_threshold",
