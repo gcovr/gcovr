@@ -20,11 +20,11 @@ This generates an XML summary of the lines executed:
     :code: xml
 
 This XML format is described in the
-`Cobertura XML DTD <https://github.com/gcovr/gcovr/tree/main/tests/cobertura.coverage-04.dtd>`__
+`Cobertura XML DTD <https://github.com/gcovr/gcovr/blob/main/tests/cobertura.coverage-04.dtd>`__
 suitable for import and display within the
-`Jenkins <http://www.jenkins-ci.org/>`__ and `Hudson <https://projects.eclipse.org/projects/technology.hudson>`__
+`Jenkins <https://www.jenkins.io/>`__ and `Hudson <https://projects.eclipse.org/projects/technology.hudson>`__
 continuous integration servers using the
-`Cobertura Plugin <https://wiki.jenkins-ci.org/display/JENKINS/Cobertura+Plugin>`__.
+`Jenkins Coverage Plugin <https://github.com/jenkinsci/coverage-plugin>`__.
 Gcovr also supports a :ref:`sonarqube_xml_output`.
 
 The :option:`--cobertura` option generates a denser XML output, and the

@@ -9,4 +9,4 @@ in a suitable XML format via the :option:`--sonarqube<gcovr --sonarqube>` option
     gcovr --sonarqube coverage.xml
 
 The SonarQube XML format is documented at
-`<https://docs.sonarqube.org/latest/analysis/generic-test/>`_.
+`<https://docs.sonarsource.com/sonarqube-server/2025.2/analyzing-source-code/test-coverage/generic-test-data/>`_.
