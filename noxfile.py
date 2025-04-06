@@ -336,8 +336,13 @@ def doc(session: nox.Session) -> None:
         with open("examples/gcovr.out", "w", encoding="UTF-8") as fh_out:
             session.run("gcovr", "-h", stdout=fh_out)
         for builder in ("linkcheck", "html", "latex", "epub"):
-            if os.environ.get("SPHINX_SKIP_CHECK_LINKS", "") == "True" and builder == "linkcheck":
-                session.log("Skip link checker due to environment SPHINX_SKIP_CHECK_LINKS=True.")
+            if (
+                os.environ.get("SPHINX_SKIP_CHECK_LINKS", "") == "True"
+                and builder == "linkcheck"
+            ):
+                session.log(
+                    "Skip link checker due to environment SPHINX_SKIP_CHECK_LINKS=True."
+                )
                 continue
             session.run(
                 "sphinx-build",
