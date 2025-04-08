@@ -317,7 +317,7 @@
                     "name": "main",
                     "lineno": 10,
                     "execution_count": 4,
-                    "blocks_percent": 83.0,
+                    "blocks_percent": 80.0,
                     "gcovr/data_sources": [
                         [
                             "main.gcda",

@@ -12,19 +12,19 @@
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -34,22 +34,68 @@
                     "function_name": "main",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 4,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "source_block_id": 0,
+                            "returned": 4,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "859a343f3d87acc283a3145c1a6a381e",
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -61,16 +107,16 @@
                     "branches": [
                         {
                             "count": 2,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0,
                             "gcovr/data_sources": [
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ],
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ]
                             ]
@@ -82,11 +128,11 @@
                             "source_block_id": 0,
                             "gcovr/data_sources": [
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ],
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ]
                             ]
@@ -95,11 +141,11 @@
                     "gcovr/md5": "af4f5248ae1df52f683f8c89f4f6b47f",
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -111,16 +157,16 @@
                     "branches": [
                         {
                             "count": 2,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0,
                             "gcovr/data_sources": [
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ],
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ]
                             ]
@@ -132,27 +178,27 @@
                             "source_block_id": 0,
                             "gcovr/data_sources": [
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ],
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ]
                             ]
                         },
                         {
                             "count": 2,
-                            "fallthrough": false,
+                            "fallthrough": true,
                             "throw": false,
-                            "source_block_id": 1,
+                            "source_block_id": 0,
                             "gcovr/data_sources": [
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ],
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ]
                             ]
@@ -161,14 +207,14 @@
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
-                            "source_block_id": 1,
+                            "source_block_id": 0,
                             "gcovr/data_sources": [
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ],
                                 [
-                                    "main.gcda",
+                                    "testcase-main.gcda",
                                     "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ]
                             ]
@@ -177,11 +223,11 @@
                     "gcovr/md5": "af4f5248ae1df52f683f8c89f4f6b47f",
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -191,47 +237,46 @@
                     "function_name": "main",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 4,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "381c1ce80d9482d18a50b1377cc00f3e",
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
-                            "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 14,
-                    "function_name": "main",
-                    "count": 4,
-                    "branches": [],
-                    "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
-                        ],
-                        [
-                            "main.gcda",
-                            "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
-                        ],
-                        [
-                            "main.gcda",
-                            "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
-                        ],
-                        [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -241,22 +286,46 @@
                     "function_name": "main",
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "8a15c09696015690470ce1ddc6dd3e7f",
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -266,22 +335,46 @@
                     "function_name": "main",
                     "count": 4,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 4,
+                            "gcovr/data_sources": [
+                                [
+                                    "testcase-main.gcda",
+                                    "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "testcase-main.gcda",
+                                    "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ]
+                            ]
+                        }
+                    ],
                     "gcovr/md5": "f1100fbdc505e80f2be5db52c35cf02b",
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -294,19 +387,19 @@
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -317,22 +410,22 @@
                     "name": "main",
                     "lineno": 10,
                     "execution_count": 4,
-                    "blocks_percent": 83.0,
+                    "blocks_percent": 89.0,
                     "gcovr/data_sources": [
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ],
                         [
-                            "main.gcda",
+                            "testcase-main.gcda",
                             "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
@@ -340,19 +433,19 @@
             ],
             "gcovr/data_sources": [
                 [
-                    "main.gcda",
+                    "testcase-main.gcda",
                     "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                 ],
                 [
-                    "main.gcda",
+                    "testcase-main.gcda",
                     "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                 ],
                 [
-                    "main.gcda",
+                    "testcase-main.gcda",
                     "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                 ],
                 [
-                    "main.gcda",
+                    "testcase-main.gcda",
                     "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                 ]
             ]
