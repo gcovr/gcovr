@@ -273,7 +273,7 @@ Each **condition** provides information about a condition on that line::
       "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(condition_number, count)``.
+The ordering and merge key is ``(condition_number)``.
 
 This exactly matches the GCC gcov format.
 

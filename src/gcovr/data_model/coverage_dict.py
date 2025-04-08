@@ -27,7 +27,7 @@ LOGGER = logging.getLogger("gcovr")
 
 LinesKeyType = tuple[int, str]
 BranchesKeyType = tuple[int, int, int]
-ConditionsKeyType = tuple[int, int]
+ConditionsKeyType = int
 CallsKeyType = int
 _Key = TypeVar(
     "_Key", int, str, LinesKeyType, BranchesKeyType, ConditionsKeyType, CallsKeyType
