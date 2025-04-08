@@ -134,6 +134,13 @@ class CoverageBase:
         else:
             self.data_sources = data_source
 
+    def merge_base_data(
+        self,
+        other: CoverageBase,
+    ) -> None:
+        """Merge the data of the base class."""
+        self.data_sources = set([*self.data_sources, *other.data_sources])
+
     def raise_merge_error(self, msg: str, other: Any) -> NoReturn:
         """Get the exception with message extended with context."""
         raise GcovrMergeAssertionError(
@@ -220,7 +227,7 @@ class BranchCoverage(CoverageBase):
 
     def __init__(
         self,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_source: Union[str, tuple[str, ...]],
         *,
         branchno: int,
         count: int,
@@ -326,6 +333,7 @@ class BranchCoverage(CoverageBase):
             other, "Destination block ID", lambda x: x.destination_block_id
         )
         self.excluded |= other.excluded
+        self.merge_base_data(other)
 
     @property
     def key(self) -> BranchesKeyType:
@@ -502,6 +510,7 @@ class ConditionCoverage(CoverageBase):
             self.count - len(self.not_covered_false) - len(self.not_covered_true)
         )
         self.excluded |= other.excluded
+        self.merge_base_data(other)
 
     @property
     def key(self) -> ConditionsKeyType:
@@ -555,6 +564,7 @@ class DecisionCoverageUncheckable(CoverageBase):
 
     def merge(self, other: DecisionCoverageUncheckable) -> None:
         """Merge the decision coverage."""
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -631,6 +641,7 @@ class DecisionCoverageConditional(CoverageBase):
         """Merge the decision coverage."""
         self.count_true += other.count_true
         self.count_false += other.count_false
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -701,6 +712,7 @@ class DecisionCoverageSwitch(CoverageBase):
     def merge(self, other: DecisionCoverageSwitch) -> None:
         """Merge the decision coverage."""
         self.count += other.count
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -813,14 +825,15 @@ class CallCoverage(CoverageBase):
             self.raise_data_error(
                 f"Call number must be equal, got {self.callno} and {other.callno}."
             )
-        self.returned += other.returned
         self.source_block_id = self._merge_property(
             other, "Source block ID", lambda x: x.source_block_id
         )
         self.destination_block_id = self._merge_property(
             other, "Destination block ID", lambda x: x.destination_block_id
         )
+        self.returned += other.returned
         self.excluded |= other.excluded
+        self.merge_base_data(other)
 
         return self
 
@@ -1025,6 +1038,7 @@ class FunctionCoverage(CoverageBase):
             self.mangled_name = self._merge_property(
                 other, "Function mangled name", lambda x: x.mangled_name
             )
+
         if not options.func_opts.ignore_function_lineno:
             if self.count.keys() != other.count.keys():
                 lines = sorted(set([*self.count.keys(), *other.count.keys()]))
@@ -1102,6 +1116,8 @@ class FunctionCoverage(CoverageBase):
             self.end = CoverageDict[int, tuple[int, int]](
                 {lineno: max(*self.end.values(), *other.end.values())}
             )
+
+        self.merge_base_data(other)
 
         return self
 
@@ -1332,6 +1348,7 @@ class LineCoverage(CoverageBase):
         self.conditions.merge(other.conditions, options)
         self.__merge_decision(other.decision)
         self.calls.merge(other.calls, options)
+        self.merge_base_data(other)
 
         return self
 

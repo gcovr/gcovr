@@ -331,6 +331,7 @@ def parse_coverage(
     for line, raw_line in tokenized_lines:
         try:
             state = _gather_coverage_from_line(
+                data_filename,
                 state,
                 line,
                 filecov=filecov,
@@ -388,6 +389,7 @@ class _ParserState(NamedTuple):
 
 
 def _gather_coverage_from_line(
+    data_filename: Union[str, tuple[str, ...]],
     state: _ParserState,
     line: _Line,
     *,
@@ -397,7 +399,7 @@ def _gather_coverage_from_line(
     Interpret a Line, updating the FileCoverage, and transitioning ParserState.
 
     The function handles all possible Line variants, and dies otherwise:
-    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", filecov=...)
+    >>> _gather_coverage_from_line("", _ParserState(), "illegal line type", filecov=...)
     Traceback (most recent call last):
     AssertionError: Unexpected line type: 'illegal line type'
     """
@@ -413,7 +415,7 @@ def _gather_coverage_from_line(
                 filecov.insert_line_coverage(state.linecov)
             state = state._replace(
                 linecov=LineCoverage(
-                    filecov.data_sources,
+                    data_filename,
                     lineno=lineno,
                     count=raw_count,
                     function_name=state.function_name,
@@ -427,7 +429,7 @@ def _gather_coverage_from_line(
 
             filecov.insert_function_coverage(
                 FunctionCoverage(
-                    filecov.data_sources,
+                    data_filename,
                     mangled_name=name,
                     demangled_name=None,
                     lineno=lineno,
@@ -462,7 +464,7 @@ def _gather_coverage_from_line(
         if state.linecov is not None:
             state.linecov.insert_branch_coverage(
                 BranchCoverage(
-                    filecov.data_sources,
+                    data_filename,
                     branchno=branchno,
                     count=hits,
                     source_block_id=state.block_id,
