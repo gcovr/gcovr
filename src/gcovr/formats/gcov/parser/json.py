@@ -162,23 +162,21 @@ def _parse_file_node(
     filecov = FileCoverage(data_fname, filename=filename)
     for line in gcov_file_node["lines"]:
         persistent_states.update(location=(filename, line["line_number"]))
-        linecov = filecov.insert_line_coverage(
-            LineCoverage(
-                str(data_fname),
-                lineno=line["line_number"],
-                count=check_hits(
-                    line["count"],
-                    source_lines[line["line_number"] - 1],
-                    ignore_parse_errors,
-                    suspicious_hits_threshold,
-                    persistent_states,
-                ),
-                function_name=line.get("function_name"),
-                block_ids=line["block_ids"],
-                md5=get_md5_hexdigest(
-                    source_lines[line["line_number"] - 1].encode("UTF-8")
-                ),
-            )
+        linecov = LineCoverage(
+            str(data_fname),
+            lineno=line["line_number"],
+            count=check_hits(
+                line["count"],
+                source_lines[line["line_number"] - 1],
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            ),
+            function_name=line.get("function_name"),
+            block_ids=line["block_ids"],
+            md5=get_md5_hexdigest(
+                source_lines[line["line_number"] - 1].encode("UTF-8")
+            ),
         )
         for index, branch in enumerate(line["branches"]):
             linecov.insert_branch_coverage(
@@ -225,6 +223,8 @@ def _parse_file_node(
                     returned=call["returned"],
                 ),
             )
+
+        filecov.insert_line_coverage(linecov)
 
     for function in gcov_file_node["functions"]:
         # Use 100% only if covered == total.

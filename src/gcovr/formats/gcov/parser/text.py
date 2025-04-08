@@ -58,7 +58,6 @@ from ....data_model.coverage import (
     FileCoverage,
     FunctionCoverage,
     LineCoverage,
-    LinesKeyType,
 )
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 
@@ -339,6 +338,8 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
             state = _ParserState(is_recovering=True)
+    if state.linecov is not None:
+        filecov.insert_line_coverage(state.linecov)
 
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
@@ -349,7 +350,7 @@ def parse_coverage(
                 str(data_filename),
                 mangled_name=name,
                 demangled_name=None,
-                lineno=filecov.lines[state.linecov_key].lineno + 1,
+                lineno=0 if state.linecov is None else (state.linecov.lineno + 1),
                 count=count,
                 blocks=blocks,
             ),
@@ -380,7 +381,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
 class _ParserState(NamedTuple):
     deferred_functions: list[_FunctionLine] = []
     function_name: Optional[str] = None
-    linecov_key: LinesKeyType = (0, "", 0, 0, None)
+    linecov: Optional[LineCoverage] = None
     block_id: Optional[int] = None
     line_contents: str = ""
     is_recovering: bool = False
@@ -403,23 +404,23 @@ def _gather_coverage_from_line(
     # pylint: disable=too-many-return-statements,too-many-branches
     # pylint: disable=no-else-return  # make life easier for type checkers
 
-    linecov: Optional[LineCoverage]
-
     if isinstance(line, _SourceLine):
         raw_count, lineno, source_code, extra_info = line
 
         is_noncode = extra_info & _ExtraInfo.NONCODE
-        linecov = None
         if not is_noncode:
-            linecov = filecov.insert_line_coverage(
-                LineCoverage(
+            if state.linecov is not None:
+                filecov.insert_line_coverage(state.linecov)
+            state = state._replace(
+                linecov=LineCoverage(
                     filecov.data_sources,
                     lineno=lineno,
                     count=raw_count,
                     function_name=state.function_name,
                     md5=get_md5_hexdigest(source_code.encode("UTF-8")),
-                ),
+                )
             )
+
         # handle deferred functions
         for function in state.deferred_functions:
             name, count, blocks = function
@@ -438,9 +439,9 @@ def _gather_coverage_from_line(
 
         return _ParserState(
             function_name=state.function_name,
-            linecov_key=state.linecov_key if linecov is None else linecov.key,
-            line_contents=line.source_code,
+            linecov=state.linecov,
             block_id=state.block_id,
+            line_contents=line.source_code,
         )
 
     elif state.is_recovering:
@@ -458,10 +459,8 @@ def _gather_coverage_from_line(
         branchno, hits, annotation = line
 
         # linecov won't exist if it was considered noncode
-        linecov = filecov.lines.get(state.linecov_key)
-
-        if linecov:
-            linecov.insert_branch_coverage(
+        if state.linecov is not None:
+            state.linecov.insert_branch_coverage(
                 BranchCoverage(
                     filecov.data_sources,
                     branchno=branchno,
@@ -474,6 +473,28 @@ def _gather_coverage_from_line(
 
         return state
 
+    # ignore unused line types, such as specialization sections
+    elif isinstance(line, _CallLine):
+        callno, returned = line
+
+        # linecov won't exist if it was considered noncode
+        if state.linecov is not None:
+            state.linecov.insert_call_coverage(
+                CallCoverage(
+                    filecov.data_sources,
+                    callno=callno,
+                    source_block_id=state.block_id,  # type: ignore [arg-type]
+                    destination_block_id=None,
+                    returned=returned,
+                ),
+            )
+
+        return state
+
+    elif isinstance(line, _BlockLine):
+        _, _, block_id, _ = line
+        return state._replace(block_id=block_id)
+
     # ignore metadata in this phase
     elif isinstance(line, _MetadataLine):
         return state
@@ -481,27 +502,6 @@ def _gather_coverage_from_line(
     # currently, the parser just ignores specialization sections
     elif isinstance(line, (_SpecializationMarkerLine, _SpecializationNameLine)):
         return state
-
-    # ignore unused line types, such as specialization sections
-    elif isinstance(line, _CallLine):
-        callno, returned = line
-        linecov = filecov.lines[state.linecov_key]  # must already exist
-
-        linecov.insert_call_coverage(
-            CallCoverage(
-                filecov.data_sources,
-                callno=callno,
-                source_block_id=state.block_id,  # type: ignore [arg-type]
-                destination_block_id=None,
-                returned=returned,
-            ),
-        )
-
-        return state
-
-    elif isinstance(line, _BlockLine):
-        _, _, block_id, _ = line
-        return state._replace(block_id=block_id)
 
     elif isinstance(line, (_UnconditionalLine,)):
         return state
