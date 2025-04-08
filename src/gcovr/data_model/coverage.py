@@ -1410,7 +1410,13 @@ class LineCoverage(CoverageBase):
     @property
     def key(self) -> LinesKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return (self.lineno, "" if self.function_name is None else self.function_name)
+        return (
+            self.lineno,
+            "" if self.function_name is None else self.function_name,
+            len(self.branches),
+            len(self.conditions),
+            None if self.block_ids is None else tuple(self.block_ids),
+        )
 
     @property
     def is_excluded(self) -> bool:
@@ -1659,7 +1665,7 @@ class FileCoverage(CoverageBase):
         filecov = FileCoverage(self.data_sources, filename=self.filename)
         filecov.functions[functioncov.key] = functioncov
 
-        filecov.lines = CoverageDict[tuple[int, str], LineCoverage](
+        filecov.lines = CoverageDict[LinesKeyType, LineCoverage](
             {
                 key: linecov
                 for key, linecov in self.lines.items()

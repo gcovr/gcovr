@@ -380,7 +380,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
 class _ParserState(NamedTuple):
     deferred_functions: list[_FunctionLine] = []
     function_name: Optional[str] = None
-    linecov_key: LinesKeyType = (0, "")
+    linecov_key: LinesKeyType = (0, "", 0, 0, None)
     block_id: Optional[int] = None
     line_contents: str = ""
     is_recovering: bool = False
