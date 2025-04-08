@@ -10,7 +10,15 @@ The ``gcovr`` command can also generate a JSON output using
 the :option:`--json` and :option:`--json-pretty`
 options::
 
-    gcovr --json coverage.json
+.. include:: ../../examples/example_json.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an indented JSON report:
+
+.. include:: ../../examples/example_json.json
+    :literal:
 
 The :option:`--json-pretty` option generates an indented
 JSON output that is easier to read.
