@@ -1,5 +1,5 @@
 
-.. program::  gcovr
+.. program:: gcovr
 
 .. _json_output:
 
@@ -8,7 +8,7 @@ JSON Output
 
 The ``gcovr`` command can also generate a JSON output using
 the :option:`--json` and :option:`--json-pretty`
-options::
+options:
 
 .. include:: ../../examples/example_json.sh
     :code: bash
