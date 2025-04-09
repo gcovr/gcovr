@@ -1,5 +1,5 @@
 
-.. program::  gcovr
+.. program:: gcovr
 
 .. _json_output:
 
@@ -8,9 +8,17 @@ JSON Output
 
 The ``gcovr`` command can also generate a JSON output using
 the :option:`--json` and :option:`--json-pretty`
-options::
+options:
 
-    gcovr --json coverage.json
+.. include:: ../../examples/example_json.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an indented JSON report:
+
+.. include:: ../../examples/example_json.json
+    :literal:
 
 The :option:`--json-pretty` option generates an indented
 JSON output that is easier to read.
@@ -117,7 +125,7 @@ Each **line** entry contains coverage data for one line::
         "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(line_number, function_name)``.
+The ordering and merge key is ``(line_number, function_name, number of branches, number of conditions, list of block ids)``.
 
 line_number: int
   The 1-based line number to which this entry relates.
@@ -265,7 +273,7 @@ Each **condition** provides information about a condition on that line::
       "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(condition_number, count)``.
+The ordering and merge key is ``(condition_number)``.
 
 This exactly matches the GCC gcov format.
 

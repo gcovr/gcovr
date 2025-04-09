@@ -35,6 +35,8 @@ Bug fixes and small improvements:
 - Fix duplicate constructors, destructors and wrong const overload functions in Cobertura report, (:issue:`1085`)
 - Fix ``JaCoCo`` report to follow the DTD. (:issue:`1089`)
 - Do not use option ``--calls`` as exclusion filter. (:issue:`1090`)
+- Fix error when merging conditions (and branches) for the same line if they are reported different
+  across GCOV data files. (:issue:`1092`)
 
 Documentation:
 
@@ -58,6 +60,8 @@ Known bugs:
 - Cobertura report contains multiple functions with same name for virtual destructors and const overloads.
   Fixed in :ref:`Next release <next_release>`.
 - ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
+- Error if conditions for the same line are reported different across GCOV data files.
+  Workaround in this release available and fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -117,6 +121,8 @@ Known bugs:
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
   :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
 - ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
+- Error if conditions for the same line are reported different across GCOV data files.
+  Workaround in :ref:`8.3 <release_8_3>` available and fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -142,6 +148,8 @@ Known bugs:
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
   :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
 - ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
+- Error if conditions for the same line are reported different across GCOV data files.
+  Workaround in :ref:`8.3 <release_8_3>` available and fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 
@@ -169,6 +177,8 @@ Known bugs:
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
   :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
 - ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
+- Error if conditions for the same line are reported different across GCOV data files.
+  Workaround in :ref:`8.3 <release_8_3>` available and fixed in :ref:`Next release <next_release>`.
 
 Breaking changes:
 

@@ -43,6 +43,9 @@
                             "destination_block_id": 3,
                             "gcovr/data_sources": [
                                 [
+                                    "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                                ],
+                                [
                                     "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                                 ]
                             ]
@@ -54,6 +57,9 @@
                             "source_block_id": 2,
                             "destination_block_id": 4,
                             "gcovr/data_sources": [
+                                [
+                                    "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                                ],
                                 [
                                     "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                                 ]
@@ -70,6 +76,9 @@
                             ],
                             "gcovr/data_sources": [
                                 [
+                                    "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                                ],
+                                [
                                     "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                                 ]
                             ]
@@ -80,6 +89,9 @@
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
                     "gcovr/data_sources": [
+                        [
+                            "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                        ],
                         [
                             "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                         ]
@@ -96,6 +108,9 @@
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
                     "gcovr/data_sources": [
                         [
+                            "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                        ],
+                        [
                             "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                         ]
                     ]
@@ -110,6 +125,9 @@
                     ],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
                     "gcovr/data_sources": [
+                        [
+                            "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                        ],
                         [
                             "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                         ]
@@ -171,6 +189,9 @@
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
                     "gcovr/data_sources": [
                         [
+                            "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                        ],
+                        [
                             "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                         ]
                     ]
@@ -190,6 +211,9 @@
                             "returned": 2,
                             "gcovr/data_sources": [
                                 [
+                                    "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                                ],
+                                [
                                     "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                                 ]
                             ]
@@ -197,6 +221,9 @@
                     ],
                     "gcovr/md5": "c18608b3fe9a00042c41d97d382d1e07",
                     "gcovr/data_sources": [
+                        [
+                            "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                        ],
                         [
                             "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                         ]
@@ -212,6 +239,9 @@
                     ],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
                     "gcovr/data_sources": [
+                        [
+                            "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                        ],
                         [
                             "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                         ]
