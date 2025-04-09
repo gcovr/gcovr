@@ -142,10 +142,6 @@
                         [
                             "main.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
                 },
@@ -158,10 +154,6 @@
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
@@ -215,10 +207,6 @@
                         [
                             "main.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
                 },
@@ -274,10 +262,6 @@
                                 [
                                     "main.gcda",
                                     "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                                ],
-                                [
-                                    "update-data.gcda",
-                                    "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                                 ]
                             ]
                         },
@@ -290,10 +274,6 @@
                                 [
                                     "main.gcda",
                                     "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                                ],
-                                [
-                                    "update-data.gcda",
-                                    "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                                 ]
                             ]
                         }
@@ -303,10 +283,6 @@
                         [
                             "main.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
                 },
@@ -332,10 +308,6 @@
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
@@ -363,10 +335,6 @@
                         [
                             "main.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
                 },
@@ -392,10 +360,6 @@
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
@@ -423,10 +387,6 @@
                         [
                             "main.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
                 },
@@ -438,10 +398,6 @@
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
-                            "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
                             "update-data.h##522c29cd66298f97fb9ff5a561c844e0.gcov"
                         ]
                     ]
