@@ -1,3 +1,5 @@
+.. program:: gcovr
+
 .. _text_output:
 .. _txt_output:
 
@@ -7,32 +9,32 @@ Text Output
 The text output format summarizes coverage in a plain-text table.
 This is the default output format if no other format is selected.
 This output format can also be explicitly selected
-with the :option:`gcovr --txt` option.
+with the :option:`--txt` option.
 
 .. versionadded:: 5.0
-   Added explicit :option:`--txt<gcovr --txt>` option.
+   Added explicit :option:`--txt` option.
 
 Example output:
 
-.. include:: ../../examples/example.txt
-    :literal:
+.. literalinclude:: ../../examples/example.txt
+    :language: text
 
 Line Coverage
 -------------
 
 Running gcovr without any explicit output formats …
 
-.. include:: ../../examples/example.sh
-    :code: bash
+.. literalinclude:: ../../examples/example.sh
+    :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 generates a text summary of the lines executed:
 
-.. include:: ../../examples/example.txt
-    :literal:
+.. literalinclude:: ../../examples/example.txt
+    :language: text
 
-The same result can be achieved when explicit :option:`--txt<gcovr --txt>`
+The same result can be achieved when explicit :option:`--txt`
 option is set. For example::
 
     gcovr --txt
@@ -62,21 +64,21 @@ Branch Coverage
 ---------------
 
 The ``gcovr`` command can also summarize branch coverage using
-the :option:`-b/--branches<gcovr --branches>` option:
+the :option:`-b/--branches <--branches>` option:
 
-.. include:: ../../examples/example_branches.sh
-    :code: bash
+.. literalinclude:: ../../examples/example_branches.sh
+    :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 This generates a tabular output that summarizes the number of branches, the number of
 branches taken and the branches that were not completely covered:
 
-.. include:: ../../examples/example_branches.txt
-    :literal:
+.. literalinclude:: ../../examples/example_branches.txt
+    :language: text
 
-The same result can be achieved when explicit :option:`--txt<gcovr --txt>`
-option is set. For example::
+The same result can be achieved when the :option:`--txt` option is
+explicitly set. For example::
 
     gcovr --branches --txt
 

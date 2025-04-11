@@ -1,23 +1,23 @@
+.. program:: gcovr
+
 .. _clover_output:
 
 Clover XML Output
 =================
 
-.. program:: gcovr
-
 The ``gcovr`` command can generate a
-Cobertura XML output using the :option:`--clover`
+Clover XML output using the :option:`--clover`
 and :option:`--clover-pretty` options:
 
-.. include:: ../../examples/example_clover.sh
-    :code: bash
+.. literalinclude:: ../../examples/example_clover.sh
+    :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 This generates an XML summary of the lines executed:
 
-.. include:: ../../examples/example_clover.xml
-    :code: xml
+.. literalinclude:: ../../examples/example_clover.xml
+    :language: xml
 
 This XML format is described in the
 `Clover XML <https://bitbucket.org/atlassian/clover/src/master/etc/schema/clover.xsd>`__

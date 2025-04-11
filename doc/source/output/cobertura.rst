@@ -1,23 +1,23 @@
+.. program:: gcovr
+
 .. _cobertura_output:
 
 Cobertura XML Output
 ====================
 
-.. program:: gcovr
-
 The ``gcovr`` command can generate a
 Cobertura XML output using the :option:`--cobertura`
 and :option:`--cobertura-pretty` options:
 
-.. include:: ../../examples/example_cobertura.sh
-    :code: bash
+.. literalinclude:: ../../examples/example_cobertura.sh
+    :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 This generates an XML summary of the lines executed:
 
-.. include:: ../../examples/example_cobertura.xml
-    :code: xml
+.. literalinclude:: ../../examples/example_cobertura.xml
+    :language: xml
 
 This XML format is described in the
 `Cobertura XML DTD <https://github.com/gcovr/gcovr/blob/main/tests/cobertura.coverage-04.dtd>`__
@@ -25,7 +25,6 @@ suitable for import and display within the
 `Jenkins <https://www.jenkins.io/>`__ and `Hudson <https://projects.eclipse.org/projects/technology.hudson>`__
 continuous integration servers using the
 `Jenkins Coverage Plugin <https://github.com/jenkinsci/coverage-plugin>`__.
-Gcovr also supports a :ref:`sonarqube_xml_output`.
 
 The :option:`--cobertura` option generates a denser XML output, and the
 :option:`--cobertura-pretty` option generates an indented

@@ -1,10 +1,12 @@
+.. program:: gcovr
+
 .. _sonarqube_xml_output:
 
 SonarQube XML Output
 ====================
 
 If you are using SonarQube, you can get a coverage report
-in a suitable XML format via the :option:`--sonarqube<gcovr --sonarqube>` option::
+in a suitable XML format via the :option:`--sonarqube` option::
 
     gcovr --sonarqube coverage.xml
 

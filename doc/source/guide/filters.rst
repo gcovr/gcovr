@@ -1,3 +1,6 @@
+.. program is needed to resolve :option: references
+.. program:: gcovr
+
 .. _filters:
 
 Using Filters
@@ -6,15 +9,15 @@ Using Filters
 Gcovr tries to only report coverage for files within your project,
 not for your libraries. This is influenced by the following options:
 
--   :option:`-r <gcovr -r>`, :option:`--root <gcovr --root>`
--   :option:`-f <gcovr -f>`, :option:`--filter <gcovr --filter>`
--   :option:`-e <gcovr -e>`, :option:`--exclude <gcovr --exclude>`
--   :option:`--gcov-filter <gcovr --gcov-filter>`
--   :option:`--gcov-exclude <gcovr --gcov-exclude>`
--   :option:`--gcov-exclude-directories <gcovr --gcov-exclude-directories>`
+-   :option:`-r`/\ :option:`--root`
+-   :option:`-f`/\ :option:`--filter`
+-   :option:`-e`/\ :option:`--exclude`
+-   :option:`--gcov-filter`
+-   :option:`--gcov-exclude`
+-   :option:`--gcov-exclude-directories`
 -   (the current working directory where gcovr is invoked)
 
-NOTE: Filters can also be specified in the gcovr configuration file: :ref:`configuration`
+NOTE: Filters can also be specified in the gcovr :ref:`configuration file <configuration>`.
 
 These options take filters.
 A filter is a regular expression that matches a file path.
@@ -47,29 +50,28 @@ Examples of relative filters:
     so we ignore any leading directory parts with ``(.+/)?``.
     The ``$`` at the end ensures that the path ends here.
 
-If no :option:`-f/--filter<gcovr --filter>` is provided,
-the :option:`-r/--root<gcovr --root>` is turned into a default filter.
-Therefore, files outside of the :option:`-r/--root<gcovr --root>`
+If no :option:`-f/--filter <--filter>` is provided,
+the :option:`-r/--root <--root>` is turned into a default filter.
+Therefore, files outside of the :option:`-r/--root <--root>`
 directory are excluded.
 
 To be included in a report, the source file must match any
-:option:`-f/--filter<gcovr --filter>`,
-and must not match any :option:`-e/--exclude<gcovr --exclude>` filter.
+:option:`-f/--filter <--filter>`,
+and must not match any :option:`-e/--exclude <--exclude>` filter.
 
-The :option:`--gcov-filter<gcovr --gcov-filter>`
-and :option:`--gcov-exclude<gcovr --gcov-exclude>` filters apply to the
+The :option:`--gcov-filter` and :option:`--gcov-exclude` filters apply to the
 ``.gcov`` / ``.json.gz`` files created by ``gcov``.
 This is useful mostly when running gcov yourself,
-and then invoking gcovr with :option:`-g/--gcov-use-existing-files<gcovr --gcov-use-existing-files>`.
+and then invoking gcovr with :option:`-g/--gcov-use-existing-files <--gcov-use-existing-files>`.
 But these filters also apply when gcov is launched by gcovr.
 
 
 Speeding up coverage data search
 --------------------------------
 
-The :option:`--gcov-exclude-directories<gcovr --gcov-exclude-directories>` filter is used
+The :option:`--gcov-exclude-directories` filter is used
 while searching for raw coverage data (or for existing ``.gcov`` files when
-:option:`-g/--gcov-use-existing-files/--use-gcov-files<gcovr --gcov-use-existing-files>` is active).
+:option:`-g/--gcov-use-existing-files <--gcov-use-existing-files>` is active).
 This filter is matched against directory paths, not file paths.
 If a directory matches,
 all its contents (files and subdirectories) will be excluded from the search.
@@ -93,22 +95,22 @@ this will exclude anything in the ``build/a`` directory
 but will use the coverage data for ``better_code.o`` and ``main.o``.
 
 This can speed up gcovr when you have a complicated build directory structure.
-Consider also using the :option:`search_paths <gcovr search_paths>`
-or :option:`--gcov-object-directory<gcovr --gcov-object-directory>` arguments to specify
+Consider also using the :option:`search_paths`
+or :option:`--gcov-object-directory` arguments to specify
 where gcovr starts searching. Here you can also specify the ``gcda`` or ``gcov`` file
 directly to get the coverage data for a specific file without searching a whole tree.
 If you are unsure which directories are being searched,
-run gcovr in :option:`-v/--verbose<gcovr --verbose>` mode.
+run gcovr in :option:`-v/--verbose <--verbose>` mode.
 
 For each found coverage data file gcovr will invoke the ``gcov`` tool.
 This is typically the slowest part,
 and other filters can only be applied *after* this step.
-In some cases, parallel execution with the :option:`-j<gcovr -j>` option
+In some cases, parallel execution with the :option:`-j` option
 might be helpful to speed up processing.
 
 .. versionadded:: 7.0
 
-   :option:`search_paths <gcovr search_paths>` also accept specific files
+   :option:`search_paths` also accept specific files.
 
 
 Filters for symlinks
@@ -149,10 +151,16 @@ or a relative path to the real path::
 More examples for filters
 -------------------------
 
-Excluding files inside build directory via --exclude with absolute path (Unix only):
+Excluding files inside build directory via :option:`--exclude`
+with absolute path (Unix only):
 
-``-e '/.*/build/'``
+.. code-block:: bash
 
-Excluding files inside build directory via --filter with relative path:
+    gcovr --exclude '/.*/build/'
 
-``--filter '\.\./'``
+Excluding files inside build directory via :option:`--filter`
+with relative path:
+
+.. code-block:: bash
+
+    gcovr --filter '\.\./'
