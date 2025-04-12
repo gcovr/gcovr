@@ -125,7 +125,7 @@ Each **line** entry contains coverage data for one line::
         "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(line_number, function_name, number of branches, number of conditions, list of block ids)``.
+The ordering and merge key is ``(line_number, function_name, number of branches, list of condition counts, list of block ids)``.
 
 line_number: int
   The 1-based line number to which this entry relates.

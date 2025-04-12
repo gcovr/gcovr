@@ -1431,7 +1431,7 @@ class LineCoverage(CoverageBase):
             self.lineno,
             "" if self.function_name is None else self.function_name,
             len(self.branches),
-            len(self.conditions),
+            tuple(c.count for c in self.conditions.values()),
             None if self.block_ids is None else tuple(self.block_ids),
         )
 

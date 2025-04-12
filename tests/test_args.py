@@ -22,6 +22,7 @@ import platform
 import sys
 from gcovr.__main__ import main
 from gcovr.version import __version__
+from gcovr.data_model.coverage_dict import LinesKeyType
 from gcovr.data_model.version import FORMAT_VERSION
 
 import logging
@@ -698,7 +699,13 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
         (16, 0, None),
         (13, 2, [1, 0]),
     ]:
-        line_key = (line, "", 0 if branches is None else len(branches), 0, None)
+        line_key: LinesKeyType = (
+            line,
+            "",
+            0 if branches is None else len(branches),
+            tuple(),
+            None,
+        )
         assert filecov.lines[line_key].count == count
         if branches is not None:
             assert len(filecov.lines[line_key].branches) == len(branches)
