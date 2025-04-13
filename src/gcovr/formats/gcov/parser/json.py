@@ -87,26 +87,25 @@ def parse_coverage(
         if is_file_excluded(fname, include_filters, exclude_filters):
             continue
 
-        if file["file"] == "<stdin>":
-            message = f"Got sourcefile {file['file']}, using empty lines."
-            LOGGER.info(message)
-            source_lines = [b"" for _ in range(file["lines"][-1]["line_number"])]
-            source_lines[0] = f"/* {message} */".encode()
-        else:
+        max_line_number = file["lines"][-1]["line_number"] if file["lines"] else 1
+        try:
             with open(fname, "rb") as fh_in2:
                 source_lines = fh_in2.read().splitlines()
             lines = len(source_lines)
-            max_line_from_cdata = (
-                file["lines"][-1]["line_number"] if file["lines"] else 1
-            )
-            if lines < max_line_from_cdata:
+            if lines < max_line_number:
                 LOGGER.warning(
-                    f"File {fname} has {lines} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                    f"File {max_line_number} has {lines} line(s) but coverage data has {max_line_number} line(s)."
                 )
-                # Python ranges are exclusive. We want to iterate over all lines, including
-                # that last line. Thus, we have to add a +1 to include that line.
-                for _ in range(lines, max_line_from_cdata):
-                    source_lines.append(b"/*EOF*/")
+                source_lines += [b"/*EOF*/"] * (max_line_number - lines)
+        except OSError as e:
+            if file["file"].endswith("<stdin>"):
+                message = f"Got sourcefile {file['file']}, using empty lines."
+                LOGGER.info(message)
+            else:
+                message = f"Can't read file, using empty lines: {e}"
+                LOGGER.warning(message)
+            source_lines = [b""] * max_line_number
+            source_lines[0] = f"/* {message} */".encode()
 
         encoded_source_lines = [
             line.decode(source_encoding, errors="replace") for line in source_lines
