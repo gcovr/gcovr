@@ -136,10 +136,11 @@ class CoverageBase:
 
     def raise_merge_error(self, msg: str, other: Any) -> NoReturn:
         """Get the exception with message extended with context."""
+        location = self.location
         raise GcovrMergeAssertionError(
             "\n".join(
                 [
-                    msg,
+                    msg if location is None else f"{location} {msg}",
                     "GCOV data file of merge source is:"
                     if len(other.data_sources) == 1
                     else "GCOV data files of merge source are:",
@@ -152,10 +153,11 @@ class CoverageBase:
 
     def raise_data_error(self, msg: str) -> NoReturn:
         """Get the exception with message extended with context."""
+        location = self.location
         raise GcovrDataAssertionError(
             "\n".join(
                 [
-                    msg,
+                    msg if location is None else f"{location} {msg}",
                     f"GCOV data file{' is' if len(self.data_sources) == 1 else 's are'} of merge source:",
                     *[f"   {' -> '.join(e)}" for e in sorted(self.data_sources)],
                 ]
@@ -175,7 +177,8 @@ class CoverageBase:
         if left is not None and right is not None:
             if left != right:
                 self.raise_merge_error(
-                    f"{msg} must be equal, got {left} and {right}.", other
+                    f"{msg} must be equal, got {left} and {right}.",
+                    other,
                 )
 
         return left or right
@@ -184,6 +187,11 @@ class CoverageBase:
     @abstractmethod
     def key(self) -> Any:
         """Get the key used for the dictionary to unique identify the coverage object."""
+
+    @property
+    @abstractmethod
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
 
 
 class BranchCoverage(CoverageBase):
@@ -209,6 +217,7 @@ class BranchCoverage(CoverageBase):
     first_undefined_source_block_id: bool = True
 
     __slots__ = (
+        "parent",
         "branchno",
         "count",
         "fallthrough",
@@ -220,6 +229,7 @@ class BranchCoverage(CoverageBase):
 
     def __init__(
         self,
+        parent: LineCoverage,
         data_source: Union[str, set[tuple[str, ...]]],
         *,
         branchno: int,
@@ -231,6 +241,7 @@ class BranchCoverage(CoverageBase):
         excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
+        self.parent = parent
         if count < 0:
             self.raise_data_error("count must not be a negative value.")
 
@@ -267,10 +278,14 @@ class BranchCoverage(CoverageBase):
 
     @classmethod
     def deserialize(
-        cls, data_source: str, branchno: int, data_dict: dict[str, Any]
+        cls,
+        linecov: LineCoverage,
+        data_source: str,
+        branchno: int,
+        data_dict: dict[str, Any],
     ) -> BranchCoverage:
         """Deserialize the object."""
-        return BranchCoverage(
+        return linecov.insert_branch_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
             branchno=branchno,
             count=data_dict["count"],
@@ -284,7 +299,7 @@ class BranchCoverage(CoverageBase):
     def merge(
         self,
         other: BranchCoverage,
-        _options: MergeOptions,
+        _option: MergeOptions,
     ) -> None:
         """
         Merge BranchCoverage information.
@@ -292,18 +307,20 @@ class BranchCoverage(CoverageBase):
         Do not use 'other' objects afterwards!
 
             Examples:
-        >>> left = BranchCoverage("left", branchno=0, count=1, source_block_id=2)
-        >>> right = BranchCoverage("right", branchno=0, count=1, source_block_id=3)
+        >>> filecov = FileCoverage("file.gcov", filename="file.cpp")
+        >>> linecov = LineCoverage(filecov, "line.gcov", lineno=100, count=2, function_name="function")
+        >>> left = BranchCoverage(linecov, "left.gcov", branchno=0, count=1, source_block_id=2)
+        >>> right = BranchCoverage(linecov, "right.gcov", branchno=0, count=1, source_block_id=3)
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrMergeAssertionError: Source block ID must be equal, got 2 and 3.
+        gcovr.data_model.coverage.GcovrMergeAssertionError: file.cpp:100 (branch 0) Source block ID must be equal, got 2 and 3.
         GCOV data file of merge source is:
-           right
+           right.gcov
         and of merge target is:
-           left
-        >>> left = BranchCoverage("left", branchno=0, count=1, source_block_id=2)
-        >>> right = BranchCoverage("-", branchno=0, count=4, source_block_id=2, fallthrough=False, throw=True)
+           left.gcov
+        >>> left = BranchCoverage(..., "left.gcov", branchno=0, count=1, source_block_id=2)
+        >>> right = BranchCoverage(..., "right.gcov", branchno=0, count=4, source_block_id=2, fallthrough=False, throw=True)
         >>> right.excluded = True
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         >>> left.count
@@ -335,6 +352,11 @@ class BranchCoverage(CoverageBase):
             self.source_block_id or 0,
             self.destination_block_id or 0,
         )
+
+    @property
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
+        return f"{self.parent.location} (branch {self.branchno})"
 
     @property
     def source_block_id_or_0(self) -> int:
@@ -382,6 +404,7 @@ class ConditionCoverage(CoverageBase):
     """
 
     __slots__ = (
+        "parent",
         "conditionno",
         "count",
         "covered",
@@ -392,6 +415,7 @@ class ConditionCoverage(CoverageBase):
 
     def __init__(
         self,
+        parent: LineCoverage,
         data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
         conditionno: int,
@@ -402,6 +426,7 @@ class ConditionCoverage(CoverageBase):
         excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
+        self.parent = parent
         if count < 0:
             self.raise_data_error("count must not be a negative value.")
         if count < covered:
@@ -433,10 +458,14 @@ class ConditionCoverage(CoverageBase):
 
     @classmethod
     def deserialize(
-        cls, data_source: str, conditionno: int, data_dict: dict[str, Any]
+        cls,
+        linecov: LineCoverage,
+        data_source: str,
+        conditionno: int,
+        data_dict: dict[str, Any],
     ) -> ConditionCoverage:
         """Deserialize the object."""
-        return ConditionCoverage(
+        return linecov.insert_condition_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
             conditionno=conditionno,
             count=data_dict["count"],
@@ -449,7 +478,7 @@ class ConditionCoverage(CoverageBase):
     def merge(
         self,
         other: ConditionCoverage,
-        _options: MergeOptions,
+        _option: MergeOptions,
     ) -> None:
         """
         Merge ConditionCoverage information.
@@ -457,18 +486,20 @@ class ConditionCoverage(CoverageBase):
         Do not use 'other' objects afterwards!
 
         Examples:
-        >>> left = ConditionCoverage("left", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
-        >>> right = ConditionCoverage("right", conditionno=2, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
+        >>> filecov = FileCoverage("file.gcov", filename="file.c")
+        >>> linecov = LineCoverage(filecov, "line.gcov", lineno=10, count=2, function_name="function")
+        >>> left = ConditionCoverage(linecov, "left.gcov", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
+        >>> right = ConditionCoverage(linecov, "right.gcov", conditionno=2, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrMergeAssertionError: The condition number must be equal, got 2 and expected 1.
+        gcovr.data_model.coverage.GcovrMergeAssertionError: file.c:10 (condition 1) The condition number must be equal, got 2 and expected 1.
         GCOV data file of merge source is:
-           right
+           right.gcov
         and of merge target is:
-           left
-        >>> left = ConditionCoverage("left", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
-        >>> right = ConditionCoverage("right", conditionno=1, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3], excluded=True)
+           left.gcov
+        >>> left = ConditionCoverage(linecov, "left.gcov", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
+        >>> right = ConditionCoverage(linecov, "right.gcov", conditionno=1, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3], excluded=True)
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         >>> left.count
         4
@@ -509,6 +540,11 @@ class ConditionCoverage(CoverageBase):
         return (self.conditionno, self.count)
 
     @property
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
+        return f"{self.parent.location} (condition {self.conditionno})"
+
+    @property
     def is_excluded(self) -> bool:
         """Return True if the branch is excluded."""
         return self.excluded
@@ -532,7 +568,15 @@ class ConditionCoverage(CoverageBase):
 class DecisionCoverageUncheckable(CoverageBase):
     r"""Represent coverage information about a decision."""
 
-    __slots__ = ()
+    __slots__ = ("parent",)
+
+    def __init__(
+        self,
+        parent: Optional[LineCoverage],
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+    ) -> None:
+        super().__init__(data_source)
+        self.parent = parent
 
     def serialize(
         self,
@@ -546,11 +590,13 @@ class DecisionCoverageUncheckable(CoverageBase):
 
     @classmethod
     def deserialize(
-        cls, data_source: str, data_dict: dict[str, Any]
-    ) -> DecisionCoverageUncheckable:
+        cls, linecov: LineCoverage, data_source: str, data_dict: dict[str, Any]
+    ) -> None:
         """Deserialize the object."""
-        return DecisionCoverageUncheckable(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source)
+        linecov.insert_decision_coverage(
+            DecisionCoverageUncheckable(
+                linecov, data_dict.get(GCOVR_DATA_SOURCES, data_source)
+            )
         )
 
     def merge(self, other: DecisionCoverageUncheckable) -> None:
@@ -560,6 +606,11 @@ class DecisionCoverageUncheckable(CoverageBase):
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
         raise NotImplementedError("Function not implemented for decision objects.")
+
+    @property
+    def location(self) -> Optional[str]:
+        """Get a string defining the source location for the coverage data."""
+        return None if self.parent is None else self.parent.location
 
     @property
     def is_covered(self) -> bool:
@@ -583,16 +634,18 @@ class DecisionCoverageConditional(CoverageBase):
 
     """
 
-    __slots__ = "count_true", "count_false"
+    __slots__ = "parent", "count_true", "count_false"
 
     def __init__(
         self,
+        parent: Optional[LineCoverage],
         data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
         count_true: int,
         count_false: int,
     ) -> None:
         super().__init__(data_source)
+        self.parent = parent
         if count_true < 0:
             self.raise_data_error("count_true must not be a negative value.")
         self.count_true = count_true
@@ -618,13 +671,16 @@ class DecisionCoverageConditional(CoverageBase):
 
     @classmethod
     def deserialize(
-        cls, data_source: str, data_dict: dict[str, Any]
-    ) -> DecisionCoverageConditional:
+        cls, linecov: LineCoverage, data_source: str, data_dict: dict[str, Any]
+    ) -> None:
         """Deserialize the object."""
-        return DecisionCoverageConditional(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            count_true=data_dict["count_true"],
-            count_false=data_dict["count_false"],
+        linecov.insert_decision_coverage(
+            DecisionCoverageConditional(
+                linecov,
+                data_dict.get(GCOVR_DATA_SOURCES, data_source),
+                count_true=data_dict["count_true"],
+                count_false=data_dict["count_false"],
+            )
         )
 
     def merge(self, other: DecisionCoverageConditional) -> None:
@@ -636,6 +692,11 @@ class DecisionCoverageConditional(CoverageBase):
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
         raise NotImplementedError("Function not implemented for decision objects.")
+
+    @property
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
+        return None if self.parent is None else self.parent.location
 
     @property
     def is_covered(self) -> bool:
@@ -660,15 +721,17 @@ class DecisionCoverageSwitch(CoverageBase):
             Number of times this decision was made.
     """
 
-    __slots__ = ("count",)
+    __slots__ = "parent", "count"
 
     def __init__(
         self,
+        parent: Optional[LineCoverage],
         data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
         count: int,
     ) -> None:
         super().__init__(data_source)
+        self.parent = parent
         if count < 0:
             self.raise_data_error("count must not be a negative value.")
         self.count = count
@@ -690,12 +753,15 @@ class DecisionCoverageSwitch(CoverageBase):
 
     @classmethod
     def deserialize(
-        cls, data_source: str, data_dict: dict[str, Any]
-    ) -> DecisionCoverageSwitch:
+        cls, linecov: LineCoverage, data_source: str, data_dict: dict[str, Any]
+    ) -> None:
         """Deserialize the object."""
-        return DecisionCoverageSwitch(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            count=data_dict["count"],
+        linecov.insert_decision_coverage(
+            DecisionCoverageSwitch(
+                linecov,
+                data_dict.get(GCOVR_DATA_SOURCES, data_source),
+                count=data_dict["count"],
+            )
         )
 
     def merge(self, other: DecisionCoverageSwitch) -> None:
@@ -706,6 +772,11 @@ class DecisionCoverageSwitch(CoverageBase):
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
         raise NotImplementedError("Function not implemented for decision objects.")
+
+    @property
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
+        return None if self.parent is None else self.parent.location
 
     @property
     def is_covered(self) -> bool:
@@ -744,6 +815,7 @@ class CallCoverage(CoverageBase):
     """
 
     __slots__ = (
+        "parent",
         "callno",
         "source_block_id",
         "destination_block_id",
@@ -753,6 +825,7 @@ class CallCoverage(CoverageBase):
 
     def __init__(
         self,
+        parent: LineCoverage,
         data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
         callno: int,
@@ -762,6 +835,7 @@ class CallCoverage(CoverageBase):
         excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
+        self.parent = parent
         self.callno = callno
         self.source_block_id = source_block_id
         self.destination_block_id = destination_block_id
@@ -788,9 +862,11 @@ class CallCoverage(CoverageBase):
         return data_dict
 
     @classmethod
-    def deserialize(cls, data_source: str, data_dict: dict[str, Any]) -> CallCoverage:
+    def deserialize(
+        cls, linecov: LineCoverage, data_source: str, data_dict: dict[str, Any]
+    ) -> CallCoverage:
         """Deserialize the object."""
-        return CallCoverage(
+        return linecov.insert_call_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
             callno=data_dict["callno"],
             returned=data_dict["returned"],
@@ -802,7 +878,7 @@ class CallCoverage(CoverageBase):
     def merge(
         self,
         other: CallCoverage,
-        _options: MergeOptions,
+        _option: MergeOptions,
     ) -> CallCoverage:
         """
         Merge CallCoverage information.
@@ -830,6 +906,11 @@ class CallCoverage(CoverageBase):
         return self.callno
 
     @property
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
+        return f"{self.parent.location} (call {self.callno})"
+
+    @property
     def is_excluded(self) -> bool:
         """Return True if the call is excluded."""
         return self.excluded
@@ -843,6 +924,411 @@ class CallCoverage(CoverageBase):
     def is_covered(self) -> bool:
         """Return True if the call is covered."""
         return self.is_reportable and self.returned != 0
+
+
+class LineCoverage(CoverageBase):
+    r"""Represent coverage information about a line.
+
+    Each line is either *excluded* or *reportable*.
+
+    A *reportable* line is either *covered* or *uncovered*.
+
+    The default state of a line is *coverable*/*reportable*/*uncovered*.
+
+    Args:
+        lineno (int):
+            The line number.
+        count (int):
+            How often this line was executed at least partially.
+        function_name (str):
+            Mangled name of the function the line belongs to.
+        block_ids (*int, optional):
+            List of block ids in this line
+        excluded (bool, optional):
+            Whether this line is excluded by a marker.
+        md5 (str, optional):
+            The md5 checksum of the source code line.
+    """
+
+    __slots__ = (
+        "parent",
+        "lineno",
+        "count",
+        "function_name",
+        "block_ids",
+        "excluded",
+        "md5",
+        "branches",
+        "conditions",
+        "decision",
+        "calls",
+    )
+
+    def __init__(
+        self,
+        parent: FileCoverage,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        *,
+        lineno: int,
+        count: int,
+        function_name: Optional[str],
+        block_ids: Optional[list[int]] = None,
+        md5: Optional[str] = None,
+        excluded: bool = False,
+    ) -> None:
+        super().__init__(data_source)
+        self.parent = parent
+        if lineno <= 0:
+            self.raise_data_error("Line number must be a positive value.")
+        if count < 0:
+            self.raise_data_error("count must not be a negative value.")
+
+        self.lineno = lineno
+        self.count = count
+        self.function_name = function_name
+        self.block_ids = block_ids
+        self.md5 = md5
+        self.excluded = excluded
+        self.branches = CoverageDict[BranchesKeyType, BranchCoverage]()
+        self.conditions = CoverageDict[ConditionsKeyType, ConditionCoverage]()
+        self.decision: Optional[DecisionCoverage] = None
+        self.calls = CoverageDict[CallsKeyType, CallCoverage]()
+
+    def serialize(
+        self,
+        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+    ) -> dict[str, Any]:
+        """Serialize the object."""
+        data_dict = dict[str, Any](
+            {
+                "line_number": self.lineno,
+            }
+        )
+        if self.function_name is not None:
+            data_dict["function_name"] = self.function_name
+
+        data_dict.update(
+            {
+                "count": self.count,
+                "branches": [
+                    branchcov.serialize(get_data_source)
+                    for _, branchcov in sorted(self.branches.items())
+                ],
+            }
+        )
+        if self.conditions:
+            data_dict["conditions"] = [
+                conditioncov.serialize(get_data_source)
+                for _, conditioncov in sorted(self.conditions.items())
+            ]
+        if self.block_ids is not None:
+            data_dict["block_ids"] = self.block_ids
+        if len(self.calls) > 0:
+            data_dict["calls"] = [
+                callcov.serialize(get_data_source)
+                for _, callcov in sorted(self.calls.items())
+            ]
+        if self.md5:
+            data_dict["gcovr/md5"] = self.md5
+        if self.excluded:
+            data_dict[GCOVR_EXCLUDED] = True
+        if self.decision is not None:
+            data_dict["gcovr/decision"] = self.decision.serialize(get_data_source)
+        data_dict.update(get_data_source(self))
+
+        return data_dict
+
+    @classmethod
+    def deserialize(
+        cls,
+        filecov: FileCoverage,
+        data_source: str,
+        data_dict: dict[str, Any],
+    ) -> LineCoverage:
+        """Deserialize the object."""
+        linecov = filecov.insert_line_coverage(
+            data_dict.get(GCOVR_DATA_SOURCES, data_source),
+            lineno=data_dict["line_number"],
+            count=data_dict["count"],
+            function_name=data_dict.get("function_name"),
+            block_ids=data_dict.get("block_ids"),
+            md5=data_dict.get("gcovr/md5"),
+            excluded=data_dict.get(GCOVR_EXCLUDED, False),
+        )
+
+        for branchno, data_dict_branch in enumerate(data_dict["branches"]):
+            BranchCoverage.deserialize(linecov, data_source, branchno, data_dict_branch)
+
+        if (conditions := data_dict.get("conditions")) is not None:
+            for conditionno, data_dict_condition in enumerate(conditions):
+                ConditionCoverage.deserialize(
+                    linecov, data_source, conditionno, data_dict_condition
+                )
+
+        if (data_dict_decision := data_dict.get("gcovr/decision")) is not None:
+            decision_type = data_dict_decision["type"]
+            if decision_type == "uncheckable":
+                DecisionCoverageUncheckable.deserialize(
+                    linecov, data_source, data_dict_decision
+                )
+            elif decision_type == "conditional":
+                DecisionCoverageConditional.deserialize(
+                    linecov, data_source, data_dict_decision
+                )
+            elif decision_type == "switch":
+                DecisionCoverageSwitch.deserialize(
+                    linecov, data_source, data_dict_decision
+                )
+            else:
+                raise AssertionError(f"Unknown decision type: {decision_type!r}")
+
+        if (calls := data_dict.get("gcovr/calls")) is not None:
+            for data_dict_call in calls:
+                CallCoverage.deserialize(linecov, data_source, data_dict_call)
+
+        return linecov
+
+    def merge(
+        self,
+        other: LineCoverage,
+        options: MergeOptions,
+    ) -> LineCoverage:
+        """
+        Merge LineCoverage information.
+
+        Do not use 'left' or 'right' objects afterwards!
+
+        Precondition: both objects must have same lineno.
+        """
+        if self.lineno != other.lineno:
+            self.raise_merge_error("Line number must be equal.", other)
+        if self.function_name != other.function_name:
+            self.raise_merge_error("Function name must be equal.", other)
+        self.md5 = self._merge_property(other, "MD5 checksum", lambda x: x.md5)
+
+        self.count += other.count
+        self.excluded |= other.excluded
+        self.branches.merge(other.branches, options)
+        self.conditions.merge(other.conditions, options)
+        self.__merge_decision(other.decision)
+        self.calls.merge(other.calls, options)
+
+        return self
+
+    def __merge_decision(  # pylint: disable=too-many-return-statements
+        self,
+        decisioncov: Optional[DecisionCoverage],
+    ) -> None:
+        """Merge DecisionCoverage information.
+
+        The DecisionCoverage has different states:
+
+        - None (no known decision)
+        - Uncheckable (there was a decision, but it can't be analyzed properly)
+        - Conditional
+        - Switch
+
+        If there is a conflict between different types, Uncheckable will be returned.
+        """
+        # If decision coverage is not known for one side, return the other.
+        if self.decision is not None and decisioncov is not None:
+            # If the type is different the result is Uncheckable.
+            if type(self.decision) is type(decisioncov):
+                self.decision.merge(decisioncov)  # type: ignore [arg-type]
+            else:
+                self.decision = DecisionCoverageUncheckable(
+                    self,
+                    set[tuple[str, ...]](
+                        *self.decision.data_sources, *decisioncov.data_sources
+                    ),
+                )
+        elif self.decision is None:
+            self.decision = decisioncov
+
+    def insert_branch_coverage(
+        self,
+        data_source: Union[str, set[tuple[str, ...]]],
+        *,
+        branchno: int,
+        count: int,
+        fallthrough: bool = False,
+        throw: bool = False,
+        source_block_id: Optional[int] = None,
+        destination_block_id: Optional[int] = None,
+        excluded: bool = False,
+    ) -> BranchCoverage:
+        """Add a branch coverage item, merge if needed."""
+        branchcov = BranchCoverage(
+            self,
+            data_source,
+            branchno=branchno,
+            count=count,
+            fallthrough=fallthrough,
+            throw=throw,
+            source_block_id=source_block_id,
+            destination_block_id=destination_block_id,
+            excluded=excluded,
+        )
+        key = branchcov.key
+        if key in self.branches:
+            self.branches[key].merge(branchcov, DEFAULT_MERGE_OPTIONS)
+        else:
+            self.branches[key] = branchcov
+            self.branches[key].parent = self
+
+        return branchcov
+
+    def insert_condition_coverage(
+        self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        *,
+        conditionno: int,
+        count: int,
+        covered: int,
+        not_covered_true: list[int],
+        not_covered_false: list[int],
+        excluded: bool = False,
+    ) -> ConditionCoverage:
+        """Add a condition coverage item, merge if needed."""
+        conditioncov = ConditionCoverage(
+            self,
+            data_source=data_source,
+            conditionno=conditionno,
+            count=count,
+            covered=covered,
+            not_covered_true=not_covered_true,
+            not_covered_false=not_covered_false,
+            excluded=excluded,
+        )
+        key = conditioncov.key
+        if key in self.conditions:
+            self.conditions[key].merge(conditioncov, DEFAULT_MERGE_OPTIONS)
+        else:
+            self.conditions[key] = conditioncov
+            self.conditions[key].parent = self
+
+        return conditioncov
+
+    def insert_decision_coverage(
+        self,
+        decisioncov: Optional[DecisionCoverage],
+    ) -> None:
+        """Add a condition coverage item, merge if needed."""
+        self.__merge_decision(decisioncov)
+        if self.decision is not None:
+            self.decision.parent = self
+
+    def insert_call_coverage(
+        self,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        *,
+        callno: int,
+        source_block_id: int,
+        destination_block_id: Optional[int],
+        returned: int,
+        excluded: bool = False,
+    ) -> CallCoverage:
+        """Add a branch coverage item, merge if needed."""
+        callcov = CallCoverage(
+            self,
+            data_source=data_source,
+            callno=callno,
+            source_block_id=source_block_id,
+            destination_block_id=destination_block_id,
+            returned=returned,
+            excluded=excluded,
+        )
+        key = callcov.key
+        if key in self.calls:
+            self.calls[key].merge(callcov, DEFAULT_MERGE_OPTIONS)
+        else:
+            self.calls[key] = callcov
+            self.calls[key].parent = self
+
+        return callcov
+
+    @property
+    def key(self) -> LinesKeyType:
+        """Get the key used for the dictionary to unique identify the coverage object."""
+        return (self.lineno, "" if self.function_name is None else self.function_name)
+
+    @property
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
+        return f"{self.parent.location}:{self.lineno}"
+
+    @property
+    def is_excluded(self) -> bool:
+        """Return True if the line is excluded."""
+        return self.excluded
+
+    @property
+    def is_reportable(self) -> bool:
+        """Return True if the line is reportable."""
+        return not self.excluded
+
+    @property
+    def is_covered(self) -> bool:
+        """Return True if the line is covered."""
+        return self.is_reportable and self.count > 0
+
+    @property
+    def is_uncovered(self) -> bool:
+        """Return True if the line is uncovered."""
+        return self.is_reportable and self.count == 0
+
+    @property
+    def has_uncovered_branch(self) -> bool:
+        """Return True if the line has a uncovered branches."""
+        return not all(
+            branchcov.is_covered or branchcov.is_excluded
+            for branchcov in self.branches.values()
+        )
+
+    @property
+    def has_uncovered_decision(self) -> bool:
+        """Return True if the line has a uncovered decision."""
+        if self.decision is None:
+            return False
+
+        return not self.decision.is_covered
+
+    def exclude(self) -> None:
+        """Exclude line from coverage statistic."""
+        self.excluded = True
+        self.count = 0
+        self.branches.clear()
+        self.conditions.clear()
+        self.decision = None
+        self.calls.clear()
+
+    def branch_coverage(self) -> CoverageStat:
+        """Return the branch coverage statistic of the line."""
+        total = 0
+        covered = 0
+        for branchcov in self.branches.values():
+            if branchcov.is_reportable:
+                total += 1
+                if branchcov.is_covered:
+                    covered += 1
+        return CoverageStat(covered=covered, total=total)
+
+    def condition_coverage(self) -> CoverageStat:
+        """Return the condition coverage statistic of the line."""
+        total = 0
+        covered = 0
+        for condition in self.conditions.values():
+            if condition.is_reportable:
+                total += condition.count
+                covered += condition.covered
+        return CoverageStat(covered=covered, total=total)
+
+    def decision_coverage(self) -> DecisionCoverageStat:
+        """Return the decision coverage statistic of the line."""
+        if self.decision is None:
+            return DecisionCoverageStat(0, 0, 0)
+
+        return self.decision.coverage()
 
 
 class FunctionCoverage(CoverageBase):
@@ -875,6 +1361,7 @@ class FunctionCoverage(CoverageBase):
     """
 
     __slots__ = (
+        "parent",
         "mangled_name",
         "demangled_name",
         "count",
@@ -886,6 +1373,7 @@ class FunctionCoverage(CoverageBase):
 
     def __init__(
         self,
+        parent: FileCoverage,
         data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         *,
         mangled_name: Optional[str],
@@ -898,6 +1386,8 @@ class FunctionCoverage(CoverageBase):
         excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
+        self.parent = parent
+
         if count < 0:
             self.raise_data_error("count must not be a negative value.")
         if mangled_name is not None:
@@ -908,6 +1398,7 @@ class FunctionCoverage(CoverageBase):
                         f"If 'name' contains a demangled name (got '{mangled_name}') the 'demangled_name' must be None (got {demangled_name})."
                     )
                 mangled_name, demangled_name = (None, mangled_name)
+
         self.mangled_name = mangled_name
         self.demangled_name = demangled_name
         self.count = CoverageDict[int, int]({lineno: count})
@@ -955,7 +1446,11 @@ class FunctionCoverage(CoverageBase):
 
     @classmethod
     def deserialize(
-        cls, data_source: str, data_dict: dict[str, Any]
+        cls,
+        filecov: FileCoverage,
+        merge_options: MergeOptions,
+        data_source: str,
+        data_dict: dict[str, Any],
     ) -> FunctionCoverage:
         """Deserialize the object."""
         start: Optional[tuple[int, int]] = None
@@ -966,8 +1461,9 @@ class FunctionCoverage(CoverageBase):
             end_l_c = data_dict["pos"][1].split(":", maxsplit=1)
             end = (int(end_l_c[0]), int(end_l_c[1]))
 
-        return FunctionCoverage(
+        return filecov.insert_function_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
+            merge_options,
             mangled_name=data_dict.get("name"),
             demangled_name=data_dict.get("demangled_name"),
             lineno=data_dict["lineno"],
@@ -1111,6 +1607,11 @@ class FunctionCoverage(CoverageBase):
         return self.name
 
     @property
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
+        return f"{self.parent.location} (function {self.name})"
+
+    @property
     def name(self) -> str:
         """Get the function name. This is the demangled name if present, else the mangled name."""
         return str(self.demangled_name or self.mangled_name)
@@ -1142,348 +1643,6 @@ class FunctionCoverage(CoverageBase):
             )
 
         return (self.demangled_name[: -len(signature)], signature)
-
-
-class LineCoverage(CoverageBase):
-    r"""Represent coverage information about a line.
-
-    Each line is either *excluded* or *reportable*.
-
-    A *reportable* line is either *covered* or *uncovered*.
-
-    The default state of a line is *coverable*/*reportable*/*uncovered*.
-
-    Args:
-        lineno (int):
-            The line number.
-        count (int):
-            How often this line was executed at least partially.
-        function_name (str):
-            Mangled name of the function the line belongs to.
-        block_ids (*int, optional):
-            List of block ids in this line
-        excluded (bool, optional):
-            Whether this line is excluded by a marker.
-        md5 (str, optional):
-            The md5 checksum of the source code line.
-    """
-
-    __slots__ = (
-        "lineno",
-        "count",
-        "function_name",
-        "block_ids",
-        "excluded",
-        "md5",
-        "branches",
-        "conditions",
-        "decision",
-        "calls",
-    )
-
-    def __init__(
-        self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
-        *,
-        lineno: int,
-        count: int,
-        function_name: Optional[str],
-        block_ids: Optional[list[int]] = None,
-        md5: Optional[str] = None,
-        excluded: bool = False,
-    ) -> None:
-        super().__init__(data_source)
-        if lineno <= 0:
-            self.raise_data_error("Line number must be a positive value.")
-        if count < 0:
-            self.raise_data_error("count must not be a negative value.")
-
-        self.lineno = lineno
-        self.count = count
-        self.function_name = function_name
-        self.block_ids = block_ids
-        self.md5 = md5
-        self.excluded = excluded
-        self.branches = CoverageDict[BranchesKeyType, BranchCoverage]()
-        self.conditions = CoverageDict[ConditionsKeyType, ConditionCoverage]()
-        self.decision: Optional[DecisionCoverage] = None
-        self.calls = CoverageDict[CallsKeyType, CallCoverage]()
-
-    def serialize(
-        self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
-    ) -> dict[str, Any]:
-        """Serialize the object."""
-        data_dict = dict[str, Any](
-            {
-                "line_number": self.lineno,
-            }
-        )
-        if self.function_name is not None:
-            data_dict["function_name"] = self.function_name
-
-        data_dict.update(
-            {
-                "count": self.count,
-                "branches": [
-                    branchcov.serialize(get_data_source)
-                    for _, branchcov in sorted(self.branches.items())
-                ],
-            }
-        )
-        if self.conditions:
-            data_dict["conditions"] = [
-                conditioncov.serialize(get_data_source)
-                for _, conditioncov in sorted(self.conditions.items())
-            ]
-        if self.block_ids is not None:
-            data_dict["block_ids"] = self.block_ids
-        if len(self.calls) > 0:
-            data_dict["calls"] = [
-                callcov.serialize(get_data_source)
-                for _, callcov in sorted(self.calls.items())
-            ]
-        if self.md5:
-            data_dict["gcovr/md5"] = self.md5
-        if self.excluded:
-            data_dict[GCOVR_EXCLUDED] = True
-        if self.decision is not None:
-            data_dict["gcovr/decision"] = self.decision.serialize(get_data_source)
-        data_dict.update(get_data_source(self))
-
-        return data_dict
-
-    @classmethod
-    def deserialize(cls, data_source: str, data_dict: dict[str, Any]) -> LineCoverage:
-        """Deserialize the object."""
-        linecov = LineCoverage(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            lineno=data_dict["line_number"],
-            count=data_dict["count"],
-            function_name=data_dict.get("function_name"),
-            block_ids=data_dict.get("block_ids"),
-            md5=data_dict.get("gcovr/md5"),
-            excluded=data_dict.get(GCOVR_EXCLUDED, False),
-        )
-
-        for branchno, data_dict_branch in enumerate(data_dict["branches"]):
-            linecov.insert_branch_coverage(
-                BranchCoverage.deserialize(data_source, branchno, data_dict_branch)
-            )
-
-        if (conditions := data_dict.get("conditions")) is not None:
-            for conditionno, data_dict_condition in enumerate(conditions):
-                linecov.insert_condition_coverage(
-                    ConditionCoverage.deserialize(
-                        data_source, conditionno, data_dict_condition
-                    ),
-                )
-
-        if (data_dict_decision := data_dict.get("gcovr/decision")) is not None:
-            decision_type = data_dict_decision["type"]
-            if decision_type == "uncheckable":
-                linecov.insert_decision_coverage(
-                    DecisionCoverageUncheckable.deserialize(
-                        data_source, data_dict_decision
-                    )
-                )
-            elif decision_type == "conditional":
-                linecov.insert_decision_coverage(
-                    DecisionCoverageConditional.deserialize(
-                        data_source, data_dict_decision
-                    )
-                )
-            elif decision_type == "switch":
-                linecov.insert_decision_coverage(
-                    DecisionCoverageSwitch.deserialize(data_source, data_dict_decision)
-                )
-            else:
-                raise AssertionError(f"Unknown decision type: {decision_type!r}")
-
-        if (calls := data_dict.get("gcovr/calls")) is not None:
-            for data_dict_call in calls:
-                linecov.insert_call_coverage(
-                    CallCoverage.deserialize(data_source, data_dict_call)
-                )
-
-        return linecov
-
-    def merge(
-        self,
-        other: LineCoverage,
-        options: MergeOptions,
-    ) -> LineCoverage:
-        """
-        Merge LineCoverage information.
-
-        Do not use 'left' or 'right' objects afterwards!
-
-        Precondition: both objects must have same lineno.
-        """
-        if self.lineno != other.lineno:
-            self.raise_merge_error("Line number must be equal.", other)
-        if self.function_name != other.function_name:
-            self.raise_merge_error("Function name must be equal.", other)
-        self.md5 = self._merge_property(other, "MD5 checksum", lambda x: x.md5)
-
-        self.count += other.count
-        self.excluded |= other.excluded
-        self.branches.merge(other.branches, options)
-        self.conditions.merge(other.conditions, options)
-        self.__merge_decision(other.decision)
-        self.calls.merge(other.calls, options)
-
-        return self
-
-    def __merge_decision(  # pylint: disable=too-many-return-statements
-        self,
-        decisioncov: Optional[DecisionCoverage],
-    ) -> None:
-        """Merge DecisionCoverage information.
-
-        The DecisionCoverage has different states:
-
-        - None (no known decision)
-        - Uncheckable (there was a decision, but it can't be analyzed properly)
-        - Conditional
-        - Switch
-
-        If there is a conflict between different types, Uncheckable will be returned.
-        """
-        # If decision coverage is not known for one side, return the other.
-        if self.decision is not None and decisioncov is not None:
-            # If the type is different the result is Uncheckable.
-            if type(self.decision) is type(decisioncov):
-                self.decision.merge(decisioncov)  # type: ignore [arg-type]
-            else:
-                self.decision = DecisionCoverageUncheckable(
-                    set[tuple[str, ...]](
-                        *self.decision.data_sources, *decisioncov.data_sources
-                    )
-                )
-        elif self.decision is None:
-            self.decision = decisioncov
-
-    def insert_branch_coverage(
-        self,
-        branchcov: BranchCoverage,
-        options: MergeOptions = DEFAULT_MERGE_OPTIONS,
-    ) -> None:
-        """Add a branch coverage item, merge if needed."""
-        key = branchcov.key
-        if key in self.branches:
-            self.branches[key].merge(branchcov, options)
-        else:
-            self.branches[key] = branchcov
-
-    def insert_condition_coverage(
-        self,
-        conditioncov: ConditionCoverage,
-        options: MergeOptions = DEFAULT_MERGE_OPTIONS,
-    ) -> None:
-        """Add a condition coverage item, merge if needed."""
-        key = conditioncov.key
-        if key in self.conditions:
-            self.conditions[key].merge(conditioncov, options)
-        else:
-            self.conditions[key] = conditioncov
-
-    def insert_decision_coverage(
-        self,
-        decisioncov: Optional[DecisionCoverage],
-    ) -> None:
-        """Add a condition coverage item, merge if needed."""
-        self.__merge_decision(decisioncov)
-
-    def insert_call_coverage(
-        self,
-        callcov: CallCoverage,
-        options: MergeOptions = DEFAULT_MERGE_OPTIONS,
-    ) -> None:
-        """Add a branch coverage item, merge if needed."""
-        key = callcov.key
-        if key in self.calls:
-            self.calls[key].merge(callcov, options)
-        else:
-            self.calls[key] = callcov
-
-    @property
-    def key(self) -> LinesKeyType:
-        """Get the key used for the dictionary to unique identify the coverage object."""
-        return (self.lineno, "" if self.function_name is None else self.function_name)
-
-    @property
-    def is_excluded(self) -> bool:
-        """Return True if the line is excluded."""
-        return self.excluded
-
-    @property
-    def is_reportable(self) -> bool:
-        """Return True if the line is reportable."""
-        return not self.excluded
-
-    @property
-    def is_covered(self) -> bool:
-        """Return True if the line is covered."""
-        return self.is_reportable and self.count > 0
-
-    @property
-    def is_uncovered(self) -> bool:
-        """Return True if the line is uncovered."""
-        return self.is_reportable and self.count == 0
-
-    @property
-    def has_uncovered_branch(self) -> bool:
-        """Return True if the line has a uncovered branches."""
-        return not all(
-            branchcov.is_covered or branchcov.is_excluded
-            for branchcov in self.branches.values()
-        )
-
-    @property
-    def has_uncovered_decision(self) -> bool:
-        """Return True if the line has a uncovered decision."""
-        if self.decision is None:
-            return False
-
-        return not self.decision.is_covered
-
-    def exclude(self) -> None:
-        """Exclude line from coverage statistic."""
-        self.excluded = True
-        self.count = 0
-        self.branches.clear()
-        self.conditions.clear()
-        self.decision = None
-        self.calls.clear()
-
-    def branch_coverage(self) -> CoverageStat:
-        """Return the branch coverage statistic of the line."""
-        total = 0
-        covered = 0
-        for branchcov in self.branches.values():
-            if branchcov.is_reportable:
-                total += 1
-                if branchcov.is_covered:
-                    covered += 1
-        return CoverageStat(covered=covered, total=total)
-
-    def condition_coverage(self) -> CoverageStat:
-        """Return the condition coverage statistic of the line."""
-        total = 0
-        covered = 0
-        for condition in self.conditions.values():
-            if condition.is_reportable:
-                total += condition.count
-                covered += condition.covered
-        return CoverageStat(covered=covered, total=total)
-
-    def decision_coverage(self) -> DecisionCoverageStat:
-        """Return the decision coverage statistic of the line."""
-        if self.decision is None:
-            return DecisionCoverageStat(0, 0, 0)
-
-        return self.decision.coverage()
 
 
 class FileCoverage(CoverageBase):
@@ -1590,15 +1749,11 @@ class FileCoverage(CoverageBase):
             filename=filename,
         )
         for data_dict_function in data_dict["functions"]:
-            filecov.insert_function_coverage(
-                FunctionCoverage.deserialize(data_source, data_dict_function),
-                merge_options,
+            FunctionCoverage.deserialize(
+                filecov, merge_options, data_source, data_dict_function
             )
         for data_dict_line in data_dict["lines"]:
-            filecov.insert_line_coverage(
-                LineCoverage.deserialize(data_source, data_dict_line),
-                merge_options,
-            )
+            LineCoverage.deserialize(filecov, data_source, data_dict_line)
 
         return filecov
 
@@ -1608,6 +1763,11 @@ class FileCoverage(CoverageBase):
         raise NotImplementedError(
             "Function not implemented for file coverage object, use property 'filename' instead."
         )
+
+    @property
+    def location(self) -> Optional[str]:
+        """Get the source location of the coverage data."""
+        return self.filename
 
     @property
     def stats(self) -> SummarizedStats:
@@ -1623,15 +1783,33 @@ class FileCoverage(CoverageBase):
 
     def insert_line_coverage(
         self,
-        linecov: LineCoverage,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
+        *,
+        lineno: int,
+        count: int,
+        function_name: Optional[str],
+        block_ids: Optional[list[int]] = None,
+        md5: Optional[str] = None,
+        excluded: bool = False,
     ) -> LineCoverage:
         """Add a line coverage item, merge if needed."""
+        linecov = LineCoverage(
+            self,
+            data_source,
+            lineno=lineno,
+            count=count,
+            function_name=function_name,
+            block_ids=block_ids,
+            md5=md5,
+            excluded=excluded,
+        )
         key = linecov.key
         if key in self.lines:
             self.lines[key].merge(linecov, options)
         else:
             self.lines[key] = linecov
+            self.lines[key].parent = self
             if linecov.lineno not in self.lines_keys_by_lineno:
                 self.lines_keys_by_lineno[linecov.lineno] = []
             self.lines_keys_by_lineno[linecov.lineno].append(key)
@@ -1640,15 +1818,39 @@ class FileCoverage(CoverageBase):
 
     def insert_function_coverage(
         self,
-        functioncov: FunctionCoverage,
+        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
-    ) -> None:
+        *,
+        mangled_name: Optional[str],
+        demangled_name: Optional[str],
+        lineno: int,
+        count: int,
+        blocks: float,
+        start: Optional[tuple[int, int]] = None,
+        end: Optional[tuple[int, int]] = None,
+        excluded: bool = False,
+    ) -> FunctionCoverage:
         """Add a function coverage item, merge if needed."""
+        functioncov = FunctionCoverage(
+            self,
+            data_source,
+            mangled_name=mangled_name,
+            demangled_name=demangled_name,
+            lineno=lineno,
+            count=count,
+            blocks=blocks,
+            start=start,
+            end=end,
+            excluded=excluded,
+        )
         key = functioncov.key
         if key in self.functions:
             self.functions[key].merge(functioncov, options)
         else:
             self.functions[key] = functioncov
+            self.functions[key].parent = self
+
+        return functioncov
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function"""

@@ -38,14 +38,7 @@ from typing import Any, Optional
 
 from gcovr.utils import get_md5_hexdigest
 
-from ....data_model.coverage import (
-    BranchCoverage,
-    CallCoverage,
-    ConditionCoverage,
-    FileCoverage,
-    FunctionCoverage,
-    LineCoverage,
-)
+from ....data_model.coverage import FileCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 from ....filter import Filter, is_file_excluded
 from .common import (
@@ -162,67 +155,59 @@ def _parse_file_node(
     for line in gcov_file_node["lines"]:
         persistent_states.update(location=(filename, line["line_number"]))
         linecov = filecov.insert_line_coverage(
-            LineCoverage(
+            str(data_fname),
+            lineno=line["line_number"],
+            count=check_hits(
+                line["count"],
+                source_lines[line["line_number"] - 1],
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            ),
+            function_name=line.get("function_name"),
+            block_ids=line["block_ids"],
+            md5=get_md5_hexdigest(
+                source_lines[line["line_number"] - 1].encode("UTF-8")
+            ),
+        )
+        for index, branch in enumerate(line["branches"]):
+            linecov.insert_branch_coverage(
                 str(data_fname),
-                lineno=line["line_number"],
+                branchno=index,
                 count=check_hits(
-                    line["count"],
+                    branch["count"],
                     source_lines[line["line_number"] - 1],
                     ignore_parse_errors,
                     suspicious_hits_threshold,
                     persistent_states,
                 ),
-                function_name=line.get("function_name"),
-                block_ids=line["block_ids"],
-                md5=get_md5_hexdigest(
-                    source_lines[line["line_number"] - 1].encode("UTF-8")
-                ),
-            )
-        )
-        for index, branch in enumerate(line["branches"]):
-            linecov.insert_branch_coverage(
-                BranchCoverage(
-                    str(data_fname),
-                    branchno=index,
-                    count=check_hits(
-                        branch["count"],
-                        source_lines[line["line_number"] - 1],
-                        ignore_parse_errors,
-                        suspicious_hits_threshold,
-                        persistent_states,
-                    ),
-                    source_block_id=branch["source_block_id"],
-                    fallthrough=branch["fallthrough"],
-                    throw=branch["throw"],
-                    destination_block_id=branch["destination_block_id"],
-                ),
+                source_block_id=branch["source_block_id"],
+                fallthrough=branch["fallthrough"],
+                throw=branch["throw"],
+                destination_block_id=branch["destination_block_id"],
             )
         for index, condition in enumerate(line.get("conditions", [])):
             linecov.insert_condition_coverage(
-                ConditionCoverage(
-                    str(data_fname),
-                    conditionno=index,
-                    count=check_hits(
-                        condition["count"],
-                        source_lines[line["line_number"] - 1],
-                        ignore_parse_errors,
-                        suspicious_hits_threshold,
-                        persistent_states,
-                    ),
-                    covered=condition["covered"],
-                    not_covered_true=condition["not_covered_true"],
-                    not_covered_false=condition["not_covered_false"],
+                str(data_fname),
+                conditionno=index,
+                count=check_hits(
+                    condition["count"],
+                    source_lines[line["line_number"] - 1],
+                    ignore_parse_errors,
+                    suspicious_hits_threshold,
+                    persistent_states,
                 ),
+                covered=condition["covered"],
+                not_covered_true=condition["not_covered_true"],
+                not_covered_false=condition["not_covered_false"],
             )
         for index, call in enumerate(line.get("calls", [])):
             linecov.insert_call_coverage(
-                CallCoverage(
-                    str(data_fname),
-                    callno=index,
-                    source_block_id=call["source_block_id"],
-                    destination_block_id=call["destination_block_id"],
-                    returned=call["returned"],
-                ),
+                str(data_fname),
+                callno=index,
+                source_block_id=call["source_block_id"],
+                destination_block_id=call["destination_block_id"],
+                returned=call["returned"],
             )
 
     for function in gcov_file_node["functions"]:
@@ -236,17 +221,15 @@ def _parse_file_node(
             blocks = min(99.9, round(ratio * 100.0, 1))
 
         filecov.insert_function_coverage(
-            FunctionCoverage(
-                str(data_fname),
-                mangled_name=function["name"],
-                demangled_name=function["demangled_name"],
-                lineno=function["start_line"],
-                count=function["execution_count"],
-                blocks=blocks,
-                start=(function["start_line"], function["start_column"]),
-                end=(function["end_line"], function["end_column"]),
-            ),
+            str(data_fname),
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+            mangled_name=function["name"],
+            demangled_name=function["demangled_name"],
+            lineno=function["start_line"],
+            count=function["execution_count"],
+            blocks=blocks,
+            start=(function["start_line"], function["start_column"]),
+            end=(function["end_line"], function["end_column"]),
         )
 
     if (
