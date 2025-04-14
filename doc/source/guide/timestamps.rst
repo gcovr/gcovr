@@ -1,3 +1,6 @@
+.. program is needed to resolve :option: references
+.. program:: gcovr
+
 .. _timestamps:
 
 Reproducible Timestamps
@@ -6,17 +9,17 @@ Reproducible Timestamps
 In some cases, it may be desirable to list a specific timestamp in the report.
 Timestamps are shown in
 the :ref:`html_output`, :ref:`coveralls_output`, and the :ref:`cobertura_output`.
-This can be achieved via the :option:`--timestamp <gcovr --timestamp>` option
+This can be achieved via the :option:`--timestamp` option
 or via :ref:`Using SOURCE_DATE_EPOCH` environment variable.
 This option does not affect the modification times or other filesystem metadata.
 
 .. versionadded:: 6.0
 
-   Respect environment variable `SOURCE_DATE_EPOCH`_ for default of :option:`gcovr --timestamp`.
+   Respect environment variable `SOURCE_DATE_EPOCH`_ for default of :option:`--timestamp`.
 
 .. versionadded:: 5.1
 
-   The :option:`gcovr --timestamp` option.
+   The :option:`--timestamp` option.
 
 
 Timestamp Syntax
@@ -30,26 +33,25 @@ are the number of seconds since 1 Jan 1970.
 These timestamps are always resolved in the UTC timezone.
 Example usage:
 
-.. include:: ../../examples/example_timestamps.sh
-   :code: bash
+.. literalinclude:: ../../examples/example_timestamps.sh
+   :language: bash
    :start-after: #BEGIN simple epoch
    :end-before: #END simple epoch
 
-`RFC 3339 <https://datatracker.ietf.org/doc/html/rfc3339>`_
-specifies a reasonable subset of ISO-8601 timestamps.
+:rfc:`3339` specifies a reasonable subset of ISO-8601 timestamps.
 This is the ``YYYY-MM-DDThh:mm:ss`` format,
 optionally followed by a timezone offset (``+hh:mm``, or ``Z`` for UTC).
 Example usage without a timezone:
 
-.. include:: ../../examples/example_timestamps.sh
-   :code: bash
+.. literalinclude:: ../../examples/example_timestamps.sh
+   :language: bash
    :start-after: #BEGIN simple RFC 3339
    :end-before: #END simple RFC 3339
 
 Example usages that show equivalent specifications for UTC timestamps:
 
-.. include:: ../../examples/example_timestamps.sh
-   :code: bash
+.. literalinclude:: ../../examples/example_timestamps.sh
+   :language: bash
    :start-after: #BEGIN RFC 3339 with UTC timezone
    :end-before: #END RFC 3339 with UTC timezone
 
@@ -70,8 +72,8 @@ it is possible to select a particular timestamp syntax with a prefix.
 
 Examples of prefixes:
 
-.. include:: ../../examples/example_timestamps.sh
-   :code: bash
+.. literalinclude:: ../../examples/example_timestamps.sh
+   :language: bash
    :start-after: #BEGIN prefixes
    :end-before: #END prefixes
 
@@ -90,8 +92,8 @@ For the current HEAD commit::
 
 This can be combined into a Bash one-liner like this:
 
-.. include:: ../../examples/example_timestamps.sh
-   :code: bash
+.. literalinclude:: ../../examples/example_timestamps.sh
+   :language: bash
    :start-after: #BEGIN git commit
    :end-before: #END git commit
 
@@ -123,14 +125,14 @@ Using SOURCE_DATE_EPOCH
 
 The Reproducible Builds project defines the ``SOURCE_DATE_EPOCH`` variable.
 Gcovr will use this variable as a default timestamp
-if no explicit :option:`--timestamp <gcovr --timestamp>` is set.
+if no explicit :option:`--timestamp` is set.
 
 The contents of this variable *must* be an UTC epoch, without any prefix.
 No other format is supported.
 Example usage:
 
-.. include:: ../../examples/example_timestamps.sh
-   :code: bash
+.. literalinclude:: ../../examples/example_timestamps.sh
+   :language: bash
    :start-after: #BEGIN source date epoch
    :end-before: #END source date epoch
 

@@ -1,3 +1,6 @@
+.. program is needed to resolve :option: references
+.. program:: gcovr
+
 .. _configuration:
 
 Configuration Files
@@ -15,8 +18,8 @@ Example::
     output = build/coverage.html
 
 How the configuration file is found:
-If a :option:`--config<gcovr --config>` option is provided, that file is used.
-Otherwise, a ``gcovr.cfg`` file in the :option:`-r/--root<gcovr --root>`
+If a :option:`--config` option is provided, that file is used.
+Otherwise, a ``gcovr.cfg`` file in the :option:`-r/--root <--root>`
 directory is used, if that file exists.
 
 Each line contains a ``key = value`` pair.
@@ -31,14 +34,14 @@ and are parsed similarly.
 In most cases, the name of a long command line option
 can be used as a config key.
 If not, this is documented in the option's help message.
-For example, :option:`--gcov-executable<gcovr --gcov-executable>`
+For example, :option:`--gcov-executable`
 can be set via the ``gcov-executable`` config key.
-But :option:`-b/--branches<gcovr --branches>` is set via ``txt-branch``.
+But :option:`-b/--branches <--branches>` is set via ``txt-branch``.
 
 Just like command line options,
 the config keys can be specified multiple times.
 Depending on the option the last one wins or a list will be built.
-For example, :option:`-f/--filter<gcovr --filter>` can be provided multiple times::
+For example, :option:`-f/--filter <--filter>` can be provided multiple times::
 
     # Only show coverage for files in src/, lib/foo, or for main.cpp files.
     filter = src/
@@ -60,19 +63,19 @@ Therefore, it doesn't matter
 whether a value is provided in the config file or the command line.
 
 Boolean flags are treated specially.
-When their config value is “yes” they are enabled,
+When their config value is ``yes`` they are enabled,
 as if the flag had been provided on the command line.
-When their value is “no”, they are explicitly disabled
+When their value is ``no``, they are explicitly disabled
 by assigning their default value.
-The :option:`-j<gcovr -j>` flag is special as it takes an optional argument.
+The :option:`-j` flag is special as it takes an optional argument.
 In the config file,
 ``gcov-parallel = yes`` would refer to the no-argument form,
 whereas ``gcov-parallel = 4`` would provide an explicit argument.
 
-If the option is a path and is not absolute the path is used relative to
-the config file. For the option :option:`gcovr --json-add-tracefile` the
-directory of the config file is always prepended.
+If the option is a path and is not absolute, the path is used relative to
+the config file. For the option :option:`--json-add-tracefile`,
+the directory of the config file is always prepended.
 
 Some config file syntax is explicitly reserved for future extensions:
-Semicolon comments, INI-style sections, multi-line values, quoted values,
-variable substitutions, alternative key–value separators, …
+semicolon comments, INI-style sections, multi-line values, quoted values,
+variable substitutions, alternative key-value separators, etc.

@@ -45,7 +45,7 @@ see the `ccache manual`_ for caveats.
 
 A shell session might look like this:
 
-.. code-block:: sh
+.. code-block:: bash
 
     # Set required env vars
     export CFLAGS="--coverage"
@@ -75,8 +75,8 @@ contains the sources. This is an extra complication for ``gcov``.
 In order to pass the correct compiler and linker flags, the following
 commands need to be in ``CMakeLists.txt``:
 
-.. include:: ../examples/CMakeLists.txt
-    :code: cmake
+.. literalinclude:: ../examples/CMakeLists.txt
+    :language: cmake
     :start-after: #BEGIN cmake_cmd
     :end-before: #END cmake_cmd
 
@@ -90,15 +90,15 @@ the ``add_compile_options`` command.
 
 We then follow a normal ``cmake`` build process:
 
-.. include:: ../examples/example_cmake.sh
-    :code: bash
+.. literalinclude:: ../examples/example_cmake.sh
+    :language: bash
     :start-after: #BEGIN cmake_build
     :end-before: #END cmake_build
 
 and run the program:
 
-.. include:: ../examples/example_cmake.sh
-    :code: bash
+.. literalinclude:: ../examples/example_cmake.sh
+    :language: bash
     :start-after: #BEGIN cmake_run
     :end-before: #END cmake_run
 
@@ -107,8 +107,8 @@ However, invocation of ``gcovr`` itself has to change. The assorted
 directory in ``BLD_DIR``, rather than next to the sources. Since
 ``gcovr`` requires both, the command we need to run is:
 
-.. include:: ../examples/example_cmake.sh
-    :code: bash
+.. literalinclude:: ../examples/example_cmake.sh
+    :language: bash
     :start-after: #BEGIN cmake_gcovr
     :end-before: #END cmake_gcovr
 
@@ -129,7 +129,7 @@ and process them before running ``gcov`` to get the correct format.
 
 Save the following Sed script as ``fix-gcov.sed``:
 
-.. code-block::
+.. code-block:: sed
 
    # fix markers for uncovered code:
    # match any of #=%$ repeated 6 times
@@ -144,7 +144,7 @@ Save the following Sed script as ``fix-gcov.sed``:
 
 Then, apply this Sed script to all gcov files before invoking gcovr:
 
-.. code-block:: sh
+.. code-block:: bash
 
    find . -name '*.gcov' -exec sed -i -f fix-gcov.sed {} \;
    gcovr --gcov-use-existing-files

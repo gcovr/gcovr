@@ -1,12 +1,11 @@
-
-.. program::  gcovr
+.. program:: gcovr
 
 .. _json_output:
 
 JSON Output
 ===========
 
-The ``gcovr`` command can also generate a JSON output using
+The ``gcovr`` command can generate JSON output using
 the :option:`--json` and :option:`--json-pretty`
 options::
 
@@ -36,7 +35,7 @@ The structure of the JSON input/output files
 is based on the GCC gcov JSON intermediate format,
 but with additional keys specific to gcovr.
 Field names use ``snake_case``.
-Gcovr-specific fields are prefixed with ``gcovr/...``.
+Gcovr-specific fields are prefixed with ``gcovr/``.
 
 The GCC gcov JSON format is documented at
 `<https://gcc.gnu.org/onlinedocs/gcc-14.1.0/gcc/Invoking-Gcov.html>`_.
@@ -55,7 +54,7 @@ gcovr/format_version: string
   with the declared version.
   Gcovr itself will only consume input files that match the exact version.
 
-  Current version is:
+  The current version is:
 
   .. include:: ../../../src/gcovr/data_model/version.py
       :start-after: # BEGIN version
@@ -543,15 +542,15 @@ The :option:`--json-summary-pretty` option
 generates an indented JSON summary output that is easier to read.
 Consider the following command:
 
-.. include:: ../../examples/example_json_summary.sh
-    :code: bash
+.. literalinclude:: ../../examples/example_json_summary.sh
+    :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 This generates an indented JSON summary:
 
-.. include:: ../../examples/example_json_summary.json
-    :code: json
+.. literalinclude:: ../../examples/example_json_summary.json
+    :language: json
 
 .. versionadded:: 5.0
    Added :option:`--json-summary`
@@ -580,7 +579,7 @@ gcovr/summary_format_version: string
   Consumers of gcovr JSON Summary reports should check
   that they are SemVer-compatible with the declared version.
 
-  Current version is:
+  The current version is:
 
   .. include:: ../../../src/gcovr/formats/json/write.py
       :start-after: # BEGIN summary version

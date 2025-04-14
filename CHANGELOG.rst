@@ -32,11 +32,13 @@ Bug fixes and small improvements:
   if ``txt-metric="branch"`` is used in config file. (:issue:`1066`)
 - Add ``excluded`` property for conditions and calls to the JSON report. (:issue:`1080`)
 - Remove the fixed width of the HTML details which leads to text overflows. (:issue:`1086`)
-- Fix duplicate constructors, destructors and wrong const overload functions in Cobertura report, (:issue:`1085`)
+- Fix duplicate constructors, destructors and wrong const overload functions in Cobertura report. (:issue:`1085`)
 - Fix ``JaCoCo`` report to follow the DTD. (:issue:`1089`)
 - Do not use option ``--calls`` as exclusion filter. (:issue:`1090`)
 
 Documentation:
+
+- Fix formatting of verbatim text included from external files. (:issue:`1093`)
 
 Internal changes:
 
@@ -812,8 +814,8 @@ Internal changes:
   will exclude branches in certain lines from coverage report.
 - Simplifying and standardizing the processing of linked files.
 - Adding tests for deeply nested code, and symbolic links.
-- Add support for multiple —filter options in same manner as —exclude
-  option.
+- Add support for multiple :option:`--filter` options in the same
+  manner as the :option:`--exclude` option.
 
 
 3.0 (10 August 2013)
@@ -835,7 +837,7 @@ Internal changes:
 - Added error when the --object-directory option specifies a bad directory.
 - Added more flexible XML testing, which can ignore XML elements
   that frequently change (e.g. timestamps).
-- Added the '—xml-pretty' option, which is used to
+- Added the '--xml-pretty' option, which is used to
   generate pretty XML output for the user manual.
 - Many documentation updates
 

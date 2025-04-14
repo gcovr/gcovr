@@ -1,3 +1,5 @@
+.. program:: gcovr
+
 .. _faq:
 
 Frequently Asked Questions
@@ -41,7 +43,7 @@ You can learn more at the `lcov website`_ or the `lcov GitHub repository`_.
 Why does C++ code have so many uncovered branches?
 --------------------------------------------------
 
-Gcovr's branch coverage reports are based on GCC's ``-profile-arcs`` feature,
+Gcovr's branch coverage reports are based on GCC's ``-fprofile-arcs`` feature,
 which uses the compiler's control flow graph (CFG) of each function
 to determine branches.
 This is a very low-level view:
@@ -82,14 +84,14 @@ because GCC's gcov tool does not make the necessary information available,
 and because different projects are interested in different kinds of branches.
 However, gcovr has the following options to *reduce* unwanted branches:
 
-With the :option:`gcovr --exclude-unreachable-branches` option,
+With the :option:`--exclude-unreachable-branches` option,
 gcovr parses the *source code* to see whether that line even contains any code.
 If the line is empty or only contains curly braces,
 this could be an indication of compiler-generated code
 that was mis-attributed to that line (such as that for static destruction)
 and branch coverage will be ignored on that line.
 
-With the :option:`gcovr --exclude-throw-branches` option,
+With the :option:`--exclude-throw-branches` option,
 exception-only branches will be ignored.
 These are typically arcs from a function call into an exception handler.
 
@@ -103,15 +105,15 @@ See also: `Gcov and Optimization`_ in the GCC documentation.
 Despite these approaches,
 100% branch coverage will be impossible for most programs.
 
-With the :option:`gcovr --decisions` option,
+With the :option:`--decisions` option,
 gcovr parses the source code to extract a metric for decision coverage.
-This metric can be interpreted as the branch coverage on C/C++-Level.
+This metric can be interpreted as the branch coverage on C/C++ level.
 While the feature is not always able to detect the decisions reliably
 when the code is written very compact (uncheckable decisions will be marked).
 
 Decision coverage may be an acceptable bandaid for C++ code bases, and may be
 especially useful for optimistic aggregate metrics (e.g. file-level coverage
-percentages and for quality gates using the --fail-under feature). However,
+percentages and for quality gates using the ``--fail-under-*`` feature). However,
 100% "decision" coverage may still leave substantial uncovered control flow.
 
 .. _Godbolt Compiler Explorer: https://godbolt.org/
@@ -123,7 +125,7 @@ Why are uncovered files not reported?
 -------------------------------------
 
 Gcovr does report files that have zero coverage,
-even when no .gcda file is available for that compilation unit.
+even when no ``.gcda`` file is available for that compilation unit.
 
 However, the gcov tool in some versions of GCC
 refuses to generate output for uncovered files.
@@ -142,15 +144,15 @@ Note that the compiler may ignore ``inline`` functions that are never used.
 Which options are used for calling gcov?
 ----------------------------------------
 
-The options used for calling ``gcov`` depends on the version of gcov.
+The options used for calling ``gcov`` depend on the version of gcov.
 
-Following options are always used:
+The following options are always used:
 
 - ``--branch-counts``
 - ``--branch-probabilities``
 - ``--object-directory``
 
-Following options are only used if available:
+The following options are only used if available:
 
 - ``--json-format``: Use JSON intermediate format. Can only be used if no calls are needed in the report.
 - ``--demangled-names``: Not available for LLVM based ``gcov``.
