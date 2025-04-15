@@ -32,7 +32,7 @@ class NegativeHits(Exception):
 
     def __init__(self, line: str, persistent_states: dict[str, Any]) -> None:
         super().__init__(
-            f"Got negative hit value in {':'.join(str(item) for item in persistent_states['location'])}: {line}\n"
+            f"{':'.join(str(item) for item in persistent_states['location'])} Got negative hit value in: {line}\n"
             "This is caused by a bug in gcov tool, see\n"
             "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
             "--gcov-ignore-parse-errors with a value of negative_hits.warn,\n"
