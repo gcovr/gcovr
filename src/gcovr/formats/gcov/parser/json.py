@@ -89,14 +89,19 @@ def parse_coverage(
                 LOGGER.warning(
                     f"File {max_line_number} has {lines} line(s) but coverage data has {max_line_number} line(s)."
                 )
+                # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
                 source_lines += [b"/*EOF*/"] * (max_line_number - lines)
         except OSError as e:
             if file["file"].endswith("<stdin>"):
-                message = f"Got sourcefile {file['file']}, using empty lines."
+                message = f"Got unreadable source file '{file['file']}', replacing with empty lines."
                 LOGGER.info(message)
             else:
+                # The exception contains the source file name,
+                # e.g. [Errno 2] No such file or directory: 'xy.txt'
                 message = f"Can't read file, using empty lines: {e}"
                 LOGGER.warning(message)
+            # If we can't read the file we use as first line the error
+            # and use empty lines for the rest of the lines.
             source_lines = [b""] * max_line_number
             source_lines[0] = f"/* {message} */".encode()
 
