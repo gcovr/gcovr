@@ -218,6 +218,7 @@ class DecisionParser:
                     # if it's a compact decision, we can only use the fallback to analyze
                     # simple decisions via branch calls
                     linecov.decision = DecisionCoverageConditional(
+                        linecov,
                         linecov.data_sources,
                         count_true=linecov.branches[keys[0]].count,
                         count_false=linecov.branches[keys[1]].count,
@@ -226,6 +227,7 @@ class DecisionParser:
                     # it's a complex decision with more than 2 branches. No accurate detection possible
                     # Set the decision to uncheckable
                     linecov.decision = DecisionCoverageUncheckable(
+                        linecov,
                         linecov.data_sources,
                     )
                     LOGGER.debug(f"Uncheckable decision at line {lineno}")
@@ -243,7 +245,7 @@ class DecisionParser:
                 linecov = self.linecov_by_line.get(next_lineno)
                 if linecov is not None:
                     linecov.decision = DecisionCoverageSwitch(
-                        linecov.data_sources, count=linecov.count
+                        linecov, linecov.data_sources, count=linecov.count
                     )
                     break
                 if " break ;" in _prepare_decision_string(code):
@@ -275,13 +277,14 @@ class DecisionParser:
             delta_count = last_decision_linecov.count - exec_count
             if delta_count >= 0:
                 last_decision_linecov.decision = DecisionCoverageConditional(
+                    linecov,
                     "unknown" if linecov is None else linecov.data_sources,
                     count_true=exec_count,
                     count_false=delta_count,
                 )
             else:
                 last_decision_linecov.decision = DecisionCoverageUncheckable(
-                    "unknown" if linecov is None else linecov.data_sources
+                    linecov, "unknown" if linecov is None else linecov.data_sources
                 )
                 LOGGER.debug(
                     f"Uncheckable decision at line {lineno}. (Delta = {delta_count})"

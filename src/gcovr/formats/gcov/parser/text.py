@@ -52,14 +52,7 @@ from .common import (
     check_hits,
 )
 from ....utils import get_md5_hexdigest
-from ....data_model.coverage import (
-    BranchCoverage,
-    CallCoverage,
-    FileCoverage,
-    FunctionCoverage,
-    LineCoverage,
-    LinesKeyType,
-)
+from ....data_model.coverage import FileCoverage, LineCoverage, LinesKeyType
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 
 LOGGER = logging.getLogger("gcovr")
@@ -345,15 +338,13 @@ def parse_coverage(
     for function in state.deferred_functions:
         name, count, blocks = function
         filecov.insert_function_coverage(
-            FunctionCoverage(
-                str(data_filename),
-                mangled_name=name,
-                demangled_name=None,
-                lineno=filecov.lines[state.linecov_key].lineno + 1,
-                count=count,
-                blocks=blocks,
-            ),
+            str(data_filename),
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+            mangled_name=name,
+            demangled_name=None,
+            lineno=filecov.lines[state.linecov_key].lineno + 1,
+            count=count,
+            blocks=blocks,
         )
 
     _report_lines_with_errors(
@@ -412,28 +403,24 @@ def _gather_coverage_from_line(
         linecov = None
         if not is_noncode:
             linecov = filecov.insert_line_coverage(
-                LineCoverage(
-                    filecov.data_sources,
-                    lineno=lineno,
-                    count=raw_count,
-                    function_name=state.function_name,
-                    md5=get_md5_hexdigest(source_code.encode("UTF-8")),
-                ),
+                filecov.data_sources,
+                lineno=lineno,
+                count=raw_count,
+                function_name=state.function_name,
+                md5=get_md5_hexdigest(source_code.encode("UTF-8")),
             )
         # handle deferred functions
         for function in state.deferred_functions:
             name, count, blocks = function
 
             filecov.insert_function_coverage(
-                FunctionCoverage(
-                    filecov.data_sources,
-                    mangled_name=name,
-                    demangled_name=None,
-                    lineno=lineno,
-                    count=count,
-                    blocks=blocks,
-                ),
+                filecov.data_sources,
                 MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+                mangled_name=name,
+                demangled_name=None,
+                lineno=lineno,
+                count=count,
+                blocks=blocks,
             )
 
         return _ParserState(
@@ -462,14 +449,12 @@ def _gather_coverage_from_line(
 
         if linecov:
             linecov.insert_branch_coverage(
-                BranchCoverage(
-                    filecov.data_sources,
-                    branchno=branchno,
-                    count=hits,
-                    source_block_id=state.block_id,
-                    fallthrough=(annotation == "fallthrough"),
-                    throw=(annotation == "throw"),
-                ),
+                filecov.data_sources,
+                branchno=branchno,
+                count=hits,
+                source_block_id=state.block_id,
+                fallthrough=(annotation == "fallthrough"),
+                throw=(annotation == "throw"),
             )
 
         return state
@@ -488,13 +473,11 @@ def _gather_coverage_from_line(
         linecov = filecov.lines[state.linecov_key]  # must already exist
 
         linecov.insert_call_coverage(
-            CallCoverage(
-                filecov.data_sources,
-                callno=callno,
-                source_block_id=state.block_id,  # type: ignore [arg-type]
-                destination_block_id=None,
-                returned=returned,
-            ),
+            filecov.data_sources,
+            callno=callno,
+            source_block_id=state.block_id,  # type: ignore [arg-type]
+            destination_block_id=None,
+            returned=returned,
         )
 
         return state

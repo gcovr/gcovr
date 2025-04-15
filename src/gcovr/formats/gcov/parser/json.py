@@ -38,14 +38,7 @@ from typing import Any, Optional
 
 from gcovr.utils import get_md5_hexdigest
 
-from ....data_model.coverage import (
-    BranchCoverage,
-    CallCoverage,
-    ConditionCoverage,
-    FileCoverage,
-    FunctionCoverage,
-    LineCoverage,
-)
+from ....data_model.coverage import FileCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 from ....filter import Filter, is_file_excluded
 from .common import (
@@ -87,26 +80,30 @@ def parse_coverage(
         if is_file_excluded(fname, include_filters, exclude_filters):
             continue
 
-        if file["file"] == "<stdin>":
-            message = f"Got sourcefile {file['file']}, using empty lines."
-            LOGGER.info(message)
-            source_lines = [b"" for _ in range(file["lines"][-1]["line_number"])]
-            source_lines[0] = f"/* {message} */".encode()
-        else:
+        max_line_number = file["lines"][-1]["line_number"] if file["lines"] else 1
+        try:
             with open(fname, "rb") as fh_in2:
                 source_lines = fh_in2.read().splitlines()
             lines = len(source_lines)
-            max_line_from_cdata = (
-                file["lines"][-1]["line_number"] if file["lines"] else 1
-            )
-            if lines < max_line_from_cdata:
+            if lines < max_line_number:
                 LOGGER.warning(
-                    f"File {fname} has {lines} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                    f"File {max_line_number} has {lines} line(s) but coverage data has {max_line_number} line(s)."
                 )
-                # Python ranges are exclusive. We want to iterate over all lines, including
-                # that last line. Thus, we have to add a +1 to include that line.
-                for _ in range(lines, max_line_from_cdata):
-                    source_lines.append(b"/*EOF*/")
+                # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
+                source_lines += [b"/*EOF*/"] * (max_line_number - lines)
+        except OSError as e:
+            if file["file"].endswith("<stdin>"):
+                message = f"Got unreadable source file '{file['file']}', replacing with empty lines."
+                LOGGER.info(message)
+            else:
+                # The exception contains the source file name,
+                # e.g. [Errno 2] No such file or directory: 'xy.txt'
+                message = f"Can't read file, using empty lines: {e}"
+                LOGGER.warning(message)
+            # If we can't read the file we use as first line the error
+            # and use empty lines for the rest of the lines.
+            source_lines = [b""] * max_line_number
+            source_lines[0] = f"/* {message} */".encode()
 
         encoded_source_lines = [
             line.decode(source_encoding, errors="replace") for line in source_lines
@@ -163,67 +160,59 @@ def _parse_file_node(
     for line in gcov_file_node["lines"]:
         persistent_states.update(location=(filename, line["line_number"]))
         linecov = filecov.insert_line_coverage(
-            LineCoverage(
+            str(data_fname),
+            lineno=line["line_number"],
+            count=check_hits(
+                line["count"],
+                source_lines[line["line_number"] - 1],
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            ),
+            function_name=line.get("function_name"),
+            block_ids=line["block_ids"],
+            md5=get_md5_hexdigest(
+                source_lines[line["line_number"] - 1].encode("UTF-8")
+            ),
+        )
+        for index, branch in enumerate(line["branches"]):
+            linecov.insert_branch_coverage(
                 str(data_fname),
-                lineno=line["line_number"],
+                branchno=index,
                 count=check_hits(
-                    line["count"],
+                    branch["count"],
                     source_lines[line["line_number"] - 1],
                     ignore_parse_errors,
                     suspicious_hits_threshold,
                     persistent_states,
                 ),
-                function_name=line.get("function_name"),
-                block_ids=line["block_ids"],
-                md5=get_md5_hexdigest(
-                    source_lines[line["line_number"] - 1].encode("UTF-8")
-                ),
-            )
-        )
-        for index, branch in enumerate(line["branches"]):
-            linecov.insert_branch_coverage(
-                BranchCoverage(
-                    str(data_fname),
-                    branchno=index,
-                    count=check_hits(
-                        branch["count"],
-                        source_lines[line["line_number"] - 1],
-                        ignore_parse_errors,
-                        suspicious_hits_threshold,
-                        persistent_states,
-                    ),
-                    source_block_id=branch["source_block_id"],
-                    fallthrough=branch["fallthrough"],
-                    throw=branch["throw"],
-                    destination_block_id=branch["destination_block_id"],
-                ),
+                source_block_id=branch["source_block_id"],
+                fallthrough=branch["fallthrough"],
+                throw=branch["throw"],
+                destination_block_id=branch["destination_block_id"],
             )
         for index, condition in enumerate(line.get("conditions", [])):
             linecov.insert_condition_coverage(
-                ConditionCoverage(
-                    str(data_fname),
-                    conditionno=index,
-                    count=check_hits(
-                        condition["count"],
-                        source_lines[line["line_number"] - 1],
-                        ignore_parse_errors,
-                        suspicious_hits_threshold,
-                        persistent_states,
-                    ),
-                    covered=condition["covered"],
-                    not_covered_true=condition["not_covered_true"],
-                    not_covered_false=condition["not_covered_false"],
+                str(data_fname),
+                conditionno=index,
+                count=check_hits(
+                    condition["count"],
+                    source_lines[line["line_number"] - 1],
+                    ignore_parse_errors,
+                    suspicious_hits_threshold,
+                    persistent_states,
                 ),
+                covered=condition["covered"],
+                not_covered_true=condition["not_covered_true"],
+                not_covered_false=condition["not_covered_false"],
             )
         for index, call in enumerate(line.get("calls", [])):
             linecov.insert_call_coverage(
-                CallCoverage(
-                    str(data_fname),
-                    callno=index,
-                    source_block_id=call["source_block_id"],
-                    destination_block_id=call["destination_block_id"],
-                    returned=call["returned"],
-                ),
+                str(data_fname),
+                callno=index,
+                source_block_id=call["source_block_id"],
+                destination_block_id=call["destination_block_id"],
+                returned=call["returned"],
             )
 
     for function in gcov_file_node["functions"]:
@@ -237,17 +226,15 @@ def _parse_file_node(
             blocks = min(99.9, round(ratio * 100.0, 1))
 
         filecov.insert_function_coverage(
-            FunctionCoverage(
-                str(data_fname),
-                mangled_name=function["name"],
-                demangled_name=function["demangled_name"],
-                lineno=function["start_line"],
-                count=function["execution_count"],
-                blocks=blocks,
-                start=(function["start_line"], function["start_column"]),
-                end=(function["end_line"], function["end_column"]),
-            ),
+            str(data_fname),
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+            mangled_name=function["name"],
+            demangled_name=function["demangled_name"],
+            lineno=function["start_line"],
+            count=function["execution_count"],
+            blocks=blocks,
+            start=(function["start_line"], function["start_column"]),
+            end=(function["end_line"], function["end_column"]),
         )
 
     if (

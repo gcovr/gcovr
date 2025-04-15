@@ -880,13 +880,13 @@ def get_file_data(
                     LOGGER.warning(
                         f"File {filename} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
                     )
-        except IOError as e:
+        except OSError as e:
             if filename.endswith("<stdin>"):
                 file_not_found = False
                 file_info = "!!! File from stdin !!!"
             else:
-                file_info = "!!! File not found !!!"
-                LOGGER.warning(f"File {filename} not found: {repr(e)}")
+                file_info = f"!!! Can't read file: {e.strerror} !!!"
+                LOGGER.warning(f"Can't read file: {e}")
             # Python ranges are exclusive. We want to iterate over all lines, including
             # that last line. Thus, we have to add a +1 to include that line.
             for ctr in range(1, max_line_from_cdata + 1):

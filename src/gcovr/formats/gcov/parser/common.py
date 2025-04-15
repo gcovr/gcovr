@@ -32,7 +32,7 @@ class NegativeHits(Exception):
 
     def __init__(self, line: str, persistent_states: dict[str, Any]) -> None:
         super().__init__(
-            f"Got negative hit value in {':'.join(str(item) for item in persistent_states['location'])}: {line}\n"
+            f"{':'.join(str(item) for item in persistent_states['location'])} Got negative hit value in: {line}\n"
             "This is caused by a bug in gcov tool, see\n"
             "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
             "--gcov-ignore-parse-errors with a value of negative_hits.warn,\n"
@@ -49,7 +49,7 @@ class NegativeHits(Exception):
         >>> NegativeHits.raise_if_not_ignored("code with space", None, state)
         Traceback (most recent call last):
             ...
-        gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in file:5: code with space
+        gcovr.formats.gcov.parser.common.NegativeHits: file:5 Got negative hit value in: code with space
         This is caused by a bug in gcov tool, see
         https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
         --gcov-ignore-parse-errors with a value of negative_hits.warn,
@@ -78,7 +78,7 @@ class NegativeHits(Exception):
                 persistent_states["negative_hits.warn_once_per_file"] += 1
             else:
                 LOGGER.warning(
-                    f"Ignoring negative hits in {':'.join(str(item) for item in persistent_states['location'])}: {line}."
+                    f"{':'.join(str(item) for item in persistent_states['location'])} Ignoring negative hits in: {line}."
                 )
                 if "negative_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["negative_hits.warn_once_per_file"] = 1
@@ -91,7 +91,7 @@ class SuspiciousHits(Exception):
 
     def __init__(self, line: str, persistent_states: dict[str, Any]) -> None:
         super().__init__(
-            f"Got suspicious hit value in {':'.join(str(item) for item in persistent_states['location'])}: {line}\n"
+            f"{':'.join(str(item) for item in persistent_states['location'])} Got suspicious hit value in: {line}\n"
             "This is caused by a bug in gcov tool, see\n"
             "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option\n"
             "--gcov-ignore-parse-errors with a value of suspicious_hits.warn,\n"
@@ -109,7 +109,7 @@ class SuspiciousHits(Exception):
         >>> SuspiciousHits.raise_if_not_ignored("code with space", None, state)
         Traceback (most recent call last):
             ...
-        gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in file:5: code with space
+        gcovr.formats.gcov.parser.common.SuspiciousHits: file:5 Got suspicious hit value in: code with space
         This is caused by a bug in gcov tool, see
         https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
         --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
@@ -160,7 +160,7 @@ def check_hits(
     >>> check_hits(-1, "code with space", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
         ...
-    gcovr.formats.gcov.parser.common.NegativeHits: Got negative hit value in file:5: code with space
+    gcovr.formats.gcov.parser.common.NegativeHits: file:5 Got negative hit value in: code with space
     This is caused by a bug in gcov tool, see
     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
     --gcov-ignore-parse-errors with a value of negative_hits.warn,
@@ -168,7 +168,7 @@ def check_hits(
     >>> check_hits(1000, "code with space", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
         ...
-    gcovr.formats.gcov.parser.common.SuspiciousHits: Got suspicious hit value in file:5: code with space
+    gcovr.formats.gcov.parser.common.SuspiciousHits: file:5 Got suspicious hit value in: code with space
     This is caused by a bug in gcov tool, see
     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
     --gcov-ignore-parse-errors with a value of suspicious_hits.warn,

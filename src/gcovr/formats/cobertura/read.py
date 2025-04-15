@@ -28,7 +28,7 @@ from ...data_model.coverage import (
     FileCoverage,
     LineCoverage,
 )
-from ...data_model.merging import get_merge_mode_from_options
+from ...data_model.merging import MergeOptions, get_merge_mode_from_options
 from ...filter import is_file_excluded
 from ...options import Options
 
@@ -89,17 +89,19 @@ def read_report(options: Options) -> CoverageContainer:
             merge_options = get_merge_mode_from_options(options)
             xml_line: etree._Element
             for xml_line in gcovr_file.xpath("./lines//line"):  # type: ignore [assignment, union-attr]
-                filecov.insert_line_coverage(
-                    _line_from_xml(data_source, xml_line),
-                    merge_options,
-                )
+                _insert_line_from_xml(filecov, data_source, merge_options, xml_line)
 
             covdata.insert_file_coverage(filecov, merge_options)
 
     return covdata
 
 
-def _line_from_xml(data_source: str, xml_line: etree._Element) -> LineCoverage:
+def _insert_line_from_xml(
+    filecov: FileCoverage,
+    data_source: str,
+    merge_options: MergeOptions,
+    xml_line: etree._Element,
+) -> None:
     try:
         lineno = int(xml_line.get("number", ""))
     except Exception:  # pragma: no cover
@@ -118,27 +120,25 @@ def _line_from_xml(data_source: str, xml_line: etree._Element) -> LineCoverage:
 
     is_branch = xml_line.get("branch") == "true"
     branch_msg = xml_line.get("condition-coverage")
-    linecov = LineCoverage(data_source, lineno=lineno, count=count, function_name=None)
+    linecov = filecov.insert_line_coverage(
+        data_source, merge_options, lineno=lineno, count=count, function_name=None
+    )
 
     if is_branch and branch_msg is not None:
         try:
             [covered, total] = branch_msg[branch_msg.rfind("(") + 1 : -1].split("/")
             for i in range(int(total)):
-                linecov.insert_branch_coverage(
-                    _branch_from_json(data_source, i, i < int(covered))
-                )
+                _branch_from_json(linecov, data_source, i, i < int(covered))
         except AssertionError as exc:  # pragma: no cover
             LOGGER.warning(
                 f"Invalid branch information for line {linecov.lineno}: {exc}"
             )
 
-    return linecov
-
 
 def _branch_from_json(
-    data_source: str, branchno: int, is_covered: bool
+    linecov: LineCoverage, data_source: str, branchno: int, is_covered: bool
 ) -> BranchCoverage:
-    return BranchCoverage(
+    return linecov.insert_branch_coverage(
         data_source,
         branchno=branchno,
         count=1 if is_covered else 0,
