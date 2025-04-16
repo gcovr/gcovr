@@ -1,23 +1,23 @@
+.. program:: gcovr
+
 .. _jacoco_output:
 
 JaCoCo XML Output
 =================
 
-.. program:: gcovr
-
 The ``gcovr`` command can generate a
 JaCoCo XML output using the :option:`--jacoco`
 and :option:`--jacoco-pretty` options:
 
-.. include:: ../../examples/example_jacoco.sh
-    :code: bash
+.. literalinclude:: ../../examples/example_jacoco.sh
+    :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 This generates an XML summary of the lines executed:
 
-.. include:: ../../examples/example_jacoco.xml
-    :code: xml
+.. literalinclude:: ../../examples/example_jacoco.xml
+    :language: xml
 
 This XML format is described in the
 `JaCoCo XML <https://www.jacoco.org/jacoco/trunk/coverage/report.dtd>`__

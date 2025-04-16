@@ -27,6 +27,10 @@
                         [
                             "main.gcda",
                             "build1/^#func.h.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/^#func.h.gcov"
                         ]
                     ]
                 },
@@ -125,6 +129,10 @@
                         [
                             "main.gcda",
                             "build1/^#func.h.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/^#func.h.gcov"
                         ]
                     ]
                 },
@@ -137,6 +145,10 @@
                         [
                             "main.gcda",
                             "build1/^#func.h.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/^#func.h.gcov"
                         ]
                     ]
                 }
@@ -233,6 +245,10 @@
                         [
                             "main.gcda",
                             "build1/^#main.c.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/^#main.c.gcov"
                         ]
                     ]
                 }

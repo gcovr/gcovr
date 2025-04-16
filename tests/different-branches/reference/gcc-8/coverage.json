@@ -147,6 +147,14 @@
                         [
                             "main.gcda",
                             "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
                 },
@@ -225,10 +233,6 @@
                         [
                             "main.gcda",
                             "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
-                        ],
-                        [
-                            "main.gcda",
-                            "build4/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
                 },

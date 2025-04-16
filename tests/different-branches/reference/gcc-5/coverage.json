@@ -147,6 +147,14 @@
                         [
                             "main.gcda",
                             "build2/^#main.c.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build3/^#main.c.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build4/^#main.c.gcov"
                         ]
                     ]
                 },
@@ -225,10 +233,6 @@
                         [
                             "main.gcda",
                             "build3/^#main.c.gcov"
-                        ],
-                        [
-                            "main.gcda",
-                            "build4/^#main.c.gcov"
                         ]
                     ]
                 },

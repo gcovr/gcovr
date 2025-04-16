@@ -1,3 +1,6 @@
+.. program is needed to resolve :option: references
+.. program:: gcovr
+
 .. _compiling:
 
 Compiling for Coverage
@@ -29,9 +32,9 @@ Example Code
 The following ``example.cpp`` program
 is used to illustrate the compilation process:
 
-.. include:: ../../examples/example.cpp
-    :code: cpp
-    :number-lines: 1
+.. literalinclude:: ../../examples/example.cpp
+    :language: cpp
+    :linenos:
 
 This code executes several subroutines in this program,
 but some lines in the program are not executed.
@@ -42,8 +45,8 @@ Compiler Options
 
 We compile ``example.cpp`` with the GCC compiler as follows:
 
-.. include:: ../../examples/example.sh
-    :code: bash
+.. literalinclude:: ../../examples/example.sh
+    :language: bash
     :start-after: #BEGIN compile
     :end-before: #END compile
 
@@ -98,8 +101,8 @@ Running the Program
 The above compiler invocation generated a ``program`` executable.
 Now, we have to execute this command:
 
-.. include:: ../../examples/example.sh
-    :code: bash
+.. literalinclude:: ../../examples/example.sh
+    :language: bash
     :start-after: #BEGIN run
     :end-before: #END run
 
@@ -119,12 +122,12 @@ Processing Coverage
 Your compiler ships with tools to analyze the coverage data files.
 For GCC, this is ``gcov``.
 For Clang, this is ``llvm-cov``.
-You don't have to call these programs yourself – gcovr will do that for you.
+You don't have to call these programs yourself, gcovr will do that for you.
 
 So let's invoke gcovr:
 
-.. include:: ../../examples/example.sh
-    :code: bash
+.. literalinclude:: ../../examples/example.sh
+    :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
@@ -134,8 +137,8 @@ and summarize the code coverage statistics into a report.
 By default, we get a text summary on the command line
 that shows aggregate statistics for each line:
 
-.. include:: ../../examples/example.txt
-    :literal:
+.. literalinclude:: ../../examples/example.txt
+    :language: text
 
 Gcovr supports many different :ref:`output_formats`
 that you can generate instead.
@@ -147,10 +150,8 @@ Choosing the Right Gcov Executable
 If you have multiple compilers installed or if you are using Clang,
 you will likely need to tell gcovr which gcov executable to use.
 By default, gcovr just uses the program named ``gcov``.
-This is fine for the default GCC compiler,
-e.g. ``gcc`` or ``g++``.
-Otherwise, you must use the :option:`--gcov-executable <gcovr --gcov-executable>`
-to tell gcovr what to use.
+This is fine for the default GCC compiler, e.g. ``gcc`` or ``g++``.
+Otherwise, you must use :option:`--gcov-executable` to tell gcovr what to use.
 
 If you have used a specific GCC version (e.g. ``gcc-8`` or ``g++-8``),
 then you must name the gcov tool with the corresponding version.
@@ -198,7 +199,7 @@ Each object file will have an associated ``.gcno`` and ``.gcda`` file
 in the same directory as the ``.o`` object file.
 For example, consider the following compilation process:
 
-.. code:: bash
+.. code-block:: bash
 
    # (1) compile to object code
    g++ --coverage -c -o a.o a.cpp

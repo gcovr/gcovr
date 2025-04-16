@@ -27,6 +27,10 @@
                         [
                             "main.gcda",
                             "build1/func.h##a6f6686adfe123f64bf0b38f0677f96a.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/func.h##a6f6686adfe123f64bf0b38f0677f96a.gcov"
                         ]
                     ]
                 },
@@ -142,6 +146,10 @@
                         [
                             "main.gcda",
                             "build1/func.h##a6f6686adfe123f64bf0b38f0677f96a.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/func.h##a6f6686adfe123f64bf0b38f0677f96a.gcov"
                         ]
                     ]
                 },
@@ -154,6 +162,10 @@
                         [
                             "main.gcda",
                             "build1/func.h##a6f6686adfe123f64bf0b38f0677f96a.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/func.h##a6f6686adfe123f64bf0b38f0677f96a.gcov"
                         ]
                     ]
                 }
@@ -234,6 +246,10 @@
                         [
                             "main.gcda",
                             "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                         ]
                     ]
                 }

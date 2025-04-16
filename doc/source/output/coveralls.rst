@@ -1,20 +1,22 @@
+.. program:: gcovr
+
 .. _coveralls_output:
 
 Coveralls JSON Output
 =====================
 
 If you are using Coveralls, you can get a coverage report
-in a suitable JSON format via the :option:`--coveralls<gcovr --coveralls>` option::
+in a suitable JSON format via the :option:`--coveralls` option::
 
     gcovr --coveralls coverage.json
 
-The :option:`--coveralls-pretty<gcovr --coveralls-pretty>` option generates
+The :option:`--coveralls-pretty` option generates
 an indented JSON output that is easier to read.
 
 Keep in mind that the output contains the checksums of the source files. If you are
 using different OSes, the line endings shall be the same.
 
-If available, environment variable COVERALLS_REPO_TOKEN will be
+If available, environment variable ``COVERALLS_REPO_TOKEN`` will be
 consumed and baked into the JSON output.
 
 If running in a CI additional variables are used:
@@ -58,5 +60,4 @@ The Coveralls JSON format is documented at
    Order of keys changed from alphabetical to logical.
 
 .. versionadded:: 5.0
-   Added :option:`--coveralls<gcovr --coveralls>`
-   and :option:`--coveralls-pretty<gcovr --coveralls-pretty>`.
+   Added :option:`--coveralls` and :option:`--coveralls-pretty`.

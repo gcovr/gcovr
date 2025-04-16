@@ -52,13 +52,7 @@ from .common import (
     check_hits,
 )
 from ....utils import get_md5_hexdigest
-from ....data_model.coverage import (
-    BranchCoverage,
-    CallCoverage,
-    FileCoverage,
-    FunctionCoverage,
-    LineCoverage,
-)
+from ....data_model.coverage import FileCoverage, LineCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 
 LOGGER = logging.getLogger("gcovr")
@@ -260,7 +254,7 @@ _LineWithError = tuple[str, Exception]
 
 
 def parse_coverage(
-    data_filename: Union[str, tuple[str, ...]],
+    data_filename: Union[str, set[tuple[str, ...]]],
     lines: list[str],
     *,
     filename: str,
@@ -331,7 +325,6 @@ def parse_coverage(
     for line, raw_line in tokenized_lines:
         try:
             state = _gather_coverage_from_line(
-                data_filename,
                 state,
                 line,
                 filecov=filecov,
@@ -339,23 +332,19 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
             state = _ParserState(is_recovering=True)
-    if state.linecov is not None:
-        filecov.insert_line_coverage(state.linecov)
 
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
         name, count, blocks = function
         filecov.insert_function_coverage(
-            FunctionCoverage(
-                str(data_filename),
-                mangled_name=name,
-                demangled_name=None,
-                lineno=0 if state.linecov is None else (state.linecov.lineno + 1),
-                count=count,
-                blocks=blocks,
-            ),
+            str(data_filename),
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+            mangled_name=name,
+            demangled_name=None,
+            lineno=0 if state.linecov is None else state.linecov.lineno + 1,
+            count=count,
+            blocks=blocks,
         )
 
     _report_lines_with_errors(
@@ -389,7 +378,6 @@ class _ParserState(NamedTuple):
 
 
 def _gather_coverage_from_line(
-    data_filename: Union[str, tuple[str, ...]],
     state: _ParserState,
     line: _Line,
     *,
@@ -399,51 +387,44 @@ def _gather_coverage_from_line(
     Interpret a Line, updating the FileCoverage, and transitioning ParserState.
 
     The function handles all possible Line variants, and dies otherwise:
-    >>> _gather_coverage_from_line("", _ParserState(), "illegal line type", filecov=...)
+    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", filecov=...)
     Traceback (most recent call last):
     AssertionError: Unexpected line type: 'illegal line type'
     """
     # pylint: disable=too-many-return-statements,too-many-branches
     # pylint: disable=no-else-return  # make life easier for type checkers
-
     if isinstance(line, _SourceLine):
         raw_count, lineno, source_code, extra_info = line
 
         is_noncode = extra_info & _ExtraInfo.NONCODE
+        linecov: Optional[LineCoverage] = None
         if not is_noncode:
-            if state.linecov is not None:
-                filecov.insert_line_coverage(state.linecov)
-            state = state._replace(
-                linecov=LineCoverage(
-                    data_filename,
-                    lineno=lineno,
-                    count=raw_count,
-                    function_name=state.function_name,
-                    md5=get_md5_hexdigest(source_code.encode("UTF-8")),
-                )
+            linecov = filecov.insert_line_coverage(
+                filecov.data_sources,
+                lineno=lineno,
+                count=raw_count,
+                function_name=state.function_name,
+                md5=get_md5_hexdigest(source_code.encode("UTF-8")),
             )
-
         # handle deferred functions
         for function in state.deferred_functions:
             name, count, blocks = function
 
             filecov.insert_function_coverage(
-                FunctionCoverage(
-                    data_filename,
-                    mangled_name=name,
-                    demangled_name=None,
-                    lineno=lineno,
-                    count=count,
-                    blocks=blocks,
-                ),
+                filecov.data_sources,
                 MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+                mangled_name=name,
+                demangled_name=None,
+                lineno=lineno,
+                count=count,
+                blocks=blocks,
             )
 
         return _ParserState(
             function_name=state.function_name,
-            linecov=state.linecov,
-            block_id=state.block_id,
+            linecov=state.linecov if linecov is None else linecov,
             line_contents=line.source_code,
+            block_id=state.block_id,
         )
 
     elif state.is_recovering:
@@ -463,14 +444,12 @@ def _gather_coverage_from_line(
         # linecov won't exist if it was considered noncode
         if state.linecov is not None:
             state.linecov.insert_branch_coverage(
-                BranchCoverage(
-                    data_filename,
-                    branchno=branchno,
-                    count=hits,
-                    source_block_id=state.block_id,
-                    fallthrough=(annotation == "fallthrough"),
-                    throw=(annotation == "throw"),
-                ),
+                filecov.data_sources,
+                branchno=branchno,
+                count=hits,
+                source_block_id=state.block_id,
+                fallthrough=(annotation == "fallthrough"),
+                throw=(annotation == "throw"),
             )
 
         return state
@@ -482,13 +461,11 @@ def _gather_coverage_from_line(
         # linecov won't exist if it was considered noncode
         if state.linecov is not None:
             state.linecov.insert_call_coverage(
-                CallCoverage(
-                    filecov.data_sources,
-                    callno=callno,
-                    source_block_id=state.block_id,  # type: ignore [arg-type]
-                    destination_block_id=None,
-                    returned=returned,
-                ),
+                filecov.data_sources,
+                callno=callno,
+                source_block_id=state.block_id,  # type: ignore [arg-type]
+                destination_block_id=None,
+                returned=returned,
             )
 
         return state

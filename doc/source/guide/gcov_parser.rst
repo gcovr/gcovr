@@ -1,7 +1,7 @@
-.. _gcov parser:
+.. program is needed to resolve :option: references
+.. program:: gcovr
 
-.. program is needed to resolve option links
-.. program::  gcovr
+.. _gcov parser:
 
 GCOV parser
 ===========

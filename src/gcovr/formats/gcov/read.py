@@ -254,7 +254,7 @@ def process_gcov_text_data(
     key = os.path.normpath(fname)
 
     filecov, source_lines = text.parse_coverage(
-        (gcda_fname, data_fname) if gcda_fname else data_fname,
+        set([(gcda_fname, data_fname) if gcda_fname else (data_fname,)]),
         lines,
         filename=key,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
