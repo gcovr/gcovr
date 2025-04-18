@@ -43,6 +43,9 @@
                             "destination_block_id": 3,
                             "gcovr/data_sources": [
                                 [
+                                    "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                                ],
+                                [
                                     "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                                 ]
                             ]
@@ -54,6 +57,9 @@
                             "source_block_id": 2,
                             "destination_block_id": 4,
                             "gcovr/data_sources": [
+                                [
+                                    "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                                ],
                                 [
                                     "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                                 ]
@@ -69,6 +75,9 @@
                                 0
                             ],
                             "gcovr/data_sources": [
+                                [
+                                    "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                                ],
                                 [
                                     "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                                 ]
@@ -189,6 +198,9 @@
                             "destination_block_id": 1,
                             "returned": 2,
                             "gcovr/data_sources": [
+                                [
+                                    "testcase-main##5a9dab3e5ce52d2d3f3bdb31df46af8b.gcov.json.gz"
+                                ],
                                 [
                                     "testcase-main##d004e4c6f6f1709f39cfb6ab5c74aa3c.gcov.json.gz"
                                 ]
