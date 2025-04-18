@@ -69,7 +69,7 @@ from abc import abstractmethod
 import logging
 import os
 import re
-from typing import Any, Callable, List, NoReturn, Optional, TypeVar, Union
+from typing import Any, Callable, NoReturn, Optional, Set, TypeVar, Union
 
 from ..filter import is_file_excluded
 
@@ -1684,7 +1684,7 @@ class FileCoverage(CoverageBase):
         self.filename: str = filename
         self.functions = CoverageDict[str, FunctionCoverage]()
         self.lines = CoverageDict[LinesKeyType, LineCoverage]()
-        self.lines_keys_by_lineno: dict[int, List[LinesKeyType]] = {}
+        self.lines_keys_by_lineno: dict[int, Set[LinesKeyType]] = {}
 
     def presentable_filename(self, root_filter: re.Pattern[str]) -> str:
         """Mangle a filename so that it is suitable for a report."""
@@ -1835,15 +1835,17 @@ class FileCoverage(CoverageBase):
             self.lines[key] = linecov
             self.lines[key].parent = self
             if linecov.lineno not in self.lines_keys_by_lineno:
-                self.lines_keys_by_lineno[linecov.lineno] = []
-            self.lines_keys_by_lineno[linecov.lineno].append(key)
+                self.lines_keys_by_lineno[linecov.lineno] = set[LinesKeyType]()
+            self.lines_keys_by_lineno[linecov.lineno].add(key)
 
         return self.lines[key]
 
     def update_linecov(self, old_key: LinesKeyType) -> None:
         """Update the line key for the given old key."""
         linecov = self.lines.pop(old_key)
+        self.lines_keys_by_lineno[linecov.lineno].remove(old_key)
         self.lines[linecov.key] = linecov
+        self.lines_keys_by_lineno[linecov.lineno].add(linecov.key)
 
     def insert_function_coverage(
         self,
