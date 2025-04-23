@@ -4806,6 +4806,10 @@
                         [
                             "main.gcda",
                             "switch_test.h##5b00ab17e6f7c638d27e0ef4ae668e29.gcov"
+                        ],
+                        [
+                            "switch_test.gcda",
+                            "switch_test.h##5b00ab17e6f7c638d27e0ef4ae668e29.gcov"
                         ]
                     ]
                 },
@@ -5001,6 +5005,10 @@
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
+                            "switch_test.h##5b00ab17e6f7c638d27e0ef4ae668e29.gcov"
+                        ],
+                        [
+                            "switch_test.gcda",
                             "switch_test.h##5b00ab17e6f7c638d27e0ef4ae668e29.gcov"
                         ]
                     ]

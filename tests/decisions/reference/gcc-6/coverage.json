@@ -5009,6 +5009,10 @@
                         [
                             "main.gcda",
                             "switch_test.h.gcov"
+                        ],
+                        [
+                            "switch_test.gcda",
+                            "switch_test.h.gcov"
                         ]
                     ]
                 },
@@ -5191,6 +5195,10 @@
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
+                            "switch_test.h.gcov"
+                        ],
+                        [
+                            "switch_test.gcda",
                             "switch_test.h.gcov"
                         ]
                     ]
