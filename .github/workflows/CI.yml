@@ -54,9 +54,14 @@ jobs:
       - name: Install spellchecker
         run: |
           npm install -g cspell@8.19.4
+      - uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
+        id: changed-files
+        with:
+          separator: ","
       - name: Run spellchecker
         run: |
-          cspell --config cspell.json --color --show-suggestions '**'
+          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changed-files.outputs.all_changed_and_modified_files }}')
+          cspell --config cspell.json --color --show-suggestions "${added_modified_files[@]}"
 
 
   upload-coverage:
