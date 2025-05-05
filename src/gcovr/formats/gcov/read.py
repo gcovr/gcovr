@@ -58,6 +58,7 @@ output_error_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied|Read-only file system)"
 )
 unknown_cla_re = re.compile(r"Unknown command line argument")
+version_mismatch_re = re.compile(r":version '[']+', prefer '[']+'")
 
 
 def read_report(options: Options) -> CoverageContainer:
@@ -786,6 +787,9 @@ def run_gcov_and_process_files(
             if unknown_cla_re.search(err):
                 # gcov tossed errors: throw exception
                 raise RuntimeError(f"Error in gcov command line: {err}")
+            if version_mismatch_re.search(err):
+                # gcov tossed errors: throw exception
+                raise RuntimeError(f"Version mismatch in gcc/gcov: {err}")
 
             ignore_source_errors = options.gcov_ignore_errors is not None and any(
                 v in options.gcov_ignore_errors for v in ["all", "source_not_found"]
