@@ -173,6 +173,7 @@
         "linenos",
         "linkcss",
         "logissue",
+        "mapfile",
         "mklink",
         "posargs",
         "Preproc",
