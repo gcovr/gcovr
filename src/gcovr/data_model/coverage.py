@@ -863,12 +863,16 @@ class CallCoverage(CoverageBase):
 
     @classmethod
     def deserialize(
-        cls, linecov: LineCoverage, data_source: str, data_dict: dict[str, Any]
+        cls,
+        linecov: LineCoverage,
+        data_source: str,
+        callno: int,
+        data_dict: dict[str, Any],
     ) -> CallCoverage:
         """Deserialize the object."""
         return linecov.insert_call_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            callno=data_dict["callno"],
+            callno=callno,
             returned=data_dict["returned"],
             source_block_id=data_dict["source_block_id"],
             destination_block_id=data_dict.get("destination_block_id"),
@@ -1007,6 +1011,9 @@ class LineCoverage(CoverageBase):
         if self.function_name is not None:
             data_dict["function_name"] = self.function_name
 
+        if self.block_ids is not None:
+            data_dict["block_ids"] = self.block_ids
+
         data_dict.update(
             {
                 "count": self.count,
@@ -1021,8 +1028,8 @@ class LineCoverage(CoverageBase):
                 conditioncov.serialize(get_data_source)
                 for _, conditioncov in sorted(self.conditions.items())
             ]
-        if self.block_ids is not None:
-            data_dict["block_ids"] = self.block_ids
+        if self.decision is not None:
+            data_dict["gcovr/decision"] = self.decision.serialize(get_data_source)
         if len(self.calls) > 0:
             data_dict["calls"] = [
                 callcov.serialize(get_data_source)
@@ -1032,8 +1039,6 @@ class LineCoverage(CoverageBase):
             data_dict["gcovr/md5"] = self.md5
         if self.excluded:
             data_dict[GCOVR_EXCLUDED] = True
-        if self.decision is not None:
-            data_dict["gcovr/decision"] = self.decision.serialize(get_data_source)
         data_dict.update(get_data_source(self))
 
         return data_dict
@@ -1082,10 +1087,9 @@ class LineCoverage(CoverageBase):
             else:
                 raise AssertionError(f"Unknown decision type: {decision_type!r}")
 
-        if (calls := data_dict.get("gcovr/calls")) is not None:
-            for data_dict_call in calls:
-                CallCoverage.deserialize(linecov, data_source, data_dict_call)
-
+        if (calls := data_dict.get("calls")) is not None:
+            for callno, data_dict_call in enumerate(calls):
+                CallCoverage.deserialize(linecov, data_source, callno, data_dict_call)
         return linecov
 
     def merge(

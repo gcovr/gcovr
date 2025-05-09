@@ -47,7 +47,6 @@
                             ]
                         }
                     ],
-                    "gcovr/md5": "1aedbc743aca5457e63d15ff98c7c6b0",
                     "gcovr/decision": {
                         "type": "conditional",
                         "count_true": 0,
@@ -59,6 +58,7 @@
                             ]
                         ]
                     },
+                    "gcovr/md5": "1aedbc743aca5457e63d15ff98c7c6b0",
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",
@@ -109,7 +109,6 @@
                             ]
                         }
                     ],
-                    "gcovr/md5": "7b25e7042a6c283ef5ff4184aa8a5bbd",
                     "gcovr/decision": {
                         "type": "conditional",
                         "count_true": 2,
@@ -121,6 +120,7 @@
                             ]
                         ]
                     },
+                    "gcovr/md5": "7b25e7042a6c283ef5ff4184aa8a5bbd",
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",

@@ -98,6 +98,12 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "cbbf56c3917659e6decbe7eaa8161cef"
                 },
                 {
@@ -105,6 +111,12 @@
                     "function_name": "main",
                     "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
                     "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2"
                 },
                 {

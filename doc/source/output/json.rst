@@ -105,14 +105,14 @@ Each **line** entry contains coverage data for one line::
     {
         "line_number": line_number,
         "function_name": function_name,
+        "block_ids", [block_id],
         "count": count,
         "branches": [branch],
-        "block_ids", [block_id],
         "conditions", [condition]
+        "gcovr/decision": decision,
+        "calls": calls,
         "gcovr/md5": md5,
         "gcovr/excluded": excluded,
-        "gcovr/decision": decision,
-        "gcovr/calls": calls,
         "gcovr/data_sources": [data_source]
     }
 
@@ -128,6 +128,9 @@ function_name: str
   supported by ``gcov``, else the mangled name. Can be missing for a
   line with an inlined statement.
 
+block_ids: list
+  The list of block ids defined in this line.
+
 count: int
   How often this line was executed.
 
@@ -138,8 +141,14 @@ conditions: list
   Only available if GCOV JSON format is used it contains an ordered list
   of :ref:`branch <json_format_condition>` coverage entries.
 
-block_ids: list
-  The list of block ids defined in this line.
+gcovr/decision: object
+  The :ref:`decision <json_format_decision>` entry for this line, if any.
+  Absent if there is no decision to report.
+  Requires that :option:`--decisions` coverage analysis was enabled.
+
+calls: object
+  The :ref:`call <json_format_call>` for this line, if any.
+  Absent if there is no call to report.
 
 gcovr/md5: str
   The MD5 sum of the line.
@@ -148,16 +157,6 @@ gcovr/excluded: boolean
   True if coverage data for this line was explicitly excluded,
   in particular with :ref:`exclusion markers`.
   May be absent if false.
-
-gcovr/decision: object
-  The :ref:`decision <json_format_decision>` entry for this line, if any.
-  Absent if there is no decision to report.
-  Requires that :option:`--decisions` coverage analysis was enabled.
-
-gcovr/calls: object
-  The :ref:`call <json_format_call>` for this line, if any.
-  Absent if there is no call to report.
-  Requires that :option:`--calls` coverage analysis was enabled.
 
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.

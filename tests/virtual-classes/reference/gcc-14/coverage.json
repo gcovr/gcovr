@@ -7,44 +7,44 @@
                 {
                     "line_number": 8,
                     "function_name": "_ZN3ns14Bar1C2Ev",
+                    "block_ids": [],
                     "count": 6,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "601116bb7f972822f71830e1433951bd"
                 },
                 {
                     "line_number": 9,
                     "function_name": "_ZN3ns14Bar1C2Ev",
+                    "block_ids": [],
                     "count": 6,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "78c3860abebb28f3bf72e51c4621fef3"
                 },
                 {
                     "line_number": 10,
                     "function_name": "_ZN3ns14Bar1D0Ev",
+                    "block_ids": [],
                     "count": 0,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "1d6ff0e31f80fb5f58616ac936759cdf"
                 },
                 {
                     "line_number": 10,
                     "function_name": "_ZN3ns14Bar1D2Ev",
+                    "block_ids": [],
                     "count": 6,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "1d6ff0e31f80fb5f58616ac936759cdf"
                 },
                 {
                     "line_number": 11,
                     "function_name": "_ZN3ns14Bar1D0Ev",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         2,
                         3
                     ],
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -62,19 +62,19 @@
                 {
                     "line_number": 11,
                     "function_name": "_ZN3ns14Bar1D2Ev",
+                    "block_ids": [],
                     "count": 6,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "060565ea354b7bca4b553bac6c4740ed"
                 },
                 {
                     "line_number": 24,
                     "function_name": "_ZN3ns24Bar2C2Ev",
-                    "count": 4,
-                    "branches": [],
                     "block_ids": [
                         2
                     ],
+                    "count": 4,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -87,36 +87,36 @@
                 {
                     "line_number": 25,
                     "function_name": "_ZN3ns24Bar2C2Ev",
+                    "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "82188094c000f89d4df0eee592868072"
                 },
                 {
                     "line_number": 26,
                     "function_name": "_ZN3ns24Bar2D0Ev",
+                    "block_ids": [],
                     "count": 0,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "0ccb106e6d18dd8e9dcd60c0ed8182fc"
                 },
                 {
                     "line_number": 26,
                     "function_name": "_ZN3ns24Bar2D2Ev",
+                    "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "0ccb106e6d18dd8e9dcd60c0ed8182fc"
                 },
                 {
                     "line_number": 27,
                     "function_name": "_ZN3ns24Bar2D0Ev",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         2,
                         3
                     ],
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -134,11 +134,11 @@
                 {
                     "line_number": 27,
                     "function_name": "_ZN3ns24Bar2D2Ev",
-                    "count": 4,
-                    "branches": [],
                     "block_ids": [
                         2
                     ],
+                    "count": 4,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -151,11 +151,11 @@
                 {
                     "line_number": 40,
                     "function_name": "_ZN3ns34Bar3C2Ev",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         2
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -168,36 +168,36 @@
                 {
                     "line_number": 41,
                     "function_name": "_ZN3ns34Bar3C2Ev",
+                    "block_ids": [],
                     "count": 2,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "a18e41118e36e1ef68607175dc1b592f"
                 },
                 {
                     "line_number": 42,
                     "function_name": "_ZN3ns34Bar3D0Ev",
+                    "block_ids": [],
                     "count": 0,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "85fc251b48f22264177f49e1836b6458"
                 },
                 {
                     "line_number": 42,
                     "function_name": "_ZN3ns34Bar3D2Ev",
+                    "block_ids": [],
                     "count": 2,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "85fc251b48f22264177f49e1836b6458"
                 },
                 {
                     "line_number": 43,
                     "function_name": "_ZN3ns34Bar3D0Ev",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         2,
                         3
                     ],
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -215,11 +215,11 @@
                 {
                     "line_number": 43,
                     "function_name": "_ZN3ns34Bar3D2Ev",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         2
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -232,19 +232,19 @@
                 {
                     "line_number": 51,
                     "function_name": "main",
+                    "block_ids": [],
                     "count": 2,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 53,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         2
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -257,6 +257,11 @@
                 {
                     "line_number": 54,
                     "function_name": "main",
+                    "block_ids": [
+                        3,
+                        4,
+                        5
+                    ],
                     "count": 2,
                     "branches": [
                         {
@@ -302,11 +307,6 @@
                             "destination_block_id": 33
                         }
                     ],
-                    "block_ids": [
-                        3,
-                        4,
-                        5
-                    ],
                     "calls": [
                         {
                             "source_block_id": 3,
@@ -329,11 +329,11 @@
                 {
                     "line_number": 55,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         6
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 6,
@@ -346,6 +346,11 @@
                 {
                     "line_number": 56,
                     "function_name": "main",
+                    "block_ids": [
+                        7,
+                        8,
+                        9
+                    ],
                     "count": 2,
                     "branches": [
                         {
@@ -391,11 +396,6 @@
                             "destination_block_id": 31
                         }
                     ],
-                    "block_ids": [
-                        7,
-                        8,
-                        9
-                    ],
                     "calls": [
                         {
                             "source_block_id": 7,
@@ -418,6 +418,11 @@
                 {
                     "line_number": 57,
                     "function_name": "main",
+                    "block_ids": [
+                        10,
+                        11,
+                        12
+                    ],
                     "count": 2,
                     "branches": [
                         {
@@ -463,11 +468,6 @@
                             "destination_block_id": 31
                         }
                     ],
-                    "block_ids": [
-                        10,
-                        11,
-                        12
-                    ],
                     "calls": [
                         {
                             "source_block_id": 10,
@@ -490,11 +490,11 @@
                 {
                     "line_number": 58,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         13
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 13,
@@ -507,6 +507,11 @@
                 {
                     "line_number": 59,
                     "function_name": "main",
+                    "block_ids": [
+                        14,
+                        15,
+                        16
+                    ],
                     "count": 2,
                     "branches": [
                         {
@@ -552,11 +557,6 @@
                             "destination_block_id": 29
                         }
                     ],
-                    "block_ids": [
-                        14,
-                        15,
-                        16
-                    ],
                     "calls": [
                         {
                             "source_block_id": 14,
@@ -579,6 +579,11 @@
                 {
                     "line_number": 60,
                     "function_name": "main",
+                    "block_ids": [
+                        17,
+                        18,
+                        19
+                    ],
                     "count": 2,
                     "branches": [
                         {
@@ -624,11 +629,6 @@
                             "destination_block_id": 29
                         }
                     ],
-                    "block_ids": [
-                        17,
-                        18,
-                        19
-                    ],
                     "calls": [
                         {
                             "source_block_id": 17,
@@ -651,6 +651,11 @@
                 {
                     "line_number": 61,
                     "function_name": "main",
+                    "block_ids": [
+                        20,
+                        21,
+                        22
+                    ],
                     "count": 2,
                     "branches": [
                         {
@@ -696,11 +701,6 @@
                             "destination_block_id": 29
                         }
                     ],
-                    "block_ids": [
-                        20,
-                        21,
-                        22
-                    ],
                     "calls": [
                         {
                             "source_block_id": 20,
@@ -723,8 +723,6 @@
                 {
                     "line_number": 62,
                     "function_name": "main",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         23,
                         24,
@@ -735,53 +733,55 @@
                         36,
                         38
                     ],
+                    "count": 0,
+                    "branches": [],
                     "gcovr/md5": "f619ca2743f98bae7db1d75919cfc0bc",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 63,
                     "function_name": "main",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         39
                     ],
+                    "count": 0,
+                    "branches": [],
                     "gcovr/md5": "257d5873569672120a0c1f23864092e0",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 64,
                     "function_name": "main",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         40,
                         41,
                         42
                     ],
+                    "count": 0,
+                    "branches": [],
                     "gcovr/md5": "01d76a240d1ff39c4acd167e4a0f0805",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 65,
                     "function_name": "main",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         43
                     ],
+                    "count": 0,
+                    "branches": [],
                     "gcovr/md5": "5703f441b323e4ec7b1b87ef3b386cb9",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 66,
                     "function_name": "main",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         44,
                         45
                     ],
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 44,
@@ -799,11 +799,11 @@
                 {
                     "line_number": 68,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         27
                     ],
+                    "count": 2,
+                    "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 }
             ],
