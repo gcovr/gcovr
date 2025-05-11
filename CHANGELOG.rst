@@ -26,6 +26,8 @@ New features and notable changes:
 
   - Add option :option:`--markdown-file-link` to link files in markdown report. (:issue:`1079`)
 
+- Abort on version mismatch between gcc/gcov instead of trying all working directories. (:issue:`1097`)
+
 Bug fixes and small improvements:
 
 - Fix warning ``Deprecated config key None used, please use 'txt-metric=branch' instead.``
