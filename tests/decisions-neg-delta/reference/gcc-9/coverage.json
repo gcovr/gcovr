@@ -47,7 +47,6 @@
                             ]
                         }
                     ],
-                    "gcovr/md5": "1aedbc743aca5457e63d15ff98c7c6b0",
                     "gcovr/decision": {
                         "type": "conditional",
                         "count_true": 1,
@@ -59,6 +58,7 @@
                             ]
                         ]
                     },
+                    "gcovr/md5": "1aedbc743aca5457e63d15ff98c7c6b0",
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -166,6 +166,17 @@
                             ]
                         }
                     ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 2,
+                        "count_false": 1,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                            ]
+                        ]
+                    },
                     "calls": [
                         {
                             "source_block_id": 3,
@@ -219,17 +230,6 @@
                         }
                     ],
                     "gcovr/md5": "7b25e7042a6c283ef5ff4184aa8a5bbd",
-                    "gcovr/decision": {
-                        "type": "conditional",
-                        "count_true": 2,
-                        "count_false": 1,
-                        "gcovr/data_sources": [
-                            [
-                                "main.gcda",
-                                "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                            ]
-                        ]
-                    },
                     "gcovr/data_sources": [
                         [
                             "main.gcda",

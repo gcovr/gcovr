@@ -7,9 +7,9 @@
                 {
                     "line_number": 4,
                     "function_name": "main",
+                    "block_ids": [],
                     "count": 1,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
                     "gcovr/data_sources": [
                         [
@@ -20,6 +20,10 @@
                 {
                     "line_number": 6,
                     "function_name": "main",
+                    "block_ids": [
+                        2,
+                        3
+                    ],
                     "count": 1,
                     "branches": [
                         {
@@ -71,10 +75,6 @@
                             ]
                         }
                     ],
-                    "block_ids": [
-                        2,
-                        3
-                    ],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -107,11 +107,11 @@
                 {
                     "line_number": 7,
                     "function_name": "main",
-                    "count": 1,
-                    "branches": [],
                     "block_ids": [
                         4
                     ],
+                    "count": 1,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 4,
@@ -134,6 +134,10 @@
                 {
                     "line_number": 9,
                     "function_name": "main",
+                    "block_ids": [
+                        6,
+                        8
+                    ],
                     "count": 0,
                     "branches": [
                         {
@@ -160,10 +164,6 @@
                                 ]
                             ]
                         }
-                    ],
-                    "block_ids": [
-                        6,
-                        8
                     ],
                     "calls": [
                         {

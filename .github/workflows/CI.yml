@@ -60,9 +60,9 @@ jobs:
           separator: ","
       - name: Run spellchecker
         run: |
+          # Run spellchecker with changed files
           mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changed-files.outputs.all_changed_and_modified_files }}')
           cspell --config cspell.json --color --show-suggestions "${added_modified_files[@]}"
-
 
   upload-coverage:
     runs-on: ubuntu-22.04
