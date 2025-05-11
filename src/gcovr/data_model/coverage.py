@@ -812,8 +812,8 @@ class CallCoverage(CoverageBase):
     r"""Represent coverage information about a call.
 
     Args:
-        callno (int):
-            The number of the call.
+        callno (int, optional):
+            The number of the call, only used if destination_block_id is None.
         source_block_id (int):
             The block number.
         destination_block_id (int, optional):
@@ -838,13 +838,19 @@ class CallCoverage(CoverageBase):
         parent: LineCoverage,
         data_source: Union[str, set[tuple[str, ...]]],
         *,
-        callno: int,
+        callno: Optional[int],
         source_block_id: int,
         destination_block_id: Optional[int],
         returned: int,
         excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
+        if callno is None and destination_block_id is None:
+            self.raise_data_error("Either callno or destination_block_id must be set.")
+        if callno is not None and destination_block_id is not None:
+            self.raise_data_error(
+                "Ony one of callno or destination_block_id must be set."
+            )
         self.parent = parent
         self.callno = callno
         self.source_block_id = source_block_id
@@ -857,11 +863,10 @@ class CallCoverage(CoverageBase):
         get_data_source: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
-        data_dict = dict[str, Any](
-            {
-                "source_block_id": self.source_block_id,
-            }
-        )
+        data_dict = dict[str, Any]()
+        if self.callno is not None:
+            data_dict["callno"] = self.callno
+        data_dict["source_block_id"] = self.source_block_id
         if self.destination_block_id is not None:
             data_dict["destination_block_id"] = self.destination_block_id
         data_dict["returned"] = self.returned
@@ -876,13 +881,12 @@ class CallCoverage(CoverageBase):
         cls,
         linecov: LineCoverage,
         data_source: str,
-        callno: int,
         data_dict: dict[str, Any],
     ) -> CallCoverage:
         """Deserialize the object."""
         return linecov.insert_call_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            callno=callno,
+            callno=data_dict.get("callno"),
             returned=data_dict["returned"],
             source_block_id=data_dict["source_block_id"],
             destination_block_id=data_dict.get("destination_block_id"),
@@ -899,10 +903,7 @@ class CallCoverage(CoverageBase):
 
         Do not use 'left' or 'right' objects afterwards!
         """
-        if self.callno != other.callno:
-            self.raise_data_error(
-                f"Call number must be equal, got {self.callno} and {other.callno}."
-            )
+        self.callno = self._merge_property(other, "Call number", lambda x: x.callno)
         self.source_block_id = self._merge_property(
             other, "Source block ID", lambda x: x.source_block_id
         )
@@ -918,12 +919,21 @@ class CallCoverage(CoverageBase):
     @property
     def key(self) -> CallsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return self.callno
+        return (
+            self.source_block_id,
+            self.destination_block_id,
+            self.callno,
+        )
 
     @property
     def location(self) -> Optional[str]:
         """Get the source location of the coverage data."""
-        return f"{self.parent.location} (call {self.callno})"
+        call_info = (
+            f"{self.source_block_id}->{self.destination_block_id}"
+            if self.callno is None
+            else self.callno
+        )
+        return f"{self.parent.location} (call {call_info})"
 
     @property
     def is_excluded(self) -> bool:
@@ -1099,8 +1109,9 @@ class LineCoverage(CoverageBase):
                 raise AssertionError(f"Unknown decision type: {decision_type!r}")
 
         if (calls := data_dict.get("calls")) is not None:
-            for callno, data_dict_call in enumerate(calls):
-                CallCoverage.deserialize(linecov, data_source, callno, data_dict_call)
+            for data_dict_call in calls:
+                CallCoverage.deserialize(linecov, data_source, data_dict_call)
+
         return linecov
 
     def merge(
@@ -1241,7 +1252,7 @@ class LineCoverage(CoverageBase):
         self,
         data_source: Union[str, set[tuple[str, ...]]],
         *,
-        callno: int,
+        callno: Optional[int],
         source_block_id: int,
         destination_block_id: Optional[int],
         returned: int,
@@ -1847,8 +1858,8 @@ class FileCoverage(CoverageBase):
     def update_linecov(self, old_key: LinesKeyType) -> None:
         """Update the line key for the given old key."""
         linecov = self.lines.pop(old_key)
-        self.lines_keys_by_lineno[linecov.lineno].remove(old_key)
         self.lines[linecov.key] = linecov
+        self.lines_keys_by_lineno[linecov.lineno].remove(old_key)
         self.lines_keys_by_lineno[linecov.lineno].add(linecov.key)
 
     def insert_function_coverage(

@@ -7,9 +7,9 @@
                 {
                     "line_number": 10,
                     "function_name": "main",
+                    "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "block_ids": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
                     "gcovr/data_sources": [
                         [
@@ -20,12 +20,12 @@
                 {
                     "line_number": 11,
                     "function_name": "main",
-                    "count": 4,
-                    "branches": [],
                     "block_ids": [
                         2,
                         3
                     ],
+                    "count": 4,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
@@ -76,6 +76,9 @@
                 {
                     "line_number": 12,
                     "function_name": "main",
+                    "block_ids": [
+                        4
+                    ],
                     "count": 2,
                     "branches": [
                         {
@@ -127,9 +130,6 @@
                             ]
                         }
                     ],
-                    "block_ids": [
-                        4
-                    ],
                     "gcovr/md5": "af4f5248ae1df52f683f8c89f4f6b47f",
                     "gcovr/data_sources": [
                         [
@@ -140,6 +140,10 @@
                 {
                     "line_number": 12,
                     "function_name": "main",
+                    "block_ids": [
+                        4,
+                        5
+                    ],
                     "count": 2,
                     "branches": [
                         {
@@ -222,10 +226,6 @@
                             ]
                         }
                     ],
-                    "block_ids": [
-                        4,
-                        5
-                    ],
                     "gcovr/md5": "af4f5248ae1df52f683f8c89f4f6b47f",
                     "gcovr/data_sources": [
                         [
@@ -236,11 +236,11 @@
                 {
                     "line_number": 13,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         5
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 5,
@@ -266,11 +266,11 @@
                 {
                     "line_number": 13,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         6
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 6,
@@ -296,11 +296,11 @@
                 {
                     "line_number": 16,
                     "function_name": "main",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         6
                     ],
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 6,
@@ -326,11 +326,11 @@
                 {
                     "line_number": 16,
                     "function_name": "main",
-                    "count": 0,
-                    "branches": [],
                     "block_ids": [
                         7
                     ],
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 7,
@@ -356,11 +356,11 @@
                 {
                     "line_number": 18,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         7
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 7,
@@ -386,11 +386,11 @@
                 {
                     "line_number": 18,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         8
                     ],
+                    "count": 2,
+                    "branches": [],
                     "calls": [
                         {
                             "source_block_id": 8,
@@ -416,11 +416,11 @@
                 {
                     "line_number": 20,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         8
                     ],
+                    "count": 2,
+                    "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
                     "gcovr/data_sources": [
                         [
@@ -431,11 +431,11 @@
                 {
                     "line_number": 20,
                     "function_name": "main",
-                    "count": 2,
-                    "branches": [],
                     "block_ids": [
                         9
                     ],
+                    "count": 2,
+                    "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
                     "gcovr/data_sources": [
                         [

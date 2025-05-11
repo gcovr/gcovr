@@ -109,7 +109,7 @@ def find_existing_gcov_files(
 ) -> list[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
-        LOGGER.debug(f"Using given file {search_path}")
+        LOGGER.debug(f"Using given gcov file {search_path}")
         gcov_files = [search_path]
     else:
         LOGGER.debug(f"Scanning directory {search_path} for gcov files...")
@@ -134,7 +134,9 @@ def find_datafiles(search_path: str, exclude_dirs: list[re.Pattern[str]]) -> lis
     So we ONLY return them if there's no corresponding .gcda file.
     """
     if os.path.isfile(search_path):
-        LOGGER.debug(f"Using given file {search_path}")
+        LOGGER.debug(
+            f"Using given {os.path.splitext(search_path)[1][1:]} file {search_path}"
+        )
         files = [search_path]
     else:
         LOGGER.debug(f"Scanning directory {search_path} for gcda/gcno files...")

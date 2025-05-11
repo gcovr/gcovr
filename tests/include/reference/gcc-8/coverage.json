@@ -111,6 +111,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -121,6 +122,7 @@
                             ]
                         },
                         {
+                            "callno": 1,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [

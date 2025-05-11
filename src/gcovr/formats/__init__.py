@@ -342,9 +342,11 @@ def validate_data(covdata: CoverageContainer) -> None:
     for filecov in covdata.values():
         already_known = set[tuple[int, Optional[str]]]()
         for linecov in filecov.lines.values():
+            if linecov.function_name is None:
+                continue
             key = (linecov.lineno, linecov.function_name)
             if key in already_known:
                 LOGGER.warning(
-                    f"Contradictory coverage data for {filecov.filename}:{linecov.lineno} (function '{linecov.function_name or 'unknown'}') found, merging not possible."
+                    f"Contradictory coverage data for {linecov.location} (function '{linecov.function_name or 'unknown'}') found, merging not possible."
                 )
             already_known.add(key)

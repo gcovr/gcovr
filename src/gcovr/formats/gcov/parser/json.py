@@ -80,7 +80,9 @@ def parse_coverage(
         if is_file_excluded(fname, include_filters, exclude_filters):
             continue
 
-        max_line_number = file["lines"][-1]["line_number"] if file["lines"] else 1
+        max_line_number = (
+            max(line["line_number"] for line in file["lines"]) if file["lines"] else 1
+        )
         try:
             with open(fname, "rb") as fh_in2:
                 source_lines = fh_in2.read().splitlines()
@@ -206,10 +208,10 @@ def _parse_file_node(
                 not_covered_true=condition["not_covered_true"],
                 not_covered_false=condition["not_covered_false"],
             )
-        for index, call in enumerate(line.get("calls", [])):
+        for call in line.get("calls", []):
             linecov.insert_call_coverage(
                 str(data_fname),
-                callno=index,
+                callno=None,
                 source_block_id=call["source_block_id"],
                 destination_block_id=call["destination_block_id"],
                 returned=call["returned"],
