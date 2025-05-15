@@ -43,9 +43,8 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> N
             continue
 
         LOGGER.debug(
-            "Excluding unreachable branch on line %d file %s: detected as compiler-generated code",
-            linecov.lineno,
-            filecov.filename,
+            "Excluding unreachable branch on line %s: detected as compiler-generated code",
+            linecov.location,
         )
 
         linecov.branches.clear()

@@ -3524,6 +3524,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3549,6 +3550,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3574,6 +3576,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3599,6 +3602,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3624,6 +3628,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3649,6 +3654,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3674,6 +3680,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3699,6 +3706,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3724,6 +3732,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3749,6 +3758,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3774,6 +3784,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3799,6 +3810,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3824,6 +3836,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3849,6 +3862,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3874,6 +3888,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3899,6 +3914,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3924,6 +3940,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -3949,6 +3966,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4023,6 +4041,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4033,6 +4052,7 @@
                             ]
                         },
                         {
+                            "callno": 3,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4043,6 +4063,7 @@
                             ]
                         },
                         {
+                            "callno": 6,
                             "source_block_id": 1,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4053,6 +4074,7 @@
                             ]
                         },
                         {
+                            "callno": 7,
                             "source_block_id": 2,
                             "returned": 0,
                             "gcovr/data_sources": [
@@ -4078,6 +4100,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4103,6 +4126,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4128,6 +4152,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4153,6 +4178,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4178,6 +4204,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4203,6 +4230,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4228,6 +4256,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4253,6 +4282,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4278,6 +4308,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4303,6 +4334,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4328,6 +4360,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4353,6 +4386,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4378,6 +4412,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4403,6 +4438,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4428,6 +4464,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4453,6 +4490,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4478,6 +4516,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -4962,6 +5001,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 1,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -5000,6 +5040,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [

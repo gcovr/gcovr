@@ -1108,14 +1108,14 @@ def source_row_call(calls: dict[CallsKeyType, CallCoverage]) -> dict[str, Any]:
     total = 0
     items = []
 
-    for callcov in sorted(calls.values(), key=lambda x: x.callno):
+    for callno, callcov in enumerate(sorted(calls.values(), key=lambda x: x.key)):
         if callcov.is_reportable:
             total += 1
         if callcov.is_covered:
             invoked += 1
         items.append(
             {
-                "name": callcov.callno,
+                "name": callno,
                 "invoked": callcov.is_covered,
                 "excluded": callcov.is_excluded,
             }

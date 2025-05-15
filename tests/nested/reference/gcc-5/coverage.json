@@ -424,6 +424,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1
                         }
@@ -437,6 +438,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1
                         }
@@ -450,6 +452,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1
                         }
@@ -463,6 +466,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1
                         }
@@ -476,6 +480,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1
                         }
@@ -514,6 +519,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 4,
                             "source_block_id": 1,
                             "returned": 1
                         }

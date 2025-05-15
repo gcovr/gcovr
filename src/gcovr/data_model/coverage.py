@@ -69,7 +69,7 @@ from abc import abstractmethod
 import logging
 import os
 import re
-from typing import Any, Callable, List, NoReturn, Optional, TypeVar, Union
+from typing import Any, Callable, NoReturn, Optional, Set, TypeVar, Union
 
 from ..filter import is_file_excluded
 
@@ -124,15 +124,20 @@ class CoverageBase:
 
     __slots__ = ("data_sources",)
 
-    def __init__(
-        self, data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]]
-    ) -> None:
+    def __init__(self, data_source: Union[str, set[tuple[str, ...]]]) -> None:
         if isinstance(data_source, str):
             self.data_sources = set[tuple[str, ...]]([(data_source,)])
-        elif isinstance(data_source, tuple):
-            self.data_sources = set[tuple[str, ...]]([data_source])
         else:
             self.data_sources = data_source
+
+    def merge_base_data(
+        self,
+        other: CoverageBase,
+    ) -> None:
+        """Merge the data of the base class."""
+        self.data_sources = set[tuple[str, ...]](
+            [*self.data_sources, *other.data_sources]
+        )
 
     def raise_merge_error(self, msg: str, other: Any) -> NoReturn:
         """Get the exception with message extended with context."""
@@ -343,6 +348,7 @@ class BranchCoverage(CoverageBase):
             other, "Destination block ID", lambda x: x.destination_block_id
         )
         self.excluded |= other.excluded
+        self.merge_base_data(other)
 
     @property
     def key(self) -> BranchesKeyType:
@@ -416,7 +422,7 @@ class ConditionCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         conditionno: int,
         count: int,
@@ -533,11 +539,12 @@ class ConditionCoverage(CoverageBase):
             self.count - len(self.not_covered_false) - len(self.not_covered_true)
         )
         self.excluded |= other.excluded
+        self.merge_base_data(other)
 
     @property
     def key(self) -> ConditionsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return (self.conditionno, self.count)
+        return self.conditionno
 
     @property
     def location(self) -> Optional[str]:
@@ -573,7 +580,7 @@ class DecisionCoverageUncheckable(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
     ) -> None:
         super().__init__(data_source)
         self.parent = parent
@@ -601,6 +608,7 @@ class DecisionCoverageUncheckable(CoverageBase):
 
     def merge(self, other: DecisionCoverageUncheckable) -> None:
         """Merge the decision coverage."""
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -639,7 +647,7 @@ class DecisionCoverageConditional(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         count_true: int,
         count_false: int,
@@ -687,6 +695,7 @@ class DecisionCoverageConditional(CoverageBase):
         """Merge the decision coverage."""
         self.count_true += other.count_true
         self.count_false += other.count_false
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -726,7 +735,7 @@ class DecisionCoverageSwitch(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         count: int,
     ) -> None:
@@ -767,6 +776,7 @@ class DecisionCoverageSwitch(CoverageBase):
     def merge(self, other: DecisionCoverageSwitch) -> None:
         """Merge the decision coverage."""
         self.count += other.count
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -802,8 +812,8 @@ class CallCoverage(CoverageBase):
     r"""Represent coverage information about a call.
 
     Args:
-        callno (int):
-            The number of the call.
+        callno (int, optional):
+            The number of the call, only used if destination_block_id is None.
         source_block_id (int):
             The block number.
         destination_block_id (int, optional):
@@ -826,15 +836,21 @@ class CallCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
-        callno: int,
+        callno: Optional[int],
         source_block_id: int,
         destination_block_id: Optional[int],
         returned: int,
         excluded: bool = False,
     ) -> None:
         super().__init__(data_source)
+        if callno is None and destination_block_id is None:
+            self.raise_data_error("Either callno or destination_block_id must be set.")
+        if callno is not None and destination_block_id is not None:
+            self.raise_data_error(
+                "Ony one of callno or destination_block_id must be set."
+            )
         self.parent = parent
         self.callno = callno
         self.source_block_id = source_block_id
@@ -847,11 +863,10 @@ class CallCoverage(CoverageBase):
         get_data_source: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
-        data_dict = dict[str, Any](
-            {
-                "source_block_id": self.source_block_id,
-            }
-        )
+        data_dict = dict[str, Any]()
+        if self.callno is not None:
+            data_dict["callno"] = self.callno
+        data_dict["source_block_id"] = self.source_block_id
         if self.destination_block_id is not None:
             data_dict["destination_block_id"] = self.destination_block_id
         data_dict["returned"] = self.returned
@@ -866,13 +881,12 @@ class CallCoverage(CoverageBase):
         cls,
         linecov: LineCoverage,
         data_source: str,
-        callno: int,
         data_dict: dict[str, Any],
     ) -> CallCoverage:
         """Deserialize the object."""
         return linecov.insert_call_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            callno=callno,
+            callno=data_dict.get("callno"),
             returned=data_dict["returned"],
             source_block_id=data_dict["source_block_id"],
             destination_block_id=data_dict.get("destination_block_id"),
@@ -889,30 +903,37 @@ class CallCoverage(CoverageBase):
 
         Do not use 'left' or 'right' objects afterwards!
         """
-        if self.callno != other.callno:
-            self.raise_data_error(
-                f"Call number must be equal, got {self.callno} and {other.callno}."
-            )
-        self.returned += other.returned
+        self.callno = self._merge_property(other, "Call number", lambda x: x.callno)
         self.source_block_id = self._merge_property(
             other, "Source block ID", lambda x: x.source_block_id
         )
         self.destination_block_id = self._merge_property(
             other, "Destination block ID", lambda x: x.destination_block_id
         )
+        self.returned += other.returned
         self.excluded |= other.excluded
+        self.merge_base_data(other)
 
         return self
 
     @property
     def key(self) -> CallsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return self.callno
+        return (
+            self.source_block_id,
+            self.destination_block_id,
+            self.callno,
+        )
 
     @property
     def location(self) -> Optional[str]:
         """Get the source location of the coverage data."""
-        return f"{self.parent.location} (call {self.callno})"
+        call_info = (
+            f"{self.source_block_id}->{self.destination_block_id}"
+            if self.callno is None
+            else self.callno
+        )
+        return f"{self.parent.location} (call {call_info})"
 
     @property
     def is_excluded(self) -> bool:
@@ -971,7 +992,7 @@ class LineCoverage(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         lineno: int,
         count: int,
@@ -1088,8 +1109,9 @@ class LineCoverage(CoverageBase):
                 raise AssertionError(f"Unknown decision type: {decision_type!r}")
 
         if (calls := data_dict.get("calls")) is not None:
-            for callno, data_dict_call in enumerate(calls):
-                CallCoverage.deserialize(linecov, data_source, callno, data_dict_call)
+            for data_dict_call in calls:
+                CallCoverage.deserialize(linecov, data_source, data_dict_call)
+
         return linecov
 
     def merge(
@@ -1162,6 +1184,7 @@ class LineCoverage(CoverageBase):
         excluded: bool = False,
     ) -> BranchCoverage:
         """Add a branch coverage item, merge if needed."""
+        old_key = self.key
         branchcov = BranchCoverage(
             self,
             data_source,
@@ -1179,12 +1202,13 @@ class LineCoverage(CoverageBase):
         else:
             self.branches[key] = branchcov
             self.branches[key].parent = self
+        self.parent.update_linecov(old_key)
 
         return branchcov
 
     def insert_condition_coverage(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         conditionno: int,
         count: int,
@@ -1194,6 +1218,7 @@ class LineCoverage(CoverageBase):
         excluded: bool = False,
     ) -> ConditionCoverage:
         """Add a condition coverage item, merge if needed."""
+        old_key = self.key
         conditioncov = ConditionCoverage(
             self,
             data_source=data_source,
@@ -1210,6 +1235,7 @@ class LineCoverage(CoverageBase):
         else:
             self.conditions[key] = conditioncov
             self.conditions[key].parent = self
+        self.parent.update_linecov(old_key)
 
         return conditioncov
 
@@ -1224,9 +1250,9 @@ class LineCoverage(CoverageBase):
 
     def insert_call_coverage(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
-        callno: int,
+        callno: Optional[int],
         source_block_id: int,
         destination_block_id: Optional[int],
         returned: int,
@@ -1254,7 +1280,13 @@ class LineCoverage(CoverageBase):
     @property
     def key(self) -> LinesKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return (self.lineno, "" if self.function_name is None else self.function_name)
+        return (
+            self.lineno,
+            "" if self.function_name is None else self.function_name,
+            len(self.branches),
+            tuple(c.count for c in self.conditions.values()),
+            None if self.block_ids is None else tuple(self.block_ids),
+        )
 
     @property
     def location(self) -> Optional[str]:
@@ -1378,7 +1410,7 @@ class FunctionCoverage(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         mangled_name: Optional[str],
         demangled_name: Optional[str],
@@ -1525,6 +1557,7 @@ class FunctionCoverage(CoverageBase):
             self.mangled_name = self._merge_property(
                 other, "Function mangled name", lambda x: x.mangled_name
             )
+
         if not options.func_opts.ignore_function_lineno:
             if self.count.keys() != other.count.keys():
                 lines = sorted(set([*self.count.keys(), *other.count.keys()]))
@@ -1603,6 +1636,8 @@ class FunctionCoverage(CoverageBase):
                 {lineno: max(*self.end.values(), *other.end.values())}
             )
 
+        self.merge_base_data(other)
+
         return self
 
     @property
@@ -1656,7 +1691,7 @@ class FileCoverage(CoverageBase):
 
     def __init__(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         filename: str,
     ) -> None:
@@ -1664,7 +1699,7 @@ class FileCoverage(CoverageBase):
         self.filename: str = filename
         self.functions = CoverageDict[str, FunctionCoverage]()
         self.lines = CoverageDict[LinesKeyType, LineCoverage]()
-        self.lines_keys_by_lineno: dict[int, List[LinesKeyType]] = {}
+        self.lines_keys_by_lineno: dict[int, Set[LinesKeyType]] = {}
 
     def presentable_filename(self, root_filter: re.Pattern[str]) -> str:
         """Mangle a filename so that it is suitable for a report."""
@@ -1787,7 +1822,7 @@ class FileCoverage(CoverageBase):
 
     def insert_line_coverage(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         lineno: int,
@@ -1815,14 +1850,21 @@ class FileCoverage(CoverageBase):
             self.lines[key] = linecov
             self.lines[key].parent = self
             if linecov.lineno not in self.lines_keys_by_lineno:
-                self.lines_keys_by_lineno[linecov.lineno] = []
-            self.lines_keys_by_lineno[linecov.lineno].append(key)
+                self.lines_keys_by_lineno[linecov.lineno] = set[LinesKeyType]()
+            self.lines_keys_by_lineno[linecov.lineno].add(key)
 
         return self.lines[key]
 
+    def update_linecov(self, old_key: LinesKeyType) -> None:
+        """Update the line key for the given old key."""
+        linecov = self.lines.pop(old_key)
+        self.lines[linecov.key] = linecov
+        self.lines_keys_by_lineno[linecov.lineno].remove(old_key)
+        self.lines_keys_by_lineno[linecov.lineno].add(linecov.key)
+
     def insert_function_coverage(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         mangled_name: Optional[str],
@@ -1865,7 +1907,7 @@ class FileCoverage(CoverageBase):
         filecov = FileCoverage(self.data_sources, filename=self.filename)
         filecov.functions[functioncov.key] = functioncov
 
-        filecov.lines = CoverageDict[tuple[int, str], LineCoverage](
+        filecov.lines = CoverageDict[LinesKeyType, LineCoverage](
             {
                 key: linecov
                 for key, linecov in self.lines.items()

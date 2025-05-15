@@ -7,9 +7,17 @@ JSON Output
 
 The ``gcovr`` command can generate JSON output using
 the :option:`--json` and :option:`--json-pretty`
-options::
+options:
 
-    gcovr --json coverage.json
+.. include:: ../../examples/example_json.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an indented JSON report:
+
+.. include:: ../../examples/example_json.json
+    :literal:
 
 The :option:`--json-pretty` option generates an indented
 JSON output that is easier to read.
@@ -116,7 +124,7 @@ Each **line** entry contains coverage data for one line::
         "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(line_number, function_name)``.
+The ordering and merge key is ``(line_number, function_name, number of branches, list of condition counts, list of block ids)``.
 
 line_number: int
   The 1-based line number to which this entry relates.
@@ -263,7 +271,7 @@ Each **condition** provides information about a condition on that line::
       "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(condition_number, count)``.
+The ordering and merge key is ``(condition_number)``.
 
 This exactly matches the GCC gcov format.
 
@@ -361,6 +369,7 @@ Call entries
 Each **call** provides information about a call on that line::
 
     {
+      "callno": callno,
       "source_block_id": source_block_id,
       "destination_block_id": destination_block_id,
       "returned": returned,
@@ -368,15 +377,16 @@ Each **call** provides information about a call on that line::
       "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``call_number``.
-
-This exactly matches the GCC gcov format.
+The ordering and merge key is ``(source_block_id, destination_block_id, callno)``.
 
 source_block_id: int
   The source block number of the call.
 
 destination_block_id: int
   Only available if ``gcov`` JSON format is used.
+
+callno: int
+  Only available if ``gcov`` text format is used.
 
 returned: int
   How often this call returned, if the value is 0 the call is uncovered.
