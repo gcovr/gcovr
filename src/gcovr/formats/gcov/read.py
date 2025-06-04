@@ -89,7 +89,7 @@ def read_report(options: Options) -> CoverageContainer:
     ) as pool:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
         for filename in sorted(datafiles):
-            pool.add(process_file, filename)
+            pool.add(process_file, filename, temporary_files=temporary_files)
         try:
             contexts = pool.wait()
         except:
