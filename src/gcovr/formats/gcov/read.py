@@ -82,6 +82,7 @@ def read_report(options: Options) -> CoverageContainer:
         datafiles.update(find_files(search_path, options.gcov_exclude_dirs))
 
     # Get coverage data
+    temporary_files = []
     with Workers(
         options.gcov_parallel,
         lambda: {"covdata": CoverageContainer(), "to_erase": set(), "options": options},
@@ -89,7 +90,12 @@ def read_report(options: Options) -> CoverageContainer:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
         for filename in sorted(datafiles):
             pool.add(process_file, filename)
-        contexts = pool.wait()
+        try:
+            contexts = pool.wait()
+        except:
+            for file_path in temporary_files:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
 
     to_erase = set()
     covdata = CoverageContainer()
@@ -394,7 +400,7 @@ def guess_source_file_name_heuristics(  # pylint: disable=too-many-return-statem
 
 
 def process_datafile(
-    filename: str, covdata: CoverageContainer, options: Options, to_erase: set[str]
+    filename: str, covdata: CoverageContainer, options: Options, to_erase: set[str], temporary_files: list[str]
 ) -> None:
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
@@ -470,6 +476,7 @@ def process_datafile(
             options=options,
             error=errors.append,
             chdir=wd,
+            temporary_files=temporary_files,
         )
 
         if options.gcov_delete:
@@ -741,6 +748,7 @@ def run_gcov_and_process_files(
     options: Options,
     error: Callable[[str], None],
     chdir: str,
+    temporary_files: list[str],
 ) -> bool:
     """Run GCOV tool and process the output files."""
     filename = None
@@ -783,6 +791,7 @@ def run_gcov_and_process_files(
                 gcov_exclude=options.gcov_exclude,
                 chdir=chdir,
             )
+            temporary_files.extend(active_gcov_files)
 
             if unknown_cla_re.search(err):
                 # gcov tossed errors: throw exception
@@ -844,6 +853,8 @@ def run_gcov_and_process_files(
             ):
                 if os.path.exists(filepath):
                     os.remove(filepath)
+                    if filepath in temporary_files:
+                        temporary_files.remove(filepath)
 
     except RuntimeError as exc:
         # If we got an merge assertion error we must end the processing
