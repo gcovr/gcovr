@@ -245,6 +245,9 @@ def process_gcov_text_data(
         ),
         current_dir=current_dir,
     )
+    if fname is None:
+        LOGGER.error(f"File '{source}' could not be resolved to any absolute path.")
+        return
 
     if is_file_excluded(fname, options.filter, options.exclude):
         return
