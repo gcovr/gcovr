@@ -879,7 +879,7 @@ def select_gcov_files_from_stdout(
         full = os.path.join(chdir, fname)
         all_files.add(full)
 
-        if is_file_excluded(fname, gcov_filter, gcov_exclude):
+        if is_file_excluded(full, gcov_filter, gcov_exclude):
             continue
 
         active_files.add(full)
