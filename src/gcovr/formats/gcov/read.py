@@ -169,7 +169,10 @@ def find_datafiles(search_path: str, exclude_dirs: list[re.Pattern[str]]) -> lis
 # Process a single gcov datafile
 #
 def process_gcov_json_data(
-    data_fname: str, covdata: CoverageContainer, options: Options
+    data_fname: str,
+    covdata: CoverageContainer,
+    options: Options,
+    current_dir: Optional[str] = None,
 ) -> None:
     """Process a GCOV JSON output."""
 
@@ -177,11 +180,13 @@ def process_gcov_json_data(
         gcov_json_data = json_loads(fh_in.read())
 
     coverage = json.parse_coverage(
-        data_fname,
+        data_fname=data_fname,
         gcov_json_data=gcov_json_data,
         include_filters=options.filter,
         exclude_filters=options.exclude,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
+        current_dir=current_dir,
+        options=options,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
     )
@@ -705,7 +710,7 @@ def run_gcov_and_process_files(
                             gcov_filename, filename, covdata, options, chdir
                         )
                     elif gcov_filename.endswith(".gcov.json.gz"):
-                        process_gcov_json_data(gcov_filename, covdata, options)
+                        process_gcov_json_data(gcov_filename, covdata, options, chdir)
                     else:  # pragma: no cover
                         raise RuntimeError(
                             f"Unknown gcov output format {gcov_filename}."

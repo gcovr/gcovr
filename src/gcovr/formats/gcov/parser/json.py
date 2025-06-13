@@ -41,6 +41,8 @@ from gcovr.utils import get_md5_hexdigest
 from ....data_model.coverage import FileCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 from ....filter import Filter, is_file_excluded
+from ....options import Options
+from ..source_file_name import guess_source_file_name
 from .common import (
     SUSPICIOUS_COUNTER,
     check_hits,
@@ -57,6 +59,8 @@ def parse_coverage(
     include_filters: list[Filter],
     exclude_filters: list[Filter],
     ignore_parse_errors: Optional[set[str]],
+    current_dir: Optional[str],
+    options: Options,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
 ) -> list[tuple[FileCoverage, list[str]]]:
@@ -72,11 +76,22 @@ def parse_coverage(
 
     for file in gcov_json_data["files"]:
         source_lines: list[bytes] = []
-        fname: str = file["file"]
-        if not os.path.isabs(fname):
-            fname = os.path.normpath(
-                os.path.join(gcov_json_data["current_working_directory"], fname)
+        fname = guess_source_file_name(
+            source_from_gcov=file["file"],
+            data_fname=data_fname,
+            gcda_fname=None,
+            root_dir=options.root_dir,
+            starting_dir=options.starting_dir,
+            obj_dir=options.gcov_objdir,
+            current_dir=current_dir,
+        )
+        if not fname:
+            original_name = file["file"]
+            LOGGER.warning(
+                f"Source file '{original_name}' could not be resolved. Skipping."
             )
+            continue
+        fname = os.path.normpath(fname)
         LOGGER.debug(f"Parsing coverage data for file {fname}")
 
         if is_file_excluded(fname, include_filters, exclude_filters):
