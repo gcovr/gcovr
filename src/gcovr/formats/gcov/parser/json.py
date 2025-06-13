@@ -72,9 +72,11 @@ def parse_coverage(
 
     for file in gcov_json_data["files"]:
         source_lines: list[bytes] = []
-        fname = os.path.normpath(
-            os.path.join(gcov_json_data["current_working_directory"], file["file"])
-        )
+        fname: str = file["file"]
+        if not os.path.isabs(fname):
+            fname = os.path.normpath(
+                os.path.join(gcov_json_data["current_working_directory"], fname)
+            )
         LOGGER.debug(f"Parsing coverage data for file {fname}")
 
         if is_file_excluded(fname, include_filters, exclude_filters):
