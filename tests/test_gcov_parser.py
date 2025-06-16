@@ -38,6 +38,7 @@ from gcovr.formats.gcov.parser.common import (
     SuspiciousHits,
 )
 from gcovr.formats.gcov.workers import Workers
+from gcovr.options import Options
 from gcovr.logging import configure_logging
 
 configure_logging()
@@ -658,6 +659,12 @@ def test_negative_branch_count_json() -> None:
             include_filters=[AlwaysMatchFilter()],
             exclude_filters=[],
             ignore_parse_errors=set(),
+            current_dir=None,
+            options=Options(
+                root_dir=".",
+                starting_dir=".",
+                gcov_objdir=None,
+            ),
         )
 
 
@@ -754,6 +761,12 @@ def test_negative_branch_count_ignored_json(
         include_filters=[AlwaysMatchFilter()],
         exclude_filters=[],
         ignore_parse_errors=set([flag]),
+        current_dir=".",
+        options=Options(
+            root_dir=".",
+            starting_dir=".",
+            gcov_objdir=".",
+        ),
     )
 
     number_of_warnings = 2 if flag == "negative_hits.warn" else 1
