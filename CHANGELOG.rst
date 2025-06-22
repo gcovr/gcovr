@@ -51,6 +51,8 @@ Internal changes:
   - Add merge functionality to coverage objects instead of an own file. (:issue:`1067`)
   - Move data serialization and deserialization from JSON report to coverage classes. (:issue:`1078`)
 
+- Update Windows runner to ``windows-2022`` and ``windows-2025``. (:issue:`1108`)
+
 .. _release_8_3:
 
 8.3 (19 January 2025)

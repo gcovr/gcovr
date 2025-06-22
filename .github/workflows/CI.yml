@@ -121,10 +121,10 @@ jobs:
             upload-app: true
 
           # Test minimum and maximum Python version on Windows.
-          - os: windows-2019
+          - os: windows-2022
             gcc: gcc
             python-version: '3.9'
-          - os: windows-2019
+          - os: windows-2025
             gcc: gcc
             python-version: '3.13'
             upload-app: true
