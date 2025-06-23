@@ -39,6 +39,7 @@ Bug fixes and small improvements:
 - Do not use option ``--calls`` as exclusion filter. (:issue:`1090`)
 - Add support for reading gcov JSON data without source files. (:issue:`1094`)
 - Add back references to the data model to get source location in error messages. (:issue:`1094`)
+- Use same file naming logic when reading .json gcov files as .txt
 
 Documentation:
 
