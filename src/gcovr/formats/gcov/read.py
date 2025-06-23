@@ -829,13 +829,16 @@ def run_gcov_and_process_files(
                         raise RuntimeError(
                             f"Unknown gcov output format {gcov_filename}."
                         )
-                done = True
 
-            if options.gcov_keep and done:
-                basename = os.path.basename(abs_filename)
-                for file in active_gcov_files:
-                    directory, filename = os.path.split(file)
-                    os.replace(file, os.path.join(directory, f"{basename}.{filename}"))
+                if options.gcov_keep:
+                    basename = os.path.basename(abs_filename)
+                    for file in active_gcov_files:
+                        directory, filename = os.path.split(file)
+                        os.replace(
+                            file, os.path.join(directory, f"{basename}.{filename}")
+                        )
+
+                done = True
 
             for filepath in (
                 list(all_gcov_files - active_gcov_files)
