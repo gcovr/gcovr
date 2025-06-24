@@ -14,6 +14,8 @@
         },
         "context": ".."
     },
+    "workspaceFolder": "/gcovr",
+    "workspaceMount": "type=bind,source=${localWorkspaceFolder}/,target=/gcovr/",
     "customizations": {
         "vscode": {
             "extensions": [
