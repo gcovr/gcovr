@@ -76,6 +76,9 @@ def parse_coverage(
 
     for file in gcov_json_data["files"]:
         source_lines: list[bytes] = []
+
+        LOGGER.debug(f"Parsing coverage data for file {file['file']}")
+
         fname = guess_source_file_name(
             source_from_gcov=file["file"],
             data_fname=data_fname,
@@ -85,42 +88,40 @@ def parse_coverage(
             obj_dir=options.gcov_objdir,
             current_dir=current_dir,
         )
-        if not fname:
-            original_name = file["file"]
-            LOGGER.warning(
-                f"Source file '{original_name}' could not be resolved. Skipping."
-            )
-            continue
-        fname = os.path.normpath(fname)
-        LOGGER.debug(f"Parsing coverage data for file {fname}")
-
-        if is_file_excluded(fname, include_filters, exclude_filters):
-            continue
 
         max_line_number = file["lines"][-1]["line_number"] if file["lines"] else 1
-        try:
-            with open(fname, "rb") as fh_in2:
-                source_lines = fh_in2.read().splitlines()
-            lines = len(source_lines)
-            if lines < max_line_number:
-                LOGGER.warning(
-                    f"File {max_line_number} has {lines} line(s) but coverage data has {max_line_number} line(s)."
+        source_lines = [b""] * max_line_number
+
+        if not fname:
+            fname = file["file"]
+            if fname.endswith("<stdin>"):
+                message = (
+                    f"Got unreadable source file '{fname}', replacing with empty lines."
                 )
-                # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
-                source_lines += [b"/*EOF*/"] * (max_line_number - lines)
-        except OSError as e:
-            if file["file"].endswith("<stdin>"):
-                message = f"Got unreadable source file '{file['file']}', replacing with empty lines."
+                source_lines[0] = f"/* {message} */".encode()
                 LOGGER.info(message)
-            else:
+        else:
+            try:
+                fname = os.path.normpath(fname)
+
+                if is_file_excluded(fname, include_filters, exclude_filters):
+                    continue
+
+                with open(fname, "rb") as fh_in2:
+                    source_lines = fh_in2.read().splitlines()
+                    lines = len(source_lines)
+                    if lines < max_line_number:
+                        LOGGER.warning(
+                            f"File {max_line_number} has {lines} line(s) but coverage data has {max_line_number} line(s)."
+                        )
+                        # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
+                        source_lines += [b"/*EOF*/"] * (max_line_number - lines)
+            except OSError as e:
                 # The exception contains the source file name,
                 # e.g. [Errno 2] No such file or directory: 'xy.txt'
                 message = f"Can't read file, using empty lines: {e}"
+                source_lines[0] = f"/* {message} */".encode()
                 LOGGER.warning(message)
-            # If we can't read the file we use as first line the error
-            # and use empty lines for the rest of the lines.
-            source_lines = [b""] * max_line_number
-            source_lines[0] = f"/* {message} */".encode()
 
         encoded_source_lines = [
             line.decode(source_encoding, errors="replace") for line in source_lines
