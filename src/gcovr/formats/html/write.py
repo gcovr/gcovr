@@ -174,9 +174,8 @@ class PygmentsHighlighting:
         """Get the CSS for the syntax highlighting."""
         if self.formatter is None:  # pragma: no cover
             return ""
-        return (
-            f"\n\n/* pygments syntax highlighting */\n{self.formatter.get_style_defs()}"
-        )
+        style = str(self.formatter.get_style_defs())  # type: ignore [no-untyped-call]
+        return f"\n\n/* pygments syntax highlighting */\n{style}"
 
     def highlighter_for_file(self, filename: str) -> Callable[[str], list[str]]:
         """Get the highlighter for the given filename."""

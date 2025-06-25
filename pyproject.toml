@@ -184,7 +184,7 @@ assert_used.skips = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-v --timeout=120 --doctest-modules --ignore-glob=*/linked/subdir/* --ignore-glob */*bazel*/* --ignore-glob */.nox*/*"
+addopts = "-v --timeout=120 --doctest-modules --showlocals --ignore-glob=*/linked/subdir/* --ignore-glob */*bazel*/* --ignore-glob */.nox*/*"
 
 [tool.coverage.run]
 branch = true
