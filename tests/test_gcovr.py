@@ -180,18 +180,18 @@ def assert_equals(
     _, extension = os.path.splitext(reference_file)
     if extension in [".html", ".xml"]:
         if extension == ".html":
-            el_reference = etree.fromstring(  # nosec # We parse our reference files here
-                reference.encode(), etree.HTMLParser(encoding=encoding)
+            el_reference = etree.fromstringlist(  # nosec # We parse our reference files here
+                reference.encode().split(b"\n"), etree.HTMLParser(encoding=encoding)
             )
-            el_test = etree.fromstring(  # nosec # We parse our test files here
-                test.encode(), etree.HTMLParser(encoding=encoding)
+            el_test = etree.fromstringlist(  # nosec # We parse our test files here
+                test.encode().split(b"\n"), etree.HTMLParser(encoding=encoding)
             )
         else:
-            el_reference = etree.fromstring(  # nosec # We parse our reference files here
-                reference.encode()
+            el_reference = etree.fromstringlist(  # nosec # We parse our reference files here
+                reference.encode().split(b"\n")
             )
-            el_test = etree.fromstring(  # nosec # We parse our test files here
-                test.encode()
+            el_test = etree.fromstringlist(  # nosec # We parse our test files here
+                test.encode().split(b"\n")
             )
 
         diff_out: Optional[str] = compare_xml(el_reference, el_test)
