@@ -271,8 +271,9 @@ def process_gcov_text_data(
         decision_parser = DecisionParser(filecov, source_lines)
         decision_parser.parse_all_lines()
 
-    LOGGER.debug(f"Merge coverage data for {fname}")
-    covdata.insert_file_coverage(filecov, get_merge_mode_from_options(options))
+    merge_mode = get_merge_mode_from_options(options)
+    LOGGER.debug(f"Merge coverage data for {fname} using {str(merge_mode)}")
+    covdata.insert_file_coverage(filecov, merge_mode)
 
 
 def guess_source_file_name(

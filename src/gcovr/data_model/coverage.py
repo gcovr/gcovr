@@ -237,7 +237,7 @@ class BranchCoverage(CoverageBase):
         parent: LineCoverage,
         data_source: Union[str, set[tuple[str, ...]]],
         *,
-        branchno: int,
+        branchno: Optional[int],
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
@@ -264,6 +264,8 @@ class BranchCoverage(CoverageBase):
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = dict[str, Any]()
+        if self.branchno is not None:
+            data_dict["branchno"] = self.branchno
         data_dict.update(
             {
                 "count": self.count,
@@ -286,13 +288,12 @@ class BranchCoverage(CoverageBase):
         cls,
         linecov: LineCoverage,
         data_source: str,
-        branchno: int,
         data_dict: dict[str, Any],
     ) -> BranchCoverage:
         """Deserialize the object."""
         return linecov.insert_branch_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            branchno=branchno,
+            branchno=data_dict.get("branchno"),
             count=data_dict["count"],
             source_block_id=data_dict.get("source_block_id"),
             fallthrough=data_dict["fallthrough"],
@@ -341,6 +342,9 @@ class BranchCoverage(CoverageBase):
         self.count += other.count
         self.fallthrough |= other.fallthrough
         self.throw |= other.throw
+        self.branchno = self._merge_property(
+            other, "Branch number", lambda x: x.branchno
+        )
         self.source_block_id = self._merge_property(
             other, "Source block ID", lambda x: x.source_block_id
         )
@@ -451,6 +455,7 @@ class ConditionCoverage(CoverageBase):
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = {
+            "conditionno": self.conditionno,
             "count": self.count,
             "covered": self.covered,
             "not_covered_false": self.not_covered_false,
@@ -467,13 +472,12 @@ class ConditionCoverage(CoverageBase):
         cls,
         linecov: LineCoverage,
         data_source: str,
-        conditionno: int,
         data_dict: dict[str, Any],
     ) -> ConditionCoverage:
         """Deserialize the object."""
         return linecov.insert_condition_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            conditionno=conditionno,
+            conditionno=data_dict["conditionno"],
             count=data_dict["count"],
             covered=data_dict["covered"],
             not_covered_false=data_dict["not_covered_false"],
@@ -918,9 +922,9 @@ class CallCoverage(CoverageBase):
     def key(self) -> CallsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
         return (
-            -1 if self.callno is None else self.callno,
+            self.callno,
             self.source_block_id,
-            -1 if self.destination_block_id is None else self.destination_block_id,
+            self.destination_block_id,
         )
 
     @property
@@ -1080,14 +1084,12 @@ class LineCoverage(CoverageBase):
             excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
-        for branchno, data_dict_branch in enumerate(data_dict["branches"]):
-            BranchCoverage.deserialize(linecov, data_source, branchno, data_dict_branch)
+        for data_dict_branch in data_dict["branches"]:
+            BranchCoverage.deserialize(linecov, data_source, data_dict_branch)
 
         if (conditions := data_dict.get("conditions")) is not None:
-            for conditionno, data_dict_condition in enumerate(conditions):
-                ConditionCoverage.deserialize(
-                    linecov, data_source, conditionno, data_dict_condition
-                )
+            for data_dict_condition in conditions:
+                ConditionCoverage.deserialize(linecov, data_source, data_dict_condition)
 
         if (data_dict_decision := data_dict.get("gcovr/decision")) is not None:
             decision_type = data_dict_decision["type"]
@@ -1178,7 +1180,7 @@ class LineCoverage(CoverageBase):
         self,
         data_source: Union[str, set[tuple[str, ...]]],
         *,
-        branchno: int,
+        branchno: Optional[int],
         count: int,
         fallthrough: bool = False,
         throw: bool = False,

@@ -14,9 +14,7 @@ coverage.json:
 	cd build2 ; ./testcase
 	cd build3 ; ./testcase
 	cd build4 ; ./testcase
-	$(GCOVR) --verbose --gcov-keep --json-pretty --json coverage.json > stderr 2>&1 || (cat stderr && exit 1)
-	cat stderr
-	grep -E "\(WARNING\) Contradictory coverage data for .*main.c:12 \(function 'main'\) found, merging not possible." stderr > /dev/null
+	$(GCOVR) --verbose --gcov-keep --json-pretty --json coverage.json
 
 json: coverage.json
 

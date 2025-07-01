@@ -37,17 +37,17 @@
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             {% for linebranch in row.line_branches %}
                             {% for branch in linebranch.branches %}
-                            {% if branch.source_block_id %}
-                            {%  set block_info = " (%d &rightarrow; %d)" | format(branch.source_block_id, branch.destination_block_id) | safe %}
+                            {% if branch.branchno is defined %}
+                            {%  set block_info = branch.branchno %}
                             {% else %}
-                            {%  set block_info = "" %}
+                            {%  set block_info = " %d &rightarrow; %d" | format(branch.source_block_id, branch.destination_block_id) | safe %}
                             {% endif %}
                             {% if branch.excluded %}
-                            <div class="color-excluded-branch">&ndash; Branch {{branch.name}}{{block_info}} excluded.</div>
+                            <div class="color-excluded-branch">&ndash; Branch {{block_info}} excluded.</div>
                             {% elif branch.taken %}
-                            <div class="color-taken-branch">&check; Branch {{branch.name}}{{block_info}} taken {{branch.count}} time{% if branch.count > 1 %}s{% endif %}.</div>
+                            <div class="color-taken-branch">&check; Branch {{block_info}} taken {{branch.count}} time{% if branch.count > 1 %}s{% endif %}.</div>
                             {% else %}
-                            <div class="color-fg-danger">&cross; Branch {{branch.name}}{{block_info}} not taken.</div>
+                            <div class="color-fg-danger">&cross; Branch {{block_info}} not taken.</div>
                             {% endif %}
                             {% endfor %}
                             {% if loop.length > 1 and not loop.last %}

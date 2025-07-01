@@ -177,10 +177,10 @@ def _parse_file_node(
                 source_lines[line["line_number"] - 1].encode("UTF-8")
             ),
         )
-        for index, branch in enumerate(line["branches"]):
+        for branch in line["branches"]:
             linecov.insert_branch_coverage(
                 str(data_fname),
-                branchno=index,
+                branchno=None,
                 count=check_hits(
                     branch["count"],
                     source_lines[line["line_number"] - 1],
