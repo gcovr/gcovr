@@ -175,7 +175,7 @@ class PygmentsHighlighting:
         if self.formatter is None:  # pragma: no cover
             return ""
         return (
-            f"\n\n/* pygments syntax highlighting */\n{self.formatter.get_style_defs()}"
+            f"\n\n/* pygments syntax highlighting */\n{self.formatter.get_style_defs()}"  # type: ignore [no-untyped-call]
         )
 
     def highlighter_for_file(self, filename: str) -> Callable[[str], list[str]]:
@@ -385,7 +385,7 @@ def write_report(
         filtered_fname = options.root_filter.sub("", f)
         if filtered_fname != "":
             files.append(filtered_fname)
-        cdata_fname[f] = filtered_fname
+        cdata_fname[f] = force_unix_separator(filtered_fname)
         if options.html_details or options.html_nested or options.html_single_page:
             if os.path.normpath(f) == os.path.normpath(options.root_dir):
                 cdata_sourcefile[f] = output_file

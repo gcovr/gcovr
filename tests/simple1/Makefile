@@ -3,7 +3,7 @@ include $(dir $(MAKEFILE_LIST))../common.mk
 BASE_OS:=$(shell uname | cut -d'-' -f1)
 
 CC_REFERENCE ?= $(notdir $(CC))
-FAIL_UNDER_LINE := $(shell cat reference/$(CC_REFERENCE)$(if $(filter $(BASE_OS),MSYS_NT MINGW64_NT),-Windows,)/fail_under)
+FAIL_UNDER_LINE := $(shell cat reference/$(CC_REFERENCE)/fail_under)
 
 all:
 	$(CXX) $(CXXFLAGS) main.cpp -o testcase
