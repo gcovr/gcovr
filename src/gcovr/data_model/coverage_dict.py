@@ -25,10 +25,10 @@ from .merging import MergeOptions
 
 LOGGER = logging.getLogger("gcovr")
 
-LinesKeyType = tuple[int, str, int, tuple[int, ...], Optional[tuple[int, ...]]]
-BranchesKeyType = tuple[int, int, int]
-ConditionsKeyType = int
-CallsKeyType = tuple[int, Optional[int], Optional[int]]
+LinesKeyType = tuple[int, str]
+BranchesKeyType = tuple[int, Optional[int], Optional[int]]
+ConditionsKeyType = tuple[int, int]
+CallsKeyType = tuple[int, int, int]
 _Key = TypeVar(
     "_Key", int, str, LinesKeyType, BranchesKeyType, ConditionsKeyType, CallsKeyType
 )

@@ -355,8 +355,8 @@ class BranchCoverage(CoverageBase):
         """Get the key used for the dictionary to unique identify the coverage object."""
         return (
             self.branchno,
-            self.source_block_id or 0,
-            self.destination_block_id or 0,
+            self.source_block_id,
+            self.destination_block_id,
         )
 
     @property
@@ -544,7 +544,7 @@ class ConditionCoverage(CoverageBase):
     @property
     def key(self) -> ConditionsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return self.conditionno
+        return (self.conditionno, self.count)
 
     @property
     def location(self) -> Optional[str]:
@@ -848,9 +848,7 @@ class CallCoverage(CoverageBase):
         if callno is None and destination_block_id is None:
             self.raise_data_error("Either callno or destination_block_id must be set.")
         if callno is not None and destination_block_id is not None:
-            self.raise_data_error(
-                "Ony one of callno or destination_block_id must be set."
-            )
+            self.raise_data_error("One of callno or destination_block_id must be set.")
         self.parent = parent
         self.callno = callno
         self.source_block_id = source_block_id
@@ -920,9 +918,9 @@ class CallCoverage(CoverageBase):
     def key(self) -> CallsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
         return (
+            -1 if self.callno is None else self.callno,
             self.source_block_id,
-            self.destination_block_id,
-            self.callno,
+            -1 if self.destination_block_id is None else self.destination_block_id,
         )
 
     @property
@@ -1130,6 +1128,11 @@ class LineCoverage(CoverageBase):
             self.raise_merge_error("Line number must be equal.", other)
         if self.function_name != other.function_name:
             self.raise_merge_error("Function name must be equal.", other)
+        # Merge the block_ids if present
+        if self.block_ids is None:
+            self.block_ids = other.block_ids
+        elif other.block_ids is not None:
+            self.block_ids = sorted(set(self.block_ids) | set(other.block_ids))
         self.md5 = self._merge_property(other, "MD5 checksum", lambda x: x.md5)
 
         self.count += other.count
@@ -1184,7 +1187,6 @@ class LineCoverage(CoverageBase):
         excluded: bool = False,
     ) -> BranchCoverage:
         """Add a branch coverage item, merge if needed."""
-        old_key = self.key
         branchcov = BranchCoverage(
             self,
             data_source,
@@ -1202,7 +1204,6 @@ class LineCoverage(CoverageBase):
         else:
             self.branches[key] = branchcov
             self.branches[key].parent = self
-        self.parent.update_linecov(old_key)
 
         return branchcov
 
@@ -1218,7 +1219,6 @@ class LineCoverage(CoverageBase):
         excluded: bool = False,
     ) -> ConditionCoverage:
         """Add a condition coverage item, merge if needed."""
-        old_key = self.key
         conditioncov = ConditionCoverage(
             self,
             data_source=data_source,
@@ -1235,7 +1235,6 @@ class LineCoverage(CoverageBase):
         else:
             self.conditions[key] = conditioncov
             self.conditions[key].parent = self
-        self.parent.update_linecov(old_key)
 
         return conditioncov
 
@@ -1283,9 +1282,6 @@ class LineCoverage(CoverageBase):
         return (
             self.lineno,
             "" if self.function_name is None else self.function_name,
-            len(self.branches),
-            tuple(c.count for c in self.conditions.values()),
-            None if self.block_ids is None else tuple(self.block_ids),
         )
 
     @property
@@ -1854,13 +1850,6 @@ class FileCoverage(CoverageBase):
             self.lines_keys_by_lineno[linecov.lineno].add(key)
 
         return self.lines[key]
-
-    def update_linecov(self, old_key: LinesKeyType) -> None:
-        """Update the line key for the given old key."""
-        linecov = self.lines.pop(old_key)
-        self.lines[linecov.key] = linecov
-        self.lines_keys_by_lineno[linecov.lineno].remove(old_key)
-        self.lines_keys_by_lineno[linecov.lineno].add(linecov.key)
 
     def insert_function_coverage(
         self,

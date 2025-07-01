@@ -105,10 +105,10 @@
                 {
                     "line_number": 12,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 4,
                     "branches": [
                         {
-                            "count": 2,
+                            "count": 4,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0,
@@ -120,57 +120,7 @@
                                 [
                                     "main.gcda",
                                     "build2/^#main.c.gcov"
-                                ]
-                            ]
-                        },
-                        {
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": false,
-                            "source_block_id": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "build1/^#main.c.gcov"
                                 ],
-                                [
-                                    "main.gcda",
-                                    "build2/^#main.c.gcov"
-                                ]
-                            ]
-                        }
-                    ],
-                    "gcovr/md5": "af4f5248ae1df52f683f8c89f4f6b47f",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "build1/^#main.c.gcov"
-                        ],
-                        [
-                            "main.gcda",
-                            "build2/^#main.c.gcov"
-                        ],
-                        [
-                            "main.gcda",
-                            "build3/^#main.c.gcov"
-                        ],
-                        [
-                            "main.gcda",
-                            "build4/^#main.c.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 12,
-                    "function_name": "main",
-                    "count": 2,
-                    "branches": [
-                        {
-                            "count": 2,
-                            "fallthrough": true,
-                            "throw": false,
-                            "source_block_id": 0,
-                            "gcovr/data_sources": [
                                 [
                                     "main.gcda",
                                     "build3/^#main.c.gcov"
@@ -187,6 +137,14 @@
                             "throw": false,
                             "source_block_id": 0,
                             "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "build1/^#main.c.gcov"
+                                ],
+                                [
+                                    "main.gcda",
+                                    "build2/^#main.c.gcov"
+                                ],
                                 [
                                     "main.gcda",
                                     "build3/^#main.c.gcov"
@@ -234,7 +192,19 @@
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
+                            "build1/^#main.c.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build2/^#main.c.gcov"
+                        ],
+                        [
+                            "main.gcda",
                             "build3/^#main.c.gcov"
+                        ],
+                        [
+                            "main.gcda",
+                            "build4/^#main.c.gcov"
                         ]
                     ]
                 },

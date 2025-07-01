@@ -193,6 +193,28 @@
                     },
                     "calls": [
                         {
+                            "callno": 0,
+                            "source_block_id": 3,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp.gcov"
+                                ]
+                            ]
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 3,
+                            "returned": 1,
+                            "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "main.cpp.gcov"
+                                ]
+                            ]
+                        },
+                        {
                             "callno": 2,
                             "source_block_id": 0,
                             "returned": 3,
@@ -218,28 +240,6 @@
                             "callno": 6,
                             "source_block_id": 1,
                             "returned": 2,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "main.cpp.gcov"
-                                ]
-                            ]
-                        },
-                        {
-                            "callno": 0,
-                            "source_block_id": 3,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "main.cpp.gcov"
-                                ]
-                            ]
-                        },
-                        {
-                            "callno": 1,
-                            "source_block_id": 3,
-                            "returned": 1,
                             "gcovr/data_sources": [
                                 [
                                     "main.gcda",

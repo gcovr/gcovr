@@ -97,8 +97,6 @@ def read_reports(options: Options) -> CoverageContainer:
     else:
         covdata = GcovHandler(options).read_report()
 
-    validate_data(covdata)
-
     if options.include:
         for search_path in options.search_paths or [options.root]:
             LOGGER.debug(f"Search for included files in {search_path}")
@@ -335,18 +333,3 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
         raise RuntimeError(
             f"Not all output files where written successful:\n{errors_as_string}"
         )
-
-
-def validate_data(covdata: CoverageContainer) -> None:
-    """Validate the data read from GCOV."""
-    for filecov in covdata.values():
-        already_known = set[tuple[int, Optional[str]]]()
-        for linecov in filecov.lines.values():
-            if linecov.function_name is None:
-                continue
-            key = (linecov.lineno, linecov.function_name)
-            if key in already_known:
-                LOGGER.warning(
-                    f"Contradictory coverage data for {linecov.location} (function '{linecov.function_name or 'unknown'}') found, merging not possible."
-                )
-            already_known.add(key)

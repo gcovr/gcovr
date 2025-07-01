@@ -89,7 +89,7 @@ def parse_coverage(
             lines = len(source_lines)
             if lines < max_line_number:
                 LOGGER.warning(
-                    f"File {max_line_number} has {lines} line(s) but coverage data has {max_line_number} line(s)."
+                    f"File {fname} has {lines} line(s) but coverage data has {max_line_number} line(s)."
                 )
                 # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
                 source_lines += [b"/*EOF*/"] * (max_line_number - lines)
