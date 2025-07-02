@@ -284,6 +284,7 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
@@ -300,6 +301,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,

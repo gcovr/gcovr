@@ -31,12 +31,14 @@
                     "count": 8,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -72,12 +74,14 @@
                     "count": 6,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -113,12 +117,14 @@
                     "count": 4,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -140,12 +146,14 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -160,36 +168,42 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 2,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 4,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2
                         },
                         {
+                            "branchno": 5,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -204,12 +218,14 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -224,36 +240,42 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 2,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 4,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2
                         },
                         {
+                            "branchno": 5,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -268,36 +290,42 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 2,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 4,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2
                         },
                         {
+                            "branchno": 5,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -312,12 +340,14 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -332,36 +362,42 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 2,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 4,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2
                         },
                         {
+                            "branchno": 5,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -376,36 +412,42 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 2,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 4,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2
                         },
                         {
+                            "branchno": 5,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -420,36 +462,42 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 2,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 4,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2
                         },
                         {
+                            "branchno": 5,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -496,12 +544,14 @@
                     "count": 0,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 1
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,

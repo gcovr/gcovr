@@ -37,6 +37,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [],
@@ -118,6 +119,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [],
@@ -288,6 +290,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [
@@ -369,6 +372,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [],
@@ -492,6 +496,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 0,
                             "not_covered_false": [
@@ -723,6 +728,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [
@@ -731,6 +737,7 @@
                             "not_covered_true": []
                         },
                         {
+                            "conditionno": 1,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [

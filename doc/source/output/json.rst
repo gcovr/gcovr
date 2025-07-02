@@ -391,16 +391,16 @@ Each **call** provides information about a call on that line::
       "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(source_block_id, destination_block_id, callno)``.
+The ordering and merge key is ``(callno, source_block_id, destination_block_id)``.
+
+callno: int
+  Only available if ``gcov`` text format is used.
 
 source_block_id: int
   The source block number of the call.
 
 destination_block_id: int
   Only available if ``gcov`` JSON format is used.
-
-callno: int
-  Only available if ``gcov`` text format is used.
 
 returned: int
   How often this call returned, if the value is 0 the call is uncovered.

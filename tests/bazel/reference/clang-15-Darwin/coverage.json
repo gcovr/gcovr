@@ -17,12 +17,14 @@
                     "count": 0,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -78,12 +80,14 @@
                     "count": 0,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
