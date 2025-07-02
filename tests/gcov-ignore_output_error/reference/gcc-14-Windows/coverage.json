@@ -1,0 +1,61 @@
+{
+    "gcovr/format_version": "0.14",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 4,
+                    "function_name": "main",
+                    "block_ids": [],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##0a591359e5dc1278658def74e1b18672.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "line_number": 5,
+                    "function_name": "main",
+                    "block_ids": [
+                        2
+                    ],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##0a591359e5dc1278658def74e1b18672.gcov.json.gz"
+                        ]
+                    ]
+                }
+            ],
+            "functions": [
+                {
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 4,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "4:5",
+                        "6:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##0a591359e5dc1278658def74e1b18672.gcov.json.gz"
+                        ]
+                    ]
+                }
+            ],
+            "gcovr/data_sources": [
+                [
+                    "testcase-main##0a591359e5dc1278658def74e1b18672.gcov.json.gz"
+                ]
+            ]
+        }
+    ]
+}

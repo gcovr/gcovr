@@ -842,6 +842,7 @@ def run_gcov_and_process_files(
                         raise RuntimeError(
                             f"Unknown gcov output format {gcov_filename}."
                         )
+
                 done = True
 
     except RuntimeError as exc:
