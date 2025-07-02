@@ -82,20 +82,18 @@ def read_report(options: Options) -> CoverageContainer:
         datafiles.update(find_files(search_path, options.gcov_exclude_dirs))
 
     # Get coverage data
-    temporary_files = []
     with Workers(
         options.gcov_parallel,
         lambda: {"covdata": CoverageContainer(), "to_erase": set(), "options": options},
     ) as pool:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
         for filename in sorted(datafiles):
-            pool.add(process_file, filename, temporary_files=temporary_files)
+            pool.add(process_file, filename)
         try:
             contexts = pool.wait()
-        except:
-            for file_path in temporary_files:
-                if os.path.exists(file_path):
-                    os.remove(file_path)
+        except KeyboardInterrupt:
+            # Stop the pool if Ctrl+C is pressed
+            pool.drain()
 
     to_erase = set()
     covdata = CoverageContainer()
@@ -400,7 +398,7 @@ def guess_source_file_name_heuristics(  # pylint: disable=too-many-return-statem
 
 
 def process_datafile(
-    filename: str, covdata: CoverageContainer, options: Options, to_erase: set[str], temporary_files: list[str]
+    filename: str, covdata: CoverageContainer, options: Options, to_erase: set[str]
 ) -> None:
     r"""Run gcovr in a suitable directory to collect coverage from gcda files.
 
@@ -476,7 +474,6 @@ def process_datafile(
             options=options,
             error=errors.append,
             chdir=wd,
-            temporary_files=temporary_files,
         )
 
         if options.gcov_delete:
@@ -748,9 +745,15 @@ def run_gcov_and_process_files(
     options: Options,
     error: Callable[[str], None],
     chdir: str,
-    temporary_files: list[str],
 ) -> bool:
     """Run GCOV tool and process the output files."""
+
+    def remove_existing_files(files: list[str]) -> None:
+        """Remove the existing files from the given list."""
+        for filepath in sorted(files):
+            if os.path.exists(filepath):
+                os.remove(filepath)
+
     filename = None
     out = None
     err = None
@@ -791,7 +794,8 @@ def run_gcov_and_process_files(
                 gcov_exclude=options.gcov_exclude,
                 chdir=chdir,
             )
-            temporary_files.extend(active_gcov_files)
+            # Remove the not used files
+            remove_existing_files(list(all_gcov_files - active_gcov_files))
 
             if unknown_cla_re.search(err):
                 # gcov tossed errors: throw exception
@@ -840,22 +844,6 @@ def run_gcov_and_process_files(
                         )
                 done = True
 
-            if options.gcov_keep and done:
-                basename = os.path.basename(abs_filename)
-                for file in active_gcov_files:
-                    directory, filename = os.path.split(file)
-                    os.replace(file, os.path.join(directory, f"{basename}.{filename}"))
-
-            for filepath in (
-                list(all_gcov_files - active_gcov_files)
-                if options.gcov_keep and done
-                else all_gcov_files
-            ):
-                if os.path.exists(filepath):
-                    os.remove(filepath)
-                    if filepath in temporary_files:
-                        temporary_files.remove(filepath)
-
     except RuntimeError as exc:
         # If we got an merge assertion error we must end the processing
         done = False
@@ -867,6 +855,16 @@ def run_gcov_and_process_files(
             f"Current processed gcov file was {filename!r}.\n"
             "Use option --verbose to get extended information."
         )
+    finally:
+        if options.gcov_keep and done:
+            # Keep the files with unique names
+            basename = os.path.basename(abs_filename)
+            for filepath in active_gcov_files:
+                directory, filename = os.path.split(filepath)
+                os.replace(filepath, os.path.join(directory, f"{basename}.{filename}"))
+        else:
+            # Remove the used files
+            remove_existing_files(active_gcov_files)
 
     return done
 
