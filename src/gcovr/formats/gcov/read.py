@@ -866,7 +866,7 @@ def run_gcov_and_process_files(
                 os.replace(filepath, os.path.join(directory, f"{basename}.{filename}"))
         else:
             # Remove the used files
-            remove_existing_files(active_gcov_files)
+            remove_existing_files(list(active_gcov_files))
 
     return done
 
