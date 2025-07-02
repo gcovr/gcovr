@@ -40,6 +40,7 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
@@ -56,6 +57,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
@@ -191,6 +193,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 2,
                             "gcovr/data_sources": [

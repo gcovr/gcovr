@@ -989,7 +989,7 @@ def source_row_branch(
     """Get branch information for a row"""
     taken = 0
     total = 0
-    items = []
+    items = list[dict[str, Any]]()
 
     for branchcov in branches.values():
         if branchcov.is_reportable:
@@ -998,16 +998,14 @@ def source_row_branch(
             taken += 1
         items.append(
             {
-                "name": branchcov.branchno,
                 "taken": branchcov.is_covered,
                 "count": branchcov.count,
                 "excluded": branchcov.is_excluded,
             }
         )
-        if (
-            branchcov.source_block_id is not None
-            and branchcov.destination_block_id is not None
-        ):
+        if branchcov.branchno is not None:
+            items[-1]["branchno"] = branchcov.branchno
+        else:
             items[-1]["source_block_id"] = branchcov.source_block_id
             items[-1]["destination_block_id"] = branchcov.destination_block_id
 
@@ -1108,14 +1106,14 @@ def source_row_call(calls: dict[CallsKeyType, CallCoverage]) -> dict[str, Any]:
     total = 0
     items = []
 
-    for callcov in sorted(calls.values(), key=lambda x: x.callno):
+    for callno, callcov in enumerate(sorted(calls.values(), key=lambda x: x.key)):
         if callcov.is_reportable:
             total += 1
         if callcov.is_covered:
             invoked += 1
         items.append(
             {
-                "name": callcov.callno,
+                "name": callno,
                 "invoked": callcov.is_covered,
                 "excluded": callcov.is_excluded,
             }

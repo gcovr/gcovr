@@ -80,14 +80,16 @@ def parse_coverage(
         if is_file_excluded(fname, include_filters, exclude_filters):
             continue
 
-        max_line_number = file["lines"][-1]["line_number"] if file["lines"] else 1
+        max_line_number = (
+            max(line["line_number"] for line in file["lines"]) if file["lines"] else 1
+        )
         try:
             with open(fname, "rb") as fh_in2:
                 source_lines = fh_in2.read().splitlines()
             lines = len(source_lines)
             if lines < max_line_number:
                 LOGGER.warning(
-                    f"File {max_line_number} has {lines} line(s) but coverage data has {max_line_number} line(s)."
+                    f"File {fname} has {lines} line(s) but coverage data has {max_line_number} line(s)."
                 )
                 # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
                 source_lines += [b"/*EOF*/"] * (max_line_number - lines)
@@ -175,10 +177,10 @@ def _parse_file_node(
                 source_lines[line["line_number"] - 1].encode("UTF-8")
             ),
         )
-        for index, branch in enumerate(line["branches"]):
+        for branch in line["branches"]:
             linecov.insert_branch_coverage(
                 str(data_fname),
-                branchno=index,
+                branchno=None,
                 count=check_hits(
                     branch["count"],
                     source_lines[line["line_number"] - 1],
@@ -206,10 +208,10 @@ def _parse_file_node(
                 not_covered_true=condition["not_covered_true"],
                 not_covered_false=condition["not_covered_false"],
             )
-        for index, call in enumerate(line.get("calls", [])):
+        for call in line.get("calls", []):
             linecov.insert_call_coverage(
                 str(data_fname),
-                callno=index,
+                callno=None,
                 source_block_id=call["source_block_id"],
                 destination_block_id=call["destination_block_id"],
                 returned=call["returned"],

@@ -179,9 +179,8 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
         for branchcov in list(linecov.branches.values()):
             if branchcov.throw:
                 LOGGER.debug(
-                    "Excluding unreachable branch on line %d file %s: detected as exception-only code",
-                    linecov.lineno,
-                    filecov.filename,
+                    "Excluding unreachable branch on %s: detected as exception-only code",
+                    linecov.location,
                 )
                 linecov.branches.pop(branchcov.key)
 

@@ -34,17 +34,17 @@
           <div class="linebranchContents">
             {% for linebranch in row.line_branches %}
             {% for branch in linebranch.branches %}
-            {% if branch.source_block_id %}
-            {%  set block_info = " (%d&rightarrow;%d)" | format(branch.source_block_id, branch.destination_block_id) | safe %}
+            {% if branch.branchno is defined %}
+            {%  set branch_info = branch.branchno %}
             {% else %}
-            {%  set block_info = "" %}
+            {%  set branch_info = "%d &rightarrow; %d" | format(branch.source_block_id, branch.destination_block_id) | safe %}
             {% endif %}
             {% if branch.excluded %}
-            <div class="excludedBranch">&ndash; Branch {{branch.name}}{{block_info}} excluded.</div>
+            <div class="excludedBranch">&ndash; Branch {{branch_info}} excluded.</div>
             {% elif branch.taken %}
-            <div class="takenBranch">&check; Branch {{branch.name}}{{block_info}} taken {{branch.count}} time{% if branch.count > 1 %}s{% endif %}.</div>
+            <div class="takenBranch">&check; Branch {{branch_info}} taken {{branch.count}} time{% if branch.count > 1 %}s{% endif %}.</div>
             {% else %}
-            <div class="notTakenBranch">&cross; Branch {{branch.name}}{{block_info}} not taken.</div>
+            <div class="notTakenBranch">&cross; Branch {{branch_info}} not taken.</div>
             {% endif %}
             {% endfor %}
             {% if loop.length > 1 and not loop.last %}
