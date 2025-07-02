@@ -91,9 +91,10 @@ def read_report(options: Options) -> CoverageContainer:
             pool.add(process_file, filename)
         try:
             contexts = pool.wait()
-        except KeyboardInterrupt:
+        except KeyboardInterrupt as exc:
             # Stop the pool if Ctrl+C is pressed
             pool.drain()
+            raise exc from None
 
     to_erase = set()
     covdata = CoverageContainer()
