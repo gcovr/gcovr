@@ -861,9 +861,12 @@ def run_gcov_and_process_files(
         if options.gcov_keep and done:
             # Keep the files with unique names
             basename = os.path.basename(abs_filename)
-            for filepath in active_gcov_files:
-                directory, filename = os.path.split(filepath)
-                os.replace(filepath, os.path.join(directory, f"{basename}.{filename}"))
+            for gcov_filename in active_gcov_files:
+                if os.path.exists(gcov_filename):
+                    directory, filename = os.path.split(gcov_filename)
+                    os.replace(
+                        gcov_filename, os.path.join(directory, f"{basename}.{filename}")
+                    )
         else:
             # Remove the used files
             remove_existing_files(list(active_gcov_files))
