@@ -89,7 +89,12 @@ def read_report(options: Options) -> CoverageContainer:
         LOGGER.debug(f"Pool started with {pool.size()} threads")
         for filename in sorted(datafiles):
             pool.add(process_file, filename)
-        contexts = pool.wait()
+        try:
+            contexts = pool.wait()
+        except KeyboardInterrupt as exc:
+            # Stop the pool if Ctrl+C is pressed
+            pool.drain()
+            raise exc from None
 
     to_erase = set()
     covdata = CoverageContainer()
@@ -743,6 +748,13 @@ def run_gcov_and_process_files(
     chdir: str,
 ) -> bool:
     """Run GCOV tool and process the output files."""
+
+    def remove_existing_files(files: list[str]) -> None:
+        """Remove the existing files from the given list."""
+        for filepath in sorted(files):
+            if os.path.exists(filepath):
+                os.remove(filepath)
+
     filename = None
     out = None
     err = None
@@ -783,6 +795,8 @@ def run_gcov_and_process_files(
                 gcov_exclude=options.gcov_exclude,
                 chdir=chdir,
             )
+            # Remove the not used files
+            remove_existing_files(list(all_gcov_files - active_gcov_files))
 
             if unknown_cla_re.search(err):
                 # gcov tossed errors: throw exception
@@ -830,23 +844,7 @@ def run_gcov_and_process_files(
                             f"Unknown gcov output format {gcov_filename}."
                         )
 
-                if options.gcov_keep:
-                    basename = os.path.basename(abs_filename)
-                    for file in active_gcov_files:
-                        directory, filename = os.path.split(file)
-                        os.replace(
-                            file, os.path.join(directory, f"{basename}.{filename}")
-                        )
-
                 done = True
-
-            for filepath in (
-                list(all_gcov_files - active_gcov_files)
-                if options.gcov_keep and done
-                else all_gcov_files
-            ):
-                if os.path.exists(filepath):
-                    os.remove(filepath)
 
     except RuntimeError as exc:
         # If we got an merge assertion error we must end the processing
@@ -859,6 +857,19 @@ def run_gcov_and_process_files(
             f"Current processed gcov file was {filename!r}.\n"
             "Use option --verbose to get extended information."
         )
+    finally:
+        if options.gcov_keep and done:
+            # Keep the files with unique names
+            basename = os.path.basename(abs_filename)
+            for gcov_filename in active_gcov_files:
+                if os.path.exists(gcov_filename):
+                    directory, filename = os.path.split(gcov_filename)
+                    os.replace(
+                        gcov_filename, os.path.join(directory, f"{basename}.{filename}")
+                    )
+        else:
+            # Remove the used files
+            remove_existing_files(list(active_gcov_files))
 
     return done
 
