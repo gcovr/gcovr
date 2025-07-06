@@ -1,0 +1,33 @@
+name: Update tags
+# Schema: https://json.schemastore.org/github-action.json
+
+inputs:
+  tag:
+    type: string
+    description: "The tag to apply"
+    required: true
+  tag_message:
+    type: string
+    description: "The tag message to use"
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+
+      # Fetch the last tag
+    - run: git fetch --tags
+      shell: bash
+
+    - if: ${{ inputs.tag != '' }}
+      run: git config --global user.email "noreply@gcovr.com"
+      shell: bash
+    - if: ${{ inputs.tag != '' }}
+      run: git config --global user.name "gcovr authors"
+      shell: bash
+    - if: ${{ inputs.tag != '' }}
+      run: git tag -a "${{ inputs.tag }}" -m "${{ inputs.tag }} (${{ inputs.tag_message }})"
+      shell: bash
+    - if: ${{ inputs.tag != '' }}
+      run: git tag --list -n ${{ inputs.tag }}
+      shell: bash

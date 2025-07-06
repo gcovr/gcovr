@@ -6,24 +6,32 @@ on:
     inputs:
       container:
         type: boolean
-        description: 'Running in docker container'
+        description: "Running in docker container"
         default: false
       os:
         type: string
-        description: 'The operating system of the runner'
+        description: "The operating system of the runner"
         default: 'ubuntu-22.04'  # Default used for container
       gcc:
         type: string
-        description: 'The GCC version to use'
+        description: "The GCC version to use"
         required: true
       python-version:
         type: string
-        description: 'The Python version to use'
+        description: "The Python version to use"
         required: false  # Only needed if not in container
       upload-app:
         type: boolean
         description: 'Upload the standalone application'
         default: false
+      tag:
+        type: string
+        description: "The tag to apply"
+        required: true
+      tag_message:
+        type: string
+        description: "The tag message to use"
+        required: true
 
 defaults:
   run:
@@ -42,24 +50,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 75
-          fetch-tags: true
 
-      - name: Workaround because fetch-tags doesn't work with git 2.48 in the GH actions
-        run: |
-          git fetch --tags
+      - name: Update tags
+        uses: "./.github/actions/update-tags"
+        with:
+          tag: ${{ inputs.tag }}
+          tag_message: ${{ inputs.tag_message }}
 
-      - name: Set up Runner
-        if: ${{ !inputs.container }}
+      - name: Set up runner
         uses: "./.github/actions/setup-runner"
         with:
-          os: ${{ inputs.os}}
-          gcc: ${{ inputs.gcc }}
-
-      - name: Set up Python
-        if: ${{ !inputs.container }}
-        uses: "./.github/actions/setup-python"
-        with:
           os: ${{ inputs.os }}
+          gcc: ${{ (!inputs.container && inputs.gcc) || '' }}
           python-version: ${{ inputs.python-version }}
 
       - name: Set up environment
@@ -86,28 +88,6 @@ jobs:
 
           # Set the CC environment
           echo "CC=${{ inputs.gcc }}" >> $GITHUB_ENV
-
-          if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
-            echo "GCOVR_VERSION=$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)" >> $GITHUB_ENV
-          else
-            echo "GCOVR_VERSION=" >> $GITHUB_ENV
-          fi
-
-      - name: Create new tag without pushing to get the correct name of the apps
-        if: ${{ (github.repository == 'gcovr/gcovr') && env.GCOVR_VERSION != '' }}
-        run: |
-          # Set git user info
-          git config --global user.email "noreply@gcovr.com"
-          git config --global user.name "gcovr authors"
-
-          # Create the tag and print the output. Do not push.
-          git tag -a "$GCOVR_VERSION" -m "$GCOVR_VERSION ($(date -I))"
-          git tag --list -n "$GCOVR_VERSION"
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install nox requests
 
       - name: Expose GitHub Runtime for Docker cache
         uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4

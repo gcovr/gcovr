@@ -12,6 +12,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Download artifacts
         uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11
         with:
