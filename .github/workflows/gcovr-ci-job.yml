@@ -1,4 +1,4 @@
-name: Run gcovr CI job
+name: CI build and test
 # Schema: https://json.schemastore.org/github-action.json
 
 on:
@@ -50,6 +50,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 75
+
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
 
       - name: Update tags
         uses: "./.github/actions/update-tags"

@@ -5,6 +5,12 @@ name: Run GCOVR CI
 
 on:
   workflow_dispatch: # For manual triggering
+    inputs:
+      do_test_release:
+        type: boolean
+        description: Do a release to test.pypi.org
+        default: false
+        required: true
   push:
     branches:
       - main
@@ -134,11 +140,22 @@ jobs:
       tag: ${{ needs.changelog.outputs.tag }}
       tag_message: ${{ needs.changelog.outputs.tag_message }}
       gcovr_version_output: ${{ steps.gcov_version.outputs.gcovr_version_output }}
+
+      # The variables used for publishing the data
+      publish_run_job: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (needs.changelog.outputs.tag != '') || inputs.do_test_release }}
+      publish_environment_name: ${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'pypi' }}
+      publish_environment_url: https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'pypi' }}.org/p/gcovr
+      publish_push_tag: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (needs.changelog.outputs.tag != '') }}
+      # Use https://upload.pypi.org/legacy for a tag in pypi environment or in all other cases https://test.pypi.org/legacy
+      publish_repository_url: https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'upload.pypi' }}.org/legacy/
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 75
+
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
 
       - name: Update tags
         uses: "./.github/actions/update-tags"
@@ -156,7 +173,7 @@ jobs:
         run: |
           nox --non-interactive --session lint
 
-      - name: Build and check the wheel
+      - name: Build and check the distribution 📦
         run: |
           nox --non-interactive --session build_wheel
 
@@ -167,10 +184,10 @@ jobs:
           gcovr_version_output="$(gcovr --version | head -n 1)"
           echo "gcovr_version_output=$gcovr_version_output" >> $GITHUB_OUTPUT
 
-      - name: Upload distribution
+      - name: Upload distribution 📦
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: python-package-distributions
           path: dist/**
 
   # -----------------------------------------------------------------------------------------------
@@ -186,6 +203,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 75
+
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
 
       - name: Update tags
         uses: "./.github/actions/update-tags"
@@ -213,6 +233,12 @@ jobs:
             cat doc/build/release_notes.md
           ) >> $GITHUB_STEP_SUMMARY
 
+      - name: Upload release notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: doc/build/release_notes.md
+
   # -----------------------------------------------------------------------------------------------
   host:
   # -----------------------------------------------------------------------------------------------
@@ -225,7 +251,6 @@ jobs:
       upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
       tag: ${{ needs.build-package.outputs.tag }}
       tag_message: ${{ needs.build-package.outputs.tag_message }}
-    secrets: inherit
 
     # Testing strategy
     # ----------------
@@ -295,9 +320,79 @@ jobs:
       python-version: 3.12
       tag: ${{ needs.build-package.outputs.tag }}
       tag_message: ${{ needs.build-package.outputs.tag_message }}
-    secrets: inherit
 
     strategy:
       fail-fast: false
       matrix:
         gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12, gcc-13, gcc-14, clang-10, clang-13, clang-14, clang-15, clang-16]
+
+  # -----------------------------------------------------------------------------------------------
+  publish:
+  # -----------------------------------------------------------------------------------------------
+    needs: [build-package, documentation, host, docker]
+    if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: write
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    environment:  # Environment for trusted publishing
+      name: ${{ needs.build-package.outputs.publish_environment_name }}
+      url: ${{ needs.build-package.outputs.publish_environment_url }}
+
+    env:
+      FORCE_COLOR: "1"
+
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
+
+      - name: Update tags
+        uses: "./.github/actions/update-tags"
+        with:
+          tag: ${{ needs.build-package.outputs.tag }}
+          tag_message: ${{ needs.build-package.outputs.tag_message }}
+
+      - name: Download all the distribution 📦
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Download all applications
+        uses: actions/download-artifact@v4
+        with:
+          pattern: app-*
+          path: build/
+          merge-multiple: true
+
+      - name: Download the release notes
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+          path: docs/build/
+
+      - name: Push new tag
+        if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
+        run: |
+          git push origin "refs/tags/${{ needs.build-package.outputs.tag }}"
+
+      - name: Create release and upload build artifacts
+        if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
+        with:
+          tag_name: ${{ needs.build-package.outputs.tag }}
+          body_path: doc/build/release_notes.md
+          files: build/*
+
+      - name: Publish distribution 📦 to ${{ ((needs.build-package.outputs.tag == '') && 'test.pypi') || 'pypi' }}.org
+        if: ${{ (needs.build-package.outputs.publish_push_tag == 'true') || ((github.repository == 'gcovr/gcovr') && inputs.do_test_release) }}
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc
+        with:
+          repository-url: ${{ needs.build-package.outputs.publish_repository_url }}
+          verbose: ${{ inputs.do_test_release || false }}
+        continue-on-error: ${{ contains('.dev', needs.build-package.outputs.tag) }} # A release of a development version will fail
