@@ -590,6 +590,9 @@ def bundle_app(session: nox.Session) -> None:
             "./pyinstaller",
             "--specpath",
             "./pyinstaller",
+            # Workaround for "UserWarning: pkg_resources is deprecated as an API"
+            "--exclude-module",
+            "pkg_resources",
             "--onefile",
             "--collect-all",
             "gcovr",
