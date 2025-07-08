@@ -7,7 +7,12 @@ all: build.a build.b build.c
 
 run: txt cobertura html sonarqube coveralls
 
-.NOTPARALLEL: coverage.a.json coverage.b.json coverage.c.json
+# .NOTPARALLEL with targets needs at least gnumake 4.4.
+# We get sporadic raise conditions on windows runner with 4.2.
+# Let's configure it manual
+# .NOTPARALLEL: coverage.a.json coverage.b.json coverage.c.json
+coverage.c.json : | coverage.b.json
+coverage.b.json : | coverage.a.json
 
 coverage.%.json:
 	$(eval base_dir := $(shell pwd))
