@@ -31,6 +31,11 @@ jobs:
       tag_message: ${{ steps.changelog.outputs.tag_message || '' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 75
+      - run: git fetch --tags
+        shell: bash
+
       - name: Check if PR is mentioned in changelog
         if: ${{ always() }}
         run: |
@@ -56,14 +61,21 @@ jobs:
             fi
           fi
           exit 0
+
       - name: Set output variables
         id: changelog
         run: |
+          first_semver="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
           if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
-            tag="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
+            tag="$first_semver"
+            echo "tag=$tag" >> $GITHUB_OUTPUT
+            echo "tag_message=$tag ($(date -I))" >> $GITHUB_OUTPUT
+          elif [[ "${{ inputs.do_test_release }}" == "true" ]] ; then
+            tag="$first_semver.dev$(git rev-list "$first_semver"..HEAD | wc -l | tr -d ' ')"
             echo "tag=$tag" >> $GITHUB_OUTPUT
             echo "tag_message=$tag ($(date -I))" >> $GITHUB_OUTPUT
           fi
+
 
   # -----------------------------------------------------------------------------------------------
   spell-check:
@@ -395,4 +407,3 @@ jobs:
         with:
           repository-url: ${{ needs.build-package.outputs.publish_repository_url }}
           verbose: ${{ inputs.do_test_release || false }}
-        continue-on-error: ${{ contains('.dev', needs.build-package.outputs.tag) }} # A release of a development version will fail

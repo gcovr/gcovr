@@ -15,7 +15,6 @@ runs:
   using: 'composite'
   steps:
 
-      # Fetch the last tag
     - run: git fetch --tags
       shell: bash
 
