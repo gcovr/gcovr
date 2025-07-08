@@ -460,6 +460,8 @@ def tests(session: nox.Session) -> None:
     if "llvm-cov" in gcov:
         gcov += " gcov"
     session.env["GCOV"] = gcov
+    session.run("make", "--version", external=True)
+    session.run("ninja", "--version", external=True)
     session.log(f"Using reference data for {session.env['CC_REFERENCE']}")
 
     with session.chdir("tests"):
