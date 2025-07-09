@@ -39,7 +39,6 @@ jobs:
         shell: bash
 
       - name: Check if PR is mentioned in changelog
-        if: ${{ always() }}
         run: |
           if [ -z "${{ github.event.pull_request.number }}" ]; then
             echo 'No PR defined'

@@ -42,7 +42,7 @@ jobs:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       - name: Finalize the upload to Codacy
-        if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
+        if: ${{ (!cancelled()) && (github.repository == 'gcovr/gcovr') }}
         run: |
           ${{ runner.temp }}/artifacts/get.sh final
         env:
