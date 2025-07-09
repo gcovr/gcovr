@@ -548,13 +548,6 @@ def check_wheel(session: nox.Session) -> None:
             )
 
 
-@nox.session
-def upload_wheel(session: nox.Session) -> None:
-    """Upload the wheel."""
-    session.install("twine")
-    session.run("twine", "upload", "dist/*", external=True)
-
-
 @functools.lru_cache(maxsize=1)
 def get_executable_name() -> Path:
     """Get the executable name."""

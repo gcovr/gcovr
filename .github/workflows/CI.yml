@@ -5,6 +5,12 @@ name: Run GCOVR CI
 
 on:
   workflow_dispatch: # For manual triggering
+    inputs:
+      do_test_release:
+        type: boolean
+        description: Do a release to test.pypi.org
+        default: false
+        required: true
   push:
     branches:
       - main
@@ -13,13 +19,23 @@ on:
 
 jobs:
 
-  changelog-check:
+  # -----------------------------------------------------------------------------------------------
+  changelog:
+  # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
     env:
       PR_BODY: "${{ github.event.pull_request.body }}"
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
+    outputs:
+      tag: ${{ steps.changelog.outputs.tag || '' }}
+      tag_message: ${{ steps.changelog.outputs.tag_message || '' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 75
+      - run: git fetch --tags
+        shell: bash
+
       - name: Check if PR is mentioned in changelog
         if: ${{ always() }}
         run: |
@@ -46,8 +62,24 @@ jobs:
           fi
           exit 0
 
+      - name: Set output variables
+        id: changelog
+        run: |
+          first_semver="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
+          if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
+            tag="$first_semver"
+            echo "tag=$tag" >> $GITHUB_OUTPUT
+            echo "tag_message=$tag ($(date -I))" >> $GITHUB_OUTPUT
+          elif [[ "${{ inputs.do_test_release }}" == "true" ]] ; then
+            tag="$first_semver.dev$(git rev-list "$first_semver"..HEAD | wc -l | tr -d ' ')"
+            echo "tag=$tag" >> $GITHUB_OUTPUT
+            echo "tag_message=$tag ($(date -I))" >> $GITHUB_OUTPUT
+          fi
 
+
+  # -----------------------------------------------------------------------------------------------
   spell-check:
+  # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -64,7 +96,9 @@ jobs:
           mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changed-files.outputs.all_changed_and_modified_files }}')
           cspell --config cspell.json --color --show-suggestions "${added_modified_files[@]}"
 
+  # -----------------------------------------------------------------------------------------------
   upload-coverage:
+  # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -80,15 +114,155 @@ jobs:
           name: "coverage"
           path: /tmp/coverage-upload/*.*
 
+  # -----------------------------------------------------------------------------------------------
+  validate-reports:
+  # -----------------------------------------------------------------------------------------------
+    runs-on: ubuntu-22.04
+    env:
+      FORCE_COLOR: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up runner
+        uses: "./.github/actions/setup-runner"
+        with:
+          os: ubuntu-22.04
+          python-version: 3.13
+
+      - name: Install libxml2
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt-get install -y \
+            libxml2-utils
+
+      - name: Run validation
+        run: |
+          nox --non-interactive --session validate_reports
+
+  # -----------------------------------------------------------------------------------------------
+  build-package:
+  # -----------------------------------------------------------------------------------------------
+    needs: [changelog, spell-check, validate-reports]
+    runs-on: ubuntu-22.04
+    env:
+      FORCE_COLOR: "1"
+    outputs:
+      tag: ${{ needs.changelog.outputs.tag }}
+      tag_message: ${{ needs.changelog.outputs.tag_message }}
+      gcovr_version_output: ${{ steps.gcov_version.outputs.gcovr_version_output }}
+
+      # The variables used for publishing the data
+      publish_run_job: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (needs.changelog.outputs.tag != '') || inputs.do_test_release }}
+      publish_environment_name: ${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'pypi' }}
+      publish_environment_url: https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'pypi' }}.org/p/gcovr
+      publish_push_tag: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (needs.changelog.outputs.tag != '') }}
+      # Use https://upload.pypi.org/legacy for a tag in pypi environment or in all other cases https://test.pypi.org/legacy
+      publish_repository_url: https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'upload.pypi' }}.org/legacy/
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 75
+
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
+
+      - name: Update tags
+        uses: "./.github/actions/update-tags"
+        with:
+          tag: ${{ needs.changelog.outputs.tag }}
+          tag_message: ${{ needs.changelog.outputs.tag_message }}
+
+      - name: Set up runner
+        uses: "./.github/actions/setup-runner"
+        with:
+          os: ubuntu-22.04
+          python-version: 3.12
+
+      - name: Lint files
+        run: |
+          nox --non-interactive --session lint
+
+      - name: Build and check the distribution 📦
+        run: |
+          nox --non-interactive --session build_wheel
+
+      - name: Set output variables
+        id: gcov_version
+        run: |
+          . .nox/check_wheel/bin/activate
+          gcovr_version_output="$(gcovr --version | head -n 1)"
+          echo "gcovr_version_output=$gcovr_version_output" >> $GITHUB_OUTPUT
+
+      - name: Upload distribution 📦
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/**
+
+  # -----------------------------------------------------------------------------------------------
+  documentation:
+  # -----------------------------------------------------------------------------------------------
+    needs: [build-package]
+
+    runs-on: ubuntu-22.04
+    env:
+      FORCE_COLOR: "1"
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 75
+
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
+
+      - name: Update tags
+        uses: "./.github/actions/update-tags"
+        with:
+          tag: ${{ needs.build-package.outputs.tag }}
+          tag_message: ${{ needs.build-package.outputs.tag_message }}
+
+      - name: Set up runner
+        uses: "./.github/actions/setup-runner"
+        with:
+          os: ubuntu-22.04
+          python-version: 3.12
+
+      - name: Generate documentation
+        run: |
+          nox --non-interactive --session doc
+
+      - name: Set release notes as job summary
+        run: |
+          (
+            echo '''
+            # ${{ needs.build-package.outputs.gcovr_version_output }}
+
+            '''
+            cat doc/build/release_notes.md
+          ) >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload release notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: doc/build/release_notes.md
+
+  # -----------------------------------------------------------------------------------------------
   host:
-    needs: [changelog-check, spell-check, upload-coverage]
+  # -----------------------------------------------------------------------------------------------
+    needs: [build-package]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       os: ${{ matrix.os }}
       gcc: ${{ matrix.gcc }}
       python-version: ${{ matrix.python-version }}
       upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
-    secrets: inherit
+      tag: ${{ needs.build-package.outputs.tag }}
+      tag_message: ${{ needs.build-package.outputs.tag_message }}
 
     # Testing strategy
     # ----------------
@@ -147,150 +321,89 @@ jobs:
             upload-app: true
 
 
+  # -----------------------------------------------------------------------------------------------
   docker:
-    needs: [changelog-check, spell-check, upload-coverage]
+  # -----------------------------------------------------------------------------------------------
+    needs: [build-package]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
       container: true
       gcc: ${{ matrix.gcc }}
-    secrets: inherit
+      python-version: 3.12
+      tag: ${{ needs.build-package.outputs.tag }}
+      tag_message: ${{ needs.build-package.outputs.tag_message }}
 
     strategy:
       fail-fast: false
       matrix:
         gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12, gcc-13, gcc-14, clang-10, clang-13, clang-14, clang-15, clang-16]
 
-  validate-reports:
-    needs: [changelog-check, spell-check, upload-coverage]
-
+  # -----------------------------------------------------------------------------------------------
+  publish:
+  # -----------------------------------------------------------------------------------------------
+    needs: [build-package, documentation, host, docker]
+    if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
     runs-on: ubuntu-22.04
-    env:
-      FORCE_COLOR: "1"
 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install libxml2
-        shell: bash
-        run: |
-          sudo apt update
-          sudo apt-get install -y \
-            libxml2-utils
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install nox requests
-
-      - name: Run validation
-        run: |
-          nox --non-interactive --session validate_reports
-
-
-  deployment:
-    needs: [host, docker, validate-reports]
-
-    runs-on: ubuntu-22.04
     permissions:
       contents: write
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    environment:  # Environment for trusted publishing
+      name: ${{ needs.build-package.outputs.publish_environment_name }}
+      url: ${{ needs.build-package.outputs.publish_environment_url }}
+
     env:
       FORCE_COLOR: "1"
+
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
+
+      - name: Update tags
+        uses: "./.github/actions/update-tags"
         with:
-          fetch-depth: 75
-          fetch-tags: true
+          tag: ${{ needs.build-package.outputs.tag }}
+          tag_message: ${{ needs.build-package.outputs.tag_message }}
 
-      - name: Workaround because fetch-tags doesn't work with git 2.48 in the GH actions
-        run: |
-          git fetch --tags
-
-      - name: Set up Python
-        uses: "./.github/actions/setup-python"
-        with:
-          os: ubuntu-22.04
-          python-version: 3.12
-
-      - name: Set up environment
-        run: |
-          if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
-            echo "GCOVR_VERSION=$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)" >> $GITHUB_ENV
-          else
-            echo "GCOVR_VERSION=" >> $GITHUB_ENV
-          fi
-
-      - name: Create new tag without pushing to get the correct name of the apps
-        if: ${{ (github.repository == 'gcovr/gcovr') && env.GCOVR_VERSION != '' }}
-        run: |
-          # Set git user info
-          git config --global user.email "noreply@gcovr.com"
-          git config --global user.name "gcovr authors"
-
-          # Create the tag and print the output.
-          git tag -a "$GCOVR_VERSION" -m "$GCOVR_VERSION ($(date -I))"
-          git tag --list -n "$GCOVR_VERSION"
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install nox requests
-
-      - name: Build and check the wheel
-        run: |
-          nox --non-interactive --session build_wheel
-
-      - name: Upload distribution
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/**
-
-      - name: Generate documentation
-        run: |
-          nox --non-interactive --session doc
-
-      - name: Set release notes as job summary
-        run: |
-          (
-            echo '''
-            # $GcovrVersion
-
-            '''
-            cat doc/build/release_notes.md
-          ) >> $GITHUB_STEP_SUMMARY
-
-      - name: Download artifacts
+      - name: Download all the distribution 📦
         uses: actions/download-artifact@v4
         with:
-          path: build
+          name: python-package-distributions
+          path: dist/
+
+      - name: Download all applications
+        uses: actions/download-artifact@v4
+        with:
           pattern: app-*
+          path: build/
           merge-multiple: true
 
-      - name: List standalone applications
-        run: |
-          ls -al build
+      - name: Download the release notes
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+          path: docs/build/
 
       - name: Push new tag
-        if: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && env.GCOVR_VERSION != '' }}
+        if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
         run: |
-          git push origin "refs/tags/$GCOVR_VERSION"
+          git push origin "refs/tags/${{ needs.build-package.outputs.tag }}"
 
       - name: Create release and upload build artifacts
-        if: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (env.GCOVR_VERSION != '') }}
+        if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
         with:
-          tag_name: ${{ env.GCOVR_VERSION }}
+          tag_name: ${{ needs.build-package.outputs.tag }}
           body_path: doc/build/release_notes.md
           files: build/*
 
-      - name: Publish to PyPi
-        if: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (env.GCOVR_VERSION != '') }}
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          nox --session upload_wheel
+      - name: Publish distribution 📦 to ${{ ((needs.build-package.outputs.tag == '') && 'test.pypi') || 'pypi' }}.org
+        if: ${{ (needs.build-package.outputs.publish_push_tag == 'true') || ((github.repository == 'gcovr/gcovr') && inputs.do_test_release) }}
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc
+        with:
+          repository-url: ${{ needs.build-package.outputs.publish_repository_url }}
+          verbose: ${{ inputs.do_test_release || false }}
