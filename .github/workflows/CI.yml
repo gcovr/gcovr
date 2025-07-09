@@ -182,12 +182,12 @@ jobs:
 
       - name: Build and check the distribution 📦
         run: |
-          nox --non-interactive --session build_wheel
+          nox --non-interactive --session build_distribution
 
       - name: Set output variables
         id: gcov_version
         run: |
-          . .nox/check_wheel/bin/activate
+          . .nox/check_distribution/bin/activate
           gcovr_version_output="$(gcovr --version | head -n 1)"
           echo "gcovr_version_output=$gcovr_version_output" >> $GITHUB_OUTPUT
 

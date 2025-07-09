@@ -59,7 +59,7 @@
         {
             "label": "Build and check the wheel",
             "type": "shell",
-            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s build_wheel",
+            "command": "nox --reuse-existing-virtualenvs $(if [ -n \"${env:NOX_ENV_DIR}\" ] ; then echo \"--envdir ${env:NOX_ENV_DIR}\" ; fi) -s build_distribution",
             "group": "build"
         },
         {

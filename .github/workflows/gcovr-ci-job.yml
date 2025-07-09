@@ -144,7 +144,7 @@ jobs:
 
       - name: Build and check the wheel
         run: |
-          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_distribution
 
       - name: Build and check standalone application
         if: ${{ !startsWith(inputs.python-version,'pypy') }}
