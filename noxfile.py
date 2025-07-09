@@ -519,7 +519,7 @@ def validate_reports(session: nox.Session) -> None:
 
 
 @nox.session
-def build_wheel(session: nox.Session) -> None:
+def build_distribution(session: nox.Session) -> None:
     """Build a wheel."""
     session.install("build")
     # Remove old dist if present
@@ -527,11 +527,11 @@ def build_wheel(session: nox.Session) -> None:
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
     session.run("python", "-m", "build")
-    session.notify(("check_wheel"))
+    session.notify(("check_distribution"))
 
 
 @nox.session
-def check_wheel(session: nox.Session) -> None:
+def check_distribution(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
     session.install("wheel", "twine")
     with session.chdir("dist"):

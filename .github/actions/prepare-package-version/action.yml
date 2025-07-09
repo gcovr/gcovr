@@ -1,0 +1,64 @@
+name: Prepare package version
+# Schema: https://json.schemastore.org/github-action.json
+
+inputs:
+  tag:
+    type: string
+    description: "The tag to apply"
+    required: true
+  tag_message:
+    type: string
+    description: "The tag message to use"
+    required: true
+  do_test_release:
+    description: "Do a release to test.pypi.org"
+    default: false
+
+runs:
+  using: 'composite'
+  steps:
+
+    - run: git fetch --tags
+      shell: bash
+
+    # ---------------------------------------------------------------------------------------------
+    # Deactivating the local version prefix for test releases
+    # ---------------------------------------------------------------------------------------------
+    - if: ${{ (inputs.do_test_release == 'true') }}
+      # cspell:disable
+      run: python -m pip install --user tomlkit
+      # cspell:enable
+      shell: bash
+    - if: ${{ (inputs.do_test_release == 'true') }}
+      # cspell:disable
+      run: |
+        # Patch pyproject.toml to turn of local version part
+        from pathlib import Path
+
+        import tomlkit
+
+        pyproject_toml_path = Path.cwd() / 'pyproject.toml'
+        pyproject_toml_txt = pyproject_toml_path.read_text()
+        pyproject_toml = tomlkit.loads(pyproject_toml_txt)
+        setuptools_scm_section = pyproject_toml['tool']['hatch']['version']['raw-options']
+        setuptools_scm_section['local_scheme'] = 'no-local-version'
+        patched_pyproject_toml_txt = tomlkit.dumps(pyproject_toml)
+        pyproject_toml_path.write_text(patched_pyproject_toml_txt)
+      shell: python
+      # cspell:enable
+    - if: ${{ (inputs.do_test_release == 'true') }}
+      run: git update-index --assume-unchanged pyproject.toml
+      shell: bash
+
+    # ---------------------------------------------------------------------------------------------
+    # Create the tag to get the correct package version
+    # ---------------------------------------------------------------------------------------------
+    - if: ${{ inputs.tag != '' }}
+      name: Create tag without pushing
+      run: |
+        set -e
+        git config --global user.email "noreply@gcovr.com"
+        git config --global user.name "gcovr authors"
+        git tag -a "${{ inputs.tag }}" -m "${{ inputs.tag }} (${{ inputs.tag_message }})"
+        git tag --list -n ${{ inputs.tag }}
+      shell: bash

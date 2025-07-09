@@ -10,7 +10,6 @@ on:
         type: boolean
         description: Do a release to test.pypi.org
         default: false
-        required: true
   push:
     branches:
       - main
@@ -23,12 +22,15 @@ jobs:
   changelog:
   # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       PR_BODY: "${{ github.event.pull_request.body }}"
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
     outputs:
       tag: ${{ steps.changelog.outputs.tag || '' }}
       tag_message: ${{ steps.changelog.outputs.tag_message || '' }}
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,7 +39,6 @@ jobs:
         shell: bash
 
       - name: Check if PR is mentioned in changelog
-        if: ${{ always() }}
         run: |
           if [ -z "${{ github.event.pull_request.number }}" ]; then
             echo 'No PR defined'
@@ -65,13 +66,8 @@ jobs:
       - name: Set output variables
         id: changelog
         run: |
-          first_semver="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
           if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
-            tag="$first_semver"
-            echo "tag=$tag" >> $GITHUB_OUTPUT
-            echo "tag_message=$tag ($(date -I))" >> $GITHUB_OUTPUT
-          elif [[ "${{ inputs.do_test_release }}" == "true" ]] ; then
-            tag="$first_semver.dev$(git rev-list "$first_semver"..HEAD | wc -l | tr -d ' ')"
+            tag="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
             echo "tag=$tag" >> $GITHUB_OUTPUT
             echo "tag_message=$tag ($(date -I))" >> $GITHUB_OUTPUT
           fi
@@ -81,6 +77,9 @@ jobs:
   spell-check:
   # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
       - name: Install spellchecker
@@ -100,6 +99,9 @@ jobs:
   upload-coverage:
   # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
       - name: Copy coverage reports
@@ -118,6 +120,8 @@ jobs:
   validate-reports:
   # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       FORCE_COLOR: "1"
 
@@ -146,6 +150,8 @@ jobs:
   # -----------------------------------------------------------------------------------------------
     needs: [changelog, spell-check, validate-reports]
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       FORCE_COLOR: "1"
     outputs:
@@ -161,6 +167,7 @@ jobs:
       # Use https://upload.pypi.org/legacy for a tag in pypi environment or in all other cases https://test.pypi.org/legacy
       publish_repository_url: https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'upload.pypi' }}.org/legacy/
     timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -169,11 +176,12 @@ jobs:
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Update tags
-        uses: "./.github/actions/update-tags"
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.changelog.outputs.tag }}
           tag_message: ${{ needs.changelog.outputs.tag_message }}
+          do_test_release: ${{ inputs.do_test_release || false }}
 
       - name: Set up runner
         uses: "./.github/actions/setup-runner"
@@ -187,12 +195,12 @@ jobs:
 
       - name: Build and check the distribution 📦
         run: |
-          nox --non-interactive --session build_wheel
+          nox --non-interactive --session build_distribution
 
       - name: Set output variables
         id: gcov_version
         run: |
-          . .nox/check_wheel/bin/activate
+          . .nox/check_distribution/bin/activate
           gcovr_version_output="$(gcovr --version | head -n 1)"
           echo "gcovr_version_output=$gcovr_version_output" >> $GITHUB_OUTPUT
 
@@ -206,11 +214,13 @@ jobs:
   documentation:
   # -----------------------------------------------------------------------------------------------
     needs: [build-package]
-
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       FORCE_COLOR: "1"
     timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -219,8 +229,8 @@ jobs:
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Update tags
-        uses: "./.github/actions/update-tags"
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.build-package.outputs.tag }}
           tag_message: ${{ needs.build-package.outputs.tag_message }}
@@ -263,7 +273,8 @@ jobs:
       upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
       tag: ${{ needs.build-package.outputs.tag }}
       tag_message: ${{ needs.build-package.outputs.tag_message }}
-
+    permissions:
+      contents: read
     # Testing strategy
     # ----------------
     #
@@ -332,7 +343,8 @@ jobs:
       python-version: 3.12
       tag: ${{ needs.build-package.outputs.tag }}
       tag_message: ${{ needs.build-package.outputs.tag_message }}
-
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -344,27 +356,29 @@ jobs:
     needs: [build-package, documentation, host, docker]
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
     runs-on: ubuntu-22.04
-
     permissions:
       contents: write
       id-token: write  # IMPORTANT: mandatory for trusted publishing
-
     environment:  # Environment for trusted publishing
       name: ${{ needs.build-package.outputs.publish_environment_name }}
       url: ${{ needs.build-package.outputs.publish_environment_url }}
-
     env:
       FORCE_COLOR: "1"
-
     timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Update tags
-        uses: "./.github/actions/update-tags"
+      - name: Check if all needed jobs succeed
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe
+        with:
+          jobs: ${{ toJSON(needs) }}
+
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.build-package.outputs.tag }}
           tag_message: ${{ needs.build-package.outputs.tag_message }}

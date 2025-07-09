@@ -40,6 +40,8 @@ defaults:
 jobs:
   gcovr-ci-job:
     runs-on: ${{ inputs.container && 'ubuntu-22.04' || inputs.os }}
+    permissions:
+      contents: read
     env:
       SPHINX_SKIP_CHECK_LINKS: "True"
       FORCE_COLOR: "1"
@@ -54,8 +56,8 @@ jobs:
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Update tags
-        uses: "./.github/actions/update-tags"
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
         with:
           tag: ${{ inputs.tag }}
           tag_message: ${{ inputs.tag_message }}
@@ -144,7 +146,7 @@ jobs:
 
       - name: Build and check the wheel
         run: |
-          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_distribution
 
       - name: Build and check standalone application
         if: ${{ !startsWith(inputs.python-version,'pypy') }}

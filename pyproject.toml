@@ -1,7 +1,7 @@
 
 [build-system]
 requires = [
-    "hatchling==1.26.1",
+    "hatchling==1.26.3",
     "hatch-vcs==0.4.0",
     "hatch-fancy-pypi-readme==24.1.0"
 ]
@@ -94,6 +94,9 @@ replacement = '.. image:: https://raw.githubusercontent.com/gcovr/gcovr/$HFPR_VE
 
 [tool.hatch.version]
 source = "vcs"
+
+[tool.hatch.version.raw-options]
+version_scheme = "no-guess-dev"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/gcovr/version.py"

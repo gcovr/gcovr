@@ -32,7 +32,7 @@ from .version import __version__
 
 LOGGER = logging.getLogger("gcovr")
 
-REGEX_VERSION_POSTFIX = re.compile(r"(.+)\.dev.+$")
+REGEX_VERSION_POSTFIX = re.compile(r"(.+?)(?:\.post\d+)?\.dev.+$")
 PRETTY_JSON_INDENT = 4
 
 
@@ -101,8 +101,7 @@ def get_version_for_report() -> str:
     """Get the printable version for the report."""
     version = __version__
     if match := REGEX_VERSION_POSTFIX.match(version):
-        major, minor = match.group(1).split(".")
-        version = f"{major}.{int(minor)-1}+main"
+        version = f"{match.group(1)}+main"
     return version
 
 
