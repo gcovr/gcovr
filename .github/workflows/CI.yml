@@ -22,12 +22,15 @@ jobs:
   changelog:
   # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       PR_BODY: "${{ github.event.pull_request.body }}"
       CHANGELOG_ISSUE: ":issue:`${{ github.event.pull_request.number }}`"
     outputs:
       tag: ${{ steps.changelog.outputs.tag || '' }}
       tag_message: ${{ steps.changelog.outputs.tag_message || '' }}
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -75,6 +78,9 @@ jobs:
   spell-check:
   # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
       - name: Install spellchecker
@@ -94,6 +100,9 @@ jobs:
   upload-coverage:
   # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
       - name: Copy coverage reports
@@ -112,6 +121,8 @@ jobs:
   validate-reports:
   # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       FORCE_COLOR: "1"
 
@@ -140,6 +151,8 @@ jobs:
   # -----------------------------------------------------------------------------------------------
     needs: [changelog, spell-check, validate-reports]
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       FORCE_COLOR: "1"
     outputs:
@@ -155,6 +168,7 @@ jobs:
       # Use https://upload.pypi.org/legacy for a tag in pypi environment or in all other cases https://test.pypi.org/legacy
       publish_repository_url: https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'upload.pypi' }}.org/legacy/
     timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -201,11 +215,13 @@ jobs:
   documentation:
   # -----------------------------------------------------------------------------------------------
     needs: [build-package]
-
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       FORCE_COLOR: "1"
     timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -258,7 +274,8 @@ jobs:
       upload-app: ${{ matrix.upload-app || false }}  # Explicit set to false if not set
       tag: ${{ needs.build-package.outputs.tag }}
       tag_message: ${{ needs.build-package.outputs.tag_message }}
-
+    permissions:
+      contents: read
     # Testing strategy
     # ----------------
     #
@@ -327,7 +344,8 @@ jobs:
       python-version: 3.12
       tag: ${{ needs.build-package.outputs.tag }}
       tag_message: ${{ needs.build-package.outputs.tag_message }}
-
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -339,19 +357,16 @@ jobs:
     needs: [build-package, documentation, host, docker]
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
     runs-on: ubuntu-22.04
-
     permissions:
       contents: write
       id-token: write  # IMPORTANT: mandatory for trusted publishing
-
     environment:  # Environment for trusted publishing
       name: ${{ needs.build-package.outputs.publish_environment_name }}
       url: ${{ needs.build-package.outputs.publish_environment_url }}
-
     env:
       FORCE_COLOR: "1"
-
     timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
 

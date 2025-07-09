@@ -40,6 +40,8 @@ defaults:
 jobs:
   gcovr-ci-job:
     runs-on: ${{ inputs.container && 'ubuntu-22.04' || inputs.os }}
+    permissions:
+      contents: read
     env:
       SPHINX_SKIP_CHECK_LINKS: "True"
       FORCE_COLOR: "1"
