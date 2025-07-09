@@ -21,22 +21,27 @@ jobs:
           run_id: ${{ github.event.workflow_run.id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Download Codacy uploader script
+        run: |
+          mkdir -p ${{ runner.temp }}/artifacts
+          curl -Ls https://coverage.codacy.com/get.sh -o ${{ runner.temp }}/artifacts/get.sh
+          chmod +x ${{ runner.temp }}/artifacts/get.sh
+
       - name: Upload coverage files to Codacy
         if: ${{ (github.repository == 'gcovr/gcovr') }}
         run: |
           # Search the coverage files and upload them
-          curl -Ls https://coverage.codacy.com/get.sh > get.sh
-          bash ./get.sh report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
-          bash ./get.sh report --partial -l C --force-coverage-parser cobertura -r 'coverage/cobertura.xml'
-          bash ./get.sh report --partial -l C --force-coverage-parser clover -r 'coverage/clover.xml'
-          bash ./get.sh report --partial -l C --force-coverage-parser jacoco -r 'coverage/jacoco.xml' || echo ignored
-          bash ./get.sh report --partial -l C --force-coverage-parser lcov -r 'coverage/coverage.lcov' || echo ignored
+          ${{ runner.temp }}/artifacts/get.sh report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
+          ${{ runner.temp }}/artifacts/get.sh report --partial -l C --force-coverage-parser cobertura -r 'coverage/cobertura.xml'
+          ${{ runner.temp }}/artifacts/get.sh report --partial -l C --force-coverage-parser clover -r 'coverage/clover.xml'
+          ${{ runner.temp }}/artifacts/get.sh report --partial -l C --force-coverage-parser jacoco -r 'coverage/jacoco.xml' || echo ignored
+          ${{ runner.temp }}/artifacts/get.sh report --partial -l C --force-coverage-parser lcov -r 'coverage/coverage.lcov' || echo ignored
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       - name: Finalize the upload to Codacy
         if: ${{ always() && (github.repository == 'gcovr/gcovr') }}
         run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) final
+          ${{ runner.temp }}/artifacts/get.sh final
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
