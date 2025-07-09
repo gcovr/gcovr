@@ -758,6 +758,8 @@ def run_gcov_and_process_files(
     filename = None
     out = None
     err = None
+    done = False
+    active_gcov_files = set[str]()
     try:
         gcov_cmd = GcovProgram(options.gcov_cmd)
         gcov_cmd.identify_and_cache_capabilities()
