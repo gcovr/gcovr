@@ -54,8 +54,8 @@ jobs:
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Update tags
-        uses: "./.github/actions/update-tags"
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
         with:
           tag: ${{ inputs.tag }}
           tag_message: ${{ inputs.tag_message }}

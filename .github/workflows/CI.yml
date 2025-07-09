@@ -10,7 +10,6 @@ on:
         type: boolean
         description: Do a release to test.pypi.org
         default: false
-        required: true
   push:
     branches:
       - main
@@ -65,13 +64,8 @@ jobs:
       - name: Set output variables
         id: changelog
         run: |
-          first_semver="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
           if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
-            tag="$first_semver"
-            echo "tag=$tag" >> $GITHUB_OUTPUT
-            echo "tag_message=$tag ($(date -I))" >> $GITHUB_OUTPUT
-          elif [[ "${{ inputs.do_test_release }}" == "true" ]] ; then
-            tag="$first_semver.dev$(git rev-list "$first_semver"..HEAD | wc -l | tr -d ' ')"
+            tag="$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)"
             echo "tag=$tag" >> $GITHUB_OUTPUT
             echo "tag_message=$tag ($(date -I))" >> $GITHUB_OUTPUT
           fi
@@ -169,11 +163,12 @@ jobs:
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Update tags
-        uses: "./.github/actions/update-tags"
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.changelog.outputs.tag }}
           tag_message: ${{ needs.changelog.outputs.tag_message }}
+          do_test_release: ${{ inputs.do_test_release || false }}
 
       - name: Set up runner
         uses: "./.github/actions/setup-runner"
@@ -219,8 +214,8 @@ jobs:
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Update tags
-        uses: "./.github/actions/update-tags"
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.build-package.outputs.tag }}
           tag_message: ${{ needs.build-package.outputs.tag_message }}
@@ -363,8 +358,8 @@ jobs:
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Update tags
-        uses: "./.github/actions/update-tags"
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.build-package.outputs.tag }}
           tag_message: ${{ needs.build-package.outputs.tag_message }}
