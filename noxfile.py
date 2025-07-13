@@ -26,6 +26,7 @@ import platform
 import re
 from runpy import run_path
 import socket
+import sys
 import textwrap
 import time
 from typing import Optional
@@ -36,6 +37,11 @@ import zipfile
 import nox
 
 import requests
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
@@ -241,6 +247,20 @@ def prepare_next_iteration(session: nox.Session) -> None:
     session.notify("html2jpeg")
 
 
+def install_dev_requirements(session: nox.Session, *requirements: str) -> None:
+    """Install the needed development packages."""
+    with Path("pyproject.toml").open("rb") as fh_in:
+        pyproject = tomllib.load(fh_in)
+    dev_deps = pyproject["project"]["optional-dependencies"]["dev"]
+    session.install(
+        *[
+            d
+            for d in dev_deps
+            if any(d.startswith(requirement) for requirement in requirements)
+        ]
+    )
+
+
 @nox.session(python=False)
 def qa(session: nox.Session) -> None:
     """Run the quality tests for the default GCC version."""
@@ -262,7 +282,7 @@ def lint(session: nox.Session) -> None:
 @nox.session
 def ruff_check(session: nox.Session) -> None:
     """Run ruff check command."""
-    session.install("ruff~=0.7.0")
+    install_dev_requirements(session, "ruff")
     if session.posargs:
         args = session.posargs
     else:
@@ -273,7 +293,7 @@ def ruff_check(session: nox.Session) -> None:
 @nox.session
 def ruff_format(session: nox.Session) -> None:
     """Run ruff format command."""
-    session.install("ruff~=0.7.0")
+    install_dev_requirements(session, "ruff")
     if session.posargs:
         args = session.posargs
     else:
@@ -284,7 +304,7 @@ def ruff_format(session: nox.Session) -> None:
 @nox.session
 def bandit(session: nox.Session) -> None:
     """Run bandit, a code formatter and format checker."""
-    session.install("bandit[toml]")
+    install_dev_requirements(session, "bandit[toml]")
     if session.posargs:
         args = session.posargs
     else:
@@ -295,7 +315,7 @@ def bandit(session: nox.Session) -> None:
 @nox.session
 def pylint(session: nox.Session) -> None:
     """Run pylint command."""
-    session.install("pylint<4.0.0", "nox", "requests", "pytest")
+    install_dev_requirements(session, "pylint", "nox", "requests", "pytest")
     session.install("-e", ".")
     if session.posargs:
         args = session.posargs
@@ -307,7 +327,7 @@ def pylint(session: nox.Session) -> None:
 @nox.session
 def mypy(session: nox.Session) -> None:
     """Run mypy command."""
-    session.install("mypy", "nox", "requests", "pytest", "yaxmldiff")
+    install_dev_requirements(session, "mypy", "nox", "requests", "pytest", "yaxmldiff")
     session.install("-e", ".")
     if session.posargs:
         args = session.posargs
@@ -422,21 +442,18 @@ def doc(session: nox.Session) -> None:
 @nox.session
 def tests(session: nox.Session) -> None:
     """Run the tests with the default GCC version."""
-    session.install(
-        "jinja2",
-        "lxml",
-        "pygments==2.13.0",
+    use_coverage = os.environ.get("USE_COVERAGE") == "true"
+    requirements = [
+        "cmake",
+        "pygments",  # Need a version from dev requirements for reference compare
         "pytest",
         "pytest-timeout",
-        "cmake",
+        "pywin32",
         "yaxmldiff",
-    )
-    if platform.system() == "Windows":
-        session.install("pywin32")
-    coverage_args = []
-    if os.environ.get("USE_COVERAGE") == "true":
-        session.install("coverage", "pytest-cov")
-        coverage_args = ["--cov=gcovr", "--cov-branch"]
+    ]
+    if use_coverage:
+        requirements += ["coverage", "pytest-cov"]
+    install_dev_requirements(session, *requirements)
     session.install("-e", ".")
     set_environment(session)
     session.log("Print tool versions")
@@ -468,7 +485,8 @@ def tests(session: nox.Session) -> None:
         session.run("make", "--silent", "clean", external=True)
 
     args = ["-m", "pytest"]
-    args += coverage_args
+    if use_coverage:
+        args += ["--cov=gcovr", "--cov-branch"]
     args += session.posargs
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
@@ -521,7 +539,7 @@ def validate_reports(session: nox.Session) -> None:
 @nox.session
 def build_distribution(session: nox.Session) -> None:
     """Build a wheel."""
-    session.install("build")
+    install_dev_requirements(session, "build")
     # Remove old dist if present
     dist_dir = Path("dist")
     if dist_dir.exists():
@@ -533,7 +551,7 @@ def build_distribution(session: nox.Session) -> None:
 @nox.session
 def check_distribution(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
-    session.install("wheel", "twine")
+    install_dev_requirements(session, "wheel", "twine")
     with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
         session.run("pip", "uninstall", "--yes", "gcovr")
@@ -569,7 +587,7 @@ def get_executable_name() -> Path:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    session.install("pyinstaller~=6.11.1")
+    install_dev_requirements(session, "pyinstaller")
     # This is needed if the virtual env is reused
     session.run("pip", "uninstall", "gcovr")
     # Do not install interactive to get the module resolved

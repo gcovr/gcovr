@@ -197,8 +197,8 @@ is needed.
 
 -   Install gcovr in development mode, and install nox::
 
-        pip install -e .
-        pip install nox
+        pip install --upgrade pip
+        pip install -e '.[dev]'
 
     You can then run gcovr as ``gcovr`` or ``python3 -m gcovr``.
 
