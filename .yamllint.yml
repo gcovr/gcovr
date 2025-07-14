@@ -1,0 +1,9 @@
+---
+extends: default
+
+ignore-from-file: .gitignore
+
+rules:
+  truthy: disable
+  line-length:
+    max: 150

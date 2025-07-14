@@ -1,3 +1,4 @@
+---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 exclude: "tests/.*/reference/.*"
@@ -20,3 +21,7 @@ repos:
     hooks:
       - id: ruff-check
       - id: ruff-format
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.1
+    hooks:
+      - id: yamllint

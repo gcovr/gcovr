@@ -1,3 +1,4 @@
+---
 name: Upload coverage
 
 on:
@@ -33,11 +34,12 @@ jobs:
         if: ${{ (github.repository == 'gcovr/gcovr') }}
         run: |
           # Search the coverage files and upload them
-          ${{ runner.temp }}/artifacts/get.sh report --partial -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
-          ${{ runner.temp }}/artifacts/get.sh report --partial -l C --force-coverage-parser cobertura -r 'coverage/cobertura.xml'
-          ${{ runner.temp }}/artifacts/get.sh report --partial -l C --force-coverage-parser clover -r 'coverage/clover.xml'
-          ${{ runner.temp }}/artifacts/get.sh report --partial -l C --force-coverage-parser jacoco -r 'coverage/jacoco.xml' || echo ignored
-          ${{ runner.temp }}/artifacts/get.sh report --partial -l C --force-coverage-parser lcov -r 'coverage/coverage.lcov' || echo ignored
+          partial_upload="${{ runner.temp }}/artifacts/get.sh report --partial"
+          ${partial_upload} -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
+          ${partial_upload} -l C --force-coverage-parser cobertura -r 'coverage/cobertura.xml'
+          ${partial_upload} -l C --force-coverage-parser clover -r 'coverage/clover.xml'
+          ${partial_upload} -l C --force-coverage-parser jacoco -r 'coverage/jacoco.xml' || echo ignored
+          ${partial_upload} -l C --force-coverage-parser lcov -r 'coverage/coverage.lcov' || echo ignored
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
