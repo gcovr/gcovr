@@ -115,8 +115,9 @@ rm -rf /tmp/googletest
 EOS
 
 RUN  <<EOS
+set -e
 # Install bazel
-if [ "$TARGETARCH" == "arm64" ] ; then
+if [ "$TARGETARCH" = "arm64" ] ; then
   echo "4e815a3f92a0285e76f306c5179a4c639e019cb9 -" > /tmp/bazel.sha1sum
 else
   echo "627291b8ef18762dd98b1535fe5c84b1792ac2d0 -" > /tmp/bazel.sha1sum

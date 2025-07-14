@@ -68,7 +68,9 @@ dev = [
     "requests",
     "ruff~=0.12.3",
     "tomli >= 1.1.0 ; python_version < '3.11'",
+    "twine",
     "yaxmldiff",
+    "wheel",
 ]
 
 [project.scripts]
@@ -135,6 +137,8 @@ disable = [
 extension-pkg-allow-list = ["lxml", "gcovr"]
 
 [tool.mypy]
+install_types = true
+non_interactive = true
 warn_unused_configs = true
 disallow_any_generics = true
 disallow_subclassing_any = true
