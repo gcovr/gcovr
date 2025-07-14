@@ -7,8 +7,8 @@ int foo(int param) {
    } else {
       param--; //std::cout << "param is null." << std::endl;
    }
-   if (param) { 
-      param++; //std::cout << "param not null." << std::endl; 
+   if (param) {
+      param++; //std::cout << "param not null." << std::endl;
    } else {
       param--; //std::cout << "param is null." << std::endl;
    }

@@ -277,6 +277,7 @@ def lint(session: nox.Session) -> None:
     session.notify("bandit")
     session.notify("pylint")
     session.notify("mypy")
+    session.notify("pre-commit")
 
 
 @nox.session
@@ -334,6 +335,17 @@ def mypy(session: nox.Session) -> None:
     else:
         args = ["."]
     session.run("mypy", *args)
+
+
+@nox.session(name="pre-commit")
+def pre_commit(session: nox.Session) -> None:
+    """Run pre-commit command."""
+    install_dev_requirements(session, "pre-commit")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = ["run", "--all-files"]
+    session.run("pre-commit", *args)
 
 
 @nox.session

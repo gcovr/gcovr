@@ -27,6 +27,9 @@ insert_final_newline = false
 # Otherwise using cygwin and WSL to execute these will fail if checkout is done on Windows.
 end_of_line = lf
 
+[*.{yml,yaml}]
+indent_size = 2
+
 # for the web templates, use more compact indent
 [src/gcovr/formats/html/*/*]
 indent_size = 2
