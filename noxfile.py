@@ -468,8 +468,9 @@ def tests(session: nox.Session) -> None:
     install_dev_requirements(session, *requirements)
     session.install("-e", ".")
     set_environment(session)
-    session.log("Print tool versions")
+    session.log("Print versions")
     session.run("python", "--version")
+    session.run("pip", "freeze")
     # Use full path to executable
     cc = str(session.env["CC"])
     session.env["CC"] = str(shutil.which(cc)).replace(os.path.sep, "/")
