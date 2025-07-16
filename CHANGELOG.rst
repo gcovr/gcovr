@@ -40,6 +40,11 @@ Bug fixes and small improvements:
 - Add support for reading gcov JSON data without source files. (:issue:`1094`)
 - Add back references to the data model to get source location in error messages. (:issue:`1094`)
 - Fix deprecation warning in standalone application. (:issue:`1115`)
+- Improvements of development environment (:issue:`1118`):
+
+  - Add optional dependencies for development.
+  - Add pre-commit hook to ensure quality checks.
+  - All line endings, except for the git internal files, are preserved.
 
 Documentation:
 
