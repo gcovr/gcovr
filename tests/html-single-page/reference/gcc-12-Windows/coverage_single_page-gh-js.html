@@ -211,9 +211,9 @@ td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5
 span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 .hll { background-color: #ffffcc }
 .c { color: #3D7B7B; font-style: italic } /* Comment */
-.err { border: 1px solid #FF0000 } /* Error */
+.err { border: 1px solid #F00 } /* Error */
 .k { color: #008000; font-weight: bold } /* Keyword */
-.o { color: #666666 } /* Operator */
+.o { color: #666 } /* Operator */
 .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
 .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
 .cp { color: #9C6500 } /* Comment.Preproc */
@@ -222,6 +222,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
 .gd { color: #A00000 } /* Generic.Deleted */
 .ge { font-style: italic } /* Generic.Emph */
+.ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
 .gr { color: #E40000 } /* Generic.Error */
 .gh { color: #000080; font-weight: bold } /* Generic.Heading */
 .gi { color: #008400 } /* Generic.Inserted */
@@ -229,34 +230,34 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
 .gs { font-weight: bold } /* Generic.Strong */
 .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.gt { color: #0044DD } /* Generic.Traceback */
+.gt { color: #04D } /* Generic.Traceback */
 .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
 .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
 .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
 .kp { color: #008000 } /* Keyword.Pseudo */
 .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
 .kt { color: #B00040 } /* Keyword.Type */
-.m { color: #666666 } /* Literal.Number */
+.m { color: #666 } /* Literal.Number */
 .s { color: #BA2121 } /* Literal.String */
 .na { color: #687822 } /* Name.Attribute */
 .nb { color: #008000 } /* Name.Builtin */
-.nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.no { color: #880000 } /* Name.Constant */
-.nd { color: #AA22FF } /* Name.Decorator */
+.nc { color: #00F; font-weight: bold } /* Name.Class */
+.no { color: #800 } /* Name.Constant */
+.nd { color: #A2F } /* Name.Decorator */
 .ni { color: #717171; font-weight: bold } /* Name.Entity */
 .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-.nf { color: #0000FF } /* Name.Function */
+.nf { color: #00F } /* Name.Function */
 .nl { color: #767600 } /* Name.Label */
-.nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.nn { color: #00F; font-weight: bold } /* Name.Namespace */
 .nt { color: #008000; font-weight: bold } /* Name.Tag */
 .nv { color: #19177C } /* Name.Variable */
-.ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.w { color: #bbbbbb } /* Text.Whitespace */
-.mb { color: #666666 } /* Literal.Number.Bin */
-.mf { color: #666666 } /* Literal.Number.Float */
-.mh { color: #666666 } /* Literal.Number.Hex */
-.mi { color: #666666 } /* Literal.Number.Integer */
-.mo { color: #666666 } /* Literal.Number.Oct */
+.ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.w { color: #BBB } /* Text.Whitespace */
+.mb { color: #666 } /* Literal.Number.Bin */
+.mf { color: #666 } /* Literal.Number.Float */
+.mh { color: #666 } /* Literal.Number.Hex */
+.mi { color: #666 } /* Literal.Number.Integer */
+.mo { color: #666 } /* Literal.Number.Oct */
 .sa { color: #BA2121 } /* Literal.String.Affix */
 .sb { color: #BA2121 } /* Literal.String.Backtick */
 .sc { color: #BA2121 } /* Literal.String.Char */
@@ -271,12 +272,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .s1 { color: #BA2121 } /* Literal.String.Single */
 .ss { color: #19177C } /* Literal.String.Symbol */
 .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.fm { color: #0000FF } /* Name.Function.Magic */
+.fm { color: #00F } /* Name.Function.Magic */
 .vc { color: #19177C } /* Name.Variable.Class */
 .vg { color: #19177C } /* Name.Variable.Global */
 .vi { color: #19177C } /* Name.Variable.Instance */
 .vm { color: #19177C } /* Name.Variable.Magic */
-.il { color: #666666 } /* Literal.Number.Integer.Long */
+.il { color: #666 } /* Literal.Number.Integer.Long */
     </style>
   </head>
   <body class="js-disabled">
@@ -973,14 +974,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo6</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo6</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2" href="#l2">2</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3" href="#l3">3</a></td>
@@ -994,42 +995,42 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                     </details>
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l4" href="#l4">4</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5" href="#l5">5</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6" href="#l6">6</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7" href="#l7">7</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="w">  </span><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8" href="#l8">8</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9" href="#l9">9</a></td>
@@ -1112,14 +1113,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2" href="#l2">2</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3" href="#l3">3</a></td>
@@ -1133,42 +1134,42 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                     </details>
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l4" href="#l4">4</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5" href="#l5">5</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6" href="#l6">6</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7" href="#l7">7</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="w">  </span><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8" href="#l8">8</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9" href="#l9">9</a></td>
@@ -1252,42 +1253,42 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">()</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">()</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l2" href="#l2">2</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l3" href="#l3">3</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l4" href="#l4">4</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l5" href="#l5">5</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l6" href="#l6">6</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l7" href="#l7">7</a></td>
@@ -1301,35 +1302,35 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar_</span><span class="p">()</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar_</span><span class="p">()</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l9" href="#l9">9</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l10" href="#l10">10</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l11" href="#l11">11</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l12" href="#l12">12</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l13" href="#l13">13</a></td>
@@ -1412,14 +1413,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foobar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foobar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2" href="#l2">2</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3" href="#l3">3</a></td>
@@ -1433,42 +1434,42 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                     </details>
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l4" href="#l4">4</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5" href="#l5">5</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6" href="#l6">6</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7" href="#l7">7</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="w">  </span><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8" href="#l8">8</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9" href="#l9">9</a></td>
@@ -1551,14 +1552,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2" href="#l2">2</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3" href="#l3">3</a></td>
@@ -1572,42 +1573,42 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                     </details>
                 </td>
                 <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l4" href="#l4">4</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5" href="#l5">5</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6" href="#l6">6</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7" href="#l7">7</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="w">  </span><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8" href="#l8">8</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9" href="#l9">9</a></td>
@@ -1691,42 +1692,42 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2" href="#l2">2</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3" href="#l3">3</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l4" href="#l4">4</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l5" href="#l5">5</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-                <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6" href="#l6">6</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7" href="#l7">7</a></td>
@@ -1740,56 +1741,56 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9" href="#l9">9</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10" href="#l10">10</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l11" href="#l11">11</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l12" href="#l12">12</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13" href="#l13">13</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="k">else</span><span class="w"></span></td>
+                <td class="src "><span class="k">else</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14" href="#l14">14</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l15" href="#l15">15</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16" href="#l16">16</a></td>
@@ -1872,28 +1873,28 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">uncovered</span><span class="p">()</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">uncovered</span><span class="p">()</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2" href="#l2">2</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">{</span><span class="w"></span></td>
+                <td class="src "><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3" href="#l3">3</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-                <td class="src uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+                <td class="src uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4" href="#l4">4</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w"></span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5" href="#l5">5</a></td>
