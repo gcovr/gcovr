@@ -1,10 +1,11 @@
+---
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Run GCOVR CI
 
 on:
-  workflow_dispatch: # For manual triggering
+  workflow_dispatch:  # For manual triggering
     inputs:
       do_test_release:
         type: boolean
@@ -20,7 +21,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   changelog:
-  # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -75,7 +75,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   spell-check:
-  # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -85,7 +84,7 @@ jobs:
       - name: Install spellchecker
         run: |
           npm install -g cspell@8.19.4
-      - uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
+      - uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c  # v46
         id: changed-files
         with:
           separator: ","
@@ -97,7 +96,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   upload-coverage:
-  # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -118,7 +116,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   validate-reports:
-  # -----------------------------------------------------------------------------------------------
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -147,7 +144,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   build-package:
-  # -----------------------------------------------------------------------------------------------
     needs: [changelog, spell-check, validate-reports]
     runs-on: ubuntu-22.04
     permissions:
@@ -160,12 +156,17 @@ jobs:
       gcovr_version_output: ${{ steps.gcov_version.outputs.gcovr_version_output }}
 
       # The variables used for publishing the data
-      publish_run_job: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (needs.changelog.outputs.tag != '') || inputs.do_test_release }}
+      publish_run_job: >-
+        ${{
+          (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (needs.changelog.outputs.tag != '')
+          || inputs.do_test_release
+        }}
       publish_environment_name: ${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'pypi' }}
       publish_environment_url: https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'pypi' }}.org/p/gcovr
       publish_push_tag: ${{ (github.repository == 'gcovr/gcovr') && (github.event.ref == 'refs/heads/main') && (needs.changelog.outputs.tag != '') }}
       # Use https://upload.pypi.org/legacy for a tag in pypi environment or in all other cases https://test.pypi.org/legacy
-      publish_repository_url: https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'upload.pypi' }}.org/legacy/
+      publish_repository_url:
+        https://${{ (((needs.changelog.outputs.tag == '') || inputs.do_test_release) && 'test.pypi') || 'upload.pypi' }}.org/legacy/
     timeout-minutes: 10
 
     steps:
@@ -212,7 +213,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   documentation:
-  # -----------------------------------------------------------------------------------------------
     needs: [build-package]
     runs-on: ubuntu-22.04
     permissions:
@@ -263,7 +263,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   host:
-  # -----------------------------------------------------------------------------------------------
     needs: [build-package]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
@@ -334,7 +333,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   docker:
-  # -----------------------------------------------------------------------------------------------
     needs: [build-package]
     uses: ./.github/workflows/gcovr-ci-job.yml
     with:
@@ -352,7 +350,6 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   publish:
-  # -----------------------------------------------------------------------------------------------
     needs: [build-package, documentation, host, docker]
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
     runs-on: ubuntu-22.04
@@ -416,7 +413,11 @@ jobs:
           files: build/*
 
       - name: Publish distribution 📦 to ${{ ((needs.build-package.outputs.tag == '') && 'test.pypi') || 'pypi' }}.org
-        if: ${{ (needs.build-package.outputs.publish_push_tag == 'true') || ((github.repository == 'gcovr/gcovr') && inputs.do_test_release) }}
+        if: >-
+          ${{
+            (needs.build-package.outputs.publish_push_tag == 'true')
+            || ((github.repository == 'gcovr/gcovr') && inputs.do_test_release)
+          }}
         uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc
         with:
           repository-url: ${{ needs.build-package.outputs.publish_repository_url }}

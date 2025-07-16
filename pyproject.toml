@@ -3,23 +3,18 @@
 requires = [
     "hatchling==1.26.3",
     "hatch-vcs==0.4.0",
-    "hatch-fancy-pypi-readme==24.1.0"
+    "hatch-fancy-pypi-readme==24.1.0",
 ]
 build-backend = "hatchling.build"
 
 [project]
-dynamic = [
-    "version",
-    "readme",
-]
+dynamic = ["version", "readme"]
 name = "gcovr"
 license = "BSD-3-Clause"
-license-files = [
-    "LICENSE.txt"
-]
+license-files = ["LICENSE.txt"]
 authors = [
-  { name="Lukas Atkinson", email="opensource@lukasatkinson.de" },
-  { name="Michael Förderer", email="michael.foerderer@gmx.de" }, # cspell:ignore Förderer
+    { name = "Lukas Atkinson", email = "opensource@lukasatkinson.de" },
+    { name = "Michael Förderer", email = "michael.foerderer@gmx.de" },  # cspell:ignore Förderer
 ]
 description = "Generate C/C++ code coverage reports with gcov"
 requires-python = ">=3.9"
@@ -46,20 +41,38 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities",
 ]
-keywords = [
-    "gcc",
-    "gcov",
-    "coverage",
-    "lcov",
-    "Cobertura",
-    "Jenkins",
-]
+keywords = ["gcc", "gcov", "coverage", "lcov", "Cobertura", "Jenkins"]
 dependencies = [
     "jinja2",
     "lxml",
     "colorlog",
     "pygments>=2.13.0",
     "tomli >= 1.1.0 ; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bandit[toml]",
+    "build",
+    "cmake",
+    "coverage",
+    "mypy",
+    "nox",
+    "pre-commit",
+    "pygments==2.13.0",                         # For reference compare
+    "pyinstaller~=6.11.1",
+    "pylint<4.0.0",
+    "pytest",
+    "pytest-cov",
+    "pytest-timeout",
+    "pywin32 ; sys_platform == 'win32'",
+    "requests",
+    "ruff~=0.12.3",
+    "tomli >= 1.1.0 ; python_version < '3.11'",
+    "twine",
+    "yaxmldiff",
+    "yamllint",
+    "wheel",
 ]
 
 [project.scripts]
@@ -71,14 +84,10 @@ Github = "https://github.com/gcovr/gcovr"
 Issues = "https://github.com/gcovr/gcovr/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = [
-    "src/gcovr"
-]
+packages = ["src/gcovr"]
 
 [tool.hatch.build.targets.sdist]
-include = [
-  "src/gcovr/",
-]
+include = ["src/gcovr/"]
 
 [tool.hatch.metadata.hooks.fancy-pypi-readme]
 content-type = "text/x-rst"
@@ -108,12 +117,10 @@ __version__ = {version!r}
 """
 
 [tool.pylint]
-ignore-paths = [
-    "tests/*",
-]
+ignore-paths = ["tests/*"]
 fail-under = 9.99
 disable = [
-    "unknown-option-value",  # This is because we are testing with several versions
+    "unknown-option-value",          # This is because we are testing with several versions
     "Format",
     "logging-fstring-interpolation",
     "missing-module-docstring",
@@ -127,14 +134,13 @@ disable = [
     "too-many-arguments",
     "too-many-positional-arguments",
     "too-many-instance-attributes",
-    "R0801"  # Similar lines
+    "R0801",                         # Similar lines
 ]
-extension-pkg-allow-list = [
-    "lxml",
-    "gcovr"
-]
+extension-pkg-allow-list = ["lxml", "gcovr"]
 
 [tool.mypy]
+install_types = true
+non_interactive = true
 warn_unused_configs = true
 disallow_any_generics = true
 disallow_subclassing_any = true
@@ -150,9 +156,7 @@ no_implicit_reexport = true
 strict_equality = true
 extra_checks = true
 disable_error_code = "attr-defined"
-exclude = [
-    "build/.*"
-]
+exclude = ["build/.*"]
 
 [tool.ruff]
 exclude = [
@@ -181,10 +185,7 @@ unfixable = ["B"]
 quote-style = "double"
 
 [tool.bandit]
-assert_used.skips = [
-    "*_test.py",
-    "*test_*.py"
-]
+assert_used.skips = ["*_test.py", "*test_*.py"]
 
 [tool.pytest.ini_options]
 addopts = "-v --timeout=120 --doctest-modules --ignore-glob=*/linked/subdir/* --ignore-glob */*bazel*/* --ignore-glob */.nox*/*"
@@ -197,7 +198,7 @@ exclude_lines = [
     "[#]\\s*pragma: no cover",
 
     "^\\s*raise AssertionError\\b",
-    "^\\s*raise NotImplementedError\\b"
+    "^\\s*raise NotImplementedError\\b",
 ]
 
 [tool.coverage.html]

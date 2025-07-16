@@ -115,8 +115,9 @@ rm -rf /tmp/googletest
 EOS
 
 RUN  <<EOS
+set -e
 # Install bazel
-if [ "$TARGETARCH" == "arm64" ] ; then
+if [ "$TARGETARCH" = "arm64" ] ; then
   echo "4e815a3f92a0285e76f306c5179a4c639e019cb9 -" > /tmp/bazel.sha1sum
 else
   echo "627291b8ef18762dd98b1535fe5c84b1792ac2d0 -" > /tmp/bazel.sha1sum
@@ -128,10 +129,13 @@ chmod 0755 /usr/local/bin/bazel
 EOS
 
 # Create new user "docker" and set password to "docker"
-RUN addgroup docker
-RUN id -un "$USERID" && userdel $(id -un "$USERID") || true
-RUN useradd --create-home $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
-RUN echo "docker:docker" | chpasswd
+RUN <<EOS
+set -e
+addgroup docker
+id -un "$USERID" && userdel $(id -un "$USERID") || true
+useradd --create-home $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
+echo "docker:docker" | chpasswd
+EOS
 
 USER docker:docker
 

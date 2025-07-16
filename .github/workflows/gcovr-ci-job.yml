@@ -1,3 +1,4 @@
+---
 name: CI build and test
 # Schema: https://json.schemastore.org/github-action.json
 
@@ -45,8 +46,10 @@ jobs:
     env:
       SPHINX_SKIP_CHECK_LINKS: "True"
       FORCE_COLOR: "1"
-      NOX_CONTAINER_ARGUMENTS: ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
-      GENERATE_DOCUMENTATION: ${{ inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10') }}
+      NOX_CONTAINER_ARGUMENTS: >-
+        ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
+      GENERATE_DOCUMENTATION: >-
+        ${{ inputs.container && contains(fromJSON('["gcc-5", "gcc-6", "gcc-8", "gcc-9", "clang-10"]'), inputs.gcc) }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -120,14 +123,24 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: "diffs-${{ inputs.container && format('docker-{0}', inputs.gcc) || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version) }}"
+          name: >-
+            diffs-
+            ${{
+              inputs.container && format('docker-{0}', inputs.gcc)
+              || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version)
+            }}
           path: tests/diff.zip
 
       - name: Upload coverage.xml
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: "coverage-${{ inputs.container && format('docker-{0}', inputs.gcc) || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version) }}"
+          name: >-
+            coverage-
+            ${{
+              inputs.container && format('docker-{0}', inputs.gcc)
+              || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version)
+            }}
           path: ./coverage.xml
 
       - name: Generate documentation

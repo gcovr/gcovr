@@ -16,19 +16,50 @@
     },
     "customizations": {
         "vscode": {
+            // cspell:disable
             "extensions": [
-                // cspell:disable
+                "charliermarsh.ruff",
                 "DotJoshJohnson.xml",
-                "trond-snekvik.simple-rst",
-                "ms-python.vscode-pylance",
-                "GitHub.vscode-pull-request-github",
                 "EditorConfig.EditorConfig",
+                "GitHub.vscode-pull-request-github",
+                "github.vscode-github-actions",
+                "ms-python.mypy-type-checker",
+                "ms-python.pylint",
+                "ms-python.vscode-pylance",
+                "nwgh.bandit",
                 "sergelamikhov.lcov-lang",
-                "streetsidesoftware.code-spell-checker"
-                // cspell:enable
-            ]
+                "streetsidesoftware.code-spell-checker",
+                "tamasfe.even-better-toml",
+                "trond-snekvik.simple-rst"
+            ],
+            // cspell:enable
+            "settings": {
+                "editor.formatOnSave": true,
+                "mypy-type-checker.importStrategy": "fromEnvironment",
+                "python.testing.pytestArgs": [
+                    "doc",
+                    "src",
+                    "tests"
+                ],
+                "python.testing.unittestEnabled": false,
+                "python.testing.pytestEnabled": true,
+                "python.analysis.extraPaths": [
+                    "./src"
+                ],
+                "pylint.importStrategy": "fromEnvironment",
+                "pylint.ignorePatterns": [
+                    "/workspaces/gcovr/tests/*"
+                ],
+                "bandit.importStrategy": "fromEnvironment",
+                "bandit.args": [
+                    "-c",
+                    "pyproject.toml"
+                ],
+                "ruff.importStrategy": "fromEnvironment"
+            }
         }
-    }
+    },
+    "postCreateCommand": "set -ex ; sed --silent --regexp-extended -e '/^(dev|dependencies) = \\[$/, /^\\]$/ { s/^ *//; s/,$//; /^\"/ { s/\"// g; p; } ; };' pyproject.toml | tee /tmp/requirements.txt ; pip install -r /tmp/requirements.txt",
     // Features to add to the dev container. More info: https://containers.dev/features.
     // "features": {},
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -36,5 +67,5 @@
     // Configure tool-specific properties.
     // "customizations": {},
     // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-    // "remoteUser": "root"
+    "remoteUser": "docker"
 }

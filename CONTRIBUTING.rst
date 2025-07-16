@@ -195,10 +195,11 @@ is needed.
 
 -   (Optional) Set up a virtualenv (e.g. with ``python3 -m venv .venv``)
 
--   Install gcovr in development mode, and install nox::
+-   Install gcovr in development mode::
 
-        pip install -e .
-        pip install nox
+        pip install --upgrade pip
+        pip install -e '.[dev]'
+        pre-commit install
 
     You can then run gcovr as ``gcovr`` or ``python3 -m gcovr``.
 

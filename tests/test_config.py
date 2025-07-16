@@ -22,6 +22,7 @@
 
 import io
 import re
+import textwrap
 from typing import Any, Iterable, Optional, Union
 
 import pytest
@@ -51,14 +52,28 @@ def test_entries_cannot_have_leading_whitespace() -> None:
     """
 
     cfg = "   key = cannot be indented"
-    error = 'test.cfg: 1: expected "key = value" entry\n' "on this line: " + cfg
+    error = (
+        textwrap.dedent(
+            """\
+            test.cfg: 1: expected "key = value" entry
+            on this line: """
+        )
+        + cfg
+    )
     with pytest.raises(SyntaxError, match=error):
         list(run_cfg_test(cfg))
 
 
 def test_line_must_have_key_and_value() -> None:  # pylint: disable=missing-docstring
     cfg = "must have key and value"
-    error = 'test.cfg: 1: expected "key = value" entry\n' "on this line: " + cfg
+    error = (
+        textwrap.dedent(
+            """\
+        test.cfg: 1: expected "key = value" entry
+        on this line: """
+        )
+        + cfg
+    )
     with pytest.raises(SyntaxError, match=error):
         list(run_cfg_test(cfg))
 
@@ -290,7 +305,7 @@ def test_option_that_appends() -> None:
 
     # when given thrice
     options = parse_config_into_dict(
-        run_cfg_test("testopt = foo\n" "testopt = bar\n" "testopt = qux\n"),
+        run_cfg_test("testopt = foo\ntestopt = bar\ntestopt = qux\n"),
         all_options=all_options,
     )
     assert options["testopt"] == ["foo", "bar", "qux"]
