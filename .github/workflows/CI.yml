@@ -280,7 +280,7 @@ jobs:
     # We have different axes of the testing matrix:
     #
     # OS: Linux, Windows
-    # Compiler: GCC-5 to GCC-14, Clang-10 to CLANG-16
+    # Compiler: GCC-5 to GCC-14, Clang-10 to CLANG-19
     # Python: 3.9 -- 3.13, pypy3
     #
     # Instead of testing all combinations, we try to achieve full coverage
@@ -346,7 +346,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gcc: [gcc-5, gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12, gcc-13, gcc-14, clang-10, clang-13, clang-14, clang-15, clang-16]
+        gcc:
+          - gcc-5
+          - gcc-6
+          - gcc-8
+          - gcc-9
+          - gcc-10
+          - gcc-11
+          - gcc-12
+          - gcc-13
+          - gcc-14
+          - clang-10
+          - clang-13
+          - clang-14
+          - clang-15
+          - clang-16
+          - clang-17
+          - clang-18
+          - clang-19
 
   # -----------------------------------------------------------------------------------------------
   publish:
