@@ -1,0 +1,88 @@
+{
+    "run_at": "2025-01-20 20:18:07 UTC",
+    "service_name": "gcovr-test-suite",
+    "service_job_id": "id",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "name": "main.cpp",
+            "source_digest": "d59f23fd56a486e49d6b9cd1691bebef",
+            "coverage": [
+                null,
+                null,
+                1,
+                null,
+                1,
+                1,
+                1,
+                null
+            ]
+        },
+        {
+            "name": "update-data.c",
+            "source_digest": "460f0e4bb0c575711b6df93c5d0c6b28",
+            "coverage": [
+                null,
+                null,
+                1,
+                null,
+                1,
+                null
+            ]
+        },
+        {
+            "name": "update-data.h",
+            "source_digest": "24354aa07840bda3337011fbbe660aa9",
+            "coverage": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                1,
+                null,
+                1,
+                null,
+                null,
+                1,
+                null,
+                1,
+                null,
+                null,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                1,
+                null,
+                null,
+                null
+            ],
+            "branches": [
+                19,
+                0,
+                0,
+                1,
+                19,
+                0,
+                1,
+                0,
+                19,
+                0,
+                0,
+                0,
+                19,
+                0,
+                1,
+                1
+            ]
+        }
+    ]
+}
