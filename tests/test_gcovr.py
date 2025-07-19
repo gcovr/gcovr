@@ -352,6 +352,10 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
                     reason="only available in docker",
                 ),
                 pytest.mark.xfail(
+                    name == "worker-exception" and IS_WINDOWS,
+                    reason="GCOV stub script sin't working under Windows",
+                ),
+                pytest.mark.xfail(
                     name in ["gcov-ignore_output_error"] and IS_WINDOWS,
                     reason="Permission is ignored on Windows",
                 ),
