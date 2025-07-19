@@ -88,10 +88,15 @@ jobs:
         id: changed-files
         with:
           separator: ","
+          files_ignore: "**/reference/**"
       - name: Run spellchecker
         run: |
           # Run spellchecker with changed files
-          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changed-files.outputs.all_changed_and_modified_files }}')
+          if [ -z "${{ steps.changed-files.outputs.all_changed_files }}" ] ; then
+            echo "No files to check"
+            exit 0
+          fi
+          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changed-files.outputs.all_changed_files }}')
           cspell --config cspell.json --color --show-suggestions "${added_modified_files[@]}"
 
   # -----------------------------------------------------------------------------------------------
