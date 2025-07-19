@@ -721,7 +721,7 @@ class GcovProgram:
         gcov_process = self.__get_gcov_process(args, **kwargs)
         out, err = gcov_process.communicate()
         LOGGER.debug(
-            f"GCOV return code was {gcov_process.returncode}, stderr was:\n{err}<<"
+            f"GCOV return code was {gcov_process.returncode}, stdout was:\n{out}<<, stderr was:\n{err}<<"
         )
         if gcov_process.returncode < 0:
             raise RuntimeError(

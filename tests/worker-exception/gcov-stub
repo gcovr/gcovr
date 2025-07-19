@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+if [[ "$1" == "--help" || "$1" == "--help-hidden" ]]; then
+# Print the original output to get
+${GCOV:-gcov} "$@"
+else
+${GCOV:-gcov} "$@" | sed -e "s/Creating .*/Creating 'does#not#exist.gcov'/i"
+fi

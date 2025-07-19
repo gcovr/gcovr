@@ -5,7 +5,11 @@ all:
 
 run: json txt lcov cobertura html sonarqube jacoco coveralls
 
-.NOTPARALLEL: coverage-throw.json coverage-exclude-throw.json
+# .NOTPARALLEL with targets needs at least gnumake 4.4.
+# We get sporadic raise conditions on windows runner with 4.2.
+# Let's configure it manual
+# .NOTPARALLEL: coverage-throw.json coverage-exclude-throw.json
+coverage-exclude-throw.json : | coverage-throw.json
 
 main.gcda:
 	./testcase

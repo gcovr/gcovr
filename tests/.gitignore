@@ -1,4 +1,5 @@
 # Ignore output files
+stderr
 coverage.log
 coverage*.txt
 coverage*.md
