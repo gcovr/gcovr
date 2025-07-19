@@ -46,6 +46,9 @@ Bug fixes and small improvements:
   - Add pre-commit hook to ensure quality checks.
   - All line endings, except for the git internal files, are preserved.
 
+- Update the reference data to the newest pygments version and extend the tests with ``clang-17``,
+  ``clang-18`` and ``clang-19``. (:issue:`1120`)
+
 Documentation:
 
 - Fix formatting of verbatim text included from external files. (:issue:`1093`)
@@ -108,7 +111,7 @@ Documentation:
 
 Internal changes:
 
-- Add MacOs 15 and clang-16 to the GitHub test workflow. (:issue:`1004`)
+- Add MacOs 15 and ``clang-16`` to the GitHub test workflow. (:issue:`1004`)
 - Fix sporadic timestamp mismatch in development build package. (:issue:`1006`)
 - Replace ``black`` and ``flake8`` with ``ruff`` and move configuration of ``pytest`` to ``pyproject.toml``. (:issue:`1007`)
 - Add ``pylint`` for testing code. (:issue:`1014`)

@@ -106,7 +106,16 @@ REFERENCE_DIR_VERSION_LIST = (
         "gcc-14",
     ]
     if "gcc" in CC_REFERENCE
-    else ["clang-10", "clang-13", "clang-14", "clang-15", "clang-16"]
+    else [
+        "clang-10",
+        "clang-13",
+        "clang-14",
+        "clang-15",
+        "clang-16",
+        "clang-17",
+        "clang-18",
+        "clang-19",
+    ]
 )
 for ref in REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
     REFERENCE_DIRS.append(os.path.join("reference", ref))
@@ -349,7 +358,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
                             IS_GCC and CC_REFERENCE_VERSION in (14,)
                         )
                     ),
-                    reason="only available in docker",
+                    reason="only available in docker on hosts != MacOs",
                 ),
                 pytest.mark.xfail(
                     name in ["gcov-ignore_output_error"] and IS_WINDOWS,
@@ -358,7 +367,10 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
                 pytest.mark.xfail(
                     name in ["less-lines"]
                     and (
-                        (IS_CLANG and CC_REFERENCE_VERSION in [13, 14, 15, 16])
+                        (
+                            IS_CLANG
+                            and CC_REFERENCE_VERSION in [13, 14, 15, 16, 17, 18, 19]
+                        )
                         or (IS_GCC and CC_REFERENCE_VERSION in [8, 9, 10, 11, 12, 13])
                     ),
                     reason="Other versions stub the line",

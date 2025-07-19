@@ -59,7 +59,7 @@ dev = [
     "mypy",
     "nox",
     "pre-commit",
-    "pygments==2.13.0",                         # For reference compare
+    "pygments==2.19.2",                         # For reference compare
     "pyinstaller~=6.11.1",
     "pylint<4.0.0",
     "pytest",

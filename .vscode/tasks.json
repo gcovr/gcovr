@@ -21,7 +21,10 @@
                 "clang-13",
                 "clang-14",
                 "clang-15",
-                "clang-16"
+                "clang-16",
+                "clang-17",
+                "clang-18",
+                "clang-19"
             ]
         }
     ],

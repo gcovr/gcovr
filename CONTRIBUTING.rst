@@ -168,6 +168,9 @@ is needed.
     -  clang-14/clang++-14/llvm-cov
     -  clang-15/clang++-15/llvm-cov
     -  clang-16/clang++-16/llvm-cov
+    -  clang-17/clang++-17/llvm-cov
+    -  clang-18/clang++-18/llvm-cov
+    -  clang-19/clang++-19/llvm-cov
 
     are available everything is OK.
     The test suite uses the newest GCC found in the PATH. To use another one you
@@ -330,7 +333,8 @@ and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
 Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8``, ``CC=gcc-9``,
 ``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``gcc-14``, ``clang-10``,
-``clang-13``, ``clang-14`` and ``clang-15``.
+``clang-13``, ``clang-14``, ``clang-15``, ``clang-16``, ``clang-17``,
+``clang-17``, ``clang-18`` and ``clang-19``.
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
@@ -422,7 +426,8 @@ Or to build and run the container in one step:
 
 You can select the gcc version to use inside the docker by setting the environment
 variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12,
-gcc-13, gcc-14, clang-10, clang-13, or clang-14 or you can build and run the
+gcc-13, gcc-14, clang-10, clang-13, clang-14, clang-15, clang-16, clang-17,
+clang-18, clang-19 or you can build and run the
 container with a specific version:
 
 .. code:: bash
