@@ -136,8 +136,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: >-
-            coverage-
-            ${{
+            coverage-${{
               inputs.container && format('docker-{0}', inputs.gcc)
               || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version)
             }}
