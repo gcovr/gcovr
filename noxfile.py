@@ -26,6 +26,7 @@ import platform
 import re
 from runpy import run_path
 import socket
+import sys
 import textwrap
 import time
 from typing import Optional
@@ -36,6 +37,11 @@ import zipfile
 import nox
 
 import requests
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
@@ -54,6 +60,9 @@ ALL_COMPILER_VERSIONS = [
     "clang-14",
     "clang-15",
     "clang-16",
+    "clang-17",
+    "clang-18",
+    "clang-19",
 ]
 DEFAULT_COMPILER_VERSION = ALL_COMPILER_VERSIONS[0]
 
@@ -241,6 +250,20 @@ def prepare_next_iteration(session: nox.Session) -> None:
     session.notify("html2jpeg")
 
 
+def install_dev_requirements(session: nox.Session, *requirements: str) -> None:
+    """Install the needed development packages."""
+    with Path("pyproject.toml").open("rb") as fh_in:
+        pyproject = tomllib.load(fh_in)
+    dev_deps = pyproject["project"]["optional-dependencies"]["dev"]
+    session.install(
+        *[
+            d
+            for d in dev_deps
+            if any(d.startswith(requirement) for requirement in requirements)
+        ]
+    )
+
+
 @nox.session(python=False)
 def qa(session: nox.Session) -> None:
     """Run the quality tests for the default GCC version."""
@@ -257,12 +280,13 @@ def lint(session: nox.Session) -> None:
     session.notify("bandit")
     session.notify("pylint")
     session.notify("mypy")
+    session.notify("pre-commit")
 
 
 @nox.session
 def ruff_check(session: nox.Session) -> None:
     """Run ruff check command."""
-    session.install("ruff~=0.7.0")
+    install_dev_requirements(session, "ruff")
     if session.posargs:
         args = session.posargs
     else:
@@ -273,7 +297,7 @@ def ruff_check(session: nox.Session) -> None:
 @nox.session
 def ruff_format(session: nox.Session) -> None:
     """Run ruff format command."""
-    session.install("ruff~=0.7.0")
+    install_dev_requirements(session, "ruff")
     if session.posargs:
         args = session.posargs
     else:
@@ -284,7 +308,7 @@ def ruff_format(session: nox.Session) -> None:
 @nox.session
 def bandit(session: nox.Session) -> None:
     """Run bandit, a code formatter and format checker."""
-    session.install("bandit[toml]")
+    install_dev_requirements(session, "bandit[toml]")
     if session.posargs:
         args = session.posargs
     else:
@@ -295,7 +319,7 @@ def bandit(session: nox.Session) -> None:
 @nox.session
 def pylint(session: nox.Session) -> None:
     """Run pylint command."""
-    session.install("pylint<4.0.0", "nox", "requests", "pytest")
+    install_dev_requirements(session, "pylint", "nox", "requests", "pytest")
     session.install("-e", ".")
     if session.posargs:
         args = session.posargs
@@ -307,13 +331,24 @@ def pylint(session: nox.Session) -> None:
 @nox.session
 def mypy(session: nox.Session) -> None:
     """Run mypy command."""
-    session.install("mypy", "nox", "requests", "pytest", "yaxmldiff")
+    install_dev_requirements(session, "mypy", "nox", "requests", "pytest", "yaxmldiff")
     session.install("-e", ".")
     if session.posargs:
         args = session.posargs
     else:
-        args = ["--install-types", "--non-interactive", "."]
+        args = ["."]
     session.run("mypy", *args)
+
+
+@nox.session(name="pre-commit")
+def pre_commit(session: nox.Session) -> None:
+    """Run pre-commit command."""
+    install_dev_requirements(session, "pre-commit")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = ["run", "--all-files"]
+    session.run("pre-commit", *args)
 
 
 @nox.session
@@ -422,25 +457,23 @@ def doc(session: nox.Session) -> None:
 @nox.session
 def tests(session: nox.Session) -> None:
     """Run the tests with the default GCC version."""
-    session.install(
-        "jinja2",
-        "lxml",
-        "pygments==2.13.0",
+    use_coverage = os.environ.get("USE_COVERAGE") == "true"
+    requirements = [
+        "cmake",
+        "pygments",  # Need a version from dev requirements for reference compare
         "pytest",
         "pytest-timeout",
-        "cmake",
+        "pywin32",
         "yaxmldiff",
-    )
-    if platform.system() == "Windows":
-        session.install("pywin32")
-    coverage_args = []
-    if os.environ.get("USE_COVERAGE") == "true":
-        session.install("coverage", "pytest-cov")
-        coverage_args = ["--cov=gcovr", "--cov-branch"]
+    ]
+    if use_coverage:
+        requirements += ["coverage", "pytest-cov"]
+    install_dev_requirements(session, *requirements)
     session.install("-e", ".")
     set_environment(session)
-    session.log("Print tool versions")
+    session.log("Print versions")
     session.run("python", "--version")
+    session.run("pip", "freeze")
     # Use full path to executable
     cc = str(session.env["CC"])
     session.env["CC"] = str(shutil.which(cc)).replace(os.path.sep, "/")
@@ -460,13 +493,16 @@ def tests(session: nox.Session) -> None:
     if "llvm-cov" in gcov:
         gcov += " gcov"
     session.env["GCOV"] = gcov
+    session.run("make", "--version", external=True)
+    session.run("ninja", "--version", external=True)
     session.log(f"Using reference data for {session.env['CC_REFERENCE']}")
 
     with session.chdir("tests"):
         session.run("make", "--silent", "clean", external=True)
 
     args = ["-m", "pytest"]
-    args += coverage_args
+    if use_coverage:
+        args += ["--cov=gcovr", "--cov-branch"]
     args += session.posargs
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
@@ -517,21 +553,21 @@ def validate_reports(session: nox.Session) -> None:
 
 
 @nox.session
-def build_wheel(session: nox.Session) -> None:
+def build_distribution(session: nox.Session) -> None:
     """Build a wheel."""
-    session.install("build")
+    install_dev_requirements(session, "build")
     # Remove old dist if present
     dist_dir = Path("dist")
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
     session.run("python", "-m", "build")
-    session.notify(("check_wheel"))
+    session.notify(("check_distribution"))
 
 
 @nox.session
-def check_wheel(session: nox.Session) -> None:
+def check_distribution(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
-    session.install("wheel", "twine")
+    install_dev_requirements(session, "wheel", "twine")
     with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
         session.run("pip", "uninstall", "--yes", "gcovr")
@@ -544,13 +580,6 @@ def check_wheel(session: nox.Session) -> None:
             session.run(
                 "gcovr", f"--{output_format}", f"out.{output_format}", external=True
             )
-
-
-@nox.session
-def upload_wheel(session: nox.Session) -> None:
-    """Upload the wheel."""
-    session.install("twine")
-    session.run("twine", "upload", "dist/*", external=True)
 
 
 @functools.lru_cache(maxsize=1)
@@ -574,7 +603,7 @@ def get_executable_name() -> Path:
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    session.install("pyinstaller~=6.11.1")
+    install_dev_requirements(session, "pyinstaller")
     # This is needed if the virtual env is reused
     session.run("pip", "uninstall", "gcovr")
     # Do not install interactive to get the module resolved
@@ -590,6 +619,9 @@ def bundle_app(session: nox.Session) -> None:
             "./pyinstaller",
             "--specpath",
             "./pyinstaller",
+            # Workaround for "UserWarning: pkg_resources is deprecated as an API"
+            "--exclude-module",
+            "pkg_resources",
             "--onefile",
             "--collect-all",
             "gcovr",
@@ -731,7 +763,15 @@ def docker_container_os(session: nox.Session) -> str:
         return "ubuntu:20.04"
     if session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
         return "ubuntu:22.04"
-    if session.env["CC"] in ["gcc-12", "gcc-13", "gcc-14", "clang-16"]:
+    if session.env["CC"] in [
+        "gcc-12",
+        "gcc-13",
+        "gcc-14",
+        "clang-16",
+        "clang-17",
+        "clang-18",
+        "clang-19",
+    ]:
         return "ubuntu:24.04"
 
     raise RuntimeError(f"No container image defined for {session.env['CC']}")

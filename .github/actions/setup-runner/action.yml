@@ -1,49 +1,56 @@
+---
 name: Set up Runner
 # Schema: https://json.schemastore.org/github-action.json
 
 inputs:
   os:
     type: string
-    description: 'The operating system of the runner'
+    description: "The operating system of the runner"
     required: true
   gcc:
     type: string
-    description: 'The GCC version to use'
+    description: "The GCC version to use"
+    required: true
+  python-version:
+    type: string
+    description: "The python version to use"
     required: true
 
 runs:
   using: 'composite'
   steps:
-    - name: Install build commands, GCC and libxml2 (Linux)
-      if: ${{ startsWith(inputs.os,'ubuntu-') }}
+    # ------------------------------ Ubuntu ------------------------------
+    - if: ${{ startsWith(inputs.os,'ubuntu-') && (inputs.gcc != '')}}
+      run: sudo apt update
       shell: bash
-      run: |
-        sudo apt update
-        sudo apt-get install -y \
-          make \
-          ninja-build \
-          ${{ inputs.gcc }} \
-          $(echo ${{ inputs.gcc }} | sed -e 's/gcc/g\+\+/') \
-          libxml2-utils
+    - if: ${{ startsWith(inputs.os,'ubuntu-') && (inputs.gcc != '')}}
+      run: sudo apt-get install -y make ninja-build ${{ inputs.gcc }} $(echo ${{ inputs.gcc }} | sed -e 's/gcc/g\+\+/') libxml2-utils
+      shell: bash
 
-    - name: Install msys with GCC (Windows)
-      if: ${{ startsWith(inputs.os,'windows-') }}
+    # ------------------------------ Windows ------------------------------
+    - if: ${{ startsWith(inputs.os,'windows-') }}
       uses: msys2/setup-msys2@ddf331adaebd714795f1042345e6ca57bd66cea8
       with:
         install: gcc make
         cache: true
 
-    - name: Install ninja (Windows)
-      if: ${{ startsWith(inputs.os,'windows-') }}
+    # ------------------------------ MacOs ------------------------------
+    - if: ${{ startsWith(inputs.os,'macos-') }}
+      run: HOMEBREW_NO_AUTO_UPDATE=1 brew update
       shell: bash
-      run: |
-        choco install ninja
+    - if: ${{ startsWith(inputs.os,'macos-') }}
+      run: HOMEBREW_NO_AUTO_UPDATE=1 brew install libxml2
+      shell: bash
 
-    - name: Install ninja and libxml2 (MacOs)
-      if: ${{ startsWith(inputs.os,'macos-') }}
+    # ------------------------------ Python, all OS ------------------------------
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Restore pip cache
+      uses: re-actors/cache-python-deps@810325a232f2a28ea124dfba85c7c72fd1774b38
+      with:
+        cache-key-for-dependency-files: ${{ hashFiles('noxfile.py', 'pyproject.toml', 'doc/requirements.txt') }}
+    - run: python3 -m pip install --upgrade pip
       shell: bash
-      run: |
-        export HOMEBREW_NO_AUTO_UPDATE=1
-        brew update
-        brew install ninja
-        brew install libxml2
+    - run: python3 -m pip install nox requests
+      shell: bash

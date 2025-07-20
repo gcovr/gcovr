@@ -1,4 +1,5 @@
-name: Run gcovr CI job
+---
+name: CI build and test
 # Schema: https://json.schemastore.org/github-action.json
 
 on:
@@ -6,24 +7,32 @@ on:
     inputs:
       container:
         type: boolean
-        description: 'Running in docker container'
+        description: "Running in docker container"
         default: false
       os:
         type: string
-        description: 'The operating system of the runner'
+        description: "The operating system of the runner"
         default: 'ubuntu-22.04'  # Default used for container
       gcc:
         type: string
-        description: 'The GCC version to use'
+        description: "The GCC version to use"
         required: true
       python-version:
         type: string
-        description: 'The Python version to use'
+        description: "The Python version to use"
         required: false  # Only needed if not in container
       upload-app:
         type: boolean
         description: 'Upload the standalone application'
         default: false
+      tag:
+        type: string
+        description: "The tag to apply"
+        required: true
+      tag_message:
+        type: string
+        description: "The tag message to use"
+        required: true
 
 defaults:
   run:
@@ -32,34 +41,35 @@ defaults:
 jobs:
   gcovr-ci-job:
     runs-on: ${{ inputs.container && 'ubuntu-22.04' || inputs.os }}
+    permissions:
+      contents: read
     env:
       SPHINX_SKIP_CHECK_LINKS: "True"
       FORCE_COLOR: "1"
-      NOX_CONTAINER_ARGUMENTS: ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
-      GENERATE_DOCUMENTATION: ${{ inputs.container && (inputs.gcc != 'gcc-5') && (inputs.gcc != 'gcc-6') && (inputs.gcc != 'gcc-8') && (inputs.gcc != 'gcc-9') && (inputs.gcc != 'clang-10') }}
+      NOX_CONTAINER_ARGUMENTS: >-
+        ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
+      GENERATE_DOCUMENTATION: >-
+        ${{ inputs.container && contains(fromJSON('["gcc-5", "gcc-6", "gcc-8", "gcc-9", "clang-10"]'), inputs.gcc) }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 75
-          fetch-tags: true
 
-      - name: Workaround because fetch-tags doesn't work with git 2.48 in the GH actions
-        run: |
-          git fetch --tags
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
 
-      - name: Set up Runner
-        if: ${{ !inputs.container }}
+      - name: Prepare package version
+        uses: "./.github/actions/prepare-package-version"
+        with:
+          tag: ${{ inputs.tag }}
+          tag_message: ${{ inputs.tag_message }}
+
+      - name: Set up runner
         uses: "./.github/actions/setup-runner"
         with:
-          os: ${{ inputs.os}}
-          gcc: ${{ inputs.gcc }}
-
-      - name: Set up Python
-        if: ${{ !inputs.container }}
-        uses: "./.github/actions/setup-python"
-        with:
           os: ${{ inputs.os }}
+          gcc: ${{ (!inputs.container && inputs.gcc) || '' }}
           python-version: ${{ inputs.python-version }}
 
       - name: Set up environment
@@ -70,7 +80,7 @@ jobs:
               gcc-5)    USE_COVERAGE=true ;;
               gcc-14)   USE_COVERAGE=true ;;
               clang-10) USE_COVERAGE=true ;;
-              clang-16) USE_COVERAGE=true ;;
+              clang-19) USE_COVERAGE=true ;;
               *)        USE_COVERAGE=false ;;
             esac
           else
@@ -86,28 +96,6 @@ jobs:
 
           # Set the CC environment
           echo "CC=${{ inputs.gcc }}" >> $GITHUB_ENV
-
-          if [ -z "$(sed -n '/Next Release/ p' CHANGELOG.rst)" ] ; then
-            echo "GCOVR_VERSION=$(sed -n 's/^\([1-9][0-9]*\.[0-9][0-9]*\).*/\1/ p' CHANGELOG.rst | head -n 1)" >> $GITHUB_ENV
-          else
-            echo "GCOVR_VERSION=" >> $GITHUB_ENV
-          fi
-
-      - name: Create new tag without pushing to get the correct name of the apps
-        if: ${{ (github.repository == 'gcovr/gcovr') && env.GCOVR_VERSION != '' }}
-        run: |
-          # Set git user info
-          git config --global user.email "noreply@gcovr.com"
-          git config --global user.name "gcovr authors"
-
-          # Create the tag and print the output. Do not push.
-          git tag -a "$GCOVR_VERSION" -m "$GCOVR_VERSION ($(date -I))"
-          git tag --list -n "$GCOVR_VERSION"
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install nox requests
 
       - name: Expose GitHub Runtime for Docker cache
         uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4
@@ -135,14 +123,23 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: "diffs-${{ inputs.container && format('docker-{0}', inputs.gcc) || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version) }}"
+          name: >-
+            diffs-
+            ${{
+              inputs.container && format('docker-{0}', inputs.gcc)
+              || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version)
+            }}
           path: tests/diff.zip
 
       - name: Upload coverage.xml
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: "coverage-${{ inputs.container && format('docker-{0}', inputs.gcc) || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version) }}"
+          name: >-
+            coverage-${{
+              inputs.container && format('docker-{0}', inputs.gcc)
+              || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version)
+            }}
           path: ./coverage.xml
 
       - name: Generate documentation
@@ -161,7 +158,7 @@ jobs:
 
       - name: Build and check the wheel
         run: |
-          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_wheel
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session build_distribution
 
       - name: Build and check standalone application
         if: ${{ !startsWith(inputs.python-version,'pypy') }}
