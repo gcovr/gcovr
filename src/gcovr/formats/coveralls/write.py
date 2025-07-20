@@ -43,7 +43,7 @@ def write_report(
     @param options: options object
     """
 
-    # Create object to collect coverage data
+    # Create object to collect coverage data (https://docs.coveralls.io/api-jobs-endpoint#json-object-job)
     json_dict = dict[str, Any]()
 
     # Capture timestamp
@@ -176,7 +176,7 @@ def write_report(
 
 
 def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]:
-    # Object with Coveralls file details
+    # Object with Coveralls file details (https://docs.coveralls.io/api-jobs-endpoint#json-object-source-file)
     source_file = dict[str, Any]()
 
     # Isolate relative file path
@@ -195,6 +195,7 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
 
     # Initialize coverage array and load with line coverage data
     coverage = list[Optional[int]]()
+    branches = list[Optional[int]]()
     source_file["coverage"] = coverage
     # source_file['branches'] = []
     for linecov in filecov.lines.values():
@@ -205,14 +206,14 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
         coverage.append(linecov.count if linecov.is_reportable else None)
 
         # Record branch information (INCOMPLETE/OMITTED)
-        # branch_details = linecov.branches
-        # if branch_details:
-        #     stat = linecov.branch_coverage()
-        #     source_file['coverage'].append(line)
-        #     # TODO: Add block information to `covdata` object
-        #     source_file['coverage'].append(0)
-        #     source_file['coverage'].append(stat.total)
-        #     source_file['coverage'].append(stat.covered)
+        for branchcov in linecov.branches.values():
+            branches.append(linecov.lineno)
+            branches.append(branchcov.source_block_id_or_0)
+            branches.append(branchcov.branchno)
+            branches.append(branchcov.count)
+
+    if branches:
+        source_file["branches"] = branches
 
     # add trailing empty lines
     if total_line_count is not None:

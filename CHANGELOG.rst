@@ -15,26 +15,27 @@ Breaking changes:
 - Improve data model to have several coverage information per line. (:issue:`1069`)
 
   - Option ``--merge-mode-conditions`` is removed.
-  - Property ``function_name`` for a line in JSON report is now always set.
-  - JSON report can now have several entries per line also with legacy text parser.
-  - Cobertura and HTML report now contain function coverage also for older GCC versions.
+  - Property ``function_name`` for a line in ``JSON`` report is now always set.
+  - ``JSON`` report can now have several entries per line also with legacy text parser.
+  - Cobertura and ``HTML`` report now contain function coverage also for older GCC versions.
 
 New features and notable changes:
 
 - Add support for Markdown output format. (:issue:`1072`)
 - Add filename and line number in warning logs. (:issue:`1075`)
 
-  - Add option :option:`--markdown-file-link` to link files in markdown report. (:issue:`1079`)
+  - Add option :option:`--markdown-file-link` to link files in ``Markdown`` report. (:issue:`1079`)
 
 - Abort on version mismatch between gcc/gcov instead of trying all working directories. (:issue:`1097`)
+- Add branch information to ``Coveralls`` report. (:issue:`1121`)
 
 Bug fixes and small improvements:
 
 - Fix warning ``Deprecated config key None used, please use 'txt-metric=branch' instead.``
   if ``txt-metric="branch"`` is used in config file. (:issue:`1066`)
-- Add ``excluded`` property for conditions and calls to the JSON report. (:issue:`1080`)
+- Add ``excluded`` property for conditions and calls to the ``JSON`` report. (:issue:`1080`)
 - Remove the fixed width of the HTML details which leads to text overflows. (:issue:`1086`)
-- Fix duplicate constructors, destructors and wrong const overload functions in Cobertura report. (:issue:`1085`)
+- Fix duplicate constructors, destructors and wrong const overload functions in ``Cobertura`` report. (:issue:`1085`)
 - Fix ``JaCoCo`` report to follow the DTD. (:issue:`1089`)
 - Do not use option ``--calls`` as exclusion filter. (:issue:`1090`)
 - Add support for reading gcov JSON data without source files. (:issue:`1094`)
@@ -58,7 +59,7 @@ Internal changes:
 - Refactor internal data model:
 
   - Add merge functionality to coverage objects instead of an own file. (:issue:`1067`)
-  - Move data serialization and deserialization from JSON report to coverage classes. (:issue:`1078`)
+  - Move data serialization and deserialization from ``JSON`` report to coverage classes. (:issue:`1078`)
 
 - Update Windows runner to ``windows-2022`` and ``windows-2025``. (:issue:`1108`)
 - Add trusted publishing. (:issue:`1114`)
@@ -72,8 +73,8 @@ Known bugs:
 
 - Log message ``Deprecated config key None used, please use 'txt-metric=branch' instead.`` is shown
   even if the mentioned key is used. :issue:`1060` and :issue:`1064`, fixed in :ref:`Next release <next_release>`.
-- JSON report doesn't contain ``excluded`` property for conditions and calls. Fixed in :ref:`Next release <next_release>`.
-- Cobertura report contains multiple functions with same name for virtual destructors and const overloads.
+- ``JSON`` report doesn't contain ``excluded`` property for conditions and calls. Fixed in :ref:`Next release <next_release>`.
+- ``Cobertura`` report contains multiple functions with same name for virtual destructors and const overloads.
   Fixed in :ref:`Next release <next_release>`.
 - ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
 
@@ -84,14 +85,14 @@ Breaking changes:
 
 New features and notable changes:
 
-- Add condition coverage to text summary report. (:issue:`985`)
+- Add condition coverage to ``text summary`` report. (:issue:`985`)
 - Add :option:`--include` to search files in search paths which should be added to report. (:issue:`998`, :issue:`1044`)
 - Add option to generate LCOV format produced by version 1.x of LCOV tool. (:issue:`1001`)
 - Extend logging for data merge errors with info about the data sources. (:issue:`1010`)
 - Add condition coverage merge mode option ``--merge-mode-conditions``. (:issue:`1009`)
 - Add :option:`--gcov-suspicious-hits-threshold` to configure the value for detecting suspicious hits in GCOV files. (:issue:`1021`)
 - Renamed JSON element ``destination_blockno`` to ``destination_block_id``. (:issue:`1045`)
-- Add :option:`--html-block-ids` to show the block ids of the lines and branches in HTML report. (:issue:`1055`)
+- Add :option:`--html-block-ids` to show the block ids of the lines and branches in ``HTML`` report. (:issue:`1055`)
 
 Bug fixes and small improvements:
 
@@ -99,7 +100,7 @@ Bug fixes and small improvements:
   instead of reporting the error and (if requested by the user) continuing execution. (:issue:`997`)
 - Check format version of external generated ``gcov`` JSON files. (:issue:`999`)
 - Fix crash on Windows when trying to fix the case of the files. (:issue:`1000`)
-- Fix LCOV report. Excluded lines where added with a count of 0. (:issue:`1012`)
+- Fix ``LCOV`` report. Excluded lines where added with a count of 0. (:issue:`1012`)
 - Fix line exclusion not clearing all child coverage data. (:issue:`1018`)
 - Fix summary stats in ``JaCoCo`` report. (:issue:`1022`)
 - Fix path issue when reading/writing ``Cobertura`` report. (:issue:`1037`)
@@ -129,7 +130,7 @@ Internal changes:
 
 Known bugs:
 
-- Excluded lines are added with a count of 0 to LCOV report. :issue:`1012`, fixed with :ref:`8.3 <release_8_3>`.
+- Excluded lines are added with a count of 0 to ``LCOV`` report. :issue:`1012`, fixed with :ref:`8.3 <release_8_3>`.
 - Negative counters in GCOV JSON export are not handled correct. :issue:`1049`, fixed in :ref:`8.3 <release_8_3>`.
 - Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
 - Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
@@ -194,7 +195,7 @@ Breaking changes:
 
   - The function return count is removed from internal data model, HTML and JSON output because missing in
     ``gcov`` JSON intermediate format. (:issue:`935`)
-  - Renamed ``name`` key in in data model and JSON report to ``demangled_name``. If ``gcov`` JSON
+  - Renamed ``name`` key in in data model and ``JSON`` report to ``demangled_name``. If ``gcov`` JSON
     intermediate format is used the ``name`` key will contained the mangled name. The keys are now
     aligned with the ``gcov`` JSON intermediate format. (:issue:`974`)
 
@@ -209,7 +210,7 @@ New features and notable changes:
 - Add support for ``gcov`` JSON intermediate format. (:issue:`766`)
 
   - Add function, block and condition information to data model. (:issue:`954`, :issue:`960`, :issue:`964`, :issue:`979`)
-  - Add function function coverage to coveralls and HTML report. (:issue:`975`)
+  - Add function coverage to Coveralls and ``HTML`` report. (:issue:`975`)
 
 - Add :ref:`Exclusion markers` to exclude a while function. (:issue:`955`)
 - Change sort order in JSON output files. (:issue:`959`)
@@ -220,7 +221,7 @@ Bug fixes and small improvements:
 - Implement consistent sorting of files with no lines, or one line with zero coverage (:issue:`918`)
 - Use replacement value of 0 for function call count ``NAN %``. (:issue:`910`)
 - Fix erroneous deprecation warning. (:issue:`912`)
-- Fix display filename in HTML report. (:issue:`920`)
+- Fix display filename in ``HTML`` report. (:issue:`920`)
 - Fix bundle of standalone executable with Python 3.12. (:issue:`924`)
 - Fix merging of function coverage data. (:issue:`925`)
 - Fix inefficient regular expression. (:issue:`933`)
@@ -270,7 +271,7 @@ New features and notable changes:
 - Add support for colored logging. (:issue:`887`)
 - Add support for TOML configuration format. (:issue:`881`)
 - Add support for Clover XML output format. (:issue:`888`)
-- Add decision to JSON summary report if :option:`--decisions` is used. (:issue:`892`)
+- Add decision to ``JSON summary`` report if :option:`--decisions` is used. (:issue:`892`)
 
 Bug fixes and small improvements:
 
@@ -310,12 +311,12 @@ New features and notable changes:
 - Add support for ``Devcontainer`` and ``GitHub Codespaces``. (:issue:`771`)
 - Fix Dockerfile.qa to avoid uid conflicts. (:issue:`801`)
 - Pygments required ≥ 2.13.0. (:issue:`799`)
-- Add a second theme for HTML report inspired by GitHub. (:issue:`793`)
+- Add a second theme for ``HTML`` report inspired by GitHub. (:issue:`793`)
 - Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
 - Add function coverage to data model. (:issue:`822`)
 - Add support for importing Cobertura XML files with ``--cobertura-add-tracefile`` option. (:issue:`805`)
 - Add :option:`--jacoco` to generate JaCoCo XML format. (:issue:`823`))
-- Add function coverage to HTML report. (:issue:`828`)
+- Add function coverage to ``HTML`` report. (:issue:`828`)
 - Improve sorting of data in reports. (:issue:`817`):
 
   - Sort file names alpha numerical and with casefold
@@ -352,7 +353,7 @@ Bug fixes and small improvements:
 - Collapse also root directory if needed in nested HTML report. (:issue:`750`)
 - Handle special case of absolute source file paths in ``gcov`` output. (:issue:`776`)
 - Ignore exit code 6 when running ``gcov`` (output write error introduced gcc-12). (:issue:`781`)
-- Change coveralls value from 0.0 to 1.0 if no code lines or branches are present. (:issue:`796`)
+- Change Coveralls value from 0.0 to 1.0 if no code lines or branches are present. (:issue:`796`)
 - Fix symlinked root directories on Windows. (:issue:`814`)
 - Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
 - Fix reading of choices options from configuration files (e.g. ``gcov-ignore-parse-errors``). (:issue:`816`)
@@ -400,7 +401,7 @@ Known bugs:
 Breaking changes:
 
 - Remove not allowed attributes ``function-rate``, ``functions-covered`` and ``functions-valid``
-  from cobertura report. (:issue:`671`)
+  from ``Cobertura`` report. (:issue:`671`)
 - Remove "noncode" entries in JSON reports. (:issue:`663`)
 - New :option:`--exclude-noncode-lines` to exclude noncode lines. Noncode lines are not excluded by default anymore. (:issue:`704`, :issue:`705`)
 - Changed :option:`--gcov-ignore-parse-errors` to accept list of errors to ignore. (:issue:`701`)
@@ -432,7 +433,7 @@ Bug fixes and small improvements:
 - Fix alphabetical sort of html report, for when there are symlinks. (:issue:`685`)
 - Handle :option:`--version` before parsing the configuration file. (:issue:`696`)
 - Fix reports of excluded coverage. (:issue:`409`, :issue:`503`, :issue:`663`)
-- Fix handling for nonexistent source code for HTML-details and Coveralls reports. (:issue:`663`)
+- Fix handling for nonexistent source code for HTML-details and ``Coveralls`` reports. (:issue:`663`)
 - Exclude functions with :ref:`Exclusion markers`. (:issue:`713`)
 - Fix problem in decision parser if open block brace is on same line. (:issue:`681`)
 - Add Python 3.11 to test matrix. (:issue:`717`)
@@ -491,7 +492,7 @@ Internal changes:
 - Change session black with no arguments to format all files. (:issue:`595`)
 - Add gcc-10 and gcc-11 to the test suite. (:issue:`597`)
 - Improved internal coverage data model to simplify processing. (:issue:`600`)
-- Use pretty print for cobertura and coveralls in test suite. (:issue:`606`)
+- Use pretty print for cobertura and Coveralls in test suite. (:issue:`606`)
 - Forward nox options `--reuse-existing-virtualenvs` and `--no-install` to call inside docker. (:issue:`616`)
 
 5.1 (26 March 2022)
@@ -656,7 +657,7 @@ Breaking changes:
   This potentially changes the interpretation of search paths.
   In ``gcovr --xml foo``,
   previous gcovr versions would search the ``foo`` directory for coverage data.
-  Now, gcovr will try to write the Cobertura report to the ``foo`` file.
+  Now, gcovr will try to write the ``Cobertura`` report to the ``foo`` file.
   To keep the old meaning, separate positional arguments like
   ``gcovr --xml -- foo``.
 
@@ -923,7 +924,7 @@ Internal changes:
   seconds since the epoch for the timestamp and a doted decimal version
   string.  Now, gcovr reports seconds since the epoch and
   "``gcovr ``"+``__version__`` (e.g. "gcovr 2.2") to differentiate it
-  from a pure Cobertura report.
+  from a pure ``Cobertura`` report.
 
 
 2.1 (26 November 2010)

@@ -1,0 +1,164 @@
+{
+    "run_at": "2025-01-20 20:18:07 UTC",
+    "service_name": "gcovr-test-suite",
+    "service_job_id": "id",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "name": "A/C/D/file6.cpp",
+            "source_digest": "51c81752202f160b25ffc07fb9134018",
+            "coverage": [
+                1,
+                null,
+                1,
+                0,
+                null,
+                1,
+                null,
+                null
+            ],
+            "branches": [
+                3,
+                2,
+                0,
+                0,
+                3,
+                2,
+                1,
+                1
+            ]
+        },
+        {
+            "name": "A/C/file5.cpp",
+            "source_digest": "994904d7cb6f33c4235bc1f132c029f9",
+            "coverage": [
+                1,
+                null,
+                1,
+                0,
+                null,
+                1,
+                null,
+                null
+            ],
+            "branches": [
+                3,
+                2,
+                0,
+                0,
+                3,
+                2,
+                1,
+                1
+            ]
+        },
+        {
+            "name": "A/file1.cpp",
+            "source_digest": "cf6b72cbb3c9c004a97684f1495332fd",
+            "coverage": [
+                1,
+                null,
+                1,
+                0,
+                null,
+                1,
+                null,
+                null
+            ],
+            "branches": [
+                3,
+                2,
+                0,
+                0,
+                3,
+                2,
+                1,
+                1
+            ]
+        },
+        {
+            "name": "A/file2.cpp",
+            "source_digest": "44683de2597fa27a9410e0f65f71fde0",
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                1,
+                null,
+                null,
+                0,
+                null,
+                0,
+                0,
+                null
+            ]
+        },
+        {
+            "name": "A/file3.cpp",
+            "source_digest": "17749ac4040d8e71ff948fceb4e522d9",
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                1,
+                null,
+                null,
+                0,
+                null,
+                0,
+                0,
+                0,
+                null,
+                0,
+                null
+            ],
+            "branches": [
+                11,
+                2,
+                0,
+                0,
+                11,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "name": "A/file4.cpp",
+            "source_digest": "7451828cfb58f0fefc6e5fbf44d9a6f4",
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                null,
+                0,
+                null,
+                null
+            ],
+            "branches": [
+                3,
+                2,
+                0,
+                1,
+                3,
+                2,
+                1,
+                0
+            ]
+        },
+        {
+            "name": "A/file7.cpp",
+            "source_digest": "cbd3974ad5ed983ce0a47c7a7d8b5725",
+            "coverage": [
+                0,
+                null,
+                0,
+                null
+            ]
+        }
+    ]
+}
