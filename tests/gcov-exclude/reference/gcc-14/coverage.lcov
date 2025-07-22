@@ -5,8 +5,8 @@ FN:1,foo(int)
 FNDA:1,foo(int)
 FNF:1
 FNH:1
-BRDA:3,2,None,-
-BRDA:3,2,None,1
+BRDA:3,2,0,-
+BRDA:3,2,1,1
 BRF:2
 BRH:1
 DA:1,1,2cfc07b9a0f8cdd3eb4553562d5875b6
@@ -44,8 +44,8 @@ FN:8,four_bar_()
 FNDA:0,four_bar_()
 FNF:2
 FNH:1
-BRDA:11,2,None,-
-BRDA:11,2,None,-
+BRDA:11,2,0,-
+BRDA:11,2,1,-
 BRF:2
 BRH:0
 DA:1,1,8ce3c51d6f9f0f061d9e9b30994b92de
@@ -66,8 +66,8 @@ FN:1,foobar(int)
 FNDA:1,foobar(int)
 FNF:1
 FNH:1
-BRDA:3,2,None,1
-BRDA:3,2,None,-
+BRDA:3,2,0,1
+BRDA:3,2,1,-
 BRF:2
 BRH:1
 DA:1,1,12ad0375e88bc9a7418a8d84c0757032

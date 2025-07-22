@@ -5,8 +5,8 @@ FN:1,foo6(int)
 FNDA:1,foo6(int)
 FNF:1
 FNH:1
-BRDA:3,2,None,-
-BRDA:3,2,None,1
+BRDA:3,2,0,-
+BRDA:3,2,1,1
 BRF:2
 BRH:1
 DA:1,1,abb3720e6b8a9cf7dc926235f89cc801
@@ -22,8 +22,8 @@ FN:1,foo5(int)
 FNDA:1,foo5(int)
 FNF:1
 FNH:1
-BRDA:3,2,None,-
-BRDA:3,2,None,1
+BRDA:3,2,0,-
+BRDA:3,2,1,1
 BRF:2
 BRH:1
 DA:1,1,326f108928b04264c1f3d79bf4ca248b
@@ -39,8 +39,8 @@ FN:1,foo(int)
 FNDA:1,foo(int)
 FNF:1
 FNH:1
-BRDA:3,2,None,-
-BRDA:3,2,None,1
+BRDA:3,2,0,-
+BRDA:3,2,1,1
 BRF:2
 BRH:1
 DA:1,1,2cfc07b9a0f8cdd3eb4553562d5875b6
@@ -96,8 +96,8 @@ FN:1,foobar(int)
 FNDA:1,foobar(int)
 FNF:1
 FNH:1
-BRDA:3,2,None,1
-BRDA:3,2,None,-
+BRDA:3,2,0,1
+BRDA:3,2,1,-
 BRF:2
 BRH:1
 DA:1,1,12ad0375e88bc9a7418a8d84c0757032
