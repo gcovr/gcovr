@@ -371,19 +371,15 @@ jobs:
           - clang-19
 
   # -----------------------------------------------------------------------------------------------
-  publish:
+  publish-push-tag:
     needs: [build-package, documentation, host, docker]
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
     runs-on: ubuntu-22.04
     permissions:
       contents: write
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
-    environment:  # Environment for trusted publishing
-      name: ${{ needs.build-package.outputs.publish_environment_name }}
-      url: ${{ needs.build-package.outputs.publish_environment_url }}
     env:
       FORCE_COLOR: "1"
-    timeout-minutes: 10
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v4
@@ -402,11 +398,30 @@ jobs:
           tag: ${{ needs.build-package.outputs.tag }}
           tag_message: ${{ needs.build-package.outputs.tag_message }}
 
-      - name: Download all the distribution 📦
-        uses: actions/download-artifact@v4
+      - name: Push new tag
+        if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
+        run: |
+          git push origin "refs/tags/$TAG"
+        env:
+          TAG: ${{ needs.build-package.outputs.tag }}
+
+  # -----------------------------------------------------------------------------------------------
+  publish-github-release:
+    needs: [build-package, publish-push-tag]
+    if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
+    runs-on: ubuntu-22.04
+    env:
+      FORCE_COLOR: "1"
+    timeout-minutes: 5
+
+    steps:
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
+
+      - name: Check if all needed jobs succeed
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe
         with:
-          name: python-package-distributions
-          path: dist/
+          jobs: ${{ toJSON(needs) }}
 
       - name: Download all applications
         uses: actions/download-artifact@v4
@@ -421,13 +436,6 @@ jobs:
           name: release-notes
           path: docs/build/
 
-      - name: Push new tag
-        if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
-        run: |
-          git push origin "refs/tags/$TAG"
-        env:
-          TAG: ${{ needs.build-package.outputs.tag }}
-
       - name: Create release and upload build artifacts
         if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
@@ -435,6 +443,35 @@ jobs:
           tag_name: ${{ needs.build-package.outputs.tag }}
           body_path: doc/build/release_notes.md
           files: build/*
+
+  # -----------------------------------------------------------------------------------------------
+  publish-pypi:
+    needs: [build-package, documentation, host, docker]
+    if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
+    runs-on: ubuntu-22.04
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+    environment:  # Environment for trusted publishing
+      name: ${{ needs.build-package.outputs.publish_environment_name }}
+      url: ${{ needs.build-package.outputs.publish_environment_url }}
+    env:
+      FORCE_COLOR: "1"
+    timeout-minutes: 10
+
+    steps:
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
+
+      - name: Check if all needed jobs succeed
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe
+        with:
+          jobs: ${{ toJSON(needs) }}
+
+      - name: Download all the distribution 📦
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
 
       - name: Publish distribution 📦 to ${{ ((needs.build-package.outputs.tag == '') && 'test.pypi') || 'pypi' }}.org
         if: >-
