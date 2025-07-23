@@ -17,12 +17,14 @@
                     "count": 9,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 6,
                             "fallthrough": false,
                             "throw": false,
@@ -37,6 +39,7 @@
                     "count": 3,
                     "branches": [
                         {
+                            "branchno": 2,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
@@ -45,18 +48,22 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 3
                         },
                         {
+                            "callno": 1,
                             "source_block_id": 0,
                             "returned": 3
                         },
                         {
+                            "callno": 4,
                             "source_block_id": 1,
                             "returned": 0
                         },
                         {
+                            "callno": 5,
                             "source_block_id": 2,
                             "returned": 0
                         }
@@ -84,6 +91,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 3
                         }
@@ -124,6 +132,7 @@
                     "count": 3,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
@@ -132,6 +141,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 3
                         }
@@ -144,12 +154,14 @@
                     "count": 3,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 3,
                             "fallthrough": false,
                             "throw": false,
@@ -158,6 +170,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 2,
                             "source_block_id": 1,
                             "returned": 3
                         }
@@ -178,6 +191,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 1,
                             "returned": 3
                         }
@@ -190,6 +204,7 @@
                     "count": 3,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
@@ -198,6 +213,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 3
                         }
@@ -210,6 +226,7 @@
                     "count": 3,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
@@ -218,6 +235,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 3
                         }
@@ -230,12 +248,14 @@
                     "count": 0,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 0
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
@@ -244,6 +264,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 2,
                             "source_block_id": 1,
                             "returned": 0
                         }
@@ -264,6 +285,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 1,
                             "returned": 0
                         }
@@ -276,6 +298,7 @@
                     "count": 3,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 3,
                             "fallthrough": true,
                             "throw": false,
@@ -284,6 +307,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 3
                         }
@@ -304,10 +328,12 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 3
                         },
                         {
+                            "callno": 1,
                             "source_block_id": 1,
                             "returned": 0
                         }
@@ -328,6 +354,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 3
                         }

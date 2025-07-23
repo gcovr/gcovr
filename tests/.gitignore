@@ -33,6 +33,7 @@ build/
 .pytest_cache/
 .coverage
 testcase
+stderr
 *.gcda
 *.gcno
 *.gcov

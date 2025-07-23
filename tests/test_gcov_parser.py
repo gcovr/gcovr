@@ -555,11 +555,16 @@ def test_branch_exclusion(flags: str) -> None:
         """
     )
 
-    expected_covered_branches = {(1, 0, 0), (2, 0, 0), (3, 0, 0), (4, 0, 0)}
+    expected_covered_branches = {
+        (1, None, None),
+        (2, None, None),
+        (3, None, None),
+        (4, None, None),
+    }
     if "exclude_throw_branches" in flags:
-        expected_covered_branches -= {(3, 0, 0), (4, 0, 0)}
+        expected_covered_branches -= {(3, None, None), (4, None, None)}
     if "exclude_unreachable_branches" in flags:
-        expected_covered_branches -= {(2, 0, 0), (4, 0, 0)}
+        expected_covered_branches -= {(2, None, None), (4, None, None)}
 
     filecov, lines = text.parse_coverage(
         "",
@@ -864,7 +869,7 @@ def test_negative_branch_count_ignored() -> None:
         if linecov.branches[branchcov].is_covered
     }
 
-    assert covered_branches == {(1, 0, 0), (3, 0, 0)}
+    assert covered_branches == {(1, None, None), (3, None, None)}
 
 
 def test_suspicious_branch_count() -> None:
@@ -980,7 +985,7 @@ def test_suspicious_branch_count_ignored() -> None:
         if linecov.branches[branchcov].is_covered
     }
 
-    assert covered_branches == {(1, 0, 0), (3, 0, 0)}
+    assert covered_branches == {(1, None, None), (3, None, None)}
 
 
 @pytest.mark.parametrize("flags", ["none", "exclude_internal_functions"])

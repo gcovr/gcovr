@@ -113,7 +113,7 @@ def _process_exclude_branch_source(
                 columnno += len(prefix)
                 location = f"{filecov.filename}:{lineno}:{columnno}"
                 if lineno in filecov.lines_keys_by_lineno:
-                    for key in filecov.lines_keys_by_lineno[lineno]:
+                    for key in sorted(filecov.lines_keys_by_lineno[lineno]):
                         if (
                             filecov.lines[key].function_name is None
                             or filecov.lines[key].block_ids is None
@@ -135,8 +135,13 @@ def _process_exclude_branch_source(
                                 # Exclude the branch where the destination is one of the blocks of the line with the marker
                                 for cur_branchcov in cur_linecov.branches.values():
                                     if cur_branchcov.destination_block_id in block_ids:
+                                        branch_info = (
+                                            f"{cur_branchcov.source_block_id}->{cur_branchcov.destination_block_id}"
+                                            if cur_branchcov.branchno is None
+                                            else cur_branchcov.branchno
+                                        )
                                         LOGGER.debug(
-                                            f"Source branch exclusion at {location} is excluding branch {cur_branchcov.branchno} of line {cur_linecov.lineno}"
+                                            f"Source branch exclusion at {location} is excluding branch {branch_info} of line {cur_linecov.lineno}"
                                         )
                                         cur_branchcov.excluded = True
                 else:

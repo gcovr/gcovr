@@ -5,13 +5,13 @@ run: json txt lcov clover cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) -v --json-pretty --json $@ 2>stderr
+	$(GCOVR) -v --json-pretty --json $@ 2>stderr && cat stderr
 	grep -F "4:7 without coverage information" stderr
 # If block_ids entry is found the compiler supports the function excludes else we need to see a warning.
-	grep -F ":11:20 $$(if grep -F '"block_ids"' --silent $@ ; then echo "is excluding branch 2 of line 5" ; else echo "needs at least gcc-14 with supported JSON format." ; fi)" stderr
-	grep -F ":15:20 $$(if grep -F '"block_ids"' --silent $@ ; then echo "is excluding branch 4 of line 5" ; else echo "needs at least gcc-14 with supported JSON format." ; fi)" stderr
+	grep -F ":11:20 $$(if grep -F '"block_ids"' --silent $@ ; then echo "is excluding branch 2->5 of line 5" ; else echo "needs at least gcc-14 with supported JSON format." ; fi)" stderr
+	grep -F ":15:20 $$(if grep -F '"block_ids"' --silent $@ ; then echo "is excluding branch 2->7 of line 5" ; else echo "needs at least gcc-14 with supported JSON format." ; fi)" stderr
 	grep -F ":19:39 $$(if grep -F '"block_ids"' --silent $@ ; then echo "found but no block ids defined at this line" ; else echo "needs at least gcc-14 with supported JSON format." ; fi)" stderr
-	grep -F ":24:45 $$(if grep -F '"block_ids"' --silent $@ ; then echo "is excluding branch 5 of line 20" ; else echo "needs at least gcc-14 with supported JSON format." ; fi)" stderr
+	grep -F ":24:45 $$(if grep -F '"block_ids"' --silent $@ ; then echo "is excluding branch 8->11 of line 20" ; else echo "needs at least gcc-14 with supported JSON format." ; fi)" stderr
 
 json: coverage.json
 

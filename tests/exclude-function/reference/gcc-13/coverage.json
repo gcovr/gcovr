@@ -23,6 +23,7 @@
                     "count": 1,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
@@ -35,6 +36,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
@@ -113,6 +115,7 @@
                     "count": 1,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
@@ -125,6 +128,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
@@ -203,6 +207,7 @@
                     "count": 3,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
@@ -215,6 +220,7 @@
                             ]
                         },
                         {
+                            "branchno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -229,6 +235,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -253,6 +260,7 @@
                     "count": 41,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false,
@@ -265,6 +273,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 16,
                             "fallthrough": false,
                             "throw": false,
@@ -291,6 +300,7 @@
                     "count": 44,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false,
@@ -303,6 +313,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 16,
                             "fallthrough": false,
                             "throw": false,
@@ -329,6 +340,7 @@
                     "count": 3,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
@@ -341,6 +353,7 @@
                             ]
                         },
                         {
+                            "branchno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -355,6 +368,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -418,6 +432,7 @@
                     "count": 44,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
@@ -430,6 +445,7 @@
                             ]
                         },
                         {
+                            "branchno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -442,6 +458,7 @@
                             ]
                         },
                         {
+                            "branchno": 3,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false,
@@ -454,6 +471,7 @@
                             ]
                         },
                         {
+                            "branchno": 4,
                             "count": 16,
                             "fallthrough": false,
                             "throw": false,
@@ -468,6 +486,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 2,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -505,6 +524,7 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
@@ -517,6 +537,7 @@
                             ]
                         },
                         {
+                            "branchno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -531,6 +552,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 1,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -568,6 +590,7 @@
                     "count": 41,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false,
@@ -580,6 +603,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 16,
                             "fallthrough": false,
                             "throw": false,
@@ -671,6 +695,7 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
@@ -683,6 +708,7 @@
                             ]
                         },
                         {
+                            "branchno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -697,6 +723,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 1,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -734,6 +761,7 @@
                     "count": 41,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 25,
                             "fallthrough": true,
                             "throw": false,
@@ -746,6 +774,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 16,
                             "fallthrough": false,
                             "throw": false,
@@ -798,6 +827,7 @@
                     "count": 2,
                     "branches": [
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
@@ -810,6 +840,7 @@
                             ]
                         },
                         {
+                            "branchno": 2,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -824,6 +855,7 @@
                     ],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 1,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -861,6 +893,7 @@
                     "count": 18,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
@@ -873,6 +906,7 @@
                             ]
                         },
                         {
+                            "branchno": 1,
                             "count": 18,
                             "fallthrough": false,
                             "throw": false,
@@ -952,6 +986,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -977,6 +1012,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -1002,6 +1038,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -1027,6 +1064,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [
@@ -1052,6 +1090,7 @@
                     "branches": [],
                     "calls": [
                         {
+                            "callno": 0,
                             "source_block_id": 0,
                             "returned": 1,
                             "gcovr/data_sources": [

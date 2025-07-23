@@ -47,6 +47,9 @@
                             "gcovr/data_sources": [
                                 [
                                     "testcase-main##2645864f7abb35dba569d19a48e04391.gcov.json.gz"
+                                ],
+                                [
+                                    "testcase-main##91df86209b7a6cf179e727ebb94ba1d0.gcov.json.gz"
                                 ]
                             ]
                         },
@@ -59,12 +62,16 @@
                             "gcovr/data_sources": [
                                 [
                                     "testcase-main##2645864f7abb35dba569d19a48e04391.gcov.json.gz"
+                                ],
+                                [
+                                    "testcase-main##91df86209b7a6cf179e727ebb94ba1d0.gcov.json.gz"
                                 ]
                             ]
                         }
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [],
@@ -74,6 +81,9 @@
                             "gcovr/data_sources": [
                                 [
                                     "testcase-main##2645864f7abb35dba569d19a48e04391.gcov.json.gz"
+                                ],
+                                [
+                                    "testcase-main##91df86209b7a6cf179e727ebb94ba1d0.gcov.json.gz"
                                 ]
                             ]
                         }
@@ -191,6 +201,9 @@
                             "gcovr/data_sources": [
                                 [
                                     "testcase-main##2645864f7abb35dba569d19a48e04391.gcov.json.gz"
+                                ],
+                                [
+                                    "testcase-main##91df86209b7a6cf179e727ebb94ba1d0.gcov.json.gz"
                                 ]
                             ]
                         }
