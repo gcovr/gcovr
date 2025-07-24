@@ -4,7 +4,7 @@
     <tr>
       <th align="right">Line</th>
       <th align="right">Branch</th>
-      {% if not EXCLUDE_CONDITION_COVERAGE %}
+      {% if SHOW_CONDITION_COVERAGE %}
       <th align="right">Condition</th>
       {% endif %}
       {% if SHOW_DECISION %}
@@ -55,7 +55,7 @@
         </details>
         {% endif %}
       </td>
-      {% if not EXCLUDE_CONDITION_COVERAGE %}
+      {% if SHOW_CONDITION_COVERAGE %}
       <td class="linecondition">
         {% if row.line_conditions %}
           <details class="lineconditionDetails">

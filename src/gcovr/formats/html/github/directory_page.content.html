@@ -7,7 +7,7 @@
         </div>
         <div role="gridcell" class="flex-auto min-width-0 col-5 mr-3">
         </div>
-        {% if not EXCLUDE_CONDITION_COVERAGE %}
+        {% if SHOW_CONDITION_COVERAGE %}
         <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >
         </div>
         {% endif %}
@@ -61,7 +61,7 @@
                 <span class="Label mr-1 Label--{{row.branches.class}}">{{row.branches.coverage}}%</span>
             </div>
         </div>
-        {% if not EXCLUDE_CONDITION_COVERAGE %}
+        {% if SHOW_CONDITION_COVERAGE %}
         <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">
             <span class="text-small color-fg-muted mr-2">{{row.conditions.exec}} of {{row.conditions.total}} conditions</span>
             <div class="Label--minw">

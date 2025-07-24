@@ -312,7 +312,7 @@ def write_report(
 
     data["SHOW_DECISION"] = show_decision
     data["SHOW_CALLS"] = show_calls
-    data["EXCLUDE_CONDITION_COVERAGE"] = not any(
+    data["SHOW_CONDITION_COVERAGE"] = any(
         filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
     )
     data["USE_BLOCK_IDS"] = options.html_block_ids
