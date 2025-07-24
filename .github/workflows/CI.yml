@@ -410,6 +410,8 @@ jobs:
     needs: [build-package, publish-push-tag]
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     env:
       FORCE_COLOR: "1"
     timeout-minutes: 5
