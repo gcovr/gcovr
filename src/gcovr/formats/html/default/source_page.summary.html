@@ -47,7 +47,7 @@
       <td>{{branches.total}}</td>
       <td class="{{branches.class}}">{{branches.coverage}}%</td>
     </tr>
-    {% if not EXCLUDE_CONDITION_COVERAGE %}
+    {% if SHOW_CONDITION_COVERAGE %}
     <tr>
       <th scope="row">Conditions:</th>
       <td>{{conditions.exec}}</td>

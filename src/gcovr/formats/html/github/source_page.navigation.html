@@ -9,7 +9,7 @@
       <th>Call count</th>
       <th>Line coverage</th>
       <th>Branch coverage</th>
-      {% if not EXCLUDE_CONDITION_COVERAGE %}
+      {% if SHOW_CONDITION_COVERAGE %}
       <th>Condition coverage</th>
       {% endif %}
       <th>Block coverage</th>
@@ -32,7 +32,7 @@
       {#- #}</td>
       {#- #}<td>{{ entry["line_coverage"] }}%</td>
       {#- #}<td>{{ entry["branch_coverage"] }}%</td>
-      {%- if not EXCLUDE_CONDITION_COVERAGE %}
+      {%- if SHOW_CONDITION_COVERAGE %}
       {#- #}<td>{{ entry["condition_coverage"] }}%</td>
       {%- endif %}
       {#- #}<td>{{ entry["blocks"] }}%</td>
