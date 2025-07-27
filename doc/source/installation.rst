@@ -31,9 +31,12 @@ Python:
 Operating System:
     Linux, Windows, and macOS.
 
-    The automated tests run on Ubuntu 20.04, 22.04 and Windows Server 2019.
+    The automated tests run on:
+
+    - Ubuntu 20.04, 22.04 and 24.04
+    - Windows Server 2022 and 2025
+    - macOS 13, 14 and 15.
 
 Compiler:
-    GCC and Clang.
-
-    The automated tests run on GCC 5, 6, 8, 9, 10, 11 and clang 10, 13, 14, and 15.
+    GCC and Clang. The versions used for development tests are
+    documented in the :ref:`contribution guide <development environment>`.

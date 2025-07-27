@@ -64,6 +64,10 @@ def find_test_cases() -> Iterator[Example]:
                 os.getenv("CC", "None"), "gcc-5", "gcc-6", "gcc-14"
             ):
                 continue
+            if output_format == "json" and is_compiler(
+                os.getenv("CC", "None"), "gcc-14"
+            ):
+                continue
             baseline = f"{data_dirname}/{name}.{'xml' if output_format in ['cobertura', 'jacoco'] else output_format}"
             if not os.path.exists(baseline):
                 continue

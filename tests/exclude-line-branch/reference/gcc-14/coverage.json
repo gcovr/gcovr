@@ -113,6 +113,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 4,
                             "covered": 4,
                             "not_covered_false": [],
@@ -178,6 +179,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [],
@@ -223,6 +225,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 1,
                             "not_covered_false": [],
@@ -413,6 +416,7 @@
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 2,
                             "not_covered_false": [],

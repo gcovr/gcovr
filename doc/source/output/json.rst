@@ -7,9 +7,17 @@ JSON Output
 
 The ``gcovr`` command can generate JSON output using
 the :option:`--json` and :option:`--json-pretty`
-options::
+options:
 
-    gcovr --json coverage.json
+.. include:: ../../examples/example_json.sh
+    :code: bash
+    :start-after: #BEGIN gcovr
+    :end-before: #END gcovr
+
+This generates an indented JSON report:
+
+.. include:: ../../examples/example_json.json
+    :literal:
 
 The :option:`--json-pretty` option generates an indented
 JSON output that is easier to read.
@@ -105,7 +113,7 @@ Each **line** entry contains coverage data for one line::
     {
         "line_number": line_number,
         "function_name": function_name,
-        "block_ids", [block_id],
+        "block_ids", [block_ids],
         "count": count,
         "branches": [branch],
         "conditions", [condition]
@@ -116,7 +124,7 @@ Each **line** entry contains coverage data for one line::
         "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(line_number, function_name)``.
+The ordering and merge key is ``(line_number, function_name, number of branches, list of condition counts, list of block ids)``.
 
 line_number: int
   The 1-based line number to which this entry relates.
@@ -203,6 +211,7 @@ Branch entries
 Each **branch** provides information about a branch on that line::
 
     {
+      "branchno": branchno,
       "count": count,
       "fallthrough": fallthrough,
       "throw": throw,
@@ -211,9 +220,12 @@ Each **branch** provides information about a branch on that line::
       "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(branch_number, source_block_id, destination_block_id)``.
+The ordering and merge key is ``(branchno, source_block_id, destination_block_id)``.
 
-This exactly matches the GCC gcov format.
+This exactly matches the GCC gcov format except ``branchno``.
+
+branchno: int
+  The branch number is only available if data is parsed from GCC gcov text format.
 
 count: int
   How often this branch was taken.
@@ -235,6 +247,9 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
 
+.. versionadded:: NEXT
+   The ``branchno`` is added.
+
 .. versionchanged:: NEXT
    The ``gcovr/data_sources`` is added.
 
@@ -255,6 +270,7 @@ Condition entries
 Each **condition** provides information about a condition on that line::
 
     {
+      "conditionno": conditionno,
       "count": count,
       "covered": covered,
       "not_covered_false": not_covered_false,
@@ -263,9 +279,12 @@ Each **condition** provides information about a condition on that line::
       "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``(condition_number, count)``.
+The ordering and merge key is ``(conditionno, count)``.
 
-This exactly matches the GCC gcov format.
+This exactly matches the GCC gcov format except ``conditionno``.
+
+conditionno: int
+  The index number of the condition in GCC gcov output.
 
 count: int
   Number of condition outcomes in this expression.
@@ -287,6 +306,9 @@ gcovr/excluded: boolean
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
+
+.. versionadded:: NEXT
+   The ``conditionno`` is added.
 
 .. versionchanged:: NEXT
    New ``gcovr/excluded`` field.
@@ -361,6 +383,7 @@ Call entries
 Each **call** provides information about a call on that line::
 
     {
+      "callno": callno,
       "source_block_id": source_block_id,
       "destination_block_id": destination_block_id,
       "returned": returned,
@@ -368,9 +391,10 @@ Each **call** provides information about a call on that line::
       "gcovr/data_sources": [data_source]
     }
 
-The ordering and merge key is ``call_number``.
+The ordering and merge key is ``(callno, source_block_id, destination_block_id)``.
 
-This exactly matches the GCC gcov format.
+callno: int
+  Only available if ``gcov`` text format is used.
 
 source_block_id: int
   The source block number of the call.

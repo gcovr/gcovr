@@ -69,7 +69,7 @@ from abc import abstractmethod
 import logging
 import os
 import re
-from typing import Any, Callable, List, NoReturn, Optional, TypeVar, Union
+from typing import Any, Callable, NoReturn, Optional, Set, TypeVar, Union
 
 from ..filter import is_file_excluded
 
@@ -124,15 +124,20 @@ class CoverageBase:
 
     __slots__ = ("data_sources",)
 
-    def __init__(
-        self, data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]]
-    ) -> None:
+    def __init__(self, data_source: Union[str, set[tuple[str, ...]]]) -> None:
         if isinstance(data_source, str):
             self.data_sources = set[tuple[str, ...]]([(data_source,)])
-        elif isinstance(data_source, tuple):
-            self.data_sources = set[tuple[str, ...]]([data_source])
         else:
             self.data_sources = data_source
+
+    def merge_base_data(
+        self,
+        other: CoverageBase,
+    ) -> None:
+        """Merge the data of the base class."""
+        self.data_sources = set[tuple[str, ...]](
+            [*self.data_sources, *other.data_sources]
+        )
 
     def raise_merge_error(self, msg: str, other: Any) -> NoReturn:
         """Get the exception with message extended with context."""
@@ -158,7 +163,7 @@ class CoverageBase:
             "\n".join(
                 [
                     msg if location is None else f"{location} {msg}",
-                    f"GCOV data file{' is' if len(self.data_sources) == 1 else 's are'} of merge source:",
+                    f"GCOV data file{' is' if len(self.data_sources) == 1 else 's are'}:",
                     *[f"   {' -> '.join(e)}" for e in sorted(self.data_sources)],
                 ]
             )
@@ -212,6 +217,27 @@ class BranchCoverage(CoverageBase):
             The destination block of the branch. None if unknown.
         excluded (bool, optional):
             Whether the branch is excluded.
+
+        >>> filecov = FileCoverage("file.c", filename="file.c")
+        >>> linecov = LineCoverage(filecov, "line.gcov", lineno=11, count=0, function_name="function")
+        >>> BranchCoverage(linecov, "call.gcov", branchno=None, count=-1)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 count must not be a negative value.
+        GCOV data file is:
+           call.gcov
+        >>> BranchCoverage(linecov, "call.gcov", branchno=None, count=-1)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 count must not be a negative value.
+        GCOV data file is:
+           call.gcov
+        >>> BranchCoverage(linecov, "call.gcov", branchno=None, source_block_id=1, destination_block_id=2, count=-1)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (source block 1, destination block 2) count must not be a negative value.
+        GCOV data file is:
+           call.gcov
     """
 
     first_undefined_source_block_id: bool = True
@@ -232,7 +258,7 @@ class BranchCoverage(CoverageBase):
         parent: LineCoverage,
         data_source: Union[str, set[tuple[str, ...]]],
         *,
-        branchno: int,
+        branchno: Optional[int],
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
@@ -242,9 +268,6 @@ class BranchCoverage(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         self.parent = parent
-        if count < 0:
-            self.raise_data_error("count must not be a negative value.")
-
         self.branchno = branchno
         self.count = count
         self.fallthrough = fallthrough
@@ -253,12 +276,17 @@ class BranchCoverage(CoverageBase):
         self.destination_block_id = destination_block_id
         self.excluded = excluded
 
+        if count < 0:
+            self.raise_data_error("count must not be a negative value.")
+
     def serialize(
         self,
         get_data_source: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = dict[str, Any]()
+        if self.branchno is not None:
+            data_dict["branchno"] = self.branchno
         data_dict.update(
             {
                 "count": self.count,
@@ -281,13 +309,12 @@ class BranchCoverage(CoverageBase):
         cls,
         linecov: LineCoverage,
         data_source: str,
-        branchno: int,
         data_dict: dict[str, Any],
     ) -> BranchCoverage:
         """Deserialize the object."""
         return linecov.insert_branch_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            branchno=branchno,
+            branchno=data_dict.get("branchno"),
             count=data_dict["count"],
             source_block_id=data_dict.get("source_block_id"),
             fallthrough=data_dict["fallthrough"],
@@ -314,17 +341,19 @@ class BranchCoverage(CoverageBase):
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrMergeAssertionError: file.cpp:100 (branch 0) Source block ID must be equal, got 2 and 3.
+        gcovr.data_model.coverage.GcovrMergeAssertionError: file.cpp:100 (branch 0, source block 2) Source block ID must be equal, got 2 and 3.
         GCOV data file of merge source is:
            right.gcov
         and of merge target is:
            left.gcov
-        >>> left = BranchCoverage(..., "left.gcov", branchno=0, count=1, source_block_id=2)
+        >>> left = BranchCoverage(..., "left.gcov", branchno=0, count=1)
         >>> right = BranchCoverage(..., "right.gcov", branchno=0, count=4, source_block_id=2, fallthrough=False, throw=True)
         >>> right.excluded = True
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         >>> left.count
         5
+        >>> left.source_block_id
+        2
         >>> left.fallthrough
         False
         >>> left.throw
@@ -336,6 +365,9 @@ class BranchCoverage(CoverageBase):
         self.count += other.count
         self.fallthrough |= other.fallthrough
         self.throw |= other.throw
+        self.branchno = self._merge_property(
+            other, "Branch number", lambda x: x.branchno
+        )
         self.source_block_id = self._merge_property(
             other, "Source block ID", lambda x: x.source_block_id
         )
@@ -343,20 +375,30 @@ class BranchCoverage(CoverageBase):
             other, "Destination block ID", lambda x: x.destination_block_id
         )
         self.excluded |= other.excluded
+        self.merge_base_data(other)
 
     @property
     def key(self) -> BranchesKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
         return (
             self.branchno,
-            self.source_block_id or 0,
-            self.destination_block_id or 0,
+            self.source_block_id,
+            self.destination_block_id,
         )
 
     @property
     def location(self) -> Optional[str]:
         """Get the source location of the coverage data."""
-        return f"{self.parent.location} (branch {self.branchno})"
+        branch_info = []
+        if self.branchno is not None:
+            branch_info.append(f"branch {self.branchno}")
+        if self.source_block_id is not None:
+            branch_info.append(f"source block {self.source_block_id}")
+        if self.destination_block_id is not None:
+            branch_info.append(f"destination block {self.destination_block_id}")
+        return str(self.parent.location) + (
+            f" ({', '.join(branch_info)})" if branch_info else ""
+        )
 
     @property
     def source_block_id_or_0(self) -> int:
@@ -401,6 +443,28 @@ class ConditionCoverage(CoverageBase):
             The conditions which were not false.
         excluded (bool, optional):
             Whether the condition is excluded.
+
+        >>> filecov = FileCoverage("file.c", filename="file.c")
+        >>> linecov = LineCoverage(filecov, "line.gcov", lineno=11, count=0, function_name="function")
+        >>> ConditionCoverage(linecov, "call.gcov", conditionno=1, count=-1, covered=2, not_covered_true=[1], not_covered_false=[2])
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (condition 1) count must not be a negative value.
+        GCOV data file is:
+           call.gcov
+        >>> ConditionCoverage(linecov, [["call_1.gcov"], ["call_2.gcov"]], conditionno=1, count=2, covered=4, not_covered_true=[1], not_covered_false=[2])
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (condition 1) count must not be less than covered.
+        GCOV data files are:
+           call_1.gcov
+           call_2.gcov
+        >>> ConditionCoverage(linecov, "call.gcov", conditionno=1, count=4, covered=2, not_covered_true=[1], not_covered_false=[1, 2])
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (condition 1) The sum of the covered conditions (2), the uncovered true conditions (1) and the uncovered false conditions (2) must be equal to the count of conditions (4).
+        GCOV data file is:
+           call.gcov
     """
 
     __slots__ = (
@@ -416,7 +480,7 @@ class ConditionCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         conditionno: int,
         count: int,
@@ -427,11 +491,6 @@ class ConditionCoverage(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         self.parent = parent
-        if count < 0:
-            self.raise_data_error("count must not be a negative value.")
-        if count < covered:
-            self.raise_data_error("count must not be less than covered.")
-
         self.conditionno = conditionno
         self.count = count
         self.covered = covered
@@ -439,12 +498,25 @@ class ConditionCoverage(CoverageBase):
         self.not_covered_false = not_covered_false
         self.excluded = excluded
 
+        if count < 0:
+            self.raise_data_error("count must not be a negative value.")
+        if count < covered:
+            self.raise_data_error("count must not be less than covered.")
+        if count != (covered + len(not_covered_true) + len(not_covered_false)):
+            self.raise_data_error(
+                f"The sum of the covered conditions ({covered}),"
+                f" the uncovered true conditions ({len(not_covered_true)})"
+                f" and the uncovered false conditions ({len(not_covered_false)})"
+                f" must be equal to the count of conditions ({count})."
+            )
+
     def serialize(
         self,
         get_data_source: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = {
+            "conditionno": self.conditionno,
             "count": self.count,
             "covered": self.covered,
             "not_covered_false": self.not_covered_false,
@@ -461,13 +533,12 @@ class ConditionCoverage(CoverageBase):
         cls,
         linecov: LineCoverage,
         data_source: str,
-        conditionno: int,
         data_dict: dict[str, Any],
     ) -> ConditionCoverage:
         """Deserialize the object."""
         return linecov.insert_condition_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            conditionno=conditionno,
+            conditionno=data_dict["conditionno"],
             count=data_dict["count"],
             covered=data_dict["covered"],
             not_covered_false=data_dict["not_covered_false"],
@@ -489,7 +560,7 @@ class ConditionCoverage(CoverageBase):
         >>> filecov = FileCoverage("file.gcov", filename="file.c")
         >>> linecov = LineCoverage(filecov, "line.gcov", lineno=10, count=2, function_name="function")
         >>> left = ConditionCoverage(linecov, "left.gcov", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
-        >>> right = ConditionCoverage(linecov, "right.gcov", conditionno=2, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3])
+        >>> right = ConditionCoverage(linecov, "right.gcov", conditionno=2, count=4, covered=1, not_covered_true=[2], not_covered_false=[1, 3])
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
@@ -499,7 +570,7 @@ class ConditionCoverage(CoverageBase):
         and of merge target is:
            left.gcov
         >>> left = ConditionCoverage(linecov, "left.gcov", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
-        >>> right = ConditionCoverage(linecov, "right.gcov", conditionno=1, count=4, covered=2, not_covered_true=[2], not_covered_false=[1, 3], excluded=True)
+        >>> right = ConditionCoverage(linecov, "right.gcov", conditionno=1, count=4, covered=1, not_covered_true=[2], not_covered_false=[1, 3], excluded=True)
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         >>> left.count
         4
@@ -533,6 +604,7 @@ class ConditionCoverage(CoverageBase):
             self.count - len(self.not_covered_false) - len(self.not_covered_true)
         )
         self.excluded |= other.excluded
+        self.merge_base_data(other)
 
     @property
     def key(self) -> ConditionsKeyType:
@@ -573,7 +645,7 @@ class DecisionCoverageUncheckable(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
     ) -> None:
         super().__init__(data_source)
         self.parent = parent
@@ -601,6 +673,7 @@ class DecisionCoverageUncheckable(CoverageBase):
 
     def merge(self, other: DecisionCoverageUncheckable) -> None:
         """Merge the decision coverage."""
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -639,7 +712,7 @@ class DecisionCoverageConditional(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         count_true: int,
         count_false: int,
@@ -687,6 +760,7 @@ class DecisionCoverageConditional(CoverageBase):
         """Merge the decision coverage."""
         self.count_true += other.count_true
         self.count_false += other.count_false
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -726,7 +800,7 @@ class DecisionCoverageSwitch(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         count: int,
     ) -> None:
@@ -767,6 +841,7 @@ class DecisionCoverageSwitch(CoverageBase):
     def merge(self, other: DecisionCoverageSwitch) -> None:
         """Merge the decision coverage."""
         self.count += other.count
+        self.merge_base_data(other)
 
     @property
     def key(self) -> NoReturn:
@@ -802,8 +877,8 @@ class CallCoverage(CoverageBase):
     r"""Represent coverage information about a call.
 
     Args:
-        callno (int):
-            The number of the call.
+        callno (int, optional):
+            The number of the call, only used if destination_block_id is None.
         source_block_id (int):
             The block number.
         destination_block_id (int, optional):
@@ -812,6 +887,22 @@ class CallCoverage(CoverageBase):
             How often the function call returned.
         excluded (bool, optional):
             Whether the call is excluded.
+
+        >>> filecov = FileCoverage("file.c", filename="file.c")
+        >>> linecov = LineCoverage(filecov, "line.gcov", lineno=11, count=0, function_name="function")
+        >>> CallCoverage(linecov, "call.gcov", callno=None, destination_block_id=None, returned=0, source_block_id=12)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (call 12->None) Either callno or destination_block_id must be set.
+        GCOV data file is:
+           call.gcov
+        >>> CallCoverage(linecov, [["call_1.gcov"], ["call_2.gcov"]], callno=1, destination_block_id=1, returned=0, source_block_id=0)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (call 1) One of callno or destination_block_id must be set.
+        GCOV data files are:
+           call_1.gcov
+           call_2.gcov
     """
 
     __slots__ = (
@@ -826,9 +917,9 @@ class CallCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
-        callno: int,
+        callno: Optional[int],
         source_block_id: int,
         destination_block_id: Optional[int],
         returned: int,
@@ -842,16 +933,20 @@ class CallCoverage(CoverageBase):
         self.returned = returned
         self.excluded = excluded
 
+        if callno is None and destination_block_id is None:
+            self.raise_data_error("Either callno or destination_block_id must be set.")
+        if callno is not None and destination_block_id is not None:
+            self.raise_data_error("One of callno or destination_block_id must be set.")
+
     def serialize(
         self,
         get_data_source: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
-        data_dict = dict[str, Any](
-            {
-                "source_block_id": self.source_block_id,
-            }
-        )
+        data_dict = dict[str, Any]()
+        if self.callno is not None:
+            data_dict["callno"] = self.callno
+        data_dict["source_block_id"] = self.source_block_id
         if self.destination_block_id is not None:
             data_dict["destination_block_id"] = self.destination_block_id
         data_dict["returned"] = self.returned
@@ -866,13 +961,12 @@ class CallCoverage(CoverageBase):
         cls,
         linecov: LineCoverage,
         data_source: str,
-        callno: int,
         data_dict: dict[str, Any],
     ) -> CallCoverage:
         """Deserialize the object."""
         return linecov.insert_call_coverage(
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
-            callno=callno,
+            callno=data_dict.get("callno"),
             returned=data_dict["returned"],
             source_block_id=data_dict["source_block_id"],
             destination_block_id=data_dict.get("destination_block_id"),
@@ -883,36 +977,85 @@ class CallCoverage(CoverageBase):
         self,
         other: CallCoverage,
         _option: MergeOptions,
-    ) -> CallCoverage:
+    ) -> None:
         """
         Merge CallCoverage information.
 
         Do not use 'left' or 'right' objects afterwards!
+
+        >>> filecov = FileCoverage("file.gcov", filename="file.c")
+        >>> linecov = LineCoverage(filecov, "line.gcov", lineno=10, count=2, function_name="function")
+        >>> left = CallCoverage(linecov, "left.gcov", callno=1, source_block_id=1, destination_block_id=None, returned=2)
+        >>> right = CallCoverage(linecov, "right.gcov", callno=2, source_block_id=10, destination_block_id=None, returned=1, excluded=True)
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrMergeAssertionError: file.c:10 (call 1) Call number must be equal, got 1 and 2.
+        GCOV data file of merge source is:
+           right.gcov
+        and of merge target is:
+           left.gcov
+        >>> right.callno = 1
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrMergeAssertionError: file.c:10 (call 1) Source block ID must be equal, got 1 and 10.
+        GCOV data file of merge source is:
+           right.gcov
+        and of merge target is:
+           left.gcov
+        >>> right.source_block_id = 1
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
+        >>> left.callno
+        1
+        >>> left.source_block_id
+        1
+        >>> left.destination_block_id == None
+        True
+        >>> left.returned
+        3
+        >>> left.excluded
+        True
+        >>> left = CallCoverage(linecov, "left.gcov", callno=None, source_block_id=1, destination_block_id=2, returned=2)
+        >>> right = CallCoverage(linecov, "right.gcov", callno=None, source_block_id=1, destination_block_id=3, returned=1, excluded=True)
+        >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrMergeAssertionError: file.c:10 (call 1->2) Destination block ID must be equal, got 2 and 3.
+        GCOV data file of merge source is:
+           right.gcov
+        and of merge target is:
+           left.gcov
         """
-        if self.callno != other.callno:
-            self.raise_data_error(
-                f"Call number must be equal, got {self.callno} and {other.callno}."
-            )
-        self.returned += other.returned
+        self.callno = self._merge_property(other, "Call number", lambda x: x.callno)
         self.source_block_id = self._merge_property(
             other, "Source block ID", lambda x: x.source_block_id
         )
         self.destination_block_id = self._merge_property(
             other, "Destination block ID", lambda x: x.destination_block_id
         )
+        self.returned += other.returned
         self.excluded |= other.excluded
-
-        return self
+        self.merge_base_data(other)
 
     @property
     def key(self) -> CallsKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return self.callno
+        return (
+            self.callno,
+            self.source_block_id,
+            self.destination_block_id,
+        )
 
     @property
     def location(self) -> Optional[str]:
         """Get the source location of the coverage data."""
-        return f"{self.parent.location} (call {self.callno})"
+        call_info = (
+            f"{self.source_block_id}->{self.destination_block_id}"
+            if self.callno is None
+            else self.callno
+        )
+        return f"{self.parent.location} (call {call_info})"
 
     @property
     def is_excluded(self) -> bool:
@@ -952,6 +1095,20 @@ class LineCoverage(CoverageBase):
             Whether this line is excluded by a marker.
         md5 (str, optional):
             The md5 checksum of the source code line.
+
+        >>> filecov = FileCoverage("file.gcov", filename="file.c")
+        >>> LineCoverage(filecov, "line.gcov", lineno=0, count=0, function_name=None)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:0 lineno must be a positive value.
+        GCOV data file is:
+           line.gcov
+        >>> LineCoverage(filecov, "line.gcov", lineno=1, count=-1, function_name=None)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:1 count must not be a negative value.
+        GCOV data file is:
+           line.gcov
     """
 
     __slots__ = (
@@ -971,7 +1128,7 @@ class LineCoverage(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         lineno: int,
         count: int,
@@ -982,11 +1139,6 @@ class LineCoverage(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         self.parent = parent
-        if lineno <= 0:
-            self.raise_data_error("Line number must be a positive value.")
-        if count < 0:
-            self.raise_data_error("count must not be a negative value.")
-
         self.lineno = lineno
         self.count = count
         self.function_name = function_name
@@ -997,6 +1149,11 @@ class LineCoverage(CoverageBase):
         self.conditions = CoverageDict[ConditionsKeyType, ConditionCoverage]()
         self.decision: Optional[DecisionCoverage] = None
         self.calls = CoverageDict[CallsKeyType, CallCoverage]()
+
+        if lineno <= 0:
+            self.raise_data_error("lineno must be a positive value.")
+        if count < 0:
+            self.raise_data_error("count must not be a negative value.")
 
     def serialize(
         self,
@@ -1061,14 +1218,12 @@ class LineCoverage(CoverageBase):
             excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
 
-        for branchno, data_dict_branch in enumerate(data_dict["branches"]):
-            BranchCoverage.deserialize(linecov, data_source, branchno, data_dict_branch)
+        for data_dict_branch in data_dict["branches"]:
+            BranchCoverage.deserialize(linecov, data_source, data_dict_branch)
 
         if (conditions := data_dict.get("conditions")) is not None:
-            for conditionno, data_dict_condition in enumerate(conditions):
-                ConditionCoverage.deserialize(
-                    linecov, data_source, conditionno, data_dict_condition
-                )
+            for data_dict_condition in conditions:
+                ConditionCoverage.deserialize(linecov, data_source, data_dict_condition)
 
         if (data_dict_decision := data_dict.get("gcovr/decision")) is not None:
             decision_type = data_dict_decision["type"]
@@ -1088,15 +1243,16 @@ class LineCoverage(CoverageBase):
                 raise AssertionError(f"Unknown decision type: {decision_type!r}")
 
         if (calls := data_dict.get("calls")) is not None:
-            for callno, data_dict_call in enumerate(calls):
-                CallCoverage.deserialize(linecov, data_source, callno, data_dict_call)
+            for data_dict_call in calls:
+                CallCoverage.deserialize(linecov, data_source, data_dict_call)
+
         return linecov
 
     def merge(
         self,
         other: LineCoverage,
         options: MergeOptions,
-    ) -> LineCoverage:
+    ) -> None:
         """
         Merge LineCoverage information.
 
@@ -1108,6 +1264,11 @@ class LineCoverage(CoverageBase):
             self.raise_merge_error("Line number must be equal.", other)
         if self.function_name != other.function_name:
             self.raise_merge_error("Function name must be equal.", other)
+        # Merge the block_ids if present
+        if self.block_ids is None:
+            self.block_ids = other.block_ids
+        elif other.block_ids is not None:
+            self.block_ids = sorted(set(self.block_ids) | set(other.block_ids))
         self.md5 = self._merge_property(other, "MD5 checksum", lambda x: x.md5)
 
         self.count += other.count
@@ -1116,8 +1277,6 @@ class LineCoverage(CoverageBase):
         self.conditions.merge(other.conditions, options)
         self.__merge_decision(other.decision)
         self.calls.merge(other.calls, options)
-
-        return self
 
     def __merge_decision(  # pylint: disable=too-many-return-statements
         self,
@@ -1153,7 +1312,7 @@ class LineCoverage(CoverageBase):
         self,
         data_source: Union[str, set[tuple[str, ...]]],
         *,
-        branchno: int,
+        branchno: Optional[int],
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
@@ -1184,7 +1343,7 @@ class LineCoverage(CoverageBase):
 
     def insert_condition_coverage(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         conditionno: int,
         count: int,
@@ -1224,9 +1383,9 @@ class LineCoverage(CoverageBase):
 
     def insert_call_coverage(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
-        callno: int,
+        callno: Optional[int],
         source_block_id: int,
         destination_block_id: Optional[int],
         returned: int,
@@ -1254,7 +1413,10 @@ class LineCoverage(CoverageBase):
     @property
     def key(self) -> LinesKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        return (self.lineno, "" if self.function_name is None else self.function_name)
+        return (
+            self.lineno,
+            "" if self.function_name is None else self.function_name,
+        )
 
     @property
     def location(self) -> Optional[str]:
@@ -1362,6 +1524,26 @@ class FunctionCoverage(CoverageBase):
             Tuple with function end line and column.
         excluded (bool, optional):
             Whether this line is excluded by a marker.
+
+        >>> filecov = FileCoverage("file.c", filename="file.c")
+        >>> FunctionCoverage(filecov, "func.gcov", mangled_name="foo()", demangled_name="bar()", lineno=5, count=3, blocks=0.5)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c (function bar()) Got foo() as 'mangled_name', in this case 'demangled_name' must be None.
+        GCOV data file is:
+           func.gcov
+        >>> FunctionCoverage(filecov, "func.gcov", mangled_name="foo()", demangled_name=None, lineno=-1, count=1, blocks=0.5)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c (function foo()) lineno must not be a negative value.
+        GCOV data file is:
+           func.gcov
+        >>> FunctionCoverage(filecov, "func.gcov", mangled_name="foo()", demangled_name=None, lineno=1, count=-1, blocks=0.5)
+        Traceback (most recent call last):
+          ...
+        gcovr.data_model.coverage.GcovrDataAssertionError: file.c (function foo()) count must not be a negative value.
+        GCOV data file is:
+           func.gcov
     """
 
     __slots__ = (
@@ -1378,7 +1560,7 @@ class FunctionCoverage(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         mangled_name: Optional[str],
         demangled_name: Optional[str],
@@ -1391,18 +1573,17 @@ class FunctionCoverage(CoverageBase):
     ) -> None:
         super().__init__(data_source)
         self.parent = parent
-
-        if count < 0:
-            self.raise_data_error("count must not be a negative value.")
         if mangled_name is not None:
             # We have a demangled name as name -> demangled_name must be None and we need to change the values
             if "(" in mangled_name:
+                # Set the value to have the correct error message.
+                self.demangled_name = demangled_name
                 if demangled_name is not None:
                     self.raise_data_error(
-                        f"If 'name' contains a demangled name (got '{mangled_name}') the 'demangled_name' must be None (got {demangled_name})."
+                        f"Got {mangled_name} as 'mangled_name', in this case 'demangled_name' must be None."
                     )
+                # Change the attribute values
                 mangled_name, demangled_name = (None, mangled_name)
-
         self.mangled_name = mangled_name
         self.demangled_name = demangled_name
         self.count = CoverageDict[int, int]({lineno: count})
@@ -1416,6 +1597,11 @@ class FunctionCoverage(CoverageBase):
         self.end: Optional[CoverageDict[int, tuple[int, int]]] = (
             None if end is None else CoverageDict[int, tuple[int, int]]({lineno: end})
         )
+
+        if lineno < 0:
+            self.raise_data_error("lineno must not be a negative value.")
+        if count < 0:
+            self.raise_data_error("count must not be a negative value.")
 
     def serialize(
         self,
@@ -1482,7 +1668,7 @@ class FunctionCoverage(CoverageBase):
         self,
         other: FunctionCoverage,
         options: MergeOptions,
-    ) -> FunctionCoverage:
+    ) -> None:
         """
         Merge FunctionCoverage information.
 
@@ -1525,11 +1711,12 @@ class FunctionCoverage(CoverageBase):
             self.mangled_name = self._merge_property(
                 other, "Function mangled name", lambda x: x.mangled_name
             )
+
         if not options.func_opts.ignore_function_lineno:
             if self.count.keys() != other.count.keys():
                 lines = sorted(set([*self.count.keys(), *other.count.keys()]))
                 self.raise_merge_error(
-                    f"Got function {self.name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                    f"Got function on multiple lines: {', '.join([str(line) for line in lines])}.\n"
                     "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
                     "\tThe available values for MERGE_MODE are described in the documentation.",
                     other,
@@ -1564,7 +1751,7 @@ class FunctionCoverage(CoverageBase):
                     self.end = CoverageDict[int, tuple[int, int]]()
                 for lineno, end in other.end.items():
                     self.end[lineno] = end
-            return self
+            return
 
         right_lineno = list(other.count.keys())[0]
         # merge all counts into an entry for a single line number
@@ -1603,7 +1790,7 @@ class FunctionCoverage(CoverageBase):
                 {lineno: max(*self.end.values(), *other.end.values())}
             )
 
-        return self
+        self.merge_base_data(other)
 
     @property
     def key(self) -> str:
@@ -1656,7 +1843,7 @@ class FileCoverage(CoverageBase):
 
     def __init__(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         *,
         filename: str,
     ) -> None:
@@ -1664,7 +1851,7 @@ class FileCoverage(CoverageBase):
         self.filename: str = filename
         self.functions = CoverageDict[str, FunctionCoverage]()
         self.lines = CoverageDict[LinesKeyType, LineCoverage]()
-        self.lines_keys_by_lineno: dict[int, List[LinesKeyType]] = {}
+        self.lines_keys_by_lineno: dict[int, Set[LinesKeyType]] = {}
 
     def presentable_filename(self, root_filter: re.Pattern[str]) -> str:
         """Mangle a filename so that it is suitable for a report."""
@@ -1787,7 +1974,7 @@ class FileCoverage(CoverageBase):
 
     def insert_line_coverage(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         lineno: int,
@@ -1815,14 +2002,14 @@ class FileCoverage(CoverageBase):
             self.lines[key] = linecov
             self.lines[key].parent = self
             if linecov.lineno not in self.lines_keys_by_lineno:
-                self.lines_keys_by_lineno[linecov.lineno] = []
-            self.lines_keys_by_lineno[linecov.lineno].append(key)
+                self.lines_keys_by_lineno[linecov.lineno] = set[LinesKeyType]()
+            self.lines_keys_by_lineno[linecov.lineno].add(key)
 
         return self.lines[key]
 
     def insert_function_coverage(
         self,
-        data_source: Union[str, tuple[str, ...], set[tuple[str, ...]]],
+        data_source: Union[str, set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         mangled_name: Optional[str],
@@ -1865,7 +2052,7 @@ class FileCoverage(CoverageBase):
         filecov = FileCoverage(self.data_sources, filename=self.filename)
         filecov.functions[functioncov.key] = functioncov
 
-        filecov.lines = CoverageDict[tuple[int, str], LineCoverage](
+        filecov.lines = CoverageDict[LinesKeyType, LineCoverage](
             {
                 key: linecov
                 for key, linecov in self.lines.items()

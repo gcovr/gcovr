@@ -206,10 +206,10 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
         coverage.append(linecov.count if linecov.is_reportable else None)
 
         # Record branch information (INCOMPLETE/OMITTED)
-        for branchcov in linecov.branches.values():
+        for branchno, branchcov in enumerate(linecov.branches.values()):
             branches.append(linecov.lineno)
             branches.append(branchcov.source_block_id_or_0)
-            branches.append(branchcov.branchno)
+            branches.append(branchno)
             branches.append(branchcov.count)
 
     if branches:

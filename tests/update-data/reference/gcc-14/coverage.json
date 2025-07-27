@@ -291,6 +291,9 @@
                             "gcovr/data_sources": [
                                 [
                                     "main##1a63eb7b70d1a2985d93246ba4b6ea98.gcov.json.gz"
+                                ],
+                                [
+                                    "update-data##5690c5ebf0c864412969e14346adacbf.gcov.json.gz"
                                 ]
                             ]
                         },
@@ -303,12 +306,16 @@
                             "gcovr/data_sources": [
                                 [
                                     "main##1a63eb7b70d1a2985d93246ba4b6ea98.gcov.json.gz"
+                                ],
+                                [
+                                    "update-data##5690c5ebf0c864412969e14346adacbf.gcov.json.gz"
                                 ]
                             ]
                         }
                     ],
                     "conditions": [
                         {
+                            "conditionno": 0,
                             "count": 2,
                             "covered": 2,
                             "not_covered_false": [],
@@ -316,6 +323,9 @@
                             "gcovr/data_sources": [
                                 [
                                     "main##1a63eb7b70d1a2985d93246ba4b6ea98.gcov.json.gz"
+                                ],
+                                [
+                                    "update-data##5690c5ebf0c864412969e14346adacbf.gcov.json.gz"
                                 ]
                             ]
                         }
@@ -372,6 +382,9 @@
                     "gcovr/data_sources": [
                         [
                             "main##1a63eb7b70d1a2985d93246ba4b6ea98.gcov.json.gz"
+                        ],
+                        [
+                            "update-data##5690c5ebf0c864412969e14346adacbf.gcov.json.gz"
                         ]
                     ]
                 },
@@ -388,6 +401,9 @@
                     "gcovr/data_sources": [
                         [
                             "main##1a63eb7b70d1a2985d93246ba4b6ea98.gcov.json.gz"
+                        ],
+                        [
+                            "update-data##5690c5ebf0c864412969e14346adacbf.gcov.json.gz"
                         ]
                     ]
                 },
@@ -404,6 +420,9 @@
                     "gcovr/data_sources": [
                         [
                             "main##1a63eb7b70d1a2985d93246ba4b6ea98.gcov.json.gz"
+                        ],
+                        [
+                            "update-data##5690c5ebf0c864412969e14346adacbf.gcov.json.gz"
                         ]
                     ]
                 }
