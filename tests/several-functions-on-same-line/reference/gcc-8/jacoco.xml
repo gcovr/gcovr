@@ -5,32 +5,23 @@
     <sourcefile name="function.hpp">
       <line nr="2"/>
       <line nr="2"/>
-      <line nr="2"/>
-      <line nr="3"/>
       <line nr="3" mb="0" cb="4"/>
       <line nr="3" mb="2" cb="2"/>
       <line nr="4"/>
       <line nr="4"/>
-      <line nr="4"/>
-      <line nr="7"/>
       <line nr="7"/>
       <line nr="7"/>
       <line nr="9"/>
       <line nr="9"/>
-      <line nr="9"/>
-      <line nr="10"/>
       <line nr="10"/>
       <line nr="10"/>
       <line nr="13"/>
       <line nr="13"/>
-      <line nr="13"/>
-      <line nr="14"/>
       <line nr="14"/>
       <line nr="14"/>
       <line nr="15"/>
       <line nr="15"/>
-      <line nr="15"/>
-      <counter type="LINE" missed="1" covered="26"/>
+      <counter type="LINE" missed="1" covered="17"/>
       <counter type="BRANCH" missed="2" covered="6"/>
       <counter type="METHOD" missed="0" covered="4"/>
     </sourcefile>
@@ -40,14 +31,10 @@
       <line nr="5"/>
       <line nr="8"/>
       <line nr="8"/>
-      <line nr="8"/>
-      <line nr="9"/>
       <line nr="9" mb="1" cb="1"/>
       <line nr="9" mb="0" cb="2"/>
       <line nr="10"/>
       <line nr="10"/>
-      <line nr="10"/>
-      <line nr="12"/>
       <line nr="12"/>
       <line nr="12"/>
       <line nr="24"/>
@@ -64,15 +51,15 @@
       <line nr="39"/>
       <line nr="40"/>
       <line nr="42"/>
-      <counter type="LINE" missed="1" covered="28"/>
+      <counter type="LINE" missed="1" covered="24"/>
       <counter type="BRANCH" missed="1" covered="3"/>
       <counter type="METHOD" missed="0" covered="4"/>
     </sourcefile>
-    <counter type="LINE" missed="2" covered="54"/>
+    <counter type="LINE" missed="2" covered="41"/>
     <counter type="BRANCH" missed="3" covered="9"/>
     <counter type="METHOD" missed="0" covered="8"/>
   </package>
-  <counter type="LINE" missed="2" covered="54"/>
+  <counter type="LINE" missed="2" covered="41"/>
   <counter type="BRANCH" missed="3" covered="9"/>
   <counter type="METHOD" missed="0" covered="8"/>
 </report>
