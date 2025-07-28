@@ -220,8 +220,6 @@ def prepare_next_iteration(session: nox.Session) -> None:
                     Next Release
                     ------------
 
-                    Known bugs:
-
                     Breaking changes:
 
                     New features and notable changes:

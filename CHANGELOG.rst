@@ -8,8 +8,6 @@
 Next Release
 ------------
 
-Known bugs:
-
 Breaking changes:
 
 - Improve data model to have several coverage information per line. (:issue:`1069`)
@@ -51,6 +49,7 @@ Bug fixes and small improvements:
   ``clang-18`` and ``clang-19``. (:issue:`1120`)
 - Fix error when merging conditions (and branches) for the same line if they are reported different
   across GCOV data files. (:issue:`1092`)
+- Fix wrong handling of functions with specialization. (:issue:`1126`)
 
 Documentation:
 
@@ -73,14 +72,12 @@ Internal changes:
 
 Known bugs:
 
-- Log message ``Deprecated config key None used, please use 'txt-metric=branch' instead.`` is shown
-  even if the mentioned key is used. :issue:`1060` and :issue:`1064`, fixed in :ref:`Next release <next_release>`.
-- ``JSON`` report doesn't contain ``excluded`` property for conditions and calls. Fixed in :ref:`Next release <next_release>`.
-- ``Cobertura`` report contains multiple functions with same name for virtual destructors and const overloads.
-  Fixed in :ref:`Next release <next_release>`.
-- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
-- Error if conditions for the same line are reported different across GCOV data files.
-  Workaround in this release available and fixed in :ref:`Next release <next_release>`.
+- :ref:`fix_1066`
+- :ref:`fix_1080`
+- :ref:`fix_1085`
+- :ref:`fix_1089`
+- :ref:`fix_1092`
+- :ref:`fix_1126`
 
 Breaking changes:
 
@@ -128,20 +125,19 @@ Internal changes:
 - Move gcovr to ``src`` directory. (:issue:`1027`)
 - The main routine doesn't call ``sys.exit`` on it's own, we always return the exit code. (:issue:`1029`)
 
+.. _release_8_2:
 
 8.2 (13 October 2024)
 ---------------------
 
 Known bugs:
 
-- Excluded lines are added with a count of 0 to ``LCOV`` report. :issue:`1012`, fixed with :ref:`8.3 <release_8_3>`.
-- Negative counters in GCOV JSON export are not handled correct. :issue:`1049`, fixed in :ref:`8.3 <release_8_3>`.
-- Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
-- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
-  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
-- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
-- Error if conditions for the same line are reported different across GCOV data files.
-  Workaround in :ref:`8.3 <release_8_3>` available and fixed in :ref:`Next release <next_release>`.
+- :ref:`fix_1012`
+- :ref:`fix_1022`
+- :ref:`fix_1037`
+- :ref:`fix_1048`
+- :ref:`fix_1089`.
+- :ref:`fix_1126`.
 
 Breaking changes:
 
@@ -162,13 +158,11 @@ Internal changes:
 
 Known bugs:
 
-- Negative counters in GCOV JSON export are not handled correct. :issue:`1049`, fixed in :ref:`8.3 <release_8_3>`.
-- Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
-- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
-  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
-- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
-- Error if conditions for the same line are reported different across GCOV data files.
-  Workaround in :ref:`8.3 <release_8_3>` available and fixed in :ref:`Next release <next_release>`.
+- :ref:`fix_1022`
+- :ref:`fix_1037`
+- :ref:`fix_1048`
+- :ref:`fix_1089`
+- :ref:`fix_1092`
 
 Breaking changes:
 
@@ -185,19 +179,19 @@ Documentation:
 
 Internal changes:
 
+.. _release_8_0:
+
 8.0 (07 October 2024)
 ---------------------
 
 Known bugs:
 
-- Exclusion of internal function not working. (:issue:`984`), fixed in :ref:`8.1 <release_8_1>`.
-- Negative counters in GCOV JSON export are not handled correct. :issue:`1049`, fixed in :ref:`8.3 <release_8_3>`.
-- Overall summary stats in ``JaCoCo`` report are not correct. :issue:`1022`, fixed in :ref:`8.3 <release_8_3>`.
-- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
-  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
-- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
-- Error if conditions for the same line are reported different across GCOV data files.
-  Workaround in :ref:`8.3 <release_8_3>` available and fixed in :ref:`Next release <next_release>`.
+- :ref:`fix_987`
+- :ref:`fix_1022`
+- :ref:`fix_1037`
+- :ref:`fix_1048`
+- :ref:`fix_1089`
+- :ref:`fix_1092`
 
 Breaking changes:
 
@@ -260,19 +254,23 @@ Internal changes:
 - Remove Codecov upload from pipeline. (:issue:`958`)
 - Add test with ``bazel`` tests. (:issue:`969`)
 
+.. _release_7_2:
+
 7.2 (24 February 2024)
 ----------------------
 
 Fix tagging issue of 7.1, no functional change.
+
+.. _release_7_1:
 
 7.1 (24 February 2024)
 ----------------------
 
 Known bugs:
 
-- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
-  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
-- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
+- :ref:`fix_1022`
+- :ref:`fix_1037`
+- :ref:`fix_1089`.
 
 Breaking changes:
 
@@ -299,14 +297,16 @@ Internal changes:
 - Add pipeline job to apply tag if new version is bumped. (:issue:`879`)
 - Improve test coverage and generate coverage report if executed in local environment. (:issue:`891`)
 
+.. _release_7_0:
+
 7.0 (25 January 2024)
 ---------------------
 
 Known bugs:
 
-- Source root path in ``Cobertura`` report is not written correct and ignored when reading report.
-  :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
-- ``JaCoCo`` report does not follow the DTD. Fixed in :ref:`Next release <next_release>`.
+- :ref:`fix_1022`
+- :ref:`fix_1037`
+- :ref:`fix_1089`
 
 Breaking changes:
 
@@ -400,13 +400,14 @@ Internal changes:
 - Add support for ``clang-15`` in our test suite and fix test with write protection under Mac OS. (:issue:`853`)
 - Add test for parallel execution of multiple gcovr instances. (:issue:`832`)
 
+.. _release_6_0:
 
 6.0 (08 March 2023)
 -------------------
 
 Known bugs:
 
-- Source root path in ``Cobertura`` report is not written correct. :issue:`1034`, fixed in :ref:`8.3 <release_8_3>`.
+- :ref:`fix_1037`
 
 Breaking changes:
 
