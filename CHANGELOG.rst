@@ -51,6 +51,7 @@ Bug fixes and small improvements:
   ``clang-18`` and ``clang-19``. (:issue:`1120`)
 - Fix error when merging conditions (and branches) for the same line if they are reported different
   across GCOV data files. (:issue:`1092`)
+- Improve branch details view if there are branches for several functions on same line. (:issue:`1128`)
 
 Documentation:
 
