@@ -78,6 +78,12 @@ td.linenos .normal {
     white-space: unset;
 }
 
+.style-function-name
+{
+    font-style: italic !important;
+    font-weight: bolder !important;
+}
+
 .color-excluded-branch, .color-taken-branch, .color-excluded-condition, .color-taken-condition, .color-taken-decision, .color-excluded-call, .color-invoked-call {
     color: var(--taken_color) !important;
 }
