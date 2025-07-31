@@ -1241,7 +1241,7 @@ class LineCoverage(CoverageBase):
                 DecisionCoverageSwitch.deserialize(
                     linecov, data_source, data_dict_decision
                 )
-            else:
+            else:  # pragma: no cover
                 raise AssertionError(f"Unknown decision type: {decision_type!r}")
 
         if (calls := data_dict.get("calls")) is not None:
