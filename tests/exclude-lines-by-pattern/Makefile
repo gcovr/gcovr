@@ -7,11 +7,12 @@ run: txt lcov cobertura html sonarqube jacoco coveralls
 
 txt:
 	./testcase
-	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' -o coverage.txt
+	$(GCOVR) -d --config config/gcovr.config -o coverage.txt
 
 lcov:
+	cp -f config/pyproject.toml ./
 	./testcase
-	$(GCOVR) -d --exclude-lines-by-pattern ' *panic\([^)]*\);' --lcov coverage.lcov
+	$(GCOVR) -d --lcov coverage.lcov
 
 cobertura:
 	./testcase
@@ -36,4 +37,4 @@ coveralls:
 clean:
 	rm -f testcase
 	rm -f *.gc*
-	rm -f coverage.txt coverage*.html coverage.css cobertura.xml sonarqube.xml jacoco.xml coveralls.json coverage.lcov
+	rm -f pyproject.toml coverage.txt coverage*.html coverage.css cobertura.xml sonarqube.xml jacoco.xml coveralls.json coverage.lcov

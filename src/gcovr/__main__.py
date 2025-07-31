@@ -319,14 +319,8 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         if not options.gcov_filter:
             options.gcov_filter = [AlwaysMatchFilter()]
         options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
-        if options.gcov_exclude_dirs:
-            options.gcov_exclude_dirs = [
-                f.build_filter() for f in options.gcov_exclude_dirs
-            ]
-
-        options.exclude_functions = [
-            (re.compile(f[1:-1] if f[0] == "/" and f[-1] == "/" else re.escape(f)))
-            for f in options.exclude_functions
+        options.gcov_exclude_dirs = [
+            f.build_filter() for f in options.gcov_exclude_dirs
         ]
         # Output the filters for debugging
         for name, filters in [
@@ -337,37 +331,43 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
             ("--gcov-filter", options.gcov_filter),
             ("--gcov-exclude", options.gcov_exclude),
             ("--gcov-exclude-directories", options.gcov_exclude_dirs),
-            ("--exclude-function", options.exclude_functions),
         ]:
             LOGGER.debug(f"Filters for {name}: ({len(filters)})")
             for f in filters:
                 LOGGER.debug(f" - {f}")
 
     except re.error as e:
+        # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
+        # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
         LOGGER.error(f"Error setting up filter '{e.pattern!s}': {e}")
         return EXIT_CMDLINE_ERROR
 
-    if options.exclude_lines_by_pattern:
-        try:
-            re.compile(options.exclude_lines_by_pattern)
-        except re.error as e:
-            # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
-            # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
-            LOGGER.error(
-                "--exclude-lines-by-pattern: "
-                f"Invalid regular expression: {options.exclude_lines_by_pattern!s}, error: {e}"
-            )
-            return EXIT_CMDLINE_ERROR
+    try:
+        options.exclude_functions = [
+            (re.compile(p[1:-1] if p[0] == "/" and p[-1] == "/" else re.escape(p)))
+            for p in options.exclude_functions
+        ]
+        options.exclude_lines_by_patterns = [
+            (re.compile(p)) for p in options.exclude_lines_by_patterns
+        ]
+        options.exclude_branches_by_patterns = [
+            (re.compile(p)) for p in options.exclude_branches_by_patterns
+        ]
+        # Output the filters for debugging
+        for name, pattern in [
+            ("--exclude-function", options.exclude_functions),
+            ("--exclude-lines-by-patterns", options.exclude_lines_by_patterns),
+            ("--exclude-branches-by-patterns", options.exclude_branches_by_patterns),
+        ]:
+            LOGGER.debug(f"Patterns for {name}: ({len(pattern)})")
+            for p in pattern:
+                LOGGER.debug(f" - {p}")
 
-    if options.exclude_branches_by_pattern:
-        try:
-            re.compile(options.exclude_branches_by_pattern)
-        except re.error as e:
-            LOGGER.error(
-                "--exclude-branches-by-pattern: "
-                f"Invalid regular expression: {repr(options.exclude_branches_by_pattern)}, error: {e}"
-            )
-            return EXIT_CMDLINE_ERROR
+    except re.error as e:
+        # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
+        # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
+        LOGGER.error(f"Error setting up filter '{e.pattern!s}': {e}")
+        return EXIT_CMDLINE_ERROR
 
     if options.fail_under_decision > 0.0 and not options.show_decision:
         LOGGER.error("--fail-under-decision need also option --decision.")
