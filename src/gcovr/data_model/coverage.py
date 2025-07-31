@@ -1116,6 +1116,7 @@ class LineCoverage(CoverageBase):
         "lineno",
         "count",
         "function_name",
+        "demangled_function_name",
         "block_ids",
         "excluded",
         "md5",
@@ -1142,6 +1143,7 @@ class LineCoverage(CoverageBase):
         self.lineno = lineno
         self.count = count
         self.function_name = function_name
+        self.demangled_function_name: Optional[str] = None
         self.block_ids = block_ids
         self.md5 = md5
         self.excluded = excluded
@@ -1239,7 +1241,7 @@ class LineCoverage(CoverageBase):
                 DecisionCoverageSwitch.deserialize(
                     linecov, data_source, data_dict_decision
                 )
-            else:
+            else:  # pragma: no cover
                 raise AssertionError(f"Unknown decision type: {decision_type!r}")
 
         if (calls := data_dict.get("calls")) is not None:
@@ -1939,12 +1941,12 @@ class FileCoverage(CoverageBase):
             data_dict.get(GCOVR_DATA_SOURCES, data_source),
             filename=filename,
         )
+        for data_dict_line in data_dict["lines"]:
+            LineCoverage.deserialize(filecov, data_source, data_dict_line)
         for data_dict_function in data_dict["functions"]:
             FunctionCoverage.deserialize(
                 filecov, merge_options, data_source, data_dict_function
             )
-        for data_dict_line in data_dict["lines"]:
-            LineCoverage.deserialize(filecov, data_source, data_dict_line)
 
         return filecov
 
@@ -2040,6 +2042,11 @@ class FileCoverage(CoverageBase):
         else:
             self.functions[key] = functioncov
             self.functions[key].parent = self
+        for linecov in self.lines.values():
+            if functioncov.mangled_name is not None and (
+                functioncov.mangled_name == linecov.function_name
+            ):
+                linecov.demangled_function_name = functioncov.demangled_name
 
         return functioncov
 
