@@ -17,6 +17,9 @@ Breaking changes:
   - ``JSON`` report can now have several entries per line also with legacy text parser.
   - Cobertura and ``HTML`` report now contain function coverage also for older GCC versions.
 
+- If the keys `exclude-lines-by-pattern` or `exclude-branches-by-pattern` are used in a TOML
+  configuration, the value needs to be changed to a list. (:issue:`1129`)
+
 New features and notable changes:
 
 - Add support for Markdown output format. (:issue:`1072`)
@@ -26,6 +29,8 @@ New features and notable changes:
 
 - Abort on version mismatch between gcc/gcov instead of trying all working directories. (:issue:`1097`)
 - Add branch information to ``Coveralls`` report. (:issue:`1121`)
+- Add support to define :option:`--exclude-lines-by-pattern` and :option:`--exclude-branches-by-pattern`
+  more than once. (:issue:`1129`)
 
 Bug fixes and small improvements:
 
@@ -49,6 +54,8 @@ Bug fixes and small improvements:
   ``clang-18`` and ``clang-19``. (:issue:`1120`)
 - Fix error when merging conditions (and branches) for the same line if they are reported different
   across GCOV data files. (:issue:`1092`)
+- Improve branch details view if there are branches for several functions on same line. (:issue:`1128`)
+- Do not add files without functions and lines from ``gcov`` JSON files to data model. (:issue:`1130`)
 - Fix wrong handling of functions with specialization. (:issue:`1126`)
 
 Documentation:
@@ -78,6 +85,7 @@ Known bugs:
 - :ref:`fix_1089`
 - :ref:`fix_1092`
 - :ref:`fix_1126`
+- :ref:`fix_1130`
 
 Breaking changes:
 
@@ -138,6 +146,7 @@ Known bugs:
 - :ref:`fix_1048`
 - :ref:`fix_1089`.
 - :ref:`fix_1126`.
+- :ref:`fix_1130`
 
 Breaking changes:
 
@@ -163,6 +172,7 @@ Known bugs:
 - :ref:`fix_1048`
 - :ref:`fix_1089`
 - :ref:`fix_1092`
+- :ref:`fix_1130`
 
 Breaking changes:
 
@@ -192,6 +202,7 @@ Known bugs:
 - :ref:`fix_1048`
 - :ref:`fix_1089`
 - :ref:`fix_1092`
+- :ref:`fix_1130`
 
 Breaking changes:
 

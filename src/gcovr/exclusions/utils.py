@@ -135,12 +135,8 @@ def apply_exclusion_ranges(
 
     Arguments:
         filecov: the coverage to filter
-        lines: the source code lines (not raw gcov lines)
-        exclude_lines_by_pattern: string with regex syntax to exclude
-            individual lines
-        exclude_branches_by_pattern: string with regex syntax to exclude
-            individual branches
-        exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers.
+        line_is_excluded: the function to check if a line is excluded
+        branch_is_excluded: the function to check if the branches are excluded
     """
 
     for linecov in filecov.lines.values():

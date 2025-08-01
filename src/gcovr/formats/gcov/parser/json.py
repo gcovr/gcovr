@@ -71,6 +71,12 @@ def parse_coverage(
         )
 
     for file in gcov_json_data["files"]:
+        if not file["lines"] and not file["functions"]:
+            LOGGER.debug(
+                f"Skip data for file {file['file']} because no lines and functions defined."
+            )
+            continue
+
         source_lines: list[bytes] = []
         fname = os.path.normpath(
             os.path.join(gcov_json_data["current_working_directory"], file["file"])
@@ -84,8 +90,8 @@ def parse_coverage(
             max(line["line_number"] for line in file["lines"]) if file["lines"] else 1
         )
         try:
-            with open(fname, "rb") as fh_in2:
-                source_lines = fh_in2.read().splitlines()
+            with open(fname, "rb") as fh_in:
+                source_lines = fh_in.read().splitlines()
             lines = len(source_lines)
             if lines < max_line_number:
                 LOGGER.warning(

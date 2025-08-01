@@ -41,13 +41,6 @@ from pygments.lexers import get_lexer_for_filename
 
 from ...data_model.container import CoverageContainer, CoverageContainerDirectory
 from ...data_model.coverage import (
-    BranchesKeyType,
-    BranchCoverage,
-    CallsKeyType,
-    CallCoverage,
-    ConditionsKeyType,
-    ConditionCoverage,
-    DecisionCoverage,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
@@ -942,30 +935,32 @@ def source_row(
             covclass = "uncoveredLine"
         else:
             line_branches = [
-                source_row_branch(linecov.branches)
+                source_row_branch(linecov)
                 for linecov in linecov_list
                 if linecov.branches
             ]
             covclass = (
                 "coveredLine"
                 if all(
-                    linebranch is None or linebranch["taken"] == linebranch["total"]
-                    for linebranch in line_branches
+                    line_branch["taken"] == line_branch["total"]
+                    for line_branch in line_branches
                 )
                 else "partialCoveredLine"
             )
             line_conditions = [
-                source_row_condition(linecov.conditions)
+                source_row_condition(linecov)
                 for linecov in linecov_list
                 if linecov.conditions
             ]
             line_decisions = [
-                source_row_decision(linecov.decision)
+                source_row_decision(linecov)
                 for linecov in linecov_list
                 if linecov.decision
             ]
             linecount = sum(linecov.count for linecov in linecov_list)
-        line_calls = [source_row_call(linecov.calls) for linecov in linecov_list]
+        line_calls = [
+            source_row_call(linecov) for linecov in linecov_list if linecov.calls
+        ]
     return {
         "lineno": lineno,
         "block_ids": []
@@ -984,14 +979,14 @@ def source_row(
 
 
 def source_row_branch(
-    branches: dict[BranchesKeyType, BranchCoverage],
+    linecov: LineCoverage,
 ) -> dict[str, Any]:
     """Get branch information for a row"""
     taken = 0
     total = 0
     items = list[dict[str, Any]]()
 
-    for branchcov in branches.values():
+    for branchcov in linecov.branches.values():
         if branchcov.is_reportable:
             total += 1
         if branchcov.is_covered:
@@ -1010,6 +1005,7 @@ def source_row_branch(
             items[-1]["destination_block_id"] = branchcov.destination_block_id
 
     return {
+        "function_name": linecov.demangled_function_name or linecov.function_name,
         "taken": taken,
         "total": total,
         "branches": items,
@@ -1017,7 +1013,7 @@ def source_row_branch(
 
 
 def source_row_condition(
-    conditions: dict[ConditionsKeyType, ConditionCoverage],
+    linecov: LineCoverage,
 ) -> dict[str, Any]:
     """Get condition information for a row."""
 
@@ -1025,18 +1021,25 @@ def source_row_condition(
     covered = 0
     items = []
 
-    for conditioncov in sorted(conditions.values(), key=lambda x: x.conditionno):
+    for conditioncov in sorted(
+        linecov.conditions.values(), key=lambda x: x.conditionno
+    ):
         if conditioncov.is_reportable:
             count += conditioncov.count
         if conditioncov.is_covered:
             covered += conditioncov.covered
-        prefix = f"{conditioncov.conditionno}-" if len(conditions) > 1 else ""
+        condition_prefix = (
+            f"Condition {conditioncov.conditionno}"
+            if len(linecov.conditions) > 1
+            else ("" if conditioncov.count == 2 else "Condition ")
+        )
+        condition_separator = "." if len(linecov.conditions) > 1 else ""
         for index in range(0, conditioncov.count // 2):
             items.append(
                 {
-                    "name": None
-                    if conditioncov.count == 2 and prefix == ""
-                    else f"{prefix}{index}",
+                    "prefix": f"{condition_prefix}{condition_separator}{index}: "
+                    if conditioncov.count > 2
+                    else (f"{condition_prefix}: " if condition_prefix else ""),
                     "not_covered_true": index in conditioncov.not_covered_true,
                     "not_covered_false": index in conditioncov.not_covered_false,
                     "excluded": conditioncov.is_excluded,
@@ -1044,6 +1047,7 @@ def source_row_condition(
             )
 
     return {
+        "function_name": linecov.demangled_function_name or linecov.function_name,
         "count": count,
         "covered": covered,
         "condition": items,
@@ -1051,48 +1055,49 @@ def source_row_condition(
 
 
 def source_row_decision(
-    decision: Optional[DecisionCoverage],
+    linecov: LineCoverage,
 ) -> dict[str, Any]:
     """Get decision information for a row"""
 
     items: list[dict[str, Any]] = []
 
-    if isinstance(decision, DecisionCoverageUncheckable):
+    if isinstance(linecov.decision, DecisionCoverageUncheckable):
         items.append(
             {
                 "uncheckable": True,
             }
         )
-    elif isinstance(decision, DecisionCoverageConditional):
+    elif isinstance(linecov.decision, DecisionCoverageConditional):
         items.append(
             {
                 "uncheckable": False,
-                "taken": decision.count_true > 0,
-                "count": decision.count_true,
+                "taken": linecov.decision.count_true > 0,
+                "count": linecov.decision.count_true,
                 "name": "true",
             }
         )
         items.append(
             {
                 "uncheckable": False,
-                "taken": decision.count_false > 0,
-                "count": decision.count_false,
+                "taken": linecov.decision.count_false > 0,
+                "count": linecov.decision.count_false,
                 "name": "false",
             }
         )
-    elif isinstance(decision, DecisionCoverageSwitch):
+    elif isinstance(linecov.decision, DecisionCoverageSwitch):
         items.append(
             {
                 "uncheckable": False,
-                "taken": decision.count > 0,
-                "count": decision.count,
+                "taken": linecov.decision.count > 0,
+                "count": linecov.decision.count,
                 "name": "true",
             }
         )
     else:
-        raise RuntimeError(f"Unknown decision type {decision!r}")
+        raise RuntimeError(f"Unknown decision type {linecov.decision!r}")
 
     return {
+        "function_name": linecov.demangled_function_name or linecov.function_name,
         "taken": len([i for i in items if i.get("taken", False)]),
         "uncheckable": len([i for i in items if i["uncheckable"]]),
         "total": len(items),
@@ -1100,13 +1105,15 @@ def source_row_decision(
     }
 
 
-def source_row_call(calls: dict[CallsKeyType, CallCoverage]) -> dict[str, Any]:
+def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     """Get call information for a source row."""
     invoked = 0
     total = 0
     items = []
 
-    for callno, callcov in enumerate(sorted(calls.values(), key=lambda x: x.key)):
+    for callno, callcov in enumerate(
+        sorted(linecov.calls.values(), key=lambda x: x.key)
+    ):
         if callcov.is_reportable:
             total += 1
         if callcov.is_covered:
@@ -1120,6 +1127,7 @@ def source_row_call(calls: dict[CallsKeyType, CallCoverage]) -> dict[str, Any]:
         )
 
     return {
+        "function_name": linecov.demangled_function_name or linecov.function_name,
         "invoked": invoked,
         "total": total,
         "calls": items,

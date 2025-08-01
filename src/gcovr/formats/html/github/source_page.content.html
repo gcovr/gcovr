@@ -36,6 +36,9 @@
                         <summary>{{row.line_branches | sum(attribute='taken')}}/{{row.line_branches | sum(attribute='total')}}</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             {% for linebranch in row.line_branches %}
+                            {% if loop.length > 1 %}
+                            <div class="style-function-name">{{linebranch.function_name}}:</div>
+                            {% endif %}
                             {% for branch in linebranch.branches %}
                             {% if branch.branchno is defined %}
                             {%  set block_info = branch.branchno %}
@@ -50,9 +53,6 @@
                             <div class="color-fg-danger">&cross; Branch {{block_info}} not taken.</div>
                             {% endif %}
                             {% endfor %}
-                            {% if loop.length > 1 and not loop.last %}
-                            <hr />
-                            {% endif %}
                             {% endfor %}
                         </div>
                     </details>
@@ -65,22 +65,22 @@
                         <summary>{{row.line_conditions | select() | sum(attribute='covered')}}/{{row.line_conditions | select() | sum(attribute='count')}}</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             {% for linecondition in row.line_conditions %}
+                            {% if loop.length > 1 %}
+                            <div class="style-function-name">{{linecondition.function_name}}:</div>
+                            {% endif %}
                             {% for condition in linecondition.condition %}
                             {% if condition.excluded %}
-                            <div class="color-excluden-condition">&ndash; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}excluded.</div>
+                            <div class="color-excluden-condition">&ndash; {{condition.prefix}}excluded.</div>
                             {% elif condition.not_covered_true and condition.not_covered_false %}
-                            <div class="color-fg-danger">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Not covered.</div>
+                            <div class="color-fg-danger">&cross; {{condition.prefix}}Not covered.</div>
                             {% elif condition.not_covered_true %}
-                            <div class="color-fg-danger">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}True not covered.</div>
+                            <div class="color-fg-danger">&cross; {{condition.prefix}}True not covered.</div>
                             {% elif condition.not_covered_false %}
-                            <div class="color-fg-danger">&cross; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}False not covered.</div>
+                            <div class="color-fg-danger">&cross; {{condition.prefix}}False not covered.</div>
                             {% else %}
-                            <div class="color-taken-condition">&check; {% if condition.name is not none %}Condition {{condition.name}}: {% endif %}Fully covered.</div>
+                            <div class="color-taken-condition">&check; {{condition.prefix}}Fully covered.</div>
                             {% endif %}
                             {% endfor %}
-                            {% if loop.length > 1 and not loop.last %}
-                            <hr />
-                            {% endif %}
                             {% endfor %}
                         </div>
                     </details>
@@ -94,6 +94,9 @@
                         <summary>{{row.line_decisions | select() | sum(attribute='taken')}}/{{row.line_decisions | select() | sum(attribute='total')}}</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             {% for linedecision in row.line_decisions %}
+                            {% if loop.length > 1 %}
+                            <div class="style-function-name">{{linedecision.function_name}}:</div>
+                            {% endif %}
                             {% for decision in linedecision.decisions %}
                             {% if decision.uncheckable %}
                             <div>? Decision couldn't be analyzed.</div>
@@ -119,6 +122,9 @@
                         <summary>{{row.line_calls | select() | sum(attribute='invoked')}}/{{row.line_calls | select() | sum(attribute='total')}}</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             {% for linecall in row.line_calls %}
+                            {% if loop.length > 1 %}
+                            <div class="style-function-name">{{linecall.function_name}}:</div>
+                            {% endif %}
                             {% for call in linecall.calls %}
                             {% if call.excluded %}
                             <div class="color-excluded-call">&check; Call {{call.name}} excluded.</div>
@@ -128,9 +134,6 @@
                             <div class="color-fg-danger">&cross; Call {{call.name}} not invoked.</div>
                             {% endif%}
                             {% endfor %}
-                            {% if loop.length > 1 and not loop.last %}
-                            <hr />
-                            {% endif %}
                             {% endfor %}
                         </div>
                     </details>

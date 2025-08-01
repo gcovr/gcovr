@@ -6,6 +6,29 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1130:
+
+Files without functions and lines are added to report
+-----------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_0`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1130`
+
+Files without functions and lines from ``gcov`` JSON report are added to data model.
+
+.. code-block:: json
+  :caption: Snippet from ``gcov`` JSON report
+
+  {
+    "file": "/path/to/file.h",
+    "functions": [],
+    "lines": []
+  }
 
 .. _fix_1126:
 

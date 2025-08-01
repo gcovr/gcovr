@@ -21,7 +21,7 @@
 Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
 """
 
-from typing import Optional, Callable
+from typing import Callable
 import logging
 import re
 
@@ -50,8 +50,8 @@ def apply_exclusion_markers(
     filecov: FileCoverage,
     *,
     lines: list[str],
-    exclude_lines_by_pattern: Optional[str],
-    exclude_branches_by_pattern: Optional[str],
+    exclude_lines_by_patterns: list[re.Pattern[str]],
+    exclude_branches_by_patterns: list[re.Pattern[str]],
     exclude_pattern_prefix: str,
 ) -> None:
     """
@@ -63,9 +63,9 @@ def apply_exclusion_markers(
     Arguments:
         filecov: the coverage to filter
         lines: the source code lines (not raw gcov lines)
-        exclude_lines_by_pattern: string with regex syntax to exclude
+        exclude_lines_by_patterns: list of regular expressions to exclude
             individual lines
-        exclude_branches_by_pattern: string with regex syntax to exclude
+        exclude_branches_by_patterns: list of regular expressions to exclude
             individual branches
         exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers.
     """
@@ -79,8 +79,8 @@ def apply_exclusion_markers(
     line_is_excluded, branch_is_excluded = _find_excluded_ranges(
         lines=lines,
         warnings=_ExclusionRangeWarnings(filecov.filename),
-        exclude_lines_by_custom_pattern=exclude_lines_by_pattern,
-        exclude_branches_by_custom_pattern=exclude_branches_by_pattern,
+        exclude_lines_by_custom_patterns=exclude_lines_by_patterns,
+        exclude_branches_by_custom_patterns=exclude_branches_by_patterns,
         exclude_pattern_prefix=exclude_pattern_prefix,
         filecov=filecov,
     )
@@ -169,8 +169,8 @@ class _ExclusionRangeWarnings:
     >>> _ = apply_exclusion_markers(  # doctest: +NORMALIZE_WHITESPACE
     ...     FileCoverage("", filename="example.cpp"),
     ...     lines=source.strip().splitlines(),
-    ...     exclude_lines_by_pattern=None,
-    ...     exclude_branches_by_pattern=None,
+    ...     exclude_lines_by_patterns=[],
+    ...     exclude_branches_by_patterns=[],
     ...     exclude_pattern_prefix=r"[GL]COVR?")
     >>> for message in caplog.record_tuples:
     ...     print(f"{message[1]}: {message[2]}")
@@ -280,8 +280,8 @@ def _find_excluded_ranges(
     *,
     warnings: _ExclusionRangeWarnings,
     exclude_pattern_prefix: str,
-    exclude_lines_by_custom_pattern: Optional[str] = None,
-    exclude_branches_by_custom_pattern: Optional[str] = None,
+    exclude_lines_by_custom_patterns: list[re.Pattern[str]],
+    exclude_branches_by_custom_patterns: list[re.Pattern[str]],
     filecov: FileCoverage,
 ) -> tuple[ExclusionPredicate, ExclusionPredicate]:
     """
@@ -289,6 +289,7 @@ def _find_excluded_ranges(
 
     Example:
     >>> from .utils import _lines_from_sparse
+    >>> import re
     >>> lines = [
     ...     (11, '//PREFIX_EXCL_LINE'), (13, '//IGNORE_LINE'),
     ...     (15, '//PREFIX_EXCL_START'), (18, '//PREFIX_EXCL_STOP'),
@@ -296,8 +297,8 @@ def _find_excluded_ranges(
     ...     (25, '//PREFIX_EXCL_BR_START'), (28, '//PREFIX_EXCL_BR_STOP')]
     >>> exclude_line, exclude_branch = _find_excluded_ranges(
     ...     _lines_from_sparse(lines), warnings=...,
-    ...     exclude_lines_by_custom_pattern='.*IGNORE_LINE',
-    ...     exclude_branches_by_custom_pattern='.*IGNORE_BR',
+    ...     exclude_lines_by_custom_patterns=[re.compile('.*IGNORE_LINE')],
+    ...     exclude_branches_by_custom_patterns=[re.compile('.*IGNORE_BR')],
     ...     exclude_pattern_prefix='PREFIX',
     ...     filecov=None)
     >>> [lineno for lineno in range(30) if exclude_line(lineno)]
@@ -309,6 +310,8 @@ def _find_excluded_ranges(
     >>> exclude_line, _ = _find_excluded_ranges(
     ...     _lines_from_sparse([(3, '// PREFIX_EXCL_START'), (7, '// PREFIX_EXCL_STOP')]),
     ...     warnings=...,
+    ...     exclude_lines_by_custom_patterns=[],
+    ...     exclude_branches_by_custom_patterns=[],
     ...     exclude_pattern_prefix='PREFIX',
     ...     filecov=None)
     >>> for lineno in range(1, 10):
@@ -327,13 +330,9 @@ def _find_excluded_ranges(
     functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
 
     def find_range_impl(
-        custom_pattern: Optional[str],
+        custom_patterns: list[re.Pattern[str]],
         exclude_word: str,
     ) -> ExclusionPredicate:
-        custom_pattern_regex = None
-        if custom_pattern:
-            custom_pattern_regex = re.compile(custom_pattern)
-
         excl_pattern = f"(.*?)(({exclude_pattern_prefix}){_EXCLUDE_FLAG}{exclude_word}({'|'.join(_EXCLUDE_PATTERN_POSTFIXES)}))"
         excl_pattern_compiled = re.compile(excl_pattern)
 
@@ -359,9 +358,8 @@ def _find_excluded_ranges(
                     )
                     columnno += len(match)
 
-            if custom_pattern_regex:
-                if custom_pattern_regex.match(code):
-                    exclude_ranges.append((lineno, lineno))
+            if any(p.match(code) for p in custom_patterns):
+                exclude_ranges.append((lineno, lineno))
 
         for header, lineno in exclusion_stack:
             warnings.start_without_stop(
@@ -377,6 +375,6 @@ def _find_excluded_ranges(
         return make_is_in_any_range_inclusive(exclude_ranges)
 
     return (
-        find_range_impl(exclude_lines_by_custom_pattern, _EXCLUDE_LINE_WORD),
-        find_range_impl(exclude_branches_by_custom_pattern, _EXCLUDE_BRANCH_WORD),
+        find_range_impl(exclude_lines_by_custom_patterns, _EXCLUDE_LINE_WORD),
+        find_range_impl(exclude_branches_by_custom_patterns, _EXCLUDE_BRANCH_WORD),
     )
