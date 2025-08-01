@@ -6197,9 +6197,6 @@
             ],
             "gcovr/data_sources": [
                 [
-                    "testcase-main##82c8f4f173fe16bf08b8b8fa721fa188.gcov.json.gz"
-                ],
-                [
                     "testcase-switch_test##8dc93b0f0ad79b5d86720ccd66d7cbf1.gcov.json.gz"
                 ]
             ]
