@@ -47,8 +47,8 @@ class GcovHandler(BaseHandler):
             "exclude_internal_functions",
             "respect_exclusion_markers",
             "exclude_functions",
-            "exclude_lines_by_pattern",
-            "exclude_branches_by_pattern",
+            "exclude_lines_by_patterns",
+            "exclude_branches_by_patterns",
             "exclude_pattern_prefix",
             "merge_mode_functions",
             # Local options

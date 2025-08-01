@@ -60,8 +60,10 @@ class ExclusionOptions:
 
     respect_exclusion_markers: bool = True
     exclude_functions: list[re.Pattern[str]] = field(default_factory=lambda: [])
-    exclude_lines_by_pattern: Optional[str] = None
-    exclude_branches_by_pattern: Optional[str] = None
+    exclude_lines_by_patterns: list[re.Pattern[str]] = field(default_factory=lambda: [])
+    exclude_branches_by_patterns: list[re.Pattern[str]] = field(
+        default_factory=lambda: []
+    )
     exclude_pattern_prefix: str = "PREFIX"
     exclude_throw_branches: bool = False
     exclude_unreachable_branches: bool = False
@@ -76,8 +78,8 @@ def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
     return ExclusionOptions(
         respect_exclusion_markers=options.respect_exclusion_markers,
         exclude_functions=options.exclude_functions,
-        exclude_lines_by_pattern=options.exclude_lines_by_pattern,
-        exclude_branches_by_pattern=options.exclude_branches_by_pattern,
+        exclude_lines_by_patterns=options.exclude_lines_by_patterns,
+        exclude_branches_by_patterns=options.exclude_branches_by_patterns,
         exclude_pattern_prefix=options.exclude_pattern_prefix,
         exclude_throw_branches=options.exclude_throw_branches,
         exclude_unreachable_branches=(options.exclude_unreachable_branches),
@@ -106,8 +108,8 @@ def apply_all_exclusions(
         apply_exclusion_markers(
             filecov,
             lines=lines,
-            exclude_lines_by_pattern=options.exclude_lines_by_pattern,
-            exclude_branches_by_pattern=options.exclude_branches_by_pattern,
+            exclude_lines_by_patterns=options.exclude_lines_by_patterns,
+            exclude_branches_by_patterns=options.exclude_branches_by_patterns,
             exclude_pattern_prefix=options.exclude_pattern_prefix,
         )
 

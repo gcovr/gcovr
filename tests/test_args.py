@@ -779,7 +779,7 @@ def test_exclude_lines_by_pattern(caplog: pytest.LogCaptureFixture) -> None:
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "--exclude-lines-by-pattern: Invalid regular expression"
+        "Error setting up filter 'example.**': multiple repeat at position 9"
     )
     assert c.exitcode != 0
 
@@ -789,7 +789,7 @@ def test_exclude_branches_by_pattern(caplog: pytest.LogCaptureFixture) -> None:
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "--exclude-branches-by-pattern: Invalid regular expression"
+        "Error setting up filter 'example.**': multiple repeat at position 9"
     )
     assert c.exitcode != 0
 

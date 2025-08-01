@@ -1,0 +1,6 @@
+[tool.gcovr]
+
+exclude-lines-by-pattern=[
+    " *panic\\([^)]*\\);",
+    " *does_not_exist.*;",
+]
