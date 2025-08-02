@@ -30,6 +30,8 @@ class SonarqubeHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
+            # Global options needed for report
+            "show_decision",
             GcovrConfigOption(
                 "sonarqube",
                 ["--sonarqube"],
@@ -43,6 +45,15 @@ class SonarqubeHandler(BaseHandler):
                 type=OutputOrDefault,
                 default=None,
                 const=OutputOrDefault(None),
+            ),
+            GcovrConfigOption(
+                "sonarqube_metric",
+                ["--sonarqube-metric"],
+                config="sonarqube-metric",
+                group="output_options",
+                help=("The metric type to report."),
+                choices=("line", "branch", "decision"),
+                default="branch",
             ),
         ]
 
