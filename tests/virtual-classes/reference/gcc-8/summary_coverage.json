@@ -4,8 +4,8 @@
     "files": [
         {
             "filename": "main.cpp",
-            "line_total": 29,
-            "line_covered": 29,
+            "line_total": 23,
+            "line_covered": 23,
             "line_percent": 100.0,
             "function_total": 7,
             "function_covered": 7,
@@ -15,8 +15,8 @@
             "branch_percent": 50.0
         }
     ],
-    "line_total": 29,
-    "line_covered": 29,
+    "line_total": 23,
+    "line_covered": 23,
     "line_percent": 100.0,
     "function_total": 7,
     "function_covered": 7,

@@ -9,7 +9,7 @@ json: coverage.json
 
 coverage.json:
 	./testcase
-	$(GCOVR) -d --json-pretty --json $@
+	$(GCOVR) -d --gcov-keep --json-pretty --json $@
 
 html: coverage.json
 	$(GCOVR) -d --verbose --html-details -o coverage.html --add-tracefile $<

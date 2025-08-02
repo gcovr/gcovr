@@ -86,6 +86,7 @@
         "jacoco",
         "jobname",
         "kcov",
+        "kwargs",
         "latexmk",
         "latexmkrc",
         "lcov",

@@ -20,24 +20,10 @@
                 },
                 {
                     "line_number": 10,
-                    "function_name": "ns1::Bar1::Bar1()",
-                    "count": 6,
-                    "branches": [],
-                    "gcovr/md5": "1d6ff0e31f80fb5f58616ac936759cdf"
-                },
-                {
-                    "line_number": 10,
                     "function_name": "ns1::Bar1::~Bar1()",
                     "count": 6,
                     "branches": [],
                     "gcovr/md5": "1d6ff0e31f80fb5f58616ac936759cdf"
-                },
-                {
-                    "line_number": 11,
-                    "function_name": "ns1::Bar1::Bar1()",
-                    "count": 6,
-                    "branches": [],
-                    "gcovr/md5": "060565ea354b7bca4b553bac6c4740ed"
                 },
                 {
                     "line_number": 11,
@@ -81,24 +67,10 @@
                 },
                 {
                     "line_number": 26,
-                    "function_name": "ns2::Bar2::Bar2()",
-                    "count": 4,
-                    "branches": [],
-                    "gcovr/md5": "0ccb106e6d18dd8e9dcd60c0ed8182fc"
-                },
-                {
-                    "line_number": 26,
                     "function_name": "ns2::Bar2::~Bar2()",
                     "count": 4,
                     "branches": [],
                     "gcovr/md5": "0ccb106e6d18dd8e9dcd60c0ed8182fc"
-                },
-                {
-                    "line_number": 27,
-                    "function_name": "ns2::Bar2::Bar2()",
-                    "count": 4,
-                    "branches": [],
-                    "gcovr/md5": "0fe98953f15971380c96945eb7c57f18"
                 },
                 {
                     "line_number": 27,
@@ -142,24 +114,10 @@
                 },
                 {
                     "line_number": 42,
-                    "function_name": "ns3::Bar3::Bar3()",
-                    "count": 2,
-                    "branches": [],
-                    "gcovr/md5": "85fc251b48f22264177f49e1836b6458"
-                },
-                {
-                    "line_number": 42,
                     "function_name": "ns3::Bar3::~Bar3()",
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "85fc251b48f22264177f49e1836b6458"
-                },
-                {
-                    "line_number": 43,
-                    "function_name": "ns3::Bar3::Bar3()",
-                    "count": 2,
-                    "branches": [],
-                    "gcovr/md5": "345e9b1d29966e451401206797f7ad22"
                 },
                 {
                     "line_number": 43,
