@@ -356,6 +356,67 @@ def doc(session: nox.Session) -> None:
     """Generate the documentation."""
     session.install("-r", "doc/requirements.txt", "docutils")
     session.install("-e", ".")
+    gcovr_version = session.run(
+        "python",
+        "-c",
+        "from gcovr.version import __version__; print(__version__)",
+        silent=True,
+    )
+
+    session.log("Read current release from CHANGELOG.rst...")
+    changelog_rst = Path("CHANGELOG.rst")
+    with changelog_rst.open(encoding="UTF-8") as fh_in:
+        lines = fh_in.readlines()
+
+    out_lines = list[str]()
+    iter_lines = iter(lines)
+    for line in iter_lines:
+        if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
+            if (release_id := line.split(" ", maxsplit=1)[0]) != gcovr_version:
+                raise RuntimeError(
+                    f"Found release {release_id} but version is {gcovr_version}"
+                )
+        elif line.startswith("------------"):
+            next(iter_lines)
+            break
+    else:
+        raise RuntimeError(f"Start of release changes not found in {changelog_rst}.")
+
+    for line in iter_lines:
+        if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
+            break
+        line = re.sub(r"``", r"`", line)
+        line = re.sub(r":(?:option|ref):", r"", line)
+        line = re.sub(r":issue:`(\d+)`", r"#\1", line)
+        # Remove the empty lines around sub lists
+        if (
+            line.lstrip().startswith("- ")
+            and out_lines[-1].rstrip() == ""
+            and out_lines[-2].lstrip().startswith("- ")
+        ):
+            out_lines.pop()
+        # Skip lines with link targets
+        elif line.startswith(".. ") and line.rstrip().endswith(":"):
+            continue
+        out_lines.append(line)
+    else:
+        raise RuntimeError(f"End of release changes not found in {changelog_rst}.")
+
+    release_notes_md = Path() / "doc" / "build" / "release_notes.md"
+    session.log(f"Write {release_notes_md}...")
+    release_notes_md.parent.mkdir(exist_ok=True)
+    with release_notes_md.open("w", encoding="UTF-8") as fh_out:
+        fh_out.writelines(out_lines)
+
+    re_issue = re.compile(r"#(\d+)")
+    job_summary_md = Path() / "doc" / "build" / "job_summary.md"
+    session.log(f"Write {job_summary_md}...")
+    with job_summary_md.open("w", encoding="UTF-8") as fh_out:
+        fh_out.write(f"# {gcovr_version}\n")
+        fh_out.writelines(
+            re_issue.sub(r"[#\1](https://github.com/gcovr/gcovr/issues/\1)", out)
+            for out in out_lines
+        )
 
     if not GCOVR_ISOLATED_TEST and not (
         # Github actions on MacOs can't use Docker
@@ -412,46 +473,6 @@ def doc(session: nox.Session) -> None:
         # Ensure that the README builds fine as a standalone document.
         readme_html = "build/README.html"
         session.run("rst2html5.py", "--strict", "../README.rst", readme_html)
-
-    session.log("Create release_notes.md out of CHANGELOG.rst...")
-    changelog_rst = Path("CHANGELOG.rst")
-    with changelog_rst.open(encoding="UTF-8") as fh_in:
-        lines = fh_in.readlines()
-
-    out_lines = list[str]()
-    iter_lines = iter(lines)
-    for line in iter_lines:
-        if line.startswith("------------"):
-            next(iter_lines)
-            break
-        if (line.rstrip())[:-1] == ":":
-            raise RuntimeError(f"Found section start before release ID: {line}")
-    else:
-        raise RuntimeError(f"Start of release changes not found in {changelog_rst}.")
-
-    for line in iter_lines:
-        if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
-            break
-        line, _ = re.subn(r"``", r"`", line)
-        line, _ = re.subn(r":(?:option|ref):", r"", line)
-        line, _ = re.subn(r":issue:`(\d+)`", r"#\1", line)
-        # Remove the empty lines around sub lists
-        if (
-            line.strip().startswith("- ")
-            and out_lines[-1].rstrip() == ""
-            and out_lines[-2].startswith("- ")
-        ):
-            out_lines.pop()
-        # Skip lines with link targets
-        elif line.startswith(".. ") and line.rstrip().endswith(":"):
-            continue
-        out_lines.append(line)
-    else:
-        raise RuntimeError(f"End of release changes not found in {changelog_rst}.")
-
-    release_notes_md = Path() / "doc" / "build" / "release_notes.md"
-    with release_notes_md.open("w", encoding="UTF-8") as fh_out:
-        fh_out.writelines(out_lines)
 
 
 @nox.session
