@@ -54,7 +54,7 @@ class TxtHandler(BaseHandler):
                 ["--txt-metric"],
                 config="txt-metric",
                 group="output_options",
-                help=("The metric type to report."),
+                help=("The metric type to report. Default is '{default!s}'."),
                 choices=("line", "branch", "decision"),
                 default="line",
             ),
