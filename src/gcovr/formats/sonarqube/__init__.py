@@ -52,10 +52,19 @@ class SonarqubeHandler(BaseHandler):
                 config="sonarqube-metric",
                 group="output_options",
                 help=("The metric type to report. Default is '{default!s}'."),
-                choices=("line", "branch", "decision"),
+                choices=("line", "branch", "condition", "decision"),
                 default="branch",
             ),
         ]
+
+    def validate_options(self) -> None:
+        if (
+            self.options.sonarqube_metric == "decision"
+            and not self.options.show_decision
+        ):
+            raise RuntimeError(
+                "--sonarqube-metric=decision needs the option --decisions."
+            )
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here

@@ -31,11 +31,6 @@ def write_report(
 ) -> None:
     """produce an XML report in the SonarQube generic coverage format"""
 
-    if options.sonarqube_metric == "decision" and not options.show_decision:
-        raise AssertionError(
-            "--sonarqube-metric=decision needs the option --decisions."
-        )
-
     root_elem = etree.Element("coverage")
     root_elem.set("version", "1")
 
@@ -55,10 +50,10 @@ def write_report(
                     stat: Optional[Union[CoverageStat, DecisionCoverageStat]] = None
                     if options.sonarqube_metric == "branch" and linecov.branches:
                         stat = linecov.branch_coverage()
+                    elif options.sonarqube_metric == "condition" and linecov.conditions:
+                        stat = linecov.condition_coverage()
                     elif options.sonarqube_metric == "decision" and linecov.decision:
                         stat = linecov.decision_coverage()
-                    else:
-                        raise RuntimeError("Unknown value {options.sonarqube_metric} for --sonarqube-metric")
 
                     if stat:
                         line_node.set("branchesToCover", str(stat.total))

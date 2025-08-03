@@ -30,5 +30,8 @@ By default the coverage report contains metrics for line and branch coverage. Yo
    * - ``--sonarqube-metric=branch``
      - The generated XML contains line and branch coverage information
 
+   * - ``--sonarqube-metric=condition``
+     - The generated XML contains line and branch coverage information, but the branch coverage is actually condition coverage. Requires GCC 14 or newer and the code to be compiled with ``-fcondition-coverage``.
+
    * - ``--sonarqube-metric=decision``
      - The generated XML contains line and branch coverage information, but the branch coverage is actually decision coverage. Requires the option ``--decisions`` to be enabled
