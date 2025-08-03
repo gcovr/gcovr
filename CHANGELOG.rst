@@ -33,7 +33,7 @@ New features and notable changes:
 - Add branch information to ``Coveralls`` report. (:issue:`1121`)
 - Add support to define :option:`--exclude-lines-by-pattern` and :option:`--exclude-branches-by-pattern`
   more than once. (:issue:`1129`)
-- Add support to define :option:`--sonarqube-metric` (:issue:`1042`)
+- Add :option:`--sonarqube-metric` to define which metric is used as  branch metric in report. (:issue:`1042`)
 
 Bug fixes and small improvements:
 

@@ -51,7 +51,7 @@ class SonarqubeHandler(BaseHandler):
                 ["--sonarqube-metric"],
                 config="sonarqube-metric",
                 group="output_options",
-                help=("The metric type to report."),
+                help=("The metric type to report. Default is '{default!s}'."),
                 choices=("line", "branch", "decision"),
                 default="branch",
             ),

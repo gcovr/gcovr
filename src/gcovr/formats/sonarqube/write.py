@@ -51,14 +51,18 @@ def write_report(
                 line_node.set("lineNumber", str(linecov.lineno))
                 line_node.set("covered", "true" if linecov.is_covered else "false")
 
-                stat: Optional[Union[CoverageStat, DecisionCoverageStat]] = None
-                if options.sonarqube_metric == "branch" and linecov.branches:
-                    stat = linecov.branch_coverage()
-                elif options.sonarqube_metric == "decision" and linecov.decision:
-                    stat = linecov.decision_coverage()
-                if stat:
-                    line_node.set("branchesToCover", str(stat.total))
-                    line_node.set("coveredBranches", str(stat.covered))
+                if options.sonarqube_metric != "line":
+                    stat: Optional[Union[CoverageStat, DecisionCoverageStat]] = None
+                    if options.sonarqube_metric == "branch" and linecov.branches:
+                        stat = linecov.branch_coverage()
+                    elif options.sonarqube_metric == "decision" and linecov.decision:
+                        stat = linecov.decision_coverage()
+                    else:
+                        raise RuntimeError("Unknown value {options.sonarqube_metric} for --sonarqube-metric")
+
+                    if stat:
+                        line_node.set("branchesToCover", str(stat.total))
+                        line_node.set("coveredBranches", str(stat.covered))
 
                 file_node.append(line_node)
 
