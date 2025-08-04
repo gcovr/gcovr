@@ -30,6 +30,8 @@ class SonarqubeHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
+            # Global options needed for report
+            "show_decision",
             GcovrConfigOption(
                 "sonarqube",
                 ["--sonarqube"],
@@ -44,7 +46,25 @@ class SonarqubeHandler(BaseHandler):
                 default=None,
                 const=OutputOrDefault(None),
             ),
+            GcovrConfigOption(
+                "sonarqube_metric",
+                ["--sonarqube-metric"],
+                config="sonarqube-metric",
+                group="output_options",
+                help=("The metric type to report. Default is '{default!s}'."),
+                choices=("line", "branch", "condition", "decision"),
+                default="branch",
+            ),
         ]
+
+    def validate_options(self) -> None:
+        if (
+            self.options.sonarqube_metric == "decision"
+            and not self.options.show_decision
+        ):
+            raise RuntimeError(
+                "--sonarqube-metric=decision needs the option --decisions."
+            )
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
