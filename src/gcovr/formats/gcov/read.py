@@ -583,11 +583,11 @@ class GcovProgram:
                     ):
                         LOGGER.debug("GCOV capabilities: JSON format available.")
                         GcovProgram.__default_options.append("--json-format")
-                        if self.__check_gcov_help_content("--condition"):
+                        if self.__check_gcov_help_content("--conditions"):
                             LOGGER.debug(
                                 "GCOV capabilities: Condition coverage available."
                             )
-                            GcovProgram.__default_options.append("--condition")
+                            GcovProgram.__default_options.append("--conditions")
                     else:
                         LOGGER.debug(
                             "GCOV capabilities: Unsupported JSON format detected."
