@@ -36,7 +36,7 @@ def write_report(
 
     if not any(
         filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
-    ):
+    ) and (options.sonarqube_metric == "condition"):
         LOGGER.warning("No condition coverage data found.")
 
     root_elem = etree.Element("coverage")
