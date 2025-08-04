@@ -17,6 +17,7 @@
 #
 # ****************************************************************************
 
+import logging
 from typing import Optional, Union
 from lxml import etree  # nosec # We only write XML files
 
@@ -25,11 +26,18 @@ from ...data_model.stats import CoverageStat, DecisionCoverageStat
 from ...options import Options
 from ...utils import write_xml_output
 
+LOGGER = logging.getLogger("gcovr")
+
 
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
     """produce an XML report in the SonarQube generic coverage format"""
+
+    if not any(
+        filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
+    ):
+        LOGGER.warning("No condition coverage data found.")
 
     root_elem = etree.Element("coverage")
     root_elem.set("version", "1")
