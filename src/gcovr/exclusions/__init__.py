@@ -172,6 +172,7 @@ def remove_function_lines(filecov: FileCoverage) -> None:
     for linecov in list(filecov.lines.values()):
         if linecov.lineno in known_function_lines:
             filecov.lines.pop(linecov.key)
+            filecov.lines_keys_by_lineno[linecov.lineno].remove(linecov.key)
 
 
 def remove_throw_branches(filecov: FileCoverage) -> None:

@@ -313,7 +313,7 @@ class BranchCoverage(CoverageBase):
     ) -> BranchCoverage:
         """Deserialize the object."""
         return linecov.insert_branch_coverage(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
+            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
             branchno=data_dict.get("branchno"),
             count=data_dict["count"],
             source_block_id=data_dict.get("source_block_id"),
@@ -537,7 +537,7 @@ class ConditionCoverage(CoverageBase):
     ) -> ConditionCoverage:
         """Deserialize the object."""
         return linecov.insert_condition_coverage(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
+            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
             conditionno=data_dict["conditionno"],
             count=data_dict["count"],
             covered=data_dict["covered"],
@@ -667,7 +667,7 @@ class DecisionCoverageUncheckable(CoverageBase):
         """Deserialize the object."""
         linecov.insert_decision_coverage(
             DecisionCoverageUncheckable(
-                linecov, data_dict.get(GCOVR_DATA_SOURCES, data_source)
+                linecov, set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)]))
             )
         )
 
@@ -750,7 +750,7 @@ class DecisionCoverageConditional(CoverageBase):
         linecov.insert_decision_coverage(
             DecisionCoverageConditional(
                 linecov,
-                data_dict.get(GCOVR_DATA_SOURCES, data_source),
+                set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
                 count_true=data_dict["count_true"],
                 count_false=data_dict["count_false"],
             )
@@ -833,7 +833,7 @@ class DecisionCoverageSwitch(CoverageBase):
         linecov.insert_decision_coverage(
             DecisionCoverageSwitch(
                 linecov,
-                data_dict.get(GCOVR_DATA_SOURCES, data_source),
+                set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
                 count=data_dict["count"],
             )
         )
@@ -965,7 +965,7 @@ class CallCoverage(CoverageBase):
     ) -> CallCoverage:
         """Deserialize the object."""
         return linecov.insert_call_coverage(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
+            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
             callno=data_dict.get("callno"),
             returned=data_dict["returned"],
             source_block_id=data_dict["source_block_id"],
@@ -1211,7 +1211,7 @@ class LineCoverage(CoverageBase):
     ) -> LineCoverage:
         """Deserialize the object."""
         linecov = filecov.insert_line_coverage(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
+            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
             lineno=data_dict["line_number"],
             count=data_dict["count"],
             function_name=data_dict.get("function_name"),
@@ -1654,7 +1654,7 @@ class FunctionCoverage(CoverageBase):
             end = (int(end_l_c[0]), int(end_l_c[1]))
 
         return filecov.insert_function_coverage(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
+            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
             merge_options,
             mangled_name=data_dict.get("name"),
             demangled_name=data_dict.get("demangled_name"),
@@ -1938,7 +1938,7 @@ class FileCoverage(CoverageBase):
             return None
 
         filecov = FileCoverage(
-            data_dict.get(GCOVR_DATA_SOURCES, data_source),
+            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
             filename=filename,
         )
         for data_dict_line in data_dict["lines"]:
