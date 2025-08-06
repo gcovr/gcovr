@@ -1313,7 +1313,7 @@ class LineCoverage(CoverageBase):
                 self.decision = DecisionCoverageUncheckable(
                     self,
                     set[tuple[str, ...]](
-                        *self.decision.data_sources, *decisioncov.data_sources
+                        [*self.decision.data_sources, *decisioncov.data_sources]
                     ),
                 )
         elif self.decision is None:
