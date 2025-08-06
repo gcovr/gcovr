@@ -153,8 +153,9 @@ Wrong handling of functions with specialization
 - A forced inline function does not contain a function name in the
   output. If the function is at the begin of the output it is ignored
   and a debug message is printed.
-  In the middle of the file it is still added to the previous function
-  which we can't fix.
+  In the middle of the file it is still added to the previous function.
+
+  **This can’t be changed on our side because of missing information.**
 
 .. code-block::
   :caption: Forced inline function at file start (ignored by fix)
