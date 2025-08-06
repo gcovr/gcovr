@@ -281,7 +281,7 @@ class BranchCoverage(CoverageBase):
 
     def serialize(
         self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+        get_data_sources: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = dict[str, Any]()
@@ -300,7 +300,7 @@ class BranchCoverage(CoverageBase):
             data_dict["destination_block_id"] = self.destination_block_id
         if self.excluded:
             data_dict[GCOVR_EXCLUDED] = True
-        data_dict.update(get_data_source(self))
+        data_dict.update(get_data_sources(self))
 
         return data_dict
 
@@ -308,12 +308,12 @@ class BranchCoverage(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        data_source: str,
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
         data_dict: dict[str, Any],
     ) -> BranchCoverage:
         """Deserialize the object."""
         return linecov.insert_branch_coverage(
-            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
+            get_data_sources(data_dict),
             branchno=data_dict.get("branchno"),
             count=data_dict["count"],
             source_block_id=data_dict.get("source_block_id"),
@@ -512,7 +512,7 @@ class ConditionCoverage(CoverageBase):
 
     def serialize(
         self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+        get_data_sources: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = {
@@ -524,7 +524,7 @@ class ConditionCoverage(CoverageBase):
         }
         if self.excluded:
             data_dict[GCOVR_EXCLUDED] = True
-        data_dict.update(get_data_source(self))
+        data_dict.update(get_data_sources(self))
 
         return data_dict
 
@@ -532,12 +532,12 @@ class ConditionCoverage(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        data_source: str,
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
         data_dict: dict[str, Any],
     ) -> ConditionCoverage:
         """Deserialize the object."""
         return linecov.insert_condition_coverage(
-            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
+            get_data_sources(data_dict),
             conditionno=data_dict["conditionno"],
             count=data_dict["count"],
             covered=data_dict["covered"],
@@ -652,23 +652,24 @@ class DecisionCoverageUncheckable(CoverageBase):
 
     def serialize(
         self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+        get_data_sources: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = dict[str, Any]({"type": "uncheckable"})
-        data_dict.update(get_data_source(self))
+        data_dict.update(get_data_sources(self))
 
         return data_dict
 
     @classmethod
     def deserialize(
-        cls, linecov: LineCoverage, data_source: str, data_dict: dict[str, Any]
+        cls,
+        linecov: LineCoverage,
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        data_dict: dict[str, Any],
     ) -> None:
         """Deserialize the object."""
         linecov.insert_decision_coverage(
-            DecisionCoverageUncheckable(
-                linecov, set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)]))
-            )
+            DecisionCoverageUncheckable(linecov, get_data_sources(data_dict))
         )
 
     def merge(self, other: DecisionCoverageUncheckable) -> None:
@@ -728,7 +729,7 @@ class DecisionCoverageConditional(CoverageBase):
 
     def serialize(
         self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+        get_data_sources: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = dict[str, Any](
@@ -738,19 +739,22 @@ class DecisionCoverageConditional(CoverageBase):
                 "count_false": self.count_false,
             }
         )
-        data_dict.update(get_data_source(self))
+        data_dict.update(get_data_sources(self))
 
         return data_dict
 
     @classmethod
     def deserialize(
-        cls, linecov: LineCoverage, data_source: str, data_dict: dict[str, Any]
+        cls,
+        linecov: LineCoverage,
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        data_dict: dict[str, Any],
     ) -> None:
         """Deserialize the object."""
         linecov.insert_decision_coverage(
             DecisionCoverageConditional(
                 linecov,
-                set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
+                get_data_sources(data_dict),
                 count_true=data_dict["count_true"],
                 count_false=data_dict["count_false"],
             )
@@ -812,7 +816,7 @@ class DecisionCoverageSwitch(CoverageBase):
 
     def serialize(
         self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+        get_data_sources: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = dict[str, Any](
@@ -821,19 +825,22 @@ class DecisionCoverageSwitch(CoverageBase):
                 "count": self.count,
             }
         )
-        data_dict.update(get_data_source(self))
+        data_dict.update(get_data_sources(self))
 
         return data_dict
 
     @classmethod
     def deserialize(
-        cls, linecov: LineCoverage, data_source: str, data_dict: dict[str, Any]
+        cls,
+        linecov: LineCoverage,
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        data_dict: dict[str, Any],
     ) -> None:
         """Deserialize the object."""
         linecov.insert_decision_coverage(
             DecisionCoverageSwitch(
                 linecov,
-                set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
+                get_data_sources(data_dict),
                 count=data_dict["count"],
             )
         )
@@ -940,7 +947,7 @@ class CallCoverage(CoverageBase):
 
     def serialize(
         self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+        get_data_sources: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = dict[str, Any]()
@@ -952,7 +959,7 @@ class CallCoverage(CoverageBase):
         data_dict["returned"] = self.returned
         if self.excluded:
             data_dict[GCOVR_EXCLUDED] = True
-        data_dict.update(get_data_source(self))
+        data_dict.update(get_data_sources(self))
 
         return data_dict
 
@@ -960,12 +967,12 @@ class CallCoverage(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        data_source: str,
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
         data_dict: dict[str, Any],
     ) -> CallCoverage:
         """Deserialize the object."""
         return linecov.insert_call_coverage(
-            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
+            get_data_sources(data_dict),
             callno=data_dict.get("callno"),
             returned=data_dict["returned"],
             source_block_id=data_dict["source_block_id"],
@@ -1159,7 +1166,7 @@ class LineCoverage(CoverageBase):
 
     def serialize(
         self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+        get_data_sources: Callable[[CoverageBase], dict[str, Any]],
     ) -> dict[str, Any]:
         """Serialize the object."""
         data_dict = dict[str, Any](
@@ -1177,28 +1184,28 @@ class LineCoverage(CoverageBase):
             {
                 "count": self.count,
                 "branches": [
-                    branchcov.serialize(get_data_source)
+                    branchcov.serialize(get_data_sources)
                     for _, branchcov in sorted(self.branches.items())
                 ],
             }
         )
         if self.conditions:
             data_dict["conditions"] = [
-                conditioncov.serialize(get_data_source)
+                conditioncov.serialize(get_data_sources)
                 for _, conditioncov in sorted(self.conditions.items())
             ]
         if self.decision is not None:
-            data_dict["gcovr/decision"] = self.decision.serialize(get_data_source)
+            data_dict["gcovr/decision"] = self.decision.serialize(get_data_sources)
         if len(self.calls) > 0:
             data_dict["calls"] = [
-                callcov.serialize(get_data_source)
+                callcov.serialize(get_data_sources)
                 for _, callcov in sorted(self.calls.items())
             ]
         if self.md5:
             data_dict["gcovr/md5"] = self.md5
         if self.excluded:
             data_dict[GCOVR_EXCLUDED] = True
-        data_dict.update(get_data_source(self))
+        data_dict.update(get_data_sources(self))
 
         return data_dict
 
@@ -1206,12 +1213,12 @@ class LineCoverage(CoverageBase):
     def deserialize(
         cls,
         filecov: FileCoverage,
-        data_source: str,
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
         data_dict: dict[str, Any],
     ) -> LineCoverage:
         """Deserialize the object."""
         linecov = filecov.insert_line_coverage(
-            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
+            get_data_sources(data_dict),
             lineno=data_dict["line_number"],
             count=data_dict["count"],
             function_name=data_dict.get("function_name"),
@@ -1221,32 +1228,34 @@ class LineCoverage(CoverageBase):
         )
 
         for data_dict_branch in data_dict["branches"]:
-            BranchCoverage.deserialize(linecov, data_source, data_dict_branch)
+            BranchCoverage.deserialize(linecov, get_data_sources, data_dict_branch)
 
         if (conditions := data_dict.get("conditions")) is not None:
             for data_dict_condition in conditions:
-                ConditionCoverage.deserialize(linecov, data_source, data_dict_condition)
+                ConditionCoverage.deserialize(
+                    linecov, get_data_sources, data_dict_condition
+                )
 
         if (data_dict_decision := data_dict.get("gcovr/decision")) is not None:
             decision_type = data_dict_decision["type"]
             if decision_type == "uncheckable":
                 DecisionCoverageUncheckable.deserialize(
-                    linecov, data_source, data_dict_decision
+                    linecov, get_data_sources, data_dict_decision
                 )
             elif decision_type == "conditional":
                 DecisionCoverageConditional.deserialize(
-                    linecov, data_source, data_dict_decision
+                    linecov, get_data_sources, data_dict_decision
                 )
             elif decision_type == "switch":
                 DecisionCoverageSwitch.deserialize(
-                    linecov, data_source, data_dict_decision
+                    linecov, get_data_sources, data_dict_decision
                 )
             else:  # pragma: no cover
                 raise AssertionError(f"Unknown decision type: {decision_type!r}")
 
         if (calls := data_dict.get("calls")) is not None:
             for data_dict_call in calls:
-                CallCoverage.deserialize(linecov, data_source, data_dict_call)
+                CallCoverage.deserialize(linecov, get_data_sources, data_dict_call)
 
         return linecov
 
@@ -1304,7 +1313,7 @@ class LineCoverage(CoverageBase):
                 self.decision = DecisionCoverageUncheckable(
                     self,
                     set[tuple[str, ...]](
-                        *self.decision.data_sources, *decisioncov.data_sources
+                        [*self.decision.data_sources, *decisioncov.data_sources]
                     ),
                 )
         elif self.decision is None:
@@ -1607,7 +1616,7 @@ class FunctionCoverage(CoverageBase):
 
     def serialize(
         self,
-        get_data_source: Callable[[CoverageBase], dict[str, Any]],
+        get_data_sources: Callable[[CoverageBase], dict[str, Any]],
     ) -> list[dict[str, Any]]:
         """Serialize the object."""
         data_dict_list = list[dict[str, Any]]()
@@ -1631,7 +1640,7 @@ class FunctionCoverage(CoverageBase):
                 )
             if self.excluded[lineno]:
                 data_dict[GCOVR_EXCLUDED] = True
-            data_dict.update(get_data_source(self))
+            data_dict.update(get_data_sources(self))
             data_dict_list.append(data_dict)
 
         return data_dict_list
@@ -1641,7 +1650,7 @@ class FunctionCoverage(CoverageBase):
         cls,
         filecov: FileCoverage,
         merge_options: MergeOptions,
-        data_source: str,
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
         data_dict: dict[str, Any],
     ) -> FunctionCoverage:
         """Deserialize the object."""
@@ -1654,7 +1663,7 @@ class FunctionCoverage(CoverageBase):
             end = (int(end_l_c[0]), int(end_l_c[1]))
 
         return filecov.insert_function_coverage(
-            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
+            get_data_sources(data_dict),
             merge_options,
             mangled_name=data_dict.get("name"),
             demangled_name=data_dict.get("demangled_name"),
@@ -1885,7 +1894,7 @@ class FileCoverage(CoverageBase):
         # Only write data in verbose mode
         if options.verbose:
 
-            def get_data_source(cov: CoverageBase) -> dict[str, Any]:
+            def get_data_sources(cov: CoverageBase) -> dict[str, Any]:
                 """Return the printable data sources."""
                 return {
                     GCOVR_DATA_SOURCES: [
@@ -1898,7 +1907,7 @@ class FileCoverage(CoverageBase):
                 }
         else:
 
-            def get_data_source(cov: CoverageBase) -> dict[str, Any]:  # pylint: disable=unused-argument
+            def get_data_sources(cov: CoverageBase) -> dict[str, Any]:  # pylint: disable=unused-argument
                 """Stub if not running in verbose mode."""
                 return {}
 
@@ -1908,16 +1917,16 @@ class FileCoverage(CoverageBase):
         data_dict = {
             "file": filename,
             "lines": [
-                line.serialize(get_data_source)
+                line.serialize(get_data_sources)
                 for _, line in sorted(self.lines.items())
             ],
             "functions": [
                 f
                 for _, function in sorted(self.functions.items())
-                for f in function.serialize(get_data_source)
+                for f in function.serialize(get_data_sources)
             ],
         }
-        data_dict.update(get_data_source(self))
+        data_dict.update(get_data_sources(self))
 
         return data_dict
 
@@ -1937,15 +1946,21 @@ class FileCoverage(CoverageBase):
         if is_file_excluded(filename, options.filter, options.exclude):
             return None
 
+        def get_data_sources(data_dict: dict[str, Any]) -> set[tuple[str, ...]]:
+            """Return the set for data sources."""
+            return set(
+                (*e,) for e in data_dict.get(GCOVR_DATA_SOURCES, [[data_source]])
+            )
+
         filecov = FileCoverage(
-            set(*data_dict.get(GCOVR_DATA_SOURCES, [(data_source,)])),
+            get_data_sources(data_dict),
             filename=filename,
         )
         for data_dict_line in data_dict["lines"]:
-            LineCoverage.deserialize(filecov, data_source, data_dict_line)
+            LineCoverage.deserialize(filecov, get_data_sources, data_dict_line)
         for data_dict_function in data_dict["functions"]:
             FunctionCoverage.deserialize(
-                filecov, merge_options, data_source, data_dict_function
+                filecov, merge_options, get_data_sources, data_dict_function
             )
 
         return filecov
