@@ -106,20 +106,6 @@
                     "gcovr/md5": "a9149bece4ba61466af8f39f07c24214"
                 },
                 {
-                    "line_number": 21,
-                    "function_name": "RAII::method_that_may_throw() const",
-                    "count": 3,
-                    "branches": [],
-                    "gcovr/md5": "a9149bece4ba61466af8f39f07c24214"
-                },
-                {
-                    "line_number": 22,
-                    "function_name": "RAII::RAII(bool)",
-                    "count": 3,
-                    "branches": [],
-                    "gcovr/md5": "9a6e11629f107016984da48f9ffc0b61"
-                },
-                {
                     "line_number": 22,
                     "function_name": "RAII::~RAII()",
                     "count": 3,

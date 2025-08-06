@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="1.0" branch-rate="0.75" lines-covered="32" lines-valid="32" branches-covered="9" branches-valid="12" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+  <sources>
+    <source>tests/several-functions-on-same-line</source>
+  </sources>
+  <packages>
+    <package name="" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+      <classes>
+        <class name="function_hpp" filename="function.hpp" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+          <methods>
+            <method name="_Z6func_aii" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="_Z6func_bii" signature="" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+              <lines>
+                <line number="2" hits="5" branch="false"/>
+                <line number="3" hits="5" branch="true" condition-coverage="75% (6/8)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="75%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="3" branch="false"/>
+                <line number="5" hits="3" branch="false"/>
+                <line number="7" hits="2" branch="false"/>
+                <line number="9" hits="5" branch="false"/>
+                <line number="10" hits="5" branch="false"/>
+              </lines>
+            </method>
+            <method name="_ZN2ns6func_aEi" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="_ZN2ns6func_bEi" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="13" hits="2" branch="false"/>
+                <line number="14" hits="2" branch="false"/>
+                <line number="15" hits="2" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="2" hits="5" branch="false"/>
+            <line number="3" hits="5" branch="true" condition-coverage="75% (6/8)">
+              <conditions>
+                <condition number="0" type="jump" coverage="75%"/>
+              </conditions>
+            </line>
+            <line number="4" hits="3" branch="false"/>
+            <line number="5" hits="3" branch="false"/>
+            <line number="7" hits="2" branch="false"/>
+            <line number="9" hits="5" branch="false"/>
+            <line number="10" hits="5" branch="false"/>
+            <line number="13" hits="2" branch="false"/>
+            <line number="14" hits="2" branch="false"/>
+            <line number="15" hits="2" branch="false"/>
+          </lines>
+        </class>
+        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+          <methods>
+            <method name="_Z3foov" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+                <line number="5" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="_Z4funcIdEvT_S0_" signature="" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+              <lines>
+                <line number="8" hits="4" branch="false"/>
+                <line number="9" hits="4" branch="true" condition-coverage="75% (3/4)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="75%"/>
+                  </conditions>
+                </line>
+                <line number="10" hits="1" branch="false"/>
+                <line number="11" hits="1" branch="false"/>
+                <line number="12" hits="4" branch="false"/>
+              </lines>
+            </method>
+            <method name="_Z4funcIiEvT_S0_" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="24" hits="1" branch="false"/>
+                <line number="25" hits="1" branch="false"/>
+                <line number="27" hits="1" branch="false"/>
+                <line number="28" hits="1" branch="false"/>
+                <line number="29" hits="1" branch="false"/>
+                <line number="30" hits="1" branch="false"/>
+                <line number="31" hits="1" branch="false"/>
+                <line number="33" hits="1" branch="false"/>
+                <line number="34" hits="1" branch="false"/>
+                <line number="36" hits="1" branch="false"/>
+                <line number="37" hits="1" branch="false"/>
+                <line number="39" hits="1" branch="false"/>
+                <line number="40" hits="1" branch="false"/>
+                <line number="42" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="1" branch="false"/>
+            <line number="4" hits="1" branch="false"/>
+            <line number="5" hits="1" branch="false"/>
+            <line number="8" hits="4" branch="false"/>
+            <line number="9" hits="4" branch="true" condition-coverage="75% (3/4)">
+              <conditions>
+                <condition number="0" type="jump" coverage="75%"/>
+              </conditions>
+            </line>
+            <line number="10" hits="1" branch="false"/>
+            <line number="11" hits="1" branch="false"/>
+            <line number="12" hits="4" branch="false"/>
+            <line number="24" hits="1" branch="false"/>
+            <line number="25" hits="1" branch="false"/>
+            <line number="27" hits="1" branch="false"/>
+            <line number="28" hits="1" branch="false"/>
+            <line number="29" hits="1" branch="false"/>
+            <line number="30" hits="1" branch="false"/>
+            <line number="31" hits="1" branch="false"/>
+            <line number="33" hits="1" branch="false"/>
+            <line number="34" hits="1" branch="false"/>
+            <line number="36" hits="1" branch="false"/>
+            <line number="37" hits="1" branch="false"/>
+            <line number="39" hits="1" branch="false"/>
+            <line number="40" hits="1" branch="false"/>
+            <line number="42" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

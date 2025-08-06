@@ -128,16 +128,6 @@ class _BlockLine(NamedTuple):
     extra_info: _ExtraInfo
 
 
-class _SpecializationMarkerLine(NamedTuple):
-    """A gcov line that delimits template specialization sections (no fields)"""
-
-
-class _SpecializationNameLine(NamedTuple):
-    """A gcov line with the name of a specialization section: ``NAME:``"""
-
-    name: str
-
-
 class _CallLine(NamedTuple):
     """A gcov line with call data: ``call CALLNO returned RETURNED``"""
 
@@ -174,6 +164,16 @@ class _FunctionLine(NamedTuple):
     blocks_covered: float
 
 
+class _FunctionSpecializationNameLine(NamedTuple):
+    """A gcov line with the name of a specialization section: ``NAME:``"""
+
+    name: str
+
+
+class _FunctionSpecializationSeparatorLine(NamedTuple):
+    """A gcov line that delimits function specializations (no fields)"""
+
+
 # NamedTuples can't inherit from a common base,
 # so we use a Union type as the _parse_line() return type.
 #
@@ -182,12 +182,12 @@ _Line = Union[
     _SourceLine,
     _MetadataLine,
     _BlockLine,
-    _SpecializationMarkerLine,
-    _SpecializationNameLine,
     _CallLine,
     _BranchLine,
     _UnconditionalLine,
     _FunctionLine,
+    _FunctionSpecializationNameLine,
+    _FunctionSpecializationSeparatorLine,
 ]
 
 
@@ -342,7 +342,7 @@ def parse_coverage(
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
             mangled_name=name,
             demangled_name=None,
-            lineno=0 if state.linecov is None else state.linecov.lineno + 1,
+            lineno=(state.linecov_list[-1].lineno + 1) if state.linecov_list else 0,
             count=count,
             blocks=blocks,
         )
@@ -371,9 +371,9 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
 class _ParserState(NamedTuple):
     deferred_functions: list[_FunctionLine] = []
     function_name: Optional[str] = None
-    linecov: Optional[LineCoverage] = None
+    function_specialization: bool = False
+    linecov_list: list[LineCoverage] = []
     block_id: Optional[int] = None
-    line_contents: str = ""
     is_recovering: bool = False
 
 
@@ -396,36 +396,63 @@ def _gather_coverage_from_line(
     if isinstance(line, _SourceLine):
         raw_count, lineno, source_code, extra_info = line
 
-        is_noncode = extra_info & _ExtraInfo.NONCODE
-        linecov: Optional[LineCoverage] = None
-        if not is_noncode:
-            linecov = filecov.insert_line_coverage(
-                filecov.data_sources,
-                lineno=lineno,
-                count=raw_count,
-                function_name=state.function_name,
-                md5=get_md5_hexdigest(source_code.encode("UTF-8")),
-            )
         # handle deferred functions
-        for function in state.deferred_functions:
-            name, count, blocks = function
+        if state.deferred_functions:
+            for function in state.deferred_functions:
+                name, count, blocks = function
 
-            filecov.insert_function_coverage(
-                filecov.data_sources,
-                MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
-                mangled_name=name,
-                demangled_name=None,
-                lineno=lineno,
-                count=count,
-                blocks=blocks,
+                filecov.insert_function_coverage(
+                    filecov.data_sources,
+                    MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+                    mangled_name=name,
+                    demangled_name=None,
+                    lineno=lineno,
+                    count=count,
+                    blocks=blocks,
+                )
+
+            # If a specialized function is following a normal one the overall lines were added
+            # already to the previous function and we need to remove them again.
+            if (
+                state.function_specialization
+                and state.linecov_list
+                and state.linecov_list[0].lineno
+                < lineno
+                <= state.linecov_list[-1].lineno
+            ):
+                to_remove = [
+                    linecov
+                    for linecov in state.linecov_list
+                    if linecov.lineno >= lineno
+                ]
+                LOGGER.debug(
+                    f"Removing line coverage for line {to_remove[0].lineno} {'' if len(to_remove) == 1 else (' to line ' + str(to_remove[-1].lineno))} from previous function."
+                )
+                filecov.remove_line_coverage(to_remove)
+            state = state._replace(
+                deferred_functions=[],
+                linecov_list=[],
             )
 
-        return _ParserState(
-            function_name=state.function_name,
-            linecov=state.linecov if linecov is None else linecov,
-            line_contents=line.source_code,
-            block_id=state.block_id,
-        )
+        is_noncode = extra_info & _ExtraInfo.NONCODE
+        if not is_noncode:
+            # This occurs if a file starts with a function with specializations.
+            # In this we get the overall line coverage of all specializations which we must ignore.
+            if state.function_name is None:
+                LOGGER.debug(
+                    f"{filecov.location}:{lineno}: Ignoring line coverage because of missing function name: {source_code}"
+                )
+            else:
+                linecov = filecov.insert_line_coverage(
+                    filecov.data_sources,
+                    lineno=lineno,
+                    count=raw_count,
+                    function_name=state.function_name,
+                    md5=get_md5_hexdigest(source_code.encode("UTF-8")),
+                )
+                state.linecov_list.append(linecov)
+
+        return state
 
     elif state.is_recovering:
         return state  # skip until the next _SourceLine
@@ -433,17 +460,33 @@ def _gather_coverage_from_line(
     elif isinstance(line, _FunctionLine):
         # Defer handling of the function tag until the next source line.
         # This is important to get correct line number information.
+        if len(state.deferred_functions):
+            LOGGER.debug(
+                f"Several function definitions for the next coverage lines, function {state.deferred_functions[-1].name} will not contain line coverage."
+            )
         return state._replace(
             deferred_functions=[*state.deferred_functions, line],
             function_name=line.name,
         )
 
+    # currently, the parser just ignores specialization sections
+    elif isinstance(line, _FunctionSpecializationNameLine):
+        return state
+
+    elif isinstance(line, _FunctionSpecializationSeparatorLine):
+        # Defer handling of the function tag until the next source line.
+        # This is important to get correct function name information.
+        return state._replace(
+            deferred_functions=[],
+            function_name=None,
+            function_specialization=True,
+        )
+
     elif isinstance(line, _BranchLine):
         branchno, hits, annotation = line
 
-        # linecov won't exist if it was considered noncode
-        if state.linecov is not None:
-            state.linecov.insert_branch_coverage(
+        if state.linecov_list:
+            state.linecov_list[-1].insert_branch_coverage(
                 filecov.data_sources,
                 branchno=branchno,
                 count=hits,
@@ -459,8 +502,8 @@ def _gather_coverage_from_line(
         callno, returned = line
 
         # linecov won't exist if it was considered noncode
-        if state.linecov is not None:
-            state.linecov.insert_call_coverage(
+        if state.linecov_list:
+            state.linecov_list[-1].insert_call_coverage(
                 filecov.data_sources,
                 callno=callno,
                 source_block_id=state.block_id,  # type: ignore [arg-type]
@@ -471,15 +514,10 @@ def _gather_coverage_from_line(
         return state
 
     elif isinstance(line, _BlockLine):
-        _, _, block_id, _ = line
-        return state._replace(block_id=block_id)
+        return state._replace(block_id=line.block_id)
 
     # ignore metadata in this phase
     elif isinstance(line, _MetadataLine):
-        return state
-
-    # currently, the parser just ignores specialization sections
-    elif isinstance(line, (_SpecializationMarkerLine, _SpecializationNameLine)):
         return state
 
     elif isinstance(line, (_UnconditionalLine,)):
@@ -619,11 +657,11 @@ def _parse_line(
 
     Example: can parse template specialization markers:
     >>> _parse_line("file", '------------------')
-    _SpecializationMarkerLine()
+    _FunctionSpecializationSeparatorLine()
 
     Example: can parse template specialization names:
     >>> _parse_line("file", 'Foo<bar>::baz():')
-    _SpecializationNameLine(name='Foo<bar>::baz()')
+    _FunctionSpecializationNameLine(name='Foo<bar>::baz()')
     >>> _parse_line("file", ' foo:')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineType:  foo:
@@ -760,7 +798,7 @@ def _parse_line(
     # more robust because it would only consider specialization names on the
     # line following a specialization marker.
     if len(line) > 2 and not line[0].isspace() and line.endswith(":"):
-        return _SpecializationNameLine(line[:-1])
+        return _FunctionSpecializationNameLine(line[:-1])
 
     raise UnknownLineType(line)
 
@@ -847,11 +885,12 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
                 name, _int_from_gcov_unit(count), _float_from_gcov_percent(blocks)
             )
 
-    # SPECIALIZATION MARKER
+    # Function separator line,
+    # see https://github.com/gcc-mirror/gcc/blob/50bc9185c2821350f0b785d6e23a6e9dcde58466/gcc/gcov.c#L3100C23-L3100C41
     #
     # Structure: literally just lots of hyphens
-    if line.startswith("-----"):
-        return _SpecializationMarkerLine()
+    if line == "------------------":
+        return _FunctionSpecializationSeparatorLine()
 
     return None
 

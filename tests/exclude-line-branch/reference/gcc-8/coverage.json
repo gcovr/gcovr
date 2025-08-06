@@ -241,24 +241,10 @@
                 },
                 {
                     "line_number": 12,
-                    "function_name": "Bar::Bar()",
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "ef89afadbfb397fa2428716379142419"
-                },
-                {
-                    "line_number": 12,
                     "function_name": "Bar::~Bar()",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "ef89afadbfb397fa2428716379142419"
-                },
-                {
-                    "line_number": 13,
-                    "function_name": "Bar::Bar()",
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "a20b7177cd45e825b1ba777bd4a25133"
                 },
                 {
                     "line_number": 13,

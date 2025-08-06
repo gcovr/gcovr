@@ -1,30 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <coverage clover="1737404287" generated="1737404287">
   <project timestamp="1737404287">
-    <metrics complexity="0" elements="30" coveredelements="29" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="1" classes="1" files="1" loc="68" ncloc="30"/>
+    <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="1" classes="1" files="1" loc="68" ncloc="24"/>
     <package name="root">
-      <metrics complexity="0" elements="30" coveredelements="29" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="68" ncloc="30"/>
+      <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="68" ncloc="24"/>
       <file name="main.cpp" path="main.cpp">
-        <metrics complexity="0" elements="30" coveredelements="29" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="68" ncloc="30"/>
+        <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="68" ncloc="24"/>
         <class name="id$118fcbaaba162ba17933c7893247df3a">
-          <metrics complexity="0" elements="30" coveredelements="29" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
+          <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
         <line num="8" type="stmt" count="3"/>
         <line num="9" type="stmt" count="3"/>
-        <line num="10" type="stmt" count="3"/>
-        <line num="11" type="stmt" count="3"/>
         <line num="10" type="stmt" count="3"/>
         <line num="11" type="stmt" count="3"/>
         <line num="24" type="stmt" count="2"/>
         <line num="25" type="stmt" count="2"/>
         <line num="26" type="stmt" count="2"/>
         <line num="27" type="stmt" count="2"/>
-        <line num="26" type="stmt" count="2"/>
-        <line num="27" type="stmt" count="2"/>
         <line num="40" type="stmt" count="1"/>
         <line num="41" type="stmt" count="1"/>
-        <line num="42" type="stmt" count="1"/>
-        <line num="43" type="stmt" count="1"/>
         <line num="42" type="stmt" count="1"/>
         <line num="43" type="stmt" count="1"/>
         <line num="51" type="stmt" count="1"/>

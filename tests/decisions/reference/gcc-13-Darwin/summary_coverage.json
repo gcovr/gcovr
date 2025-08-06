@@ -19,8 +19,8 @@
         },
         {
             "filename": "switch_test.cpp",
-            "line_total": 5,
-            "line_covered": 5,
+            "line_total": 4,
+            "line_covered": 4,
             "line_percent": 100.0,
             "function_total": 2,
             "function_covered": 2,
@@ -48,9 +48,9 @@
             "decision_percent": 33.3
         }
     ],
-    "line_total": 196,
-    "line_covered": 162,
-    "line_percent": 82.7,
+    "line_total": 195,
+    "line_covered": 161,
+    "line_percent": 82.6,
     "function_total": 37,
     "function_covered": 37,
     "function_percent": 100.0,

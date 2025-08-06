@@ -2024,6 +2024,15 @@ class FileCoverage(CoverageBase):
 
         return self.lines[key]
 
+    def remove_line_coverage(self, linecov_list: list[LineCoverage]) -> None:
+        """Remove line coverage objects from File.
+
+        Objects can be added by the text parser if a normal function is followed by a template.
+        This specialization is detected too late and we need to remove the lines again.
+        """
+        for linecov in linecov_list:
+            del self.lines[linecov.key]
+
     def insert_function_coverage(
         self,
         data_source: Union[str, set[tuple[str, ...]]],

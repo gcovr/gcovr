@@ -5,24 +5,14 @@
     <sourcefile name="main.cpp">
       <line nr="8"/>
       <line nr="9"/>
-      <line nr="8"/>
-      <line nr="9"/>
-      <line nr="10"/>
-      <line nr="11"/>
       <line nr="10"/>
       <line nr="11"/>
       <line nr="24"/>
       <line nr="25"/>
-      <line nr="24"/>
-      <line nr="25"/>
-      <line nr="26"/>
-      <line nr="27"/>
       <line nr="26"/>
       <line nr="27"/>
       <line nr="40"/>
       <line nr="41"/>
-      <line nr="42"/>
-      <line nr="43"/>
       <line nr="42"/>
       <line nr="43"/>
       <line nr="51"/>
@@ -41,15 +31,15 @@
       <line nr="65"/>
       <line nr="66"/>
       <line nr="68"/>
-      <counter type="LINE" missed="1" covered="33"/>
+      <counter type="LINE" missed="1" covered="23"/>
       <counter type="BRANCH" missed="18" covered="18"/>
       <counter type="METHOD" missed="0" covered="7"/>
     </sourcefile>
-    <counter type="LINE" missed="1" covered="33"/>
+    <counter type="LINE" missed="1" covered="23"/>
     <counter type="BRANCH" missed="18" covered="18"/>
     <counter type="METHOD" missed="0" covered="7"/>
   </package>
-  <counter type="LINE" missed="1" covered="33"/>
+  <counter type="LINE" missed="1" covered="23"/>
   <counter type="BRANCH" missed="18" covered="18"/>
   <counter type="METHOD" missed="0" covered="7"/>
 </report>
