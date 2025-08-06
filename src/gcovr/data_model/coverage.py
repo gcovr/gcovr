@@ -2013,7 +2013,7 @@ class FileCoverage(CoverageBase):
         """Remove line coverage objects from File.
 
         Objects can be added by the text parser if a normal function is followed by a template.
-        This specialization is detected to late and we need to remove the lines again.
+        This specialization is detected too late and we need to remove the lines again.
         """
         for linecov in linecov_list:
             del self.lines[linecov.key]

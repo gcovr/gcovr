@@ -411,7 +411,7 @@ def _gather_coverage_from_line(
                     blocks=blocks,
                 )
 
-            # If a specialized function is following a normal one the overall lines where added
+            # If a specialized function is following a normal one the overall lines were added
             # already to the previous function and we need to remove them again.
             if (
                 state.function_specialization
@@ -436,7 +436,7 @@ def _gather_coverage_from_line(
 
         is_noncode = extra_info & _ExtraInfo.NONCODE
         if not is_noncode:
-            # This occur if a file starts with a function with specializations.
+            # This occurs if a file starts with a function with specializations.
             # In this we get the overall line coverage of all specializations which we must ignore.
             if state.function_name is None:
                 LOGGER.debug(
