@@ -35,8 +35,8 @@ _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
 
 def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> None:
     """Remove branches on lines that look like they don't contain useful code."""
-    for linecov in filecov.lines.values():
-        if not linecov.branches:
+    for linecov in filecov.linecov():
+        if not linecov.has_branches:
             continue
 
         if _line_can_contain_branches(lines[linecov.lineno - 1]):
@@ -47,16 +47,16 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> N
             linecov.location,
         )
 
-        linecov.branches.clear()
+        linecov.delete_branches()
 
 
 def remove_noncode_lines(filecov: FileCoverage, *, lines: list[str]) -> None:
     """Remove lines that look like non-code."""
     # iterate over a shallow copy
-    for linecov in list(filecov.lines.values()):
+    for linecov in list(filecov.linecov()):
         source_code = lines[linecov.lineno - 1]
         if linecov.count == 0 and _is_non_code(source_code):
-            filecov.lines.pop(linecov.key)
+            filecov.delete_linecov(linecov)
 
 
 def _line_can_contain_branches(code: str) -> bool:

@@ -17,18 +17,18 @@
 #
 # ****************************************************************************
 
+import logging
+import os
 from pathlib import Path
 import platform
 import sys
+import re
+
+import pytest
+
 from gcovr.__main__ import main
 from gcovr.version import __version__
-from gcovr.data_model.coverage_dict import LinesKeyType
 from gcovr.data_model.version import FORMAT_VERSION
-
-import logging
-import pytest
-import os
-import re
 
 
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
@@ -548,12 +548,12 @@ def test_multiple_output_formats_to_stdout(caplog: pytest.LogCaptureFixture) -> 
             ("Text", "--txt"),
         ]
     ):
-        format, option = text_fragments
+        format_name, option = text_fragments
         message = c.record_tuples[index]
         assert message[1] == logging.WARNING
         assert (
             message[2]
-            == f"{format} output skipped - consider providing an output file with `{option}=OUTPUT`."
+            == f"{format_name} output skipped - consider providing an output file with `{option}=OUTPUT`."
         )
     assert c.exitcode == 0
 
@@ -589,12 +589,12 @@ def test_multiple_output_formats_to_stdout_1(caplog: pytest.LogCaptureFixture) -
             ("Text", "--txt"),
         ]
     ):
-        format, option = text_fragments
+        format_name, option = text_fragments
         message = c.record_tuples[index]
         assert message[1] == logging.WARNING
         assert (
             message[2]
-            == f"{format} output skipped - consider providing an output file with `{option}=OUTPUT`."
+            == f"{format_name} output skipped - consider providing an output file with `{option}=OUTPUT`."
         )
     assert c.exitcode == 0
 
@@ -692,22 +692,29 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
     testfile = os.path.join(tmp_path, testfile)
     assert testfile in covdata
     filecov = covdata[testfile]
-    assert len(filecov.lines) == 10
+    assert len(list(filecov.lines())) == 10
     for line, count, branches in [
         (7, 1, None),
         (9, 3, None),
         (16, 0, None),
         (13, 2, [1, 0]),
     ]:
-        line_key: LinesKeyType = (line, "")
-        assert filecov.lines[line_key].count == count
+        linecovs = filecov.get_line(line)
+        assert linecovs is not None
+        assert linecovs.count == count
+        branchcov_list = list(linecovs[""].branches())
         if branches is not None:
-            assert len(filecov.lines[line_key].branches) == len(branches)
+            assert len(branchcov_list) == len(branches)
             for branch_idx, branch_count in enumerate(branches):
-                assert (
-                    filecov.lines[line_key].branches[(branch_idx, None, None)].count
-                    == branch_count
-                )
+                matching_branch = [
+                    branchcov
+                    for branchcov in branchcov_list
+                    if branchcov.key == (branch_idx, None, None)
+                ]
+                assert len(matching_branch) == 1
+                assert matching_branch[0].count == branch_count
+        else:
+            assert len(branchcov_list) == 0
 
 
 def test_invalid_cobertura_file(caplog: pytest.LogCaptureFixture) -> None:

@@ -73,7 +73,7 @@ def write_report(
         # The Cobertura DTD requires a methods section, which isn't
         # trivial to get from gcov (so we will leave it blank)
         methods_elem = etree.SubElement(class_elem, "methods")
-        for functioncov in filecov.functions.values():
+        for functioncov in filecov.functioncov():
             filtered_filecov = filecov.filter_for_function(functioncov)
             function_stats = filtered_filecov.stats
             name, signature = functioncov.name_and_signature
@@ -84,13 +84,13 @@ def write_report(
             method_elem.set("branch-rate", _rate(function_stats.branch))
             method_elem.set("complexity", "0.0")
             lines_elem = etree.SubElement(method_elem, "lines")
-            for linecov in filtered_filecov.lines.values():
+            for linecov in filtered_filecov.linecov():
                 if linecov.is_reportable:
                     lines_elem.append(_line_element(linecov))
 
         lines_elem = etree.SubElement(class_elem, "lines")
 
-        for linecov in filecov.lines.values():
+        for linecov in filecov.linecov():
             if linecov.is_reportable:
                 lines_elem.append(_line_element(linecov))
 

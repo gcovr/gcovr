@@ -75,7 +75,7 @@ def write_report(
         loc = 0
         ncloc = 0
         covered_elements = 0
-        for linecov in filecov.lines.values():
+        for linecov in filecov.linecov():
             loc = linecov.lineno
             if linecov.is_reportable:
                 ncloc += 1

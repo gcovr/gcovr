@@ -134,6 +134,7 @@ disable = [
     "too-many-arguments",
     "too-many-positional-arguments",
     "too-many-instance-attributes",
+    "too-many-public-methods",
     "R0801",                         # Similar lines
 ]
 extension-pkg-allow-list = ["lxml", "gcovr"]
