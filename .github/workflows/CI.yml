@@ -252,13 +252,7 @@ jobs:
 
       - name: Set release notes as job summary
         run: |
-          (
-            echo '''
-            # ${{ needs.build-package.outputs.gcovr_version_output }}
-
-            '''
-            cat doc/build/release_notes.md
-          ) >> $GITHUB_STEP_SUMMARY
+          cat doc/build/job_summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload release notes
         uses: actions/upload-artifact@v4

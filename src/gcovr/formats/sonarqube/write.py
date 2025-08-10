@@ -17,17 +17,27 @@
 #
 # ****************************************************************************
 
+import logging
+from typing import Optional, Union
 from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
+from ...data_model.stats import CoverageStat, DecisionCoverageStat
 from ...options import Options
 from ...utils import write_xml_output
+
+LOGGER = logging.getLogger("gcovr")
 
 
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
     """produce an XML report in the SonarQube generic coverage format"""
+
+    if not any(
+        filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
+    ) and (options.sonarqube_metric == "condition"):
+        LOGGER.warning("No condition coverage data found.")
 
     root_elem = etree.Element("coverage")
     root_elem.set("version", "1")
@@ -44,10 +54,18 @@ def write_report(
                 line_node.set("lineNumber", str(linecov.lineno))
                 line_node.set("covered", "true" if linecov.is_covered else "false")
 
-                if linecov.branches:
-                    stat = linecov.branch_coverage()
-                    line_node.set("branchesToCover", str(stat.total))
-                    line_node.set("coveredBranches", str(stat.covered))
+                if options.sonarqube_metric != "line":
+                    stat: Optional[Union[CoverageStat, DecisionCoverageStat]] = None
+                    if options.sonarqube_metric == "branch" and linecov.branches:
+                        stat = linecov.branch_coverage()
+                    elif options.sonarqube_metric == "condition" and linecov.conditions:
+                        stat = linecov.condition_coverage()
+                    elif options.sonarqube_metric == "decision" and linecov.decision:
+                        stat = linecov.decision_coverage()
+
+                    if stat:
+                        line_node.set("branchesToCover", str(stat.total))
+                        line_node.set("coveredBranches", str(stat.covered))
 
                 file_node.append(line_node)
 

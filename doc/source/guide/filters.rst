@@ -14,7 +14,7 @@ not for your libraries. This is influenced by the following options:
 -   :option:`-e`/\ :option:`--exclude`
 -   :option:`--gcov-filter`
 -   :option:`--gcov-exclude`
--   :option:`--gcov-exclude-directories`
+-   :option:`--gcov-exclude-directory`
 -   (the current working directory where gcovr is invoked)
 
 NOTE: Filters can also be specified in the gcovr :ref:`configuration file <configuration>`.
@@ -69,7 +69,7 @@ But these filters also apply when gcov is launched by gcovr.
 Speeding up coverage data search
 --------------------------------
 
-The :option:`--gcov-exclude-directories` filter is used
+The :option:`--gcov-exclude-directory` filter is used
 while searching for raw coverage data (or for existing ``.gcov`` files when
 :option:`-g/--gcov-use-existing-files <--gcov-use-existing-files>` is active).
 This filter is matched against directory paths, not file paths.
@@ -90,7 +90,7 @@ For example, consider this build directory::
        ├─ better_code.gcda
        └─ better_code.gcno
 
-If we run ``gcovr --gcov-exclude-directories 'build/a$'``,
+If we run ``gcovr --gcov-exclude-directory 'build/a$'``,
 this will exclude anything in the ``build/a`` directory
 but will use the coverage data for ``better_code.o`` and ``main.o``.
 

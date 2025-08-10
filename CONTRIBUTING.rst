@@ -451,13 +451,13 @@ A useful command to update all the reference files is:
 
 .. code:: bash
 
-    python3 -m nox --s 'docker_compiler(all)' -- -rs tests -- --update_reference
+    python3 -m nox -s 'docker_compiler(all)' -- -rs tests -- --update_reference
 
 or only for the tests containing ``simple1`` in the name:
 
 .. code:: bash
 
-    python3 -m nox --s 'docker_compiler(all)' -- -rs tests -- --update_reference -k 'simple1'
+    python3 -m nox -s 'docker_compiler(all)' -- -rs tests -- --update_reference -k 'simple1'
 
 .. _devcontainer:
 

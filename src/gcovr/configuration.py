@@ -231,7 +231,7 @@ def _get_value_from_config_entry(
         except (ValueError, ArgumentTypeError) as err:
             raise cfg_entry.error(str(err)) from None
 
-    elif option.name == "json_add_tracefile":  # Special case for patterns
+    elif option.name == "json_tracefile":  # Special case for patterns
         if cfg_entry.filename is None:
             raise AssertionError(
                 "Conversion function must derive base directory from filename"
@@ -695,22 +695,7 @@ GCOVR_CONFIG_OPTIONS = [
         default=source_date_epoch() or datetime.datetime.now(),
     ),
     GcovrConfigOption(
-        "filter",
-        ["-f", "--filter"],
-        group="filter_options",
-        help=(
-            "Keep only source files that match this filter. "
-            "Can be specified multiple times. "
-            "Relative filters are relative to the current working directory "
-            "or if defined in a configuration file. "
-            "If no filters are provided, defaults to --root."
-        ),
-        action="append",
-        type=FilterOption,
-        default=[],
-    ),
-    GcovrConfigOption(
-        "include",
+        "include_search_filter",
         ["-i", "--include"],
         group="filter_options",
         help=(
@@ -725,7 +710,22 @@ GCOVR_CONFIG_OPTIONS = [
         default=[],
     ),
     GcovrConfigOption(
-        "exclude",
+        "include_filter",
+        ["-f", "--filter"],
+        group="filter_options",
+        help=(
+            "Keep only source files that match this filter. "
+            "Can be specified multiple times. "
+            "Relative filters are relative to the current working directory "
+            "or if defined in a configuration file. "
+            "If no filters are provided, defaults to --root."
+        ),
+        action="append",
+        type=FilterOption,
+        default=[],
+    ),
+    GcovrConfigOption(
+        "exclude_filter",
         ["-e", "--exclude"],
         group="filter_options",
         help=(
@@ -802,7 +802,7 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
-        "exclude_functions",
+        "exclude_function",
         ["--exclude-function"],
         help=(
             "Exclude coverage of functions. If function starts and end "
@@ -815,7 +815,7 @@ GCOVR_CONFIG_OPTIONS = [
         default=[],
     ),
     GcovrConfigOption(
-        "exclude_lines_by_patterns",
+        "exclude_lines_by_pattern",
         ["--exclude-lines-by-pattern"],
         help="Exclude lines that match this regex. The regex must match the start of the line.",
         action="append",
@@ -823,7 +823,7 @@ GCOVR_CONFIG_OPTIONS = [
         default=[],
     ),
     GcovrConfigOption(
-        "exclude_branches_by_patterns",
+        "exclude_branches_by_pattern",
         ["--exclude-branches-by-pattern"],
         help="Exclude branches that match this regex. The regex must match the start of the line.",
         action="append",

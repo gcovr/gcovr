@@ -79,7 +79,7 @@ def read_report(options: Options) -> CoverageContainer:
             options.search_paths.append(options.gcov_objdir)
 
     for search_path in options.search_paths:
-        datafiles.update(find_files(search_path, options.gcov_exclude_dirs))
+        datafiles.update(find_files(search_path, options.gcov_exclude_directory))
 
     # Get coverage data
     with Workers(
@@ -110,7 +110,7 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def find_existing_gcov_files(
-    search_path: str, exclude_dirs: list[re.Pattern[str]]
+    search_path: str, gcov_exclude_directory: list[re.Pattern[str]]
 ) -> list[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
@@ -123,14 +123,16 @@ def find_existing_gcov_files(
                 lambda fname: re.compile(r".*\.gcov(?:\.json\.gz)?$").match(fname)
                 is not None,
                 search_path,
-                exclude_dirs=exclude_dirs,
+                gcov_exclude_directory=gcov_exclude_directory,
             )
         )
         LOGGER.debug(f"Found {len(gcov_files)} files (and will process all of them)")
     return gcov_files
 
 
-def find_datafiles(search_path: str, exclude_dirs: list[re.Pattern[str]]) -> list[str]:
+def find_datafiles(
+    search_path: str, gcov_exclude_directory: list[re.Pattern[str]]
+) -> list[str]:
     """Find .gcda and .gcno files under the given search path.
 
     The .gcno files will *only* produce uncovered results.
@@ -149,7 +151,7 @@ def find_datafiles(search_path: str, exclude_dirs: list[re.Pattern[str]]) -> lis
             search_file(
                 lambda fname: re.compile(r".*\.gc(da|no)$").match(fname) is not None,
                 search_path,
-                exclude_dirs=exclude_dirs,
+                gcov_exclude_directory=gcov_exclude_directory,
             )
         )
     gcda_files = []
@@ -188,8 +190,8 @@ def process_gcov_json_data(
     coverage = json.parse_coverage(
         data_fname,
         gcov_json_data=gcov_json_data,
-        include_filters=options.filter,
-        exclude_filters=options.exclude,
+        include_filter=options.include_filter,
+        exclude_filter=options.exclude_filter,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
@@ -255,7 +257,7 @@ def process_gcov_text_data(
         current_dir=current_dir,
     )
 
-    if is_file_excluded(fname, options.filter, options.exclude):
+    if is_file_excluded(fname, options.include_filter, options.exclude_filter):
         return
 
     LOGGER.debug(f"Parsing coverage data for file {fname}")
@@ -583,11 +585,11 @@ class GcovProgram:
                     ):
                         LOGGER.debug("GCOV capabilities: JSON format available.")
                         GcovProgram.__default_options.append("--json-format")
-                        if self.__check_gcov_help_content("--condition"):
+                        if self.__check_gcov_help_content("--conditions"):
                             LOGGER.debug(
                                 "GCOV capabilities: Condition coverage available."
                             )
-                            GcovProgram.__default_options.append("--condition")
+                            GcovProgram.__default_options.append("--conditions")
                     else:
                         LOGGER.debug(
                             "GCOV capabilities: Unsupported JSON format detected."
@@ -752,25 +754,27 @@ def run_gcov_and_process_files(
 ) -> bool:
     """Run GCOV tool and process the output files."""
 
-    def remove_existing_files(files: list[str]) -> None:
-        """Remove the existing files from the given list."""
-        for filepath in sorted(files):
-            if os.path.exists(filepath):
-                os.remove(filepath)
-
-    filename = None
-    out = None
-    err = None
     done = False
-    active_gcov_files = set[str]()
-    try:
-        gcov_cmd = GcovProgram(options.gcov_cmd)
-        gcov_cmd.identify_and_cache_capabilities()
 
-        # ATTENTION:
-        # This lock is essential for parallel processing because without
-        # this there can be name collisions for the generated output files.
-        with locked_directory(chdir):
+    # ATTENTION:
+    # This lock is essential for parallel processing because without
+    # this there can be name collisions for the generated output files.
+    with locked_directory(chdir):
+
+        def remove_existing_files(files: list[str]) -> None:
+            """Remove the existing files from the given list."""
+            for filepath in sorted(files):
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+
+        filename = None
+        out = None
+        err = None
+        active_gcov_files = set[str]()
+        try:
+            gcov_cmd = GcovProgram(options.gcov_cmd)
+            gcov_cmd.identify_and_cache_capabilities()
+
             filename = abs_filename
             # Use try catch because the relpath can fail on Windows for different drives.
             # Do not know how to force this exception therefore ignore coverage.
@@ -796,8 +800,8 @@ def run_gcov_and_process_files(
             # find the files that gcov created
             active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
                 out,
-                gcov_filter=options.gcov_filter,
-                gcov_exclude=options.gcov_exclude,
+                include_filter=options.gcov_include_filter,
+                exclude_filter=options.gcov_exclude_filter,
                 chdir=chdir,
             )
             # Remove the not used files
@@ -851,38 +855,39 @@ def run_gcov_and_process_files(
 
                 done = True
 
-    except RuntimeError as exc:
-        # If we got an merge assertion error we must end the processing
-        done = False
-        error(
-            f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
-            f"Stdout of gcov was >>{out}<< End of stdout\n"
-            f"Stderr of gcov was >>{err}<< End of stderr\n"
-            f"Exception was >>{str(exc)}<< End of stderr\n"
-            f"Current processed gcov file was {filename!r}.\n"
-            "Use option --verbose to get extended information."
-        )
-    finally:
-        if options.gcov_keep and done:
-            # Keep the files with unique names
-            basename = os.path.basename(abs_filename)
-            for gcov_filename in active_gcov_files:
-                if os.path.exists(gcov_filename):
-                    directory, filename = os.path.split(gcov_filename)
-                    os.replace(
-                        gcov_filename, os.path.join(directory, f"{basename}.{filename}")
-                    )
-        else:
-            # Remove the used files
-            remove_existing_files(list(active_gcov_files))
+        except RuntimeError as exc:
+            # If we got an merge assertion error we must end the processing
+            done = False
+            error(
+                f"Trouble processing {abs_filename!r} with working directory {chdir!r}.\n"
+                f"Stdout of gcov was >>{out}<< End of stdout\n"
+                f"Stderr of gcov was >>{err}<< End of stderr\n"
+                f"Exception was >>{str(exc)}<< End of stderr\n"
+                f"Current processed gcov file was {filename!r}.\n"
+                "Use option --verbose to get extended information."
+            )
+        finally:
+            if options.gcov_keep and done:
+                # Keep the files with unique names
+                basename = os.path.basename(abs_filename)
+                for gcov_filename in active_gcov_files:
+                    if os.path.exists(gcov_filename):
+                        directory, filename = os.path.split(gcov_filename)
+                        os.replace(
+                            gcov_filename,
+                            os.path.join(directory, f"{basename}.{filename}"),
+                        )
+            else:
+                # Remove the used files
+                remove_existing_files(list(active_gcov_files))
 
     return done
 
 
 def select_gcov_files_from_stdout(
     out: str,
-    gcov_filter: list[Filter],
-    gcov_exclude: list[Filter],
+    include_filter: list[Filter],
+    exclude_filter: list[Filter],
     chdir: str,
 ) -> tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""
@@ -898,7 +903,7 @@ def select_gcov_files_from_stdout(
         full = os.path.join(chdir, fname)
         all_files.add(full)
 
-        if is_file_excluded(fname, gcov_filter, gcov_exclude):
+        if is_file_excluded(fname, include_filter, exclude_filter):
             continue
 
         active_files.add(full)
@@ -913,7 +918,9 @@ def process_existing_gcov_file(
     filename: str, covdata: CoverageContainer, options: Options, to_erase: set[str]
 ) -> None:
     """Process an existing GCOV filename."""
-    if is_file_excluded(filename, options.gcov_filter, options.gcov_exclude):
+    if is_file_excluded(
+        filename, options.gcov_include_filter, options.gcov_exclude_filter
+    ):
         LOGGER.debug(f"Excluding gcov file: {filename}")
 
     if filename.endswith(".gcov"):

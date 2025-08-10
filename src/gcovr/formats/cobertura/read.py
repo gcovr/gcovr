@@ -43,12 +43,12 @@ def read_report(options: Options) -> CoverageContainer:
     compatible with Cobertura"""
 
     covdata = CoverageContainer()
-    if len(options.cobertura_add_tracefile) == 0:
+    if len(options.cobertura_tracefile) == 0:
         return covdata
 
     datafiles = set()
 
-    for trace_files_regex in options.cobertura_add_tracefile:
+    for trace_files_regex in options.cobertura_tracefile:
         trace_files = glob(trace_files_regex, recursive=True)
         if not trace_files:
             raise RuntimeError(
@@ -82,7 +82,9 @@ def read_report(options: Options) -> CoverageContainer:
                 continue
 
             filename = str(os.path.normpath(os.path.join(source_dir, filename)))
-            if is_file_excluded(filename, options.filter, options.exclude):
+            if is_file_excluded(
+                filename, options.include_filter, options.exclude_filter
+            ):
                 continue
 
             filecov = FileCoverage(data_source, filename=filename)

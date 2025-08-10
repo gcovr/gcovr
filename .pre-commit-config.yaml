@@ -15,7 +15,6 @@ repos:
       - id: mixed-line-ending
         args:
           - --fix=no
-      - id: no-commit-to-branch
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.3
     hooks:

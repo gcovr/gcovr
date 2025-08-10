@@ -10,7 +10,7 @@ run: txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --gcov-exclude-directories 'build/a' --json-pretty --json $@
+	$(GCOVR) --gcov-exclude-directory 'build/a' --json-pretty --json $@
 
 txt: coverage.json
 	$(GCOVR) -a $< -o coverage.txt

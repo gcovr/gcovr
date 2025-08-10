@@ -90,7 +90,7 @@ class JsonHandler(BaseHandler):
                 default=None,
             ),
             GcovrConfigOption(
-                "json_add_tracefile",
+                "json_tracefile",
                 ["-a", "--json-add-tracefile", "--add-tracefile"],
                 config="add-tracefile",
                 help=(

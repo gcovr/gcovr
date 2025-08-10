@@ -55,7 +55,7 @@ class CoberturaHandler(BaseHandler):
                 action="store_true",
             ),
             GcovrConfigOption(
-                "cobertura_add_tracefile",
+                "cobertura_tracefile",
                 ["--cobertura-add-tracefile"],
                 config="cobertura-add-tracefile",
                 help=(

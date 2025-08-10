@@ -37,10 +37,10 @@ def read_report(options: Options) -> CoverageContainer:
     """Read trace files into internal data model."""
 
     covdata = CoverageContainer()
-    if len(options.json_add_tracefile) != 0:
+    if len(options.json_tracefile) != 0:
         datafiles = set()
 
-        for trace_files_regex in options.json_add_tracefile:
+        for trace_files_regex in options.json_tracefile:
             trace_files = glob(trace_files_regex, recursive=True)
             if not trace_files:
                 raise RuntimeError(
