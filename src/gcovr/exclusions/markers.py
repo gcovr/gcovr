@@ -50,8 +50,8 @@ def apply_exclusion_markers(
     filecov: FileCoverage,
     *,
     lines: list[str],
-    exclude_lines_by_patterns: list[re.Pattern[str]],
-    exclude_branches_by_patterns: list[re.Pattern[str]],
+    exclude_lines_by_pattern: list[re.Pattern[str]],
+    exclude_branches_by_pattern: list[re.Pattern[str]],
     exclude_pattern_prefix: str,
 ) -> None:
     """
@@ -63,9 +63,9 @@ def apply_exclusion_markers(
     Arguments:
         filecov: the coverage to filter
         lines: the source code lines (not raw gcov lines)
-        exclude_lines_by_patterns: list of regular expressions to exclude
+        exclude_lines_by_pattern: list of regular expressions to exclude
             individual lines
-        exclude_branches_by_patterns: list of regular expressions to exclude
+        exclude_branches_by_pattern: list of regular expressions to exclude
             individual branches
         exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers.
     """
@@ -79,8 +79,8 @@ def apply_exclusion_markers(
     line_is_excluded, branch_is_excluded = _find_excluded_ranges(
         lines=lines,
         warnings=_ExclusionRangeWarnings(filecov.filename),
-        exclude_lines_by_custom_patterns=exclude_lines_by_patterns,
-        exclude_branches_by_custom_patterns=exclude_branches_by_patterns,
+        exclude_lines_by_custom_patterns=exclude_lines_by_pattern,
+        exclude_branches_by_custom_patterns=exclude_branches_by_pattern,
         exclude_pattern_prefix=exclude_pattern_prefix,
         filecov=filecov,
     )
@@ -169,8 +169,8 @@ class _ExclusionRangeWarnings:
     >>> _ = apply_exclusion_markers(  # doctest: +NORMALIZE_WHITESPACE
     ...     FileCoverage("", filename="example.cpp"),
     ...     lines=source.strip().splitlines(),
-    ...     exclude_lines_by_patterns=[],
-    ...     exclude_branches_by_patterns=[],
+    ...     exclude_lines_by_pattern=[],
+    ...     exclude_branches_by_pattern=[],
     ...     exclude_pattern_prefix=r"[GL]COVR?")
     >>> for message in caplog.record_tuples:
     ...     print(f"{message[1]}: {message[2]}")

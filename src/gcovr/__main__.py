@@ -348,32 +348,36 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
             ) from None
 
     try:
-        options.filter = _setup_filter(
-            "--filter", options.filter, DirectoryPrefixFilter(options.root_dir)
+        options.include_filter = _setup_filter(
+            "--filter", options.include_filter, DirectoryPrefixFilter(options.root_dir)
         )
-        options.exclude = _setup_filter("--exclude", options.exclude)
-        options.include = _setup_filter("--include", options.include)
-
-        options.gcov_filter = _setup_filter(
-            "--gcov-filter", options.gcov_filter, AlwaysMatchFilter()
-        )
-        options.gcov_exclude = _setup_filter("--gcov-exclude", options.gcov_exclude)
-        options.gcov_exclude_directories = _setup_filter(
-            "--gcov-exclude-directories", options.gcov_exclude_directories
+        options.exclude_filter = _setup_filter("--exclude", options.exclude_filter)
+        options.include_search_filter = _setup_filter(
+            "--include", options.include_search_filter
         )
 
-        options.exclude_functions = _setup_pattern(
+        options.gcov_include_filter = _setup_filter(
+            "--gcov-filter", options.gcov_include_filter, AlwaysMatchFilter()
+        )
+        options.gcov_exclude_filter = _setup_filter(
+            "--gcov-exclude", options.gcov_exclude_filter
+        )
+        options.gcov_exclude_directory = _setup_filter(
+            "--gcov-exclude-directory", options.gcov_exclude_directory
+        )
+
+        options.exclude_function = _setup_pattern(
             "--exclude-function",
             [
                 p[1:-1] if p[0] == "/" and p[-1] == "/" else re.escape(p)
-                for p in options.exclude_functions
+                for p in options.exclude_function
             ],
         )
-        options.exclude_lines_by_patterns = _setup_pattern(
-            "--exclude-lines-by-pattern", options.exclude_lines_by_patterns
+        options.exclude_lines_by_pattern = _setup_pattern(
+            "--exclude-lines-by-pattern", options.exclude_lines_by_pattern
         )
-        options.exclude_branches_by_patterns = _setup_pattern(
-            "--exclude-branches-by-pattern", options.exclude_branches_by_patterns
+        options.exclude_branches_by_pattern = _setup_pattern(
+            "--exclude-branches-by-pattern", options.exclude_branches_by_pattern
         )
     except RuntimeError as e:
         LOGGER.error(str(e))

@@ -94,8 +94,8 @@ def test_empty_exclude(capsys: pytest.CaptureFixture[str]) -> None:
     assert c.exitcode != 0
 
 
-def test_empty_exclude_directories(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--gcov-exclude-directories", ""])
+def test_empty_exclude_directory(capsys: pytest.CaptureFixture[str]) -> None:
+    c = capture(capsys, ["--gcov-exclude-directory", ""])
     assert c.out == ""
     assert "filter cannot be empty" in c.err
     assert c.exitcode != 0
@@ -685,7 +685,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
 
     filename = str(tempfile)
     opts = merge_options_and_set_defaults(
-        [{"cobertura_add_tracefile": [filename], "include_filters": [re.compile(".")]}]
+        [{"cobertura_tracefile": [filename], "include_filter": [re.compile(".")]}]
     )
     covdata = read_reports(opts)
     assert covdata is not None
@@ -782,7 +782,7 @@ def test_import_cobertura_file_with_invalid_line(
         "--include",
         "--gcov-filter",
         "--gcov-exclude",
-        "--gcov-exclude-directories",
+        "--gcov-exclude-directory",
     ],
 )
 def test_exclude_filter(caplog: pytest.LogCaptureFixture, option: str) -> None:

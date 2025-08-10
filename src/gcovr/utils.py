@@ -106,7 +106,9 @@ def get_version_for_report() -> str:
 
 
 def search_file(
-    predicate: Callable[[str], bool], path: str, exclude_dirs: list[re.Pattern[str]]
+    predicate: Callable[[str], bool],
+    path: str,
+    gcov_exclude_directory: list[re.Pattern[str]],
 ) -> Iterator[str]:
     """
     Given a search path, recursively descend to find files that satisfy a
@@ -127,7 +129,9 @@ def search_file(
         dirs[:] = [
             d
             for d in sorted(dirs)
-            if not any(exc.match(os.path.join(root, d)) for exc in exclude_dirs)
+            if not any(
+                exc.match(os.path.join(root, d)) for exc in gcov_exclude_directory
+            )
         ]
         root = os.path.abspath(root)
 

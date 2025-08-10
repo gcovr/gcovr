@@ -88,7 +88,7 @@ def validate_options(options: Options) -> None:
 
 def read_reports(options: Options) -> CoverageContainer:
     """Read the reports from the given locations."""
-    if options.json_add_tracefile or options.cobertura_add_tracefile:
+    if options.json_tracefile or options.cobertura_tracefile:
         covdata = JsonHandler(options).read_report()
         covdata.merge(
             CoberturaHandler(options).read_report(),
@@ -97,17 +97,21 @@ def read_reports(options: Options) -> CoverageContainer:
     else:
         covdata = GcovHandler(options).read_report()
 
-    if options.include:
+    if options.include_search_filter:
         for search_path in options.search_paths or [options.root]:
             LOGGER.debug(f"Search for included files in {search_path}")
             for fname in search_file(
-                lambda fname: any(f.match(fname) for f in options.include),
+                lambda fname: any(
+                    f.match(fname) for f in options.include_search_filter
+                ),
                 search_path,
-                exclude_dirs=options.gcov_exclude_directories,
+                gcov_exclude_directory=options.gcov_exclude_directory,
             ):
                 # Return if the filename does not match the filter
                 # Return if the filename matches the exclude pattern
-                if is_file_excluded(fname, options.filter, options.exclude):
+                if is_file_excluded(
+                    fname, options.include_filter, options.exclude_filter
+                ):
                     continue
 
                 filecov = FileCoverage("option --include", filename=fname)

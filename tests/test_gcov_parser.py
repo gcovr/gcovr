@@ -660,8 +660,8 @@ def test_negative_branch_count_json() -> None:
         json.parse_coverage(
             "example.gcov.json.gz",
             gcov_json_data=source,
-            include_filters=[AlwaysMatchFilter()],
-            exclude_filters=[],
+            include_filter=[AlwaysMatchFilter()],
+            exclude_filter=[],
             ignore_parse_errors=set(),
         )
 
@@ -756,8 +756,8 @@ def test_negative_branch_count_ignored_json(
     json.parse_coverage(
         gcov_json_data=source,
         data_fname="example.gcov.json.gz",
-        include_filters=[AlwaysMatchFilter()],
-        exclude_filters=[],
+        include_filter=[AlwaysMatchFilter()],
+        exclude_filter=[],
         ignore_parse_errors=set([flag]),
     )
 

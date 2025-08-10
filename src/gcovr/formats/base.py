@@ -44,8 +44,8 @@ class BaseHandler:
             "search_paths",
             "source_encoding",
             "starting_dir",
-            "filter",
-            "exclude",
+            "include_filter",
+            "exclude_filter",
         ]
         option_dict = {}
         for name in global_options + [
