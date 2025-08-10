@@ -142,7 +142,7 @@ class GcovHandler(BaseHandler):
                 default=[],
             ),
             GcovrConfigOption(
-                "gcov_exclude_dirs",
+                "gcov_exclude_directories",
                 ["--gcov-exclude-directories", "--exclude-directories"],
                 group="filter_options",
                 help=(

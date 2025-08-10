@@ -426,7 +426,7 @@ def test_filter_backslashes_are_detected(caplog: pytest.LogCaptureFixture) -> No
     message = c.record_tuples[3]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "Error setting up filter 'C:\\\\foo\\moo': bad escape \\m at position 7"
+        "Error setting up filter --filter='C:\\\\foo\\moo': bad escape \\m at position 7"
     )
 
 
@@ -685,7 +685,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
 
     filename = str(tempfile)
     opts = merge_options_and_set_defaults(
-        [{"cobertura_add_tracefile": [filename], "filter": [re.compile(".")]}]
+        [{"cobertura_add_tracefile": [filename], "include_filters": [re.compile(".")]}]
     )
     covdata = read_reports(opts)
     assert covdata is not None
@@ -774,22 +774,47 @@ def test_import_cobertura_file_with_invalid_line(
     assert c.exitcode != 0
 
 
-def test_exclude_lines_by_pattern(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--exclude-lines-by-pattern", "example.**"])
+@pytest.mark.parametrize(
+    "option",
+    [
+        "--filter",
+        "--exclude",
+        "--include",
+        "--gcov-filter",
+        "--gcov-exclude",
+        "--gcov-exclude-directories",
+    ],
+)
+def test_exclude_filter(caplog: pytest.LogCaptureFixture, option: str) -> None:
+    c = log_capture(
+        caplog,
+        [option, "example.**"],
+    )
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "Error setting up filter 'example.**': multiple repeat at position 9"
+        f"Error setting up filter {option}='example.**': multiple repeat at position 9"
     )
     assert c.exitcode != 0
 
 
-def test_exclude_branches_by_pattern(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--exclude-branches-by-pattern", "example.**"])
+@pytest.mark.parametrize(
+    "option",
+    [
+        "--exclude-function",
+        "--exclude-lines-by-pattern",
+        "--exclude-branches-by-pattern",
+    ],
+)
+def test_exclude_pattern(caplog: pytest.LogCaptureFixture, option: str) -> None:
+    c = log_capture(
+        caplog,
+        [option, "/example.**/" if option == "--exclude-function" else "example.**"],
+    )
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "Error setting up filter 'example.**': multiple repeat at position 9"
+        f"Error setting up pattern {option}='example.**': multiple repeat at position 9"
     )
     assert c.exitcode != 0
 
@@ -827,7 +852,7 @@ def test_sort_branch_and_not_uncovered_or_percent(
 def test_deprecated_option(
     caplog: pytest.LogCaptureFixture, option: tuple[str, str]
 ) -> None:
-    c = log_capture(caplog, [option[0]])
+    c = log_capture(caplog, [option[0], "--help"])
     message = c.record_tuples[0]
     assert message[1] == logging.WARNING
     assert (

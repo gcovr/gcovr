@@ -79,7 +79,7 @@ def read_report(options: Options) -> CoverageContainer:
             options.search_paths.append(options.gcov_objdir)
 
     for search_path in options.search_paths:
-        datafiles.update(find_files(search_path, options.gcov_exclude_dirs))
+        datafiles.update(find_files(search_path, options.gcov_exclude_directories))
 
     # Get coverage data
     with Workers(

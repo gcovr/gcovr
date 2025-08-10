@@ -103,7 +103,7 @@ def read_reports(options: Options) -> CoverageContainer:
             for fname in search_file(
                 lambda fname: any(f.match(fname) for f in options.include),
                 search_path,
-                exclude_dirs=options.gcov_exclude_dirs,
+                exclude_dirs=options.gcov_exclude_directories,
             ):
                 # Return if the filename does not match the filter
                 # Return if the filename matches the exclude pattern
