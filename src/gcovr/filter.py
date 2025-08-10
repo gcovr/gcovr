@@ -108,34 +108,34 @@ class DirectoryPrefixFilter(Filter):
 
 def is_file_excluded(
     filename: str,
-    include_filters: list[Filter],
-    exclude_filters: list[Filter],
+    include_filter: list[Filter],
+    exclude_filter: list[Filter],
 ) -> bool:
     """Apply inclusion/exclusion filters to filename.
 
-    The include_filters are tested against
+    The include_filter are tested against
     the given (relative) filename.
-    The exclude_filters are tested against
+    The exclude_filter are tested against
     the stripped, given (relative), and absolute filenames.
 
     filename (str): the absolute file path to match
-    include_filters (list of FilterOption): ANY of these filters must match
-    exclude_filters (list of FilterOption): NONE of these filters must match
+    include_filter (list of FilterOption): ANY of these filters must match
+    exclude_filter (list of FilterOption): NONE of these filters must match
 
     returns:
         True when filename is not matching a include filter or matches an exclude filter.
     """
 
     LOGGER.debug(f"Check if {filename} is included...")
-    if not any(f.match(filename) for f in include_filters):
+    if not any(f.match(filename) for f in include_filter):
         LOGGER.debug("  No filter matched.")
         return True
 
-    if not exclude_filters:
+    if not exclude_filter:
         return False
 
     LOGGER.debug("Check for exclusion...")
-    if any(f.match(filename) for f in exclude_filters):
+    if any(f.match(filename) for f in exclude_filter):
         return True
 
     LOGGER.debug("  No filter matched.")

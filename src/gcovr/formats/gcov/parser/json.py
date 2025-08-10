@@ -54,8 +54,8 @@ DEFAULT_SOURCE_ENCODING = getpreferredencoding()
 def parse_coverage(
     data_fname: str,
     gcov_json_data: dict[str, Any],
-    include_filters: list[Filter],
-    exclude_filters: list[Filter],
+    include_filter: list[Filter],
+    exclude_filter: list[Filter],
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
@@ -83,7 +83,7 @@ def parse_coverage(
         )
         LOGGER.debug(f"Parsing coverage data for file {fname}")
 
-        if is_file_excluded(fname, include_filters, exclude_filters):
+        if is_file_excluded(fname, include_filter, exclude_filter):
             continue
 
         max_line_number = (

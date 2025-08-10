@@ -41,6 +41,7 @@ from .logging import (
 from .filter import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
+    Filter,
 )
 from .version import __version__
 
@@ -304,69 +305,82 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
     #
     # Setup filters
     #
-    try:
-        # The root filter isn't technically a filter,
-        # but is used to turn absolute paths into relative paths
-        options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
+    # The root filter isn't technically a filter,
+    # but is used to turn absolute paths into relative paths
+    options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
-        options.filter = [f.build_filter() for f in options.filter]
-        if not options.filter:
-            options.filter = [DirectoryPrefixFilter(options.root_dir)]
-        options.exclude = [f.build_filter() for f in options.exclude]
-        options.include = [f.build_filter() for f in options.include]
-
-        options.gcov_filter = [f.build_filter() for f in options.gcov_filter]
-        if not options.gcov_filter:
-            options.gcov_filter = [AlwaysMatchFilter()]
-        options.gcov_exclude = [f.build_filter() for f in options.gcov_exclude]
-        options.gcov_exclude_dirs = [
-            f.build_filter() for f in options.gcov_exclude_dirs
-        ]
-        # Output the filters for debugging
-        for name, filters in [
-            ("--root", [options.root_filter]),
-            ("--filter", options.filter),
-            ("--exclude", options.exclude),
-            ("--include", options.include),
-            ("--gcov-filter", options.gcov_filter),
-            ("--gcov-exclude", options.gcov_exclude),
-            ("--gcov-exclude-directories", options.gcov_exclude_dirs),
-        ]:
-            LOGGER.debug(f"Filters for {name}: ({len(filters)})")
+    def _setup_filter(
+        option: str, patterns: list[str], default_filter: Optional[Filter] = None
+    ) -> list[Filter]:
+        """Setup a filter and handle the exception."""
+        try:
+            filters = list[Filter]()
+            if len(patterns):
+                filters = [f.build_filter() for f in patterns]
+            elif default_filter is not None:
+                filters.append(default_filter)
+            LOGGER.debug(f"Filters for {option}: ({len(filters)})")
             for f in filters:
                 LOGGER.debug(f" - {f}")
+            return filters
+        except re.error as e:
+            # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
+            # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
+            raise RuntimeError(
+                f"Error setting up filter {option}='{e.pattern!s}': {e}"
+            ) from None
 
-    except re.error as e:
-        # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
-        # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
-        LOGGER.error(f"Error setting up filter '{e.pattern!s}': {e}")
-        return EXIT_CMDLINE_ERROR
+    def _setup_pattern(option: str, patterns: list[str]) -> list[re.Pattern[str]]:
+        """Setup a filter and handle the exception."""
+        try:
+            compiled_patterns = list[re.Pattern[str]]()
+            if len(patterns):
+                compiled_patterns = [re.compile(p) for p in patterns]
+            LOGGER.debug(f"Patterns for {option}: ({len(compiled_patterns)})")
+            for p in compiled_patterns:
+                LOGGER.debug(f" - {p}")
+            return compiled_patterns
+        except re.error as e:
+            # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
+            # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
+            raise RuntimeError(
+                f"Error setting up pattern {option}='{e.pattern!s}': {e}"
+            ) from None
 
     try:
-        options.exclude_functions = [
-            (re.compile(p[1:-1] if p[0] == "/" and p[-1] == "/" else re.escape(p)))
-            for p in options.exclude_functions
-        ]
-        options.exclude_lines_by_patterns = [
-            (re.compile(p)) for p in options.exclude_lines_by_patterns
-        ]
-        options.exclude_branches_by_patterns = [
-            (re.compile(p)) for p in options.exclude_branches_by_patterns
-        ]
-        # Output the filters for debugging
-        for name, pattern in [
-            ("--exclude-function", options.exclude_functions),
-            ("--exclude-lines-by-patterns", options.exclude_lines_by_patterns),
-            ("--exclude-branches-by-patterns", options.exclude_branches_by_patterns),
-        ]:
-            LOGGER.debug(f"Patterns for {name}: ({len(pattern)})")
-            for p in pattern:
-                LOGGER.debug(f" - {p}")
+        options.include_filter = _setup_filter(
+            "--filter", options.include_filter, DirectoryPrefixFilter(options.root_dir)
+        )
+        options.exclude_filter = _setup_filter("--exclude", options.exclude_filter)
+        options.include_search_filter = _setup_filter(
+            "--include", options.include_search_filter
+        )
 
-    except re.error as e:
-        # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
-        # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
-        LOGGER.error(f"Error setting up filter '{e.pattern!s}': {e}")
+        options.gcov_include_filter = _setup_filter(
+            "--gcov-filter", options.gcov_include_filter, AlwaysMatchFilter()
+        )
+        options.gcov_exclude_filter = _setup_filter(
+            "--gcov-exclude", options.gcov_exclude_filter
+        )
+        options.gcov_exclude_directory = _setup_filter(
+            "--gcov-exclude-directory", options.gcov_exclude_directory
+        )
+
+        options.exclude_function = _setup_pattern(
+            "--exclude-function",
+            [
+                p[1:-1] if p[0] == "/" and p[-1] == "/" else re.escape(p)
+                for p in options.exclude_function
+            ],
+        )
+        options.exclude_lines_by_pattern = _setup_pattern(
+            "--exclude-lines-by-pattern", options.exclude_lines_by_pattern
+        )
+        options.exclude_branches_by_pattern = _setup_pattern(
+            "--exclude-branches-by-pattern", options.exclude_branches_by_pattern
+        )
+    except RuntimeError as e:
+        LOGGER.error(str(e))
         return EXIT_CMDLINE_ERROR
 
     if options.fail_under_decision > 0.0 and not options.show_decision:

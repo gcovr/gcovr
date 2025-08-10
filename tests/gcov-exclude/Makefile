@@ -16,7 +16,7 @@ run: json lcov
 coverage.json:
 	./subdir/testcase
 	# First exclude file pattern is for GCC, second one for clang output filenames
-	$(GCOVR) -r subdir --verbose --gcov-exclude-directories '.*/A/C(?:/.*)?' --gcov-filter '.*' --gcov-exclude 'subdir#A#[Ff]ile.\.cpp\.gcov' --gcov-exclude '[Ff]ile.\.cpp##.*' --json-pretty --json $@
+	$(GCOVR) -r subdir --verbose --gcov-exclude-directory '.*/A/C(?:/.*)?' --gcov-filter '.*' --gcov-exclude 'subdir#A#[Ff]ile.\.cpp\.gcov' --gcov-exclude '[Ff]ile.\.cpp##.*' --json-pretty --json $@
 
 json: coverage.json
 	echo Dummy

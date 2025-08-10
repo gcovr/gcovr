@@ -59,9 +59,9 @@ class ExclusionOptions:
     """
 
     respect_exclusion_markers: bool = True
-    exclude_functions: list[re.Pattern[str]] = field(default_factory=lambda: [])
-    exclude_lines_by_patterns: list[re.Pattern[str]] = field(default_factory=lambda: [])
-    exclude_branches_by_patterns: list[re.Pattern[str]] = field(
+    exclude_function: list[re.Pattern[str]] = field(default_factory=lambda: [])
+    exclude_lines_by_pattern: list[re.Pattern[str]] = field(default_factory=lambda: [])
+    exclude_branches_by_pattern: list[re.Pattern[str]] = field(
         default_factory=lambda: []
     )
     exclude_pattern_prefix: str = "PREFIX"
@@ -77,9 +77,9 @@ def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
 
     return ExclusionOptions(
         respect_exclusion_markers=options.respect_exclusion_markers,
-        exclude_functions=options.exclude_functions,
-        exclude_lines_by_patterns=options.exclude_lines_by_patterns,
-        exclude_branches_by_patterns=options.exclude_branches_by_patterns,
+        exclude_function=options.exclude_function,
+        exclude_lines_by_pattern=options.exclude_lines_by_pattern,
+        exclude_branches_by_pattern=options.exclude_branches_by_pattern,
         exclude_pattern_prefix=options.exclude_pattern_prefix,
         exclude_throw_branches=options.exclude_throw_branches,
         exclude_unreachable_branches=(options.exclude_unreachable_branches),
@@ -108,13 +108,13 @@ def apply_all_exclusions(
         apply_exclusion_markers(
             filecov,
             lines=lines,
-            exclude_lines_by_patterns=options.exclude_lines_by_patterns,
-            exclude_branches_by_patterns=options.exclude_branches_by_patterns,
+            exclude_lines_by_pattern=options.exclude_lines_by_pattern,
+            exclude_branches_by_pattern=options.exclude_branches_by_pattern,
             exclude_pattern_prefix=options.exclude_pattern_prefix,
         )
 
-    if options.exclude_functions:
-        remove_functions(filecov, options.exclude_functions)
+    if options.exclude_function:
+        remove_functions(filecov, options.exclude_function)
 
     if options.exclude_throw_branches:
         remove_throw_branches(filecov)

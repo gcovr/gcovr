@@ -79,7 +79,7 @@ def read_report(options: Options) -> CoverageContainer:
             options.search_paths.append(options.gcov_objdir)
 
     for search_path in options.search_paths:
-        datafiles.update(find_files(search_path, options.gcov_exclude_dirs))
+        datafiles.update(find_files(search_path, options.gcov_exclude_directory))
 
     # Get coverage data
     with Workers(
@@ -110,7 +110,7 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def find_existing_gcov_files(
-    search_path: str, exclude_dirs: list[re.Pattern[str]]
+    search_path: str, gcov_exclude_directory: list[re.Pattern[str]]
 ) -> list[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
@@ -123,14 +123,16 @@ def find_existing_gcov_files(
                 lambda fname: re.compile(r".*\.gcov(?:\.json\.gz)?$").match(fname)
                 is not None,
                 search_path,
-                exclude_dirs=exclude_dirs,
+                gcov_exclude_directory=gcov_exclude_directory,
             )
         )
         LOGGER.debug(f"Found {len(gcov_files)} files (and will process all of them)")
     return gcov_files
 
 
-def find_datafiles(search_path: str, exclude_dirs: list[re.Pattern[str]]) -> list[str]:
+def find_datafiles(
+    search_path: str, gcov_exclude_directory: list[re.Pattern[str]]
+) -> list[str]:
     """Find .gcda and .gcno files under the given search path.
 
     The .gcno files will *only* produce uncovered results.
@@ -149,7 +151,7 @@ def find_datafiles(search_path: str, exclude_dirs: list[re.Pattern[str]]) -> lis
             search_file(
                 lambda fname: re.compile(r".*\.gc(da|no)$").match(fname) is not None,
                 search_path,
-                exclude_dirs=exclude_dirs,
+                gcov_exclude_directory=gcov_exclude_directory,
             )
         )
     gcda_files = []
@@ -188,8 +190,8 @@ def process_gcov_json_data(
     coverage = json.parse_coverage(
         data_fname,
         gcov_json_data=gcov_json_data,
-        include_filters=options.filter,
-        exclude_filters=options.exclude,
+        include_filter=options.include_filter,
+        exclude_filter=options.exclude_filter,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
@@ -255,7 +257,7 @@ def process_gcov_text_data(
         current_dir=current_dir,
     )
 
-    if is_file_excluded(fname, options.filter, options.exclude):
+    if is_file_excluded(fname, options.include_filter, options.exclude_filter):
         return
 
     LOGGER.debug(f"Parsing coverage data for file {fname}")
@@ -798,8 +800,8 @@ def run_gcov_and_process_files(
             # find the files that gcov created
             active_gcov_files, all_gcov_files = select_gcov_files_from_stdout(
                 out,
-                gcov_filter=options.gcov_filter,
-                gcov_exclude=options.gcov_exclude,
+                include_filter=options.gcov_include_filter,
+                exclude_filter=options.gcov_exclude_filter,
                 chdir=chdir,
             )
             # Remove the not used files
@@ -884,8 +886,8 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str,
-    gcov_filter: list[Filter],
-    gcov_exclude: list[Filter],
+    include_filter: list[Filter],
+    exclude_filter: list[Filter],
     chdir: str,
 ) -> tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""
@@ -901,7 +903,7 @@ def select_gcov_files_from_stdout(
         full = os.path.join(chdir, fname)
         all_files.add(full)
 
-        if is_file_excluded(fname, gcov_filter, gcov_exclude):
+        if is_file_excluded(fname, include_filter, exclude_filter):
             continue
 
         active_files.add(full)
@@ -916,7 +918,9 @@ def process_existing_gcov_file(
     filename: str, covdata: CoverageContainer, options: Options, to_erase: set[str]
 ) -> None:
     """Process an existing GCOV filename."""
-    if is_file_excluded(filename, options.gcov_filter, options.gcov_exclude):
+    if is_file_excluded(
+        filename, options.gcov_include_filter, options.gcov_exclude_filter
+    ):
         LOGGER.debug(f"Excluding gcov file: {filename}")
 
     if filename.endswith(".gcov"):

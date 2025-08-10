@@ -46,9 +46,9 @@ class GcovHandler(BaseHandler):
             "exclude_function_lines",
             "exclude_internal_functions",
             "respect_exclusion_markers",
-            "exclude_functions",
-            "exclude_lines_by_patterns",
-            "exclude_branches_by_patterns",
+            "exclude_function",
+            "exclude_lines_by_pattern",
+            "exclude_branches_by_pattern",
             "exclude_pattern_prefix",
             "merge_mode_functions",
             # Local options
@@ -118,7 +118,7 @@ class GcovHandler(BaseHandler):
                 default=2**32,
             ),
             GcovrConfigOption(
-                "gcov_filter",
+                "gcov_include_filter",
                 ["--gcov-filter"],
                 group="filter_options",
                 help=(
@@ -130,7 +130,7 @@ class GcovHandler(BaseHandler):
                 default=[],
             ),
             GcovrConfigOption(
-                "gcov_exclude",
+                "gcov_exclude_filter",
                 ["--gcov-exclude"],
                 group="filter_options",
                 help=(
@@ -142,8 +142,12 @@ class GcovHandler(BaseHandler):
                 default=[],
             ),
             GcovrConfigOption(
-                "gcov_exclude_dirs",
-                ["--gcov-exclude-directories", "--exclude-directories"],
+                "gcov_exclude_directory",
+                [
+                    "--gcov-exclude-directory",
+                    "--gcov-exclude-directories",
+                    "--exclude-directories",
+                ],
                 group="filter_options",
                 help=(
                     "Exclude directories that match this regex "

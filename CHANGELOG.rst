@@ -19,9 +19,6 @@ Breaking changes:
   - ``JSON`` report can now have several entries per line also with legacy text parser.
   - Cobertura and ``HTML`` report now contain function coverage also for older GCC versions.
 
-- If the keys `exclude-lines-by-pattern` or `exclude-branches-by-pattern` are used in a TOML
-  configuration, the value needs to be changed to a list. (:issue:`1129`)
-
 New features and notable changes:
 
 - Add support for Markdown output format. (:issue:`1072`)
@@ -60,6 +57,14 @@ Bug fixes and small improvements:
   across GCOV data files. (:issue:`1092`)
 - Improve branch details view if there are branches for several functions on same line. (:issue:`1128`)
 - Do not add files without functions and lines from ``gcov`` JSON files to data model. (:issue:`1130`)
+- Improve error message if regex pattern is wrong. (:issue:`1135`)
+
+  - The error message now contains the option name.
+  - Align option names if it can be used multiple times
+
+    - The key used for storing the option is always written in singular and
+      the option always has a singular version, except the options
+      :option:`--gcov-ignore-errors` and :option:`--gcov-ignore-parse-errors`.
 
 Documentation:
 
