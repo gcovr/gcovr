@@ -32,6 +32,7 @@ New features and notable changes:
 - Add support to define :option:`--exclude-lines-by-pattern` and :option:`--exclude-branches-by-pattern`
   more than once. (:issue:`1129`)
 - Add :option:`--sonarqube-metric` to define which metric is used as branch metric in report. (:issue:`1132`)
+- Add :option:`--sonarqube-pretty` to pretty print the report. (:issue:`1136`)
 
 Bug fixes and small improvements:
 

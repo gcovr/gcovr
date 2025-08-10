@@ -73,7 +73,7 @@ def write_report(
 
     write_xml_output(
         root_elem,
-        pretty=False,
+        pretty=options.sonarqube_pretty,
         filename=output_file,
         default_filename="sonarqube.xml",
     )

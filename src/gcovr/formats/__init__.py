@@ -265,7 +265,7 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
             )
         )
 
-    if options.sonarqube:
+    if options.sonarqube or options.sonarqube_pretty:
         generators.append(
             (
                 [options.sonarqube],

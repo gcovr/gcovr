@@ -38,13 +38,20 @@ class SonarqubeHandler(BaseHandler):
                 group="output_options",
                 metavar="OUTPUT",
                 help=(
-                    "Generate sonarqube generic coverage report in this file name. "
+                    "Generate Sonarqube generic coverage report in this file name. "
                     "OUTPUT is optional and defaults to --output."
                 ),
                 nargs="?",
                 type=OutputOrDefault,
                 default=None,
                 const=OutputOrDefault(None),
+            ),
+            GcovrConfigOption(
+                "sonarqube_pretty",
+                ["--sonarqube-pretty"],
+                group="output_options",
+                help=("Pretty-print the Sonarqube XML report. Implies --sonarqube."),
+                action="store_true",
             ),
             GcovrConfigOption(
                 "sonarqube_metric",

@@ -56,7 +56,7 @@ html:
 
 sonarqube:
 	./testcase
-	$(GCOVR) -d --sonarqube sonarqube.xml
+	$(GCOVR) -d --sonarqube-pretty --sonarqube sonarqube.xml
 
 jacoco:
 	./testcase
