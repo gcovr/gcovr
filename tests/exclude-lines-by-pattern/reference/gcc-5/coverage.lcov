@@ -1,12 +1,12 @@
 TN:GCOVR report
 SF:tests/exclude-lines-by-pattern/main.cpp
 VER:6bc26001ff07bea6b3466fcf1f18d4a5
+FN:5,panic()
+FNDA:0,panic()
 FN:10,foo(int)
 FNDA:1,foo(int)
 FN:20,main
 FNDA:1,main
-FN:5,panic()
-FNDA:0,panic()
 FNF:3
 FNH:2
 BRDA:12,0,0,1

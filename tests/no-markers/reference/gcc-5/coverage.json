@@ -265,16 +265,16 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "bar(int)",
-                    "lineno": 18,
-                    "execution_count": 1,
-                    "blocks_percent": 67.0
-                },
-                {
                     "demangled_name": "foo(int)",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 64.0
+                },
+                {
+                    "demangled_name": "bar(int)",
+                    "lineno": 18,
+                    "execution_count": 1,
+                    "blocks_percent": 67.0
                 },
                 {
                     "name": "main",

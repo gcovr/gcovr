@@ -53,26 +53,26 @@
             </method>
           </methods>
           <lines>
-            <line number="2" hits="4" branch="false"/>
             <line number="2" hits="1" branch="false"/>
-            <line number="3" hits="4" branch="true" condition-coverage="100% (4/4)">
-              <conditions>
-                <condition number="0" type="jump" coverage="100%"/>
-              </conditions>
-            </line>
+            <line number="2" hits="4" branch="false"/>
             <line number="3" hits="1" branch="true" condition-coverage="50% (2/4)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
-            <line number="4" hits="2" branch="false"/>
+            <line number="3" hits="4" branch="true" condition-coverage="100% (4/4)">
+              <conditions>
+                <condition number="0" type="jump" coverage="100%"/>
+              </conditions>
+            </line>
             <line number="4" hits="1" branch="false"/>
-            <line number="7" hits="2" branch="false"/>
+            <line number="4" hits="2" branch="false"/>
             <line number="7" hits="0" branch="false"/>
-            <line number="9" hits="4" branch="false"/>
+            <line number="7" hits="2" branch="false"/>
             <line number="9" hits="1" branch="false"/>
-            <line number="10" hits="4" branch="false"/>
+            <line number="9" hits="4" branch="false"/>
             <line number="10" hits="1" branch="false"/>
+            <line number="10" hits="4" branch="false"/>
             <line number="13" hits="1" branch="false"/>
             <line number="13" hits="1" branch="false"/>
             <line number="14" hits="1" branch="false"/>
@@ -88,24 +88,6 @@
                 <line number="3" hits="1" branch="false"/>
                 <line number="4" hits="1" branch="false"/>
                 <line number="5" hits="1" branch="false"/>
-              </lines>
-            </method>
-            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="24" hits="1" branch="false"/>
-                <line number="25" hits="1" branch="false"/>
-                <line number="27" hits="1" branch="false"/>
-                <line number="28" hits="1" branch="false"/>
-                <line number="29" hits="1" branch="false"/>
-                <line number="30" hits="1" branch="false"/>
-                <line number="31" hits="1" branch="false"/>
-                <line number="33" hits="1" branch="false"/>
-                <line number="34" hits="1" branch="false"/>
-                <line number="36" hits="1" branch="false"/>
-                <line number="37" hits="1" branch="false"/>
-                <line number="39" hits="1" branch="false"/>
-                <line number="40" hits="1" branch="false"/>
-                <line number="42" hits="1" branch="false"/>
               </lines>
             </method>
             <method name="void func&lt;double&gt;" signature="(double, double)" line-rate="0.75" branch-rate="0.5" complexity="0.0">
@@ -130,6 +112,24 @@
                 </line>
                 <line number="10" hits="1" branch="false"/>
                 <line number="12" hits="2" branch="false"/>
+              </lines>
+            </method>
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="24" hits="1" branch="false"/>
+                <line number="25" hits="1" branch="false"/>
+                <line number="27" hits="1" branch="false"/>
+                <line number="28" hits="1" branch="false"/>
+                <line number="29" hits="1" branch="false"/>
+                <line number="30" hits="1" branch="false"/>
+                <line number="31" hits="1" branch="false"/>
+                <line number="33" hits="1" branch="false"/>
+                <line number="34" hits="1" branch="false"/>
+                <line number="36" hits="1" branch="false"/>
+                <line number="37" hits="1" branch="false"/>
+                <line number="39" hits="1" branch="false"/>
+                <line number="40" hits="1" branch="false"/>
+                <line number="42" hits="1" branch="false"/>
               </lines>
             </method>
           </methods>

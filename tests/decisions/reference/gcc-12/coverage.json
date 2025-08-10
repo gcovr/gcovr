@@ -4650,10 +4650,10 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "checkBiggerBoth(int)",
-                    "lineno": 32,
-                    "execution_count": 2,
-                    "blocks_percent": 100.0,
+                    "demangled_name": "checkBiggerTrue(int)",
+                    "lineno": 8,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",
@@ -4674,82 +4674,82 @@
                     ]
                 },
                 {
-                    "demangled_name": "checkBiggerTrue(int)",
-                    "lineno": 8,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkCompactBranch1False(int)",
-                    "lineno": 246,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkCompactBranch1True(int)",
-                    "lineno": 241,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkCompactBranch2False(int)",
-                    "lineno": 256,
-                    "execution_count": 1,
-                    "blocks_percent": 60.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkCompactBranch2True(int)",
-                    "lineno": 251,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkComplexFalse(int)",
-                    "lineno": 128,
-                    "execution_count": 1,
-                    "blocks_percent": 67.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkComplexForLoop(int)",
-                    "lineno": 303,
-                    "execution_count": 1,
+                    "demangled_name": "checkBiggerBoth(int)",
+                    "lineno": 32,
+                    "execution_count": 2,
                     "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkSmallerTrue(int)",
+                    "lineno": 44,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkSmallerFalse(int)",
+                    "lineno": 56,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkEqualTrue(int)",
+                    "lineno": 68,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkEqualFalse(int)",
+                    "lineno": 80,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkNotEqualTrue(int)",
+                    "lineno": 92,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkNotEqualFalse(int)",
+                    "lineno": 104,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",
@@ -4770,10 +4770,10 @@
                     ]
                 },
                 {
-                    "demangled_name": "checkDoWhileLoop(int)",
-                    "lineno": 327,
+                    "demangled_name": "checkComplexFalse(int)",
+                    "lineno": 128,
                     "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 67.0,
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",
@@ -4818,126 +4818,6 @@
                     ]
                 },
                 {
-                    "demangled_name": "checkEqualFalse(int)",
-                    "lineno": 80,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkEqualTrue(int)",
-                    "lineno": 68,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkForLoop(int)",
-                    "lineno": 293,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkInterpreter(int)",
-                    "lineno": 341,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkNotEqualFalse(int)",
-                    "lineno": 104,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkNotEqualTrue(int)",
-                    "lineno": 92,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkSmallerFalse(int)",
-                    "lineno": 56,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkSmallerTrue(int)",
-                    "lineno": 44,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkSplittedFalse(int)",
-                    "lineno": 287,
-                    "execution_count": 1,
-                    "blocks_percent": 60.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "checkSplittedTrue(int)",
-                    "lineno": 281,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
                     "demangled_name": "checkSwitch1(int)",
                     "lineno": 188,
                     "execution_count": 1,
@@ -4974,10 +4854,46 @@
                     ]
                 },
                 {
-                    "demangled_name": "checkTernary1False(int)",
-                    "lineno": 266,
+                    "demangled_name": "checkCompactBranch1True(int)",
+                    "lineno": 241,
                     "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkCompactBranch1False(int)",
+                    "lineno": 246,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkCompactBranch2True(int)",
+                    "lineno": 251,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkCompactBranch2False(int)",
+                    "lineno": 256,
+                    "execution_count": 1,
+                    "blocks_percent": 60.0,
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",
@@ -4998,10 +4914,10 @@
                     ]
                 },
                 {
-                    "demangled_name": "checkTernary2False(int)",
-                    "lineno": 276,
+                    "demangled_name": "checkTernary1False(int)",
+                    "lineno": 266,
                     "execution_count": 1,
-                    "blocks_percent": 67.0,
+                    "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",
@@ -5022,9 +4938,105 @@
                     ]
                 },
                 {
+                    "demangled_name": "checkTernary2False(int)",
+                    "lineno": 276,
+                    "execution_count": 1,
+                    "blocks_percent": 67.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkSplittedTrue(int)",
+                    "lineno": 281,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkSplittedFalse(int)",
+                    "lineno": 287,
+                    "execution_count": 1,
+                    "blocks_percent": 60.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkForLoop(int)",
+                    "lineno": 293,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkComplexForLoop(int)",
+                    "lineno": 303,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
                     "demangled_name": "checkWhileLoop(int)",
                     "lineno": 313,
                     "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkDoWhileLoop(int)",
+                    "lineno": 327,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "checkInterpreter(int)",
+                    "lineno": 341,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "verify_issue_679(bool)",
+                    "lineno": 365,
+                    "execution_count": 2,
                     "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [
@@ -5038,18 +5050,6 @@
                     "lineno": 372,
                     "execution_count": 1,
                     "blocks_percent": 95.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "verify_issue_679(bool)",
-                    "lineno": 365,
-                    "execution_count": 2,
-                    "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",

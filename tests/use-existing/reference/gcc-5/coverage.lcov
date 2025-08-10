@@ -3,10 +3,10 @@ SF:tests/use-existing/main.cpp
 VER:251395fea4d88bf2d3ffc4d00110a5ef
 FN:4,_Z3fooi
 FNDA:1,_Z3fooi
-FN:26,_Z41__static_initialization_and_destruction_0ii
-FNDA:1,_Z41__static_initialization_and_destruction_0ii
 FN:13,main
 FNDA:1,main
+FN:26,_Z41__static_initialization_and_destruction_0ii
+FNDA:1,_Z41__static_initialization_and_destruction_0ii
 FNF:3
 FNH:3
 BRDA:5,0,0,-

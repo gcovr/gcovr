@@ -302,16 +302,16 @@
             ],
             "functions": [
                 {
-                    "name": "_Z22function_with_catchersi",
-                    "lineno": 24,
-                    "execution_count": 1,
-                    "blocks_percent": 55.0
-                },
-                {
                     "name": "_Z23function_that_may_throwb",
                     "lineno": 3,
                     "execution_count": 3,
                     "blocks_percent": 57.0
+                },
+                {
+                    "name": "_ZNK4RAII21method_that_may_throwEv",
+                    "lineno": 16,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
                 },
                 {
                     "name": "_ZN4RAIIC2Eb",
@@ -326,10 +326,10 @@
                     "blocks_percent": 100.0
                 },
                 {
-                    "name": "_ZNK4RAII21method_that_may_throwEv",
-                    "lineno": 16,
+                    "name": "_Z22function_with_catchersi",
+                    "lineno": 24,
                     "execution_count": 1,
-                    "blocks_percent": 100.0
+                    "blocks_percent": 55.0
                 },
                 {
                     "name": "main",

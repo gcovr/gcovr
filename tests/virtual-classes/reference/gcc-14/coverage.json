@@ -809,17 +809,6 @@
             ],
             "functions": [
                 {
-                    "name": "main",
-                    "demangled_name": "main",
-                    "lineno": 51,
-                    "execution_count": 2,
-                    "blocks_percent": 62.2,
-                    "pos": [
-                        "51:5",
-                        "69:1"
-                    ]
-                },
-                {
                     "name": "_ZN3ns14Bar1C2Ev",
                     "demangled_name": "ns1::Bar1::Bar1()",
                     "lineno": 8,
@@ -883,6 +872,17 @@
                     "pos": [
                         "42:15",
                         "43:27"
+                    ]
+                },
+                {
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 51,
+                    "execution_count": 2,
+                    "blocks_percent": 62.2,
+                    "pos": [
+                        "51:5",
+                        "69:1"
                     ]
                 }
             ]

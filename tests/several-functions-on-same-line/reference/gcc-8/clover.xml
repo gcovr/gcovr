@@ -9,18 +9,18 @@
         <class name="id$a8137fe20e1ee1dbd18324b7662115fa">
           <metrics complexity="0" elements="18" coveredelements="17" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>
-        <line num="2" type="stmt" count="4"/>
         <line num="2" type="stmt" count="1"/>
-        <line num="3" type="stmt" count="4"/>
+        <line num="2" type="stmt" count="4"/>
         <line num="3" type="stmt" count="1"/>
-        <line num="4" type="stmt" count="2"/>
+        <line num="3" type="stmt" count="4"/>
         <line num="4" type="stmt" count="1"/>
-        <line num="7" type="stmt" count="2"/>
+        <line num="4" type="stmt" count="2"/>
         <line num="7" type="stmt" count="0"/>
-        <line num="9" type="stmt" count="4"/>
+        <line num="7" type="stmt" count="2"/>
         <line num="9" type="stmt" count="1"/>
-        <line num="10" type="stmt" count="4"/>
+        <line num="9" type="stmt" count="4"/>
         <line num="10" type="stmt" count="1"/>
+        <line num="10" type="stmt" count="4"/>
         <line num="13" type="stmt" count="1"/>
         <line num="13" type="stmt" count="1"/>
         <line num="14" type="stmt" count="1"/>

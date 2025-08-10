@@ -320,14 +320,14 @@
                     ]
                 },
                 {
-                    "name": "_ZN3Bar3fooEv",
-                    "demangled_name": "Bar::foo()",
-                    "lineno": 15,
-                    "execution_count": 2,
+                    "name": "_ZN3BarD0Ev",
+                    "demangled_name": "Bar::~Bar()",
+                    "lineno": 8,
+                    "execution_count": 4,
                     "blocks_percent": 100.0,
                     "pos": [
-                        "15:10",
-                        "18:5"
+                        "8:13",
+                        "9:6"
                     ]
                 },
                 {
@@ -342,14 +342,14 @@
                     ]
                 },
                 {
-                    "name": "_ZN3BarD0Ev",
-                    "demangled_name": "Bar::~Bar()",
-                    "lineno": 8,
-                    "execution_count": 4,
+                    "name": "_ZN3Bar3fooEv",
+                    "demangled_name": "Bar::foo()",
+                    "lineno": 15,
+                    "execution_count": 2,
                     "blocks_percent": 100.0,
                     "pos": [
-                        "8:13",
-                        "9:6"
+                        "15:10",
+                        "18:5"
                     ]
                 },
                 {

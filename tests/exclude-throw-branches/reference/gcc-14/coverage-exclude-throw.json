@@ -436,14 +436,14 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN4RAIIC2Eb",
-                    "demangled_name": "RAII::RAII(bool)",
-                    "lineno": 21,
-                    "execution_count": 3,
-                    "blocks_percent": 100.0,
+                    "name": "_Z23function_that_may_throwb",
+                    "demangled_name": "function_that_may_throw(bool)",
+                    "lineno": 3,
+                    "execution_count": 9,
+                    "blocks_percent": 87.5,
                     "pos": [
-                        "21:1",
-                        "21:33"
+                        "3:5",
+                        "9:1"
                     ]
                 },
                 {
@@ -458,6 +458,17 @@
                     ]
                 },
                 {
+                    "name": "_ZN4RAIIC2Eb",
+                    "demangled_name": "RAII::RAII(bool)",
+                    "lineno": 21,
+                    "execution_count": 3,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "21:1",
+                        "21:33"
+                    ]
+                },
+                {
                     "name": "_ZN4RAIID2Ev",
                     "demangled_name": "RAII::~RAII()",
                     "lineno": 22,
@@ -466,17 +477,6 @@
                     "pos": [
                         "22:1",
                         "22:16"
-                    ]
-                },
-                {
-                    "name": "_Z23function_that_may_throwb",
-                    "demangled_name": "function_that_may_throw(bool)",
-                    "lineno": 3,
-                    "execution_count": 9,
-                    "blocks_percent": 87.5,
-                    "pos": [
-                        "3:5",
-                        "9:1"
                     ]
                 },
                 {

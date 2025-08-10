@@ -661,12 +661,6 @@
             ],
             "functions": [
                 {
-                    "name": "main",
-                    "lineno": 51,
-                    "execution_count": 2,
-                    "blocks_percent": 62.0
-                },
-                {
                     "demangled_name": "ns1::Bar1::Bar1()",
                     "lineno": 8,
                     "execution_count": 6,
@@ -701,6 +695,12 @@
                     "lineno": 42,
                     "execution_count": 2,
                     "blocks_percent": 100.0
+                },
+                {
+                    "name": "main",
+                    "lineno": 51,
+                    "execution_count": 2,
+                    "blocks_percent": 62.0
                 }
             ]
         }

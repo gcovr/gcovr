@@ -29,12 +29,12 @@ LF:2
 end_of_record
 SF:tests/update-data/update-data.h
 VER:24354aa07840bda3337011fbbe660aa9
-FN:17,called_from_both
-FNDA:2,called_from_both
 FN:7,called_from_main
 FNDA:1,called_from_main
 FN:12,called_from_update_data
 FNDA:1,called_from_update_data
+FN:17,called_from_both
+FNDA:2,called_from_both
 FNF:3
 FNH:3
 BRDA:19,2,0,1

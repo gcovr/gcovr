@@ -41,18 +41,6 @@
         </class>
         <class name="update-data_h" filename="update-data.h" line-rate="1.0" branch-rate="1.0" complexity="0.0">
           <methods>
-            <method name="called_from_both" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="17" hits="2" branch="false"/>
-                <line number="19" hits="2" branch="true" condition-coverage="100% (2/2)">
-                  <conditions>
-                    <condition number="0" type="jump" coverage="100%"/>
-                  </conditions>
-                </line>
-                <line number="20" hits="1" branch="false"/>
-                <line number="23" hits="1" branch="false"/>
-              </lines>
-            </method>
             <method name="called_from_main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="7" hits="1" branch="false"/>
@@ -63,6 +51,18 @@
               <lines>
                 <line number="12" hits="1" branch="false"/>
                 <line number="14" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="called_from_both" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="17" hits="2" branch="false"/>
+                <line number="19" hits="2" branch="true" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="100%"/>
+                  </conditions>
+                </line>
+                <line number="20" hits="1" branch="false"/>
+                <line number="23" hits="1" branch="false"/>
               </lines>
             </method>
           </methods>

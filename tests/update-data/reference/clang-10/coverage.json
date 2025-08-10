@@ -407,22 +407,6 @@
             ],
             "functions": [
                 {
-                    "name": "_ZL16called_from_bothi",
-                    "lineno": 17,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "update-data.h##1df83ebd18f5e6a80086aa29e500b3c8.gcov"
-                        ],
-                        [
-                            "update-data.gcda",
-                            "update-data.h##1df83ebd18f5e6a80086aa29e500b3c8.gcov"
-                        ]
-                    ]
-                },
-                {
                     "name": "_ZL16called_from_mainv",
                     "lineno": 7,
                     "execution_count": 1,
@@ -439,10 +423,10 @@
                     ]
                 },
                 {
-                    "name": "called_from_both",
-                    "lineno": 17,
+                    "name": "called_from_update_data",
+                    "lineno": 12,
                     "execution_count": 1,
-                    "blocks_percent": 80.0,
+                    "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [
                             "update-data.gcda",
@@ -451,10 +435,26 @@
                     ]
                 },
                 {
-                    "name": "called_from_update_data",
-                    "lineno": 12,
+                    "name": "_ZL16called_from_bothi",
+                    "lineno": 17,
                     "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "update-data.h##1df83ebd18f5e6a80086aa29e500b3c8.gcov"
+                        ],
+                        [
+                            "update-data.gcda",
+                            "update-data.h##1df83ebd18f5e6a80086aa29e500b3c8.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "called_from_both",
+                    "lineno": 17,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
                     "gcovr/data_sources": [
                         [
                             "update-data.gcda",

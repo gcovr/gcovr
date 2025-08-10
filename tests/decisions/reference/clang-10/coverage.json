@@ -4357,6 +4357,138 @@
             ],
             "functions": [
                 {
+                    "name": "_Z15checkBiggerTruei",
+                    "lineno": 8,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z16checkBiggerFalsei",
+                    "lineno": 20,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z15checkBiggerBothi",
+                    "lineno": 32,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z16checkSmallerTruei",
+                    "lineno": 44,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkSmallerFalsei",
+                    "lineno": 56,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z14checkEqualTruei",
+                    "lineno": 68,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z15checkEqualFalsei",
+                    "lineno": 80,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkNotEqualTruei",
+                    "lineno": 92,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z18checkNotEqualFalsei",
+                    "lineno": 104,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z16checkComplexTruei",
+                    "lineno": 116,
+                    "execution_count": 1,
+                    "blocks_percent": 85.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkComplexFalsei",
+                    "lineno": 128,
+                    "execution_count": 1,
+                    "blocks_percent": 71.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
                     "name": "_Z12checkElseIf1i",
                     "lineno": 140,
                     "execution_count": 1,
@@ -4385,18 +4517,6 @@
                     "lineno": 172,
                     "execution_count": 1,
                     "blocks_percent": 71.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z12checkForLoopi",
-                    "lineno": 293,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -4441,10 +4561,142 @@
                     ]
                 },
                 {
-                    "name": "_Z14checkEqualTruei",
-                    "lineno": 68,
+                    "name": "_Z23checkCompactBranch1Truei",
+                    "lineno": 241,
                     "execution_count": 1,
                     "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z24checkCompactBranch1Falsei",
+                    "lineno": 246,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z23checkCompactBranch2Truei",
+                    "lineno": 251,
+                    "execution_count": 1,
+                    "blocks_percent": 83.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z24checkCompactBranch2Falsei",
+                    "lineno": 256,
+                    "execution_count": 1,
+                    "blocks_percent": 66.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkTernary1Truei",
+                    "lineno": 261,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z18checkTernary1Falsei",
+                    "lineno": 266,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkTernary2Truei",
+                    "lineno": 271,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z18checkTernary2Falsei",
+                    "lineno": 276,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkSplittedTruei",
+                    "lineno": 281,
+                    "execution_count": 1,
+                    "blocks_percent": 71.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z18checkSplittedFalsei",
+                    "lineno": 287,
+                    "execution_count": 1,
+                    "blocks_percent": 57.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z12checkForLoopi",
+                    "lineno": 293,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z19checkComplexForLoopi",
+                    "lineno": 303,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -4457,66 +4709,6 @@
                     "lineno": 313,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z15checkBiggerBothi",
-                    "lineno": 32,
-                    "execution_count": 2,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z15checkBiggerTruei",
-                    "lineno": 8,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z15checkEqualFalsei",
-                    "lineno": 80,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z16checkBiggerFalsei",
-                    "lineno": 20,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z16checkComplexTruei",
-                    "lineno": 116,
-                    "execution_count": 1,
-                    "blocks_percent": 85.0,
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -4549,202 +4741,10 @@
                     ]
                 },
                 {
-                    "name": "_Z16checkSmallerTruei",
-                    "lineno": 44,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
                     "name": "_Z16verify_issue_679b",
                     "lineno": 365,
                     "execution_count": 2,
                     "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkComplexFalsei",
-                    "lineno": 128,
-                    "execution_count": 1,
-                    "blocks_percent": 71.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkNotEqualTruei",
-                    "lineno": 92,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkSmallerFalsei",
-                    "lineno": 56,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkSplittedTruei",
-                    "lineno": 281,
-                    "execution_count": 1,
-                    "blocks_percent": 71.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkTernary1Truei",
-                    "lineno": 261,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkTernary2Truei",
-                    "lineno": 271,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z18checkNotEqualFalsei",
-                    "lineno": 104,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z18checkSplittedFalsei",
-                    "lineno": 287,
-                    "execution_count": 1,
-                    "blocks_percent": 57.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z18checkTernary1Falsei",
-                    "lineno": 266,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z18checkTernary2Falsei",
-                    "lineno": 276,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z19checkComplexForLoopi",
-                    "lineno": 303,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z23checkCompactBranch1Truei",
-                    "lineno": 241,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z23checkCompactBranch2Truei",
-                    "lineno": 251,
-                    "execution_count": 1,
-                    "blocks_percent": 83.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z24checkCompactBranch1Falsei",
-                    "lineno": 246,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z24checkCompactBranch2Falsei",
-                    "lineno": 256,
-                    "execution_count": 1,
-                    "blocks_percent": 66.0,
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -4857,10 +4857,10 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN18SwitchTestIssue78311checkSwitchEv",
-                    "lineno": 7,
+                    "name": "_ZN18SwitchTestIssue783C2Ev",
+                    "lineno": 5,
                     "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 60.0,
                     "gcovr/data_sources": [
                         [
                             "switch_test.gcda",
@@ -4869,10 +4869,10 @@
                     ]
                 },
                 {
-                    "name": "_ZN18SwitchTestIssue783C2Ev",
-                    "lineno": 5,
+                    "name": "_ZN18SwitchTestIssue78311checkSwitchEv",
+                    "lineno": 7,
                     "execution_count": 1,
-                    "blocks_percent": 60.0,
+                    "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [
                             "switch_test.gcda",
@@ -5085,18 +5085,6 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
-                    "lineno": 17,
-                    "execution_count": 1,
-                    "blocks_percent": 57.0,
-                    "gcovr/data_sources": [
-                        [
-                            "switch_test.gcda",
-                            "switch_test.h##5b00ab17e6f7c638d27e0ef4ae668e29.gcov"
-                        ]
-                    ]
-                },
-                {
                     "name": "_ZN18SwitchTestIssue783D2Ev",
                     "lineno": 14,
                     "execution_count": 1,
@@ -5106,6 +5094,18 @@
                             "main.gcda",
                             "switch_test.h##5b00ab17e6f7c638d27e0ef4ae668e29.gcov"
                         ],
+                        [
+                            "switch_test.gcda",
+                            "switch_test.h##5b00ab17e6f7c638d27e0ef4ae668e29.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "lineno": 17,
+                    "execution_count": 1,
+                    "blocks_percent": 57.0,
+                    "gcovr/data_sources": [
                         [
                             "switch_test.gcda",
                             "switch_test.h##5b00ab17e6f7c638d27e0ef4ae668e29.gcov"

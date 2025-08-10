@@ -257,17 +257,6 @@
                     ]
                 },
                 {
-                    "name": "_ZNK12_GLOBAL__N_13Bar3fooEv",
-                    "demangled_name": "(anonymous namespace)::Bar::foo() const",
-                    "lineno": 13,
-                    "execution_count": 2,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "13:11",
-                        "17:7"
-                    ]
-                },
-                {
                     "name": "_ZN12_GLOBAL__N_13BarD2Ev",
                     "demangled_name": "(anonymous namespace)::Bar::~Bar()",
                     "lineno": 10,
@@ -276,6 +265,17 @@
                     "pos": [
                         "10:7",
                         "11:8"
+                    ]
+                },
+                {
+                    "name": "_ZNK12_GLOBAL__N_13Bar3fooEv",
+                    "demangled_name": "(anonymous namespace)::Bar::foo() const",
+                    "lineno": 13,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "13:11",
+                        "17:7"
                     ]
                 },
                 {

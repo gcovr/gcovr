@@ -111,17 +111,17 @@
             ],
             "functions": [
                 {
+                    "demangled_name": "foo(int)",
+                    "lineno": 4,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0
+                },
+                {
                     "demangled_name": "bar()",
                     "lineno": 20,
                     "execution_count": 0,
                     "blocks_percent": 100.0,
                     "gcovr/excluded": true
-                },
-                {
-                    "demangled_name": "foo(int)",
-                    "lineno": 4,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0
                 },
                 {
                     "name": "main",

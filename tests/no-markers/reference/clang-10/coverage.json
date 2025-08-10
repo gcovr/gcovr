@@ -192,16 +192,16 @@
             ],
             "functions": [
                 {
-                    "name": "_Z3bari",
-                    "lineno": 18,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0
-                },
-                {
                     "name": "_Z3fooi",
                     "lineno": 3,
                     "execution_count": 1,
                     "blocks_percent": 75.0
+                },
+                {
+                    "name": "_Z3bari",
+                    "lineno": 18,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0
                 },
                 {
                     "name": "main",

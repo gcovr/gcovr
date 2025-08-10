@@ -9,22 +9,11 @@
       <classes>
         <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.71429" complexity="0.0">
           <methods>
-            <method name="bar" signature="(int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
             <method name="foo" signature="(int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="95" hits="1" branch="false"/>
-                <line number="96" hits="1" branch="false"/>
-                <line number="97" hits="1" branch="false"/>
-                <line number="99" hits="1" branch="false"/>
-                <line number="100" hits="1" branch="false"/>
-                <line number="101" hits="1" branch="false"/>
-                <line number="103" hits="1" branch="false"/>
-              </lines>
+            <method name="bar" signature="(int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
             </method>
             <method name="sort_excluded" signature="()" line-rate="1.0" branch-rate="0.5" complexity="0.0">
               <lines>
@@ -58,15 +47,6 @@
                 </line>
               </lines>
             </method>
-            <method name="sort_excluded_both" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
-            <method name="sort_excluded_both()::{lambda(int, int)#1}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
-            <method name="sort_excluded_both()::{lambda(int, int)#2}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
             <method name="sort_lambda_excluded" signature="()" line-rate="1.0" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="48" hits="1" branch="false"/>
@@ -90,6 +70,26 @@
             </method>
             <method name="sort_lambda_excluded()::{lambda(int, int)#2}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
+            </method>
+            <method name="sort_excluded_both" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="sort_excluded_both()::{lambda(int, int)#1}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="sort_excluded_both()::{lambda(int, int)#2}::operator()" signature="(int, int) const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="95" hits="1" branch="false"/>
+                <line number="96" hits="1" branch="false"/>
+                <line number="97" hits="1" branch="false"/>
+                <line number="99" hits="1" branch="false"/>
+                <line number="100" hits="1" branch="false"/>
+                <line number="101" hits="1" branch="false"/>
+                <line number="103" hits="1" branch="false"/>
+              </lines>
             </method>
           </methods>
           <lines>

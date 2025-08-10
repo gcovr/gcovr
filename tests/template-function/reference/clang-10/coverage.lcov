@@ -1,12 +1,12 @@
 TN:GCOVR report
 SF:tests/template-function/main.cpp
 VER:50772fdb5b19353fa726392fd21699e0
-FN:20,_Z3barv
-FNDA:4,_Z3barv
 FN:5,_Z3fooIdEvT_
 FNDA:4,_Z3fooIdEvT_
 FN:5,_Z3fooIiEvT_
 FNDA:6,_Z3fooIiEvT_
+FN:20,_Z3barv
+FNDA:4,_Z3barv
 FN:35,main
 FNDA:1,main
 FNF:4

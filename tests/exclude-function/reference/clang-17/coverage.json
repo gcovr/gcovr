@@ -269,8 +269,8 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "bar(int)",
-                    "lineno": 19,
+                    "demangled_name": "foo(int)",
+                    "lineno": 9,
                     "execution_count": 1,
                     "blocks_percent": 75.0,
                     "gcovr/data_sources": [
@@ -281,8 +281,8 @@
                     ]
                 },
                 {
-                    "demangled_name": "foo(int)",
-                    "lineno": 9,
+                    "demangled_name": "bar(int)",
+                    "lineno": 19,
                     "execution_count": 1,
                     "blocks_percent": 75.0,
                     "gcovr/data_sources": [

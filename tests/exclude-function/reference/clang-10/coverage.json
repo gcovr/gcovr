@@ -269,8 +269,8 @@
             ],
             "functions": [
                 {
-                    "name": "_Z3bari",
-                    "lineno": 19,
+                    "name": "_Z3fooi",
+                    "lineno": 9,
                     "execution_count": 1,
                     "blocks_percent": 80.0,
                     "gcovr/data_sources": [
@@ -281,8 +281,8 @@
                     ]
                 },
                 {
-                    "name": "_Z3fooi",
-                    "lineno": 9,
+                    "name": "_Z3bari",
+                    "lineno": 19,
                     "execution_count": 1,
                     "blocks_percent": 80.0,
                     "gcovr/data_sources": [

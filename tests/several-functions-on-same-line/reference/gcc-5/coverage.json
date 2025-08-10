@@ -1140,18 +1140,6 @@
                     ]
                 },
                 {
-                    "name": "main",
-                    "lineno": 24,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp.gcov"
-                        ]
-                    ]
-                },
-                {
                     "demangled_name": "void func<double>(double, double)",
                     "lineno": 8,
                     "execution_count": 2,
@@ -1167,6 +1155,18 @@
                     "demangled_name": "void func<int>(int, int)",
                     "lineno": 8,
                     "execution_count": 2,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "main",
+                    "lineno": 24,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [

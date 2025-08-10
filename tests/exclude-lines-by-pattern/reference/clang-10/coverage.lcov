@@ -1,10 +1,10 @@
 TN:GCOVR report
 SF:tests/exclude-lines-by-pattern/main.cpp
 VER:6bc26001ff07bea6b3466fcf1f18d4a5
-FN:10,_Z3fooi
-FNDA:1,_Z3fooi
 FN:5,_ZL5panicv
 FNDA:0,_ZL5panicv
+FN:10,_Z3fooi
+FNDA:1,_Z3fooi
 FN:20,main
 FNDA:1,main
 FNF:3

@@ -871,18 +871,6 @@
             ],
             "functions": [
                 {
-                    "name": "_Z3barv",
-                    "lineno": 20,
-                    "execution_count": 4,
-                    "blocks_percent": 90.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
                     "name": "_Z3fooIdEvT_",
                     "lineno": 5,
                     "execution_count": 4,
@@ -899,6 +887,18 @@
                     "lineno": 5,
                     "execution_count": 6,
                     "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z3barv",
+                    "lineno": 20,
+                    "execution_count": 4,
+                    "blocks_percent": 90.0,
                     "gcovr/data_sources": [
                         [
                             "main.gcda",

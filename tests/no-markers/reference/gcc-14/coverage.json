@@ -337,17 +337,6 @@
             ],
             "functions": [
                 {
-                    "name": "_Z3bari",
-                    "demangled_name": "bar(int)",
-                    "lineno": 18,
-                    "execution_count": 1,
-                    "blocks_percent": 66.7,
-                    "pos": [
-                        "18:6",
-                        "24:1"
-                    ]
-                },
-                {
                     "name": "_Z3fooi",
                     "demangled_name": "foo(int)",
                     "lineno": 3,
@@ -356,6 +345,17 @@
                     "pos": [
                         "3:6",
                         "16:1"
+                    ]
+                },
+                {
+                    "name": "_Z3bari",
+                    "demangled_name": "bar(int)",
+                    "lineno": 18,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "18:6",
+                        "24:1"
                     ]
                 },
                 {

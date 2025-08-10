@@ -277,10 +277,10 @@
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "Bar::foo()",
-                    "lineno": 15,
-                    "execution_count": 2,
-                    "blocks_percent": 100.0
+                    "demangled_name": "Bar::~Bar()",
+                    "lineno": 8,
+                    "execution_count": 4,
+                    "blocks_percent": 67.0
                 },
                 {
                     "demangled_name": "Bar::foo() const",
@@ -289,10 +289,10 @@
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "Bar::~Bar()",
-                    "lineno": 8,
-                    "execution_count": 4,
-                    "blocks_percent": 67.0
+                    "demangled_name": "Bar::foo()",
+                    "lineno": 15,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0
                 },
                 {
                     "name": "main",

@@ -1019,23 +1019,6 @@
             ],
             "functions": [
                 {
-                    "name": "_Z3bari",
-                    "demangled_name": "bar(int)",
-                    "lineno": 19,
-                    "execution_count": 0,
-                    "blocks_percent": 80.0,
-                    "pos": [
-                        "19:5",
-                        "26:1"
-                    ],
-                    "gcovr/excluded": true,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
                     "name": "_Z3fooi",
                     "demangled_name": "foo(int)",
                     "lineno": 9,
@@ -1053,15 +1036,16 @@
                     ]
                 },
                 {
-                    "name": "main",
-                    "demangled_name": "main",
-                    "lineno": 95,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "name": "_Z3bari",
+                    "demangled_name": "bar(int)",
+                    "lineno": 19,
+                    "execution_count": 0,
+                    "blocks_percent": 80.0,
                     "pos": [
-                        "95:5",
-                        "104:1"
+                        "19:5",
+                        "26:1"
                     ],
+                    "gcovr/excluded": true,
                     "gcovr/data_sources": [
                         [
                             "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"
@@ -1110,6 +1094,55 @@
                         "45:4",
                         "45:4"
                     ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z20sort_lambda_excludedv",
+                    "demangled_name": "sort_lambda_excluded()",
+                    "lineno": 48,
+                    "execution_count": 1,
+                    "blocks_percent": 92.3,
+                    "pos": [
+                        "48:6",
+                        "64:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_ZZ20sort_lambda_excludedvENKUliiE_clEii",
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
+                    "lineno": 50,
+                    "execution_count": 41,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "50:4",
+                        "50:4"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
+                    "lineno": 57,
+                    "execution_count": 0,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "57:7",
+                        "62:7"
+                    ],
+                    "gcovr/excluded": true,
                     "gcovr/data_sources": [
                         [
                             "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"
@@ -1168,48 +1201,15 @@
                     ]
                 },
                 {
-                    "name": "_Z20sort_lambda_excludedv",
-                    "demangled_name": "sort_lambda_excluded()",
-                    "lineno": 48,
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 95,
                     "execution_count": 1,
-                    "blocks_percent": 92.3,
-                    "pos": [
-                        "48:6",
-                        "64:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_ZZ20sort_lambda_excludedvENKUliiE_clEii",
-                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
-                    "lineno": 50,
-                    "execution_count": 41,
                     "blocks_percent": 100.0,
                     "pos": [
-                        "50:4",
-                        "50:4"
+                        "95:5",
+                        "104:1"
                     ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
-                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "lineno": 57,
-                    "execution_count": 0,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "57:7",
-                        "62:7"
-                    ],
-                    "gcovr/excluded": true,
                     "gcovr/data_sources": [
                         [
                             "testcase-main##ca403639e71e9ffcd2df74412d45a326.gcov.json.gz"

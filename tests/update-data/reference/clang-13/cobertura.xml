@@ -41,6 +41,18 @@
         </class>
         <class name="update-data_h" filename="update-data.h" line-rate="0.85714" branch-rate="0.5" complexity="0.0">
           <methods>
+            <method name="called_from_main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="7" hits="1" branch="false"/>
+                <line number="9" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="called_from_update_data" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="12" hits="1" branch="false"/>
+                <line number="14" hits="1" branch="false"/>
+              </lines>
+            </method>
             <method name="called_from_both" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="17" hits="1" branch="false"/>
@@ -67,18 +79,6 @@
                 <line number="25" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="called_from_main" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="7" hits="1" branch="false"/>
-                <line number="9" hits="1" branch="false"/>
-              </lines>
-            </method>
-            <method name="called_from_update_data" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="12" hits="1" branch="false"/>
-                <line number="14" hits="1" branch="false"/>
-              </lines>
-            </method>
           </methods>
           <lines>
             <line number="7" hits="1" branch="false"/>
@@ -97,10 +97,10 @@
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
-            <line number="20" hits="0" branch="false"/>
             <line number="20" hits="1" branch="false"/>
-            <line number="23" hits="1" branch="false"/>
+            <line number="20" hits="0" branch="false"/>
             <line number="23" hits="0" branch="false"/>
+            <line number="23" hits="1" branch="false"/>
             <line number="25" hits="1" branch="false"/>
             <line number="25" hits="1" branch="false"/>
           </lines>

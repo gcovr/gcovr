@@ -3,7 +3,7 @@ SF:tests/different-function-lines-separate/func.h
 VER:038c9fe6d002775301b38c63c7aa5e6c
 FN:3,_Z3fooi_3
 FN:5,_Z3fooi_5
-FNDA:1,_Z3fooi_3
+FNDA:1,_Z3fooi_5
 FNDA:1,_Z3fooi_5
 FNF:2
 FNH:2

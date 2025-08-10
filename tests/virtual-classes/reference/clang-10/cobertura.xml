@@ -15,14 +15,14 @@
                 <line number="9" hits="6" branch="false"/>
               </lines>
             </method>
-            <method name="_ZN3ns14Bar1D2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
             <method name="_ZN3ns14Bar1D0Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="10" hits="3" branch="false"/>
                 <line number="11" hits="3" branch="false"/>
               </lines>
+            </method>
+            <method name="_ZN3ns14Bar1D2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
             </method>
             <method name="_ZN3ns24Bar2C2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
@@ -30,14 +30,14 @@
                 <line number="25" hits="6" branch="false"/>
               </lines>
             </method>
-            <method name="_ZN3ns24Bar2D2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
             <method name="_ZN3ns24Bar2D0Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="26" hits="2" branch="false"/>
                 <line number="27" hits="2" branch="false"/>
               </lines>
+            </method>
+            <method name="_ZN3ns24Bar2D2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
             </method>
             <method name="_ZN3ns34Bar3C2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
@@ -45,14 +45,14 @@
                 <line number="41" hits="3" branch="false"/>
               </lines>
             </method>
-            <method name="_ZN3ns34Bar3D2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
             <method name="_ZN3ns34Bar3D0Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="42" hits="1" branch="false"/>
                 <line number="43" hits="1" branch="false"/>
               </lines>
+            </method>
+            <method name="_ZN3ns34Bar3D2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
             </method>
             <method name="main" signature="" line-rate="0.84615" branch-rate="0.47727" complexity="0.0">
               <lines>
