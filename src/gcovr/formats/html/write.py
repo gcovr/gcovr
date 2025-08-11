@@ -939,7 +939,7 @@ def source_row(
             line_branches = [
                 source_row_branch(linecov)
                 for linecov in linecov_list
-                if linecov.has_branches
+                if linecov.has_reportable_branches
             ]
             covclass = (
                 "coveredLine"
@@ -952,7 +952,7 @@ def source_row(
             line_conditions = [
                 source_row_condition(linecov)
                 for linecov in linecov_list
-                if linecov.has_conditions
+                if linecov.has_reportable_conditions
             ]
             line_decisions = [
                 source_row_decision(linecov)
@@ -961,7 +961,9 @@ def source_row(
             ]
             linecount = sum(linecov.count for linecov in linecov_list)
         line_calls = [
-            source_row_call(linecov) for linecov in linecov_list if linecov.has_calls
+            source_row_call(linecov)
+            for linecov in linecov_list
+            if linecov.has_reportable_calls
         ]
     return {
         "lineno": lineno,
@@ -988,7 +990,9 @@ def source_row_branch(
     total = 0
     items = list[dict[str, Any]]()
 
-    for branchcov in linecov.branches():
+    for branchcov in [
+        branchcov for branchcov in linecov.branches() if branchcov.is_reportable
+    ]:
         if branchcov.is_reportable:
             total += 1
         if branchcov.is_covered:
@@ -1023,7 +1027,11 @@ def source_row_condition(
     covered = 0
     items = []
 
-    conditioncov_list = list(linecov.conditions())
+    conditioncov_list = list(
+        conditioncov
+        for conditioncov in linecov.conditions()
+        if conditioncov.is_reportable
+    )
     for conditioncov in conditioncov_list:
         if conditioncov.is_reportable:
             count += conditioncov.count
@@ -1112,7 +1120,9 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     total = 0
     items = []
 
-    for callno, callcov in enumerate(linecov.calls()):
+    for callno, callcov in enumerate(
+        filter(lambda callcov: callcov.is_reportable, linecov.calls())
+    ):
         if callcov.is_reportable:
             total += 1
         if callcov.is_covered:

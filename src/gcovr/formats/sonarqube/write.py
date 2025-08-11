@@ -56,11 +56,14 @@ def write_report(
 
                 if options.sonarqube_metric != "line":
                     stat: Optional[Union[CoverageStat, DecisionCoverageStat]] = None
-                    if options.sonarqube_metric == "branch" and linecov.has_branches:
+                    if (
+                        options.sonarqube_metric == "branch"
+                        and linecov.has_reportable_branches
+                    ):
                         stat = linecov.branch_coverage()
                     elif (
                         options.sonarqube_metric == "condition"
-                        and linecov.has_conditions
+                        and linecov.has_reportable_conditions
                     ):
                         stat = linecov.condition_coverage()
                     elif options.sonarqube_metric == "decision" and linecov.decision:

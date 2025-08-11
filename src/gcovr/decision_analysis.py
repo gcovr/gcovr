@@ -207,7 +207,7 @@ class DecisionParser:
             return
 
         # check if a branch exists (prevent misdetection caused by inaccurate parsing)
-        if linecov and linecov.has_branches:
+        if linecov and linecov.has_reportable_branches:
             branchcov_list = list(linecov.branches())
             if (
                 _is_a_loop(code)
