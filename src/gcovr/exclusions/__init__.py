@@ -170,7 +170,7 @@ def remove_function_lines(filecov: FileCoverage) -> None:
     )
     for linecov in list(filecov.linecov()):
         if linecov.lineno in known_function_lines:
-            filecov.delete_linecov(linecov)
+            filecov.remove_line_coverage(linecov)
 
 
 def remove_throw_branches(filecov: FileCoverage) -> None:
@@ -183,7 +183,7 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
                     "Excluding unreachable branch on %s: detected as exception-only code",
                     linecov.location,
                 )
-                linecov.delete_branch(branchcov)
+                linecov.remove_branch_coverage(branchcov)
 
 
 def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> None:

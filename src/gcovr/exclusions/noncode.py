@@ -47,7 +47,7 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> N
             linecov.location,
         )
 
-        linecov.delete_branches()
+        linecov.remove_all_branches()
 
 
 def remove_noncode_lines(filecov: FileCoverage, *, lines: list[str]) -> None:
@@ -56,7 +56,7 @@ def remove_noncode_lines(filecov: FileCoverage, *, lines: list[str]) -> None:
     for linecov in list(filecov.linecov()):
         source_code = lines[linecov.lineno - 1]
         if linecov.count == 0 and _is_non_code(source_code):
-            filecov.delete_linecov(linecov)
+            filecov.remove_line_coverage(linecov)
 
 
 def _line_can_contain_branches(code: str) -> bool:

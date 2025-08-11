@@ -428,7 +428,8 @@ def _gather_coverage_from_line(
                 LOGGER.debug(
                     f"Removing line coverage for line {to_remove[0].lineno} {'' if len(to_remove) == 1 else (' to line ' + str(to_remove[-1].lineno))} from previous function."
                 )
-                filecov.remove_line_coverage(to_remove)
+                for linecov in to_remove:
+                    filecov.remove_line_coverage(linecov)
             state = state._replace(
                 deferred_functions=[],
                 linecov_list=[],

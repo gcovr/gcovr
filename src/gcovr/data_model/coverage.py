@@ -1356,6 +1356,14 @@ class LineCoverage(CoverageBase):
 
         return branchcov
 
+    def remove_branch_coverage(self, branchcov: BranchCoverage) -> None:
+        """Remove the given branch."""
+        del self.__branches[branchcov.key]
+
+    def remove_all_branches(self) -> None:
+        """Remove all the branches."""
+        self.__branches.clear()
+
     def insert_condition_coverage(
         self,
         data_source: Union[str, set[tuple[str, ...]]],
@@ -1467,19 +1475,11 @@ class LineCoverage(CoverageBase):
 
     @property
     def has_uncovered_branch(self) -> bool:
-        """Return True if the line has a uncovered branches."""
+        """Test if the line has uncovered branches."""
         return not all(
             branchcov.is_covered or branchcov.is_excluded
             for branchcov in self.branches()
         )
-
-    def delete_branch(self, branchcov: BranchCoverage) -> None:
-        """Test if there are branches."""
-        del self.__branches[branchcov.key]
-
-    def delete_branches(self) -> None:
-        """Test if there are branches."""
-        self.__branches.clear()
 
     def branches(self) -> Iterable[BranchCoverage]:
         """Iterate over the branches."""
@@ -1492,7 +1492,7 @@ class LineCoverage(CoverageBase):
 
     @property
     def has_uncovered_conditions(self) -> bool:
-        """Return True if the line has a uncovered branches."""
+        """Test if the line has uncovered conditions."""
         return not all(
             conditioncov.is_covered or conditioncov.is_excluded
             for conditioncov in self.conditions()
@@ -1503,6 +1503,14 @@ class LineCoverage(CoverageBase):
         yield from [v for _, v in sorted(self.__conditions.items())]
 
     @property
+    def has_uncovered_decision(self) -> bool:
+        """Test if the line has an uncovered decision."""
+        if self.decision is None:
+            return False
+
+        return not self.decision.is_covered
+
+    @property
     def has_calls(self) -> bool:
         """Test if there are calls."""
         return bool(self.__calls)
@@ -1510,14 +1518,6 @@ class LineCoverage(CoverageBase):
     def calls(self) -> Iterable[CallCoverage]:
         """Iterate over the calls."""
         yield from [v for _, v in sorted(self.__calls.items())]
-
-    @property
-    def has_uncovered_decision(self) -> bool:
-        """Return True if the line has a uncovered decision."""
-        if self.decision is None:
-            return False
-
-        return not self.decision.is_covered
 
     def exclude(self) -> None:
         """Exclude line from coverage statistic."""
@@ -1664,7 +1664,7 @@ class LineCoverageCollection(CoverageBase):
 
     @property
     def has_uncovered_branch(self) -> bool:
-        """Return True if the line has a uncovered branches."""
+        """Test if the line has uncovered branches."""
         return not all(
             branchcov.is_covered or branchcov.is_excluded
             for linecov in self.linecovs()
@@ -1673,7 +1673,7 @@ class LineCoverageCollection(CoverageBase):
 
     @property
     def has_uncovered_decision(self) -> bool:
-        """Return True if the line has a uncovered decision."""
+        """Test if the line has an uncovered decision."""
         if all(linecov.decision is None for linecov in self.linecovs()):
             return False
 
@@ -1694,10 +1694,6 @@ class LineCoverageCollection(CoverageBase):
         for linecov in self.linecovs():
             stat += linecov.decision_coverage()
         return stat
-
-    def remove_line_coverage(self, linecov: LineCoverage) -> None:
-        """Remove line coverage object from lin coverage collection."""
-        del self.__linecovs[linecov.key]
 
     def insert_line_coverage(
         self,
@@ -1729,12 +1725,17 @@ class LineCoverageCollection(CoverageBase):
 
         return self.__linecovs[key]
 
+    def remove_line_coverage(self, linecov: LineCoverage) -> None:
+        """Remove line coverage object from line coverage collection."""
+        del self.__linecovs[linecov.key]
+
     def merge(
         self,
         other: LineCoverageCollection,
         options: MergeOptions,
     ) -> None:
         """Merge the data of the line coverage object."""
+        # pylint: disable=protected-access
         self.__linecovs.merge(other.__linecovs, options)
         self.merge_base_data(other)
 
@@ -2207,7 +2208,7 @@ class FileCoverage(CoverageBase):
         return _presentable_filename(self.filename, root_filter)
 
     def functioncov(self) -> Iterable[FunctionCoverage]:
-        """Iterate over the lines."""
+        """Iterate over the function coverage object."""
         yield from sorted(
             self.__functions.values(),
             # Sort functions always by lowest line number
@@ -2215,39 +2216,35 @@ class FileCoverage(CoverageBase):
         )
 
     def get_functioncov(self, name: str) -> Optional[FunctionCoverage]:
-        """Iterate over the lines."""
+        """Get the function coverage object of a function."""
         return self.__functions.get(name)
 
     def delete_functioncov(self, functioncov: FunctionCoverage) -> None:
-        """Delete the line coverage data."""
+        """Delete the function coverage object."""
         del self.__functions[functioncov.key]
 
     def has_lines(self) -> bool:
-        """Query if there are lines."""
+        """Test if there are line coverage collections."""
         return bool(self.__lines)
 
     def lines(self) -> Iterable[LineCoverageCollection]:
-        """Iterate over the lines."""
+        """Iterate over the line coverage collection objects."""
         yield from [
             linecov_collection for _, linecov_collection in sorted(self.__lines.items())
         ]
 
     def get_line(self, lineno: int) -> Optional[LineCoverageCollection]:
-        """Iterate over the lines."""
+        """Get the line coverage collection of the given line."""
         return self.__lines.get(lineno)
 
     def has_linecov(self) -> bool:
-        """Query if there are lines."""
+        """Test if there are line coverage objects available."""
         return any(linecov_collection for linecov_collection in self.lines())
 
     def linecov(self) -> Iterable[LineCoverage]:
-        """Iterate over the lines."""
+        """Iterate over the line coverage objects."""
         for linecov_collection in self.lines():
             yield from linecov_collection
-
-    def delete_linecov(self, linecov: LineCoverage) -> None:
-        """Delete the line coverage data."""
-        del self.__lines[linecov.lineno][linecov.key]
 
     @property
     def stats(self) -> SummarizedStats:
@@ -2292,14 +2289,9 @@ class FileCoverage(CoverageBase):
             excluded=excluded,
         )
 
-    def remove_line_coverage(self, linecov_list: list[LineCoverage]) -> None:
-        """Remove line coverage objects from File.
-
-        Objects can be added by the text parser if a normal function is followed by a template.
-        This specialization is detected too late and we need to remove the lines again.
-        """
-        for linecov in linecov_list:
-            self.__lines[linecov.lineno].remove_line_coverage(linecov)
+    def remove_line_coverage(self, linecov: LineCoverage) -> None:
+        """Remove line coverage objects."""
+        self.__lines[linecov.parent.key].remove_line_coverage(linecov)
 
     def insert_function_coverage(
         self,

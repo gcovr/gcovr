@@ -147,7 +147,7 @@ def apply_exclusion_ranges(
             linecov.exclude()
 
         elif branch_is_excluded(linecov.lineno):
-            linecov.delete_branches()
+            linecov.remove_all_branches()
 
     for functioncov in filecov.functioncov():
         for lineno in functioncov.excluded.keys():
