@@ -75,4 +75,5 @@ describes gcovr |release|.
    faq
    contributing
    changelog
+   known_bugs
    license

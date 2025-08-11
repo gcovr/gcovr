@@ -6,18 +6,6 @@
             "lines": [
                 {
                     "line_number": 5,
-                    "count": 10,
-                    "branches": [],
-                    "gcovr/md5": "dba5047a1c46365f2bdb480dbbb2daf2",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 5,
                     "function_name": "void foo<double>(double)",
                     "count": 4,
                     "branches": [],
@@ -35,18 +23,6 @@
                     "count": 6,
                     "branches": [],
                     "gcovr/md5": "dba5047a1c46365f2bdb480dbbb2daf2",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 9,
-                    "count": 10,
-                    "branches": [],
-                    "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208",
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -136,18 +112,6 @@
                 },
                 {
                     "line_number": 10,
-                    "count": 10,
-                    "branches": [],
-                    "gcovr/md5": "ce89f0561eba0edab1b15fcc27331db0",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 10,
                     "function_name": "void foo<double>(double)",
                     "count": 4,
                     "branches": [],
@@ -257,18 +221,6 @@
                         }
                     ],
                     "gcovr/md5": "ce89f0561eba0edab1b15fcc27331db0",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 12,
-                    "count": 10,
-                    "branches": [],
-                    "gcovr/md5": "a177367d02d536dc6534ded90eceddb1",
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -554,18 +506,6 @@
                 },
                 {
                     "line_number": 13,
-                    "count": 10,
-                    "branches": [],
-                    "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 13,
                     "function_name": "void foo<double>(double)",
                     "count": 4,
                     "branches": [
@@ -637,18 +577,6 @@
                         }
                     ],
                     "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 14,
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "99f611279210618e94c36e076b6faca1",
                     "gcovr/data_sources": [
                         [
                             "main.gcda",
@@ -776,18 +704,6 @@
                 },
                 {
                     "line_number": 17,
-                    "count": 10,
-                    "branches": [],
-                    "gcovr/md5": "dd73f8311b6b70ff0270945514d01946",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 17,
                     "function_name": "void foo<double>(double)",
                     "count": 4,
                     "branches": [],
@@ -805,18 +721,6 @@
                     "count": 6,
                     "branches": [],
                     "gcovr/md5": "dd73f8311b6b70ff0270945514d01946",
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "line_number": 18,
-                    "count": 10,
-                    "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
                     "gcovr/data_sources": [
                         [
                             "main.gcda",

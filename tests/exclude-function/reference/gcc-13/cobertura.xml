@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.93478" branch-rate="0.67857" lines-covered="43" lines-valid="46" branches-covered="19" branches-valid="28" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="0.93023" branch-rate="0.65385" lines-covered="40" lines-valid="43" branches-covered="17" branches-valid="26" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/exclude-function</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.93478" branch-rate="0.67857" complexity="0.0">
+    <package name="" line-rate="0.93023" branch-rate="0.65385" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="0.93478" branch-rate="0.67857" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="0.93023" branch-rate="0.65385" complexity="0.0">
           <methods>
-            <method name="bar" signature="(int)" line-rate="0.875" branch-rate="0.75" complexity="0.0">
+            <method name="bar" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
               <lines>
                 <line number="19" hits="1" branch="false"/>
                 <line number="20" hits="1" branch="true" condition-coverage="50% (1/2)">
@@ -20,13 +20,6 @@
                 <line number="21" hits="0" branch="false"/>
                 <line number="23" hits="1" branch="false"/>
                 <line number="25" hits="1" branch="false"/>
-                <line number="44" hits="44" branch="false"/>
-                <line number="45" hits="44" branch="true" condition-coverage="100% (2/2)">
-                  <conditions>
-                    <condition number="0" type="jump" coverage="100%"/>
-                  </conditions>
-                </line>
-                <line number="46" hits="1" branch="false"/>
               </lines>
             </method>
             <method name="foo" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
@@ -171,7 +164,6 @@
             <line number="21" hits="0" branch="false"/>
             <line number="23" hits="1" branch="false"/>
             <line number="25" hits="1" branch="false"/>
-            <line number="44" hits="44" branch="false"/>
             <line number="44" hits="3" branch="true" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
@@ -182,17 +174,11 @@
                 <condition number="0" type="jump" coverage="100%"/>
               </conditions>
             </line>
-            <line number="45" hits="44" branch="true" condition-coverage="100% (2/2)">
-              <conditions>
-                <condition number="0" type="jump" coverage="100%"/>
-              </conditions>
-            </line>
             <line number="45" hits="3" branch="true" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
-            <line number="46" hits="1" branch="false"/>
             <line number="46" hits="1" branch="false"/>
             <line number="48" hits="1" branch="false"/>
             <line number="50" hits="44" branch="true" condition-coverage="75% (3/4)">

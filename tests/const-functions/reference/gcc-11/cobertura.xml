@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="1.0" branch-rate="0.5" lines-covered="19" lines-valid="19" branches-covered="2" branches-valid="4" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="1.0" branch-rate="0.5" lines-covered="17" lines-valid="17" branches-covered="2" branches-valid="4" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/const-functions</source>
   </sources>
@@ -13,8 +13,6 @@
               <lines>
                 <line number="6" hits="2" branch="false"/>
                 <line number="7" hits="2" branch="false"/>
-                <line number="8" hits="2" branch="false"/>
-                <line number="9" hits="2" branch="false"/>
               </lines>
             </method>
             <method name="Bar::~Bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
@@ -60,8 +58,6 @@
           <lines>
             <line number="6" hits="2" branch="false"/>
             <line number="7" hits="2" branch="false"/>
-            <line number="8" hits="2" branch="false"/>
-            <line number="9" hits="2" branch="false"/>
             <line number="8" hits="2" branch="false"/>
             <line number="9" hits="2" branch="false"/>
             <line number="11" hits="1" branch="false"/>

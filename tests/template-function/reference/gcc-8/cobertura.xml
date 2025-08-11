@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.95833" branch-rate="0.76667" lines-covered="46" lines-valid="48" branches-covered="23" branches-valid="30" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="0.95" branch-rate="0.76667" lines-covered="38" lines-valid="40" branches-covered="23" branches-valid="30" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
   <sources>
     <source>tests/template-function</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.95833" branch-rate="0.76667" complexity="0.0">
+    <package name="" line-rate="0.95" branch-rate="0.76667" complexity="0.0">
       <classes>
-        <class name="main_cpp" filename="main.cpp" line-rate="0.95833" branch-rate="0.76667" complexity="0.0">
+        <class name="main_cpp" filename="main.cpp" line-rate="0.95" branch-rate="0.76667" complexity="0.0">
           <methods>
             <method name="bar" signature="()" line-rate="0.875" branch-rate="0.7" complexity="0.0">
               <lines>
@@ -103,10 +103,8 @@
             </method>
           </methods>
           <lines>
-            <line number="5" hits="10" branch="false"/>
             <line number="5" hits="4" branch="false"/>
             <line number="5" hits="6" branch="false"/>
-            <line number="9" hits="10" branch="false"/>
             <line number="9" hits="4" branch="true" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
@@ -117,10 +115,8 @@
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
-            <line number="10" hits="10" branch="false"/>
             <line number="10" hits="4" branch="false"/>
             <line number="10" hits="6" branch="false"/>
-            <line number="12" hits="10" branch="false"/>
             <line number="12" hits="4" branch="true" condition-coverage="83% (5/6)">
               <conditions>
                 <condition number="0" type="jump" coverage="83%"/>
@@ -131,7 +127,6 @@
                 <condition number="0" type="jump" coverage="100%"/>
               </conditions>
             </line>
-            <line number="13" hits="10" branch="false"/>
             <line number="13" hits="4" branch="true" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="0" type="jump" coverage="50%"/>
@@ -142,13 +137,10 @@
                 <condition number="0" type="jump" coverage="100%"/>
               </conditions>
             </line>
-            <line number="14" hits="1" branch="false"/>
             <line number="14" hits="0" branch="false"/>
             <line number="14" hits="1" branch="false"/>
-            <line number="17" hits="10" branch="false"/>
             <line number="17" hits="4" branch="false"/>
             <line number="17" hits="6" branch="false"/>
-            <line number="18" hits="10" branch="false"/>
             <line number="18" hits="4" branch="false"/>
             <line number="18" hits="6" branch="false"/>
             <line number="20" hits="4" branch="false"/>

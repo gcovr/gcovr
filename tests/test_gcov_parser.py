@@ -288,7 +288,7 @@ GCOV_8_SOURCES = dict(
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     gcov_8_example=[7, 8, 33],
     gcov_8_exclude_throw=[7, 8, 33],
-    nautilus_example=[51, 51, 51, 52, 54],
+    nautilus_example=[51, 51],
     gcov_8_example_2=[7, 8, 33],
 )
 
@@ -336,6 +336,9 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
         ),
     )
 
+    out, err = capsys.readouterr()
+    assert (out, err) == ("", "")
+
     uncovered_lines = [
         linecov.lineno for linecov in filecov.lines.values() if linecov.is_uncovered
     ]
@@ -346,9 +349,6 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
     ]
     assert uncovered_lines == expected_uncovered_lines
     assert uncovered_branches == expected_uncovered_branches
-
-    out, err = capsys.readouterr()
-    assert (out, err) == ("", "")
 
 
 def contains_phrases(string: str, *phrases: str) -> bool:
@@ -449,12 +449,12 @@ def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) 
     """
 
     source = textwrap.dedent(
-        r"""
-    function __compiler-internal called 5 returned 6 blocks executed 7%
-          1: 3:magic code!
-    branch 0 taken 5%
-      #####: 4:recover here
-    """
+        """\
+        function __compiler-internal called 5 returned 6 blocks executed 7%
+            1: 3:magic code!
+        branch 0 taken 5%
+        #####: 4:recover here
+        """
     )
     lines = source.splitlines()
 
@@ -478,7 +478,7 @@ def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) 
     assert message0[1] == logging.WARNING
     warning_phrases1 = [
         "Unrecognized GCOV output",
-        lines[0],
+        lines[1],
     ]
     assert contains_phrases(message0[2], *warning_phrases1)
 
@@ -507,9 +507,10 @@ def test_trailing_function_tag() -> None:
 
     source = textwrap.dedent(
         """\
-      #####: 2:example line
-    function example called 17 returned 16 blocks executed 3%
-    """
+        function foo() called 1 returned 100% blocks executed 100%
+          #####: 2:example line
+        function example called 17 returned 16 blocks executed 3%
+        """
     )
 
     coverage, _ = text.parse_coverage(
@@ -519,13 +520,13 @@ def test_trailing_function_tag() -> None:
         ignore_parse_errors=None,
     )
 
-    assert coverage.functions.keys() == {"example"}
-    filecov = coverage.functions["example"]
-    assert list(filecov.count.keys()) == [3]  # previous lineno + 1
-    assert filecov.mangled_name == "example"
-    assert filecov.demangled_name is None
-    assert filecov.name == "example"
-    assert filecov.count[3] == 17  # number of calls
+    assert coverage.functions.keys() == {"example", "foo()"}
+    functioncov = coverage.functions["example"]
+    assert list(functioncov.count.keys()) == [3]  # previous lineno + 1
+    assert functioncov.mangled_name == "example"
+    assert functioncov.demangled_name is None
+    assert functioncov.name == "example"
+    assert functioncov.count[3] == 17  # number of calls
 
 
 @pytest.mark.parametrize(
@@ -544,6 +545,7 @@ def test_branch_exclusion(flags: str) -> None:
 
     source = textwrap.dedent(
         """\
+        function foo() called 1 returned 100% blocks executed 100%
           1: 1: normal line
         branch 1 taken 80%
           1: 2: } // line without apparent code
@@ -598,6 +600,7 @@ def test_negative_branch_count() -> None:
 
     source = textwrap.dedent(
         """\
+        function foo() called 1 returned 100% blocks executed 100%
           1: 1: normal line
         branch 1 taken 80%
           1: 2: } // line without apparent code
@@ -794,6 +797,7 @@ def test_negative_line_count_ignored(
 
     source = textwrap.dedent(
         """\
+        function foo() called 1 returned 100% blocks executed 100%
              1: 1:foo += 1;
             -1: 2:foo += 1;
              2: 3:foo += 1;
@@ -838,6 +842,7 @@ def test_negative_branch_count_ignored() -> None:
 
     source = textwrap.dedent(
         """\
+        function foo() called 1 returned 100% blocks executed 100%
           1: 1: normal line
         branch 1 taken 80%
           1: 2: } // line without apparent code
@@ -910,6 +915,7 @@ def test_suspicious_line_count_ignored(
 
     source = textwrap.dedent(
         """\
+        function foo() called 1 returned 100% blocks executed 100%
              1: 1:foo += 1;
             4294967296: 2:foo += 1;
              2: 3:foo += 1;
@@ -954,6 +960,7 @@ def test_suspicious_branch_count_ignored() -> None:
 
     source = textwrap.dedent(
         """\
+        function foo() called 1 returned 100% blocks executed 100%
           1: 1: normal line
         branch 1 taken 80%
           1: 2: } // line without apparent code
@@ -1063,7 +1070,7 @@ def test_noncode_lines() -> None:
 
     # By itself, function lines have no special treatment.
     status = get_line_status(["3: 32:void foo(){}"])
-    assert status == "normal:3"
+    assert status == "noncode"
 
     # If gcov reports a function, keep the line.
     status = get_line_status(
@@ -1090,7 +1097,15 @@ def test_noncode_lines() -> None:
     assert get_line_status(["-: 32:}"]) == "noncode"
 
     # Uncovered line with code: keep
-    assert get_line_status(["#####: 32:looks like code"]) == "normal:0"
+    assert (
+        get_line_status(
+            [
+                "function foo called 3 returned 99% blocks executed 70%",
+                "#####: 32:looks like code",
+            ]
+        )
+        == "normal:0"
+    )
 
     # Uncovered code that doesn't look like code: discard
     assert get_line_status(["#####: 32:}"], exclude_noncode_lines=True) == "noncode"

@@ -197,13 +197,7 @@ def update_changelog(filename: str, lines: list[str], version: str) -> list[str]
     else:
         raise RuntimeError(f"Call of {next_release!r} not found in {filename!r}.")
 
-    next_release_link_regex = re.compile(r":ref:`Next release <next_release>`")
-    for line in iter_lines:
-        new_lines.append(
-            next_release_link_regex.sub(
-                f":ref:`{version} <{next_release_link_id}>`", line
-            )
-        )
+    new_lines += list(iter_lines)
 
     return new_lines
 
@@ -219,6 +213,18 @@ def update_documentation(_filename: str, lines: list[str], version: str) -> list
                 r"\g<1>" + version,
                 line,
             )
+        # We need to also change the line after "Next Release"
+        # because the minus must have the same length than the
+        # headline to have valid RST.
+        # We change:
+        #    :ref:`next_release`
+        # to:
+        #    :ref:`release_x_y`
+        line = re.sub(
+            r":ref:`next_release`",
+            f"release_{version.replace('.', '_')}",
+            line,
+        )
         new_lines.append(line)
 
     return new_lines
@@ -324,8 +330,6 @@ def main(version: str, for_file: Optional[str] = None) -> None:
             _, extension = os.path.splitext(filename)
             fullname = os.path.join(root, filename)
             if for_file is not None and for_file != os.path.abspath(fullname):
-                if filename == "CHANGELOG.rst":
-                    print(fullname)
                 continue
             if filename.endswith(".py") and filename not in ["version.py"]:
                 handlers.append(add_copyright_header_to_python_file)

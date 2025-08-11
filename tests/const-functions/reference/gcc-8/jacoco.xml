@@ -7,8 +7,6 @@
       <line nr="7"/>
       <line nr="8"/>
       <line nr="9"/>
-      <line nr="8"/>
-      <line nr="9"/>
       <line nr="11"/>
       <line nr="13"/>
       <line nr="14"/>
@@ -21,15 +19,15 @@
       <line nr="27" mb="1" cb="1"/>
       <line nr="28" mb="1" cb="1"/>
       <line nr="30"/>
-      <counter type="LINE" missed="0" covered="18"/>
+      <counter type="LINE" missed="0" covered="16"/>
       <counter type="BRANCH" missed="2" covered="2"/>
       <counter type="METHOD" missed="0" covered="5"/>
     </sourcefile>
-    <counter type="LINE" missed="0" covered="18"/>
+    <counter type="LINE" missed="0" covered="16"/>
     <counter type="BRANCH" missed="2" covered="2"/>
     <counter type="METHOD" missed="0" covered="5"/>
   </package>
-  <counter type="LINE" missed="0" covered="18"/>
+  <counter type="LINE" missed="0" covered="16"/>
   <counter type="BRANCH" missed="2" covered="2"/>
   <counter type="METHOD" missed="0" covered="5"/>
 </report>
