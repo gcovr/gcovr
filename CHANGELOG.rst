@@ -78,6 +78,7 @@ Internal changes:
 
 - Update Windows runner to ``windows-2022`` and ``windows-2025``. (:issue:`1108`)
 - Add trusted publishing. (:issue:`1114`)
+- Restructure the line coverage data model and change the sort order in the reports. (:issue:`1137`)
 
 .. _release_8_3:
 
