@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <coverage clover="1737404287" generated="1737404287">
   <project timestamp="1737404287">
-    <metrics complexity="0" elements="30" coveredelements="30" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="1" classes="2" files="2" loc="58" ncloc="30"/>
+    <metrics complexity="0" elements="30" coveredelements="30" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="1" classes="2" files="2" loc="57" ncloc="30"/>
     <package name="root">
-      <metrics complexity="0" elements="30" coveredelements="30" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="2" files="2" loc="58" ncloc="30"/>
+      <metrics complexity="0" elements="30" coveredelements="30" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="2" files="2" loc="57" ncloc="30"/>
       <file name="function.hpp" path="function.hpp">
         <metrics complexity="0" elements="9" coveredelements="9" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="15" ncloc="9"/>
         <class name="id$a8137fe20e1ee1dbd18324b7662115fa">
@@ -20,7 +20,7 @@
         <line num="15" type="stmt" count="2"/>
       </file>
       <file name="main.cpp" path="main.cpp">
-        <metrics complexity="0" elements="21" coveredelements="21" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="43" ncloc="21"/>
+        <metrics complexity="0" elements="21" coveredelements="21" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="42" ncloc="21"/>
         <class name="id$118fcbaaba162ba17933c7893247df3a">
           <metrics complexity="0" elements="21" coveredelements="21" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
         </class>

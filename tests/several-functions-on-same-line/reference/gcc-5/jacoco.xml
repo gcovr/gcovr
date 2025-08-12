@@ -38,7 +38,6 @@
       <line nr="39"/>
       <line nr="40"/>
       <line nr="42"/>
-      <line nr="43"/>
       <counter type="LINE" missed="0" covered="21"/>
       <counter type="BRANCH" missed="1" covered="3"/>
       <counter type="METHOD" missed="0" covered="4"/>

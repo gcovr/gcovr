@@ -464,8 +464,25 @@
                 {
                     "line_number": 62,
                     "function_name": "main",
-                    "count": 0,
-                    "branches": [],
+                    "count": 2,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 4,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 4,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "f619ca2743f98bae7db1d75919cfc0bc",
                     "gcovr/excluded": true
                 },
@@ -473,7 +490,24 @@
                     "line_number": 63,
                     "function_name": "main",
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "257d5873569672120a0c1f23864092e0",
                     "gcovr/excluded": true
                 },
@@ -481,7 +515,40 @@
                     "line_number": 64,
                     "function_name": "main",
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 1,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 1,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "01d76a240d1ff39c4acd167e4a0f0805",
                     "gcovr/excluded": true
                 },
@@ -489,7 +556,24 @@
                     "line_number": 65,
                     "function_name": "main",
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "5703f441b323e4ec7b1b87ef3b386cb9",
                     "gcovr/excluded": true
                 },

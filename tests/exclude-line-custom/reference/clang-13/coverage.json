@@ -73,7 +73,7 @@
                 {
                     "line_number": 22,
                     "function_name": "foo(int)",
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "bf5be2a3bc0ecc42e120b71a7eebd727",
                     "gcovr/excluded": true
@@ -81,7 +81,7 @@
                 {
                     "line_number": 25,
                     "function_name": "foo(int)",
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "24c0af48fef8b1ec52c142d48f748106",
                     "gcovr/excluded": true

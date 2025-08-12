@@ -1,10 +1,10 @@
 TN:GCOVR report
 SF:tests/exclude-function/main.cpp
 VER:1c290a863c4be067f27e2a61b6458b9e
-FN:19,bar(int)
-FNDA:1,bar(int)
 FN:9,foo(int)
 FNDA:1,foo(int)
+FN:19,bar(int)
+FNDA:1,bar(int)
 FN:95,main
 FNDA:1,main
 FNF:3

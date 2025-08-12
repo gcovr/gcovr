@@ -5308,14 +5308,14 @@
             ],
             "functions": [
                 {
-                    "name": "_Z15checkBiggerBothi",
-                    "demangled_name": "checkBiggerBoth(int)",
-                    "lineno": 32,
-                    "execution_count": 2,
-                    "blocks_percent": 100.0,
+                    "name": "_Z15checkBiggerTruei",
+                    "demangled_name": "checkBiggerTrue(int)",
+                    "lineno": 8,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
                     "pos": [
-                        "32:6",
-                        "42:1"
+                        "8:6",
+                        "18:1"
                     ],
                     "gcovr/data_sources": [
                         [
@@ -5340,110 +5340,110 @@
                     ]
                 },
                 {
-                    "name": "_Z15checkBiggerTruei",
-                    "demangled_name": "checkBiggerTrue(int)",
-                    "lineno": 8,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "8:6",
-                        "18:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z24checkCompactBranch1Falsei",
-                    "demangled_name": "checkCompactBranch1False(int)",
-                    "lineno": 246,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "246:6",
-                        "249:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z23checkCompactBranch1Truei",
-                    "demangled_name": "checkCompactBranch1True(int)",
-                    "lineno": 241,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "241:6",
-                        "244:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z24checkCompactBranch2Falsei",
-                    "demangled_name": "checkCompactBranch2False(int)",
-                    "lineno": 256,
-                    "execution_count": 1,
-                    "blocks_percent": 60.0,
-                    "pos": [
-                        "256:6",
-                        "259:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z23checkCompactBranch2Truei",
-                    "demangled_name": "checkCompactBranch2True(int)",
-                    "lineno": 251,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "pos": [
-                        "251:6",
-                        "254:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkComplexFalsei",
-                    "demangled_name": "checkComplexFalse(int)",
-                    "lineno": 128,
-                    "execution_count": 1,
-                    "blocks_percent": 66.7,
-                    "pos": [
-                        "128:6",
-                        "138:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z19checkComplexForLoopi",
-                    "demangled_name": "checkComplexForLoop(int)",
-                    "lineno": 303,
-                    "execution_count": 1,
+                    "name": "_Z15checkBiggerBothi",
+                    "demangled_name": "checkBiggerBoth(int)",
+                    "lineno": 32,
+                    "execution_count": 2,
                     "blocks_percent": 100.0,
                     "pos": [
-                        "303:5",
-                        "311:1"
+                        "32:6",
+                        "42:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z16checkSmallerTruei",
+                    "demangled_name": "checkSmallerTrue(int)",
+                    "lineno": 44,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "44:6",
+                        "54:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkSmallerFalsei",
+                    "demangled_name": "checkSmallerFalse(int)",
+                    "lineno": 56,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "56:6",
+                        "66:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z14checkEqualTruei",
+                    "demangled_name": "checkEqualTrue(int)",
+                    "lineno": 68,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "68:6",
+                        "78:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z15checkEqualFalsei",
+                    "demangled_name": "checkEqualFalse(int)",
+                    "lineno": 80,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "80:6",
+                        "90:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkNotEqualTruei",
+                    "demangled_name": "checkNotEqualTrue(int)",
+                    "lineno": 92,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "92:6",
+                        "102:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z18checkNotEqualFalsei",
+                    "demangled_name": "checkNotEqualFalse(int)",
+                    "lineno": 104,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "104:6",
+                        "114:1"
                     ],
                     "gcovr/data_sources": [
                         [
@@ -5468,14 +5468,14 @@
                     ]
                 },
                 {
-                    "name": "_Z16checkDoWhileLoopi",
-                    "demangled_name": "checkDoWhileLoop(int)",
-                    "lineno": 327,
+                    "name": "_Z17checkComplexFalsei",
+                    "demangled_name": "checkComplexFalse(int)",
+                    "lineno": 128,
                     "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 66.7,
                     "pos": [
-                        "327:5",
-                        "339:1"
+                        "128:6",
+                        "138:1"
                     ],
                     "gcovr/data_sources": [
                         [
@@ -5532,166 +5532,6 @@
                     ]
                 },
                 {
-                    "name": "_Z15checkEqualFalsei",
-                    "demangled_name": "checkEqualFalse(int)",
-                    "lineno": 80,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "80:6",
-                        "90:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z14checkEqualTruei",
-                    "demangled_name": "checkEqualTrue(int)",
-                    "lineno": 68,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "68:6",
-                        "78:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z12checkForLoopi",
-                    "demangled_name": "checkForLoop(int)",
-                    "lineno": 293,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "293:5",
-                        "301:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z16checkInterpreteri",
-                    "demangled_name": "checkInterpreter(int)",
-                    "lineno": 341,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "pos": [
-                        "341:6",
-                        "363:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z18checkNotEqualFalsei",
-                    "demangled_name": "checkNotEqualFalse(int)",
-                    "lineno": 104,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "104:6",
-                        "114:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkNotEqualTruei",
-                    "demangled_name": "checkNotEqualTrue(int)",
-                    "lineno": 92,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "92:6",
-                        "102:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkSmallerFalsei",
-                    "demangled_name": "checkSmallerFalse(int)",
-                    "lineno": 56,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "56:6",
-                        "66:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z16checkSmallerTruei",
-                    "demangled_name": "checkSmallerTrue(int)",
-                    "lineno": 44,
-                    "execution_count": 1,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "44:6",
-                        "54:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z18checkSplittedFalsei",
-                    "demangled_name": "checkSplittedFalse(int)",
-                    "lineno": 287,
-                    "execution_count": 1,
-                    "blocks_percent": 60.0,
-                    "pos": [
-                        "287:6",
-                        "291:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
-                    "name": "_Z17checkSplittedTruei",
-                    "demangled_name": "checkSplittedTrue(int)",
-                    "lineno": 281,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "pos": [
-                        "281:6",
-                        "285:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
                     "name": "_Z12checkSwitch1i",
                     "demangled_name": "checkSwitch1(int)",
                     "lineno": 188,
@@ -5740,14 +5580,62 @@
                     ]
                 },
                 {
-                    "name": "_Z18checkTernary1Falsei",
-                    "demangled_name": "checkTernary1False(int)",
-                    "lineno": 266,
+                    "name": "_Z23checkCompactBranch1Truei",
+                    "demangled_name": "checkCompactBranch1True(int)",
+                    "lineno": 241,
                     "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 75.0,
                     "pos": [
-                        "266:6",
-                        "269:1"
+                        "241:6",
+                        "244:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z24checkCompactBranch1Falsei",
+                    "demangled_name": "checkCompactBranch1False(int)",
+                    "lineno": 246,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "246:6",
+                        "249:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z23checkCompactBranch2Truei",
+                    "demangled_name": "checkCompactBranch2True(int)",
+                    "lineno": 251,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "pos": [
+                        "251:6",
+                        "254:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z24checkCompactBranch2Falsei",
+                    "demangled_name": "checkCompactBranch2False(int)",
+                    "lineno": 256,
+                    "execution_count": 1,
+                    "blocks_percent": 60.0,
+                    "pos": [
+                        "256:6",
+                        "259:1"
                     ],
                     "gcovr/data_sources": [
                         [
@@ -5772,14 +5660,14 @@
                     ]
                 },
                 {
-                    "name": "_Z18checkTernary2Falsei",
-                    "demangled_name": "checkTernary2False(int)",
-                    "lineno": 276,
+                    "name": "_Z18checkTernary1Falsei",
+                    "demangled_name": "checkTernary1False(int)",
+                    "lineno": 266,
                     "execution_count": 1,
-                    "blocks_percent": 66.7,
+                    "blocks_percent": 100.0,
                     "pos": [
-                        "276:6",
-                        "279:1"
+                        "266:6",
+                        "269:1"
                     ],
                     "gcovr/data_sources": [
                         [
@@ -5804,6 +5692,86 @@
                     ]
                 },
                 {
+                    "name": "_Z18checkTernary2Falsei",
+                    "demangled_name": "checkTernary2False(int)",
+                    "lineno": 276,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "276:6",
+                        "279:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z17checkSplittedTruei",
+                    "demangled_name": "checkSplittedTrue(int)",
+                    "lineno": 281,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "pos": [
+                        "281:6",
+                        "285:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z18checkSplittedFalsei",
+                    "demangled_name": "checkSplittedFalse(int)",
+                    "lineno": 287,
+                    "execution_count": 1,
+                    "blocks_percent": 60.0,
+                    "pos": [
+                        "287:6",
+                        "291:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z12checkForLoopi",
+                    "demangled_name": "checkForLoop(int)",
+                    "lineno": 293,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "293:5",
+                        "301:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z19checkComplexForLoopi",
+                    "demangled_name": "checkComplexForLoop(int)",
+                    "lineno": 303,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "303:5",
+                        "311:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
                     "name": "_Z14checkWhileLoopi",
                     "demangled_name": "checkWhileLoop(int)",
                     "lineno": 313,
@@ -5820,14 +5788,30 @@
                     ]
                 },
                 {
-                    "name": "main",
-                    "demangled_name": "main",
-                    "lineno": 372,
+                    "name": "_Z16checkDoWhileLoopi",
+                    "demangled_name": "checkDoWhileLoop(int)",
+                    "lineno": 327,
                     "execution_count": 1,
-                    "blocks_percent": 95.3,
+                    "blocks_percent": 100.0,
                     "pos": [
-                        "372:5",
-                        "429:1"
+                        "327:5",
+                        "339:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "_Z16checkInterpreteri",
+                    "demangled_name": "checkInterpreter(int)",
+                    "lineno": 341,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "pos": [
+                        "341:6",
+                        "363:1"
                     ],
                     "gcovr/data_sources": [
                         [
@@ -5844,6 +5828,22 @@
                     "pos": [
                         "365:6",
                         "370:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main##ab9fd553a654e1ba919762756d077556.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 372,
+                    "execution_count": 1,
+                    "blocks_percent": 95.3,
+                    "pos": [
+                        "372:5",
+                        "429:1"
                     ],
                     "gcovr/data_sources": [
                         [

@@ -12,7 +12,6 @@
       <line nr="18" mb="1" cb="1"/>
       <line nr="22"/>
       <line nr="25"/>
-      <line nr="26"/>
       <counter type="LINE" missed="2" covered="7"/>
       <counter type="BRANCH" missed="2" covered="2"/>
       <counter type="METHOD" missed="0" covered="2"/>
