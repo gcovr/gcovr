@@ -1,65 +1,10 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<coverage clover="1737404287" generated="1737404287">
-  <project timestamp="1737404287">
-    <metrics complexity="0" elements="38" coveredelements="31" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" packages="1" classes="1" files="1" loc="68" ncloc="38"/>
-    <package name="root">
-      <metrics complexity="0" elements="38" coveredelements="31" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" files="1" loc="68" ncloc="38"/>
-      <file name="main.cpp" path="main.cpp">
-        <metrics complexity="0" elements="38" coveredelements="31" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0" classes="1" loc="68" ncloc="38"/>
-        <class name="id$118fcbaaba162ba17933c7893247df3a">
-          <metrics complexity="0" elements="38" coveredelements="31" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
-        </class>
-        <line num="8" type="stmt" count="1"/>
-        <line num="9" type="stmt" count="1"/>
-        <line num="8" type="stmt" count="2"/>
-        <line num="9" type="stmt" count="2"/>
-        <line num="10" type="stmt" count="0"/>
-        <line num="11" type="stmt" count="0"/>
-        <line num="10" type="stmt" count="1"/>
-        <line num="11" type="stmt" count="1"/>
-        <line num="10" type="stmt" count="2"/>
-        <line num="11" type="stmt" count="2"/>
-        <line num="24" type="stmt" count="1"/>
-        <line num="25" type="stmt" count="1"/>
-        <line num="24" type="stmt" count="1"/>
-        <line num="25" type="stmt" count="1"/>
-        <line num="26" type="stmt" count="0"/>
-        <line num="27" type="stmt" count="0"/>
-        <line num="26" type="stmt" count="1"/>
-        <line num="27" type="stmt" count="1"/>
-        <line num="26" type="stmt" count="1"/>
-        <line num="27" type="stmt" count="1"/>
-        <line num="40" type="stmt" count="1"/>
-        <line num="41" type="stmt" count="1"/>
-        <line num="42" type="stmt" count="0"/>
-        <line num="43" type="stmt" count="0"/>
-        <line num="42" type="stmt" count="1"/>
-        <line num="43" type="stmt" count="1"/>
-        <line num="51" type="stmt" count="1"/>
-        <line num="53" type="stmt" count="1"/>
-        <line num="54" type="stmt" count="1"/>
-        <line num="55" type="stmt" count="1"/>
-        <line num="56" type="stmt" count="1"/>
-        <line num="57" type="stmt" count="1"/>
-        <line num="58" type="stmt" count="1"/>
-        <line num="59" type="stmt" count="1"/>
-        <line num="60" type="stmt" count="1"/>
-        <line num="61" type="stmt" count="1"/>
-        <line num="66" type="stmt" count="0"/>
-        <line num="68" type="stmt" count="1"/>
-      </file>
-    </package>
-  </project>
-  <testproject timestamp="1737404287">
-    <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
-    <package name="dummy">
-      <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
-      <file name="dummy" path="dummy">
-        <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
-        <class name="id$275876e34cf609db118f3d84b799a790">
-          <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" coveredmethods="0" methods="0"/>
-        </class>
-      </file>
-    </package>
-  </testproject>
-</coverage>
+------------------------------------------------------------------------------
+                           GCC Code Coverage Report
+Directory: .
+------------------------------------------------------------------------------
+File                                       Lines    Exec  Cover   Missing
+------------------------------------------------------------------------------
+main.cpp                                      38      31    81%   10-11,26-27,42-43,66
+------------------------------------------------------------------------------
+TOTAL                                         38      31    81%
+------------------------------------------------------------------------------

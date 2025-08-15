@@ -100,7 +100,7 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
 
-.. versionchanged:: 8.3
+.. versionadded:: 8.3
    The ``gcovr/data_sources`` is added.
 
 .. _json_format_line:
@@ -181,22 +181,22 @@ The line entry should be interpreted as follows:
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
 
-.. versionchanged:: NEXT
+.. versionadded:: NEXT
    The ``gcovr/data_sources`` is added.
 
-.. versionchanged:: 8.0
+.. versionadded:: 8.0
    The ``conditions`` is added.
 
-.. versionchanged:: 8.0
+.. versionadded:: 8.0
    The ``block_ids`` is added.
 
-.. versionchanged:: 8.0
+.. versionadded:: 8.0
    The ``function_name`` is added.
 
-.. versionchanged:: 8.0
+.. versionadded:: 8.0
    The ``gcovr/md5`` is added.
 
-.. versionchanged:: 6.0
+.. versionadded:: 6.0
    The ``gcovr/excluded`` field can be absent if false.
 
 .. versionchanged:: 6.0
@@ -217,6 +217,7 @@ Each **branch** provides information about a branch on that line::
       "throw": throw,
       "source_block_id": number,
       "destination_block_id": number,
+      "gcovr/excluded": excluded,
       "gcovr/data_sources": [data_source]
     }
 
@@ -243,6 +244,11 @@ destination_block_id: int
   The destination block of this branch.
   Only available if ``gcov`` JSON format is used.
 
+gcovr/excluded: boolean
+  True if coverage data for this line was explicitly excluded,
+  in particular with :ref:`exclusion markers`.
+  May be absent if false.
+
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
@@ -250,7 +256,10 @@ gcovr/data_sources: list
 .. versionadded:: NEXT
    The ``branchno`` is added.
 
-.. versionchanged:: NEXT
+.. versionadded:: NEXT
+   The ``gcovr/excluded`` is added.
+
+.. versionadded:: NEXT
    The ``gcovr/data_sources`` is added.
 
 .. versionadded:: 8.0
@@ -310,10 +319,10 @@ gcovr/data_sources: list
 .. versionadded:: NEXT
    The ``conditionno`` is added.
 
-.. versionchanged:: NEXT
+.. versionadded:: NEXT
    New ``gcovr/excluded`` field.
 
-.. versionchanged:: NEXT
+.. versionadded:: NEXT
    The ``gcovr/data_sources`` is added.
 
 .. _json_format_decision:
@@ -372,7 +381,7 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
 
-.. versionchanged:: NEXT
+.. versionadded:: NEXT
    The ``gcovr/data_sources`` is added.
 
 .. _json_format_call:
@@ -417,10 +426,10 @@ gcovr/data_sources: list
 .. versionchanged:: NEXT
    New ``returned`` field is replacing the field ``covered``.
 
-.. versionchanged:: NEXT
+.. versionadded:: NEXT
    New ``gcovr/excluded`` field.
 
-.. versionchanged:: NEXT
+.. versionadded:: NEXT
    The ``gcovr/data_sources`` is added.
 
 .. _json_format_function:
@@ -480,7 +489,7 @@ gcovr/data_sources: list
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
-.. versionchanged:: NEXT
+.. versionadded:: NEXT
    The ``gcovr/data_sources`` is added.
 
 .. versionadded:: 8.0

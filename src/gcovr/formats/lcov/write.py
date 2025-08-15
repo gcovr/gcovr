@@ -68,19 +68,18 @@ def write_report(
 
             functions = 0
             function_hits = 0
-            for function_name in sorted(filecov.functions):
-                linenos = list(filecov.functions[function_name].count)
+            for functioncov in filecov.functioncov():
+                linenos = list(functioncov.count)
                 functions += len(linenos)
 
                 for lineno in sorted(linenos):
                     # FN:<line number of function start>,[<line number of function end>,]<function name>
-                    fh.write(f"FN:{lineno},{function_name}{postfix()}\n")
-                for lineno in sorted(filecov.functions[function_name].count):
-                    count = filecov.functions[function_name].count[lineno]
+                    fh.write(f"FN:{lineno},{functioncov.name}{postfix()}\n")
+                for _, count in sorted(functioncov.count.items()):
                     if count:
                         function_hits += 1
                     # FNDA:<execution count>,<function name>
-                    fh.write(f"FNDA:{count},{function_name}{postfix()}\n")
+                    fh.write(f"FNDA:{count},{functioncov.name}{postfix()}\n")
             # FNF:<number of functions found>
             fh.write(f"FNF:{functions}\n")
             # FNH:<number of function hit>
@@ -88,10 +87,11 @@ def write_report(
 
             branches = 0
             branch_hits = 0
-            for linecov in filecov.lines.values():
+            for linecov in filecov.linecov():
                 if linecov.is_reportable:
-                    branches += len(linecov.branches)
-                    for branchno, branchcov in enumerate(linecov.branches.values()):
+                    branchcov_list = list(linecov.branches())
+                    branches += len(branchcov_list)
+                    for branchno, branchcov in enumerate(branchcov_list):
                         if branchcov.count:
                             branch_hits += 1
                         # BRDA:<line_number>,[<exception>]<block>,<branch>,<taken>
@@ -105,7 +105,7 @@ def write_report(
             fh.write(f"BRH:{branch_hits}\n")
 
             lines_covered = 0
-            for linecov in filecov.lines.values():
+            for linecov in filecov.linecov():
                 if linecov.is_reportable:
                     if linecov.count:
                         lines_covered += 1

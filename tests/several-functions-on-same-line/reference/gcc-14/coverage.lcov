@@ -11,28 +11,28 @@ FN:13,ns::func_b(int)
 FNDA:1,ns::func_b(int)
 FNF:4
 FNH:4
-BRDA:3,2,0,3
-BRDA:3,2,1,1
-BRDA:3,3,2,2
-BRDA:3,3,3,1
 BRDA:3,2,0,1
 BRDA:3,2,1,-
 BRDA:3,3,2,1
 BRDA:3,3,3,-
+BRDA:3,2,0,3
+BRDA:3,2,1,1
+BRDA:3,3,2,2
+BRDA:3,3,3,1
 BRF:8
 BRH:6
-DA:2,4,c150c688cc2be0c33e969345b6e55a30
 DA:2,1,c150c688cc2be0c33e969345b6e55a30
-DA:3,4,7c6be6f1b03d88e1aeb1a5da84d7b29c
+DA:2,4,c150c688cc2be0c33e969345b6e55a30
 DA:3,1,7c6be6f1b03d88e1aeb1a5da84d7b29c
-DA:4,2,f21dc0f51cdb8efdd8342542fdf74185
+DA:3,4,7c6be6f1b03d88e1aeb1a5da84d7b29c
 DA:4,1,f21dc0f51cdb8efdd8342542fdf74185
-DA:7,2,1db5729894b8021f205502133146e3fd
+DA:4,2,f21dc0f51cdb8efdd8342542fdf74185
 DA:7,0,1db5729894b8021f205502133146e3fd
-DA:9,4,be4211c964ef649c710fd79d8c6acec0
+DA:7,2,1db5729894b8021f205502133146e3fd
 DA:9,1,be4211c964ef649c710fd79d8c6acec0
-DA:10,4,cbb184dd8e05c9709e5dcaedaa0495cf
+DA:9,4,be4211c964ef649c710fd79d8c6acec0
 DA:10,1,cbb184dd8e05c9709e5dcaedaa0495cf
+DA:10,4,cbb184dd8e05c9709e5dcaedaa0495cf
 DA:13,1,cccd11fa7c16adf1ce73d9b8fb501a51
 DA:13,1,cccd11fa7c16adf1ce73d9b8fb501a51
 DA:14,1,eedfabe25e1a74e2cea1c0c0ecad9dbd
@@ -46,12 +46,12 @@ SF:tests/several-functions-on-same-line/main.cpp
 VER:8fef35f1722a6320e50c178291d226bf
 FN:3,foo()
 FNDA:1,foo()
-FN:24,main
-FNDA:1,main
 FN:8,void func<double>(double, double)
 FNDA:2,void func<double>(double, double)
 FN:8,void func<int>(int, int)
 FNDA:2,void func<int>(int, int)
+FN:24,main
+FNDA:1,main
 FNF:4
 FNH:4
 BRDA:9,2,0,-

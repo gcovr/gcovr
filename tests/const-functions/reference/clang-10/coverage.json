@@ -171,12 +171,6 @@
             ],
             "functions": [
                 {
-                    "name": "_ZN3Bar3fooEv",
-                    "lineno": 15,
-                    "execution_count": 2,
-                    "blocks_percent": 100.0
-                },
-                {
                     "name": "_ZN3BarC2Ev",
                     "lineno": 6,
                     "execution_count": 4,
@@ -197,6 +191,12 @@
                 {
                     "name": "_ZNK3Bar3fooEv",
                     "lineno": 11,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0
+                },
+                {
+                    "name": "_ZN3Bar3fooEv",
+                    "lineno": 15,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },

@@ -126,10 +126,10 @@ LF:2
 end_of_record
 SF:tests/nested2-use-existing/subdir/B/main.cpp
 VER:c95232e53ac0253b638414c18fd6ba6c
-FN:21,_Z41__static_initialization_and_destruction_0ii
-FNDA:1,_Z41__static_initialization_and_destruction_0ii
 FN:12,main
 FNDA:1,main
+FN:21,_Z41__static_initialization_and_destruction_0ii
+FNDA:1,_Z41__static_initialization_and_destruction_0ii
 FNF:2
 FNH:2
 BRDA:21,0,0,1

@@ -14,7 +14,6 @@
       <line nr="21" mb="1" cb="1"/>
       <line nr="25"/>
       <line nr="28"/>
-      <line nr="29"/>
       <counter type="LINE" missed="4" covered="7"/>
       <counter type="BRANCH" missed="2" covered="2"/>
       <counter type="METHOD" missed="1" covered="2"/>

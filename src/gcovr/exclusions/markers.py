@@ -112,28 +112,30 @@ def _process_exclude_branch_source(
             for prefix, match in excl_pattern_compiled.findall(code):
                 columnno += len(prefix)
                 location = f"{filecov.filename}:{lineno}:{columnno}"
-                if lineno in filecov.lines_keys_by_lineno:
-                    for key in sorted(filecov.lines_keys_by_lineno[lineno]):
-                        if (
-                            filecov.lines[key].function_name is None
-                            or filecov.lines[key].block_ids is None
-                        ):
+                linecovs = filecov.get_line(lineno)
+                if linecovs is None:
+                    LOGGER.error(
+                        f"Found marker for source branch exclusion at {location} without coverage information"
+                    )
+                else:
+                    for linecov in linecovs:
+                        if linecov.function_name is None or linecov.block_ids is None:
                             LOGGER.warning(
                                 f"Source branch exclusion at {location} needs at least gcc-14 with supported JSON format."
                             )
-                        elif not filecov.lines[key].block_ids:
+                        elif not linecov.block_ids:
                             LOGGER.error(
                                 f"Source branch exclusion at {location} found but no block ids defined at this line."
                             )
                         else:
-                            function_name = filecov.lines[key].function_name
-                            block_ids = filecov.lines[key].block_ids or []
+                            function_name = linecov.function_name
+                            block_ids = linecov.block_ids or []
                             # Check the lines which belong to the function
-                            for cur_linecov in filecov.lines.values():
+                            for cur_linecov in filecov.linecov():
                                 if cur_linecov.function_name != function_name:
                                     continue
                                 # Exclude the branch where the destination is one of the blocks of the line with the marker
-                                for cur_branchcov in cur_linecov.branches.values():
+                                for cur_branchcov in cur_linecov.branches():
                                     if cur_branchcov.destination_block_id in block_ids:
                                         branch_info = (
                                             f"{cur_branchcov.source_block_id}->{cur_branchcov.destination_block_id}"
@@ -144,10 +146,6 @@ def _process_exclude_branch_source(
                                             f"Source branch exclusion at {location} is excluding branch {branch_info} of line {cur_linecov.lineno}"
                                         )
                                         cur_branchcov.excluded = True
-                else:
-                    LOGGER.error(
-                        f"Found marker for source branch exclusion at {location} without coverage information"
-                    )
                 columnno += len(match)
 
 

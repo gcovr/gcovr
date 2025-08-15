@@ -677,16 +677,13 @@ def get_coverage_data(
 
     stats = cdata.stats
 
+    is_file_with_lines = isinstance(cdata, FileCoverage) and cdata.has_lines()
     lines = {
         "total": stats.line.total,
         "exec": stats.line.covered,
-        "coverage": stats.line.percent_or(
-            100.0 if isinstance(cdata, FileCoverage) and cdata.lines else "-"
-        ),
+        "coverage": stats.line.percent_or(100.0 if is_file_with_lines else "-"),
         "class": line_coverage_class(
-            stats.line.percent_or(
-                100.0 if isinstance(cdata, FileCoverage) and cdata.lines else None
-            )
+            stats.line.percent_or(100.0 if is_file_with_lines else None)
         ),
     }
 
@@ -819,7 +816,7 @@ def get_file_data(
     functions = dict[tuple[str, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
     for functioncov in sorted(
-        cdata.functions.values(), key=lambda functioncov: functioncov.key
+        cdata.functioncov(), key=lambda functioncov: functioncov.key
     ):
         for lineno in sorted(functioncov.count.keys()):
             f_data = dict[str, Any]()
@@ -844,14 +841,16 @@ def get_file_data(
                 )
             ] = f_data
 
-    lines_by_lineno: dict[int, list[LineCoverage]] = {}
-    for linecov in cdata.lines.values():
-        if linecov.lineno not in lines_by_lineno:
-            lines_by_lineno[linecov.lineno] = []
-        lines_by_lineno[linecov.lineno].append(linecov)
+    def get_linecovs(lineno: int) -> Optional[list[LineCoverage]]:
+        """Get a list of line coverage objects if available for the line."""
+        linecovs = cdata.get_line(lineno)
+        return None if linecovs is None else list(linecovs)
 
     with chdir(options.root_dir):
-        max_line_from_cdata = max(lines_by_lineno.keys(), default=0)
+        linecov_collections = list(cdata.lines())
+        max_line_from_cdata = (
+            linecov_collections[-1].lineno if linecov_collections else 0
+        )
         try:
             file_not_found = True
             with open(
@@ -862,16 +861,19 @@ def get_file_data(
             ) as source_file:
                 file_not_found = False
                 lines = formatter.highlighter_for_file(filename)(source_file.read())
-                ctr = 0
-                for ctr, line in enumerate(lines, 1):
+                lineno = 0
+                for lineno, line in enumerate(lines, 1):
                     file_data["source_lines"].append(
                         source_row(
-                            ctr, line, lines_by_lineno.get(ctr), options.html_block_ids
+                            lineno,
+                            line,
+                            get_linecovs(lineno),
+                            options.html_block_ids,
                         )
                     )
-                if ctr < max_line_from_cdata:
+                if lineno < max_line_from_cdata:
                     LOGGER.warning(
-                        f"File {filename} has {ctr} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                        f"File {filename} has {lineno} line(s) but coverage data has {max_line_from_cdata} line(s)."
                     )
         except OSError as e:
             if filename.endswith("<stdin>"):
@@ -882,12 +884,12 @@ def get_file_data(
                 LOGGER.warning(f"Can't read file: {e}")
             # Python ranges are exclusive. We want to iterate over all lines, including
             # that last line. Thus, we have to add a +1 to include that line.
-            for ctr in range(1, max_line_from_cdata + 1):
+            for lineno in range(1, max_line_from_cdata + 1):
                 file_data["source_lines"].append(
                     source_row(
-                        ctr,
-                        file_info if ctr == 1 else "",
-                        lines_by_lineno.get(ctr),
+                        lineno,
+                        file_info if lineno == 1 else "",
+                        get_linecovs(lineno),
                         options.html_block_ids,
                     )
                 )
@@ -937,7 +939,7 @@ def source_row(
             line_branches = [
                 source_row_branch(linecov)
                 for linecov in linecov_list
-                if linecov.branches
+                if linecov.has_reportable_branches
             ]
             covclass = (
                 "coveredLine"
@@ -950,7 +952,7 @@ def source_row(
             line_conditions = [
                 source_row_condition(linecov)
                 for linecov in linecov_list
-                if linecov.conditions
+                if linecov.has_reportable_conditions
             ]
             line_decisions = [
                 source_row_decision(linecov)
@@ -959,7 +961,9 @@ def source_row(
             ]
             linecount = sum(linecov.count for linecov in linecov_list)
         line_calls = [
-            source_row_call(linecov) for linecov in linecov_list if linecov.calls
+            source_row_call(linecov)
+            for linecov in linecov_list
+            if linecov.has_reportable_calls
         ]
     return {
         "lineno": lineno,
@@ -986,7 +990,9 @@ def source_row_branch(
     total = 0
     items = list[dict[str, Any]]()
 
-    for branchcov in linecov.branches.values():
+    for branchcov in [
+        branchcov for branchcov in linecov.branches() if branchcov.is_reportable
+    ]:
         if branchcov.is_reportable:
             total += 1
         if branchcov.is_covered:
@@ -1021,19 +1027,22 @@ def source_row_condition(
     covered = 0
     items = []
 
-    for conditioncov in sorted(
-        linecov.conditions.values(), key=lambda x: x.conditionno
-    ):
+    conditioncov_list = list(
+        conditioncov
+        for conditioncov in linecov.conditions()
+        if conditioncov.is_reportable
+    )
+    for conditioncov in conditioncov_list:
         if conditioncov.is_reportable:
             count += conditioncov.count
         if conditioncov.is_covered:
             covered += conditioncov.covered
         condition_prefix = (
             f"Condition {conditioncov.conditionno}"
-            if len(linecov.conditions) > 1
+            if len(conditioncov_list) > 1
             else ("" if conditioncov.count == 2 else "Condition ")
         )
-        condition_separator = "." if len(linecov.conditions) > 1 else ""
+        condition_separator = "." if len(conditioncov_list) > 1 else ""
         for index in range(0, conditioncov.count // 2):
             items.append(
                 {
@@ -1112,7 +1121,7 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     items = []
 
     for callno, callcov in enumerate(
-        sorted(linecov.calls.values(), key=lambda x: x.key)
+        filter(lambda callcov: callcov.is_reportable, linecov.calls())
     ):
         if callcov.is_reportable:
             total += 1

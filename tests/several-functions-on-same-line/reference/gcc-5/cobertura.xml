@@ -62,6 +62,21 @@
                 <line number="5" hits="1" branch="false"/>
               </lines>
             </method>
+            <method name="void func&lt;double&gt;" signature="(double, double)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
+            </method>
+            <method name="void func&lt;int&gt;" signature="(int, int)" line-rate="1.0" branch-rate="0.75" complexity="0.0">
+              <lines>
+                <line number="8" hits="4" branch="false"/>
+                <line number="9" hits="4" branch="true" condition-coverage="75% (3/4)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="75%"/>
+                  </conditions>
+                </line>
+                <line number="10" hits="1" branch="false"/>
+                <line number="12" hits="4" branch="false"/>
+              </lines>
+            </method>
             <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="24" hits="1" branch="false"/>
@@ -78,21 +93,6 @@
                 <line number="39" hits="1" branch="false"/>
                 <line number="40" hits="1" branch="false"/>
                 <line number="42" hits="1" branch="false"/>
-              </lines>
-            </method>
-            <method name="void func&lt;double&gt;" signature="(double, double)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
-            <method name="void func&lt;int&gt;" signature="(int, int)" line-rate="1.0" branch-rate="0.75" complexity="0.0">
-              <lines>
-                <line number="8" hits="4" branch="false"/>
-                <line number="9" hits="4" branch="true" condition-coverage="75% (3/4)">
-                  <conditions>
-                    <condition number="0" type="jump" coverage="75%"/>
-                  </conditions>
-                </line>
-                <line number="10" hits="1" branch="false"/>
-                <line number="12" hits="4" branch="false"/>
               </lines>
             </method>
           </methods>

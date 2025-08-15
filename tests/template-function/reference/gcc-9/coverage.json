@@ -1489,30 +1489,6 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "bar()",
-                    "lineno": 20,
-                    "execution_count": 4,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "main",
-                    "lineno": 35,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
                     "demangled_name": "void foo<double>(double)",
                     "lineno": 5,
                     "execution_count": 4,
@@ -1528,6 +1504,30 @@
                     "demangled_name": "void foo<int>(int)",
                     "lineno": 5,
                     "execution_count": 6,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "bar()",
+                    "lineno": 20,
+                    "execution_count": 4,
+                    "blocks_percent": 80.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "main",
+                    "lineno": 35,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [

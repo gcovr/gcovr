@@ -332,6 +332,12 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
                 continue
 
             marks = [
+                pytest.mark.xfail(
+                    "virtual-classes" in name
+                    and IS_GCC
+                    and CC_REFERENCE_VERSION in [5, 6],
+                    reason="The branch and call numbers differ in locale execution and CI",
+                ),
                 pytest.mark.skipif(
                     "conditions" in name and (not IS_GCC or CC_REFERENCE_VERSION < 14),
                     reason="Condition coverage needs at least gcc-14.",

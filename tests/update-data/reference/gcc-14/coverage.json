@@ -370,25 +370,6 @@
             ],
             "functions": [
                 {
-                    "name": "called_from_both",
-                    "demangled_name": "called_from_both",
-                    "lineno": 17,
-                    "execution_count": 2,
-                    "blocks_percent": 75.0,
-                    "pos": [
-                        "17:12",
-                        "25:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "main##1a63eb7b70d1a2985d93246ba4b6ea98.gcov.json.gz"
-                        ],
-                        [
-                            "update-data##5690c5ebf0c864412969e14346adacbf.gcov.json.gz"
-                        ]
-                    ]
-                },
-                {
                     "name": "called_from_main",
                     "demangled_name": "called_from_main",
                     "lineno": 7,
@@ -416,6 +397,25 @@
                     "pos": [
                         "12:12",
                         "15:1"
+                    ],
+                    "gcovr/data_sources": [
+                        [
+                            "main##1a63eb7b70d1a2985d93246ba4b6ea98.gcov.json.gz"
+                        ],
+                        [
+                            "update-data##5690c5ebf0c864412969e14346adacbf.gcov.json.gz"
+                        ]
+                    ]
+                },
+                {
+                    "name": "called_from_both",
+                    "demangled_name": "called_from_both",
+                    "lineno": 17,
+                    "execution_count": 2,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "17:12",
+                        "25:1"
                     ],
                     "gcovr/data_sources": [
                         [

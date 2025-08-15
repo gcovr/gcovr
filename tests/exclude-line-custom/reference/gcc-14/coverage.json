@@ -80,6 +80,20 @@
                     ],
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 5,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 6,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "7941e88bbc29e13c47185370feeea41a",
                     "gcovr/excluded": true
                 },
@@ -92,6 +106,20 @@
                     ],
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 7,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 8,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "0b070cd9a90e53516ae557a8958afe6d",
                     "gcovr/excluded": true
                 },
@@ -135,8 +163,22 @@
                         12,
                         13
                     ],
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 12,
+                            "destination_block_id": 1,
+                            "returned": 1,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 13,
+                            "destination_block_id": 1,
+                            "returned": 1,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "bf5be2a3bc0ecc42e120b71a7eebd727",
                     "gcovr/excluded": true
                 },
@@ -147,8 +189,22 @@
                         14,
                         15
                     ],
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 14,
+                            "destination_block_id": 1,
+                            "returned": 1,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 15,
+                            "destination_block_id": 1,
+                            "returned": 1,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "24c0af48fef8b1ec52c142d48f748106",
                     "gcovr/excluded": true
                 },

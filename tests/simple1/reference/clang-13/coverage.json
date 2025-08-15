@@ -128,6 +128,12 @@
             ],
             "functions": [
                 {
+                    "demangled_name": "not_called()",
+                    "lineno": 3,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0
+                },
+                {
                     "demangled_name": "foo(int)",
                     "lineno": 7,
                     "execution_count": 1,
@@ -138,12 +144,6 @@
                     "lineno": 16,
                     "execution_count": 1,
                     "blocks_percent": 66.0
-                },
-                {
-                    "demangled_name": "not_called()",
-                    "lineno": 3,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0
                 }
             ]
         }

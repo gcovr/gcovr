@@ -48,7 +48,7 @@ def write_report(
         file_node = etree.Element("file")
         file_node.set("path", filename)
 
-        for linecov in filecov.lines.values():
+        for linecov in filecov.linecov():
             if linecov.is_reportable:
                 line_node = etree.Element("lineToCover")
                 line_node.set("lineNumber", str(linecov.lineno))
@@ -56,9 +56,15 @@ def write_report(
 
                 if options.sonarqube_metric != "line":
                     stat: Optional[Union[CoverageStat, DecisionCoverageStat]] = None
-                    if options.sonarqube_metric == "branch" and linecov.branches:
+                    if (
+                        options.sonarqube_metric == "branch"
+                        and linecov.has_reportable_branches
+                    ):
                         stat = linecov.branch_coverage()
-                    elif options.sonarqube_metric == "condition" and linecov.conditions:
+                    elif (
+                        options.sonarqube_metric == "condition"
+                        and linecov.has_reportable_conditions
+                    ):
                         stat = linecov.condition_coverage()
                     elif options.sonarqube_metric == "decision" and linecov.decision:
                         stat = linecov.decision_coverage()

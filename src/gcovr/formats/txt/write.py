@@ -174,7 +174,7 @@ def _format_line(name: str, stat: CoverageStat, uncovered_lines: str) -> str:
 
 def _covered_lines_str(filecov: FileCoverage) -> str:
     covered_lines = sorted(
-        linecov.lineno for linecov in filecov.lines.values() if not linecov.is_uncovered
+        linecov.lineno for linecov in filecov.linecov() if not linecov.is_uncovered
     )
 
     # Walk through the covered lines in sorted order.
@@ -192,7 +192,7 @@ def _covered_lines_str(filecov: FileCoverage) -> str:
 
 def _uncovered_lines_str(filecov: FileCoverage) -> str:
     uncovered_lines = sorted(
-        linecov.lineno for linecov in filecov.lines.values() if linecov.is_uncovered
+        linecov.lineno for linecov in filecov.linecov() if linecov.is_uncovered
     )
 
     # Walk through the uncovered lines in sorted order.
@@ -211,7 +211,7 @@ def _uncovered_lines_str(filecov: FileCoverage) -> str:
 def _covered_branches_str(filecov: FileCoverage) -> str:
     covered_lines = sorted(
         linecov.lineno
-        for linecov in filecov.lines.values()
+        for linecov in filecov.linecov()
         if not linecov.has_uncovered_branch
     )
 
@@ -222,7 +222,7 @@ def _covered_branches_str(filecov: FileCoverage) -> str:
 def _covered_decisions_str(filecov: FileCoverage) -> str:
     covered_decisions = sorted(
         linecov.lineno
-        for linecov in filecov.lines.values()
+        for linecov in filecov.linecov
         if not linecov.has_uncovered_decision
     )
     return ",".join(str(lineno) for lineno in covered_decisions)
@@ -231,7 +231,7 @@ def _covered_decisions_str(filecov: FileCoverage) -> str:
 def _uncovered_decisions_str(filecov: FileCoverage) -> str:
     uncovered_decisions = sorted(
         linecov.lineno
-        for linecov in filecov.lines.values()
+        for linecov in filecov.linecov()
         if linecov.has_uncovered_decision
     )
     return ",".join(str(lineno) for lineno in uncovered_decisions)
@@ -239,9 +239,7 @@ def _uncovered_decisions_str(filecov: FileCoverage) -> str:
 
 def _uncovered_branches_str(filecov: FileCoverage) -> str:
     uncovered_lines = sorted(
-        linecov.lineno
-        for linecov in filecov.lines.values()
-        if linecov.has_uncovered_branch
+        linecov.lineno for linecov in filecov.linecov() if linecov.has_uncovered_branch
     )
 
     # Don't do any aggregation on branch results.

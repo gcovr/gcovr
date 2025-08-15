@@ -1,30 +1,30 @@
 TN:GCOVR report
 SF:tests/exclude-function/main.cpp
 VER:1c290a863c4be067f27e2a61b6458b9e
-FN:19,bar(int)
-FNDA:0,bar(int)
 FN:9,foo(int)
 FNDA:0,foo(int)
-FN:95,main
-FNDA:1,main
+FN:19,bar(int)
+FNDA:0,bar(int)
 FN:44,sort_excluded()
 FNDA:1,sort_excluded()
 FN:44,sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const
 FNDA:41,sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const
 FN:45,sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const
 FNDA:41,sort_excluded()::{lambda(int, int)#2}::operator()(int, int) const
-FN:66,sort_excluded_both()
-FNDA:0,sort_excluded_both()
-FN:73,sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const
-FNDA:0,sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const
-FN:84,sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const
-FNDA:0,sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const
 FN:48,sort_lambda_excluded()
 FNDA:1,sort_lambda_excluded()
 FN:50,sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const
 FNDA:41,sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const
 FN:57,sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const
 FNDA:0,sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const
+FN:66,sort_excluded_both()
+FNDA:0,sort_excluded_both()
+FN:73,sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const
+FNDA:0,sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const
+FN:84,sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const
+FNDA:0,sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const
+FN:95,main
+FNDA:1,main
 FNF:12
 FNH:6
 BRDA:44,6,0,1

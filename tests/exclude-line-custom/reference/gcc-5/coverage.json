@@ -57,6 +57,20 @@
                     "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "7941e88bbc29e13c47185370feeea41a",
                     "gcovr/excluded": true
                 },
@@ -65,6 +79,20 @@
                     "function_name": "foo(int)",
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "0b070cd9a90e53516ae557a8958afe6d",
                     "gcovr/excluded": true
                 },
@@ -97,16 +125,44 @@
                 {
                     "line_number": 22,
                     "function_name": "foo(int)",
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "bf5be2a3bc0ecc42e120b71a7eebd727",
                     "gcovr/excluded": true
                 },
                 {
                     "line_number": 25,
                     "function_name": "foo(int)",
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "24c0af48fef8b1ec52c142d48f748106",
                     "gcovr/excluded": true
                 },
@@ -144,14 +200,6 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
-                },
-                {
-                    "line_number": 35,
-                    "function_name": "__static_initialization_and_destruction_0(int, int)",
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "gcovr/excluded": true
                 }
             ],
             "functions": [

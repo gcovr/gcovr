@@ -340,12 +340,10 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
     assert (out, err) == ("", "")
 
     uncovered_lines = [
-        linecov.lineno for linecov in filecov.lines.values() if linecov.is_uncovered
+        linecov.lineno for linecov in filecov.linecov() if linecov.is_uncovered
     ]
     uncovered_branches = [
-        linecov.lineno
-        for linecov in filecov.lines.values()
-        if linecov.has_uncovered_branch
+        linecov.lineno for linecov in filecov.linecov() if linecov.has_uncovered_branch
     ]
     assert uncovered_lines == expected_uncovered_lines
     assert uncovered_branches == expected_uncovered_branches
@@ -374,11 +372,11 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
         filecov = run_the_parser()
 
         uncovered_lines = [
-            linecov.lineno for linecov in filecov.lines.values() if linecov.is_uncovered
+            linecov.lineno for linecov in filecov.linecov() if linecov.is_uncovered
         ]
         uncovered_branches = [
             linecov.lineno
-            for linecov in filecov.lines.values()
+            for linecov in filecov.linecov()
             if linecov.has_uncovered_branch
         ]
         assert uncovered_lines == []
@@ -520,8 +518,12 @@ def test_trailing_function_tag() -> None:
         ignore_parse_errors=None,
     )
 
-    assert coverage.functions.keys() == {"example", "foo()"}
-    functioncov = coverage.functions["example"]
+    assert [functioncov.name for functioncov in coverage.functioncov()] == [
+        "foo()",
+        "example",
+    ]
+    functioncov = coverage.get_functioncov("example")
+    assert functioncov is not None
     assert list(functioncov.count.keys()) == [3]  # previous lineno + 1
     assert functioncov.mangled_name == "example"
     assert functioncov.demangled_name is None
@@ -585,9 +587,9 @@ def test_branch_exclusion(flags: str) -> None:
     )
 
     covered_branches = {
-        branch
-        for linecov in filecov.lines.values()
-        for branch in linecov.branches.keys()
+        branchcov.key
+        for linecov in filecov.linecov()
+        for branchcov in linecov.branches()
     }
 
     assert covered_branches == expected_covered_branches
@@ -813,7 +815,7 @@ def test_negative_line_count_ignored(
     )
 
     covered_lines = {
-        linecov.lineno for linecov in filecov.lines.values() if linecov.is_covered
+        linecov.lineno for linecov in filecov.linecov() if linecov.is_covered
     }
 
     assert covered_lines == {1, 3}
@@ -868,10 +870,10 @@ def test_negative_branch_count_ignored() -> None:
     )
 
     covered_branches = {
-        branchcov
-        for linecov in coverage.lines.values()
-        for branchcov in linecov.branches.keys()
-        if linecov.branches[branchcov].is_covered
+        branchcov.key
+        for linecov in coverage.linecov()
+        for branchcov in linecov.branches()
+        if branchcov.is_covered
     }
 
     assert covered_branches == {(1, None, None), (3, None, None)}
@@ -931,7 +933,7 @@ def test_suspicious_line_count_ignored(
     )
 
     covered_lines = {
-        linecov.lineno for linecov in coverage.lines.values() if linecov.is_covered
+        linecov.lineno for linecov in coverage.linecov() if linecov.is_covered
     }
 
     assert covered_lines == {1, 3}
@@ -986,10 +988,10 @@ def test_suspicious_branch_count_ignored() -> None:
     )
 
     covered_branches = {
-        branchcov
-        for linecov in coverage.lines.values()
-        for branchcov in linecov.branches.keys()
-        if linecov.branches[branchcov].is_covered
+        branchcov.key
+        for linecov in coverage.linecov()
+        for branchcov in linecov.branches()
+        if branchcov.is_covered
     }
 
     assert covered_branches == {(1, None, None), (3, None, None)}
@@ -1028,7 +1030,9 @@ def test_function_exclusion(flags: str) -> None:
         ),
     )
 
-    assert list(coverage.functions.keys()) == expected_functions
+    assert [
+        functioncov.name for functioncov in coverage.functioncov()
+    ] == expected_functions
 
 
 def test_noncode_lines() -> None:
@@ -1061,7 +1065,7 @@ def test_noncode_lines() -> None:
         )
         apply_all_exclusions(filecov, lines=source, options=options)
 
-        for linecov in filecov.lines.values():
+        for linecov in filecov.linecov():
             return f"normal:{linecov.count}"
 
         return "noncode"

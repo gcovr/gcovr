@@ -54,7 +54,7 @@ def write_report(
         source_elem = etree.Element("sourcefile")
         source_elem.set("name", fname)
 
-        for linecov in filecov.lines.values():
+        for linecov in filecov.linecov():
             line_elem = etree.SubElement(source_elem, "line")
             line_elem.set("nr", str(linecov.lineno))
             if linecov.is_reportable:

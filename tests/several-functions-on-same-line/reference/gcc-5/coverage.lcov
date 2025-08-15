@@ -37,12 +37,12 @@ SF:tests/several-functions-on-same-line/main.cpp
 VER:8fef35f1722a6320e50c178291d226bf
 FN:3,foo()
 FNDA:1,foo()
-FN:24,main
-FNDA:1,main
 FN:8,void func<double>(double, double)
 FNDA:2,void func<double>(double, double)
 FN:8,void func<int>(int, int)
 FNDA:2,void func<int>(int, int)
+FN:24,main
+FNDA:1,main
 FNF:4
 FNH:4
 BRDA:9,0,0,-

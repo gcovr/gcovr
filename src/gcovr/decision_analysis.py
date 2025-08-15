@@ -164,11 +164,11 @@ class DecisionParser:
     def __init__(self, filecov: FileCoverage, lines: list[str]) -> None:
         # If there are several line coverage definitions for the same line we ignore all of them
         self.linecov_by_line: dict[int, Optional[LineCoverage]] = {}
-        for linecov in filecov.lines.values():
-            if linecov.lineno in self.linecov_by_line:
-                self.linecov_by_line[linecov.lineno] = None
-            else:
-                self.linecov_by_line[linecov.lineno] = linecov
+        for linecov_collection in filecov.lines():
+            if len(linecov_collection) == 1:
+                self.linecov_by_line[linecov_collection.lineno] = list(
+                    linecov_collection.linecovs()
+                )[0]
         self.lines = lines
 
         # status variables for decision analysis
@@ -207,21 +207,21 @@ class DecisionParser:
             return
 
         # check if a branch exists (prevent misdetection caused by inaccurate parsing)
-        if linecov and linecov.branches.items():
+        if linecov and linecov.has_reportable_branches:
+            branchcov_list = list(linecov.branches())
             if (
                 _is_a_loop(code)
                 or _is_a_oneline_branch(code)
-                or (_is_a_closed_branch(code) and (len(linecov.branches.items()) == 2))
+                or (_is_a_closed_branch(code) and (len(branchcov_list) == 2))
             ):
-                if len(linecov.branches.items()) == 2:
-                    keys = sorted(linecov.branches)
+                if len(branchcov_list) == 2:
                     # if it's a compact decision, we can only use the fallback to analyze
                     # simple decisions via branch calls
                     linecov.decision = DecisionCoverageConditional(
                         linecov,
                         linecov.data_sources,
-                        count_true=linecov.branches[keys[0]].count,
-                        count_false=linecov.branches[keys[1]].count,
+                        count_true=branchcov_list[0].count,
+                        count_false=branchcov_list[1].count,
                     )
                 else:
                     # it's a complex decision with more than 2 branches. No accurate detection possible

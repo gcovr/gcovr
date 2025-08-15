@@ -265,26 +265,12 @@
                             "main.cpp.gcov"
                         ]
                     ]
-                },
-                {
-                    "line_number": 104,
-                    "function_name": "__static_initialization_and_destruction_0(int, int)",
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "gcovr/excluded": true,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp.gcov"
-                        ]
-                    ]
                 }
             ],
             "functions": [
                 {
-                    "demangled_name": "bar(int)",
-                    "lineno": 19,
+                    "demangled_name": "foo(int)",
+                    "lineno": 9,
                     "execution_count": 1,
                     "blocks_percent": 80.0,
                     "gcovr/data_sources": [
@@ -295,8 +281,8 @@
                     ]
                 },
                 {
-                    "demangled_name": "foo(int)",
-                    "lineno": 9,
+                    "demangled_name": "bar(int)",
+                    "lineno": 19,
                     "execution_count": 1,
                     "blocks_percent": 80.0,
                     "gcovr/data_sources": [

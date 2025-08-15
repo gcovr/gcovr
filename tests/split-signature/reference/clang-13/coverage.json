@@ -147,14 +147,14 @@
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "(anonymous namespace)::Bar::foo() const",
-                    "lineno": 13,
+                    "demangled_name": "(anonymous namespace)::Bar::~Bar()",
+                    "lineno": 10,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
-                    "demangled_name": "(anonymous namespace)::Bar::~Bar()",
-                    "lineno": 10,
+                    "demangled_name": "(anonymous namespace)::Bar::foo() const",
+                    "lineno": 13,
                     "execution_count": 2,
                     "blocks_percent": 100.0
                 },

@@ -654,6 +654,26 @@
                     "function_name": "main",
                     "count": 0,
                     "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "callno": 2,
+                            "source_block_id": 2,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "f619ca2743f98bae7db1d75919cfc0bc",
                     "gcovr/excluded": true
                 },
@@ -661,7 +681,32 @@
                     "line_number": 63,
                     "function_name": "main",
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 2,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 2,
+                            "gcovr/excluded": true
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 2,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "257d5873569672120a0c1f23864092e0",
                     "gcovr/excluded": true
                 },
@@ -669,7 +714,60 @@
                     "line_number": 64,
                     "function_name": "main",
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 5,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 1,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 6,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 1,
+                            "gcovr/excluded": true
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "callno": 3,
+                            "source_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "callno": 4,
+                            "source_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "01d76a240d1ff39c4acd167e4a0f0805",
                     "gcovr/excluded": true
                 },
@@ -677,7 +775,32 @@
                     "line_number": 65,
                     "function_name": "main",
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "5703f441b323e4ec7b1b87ef3b386cb9",
                     "gcovr/excluded": true
                 },
@@ -687,23 +810,9 @@
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
-                },
-                {
-                    "line_number": 69,
-                    "function_name": "__static_initialization_and_destruction_0(int, int)",
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "9e7ce02d034587718cd3b6c29d789ef0",
-                    "gcovr/excluded": true
                 }
             ],
             "functions": [
-                {
-                    "name": "main",
-                    "lineno": 51,
-                    "execution_count": 2,
-                    "blocks_percent": 62.0
-                },
                 {
                     "demangled_name": "ns1::Bar1::Bar1()",
                     "lineno": 8,
@@ -739,6 +848,12 @@
                     "lineno": 42,
                     "execution_count": 2,
                     "blocks_percent": 100.0
+                },
+                {
+                    "name": "main",
+                    "lineno": 51,
+                    "execution_count": 2,
+                    "blocks_percent": 62.0
                 }
             ]
         }

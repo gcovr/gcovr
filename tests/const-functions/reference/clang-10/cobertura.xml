@@ -15,14 +15,14 @@
                 <line number="7" hits="4" branch="false"/>
               </lines>
             </method>
-            <method name="_ZN3BarD2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines/>
-            </method>
             <method name="_ZN3BarD0Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="8" hits="2" branch="false"/>
                 <line number="9" hits="2" branch="false"/>
               </lines>
+            </method>
+            <method name="_ZN3BarD2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines/>
             </method>
             <method name="_ZNK3Bar3fooEv" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>

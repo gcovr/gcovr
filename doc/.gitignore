@@ -1,6 +1,6 @@
 examples/program
-examples/program-example.*
 examples/gcovr.out
+examples/example.gc*
 examples/example-*.html
 examples/example-*.css
 build/

@@ -1191,18 +1191,6 @@
             ],
             "functions": [
                 {
-                    "demangled_name": "bar(int)",
-                    "lineno": 19,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
                     "demangled_name": "foo(int)",
                     "lineno": 9,
                     "execution_count": 1,
@@ -1215,10 +1203,10 @@
                     ]
                 },
                 {
-                    "name": "main",
-                    "lineno": 95,
+                    "demangled_name": "bar(int)",
+                    "lineno": 19,
                     "execution_count": 1,
-                    "blocks_percent": 100.0,
+                    "blocks_percent": 80.0,
                     "gcovr/data_sources": [
                         [
                             "testcase-main.gcda",
@@ -1241,6 +1229,42 @@
                 {
                     "demangled_name": "sort_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
                     "lineno": 44,
+                    "execution_count": 41,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "sort_lambda_excluded()",
+                    "lineno": 48,
+                    "execution_count": 1,
+                    "blocks_percent": 89.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
+                    "lineno": 50,
+                    "execution_count": 41,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "testcase-main.gcda",
+                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
+                    "lineno": 57,
                     "execution_count": 41,
                     "blocks_percent": 100.0,
                     "gcovr/data_sources": [
@@ -1287,33 +1311,9 @@
                     ]
                 },
                 {
-                    "demangled_name": "sort_lambda_excluded()",
-                    "lineno": 48,
+                    "name": "main",
+                    "lineno": 95,
                     "execution_count": 1,
-                    "blocks_percent": 89.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#1}::operator()(int, int) const",
-                    "lineno": 50,
-                    "execution_count": 41,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main.gcda",
-                            "main.cpp##118fcbaaba162ba17933c7893247df3a.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
-                    "lineno": 57,
-                    "execution_count": 41,
                     "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [

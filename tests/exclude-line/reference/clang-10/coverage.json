@@ -43,7 +43,7 @@
                 {
                     "line_number": 8,
                     "function_name": "_Z3fooi",
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "e9026c353d8eb4fdf1ddc7119e5a6f06",
                     "gcovr/excluded": true
@@ -58,7 +58,7 @@
                 {
                     "line_number": 20,
                     "function_name": "_Z3barv",
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "269f0b0a90ab119787a401a23c6724d9",
                     "gcovr/excluded": true
@@ -66,7 +66,7 @@
                 {
                     "line_number": 21,
                     "function_name": "_Z3barv",
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "4ca6299c36250a42f3f07b54753da812",
                     "gcovr/excluded": true
@@ -88,7 +88,7 @@
                 {
                     "line_number": 27,
                     "function_name": "main",
-                    "count": 0,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "91eb0ddca36abc6b5ceb6d1f1fc3b9d1",
                     "gcovr/excluded": true
@@ -103,17 +103,17 @@
             ],
             "functions": [
                 {
+                    "name": "_Z3fooi",
+                    "lineno": 4,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0
+                },
+                {
                     "name": "_Z3barv",
                     "lineno": 20,
                     "execution_count": 0,
                     "blocks_percent": 100.0,
                     "gcovr/excluded": true
-                },
-                {
-                    "name": "_Z3fooi",
-                    "lineno": 4,
-                    "execution_count": 1,
-                    "blocks_percent": 80.0
                 },
                 {
                     "name": "main",

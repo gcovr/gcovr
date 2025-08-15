@@ -124,17 +124,15 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
-                },
-                {
-                    "line_number": 29,
-                    "function_name": "__static_initialization_and_destruction_0(int, int)",
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "gcovr/excluded": true
                 }
             ],
             "functions": [
+                {
+                    "demangled_name": "not_called()",
+                    "lineno": 3,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0
+                },
                 {
                     "demangled_name": "foo(int)",
                     "lineno": 7,
@@ -146,12 +144,6 @@
                     "lineno": 16,
                     "execution_count": 1,
                     "blocks_percent": 80.0
-                },
-                {
-                    "demangled_name": "not_called()",
-                    "lineno": 3,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0
                 }
             ]
         }

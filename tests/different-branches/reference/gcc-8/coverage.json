@@ -166,6 +166,14 @@
                             "gcovr/data_sources": [
                                 [
                                     "main.gcda",
+                                    "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "main.gcda",
+                                    "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "main.gcda",
                                     "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
                                 ],
                                 [
@@ -181,6 +189,14 @@
                             "throw": false,
                             "source_block_id": 0,
                             "gcovr/data_sources": [
+                                [
+                                    "main.gcda",
+                                    "build1/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
+                                [
+                                    "main.gcda",
+                                    "build2/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"
+                                ],
                                 [
                                     "main.gcda",
                                     "build3/main.c##479660f3c43d1ac0e01592060f3c1d4d.gcov"

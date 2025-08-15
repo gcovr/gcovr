@@ -815,8 +815,69 @@
                         36,
                         38
                     ],
-                    "count": 0,
-                    "branches": [],
+                    "count": 2,
+                    "branches": [
+                        {
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 36,
+                            "destination_block_id": 37,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 36,
+                            "destination_block_id": 38,
+                            "gcovr/excluded": true
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 23,
+                            "destination_block_id": 1,
+                            "returned": 2,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 24,
+                            "destination_block_id": 1,
+                            "returned": 2,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 25,
+                            "destination_block_id": 1,
+                            "returned": 2,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 29,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 31,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 33,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 38,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "f619ca2743f98bae7db1d75919cfc0bc",
                     "gcovr/excluded": true
                 },
@@ -827,7 +888,32 @@
                         39
                     ],
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 39,
+                            "destination_block_id": 40,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 39,
+                            "destination_block_id": 45,
+                            "gcovr/excluded": true
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 39,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "257d5873569672120a0c1f23864092e0",
                     "gcovr/excluded": true
                 },
@@ -840,7 +926,60 @@
                         42
                     ],
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 40,
+                            "destination_block_id": 41,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 40,
+                            "destination_block_id": 45,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 42,
+                            "destination_block_id": 43,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 42,
+                            "destination_block_id": 45,
+                            "gcovr/excluded": true
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 40,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 41,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "source_block_id": 42,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "01d76a240d1ff39c4acd167e4a0f0805",
                     "gcovr/excluded": true
                 },
@@ -851,7 +990,32 @@
                         43
                     ],
                     "count": 0,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 43,
+                            "destination_block_id": 44,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 43,
+                            "destination_block_id": 45,
+                            "gcovr/excluded": true
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "source_block_id": 43,
+                            "destination_block_id": 1,
+                            "returned": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "5703f441b323e4ec7b1b87ef3b386cb9",
                     "gcovr/excluded": true
                 },
@@ -890,17 +1054,6 @@
                 }
             ],
             "functions": [
-                {
-                    "name": "main",
-                    "demangled_name": "main",
-                    "lineno": 51,
-                    "execution_count": 2,
-                    "blocks_percent": 62.2,
-                    "pos": [
-                        "51:5",
-                        "69:1"
-                    ]
-                },
                 {
                     "name": "_ZN3ns14Bar1C1Ev",
                     "demangled_name": "ns1::Bar1::Bar1()",
@@ -965,6 +1118,17 @@
                     "pos": [
                         "42:15",
                         "43:27"
+                    ]
+                },
+                {
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 51,
+                    "execution_count": 2,
+                    "blocks_percent": 62.2,
+                    "pos": [
+                        "51:5",
+                        "69:1"
                     ]
                 }
             ]

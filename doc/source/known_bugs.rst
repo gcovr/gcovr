@@ -6,6 +6,24 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1137:
+
+Discrepancy between exclusion and removal of coverage data
+----------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_0`
+
+   * - Fixed
+     - :ref:`next_release`
+
+- The internal functions where removed but the line coverage was only excluded. Now the line
+  coverage data is also removed.
+- The coverage of a whole line was removed if a function started on this line, even if the line
+  coverage belongs to another function. Now only the data for this function is removed.
+
 .. _fix_1130:
 
 Files without functions and lines are added to report

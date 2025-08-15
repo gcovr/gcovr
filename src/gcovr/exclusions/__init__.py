@@ -123,7 +123,7 @@ def apply_all_exclusions(
         remove_unreachable_branches(filecov, lines=lines)
 
     if options.exclude_function_lines:
-        remove_function_lines(filecov)
+        remove_function_definition_lines(filecov)
 
     if options.exclude_internal_functions:
         remove_internal_functions(filecov)
@@ -132,28 +132,21 @@ def apply_all_exclusions(
 def remove_internal_functions(filecov: FileCoverage) -> None:
     """Remove compiler-generated functions, e.g. for static initialization."""
 
-    # Get all the keys first because we want to remove some of them which will else result in an error.
-    for key in list(filecov.functions.keys()):
-        functioncov = filecov.functions[key]
+    # Get all the functions first because we want to remove some of them which will else result in an error.
+    for functioncov in list(filecov.functioncov()):
         if _function_can_be_excluded(
             functioncov.mangled_name, functioncov.demangled_name
         ):
             LOGGER.debug(
-                "Ignoring symbol %s in line %s in file %s",
+                "%s Removing symbol %s detected as compiler generated functions, e.g. for static initialization",
+                functioncov.location,
                 functioncov.name,
-                ", ".join([str(line) for line in sorted(functioncov.count.keys())]),
-                filecov.filename,
             )
-
-            # Remove function and exclude the related lines
-            filecov.functions.pop(key)
-            for linecov in filecov.lines.values():
-                if functioncov.is_function(linecov.function_name):
-                    linecov.exclude()
+            filecov.remove_function_coverage(functioncov)
 
 
 def _function_can_be_excluded(*names: Optional[str]) -> bool:
-    """special names for construction/destruction of static objects will be ignored"""
+    """Special names for construction/destruction of static objects will be ignored"""
     return any(
         name is not None
         and (name.startswith("__") or name.startswith("_GLOBAL__sub_I_"))
@@ -161,36 +154,42 @@ def _function_can_be_excluded(*names: Optional[str]) -> bool:
     )
 
 
-def remove_function_lines(filecov: FileCoverage) -> None:
+def remove_function_definition_lines(filecov: FileCoverage) -> None:
     """Remove coverage for lines that contain a function definition."""
     # iterate over a shallow copy
     known_function_lines = set(
-        lineno
-        for functioncov in filecov.functions.values()
+        (lineno, functioncov.name)
+        for functioncov in filecov.functioncov()
         for lineno in functioncov.count.keys()
     )
-    for linecov in list(filecov.lines.values()):
-        if linecov.lineno in known_function_lines:
-            filecov.lines.pop(linecov.key)
-            filecov.lines_keys_by_lineno[linecov.lineno].remove(linecov.key)
+    for linecov in list(filecov.linecov()):
+        if (linecov.lineno, linecov.function_name) in known_function_lines or (
+            linecov.lineno,
+            linecov.demangled_function_name,
+        ) in known_function_lines:
+            LOGGER.debug(
+                "%s Removing line of function definition",
+                linecov.location,
+            )
+            filecov.remove_line_coverage(linecov)
 
 
 def remove_throw_branches(filecov: FileCoverage) -> None:
     """Remove branches annotated as "throw"."""
-    for linecov in filecov.lines.values():
+    for linecov in filecov.linecov():
         # iterate over shallow copy
-        for branchcov in list(linecov.branches.values()):
+        for branchcov in list(linecov.branches()):
             if branchcov.throw:
                 LOGGER.debug(
-                    "Excluding unreachable branch on %s: detected as exception-only code",
+                    "%s Removing unreachable branch detected as exception-only code",
                     linecov.location,
                 )
-                linecov.branches.pop(branchcov.key)
+                linecov.remove_branch_coverage(branchcov)
 
 
 def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> None:
     """Remove matching functions"""
-    if filecov.functions:
+    if filecov.functioncov():
         functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
 
         exclude_ranges = []

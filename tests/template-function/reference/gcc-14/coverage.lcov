@@ -1,14 +1,14 @@
 TN:GCOVR report
 SF:tests/template-function/main.cpp
 VER:50772fdb5b19353fa726392fd21699e0
-FN:20,bar()
-FNDA:4,bar()
-FN:35,main
-FNDA:1,main
 FN:5,void foo<double>(double)
 FNDA:4,void foo<double>(double)
 FN:5,void foo<int>(int)
 FNDA:6,void foo<int>(int)
+FN:20,bar()
+FNDA:4,bar()
+FN:35,main
+FNDA:1,main
 FNF:4
 FNH:4
 BRDA:9,2,0,4

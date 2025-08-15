@@ -1110,38 +1110,12 @@
                             "main.cpp.gcov"
                         ]
                     ]
-                },
-                {
-                    "line_number": 43,
-                    "function_name": "__static_initialization_and_destruction_0(int, int)",
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "gcovr/excluded": true,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp.gcov"
-                        ]
-                    ]
                 }
             ],
             "functions": [
                 {
                     "demangled_name": "foo()",
                     "lineno": 3,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "gcovr/data_sources": [
-                        [
-                            "main.gcda",
-                            "main.cpp.gcov"
-                        ]
-                    ]
-                },
-                {
-                    "name": "main",
-                    "lineno": 24,
                     "execution_count": 1,
                     "blocks_percent": 100.0,
                     "gcovr/data_sources": [
@@ -1167,6 +1141,18 @@
                     "demangled_name": "void func<int>(int, int)",
                     "lineno": 8,
                     "execution_count": 2,
+                    "blocks_percent": 100.0,
+                    "gcovr/data_sources": [
+                        [
+                            "main.gcda",
+                            "main.cpp.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "name": "main",
+                    "lineno": 24,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "gcovr/data_sources": [
                         [
