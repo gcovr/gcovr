@@ -1706,6 +1706,9 @@ class LineCoverageCollection(CoverageBase):
     def remove_line_coverage(self, linecov: LineCoverage) -> None:
         """Remove line coverage object from line coverage collection."""
         del self.__linecovs[linecov.key]
+        # Remove the line coverage collection if no data is available anymore for the line.
+        if not self.__linecovs:
+            self.parent.remove_line(linecov.lineno)
 
     def merge(
         self,
@@ -2215,6 +2218,14 @@ class FileCoverage(CoverageBase):
     def get_line(self, lineno: int) -> Optional[LineCoverageCollection]:
         """Get the line coverage collection of the given line."""
         return self.__lines.get(lineno)
+
+    def remove_line(self, lineno: int) -> None:
+        """Remove the line coverage collection for the given line."""
+        if self.__lines[lineno]:  # pragma: no cover
+            raise RuntimeError(
+                "Sanity check, only lines without coverage can be removed."
+            )
+        del self.__lines[lineno]
 
     def has_linecov(self) -> bool:
         """Test if there are line coverage objects available."""
