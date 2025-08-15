@@ -1618,9 +1618,6 @@ class LineCoverageCollection(CoverageBase):
     def __len__(self) -> int:
         return len(self.__linecovs)
 
-    def __delitem__(self, key: LinecovKeyType) -> None:
-        del self.__linecovs[key]
-
     def __iter__(self) -> Iterator[LineCoverage]:
         return iter(self.__linecovs.values())
 
