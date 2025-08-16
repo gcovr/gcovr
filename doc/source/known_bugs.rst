@@ -6,6 +6,24 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1138:
+
+Wrong data used in clover report
+--------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_7_1`
+
+   * - Fixed
+     - :ref:`next_release`
+
+- ``loc`` contains the highest line number with coverage information instead of lines of the file.
+- ``ncloc`` contains the number of reportable lines instead of the lines of the file without comments.
+- ``statements`` and ``coveredstatements`` are always set to zero but lines of type ``stmt`` are added
+  to the report.
+
 .. _fix_1137:
 
 Discrepancy between exclusion and removal of coverage data
