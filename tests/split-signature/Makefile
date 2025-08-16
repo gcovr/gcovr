@@ -7,7 +7,7 @@ run: txt clover cobertura html sonarqube jacoco json json_summary coveralls
 
 txt:
 	./testcase
-	$(GCOVR) -d --clover-pretty --clover coverage.txt
+	$(GCOVR) -d --txt coverage.txt
 
 clover:
 	./testcase
