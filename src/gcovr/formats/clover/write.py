@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-# cspell:ignore ncloc coveredelements coveredconditionals coveredstatements coveredmethods
+# cspell:ignore coveredelements coveredconditionals coveredmethods
 
 from dataclasses import dataclass
 import logging
@@ -48,7 +48,7 @@ def write_report(
     project_elem.set("timestamp", timestamp)
     project_metrics = _metrics_element()
     project_elem.append(project_metrics)
-    project_data = ProjectData(0, 0, 0, 0)
+    project_data = ProjectData(0, 0, 0)
 
     # Generate the coverage output (on a per-package basis)
     packages = dict[str, PackageData]()
@@ -62,7 +62,7 @@ def write_report(
 
         package_data = packages.setdefault(
             directory,
-            PackageData({}, 0, 0, 0),
+            PackageData({}, 0, 0),
         )
         file_elem = etree.Element("file")
         file_metrics = _metrics_element()
@@ -72,46 +72,44 @@ def write_report(
         class_metrics = _metrics_element()
         class_elem.append(class_metrics)
 
-        loc = 0
-        ncloc = 0
-        covered_elements = 0
+        statements = 0
+        covered_statements = 0
         for linecov in filecov.linecov():
-            loc = linecov.lineno
             if linecov.is_reportable:
-                ncloc += 1
+                statements += 1
                 if linecov.is_covered:
-                    covered_elements += 1
+                    covered_statements += 1
                 file_elem.append(_line_element(linecov))
 
         file_elem.set("name", fname)
         file_elem.set("path", filename)
 
         file_metrics.set("classes", "1")
-        file_metrics.set("loc", str(loc))
-        file_metrics.set("ncloc", str(ncloc))
-        file_metrics.set("elements", str(ncloc))
-        file_metrics.set("coveredelements", str(covered_elements))
+        file_metrics.set("elements", str(statements))
+        file_metrics.set("coveredelements", str(covered_statements))
+        file_metrics.set("statements", str(statements))
+        file_metrics.set("coveredstatements", str(covered_statements))
 
-        class_metrics.set("elements", str(ncloc))
-        class_metrics.set("coveredelements", str(covered_elements))
+        class_metrics.set("elements", str(statements))
+        class_metrics.set("coveredelements", str(covered_statements))
+        class_metrics.set("statements", str(statements))
+        class_metrics.set("coveredstatements", str(covered_statements))
 
         package_data.files_xml[fname] = file_elem
-        package_data.loc += loc
-        package_data.ncloc += ncloc
-        package_data.covered_elements += covered_elements
+        package_data.statements += statements
+        package_data.covered_statements += covered_statements
 
         project_data.files += 1
-        project_data.loc += loc
-        project_data.ncloc += ncloc
-        project_data.covered_elements += covered_elements
+        project_data.statements += statements
+        project_data.covered_statements += covered_statements
 
     project_metrics.set("packages", str(len(packages)))
     project_metrics.set("classes", str(project_data.files))
     project_metrics.set("files", str(project_data.files))
-    project_metrics.set("loc", str(project_data.loc))
-    project_metrics.set("ncloc", str(project_data.ncloc))
-    project_metrics.set("elements", str(project_data.ncloc))
-    project_metrics.set("coveredelements", str(project_data.covered_elements))
+    project_metrics.set("elements", str(project_data.statements))
+    project_metrics.set("coveredelements", str(project_data.covered_statements))
+    project_metrics.set("statements", str(project_data.statements))
+    project_metrics.set("coveredstatements", str(project_data.covered_statements))
 
     for package_name in sorted(packages):
         package_data = packages[package_name]
@@ -121,10 +119,10 @@ def write_report(
         number_files = str(len(package_data.files_xml))
         package_metrics.set("classes", number_files)
         package_metrics.set("files", number_files)
-        package_metrics.set("loc", str(package_data.loc))
-        package_metrics.set("ncloc", str(package_data.ncloc))
-        package_metrics.set("elements", str(package_data.ncloc))
-        package_metrics.set("coveredelements", str(package_data.covered_elements))
+        package_metrics.set("elements", str(package_data.statements))
+        package_metrics.set("coveredelements", str(package_data.covered_statements))
+        package_metrics.set("statements", str(package_data.statements))
+        package_metrics.set("coveredstatements", str(package_data.covered_statements))
         for fname in sorted(package_data.files_xml):
             package_elem.append(package_data.files_xml[fname])
         package_elem.set("name", package_name.replace("/", "."))
@@ -163,9 +161,8 @@ class ProjectData:
     """Data class for the project data."""
 
     files: int
-    loc: int
-    ncloc: int
-    covered_elements: int
+    statements: int
+    covered_statements: int
 
 
 @dataclass
@@ -173,9 +170,8 @@ class PackageData:
     """Data class for the package data."""
 
     files_xml: dict[str, etree._Element]
-    loc: int
-    ncloc: int
-    covered_elements: int
+    statements: int
+    covered_statements: int
 
 
 def _metrics_element() -> etree._Element:
@@ -188,8 +184,8 @@ def _metrics_element() -> etree._Element:
         "coveredconditionals",
         "statements",
         "coveredstatements",
-        "coveredmethods",
         "methods",
+        "coveredmethods",
     ]:
         elem.set(metric, "0")
 

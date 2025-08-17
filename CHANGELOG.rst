@@ -64,6 +64,14 @@ Bug fixes and small improvements:
     :option:`--gcov-ignore-errors` and :option:`--gcov-ignore-parse-errors`.
 
 - Fix wrong handling of functions with specialization. (:issue:`1126`)
+- Fix errors in ``Clover XML`` report. (:issue:`1138`)
+
+  - Remove optional attributes where information is not available:
+
+    - ``loc`` contained the highest line number with coverage information instead of lines of the file.
+    - ``ncloc`` contained the number of reportable lines instead of the lines of the file without comments.
+
+  - ``statements`` and ``coveredstatements`` contain now the correct value instead of ``0``.
 
 Documentation:
 
@@ -94,6 +102,7 @@ Known bugs:
 - :ref:`fix_1092`
 - :ref:`fix_1126`
 - :ref:`fix_1130`
+- :ref:`fix_1138`
 
 Breaking changes:
 
@@ -155,6 +164,7 @@ Known bugs:
 - :ref:`fix_1089`.
 - :ref:`fix_1126`.
 - :ref:`fix_1130`
+- :ref:`fix_1138`
 
 Breaking changes:
 
@@ -181,6 +191,7 @@ Known bugs:
 - :ref:`fix_1089`
 - :ref:`fix_1092`
 - :ref:`fix_1130`
+- :ref:`fix_1138`
 
 Breaking changes:
 
@@ -211,6 +222,7 @@ Known bugs:
 - :ref:`fix_1089`
 - :ref:`fix_1092`
 - :ref:`fix_1130`
+- :ref:`fix_1138`
 
 Breaking changes:
 
@@ -290,6 +302,7 @@ Known bugs:
 - :ref:`fix_1022`
 - :ref:`fix_1037`
 - :ref:`fix_1089`.
+- :ref:`fix_1138`
 
 Breaking changes:
 
@@ -297,7 +310,7 @@ New features and notable changes:
 
 - Add support for colored logging. (:issue:`887`)
 - Add support for TOML configuration format. (:issue:`881`)
-- Add support for Clover XML output format. (:issue:`888`)
+- Add support for ``Clover XML`` output format. (:issue:`888`)
 - Add decision to ``JSON summary`` report if :option:`--decisions` is used. (:issue:`892`)
 
 Bug fixes and small improvements:
