@@ -1,0 +1,18 @@
+---
+name: PR Cleanup
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Clean cache for the branch name
+        uses: opengrabeso/clean-cache@25539886f54d706a8276017c92fc8baa0e22b57b
