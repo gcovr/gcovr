@@ -1,15 +1,22 @@
-ARG DOCKER_OS
+ARG UBUNTU_TAG
 
-FROM $DOCKER_OS
+FROM ubuntu:${UBUNTU_TAG:-ToBeDefined}
 
 ARG TARGETARCH
-ARG DOCKER_OS
+ARG UBUNTU_TAG
 ARG USERID
 ARG CC
 ARG CXX
-ARG NOX_ENV_DIR=/gcovr/.nox-containerized.$CC.uid_$USERID
+ARG NOX_ENV_DIR=/gcovr/.nox-containerized/$CC.uid_$USERID
 
-RUN --mount=type=cache,target=/var/cache/apt <<EOS
+LABEL org.opencontainers.image.authors="GCOVR developers"
+LABEL org.opencontainers.image.title="Image used to test GCOVR in the CI and during development"
+
+LABEL org.opencontainers.image.source="https://github.com/gcovr/gcovr/blob/main/admin/Dockerfile.qa"
+LABEL org.opencontainers.image.version="$CC"
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
@@ -17,10 +24,10 @@ apt-get update
 # Install base requirements
 apt-get install -y software-properties-common \
                    sudo \
-                   make \
-                   cmake \
                    $CC \
                    $CXX \
+                   make \
+                   cmake \
                    ninja-build \
                    libxml2-utils \
                    git \
@@ -32,7 +39,10 @@ apt-get install -y software-properties-common \
                    texlive-latex-recommended \
                    texlive-latex-extra
 
-if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
+# Mark the compiler to not be removed
+apt-mark manual $CC $CXX
+
+if [ "$UBUNTU_TAG" = "18.04" ]; then
   # cspell:disable
   apt install -y wget \
                  checkinstall \
@@ -57,7 +67,20 @@ if [ "$DOCKER_OS" = "ubuntu:18.04" ]; then
   # cspell:ignore altinstall
   make altinstall
   update-alternatives --install /usr/local/bin/python3 python3 /usr/local/bin/python3.9 10
-elif [ "$DOCKER_OS" = "ubuntu:20.04" ]; then
+  cd /tmp
+  rm -rf Python-$PythonVersion
+  # cspell:disable
+  apt remove -y libreadline-gplv2-dev \
+                libncursesw5-dev \
+                libssl-dev \
+                libsqlite3-dev \
+                tk-dev \
+                libgdbm-dev \
+                libbz2-dev \
+                libffi-dev \
+                zlib1g-dev
+  # cspell:enable
+elif [ "$UBUNTU_TAG" = "20.04" ]; then
   apt install -y software-properties-common
   add-apt-repository ppa:deadsnakes/ppa
   apt-get update
@@ -73,7 +96,7 @@ fi
 python3 --version
 
 # Install pip, nox and requests
-if [ "$DOCKER_OS" = "ubuntu:18.04" -o "$DOCKER_OS" = "ubuntu:20.04" -o "$DOCKER_OS" = "ubuntu:22.04" ]; then
+if [ "$UBUNTU_TAG" = "18.04" -o "$UBUNTU_TAG" = "20.04" -o "$UBUNTU_TAG" = "22.04" ]; then
   # Install dependencies.
   #
   # Installing pip is a bit more complicated though:
@@ -92,6 +115,17 @@ fi
 apt-get autoremove -y
 EOS
 
+RUN <<EOS
+set -e
+export DEBIAN_FRONTEND=noninteractive
+
+set -e
+export DEBIAN_FRONTEND=noninteractive
+
+apt-get clean -y
+rm -rf /var/lib/apt/lists/*
+EOS
+
 ENV \
   CC=$CC \
   CXX=$CXX \
@@ -108,13 +142,13 @@ git clone -q \
 cd /tmp/googletest
 mkdir build
 cd build
-cmake ..
+cmake .. || ( cat CMakeFiles/*.log && exit 1 )
 make
 make install
 rm -rf /tmp/googletest
 EOS
 
-RUN  <<EOS
+RUN <<EOS
 set -e
 # Install bazel
 if [ "$TARGETARCH" = "arm64" ] ; then
@@ -145,5 +179,5 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 WORKDIR /gcovr
 
-                                                # This are the arguments given to "docker run ... <Image> $0 $@"
-ENTRYPOINT python3 -m nox --envdir $NOX_ENV_DIR $0 "$@"
+ENTRYPOINT ["sh", "-c", "python3 -m nox --envdir $NOX_ENV_DIR \"$@\""]
+CMD []
