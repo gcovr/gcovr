@@ -774,14 +774,14 @@ def html2jpeg(session: nox.Session) -> None:
         )
 
 
-def docker_container_os(session: nox.Session) -> str:
+def docker_container_os_version(session: nox.Session) -> str:
     """Get the version of the OS for the used GCC version."""
     if session.env["CC"] in ["gcc-5", "gcc-6"]:
-        return "ubuntu:18.04"
+        return "18.04"
     if session.env["CC"] in ["gcc-8", "gcc-9", "clang-10"]:
-        return "ubuntu:20.04"
+        return "20.04"
     if session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
-        return "ubuntu:22.04"
+        return "22.04"
     if session.env["CC"] in [
         "gcc-12",
         "gcc-13",
@@ -791,14 +791,14 @@ def docker_container_os(session: nox.Session) -> str:
         "clang-18",
         "clang-19",
     ]:
-        return "ubuntu:24.04"
+        return "24.04"
 
     raise RuntimeError(f"No container image defined for {session.env['CC']}")
 
 
-def docker_container_id(session: nox.Session, version: str) -> str:
+def docker_container_tag(version: str) -> str:
     """Get the docker container ID."""
-    return f"gcovr-{docker_container_os(session).replace(':', '_')}-{version}-uid_{os.geteuid()}"
+    return f"gcovr-test:{version}-uid_{os.geteuid()}"
 
 
 @nox.session(python=False)
@@ -841,7 +841,7 @@ def docker_build_compiler_clang(session: nox.Session) -> None:
 def docker_build_compiler(session: nox.Session, version: str) -> None:
     """Build the docker container for a specific GCC version."""
     set_environment(session, version)
-    container_id = docker_container_id(session, version)
+    container_tag = docker_container_tag(version)
     cache_options = []
     if CI_RUN:
         session.log(
@@ -859,19 +859,26 @@ def docker_build_compiler(session: nox.Session, version: str) -> None:
         )
         cache_options += [
             "--builder=gha-container",
-            "--cache-to",
-            f"type=gha,mode=max,scope={container_id}",
             "--cache-from",
-            f"type=gha,scope={container_id}",
+            f"type=gha,scope={container_tag}",
         ]
+        # Only update cache on main branch. The cache size is restricted
+        # and updating from PR branch destroys cache of main branch.
+        # The cache of the main branch is also used by PR branch.
+        if os.environ["GITHUB_REF"] == "refs/heads/main":
+            cache_options += [
+                "--cache-to",
+                f"type=gha,mode=max,scope={container_tag}",
+            ]
+
     session.run(
         "docker",
         "build",
         *cache_options,
         "--tag",
-        container_id,
+        container_tag,
         "--build-arg",
-        f"DOCKER_OS={docker_container_os(session)}",
+        f"UBUNTU_TAG={docker_container_os_version(session)}",
         "--build-arg",
         f"USERID={os.geteuid()}",
         "--build-arg",
@@ -951,7 +958,7 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "SPHINX_SKIP_CHECK_LINKS",
         "-v",
         f"{os.getcwd()}:/gcovr",
-        docker_container_id(session, version),
+        docker_container_tag(version),
         *nox_options,
         external=True,
     )

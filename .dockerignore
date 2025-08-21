@@ -1,22 +1,2 @@
-# ignore all by default
+# Do not add any file to the context
 *
-
-# explicitly allow certain code files, build files config files, and documentation
-!*.py
-!src/
-!doc/**.py
-!admin
-!**/Makefile
-!**.md
-!**.rst
-!*.txt
-!*.cfg
-!**/requirements.txt
-
-# explicitly allow tests
-!doc/examples
-!tests/
-
-# always ignore these files
-**/__pycache__
-**/*.pyc
