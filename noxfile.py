@@ -859,11 +859,17 @@ def docker_build_compiler(session: nox.Session, version: str) -> None:
         )
         cache_options += [
             "--builder=gha-container",
-            "--cache-to",
-            f"type=gha,mode=max,scope={container_tag}",
             "--cache-from",
             f"type=gha,scope={container_tag}",
         ]
+        # Only update cache on main branch. The cache size is restricted
+        # and updating from PR branch destroys cache of main branch.
+        # The cache of the main branch is also used by PR branch.
+        if os.environ["GITHUB_REF"] == "refs/heads/main":
+            cache_options += [
+                "--cache-to",
+                f"type=gha,mode=max,scope={container_tag}",
+            ]
 
     session.run(
         "docker",
