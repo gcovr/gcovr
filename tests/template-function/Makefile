@@ -8,6 +8,8 @@ run: json txt lcov cobertura html sonarqube jacoco coveralls
 coverage.json:
 	./testcase
 	$(GCOVR) --gcov-keep -v --json-pretty --json $@
+	$(GCOVR) --gcov-keep --merge-lines -v --json-pretty --json coverage.merged.json
+	diff -U 1 $@ coverage.merged.json
 
 json: coverage.json
 

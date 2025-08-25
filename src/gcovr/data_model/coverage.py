@@ -135,11 +135,11 @@ class CoverageBase:
 
     __slots__ = ("data_sources",)
 
-    def __init__(self, data_source: Union[str, set[tuple[str, ...]]]) -> None:
-        if isinstance(data_source, str):
-            self.data_sources = set[tuple[str, ...]]([(data_source,)])
+    def __init__(self, data_sources: Union[str, set[tuple[str, ...]]]) -> None:
+        if isinstance(data_sources, str):
+            self.data_sources = set[tuple[str, ...]]([(data_sources,)])
         else:
-            self.data_sources = data_source
+            self.data_sources = data_sources
 
     def merge_base_data(
         self,
@@ -266,7 +266,7 @@ class BranchCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         branchno: Optional[int],
         count: int,
@@ -276,7 +276,7 @@ class BranchCoverage(CoverageBase):
         destination_block_id: Optional[int] = None,
         excluded: bool = False,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
         self.branchno = branchno
         self.count = count
@@ -492,7 +492,7 @@ class ConditionCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         conditionno: int,
         count: int,
@@ -501,7 +501,7 @@ class ConditionCoverage(CoverageBase):
         not_covered_false: list[int],
         excluded: bool = False,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
         self.conditionno = conditionno
         self.count = count
@@ -658,9 +658,9 @@ class DecisionCoverageUncheckable(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
 
     def serialize(
@@ -726,12 +726,12 @@ class DecisionCoverageConditional(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         count_true: int,
         count_false: int,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
         if count_true < 0:
             self.raise_data_error("count_true must not be a negative value.")
@@ -817,11 +817,11 @@ class DecisionCoverageSwitch(CoverageBase):
     def __init__(
         self,
         parent: Optional[LineCoverage],
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         count: int,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
         if count < 0:
             self.raise_data_error("count must not be a negative value.")
@@ -938,7 +938,7 @@ class CallCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         callno: Optional[int],
         source_block_id: int,
@@ -946,7 +946,7 @@ class CallCoverage(CoverageBase):
         returned: int,
         excluded: bool = False,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
         self.callno = callno
         self.source_block_id = source_block_id
@@ -1143,7 +1143,7 @@ class LineCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverageCollection,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         count: int,
         function_name: Optional[str],
@@ -1151,7 +1151,7 @@ class LineCoverage(CoverageBase):
         md5: Optional[str] = None,
         excluded: bool = False,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
         self.count = count
         self.function_name = function_name
@@ -1325,7 +1325,7 @@ class LineCoverage(CoverageBase):
 
     def insert_branch_coverage(
         self,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         branchno: Optional[int],
         count: int,
@@ -1338,7 +1338,7 @@ class LineCoverage(CoverageBase):
         """Add a branch coverage item, merge if needed."""
         branchcov = BranchCoverage(
             self,
-            data_source,
+            data_sources,
             branchno=branchno,
             count=count,
             fallthrough=fallthrough,
@@ -1366,7 +1366,7 @@ class LineCoverage(CoverageBase):
 
     def insert_condition_coverage(
         self,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         conditionno: int,
         count: int,
@@ -1378,7 +1378,7 @@ class LineCoverage(CoverageBase):
         """Add a condition coverage item, merge if needed."""
         conditioncov = ConditionCoverage(
             self,
-            data_source=data_source,
+            data_sources=data_sources,
             conditionno=conditionno,
             count=count,
             covered=covered,
@@ -1406,7 +1406,7 @@ class LineCoverage(CoverageBase):
 
     def insert_call_coverage(
         self,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         callno: Optional[int],
         source_block_id: int,
@@ -1417,7 +1417,7 @@ class LineCoverage(CoverageBase):
         """Add a branch coverage item, merge if needed."""
         callcov = CallCoverage(
             self,
-            data_source=data_source,
+            data_sources=data_sources,
             callno=callno,
             source_block_id=source_block_id,
             destination_block_id=destination_block_id,
@@ -1592,39 +1592,130 @@ class LineCoverageCollection(CoverageBase):
        line.gcov
     """
 
-    __slots__ = ("parent", "lineno", "__linecovs")
+    __slots__ = ("parent", "lineno", "__linecov", "__raw_linecov")
 
     def __init__(
         self,
         parent: FileCoverage,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         lineno: int,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
         self.lineno = lineno
-        self.__linecovs = CoverageDict[LinecovKeyType, LineCoverage]()
+        self.__linecov = CoverageDict[LinecovKeyType, LineCoverage]()
+        self.__raw_linecov = CoverageDict[LinecovKeyType, LineCoverage]()
 
         if lineno <= 0:
             self.raise_data_error("lineno must be a positive value.")
 
     def __setitem__(self, key: LinecovKeyType, item: LineCoverage) -> None:
-        self.__linecovs[key] = item
+        self.__linecov[key] = item
 
     def __getitem__(self, key: LinecovKeyType) -> LineCoverage:
-        return self.__linecovs[key]
+        return self.__linecov[key]
 
     def __len__(self) -> int:
-        return len(self.__linecovs)
+        return len(self.__linecov)
 
     def __iter__(self) -> Iterator[LineCoverage]:
-        return iter(self.__linecovs.values())
+        return iter(self.__linecov.values())
 
-    def linecovs(self) -> Iterable[LineCoverage]:
+    def linecov(self) -> Iterable[LineCoverage]:
         """Iterate over the lines."""
-        for _, linecov in sorted(self.__linecovs.items()):
+        for _, linecov in sorted(self.__linecov.items()):
             yield linecov
+
+    def raw_linecov(self) -> Iterable[LineCoverage]:
+        """Iterate over the lines."""
+        if self.__raw_linecov:
+            for _, linecov in sorted(self.__raw_linecov.items()):
+                yield linecov
+        else:
+            yield from self.linecov()
+
+    def merge_lines(self) -> None:
+        """Merge line coverage if there are several items for same line."""
+        if len(self) > 1:
+            # Remember the line coverage objects and clear the dictionary
+            separate_linecov = list(self)
+            self.__linecov.clear()
+            # Merge the information, needed for line coverage
+            data_sources = set[tuple[str, ...]]()
+            block_ids = set[int]()
+            md5 = None
+            for linecov in separate_linecov:
+                data_sources.update(linecov.data_sources)
+                if linecov.block_ids is not None:
+                    block_ids.update(linecov.block_ids)
+                if linecov.md5 is not None:
+                    md5 = linecov.md5
+            new_linecov = self.insert_line_coverage(
+                data_sources,
+                count=sum(linecov.count for linecov in separate_linecov),
+                function_name=None,
+                block_ids=list(sorted(block_ids)) if block_ids else None,
+                md5=md5,
+                excluded=all(linecov.is_excluded for linecov in separate_linecov),
+            )
+            # ...and add the child objects
+            for linecov in separate_linecov:
+                self.__raw_linecov[linecov.key] = linecov
+                for branchcov in linecov.branches():
+                    new_linecov.insert_branch_coverage(
+                        branchcov.data_sources,
+                        branchno=branchcov.branchno,
+                        count=branchcov.count,
+                        fallthrough=branchcov.fallthrough,
+                        throw=branchcov.throw,
+                        source_block_id=branchcov.source_block_id,
+                        destination_block_id=branchcov.destination_block_id,
+                        excluded=branchcov.excluded,
+                    )
+                for conditioncov in linecov.conditions():
+                    new_linecov.insert_condition_coverage(
+                        conditioncov.data_sources,
+                        conditionno=conditioncov.conditionno,
+                        count=conditioncov.count,
+                        covered=conditioncov.covered,
+                        not_covered_true=list(conditioncov.not_covered_true),
+                        not_covered_false=list(conditioncov.not_covered_false),
+                        excluded=conditioncov.excluded,
+                    )
+                if (decisioncov := linecov.decision) is not None:
+                    if isinstance(decisioncov, DecisionCoverageUncheckable):
+                        decisioncov = DecisionCoverageUncheckable(
+                            new_linecov,
+                            decisioncov.data_sources,
+                        )
+                    elif isinstance(decisioncov, DecisionCoverageConditional):
+                        decisioncov = DecisionCoverageConditional(
+                            new_linecov,
+                            decisioncov.data_sources,
+                            count_true=decisioncov.count_true,
+                            count_false=decisioncov.count_false,
+                        )
+                    elif isinstance(decisioncov, DecisionCoverageSwitch):
+                        decisioncov = DecisionCoverageSwitch(
+                            new_linecov,
+                            decisioncov.data_sources,
+                            count=decisioncov.count,
+                        )
+                    else:
+                        raise RuntimeError(
+                            "Sanity check failed, unknown decision type."
+                        )
+                    new_linecov.insert_decision_coverage(decisioncov)
+                for callcov in linecov.calls():
+                    new_linecov.insert_call_coverage(
+                        callcov.data_sources,
+                        callno=callcov.callno,
+                        source_block_id=callcov.source_block_id,
+                        destination_block_id=callcov.destination_block_id,
+                        returned=callcov.returned,
+                        excluded=callcov.excluded,
+                    )
 
     @property
     def key(self) -> LinecovCollectionKeyType:
@@ -1639,12 +1730,12 @@ class LineCoverageCollection(CoverageBase):
     @property
     def count(self) -> int:
         """Get the overall count of the line."""
-        return sum(linecov.count for linecov in self.linecovs())
+        return sum(linecov.count for linecov in self.linecov())
 
     @property
     def is_excluded(self) -> bool:
         """Return True if the line is excluded."""
-        return all(linecov.excluded for linecov in self.linecovs())
+        return all(linecov.excluded for linecov in self.linecov())
 
     @property
     def is_reportable(self) -> bool:
@@ -1663,19 +1754,19 @@ class LineCoverageCollection(CoverageBase):
 
     def exclude(self) -> None:
         """Exclude line from coverage statistic."""
-        for linecov in self.linecovs():
+        for linecov in self.linecov():
             linecov.excude()
 
     def decision_coverage(self) -> DecisionCoverageStat:
         """Return the decision coverage statistic of the line."""
         stat = DecisionCoverageStat.new_empty()
-        for linecov in self.linecovs():
+        for linecov in self.linecov():
             stat += linecov.decision_coverage()
         return stat
 
     def insert_line_coverage(
         self,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         count: int,
@@ -1687,7 +1778,7 @@ class LineCoverageCollection(CoverageBase):
         """Add a line coverage item, merge if needed."""
         linecov = LineCoverage(
             self,
-            data_source,
+            data_sources,
             count=count,
             function_name=function_name,
             block_ids=block_ids,
@@ -1695,19 +1786,19 @@ class LineCoverageCollection(CoverageBase):
             excluded=excluded,
         )
         key = linecov.key
-        if key in self.__linecovs:
-            self.__linecovs[key].merge(linecov, options)
+        if key in self.__linecov:
+            self.__linecov[key].merge(linecov, options)
         else:
-            self.__linecovs[key] = linecov
-            self.__linecovs[key].parent = self
+            self.__linecov[key] = linecov
+            self.__linecov[key].parent = self
 
-        return self.__linecovs[key]
+        return self.__linecov[key]
 
     def remove_line_coverage(self, linecov: LineCoverage) -> None:
         """Remove line coverage object from line coverage collection."""
-        del self.__linecovs[linecov.key]
+        del self.__linecov[linecov.key]
         # Remove the line coverage collection if no data is available anymore for the line.
-        if not self.__linecovs:
+        if not self.__linecov:
             self.parent.remove_line(linecov.lineno)
 
     def merge(
@@ -1717,7 +1808,7 @@ class LineCoverageCollection(CoverageBase):
     ) -> None:
         """Merge the data of the line coverage object."""
         # pylint: disable=protected-access
-        self.__linecovs.merge(other.__linecovs, options)
+        self.__linecov.merge(other.__linecov, options)
         self.merge_base_data(other)
 
 
@@ -1784,7 +1875,7 @@ class FunctionCoverage(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         mangled_name: Optional[str],
         demangled_name: Optional[str],
@@ -1795,7 +1886,7 @@ class FunctionCoverage(CoverageBase):
         end: Optional[tuple[int, int]] = None,
         excluded: bool = False,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.parent = parent
         self.count = CoverageDict[int, int]({lineno: count})
         self.blocks = CoverageDict[int, float]({lineno: blocks})
@@ -2072,11 +2163,11 @@ class FileCoverage(CoverageBase):
 
     def __init__(
         self,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         *,
         filename: str,
     ) -> None:
-        super().__init__(data_source)
+        super().__init__(data_sources)
         self.filename: str = filename
         self.__functions = CoverageDict[FunctioncovKeyType, FunctionCoverage]()
         self.__lines = CoverageDict[LinecovCollectionKeyType, LineCoverageCollection]()
@@ -2092,9 +2183,9 @@ class FileCoverage(CoverageBase):
                     GCOVR_DATA_SOURCES: [
                         [
                             _presentable_filename(filename, options.root_filter)
-                            for filename in data_source
+                            for filename in data_sources
                         ]
-                        for data_source in sorted(cov.data_sources)
+                        for data_sources in sorted(cov.data_sources)
                     ]
                 }
         else:
@@ -2109,7 +2200,7 @@ class FileCoverage(CoverageBase):
         data_dict = {
             "file": filename,
             "lines": [
-                linecov.serialize(get_data_sources) for linecov in self.linecov()
+                linecov.serialize(get_data_sources) for linecov in self.raw_linecov()
             ],
             "functions": [
                 f
@@ -2124,7 +2215,7 @@ class FileCoverage(CoverageBase):
     @classmethod
     def deserialize(
         cls,
-        data_source: str,
+        data_sources: str,
         data_dict: dict[str, Any],
         merge_options: MergeOptions,
         options: Options,
@@ -2140,7 +2231,7 @@ class FileCoverage(CoverageBase):
         def get_data_sources(data_dict: dict[str, Any]) -> set[tuple[str, ...]]:
             """Return the set for data sources."""
             return set(
-                (*e,) for e in data_dict.get(GCOVR_DATA_SOURCES, [[data_source]])
+                (*e,) for e in data_dict.get(GCOVR_DATA_SOURCES, [[data_sources]])
             )
 
         filecov = FileCoverage(
@@ -2227,6 +2318,11 @@ class FileCoverage(CoverageBase):
             )
         del self.__lines[lineno]
 
+    def merge_lines(self) -> None:
+        """Merge line coverage if there are several items for same line."""
+        for linecov_collection in self.lines():
+            linecov_collection.merge_lines()
+
     def has_linecov(self) -> bool:
         """Test if there are line coverage objects available."""
         return any(linecov_collection for linecov_collection in self.lines())
@@ -2235,6 +2331,11 @@ class FileCoverage(CoverageBase):
         """Iterate over the line coverage objects."""
         for linecov_collection in self.lines():
             yield from linecov_collection
+
+    def raw_linecov(self) -> Iterable[LineCoverage]:
+        """Iterate over the line coverage objects."""
+        for linecov_collection in self.lines():
+            yield from linecov_collection.raw_linecov()
 
     @property
     def stats(self) -> SummarizedStats:
@@ -2250,7 +2351,7 @@ class FileCoverage(CoverageBase):
 
     def insert_line_coverage(
         self,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         lineno: int,
@@ -2261,7 +2362,7 @@ class FileCoverage(CoverageBase):
         excluded: bool = False,
     ) -> LineCoverage:
         """Add a line coverage item, merge if needed."""
-        linecov_collection = LineCoverageCollection(self, data_source, lineno=lineno)
+        linecov_collection = LineCoverageCollection(self, data_sources, lineno=lineno)
         key = linecov_collection.key
         if key in self.__lines:
             self.__lines[key].merge(linecov_collection, options)
@@ -2270,7 +2371,7 @@ class FileCoverage(CoverageBase):
             self.__lines[key].parent = self
 
         return self.__lines[key].insert_line_coverage(
-            data_source,
+            data_sources,
             options,
             count=count,
             function_name=function_name,
@@ -2285,7 +2386,7 @@ class FileCoverage(CoverageBase):
 
     def insert_function_coverage(
         self,
-        data_source: Union[str, set[tuple[str, ...]]],
+        data_sources: Union[str, set[tuple[str, ...]]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         mangled_name: Optional[str],
@@ -2300,7 +2401,7 @@ class FileCoverage(CoverageBase):
         """Add a function coverage item, merge if needed."""
         functioncov = FunctionCoverage(
             self,
-            data_source,
+            data_sources,
             mangled_name=mangled_name,
             demangled_name=demangled_name,
             lineno=lineno,
@@ -2317,7 +2418,7 @@ class FileCoverage(CoverageBase):
             self.__functions[key] = functioncov
             self.__functions[key].parent = self
         for linecov_collection in self.lines():
-            for linecov in linecov_collection.linecovs():
+            for linecov in linecov_collection.linecov():
                 if functioncov.mangled_name is not None and (
                     functioncov.mangled_name == linecov.function_name
                 ):
@@ -2352,7 +2453,7 @@ class FileCoverage(CoverageBase):
             )
             filecov.__lines[lineno][linecov.key] = linecov
 
-        for linecov in self.linecov():
+        for linecov in self.raw_linecov():
             if functioncov.is_function(linecov.function_name):
                 add_linecov_to_collection(linecov)
 
