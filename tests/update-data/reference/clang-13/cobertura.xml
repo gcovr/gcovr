@@ -97,10 +97,10 @@
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
-            <line number="20" hits="1" branch="false"/>
             <line number="20" hits="0" branch="false"/>
-            <line number="23" hits="0" branch="false"/>
+            <line number="20" hits="1" branch="false"/>
             <line number="23" hits="1" branch="false"/>
+            <line number="23" hits="0" branch="false"/>
             <line number="25" hits="1" branch="false"/>
             <line number="25" hits="1" branch="false"/>
           </lines>
