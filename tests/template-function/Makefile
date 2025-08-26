@@ -7,8 +7,8 @@ run: json txt lcov cobertura html sonarqube jacoco coveralls
 
 coverage.json:
 	./testcase
-	$(GCOVR) --gcov-keep -v --json-pretty --json $@
-	$(GCOVR) --gcov-keep --merge-lines -v --json-pretty --json coverage.merged.json
+	$(GCOVR) --gcov-keep --decision -v --json-pretty --json $@
+	$(GCOVR) --gcov-keep --merge-lines --decision -v --json-pretty --json coverage.merged.json
 	diff -U 1 $@ coverage.merged.json
 
 json: coverage.json
@@ -26,8 +26,8 @@ cobertura: coverage.json
 	$(GCOVR) -a $< --merge-lines --cobertura-pretty --cobertura cobertura.merged.xml
 
 html: coverage.json
-	$(GCOVR) -a $< --html-self-contained --html-single-page --html-details -o coverage.html
-	$(GCOVR) -a $< --merge-lines --html-self-contained --html-single-page --html-details -o coverage.merged.html
+	$(GCOVR) -a $< --decision --html-self-contained --html-single-page --html-details -o coverage.html
+	$(GCOVR) -a $< --merge-lines --decision --html-self-contained --html-single-page --html-details -o coverage.merged.html
 
 sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube sonarqube.xml
