@@ -167,7 +167,7 @@ class DecisionParser:
         for linecov_collection in filecov.lines():
             if len(linecov_collection) == 1:
                 self.linecov_by_line[linecov_collection.lineno] = list(
-                    linecov_collection.linecovs()
+                    linecov_collection.linecov()
                 )[0]
         self.lines = lines
 

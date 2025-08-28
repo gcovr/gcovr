@@ -120,6 +120,7 @@ New features and notable changes:
 - Add :option:`--gcov-suspicious-hits-threshold` to configure the value for detecting suspicious hits in GCOV files. (:issue:`1021`)
 - Renamed JSON element ``destination_blockno`` to ``destination_block_id``. (:issue:`1045`)
 - Add :option:`--html-block-ids` to show the block ids of the lines and branches in ``HTML`` report. (:issue:`1055`)
+- Add :option:`--merge-lines` to merge line coverage of several functions for same line. (:issue:`1140`)
 
 Bug fixes and small improvements:
 

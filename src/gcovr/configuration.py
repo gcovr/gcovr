@@ -755,6 +755,17 @@ GCOVR_CONFIG_OPTIONS = [
         ),
     ),
     GcovrConfigOption(
+        "merge_lines",
+        ["--merge-lines"],
+        group="gcov_options",
+        help=(
+            "Merge line coverage for same line coming from different functions, "
+            "e.g. template instances. The branches, conditions and calls are merged "
+            "accordingly."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "exclude_internal_functions",
         ["--include-internal-functions"],
         group="gcov_options",

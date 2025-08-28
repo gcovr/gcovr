@@ -120,6 +120,9 @@ def read_reports(options: Options) -> CoverageContainer:
                     filecov, get_merge_mode_from_options(options)
                 )
 
+    if options.merge_lines:
+        covdata.merge_lines()
+
     return covdata
 
 

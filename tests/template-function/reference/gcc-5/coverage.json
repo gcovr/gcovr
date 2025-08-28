@@ -75,6 +75,17 @@
                             ]
                         }
                     ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 10,
+                        "count_false": 0,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp.gcov"
+                            ]
+                        ]
+                    },
                     "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208",
                     "gcovr/data_sources": [
                         [
@@ -348,6 +359,17 @@
                             ]
                         }
                     ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 10,
+                        "count_false": 0,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp.gcov"
+                            ]
+                        ]
+                    },
                     "calls": [
                         {
                             "callno": 6,
@@ -504,6 +526,17 @@
                             ]
                         }
                     ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 9,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp.gcov"
+                            ]
+                        ]
+                    },
                     "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b",
                     "gcovr/data_sources": [
                         [
@@ -686,6 +719,17 @@
                             ]
                         }
                     ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 4,
+                        "count_false": 0,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp.gcov"
+                            ]
+                        ]
+                    },
                     "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208",
                     "gcovr/data_sources": [
                         [
@@ -826,6 +870,17 @@
                             ]
                         }
                     ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 4,
+                        "count_false": 0,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp.gcov"
+                            ]
+                        ]
+                    },
                     "calls": [
                         {
                             "callno": 6,
@@ -901,6 +956,17 @@
                             ]
                         }
                     ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 4,
+                        "gcovr/data_sources": [
+                            [
+                                "main.gcda",
+                                "main.cpp.gcov"
+                            ]
+                        ]
+                    },
                     "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b",
                     "gcovr/data_sources": [
                         [
