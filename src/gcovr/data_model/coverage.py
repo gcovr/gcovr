@@ -1113,8 +1113,6 @@ class LineCoverage(CoverageBase):
             List of block ids in this line
         excluded (bool, optional):
             Whether this line is excluded by a marker.
-        md5 (str, optional):
-            The md5 checksum of the source code line.
 
     >>> filecov = FileCoverage("file.gcov", filename="file.c")
     >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=1)
@@ -1133,7 +1131,6 @@ class LineCoverage(CoverageBase):
         "demangled_function_name",
         "block_ids",
         "excluded",
-        "md5",
         "__branches",
         "__conditions",
         "decision",
@@ -1148,7 +1145,6 @@ class LineCoverage(CoverageBase):
         count: int,
         function_name: Optional[str],
         block_ids: Optional[list[int]] = None,
-        md5: Optional[str] = None,
         excluded: bool = False,
     ) -> None:
         super().__init__(data_sources)
@@ -1157,7 +1153,6 @@ class LineCoverage(CoverageBase):
         self.function_name = function_name
         self.demangled_function_name: Optional[str] = None
         self.block_ids = block_ids
-        self.md5 = md5
         self.excluded = excluded
         self.__branches = CoverageDict[BranchcovKeyType, BranchCoverage]()
         self.__conditions = CoverageDict[ConditioncovKeyType, ConditionCoverage]()
@@ -1274,8 +1269,6 @@ class LineCoverage(CoverageBase):
 
         Precondition: both objects must have same lineno.
         """
-        if self.lineno != other.lineno:
-            self.raise_merge_error("Line number must be equal.", other)
         if self.function_name != other.function_name:
             self.raise_merge_error("Function name must be equal.", other)
         # Merge the block_ids if present
@@ -1283,7 +1276,6 @@ class LineCoverage(CoverageBase):
             self.block_ids = other.block_ids
         elif other.block_ids is not None:
             self.block_ids = sorted(set(self.block_ids) | set(other.block_ids))
-        self.md5 = self._merge_property(other, "MD5 checksum", lambda x: x.md5)
 
         self.count += other.count
         self.excluded |= other.excluded
@@ -1449,6 +1441,11 @@ class LineCoverage(CoverageBase):
         return self.parent.lineno
 
     @property
+    def md5(self) -> Optional[str]:
+        """Get the md5of the source line."""
+        return self.parent.md5
+
+    @property
     def is_excluded(self) -> bool:
         """Return True if the line is excluded."""
         return self.excluded
@@ -1582,6 +1579,8 @@ class LineCoverageCollection(CoverageBase):
     Args:
         lineno (int):
             The line number.
+        md5 (str, optional):
+            The md5 checksum of the source code line.
 
     >>> filecov = FileCoverage("file.gcov", filename="file.c")
     >>> linecov_list = LineCoverageCollection(filecov, "line.gcov", lineno=0)
@@ -1592,7 +1591,7 @@ class LineCoverageCollection(CoverageBase):
        line.gcov
     """
 
-    __slots__ = ("parent", "lineno", "__linecov", "__raw_linecov")
+    __slots__ = ("parent", "lineno", "md5", "__linecov", "__raw_linecov")
 
     def __init__(
         self,
@@ -1600,10 +1599,12 @@ class LineCoverageCollection(CoverageBase):
         data_sources: Union[str, set[tuple[str, ...]]],
         *,
         lineno: int,
+        md5: Optional[str] = None,
     ) -> None:
         super().__init__(data_sources)
         self.parent = parent
         self.lineno = lineno
+        self.md5 = md5
         self.__linecov = CoverageDict[LinecovKeyType, LineCoverage]()
         self.__raw_linecov = CoverageDict[LinecovKeyType, LineCoverage]()
 
@@ -1644,19 +1645,15 @@ class LineCoverageCollection(CoverageBase):
             # Merge the information, needed for line coverage
             data_sources = set[tuple[str, ...]]()
             block_ids = set[int]()
-            md5 = None
             for linecov in separate_linecov:
                 data_sources.update(linecov.data_sources)
                 if linecov.block_ids is not None:
                     block_ids.update(linecov.block_ids)
-                if linecov.md5 is not None:
-                    md5 = linecov.md5
             new_linecov = self.insert_line_coverage(
                 data_sources,
                 count=sum(linecov.count for linecov in separate_linecov),
                 function_name=None,
                 block_ids=list(sorted(block_ids)) if block_ids else None,
-                md5=md5,
                 excluded=all(linecov.is_excluded for linecov in separate_linecov),
             )
             # ...and add the child objects
@@ -1772,7 +1769,6 @@ class LineCoverageCollection(CoverageBase):
         count: int,
         function_name: Optional[str],
         block_ids: Optional[list[int]] = None,
-        md5: Optional[str] = None,
         excluded: bool = False,
     ) -> LineCoverage:
         """Add a line coverage item, merge if needed."""
@@ -1782,7 +1778,6 @@ class LineCoverageCollection(CoverageBase):
             count=count,
             function_name=function_name,
             block_ids=block_ids,
-            md5=md5,
             excluded=excluded,
         )
         key = linecov.key
@@ -1807,6 +1802,9 @@ class LineCoverageCollection(CoverageBase):
         options: MergeOptions,
     ) -> None:
         """Merge the data of the line coverage object."""
+        if self.lineno != other.lineno:
+            self.raise_merge_error("Line number must be equal.", other)
+        self.md5 = self._merge_property(other, "MD5 checksum", lambda x: x.md5)
         # pylint: disable=protected-access
         self.__linecov.merge(other.__linecov, options)
         self.merge_base_data(other)
@@ -2362,7 +2360,9 @@ class FileCoverage(CoverageBase):
         excluded: bool = False,
     ) -> LineCoverage:
         """Add a line coverage item, merge if needed."""
-        linecov_collection = LineCoverageCollection(self, data_sources, lineno=lineno)
+        linecov_collection = LineCoverageCollection(
+            self, data_sources, lineno=lineno, md5=md5
+        )
         key = linecov_collection.key
         if key in self.__lines:
             self.__lines[key].merge(linecov_collection, options)
@@ -2376,7 +2376,6 @@ class FileCoverage(CoverageBase):
             count=count,
             function_name=function_name,
             block_ids=block_ids,
-            md5=md5,
             excluded=excluded,
         )
 
