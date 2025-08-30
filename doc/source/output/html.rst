@@ -21,9 +21,10 @@ following output:
     :align: center
 
 The default behavior of the :option:`--html` option is to generate
-HTML for a single webpage that summarizes the coverage for all files. The
-HTML is printed to standard output, but the :option:`-o/--output <--output>`
-option is used to specify a file that stores the HTML output.
+HTML for a single webpage that summarizes the coverage for all files.
+
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+This only make sense for a self contained report with one page.
 
 The :option:`--html-details` option is used to create a separate web
 page for each file. Each of these web pages includes the contents of

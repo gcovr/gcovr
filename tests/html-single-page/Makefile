@@ -18,10 +18,12 @@ coverage.json:
 	$(GCOVR) -r subdir --json-pretty --json $@
 
 html: coverage.json
-	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./                                --html-single-page static --no-html-self-contained
-	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./coverage_single_page-js.html    --html-single-page        --no-html-self-contained
-	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-nested  ./coverage_single_page-gh.html    --html-single-page static --html-theme github.blue
-	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-nested  ./coverage_single_page-gh-js.html --html-single-page        --html-theme github.blue
+	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./                                   --html-single-page static --no-html-self-contained
+	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-details ./coverage_single_page-js.html       --html-single-page        --no-html-self-contained
+	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-nested  ./coverage_single_page-gh.html.gz    --html-single-page static --html-theme github.blue
+	gunzip -c ./coverage_single_page-gh.html.gz > ./coverage_single_page-gh.html
+	$(GCOVR) -r subdir --filter subdir/A -a $< --verbose --html-nested  ./coverage_single_page-gh-js.html.gz --html-single-page        --html-theme github.blue
+	gunzip -c ./coverage_single_page-gh-js.html.gz > ./coverage_single_page-gh-js.html
 
 clean:
 	rm -rf ./subdir

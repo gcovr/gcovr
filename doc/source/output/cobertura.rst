@@ -29,11 +29,14 @@ continuous integration servers using the
 The :option:`--cobertura` option generates a denser XML output, and the
 :option:`--cobertura-pretty` option generates an indented
 XML output that is easier to read. Note that the XML output contains more
-information than the tabular summary.  The tabular summary shows the percentage
+information than the tabular summary. The tabular summary shows the percentage
 of covered lines, while the XML output includes branch statistics and the number
-of times that each line was covered.  Consequently, XML output can be
+of times that each line was covered. Consequently, XML output can be
 used to support performance optimization in the same manner that
 ``gcov`` does.
+
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip
+and needs to be unzipped before using as input for other tools.
 
 .. versionadded:: 5.1
 

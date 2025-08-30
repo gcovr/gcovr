@@ -15,6 +15,9 @@ coveralls*.json
 jacoco*.xml
 sonarqube*.xml
 
+# Zipped reports
+*.*.gz
+
 # CMake build directory
 build/
 

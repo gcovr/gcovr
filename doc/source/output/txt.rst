@@ -11,6 +11,8 @@ This is the default output format if no other format is selected.
 This output format can also be explicitly selected
 with the :option:`--txt` option.
 
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+
 .. versionadded:: 5.0
    Added explicit :option:`--txt` option.
 

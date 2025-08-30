@@ -13,6 +13,8 @@ in a suitable JSON format via the :option:`--coveralls` option::
 The :option:`--coveralls-pretty` option generates
 an indented JSON output that is easier to read.
 
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+
 Keep in mind that the output contains the checksums of the source files. If you are
 using different OSes, the line endings shall be the same.
 
