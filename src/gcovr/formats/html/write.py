@@ -1151,8 +1151,6 @@ def _get_prefix_and_suffix(output_file: str) -> tuple[str, str]:
     (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
     if output_suffix == GZIP_SUFFIX:
         return _get_prefix_and_suffix(output_prefix)
-    if output_suffix == "":
-        output_suffix = ".html"
 
     return (output_prefix, output_suffix)
 
