@@ -120,6 +120,8 @@ New features and notable changes:
 - Add :option:`--gcov-suspicious-hits-threshold` to configure the value for detecting suspicious hits in GCOV files. (:issue:`1021`)
 - Renamed JSON element ``destination_blockno`` to ``destination_block_id``. (:issue:`1045`)
 - Add :option:`--html-block-ids` to show the block ids of the lines and branches in ``HTML`` report. (:issue:`1055`)
+- Add support to save zipped reports if last suffix is ``.gz``. This is useable to reduce the size for JSON
+  report format :option:`--json`. (:issue:`1141`)
 
 Bug fixes and small improvements:
 

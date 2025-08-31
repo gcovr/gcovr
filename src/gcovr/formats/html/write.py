@@ -50,6 +50,7 @@ from ...data_model.coverage import (
 from ...data_model.coverage import CoverageStat, DecisionCoverageStat
 from ...options import Options
 from ...utils import (
+    GZIP_SUFFIX,
     chdir,
     commonpath,
     force_unix_separator,
@@ -381,7 +382,11 @@ def write_report(
         cdata_fname[f] = force_unix_separator(filtered_fname)
         if options.html_details or options.html_nested or options.html_single_page:
             if os.path.normpath(f) == os.path.normpath(options.root_dir):
-                cdata_sourcefile[f] = output_file
+                cdata_sourcefile[f] = (
+                    output_file[: -len(GZIP_SUFFIX)]
+                    if output_file.endswith(GZIP_SUFFIX)
+                    else output_file
+                )
             else:
                 cdata_sourcefile[f] = _make_short_source_filename(
                     output_file, filtered_fname.rstrip(os.sep)
@@ -409,9 +414,7 @@ def write_report(
     root_info.set_directory(root_directory)
 
     if options.html_details or options.html_nested:
-        (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
-        if output_suffix == "":
-            output_suffix = ".html"
+        (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
         functions_output_file = f"{output_prefix}.functions{output_suffix}"
         data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
         if options.html_single_page:
@@ -1143,6 +1146,15 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     }
 
 
+def _get_prefix_and_suffix(output_file: str) -> tuple[str, str]:
+    """Split into prefix and suffix, ignoring the last suffix for GZIP."""
+    (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
+    if output_suffix == GZIP_SUFFIX:
+        return _get_prefix_and_suffix(output_prefix)
+
+    return (output_prefix, output_suffix)
+
+
 def _make_short_source_filename(output_file: str, filename: str) -> str:
     r"""Make a short-ish file path for --html-detail output.
 
@@ -1151,10 +1163,7 @@ def _make_short_source_filename(output_file: str, filename: str) -> str:
         filename (str): Path from root to source code.
     """
 
-    (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
-    if output_suffix == "":
-        output_suffix = ".html"
-
+    (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
     filename = filename.replace(os.sep, "/").replace("<stdin>", "stdin")
     source_filename = (
         ".".join(

@@ -10,6 +10,8 @@ in a suitable info format via the :option:`--lcov` option::
 
     gcovr --lcov coverage.lcov
 
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+
 With the following options you can set user defined fields in the coverage report:
 
 - :option:`--lcov-comment` defines an optional comment.

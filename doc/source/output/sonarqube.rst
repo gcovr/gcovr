@@ -10,6 +10,8 @@ in a suitable XML format via the :option:`--sonarqube` option::
 
     gcovr --sonarqube coverage.xml
 
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+
 The SonarQube XML format is documented at
 `<https://docs.sonarsource.com/sonarqube-server/2025.2/analyzing-source-code/test-coverage/generic-test-data/>`_.
 

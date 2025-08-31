@@ -29,6 +29,8 @@ The :option:`--clover` option generates a denser XML output, and the
 :option:`--clover-pretty` option generates an indented
 XML output that is easier to read.
 
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+
 .. versionadded:: 7.1
 
     Add :option:`--clover` and :option:`--clover-pretty`.
