@@ -92,6 +92,10 @@ CC_REFERENCE_VERSION = int(CC_REFERENCE.split("-")[1])
 IS_CLANG = "clang" in CC_REFERENCE
 IS_GCC = not IS_CLANG
 
+REFERENCE_DIR_OS_SUFFIX = (
+    "" if platform.system() == "Linux" else f"-{platform.system()}"
+)
+
 REFERENCE_DIRS = []
 REFERENCE_DIR_VERSION_LIST = (
     [
@@ -119,8 +123,8 @@ REFERENCE_DIR_VERSION_LIST = (
 )
 for ref in REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
     REFERENCE_DIRS.append(os.path.join("reference", ref))
-    if platform.system() != "Linux":
-        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}-{platform.system()}")
+    if REFERENCE_DIR_OS_SUFFIX:
+        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}{REFERENCE_DIR_OS_SUFFIX}")
     if ref == CC_REFERENCE:
         break
 REFERENCE_DIRS.reverse()
@@ -516,9 +520,13 @@ def remove_duplicate_data(  # pragma: no cover
         if other_reference_file != reference_file and os.path.isfile(
             other_reference_file
         ):  # pragma: no cover
-            with open(other_reference_file, newline="", encoding=encoding) as f:
-                if coverage == f.read():
-                    os.unlink(reference_file)
+            # Only remove it if we have no suffix or the other file has the same.
+            if not REFERENCE_DIR_OS_SUFFIX or other_reference_file.endswith(
+                REFERENCE_DIR_OS_SUFFIX
+            ):
+                with open(other_reference_file, newline="", encoding=encoding) as f:
+                    if coverage == f.read():
+                        os.unlink(reference_file)
             break
         # Check if folder is empty
         if (
