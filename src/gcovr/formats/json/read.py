@@ -23,6 +23,8 @@ import logging
 import os
 from glob import glob
 
+from ...utils import GZIP_SUFFIX
+
 from ...data_model import version
 from ...data_model.container import CoverageContainer
 from ...data_model.merging import get_merge_mode_from_options
@@ -56,7 +58,7 @@ def read_report(options: Options) -> CoverageContainer:
         for data_source in datafiles:
             LOGGER.debug(f"Processing file: {data_source}")
 
-            if data_source.casefold().endswith(".json.gz"):
+            if data_source.casefold().endswith(GZIP_SUFFIX):
                 with gzip.open(data_source, "rt", encoding="UTF-8") as fh:
                     gcovr_json_data = json.loads(fh.read())
             else:

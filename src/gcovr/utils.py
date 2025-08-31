@@ -213,7 +213,7 @@ def open_text_for_writing(
         filename += default_filename
 
     if filename is not None and filename != "-":
-        if filename.endswith(".gz"):
+        if filename.endswith(GZIP_SUFFIX):
             with gzip.open(filename, "wt", **kwargs) as fh_out:
                 yield fh_out
         else:
