@@ -1483,7 +1483,13 @@ class LineCoverage(CoverageBase):
 
     def branches(self) -> Iterable[BranchCoverage]:
         """Iterate over the branches."""
-        yield from [v for _, v in sorted(self.__branches.items())]
+        yield from [
+            v
+            for _, v in sorted(
+                self.__branches.items(),
+                key=lambda kv: tuple(x if x is not None else -1 for x in kv[0]),
+            )
+        ]
 
     @property
     def has_reportable_conditions(self) -> bool:
@@ -1517,7 +1523,13 @@ class LineCoverage(CoverageBase):
 
     def calls(self) -> Iterable[CallCoverage]:
         """Iterate over the calls."""
-        yield from [v for _, v in sorted(self.__calls.items())]
+        yield from [
+            v
+            for _, v in sorted(
+                self.__calls.items(),
+                key=lambda kv: tuple(x if x is not None else -1 for x in kv[0]),
+            )
+        ]
 
     def exclude(self) -> None:
         """Exclude line from coverage statistic."""
