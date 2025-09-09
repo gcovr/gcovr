@@ -42,6 +42,7 @@ The following developers contributed to gcovr (ordered alphabetically):
     Jörg Kreuzberger,
     Jordi Sabater,
     Josef Barnes,
+    Julien Marrec,
     Kai Blaschke,
     Kevin Broselge,
     Kevin Cai,
