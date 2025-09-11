@@ -875,8 +875,8 @@ def render_jinja_template(open_file: TextIO) -> str:
     # Read the template text
     template_text = open_file.read()
 
-    # Create a Jinja2 environment (sandboxed by default)
-    env = Environment(autoescape=False)
+    # Create a Jinja2 environment
+    env = Environment(autoescape=True)
 
     # Load from the string contents
     template = env.from_string(template_text)
