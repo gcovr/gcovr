@@ -1202,7 +1202,7 @@ class LineCoverage(CoverageBase):
         if len(self.__calls) > 0:
             data_dict["calls"] = [
                 callcov.serialize(get_data_sources)
-                for _, callcov in sorted(self.__calls.items())
+                for callcov in self.calls()
             ]
         if self.md5:
             data_dict["gcovr/md5"] = self.md5
