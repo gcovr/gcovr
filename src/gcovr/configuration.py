@@ -24,12 +24,16 @@ from __future__ import annotations
 import datetime
 import logging
 import os
+import platform
 import re
 from argparse import SUPPRESS, ArgumentParser, ArgumentTypeError, _ArgumentGroup
 from dataclasses import dataclass
 from inspect import isclass
 from locale import getpreferredencoding
+from pathlib import Path
 from typing import Any, Callable, Iterable, Optional, TextIO
+
+from jinja2 import Environment
 
 from . import formats
 from .options import (
@@ -866,6 +870,28 @@ CONFIG_KV = re.compile(r"^((?=\w)[\w-]+) \s* = \s* (.*) $", re.X)
 CONFIG_POSSIBLE_VARIABLE = re.compile(r"[$][\w{(]")
 
 
+def render_jinja_template(open_file: TextIO) -> str:
+    r"""Render a Jinja2 template from a given file"""
+    # Read the template text
+    template_text = open_file.read()
+
+    # Create a Jinja2 environment (sandboxed by default)
+    env = Environment(autoescape=False)
+
+    # Load from the string contents
+    template = env.from_string(template_text)
+
+    # Build the context passed to Jinja
+    context = {
+        "platform": platform,
+        "os": os,
+        "Path": Path,
+        # You can inject whatever else you want here
+    }
+
+    return template.render(**context)
+
+
 def parse_config_file(
     open_file: TextIO,
     filename: str,
@@ -873,6 +899,8 @@ def parse_config_file(
 ) -> Iterable[ConfigEntry]:
     r"""
     Parse an ini-style configuration format.
+    Jinja2 template variables are possible.
+    The following contexts are given: module `os`, module `platform`, and the `Path` (pathlib.Path)
 
     Yields: ConfigEntry
 
@@ -887,6 +915,13 @@ def parse_config_file(
     ... key = can have multiple values
     ... another-key =  # can be empty
     ... optional=spaces
+    ...
+    ... # Jinja2
+    ... gcov-parallel = {{ os.cpu_count() - 1 }}
+    ... html = {{ Path.cwd() / platform.system() }}/html  # jinja2 template variable
+    ... {% if Path.cwd().name.startswith('build') %} # jinja2 conditional
+    ... gcov-object-directory = {{ Path.cwd() }}
+    ... {% endif %}
     ... '''
     >>> open_file = io.StringIO(cfg[1:])
     >>> for entry in parse_config_file(open_file, 'test.cfg'):
@@ -897,13 +932,20 @@ def parse_config_file(
     test.cfg: 7: optional = spaces
     """
 
+    try:
+        content = render_jinja_template(open_file=open_file)
+    except Exception as ex:
+        raise SyntaxError(
+            f"Error rendering Jinja2 template in {filename}: {ex}"
+        ) from ex
+
     def error(pattern: str, *args: object, **kwargs: object) -> SyntaxError:
         # pylint: disable=cell-var-from-loop
         message = pattern.format(*args, **kwargs)
         message += f"\non this line: {line}"
         return SyntaxError(": ".join([filename, str(lineno), message]))
 
-    for lineno, line in enumerate(open_file, first_lineno):
+    for lineno, line in enumerate(content.splitlines(), start=first_lineno):
         line = line.rstrip()
 
         # strip (trailing) comments
