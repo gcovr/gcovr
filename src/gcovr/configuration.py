@@ -20,18 +20,18 @@
 # cspell:ignore getpreferredencoding getfixture caplog
 
 from __future__ import annotations
-from argparse import _ArgumentGroup, ArgumentParser, ArgumentTypeError, SUPPRESS
-from inspect import isclass
-from locale import getpreferredencoding
-import logging
-from typing import Iterable, Any, Optional, Callable, TextIO
-from dataclasses import dataclass
+
 import datetime
+import logging
 import os
 import re
+from argparse import SUPPRESS, ArgumentParser, ArgumentTypeError, _ArgumentGroup
+from dataclasses import dataclass
+from inspect import isclass
+from locale import getpreferredencoding
+from typing import Any, Callable, Iterable, Optional, TextIO
 
 from . import formats
-from .timestamps import parse_timestamp
 from .options import (
     FilterOption,
     GcovrConfigOption,
@@ -44,6 +44,7 @@ from .options import (
     check_percentage,
     relative_path,
 )
+from .timestamps import parse_timestamp
 
 LOGGER = logging.getLogger("gcovr")
 
