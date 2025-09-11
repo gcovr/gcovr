@@ -1201,8 +1201,7 @@ class LineCoverage(CoverageBase):
             data_dict["gcovr/decision"] = self.decision.serialize(get_data_sources)
         if len(self.__calls) > 0:
             data_dict["calls"] = [
-                callcov.serialize(get_data_sources)
-                for callcov in self.calls()
+                callcov.serialize(get_data_sources) for callcov in self.calls()
             ]
         if self.md5:
             data_dict["gcovr/md5"] = self.md5
