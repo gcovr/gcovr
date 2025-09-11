@@ -19,8 +19,9 @@
 
 # cspell:ignore testopt
 
-
 import io
+import os
+import platform
 import re
 import textwrap
 from typing import Any, Iterable, Optional, Union
@@ -97,6 +98,38 @@ def test_reserved_config_file_syntax(name: str, cfg: str) -> None:
     in case the config file format will be expanded in the future.
     """
     error = re.compile(rf"test.cfg: 1: {re.escape(name)} .* is reserved")
+    with pytest.raises(SyntaxError, match=error):
+        list(run_cfg_test(cfg))
+
+
+def test_config_file_allows_jinja_template() -> None:
+    r"""
+    Check that jinja templates are supported in config files.
+    """
+    cfg = r"""
+{% if os.cpu_count() > 1 %}
+gcov-parallel = {{ os.cpu_count() - 1 }}
+{% endif %}
+html = {{ platform.system() }}.html
+gcov-object-directory = {{ Path.cwd().parent / 'build' }}
+    """
+    options = parse_config_into_dict(
+        run_cfg_test(cfg), all_options=GCOVR_CONFIG_OPTIONS
+    )
+    assert "gcov_parallel" in options
+    assert options["gcov_parallel"] == os.cpu_count() - 1
+    assert "html" in options
+    assert options["html"].value == f"{platform.system()}.html"
+    assert "gcov_objdir" in options
+    assert options["gcov_objdir"] == "../build"
+
+
+def test_config_file_handles_bad_jinja_syntax() -> None:
+    r"""
+    Check that jinja templates with broken syntax are handled.
+    """
+    cfg = "html = {{ badsyntax.system() }}.html"
+    error = "Error rendering Jinja2 template in test.cfg: 'badsyntax' is undefined"
     with pytest.raises(SyntaxError, match=error):
         list(run_cfg_test(cfg))
 
