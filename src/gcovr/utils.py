@@ -17,6 +17,7 @@
 #
 # ****************************************************************************
 
+import gzip
 from hashlib import md5
 import json
 from typing import Any, Callable, Iterator, Optional
@@ -34,6 +35,7 @@ LOGGER = logging.getLogger("gcovr")
 
 REGEX_VERSION_POSTFIX = re.compile(r"(.+?)(?:\.post\d+)?\.dev.+$")
 PRETTY_JSON_INDENT = 4
+GZIP_SUFFIX = ".gz"
 
 
 class LoopChecker:
@@ -211,8 +213,12 @@ def open_text_for_writing(
         filename += default_filename
 
     if filename is not None and filename != "-":
-        with open(filename, "w", **kwargs) as fh_out:  # pylint: disable=unspecified-encoding
-            yield fh_out
+        if filename.endswith(GZIP_SUFFIX):
+            with gzip.open(filename, "wt", **kwargs) as fh_out:
+                yield fh_out
+        else:
+            with open(filename, "wt", **kwargs) as fh_out:  # pylint: disable=unspecified-encoding
+                yield fh_out
     else:
         yield sys.stdout
 
@@ -231,9 +237,13 @@ def open_binary_for_writing(
         filename += default_filename
 
     if filename is not None and filename != "-":
-        # files in write binary mode for UTF-8
-        with open(filename, "wb", **kwargs) as fh_out:
-            yield fh_out
+        if filename.endswith(GZIP_SUFFIX):
+            with gzip.open(filename, "wb", **kwargs) as fh_out:
+                yield fh_out
+        else:
+            # files in write binary mode for UTF-8
+            with open(filename, "wb", **kwargs) as fh_out:
+                yield fh_out
     else:
         yield sys.stdout.buffer
 
@@ -246,7 +256,7 @@ def write_json_output(
     default_filename: str,
     **kwargs: Any,
 ) -> None:
-    """Helper function to output JSON format dictionary to a file/STDOUT"""
+    """Helper function to output JSON dictionary to a file/STDOUT."""
     with open_text_for_writing(filename, default_filename, **kwargs) as fh:
         json.dump(json_dict, fh, indent=PRETTY_JSON_INDENT if pretty else None)
 

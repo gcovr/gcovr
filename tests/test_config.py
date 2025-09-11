@@ -329,7 +329,7 @@ class Ref:
     This is useful to represent the presence of a value that may be None.
     """
 
-    def __init__(self, value: Union[str, list[str]]) -> None:
+    def __init__(self, value: Union[Optional[str], list[str]]) -> None:
         self.value = value
 
 

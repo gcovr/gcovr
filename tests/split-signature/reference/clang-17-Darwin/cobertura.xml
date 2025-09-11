@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="1.0" branch-rate="0.5" lines-covered="17" lines-valid="17" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+  <sources>
+    <source>tests/split-signature</source>
+  </sources>
+  <packages>
+    <package name="" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+      <classes>
+        <class name="main_cpp" filename="main.cpp" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+          <methods>
+            <method name="(anonymous namespace)::Bar::Bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="8" hits="2" branch="false"/>
+                <line number="9" hits="2" branch="false"/>
+              </lines>
+            </method>
+            <method name="(anonymous namespace)::Bar::~Bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="10" hits="2" branch="false"/>
+                <line number="11" hits="2" branch="false"/>
+              </lines>
+            </method>
+            <method name="(anonymous namespace)::Bar::foo" signature="() const" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="13" hits="1" branch="false"/>
+                <line number="15" hits="1" branch="false"/>
+                <line number="16" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="(anonymous namespace)::foo" signature="()" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="21" hits="1" branch="false"/>
+                <line number="23" hits="1" branch="false"/>
+                <line number="24" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="25" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="bar" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="29" hits="1" branch="false"/>
+                <line number="31" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="bar_cpp" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="34" hits="1" branch="false"/>
+                <line number="36" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="main" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="39" hits="1" branch="false"/>
+                <line number="40" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="8" hits="2" branch="false"/>
+            <line number="9" hits="2" branch="false"/>
+            <line number="10" hits="2" branch="false"/>
+            <line number="11" hits="2" branch="false"/>
+            <line number="13" hits="1" branch="false"/>
+            <line number="15" hits="1" branch="false"/>
+            <line number="16" hits="1" branch="false"/>
+            <line number="21" hits="1" branch="false"/>
+            <line number="23" hits="1" branch="false"/>
+            <line number="24" hits="1" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="25" hits="1" branch="false"/>
+            <line number="29" hits="1" branch="false"/>
+            <line number="31" hits="1" branch="false"/>
+            <line number="34" hits="1" branch="false"/>
+            <line number="36" hits="1" branch="false"/>
+            <line number="39" hits="1" branch="false"/>
+            <line number="40" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
