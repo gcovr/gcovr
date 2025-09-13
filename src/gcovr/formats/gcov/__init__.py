@@ -17,7 +17,6 @@
 #
 # ****************************************************************************
 
-from multiprocessing import cpu_count
 import os
 from typing import Union
 
@@ -212,9 +211,12 @@ class GcovHandler(BaseHandler):
                 ["-j"],
                 config="gcov-parallel",
                 group="gcov_options",
-                help="Set the number of threads to use in parallel.",
+                help=(
+                    "Set the number of threads to use in parallel. "
+                    "0=Number of CPUs, negative number='all but N CPUs'."
+                ),
                 nargs="?",
-                const=cpu_count(),
+                const=0,
                 type=int,
                 default=1,
             ),
