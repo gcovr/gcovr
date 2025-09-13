@@ -1201,8 +1201,7 @@ class LineCoverage(CoverageBase):
             data_dict["gcovr/decision"] = self.decision.serialize(get_data_sources)
         if len(self.__calls) > 0:
             data_dict["calls"] = [
-                callcov.serialize(get_data_sources)
-                for _, callcov in sorted(self.__calls.items())
+                callcov.serialize(get_data_sources) for callcov in self.calls()
             ]
         if self.md5:
             data_dict["gcovr/md5"] = self.md5
@@ -1483,7 +1482,13 @@ class LineCoverage(CoverageBase):
 
     def branches(self) -> Iterable[BranchCoverage]:
         """Iterate over the branches."""
-        yield from [v for _, v in sorted(self.__branches.items())]
+        yield from [
+            v
+            for _, v in sorted(
+                self.__branches.items(),
+                key=lambda kv: tuple(x if x is not None else -1 for x in kv[0]),
+            )
+        ]
 
     @property
     def has_reportable_conditions(self) -> bool:
@@ -1517,7 +1522,13 @@ class LineCoverage(CoverageBase):
 
     def calls(self) -> Iterable[CallCoverage]:
         """Iterate over the calls."""
-        yield from [v for _, v in sorted(self.__calls.items())]
+        yield from [
+            v
+            for _, v in sorted(
+                self.__calls.items(),
+                key=lambda kv: tuple(x if x is not None else -1 for x in kv[0]),
+            )
+        ]
 
     def exclude(self) -> None:
         """Exclude line from coverage statistic."""
