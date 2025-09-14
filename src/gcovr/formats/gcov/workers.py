@@ -18,6 +18,7 @@
 # ****************************************************************************
 
 import logging
+from multiprocessing import cpu_count
 from sys import exc_info
 from threading import Thread, Condition, RLock
 from traceback import format_exception
@@ -102,11 +103,37 @@ class Workers:
     """
     Create a thread-pool which can be given work via an
     add method and will run until work is complete
+
+    >>> monkeypatch = getfixture("monkeypatch")
+    >>> monkeypatch.setattr("gcovr.formats.gcov.workers.cpu_count", lambda: 4)
+
+    >>> with Workers(3, lambda: {}) as pool:
+    ...   print(len(pool.workers))
+    ...   print(len(pool.wait()))
+    3
+    3
+    >>> with Workers(0, lambda: {}) as pool:
+    ...   print(len(pool.workers))
+    ...   print(len(pool.wait()))
+    4
+    4
+    >>> with Workers(-1, lambda: {}) as pool:
+    ...   print(len(pool.workers))
+    ...   print(len(pool.wait()))
+    3
+    3
+    >>> with Workers(-10, lambda: {}) as pool:
+    ...   print(len(pool.workers))
+    ...   print(len(pool.wait()))
+    1
+    1
     """
 
     def __init__(self, number: int, context: Callable[[], dict[str, Any]]) -> None:
-        if number < 1:
-            raise AssertionError("At least one executer is needed.")
+        if number <= 0:
+            number = max(1, cpu_count() + number)
+        LOGGER.debug(f"Using {number} workers.")
+
         self.q: "Queue[QueueContent]" = Queue()
         self.lock = RLock()
         self.exceptions = list[str]()

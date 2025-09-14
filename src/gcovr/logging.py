@@ -38,7 +38,7 @@ def __colored_formatter(options: Optional[Options] = None) -> ColoredFormatter:
     """Configure the colored logging formatter."""
     if options is not None:
         log_format = (
-            COLOR_LOG_FORMAT_THREADS if options.gcov_parallel > 1 else COLOR_LOG_FORMAT
+            COLOR_LOG_FORMAT_THREADS if options.gcov_parallel != 1 else COLOR_LOG_FORMAT
         )
         force_color = getattr(options, "force_color", False)
         no_color = getattr(options, "no_color", False)
