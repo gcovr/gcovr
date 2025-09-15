@@ -206,7 +206,7 @@ linkcheck_ignore = [
     r"https://github.com/gcovr/gcovr/issues/\d+",
     r"https://github.com/.+/blob/.+",
     r"https://stackoverflow.com/questions/tagged/gcovr",
-    r"https://gcovr.com/en/latest/known_bugs.html",  # TODO: Can be removed after first generation
+    r"https://gcovr.com/en/latest/known_bugs.html",
 ]
 
 # -- Jinja2 template context ------------------------------------------

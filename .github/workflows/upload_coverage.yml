@@ -19,7 +19,7 @@ jobs:
       - name: Download artifacts
         uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11
         with:
-          name: coverage.*
+          name: "coverage-(merged|reference)"
           name_is_regexp: true
           run_id: ${{ github.event.workflow_run.id }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -35,11 +35,11 @@ jobs:
         run: |
           # Search the coverage files and upload them
           partial_upload="${{ runner.temp }}/artifacts/get.sh report --partial"
-          ${partial_upload} -l python --force-coverage-parser cobertura $(find . -name 'coverage.xml' -print | sed -e 's/^/ -r /' | tr -d '\n')
-          ${partial_upload} -l C --force-coverage-parser cobertura -r 'coverage/cobertura.xml'
-          ${partial_upload} -l C --force-coverage-parser clover -r 'coverage/clover.xml'
-          ${partial_upload} -l C --force-coverage-parser jacoco -r 'coverage/jacoco.xml' || echo ignored
-          ${partial_upload} -l C --force-coverage-parser lcov -r 'coverage/coverage.lcov' || echo ignored
+          ${partial_upload} -l python --force-coverage-parser cobertura -r coverage-merged/coverage.xml
+          ${partial_upload} -l C --force-coverage-parser cobertura -r 'coverage-reference/cobertura.xml'
+          ${partial_upload} -l C --force-coverage-parser clover -r 'coverage-reference/clover.xml'
+          ${partial_upload} -l C --force-coverage-parser jacoco -r 'coverage-reference/jacoco.xml' || echo ignored
+          ${partial_upload} -l C --force-coverage-parser lcov -r 'coverage-reference/coverage.lcov' || echo ignored
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 

@@ -193,6 +193,16 @@ addopts = "-v --timeout=120 --doctest-modules --ignore-glob=*/linked/subdir/* --
 
 [tool.coverage.run]
 branch = true
+relative_files = true
+source = [
+    "src"
+]
+omit = [
+    "*/src/gcovr/version.py"
+]
+patch = [
+    "subprocess"
+]
 
 [tool.coverage.report]
 exclude_lines = [

@@ -521,7 +521,8 @@ def tests(session: nox.Session) -> None:
 
     args = ["-m", "pytest"]
     if use_coverage:
-        args += ["--cov=gcovr", "--cov-branch"]
+        args += ["--cov=src", "--cov-branch"]
+        session.env["COVERAGE_FILE"] = f".coverage_{session.env['CC_REFERENCE']}"
     args += session.posargs
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
@@ -538,6 +539,19 @@ def tests(session: nox.Session) -> None:
             session.run("coverage", "xml")
             if not CI_RUN:
                 session.run("coverage", "html")
+
+
+@nox.session
+def combine_coverage(session: nox.Session) -> None:
+    """Merge coverage reports to a single report."""
+    install_dev_requirements(session, "coverage", "pytest-cov")
+    if session.posargs:
+        args = session.posargs
+    else:
+        args = [str(p) for p in Path().glob(".coverage_*")]
+    session.run("coverage", "combine", *args)
+    session.run("coverage", "xml")
+    session.run("coverage", "html")
 
 
 @nox.session(python=False)
@@ -948,6 +962,8 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "-it" if session.interactive else "-t",
         "-e",
         "CC",
+        "-e",
+        "GITHUB_ACTION",
         "-e",
         "USE_COVERAGE",
         "-e",
