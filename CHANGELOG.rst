@@ -123,6 +123,7 @@ New features and notable changes:
 - Add :option:`--html-block-ids` to show the block ids of the lines and branches in ``HTML`` report. (:issue:`1055`)
 - Add support to save zipped reports if last suffix is ``.gz``. This is useable to reduce the size for JSON
   report format :option:`--json`. (:issue:`1141`)
+- Add :option:`--merge-lines` to merge line coverage of several functions for same line. (:issue:`1140`)
 
 Bug fixes and small improvements:
 

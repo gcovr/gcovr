@@ -158,7 +158,7 @@ class CoverageContainer(ContainerBase):
     @classmethod
     def deserialize(
         cls,
-        data_source: str,
+        data_sources: str,
         data_dicts_files: list[dict[str, Any]],
         options: Options,
         merge_options: MergeOptions,
@@ -168,7 +168,7 @@ class CoverageContainer(ContainerBase):
         for gcovr_file in data_dicts_files:
             if (
                 filecov := FileCoverage.deserialize(
-                    data_source, gcovr_file, merge_options, options
+                    data_sources, gcovr_file, merge_options, options
                 )
             ) is not None:
                 covdata.insert_file_coverage(
@@ -177,6 +177,11 @@ class CoverageContainer(ContainerBase):
                 )
 
         return covdata
+
+    def merge_lines(self) -> None:
+        """Merge line coverage for same line number. Remove the function information on merged lines."""
+        for _, filecov in sorted(self.items()):
+            filecov.merge_lines()
 
     def merge(self, other: CoverageContainer, options: MergeOptions) -> None:
         """

@@ -82,7 +82,7 @@ Each **file** entry contains coverage data for one source file::
         "file": filename,
         "lines": [line],
         "functions": [function],
-        "gcovr/data_sources": [data_source]
+        "gcovr/data_sources": [data_sources]
     }
 
 file: string
@@ -121,7 +121,7 @@ Each **line** entry contains coverage data for one line::
         "calls": calls,
         "gcovr/md5": md5,
         "gcovr/excluded": excluded,
-        "gcovr/data_sources": [data_source]
+        "gcovr/data_sources": [data_sources]
     }
 
 The ordering and merge key is ``(line_number, function_name, number of branches, list of condition counts, list of block ids)``.
@@ -218,7 +218,7 @@ Each **branch** provides information about a branch on that line::
       "source_block_id": number,
       "destination_block_id": number,
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_source]
+      "gcovr/data_sources": [data_sources]
     }
 
 The ordering and merge key is ``(branchno, source_block_id, destination_block_id)``.
@@ -285,7 +285,7 @@ Each **condition** provides information about a condition on that line::
       "not_covered_false": not_covered_false,
       "not_covered_true": not_covered_true,
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_source]
+      "gcovr/data_sources": [data_sources]
     }
 
 The ordering and merge key is ``(conditionno, count)``.
@@ -334,20 +334,20 @@ Each **decision** summarizes the line's branch coverage data::
 
     {
       "type": "uncheckable",
-      "gcovr/data_sources": [data_source]
+      "gcovr/data_sources": [data_sources]
     }
 
     {
       "type": "conditional",
       "count_true": count_true,
       "count_false": count_false,
-      "gcovr/data_sources": [data_source]
+      "gcovr/data_sources": [data_sources]
     }
 
     {
       "type": "switch",
       "count": count,
-      "gcovr/data_sources": [data_source]
+      "gcovr/data_sources": [data_sources]
     }
 
 type: string
@@ -397,7 +397,7 @@ Each **call** provides information about a call on that line::
       "destination_block_id": destination_block_id,
       "returned": returned,
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_source]
+      "gcovr/data_sources": [data_sources]
     }
 
 The ordering and merge key is ``(callno, source_block_id, destination_block_id)``.
@@ -450,7 +450,7 @@ Each **function** entry describes a line in the source file::
         "<end line>:<end column>"
       ]
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_source]
+      "gcovr/data_sources": [data_sources]
     }
 
 The ordering and merge key is ``function_name``.
