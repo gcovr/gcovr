@@ -116,7 +116,7 @@ jobs:
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
-          name: "coverage"
+          name: coverage-reference
           path: /tmp/coverage-upload/*.*
 
   # -----------------------------------------------------------------------------------------------
@@ -398,6 +398,47 @@ jobs:
           git push origin "refs/tags/$TAG"
         env:
           TAG: ${{ needs.build-package.outputs.tag }}
+
+  # -----------------------------------------------------------------------------------------------
+  merge_coverage:
+    needs: [host, docker]
+    if: ${{ always() }}
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    env:
+      FORCE_COLOR: "1"
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Print job variables
+        run: echo '''${{ toJSON(needs) }}'''
+
+      - name: Set up runner
+        uses: "./.github/actions/setup-runner"
+        with:
+          os: ubuntu-22.04
+          python-version: 3.12
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v5
+        with:
+          pattern: coverage-pytest-*
+
+      - name: Combine coverage
+        run: |
+          nox --non-interactive --session combine_coverage -- $(find . -name '.coverage_*')
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-merged
+          path: |
+            coverage.xml
+            htmlcov
+
 
   # -----------------------------------------------------------------------------------------------
   publish-github-release:

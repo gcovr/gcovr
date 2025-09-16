@@ -17,7 +17,7 @@ src/gcovr/version.py
 /build
 
 # coverage report
-/.coverage
+/.coverage*
 /coverage.xml
 # temporary generated files
 /.coverage.*

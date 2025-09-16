@@ -131,16 +131,17 @@ jobs:
             }}
           path: tests/diff.zip
 
-      - name: Upload coverage.xml
+      - name: Upload coverage
         if: ${{ env.USE_COVERAGE == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: >-
-            coverage-${{
+            coverage-pytest-${{
               inputs.container && format('docker-{0}', inputs.gcc)
               || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version)
             }}
-          path: ./coverage.xml
+          path: .coverage_*
+          include-hidden-files: true
 
       - name: Generate documentation
         if: ${{ env.GENERATE_DOCUMENTATION == 'true' }}

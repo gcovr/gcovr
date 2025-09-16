@@ -15,8 +15,7 @@ LABEL org.opencontainers.image.title="Image used to test GCOVR in the CI and dur
 LABEL org.opencontainers.image.source="https://github.com/gcovr/gcovr/blob/main/admin/Dockerfile.qa"
 LABEL org.opencontainers.image.version="$CC"
 
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked <<EOS
+RUN <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
