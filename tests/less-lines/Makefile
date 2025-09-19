@@ -13,7 +13,7 @@ html:
 	cd build; ./testcase
 	cd build; $(GCOVR) -d --verbose --gcov-keep --html-details --html ../coverage.html 2>stderr || ( cat stderr & exit 1 )
 	cd build; cat stderr
-	cd build; grep -P "File .+main.cpp has [67] line\(s\) but coverage data has 10 line\(s\)\." stderr
+	cd build; grep -E "File .+main.cpp has [67] line\(s\) but coverage data has 10 line\(s\)\." stderr
 
 clean:
 	rm -rf build

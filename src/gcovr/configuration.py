@@ -852,6 +852,12 @@ GCOVR_CONFIG_OPTIONS = [
         default=r"[GL]COVR?",
     ),
     GcovrConfigOption(
+        "warn_excluded_lines_with_hits",
+        ["--warn-excluded-lines-with-hits"],
+        help="Print a warning if a line excluded by comments has a hit counter != 0.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
         "search_paths",
         config="search-path",
         positional=True,
