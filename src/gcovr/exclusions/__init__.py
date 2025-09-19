@@ -59,6 +59,7 @@ class ExclusionOptions:
     """
 
     respect_exclusion_markers: bool = True
+    warn_excluded_lines_with_hits: bool = False
     exclude_function: list[re.Pattern[str]] = field(default_factory=lambda: [])
     exclude_lines_by_pattern: list[re.Pattern[str]] = field(default_factory=lambda: [])
     exclude_branches_by_pattern: list[re.Pattern[str]] = field(
@@ -77,6 +78,7 @@ def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
 
     return ExclusionOptions(
         respect_exclusion_markers=options.respect_exclusion_markers,
+        warn_excluded_lines_with_hits=options.warn_excluded_lines_with_hits,
         exclude_function=options.exclude_function,
         exclude_lines_by_pattern=options.exclude_lines_by_pattern,
         exclude_branches_by_pattern=options.exclude_branches_by_pattern,
@@ -111,6 +113,7 @@ def apply_all_exclusions(
             exclude_lines_by_pattern=options.exclude_lines_by_pattern,
             exclude_branches_by_pattern=options.exclude_branches_by_pattern,
             exclude_pattern_prefix=options.exclude_pattern_prefix,
+            warn_excluded_lines_with_hits=options.warn_excluded_lines_with_hits,
         )
 
     if options.exclude_function:
@@ -228,4 +231,5 @@ def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> 
             filecov,
             line_is_excluded=exclusion_predicate,
             branch_is_excluded=exclusion_predicate,
+            warn_excluded_lines_with_hits=False,
         )
