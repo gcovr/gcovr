@@ -43,6 +43,5 @@ coveralls:
 
 clean:
 	rm -f testcase
-	rm -f stderr
 	rm -f *.gc*
 	rm -f *coverage*.* jacoco.xml clover.xml cobertura.xml sonarqube.xml coveralls.json

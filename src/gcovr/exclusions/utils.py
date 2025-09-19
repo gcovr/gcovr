@@ -126,6 +126,7 @@ def apply_exclusion_ranges(
     *,
     line_is_excluded: ExclusionPredicate,
     branch_is_excluded: ExclusionPredicate,
+    warn_excluded_lines_with_hits: bool,
 ) -> None:
     """
     Remove any coverage information that is excluded by explicit markers such as
@@ -144,6 +145,10 @@ def apply_exclusion_ranges(
         linecov.decision = None
 
         if line_is_excluded(linecov.lineno):
+            if warn_excluded_lines_with_hits and linecov.count:
+                LOGGER.warning(
+                    f"{linecov.location}: Line with {linecov.count} hit(s) excluded."
+                )
             linecov.exclude()
 
         elif branch_is_excluded(linecov.lineno):
