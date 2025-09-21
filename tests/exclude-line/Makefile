@@ -7,7 +7,9 @@ run: txt lcov clover cobertura html sonarqube jacoco coveralls json
 
 coverage.json:
 	./testcase
-	$(GCOVR) --json-pretty --json $@
+	$(GCOVR) --warn-excluded-lines-with-hits --json-pretty --json $@ 2>stderr || (cat stderr && exit 1)
+	cat stderr
+	grep -E "\(WARNING\) .*main.cpp:8: Line with 1 hit\(s\) excluded." stderr
 
 json: coverage.json
 
@@ -37,5 +39,6 @@ coveralls: coverage.json
 
 clean:
 	rm -f testcase
+	rm -f stderr
 	rm -f *.gc*
 	rm -f clover.xml coverage*.* cobertura*.* sonarqube*.* jacoco*.* coveralls.json

@@ -49,6 +49,7 @@ class GcovHandler(BaseHandler):
             "exclude_lines_by_pattern",
             "exclude_branches_by_pattern",
             "exclude_pattern_prefix",
+            "warn_excluded_lines_with_hits",
             "merge_mode_functions",
             # Local options
             GcovrConfigOption(

@@ -53,6 +53,7 @@ def apply_exclusion_markers(
     exclude_lines_by_pattern: list[re.Pattern[str]],
     exclude_branches_by_pattern: list[re.Pattern[str]],
     exclude_pattern_prefix: str,
+    warn_excluded_lines_with_hits: bool,
 ) -> None:
     """
     Remove any coverage information that is excluded by explicit markers such as
@@ -89,6 +90,7 @@ def apply_exclusion_markers(
         filecov,
         line_is_excluded=line_is_excluded,
         branch_is_excluded=branch_is_excluded,
+        warn_excluded_lines_with_hits=warn_excluded_lines_with_hits,
     )
 
 
@@ -169,7 +171,8 @@ class _ExclusionRangeWarnings:
     ...     lines=source.strip().splitlines(),
     ...     exclude_lines_by_pattern=[],
     ...     exclude_branches_by_pattern=[],
-    ...     exclude_pattern_prefix=r"[GL]COVR?")
+    ...     exclude_pattern_prefix=r"[GL]COVR?",
+    ...     warn_excluded_lines_with_hits=False)
     >>> for message in caplog.record_tuples:
     ...     print(f"{message[1]}: {message[2]}")
     30: mismatched coverage exclusion flags.

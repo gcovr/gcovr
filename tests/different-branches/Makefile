@@ -23,4 +23,4 @@ html: coverage.json
 
 clean:
 	rm -rf build*
-	rm -f *.gc* coverage*.* stderr
+	rm -f *.gc* coverage*.*
