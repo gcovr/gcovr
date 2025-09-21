@@ -39,8 +39,18 @@ LOGGER = logging.getLogger("gcovr")
 _EXCLUDE_FLAG = "_EXCL_"
 _EXCLUDE_LINE_WORD = ""
 _EXCLUDE_BRANCH_WORD = "BR_"
-_EXCLUDE_PATTERN_POSTFIXES = ["LINE", "START", "STOP", "FUNCTION"]
+_EXCLUDE_PATTERN_POSTFIXES_LINE = "LINE"
+_EXCLUDE_PATTERN_POSTFIXES_START = "START"
+_EXCLUDE_PATTERN_POSTFIXES_STOP = "STOP"
+_EXCLUDE_PATTERN_POSTFIXES_FUNCTION = "FUNCTION"
+_EXCLUDE_PATTERN_POSTFIXES = [
+    _EXCLUDE_PATTERN_POSTFIXES_LINE,
+    _EXCLUDE_PATTERN_POSTFIXES_START,
+    _EXCLUDE_PATTERN_POSTFIXES_STOP,
+    _EXCLUDE_PATTERN_POSTFIXES_FUNCTION,
+]
 _EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX = "SOURCE"
+_EXCLUDE_BRANCH_WITHOUT_HIT = "WITHOUT_HIT"
 
 ExclusionPredicate = Callable[[int], bool]
 FunctionListByLine = dict[int, list[FunctionCoverage]]
@@ -77,6 +87,12 @@ def apply_exclusion_markers(
         filecov=filecov,
     )
 
+    _process_exclude_branch_with_no_hit(
+        lines=lines,
+        exclude_pattern_prefix=exclude_pattern_prefix,
+        filecov=filecov,
+    )
+
     line_is_excluded, branch_is_excluded = _find_excluded_ranges(
         lines=lines,
         warnings=_ExclusionRangeWarnings(filecov.filename),
@@ -100,12 +116,9 @@ def _process_exclude_branch_source(
     exclude_pattern_prefix: str,
     filecov: FileCoverage,
 ) -> None:
-    """
-    Scan through all lines to find source branch exclusion markers.
-    """
+    """Scan through all lines to find source branch exclusion markers."""
 
-    exclude_word = "BR_"
-    excl_pattern = f"(.*?)({exclude_pattern_prefix}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX})"
+    excl_pattern = f"(.*?)({exclude_pattern_prefix}{_EXCLUDE_FLAG}{_EXCLUDE_BRANCH_WORD}{_EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX})"
     excl_pattern_compiled = re.compile(excl_pattern)
 
     for lineno, code in enumerate(lines, 1):
@@ -148,6 +161,55 @@ def _process_exclude_branch_source(
                                             f"Source branch exclusion at {location} is excluding branch {branch_info} of line {cur_linecov.lineno}"
                                         )
                                         cur_branchcov.excluded = True
+                columnno += len(match)
+
+
+def _process_exclude_branch_with_no_hit(
+    lines: list[str],
+    *,
+    exclude_pattern_prefix: str,
+    filecov: FileCoverage,
+) -> None:
+    """Scan through all lines to find exclusion markers for branches without a hit."""
+
+    excl_pattern = rf"(.*?)({exclude_pattern_prefix}{_EXCLUDE_FLAG}{_EXCLUDE_BRANCH_WORD}{_EXCLUDE_BRANCH_WITHOUT_HIT}:\s+((\d+)/(\d+)))"
+    excl_pattern_compiled = re.compile(excl_pattern)
+
+    for lineno, code in enumerate(lines, 1):
+        if _EXCLUDE_FLAG in code:
+            columnno = 1
+            for (
+                prefix,
+                match,
+                stats_string,
+                uncovered,
+                total,
+            ) in excl_pattern_compiled.findall(code):
+                columnno += len(prefix)
+                location = f"{filecov.filename}:{lineno}:{columnno}"
+                linecovs = filecov.get_line(lineno)
+                if linecovs is None:
+                    LOGGER.error(
+                        f"Found marker for exclusion of branches without hits at {location} without coverage information"
+                    )
+                else:
+                    for linecov in linecovs:
+                        stats = linecov.branch_coverage()
+                        expected_uncovered = stats.total - stats.covered
+                        if (
+                            str(stats.total) == total
+                            and str(expected_uncovered) == uncovered
+                        ):
+                            LOGGER.debug(
+                                f"Exclusion of branches without hits at {location} is excluding {uncovered} branch(es)"
+                            )
+                            for branchcov in linecov.branches():
+                                if not branchcov.count:
+                                    branchcov.excluded = True
+                        else:
+                            LOGGER.error(
+                                f"Exclusion of branches without hits ({stats_string}) at {location} is wrong. There {'is' if expected_uncovered <= 1 else 'are'} {expected_uncovered} out of {stats.total} branches uncovered"
+                            )
                 columnno += len(match)
 
 
@@ -241,36 +303,36 @@ def _process_exclusion_marker(
     STOP flags remove a marker from the exclusion stack
     """
 
-    if flag == "LINE":
+    if flag == _EXCLUDE_PATTERN_POSTFIXES_LINE:
         if exclusion_stack:
             warnings.line_after_start(
                 lineno,
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}LINE",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_LINE}",
                 exclusion_stack[-1][1],
             )
         else:
             exclude_ranges.append((lineno, lineno))
-    elif flag == "FUNCTION":
+    elif flag == _EXCLUDE_PATTERN_POSTFIXES_FUNCTION:
         exclude_ranges += get_function_exclude_ranges(
             warnings.filename, lineno, columnno, functions_by_line=functions_by_line
         )
-    elif flag == "START":
+    elif flag == _EXCLUDE_PATTERN_POSTFIXES_START:
         exclusion_stack.append((header, lineno))
-    elif flag == "STOP":
+    elif flag == _EXCLUDE_PATTERN_POSTFIXES_STOP:
         if not exclusion_stack:
             warnings.stop_without_start(
                 lineno,
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}START",
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}STOP",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_START}",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_STOP}",
             )
         else:
             start_header, start_lineno = exclusion_stack.pop()
             if header != start_header:
                 warnings.mismatched_start_stop(
                     start_lineno,
-                    f"{start_header}{_EXCLUDE_FLAG}{exclude_word}START",
+                    f"{start_header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_START}",
                     lineno,
-                    f"{header}{_EXCLUDE_FLAG}{exclude_word}STOP",
+                    f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_STOP}",
                 )
 
             exclude_ranges.append((start_lineno, lineno - 1))
@@ -365,8 +427,8 @@ def _find_excluded_ranges(
         for header, lineno in exclusion_stack:
             warnings.start_without_stop(
                 lineno,
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}START",
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}STOP",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_START}",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_STOP}",
             )
 
         LOGGER.debug(
