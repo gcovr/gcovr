@@ -25,50 +25,57 @@
   <table class="coverage">
     <tr>
       <th></th>
+      <th scope="col">Coverage</th>
       <th scope="col">Exec</th>
       <th scope="col">Total</th>
-      <th scope="col">Coverage</th>
+      <th scope="col">Excluded</th>
     </tr>
     <tr>
       <th scope="row">Lines:</th>
+      <td class="{{lines.class}}">{{lines.coverage}}%</td>
       <td>{{lines.exec}}</td>
       <td>{{lines.total}}</td>
-      <td class="{{lines.class}}">{{lines.coverage}}%</td>
+      <td>{{lines.excluded}}</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
+      <td class="{{functions.class}}">{{functions.coverage}}%</td>
       <td>{{functions.exec}}</td>
       <td>{{functions.total}}</td>
-      <td class="{{functions.class}}">{{functions.coverage}}%</td>
+      <td>{{functions.excluded}}</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
+      <td class="{{branches.class}}">{{branches.coverage}}%</td>
       <td>{{branches.exec}}</td>
       <td>{{branches.total}}</td>
-      <td class="{{branches.class}}">{{branches.coverage}}%</td>
+      <td>{{branches.excluded}}</td>
     </tr>
     {% if SHOW_CONDITION_COVERAGE %}
     <tr>
       <th scope="row">Conditions:</th>
+      <td class="{{conditions.class}}">{{conditions.coverage}}%</td>
       <td>{{conditions.exec}}</td>
       <td>{{conditions.total}}</td>
-      <td class="{{conditions.class}}">{{conditions.coverage}}%</td>
+      <td>{{conditions.excluded}}</td>
     </tr>
     {% endif %}
     {% if SHOW_DECISION %}
     <tr>
       <th scope="row">Decisions:</th>
+      <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
       <td>{{decisions.exec}}</td>
       <td>{{decisions.total}}</td>
-      <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
+      <td>-</td>
     </tr>
     {% endif %}
     {% if SHOW_CALLS %}
     <tr>
       <th scope="row">Calls:</th>
+      <td class="{{calls.class}}">{{calls.coverage}}%</td>
       <td>{{calls.exec}}</td>
       <td>{{calls.total}}</td>
-      <td class="{{calls.class}}">{{calls.coverage}}%</td>
+      <td>{{calls.excluded}}</td>
     </tr>
     {% endif %}
   </table>

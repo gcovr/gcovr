@@ -684,6 +684,7 @@ def get_coverage_data(
     lines = {
         "total": stats.line.total,
         "exec": stats.line.covered,
+        "excluded": stats.line.excluded,
         "coverage": stats.line.percent_or(100.0 if is_file_with_lines else "-"),
         "class": line_coverage_class(
             stats.line.percent_or(100.0 if is_file_with_lines else None)
@@ -693,6 +694,7 @@ def get_coverage_data(
     branches = {
         "total": stats.branch.total,
         "exec": stats.branch.covered,
+        "excluded": stats.branch.excluded,
         "coverage": stats.branch.percent_or("-"),
         "class": branch_coverage_class(stats.branch.percent),
     }
@@ -700,6 +702,7 @@ def get_coverage_data(
     conditions = {
         "total": stats.condition.total,
         "exec": stats.condition.covered,
+        "excluded": stats.condition.excluded,
         "coverage": stats.condition.percent_or("-"),
         "class": branch_coverage_class(stats.condition.percent),
     }
@@ -715,6 +718,7 @@ def get_coverage_data(
     functions = {
         "total": stats.function.total,
         "exec": stats.function.covered,
+        "excluded": stats.function.excluded,
         "coverage": stats.function.percent_or("-"),
         "class": coverage_class(stats.function.percent),
     }
@@ -722,6 +726,7 @@ def get_coverage_data(
     calls = {
         "total": stats.call.total,
         "exec": stats.call.covered,
+        "excluded": stats.call.excluded,
         "coverage": stats.call.percent_or("-"),
         "class": coverage_class(stats.call.percent),
     }
@@ -829,7 +834,6 @@ def get_file_data(
             f_data["line"] = lineno
             f_data["count"] = functioncov.count[lineno]
             f_data["blocks"] = functioncov.blocks[lineno]
-            f_data["excluded"] = functioncov.excluded[lineno]
             function_stats = cdata.filter_for_function(functioncov).stats
             f_data["line_coverage"] = function_stats.line.percent_or(100.0)
             f_data["branch_coverage"] = function_stats.branch.percent_or("-")
@@ -910,6 +914,7 @@ def dict_from_stat(
     data = {
         "total": stat.total,
         "exec": stat.covered,
+        "excluded": stat.excluded if isinstance(stat, CoverageStat) else "-",
         "coverage": stat.percent_or(coverage_default),
         "class": coverage_class(stat.percent_or(default)),
     }
@@ -989,17 +994,10 @@ def source_row_branch(
     linecov: LineCoverage,
 ) -> dict[str, Any]:
     """Get branch information for a row"""
-    taken = 0
-    total = 0
     items = list[dict[str, Any]]()
-
     for branchcov in [
         branchcov for branchcov in linecov.branches() if branchcov.is_reportable
     ]:
-        if branchcov.is_reportable:
-            total += 1
-        if branchcov.is_covered:
-            taken += 1
         items.append(
             {
                 "taken": branchcov.is_covered,
@@ -1013,10 +1011,11 @@ def source_row_branch(
             items[-1]["source_block_id"] = branchcov.source_block_id
             items[-1]["destination_block_id"] = branchcov.destination_block_id
 
+    stats = linecov.branch_coverage()
     return {
         "function_name": linecov.demangled_function_name or linecov.function_name,
-        "taken": taken,
-        "total": total,
+        "taken": stats.covered,
+        "total": stats.total,
         "branches": items,
     }
 
@@ -1026,8 +1025,6 @@ def source_row_condition(
 ) -> dict[str, Any]:
     """Get condition information for a row."""
 
-    count = 0
-    covered = 0
     items = []
 
     conditioncov_list = list(
@@ -1036,10 +1033,6 @@ def source_row_condition(
         if conditioncov.is_reportable
     )
     for conditioncov in conditioncov_list:
-        if conditioncov.is_reportable:
-            count += conditioncov.count
-        if conditioncov.is_covered:
-            covered += conditioncov.covered
         condition_prefix = (
             f"Condition {conditioncov.conditionno}"
             if len(conditioncov_list) > 1
@@ -1057,11 +1050,11 @@ def source_row_condition(
                     "excluded": conditioncov.is_excluded,
                 }
             )
-
+    stats = linecov.condition_coverage()
     return {
         "function_name": linecov.demangled_function_name or linecov.function_name,
-        "count": count,
-        "covered": covered,
+        "count": stats.total,
+        "covered": stats.covered,
         "condition": items,
     }
 
@@ -1119,17 +1112,11 @@ def source_row_decision(
 
 def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     """Get call information for a source row."""
-    invoked = 0
-    total = 0
     items = []
 
     for callno, callcov in enumerate(
         filter(lambda callcov: callcov.is_reportable, linecov.calls())
     ):
-        if callcov.is_reportable:
-            total += 1
-        if callcov.is_covered:
-            invoked += 1
         items.append(
             {
                 "name": callno,
@@ -1138,10 +1125,11 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
             }
         )
 
+    stats = linecov.call_coverage()
     return {
         "function_name": linecov.demangled_function_name or linecov.function_name,
-        "invoked": invoked,
-        "total": total,
+        "invoked": stats.covered,
+        "total": stats.total,
         "calls": items,
     }
 
