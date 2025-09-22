@@ -5,7 +5,7 @@ generate GCC code coverage reports
 
 `website and documentation <website_>`__ • bugtracker_ • `GitHub <repo_>`__
 
-|GitHub-Actions-badge| |codacy-quality-badge| |codacy-coverage-badge| |pypi-badge| |Readthedocs-badge| |gitter-badge|
+|GitHub-Actions-badge| |codacy-quality-badge| |codacy-coverage-badge| |pypi-badge| |pypi-stats-badge| |Readthedocs-badge| |gitter-badge|
 
 .. begin abstract
 
@@ -166,7 +166,10 @@ Example HTML details:
    :alt: Codacy coverage status
 .. |pypi-badge| image:: https://img.shields.io/pypi/v/gcovr.svg
    :target: https://pypi.python.org/pypi/gcovr
-   :alt: install from PyPI
+   :alt: Install from PyPI
+.. |pypi-stats-badge| image:: https://img.shields.io/pypi/dm/gcovr
+   :target: https://pypistats.org/packages/gcovr
+   :alt: Downloads from PyPI
 .. |Readthedocs-badge| image:: https://readthedocs.org/projects/gcovr/badge/?version=latest
    :target: https://gcovr.com/en/latest/?badge=latest
    :alt: Documentation Status
