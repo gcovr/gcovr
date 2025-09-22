@@ -22,7 +22,8 @@
 import functools
 import logging
 import os
-from typing import Any, Callable, Optional, Union
+import re
+from typing import Any, Callable, Iterable, Iterator, Optional, Union
 
 from jinja2 import (
     BaseLoader,
@@ -35,9 +36,15 @@ from jinja2 import (
 )
 from markupsafe import Markup
 import pygments
+from pygments.filter import Filter
 from pygments.formatters.html import HtmlFormatter
+from pygments.lexer import Lexer
 from pygments.lexers import get_lexer_for_filename
+from pygments.token import _TokenType, Token
+from pygments.style import Style
+from pygments.styles.default import DefaultStyle
 
+from ...exclusions.markers import _EXCLUDE_FLAG, get_markers_regex
 
 from ...data_model.container import CoverageContainer, CoverageContainerDirectory
 from ...data_model.coverage import (
@@ -157,10 +164,47 @@ class NullHighlighting:
 class PygmentsHighlighting:
     """Class for syntax highlighting in report."""
 
-    def __init__(self, style: str) -> None:
+    class DefaultStyle(Style):
+        """GCOVR default style."""
+
+        styles = dict(
+            list(DefaultStyle.styles.items()) + [(Token.Comment.Special, "bold")]
+        )
+
+    class MarkerFilter(Filter):
+        """A filter to highlight the marker keywords"""
+
+        def __init__(self, markers_regex: re.Pattern[str], **options: Any):
+            super().__init__(**options)
+            self.markers_regex = markers_regex
+
+        def filter(
+            self, lexer: Lexer, stream: Iterable[tuple[_TokenType, str]]
+        ) -> Iterator[tuple[_TokenType, str]]:
+            for ttype, value in stream:
+                if _EXCLUDE_FLAG in value:
+                    last = 0
+                    for match in self.markers_regex.finditer(value):
+                        start, end = match.start(), match.end()
+                        if start != last:
+                            yield ttype, value[last:start]
+                        yield Token.Comment.Special, value[start:end]
+                        last = end
+                    if last != len(value):
+                        yield ttype, value[last:]
+                else:
+                    yield ttype, value
+
+    def __init__(self, style: str, markers_regex: re.Pattern[str]) -> None:
+        self.filter = PygmentsHighlighting.MarkerFilter(markers_regex)
         self.formatter = None
         try:
-            self.formatter = HtmlFormatter(nowrap=True, style=style)
+            self.formatter = HtmlFormatter(
+                nowrap=True,
+                style=PygmentsHighlighting.DefaultStyle
+                if style == "default"
+                else style,
+            )
         except ImportError as e:  # pragma: no cover
             LOGGER.warning(f"No syntax highlighting available: {str(e)}")
 
@@ -179,6 +223,7 @@ class PygmentsHighlighting:
 
         try:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)
+            lexer.add_filter(self.filter)
             formatter = self.formatter
             return lambda code: [
                 Markup(line.rstrip())  # nosec
@@ -191,16 +236,17 @@ class PygmentsHighlighting:
 @functools.lru_cache(maxsize=1)
 def get_formatter(options: Options) -> Union[PygmentsHighlighting, NullHighlighting]:
     """Get the formatter for the selected theme."""
-    highlight_style = (
-        templates(options)
-        .get_template(f"pygments.{get_theme_color(options.html_theme)}")
-        .render()
-    )
-    return (
-        PygmentsHighlighting(highlight_style)
-        if options.html_syntax_highlighting
-        else NullHighlighting()
-    )
+    if options.html_syntax_highlighting:
+        highlight_style = (
+            templates(options)
+            .get_template(f"pygments.{get_theme_color(options.html_theme)}")
+            .render()
+        )
+        return PygmentsHighlighting(
+            highlight_style, get_markers_regex(options.exclude_pattern_prefix)
+        )
+
+    return NullHighlighting()
 
 
 def coverage_to_class(

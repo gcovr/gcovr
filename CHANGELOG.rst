@@ -76,6 +76,8 @@ Bug fixes and small improvements:
 
   - ``statements`` and ``coveredstatements`` contain now the correct value instead of ``0``.
 
+- Add highlighting for exclusion markers in HTML report file details. (:issue:`1154`)
+
 Documentation:
 
 - Fix formatting of verbatim text included from external files. (:issue:`1093`)

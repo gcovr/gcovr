@@ -37,23 +37,37 @@ from ..data_model.coverage import FileCoverage, FunctionCoverage
 LOGGER = logging.getLogger("gcovr")
 
 _EXCLUDE_FLAG = "_EXCL_"
-_EXCLUDE_LINE_WORD = ""
-_EXCLUDE_BRANCH_WORD = "BR_"
-_EXCLUDE_PATTERN_POSTFIXES_LINE = "LINE"
-_EXCLUDE_PATTERN_POSTFIXES_START = "START"
-_EXCLUDE_PATTERN_POSTFIXES_STOP = "STOP"
-_EXCLUDE_PATTERN_POSTFIXES_FUNCTION = "FUNCTION"
-_EXCLUDE_PATTERN_POSTFIXES = [
-    _EXCLUDE_PATTERN_POSTFIXES_LINE,
-    _EXCLUDE_PATTERN_POSTFIXES_START,
-    _EXCLUDE_PATTERN_POSTFIXES_STOP,
-    _EXCLUDE_PATTERN_POSTFIXES_FUNCTION,
+_EXCLUDE_PATTERN_LINE = ""
+_EXCLUDE_PATTERN_BRANCH = "BR_"
+_EXCLUDE_PATTERN_SUFFIX_LINE = "LINE"
+_EXCLUDE_PATTERN_SUFFIX_START = "START"
+_EXCLUDE_PATTERN_SUFFIX_STOP = "STOP"
+_EXCLUDE_PATTERN_SUFFIX_FUNCTION = "FUNCTION"
+_EXCLUDE_PATTERN_SUFFIXES = [
+    _EXCLUDE_PATTERN_SUFFIX_LINE,
+    _EXCLUDE_PATTERN_SUFFIX_START,
+    _EXCLUDE_PATTERN_SUFFIX_STOP,
+    _EXCLUDE_PATTERN_SUFFIX_FUNCTION,
 ]
-_EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX = "SOURCE"
-_EXCLUDE_BRANCH_WITHOUT_HIT = "WITHOUT_HIT"
+_EXCLUDE_PATTERN_SUFFIX_SOURCE_BRANCH_EXCLUSION = (
+    f"{_EXCLUDE_FLAG}{_EXCLUDE_PATTERN_BRANCH}SOURCE"
+)
+_EXCLUDE_PATTERN_SUFFIX_BRANCH_WITHOUT_HIT_EXCLUSION = (
+    rf"{_EXCLUDE_FLAG}{_EXCLUDE_PATTERN_BRANCH}WITHOUT_HIT:\s+((\d+)/(\d+))"
+)
 
 ExclusionPredicate = Callable[[int], bool]
 FunctionListByLine = dict[int, list[FunctionCoverage]]
+
+
+def get_markers_regex(exclude_pattern_prefix: str) -> re.Pattern[str]:
+    """Get a regular expression matching all markers."""
+    patterns = [
+        f"{_EXCLUDE_FLAG}(?:{_EXCLUDE_PATTERN_BRANCH}|{_EXCLUDE_PATTERN_LINE})(?:{'|'.join(_EXCLUDE_PATTERN_SUFFIXES)})"
+    ]
+    patterns.append(_EXCLUDE_PATTERN_SUFFIX_SOURCE_BRANCH_EXCLUSION)
+    patterns.append(_EXCLUDE_PATTERN_SUFFIX_BRANCH_WITHOUT_HIT_EXCLUSION)
+    return re.compile(f"{exclude_pattern_prefix}(?:{'|'.join(patterns)})")
 
 
 def apply_exclusion_markers(
@@ -118,7 +132,7 @@ def _process_exclude_branch_source(
 ) -> None:
     """Scan through all lines to find source branch exclusion markers."""
 
-    excl_pattern = f"(.*?)({exclude_pattern_prefix}{_EXCLUDE_FLAG}{_EXCLUDE_BRANCH_WORD}{_EXCLUDE_SOURCE_BRANCH_PATTERN_POSTFIX})"
+    excl_pattern = f"(.*?)({exclude_pattern_prefix}{_EXCLUDE_PATTERN_SUFFIX_SOURCE_BRANCH_EXCLUSION})"
     excl_pattern_compiled = re.compile(excl_pattern)
 
     for lineno, code in enumerate(lines, 1):
@@ -172,7 +186,7 @@ def _process_exclude_branch_with_no_hit(
 ) -> None:
     """Scan through all lines to find exclusion markers for branches without a hit."""
 
-    excl_pattern = rf"(.*?)({exclude_pattern_prefix}{_EXCLUDE_FLAG}{_EXCLUDE_BRANCH_WORD}{_EXCLUDE_BRANCH_WITHOUT_HIT}:\s+((\d+)/(\d+)))"
+    excl_pattern = rf"(.*?)({exclude_pattern_prefix}{_EXCLUDE_PATTERN_SUFFIX_BRANCH_WITHOUT_HIT_EXCLUSION})"
     excl_pattern_compiled = re.compile(excl_pattern)
 
     for lineno, code in enumerate(lines, 1):
@@ -303,36 +317,36 @@ def _process_exclusion_marker(
     STOP flags remove a marker from the exclusion stack
     """
 
-    if flag == _EXCLUDE_PATTERN_POSTFIXES_LINE:
+    if flag == _EXCLUDE_PATTERN_SUFFIX_LINE:
         if exclusion_stack:
             warnings.line_after_start(
                 lineno,
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_LINE}",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_LINE}",
                 exclusion_stack[-1][1],
             )
         else:
             exclude_ranges.append((lineno, lineno))
-    elif flag == _EXCLUDE_PATTERN_POSTFIXES_FUNCTION:
+    elif flag == _EXCLUDE_PATTERN_SUFFIX_FUNCTION:
         exclude_ranges += get_function_exclude_ranges(
             warnings.filename, lineno, columnno, functions_by_line=functions_by_line
         )
-    elif flag == _EXCLUDE_PATTERN_POSTFIXES_START:
+    elif flag == _EXCLUDE_PATTERN_SUFFIX_START:
         exclusion_stack.append((header, lineno))
-    elif flag == _EXCLUDE_PATTERN_POSTFIXES_STOP:
+    elif flag == _EXCLUDE_PATTERN_SUFFIX_STOP:
         if not exclusion_stack:
             warnings.stop_without_start(
                 lineno,
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_START}",
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_STOP}",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_START}",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_STOP}",
             )
         else:
             start_header, start_lineno = exclusion_stack.pop()
             if header != start_header:
                 warnings.mismatched_start_stop(
                     start_lineno,
-                    f"{start_header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_START}",
+                    f"{start_header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_START}",
                     lineno,
-                    f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_STOP}",
+                    f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_STOP}",
                 )
 
             exclude_ranges.append((start_lineno, lineno - 1))
@@ -396,7 +410,7 @@ def _find_excluded_ranges(
         custom_patterns: list[re.Pattern[str]],
         exclude_word: str,
     ) -> ExclusionPredicate:
-        excl_pattern = f"(.*?)(({exclude_pattern_prefix}){_EXCLUDE_FLAG}{exclude_word}({'|'.join(_EXCLUDE_PATTERN_POSTFIXES)}))"
+        excl_pattern = f"(.*?)(({exclude_pattern_prefix}){_EXCLUDE_FLAG}{exclude_word}({'|'.join(_EXCLUDE_PATTERN_SUFFIXES)}))"
         excl_pattern_compiled = re.compile(excl_pattern)
 
         # possibly overlapping inclusive (closed) ranges that describe exclusions regions
@@ -427,8 +441,8 @@ def _find_excluded_ranges(
         for header, lineno in exclusion_stack:
             warnings.start_without_stop(
                 lineno,
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_START}",
-                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_POSTFIXES_STOP}",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_START}",
+                f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_STOP}",
             )
 
         LOGGER.debug(
@@ -438,6 +452,6 @@ def _find_excluded_ranges(
         return make_is_in_any_range_inclusive(exclude_ranges)
 
     return (
-        find_range_impl(exclude_lines_by_custom_patterns, _EXCLUDE_LINE_WORD),
-        find_range_impl(exclude_branches_by_custom_patterns, _EXCLUDE_BRANCH_WORD),
+        find_range_impl(exclude_lines_by_custom_patterns, _EXCLUDE_PATTERN_LINE),
+        find_range_impl(exclude_branches_by_custom_patterns, _EXCLUDE_PATTERN_BRANCH),
     )
