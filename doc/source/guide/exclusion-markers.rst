@@ -23,11 +23,12 @@ You can exclude parts of your code from coverage metrics.
 - If ``GCOVR_EXCL_BR_*`` markers are used the same exclusion rules
   apply as above, with the difference being that they are only taken
   into account for branch coverage.
-- If ``GCOVR_EXCL_BR_SOURCE`` appears in the line, the branches which have one of the block
-  ids of the current line as destination block are excluded from the
-  coverage. This can be used e.e. in a ``default`` branch which is used
-  for error handling to exclude the source branch from the coverage.
-- If ``GCOVR_EXCL_BR_WITHOUT_HIT: uncovered/total`` appears in the line,
+- If ``GCOVR_EXCL_BR_SOURCE`` appears within a line, the branches
+  which have one of the block ids of the current line as destination
+  block are excluded from the coverage. This can be used e.g. in a
+  ``default`` branch which is used for error handling to exclude the
+  source branch from the coverage.
+- If ``GCOVR_EXCL_BR_WITHOUT_HIT: uncovered/total`` appears within a line,
   the uncovered branches are ignored, e.g. ``GCOVR_EXCL_BR_WITHOUT_HIT: 2/6``
   will exclude the 2 uncovered branches out of 6 branches in the line.
   If the uncovered or total branches doesn't match the branches in the line a
