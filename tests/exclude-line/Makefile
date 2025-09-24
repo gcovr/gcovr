@@ -26,7 +26,7 @@ cobertura: coverage.json
 	$(GCOVR) -a $< --cobertura-pretty --cobertura cobertura.xml
 
 html: coverage.json
-	$(GCOVR) -a $< --html-details -o coverage.html
+	$(GCOVR) -a $< --html-details --html-theme github.green -o coverage.html
 
 sonarqube: coverage.json
 	$(GCOVR) -a $< --sonarqube sonarqube.xml

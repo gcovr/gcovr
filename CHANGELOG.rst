@@ -32,7 +32,8 @@ New features and notable changes:
 - Add :option:`--sonarqube-metric` to define which metric is used as branch metric in report. (:issue:`1132`)
 - Add :option:`--sonarqube-pretty` to pretty print the report. (:issue:`1136`)
 - If the value for :option:`-j` is 0, the number of CPUs is used. If it is negative the it means "all but N CPUs". (:issue:`1148`)
-- Add :option:`--warn-excluded-lines-with-hits` to print a warning if a line excluded by comments has a hit counter != 0. (:issue:`1151`)
+- Add :option:`--warn-excluded-lines-with-hits` to print a warning if a line which is excluded by comments has a hit counter != 0. (:issue:`1151`)
+- Add comment to exclude branches without hit in addition to exclude all. (:issue:`1152`)
 
 Bug fixes and small improvements:
 
@@ -74,6 +75,8 @@ Bug fixes and small improvements:
     - ``ncloc`` contained the number of reportable lines instead of the lines of the file without comments.
 
   - ``statements`` and ``coveredstatements`` contain now the correct value instead of ``0``.
+
+- Add highlighting for exclusion markers in HTML report file details. (:issue:`1154`)
 
 Documentation:
 
