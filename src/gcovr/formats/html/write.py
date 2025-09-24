@@ -728,7 +728,7 @@ def get_coverage_data(
 
     is_file_with_lines = isinstance(cdata, FileCoverage) and cdata.has_lines()
     lines = {
-        "total": stats.line.total,
+        "total": stats.line.total_with_excluded,
         "exec": stats.line.covered,
         "excluded": stats.line.excluded,
         "coverage": stats.line.percent_or(100.0 if is_file_with_lines else "-"),
@@ -738,7 +738,7 @@ def get_coverage_data(
     }
 
     branches = {
-        "total": stats.branch.total,
+        "total": stats.branch.total_with_excluded,
         "exec": stats.branch.covered,
         "excluded": stats.branch.excluded,
         "coverage": stats.branch.percent_or("-"),
@@ -746,7 +746,7 @@ def get_coverage_data(
     }
 
     conditions = {
-        "total": stats.condition.total,
+        "total": stats.condition.total_with_excluded,
         "exec": stats.condition.covered,
         "excluded": stats.condition.excluded,
         "coverage": stats.condition.percent_or("-"),
@@ -762,7 +762,7 @@ def get_coverage_data(
     }
 
     functions = {
-        "total": stats.function.total,
+        "total": stats.function.total_with_excluded,
         "exec": stats.function.covered,
         "excluded": stats.function.excluded,
         "coverage": stats.function.percent_or("-"),
@@ -770,7 +770,7 @@ def get_coverage_data(
     }
 
     calls = {
-        "total": stats.call.total,
+        "total": stats.call.total_with_excluded,
         "exec": stats.call.covered,
         "excluded": stats.call.excluded,
         "coverage": stats.call.percent_or("-"),
@@ -958,7 +958,9 @@ def dict_from_stat(
     """Get a dictionary from the stats."""
     coverage_default = "-" if default is None else default
     data = {
-        "total": stat.total,
+        "total": stat.total_with_excluded
+        if isinstance(stat, CoverageStat)
+        else stat.total,
         "exec": stat.covered,
         "excluded": stat.excluded if isinstance(stat, CoverageStat) else "-",
         "coverage": stat.percent_or(coverage_default),
@@ -1061,7 +1063,7 @@ def source_row_branch(
     return {
         "function_name": linecov.demangled_function_name or linecov.function_name,
         "taken": stats.covered,
-        "total": stats.total,
+        "total": stats.total_with_excluded,
         "branches": items,
     }
 
@@ -1099,7 +1101,7 @@ def source_row_condition(
     stats = linecov.condition_coverage()
     return {
         "function_name": linecov.demangled_function_name or linecov.function_name,
-        "count": stats.total,
+        "count": stats.total_with_excluded,
         "covered": stats.covered,
         "condition": items,
     }
@@ -1175,7 +1177,7 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     return {
         "function_name": linecov.demangled_function_name or linecov.function_name,
         "invoked": stats.covered,
-        "total": stats.total,
+        "total": stats.total_with_excluded,
         "calls": items,
     }
 

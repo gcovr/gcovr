@@ -418,7 +418,7 @@ def doc(session: nox.Session) -> None:
 
     if not GCOVR_ISOLATED_TEST and not (
         # Github actions on MacOs can't use Docker
-        platform.system() == "Darwin" and CI_RUN
+        CI_RUN and platform.system() == "Darwin"
     ):
         docker_build_compiler(session, "gcc-8")
         # We need to inject the arguments

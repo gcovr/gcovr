@@ -17,6 +17,9 @@ Breaking changes:
   - ``JSON`` report can now have several entries per line also with legacy text parser.
   - Cobertura and ``HTML`` report now contain function coverage also for older GCC versions.
 
+- Add excluded metrics to HTML report. The total numbers in the report contain now also
+  the excluded elements. (:issue:`1153`)
+
 New features and notable changes:
 
 - Add support for Markdown output format. (:issue:`1072`)

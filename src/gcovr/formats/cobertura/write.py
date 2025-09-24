@@ -141,11 +141,9 @@ class PackageData:
 
 def _rate(stat: CoverageStat) -> str:
     """format a CoverageStat as a string in range 0.0 to 1.0 inclusive"""
-    total = stat.total
-    covered = stat.covered
-    if not total:
+    if not stat.total:
         return "1.0"
-    return str(covered / total)
+    return str(stat.covered / stat.total)
 
 
 def _line_element(linecov: LineCoverage) -> etree._Element:
