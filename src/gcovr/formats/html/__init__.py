@@ -55,6 +55,8 @@ class HtmlHandler(BaseHandler):
             "high_threshold_branch",
             "medium_threshold_line",
             "high_threshold_line",
+            # Needed for highlighting of GCOVR markers
+            "exclude_pattern_prefix",
             # Local options
             GcovrConfigOption(
                 "html",
