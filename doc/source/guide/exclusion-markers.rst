@@ -23,10 +23,16 @@ You can exclude parts of your code from coverage metrics.
 - If ``GCOVR_EXCL_BR_*`` markers are used the same exclusion rules
   apply as above, with the difference being that they are only taken
   into account for branch coverage.
-- If ``GCOVR_EXCL_BR_SOURCE`` the branches which have one of the block
-  ids of the current line as destination block are excluded from the
-  coverage. This can be used e.e. in a ``default`` branch which is used
-  for error handling to exclude the source branch from the coverage.
+- If ``GCOVR_EXCL_BR_SOURCE`` appears within a line, the branches
+  which have one of the block ids of the current line as destination
+  block are excluded from the coverage. This can be used e.g. in a
+  ``default`` branch which is used for error handling to exclude the
+  source branch from the coverage.
+- If ``GCOVR_EXCL_BR_WITHOUT_HIT: uncovered/total`` appears within a line,
+  the uncovered branches are ignored, e.g. ``GCOVR_EXCL_BR_WITHOUT_HIT: 2/6``
+  will exclude the 2 uncovered branches out of 6 branches in the line.
+  If the uncovered or total branches doesn't match the branches in the line a
+  error is logged and nothing is excluded.
 
 Instead of ``GCOVR_*``,
 the markers may also start with ``GCOV_*`` or ``LCOV_*``.
@@ -49,3 +55,9 @@ In the excluded regions, *any* coverage is excluded.
 
 .. versionadded:: 8.0
     If :option:`--verbose` is used the exclusion ranges are logged.
+
+.. versionadded:: 8.0
+    Comment ``GCOVR_EXCL_BR_SOURCE``.
+
+.. versionadded:: NEXT
+    Comment ``GCOVR_EXCL_BR_WITHOUT_HIT: uncovered/total``.
