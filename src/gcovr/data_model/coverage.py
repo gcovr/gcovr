@@ -2523,8 +2523,7 @@ class FileCoverage(CoverageBase):
         stat = CoverageStat.new_empty()
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                stat += linecov.branch_coverage()
+            stat += linecov.branch_coverage()
 
         return stat
 
@@ -2533,8 +2532,7 @@ class FileCoverage(CoverageBase):
         stat = CoverageStat.new_empty()
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                stat += linecov.condition_coverage()
+            stat += linecov.condition_coverage()
 
         return stat
 
@@ -2543,8 +2541,7 @@ class FileCoverage(CoverageBase):
         stat = DecisionCoverageStat.new_empty()
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                stat += linecov.decision_coverage()
+            stat += linecov.decision_coverage()
 
         return stat
 
@@ -2553,7 +2550,6 @@ class FileCoverage(CoverageBase):
         stat = CoverageStat.new_empty()
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                stat += linecov.call_coverage()
+            stat += linecov.call_coverage()
 
         return stat
