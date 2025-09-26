@@ -1540,24 +1540,33 @@ class LineCoverage(CoverageBase):
 
     def branch_coverage(self) -> CoverageStat:
         """Return the branch coverage statistic of the line."""
-        total = 0
+        total_with_excluded = 0
         covered = 0
+        excluded = 0
         for branchcov in self.__branches.values():
-            if branchcov.is_reportable:
-                total += 1
-                if branchcov.is_covered:
-                    covered += 1
-        return CoverageStat(covered=covered, total=total)
+            total_with_excluded += 1
+            if branchcov.is_reportable and branchcov.is_covered:
+                covered += 1
+            if branchcov.is_excluded:
+                excluded += 1
+        return CoverageStat(
+            covered=covered, excluded=excluded, total_with_excluded=total_with_excluded
+        )
 
     def condition_coverage(self) -> CoverageStat:
         """Return the condition coverage statistic of the line."""
-        total = 0
+        total_with_excluded = 0
         covered = 0
+        excluded = 0
         for condition in self.__conditions.values():
+            total_with_excluded += condition.count
             if condition.is_reportable:
-                total += condition.count
                 covered += condition.covered
-        return CoverageStat(covered=covered, total=total)
+            if condition.is_excluded:
+                excluded += condition.count
+        return CoverageStat(
+            covered=covered, excluded=excluded, total_with_excluded=total_with_excluded
+        )
 
     def decision_coverage(self) -> DecisionCoverageStat:
         """Return the decision coverage statistic of the line."""
@@ -1568,14 +1577,18 @@ class LineCoverage(CoverageBase):
 
     def call_coverage(self) -> CoverageStat:
         """Return the call coverage statistic of the line."""
-        total = 0
+        total_with_excluded = 0
         covered = 0
+        excluded = 0
         for callcov in self.__calls.values():
-            if callcov.is_reportable:
-                total += 1
-                if callcov.is_covered:
-                    covered += 1
-        return CoverageStat(covered=covered, total=total)
+            total_with_excluded += 1
+            if callcov.is_reportable and callcov.is_covered:
+                covered += 1
+            if callcov.is_excluded:
+                excluded += 1
+        return CoverageStat(
+            covered=covered, excluded=excluded, total_with_excluded=total_with_excluded
+        )
 
 
 class LineCoverageCollection(CoverageBase):
@@ -2471,38 +2484,46 @@ class FileCoverage(CoverageBase):
 
     def function_coverage(self) -> CoverageStat:
         """Return the function coverage statistic of the file."""
-        total = 0
+        total_with_excluded = 0
         covered = 0
+        excluded = 0
 
         for functioncov in self.functioncov():
-            for lineno, excluded in functioncov.excluded.items():
-                if not excluded:
-                    total += 1
+            for lineno, excluded_function in functioncov.excluded.items():
+                total_with_excluded += 1
+                if excluded_function:
+                    excluded += 1
+                else:
                     if functioncov.count[lineno] > 0:
                         covered += 1
 
-        return CoverageStat(covered, total)
+        return CoverageStat(
+            covered=covered, excluded=excluded, total_with_excluded=total_with_excluded
+        )
 
     def line_coverage(self) -> CoverageStat:
         """Return the line coverage statistic of the file."""
-        total = 0
+        total_with_excluded = 0
         covered = 0
+        excluded = 0
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                total += 1
-                if linecov.is_covered:
-                    covered += 1
+            total_with_excluded += 1
+            if linecov.is_reportable and linecov.is_covered:
+                covered += 1
+            if linecov.is_excluded:
+                excluded += 1
 
-        return CoverageStat(covered, total)
+        return CoverageStat(
+            covered=covered, excluded=excluded, total_with_excluded=total_with_excluded
+        )
 
     def branch_coverage(self) -> CoverageStat:
         """Return the branch coverage statistic of the file."""
         stat = CoverageStat.new_empty()
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                stat += linecov.branch_coverage()
+            stat += linecov.branch_coverage()
 
         return stat
 
@@ -2511,8 +2532,7 @@ class FileCoverage(CoverageBase):
         stat = CoverageStat.new_empty()
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                stat += linecov.condition_coverage()
+            stat += linecov.condition_coverage()
 
         return stat
 
@@ -2521,8 +2541,7 @@ class FileCoverage(CoverageBase):
         stat = DecisionCoverageStat.new_empty()
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                stat += linecov.decision_coverage()
+            stat += linecov.decision_coverage()
 
         return stat
 
@@ -2531,7 +2550,6 @@ class FileCoverage(CoverageBase):
         stat = CoverageStat.new_empty()
 
         for linecov in self.linecov():
-            if linecov.is_reportable:
-                stat += linecov.call_coverage()
+            stat += linecov.call_coverage()
 
         return stat

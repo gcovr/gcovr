@@ -16,37 +16,37 @@
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
-                <div class="mr-2" style="margin: auto;">{{lines.exec}}/{{lines.total}}</div>
+                <div class="mr-2" style="margin: auto;">{{lines.exec}} of {{lines.total}}, {{lines.excluded}} excluded</div>
                 <div class="Label--minw"><span class="{{lines.class}} IssueLabel color-fg-on-emphasis mr-1">{{lines.coverage}}%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Functions:</div>
-                <div class="mr-2" style="margin: auto;">{{functions.exec}}/{{functions.total}}</div>
+                <div class="mr-2" style="margin: auto;">{{functions.exec}} of {{functions.total}}, {{functions.excluded}} excluded</div>
                 <div class="Label--minw"><span class="{{functions.class}} IssueLabel color-fg-on-emphasis mr-1">{{functions.coverage}}%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Branches:</div>
-                <div class="mr-2" style="margin: auto;">{{branches.exec}}/{{branches.total}}</div>
+                <div class="mr-2" style="margin: auto;">{{branches.exec}} of {{branches.total}}, {{branches.excluded}} excluded</div>
                 <div class="Label--minw"><span class="{{branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{branches.coverage}}%</span></div>
             </div>
             {% if SHOW_CONDITION_COVERAGE %}
             <div class="d-flex">
                 <div class="mr-2">Conditions:</div>
-                <div class="mr-2" style="margin: auto;">{{conditions.exec}}/{{conditions.total}}</div>
+                <div class="mr-2" style="margin: auto;">{{conditions.exec}} of {{conditions.total}}, {{conditions.excluded}} excluded</div>
                 <div class="Label--minw"><span class="{{conditions.class}} IssueLabel color-fg-on-emphasis mr-1">{{conditions.coverage}}%</span></div>
             </div>
             {% endif %}
             {% if SHOW_DECISION %}
             <div class="d-flex">
                 <div class="mr-2">Decisions:</div>
-                <div class="mr-2" style="margin: auto;">{{decisions.exec}}/{{decisions.total}}</div>
+                <div class="mr-2" style="margin: auto;">{{decisions.exec}} of {{decisions.total}}</div>
                 <div class="Label--minw"><span class="{{decisions.class}} IssueLabel color-fg-on-emphasis mr-1">{{decisions.coverage}}%</span></div>
             </div>
             {% endif %}
             {% if SHOW_CALLS %}
             <div class="d-flex">
                 <div class="mr-2">Calls:</div>
-                <div class="mr-2" style="margin: auto;">{{calls.exec}}/{{calls.total}}</div>
+                <div class="mr-2" style="margin: auto;">{{calls.exec}} of {{calls.total}}, {{calls.excluded}} excluded</div>
                 <div class="Label--minw"><span class="{{calls.class}} IssueLabel color-fg-on-emphasis mr-1">{{calls.coverage}}%</span></div>
             </div>
             {% endif %}

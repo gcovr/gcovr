@@ -25,50 +25,57 @@
   <table class="coverage">
     <tr>
       <th></th>
-      <th scope="col">Exec</th>
-      <th scope="col">Total</th>
       <th scope="col">Coverage</th>
+      <th scope="col">Exec</th>
+      <th scope="col">Excl</th>
+      <th scope="col">Total</th>
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>{{lines.exec}}</td>
-      <td>{{lines.total}}</td>
       <td class="{{lines.class}}">{{lines.coverage}}%</td>
+      <td class="{{lines.class}}">{{lines.exec}}</td>
+      <td class="{{lines.class}}">{{lines.excluded}}</td>
+      <td class="{{lines.class}}">{{lines.total}}</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
-      <td>{{functions.exec}}</td>
-      <td>{{functions.total}}</td>
       <td class="{{functions.class}}">{{functions.coverage}}%</td>
+      <td class="{{functions.class}}">{{functions.exec}}</td>
+      <td class="{{functions.class}}">{{functions.excluded}}</td>
+      <td class="{{functions.class}}">{{functions.total}}</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>{{branches.exec}}</td>
-      <td>{{branches.total}}</td>
       <td class="{{branches.class}}">{{branches.coverage}}%</td>
+      <td class="{{branches.class}}">{{branches.exec}}</td>
+      <td class="{{branches.class}}">{{branches.excluded}}</td>
+      <td class="{{branches.class}}">{{branches.total}}</td>
     </tr>
     {% if SHOW_CONDITION_COVERAGE %}
     <tr>
       <th scope="row">Conditions:</th>
-      <td>{{conditions.exec}}</td>
-      <td>{{conditions.total}}</td>
       <td class="{{conditions.class}}">{{conditions.coverage}}%</td>
+      <td class="{{conditions.class}}">{{conditions.exec}}</td>
+      <td class="{{conditions.class}}">{{conditions.excluded}}</td>
+      <td class="{{conditions.class}}">{{conditions.total}}</td>
     </tr>
     {% endif %}
     {% if SHOW_DECISION %}
     <tr>
       <th scope="row">Decisions:</th>
-      <td>{{decisions.exec}}</td>
-      <td>{{decisions.total}}</td>
       <td class="{{decisions.class}}">{{decisions.coverage}}%</td>
+      <td class="{{decisions.class}}">{{decisions.exec}}</td>
+      <td class="{{decisions.class}}">-</td>
+      <td class="{{decisions.class}}">{{decisions.total}}</td>
     </tr>
     {% endif %}
     {% if SHOW_CALLS %}
     <tr>
       <th scope="row">Calls:</th>
-      <td>{{calls.exec}}</td>
-      <td>{{calls.total}}</td>
       <td class="{{calls.class}}">{{calls.coverage}}%</td>
+      <td class="{{calls.class}}">{{calls.exec}}</td>
+      <td class="{{calls.class}}">{{calls.excluded}}</td>
+      <td class="{{calls.class}}">{{calls.total}}</td>
     </tr>
     {% endif %}
   </table>

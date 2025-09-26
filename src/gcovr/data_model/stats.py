@@ -110,13 +110,21 @@ class CoverageStat:
     covered: int
     """How many elements were covered."""
 
-    total: int
-    """How many elements there were in total."""
+    excluded: int
+    """How many elements there were excluded."""
+
+    total_with_excluded: int
+    """How many elements there were in total (including the excluded ones)."""
 
     @staticmethod
     def new_empty() -> CoverageStat:
         """Create a empty coverage statistic."""
-        return CoverageStat(0, 0)
+        return CoverageStat(0, 0, 0)
+
+    @property
+    def total(self) -> int:
+        """Get the total without the excluded elements."""
+        return self.total_with_excluded - self.excluded
 
     @property
     def percent(self) -> Optional[float]:
@@ -127,17 +135,17 @@ class CoverageStat:
         """Percentage of covered elements.
 
         Coverage is truncated to one decimal:
-        >>> CoverageStat(1234, 10000).percent_or("default")
+        >>> CoverageStat(1234, 0, 10000).percent_or("default")
         12.3
 
         Coverage is capped at 99.9% unless everything is covered:
-        >>> CoverageStat(9999, 10000).percent_or("default")
+        >>> CoverageStat(9999, 0, 10000).percent_or("default")
         99.9
-        >>> CoverageStat(10000, 10000).percent_or("default")
+        >>> CoverageStat(10000, 0, 10000).percent_or("default")
         100.0
 
         If there are no elements, percentage is NaN and the default will be returned:
-        >>> CoverageStat(0, 0).percent_or("default")
+        >>> CoverageStat(0, 0, 0).percent_or("default")
         'default'
         """
         if not self.total:
@@ -154,7 +162,8 @@ class CoverageStat:
 
     def __iadd__(self, other: CoverageStat) -> CoverageStat:
         self.covered += other.covered
-        self.total += other.total
+        self.total_with_excluded += other.total_with_excluded
+        self.excluded += other.excluded
         return self
 
 
@@ -174,7 +183,9 @@ class DecisionCoverageStat:
     @property
     def to_coverage_stat(self) -> CoverageStat:
         """Convert a decision coverage statistic to a coverage statistic."""
-        return CoverageStat(covered=self.covered, total=self.total)
+        return CoverageStat(
+            covered=self.covered, excluded=0, total_with_excluded=self.total
+        )
 
     @property
     def percent(self) -> Optional[float]:

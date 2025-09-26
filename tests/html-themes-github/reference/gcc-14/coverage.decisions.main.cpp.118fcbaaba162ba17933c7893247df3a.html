@@ -31,27 +31,27 @@
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
-                <div class="mr-2" style="margin: auto;">20/23</div>
-                <div class="Label--minw"><span class="coverage-medium IssueLabel color-fg-on-emphasis mr-1">87.0%</span></div>
+                <div class="mr-2" style="margin: auto;">21 of 24, 0 excluded</div>
+                <div class="Label--minw"><span class="coverage-medium IssueLabel color-fg-on-emphasis mr-1">87.5%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Functions:</div>
-                <div class="mr-2" style="margin: auto;">6/6</div>
+                <div class="mr-2" style="margin: auto;">6 of 6, 0 excluded</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Branches:</div>
-                <div class="mr-2" style="margin: auto;">7/14</div>
+                <div class="mr-2" style="margin: auto;">8 of 16, 0 excluded</div>
                 <div class="Label--minw"><span class="coverage-low IssueLabel color-fg-on-emphasis mr-1">50.0%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Conditions:</div>
-                <div class="mr-2" style="margin: auto;">2/2</div>
+                <div class="mr-2" style="margin: auto;">2 of 2, 0 excluded</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Decisions:</div>
-                <div class="mr-2" style="margin: auto;">2/2</div>
+                <div class="mr-2" style="margin: auto;">2 of 2</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
         </div>
@@ -76,8 +76,8 @@
     <tr><td><a href="#l16">RAII::method_that_may_throw() const (line 16)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
     <tr><td><a href="#l22">RAII::~RAII() (line 22)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
     <tr><td><a href="#l3">function_that_may_throw(bool) (line 3)</a></td><td>called 3 times</td><td>100.0%</td><td>75.0%</td><td>100.0%</td><td>87.5%</td></tr>
-    <tr><td><a href="#l24">function_with_catchers(int) (line 24)</a></td><td>called 1 time</td><td>76.9%</td><td>40.0%</td><td>-%</td><td>63.2%</td></tr>
-    <tr><td><a href="#l49">main (line 49)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l24">function_with_catchers(int) (line 24)</a></td><td>called 1 time</td><td>78.6%</td><td>41.7%</td><td>-%</td><td>63.2%</td></tr>
+    <tr><td><a href="#l47">main (line 47)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
   </table>
 </details>
 </div>
@@ -526,41 +526,24 @@
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l33" href="#l33">33</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>1/2</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch  3 &rightarrow; 4 taken 1 time.</div>
+                            <div class="color-fg-danger">&cross; Branch  3 &rightarrow; 20 not taken.</div>
+                        </div>
+                    </details>
                 </td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">// </span><span class="cs">GCOV_EXCL_START</span></td>
-                <td class="text-right src linenos"></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l34" href="#l34">34</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src excludedLine pr-2 pl-2 color-fg-muted text-right">&minus;</td>
-                <td class="src excludedLine"><span class="w">    </span><span class="n">RAII</span><span class="w"> </span><span class="n">raii</span><span class="p">(</span><span class="n">die_again</span><span class="p">);</span></td>
+                <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
+                <td class="src partialCoveredLine"><span class="w">    </span><span class="n">RAII</span><span class="w"> </span><span class="n">raii</span><span class="p">(</span><span class="n">die_again</span><span class="p">);</span></td>
                 <td class="text-right src linenos">[3]</td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l35" href="#l35">35</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">// </span><span class="cs">GCOV_EXCL_STOP</span></td>
-                <td class="text-right src linenos"></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l36" href="#l36">36</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l34" href="#l34">34</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -572,7 +555,7 @@
                 <td class="text-right src linenos"></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l37" href="#l37">37</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l35" href="#l35">35</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -584,7 +567,7 @@
                 <td class="text-right src linenos"></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l38" href="#l38">38</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l36" href="#l36">36</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/2</summary>
@@ -603,7 +586,7 @@
                 <td class="text-right src linenos">[4]</td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l39" href="#l39">39</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l37" href="#l37">37</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -615,7 +598,7 @@
                 <td class="text-right src linenos">[14, 16]</td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l40" href="#l40">40</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l38" href="#l38">38</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -627,7 +610,7 @@
                 <td class="text-right src linenos"></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l41" href="#l41">41</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l39" href="#l39">39</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -639,7 +622,7 @@
                 <td class="text-right src linenos">[17]</td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l42" href="#l42">42</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l40" href="#l40">40</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -651,7 +634,7 @@
                 <td class="text-right src linenos"></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l43" href="#l43">43</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l41" href="#l41">41</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/2</summary>
@@ -670,7 +653,7 @@
                 <td class="text-right src linenos">[5]</td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l42" href="#l42">42</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -682,7 +665,7 @@
                 <td class="text-right src linenos"></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l43" href="#l43">43</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -694,7 +677,7 @@
                 <td class="text-right src linenos">[6]</td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -706,31 +689,31 @@
                 <td class="text-right src linenos">[7, 18]</td>
             </tr>
             <tr>
+                <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+                <td class="text-right src linenos"></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+                <td class="text-right src linenos"></td>
+            </tr>
+            <tr>
                 <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
-                <td class="text-right src linenos"></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
-                <td class="text-right src linenos"></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -742,7 +725,7 @@
                 <td class="text-right src linenos"></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -754,7 +737,7 @@
                 <td class="text-right src linenos">[2, 3]</td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">
@@ -766,7 +749,7 @@
                 <td class="text-right src linenos"></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l52" href="#l52">52</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="text-right src linenos ws-unset">

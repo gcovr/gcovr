@@ -46,22 +46,22 @@
       {% endif %}
     </td>
     <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}%</td>
-    <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.exec}} / {{row.lines.total}}</td>
+    <td class="CoverValue line-coverage {{row.lines.class}}" title="Exec / Excl / Total">{{row.lines.exec}} / {{row.lines.excluded}} / {{row.lines.total}}</td>
     <td class="CoverValue function-coverage {{row.functions.class}}">{{row.functions.coverage}}%</td>
-    <td class="CoverValue function-coverage {{row.functions.class}}">{{row.functions.exec}} / {{row.functions.total}}</td>
+    <td class="CoverValue function-coverage {{row.functions.class}}" title="Exec / Excl / Total">{{row.functions.exec}} / {{row.functions.excluded}} / {{row.functions.total}}</td>
     <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.coverage}}%</td>
-    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.exec}} / {{row.branches.total}}</td>
+    <td class="CoverValue branch-coverage {{row.branches.class}}" title="Exec / Excl / Total">{{row.branches.exec}} / {{row.branches.excluded}} / {{row.branches.total}}</td>
     {% if SHOW_CONDITION_COVERAGE %}
     <td class="CoverValue decision-coverage {{row.conditions.class}}">{{row.conditions.coverage}}%</td>
-    <td class="CoverValue decision-coverage {{row.conditions.class}}">{{row.conditions.exec}} / {{row.conditions.total}}</td>
+    <td class="CoverValue decision-coverage {{row.conditions.class}}" title="Exec / Excl / Total">{{row.conditions.exec}} / {{row.conditions.excluded}} / {{row.conditions.total}}</td>
     {% endif %}
     {% if SHOW_DECISION %}
     <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.coverage}}%</td>
-    <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.exec}} / {{row.decisions.total}}</td>
+    <td class="CoverValue decision-coverage {{row.decisions.class}}" title="Exec / Excl / Total">{{row.decisions.exec}} / - / {{row.decisions.total}}</td>
     {% endif %}
     {% if SHOW_CALLS %}
     <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.calls.coverage}}%</td>
-    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.calls.exec}} / {{row.calls.total}}</td>
+    <td class="CoverValue branch-coverage {{row.branches.class}}" title="Exec / Excl / Total">{{row.calls.exec}} / {{row.calls.excluded}} / {{row.calls.total}}</td>
     {% endif %}
   </tr>
 
