@@ -30,9 +30,7 @@ int function_with_catchers(int argc) {
         die_again = false;
     }
 
-    // GCOV_EXCL_START
     RAII raii(die_again);
-    // GCOV_EXCL_STOP
 
     try {
         raii.method_that_may_throw();
