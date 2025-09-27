@@ -17,7 +17,7 @@ Wrong data used in clover report
      - :ref:`release_7_1`
 
    * - Fixed
-     - :ref:`next_release`
+     - :ref:`release_8_4`
 
 - ``loc`` contains the highest line number with coverage information instead of lines of the file.
 - ``ncloc`` contains the number of reportable lines instead of the lines of the file without comments.
@@ -35,7 +35,7 @@ Discrepancy between exclusion and removal of coverage data
      - :ref:`release_8_0`
 
    * - Fixed
-     - :ref:`next_release`
+     - :ref:`release_8_4`
 
 - The internal functions where removed but the line coverage was only excluded. Now the line
   coverage data is also removed.
@@ -53,7 +53,7 @@ Files without functions and lines are added to report
      - :ref:`release_8_0`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1130`
+     - :ref:`release_8_4`, :issue:`1130`
 
 Files without functions and lines from ``gcov`` JSON report are added to data model.
 
@@ -77,7 +77,7 @@ Wrong handling of functions with specialization
      - :ref:`release_8_3`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1126`
+     - :ref:`release_8_4`, :issue:`1126`
 
 - With gcc-5, gcc-6 and clang compiler functions with specializations
   (template functions) use one block in the output which starts with all
@@ -230,7 +230,7 @@ Error if conditions for the same line are reported different across GCOV data fi
      - :ref:`release_8_3`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1092`
+     - :ref:`release_8_4`, :issue:`1092`
 
 The number and the order of the items reported by ``GCOV`` can differ between the compilation
 units or between the runs. With the fix the data is merged if they have the same properties
@@ -357,7 +357,7 @@ JaCoCo report does not follow the DTD schema
      - :ref:`release_7_0`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1089`
+     - :ref:`release_8_4`, :issue:`1089`
 
 ``JaCoCo`` report does not follow the DTD.
 
@@ -372,7 +372,7 @@ Multiple functions with same name in Cobertura report
      - :ref:`release_8_3`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1085`
+     - :ref:`release_8_4`, :issue:`1085`
 
 ``Cobertura`` report contains multiple functions with same name for virtual destructors and const overloads.
 
@@ -387,7 +387,7 @@ Missing excluded property for condition in JSON report
      - :ref:`release_8_3`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1080`
+     - :ref:`release_8_4`, :issue:`1080`
 
 ``JSON`` report doesn't contain ``excluded`` property for conditions and calls.
 
@@ -402,7 +402,7 @@ Wrong log message: Deprecated config key None used, please use ...
      - :ref:`release_8_3`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1066`
+     - :ref:`release_8_4`, :issue:`1066`
 
 The log message ``Deprecated config key None used, please use 'txt-metric=branch' instead.`` is printed
 even if the mentioned key is used.

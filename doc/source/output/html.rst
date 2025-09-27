@@ -111,7 +111,7 @@ templates you wish to customize.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.4
    The total number of elements now also contain the excluded once because they are
    also listed.
 

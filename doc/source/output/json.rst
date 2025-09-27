@@ -181,7 +181,7 @@ The line entry should be interpreted as follows:
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``gcovr/data_sources`` is added.
 
 .. versionadded:: 8.0
@@ -253,13 +253,13 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``branchno`` is added.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``gcovr/excluded`` is added.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``gcovr/data_sources`` is added.
 
 .. versionadded:: 8.0
@@ -316,13 +316,13 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``conditionno`` is added.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    New ``gcovr/excluded`` field.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``gcovr/data_sources`` is added.
 
 .. _json_format_decision:
@@ -381,7 +381,7 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``gcovr/data_sources`` is added.
 
 .. _json_format_call:
@@ -423,13 +423,13 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--verbose` is given.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.4
    New ``returned`` field is replacing the field ``covered``.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    New ``gcovr/excluded`` field.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``gcovr/data_sources`` is added.
 
 .. _json_format_function:
@@ -489,7 +489,7 @@ gcovr/data_sources: list
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
    The ``gcovr/data_sources`` is added.
 
 .. versionadded:: 8.0
@@ -547,7 +547,7 @@ With the :option:`--merge-mode-functions` you can change this:
 - ``merge-use-line-max``: Allow same function on different lines, in this case use maximum line.
 - ``separate``: Allow same function on different lines. Instead of merging keep the functions separate.
 
-.. versionremoved:: NEXT
+.. versionremoved:: 8.4
 
     Removed the option ``--merge-mode-conditions`` option.
 

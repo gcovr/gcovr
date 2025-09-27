@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.3+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/main
+# This file is part of gcovr 8.4, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/8.4
 #
 # _____________________________________________________________________________
 #
@@ -195,13 +195,12 @@ def prepare_release(session: nox.Session) -> None:
         major = str(int(major) + 1)
         minor = "0"
     elif release_type == "2":
-        # hatchling has already set the correct version
-        pass
+        minor = str(int(minor) + 1)
     else:
         session.error(f"Invalid input {release_type!r}")
 
     session.run("python", "admin/bump_version.py", f"{major}.{minor}")
-    html2jpeg(session)
+    session.notify("html2jpeg")
 
 
 @nox.session()
@@ -357,7 +356,7 @@ def doc(session: nox.Session) -> None:
     gcovr_version = session.run(
         "python",
         "-c",
-        "from gcovr.version import __version__; print(__version__)",
+        "from gcovr.version import __version__; print(__version__, end='')",
         silent=True,
     )
 
@@ -715,7 +714,6 @@ def html2jpeg(session: nox.Session) -> None:
 
         defer.callback(docker_stop)
         url = f"http://localhost:{port}/1/screenshot"
-        time.sleep(5.0)  # nosemgrep # We need to wait here until server is started.
 
         def screenshot(html: str, jpeg: str, size: tuple[int, int]) -> None:
             def read_file(file: str) -> str:
@@ -736,15 +734,27 @@ def html2jpeg(session: nox.Session) -> None:
                 },
             }
             session.log(f"Generating {jpeg} from {html}...")
-            response = requests.post(
-                url,
-                headers={"Content-Type": "application/json"},
-                json=payload,
-                timeout=10,
-            )
-            response.raise_for_status()
-            with open(jpeg, mode="bw") as fh_out:
-                fh_out.write(response.content)
+            retries = 0
+            while True:
+                try:
+                    response = requests.post(
+                        url,
+                        headers={"Content-Type": "application/json"},
+                        json=payload,
+                        timeout=10,
+                    )
+                    response.raise_for_status()
+                    with open(jpeg, mode="bw") as fh_out:
+                        fh_out.write(response.content)
+                    break
+                except requests.exceptions.ConnectionError:
+                    retries += 1
+                    if retries == 10:
+                        session.error("Giving up!")
+                    session.log(f"Retry {retries} in 1 second")
+                    time.sleep(  # nosemgrep # We need to wait here until server is started.
+                        1.0
+                    )
 
         screenshot(
             "doc/examples/example_html.html",
