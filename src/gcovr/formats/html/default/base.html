@@ -4,7 +4,7 @@
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset={{info.encoding}}"/>
-    <title>{{info.head}}</title>
+    <title>{% block html_title %}{{info.head}}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     {% if css_link is defined %}
     <link rel="stylesheet" href="{{css_link}}"/>

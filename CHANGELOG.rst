@@ -80,6 +80,7 @@ Bug fixes and small improvements:
   - ``statements`` and ``coveredstatements`` contain now the correct value instead of ``0``.
 
 - Add highlighting for exclusion markers in HTML report file details. (:issue:`1154`)
+- Make ``<title>`` of HTML reports more informative. The title of a file's source listing page now includes the file path. (:issue:`1155`)
 
 Documentation:
 

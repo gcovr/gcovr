@@ -1,6 +1,8 @@
 {# -*- engine: jinja -*- #}
 {% extends "base.html" %}
 
+{% block html_title %}{{filename}} - {{info.head}}{% endblock %}
+
 {% block summary %}
 {%  include "source_page.summary.html" %}
 
