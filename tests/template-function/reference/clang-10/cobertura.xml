@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.94444" branch-rate="0.76667" lines-covered="34" lines-valid="36" branches-covered="23" branches-valid="30" complexity="0.0" timestamp="1737404287" version="gcovr 8.3+main">
+<coverage line-rate="0.94444" branch-rate="0.76667" lines-covered="34" lines-valid="36" branches-covered="23" branches-valid="30" complexity="0.0" timestamp="1759008245" version="gcovr 8.4">
   <sources>
     <source>tests/template-function</source>
   </sources>

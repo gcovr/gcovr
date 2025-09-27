@@ -5,7 +5,7 @@
 Markdown Output
 ===============
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
 
 The ``gcovr`` command can generate Markdown output using
 the :option:`--markdown` option::

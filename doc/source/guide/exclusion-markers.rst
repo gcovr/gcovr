@@ -59,5 +59,5 @@ In the excluded regions, *any* coverage is excluded.
 .. versionadded:: 8.0
     Comment ``GCOVR_EXCL_BR_SOURCE``.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.4
     Comment ``GCOVR_EXCL_BR_WITHOUT_HIT: uncovered/total``.
