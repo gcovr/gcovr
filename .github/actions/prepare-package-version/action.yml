@@ -60,6 +60,6 @@ runs:
         set -e
         git config --global user.email "noreply@gcovr.com"
         git config --global user.name "gcovr authors"
-        git tag -a "${{ inputs.tag }}" -m "${{ inputs.tag }} (${{ inputs.tag_message }})"
+        git tag -a "${{ inputs.tag }}" -m "${{ inputs.tag_message }}"
         git tag --list -n ${{ inputs.tag }}
       shell: bash

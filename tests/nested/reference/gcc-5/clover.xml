@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<coverage clover="1759008245" generated="1759008245">
-  <project name="Test project" timestamp="1759008245">
+<coverage clover="1759082961" generated="1759082961">
+  <project name="Test project" timestamp="1759082961">
     <metrics complexity="0" elements="42" coveredelements="28" conditionals="0" coveredconditionals="0" statements="42" coveredstatements="28" methods="0" coveredmethods="0" packages="4" classes="8" files="8"/>
     <package name="A">
       <metrics complexity="0" elements="26" coveredelements="14" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="14" methods="0" coveredmethods="0" classes="5" files="5"/>
@@ -105,7 +105,7 @@
       </file>
     </package>
   </project>
-  <testproject timestamp="1759008245">
+  <testproject timestamp="1759082961">
     <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
     <package name="dummy">
       <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>

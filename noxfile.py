@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.4, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/8.4
+# This file is part of gcovr 8.4+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -210,7 +210,7 @@ def prepare_next_iteration(session: nox.Session) -> None:
     new_lines = []
     lines = iter(GCOVR_CHANGELOG_RST.read_text().splitlines())
     for line in lines:
-        if re.match(r"^\d+\.\d+ \(", line):
+        if matches := re.match(r"^.. _release_(\d+)_(\d+):", line):
             new_lines.append(
                 textwrap.dedent(
                     """\
@@ -231,7 +231,7 @@ def prepare_next_iteration(session: nox.Session) -> None:
                     """
                 )
             )
-            last_version = line.split(" ", maxsplit=1)[0]
+            last_version = f"{matches.group(1)}.{matches.group(2)}"
             new_lines.append(line)
             break
         if line == "Next Release":

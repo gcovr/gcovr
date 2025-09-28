@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.66667" branch-rate="0.42857" lines-covered="28" lines-valid="42" branches-covered="6" branches-valid="14" complexity="0.0" timestamp="1759008245" version="gcovr 8.4">
+<coverage line-rate="0.66667" branch-rate="0.42857" lines-covered="28" lines-valid="42" branches-covered="6" branches-valid="14" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
   <sources>
     <source>tests/linked</source>
   </sources>
