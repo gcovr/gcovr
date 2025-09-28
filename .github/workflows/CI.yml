@@ -471,14 +471,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: release-notes
-          path: docs/build/
 
       - name: Create release and upload build artifacts
         if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
         with:
           tag_name: ${{ needs.build-package.outputs.tag }}
-          body_path: doc/build/release_notes.md
+          body_path: release_notes.md
           files: build/*
 
   # -----------------------------------------------------------------------------------------------
