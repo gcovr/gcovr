@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="1.0" branch-rate="0.47727" lines-covered="23" lines-valid="23" branches-covered="21" branches-valid="44" complexity="0.0" timestamp="1759008245" version="gcovr 8.4">
+<coverage line-rate="1.0" branch-rate="0.47727" lines-covered="23" lines-valid="23" branches-covered="21" branches-valid="44" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
   <sources>
     <source>tests/virtual-classes</source>
   </sources>
