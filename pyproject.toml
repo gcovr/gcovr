@@ -1,9 +1,9 @@
 
 [build-system]
 requires = [
-    "hatchling==1.26.3",
-    "hatch-vcs==0.4.0",
-    "hatch-fancy-pypi-readme==24.1.0",
+    "hatchling==1.27.0",
+    "hatch-vcs==0.5.0",
+    "hatch-fancy-pypi-readme==25.1.0",
 ]
 build-backend = "hatchling.build"
 
@@ -59,15 +59,15 @@ dev = [
     "mypy",
     "nox",
     "pre-commit",
-    "pygments==2.19.2",                         # For reference compare
-    "pyinstaller~=6.11.1",
+    "pygments==2.19.2",     # For reference compare
+    "pyinstaller~=6.16.0",
     "pylint<4.0.0",
     "pytest",
     "pytest-cov",
     "pytest-timeout",
     "pywin32 ; sys_platform == 'win32'",
     "requests",
-    "ruff~=0.12.3",
+    "ruff~=0.13.2",
     "tomli >= 1.1.0 ; python_version < '3.11'",
     "twine",
     "yaxmldiff",
