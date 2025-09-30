@@ -44,6 +44,8 @@ from pygments.token import _TokenType, Token
 from pygments.style import Style
 from pygments.styles.default import DefaultStyle
 
+from ...data_model.coverage_dict import FunctioncovKeyType
+
 from ...exclusions.markers import _EXCLUDE_FLAG, get_markers_regex
 
 from ...data_model.container import CoverageContainer, CoverageContainerDirectory
@@ -872,7 +874,7 @@ def get_file_data(
             root_info, cdata, cdata_sourcefile[filename], cdata_fname[filename]
         )
     )
-    functions = dict[tuple[str, str, int], dict[str, Any]]()
+    functions = dict[tuple[FunctioncovKeyType, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
     for functioncov in sorted(
         cdata.functioncov(), key=lambda functioncov: functioncov.key
