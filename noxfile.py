@@ -169,7 +169,6 @@ def set_environment(session: nox.Session, cc: Optional[str] = None) -> None:
 
     cc_path, cc_file = os.path.split(cc)
 
-    session.env["GCOVR_TEST_SUITE"] = "1"
     session.env["CC"] = os.path.join(cc_path, cc_file)
     session.env["CFLAGS"] = "--this_flag_does_not_exist"
     session.env["CXX"] = os.path.join(
@@ -480,6 +479,7 @@ def tests(session: nox.Session) -> None:
         "cmake",
         "pygments",  # Need a version from dev requirements for reference compare
         "pytest",
+        "pytest-check",
         "pytest-timeout",
         "pywin32",
         "yaxmldiff",
@@ -513,10 +513,9 @@ def tests(session: nox.Session) -> None:
     session.env["GCOV"] = gcov
     session.run("make", "--version", external=True)
     session.run("ninja", "--version", external=True)
-    session.log(f"Using reference data for {session.env['CC_REFERENCE']}")
 
-    with session.chdir("tests"):
-        session.run("make", "--silent", "clean", external=True)
+    if (diff_zip := Path("diff.zip")).exists():
+        diff_zip.unlink()
 
     args = ["-m", "pytest"]
     if use_coverage:
