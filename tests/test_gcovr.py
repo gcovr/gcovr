@@ -43,12 +43,11 @@ from lxml import etree  # nosec # Data is trusted.
 
 from gcovr.utils import force_unix_separator
 
-python_interpreter = force_unix_separator(
+PYTHON_INTERPRETER = force_unix_separator(
     sys.executable
 )  # use forward slash on windows as well
 env = os.environ
-env["SOURCE_DATE_EPOCH"] = "1759082961"
-env["GCOVR"] = python_interpreter + " -m gcovr"
+env["GCOVR"] = PYTHON_INTERPRETER + " -m gcovr"
 for var in [
     "CPATH",
     "C_INCLUDE_PATH",
