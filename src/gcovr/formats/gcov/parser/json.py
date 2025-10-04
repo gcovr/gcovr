@@ -81,10 +81,11 @@ def parse_coverage(
         fname = os.path.normpath(
             os.path.join(gcov_json_data["current_working_directory"], file["file"])
         )
-        LOGGER.debug(f"Parsing coverage data for file {fname}")
 
         if is_file_excluded(fname, include_filter, exclude_filter):
             continue
+
+        LOGGER.debug(f"Parsing coverage data for file {fname}")
 
         max_line_number = (
             max(line["line_number"] for line in file["lines"]) if file["lines"] else 1
