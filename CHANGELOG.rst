@@ -14,6 +14,8 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Fix coveralls report if there are several coverage elements per line. (:issue:`1165`)
+
 Documentation:
 
 Internal changes:
@@ -22,6 +24,10 @@ Internal changes:
 
 8.4 (27 September 2025)
 -----------------------
+
+Known bugs:
+
+- :ref:`fix_1165`
 
 Breaking changes:
 
@@ -331,8 +337,6 @@ Known bugs:
 - :ref:`fix_1037`
 - :ref:`fix_1089`.
 - :ref:`fix_1138`
-
-Breaking changes:
 
 New features and notable changes:
 
