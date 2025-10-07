@@ -11,10 +11,11 @@ __pycache__
 src/gcovr/version.py
 
 # Packages
-/gcovr.egg
-/gcovr.egg-info
-/dist
-/build
+/dist/
+/build/
+
+# Data for debugging issues
+/debug/
 
 # coverage report
 /.coverage*

@@ -6,6 +6,24 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1165:
+
+Multiple counters for same line are not merged in coveralls report
+------------------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`
+
+Since version 8.4 there can be several coverage elements for same line. This data
+isn't merged in coveralls report. The elements are added as several elements to the
+``coverage`` list in the coveralls report which result in wrong data for the
+following lines.
+
 .. _fix_1138:
 
 Wrong data used in clover report
