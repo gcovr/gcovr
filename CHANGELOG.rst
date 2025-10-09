@@ -100,6 +100,9 @@ Bug fixes and small improvements:
 
   - ``statements`` and ``coveredstatements`` contain now the correct value instead of ``0``.
 
+- Add support to save zipped reports if last suffix is ``.gz``. This is useable to reduce the size for JSON
+  report format :option:`--json`. (:issue:`1141`)
+- Add :option:`--merge-lines` to merge line coverage of several functions for same line. (:issue:`1140`)
 - Add highlighting for exclusion markers in HTML report file details. (:issue:`1154`)
 - Make ``<title>`` of HTML reports more informative. The title of a file's source listing page now includes the file path. (:issue:`1155`)
 
@@ -150,9 +153,6 @@ New features and notable changes:
 - Add :option:`--gcov-suspicious-hits-threshold` to configure the value for detecting suspicious hits in GCOV files. (:issue:`1021`)
 - Renamed JSON element ``destination_blockno`` to ``destination_block_id``. (:issue:`1045`)
 - Add :option:`--html-block-ids` to show the block ids of the lines and branches in ``HTML`` report. (:issue:`1055`)
-- Add support to save zipped reports if last suffix is ``.gz``. This is useable to reduce the size for JSON
-  report format :option:`--json`. (:issue:`1141`)
-- Add :option:`--merge-lines` to merge line coverage of several functions for same line. (:issue:`1140`)
 
 Bug fixes and small improvements:
 
