@@ -1,0 +1,48 @@
+{
+    "run_at": "2025-09-28 18:09:21 UTC",
+    "source_files": [
+        {
+            "name": "func.h",
+            "source_digest": "038c9fe6d002775301b38c63c7aa5e6c",
+            "coverage": [
+                null,
+                null,
+                1,
+                null,
+                1,
+                null,
+                2,
+                0,
+                null,
+                2,
+                null,
+                null
+            ],
+            "branches": [
+                7,
+                2,
+                0,
+                0,
+                7,
+                2,
+                1,
+                2
+            ]
+        },
+        {
+            "name": "main.c",
+            "source_digest": "5e9dc757e8533396ceb462a0d827e003",
+            "coverage": [
+                null,
+                null,
+                null,
+                null,
+                2,
+                2,
+                null,
+                2,
+                null
+            ]
+        }
+    ]
+}

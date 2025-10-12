@@ -26,6 +26,8 @@ from argparse import ArgumentError, ArgumentParser, Namespace
 from typing import Any, Optional
 import traceback
 
+from .formats.gcov.read import GcovProgram
+
 from .configuration import (
     argument_parser_setup,
     config_entries_from_dict,
@@ -240,6 +242,9 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
 
     # Reconfigure the logging.
     update_logging(options)
+
+    # We need to reset the stored information her for our test framework
+    GcovProgram.reset()
 
     if options.sort_branches and options.sort_key not in [
         "uncovered-number",

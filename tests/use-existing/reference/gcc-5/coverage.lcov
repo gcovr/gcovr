@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:tests/use-existing/main.cpp
+SF:tests/use-existing/output/main.cpp
 VER:251395fea4d88bf2d3ffc4d00110a5ef
 FN:4,_Z3fooi
 FNDA:1,_Z3fooi

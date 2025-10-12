@@ -84,12 +84,12 @@
       <th>Condition coverage</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l21">RAII::RAII(bool) (line 21)</a></td><td>called 2 times</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
-    <tr><td><a href="#l16">RAII::method_that_may_throw() const (line 16)</a></td><td>called 2 times</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
-    <tr><td><a href="#l22">RAII::~RAII() (line 22)</a></td><td>called 2 times</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
-    <tr><td><a href="#l3">function_that_may_throw(bool) (line 3)</a></td><td>called 6 times</td><td>100.0%</td><td>100.0%</td><td>100.0%</td><td>87.5%</td></tr>
-    <tr><td><a href="#l24">function_with_catchers(int) (line 24)</a></td><td>called 2 times</td><td>78.6%</td><td>50.0%</td><td>-%</td><td>63.2%</td></tr>
-    <tr><td><a href="#l47">main (line 47)</a></td><td>called 2 times</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l21">RAII::RAII(bool) (line 21)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l16">RAII::method_that_may_throw() const (line 16)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l22">RAII::~RAII() (line 22)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
+    <tr><td><a href="#l3">function_that_may_throw(bool) (line 3)</a></td><td>called 3 times</td><td>100.0%</td><td>100.0%</td><td>100.0%</td><td>87.5%</td></tr>
+    <tr><td><a href="#l24">function_with_catchers(int) (line 24)</a></td><td>called 1 time</td><td>78.6%</td><td>50.0%</td><td>-%</td><td>63.2%</td></tr>
+    <tr><td><a href="#l47">main (line 47)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>-%</td><td>100.0%</td></tr>
   </table>
 </details>
 
@@ -128,7 +128,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">6</td>
+      <td class="linecount coveredLine">3</td>
       <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function_that_may_throw</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
     <tr class="source-line">
@@ -137,8 +137,8 @@
         <details class="linebranchDetails">
           <summary class="linebranchSummary">2/2</summary>
           <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 2 times.</div>
-            <div class="takenBranch">&check; Branch 2 &rightarrow; 6 taken 4 times.</div>
+            <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 1 time.</div>
+            <div class="takenBranch">&check; Branch 2 &rightarrow; 6 taken 2 times.</div>
           </div>
         </details>
       </td>
@@ -150,7 +150,7 @@
             </div>
             </details>
       </td>
-      <td class="linecount coveredLine">6</td>
+      <td class="linecount coveredLine">3</td>
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
     <tr class="source-line">
@@ -159,13 +159,13 @@
         <details class="linebranchDetails">
           <summary class="linebranchSummary">1/1</summary>
           <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 2 times.</div>
+            <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 1 time.</div>
           </div>
         </details>
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;the error&quot;</span><span class="p">);</span></td>
     </tr>
     <tr class="source-line">
@@ -183,7 +183,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">4</td>
+      <td class="linecount coveredLine">2</td>
       <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
@@ -264,7 +264,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">method_that_may_throw</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
     <tr class="source-line">
@@ -273,7 +273,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">die</span><span class="p">);</span></td>
     </tr>
     <tr class="source-line">
@@ -309,7 +309,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="n">RAII</span><span class="o">::</span><span class="n">RAII</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="n">die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span></td>
     </tr>
     <tr class="source-line">
@@ -318,7 +318,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="n">RAII</span><span class="o">::~</span><span class="n">RAII</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span></td>
     </tr>
     <tr class="source-line">
@@ -336,7 +336,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
     <tr class="source-line">
@@ -345,7 +345,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
@@ -378,7 +378,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount partialCoveredLine">2</td>
+      <td class="linecount partialCoveredLine">1</td>
       <td class="src partialCoveredLine"><span class="w">        </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
     </tr>
     <tr class="source-line">
@@ -388,13 +388,13 @@
           <summary class="linebranchSummary">1/2</summary>
           <div class="linebranchContents">
             <div class="notTakenBranch">&cross; Branch 10 &rightarrow; 11 not taken.</div>
-            <div class="takenBranch">&check; Branch 10 &rightarrow; 12 taken 2 times.</div>
+            <div class="takenBranch">&check; Branch 10 &rightarrow; 12 taken 1 time.</div>
           </div>
         </details>
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount partialCoveredLine">2</td>
+      <td class="linecount partialCoveredLine">1</td>
       <td class="src partialCoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
     <tr class="source-line">
@@ -403,7 +403,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">        </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
@@ -412,7 +412,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">    </span><span class="p">}</span></td>
     </tr>
     <tr class="source-line">
@@ -430,13 +430,13 @@
         <details class="linebranchDetails">
           <summary class="linebranchSummary">1/1</summary>
           <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 2 times.</div>
+            <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 1 time.</div>
           </div>
         </details>
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">    </span><span class="n">RAII</span><span class="w"> </span><span class="n">raii</span><span class="p">(</span><span class="n">die_again</span><span class="p">);</span></td>
     </tr>
     <tr class="source-line">
@@ -463,13 +463,13 @@
         <details class="linebranchDetails">
           <summary class="linebranchSummary">1/1</summary>
           <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 2 times.</div>
+            <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 1 time.</div>
           </div>
         </details>
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">        </span><span class="n">raii</span><span class="p">.</span><span class="n">method_that_may_throw</span><span class="p">();</span></td>
     </tr>
     <tr class="source-line">
@@ -514,13 +514,13 @@
         <details class="linebranchDetails">
           <summary class="linebranchSummary">1/1</summary>
           <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 2 times.</div>
+            <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 1 time.</div>
           </div>
         </details>
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">    </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
     </tr>
     <tr class="source-line">
@@ -538,7 +538,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
     </tr>
     <tr class="source-line">
@@ -547,7 +547,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="p">}</span></td>
     </tr>
     <tr class="source-line">
@@ -574,7 +574,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
     <tr class="source-line">
@@ -583,7 +583,7 @@
       </td>
       <td class="linecondition">
       </td>
-      <td class="linecount coveredLine">2</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="n">argc</span><span class="p">);</span></td>
     </tr>
     <tr class="source-line">

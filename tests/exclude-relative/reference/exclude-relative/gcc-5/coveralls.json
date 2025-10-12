@@ -1,0 +1,39 @@
+{
+    "run_at": "2025-09-28 18:09:21 UTC",
+    "source_files": [
+        {
+            "name": "main.cpp",
+            "source_digest": "aa3e0bff9ee1c3840efb1be8065bab01",
+            "coverage": [
+                null,
+                null,
+                null,
+                null,
+                1,
+                1,
+                0,
+                null,
+                1,
+                null,
+                null,
+                null,
+                null,
+                1,
+                1,
+                null,
+                1,
+                null
+            ],
+            "branches": [
+                6,
+                0,
+                0,
+                0,
+                6,
+                0,
+                1,
+                1
+            ]
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:tests/exclude-line-custom/main.cpp
+SF:tests/exclude-line-custom/output/main.cpp
 VER:946992153a16ca487416932e28191a83
 FN:4,_Z3fooi
 FNDA:1,_Z3fooi

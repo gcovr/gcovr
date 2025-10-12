@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:tests/exclude-lines-by-pattern/main.cpp
+SF:tests/exclude-lines-by-pattern/output/main.cpp
 VER:6bc26001ff07bea6b3466fcf1f18d4a5
 FN:5,panic()
 FNDA:0,panic()
