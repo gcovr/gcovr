@@ -20,6 +20,8 @@ Documentation:
 
 Internal changes:
 
+- Rewrite test suite to use python files instead of Makefiles. (:issue:`1170`)
+
 .. _release_8_4:
 
 8.4 (27 September 2025)
