@@ -1,3 +1,0 @@
-This test case covers relative filters that reference symlinks.
-The test can only pass if the symlinks are resolved prior to matching.
-Test uses unfiltered JSON coverage to create output coverages with applied filters.

@@ -1,0 +1,14 @@
+TN:GCOVR report
+SF:tests/filter/output/relative-lib-from-unfiltered-tracefile/project/relevant-library/src/yes.cpp
+VER:62521d726248e71c9a4b8d0a8c62ef43
+FN:1,yes(int)
+FNDA:1,yes(int)
+FNF:1
+FNH:1
+BRF:0
+BRH:0
+DA:1,1,dc38f7ea808f7277a4c5c35069c4325d
+DA:2,1,3aa7288ed012b3d8637f94edc3463ccf
+LH:2
+LF:2
+end_of_record

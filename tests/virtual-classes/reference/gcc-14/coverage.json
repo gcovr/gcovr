@@ -8,7 +8,7 @@
                     "line_number": 8,
                     "function_name": "_ZN3ns14Bar1C2Ev",
                     "block_ids": [],
-                    "count": 6,
+                    "count": 3,
                     "branches": [],
                     "gcovr/md5": "601116bb7f972822f71830e1433951bd"
                 },
@@ -16,7 +16,7 @@
                     "line_number": 9,
                     "function_name": "_ZN3ns14Bar1C2Ev",
                     "block_ids": [],
-                    "count": 6,
+                    "count": 3,
                     "branches": [],
                     "gcovr/md5": "78c3860abebb28f3bf72e51c4621fef3"
                 },
@@ -32,7 +32,7 @@
                     "line_number": 10,
                     "function_name": "_ZN3ns14Bar1D2Ev",
                     "block_ids": [],
-                    "count": 6,
+                    "count": 3,
                     "branches": [],
                     "gcovr/md5": "1d6ff0e31f80fb5f58616ac936759cdf"
                 },
@@ -63,7 +63,7 @@
                     "line_number": 11,
                     "function_name": "_ZN3ns14Bar1D2Ev",
                     "block_ids": [],
-                    "count": 6,
+                    "count": 3,
                     "branches": [],
                     "gcovr/md5": "060565ea354b7bca4b553bac6c4740ed"
                 },
@@ -73,13 +73,13 @@
                     "block_ids": [
                         2
                     ],
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
                             "destination_block_id": 1,
-                            "returned": 4
+                            "returned": 2
                         }
                     ],
                     "gcovr/md5": "2598ea30dbb711a590a1617919c5cfba"
@@ -88,7 +88,7 @@
                     "line_number": 25,
                     "function_name": "_ZN3ns24Bar2C2Ev",
                     "block_ids": [],
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "gcovr/md5": "82188094c000f89d4df0eee592868072"
                 },
@@ -104,7 +104,7 @@
                     "line_number": 26,
                     "function_name": "_ZN3ns24Bar2D2Ev",
                     "block_ids": [],
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "gcovr/md5": "0ccb106e6d18dd8e9dcd60c0ed8182fc"
                 },
@@ -137,13 +137,13 @@
                     "block_ids": [
                         2
                     ],
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
                             "destination_block_id": 1,
-                            "returned": 4
+                            "returned": 2
                         }
                     ],
                     "gcovr/md5": "0fe98953f15971380c96945eb7c57f18"
@@ -154,13 +154,13 @@
                     "block_ids": [
                         2
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "5e4fd23a42f87556b2a43f098251e8c7"
@@ -169,7 +169,7 @@
                     "line_number": 41,
                     "function_name": "_ZN3ns34Bar3C2Ev",
                     "block_ids": [],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "a18e41118e36e1ef68607175dc1b592f"
                 },
@@ -185,7 +185,7 @@
                     "line_number": 42,
                     "function_name": "_ZN3ns34Bar3D2Ev",
                     "block_ids": [],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "85fc251b48f22264177f49e1836b6458"
                 },
@@ -218,13 +218,13 @@
                     "block_ids": [
                         2
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "345e9b1d29966e451401206797f7ad22"
@@ -233,7 +233,7 @@
                     "line_number": 51,
                     "function_name": "main",
                     "block_ids": [],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
@@ -243,13 +243,13 @@
                     "block_ids": [
                         2
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "source_block_id": 2,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "7889012628b20062a6750840f5e81ec7"
@@ -262,10 +262,10 @@
                         4,
                         5
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 3,
@@ -279,7 +279,7 @@
                             "destination_block_id": 33
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 4,
@@ -293,7 +293,7 @@
                             "destination_block_id": 33
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 5,
@@ -311,17 +311,17 @@
                         {
                             "source_block_id": 3,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 4,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 5,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "5336964c912a66290b6604e90b172abb"
@@ -332,13 +332,13 @@
                     "block_ids": [
                         6
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "source_block_id": 6,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "3a47500e65c552706f582f1293cf2a18"
@@ -351,10 +351,10 @@
                         8,
                         9
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 7,
@@ -368,7 +368,7 @@
                             "destination_block_id": 31
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 8,
@@ -382,7 +382,7 @@
                             "destination_block_id": 31
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 9,
@@ -400,17 +400,17 @@
                         {
                             "source_block_id": 7,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 8,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 9,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "e957e4f8902c1c42f540dc8c31b14c16"
@@ -423,10 +423,10 @@
                         11,
                         12
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 10,
@@ -440,7 +440,7 @@
                             "destination_block_id": 31
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 11,
@@ -454,7 +454,7 @@
                             "destination_block_id": 31
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 12,
@@ -472,17 +472,17 @@
                         {
                             "source_block_id": 10,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 11,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 12,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "4e29cd99a75408f6184cd5f2da17bf4b"
@@ -493,13 +493,13 @@
                     "block_ids": [
                         13
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "source_block_id": 13,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "b8ca8f7bb408d9ed3293ae26eaa9573c"
@@ -512,10 +512,10 @@
                         15,
                         16
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 14,
@@ -529,7 +529,7 @@
                             "destination_block_id": 29
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 15,
@@ -543,7 +543,7 @@
                             "destination_block_id": 29
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 16,
@@ -561,17 +561,17 @@
                         {
                             "source_block_id": 14,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 15,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 16,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "a73247510c9604c43ca8cfeb1cbe1e5c"
@@ -584,10 +584,10 @@
                         18,
                         19
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 17,
@@ -601,7 +601,7 @@
                             "destination_block_id": 29
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 18,
@@ -615,7 +615,7 @@
                             "destination_block_id": 29
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 19,
@@ -633,17 +633,17 @@
                         {
                             "source_block_id": 17,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 18,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 19,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "f199d76205e3f206214ea2c7f1d273b1"
@@ -656,10 +656,10 @@
                         21,
                         22
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 20,
@@ -673,7 +673,7 @@
                             "destination_block_id": 29
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 21,
@@ -687,7 +687,7 @@
                             "destination_block_id": 29
                         },
                         {
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 22,
@@ -705,17 +705,17 @@
                         {
                             "source_block_id": 20,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 21,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "source_block_id": 22,
                             "destination_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "7eaf42f0e8e357e2dfa91b4013c3750d"
@@ -733,7 +733,7 @@
                         36,
                         38
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "count": 0,
@@ -756,19 +756,19 @@
                         {
                             "source_block_id": 23,
                             "destination_block_id": 1,
-                            "returned": 2,
+                            "returned": 1,
                             "gcovr/excluded": true
                         },
                         {
                             "source_block_id": 24,
                             "destination_block_id": 1,
-                            "returned": 2,
+                            "returned": 1,
                             "gcovr/excluded": true
                         },
                         {
                             "source_block_id": 25,
                             "destination_block_id": 1,
-                            "returned": 2,
+                            "returned": 1,
                             "gcovr/excluded": true
                         },
                         {
@@ -966,7 +966,7 @@
                     "block_ids": [
                         27
                     ],
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 }
@@ -976,7 +976,7 @@
                     "name": "_ZN3ns14Bar1C2Ev",
                     "demangled_name": "ns1::Bar1::Bar1()",
                     "lineno": 8,
-                    "execution_count": 6,
+                    "execution_count": 3,
                     "blocks_percent": 100.0,
                     "pos": [
                         "8:7",
@@ -987,7 +987,7 @@
                     "name": "_ZN3ns14Bar1D0Ev",
                     "demangled_name": "ns1::Bar1::~Bar1()",
                     "lineno": 10,
-                    "execution_count": 6,
+                    "execution_count": 3,
                     "blocks_percent": 100.0,
                     "pos": [
                         "10:15",
@@ -998,7 +998,7 @@
                     "name": "_ZN3ns24Bar2C2Ev",
                     "demangled_name": "ns2::Bar2::Bar2()",
                     "lineno": 24,
-                    "execution_count": 4,
+                    "execution_count": 2,
                     "blocks_percent": 100.0,
                     "pos": [
                         "24:7",
@@ -1009,7 +1009,7 @@
                     "name": "_ZN3ns24Bar2D0Ev",
                     "demangled_name": "ns2::Bar2::~Bar2()",
                     "lineno": 26,
-                    "execution_count": 4,
+                    "execution_count": 2,
                     "blocks_percent": 100.0,
                     "pos": [
                         "26:15",
@@ -1020,7 +1020,7 @@
                     "name": "_ZN3ns34Bar3C2Ev",
                     "demangled_name": "ns3::Bar3::Bar3()",
                     "lineno": 40,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [
                         "40:7",
@@ -1031,7 +1031,7 @@
                     "name": "_ZN3ns34Bar3D0Ev",
                     "demangled_name": "ns3::Bar3::~Bar3()",
                     "lineno": 42,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [
                         "42:15",
@@ -1042,7 +1042,7 @@
                     "name": "main",
                     "demangled_name": "main",
                     "lineno": 51,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 62.2,
                     "pos": [
                         "51:5",

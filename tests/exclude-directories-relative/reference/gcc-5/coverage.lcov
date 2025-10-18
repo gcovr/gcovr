@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:tests/exclude-directories-relative/b/main.cpp
+SF:tests/exclude-directories-relative/output/b/main.cpp
 VER:aa3e0bff9ee1c3840efb1be8065bab01
 FN:5,foo(int)
 FNDA:1,foo(int)

@@ -1,0 +1,32 @@
+{
+    "gcovr/format_version": "0.14",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 2,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
+                },
+                {
+                    "line_number": 3,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "cf14be7c6e90c6c921e4302a50bd61e8"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "main",
+                    "lineno": 2,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
+                }
+            ]
+        }
+    ]
+}

@@ -7,9 +7,9 @@
         // Path is relative to the devcontainer.json file.
         "dockerfile": "../admin/Dockerfile.qa",
         "args": {
-            "DOCKER_OS": "mcr.microsoft.com/devcontainers/base:jammy",
-            "CC": "gcc-11",
-            "CXX": "g++-11",
+            "UBUNTU_TAG": "20.04",
+            "CC": "clang-10",
+            "CXX": "clang-10",
             "NOX_ENV_DIR": "/workspaces/gcovr/.nox-devcontainer"
         },
         "context": ".."

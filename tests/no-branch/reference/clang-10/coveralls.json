@@ -1,0 +1,14 @@
+{
+    "run_at": "2025-09-28 18:09:21 UTC",
+    "source_files": [
+        {
+            "name": "main.cpp",
+            "source_digest": "e3e6a5d78e81ea389bb54b2bd6c04e7d",
+            "coverage": [
+                1,
+                1,
+                null
+            ]
+        }
+    ]
+}

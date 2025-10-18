@@ -2,7 +2,7 @@
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="1.0" branch-rate="0.5" lines-covered="17" lines-valid="17" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
   <sources>
-    <source>tests/split-signature</source>
+    <source>tests/split-signature/output</source>
   </sources>
   <packages>
     <package name="" line-rate="1.0" branch-rate="0.5" complexity="0.0">
