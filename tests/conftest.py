@@ -158,16 +158,16 @@ def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:
 def pytest_addoption(parser: pytest.Parser) -> None:  # pragma: no cover
     """Set the additional options for pytest."""
     parser.addoption(
-        "--generate_reference", action="store_true", help="Generate the reference"
+        "--generate-reference", action="store_true", help="Generate the reference"
     )
     parser.addoption(
-        "--update_reference", action="store_true", help="Update the reference"
+        "--update-reference", action="store_true", help="Update the reference"
     )
     parser.addoption(
-        "--archive_differences", action="store_true", help="Archive the different files"
+        "--archive-differences", action="store_true", help="Archive the different files"
     )
     parser.addoption(
-        "--skip_clean", action="store_true", help="Skip the clean after the test"
+        "--skip-clean", action="store_true", help="Skip the clean after the test"
     )
 
 
