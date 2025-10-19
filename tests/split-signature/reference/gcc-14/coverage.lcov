@@ -1,0 +1,43 @@
+TN:GCOVR report
+SF:tests/split-signature/output/main.cpp
+VER:39030f47fbff470180d95246db4bac93
+FN:8,(anonymous namespace)::Bar::Bar()
+FNDA:1,(anonymous namespace)::Bar::Bar()
+FN:10,(anonymous namespace)::Bar::~Bar()
+FNDA:1,(anonymous namespace)::Bar::~Bar()
+FN:13,(anonymous namespace)::Bar::foo() const
+FNDA:1,(anonymous namespace)::Bar::foo() const
+FN:21,(anonymous namespace)::foo()
+FNDA:1,(anonymous namespace)::foo()
+FN:29,bar
+FNDA:1,bar
+FN:34,bar_cpp()
+FNDA:1,bar_cpp()
+FN:39,main
+FNDA:1,main
+FNF:7
+FNH:7
+BRDA:24,3,0,1
+BRDA:24,e3,1,-
+BRF:2
+BRH:1
+DA:8,1,c1536101012b92b1f924d9564a8db9a4
+DA:9,1,23a5c121332ac44640e8a8aadd465d80
+DA:10,1,91882e069c0d4a43e705d9b30ce9ca64
+DA:11,1,23a5c121332ac44640e8a8aadd465d80
+DA:13,1,6eb9aa93229e98dbc24fc3cdfd374c62
+DA:15,1,f7b703e8cd6b1f3cc2d2ce6e752d73fb
+DA:16,1,f4705ee5bd3c93d33aa9bbc37dd4e473
+DA:21,1,99ed9883cde0cb47f8780f9e39329317
+DA:23,1,4266678a417dc4903d9cf236dbb12034
+DA:24,2,66f12633d5a7eca9fdde0e1b7272565f
+DA:25,1,7eefb90de6682989ef933bcadcbb7de9
+DA:29,1,e459abcd38370e1e4253b6775d03eb8b
+DA:31,1,905b733c12d828acb6d6d4193f874fd0
+DA:34,1,c642cd661b7e6e9286c159d01714d04d
+DA:36,1,9dd2d45dcd78fcf24e26368e4f420be7
+DA:39,1,2a787a1309f19379bb0e3d8434d2a18d
+DA:40,1,506b460b78d3b5b014a801d7778d319f
+LH:17
+LF:17
+end_of_record

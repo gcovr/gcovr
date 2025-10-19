@@ -1,0 +1,140 @@
+{
+    "gcovr/format_version": "0.14",
+    "files": [
+        {
+            "file": "source/code.cpp",
+            "lines": [
+                {
+                    "line_number": 3,
+                    "function_name": "_Z4foo1i",
+                    "block_ids": [],
+                    "count": 3,
+                    "branches": [],
+                    "gcovr/md5": "d202d6f6b151ca991538c418a08707bd"
+                },
+                {
+                    "line_number": 4,
+                    "function_name": "_Z4foo1i",
+                    "block_ids": [
+                        2
+                    ],
+                    "count": 3,
+                    "branches": [
+                        {
+                            "count": 2,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2,
+                            "destination_block_id": 3
+                        },
+                        {
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 2,
+                            "destination_block_id": 4
+                        }
+                    ],
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
+                },
+                {
+                    "line_number": 5,
+                    "function_name": "_Z4foo1i",
+                    "block_ids": [
+                        3
+                    ],
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
+                },
+                {
+                    "line_number": 7,
+                    "function_name": "_Z4foo1i",
+                    "block_ids": [
+                        4
+                    ],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
+                },
+                {
+                    "line_number": 12,
+                    "function_name": "_Z4foo2i",
+                    "block_ids": [],
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "2ab67b7c6eda50a1c284dd3b7cac701c"
+                },
+                {
+                    "line_number": 13,
+                    "function_name": "_Z4foo2i",
+                    "block_ids": [
+                        2
+                    ],
+                    "count": 2,
+                    "branches": [
+                        {
+                            "count": 2,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2,
+                            "destination_block_id": 3
+                        },
+                        {
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 2,
+                            "destination_block_id": 4
+                        }
+                    ],
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
+                },
+                {
+                    "line_number": 14,
+                    "function_name": "_Z4foo2i",
+                    "block_ids": [
+                        3
+                    ],
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
+                },
+                {
+                    "line_number": 16,
+                    "function_name": "_Z4foo2i",
+                    "block_ids": [
+                        4
+                    ],
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_Z4foo1i",
+                    "demangled_name": "foo1(int)",
+                    "lineno": 3,
+                    "execution_count": 3,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "3:5",
+                        "9:1"
+                    ]
+                },
+                {
+                    "name": "_Z4foo2i",
+                    "demangled_name": "foo2(int)",
+                    "lineno": 12,
+                    "execution_count": 2,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "12:5",
+                        "18:1"
+                    ]
+                }
+            ]
+        }
+    ]
+}

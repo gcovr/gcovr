@@ -1,0 +1,124 @@
+{
+    "gcovr/format_version": "0.14",
+    "files": [
+        {
+            "file": "source/code.cpp",
+            "lines": [
+                {
+                    "line_number": 3,
+                    "function_name": "_Z4foo1i",
+                    "count": 3,
+                    "branches": [],
+                    "gcovr/md5": "d202d6f6b151ca991538c418a08707bd"
+                },
+                {
+                    "line_number": 4,
+                    "function_name": "_Z4foo1i",
+                    "count": 3,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
+                },
+                {
+                    "line_number": 5,
+                    "function_name": "_Z4foo1i",
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
+                },
+                {
+                    "line_number": 7,
+                    "function_name": "_Z4foo1i",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
+                },
+                {
+                    "line_number": 9,
+                    "function_name": "_Z4foo1i",
+                    "count": 3,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 12,
+                    "function_name": "_Z4foo2i",
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "2ab67b7c6eda50a1c284dd3b7cac701c"
+                },
+                {
+                    "line_number": 13,
+                    "function_name": "_Z4foo2i",
+                    "count": 2,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 2,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
+                },
+                {
+                    "line_number": 14,
+                    "function_name": "_Z4foo2i",
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e"
+                },
+                {
+                    "line_number": 16,
+                    "function_name": "_Z4foo2i",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "9e509d19a37174e72bead0ea24176228"
+                },
+                {
+                    "line_number": 18,
+                    "function_name": "_Z4foo2i",
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_Z4foo1i",
+                    "lineno": 3,
+                    "execution_count": 3,
+                    "blocks_percent": 100.0
+                },
+                {
+                    "name": "_Z4foo2i",
+                    "lineno": 12,
+                    "execution_count": 2,
+                    "blocks_percent": 80.0
+                }
+            ]
+        }
+    ]
+}

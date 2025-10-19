@@ -1,9 +1,0 @@
-This test case tests the output of cascaded html coverage
-reports. It will test that a directory with items in it properly
-aggregates the statistics within it, all the sorting works for
-each directory, any flattening of directories that have a single
-entry, and the writing of source files within each directory.
-
-The special case here is that a filter is used to filter a single directory.
-
-In this case, the directory listings should be unsorted.

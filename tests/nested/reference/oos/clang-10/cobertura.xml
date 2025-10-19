@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.67568" branch-rate="0.42857" lines-covered="25" lines-valid="37" branches-covered="6" branches-valid="14" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
+  <sources>
+    <source>tests/nested/output/oos/subdir</source>
+  </sources>
+  <packages>
+    <package name="A" line-rate="0.54545" branch-rate="0.33333" complexity="0.0">
+      <classes>
+        <class name="File2_cpp" filename="A/File2.cpp" line-rate="0.6" branch-rate="1.0" complexity="0.0">
+          <methods>
+            <method name="_Z3barv" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+                <line number="5" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="_Z4bar_v" signature="" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="10" hits="0" branch="false"/>
+                <line number="11" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="1" branch="false"/>
+            <line number="4" hits="1" branch="false"/>
+            <line number="5" hits="1" branch="false"/>
+            <line number="10" hits="0" branch="false"/>
+            <line number="11" hits="0" branch="false"/>
+          </lines>
+        </class>
+        <class name="File4_cpp" filename="A/File4.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+          <methods>
+            <method name="_Z6foobari" signature="" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="1" branch="false"/>
+                <line number="6" hits="0" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="4" hits="1" branch="false"/>
+            <line number="6" hits="0" branch="false"/>
+            <line number="8" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="file1_cpp" filename="A/file1.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+          <methods>
+            <method name="_Z3fooi" signature="" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="0" branch="false"/>
+                <line number="6" hits="1" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="4" hits="0" branch="false"/>
+            <line number="6" hits="1" branch="false"/>
+            <line number="8" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="file3_cpp" filename="A/file3.cpp" line-rate="0.375" branch-rate="0.0" complexity="0.0">
+          <methods>
+            <method name="_Z8four_barv" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+                <line number="5" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="_Z9four_bar_v" signature="" line-rate="0.0" branch-rate="0.0" complexity="0.0">
+              <lines>
+                <line number="10" hits="0" branch="false"/>
+                <line number="11" hits="0" branch="true" condition-coverage="0% (0/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="0%"/>
+                  </conditions>
+                </line>
+                <line number="12" hits="0" branch="false"/>
+                <line number="14" hits="0" branch="false"/>
+                <line number="15" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="1" branch="false"/>
+            <line number="4" hits="1" branch="false"/>
+            <line number="5" hits="1" branch="false"/>
+            <line number="10" hits="0" branch="false"/>
+            <line number="11" hits="0" branch="true" condition-coverage="0% (0/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="0%"/>
+              </conditions>
+            </line>
+            <line number="12" hits="0" branch="false"/>
+            <line number="14" hits="0" branch="false"/>
+            <line number="15" hits="0" branch="false"/>
+          </lines>
+        </class>
+        <class name="file7_cpp" filename="A/file7.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+          <methods>
+            <method name="_Z9uncoveredv" signature="" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="3" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="0" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package name="A.C" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+      <classes>
+        <class name="file5_cpp" filename="A/C/file5.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+          <methods>
+            <method name="_Z4foo5i" signature="" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="0" branch="false"/>
+                <line number="6" hits="1" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="4" hits="0" branch="false"/>
+            <line number="6" hits="1" branch="false"/>
+            <line number="8" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package name="A.C.D" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+      <classes>
+        <class name="File6_cpp" filename="A/C/D/File6.cpp" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+          <methods>
+            <method name="_Z4foo6i" signature="" line-rate="0.75" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="4" hits="0" branch="false"/>
+                <line number="6" hits="1" branch="false"/>
+                <line number="8" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="1" branch="true" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="4" hits="0" branch="false"/>
+            <line number="6" hits="1" branch="false"/>
+            <line number="8" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package name="B" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+      <classes>
+        <class name="main_cpp" filename="B/main.cpp" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+          <methods>
+            <method name="main" signature="" line-rate="1.0" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="13" hits="1" branch="false"/>
+                <line number="14" hits="1" branch="false"/>
+                <line number="15" hits="1" branch="false"/>
+                <line number="16" hits="1" branch="false"/>
+                <line number="17" hits="1" branch="false"/>
+                <line number="18" hits="1" branch="true" condition-coverage="50% (2/4)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="20" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="13" hits="1" branch="false"/>
+            <line number="14" hits="1" branch="false"/>
+            <line number="15" hits="1" branch="false"/>
+            <line number="16" hits="1" branch="false"/>
+            <line number="17" hits="1" branch="false"/>
+            <line number="18" hits="1" branch="true" condition-coverage="50% (2/4)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="20" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>

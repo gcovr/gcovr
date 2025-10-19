@@ -2,7 +2,7 @@
     "gcovr/format_version": "0.14",
     "files": [
         {
-            "file": "tests/exclude-line-branch/bar.cpp",
+            "file": "output/bar.cpp",
             "lines": [
                 {
                     "line_number": 14,
@@ -94,7 +94,7 @@
             ]
         },
         {
-            "file": "tests/exclude-line-branch/foo.cpp",
+            "file": "output/foo.cpp",
             "lines": [
                 {
                     "line_number": 2,
@@ -448,7 +448,7 @@
             ]
         },
         {
-            "file": "tests/exclude-line-branch/main.cpp",
+            "file": "output/main.cpp",
             "lines": [
                 {
                     "line_number": 10,

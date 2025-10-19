@@ -188,7 +188,10 @@ unfixable = ["B"]
 quote-style = "double"
 
 [tool.bandit]
-assert_used.skips = ["*_test.py", "*test_*.py"]
+assert_used.skips = [
+    "*/conftest.py",
+    "*/test_*.py"
+]
 
 [tool.pytest.ini_options]
 addopts = "-v --timeout=120 --doctest-modules --ignore-glob=*/linked/subdir/* --ignore-glob */output/* --ignore-glob */.nox*/*"

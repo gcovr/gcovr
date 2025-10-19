@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:tests/several-functions-on-same-line/function.hpp
+SF:tests/several-functions-on-same-line/output/function.hpp
 VER:85bc1e5211f215b6cd6a1b54bf4cfbac
 FN:2,func_a(int, int)
 FNDA:4,func_a(int, int)
@@ -42,7 +42,7 @@ DA:15,1,68e4fcd72e87ba52e753d0af1b16fc7d
 LH:17
 LF:18
 end_of_record
-SF:tests/several-functions-on-same-line/main.cpp
+SF:tests/several-functions-on-same-line/output/main.cpp
 VER:8fef35f1722a6320e50c178291d226bf
 FN:3,foo()
 FNDA:1,foo()

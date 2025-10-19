@@ -2,18 +2,18 @@
 <coverage clover="1759082961" generated="1759082961">
   <project timestamp="1759082961">
     <metrics complexity="0" elements="22" coveredelements="17" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="17" methods="0" coveredmethods="0" packages="1" classes="3" files="3"/>
-    <package name="tests.exclude-line-branch">
+    <package name="output">
       <metrics complexity="0" elements="22" coveredelements="17" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="17" methods="0" coveredmethods="0" classes="3" files="3"/>
-      <file name="bar.cpp" path="tests/exclude-line-branch/bar.cpp">
+      <file name="bar.cpp" path="output/bar.cpp">
         <metrics complexity="0" elements="1" coveredelements="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" methods="0" coveredmethods="0" classes="1"/>
-        <class name="id$30d81ad9e42c138b168191676f5c4a81">
+        <class name="id$80749f95fc2eba565bed31b510727caa">
           <metrics complexity="0" elements="1" coveredelements="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" methods="0" coveredmethods="0"/>
         </class>
         <line num="19" type="stmt" count="0"/>
       </file>
-      <file name="foo.cpp" path="tests/exclude-line-branch/foo.cpp">
+      <file name="foo.cpp" path="output/foo.cpp">
         <metrics complexity="0" elements="10" coveredelements="8" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="8" methods="0" coveredmethods="0" classes="1"/>
-        <class name="id$5d862f9aaa0eedd39c029cb519ae0804">
+        <class name="id$f39ca8726eacf8fd6911955b87a676ab">
           <metrics complexity="0" elements="10" coveredelements="8" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="8" methods="0" coveredmethods="0"/>
         </class>
         <line num="2" type="stmt" count="5"/>
@@ -27,9 +27,9 @@
         <line num="21" type="stmt" count="1"/>
         <line num="22" type="stmt" count="5"/>
       </file>
-      <file name="main.cpp" path="tests/exclude-line-branch/main.cpp">
+      <file name="main.cpp" path="output/main.cpp">
         <metrics complexity="0" elements="11" coveredelements="9" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="9" methods="0" coveredmethods="0" classes="1"/>
-        <class name="id$cd06c50bef061db9600a967b359dfe11">
+        <class name="id$2f367e91697f959ea0707917fa0645cd">
           <metrics complexity="0" elements="11" coveredelements="9" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="9" methods="0" coveredmethods="0"/>
         </class>
         <line num="10" type="stmt" count="2"/>

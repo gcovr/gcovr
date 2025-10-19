@@ -1,1 +1,0 @@
-A subfolder includes pattern that causes include header file has a incorrect relative path in .gcov file.

@@ -1,134 +1,200 @@
 {
+    "gcovr/format_version": "0.14",
     "files": [
         {
             "file": "code.cpp",
-            "functions": [
-                {
-                    "execution_count": 1,
-                    "lineno": 3,
-                    "name": "foo1(int)"
-                },
-                {
-                    "execution_count": 1,
-                    "lineno": 12,
-                    "name": "foo2(int)"
-                }
-            ],
             "lines": [
                 {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 2
-                },
-                {
-                    "branches": [],
+                    "line_number": 3,
+                    "function_name": "foo1(int)",
                     "count": 1,
-                    "gcovr/noncode": false,
-                    "line_number": 3
+                    "branches": [],
+                    "gcovr/md5": "d202d6f6b151ca991538c418a08707bd",
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
                 },
                 {
+                    "line_number": 4,
+                    "function_name": "foo1(int)",
+                    "count": 1,
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 0,
-                            "fallthrough": false,
-                            "throw": false
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "code.gcda",
+                                    "code.cpp.gcov"
+                                ]
+                            ]
                         },
                         {
+                            "branchno": 1,
                             "count": 1,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "code.gcda",
+                                    "code.cpp.gcov"
+                                ]
+                            ]
                         }
                     ],
-                    "count": 1,
-                    "gcovr/noncode": false,
-                    "line_number": 4
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
                 },
                 {
-                    "branches": [],
+                    "line_number": 5,
+                    "function_name": "foo1(int)",
                     "count": 0,
-                    "gcovr/noncode": false,
-                    "line_number": 5
+                    "branches": [],
+                    "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
                 },
                 {
-                    "branches": [],
+                    "line_number": 7,
+                    "function_name": "foo1(int)",
                     "count": 1,
-                    "gcovr/noncode": false,
-                    "line_number": 7
+                    "branches": [],
+                    "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
                 },
                 {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 8
-                },
-                {
-                    "branches": [],
+                    "line_number": 12,
+                    "function_name": "foo2(int)",
                     "count": 1,
-                    "gcovr/noncode": false,
-                    "line_number": 9
+                    "branches": [],
+                    "gcovr/md5": "2ab67b7c6eda50a1c284dd3b7cac701c",
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
                 },
                 {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 10
-                },
-                {
-                    "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 11
-                },
-                {
-                    "branches": [],
+                    "line_number": 13,
+                    "function_name": "foo2(int)",
                     "count": 1,
-                    "gcovr/noncode": false,
-                    "line_number": 12
-                },
-                {
                     "branches": [
                         {
+                            "branchno": 0,
                             "count": 1,
-                            "fallthrough": false,
-                            "throw": false
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "code.gcda",
+                                    "code.cpp.gcov"
+                                ]
+                            ]
                         },
                         {
+                            "branchno": 1,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": false
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/data_sources": [
+                                [
+                                    "code.gcda",
+                                    "code.cpp.gcov"
+                                ]
+                            ]
                         }
                     ],
-                    "count": 1,
-                    "gcovr/noncode": false,
-                    "line_number": 13
+                    "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
                 },
                 {
-                    "branches": [],
+                    "line_number": 14,
+                    "function_name": "foo2(int)",
                     "count": 1,
-                    "gcovr/noncode": false,
-                    "line_number": 14
+                    "branches": [],
+                    "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
                 },
                 {
-                    "branches": [],
+                    "line_number": 16,
+                    "function_name": "foo2(int)",
                     "count": 0,
-                    "gcovr/noncode": false,
-                    "line_number": 16
-                },
-                {
                     "branches": [],
-                    "count": 0,
-                    "gcovr/noncode": true,
-                    "line_number": 17
-                },
-                {
-                    "branches": [],
-                    "count": 1,
-                    "gcovr/noncode": false,
-                    "line_number": 18
+                    "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
                 }
+            ],
+            "functions": [
+                {
+                    "demangled_name": "foo1(int)",
+                    "lineno": 3,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
+                },
+                {
+                    "demangled_name": "foo2(int)",
+                    "lineno": 12,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "gcovr/data_sources": [
+                        [
+                            "code.gcda",
+                            "code.cpp.gcov"
+                        ]
+                    ]
+                }
+            ],
+            "gcovr/data_sources": [
+                [
+                    "code.gcda",
+                    "code.cpp.gcov"
+                ]
             ]
         }
-    ],
-    "gcovr/format_version": "0.5"
+    ]
 }

@@ -2,12 +2,12 @@
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.88235" branch-rate="0.8" lines-covered="15" lines-valid="17" branches-covered="8" branches-valid="10" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
   <sources>
-    <source></source>
+    <source>tests/exclude-line-branch</source>
   </sources>
   <packages>
-    <package name="tests.exclude-line-branch" line-rate="0.88235" branch-rate="0.8" complexity="0.0">
+    <package name="output" line-rate="0.88235" branch-rate="0.8" complexity="0.0">
       <classes>
-        <class name="bar_cpp" filename="tests/exclude-line-branch/bar.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+        <class name="bar_cpp" filename="output/bar.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
           <methods>
             <method name="bar" signature="(int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
@@ -15,7 +15,7 @@
           </methods>
           <lines/>
         </class>
-        <class name="foo_cpp" filename="tests/exclude-line-branch/foo.cpp" line-rate="0.77778" branch-rate="0.75" complexity="0.0">
+        <class name="foo_cpp" filename="output/foo.cpp" line-rate="0.77778" branch-rate="0.75" complexity="0.0">
           <methods>
             <method name="foo" signature="(int)" line-rate="0.77778" branch-rate="0.75" complexity="0.0">
               <lines>
@@ -67,7 +67,7 @@
             <line number="21" hits="1" branch="false"/>
           </lines>
         </class>
-        <class name="main_cpp" filename="tests/exclude-line-branch/main.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+        <class name="main_cpp" filename="output/main.cpp" line-rate="1.0" branch-rate="1.0" complexity="0.0">
           <methods>
             <method name="Bar::Bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
