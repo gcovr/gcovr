@@ -15,7 +15,24 @@
                     "line_number": 5,
                     "function_name": "foo(int)",
                     "count": 1,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "1f75572ae0564be4a3859e6b52e9087c"
                 },
                 {
@@ -86,7 +103,24 @@
                     "line_number": 16,
                     "function_name": "foo(int)",
                     "count": 1,
-                    "branches": [],
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "gcovr/excluded": true
+                        }
+                    ],
                     "gcovr/md5": "9aec6e9f39e083955a45d75c49ebcda0"
                 },
                 {
