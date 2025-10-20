@@ -217,9 +217,7 @@ def _process_exclude_branch_with_no_hit(
                             LOGGER.debug(
                                 f"Exclusion of branches without hits at {location} is excluding {uncovered} branch(es)"
                             )
-                            for branchcov in linecov.branches():
-                                if not branchcov.count:
-                                    branchcov.excluded = True
+                            linecov.exclude_branches()
                         else:
                             LOGGER.error(
                                 f"Exclusion of branches without hits ({stats_string}) at {location} is wrong. There {'is' if expected_uncovered <= 1 else 'are'} {expected_uncovered} out of {stats.total} branches uncovered"

@@ -6,6 +6,26 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1171:
+
+Branch exclusion comments remove the branches complete and do not affect conditions
+-----------------------------------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_0`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1171`
+
+If a line is excluded by comments and contains branches and conditions, the branches,
+conditions are excluded and the decision is cleared.
+If branches are excluded by comments they are removed completely and the conditions
+are not touched and still reported.
+With the fix the branch exclusion comments are excluding the branches and conditions
+and clear the decision the same way as it is done if a whole line is excluded.
+
 .. _fix_1165:
 
 Multiple counters for same line are not merged in coveralls report

@@ -187,7 +187,7 @@ def remove_throw_branches(filecov: FileCoverage) -> None:
                     "%s Removing unreachable branch detected as exception-only code",
                     linecov.location,
                 )
-                linecov.remove_branch_coverage(branchcov)
+                linecov.remove_branch(branchcov)
 
 
 def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> None:

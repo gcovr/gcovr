@@ -140,19 +140,16 @@ def apply_exclusion_ranges(
         branch_is_excluded: the function to check if the branches are excluded
     """
 
-    for linecov in filecov.linecov():
-        # always erase decision coverage since exclusions can change analysis
-        linecov.decision = None
-
-        if line_is_excluded(linecov.lineno):
-            if warn_excluded_lines_with_hits and linecov.count:
+    for linecov_collection in filecov.lines():
+        if line_is_excluded(linecov_collection.lineno):
+            if warn_excluded_lines_with_hits and linecov_collection.count:
                 LOGGER.warning(
-                    f"{linecov.location}: Line with {linecov.count} hit(s) excluded."
+                    f"{linecov_collection.location}: Line with {linecov_collection.count} hit(s) excluded."
                 )
-            linecov.exclude()
+            linecov_collection.exclude()
 
-        elif branch_is_excluded(linecov.lineno):
-            linecov.remove_all_branches()
+        elif branch_is_excluded(linecov_collection.lineno):
+            linecov_collection.exclude_branches()
 
     for functioncov in filecov.functioncov():
         for lineno in functioncov.excluded.keys():
