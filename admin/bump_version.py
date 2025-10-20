@@ -312,16 +312,16 @@ def update_license(filename: str, lines: list[str], _version: str) -> list[str]:
     return new_lines
 
 
-def update_source_date_epoch(
+def update_source_date_epoch_for_pytest(
     filename: str, lines: list[str], _version: str
 ) -> list[str]:
     """Update the timestamp in the test."""
     new_lines = []
 
-    env_source_date_epoch = 'env["SOURCE_DATE_EPOCH"] = '
+    env_source_date_epoch = '"SOURCE_DATE_EPOCH='
     iter_lines = iter(lines)
     for line in iter_lines:
-        if line.startswith(env_source_date_epoch):
+        if line.lstrip().startswith(env_source_date_epoch):
             line = re.sub(r"\d+", SOURCE_DATE_EPOCH_STR, line)
             new_lines.append(line)
             break
@@ -357,8 +357,8 @@ def main(version: str, for_file: Optional[str] = None) -> None:
                 handlers.append(update_copyright_string)
             if filename == "LICENSE.txt":
                 handlers.append(update_license)
-            if filename == "test_gcovr.py":
-                handlers.append(update_source_date_epoch)
+            if filename == "pyproject.toml":
+                handlers.append(update_source_date_epoch_for_pytest)
             if extension in [".xml", ".html", ".json"] and (
                 "reference" in fullname or "examples" in fullname
             ):

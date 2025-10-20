@@ -47,7 +47,7 @@ def read_report(options: Options) -> CoverageContainer:
             trace_files = glob(trace_files_pattern, recursive=True)
             if not trace_files:
                 raise RuntimeError(
-                    "Bad --json-add-tracefile option.\n"
+                    f"Bad --json-add-tracefile={trace_files_pattern} option.\n"
                     "\tThe specified file does not exist."
                 )
 

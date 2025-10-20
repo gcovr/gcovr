@@ -1,6 +1,13 @@
 # Python cache files
 __pycache__
 *.py[cod]
+*.gcda
+*.gcno
+*.gcov
+*.gcov.json.gz
+*.gcov.json
+# Extracted .json.gz
+*##*.json
 
 # nox virtual environments
 /.nox*/
@@ -42,3 +49,4 @@ src/gcovr/version.py
 
 # CI standalone app folder
 /artifacts
+/.vscode/settings.json

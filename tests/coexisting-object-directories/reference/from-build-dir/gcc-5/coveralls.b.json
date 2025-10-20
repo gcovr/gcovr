@@ -1,0 +1,143 @@
+{
+    "run_at": "2025-09-28 18:09:21 UTC",
+    "service_name": "gcovr-test-suite",
+    "service_job_id": "id",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "name": "source/fn_00.cpp",
+            "source_digest": "838abba9269fd0ccd9ee54e150c66937",
+            "coverage": [
+                null,
+                0,
+                0,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_01.cpp",
+            "source_digest": "90dfefaaa54d64131c9257f069b6f564",
+            "coverage": [
+                null,
+                0,
+                0,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_02.cpp",
+            "source_digest": "9114a53173f720355c90a27fa2d54350",
+            "coverage": [
+                null,
+                0,
+                0,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_03.cpp",
+            "source_digest": "a4be31c6060adc4bc5ee829d5b37eaed",
+            "coverage": [
+                null,
+                0,
+                0,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_04.cpp",
+            "source_digest": "e02f130bf71c9cfca550dd1b821032b2",
+            "coverage": [
+                null,
+                0,
+                0,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_05.cpp",
+            "source_digest": "9288cdd20000856be0f98cf4d78332e0",
+            "coverage": [
+                null,
+                1,
+                1,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_06.cpp",
+            "source_digest": "4c53064de17ab312f44b689579eb1c82",
+            "coverage": [
+                null,
+                1,
+                1,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_07.cpp",
+            "source_digest": "134375e87f3ca56e8246c3cbace04bb4",
+            "coverage": [
+                null,
+                1,
+                1,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_08.cpp",
+            "source_digest": "f1b74a71f2c0c2bfa69b558cf0ee1aec",
+            "coverage": [
+                null,
+                1,
+                1,
+                null
+            ]
+        },
+        {
+            "name": "source/fn_09.cpp",
+            "source_digest": "8c969aa7f0a189d50eeb2b01ec81d67e",
+            "coverage": [
+                null,
+                1,
+                1,
+                null
+            ]
+        },
+        {
+            "name": "source/main.cpp",
+            "source_digest": "585bdc63534c78ffe4dfd0e451b7568b",
+            "coverage": [
+                null,
+                1,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                1,
+                null,
+                1,
+                null,
+                1,
+                null,
+                1,
+                null,
+                1,
+                null,
+                1,
+                null,
+                null
+            ]
+        }
+    ]
+}

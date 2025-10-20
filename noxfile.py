@@ -112,72 +112,28 @@ def get_gcovr_version() -> str:
     )
 
 
-def get_gcc_versions() -> tuple[str, str]:
-    """Get the gcc version from the environment or from the output of the executable."""
-    # If the user explicitly set CC variable, use that directly without checks.
-    cc = os.environ.get("CC")
-    if cc is None:
-        # Find the first installed compiler version we support
-        for command in ALL_COMPILER_VERSIONS_NEWEST_FIRST:
-            if shutil.which(command):
-                return (command, command)
-    elif cc_reference := os.environ.get("CC_REFERENCE"):
-        return (cc, cc_reference)
-
-    commands = ["gcc", "clang"] if cc is None else [cc]
-
-    for command in commands:
-        if shutil.which(command):
-            output = subprocess.check_output([command, "--version"]).decode()  # nosec # The command is not a user input
-
-            # cspell:ignore Linaro xctoolchain
-            # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
-            #   gcc-5 (Ubuntu/Linaro 5.5.0-12ubuntu1) 5.5.0 20171010
-            #   Copyright (C) 2015 Free Software Foundation, Inc.
-            #   This is free software; see the source for copying conditions.  There is NO
-            #   warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-            search_gcc_version = re.search(r"^gcc\b.* ([0-9]+)\..+$", output, re.M)
-
-            # look for a line "WHATEVER clang version VERSION.WHATEVER" in output like:
-            #    Apple clang version 13.1.6 (clang-1316.0.21.2.5)
-            #    Target: arm64-apple-darwin21.5.0
-            #    Thread model: posix
-            #    InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
-            search_clang_version = re.search(
-                r"\bclang version ([0-9]+)\.", output, re.M
-            )
-
-            if search_gcc_version:
-                major_version = search_gcc_version.group(1)
-                return (command, f"gcc-{major_version}")
-
-            if search_clang_version:
-                major_version = search_clang_version.group(1)
-                return (command, f"clang-{major_version}")
-
-    raise RuntimeError(
-        "Could not detect a valid compiler, you can define one by setting the environment CC"
-    )
-
-
 def set_environment(session: nox.Session, cc: Optional[str] = None) -> None:
     """Set the environment variables"""
     if cc is None:
-        cc, cc_reference = get_gcc_versions()
-    else:
-        cc_reference = cc
+        cc = os.environ.get("CC")
+        if cc is None:
+            for command in ["gcc", "clang"]:
+                if shutil.which(command):
+                    cc = command
+
+            if cc is None:
+                session.error(
+                    "No compiler found in PATH, please set CC environment variable"
+                )
 
     cc_path, cc_file = os.path.split(cc)
 
-    session.env["GCOVR_TEST_SUITE"] = "1"
     session.env["CC"] = os.path.join(cc_path, cc_file)
     session.env["CFLAGS"] = "--this_flag_does_not_exist"
     session.env["CXX"] = os.path.join(
         cc_path, cc_file.replace("clang", "clang++").replace("gcc", "g++")
     )
     session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
-    if cc_reference is not None:
-        session.env["CC_REFERENCE"] = cc_reference
 
 
 @nox.session()
@@ -480,6 +436,7 @@ def tests(session: nox.Session) -> None:
         "cmake",
         "pygments",  # Need a version from dev requirements for reference compare
         "pytest",
+        "pytest-check",
         "pytest-timeout",
         "pywin32",
         "yaxmldiff",
@@ -513,15 +470,14 @@ def tests(session: nox.Session) -> None:
     session.env["GCOV"] = gcov
     session.run("make", "--version", external=True)
     session.run("ninja", "--version", external=True)
-    session.log(f"Using reference data for {session.env['CC_REFERENCE']}")
 
-    with session.chdir("tests"):
-        session.run("make", "--silent", "clean", external=True)
+    if (diff_zip := Path("diff.zip")).exists():
+        diff_zip.unlink()
 
     args = ["-m", "pytest"]
     if use_coverage:
         args += ["--cov=src", "--cov-branch"]
-        session.env["COVERAGE_FILE"] = f".coverage_{session.env['CC_REFERENCE']}"
+        session.env["COVERAGE_FILE"] = f".coverage_{Path(cc).name}"
     args += session.posargs
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
@@ -861,11 +817,11 @@ def docker_build_compiler_clang(session: nox.Session) -> None:
 
 
 @nox.session(python=False)
-@nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
-def docker_build_compiler(session: nox.Session, version: str) -> None:
+@nox.parametrize("cc", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
+def docker_build_compiler(session: nox.Session, cc: str) -> None:
     """Build the docker container for a specific GCC version."""
-    set_environment(session, version)
-    container_tag = docker_container_tag(version)
+    set_environment(session, cc)
+    container_tag = docker_container_tag(cc)
     cache_options = []
     if CI_RUN:
         session.log(
@@ -952,10 +908,10 @@ def docker_run_compiler_clang(session: nox.Session) -> None:
 
 
 @nox.session(python=False)
-@nox.parametrize("version", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
-def docker_run_compiler(session: nox.Session, version: str) -> None:
+@nox.parametrize("cc", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
+def docker_run_compiler(session: nox.Session, cc: str) -> None:
     """Run the docker container for a specific GCC version."""
-    set_environment(session, version)
+    set_environment(session, cc)
 
     nox_options = session.posargs if session.posargs else ["-s", "qa"]
     if not session.interactive:
@@ -984,7 +940,7 @@ def docker_run_compiler(session: nox.Session, version: str) -> None:
         "SPHINX_SKIP_CHECK_LINKS",
         "-v",
         f"{os.getcwd()}:/gcovr",
-        docker_container_tag(version),
+        docker_container_tag(cc),
         *nox_options,
         external=True,
     )

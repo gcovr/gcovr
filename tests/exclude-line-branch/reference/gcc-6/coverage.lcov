@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:tests/exclude-line-branch/bar.cpp
+SF:tests/exclude-line-branch/output/bar.cpp
 VER:7c2adb8c2d04277ae316f0bc581968cc
 FN:14,bar(int)
 FNDA:0,bar(int)
@@ -10,7 +10,7 @@ BRH:0
 LH:0
 LF:0
 end_of_record
-SF:tests/exclude-line-branch/foo.cpp
+SF:tests/exclude-line-branch/output/foo.cpp
 VER:3d3327303c689440297b037f75ff9f29
 FN:2,foo(int)
 FNDA:5,foo(int)
@@ -38,7 +38,7 @@ DA:21,1,c26ba559a5f34d46a49fafed87946fb7
 LH:7
 LF:9
 end_of_record
-SF:tests/exclude-line-branch/main.cpp
+SF:tests/exclude-line-branch/output/main.cpp
 VER:5f51924059b39181646c5b2d21604f3b
 FN:10,Bar::Bar()
 FNDA:1,Bar::Bar()

@@ -2,7 +2,7 @@
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.92" branch-rate="0.47727" lines-covered="23" lines-valid="25" branches-covered="21" branches-valid="44" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
   <sources>
-    <source>tests/virtual-classes</source>
+    <source>tests/virtual-classes/output</source>
   </sources>
   <packages>
     <package name="" line-rate="0.92" branch-rate="0.47727" complexity="0.0">

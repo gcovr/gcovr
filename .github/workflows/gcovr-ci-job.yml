@@ -111,7 +111,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session tests --  --archive_differences
+          nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session tests --  --archive-differences
           # There must not be any modifications to get the correct versions later
           if [ -n "$(git status --porcelain)" ] ; then
             echo "Following files are modified:"

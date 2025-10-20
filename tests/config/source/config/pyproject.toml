@@ -1,0 +1,9 @@
+[tool.gcovr]
+
+filter=[
+    'main\.cpp',
+    '.*'
+]
+
+json = "coverage.json"
+json-pretty = true

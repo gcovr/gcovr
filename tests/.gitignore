@@ -1,49 +1,18 @@
-# Ignore output files
-stderr
-coverage.log
-coverage*.txt
-coverage*.md
-*.html
-*.css
-coverage*.json
-summary_coverage*.json
-coverage*.csv
-coverage*.lcov
-clover*.xml
-cobertura*.xml
-coveralls*.json
-jacoco*.xml
-sonarqube*.xml
-
-# Zipped reports
-*.*.gz
-
-# CMake build directory
-build/
+# Ignore output directory and files
+output/
 
 # except in config, reference and data directories
 !*/config/**
 !*/reference/**
 !*/data/**
 # and input stylesheet
-!style.css
-
-# C extensions
-*.o
-*.so
+!style*.css
 
 # Unit test / coverage reports
 .pytest_cache/
 .coverage
 testcase
 stderr
-*.gcda
-*.gcno
-*.gcov
-*.gcov.json.gz
-*.gcov.json
-# Extracted .json.gz
-*##*.json
 
 # Differences
 diff.zip

@@ -2,7 +2,7 @@
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.78571" branch-rate="0.5" lines-covered="11" lines-valid="14" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
   <sources>
-    <source>tests/exclude-branch</source>
+    <source>tests/exclude-branch/output</source>
   </sources>
   <packages>
     <package name="" line-rate="0.78571" branch-rate="0.5" complexity="0.0">

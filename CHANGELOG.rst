@@ -20,6 +20,17 @@ Documentation:
 
 Internal changes:
 
+- Rewrite test suite to use python files instead of Makefiles. (:issue:`1170`)
+
+  - Replaced ``_`` with ``-`` in the options controlling the test suite:
+
+    - ``--generate_reference`` is now ``--generate-reference``
+    - ``--update_reference`` is now ``--update-reference``
+    - ``--archive_differences`` is now ``--archive-differences``
+    - ``--skip_clean`` is now ``--skip-clean``
+
+  - Remove test with MacOs 13 because image will be retired by December 4th, 2025.
+
 .. _release_8_4:
 
 8.4 (27 September 2025)
@@ -713,10 +724,10 @@ Internal changes:
 
   - Set make variable TEST_OPTS as environment variable inside docker. (:issue:`372`)
   - Add make variable USE_COVERAGE to extend flags for coverage report in GitHub actions. (:issue:`404`)
-  - Extend tests to use an unified diff in the assert. Add test options `--generate_reference`,
-    `--update_reference` and `--skip_clean`. (:issue:`379`)
+  - Extend tests to use an unified diff in the assert. Add test options ``--generate_reference``,
+    ``--update_reference`` and ``--skip_clean``. (:issue:`379`)
   - Support multiple output patterns in integration tests. (:issue:`383`)
-  - New option `--archive_differences` to save the different files as ZIP.
+  - New option ``--archive_differences`` to save the different files as ZIP.
     Use this ZIP as artifact in AppVeyor. (:issue:`392`)
   - Add support for gcc-8 to test suite and docker tests. (:issue:`423`)
   - Run as limited user inside docker container and add test with read only directory. (:issue:`445`)

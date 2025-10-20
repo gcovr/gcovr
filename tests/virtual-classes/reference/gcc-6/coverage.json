@@ -7,21 +7,21 @@
                 {
                     "line_number": 8,
                     "function_name": "ns1::Bar1::Bar1()",
-                    "count": 6,
+                    "count": 3,
                     "branches": [],
                     "gcovr/md5": "601116bb7f972822f71830e1433951bd"
                 },
                 {
                     "line_number": 9,
                     "function_name": "ns1::Bar1::Bar1()",
-                    "count": 6,
+                    "count": 3,
                     "branches": [],
                     "gcovr/md5": "78c3860abebb28f3bf72e51c4621fef3"
                 },
                 {
                     "line_number": 10,
                     "function_name": "ns1::Bar1::~Bar1()",
-                    "count": 6,
+                    "count": 3,
                     "branches": [],
                     "gcovr/md5": "1d6ff0e31f80fb5f58616ac936759cdf"
                 },
@@ -47,13 +47,13 @@
                 {
                     "line_number": 24,
                     "function_name": "ns2::Bar2::Bar2()",
-                    "count": 8,
+                    "count": 4,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 1,
-                            "returned": 4
+                            "returned": 2
                         }
                     ],
                     "gcovr/md5": "2598ea30dbb711a590a1617919c5cfba"
@@ -61,21 +61,21 @@
                 {
                     "line_number": 25,
                     "function_name": "ns2::Bar2::Bar2()",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "gcovr/md5": "82188094c000f89d4df0eee592868072"
                 },
                 {
                     "line_number": 26,
                     "function_name": "ns2::Bar2::~Bar2()",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "gcovr/md5": "0ccb106e6d18dd8e9dcd60c0ed8182fc"
                 },
                 {
                     "line_number": 27,
                     "function_name": "ns2::Bar2::~Bar2()",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "calls": [
                         {
@@ -91,7 +91,7 @@
                         {
                             "callno": 2,
                             "source_block_id": 1,
-                            "returned": 4
+                            "returned": 2
                         }
                     ],
                     "gcovr/md5": "0fe98953f15971380c96945eb7c57f18"
@@ -99,13 +99,13 @@
                 {
                     "line_number": 40,
                     "function_name": "ns3::Bar3::Bar3()",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "5e4fd23a42f87556b2a43f098251e8c7"
@@ -113,21 +113,21 @@
                 {
                     "line_number": 41,
                     "function_name": "ns3::Bar3::Bar3()",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "a18e41118e36e1ef68607175dc1b592f"
                 },
                 {
                     "line_number": 42,
                     "function_name": "ns3::Bar3::~Bar3()",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "85fc251b48f22264177f49e1836b6458"
                 },
                 {
                     "line_number": 43,
                     "function_name": "ns3::Bar3::~Bar3()",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
@@ -143,7 +143,7 @@
                         {
                             "callno": 2,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "345e9b1d29966e451401206797f7ad22"
@@ -151,14 +151,14 @@
                 {
                     "line_number": 51,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 53,
                     "function_name": "main",
-                    "count": 4,
+                    "count": 2,
                     "branches": [
                         {
                             "branchno": 3,
@@ -179,12 +179,12 @@
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 1,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 2,
@@ -202,11 +202,11 @@
                 {
                     "line_number": 54,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "branchno": 1,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 4
@@ -220,7 +220,7 @@
                         },
                         {
                             "branchno": 4,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
@@ -234,7 +234,7 @@
                         },
                         {
                             "branchno": 7,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 1
@@ -251,17 +251,17 @@
                         {
                             "callno": 0,
                             "source_block_id": 4,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 6,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "5336964c912a66290b6604e90b172abb"
@@ -269,18 +269,18 @@
                 {
                     "line_number": 55,
                     "function_name": "main",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 1,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 2,
@@ -293,11 +293,11 @@
                 {
                     "line_number": 56,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "branchno": 1,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 1
@@ -311,7 +311,7 @@
                         },
                         {
                             "branchno": 4,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
@@ -325,7 +325,7 @@
                         },
                         {
                             "branchno": 7,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 1
@@ -342,17 +342,17 @@
                         {
                             "callno": 0,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 6,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "e957e4f8902c1c42f540dc8c31b14c16"
@@ -360,11 +360,11 @@
                 {
                     "line_number": 57,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "branchno": 1,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
@@ -378,7 +378,7 @@
                         },
                         {
                             "branchno": 4,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 1
@@ -392,7 +392,7 @@
                         },
                         {
                             "branchno": 7,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2
@@ -409,17 +409,17 @@
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 6,
                             "source_block_id": 2,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "4e29cd99a75408f6184cd5f2da17bf4b"
@@ -427,18 +427,18 @@
                 {
                     "line_number": 58,
                     "function_name": "main",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 1,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 2,
@@ -451,11 +451,11 @@
                 {
                     "line_number": 59,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "branchno": 1,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2
@@ -469,7 +469,7 @@
                         },
                         {
                             "branchno": 4,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
@@ -483,7 +483,7 @@
                         },
                         {
                             "branchno": 7,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 1
@@ -500,17 +500,17 @@
                         {
                             "callno": 0,
                             "source_block_id": 2,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 6,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "a73247510c9604c43ca8cfeb1cbe1e5c"
@@ -518,11 +518,11 @@
                 {
                     "line_number": 60,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "branchno": 1,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
@@ -536,7 +536,7 @@
                         },
                         {
                             "branchno": 4,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 1
@@ -550,7 +550,7 @@
                         },
                         {
                             "branchno": 7,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2
@@ -567,17 +567,17 @@
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 6,
                             "source_block_id": 2,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "f199d76205e3f206214ea2c7f1d273b1"
@@ -585,11 +585,11 @@
                 {
                     "line_number": 61,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "branchno": 1,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
@@ -603,7 +603,7 @@
                         },
                         {
                             "branchno": 4,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 1
@@ -617,7 +617,7 @@
                         },
                         {
                             "branchno": 7,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2
@@ -634,17 +634,17 @@
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 6,
                             "source_block_id": 2,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "7eaf42f0e8e357e2dfa91b4013c3750d"
@@ -807,7 +807,7 @@
                 {
                     "line_number": 68,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 }
@@ -816,43 +816,43 @@
                 {
                     "demangled_name": "ns1::Bar1::Bar1()",
                     "lineno": 8,
-                    "execution_count": 6,
+                    "execution_count": 3,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns1::Bar1::~Bar1()",
                     "lineno": 10,
-                    "execution_count": 6,
+                    "execution_count": 3,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns2::Bar2::Bar2()",
                     "lineno": 24,
-                    "execution_count": 4,
+                    "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns2::Bar2::~Bar2()",
                     "lineno": 26,
-                    "execution_count": 4,
+                    "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns3::Bar3::Bar3()",
                     "lineno": 40,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "ns3::Bar3::~Bar3()",
                     "lineno": 42,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
                     "name": "main",
                     "lineno": 51,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 62.0
                 }
             ]

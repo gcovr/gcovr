@@ -259,12 +259,12 @@ The QA process (``python3 -m nox``) consists of multiple parts:
 
 The tests are in the ``tests`` directory.
 You can run the tests with ``python3 -m nox --session tests``
-for the default GCC version (specified via ``CC`` environment variable, defaults to gcc-5).
-
+for the default GCC version (specified via ``CC`` environment variable,
+defaults to gcc or clang).
 
 There are unit tests for some parts of gcovr,
-and a comprehensive corpus of example projects
-that are executed as the ``test_gcovr.py`` integration test.
+and a comprehensive corpus of example projects for
+:ref:`integration tests <integration tests>`.
 Each ``tests/*`` directory is one such example project.
 
 You can format files with ``python3 -m nox --session ruff -- format path/to/file``)
@@ -289,35 +289,29 @@ Structure of integration tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Each project in the corpus
-contains a ``Makefile`` and a ``reference`` directory::
+contains a ``test_*.py``, a ``reference`` directory and a ``source`` directory or file::
 
    tests/some-test/
      reference/
-     Makefile
-     README
-     example.cpp
+     source/
+       example.cpp
+     test_some_test.py
 
-The Makefile controls how the project is built,
+The ``test_some_test.py`` controls how the project is built,
 and how gcovr should be invoked.
 The reference directory contains baseline files against
 which the gcovr output is compared.
 Tests can be executed even without baseline files.
 
-Each Makefile contains the following targets:
+Each test function uses the fixture ``gcovr_test_exec`` which is defined in ``conftest.py``.
+This fixture creates a temporary ``output`` directory for each test and copies
+the content of ``source`` into it. If ``source`` is a file it must contain the name
+of the test from which the source should be copied.
+It provides functions to execute the compiler and linker, run ``gcovr`` or other programs
+and to compare the generated output files with the reference files. After the test
+function is finished the fixture checks if all files where compared by the test
+and removes the temporary output directory if option .
 
-* ``all:`` builds the example project. Can be shared between gcovr invocations.
-* ``run:`` lists available targets
-  which must be a subset of the available output formats.
-* ``clean:`` remove any generated files
-  after all tests of the scenario have finished.
-* output formats (txt, html, json, sonarqube, ...):
-  invoke gcovr to produce output files of the correct format.
-  The test runner automatically finds the generated files (if any)
-  and compares them to the baseline files in the reference directory.
-  All formats are optional,
-  but using at least JSON is recommended.
-* ``clean-each:`` if provided, will be invoked by the test runner
-  after testing each format.
 
 .. _run tests:
 
@@ -328,7 +322,7 @@ To run all tests, use ``python3 -m nox``.
 The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
-Supported versions are ``CC=gcc-5``, ``CC=gcc-6``, ``CC=gcc-8``, ``CC=gcc-9``,
+Supported versions are ``gcc-5``, ``gcc-6``, ``gcc-8``, ``gcc-9``,
 ``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``gcc-14``, ``clang-10``,
 ``clang-13``, ``clang-14``, ``clang-15``, ``clang-16``, ``clang-17``,
 ``clang-17``, ``clang-18`` and ``clang-19``.
@@ -358,43 +352,51 @@ To see which tests would be run, add the ``--collect-only`` option:
 
 Sometimes during development you need to create reference files for new test
 or update the current reference files. To do this you have to
-add ``--generate_reference`` or ``--update_reference`` option
+add ``--generate-reference`` or ``--update-reference`` option
 to the test invocation.
 By default generated output files are automatically removed after test run.
-To skip this process you can add ``--skip_clean`` option the test invocation.
+To skip this process you can add ``--skip-clean`` option the test invocation.
 For example:
 
 .. code:: bash
 
     # run tests and generate references for simple1 example
-    python3 -m nox --session tests -- -k 'simple1' --generate_reference
+    python3 -m nox --session tests -- -k 'simple1' --generate-reference
 
     # run tests and update xml references for simple1 example
-    python3 -m nox --session tests -- -k 'xml and simple1' --update_reference
+    python3 -m nox --session tests -- -k 'xml and simple1' --update-reference
 
     # run only XML tests and do not remove generated files
-    python3 -m nox --session tests -- -k 'xml' --skip_clean
+    python3 -m nox --session tests -- -k 'xml' --skip-clean
 
 To update the reference data for all compiler in one call see
 :ref:`run tests with Docker <docker tests>`.
 
 When the currently generated output reports differ to the reference files
 you can create a ZIP archive named ``diff.zip`` in the tests directory
-by using ``--archive_differences`` option.
+by using ``--archive-differences`` option.
 Currently in gcovr it is used by GitHub CI to create a ZIP file
 with the differences as an artifact.
 
 .. code:: bash
 
     # run tests and generate a ZIP archive when there were differences
-    python3 -m nox --session tests -- --archive_differences
+    python3 -m nox --session tests -- --archive-differences
+
+.. versionchanged:: NEXT
+   Replaced ``_`` with ``-`` in the options controlling the test suite:
+
+   - ``--generate_reference`` is now ``--generate-reference``
+   - ``--update_reference`` is now ``--update-reference``
+   - ``--archive_differences`` is now ``--archive-differences``
+   - ``--skip_clean`` is now ``--skip-clean``
 
 .. versionchanged:: 5.1
     Change how to start test from ``make test`` to ``python3 -m nox --session tests``
 
 .. versionadded:: 5.0
-   Added test options `--generate_reference`, `--update_reference`,
-   `--skip_clean`, '--archive_differences' and changed way to call tests
+   Added test options ``--generate_reference``, ``--update_reference``,
+   ``--skip_clean``, ``--archive_differences`` and changed way to call tests
    only by ``make test``.
 
 .. _docker tests:
@@ -439,8 +441,8 @@ after a ``--`` :
 
     python3 -m nox -s 'docker_compiler(gcc-9)' -- -rs tests
 
-You can also use the compiler 'all' to run the tests for all compiler versions,
-'gcc' to only use the ``gcc`` versions, or 'clang' to use ``clang`` versions.
+You can also use the compiler ``all`` to run the tests for all compiler versions,
+``gcc`` to only use the all GCC versions, or ``clang`` to use all Clang/LLVM versions.
 
 If you run the ``tests`` session inside the container you can add also
 additional pytest arguments.
@@ -448,13 +450,13 @@ A useful command to update all the reference files is:
 
 .. code:: bash
 
-    python3 -m nox -s 'docker_compiler(all)' -- -rs tests -- --update_reference
+    python3 -m nox -s 'docker_compiler(all)' -- -rs tests -- --update-reference
 
-or only for the tests containing ``simple1`` in the name:
+or only for the tests containing ``simple`` in the name:
 
 .. code:: bash
 
-    python3 -m nox -s 'docker_compiler(all)' -- -rs tests -- --update_reference -k 'simple1'
+    python3 -m nox -s 'docker_compiler(all)' -- -rs tests -- --update-reference -k 'simple'
 
 .. _devcontainer:
 

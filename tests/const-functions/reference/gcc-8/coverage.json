@@ -7,28 +7,28 @@
                 {
                     "line_number": 6,
                     "function_name": "Bar::Bar()",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "gcovr/md5": "61c88453392c74ecd94f0057a8aedc7d"
                 },
                 {
                     "line_number": 7,
                     "function_name": "Bar::Bar()",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "gcovr/md5": "5efee26ba06711f9395b3c3bc7a9d94a"
                 },
                 {
                     "line_number": 8,
                     "function_name": "Bar::~Bar()",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "gcovr/md5": "ef89afadbfb397fa2428716379142419"
                 },
                 {
                     "line_number": 9,
                     "function_name": "Bar::~Bar()",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "calls": [
                         {
@@ -47,30 +47,30 @@
                 {
                     "line_number": 11,
                     "function_name": "Bar::foo() const",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "a0e7e27b6061fb4fa8ba7c50f9ead766"
                 },
                 {
                     "line_number": 13,
                     "function_name": "Bar::foo() const",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 1,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 2,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "ab1117040294bf9c2b68b8aba4e7c3a7"
@@ -78,37 +78,37 @@
                 {
                     "line_number": 14,
                     "function_name": "Bar::foo() const",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
                 },
                 {
                     "line_number": 15,
                     "function_name": "Bar::foo()",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "270828e04d7e08baf4e083b1861a88d1"
                 },
                 {
                     "line_number": 17,
                     "function_name": "Bar::foo()",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 1,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 2,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "18a2ea0c62241309997b08ebde8d2ff3"
@@ -116,32 +116,32 @@
                 {
                     "line_number": 18,
                     "function_name": "Bar::foo()",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
                 },
                 {
                     "line_number": 24,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 25,
                     "function_name": "main",
-                    "count": 4,
+                    "count": 2,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 1,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 2,
@@ -154,13 +154,13 @@
                 {
                     "line_number": 26,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 1,
@@ -173,11 +173,11 @@
                 {
                     "line_number": 27,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "branchno": 1,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
@@ -194,7 +194,7 @@
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "426df3762971fc92b44b6fbe977b54c0"
@@ -202,11 +202,11 @@
                 {
                     "line_number": 28,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [
                         {
                             "branchno": 1,
-                            "count": 2,
+                            "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 0
@@ -223,7 +223,7 @@
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "1c58ebd1fa62ed5c8e36eeea1396340f"
@@ -231,13 +231,13 @@
                 {
                     "line_number": 30,
                     "function_name": "main",
-                    "count": 2,
+                    "count": 1,
                     "branches": [],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
+                            "returned": 1
                         }
                     ],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
@@ -247,31 +247,31 @@
                 {
                     "demangled_name": "Bar::Bar()",
                     "lineno": 6,
-                    "execution_count": 4,
+                    "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "Bar::~Bar()",
                     "lineno": 8,
-                    "execution_count": 4,
+                    "execution_count": 2,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "Bar::foo() const",
                     "lineno": 11,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
                     "demangled_name": "Bar::foo()",
                     "lineno": 15,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 100.0
                 },
                 {
                     "name": "main",
                     "lineno": 24,
-                    "execution_count": 2,
+                    "execution_count": 1,
                     "blocks_percent": 69.0
                 }
             ]

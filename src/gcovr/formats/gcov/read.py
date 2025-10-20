@@ -569,6 +569,17 @@ class GcovProgram:
                     f"Gcov command must not be changed, expected '{GcovProgram.__cmd}', got '{cmd}'"
                 )
 
+    @classmethod
+    def reset(cls) -> None:
+        """Reset the cached values (for testing purposes)."""
+        with GcovProgram.LockContext(GcovProgram.__lock):
+            cls.__cmd = ""
+            cls.__cmd_split = list[str]()
+            cls.__default_options = list[str]()
+            cls.__exitcode_to_ignore = list[int]([0])
+            cls.__help_output = ""
+            cls.__version_output = ""
+
     def identify_and_cache_capabilities(self) -> None:
         """Check the capabilities of GCOVR once."""
         with GcovProgram.LockContext(GcovProgram.__lock):

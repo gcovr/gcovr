@@ -113,6 +113,8 @@ jobs:
           rm -rf /tmp/coverage-upload/*
           cp --target-directory=/tmp/coverage-upload ./tests/exclude-line-branch/reference/gcc-5/*.*
           cp --target-directory=/tmp/coverage-upload --force ./tests/exclude-line-branch/reference/gcc-14/*.*
+          # Patch the paths inside the coverage files
+          find /tmp/coverage-upload -type f -name '*' -exec sed -e 's^output/^source/^g ; s^output^source^g ;' -i '' {} \;
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
@@ -313,10 +315,6 @@ jobs:
             upload-app: true
 
           # Test minimum and maximum Python version on Mac OS.
-          - os: macos-13
-            gcc: gcc
-            python-version: '3.13'
-            upload-app: true
           - os: macos-14
             gcc: gcc
             python-version: '3.9'

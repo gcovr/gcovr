@@ -35,7 +35,7 @@ Operating System:
 
     - Ubuntu 20.04, 22.04 and 24.04
     - Windows Server 2022 and 2025
-    - macOS 13, 14 and 15.
+    - MacOS 14 and 15.
 
 Compiler:
     GCC and Clang. The versions used for development tests are

@@ -1,5 +1,5 @@
 TN:GCOVR report
-SF:tests/no-markers/main.cpp
+SF:tests/no-markers/output/main.cpp
 VER:058d6bcbb91973465139dfd011da6d89
 FN:3,_Z3fooi
 FNDA:1,_Z3fooi
