@@ -3,7 +3,7 @@ import pytest
 from tests.conftest import GcovrTestExec
 
 
-@pytest.mark.xfail(
+@pytest.mark.skipif(
     GcovrTestExec.is_gcc() and GcovrTestExec.cc_version() in [5, 6],
     reason="The branch and call numbers differ in locale execution and CI",
 )
