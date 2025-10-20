@@ -89,9 +89,12 @@ def write_report(
             branch_hits = 0
             for linecov in filecov.linecov():
                 if linecov.is_reportable:
-                    branchcov_list = list(linecov.branches())
-                    branches += len(branchcov_list)
-                    for branchno, branchcov in enumerate(branchcov_list):
+                    for branchno, branchcov in enumerate(
+                        branchcov
+                        for branchcov in linecov.branches()
+                        if branchcov.is_reportable
+                    ):
+                        branches += 1
                         if branchcov.count:
                             branch_hits += 1
                         # BRDA:<line_number>,[<exception>]<block>,<branch>,<taken>

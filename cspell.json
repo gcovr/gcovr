@@ -163,6 +163,7 @@
         "addgroup",
         "addopts",
         "bedrockio",
+        "BRDA",
         "buildx",
         "caplog",
         "capsys",

@@ -6,7 +6,7 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
-.. _fix_1171:
+.. _fix_1171_1:
 
 Branch exclusion comments remove the branches complete and do not affect conditions
 -----------------------------------------------------------------------------------
@@ -25,6 +25,22 @@ If branches are excluded by comments they are removed completely and the conditi
 are not touched and still reported.
 With the fix the branch exclusion comments are excluding the branches and conditions
 and clear the decision the same way as it is done if a whole line is excluded.
+
+.. _fix_1171_2:
+
+Excluded branches ar still reported in LCOV report
+--------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1171`
+
+When a line with branches is excluded the branch exclusion flag is
+ignored and there are still ``BRDA`` lines created in the ``LCOV`` report.
 
 .. _fix_1165:
 

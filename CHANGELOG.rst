@@ -16,6 +16,7 @@ Bug fixes and small improvements:
 
 - Fix coveralls report if there are several coverage elements per line. (:issue:`1165`)
 - Fix not excluded conditions if branches are excluded by comments. (:issue:`1171`)
+- Fix reported excluded branches in ``LCOV`` report. (:issue:`1171`)
 
 Documentation:
 
@@ -40,7 +41,8 @@ Internal changes:
 Known bugs:
 
 - :ref:`fix_1165`
-- :ref:`fix_1171`
+- :ref:`fix_1171_1`
+- :ref:`fix_1171_2`
 
 Breaking changes:
 
@@ -150,7 +152,7 @@ Known bugs:
 - :ref:`fix_1126`
 - :ref:`fix_1130`
 - :ref:`fix_1138`
-- :ref:`fix_1171`
+- :ref:`fix_1171_1`
 
 Breaking changes:
 
@@ -213,7 +215,7 @@ Known bugs:
 - :ref:`fix_1126`.
 - :ref:`fix_1130`
 - :ref:`fix_1138`
-- :ref:`fix_1171`
+- :ref:`fix_1171_1`
 
 Breaking changes:
 
@@ -241,7 +243,7 @@ Known bugs:
 - :ref:`fix_1092`
 - :ref:`fix_1130`
 - :ref:`fix_1138`
-- :ref:`fix_1171`
+- :ref:`fix_1171_1`
 
 Breaking changes:
 
@@ -273,7 +275,7 @@ Known bugs:
 - :ref:`fix_1092`
 - :ref:`fix_1130`
 - :ref:`fix_1138`
-- :ref:`fix_1171`
+- :ref:`fix_1171_1`
 
 Breaking changes:
 
