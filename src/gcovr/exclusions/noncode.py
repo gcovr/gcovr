@@ -47,7 +47,7 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> N
             linecov.location,
         )
 
-        linecov.remove_all_branches()
+        linecov.clear_branches()
 
 
 def _line_can_contain_branches(code: str) -> bool:

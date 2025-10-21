@@ -126,7 +126,7 @@ def test(
     gcovr_test_exec.compare_html()
 
 
-@pytest.mark.xfail(
+@pytest.mark.skipif(
     GcovrTestExec.cc_version() >= (8 if GcovrTestExec.is_gcc() else 13),
     reason="Newer versions stub the missing lines",
 )

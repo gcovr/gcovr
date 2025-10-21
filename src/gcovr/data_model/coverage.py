@@ -1347,13 +1347,13 @@ class LineCoverage(CoverageBase):
 
         return branchcov
 
-    def remove_branch_coverage(self, branchcov: BranchCoverage) -> None:
-        """Remove the given branch."""
-        del self.__branches[branchcov.key]
-
-    def remove_all_branches(self) -> None:
+    def clear_branches(self) -> None:
         """Remove all the branches."""
         self.__branches.clear()
+
+    def remove_branch(self, branchcov: BranchCoverage) -> None:
+        """Remove the given branch."""
+        del self.__branches[branchcov.key]
 
     def insert_condition_coverage(
         self,
@@ -1530,12 +1530,16 @@ class LineCoverage(CoverageBase):
     def exclude(self) -> None:
         """Exclude line from coverage statistic."""
         self.excluded = True
+        for callcov in self.calls():
+            callcov.excluded = True
+        self.exclude_branches()
+
+    def exclude_branches(self) -> None:
+        """Exclude branches and conditions/decisions of line from coverage statistic."""
         for branchcov in self.branches():
             branchcov.excluded = True
         for conditioncov in self.conditions():
             conditioncov.excluded = True
-        for callcov in self.calls():
-            callcov.excluded = True
         self.decision = None
 
     def branch_coverage(self) -> CoverageStat:
@@ -1776,7 +1780,12 @@ class LineCoverageCollection(CoverageBase):
     def exclude(self) -> None:
         """Exclude line from coverage statistic."""
         for linecov in self.linecov():
-            linecov.excude()
+            linecov.exclude()
+
+    def exclude_branches(self) -> None:
+        """Exclude line from coverage statistic."""
+        for linecov in self.linecov():
+            linecov.exclude_branches()
 
     def decision_coverage(self) -> DecisionCoverageStat:
         """Return the decision coverage statistic of the line."""

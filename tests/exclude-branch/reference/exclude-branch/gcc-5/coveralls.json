@@ -1,0 +1,55 @@
+{
+    "run_at": "2025-09-28 18:09:21 UTC",
+    "service_name": "gcovr-test-suite",
+    "service_job_id": "id",
+    "service_number": "number",
+    "service_pull_request": "pr",
+    "source_files": [
+        {
+            "name": "main_exclude_branch.cpp",
+            "source_digest": "6d3285119b8ab4620218bf24baa23923",
+            "coverage": [
+                null,
+                null,
+                null,
+                1,
+                1,
+                0,
+                null,
+                1,
+                null,
+                1,
+                1,
+                null,
+                0,
+                null,
+                null,
+                1,
+                0,
+                null,
+                1,
+                null,
+                null,
+                1,
+                null,
+                null,
+                null,
+                1,
+                1,
+                null,
+                1,
+                null
+            ],
+            "branches": [
+                10,
+                0,
+                0,
+                1,
+                10,
+                0,
+                1,
+                0
+            ]
+        }
+    ]
+}
