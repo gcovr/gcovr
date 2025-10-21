@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<coverage line-rate="0.66667" branch-rate="0.45455" lines-covered="8" lines-valid="12" branches-covered="5" branches-valid="11" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
+  <sources>
+    <source>tests/exclude-branch/output/exclude-branch-source</source>
+  </sources>
+  <packages>
+    <package name="" line-rate="0.66667" branch-rate="0.45455" complexity="0.0">
+      <classes>
+        <class name="main_exclude_branch_source_cpp" filename="main_exclude_branch_source.cpp" line-rate="0.66667" branch-rate="0.45455" complexity="0.0">
+          <methods>
+            <method name="foo" signature="(int)" line-rate="0.57143" branch-rate="0.4" complexity="0.0">
+              <lines>
+                <line number="3" hits="2" branch="false"/>
+                <line number="5" hits="2" branch="true" condition-coverage="40% (2/5)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="40%"/>
+                  </conditions>
+                </line>
+                <line number="7" hits="1" branch="false"/>
+                <line number="9" hits="0" branch="false"/>
+                <line number="11" hits="0" branch="false"/>
+                <line number="13" hits="1" branch="false"/>
+                <line number="15" hits="0" branch="false"/>
+              </lines>
+            </method>
+            <method name="main" signature="" line-rate="0.8" branch-rate="0.5" complexity="0.0">
+              <lines>
+                <line number="19" hits="1" branch="false"/>
+                <line number="20" hits="1" branch="true" condition-coverage="50% (3/6)">
+                  <conditions>
+                    <condition number="0" type="jump" coverage="50%"/>
+                  </conditions>
+                </line>
+                <line number="21" hits="1" branch="false"/>
+                <line number="24" hits="0" branch="false"/>
+                <line number="27" hits="1" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="2" branch="false"/>
+            <line number="5" hits="2" branch="true" condition-coverage="40% (2/5)">
+              <conditions>
+                <condition number="0" type="jump" coverage="40%"/>
+              </conditions>
+            </line>
+            <line number="7" hits="1" branch="false"/>
+            <line number="9" hits="0" branch="false"/>
+            <line number="11" hits="0" branch="false"/>
+            <line number="13" hits="1" branch="false"/>
+            <line number="15" hits="0" branch="false"/>
+            <line number="19" hits="1" branch="false"/>
+            <line number="20" hits="1" branch="true" condition-coverage="50% (3/6)">
+              <conditions>
+                <condition number="0" type="jump" coverage="50%"/>
+              </conditions>
+            </line>
+            <line number="21" hits="1" branch="false"/>
+            <line number="24" hits="0" branch="false"/>
+            <line number="27" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
