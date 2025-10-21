@@ -33,6 +33,8 @@ Internal changes:
 
   - Remove test with MacOs 13 because image will be retired by December 4th, 2025.
 
+- Activate parallel test execution by default and improve IDE support. (:issue:`1174`)
+
 .. _release_8_4:
 
 8.4 (27 September 2025)
