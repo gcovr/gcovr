@@ -19,12 +19,12 @@ Branch exclusion comments remove the branches complete and do not affect conditi
    * - Fixed
      - :ref:`next_release`, :issue:`1171`
 
-If a line is excluded by comments and contains branches and conditions, the branches,
-conditions are excluded and the decision is cleared.
-If branches are excluded by comments they are removed completely and the conditions
-are not touched and still reported.
-With the fix the branch exclusion comments are excluding the branches and conditions
-and clear the decision the same way as it is done if a whole line is excluded.
+If a line is excluded by comments and contains branches and conditions, the branches and
+conditions are excluded and the decisions are cleared.
+If branches are excluded by comments they are removed completely but the conditions
+are still reported.
+With the fix the branch exclusion comments exclude both the branches and conditions
+and clear the decisions as if the line was excluded.
 
 .. _fix_1171_2:
 
