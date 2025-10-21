@@ -372,10 +372,12 @@ class GcovrTestCompare:
                     with other_reference_file.open(encoding=encoding, newline="") as f:
                         if coverage == f.read():
                             os.unlink(reference_file)
-                # Check if folder is empty
-                if reference_dir.exists() and len(list(reference_dir.glob("*"))) == 0:
-                    os.rmdir(str(reference_dir))
                 break
+
+        for reference_dir in self.reference_dirs():  # pragma: no cover
+            # Check if folder is empty
+            if reference_dir.exists() and len(list(reference_dir.glob("*"))) == 0:
+                os.rmdir(str(reference_dir))
 
     @staticmethod
     def assert_equals(
