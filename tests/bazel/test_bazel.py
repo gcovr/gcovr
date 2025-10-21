@@ -10,7 +10,7 @@ BAZEL = shutil.which("bazel")
 
 
 @pytest.mark.skipif(
-    BAZEL is None or IS_WINDOWS or (IS_DARWIN and IS_GCC),
+    BAZEL is None or IS_WINDOWS or (IS_DARWIN and IS_GCC) or not IS_GCC,
     reason="Bazel test not working on Windows or on MacOs (with gcc).",
 )
 def test(gcovr_test_exec: "GcovrTestExec") -> None:

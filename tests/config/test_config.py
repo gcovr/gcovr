@@ -48,7 +48,7 @@ def test_config_deprecated(
     )
 
 
-def test_config(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_gcovr_config(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with gcovr.config."""
     gcovr_test_exec.cxx_link(
         "testcase",

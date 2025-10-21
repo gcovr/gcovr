@@ -11,6 +11,8 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.run("./testcase", cwd=Path("src code"))
     gcovr_test_exec.gcovr(
         "--root=src code",
+        "--json-pretty",
+        "--json=coverage.json",
         "--html-details=coverage.html",
         "--txt=coverage.txt",
         "--cobertura-pretty",
@@ -22,6 +24,7 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
         "--lcov=coverage.lcov",
         "--sonarqube=sonarqube.xml",
     )
+    gcovr_test_exec.compare_json()
     gcovr_test_exec.compare_html()
     gcovr_test_exec.compare_txt()
     gcovr_test_exec.compare_cobertura()
