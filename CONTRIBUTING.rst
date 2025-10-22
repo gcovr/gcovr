@@ -293,6 +293,7 @@ contains a ``test_*.py``, a ``reference`` directory and a ``source`` directory o
 
    tests/some-test/
      reference/
+       gcc-5/
      source/
        example.cpp
      test_some_test.py
@@ -305,8 +306,11 @@ Tests can be executed even without baseline files.
 
 Each test function uses the fixture ``gcovr_test_exec`` which is defined in ``conftest.py``.
 This fixture creates a temporary ``output`` directory for each test and copies
-the content of ``source`` into it. If ``source`` is a file it must contain the name
+the content of ``source`` into it. If source contains a sub directory with the test ID (the
+name of the test function without ``test_`` prefix and ``_`` replaced by ``-``),
+that directory will be used. If ``source`` is a file it must contain the name
 of the test from which the source should be copied.
+If there is a test ID, the reference is always used from this sub directory in ``reference``.
 It provides functions to execute the compiler and linker, run ``gcovr`` or other programs
 and to compare the generated output files with the reference files. After the test
 function is finished the fixture checks if all files where compared by the test

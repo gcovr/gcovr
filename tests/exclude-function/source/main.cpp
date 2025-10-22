@@ -1,6 +1,6 @@
 #include <iostream>
 
-#if defined USE_LAMBDA
+#if defined GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS
 # include <algorithm>
 # include <array>
 # include <functional>
@@ -25,7 +25,7 @@ int bar(int param) { // Excluded by CLI option
    return param;
 }
 
-#if defined USE_LAMBDA
+#if defined GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS
 #define LAMBDA_SORT \
    { \
       std::array<int, 10> arr = { 0, 9, 1, 8, 2, 7, 3, 6, 4, 5 }; \
@@ -95,7 +95,7 @@ void sort_excluded_both(void) // GCOVR_EXCL_FUNCTION
 int main(int argc, char* argv[]) {
    foo(0);
    bar(0);
-#if defined USE_LAMBDA
+#if defined GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS
    sort_excluded();
    sort_lambda_excluded();
    sort_excluded_both();

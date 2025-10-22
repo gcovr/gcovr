@@ -6,7 +6,6 @@ ARG TARGETARCH
 ARG UBUNTU_TAG
 ARG USERID
 ARG CC
-ARG CXX
 ARG NOX_ENV_DIR=/gcovr/.nox-containerized/$CC.uid_$USERID
 
 LABEL org.opencontainers.image.authors="GCOVR developers"
@@ -18,6 +17,8 @@ LABEL org.opencontainers.image.version="$CC"
 RUN <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
+
+export CXX=$(echo "$CC" | sed 's/gcc/g++/ ; s/clang/clang++/')
 
 apt-get update
 # Install base requirements
@@ -112,22 +113,13 @@ fi
 
 # cspell:ignore autoremove
 apt-get autoremove -y
-EOS
-
-RUN <<EOS
-set -e
-export DEBIAN_FRONTEND=noninteractive
-
-set -e
-export DEBIAN_FRONTEND=noninteractive
-
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
+
 EOS
 
 ENV \
   CC=$CC \
-  CXX=$CXX \
   GCOVR_ISOLATED_TEST=zkQEVaBpXF1i \
   NOX_ENV_DIR=$NOX_ENV_DIR \
   XDG_CACHE_HOME=$NOX_ENV_DIR/.cache
@@ -141,7 +133,7 @@ git clone -q \
 cd /tmp/googletest
 mkdir build
 cd build
-cmake .. || ( cat CMakeFiles/*.log && exit 1 )
+CXX=$(echo "$CC" | sed 's/gcc/g++/ ; s/clang/clang++/') cmake .. || ( cat CMakeFiles/*.log && exit 1 )
 make
 make install
 rm -rf /tmp/googletest
