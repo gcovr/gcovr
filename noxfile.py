@@ -75,7 +75,7 @@ ALL_COMPILER_VERSIONS_NEWEST_FIRST = [
 ALL_GCC_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("gcc-")]
 ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")]
 
-DEFAULT_TEST_DIRECTORIES = ["src", "tests"]
+DEFAULT_TEST_DIRECTORIES = ["doc/examples", "src", "tests"]
 DEFAULT_LINT_ARGUMENTS = [
     "noxfile.py",
     "scripts",

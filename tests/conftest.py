@@ -616,28 +616,35 @@ class GcovrTestExec:
         """Get the gcov command to use."""
         return [str(e) for e in GCOV]
 
-    def copy_source(self, source_from: Optional[str] = None) -> None:
+    def copy_source(self, source: Optional[Path] = None) -> None:
         """Copy the test data to the output."""
-        if source_from is None:
-            data = Path.cwd() / "source"
-            if (data / self.test_id).exists():
-                data = data / self.test_id
-            elif self.test_name is not None and (data / self.test_name).exists():
-                data = data / self.test_name
+        if source is None:
+            source = Path.cwd() / "source"
+            if (source / self.test_id).exists():
+                source = source / self.test_id
+            elif self.test_name is not None and (source / self.test_name).exists():
+                source = source / self.test_name
+            if not source.exists():
+                return
+
+            if source.is_file():
+                source = Path(
+                    Path.cwd().parent
+                    / source.read_text(encoding="utf-8").splitlines()[0]
+                    / "source"
+                )
+
+        if not source.exists():
+            raise ValueError(f"Source data {source.absolute()} does not exist.")
+        if source.is_file():
+            shutil.copy(source, self.output_dir)
         else:
-            data = Path.cwd().parent / source_from / "source"
-        if data.is_file():
-            data = Path(
-                Path.cwd().parent
-                / data.read_text(encoding="utf-8").splitlines()[0]
-                / "source"
-            )
-        for entry in data.glob("*"):
-            print(f"Copying {entry} to {self.output_dir}", file=stderr)
-            if entry.is_dir():
-                shutil.copytree(entry, self.output_dir / entry.name)
-            else:
-                shutil.copy(entry, self.output_dir)
+            for entry in source.glob("*"):
+                print(f"Copying {entry} to {self.output_dir}", file=stderr)
+                if entry.is_dir():
+                    shutil.copytree(entry, self.output_dir / entry.name)
+                else:
+                    shutil.copy(entry, self.output_dir)
 
     def skip(self, message: str) -> NoReturn:
         """Skip the current test."""

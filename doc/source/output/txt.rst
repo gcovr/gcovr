@@ -18,7 +18,7 @@ If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
 
 Example output:
 
-.. literalinclude:: ../../examples/example.txt
+.. literalinclude:: ../../examples/example_txt.txt
     :language: text
 
 Line Coverage
@@ -26,14 +26,14 @@ Line Coverage
 
 Running gcovr without any explicit output formats …
 
-.. literalinclude:: ../../examples/example.sh
+.. literalinclude:: ../../examples/example_txt.sh
     :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
 generates a text summary of the lines executed:
 
-.. literalinclude:: ../../examples/example.txt
+.. literalinclude:: ../../examples/example_txt.txt
     :language: text
 
 The same result can be achieved when explicit :option:`--txt`
