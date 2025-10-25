@@ -35,8 +35,6 @@ import zipfile
 
 import nox
 
-import requests
-
 if sys.version_info >= (3, 11):
     import tomllib
 else:
@@ -208,7 +206,6 @@ def lint(session: nox.Session) -> None:
     session.notify("bandit")
     session.notify("pylint")
     session.notify("mypy")
-    session.notify("pre-commit")
 
 
 @nox.session
@@ -266,17 +263,6 @@ def mypy(session: nox.Session) -> None:
     else:
         args = ["."]
     session.run("mypy", *args)
-
-
-@nox.session(name="pre-commit")
-def pre_commit(session: nox.Session) -> None:
-    """Run pre-commit command."""
-    install_dev_requirements(session, "pre-commit")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = ["run", "--all-files"]
-    session.run("pre-commit", *args)
 
 
 @nox.session
@@ -591,7 +577,7 @@ def check_bundled_app(session: nox.Session) -> None:
 @nox.session()
 def html2jpeg(session: nox.Session) -> None:
     """Create JPEGs from HTML for documentation"""
-    session.install("requests")
+    import requests  # pylint: disable=import-outside-toplevel
 
     # Create a socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
