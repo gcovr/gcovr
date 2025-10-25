@@ -1,8 +1,8 @@
 from pathlib import Path
-import typing
 
-if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+import pytest
+
+from tests.conftest import CXX, IS_LINUX, GcovrTestExec
 
 
 def test_absolute(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -417,3 +417,27 @@ def test_relative_lib_from_unfiltered_tracefile(
         cwd=Path("project"),
     )
     gcovr_test_exec.compare_sonarqube()
+
+
+@pytest.mark.skipif(
+    not IS_LINUX,
+    reason="File inclusion is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+)
+def test_include(gcovr_test_exec: "GcovrTestExec") -> None:
+    """Test include filtering and multiple HTML themes."""
+    # Compile file1.cpp without coverage flags, then main.cpp with coverage
+    gcovr_test_exec.run(CXX, "-fPIC", "-c", "file1.cpp", "-o", "file1.o")
+    gcovr_test_exec.cxx_link(
+        "testcase",
+        gcovr_test_exec.cxx_compile("main.cpp"),
+        "file1.o",
+    )
+
+    gcovr_test_exec.run("./testcase")
+    gcovr_test_exec.gcovr(
+        "--verbose",
+        "--include=file1.cpp",
+        "--json-pretty",
+        "--json=coverage.json",
+    )
+    gcovr_test_exec.compare_json()

@@ -1,9 +1,64 @@
+import logging
+import os
 import subprocess  # nosec
 import typing
 
 import pytest
 
-from tests.conftest import GcovrTestExec
+from gcovr.formats.html.write import _make_short_source_filename
+from tests.conftest import IS_LINUX, IS_WINDOWS, GcovrTestExec
+
+
+@pytest.mark.parametrize(
+    "outfile,source_filename",
+    [
+        ("../gcovr", "C:\\other_dir\\project\\source.c"),
+        ("../gcovr/", "C:\\other_dir\\project\\source.c"),
+        ("..\\gcovr", "C:\\other_dir\\project\\source.c"),
+        ("..\\gcovr\\", "C:\\other_dir\\project\\source.c"),
+        (
+            "..\\gcovr",
+            "C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c",
+        ),
+        ("..\\gcovr\\result.html", "C:\\other_dir\\project\\source.c"),
+        (
+            "..\\gcovr\\result",
+            "C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c",
+        ),
+        (
+            "C:\\gcovr",
+            "C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c",
+        ),
+        (
+            "C:/gcovr",
+            "C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c",
+        ),
+        (
+            "C:/gcovr_files",
+            "C:\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\other_dir\\project\\source.c",
+        ),
+    ],
+)
+@pytest.mark.skipif(not IS_WINDOWS, reason="Only for Windows")
+def test_windows_make_short_source_filename(outfile: str, source_filename: str) -> None:
+    CurrentDrive = os.getcwd()[0:1]
+    outfile = outfile.replace("C:", CurrentDrive)
+    source_filename = source_filename.replace("C:", CurrentDrive)
+
+    result = _make_short_source_filename(outfile, source_filename)
+    logging.info("=" * 100)
+    logging.info(outfile)
+    logging.info(source_filename)
+    logging.info(result)
+    assert (
+        ":" not in result
+        or (  # nosec
+            result.startswith(CurrentDrive) and ":" not in result[2:]
+        )
+    )
+
+    assert len(result) < 256  # nosec
+
 
 PARAMETERS = [
     (
@@ -243,8 +298,128 @@ def test_template_dir(gcovr_test_exec: "GcovrTestExec") -> None:
         "-d",
         "--html",
         "--html-self-contained",
-        "--html-css=template_dir/style.css",
-        "--html-template-dir=template_dir/config/",
+        "--html-css=user_template/style.css",
+        "--html-template-dir=user_template/config/",
         "--html=coverage.html",
+    )
+    gcovr_test_exec.compare_html()
+
+
+PARAMETERS_NESTED = [
+    (
+        "sort-none",
+        [
+            "--html-nested=./",
+        ],
+    ),
+    (
+        "filter",
+        [
+            "--filter",
+            "subdir/A",
+            "--html-nested=./",
+        ],
+    ),
+    (
+        "sort-uncovered-percentage",
+        [
+            "--sort",
+            "uncovered-percent",
+            "--html-nested=coverage.html",
+        ],
+    ),
+    (
+        "sort-uncovered-number",
+        [
+            "--sort",
+            "uncovered-number",
+            "--html-nested=coverage.html",
+        ],
+    ),
+    (
+        "default-theme-static",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-single-page=static",
+            "--no-html-self-contained",
+        ),
+    ),
+    (
+        "default-theme-js",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-single-page",
+        ),
+    ),
+    (
+        "github-theme-static",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-single-page",
+            "--html-theme",
+            "github.blue",
+            "--no-html-self-contained",
+        ),
+    ),
+    (
+        "github-theme-js",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-single-page=static",
+            "--html-theme",
+            "github.blue",
+        ),
+    ),
+]
+
+
+@pytest.mark.skipif(
+    not IS_LINUX,
+    reason="The nested report generation is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+)
+@pytest.mark.parametrize(
+    "_test_id,options",
+    PARAMETERS_NESTED,
+    ids=[p[0] for p in PARAMETERS_NESTED],
+)
+def test_nested(
+    gcovr_test_exec: "GcovrTestExec", _test_id: str, options: typing.List[str]
+) -> None:
+    """This test case tests the output of cascaded html coverage
+    reports.
+
+    It will test that a directory with items in it properly
+    aggregates the statistics within it, all the sorting works for
+    each directory, any flattening of directories that have a single
+    entry, and the writing of source files within each directory.
+
+    In this case, the directory listings should be unsorted.
+    """
+
+    gcovr_test_exec.cxx_link(
+        "subdir/testcase",
+        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+    )
+
+    gcovr_test_exec.run("./subdir/testcase")
+    gcovr_test_exec.gcovr(
+        "-r",
+        "subdir",
+        *options,
     )
     gcovr_test_exec.compare_html()

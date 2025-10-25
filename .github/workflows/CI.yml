@@ -111,8 +111,8 @@ jobs:
         run: |
           mkdir -p /tmp/coverage-upload
           rm -rf /tmp/coverage-upload/*
-          cp --target-directory=/tmp/coverage-upload ./tests/exclude-line-branch/reference/gcc-5/*.*
-          cp --target-directory=/tmp/coverage-upload --force ./tests/exclude-line-branch/reference/gcc-14/*.*
+          cp --target-directory=/tmp/coverage-upload ./tests/exclusion/reference//exclude-line-branch/gcc-5/*.*
+          cp --target-directory=/tmp/coverage-upload --force ./tests/exclusion/reference//exclude-line-branch/gcc-14/*.*
           # Patch the paths inside the coverage files
           find /tmp/coverage-upload -type f -name '*' -exec sed -e 's^output/^source/^g ; s^output^source^g ;' -i '' {} \;
       - name: Upload coverage
@@ -122,36 +122,8 @@ jobs:
           path: /tmp/coverage-upload/*.*
 
   # -----------------------------------------------------------------------------------------------
-  validate-reports:
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    env:
-      FORCE_COLOR: "1"
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up runner
-        uses: "./.github/actions/setup-runner"
-        with:
-          os: ubuntu-22.04
-          python-version: 3.13
-
-      - name: Install libxml2
-        shell: bash
-        run: |
-          sudo apt update
-          sudo apt-get install -y \
-            libxml2-utils
-
-      - name: Run validation
-        run: |
-          nox --non-interactive --session validate_reports
-
-  # -----------------------------------------------------------------------------------------------
   build-package:
-    needs: [changelog, spell-check, validate-reports]
+    needs: [changelog, spell-check]
     runs-on: ubuntu-22.04
     permissions:
       contents: read

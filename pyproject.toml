@@ -67,6 +67,7 @@ dev = [
     "pytest-cov",
     "pytest-timeout",
     "pytest-env",
+    "pytest-xdist",
     "pywin32 ; sys_platform == 'win32'",
     "requests",
     "ruff~=0.13.2",
@@ -194,10 +195,9 @@ assert_used.skips = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-v --timeout=120 --doctest-modules --ignore-glob=*/linked/subdir/* --ignore-glob */output/* --ignore-glob */.nox*/*"
+addopts = "-n auto -v --timeout=120 --doctest-modules --ignore-glob */output/* --ignore-glob */.nox*/*"
 env = [
     "D:CC=gcc",
-    "D:CXX=g++",
     "GCOVR_TEST_SUITE=1",
     "GCOVR_TEST_SUITE_NO_GIT_COMMAND=1",
     "SOURCE_DATE_EPOCH=1759082961",

@@ -1,14 +1,10 @@
-import platform
-import typing
-
 import pytest
 
-if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+from tests.conftest import IS_LINUX, GcovrTestExec
 
 
 @pytest.mark.skipif(
-    platform.system() != "Linux",
+    not IS_LINUX,
     reason="Merging is independent of OS and we do not want to have separate data wor Windows and Darwin.",
 )
 def test(gcovr_test_exec: "GcovrTestExec") -> None:

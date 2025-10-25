@@ -29,14 +29,11 @@ import socket
 import sys
 import textwrap
 import time
-from typing import Optional
 import shutil
 import subprocess  # nosec # Commands are trusted.
 import zipfile
 
 import nox
-
-import requests
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -78,7 +75,7 @@ ALL_COMPILER_VERSIONS_NEWEST_FIRST = [
 ALL_GCC_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("gcc-")]
 ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")]
 
-DEFAULT_TEST_DIRECTORIES = ["doc", "src", "tests"]
+DEFAULT_TEST_DIRECTORIES = ["doc/examples", "src", "tests"]
 DEFAULT_LINT_ARGUMENTS = [
     "noxfile.py",
     "scripts",
@@ -110,30 +107,6 @@ def get_gcovr_version() -> str:
             "__version__"
         ],
     )
-
-
-def set_environment(session: nox.Session, cc: Optional[str] = None) -> None:
-    """Set the environment variables"""
-    if cc is None:
-        cc = os.environ.get("CC")
-        if cc is None:
-            for command in ["gcc", "clang"]:
-                if shutil.which(command):
-                    cc = command
-
-            if cc is None:
-                session.error(
-                    "No compiler found in PATH, please set CC environment variable"
-                )
-
-    cc_path, cc_file = os.path.split(cc)
-
-    session.env["CC"] = os.path.join(cc_path, cc_file)
-    session.env["CFLAGS"] = "--this_flag_does_not_exist"
-    session.env["CXX"] = os.path.join(
-        cc_path, cc_file.replace("clang", "clang++").replace("gcc", "g++")
-    )
-    session.env["CXXFLAGS"] = "--this_flag_does_not_exist"
 
 
 @nox.session()
@@ -233,7 +206,6 @@ def lint(session: nox.Session) -> None:
     session.notify("bandit")
     session.notify("pylint")
     session.notify("mypy")
-    session.notify("pre-commit")
 
 
 @nox.session
@@ -291,17 +263,6 @@ def mypy(session: nox.Session) -> None:
     else:
         args = ["."]
     session.run("mypy", *args)
-
-
-@nox.session(name="pre-commit")
-def pre_commit(session: nox.Session) -> None:
-    """Run pre-commit command."""
-    install_dev_requirements(session, "pre-commit")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = ["run", "--all-files"]
-    session.run("pre-commit", *args)
 
 
 @nox.session
@@ -436,8 +397,6 @@ def tests(session: nox.Session) -> None:
         "cmake",
         "pygments",  # Need a version from dev requirements for reference compare
         "pytest",
-        "pytest-check",
-        "pytest-timeout",
         "pywin32",
         "yaxmldiff",
     ]
@@ -445,31 +404,6 @@ def tests(session: nox.Session) -> None:
         requirements += ["coverage", "pytest-cov"]
     install_dev_requirements(session, *requirements)
     session.install("-e", ".")
-    set_environment(session)
-    session.log("Print versions")
-    session.run("python", "--version")
-    session.run("pip", "freeze")
-    # Use full path to executable
-    cc = str(session.env["CC"])
-    session.env["CC"] = str(shutil.which(cc)).replace(os.path.sep, "/")
-    session.run(cc, "--version", external=True)
-    cxx = str(session.env["CXX"])
-    session.env["CXX"] = str(shutil.which(cxx)).replace(os.path.sep, "/")
-    session.run(cxx, "--version", external=True)
-    cc_path, cc_file = os.path.split(cc)
-    gcov = str(
-        shutil.which(
-            os.path.join(
-                cc_path, cc_file.replace("clang", "llvm-cov").replace("gcc", "gcov")
-            )
-        )
-    ).replace(os.path.sep, "/")
-    session.run(gcov, "--version", external=True)
-    if "llvm-cov" in gcov:
-        gcov += " gcov"
-    session.env["GCOV"] = gcov
-    session.run("make", "--version", external=True)
-    session.run("ninja", "--version", external=True)
 
     if (diff_zip := Path("diff.zip")).exists():
         diff_zip.unlink()
@@ -477,7 +411,9 @@ def tests(session: nox.Session) -> None:
     args = ["-m", "pytest"]
     if use_coverage:
         args += ["--cov=src", "--cov-branch"]
-        session.env["COVERAGE_FILE"] = f".coverage_{Path(cc).name}"
+        session.env["COVERAGE_FILE"] = (
+            f".coverage{'_' + os.environ['CC'] if 'CC' in os.environ else ''}"
+        )
     args += session.posargs
     if "--" not in args:
         args += ["--"] + DEFAULT_TEST_DIRECTORIES
@@ -507,37 +443,6 @@ def combine_coverage(session: nox.Session) -> None:
     session.run("coverage", "combine", *args)
     session.run("coverage", "xml")
     session.run("coverage", "html")
-
-
-@nox.session(python=False)
-def validate_reports(session: nox.Session) -> None:
-    """Validate the generated reports where a schema is available."""
-
-    def run_xmllint(file: Path, schema: Path) -> None:
-        command = ["xmllint", "--noout"]
-        command += (
-            ["--nonet", "--dtdvalid"] if schema.suffix == ".dtd" else ["--schema"]
-        )
-        command += [str(schema), str(file)]
-        out = ""
-        try:
-            out = str(session.run(*command, silent=True, external=True))
-        except nox.command.CommandFailed as e:
-            session.error(f"{e}\n{out}")
-
-    for test_directory in [Path(p) for p in ("tests", "doc/examples")]:
-        cobertura_dtd = Path("tests") / "cobertura.coverage-04.dtd"
-        for file in test_directory.rglob("*cobertura*.xml"):
-            run_xmllint(file, cobertura_dtd)
-        jacoco_dtd = Path("tests") / "JaCoCo.report.dtd"
-        for file in test_directory.rglob("*jacoco*.xml"):
-            run_xmllint(file, jacoco_dtd)
-        clover_schema = Path("tests") / "clover.xsd"
-        for file in test_directory.rglob("*clover*.xml"):
-            run_xmllint(file, clover_schema)
-        sonarqube_schema = Path("tests") / "sonar-generic-coverage.xsd"
-        for file in test_directory.rglob("*sonarqube*.xml"):
-            run_xmllint(file, sonarqube_schema)
 
 
 @nox.session
@@ -641,7 +546,7 @@ def check_bundled_app(session: nox.Session) -> None:
 @nox.session()
 def html2jpeg(session: nox.Session) -> None:
     """Create JPEGs from HTML for documentation"""
-    session.install("requests")
+    import requests  # pylint: disable=import-outside-toplevel
 
     # Create a socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -754,15 +659,15 @@ def html2jpeg(session: nox.Session) -> None:
         )
 
 
-def docker_container_os_version(session: nox.Session) -> str:
+def docker_container_os_version(cc: str) -> str:
     """Get the version of the OS for the used GCC version."""
-    if session.env["CC"] in ["gcc-5", "gcc-6"]:
+    if cc in ["gcc-5", "gcc-6"]:
         return "18.04"
-    if session.env["CC"] in ["gcc-8", "gcc-9", "clang-10"]:
+    if cc in ["gcc-8", "gcc-9", "clang-10"]:
         return "20.04"
-    if session.env["CC"] in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
+    if cc in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
         return "22.04"
-    if session.env["CC"] in [
+    if cc in [
         "gcc-12",
         "gcc-13",
         "gcc-14",
@@ -773,7 +678,7 @@ def docker_container_os_version(session: nox.Session) -> str:
     ]:
         return "24.04"
 
-    raise RuntimeError(f"No container image defined for {session.env['CC']}")
+    raise RuntimeError(f"No container image defined for {cc}")
 
 
 def docker_container_tag(version: str) -> str:
@@ -820,7 +725,6 @@ def docker_build_compiler_clang(session: nox.Session) -> None:
 @nox.parametrize("cc", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
 def docker_build_compiler(session: nox.Session, cc: str) -> None:
     """Build the docker container for a specific GCC version."""
-    set_environment(session, cc)
     container_tag = docker_container_tag(cc)
     cache_options = []
     if CI_RUN:
@@ -858,13 +762,11 @@ def docker_build_compiler(session: nox.Session, cc: str) -> None:
         "--tag",
         container_tag,
         "--build-arg",
-        f"UBUNTU_TAG={docker_container_os_version(session)}",
+        f"UBUNTU_TAG={docker_container_os_version(cc)}",
         "--build-arg",
         f"USERID={os.geteuid()}",
         "--build-arg",
-        f"CC={session.env['CC']}",
-        "--build-arg",
-        f"CXX={session.env['CXX']}",
+        f"CC={cc}",
         "--file",
         "admin/Dockerfile.qa",
         ".",
@@ -911,8 +813,6 @@ def docker_run_compiler_clang(session: nox.Session) -> None:
 @nox.parametrize("cc", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
 def docker_run_compiler(session: nox.Session, cc: str) -> None:
     """Run the docker container for a specific GCC version."""
-    set_environment(session, cc)
-
     nox_options = session.posargs if session.posargs else ["-s", "qa"]
     if not session.interactive:
         nox_options.insert(0, "--non-interactive")
@@ -927,7 +827,7 @@ def docker_run_compiler(session: nox.Session, cc: str) -> None:
         "--rm",
         "-it" if session.interactive else "-t",
         "-e",
-        "CC",
+        f"CC={cc}",
         "-e",
         "GITHUB_ACTION",
         "-e",

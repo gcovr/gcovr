@@ -28,7 +28,7 @@ import platform
 import re
 import shlex
 import shutil
-import subprocess  # nosec
+import subprocess  # nosec: B404
 from sys import stderr, stdout
 from typing import Callable, Generator, List, NoReturn, Optional, Union
 from unittest import mock
@@ -42,45 +42,40 @@ from gcovr.__main__ import main as gcovr_main
 
 LOGGER = logging.getLogger(__name__)
 
+_BASE_DIRECTORY = Path(__file__).absolute().parent
+GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
+
+_ARCHIVE_DIFFERENCES_FILE = _BASE_DIRECTORY / "diff.zip"
+
 IS_LINUX = platform.system() == "Linux"
 IS_DARWIN = platform.system() == "Darwin"
 IS_DARWIN_HOST = os.getenv("HOST_OS") == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
 
-CC = os.environ["CC"]
-CXX = os.environ["CXX"]
-GCOV = os.environ.get("GCOV", "gcov").split(" ")
+CC = Path(str(shutil.which(os.environ.get("CC", "gcc-5"))))
+os.environ["CC"] = str(CC)
+CXX = CC.parent / CC.name.replace("clang", "clang++").replace("gcc", "g++")
+os.environ["CXX"] = str(CXX)
+GCOV = [CC.parent / CC.name.replace("clang", "llvm-cov").replace("gcc", "gcov")] + (
+    ["gcov"] if "clang" in CC.name else []
+)
+os.environ["GCOV"] = shlex.join(str(e) for e in GCOV)
 
-CC_HELP_OUTPUT = subprocess.run(  # nosec
+# The arguments to subprocess are constructed from trusted sources.
+_CC_HELP_OUTPUT = subprocess.run(  # nosec: B603
     [CC, "--help", "--verbose"],
     capture_output=True,
     text=True,
-    check=False,
+    check=False,  # Some versions return 1
+    shell=False,
 ).stdout
-CC_VERSION_OUTPUT = subprocess.run(  # nosec
+_CC_VERSION_OUTPUT = subprocess.run(  # nosec: B603
     [CC, "--version"],
     capture_output=True,
     text=True,
     check=True,
+    shell=False,
 ).stdout
-CXX_LAMBDA_EXPRESSIONS_AVAILABLE = "c++20" in CC_HELP_OUTPUT
-
-CFLAGS = [
-    "-fPIC",
-    "-fprofile-arcs",
-    "-ftest-coverage",
-]
-if "condition-coverage" in CC_HELP_OUTPUT:
-    CFLAGS.append("-fcondition-coverage")
-CXXFLAGS = CFLAGS.copy()
-if CXX_LAMBDA_EXPRESSIONS_AVAILABLE:
-    CXXFLAGS += ["-std=c++20", "-DUSE_LAMBDA"]
-
-
-BASE_DIRECTORY = os.path.split(os.path.abspath(__file__))[0]
-GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
-
-ARCHIVE_DIFFERENCES_FILE = os.path.join(BASE_DIRECTORY, "diff.zip")
 
 # cspell:ignore Linaro xctoolchain
 # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
@@ -88,69 +83,89 @@ ARCHIVE_DIFFERENCES_FILE = os.path.join(BASE_DIRECTORY, "diff.zip")
 #   Copyright (C) 2015 Free Software Foundation, Inc.
 #   This is free software; see the source for copying conditions.  There is NO
 #   warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-if matches := re.search(r"^gcc\b.* ([0-9]+)\..+$", CC_VERSION_OUTPUT, re.M):
+if matches := re.search(r"^gcc\b.* ([0-9]+)\..+$", _CC_VERSION_OUTPUT, re.M):
+    CC_VERSION = int(matches.group(1))
     IS_GCC = True
-    CC_REFERENCE_VERSION = int(matches.group(1))
-    REFERENCE_DIR_VERSION_LIST = [
-        f"gcc-{version}"
-        for version in range(5, CC_REFERENCE_VERSION + 1)
-        if version != 7
+    _REFERENCE_DIR_VERSION_LIST = [
+        f"gcc-{version}" for version in range(5, CC_VERSION + 1) if version != 7
     ]
-    USE_GCC_JSON_INTERMEDIATE_FORMAT = "JSON format version: 2" in CC_VERSION_OUTPUT
 # look for a line "WHATEVER clang version VERSION.WHATEVER" in output like:
 #    Apple clang version 13.1.6 (clang-1316.0.21.2.5)
 #    Target: arm64-apple-darwin21.5.0
 #    Thread model: posix
 #    InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
-elif matches := re.search(r"\bclang version ([0-9]+)\.", CC_VERSION_OUTPUT, re.M):
+elif matches := re.search(r"\bclang version ([0-9]+)\.", _CC_VERSION_OUTPUT, re.M):
+    CC_VERSION = int(matches.group(1))
     IS_GCC = False
-    CC_REFERENCE_VERSION = int(matches.group(1))
-    REFERENCE_DIR_VERSION_LIST = [
-        f"clang-{version}" for version in range(10, CC_REFERENCE_VERSION + 1)
+    _REFERENCE_DIR_VERSION_LIST = [
+        f"clang-{version}" for version in range(10, CC_VERSION + 1)
     ]
-    USE_GCC_JSON_INTERMEDIATE_FORMAT = False
 else:
-    raise AssertionError(f"Unable to get compiler version from:\n{CC_VERSION_OUTPUT}")
+    raise AssertionError(f"Unable to get compiler version from:\n{_CC_VERSION_OUTPUT}")
 
-CC_REFERENCE = REFERENCE_DIR_VERSION_LIST[-1]
-REFERENCE_DIR_OS_SUFFIX = "" if IS_LINUX else f"-{platform.system()}"
+USE_GCC_JSON_INTERMEDIATE_FORMAT = (
+    IS_GCC and "JSON format version: 2" in _CC_VERSION_OUTPUT
+)
+GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS = "c++20" in _CC_HELP_OUTPUT
+
+_CFLAGS = [
+    "-fPIC",
+    "-fprofile-arcs",
+    "-ftest-coverage",
+]
+if "condition-coverage" in _CC_HELP_OUTPUT:
+    _CFLAGS.append("-fcondition-coverage")
+_CXXFLAGS = _CFLAGS.copy()
+if GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS:
+    _CXXFLAGS += ["-std=c++20", "-DGCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS"]
+
+_REFERENCE_DIR_OS_SUFFIX = "" if IS_LINUX else f"-{platform.system()}"
 REFERENCE_DIRS = list[str]()
-for ref in REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
+for ref in _REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
     REFERENCE_DIRS.append(ref)
-    if REFERENCE_DIR_OS_SUFFIX:
-        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}{REFERENCE_DIR_OS_SUFFIX}")
+    if _REFERENCE_DIR_OS_SUFFIX:
+        REFERENCE_DIRS.append(f"{REFERENCE_DIRS[-1]}{_REFERENCE_DIR_OS_SUFFIX}")
 REFERENCE_DIRS.reverse()
-
-# Set environment variables to mark tests
-os.environ["CC_REFERENCE_VERSION"] = str(CC_REFERENCE_VERSION)
-os.environ["IS_GCC"] = str(IS_GCC)
-
-RE_DECIMAL = re.compile(r"(\d+\.\d+)")
-
-RE_CRLF = re.compile(r"\r\n")
-
-RE_TXT_WHITESPACE_AT_EOL = re.compile(r"[ ]+$", flags=re.MULTILINE)
-
-RE_LCOV_PATH = re.compile(r"(SF:)(?:.:)?/.+?((?:tests|doc)/.+?)?$", flags=re.MULTILINE)
-
-RE_COBERTURA_SOURCE_DIR = re.compile(r"(<source>)(?:.:)?/.+?((?:tests/.+?)?</source>)")
-
-RE_COVERALLS_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token)": "[^"]*"')
-RE_COVERALLS_GIT = re.compile(
-    r'"git": \{(?:"[^"]*": (?:"[^"]*"|\{[^\}]*\}|\[[^\]]*\])(?:, )?)+\}, '
-)
-RE_COVERALLS_GIT_PRETTY = re.compile(
-    r'\s+"git": \{\s+"head": \{(?:\s+"[^"]+":.+\n)+\s+\},\s+"branch": "branch",\s+"remotes": \[[^\]]+\]\s+\},'
-)
 
 
 def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:
     """Get additional info printed in pytest header."""
+    if cmake := shutil.which("cmake"):
+        cmake_version = subprocess.check_output(  # nosec: B603
+            [cmake, "--version"],
+            shell=False,
+            text=True,
+        ).splitlines()[0]
+    else:
+        cmake_version = "No CMake found"
+    if make := shutil.which("make"):
+        make_version = subprocess.check_output(  # nosec: B603
+            [make, "--version"],
+            shell=False,
+            text=True,
+        ).splitlines()[0]
+    else:
+        make_version = "No make found"
+    if ninja := shutil.which("ninja"):
+        ninja_version = (
+            "ninja "
+            + subprocess.check_output(  # nosec: B603
+                [ninja, "--version"],
+                shell=False,
+                text=True,
+            ).splitlines()[0]
+        )
+    else:
+        ninja_version = "No ninja found"
     return (
         "GCOVR test configuration:",
-        f"   {'GCC' if IS_GCC else 'LLVM/clang'} version {CC_REFERENCE_VERSION}",
-        f"   C:   {Path(CC).name} {shlex.join(CFLAGS)}",
-        f"   C++: {Path(CXX).name} {shlex.join(CXXFLAGS)}",
+        f"   {_CC_VERSION_OUTPUT.splitlines()[0]}",
+        f"      C:   {CC} {shlex.join(_CFLAGS)}",
+        f"      C++: {CXX} {shlex.join(_CXXFLAGS)}",
+        f"      gcov: {shlex.join(str(e) for e in GCOV)}",
+        f"   {cmake_version}",
+        f"   {make_version}",
+        f"   {ninja_version}",
         f"   Reference directories: {', '.join(REFERENCE_DIRS)}",
     )
 
@@ -221,6 +236,29 @@ def create_output(
 class GcovrTestCompare:
     """Class for comparing files."""
 
+    # Regular expressions for scrubbing data
+    RE_DECIMAL = re.compile(r"(\d+\.\d+)")
+
+    RE_CRLF = re.compile(r"\r\n")
+
+    RE_TXT_WHITESPACE_AT_EOL = re.compile(r"[ ]+$", flags=re.MULTILINE)
+
+    RE_LCOV_PATH = re.compile(
+        r"(SF:)(?:.:)?/.+?((?:tests|doc)/.+?)?$", flags=re.MULTILINE
+    )
+
+    RE_COBERTURA_SOURCE_DIR = re.compile(
+        r"(<source>)(?:.:)?/.+?((?:tests/.+?)?</source>)"
+    )
+
+    RE_COVERALLS_CLEAN_KEYS = re.compile(r'"(commit_sha|repo_token)": "[^"]*"')
+    RE_COVERALLS_GIT = re.compile(
+        r'"git": \{(?:"[^"]*": (?:"[^"]*"|\{[^\}]*\}|\[[^\]]*\])(?:, )?)+\}, '
+    )
+    RE_COVERALLS_GIT_PRETTY = re.compile(
+        r'\s+"git": \{\s+"head": \{(?:\s+"[^"]+":.+\n)+\s+\},\s+"branch": "branch",\s+"remotes": \[[^\]]+\]\s+\},'
+    )
+
     def __init__(
         self,
         *,
@@ -273,38 +311,42 @@ class GcovrTestCompare:
     @staticmethod
     def __translate_newlines_if_windows(contents: str) -> str:
         return (
-            RE_CRLF.sub(r"\n", contents) if platform.system() == "Windows" else contents
+            GcovrTestCompare.RE_CRLF.sub(r"\n", contents)
+            if platform.system() == "Windows"
+            else contents
         )
 
     @staticmethod
     def scrub_txt(contents: str) -> str:
         """Scrub data for compare."""
-        return RE_TXT_WHITESPACE_AT_EOL.sub("", contents)
+        return GcovrTestCompare.RE_TXT_WHITESPACE_AT_EOL.sub("", contents)
 
     @staticmethod
     def scrub_lcov(contents: str) -> str:
         """Scrub data for compare."""
-        return RE_LCOV_PATH.sub(r"\1\2", contents)
+        return GcovrTestCompare.RE_LCOV_PATH.sub(r"\1\2", contents)
 
     @staticmethod
     def scrub_xml(contents: str) -> str:
         """Scrub data for compare."""
-        contents = RE_DECIMAL.sub(lambda m: str(round(float(m.group(1)), 5)), contents)
+        contents = GcovrTestCompare.RE_DECIMAL.sub(
+            lambda m: str(round(float(m.group(1)), 5)), contents
+        )
         return contents
 
     @staticmethod
     def scrub_cobertura(contents: str) -> str:
         """Scrub data for compare."""
         contents = GcovrTestCompare.scrub_xml(contents)
-        contents = RE_COBERTURA_SOURCE_DIR.sub(r"\1\2", contents)
+        contents = GcovrTestCompare.RE_COBERTURA_SOURCE_DIR.sub(r"\1\2", contents)
         return contents
 
     @staticmethod
     def scrub_coveralls(contents: str) -> str:
         """Scrub data for compare."""
-        contents = RE_COVERALLS_CLEAN_KEYS.sub('"\\1": ""', contents)
-        contents = RE_COVERALLS_GIT_PRETTY.sub("", contents)
-        contents = RE_COVERALLS_GIT.sub("", contents)
+        contents = GcovrTestCompare.RE_COVERALLS_CLEAN_KEYS.sub('"\\1": ""', contents)
+        contents = GcovrTestCompare.RE_COVERALLS_GIT_PRETTY.sub("", contents)
+        contents = GcovrTestCompare.RE_COVERALLS_GIT.sub("", contents)
         return contents
 
     def __find_reference_files(
@@ -342,7 +384,7 @@ class GcovrTestCompare:
     def __archive_difference_data(  # pragma: no cover
         self, data: str, reference_file: Path, encoding: str
     ) -> None:
-        with zipfile.ZipFile(ARCHIVE_DIFFERENCES_FILE, mode="a") as fh_zip:
+        with zipfile.ZipFile(_ARCHIVE_DIFFERENCES_FILE, mode="a") as fh_zip:
             fh_zip.writestr(
                 (self.main_reference / reference_file.name)
                 .relative_to(Path.cwd().parent)
@@ -366,8 +408,8 @@ class GcovrTestCompare:
                 and other_reference_file.is_file()
             ):  # pragma: no cover
                 # Only remove it if we have no suffix or the other file has the same.
-                if not REFERENCE_DIR_OS_SUFFIX or other_reference_file.name.endswith(
-                    REFERENCE_DIR_OS_SUFFIX
+                if not _REFERENCE_DIR_OS_SUFFIX or other_reference_file.name.endswith(
+                    _REFERENCE_DIR_OS_SUFFIX
                 ):
                     with other_reference_file.open(encoding=encoding, newline="") as f:
                         if coverage == f.read():
@@ -384,7 +426,8 @@ class GcovrTestCompare:
         reference_file: Path, reference: str, test_file: Path, test: str, encoding: str
     ) -> None:
         """Assert that the given files are equal."""
-        _, extension = os.path.splitext(reference_file)
+        extension = reference_file.suffix
+        check_output: list[str] = []
         if extension in [".html", ".xml"]:
             if extension == ".html":
                 el_reference = etree.fromstringlist(  # nosec # We parse our reference files here
@@ -401,13 +444,12 @@ class GcovrTestCompare:
                     test.encode().split(b"\n")
                 )
 
-            diff_out: Optional[str] = compare_xml(el_reference, el_test)
-            if diff_out is None:
-                return
-
-            diff_out = (
-                f"-- {reference_file}\n++ {test_file}\n{diff_out}"  # pragma: no cover
-            )
+            if (
+                compare_output := compare_xml(el_reference, el_test)
+            ) is not None:  # pragma: no cover
+                check_output.append(
+                    f"-- {reference_file}\n++ {test_file}\n{compare_output}"
+                )
         else:
             reference_list = reference.splitlines(keepends=True)
             reference_list.append("\n")
@@ -422,12 +464,49 @@ class GcovrTestCompare:
                 )
             )
 
-            diff_is_empty = len(diff_lines) == 0
-            if diff_is_empty:
-                return
-            diff_out = "".join(diff_lines)  # pragma: no cover
+            if diff_lines:  # pragma: no cover
+                check_output.append("".join(diff_lines))
 
-        raise AssertionError(diff_out)  # pragma: no cover
+        if extension == ".xml":
+            schema: Optional[Path] = None
+            if "cobertura" in reference_file.name:
+                schema = _BASE_DIRECTORY / "cobertura.coverage-04.dtd"
+            elif "jacoco" in reference_file.name:
+                schema = _BASE_DIRECTORY / "JaCoCo.report.dtd"
+            elif "clover" in reference_file.name:
+                schema = _BASE_DIRECTORY / "clover.xsd"
+            elif "sonarqube" in reference_file.name:
+                schema = _BASE_DIRECTORY / "sonar-generic-coverage.xsd"
+
+            if schema is not None:
+                if schema.suffix == ".dtd":
+
+                    def run_xmllint() -> Optional[str]:
+                        dtd_schema = etree.DTD(str(schema))  # nosec # We parse our trusted XSD files here
+                        doc = etree.parse(str(test_file))  # nosec # We parse our test files here
+                        return (
+                            None
+                            if dtd_schema.validate(doc)
+                            else f"DTD validation error for {test_file}:\n{dtd_schema.error_log}"
+                        )
+
+                else:
+
+                    def run_xmllint() -> Optional[str]:
+                        xmlschema_doc = etree.parse(str(schema))  # nosec # We parse our trusted XSD files here
+                        xmlschema = etree.XMLSchema(xmlschema_doc)
+                        doc = etree.parse(str(test_file))  # nosec # We parse our test files here
+                        return (
+                            None
+                            if xmlschema.validate(doc)
+                            else f"XSD validation error for {test_file}:\n{xmlschema.error_log}"
+                        )
+
+                if (validation_error := run_xmllint()) is not None:
+                    check_output.append(validation_error)
+
+        if check_output:  # pragma: no cover
+            raise AssertionError("\n\n".join(check_output))
 
     def compare_files(
         self,
@@ -510,12 +589,16 @@ class GcovrTestExec:
         self,
         *,
         output_dir: Path,
+        test_name: Optional[str],
+        test_id: str,
         capsys: pytest.CaptureFixture[str],
         check,
         compare: GcovrTestCompare,
     ):
         """Init the builder."""
         self.output_dir = output_dir
+        self.test_name = test_name
+        self.test_id = test_id
         self.capsys = capsys
         self.check = check
         self._compare = compare
@@ -548,17 +631,17 @@ class GcovrTestExec:
     @staticmethod
     def cc_version() -> int:
         """Query the version of CC."""
-        return CC_REFERENCE_VERSION
+        return CC_VERSION
 
     @staticmethod
     def is_cxx_lambda_expression_available() -> bool:
         """Query if we are testing with LLVM/clang."""
-        return not CXX_LAMBDA_EXPRESSIONS_AVAILABLE
+        return not GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS
 
     @staticmethod
     def is_in_gcc_help(string: str) -> bool:
         """Check if the given string is in part of the GCC help."""
-        return string in CC_HELP_OUTPUT
+        return string in _CC_HELP_OUTPUT
 
     @staticmethod
     def use_gcc_json_format() -> bool:
@@ -568,25 +651,37 @@ class GcovrTestExec:
     @staticmethod
     def gcov() -> list[str]:
         """Get the gcov command to use."""
-        return GCOV
+        return [str(e) for e in GCOV]
 
-    def copy_source(self, source_from: Optional[str] = None) -> None:
+    def copy_source(self, source: Optional[Path] = None) -> None:
         """Copy the test data to the output."""
-        if source_from is None:
-            data = Path.cwd() / "source"
-            if data.is_file():
-                data = Path(
+        if source is None:
+            source = Path.cwd() / "source"
+            if (source / self.test_id).exists():
+                source = source / self.test_id
+            elif self.test_name is not None and (source / self.test_name).exists():
+                source = source / self.test_name
+            if not source.exists():
+                return
+
+            if source.is_file():
+                source = Path(
                     Path.cwd().parent
-                    / data.read_text(encoding="utf-8").splitlines()[0]
+                    / source.read_text(encoding="utf-8").splitlines()[0]
                     / "source"
                 )
+
+        if not source.exists():
+            raise ValueError(f"Source data {source.absolute()} does not exist.")
+        if source.is_file():
+            shutil.copy(source, self.output_dir)
         else:
-            data = Path.cwd().parent / source_from / "source"
-        for entry in data.glob("*"):
-            if entry.is_dir():
-                shutil.copytree(entry, self.output_dir / entry.name)
-            else:
-                shutil.copy(entry, self.output_dir)
+            for entry in source.glob("*"):
+                print(f"Copying {entry} to {self.output_dir}", file=stderr)
+                if entry.is_dir():
+                    shutil.copytree(entry, self.output_dir / entry.name)
+                else:
+                    shutil.copy(entry, self.output_dir)
 
     def skip(self, message: str) -> NoReturn:
         """Skip the current test."""
@@ -600,6 +695,10 @@ class GcovrTestExec:
         for name in ["CFLAGS", "CXXFLAGS"]:
             if name in env:
                 del env[name]
+
+        env["CC"] = str(CC)
+        env["CXX"] = str(CXX)
+        env["GCOV"] = shlex.join(str(e) for e in GCOV)
 
         return env
 
@@ -680,7 +779,7 @@ class GcovrTestExec:
         cwd: Optional[Path] = None,
     ) -> None:
         """Run CC with the given arguments."""
-        self.run(CC, *CFLAGS, *args, cwd=cwd)
+        self.run(CC, *_CFLAGS, *args, cwd=cwd)
 
     def cxx(
         self,
@@ -688,7 +787,7 @@ class GcovrTestExec:
         cwd: Optional[Path] = None,
     ) -> None:
         """Run CXX with the given arguments."""
-        self.run(CXX, *CXXFLAGS, *args, cwd=cwd)
+        self.run(CXX, *_CXXFLAGS, *args, cwd=cwd)
 
     def cc_compile(
         self,
@@ -750,7 +849,9 @@ class GcovrTestExec:
             cwd = cwd or self.output_dir
             with chdir(cwd):
                 with mock.patch.dict("os.environ", env or {}, clear=True):
-                    cmd = [str(arg) for arg in args]
+                    cmd = ["--gcov-executable", shlex.join(str(e) for e in GCOV)] + [
+                        str(arg) for arg in args
+                    ]
                     with log_command(self.capsys, cwd, ["gcovr-main", *cmd]):
                         returncode = gcovr_main(cmd)
                         out, err = self.capsys.readouterr()
@@ -872,14 +973,16 @@ def gcovr_test_exec(  # type: ignore[no-untyped-def]
         parameter = parameter[:-1]
     test_id_parts = list[str]()
     if function_name != "test":
-        test_id_parts.append(function_name[5:])
+        test_id_parts.append(function_name[5:].replace("_", "-"))
     if parameter is not None:
-        test_id_parts.append(parameter)
-    test_id = "-".join(test_id_parts).replace("_", "-")
+        test_id_parts.append(parameter.replace("_", "-"))
+    test_id = "-".join(test_id_parts)
     with chdir(request.path.parent) as _test_dir:
         with create_output(test_id, request) as output_dir:
             test_exec = GcovrTestExec(
                 output_dir=output_dir,
+                test_name=test_id_parts[0] if test_id_parts else None,
+                test_id=test_id,
                 capsys=capsys,
                 check=check,
                 compare=GcovrTestCompare(

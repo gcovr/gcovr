@@ -20,7 +20,7 @@
 from pathlib import Path
 import pytest
 
-from .conftest import GCOVR_ISOLATED_TEST, IS_GCC, GcovrTestExec
+from tests.conftest import GCOVR_ISOLATED_TEST, IS_GCC, GcovrTestExec
 
 
 EXAMPLES_DIRECTORY = Path(__file__).parent.parent / "doc" / "examples"
@@ -36,8 +36,12 @@ SHELL_SCRIPTS = [
 @pytest.mark.parametrize("shell_script", SHELL_SCRIPTS, ids=lambda p: p.stem)
 def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
     """Run the examples as tests."""
+    gcovr_test_exec.copy_source(EXAMPLES_DIRECTORY / "example.cpp")
+    gcovr_test_exec.copy_source(shell_script)
+    if "cmake" in shell_script.name:
+        gcovr_test_exec.copy_source(EXAMPLES_DIRECTORY / "CMakeLists.txt")
     name = shell_script.name.split(".", maxsplit=1)[0]
-    output_format = name.split("_", maxsplit=1)[1] if "_" in name else "txt"
+    output_format = name.split("_", maxsplit=1)[1]
     if output_format in ("branches", "cmake"):
         output_format = "txt"
     elif output_format == "json_summary":
@@ -64,30 +68,45 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
         "xml" if output_format in ("cobertura", "clover", "jacoco") else output_format
     )
     baseline_file = EXAMPLES_DIRECTORY / f"{name}.{extension}"
+    output_file = gcovr_test_exec.output_dir / baseline_file.name
 
     scrub_function = getattr(
-        gcovr_test_exec._compare, f"scrub_{output_format}", lambda x: x
+        gcovr_test_exec._compare,  # pylint: disable=protected-access
+        f"scrub_{output_format}",
+        lambda x: x,
     )
 
     # Read old file
     baseline = baseline_file.read_bytes().decode(encoding="UTF-8")
     baseline_scrubbed = scrub_function(baseline)
+    current = None
     try:
-        gcovr_test_exec.run("sh", "-c", shell_script, cwd=EXAMPLES_DIRECTORY)
+        gcovr_test_exec.run(
+            "sh",
+            "-c",
+            gcovr_test_exec.output_dir / shell_script.name,
+        )
         # Read new data
-        current = baseline_file.read_bytes().decode(encoding="UTF-8")
+        current = output_file.read_bytes().decode(encoding="UTF-8")
         current_scrubbed = scrub_function(current)
 
-        gcovr_test_exec._compare.assert_equals(
+        gcovr_test_exec._compare.assert_equals(  # pylint: disable=protected-access
             baseline_file,
             baseline_scrubbed,
-            Path("<STDOUT>"),
+            output_file,
             current_scrubbed,
             encoding="utf8",
         )
     finally:
-        if not gcovr_test_exec._compare.update_reference:
-            baseline_file.write_text(baseline, encoding="UTF-8")
+        if current is not None and gcovr_test_exec._compare.update_reference:  # pylint: disable=protected-access
+            if output_format == "html":
+                for file in [
+                    gcovr_test_exec.output_dir / "example_html.html",
+                    *gcovr_test_exec.output_dir.glob("example_html.details.*"),
+                ]:
+                    file.rename(EXAMPLES_DIRECTORY / file.name)
+            else:
+                output_file.rename(baseline_file)
 
 
 def test_timestamps_example(gcovr_test_exec: "GcovrTestExec") -> None:

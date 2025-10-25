@@ -157,6 +157,7 @@
         "versionchanged",
         "versionremoved",
         "virtualenv",
+        "xdist",
         "yaxmldiff"
     ],
     "ignoreWords": [

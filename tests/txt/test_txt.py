@@ -1,14 +1,18 @@
-import platform
-import typing
-
 import pytest
 
-if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+from tests.conftest import (
+    GcovrTestExec,
+    IS_LINUX,
+    IS_DARWIN,
+    IS_GCC,
+    CC_VERSION,
+)
+
+SKIP_TEST = not IS_LINUX and not (IS_DARWIN and not IS_GCC and CC_VERSION == 17)
 
 
 @pytest.mark.skipif(
-    platform.system() != "Linux",
+    SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
 )
 def test_summary(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -30,7 +34,7 @@ def test_summary(gcovr_test_exec: "GcovrTestExec") -> None:
 
 
 @pytest.mark.skipif(
-    platform.system() != "Linux",
+    SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
 )
 def test_summary_full(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -54,7 +58,7 @@ def test_summary_full(gcovr_test_exec: "GcovrTestExec") -> None:
 
 
 @pytest.mark.skipif(
-    platform.system() != "Linux",
+    SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
 )
 def test_default(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -70,7 +74,7 @@ def test_default(gcovr_test_exec: "GcovrTestExec") -> None:
 
 
 @pytest.mark.skipif(
-    platform.system() != "Linux",
+    SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
 )
 def test_branches(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -88,7 +92,7 @@ def test_branches(gcovr_test_exec: "GcovrTestExec") -> None:
 
 
 @pytest.mark.skipif(
-    platform.system() != "Linux",
+    SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
 )
 def test_report_covered(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -106,7 +110,7 @@ def test_report_covered(gcovr_test_exec: "GcovrTestExec") -> None:
 
 
 @pytest.mark.skipif(
-    platform.system() != "Linux",
+    SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
 )
 def test_report_covered_branches(gcovr_test_exec: "GcovrTestExec") -> None:

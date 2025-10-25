@@ -45,7 +45,7 @@ Compiler Options
 
 We compile ``example.cpp`` with the GCC compiler as follows:
 
-.. literalinclude:: ../../examples/example.sh
+.. literalinclude:: ../../examples/example_txt.sh
     :language: bash
     :start-after: #BEGIN compile
     :end-before: #END compile
@@ -101,7 +101,7 @@ Running the Program
 The above compiler invocation generated a ``program`` executable.
 Now, we have to execute this command:
 
-.. literalinclude:: ../../examples/example.sh
+.. literalinclude:: ../../examples/example_txt.sh
     :language: bash
     :start-after: #BEGIN run
     :end-before: #END run
@@ -126,7 +126,7 @@ You don't have to call these programs yourself, gcovr will do that for you.
 
 So let's invoke gcovr:
 
-.. literalinclude:: ../../examples/example.sh
+.. literalinclude:: ../../examples/example_txt.sh
     :language: bash
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
@@ -137,7 +137,7 @@ and summarize the code coverage statistics into a report.
 By default, we get a text summary on the command line
 that shows aggregate statistics for each line:
 
-.. literalinclude:: ../../examples/example.txt
+.. literalinclude:: ../../examples/example_txt.txt
     :language: text
 
 Gcovr supports many different :ref:`output_formats`

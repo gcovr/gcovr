@@ -7,11 +7,19 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-      - id: check-yaml
       - id: check-added-large-files
+      - id: check-ast
       - id: check-case-conflict
+      - id: check-executables-have-shebangs
       - id: check-illegal-windows-names
+      - id: check-json
+        # This are JSONC files, which are not strictly valid JSON
+        exclude: (?:.devcontainer/devcontainer.json|cspell.json|.vscode/tasks.json)
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-toml
       - id: check-yaml
+      - id: debug-statements
       - id: mixed-line-ending
         args:
           - --fix=no
@@ -24,3 +32,26 @@ repos:
     rev: v1.37.1
     hooks:
       - id: yamllint
+  - repo: local
+    hooks:
+      - id: bandit-files
+        name: Run nox bandit session
+        entry: python3 -m nox -rs bandit --
+        language: system
+        types: [python]
+        pass_filenames: true
+        require_serial: true
+      - id: pylint-files
+        name: Run nox pylint session
+        entry: python3 -m nox -rs pylint --
+        language: system
+        types: [python]
+        pass_filenames: true
+        require_serial: true
+      - id: mypy-files
+        name: Run nox mypy session
+        entry: python3 -m nox -rs mypy --
+        language: system
+        types: [python]
+        pass_filenames: true
+        require_serial: true

@@ -1,0 +1,188 @@
+{
+    "gcovr/format_version": "0.14",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 4,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31"
+                },
+                {
+                    "line_number": 5,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "1f75572ae0564be4a3859e6b52e9087c"
+                },
+                {
+                    "line_number": 6,
+                    "function_name": "foo(int)",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "64ec5cef577563bace82970087694de4"
+                },
+                {
+                    "line_number": 7,
+                    "function_name": "foo(int)",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "6cba61c5865ea7f66ac538d12604b7cf"
+                },
+                {
+                    "line_number": 8,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "ee6ba24d738b3a523af06e5841029292"
+                },
+                {
+                    "line_number": 10,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "9aec6e9f39e083955a45d75c49ebcda0"
+                },
+                {
+                    "line_number": 11,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "64ec5cef577563bace82970087694de4"
+                },
+                {
+                    "line_number": 12,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "6cba61c5865ea7f66ac538d12604b7cf"
+                },
+                {
+                    "line_number": 13,
+                    "function_name": "foo(int)",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "ee6ba24d738b3a523af06e5841029292"
+                },
+                {
+                    "line_number": 16,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        }
+                    ],
+                    "gcovr/md5": "9aec6e9f39e083955a45d75c49ebcda0"
+                },
+                {
+                    "line_number": 17,
+                    "function_name": "foo(int)",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "64ec5cef577563bace82970087694de4"
+                },
+                {
+                    "line_number": 18,
+                    "function_name": "foo(int)",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "6cba61c5865ea7f66ac538d12604b7cf"
+                },
+                {
+                    "line_number": 19,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "ee6ba24d738b3a523af06e5841029292"
+                },
+                {
+                    "line_number": 22,
+                    "function_name": "foo(int)",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "6304eee57366eeaaf7da439e3dcbbf8a"
+                },
+                {
+                    "line_number": 26,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
+                },
+                {
+                    "line_number": 27,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "c18608b3fe9a00042c41d97d382d1e07"
+                },
+                {
+                    "line_number": 29,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
+                }
+            ],
+            "functions": [
+                {
+                    "demangled_name": "foo(int)",
+                    "lineno": 4,
+                    "execution_count": 1,
+                    "blocks_percent": 70.0
+                },
+                {
+                    "name": "main",
+                    "lineno": 26,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0
+                }
+            ]
+        }
+    ]
+}

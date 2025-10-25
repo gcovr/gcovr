@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<coverage clover="1759082961" generated="1759082961">
+  <project timestamp="1759082961">
+    <metrics complexity="0" elements="19" coveredelements="15" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="15" methods="0" coveredmethods="0" packages="1" classes="3" files="3"/>
+    <package name="exclude-line-branch">
+      <metrics complexity="0" elements="19" coveredelements="15" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="15" methods="0" coveredmethods="0" classes="3" files="3"/>
+      <file name="bar.cpp" path="exclude-line-branch/bar.cpp">
+        <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0" classes="1"/>
+        <class name="id$33243d08388e3ada4163475daccef2bb">
+          <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+        </class>
+      </file>
+      <file name="foo.cpp" path="exclude-line-branch/foo.cpp">
+        <metrics complexity="0" elements="9" coveredelements="7" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="7" methods="0" coveredmethods="0" classes="1"/>
+        <class name="id$faebb52d874bf75fe914824f9610c557">
+          <metrics complexity="0" elements="9" coveredelements="7" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="7" methods="0" coveredmethods="0"/>
+        </class>
+        <line num="2" type="stmt" count="5"/>
+        <line num="3" type="stmt" count="5"/>
+        <line num="4" type="stmt" count="2"/>
+        <line num="6" type="stmt" count="1"/>
+        <line num="7" type="stmt" count="2"/>
+        <line num="8" type="stmt" count="0"/>
+        <line num="9" type="stmt" count="2"/>
+        <line num="10" type="stmt" count="0"/>
+        <line num="21" type="stmt" count="1"/>
+      </file>
+      <file name="main.cpp" path="exclude-line-branch/main.cpp">
+        <metrics complexity="0" elements="10" coveredelements="8" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="8" methods="0" coveredmethods="0" classes="1"/>
+        <class name="id$b5073e8514f91f78eb0683c46411f0e4">
+          <metrics complexity="0" elements="10" coveredelements="8" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="8" methods="0" coveredmethods="0"/>
+        </class>
+        <line num="10" type="stmt" count="1"/>
+        <line num="11" type="stmt" count="1"/>
+        <line num="12" type="stmt" count="0"/>
+        <line num="12" type="stmt" count="1"/>
+        <line num="13" type="stmt" count="0"/>
+        <line num="13" type="stmt" count="1"/>
+        <line num="19" type="stmt" count="1"/>
+        <line num="20" type="stmt" count="6"/>
+        <line num="21" type="stmt" count="5"/>
+        <line num="32" type="stmt" count="1"/>
+      </file>
+    </package>
+  </project>
+  <testproject timestamp="1759082961">
+    <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+    <package name="dummy">
+      <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+      <file name="dummy" path="dummy">
+        <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+        <class name="id$275876e34cf609db118f3d84b799a790">
+          <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+        </class>
+      </file>
+    </package>
+  </testproject>
+</coverage>
