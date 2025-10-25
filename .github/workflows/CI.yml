@@ -122,36 +122,8 @@ jobs:
           path: /tmp/coverage-upload/*.*
 
   # -----------------------------------------------------------------------------------------------
-  validate-reports:
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    env:
-      FORCE_COLOR: "1"
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up runner
-        uses: "./.github/actions/setup-runner"
-        with:
-          os: ubuntu-22.04
-          python-version: 3.13
-
-      - name: Install libxml2
-        shell: bash
-        run: |
-          sudo apt update
-          sudo apt-get install -y \
-            libxml2-utils
-
-      - name: Run validation
-        run: |
-          nox --non-interactive --session validate_reports
-
-  # -----------------------------------------------------------------------------------------------
   build-package:
-    needs: [changelog, spell-check, validate-reports]
+    needs: [changelog, spell-check]
     runs-on: ubuntu-22.04
     permissions:
       contents: read

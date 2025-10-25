@@ -427,6 +427,7 @@ class GcovrTestCompare:
     ) -> None:
         """Assert that the given files are equal."""
         extension = reference_file.suffix
+        check_output: list[str] = []
         if extension in [".html", ".xml"]:
             if extension == ".html":
                 el_reference = etree.fromstringlist(  # nosec # We parse our reference files here
@@ -443,13 +444,12 @@ class GcovrTestCompare:
                     test.encode().split(b"\n")
                 )
 
-            diff_out: Optional[str] = compare_xml(el_reference, el_test)
-            if diff_out is None:
-                return
-
-            diff_out = (
-                f"-- {reference_file}\n++ {test_file}\n{diff_out}"  # pragma: no cover
-            )
+            if (
+                compare_output := compare_xml(el_reference, el_test)
+            ) is not None:  # pragma: no cover
+                check_output.append(
+                    f"-- {reference_file}\n++ {test_file}\n{compare_output}"
+                )
         else:
             reference_list = reference.splitlines(keepends=True)
             reference_list.append("\n")
@@ -464,12 +464,49 @@ class GcovrTestCompare:
                 )
             )
 
-            diff_is_empty = len(diff_lines) == 0
-            if diff_is_empty:
-                return
-            diff_out = "".join(diff_lines)  # pragma: no cover
+            if diff_lines:  # pragma: no cover
+                check_output.append("".join(diff_lines))
 
-        raise AssertionError(diff_out)  # pragma: no cover
+        if extension == ".xml":
+            schema: Optional[Path] = None
+            if "cobertura" in reference_file.name:
+                schema = _BASE_DIRECTORY / "cobertura.coverage-04.dtd"
+            elif "jacoco" in reference_file.name:
+                schema = _BASE_DIRECTORY / "JaCoCo.report.dtd"
+            elif "clover" in reference_file.name:
+                schema = _BASE_DIRECTORY / "clover.xsd"
+            elif "sonarqube" in reference_file.name:
+                schema = _BASE_DIRECTORY / "sonar-generic-coverage.xsd"
+
+            if schema is not None:
+                if schema.suffix == ".dtd":
+
+                    def run_xmllint() -> Optional[str]:
+                        dtd_schema = etree.DTD(str(schema))  # nosec # We parse our trusted XSD files here
+                        doc = etree.parse(str(test_file))  # nosec # We parse our test files here
+                        return (
+                            None
+                            if dtd_schema.validate(doc)
+                            else f"DTD validation error for {test_file}:\n{dtd_schema.error_log}"
+                        )
+
+                else:
+
+                    def run_xmllint() -> Optional[str]:
+                        xmlschema_doc = etree.parse(str(schema))  # nosec # We parse our trusted XSD files here
+                        xmlschema = etree.XMLSchema(xmlschema_doc)
+                        doc = etree.parse(str(test_file))  # nosec # We parse our test files here
+                        return (
+                            None
+                            if xmlschema.validate(doc)
+                            else f"XSD validation error for {test_file}:\n{xmlschema.error_log}"
+                        )
+
+                if (validation_error := run_xmllint()) is not None:
+                    check_output.append(validation_error)
+
+        if check_output:  # pragma: no cover
+            raise AssertionError("\n\n".join(check_output))
 
     def compare_files(
         self,
