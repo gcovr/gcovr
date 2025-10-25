@@ -111,8 +111,8 @@ jobs:
         run: |
           mkdir -p /tmp/coverage-upload
           rm -rf /tmp/coverage-upload/*
-          cp --target-directory=/tmp/coverage-upload ./tests/exclude-line-branch/reference/gcc-5/*.*
-          cp --target-directory=/tmp/coverage-upload --force ./tests/exclude-line-branch/reference/gcc-14/*.*
+          cp --target-directory=/tmp/coverage-upload ./tests/exclusion/reference//exclude-line-branch/gcc-5/*.*
+          cp --target-directory=/tmp/coverage-upload --force ./tests/exclusion/reference//exclude-line-branch/gcc-14/*.*
           # Patch the paths inside the coverage files
           find /tmp/coverage-upload -type f -name '*' -exec sed -e 's^output/^source/^g ; s^output^source^g ;' -i '' {} \;
       - name: Upload coverage
