@@ -59,8 +59,8 @@ def __colored_formatter(options: "Optional[Options]" = None) -> ColoredFormatter
         log_format = (
             COLOR_LOG_FORMAT_THREADS if options.gcov_parallel != 1 else COLOR_LOG_FORMAT
         )
-        force_color = getattr(options, "force_color", False)
-        no_color = getattr(options, "no_color", False)
+        force_color = options.force_color
+        no_color = options.no_color
     else:
         log_format = COLOR_LOG_FORMAT
         force_color = False

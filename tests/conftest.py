@@ -53,6 +53,12 @@ IS_DARWIN = platform.system() == "Darwin"
 IS_DARWIN_HOST = os.getenv("HOST_OS") == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
 
+# Clear color environment variables to avoid colored output in tests.
+# The used escape sequences may interfere with the output comparison.
+for envvar in ["FORCE_COLOR", "NO_COLOR"]:
+    if envvar in os.environ:
+        del os.environ[envvar]
+
 CC = Path(str(shutil.which(os.environ.get("CC", "gcc-5"))))
 os.environ["CC"] = str(CC)
 CXX = CC.parent / CC.name.replace("clang", "clang++").replace("gcc", "g++")
