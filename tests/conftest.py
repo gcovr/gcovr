@@ -39,6 +39,7 @@ from lxml import etree  # nosec # Data is trusted.
 from yaxmldiff import compare_xml
 
 from gcovr.__main__ import main as gcovr_main
+from gcovr.formats.gcov.parser.json import GCOV_JSON_VERSION
 
 LOGGER = logging.getLogger(__name__)
 
@@ -76,6 +77,13 @@ _CC_VERSION_OUTPUT = subprocess.run(  # nosec: B603
     check=True,
     shell=False,
 ).stdout
+_GCOV_VERSION_OUTPUT = subprocess.run(  # nosec: B603
+    [*GCOV, "--version"],
+    capture_output=True,
+    text=True,
+    check=True,
+    shell=False,
+).stdout
 
 # cspell:ignore Linaro xctoolchain
 # look for a line "gcc WHATEVER VERSION.WHATEVER" in output like:
@@ -104,7 +112,7 @@ else:
     raise AssertionError(f"Unable to get compiler version from:\n{_CC_VERSION_OUTPUT}")
 
 USE_GCC_JSON_INTERMEDIATE_FORMAT = (
-    IS_GCC and "JSON format version: 2" in _CC_VERSION_OUTPUT
+    IS_GCC and f"JSON format version: {GCOV_JSON_VERSION}" in _GCOV_VERSION_OUTPUT
 )
 GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS = "c++20" in _CC_HELP_OUTPUT
 
