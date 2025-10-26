@@ -19,11 +19,10 @@
 
 # pylint: disable=too-many-lines
 
-import logging
 from typing import Any
 
+from ....logging import LOGGER
 
-LOGGER = logging.getLogger("gcovr")
 SUSPICIOUS_COUNTER = 2**32
 
 

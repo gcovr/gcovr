@@ -17,7 +17,6 @@
 #
 # ****************************************************************************
 
-import logging
 import os
 from glob import glob
 from lxml import etree  # nosec # We only write XML files
@@ -30,9 +29,8 @@ from ...data_model.coverage import (
 )
 from ...data_model.merging import MergeOptions, get_merge_mode_from_options
 from ...filter import is_file_excluded
+from ...logging import LOGGER
 from ...options import Options
-
-LOGGER = logging.getLogger("gcovr")
 
 
 #

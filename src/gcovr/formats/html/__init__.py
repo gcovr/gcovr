@@ -17,7 +17,6 @@
 #
 # ****************************************************************************
 
-import logging
 from typing import Union
 
 from ...data_model.container import CoverageContainer
@@ -29,7 +28,6 @@ from ...options import (
 )
 
 
-LOGGER = logging.getLogger("gcovr")
 THEMES = (
     "green",
     "blue",

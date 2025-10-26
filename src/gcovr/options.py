@@ -21,15 +21,13 @@ from __future__ import annotations
 from abc import abstractmethod
 from argparse import ArgumentParser, ArgumentTypeError, Namespace
 import argparse
-import logging
 import platform
 import re
 from typing import Any, Optional, Type, Union, Callable
 import os
 
 from .filter import AbsoluteFilter, Filter, RelativeFilter
-
-LOGGER = logging.getLogger("gcovr")
+from .logging import LOGGER
 
 
 def check_percentage(value: str) -> float:

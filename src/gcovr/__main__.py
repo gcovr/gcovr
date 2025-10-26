@@ -17,7 +17,6 @@
 #
 # ****************************************************************************
 
-import logging
 import os
 import re
 import sys
@@ -25,8 +24,6 @@ import sys
 from argparse import ArgumentError, ArgumentParser, Namespace
 from typing import Any, Optional
 import traceback
-
-from .formats.gcov.read import GcovProgram
 
 from .configuration import (
     argument_parser_setup,
@@ -36,15 +33,13 @@ from .configuration import (
     parse_config_into_dict,
 )
 from .data_model.container import CoverageContainer
-from .logging import (
-    configure_logging,
-    update_logging,
-)
 from .filter import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
     Filter,
 )
+from .formats.gcov.read import GcovProgram
+from .logging import configure_logging, update_logging, LOGGER
 from .version import __version__
 
 # formats
@@ -54,9 +49,6 @@ if sys.version_info >= (3, 11):
     import tomllib
 else:
     import tomli as tomllib
-
-LOGGER = logging.getLogger("gcovr")
-
 
 EXIT_SUCCESS = 0
 EXIT_CMDLINE_ERROR = 1
@@ -369,6 +361,13 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         )
         options.gcov_exclude_directory = _setup_filter(
             "--gcov-exclude-directory", options.gcov_exclude_directory
+        )
+
+        options.trace_include_filter = _setup_filter(
+            "--trace-include", options.trace_include_filter
+        )
+        options.trace_exclude_filter = _setup_filter(
+            "--trace-exclude", options.trace_exclude_filter
         )
 
         options.exclude_function = _setup_pattern(

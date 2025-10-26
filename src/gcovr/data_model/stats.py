@@ -18,7 +18,6 @@
 # ****************************************************************************
 
 from __future__ import annotations
-import logging
 from typing import (
     Optional,
     TypeVar,
@@ -28,7 +27,6 @@ from dataclasses import dataclass
 
 from ..options import Options
 
-LOGGER = logging.getLogger("gcovr")
 
 _T = TypeVar("_T")
 

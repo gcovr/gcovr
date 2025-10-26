@@ -21,7 +21,6 @@ import gzip
 from hashlib import md5
 import json
 from typing import Any, Callable, Iterator, Optional
-import logging
 import os
 import functools
 import re
@@ -29,9 +28,8 @@ import sys
 from contextlib import contextmanager
 from lxml import etree  # nosec # We only write XML files
 
+from .logging import LOGGER
 from .version import __version__
-
-LOGGER = logging.getLogger("gcovr")
 
 REGEX_VERSION_POSTFIX = re.compile(r"(.+?)(?:\.post\d+)?\.dev.+$")
 PRETTY_JSON_INDENT = 4

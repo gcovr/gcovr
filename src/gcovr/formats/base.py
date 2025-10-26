@@ -46,6 +46,8 @@ class BaseHandler:
             "starting_dir",
             "include_filter",
             "exclude_filter",
+            "trace_include_filter",
+            "trace_exclude_filter",
         ]
         option_dict = {}
         for name in global_options + [

@@ -17,7 +17,6 @@
 #
 # ****************************************************************************
 
-import logging
 from multiprocessing import cpu_count
 from sys import exc_info
 from threading import Thread, Condition, RLock
@@ -26,7 +25,7 @@ from contextlib import contextmanager
 from queue import Queue, Empty
 from typing import Any, Callable, Iterator, Optional
 
-LOGGER = logging.getLogger("gcovr")
+from ...logging import LOGGER
 
 
 class LockedDirectories:

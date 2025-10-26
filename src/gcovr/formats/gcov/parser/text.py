@@ -36,7 +36,6 @@ The behavior of this parser was informed by the following sources:
 # pylint: disable=too-many-lines
 
 import enum
-import logging
 import re
 from typing import (
     Any,
@@ -47,15 +46,15 @@ from typing import (
     Union,
 )
 
+from ....data_model.coverage import FileCoverage, LineCoverage
+from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
+from ....logging import LOGGER
+from ....utils import get_md5_hexdigest
+
 from .common import (
     SUSPICIOUS_COUNTER,
     check_hits,
 )
-from ....utils import get_md5_hexdigest
-from ....data_model.coverage import FileCoverage, LineCoverage
-from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
-
-LOGGER = logging.getLogger("gcovr")
 
 
 def _line_pattern(pattern: str) -> Pattern[str]:

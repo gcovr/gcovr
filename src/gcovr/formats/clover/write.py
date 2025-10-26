@@ -20,15 +20,12 @@
 # cspell:ignore coveredelements coveredconditionals coveredmethods
 
 from dataclasses import dataclass
-import logging
 from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import LineCoverage
 from ...options import Options
 from ...utils import get_md5_hexdigest, write_xml_output
-
-LOGGER = logging.getLogger("gcovr")
 
 
 def write_report(

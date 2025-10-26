@@ -29,10 +29,14 @@ via ``apply_all_exclusions()``, which is configured via the usual options object
 from dataclasses import dataclass, field
 import re
 from typing import Optional
-import logging
 
+
+from ..data_model.coverage import FileCoverage
+from ..logging import LOGGER
 from ..options import Options
 
+from .markers import ExclusionPredicate, FunctionListByLine, apply_exclusion_markers
+from .noncode import remove_unreachable_branches, remove_noncode_lines
 from .utils import (
     make_is_in_any_range_inclusive,
     apply_exclusion_ranges,
@@ -40,12 +44,6 @@ from .utils import (
     get_function_exclude_ranges,
     get_functions_by_line,
 )
-
-from ..data_model.coverage import FileCoverage
-from .markers import ExclusionPredicate, FunctionListByLine, apply_exclusion_markers
-from .noncode import remove_unreachable_branches, remove_noncode_lines
-
-LOGGER = logging.getLogger("gcovr")
 
 
 @dataclass

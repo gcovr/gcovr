@@ -22,7 +22,6 @@ Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
 """
 
 from typing import Callable
-import logging
 import re
 
 from .utils import (
@@ -33,8 +32,8 @@ from .utils import (
 )
 
 from ..data_model.coverage import FileCoverage, FunctionCoverage
+from ..logging import LOGGER
 
-LOGGER = logging.getLogger("gcovr")
 
 _EXCLUDE_FLAG = "_EXCL_"
 _EXCLUDE_PATTERN_LINE = ""

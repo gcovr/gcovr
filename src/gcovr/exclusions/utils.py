@@ -19,12 +19,11 @@
 
 """Utils for exclusion of lines and branches"""
 
-import logging
 from typing import Callable, Iterable, Optional
 
 from ..data_model.coverage import FileCoverage, FunctionCoverage
+from ..logging import LOGGER
 
-LOGGER = logging.getLogger("gcovr")
 
 ExclusionPredicate = Callable[[int], bool]
 FunctionListByLine = dict[int, list[FunctionCoverage]]

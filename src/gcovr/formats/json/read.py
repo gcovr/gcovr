@@ -19,18 +19,15 @@
 
 import gzip
 import json
-import logging
 import os
 from glob import glob
-
-from ...utils import GZIP_SUFFIX
 
 from ...data_model import version
 from ...data_model.container import CoverageContainer
 from ...data_model.merging import get_merge_mode_from_options
+from ...logging import LOGGER
 from ...options import Options
-
-LOGGER = logging.getLogger("gcovr")
+from ...utils import GZIP_SUFFIX
 
 
 #

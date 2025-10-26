@@ -17,16 +17,14 @@
 #
 # ****************************************************************************
 
-import logging
 from typing import Optional, Union
 from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
 from ...data_model.stats import CoverageStat, DecisionCoverageStat
+from ...logging import LOGGER
 from ...options import Options
 from ...utils import write_xml_output
-
-LOGGER = logging.getLogger("gcovr")
 
 
 def write_report(

@@ -19,7 +19,6 @@
 
 import gzip
 from json import loads as json_loads
-import logging
 import os
 import re
 import shlex
@@ -35,6 +34,7 @@ from ...exclusions import (
     get_exclusion_options_from_options,
 )
 from ...filter import Filter, is_file_excluded
+from ...logging import LOGGER
 from ...options import Options
 from ...utils import (
     commonpath,
@@ -47,8 +47,6 @@ from .parser import (
     text,
 )
 from .workers import Workers, locked_directory
-
-LOGGER = logging.getLogger("gcovr")
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_error_re = re.compile(

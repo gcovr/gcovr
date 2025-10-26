@@ -31,7 +31,6 @@ The behavior of this parser was informed by the following sources:
 # pylint: disable=too-many-lines
 # cspell:ignore getpreferredencoding
 
-import logging
 import os
 from locale import getpreferredencoding
 from typing import Any, Optional
@@ -41,13 +40,14 @@ from gcovr.utils import get_md5_hexdigest
 from ....data_model.coverage import FileCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 from ....filter import Filter, is_file_excluded
+from ....logging import LOGGER
 from .common import (
     SUSPICIOUS_COUNTER,
     check_hits,
 )
 
 GCOV_JSON_VERSION = "2"
-LOGGER = logging.getLogger("gcovr")
+
 DEFAULT_SOURCE_ENCODING = getpreferredencoding()
 
 
