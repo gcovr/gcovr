@@ -1,3 +1,6 @@
+
+.. program::  gcovr
+
 .. _known_bugs:
 
 Known bugs
@@ -5,6 +8,22 @@ Known bugs
 
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
+
+.. _fix_1176:
+
+Exclusion filter for existing GCOV files doesn't work
+-----------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_3`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1176`
+
+The exclusion filter given by :option:`--gcov-exclude` isn't applied.
+The message ``Excluding gcov file: ...`` is printed but the file is still used.
 
 .. _fix_1171_1:
 
