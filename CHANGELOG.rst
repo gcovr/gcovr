@@ -34,6 +34,8 @@ Internal changes:
   - Remove test with MacOs 13 because image will be retired by December 4th, 2025.
 
 - Activate parallel test execution by default and improve IDE support. (:issue:`1174`)
+- Add :option:`--trace-include` and :option:`--trace-exclude` to get additional output
+  from parsing of included gcov files. (:issue:`1175`)
 
 .. _release_8_4:
 
