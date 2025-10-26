@@ -87,7 +87,7 @@ if matches := re.search(r"^gcc\b.* ([0-9]+)\..+$", _CC_VERSION_OUTPUT, re.M):
     CC_VERSION = int(matches.group(1))
     IS_GCC = True
     _REFERENCE_DIR_VERSION_LIST = [
-        f"gcc-{version}" for version in range(5, CC_VERSION + 1) if version != 7
+        f"gcc-{version}" for version in range(5, CC_VERSION + 1)
     ]
 # look for a line "WHATEVER clang version VERSION.WHATEVER" in output like:
 #    Apple clang version 13.1.6 (clang-1316.0.21.2.5)

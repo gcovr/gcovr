@@ -49,7 +49,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
     if (
         output_format in ("html", "cobertura")
         and gcovr_test_exec.is_gcc()
-        and (gcovr_test_exec.cc_version() in [5, 6, 14])
+        and (gcovr_test_exec.cc_version() not in [8, 9, 10, 11, 12, 13])
     ):
         gcovr_test_exec.skip(
             f"GCC {gcovr_test_exec.cc_version()} have broken HTML output."
@@ -58,7 +58,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
     if (
         output_format == "json"
         and gcovr_test_exec.is_gcc()
-        and gcovr_test_exec.cc_version() == 14
+        and gcovr_test_exec.cc_version() >= 14
     ):
         gcovr_test_exec.skip(
             f"GCC {gcovr_test_exec.cc_version()} has broken JSON output."

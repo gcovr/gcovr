@@ -318,6 +318,7 @@ jobs:
         gcc:
           - gcc-5
           - gcc-6
+          - gcc-7
           - gcc-8
           - gcc-9
           - gcc-10
@@ -325,7 +326,10 @@ jobs:
           - gcc-12
           - gcc-13
           - gcc-14
+          - gcc-15
           - clang-10
+          - clang-11
+          - clang-12
           - clang-13
           - clang-14
           - clang-15
@@ -333,6 +337,7 @@ jobs:
           - clang-17
           - clang-18
           - clang-19
+          - clang-20
 
   # -----------------------------------------------------------------------------------------------
   publish-push-tag:
