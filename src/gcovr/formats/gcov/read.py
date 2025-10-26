@@ -933,6 +933,7 @@ def process_existing_gcov_file(
         filename, options.gcov_include_filter, options.gcov_exclude_filter
     ):
         LOGGER.debug(f"Excluding gcov file: {filename}")
+        return
 
     if filename.endswith(".gcov"):
         process_gcov_text_data(filename, None, covdata, options)
