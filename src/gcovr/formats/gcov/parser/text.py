@@ -203,6 +203,7 @@ def parse_metadata(
     lines: list[str],
     *,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
+    trace_file: bool = False,
 ) -> dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
@@ -236,6 +237,8 @@ def parse_metadata(
 
         if isinstance(parsed_line, _MetadataLine):
             key, value = parsed_line
+            if trace_file:
+                LOGGER.trace(f"Metadata: {parsed_line.key}={parsed_line.value}")
             collected[key] = value
         else:
             break  # stop at the first line that is not metadata
@@ -259,6 +262,7 @@ def parse_coverage(
     filename: str,
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
+    trace_file: bool = False,
 ) -> tuple[FileCoverage, list[str]]:
     """
     Extract coverage data from a gcov report.
@@ -288,18 +292,16 @@ def parse_coverage(
             continue
 
         try:
-            tokenized_lines.append(
-                (
-                    _parse_line(
-                        filename,
-                        raw_line,
-                        suspicious_hits_threshold,
-                        ignore_parse_errors,
-                        persistent_states,
-                    ),
-                    raw_line,
-                )
+            parsed_line = _parse_line(
+                filename,
+                raw_line,
+                suspicious_hits_threshold,
+                ignore_parse_errors,
+                persistent_states,
             )
+            tokenized_lines.append((parsed_line, raw_line))
+            if trace_file:
+                LOGGER.trace(f"Parsed line: {parsed_line}")
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 

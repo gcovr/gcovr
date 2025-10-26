@@ -27,6 +27,7 @@ repos:
     rev: v0.12.3
     hooks:
       - id: ruff-check
+        args: [--fix]
       - id: ruff-format
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.37.1

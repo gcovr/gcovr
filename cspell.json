@@ -135,6 +135,7 @@
         "pypi",
         "pyproject",
         "pypy",
+        "pyright",
         "pytest",
         "pywin32",
         "Quickstart",

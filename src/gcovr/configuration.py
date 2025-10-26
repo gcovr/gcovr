@@ -735,6 +735,30 @@ GCOVR_CONFIG_OPTIONS = [
         default=[],
     ),
     GcovrConfigOption(
+        "trace_include_filter",
+        ["--trace-include"],
+        group="filter_options",
+        help=(
+            "Log very verbose output for files that match this filter. "
+            "Can be specified multiple times."
+        ),
+        action="append",
+        type=NonEmptyFilterOption,
+        default=[],
+    ),
+    GcovrConfigOption(
+        "trace_exclude_filter",
+        ["--trace-exclude"],
+        group="filter_options",
+        help=(
+            "Do not log very verbose output for files that match this filter. "
+            "Can be specified multiple times."
+        ),
+        action="append",
+        type=NonEmptyFilterOption,
+        default=[],
+    ),
+    GcovrConfigOption(
         "merge_mode_functions",
         ["--merge-mode-functions"],
         metavar="MERGE_MODE",
