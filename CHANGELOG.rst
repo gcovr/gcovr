@@ -18,6 +18,8 @@ Bug fixes and small improvements:
 - Fix not excluded conditions if branches are excluded by comments. (:issue:`1171`)
 - Fix reported excluded branches in ``LCOV`` report. (:issue:`1171`)
 - Fix exclusion filter :option:`--gcov-exclude`. (:issue:`1176`)
+- Add :option:`--json-trace-data-source` to include the trace data source in the JSON report
+  independent from :option:`--verbose`. (:issue:`1178`)
 
 Documentation:
 

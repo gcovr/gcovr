@@ -108,6 +108,13 @@ class JsonHandler(BaseHandler):
                 action="append",
                 default=[],
             ),
+            GcovrConfigOption(
+                "json_trace_data_source",
+                ["--json-trace-data-source"],
+                group="output_options",
+                help="Write the data source to the tracefile.",
+                action="store_true",
+            ),
         ]
 
     def read_report(self) -> CoverageContainer:
