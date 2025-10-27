@@ -35,6 +35,7 @@ Internal changes:
   - Remove test with MacOs 13 because image will be retired by December 4th, 2025.
 
 - Activate parallel test execution by default and improve IDE support. (:issue:`1174`)
+- Add ``gcc-7``, ``gcc-15``, ``clang-11``, ``clang-12`` and ``clang-20`` to the test suite. (:issue:`1177`)
 
 .. _release_8_4:
 
@@ -333,7 +334,7 @@ Internal changes:
 - Move tag creation before publish the distribution because tag from pipeline doesn't trigger additional runs. (:issue:`899`)
 - Fix scrubber for date in HTML test data. (:issue:`919`)
 - Add test with Python 3.12. (:issue:`924`)
-- Add gcc-14 to the test suite. (:issue:`923`)
+- Add ``gcc-14`` to the test suite. (:issue:`923`)
 - Skip coverage upload if executed in a fork. (:issue:`930`)
 - Only execute pipeline if pushed on main and add button to execute workflow manual. (:issue:`930`)
 - Check spelling in test pipeline. (:issue:`932`)
@@ -450,7 +451,7 @@ Bug fixes and small improvements:
 - Log the thread name if :option:`-j` is used. (:issue:`752`)
 - Collapse also root directory if needed in nested HTML report. (:issue:`750`)
 - Handle special case of absolute source file paths in ``gcov`` output. (:issue:`776`)
-- Ignore exit code 6 when running ``gcov`` (output write error introduced gcc-12). (:issue:`781`)
+- Ignore exit code 6 when running ``gcov`` (output write error introduced ``gcc-12``). (:issue:`781`)
 - Change Coveralls value from 0.0 to 1.0 if no code lines or branches are present. (:issue:`796`)
 - Fix symlinked root directories on Windows. (:issue:`814`)
 - Extend :option:`--gcov-ignore-errors` to be able to ignore specific gcov errors. (:issue:`787`)
@@ -481,7 +482,7 @@ Internal changes:
 - Use interactive terminal for docker (support of Ctrl-C to interrupt). (:issue:`767`)
 - Use separate session for flake8 and us this session in lint. (:issue:`768`)
 - Replace the deprecated codecov python uploader with the binary uploader. (:issue:`770`)
-- Add gcc-12 and gcc-13 to the test suite. (:issue:`780`)
+- Add ``gcc-12`` and ``gcc-13`` to the test suite. (:issue:`780`)
 - Add sessions to run the targets for all versions of ``gcc`` or ``clang``. (:issue:`782`)
 - Use ``build`` instead of calling ``setup.py`` directly. (:issue:`819`)
 - Add nox session to import reference file from pipeline. (:issue:`831`)
@@ -572,7 +573,7 @@ Bug fixes and small improvements:
 - Remove function coverage from sonarqube report. (:issue:`591`)
 - Fix parallel processing of gcov data. (:issue:`592`)
 - Better diagnostics when dealing with corrupted input files. (:issue:`593`)
-- Accept metadata lines without values (introduced in gcc-11). (:issue:`601`)
+- Accept metadata lines without values (introduced in ``gcc-11``). (:issue:`601`)
 - Properly close <a> element in detailed HTML report. (:issue:`602`)
 - Use `≥` sign instead of `>=` in HTML legend. (:issue:`603`)
 - Using :option:`--add-tracefile` will now correctly merge branch coverage. (:issue:`600`)
@@ -589,7 +590,7 @@ Internal changes:
 
 - Fix black check to fail on format errors. (:issue:`594`)
 - Change session black with no arguments to format all files. (:issue:`595`)
-- Add gcc-10 and gcc-11 to the test suite. (:issue:`597`)
+- Add ``gcc-10`` and ``gcc-11`` to the test suite. (:issue:`597`)
 - Improved internal coverage data model to simplify processing. (:issue:`600`)
 - Use pretty print for cobertura and Coveralls in test suite. (:issue:`606`)
 - Forward nox options `--reuse-existing-virtualenvs` and `--no-install` to call inside docker. (:issue:`616`)
@@ -653,9 +654,9 @@ Internal changes:
 - New tests
 
   - more compilers:
-    clang-10 (:issue:`484`),
-    clang-13 (:issue:`527`),
-    gcc-9 (:issue:`527`)
+    ``clang-10`` (:issue:`484`),
+    ``clang-13`` (:issue:`527`),
+    ``gcc-9`` (:issue:`527`)
   - ``-fprofile-abs-path`` compiler option (:issue:`521`)
   - enabled symlink tests for Windows (:issue:`539`)
 
@@ -742,7 +743,7 @@ Internal changes:
   - Support multiple output patterns in integration tests. (:issue:`383`)
   - New option ``--archive_differences`` to save the different files as ZIP.
     Use this ZIP as artifact in AppVeyor. (:issue:`392`)
-  - Add support for gcc-8 to test suite and docker tests. (:issue:`423`)
+  - Add support for ``gcc-8`` to test suite and docker tests. (:issue:`423`)
   - Run as limited user inside docker container and add test with read only directory. (:issue:`445`)
 
 4.2 (6 November 2019)

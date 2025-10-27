@@ -148,26 +148,11 @@ tests expect a Unix-like environment. You can use MinGW-W64 or MinGW.
 An easier way is to :ref:`run tests with Docker <docker tests>`.
 
 -   Check your GCC installation, the binary directory must be added to
-    the PATH environment. If on of the following command groups are
+    the PATH environment. If one of the following command groups works
     everything is OK.
 
-    -  gcc-5/g++-5/gcov-5
-    -  gcc-6/g++-6/gcov-6
-    -  gcc-8/g++-8/gcov-8
-    -  gcc-9/g++-9/gcov-9
-    -  gcc-10/g++-10/gcov-10
-    -  gcc-11/g++-11/gcov-11
-    -  gcc-12/g++-12/gcov-12
-    -  gcc-13/g++-13/gcov-13
-    -  gcc-14/g++-14/gcov-14
-    -  clang-10/clang++-10/llvm-cov
-    -  clang-13/clang++-13/llvm-cov
-    -  clang-14/clang++-14/llvm-cov
-    -  clang-15/clang++-15/llvm-cov
-    -  clang-16/clang++-16/llvm-cov
-    -  clang-17/clang++-17/llvm-cov
-    -  clang-18/clang++-18/llvm-cov
-    -  clang-19/clang++-19/llvm-cov
+    - gcc-5/g++-5/gcov-5 to gcc-15/g++-15/gcov-15
+    - clang-10/clang++-10/llvm-cov to clang-19/clang++-19/llvm-cov
 
     are available everything is OK.
     The test suite uses the newest GCC found in the PATH. To use another one you
@@ -326,10 +311,10 @@ To run all tests, use ``python3 -m nox``.
 The tests currently assume that you are using GCC 5
 and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
-Supported versions are ``gcc-5``, ``gcc-6``, ``gcc-8``, ``gcc-9``,
-``gcc-10``, ``gcc-11``, ``gcc-12``, ``gcc-13``, ``gcc-14``, ``clang-10``,
-``clang-13``, ``clang-14``, ``clang-15``, ``clang-16``, ``clang-17``,
-``clang-17``, ``clang-18`` and ``clang-19``.
+Supported versions are:
+
+- ``gcc``: ``5``, ``6`` and ``8`` to ``15``
+- ``clang``: ``10`` and ``13`` to ``19``
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
@@ -428,9 +413,8 @@ Or to build and run the container in one step:
     python3 -m nox -s docker
 
 You can select the gcc version to use inside the docker by setting the environment
-variable CC to gcc-5 (default), gcc-6, gcc-8, gcc-9, gcc-10, gcc-11, gcc-12,
-gcc-13, gcc-14, clang-10, clang-13, clang-14, clang-15, clang-16, clang-17,
-clang-18, clang-19 or you can build and run the
+variable CC to ``gcc-5`` (default), ``gcc-6``, ``gcc-8`` to ``gcc-15``,
+``clang-10``, ``clang-13`` to ``clang-19`` or you can build and run the
 container with a specific version:
 
 .. code:: bash
