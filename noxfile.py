@@ -803,10 +803,6 @@ def docker_run_compiler(session: nox.Session, cc: str) -> None:
     nox_options = session.posargs if session.posargs else ["-s", "qa"]
     if not session.interactive:
         nox_options.insert(0, "--non-interactive")
-    if session._runner.global_config.no_install:  # pylint: disable=protected-access
-        nox_options.insert(0, "--no-install")
-    if session._runner.global_config.reuse_existing_virtualenvs:  # pylint: disable=protected-access
-        nox_options.insert(0, "--reuse-existing-virtualenvs")
 
     session.run(
         "docker",

@@ -23,6 +23,7 @@
     "useGitignore": true,
     "words": [
         "autoprogram",
+        "autoremove",
         "bandaid",
         "bazel",
         "bdist",
@@ -129,6 +130,7 @@
         "profdata",
         "pycache",
         "pycoverage",
+        "PYENV",
         "Pygments",
         "pyinstaller",
         "pylint",
