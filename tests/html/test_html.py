@@ -202,9 +202,7 @@ def test_less_lines(  # type: ignore[no-untyped-def]
     main_cpp.write_text(content)
 
     gcovr_test_exec.run("./testcase")
-    process = gcovr_test_exec.gcovr(
-        "--gcov-keep", "--html-details", "--html", "coverage.html"
-    )
+    process = gcovr_test_exec.gcovr("--html-details", "--html", "coverage.html")
     with check:
         assert (
             f"(WARNING) File {main_cpp} has 5 line(s) but coverage data has 23 line(s)."

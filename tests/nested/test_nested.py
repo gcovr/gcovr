@@ -19,9 +19,7 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
     gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr(
-        "-r", "subdir", "--gcov-keep", "--json-pretty", "--json=coverage.json"
-    )
+    gcovr_test_exec.gcovr("-r", "subdir", "--json-pretty", "--json=coverage.json")
     gcovr_test_exec.compare_json()
 
     gcovr_test_exec.gcovr(
@@ -122,7 +120,7 @@ def test_threaded(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./subdir/testcase")
     gcovr_test_exec.gcovr(
-        "-r", "subdir", "--gcov-keep", "-j=-1", "--json-pretty", "--json=coverage.json"
+        "-r", "subdir", "-j=-1", "--json-pretty", "--json=coverage.json"
     )
     gcovr_test_exec.compare_json()
 

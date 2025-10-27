@@ -64,7 +64,6 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
             additional_options += ["--root", "/proc/self/cwd"]
 
         gcovr_test_exec.gcovr(
-            "--gcov-keep",
             "--json-pretty",
             "--json=coverage.json",
             *additional_options,
@@ -86,10 +85,8 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
                 env=env,
             )
             gcovr_test_exec.gcovr(
-                "--gcov-keep",
                 "--json-pretty",
-                "--json",
-                "coverage_bazel.json",
+                "--json=coverage_bazel.json",
                 *additional_options,
                 directory.parent / "testlogs",
             )

@@ -12,7 +12,7 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
     gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr("--gcov-keep", "--json-pretty", "--json=coverage.json")
+    gcovr_test_exec.gcovr("--json-pretty", "--json=coverage.json")
     gcovr_test_exec.compare_json()
 
     gcovr_test_exec.gcovr(
