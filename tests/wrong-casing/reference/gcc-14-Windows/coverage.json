@@ -9,15 +9,7 @@
                     "function_name": "main",
                     "count": 2,
                     "branches": [],
-                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
-                    "gcovr/data_sources": [
-                        [
-                            "data/main.case_2.gcov"
-                        ],
-                        [
-                            "main.case_1.gcov"
-                        ]
-                    ]
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 6,
@@ -28,96 +20,40 @@
                             "branchno": 1,
                             "count": 2,
                             "fallthrough": true,
-                            "throw": false,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "throw": false
                         },
                         {
                             "branchno": 2,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "throw": true
                         },
                         {
                             "branchno": 4,
                             "count": 2,
                             "fallthrough": true,
-                            "throw": false,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "throw": false
                         },
                         {
                             "branchno": 5,
                             "count": 0,
                             "fallthrough": false,
-                            "throw": true,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "throw": true
                         }
                     ],
                     "calls": [
                         {
                             "callno": 0,
                             "source_block_id": null,
-                            "returned": 2,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "returned": 2
                         },
                         {
                             "callno": 3,
                             "source_block_id": null,
-                            "returned": 2,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "returned": 2
                         }
                     ],
-                    "gcovr/md5": "081d5fb82495b5cd31889b9f42f01280",
-                    "gcovr/data_sources": [
-                        [
-                            "data/main.case_2.gcov"
-                        ],
-                        [
-                            "main.case_1.gcov"
-                        ]
-                    ]
+                    "gcovr/md5": "081d5fb82495b5cd31889b9f42f01280"
                 },
                 {
                     "line_number": 7,
@@ -128,26 +64,10 @@
                         {
                             "callno": 0,
                             "source_block_id": null,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "returned": 0
                         }
                     ],
-                    "gcovr/md5": "7dca543db65aeb09385b27737ebed8b3",
-                    "gcovr/data_sources": [
-                        [
-                            "data/main.case_2.gcov"
-                        ],
-                        [
-                            "main.case_1.gcov"
-                        ]
-                    ]
+                    "gcovr/md5": "7dca543db65aeb09385b27737ebed8b3"
                 },
                 {
                     "line_number": 9,
@@ -158,39 +78,15 @@
                         {
                             "callno": 0,
                             "source_block_id": null,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "returned": 0
                         },
                         {
                             "callno": 1,
                             "source_block_id": null,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "data/main.case_2.gcov"
-                                ],
-                                [
-                                    "main.case_1.gcov"
-                                ]
-                            ]
+                            "returned": 0
                         }
                     ],
-                    "gcovr/md5": "2346f8c9887231d4dc95411978ecfabf",
-                    "gcovr/data_sources": [
-                        [
-                            "data/main.case_2.gcov"
-                        ],
-                        [
-                            "main.case_1.gcov"
-                        ]
-                    ]
+                    "gcovr/md5": "2346f8c9887231d4dc95411978ecfabf"
                 }
             ],
             "functions": [
@@ -198,24 +94,8 @@
                     "name": "main",
                     "lineno": 4,
                     "execution_count": 2,
-                    "blocks_percent": 44.0,
-                    "gcovr/data_sources": [
-                        [
-                            "data/main.case_2.gcov"
-                        ],
-                        [
-                            "main.case_1.gcov"
-                        ]
-                    ]
+                    "blocks_percent": 44.0
                 }
-            ],
-            "gcovr/data_sources": [
-                [
-                    "data/main.case_2.gcov"
-                ],
-                [
-                    "main.case_1.gcov"
-                ]
             ]
         }
     ]
