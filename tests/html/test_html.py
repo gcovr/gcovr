@@ -182,7 +182,7 @@ def test(
 
 
 @pytest.mark.skipif(
-    GcovrTestExec.cc_version() >= (8 if GcovrTestExec.is_gcc() else 13),
+    GcovrTestExec.cc_version() >= (8 if GcovrTestExec.is_gcc() else 12),
     reason="Newer versions stub the missing lines",
 )
 def test_less_lines(  # type: ignore[no-untyped-def]

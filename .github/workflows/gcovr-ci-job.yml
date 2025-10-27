@@ -79,6 +79,7 @@ jobs:
             case "${{ inputs.gcc }}" in
               gcc-5)    USE_COVERAGE=true ;;
               gcc-14)   USE_COVERAGE=true ;;
+              gcc-15)   USE_COVERAGE=true ;;
               clang-10) USE_COVERAGE=true ;;
               clang-19) USE_COVERAGE=true ;;
               *)        USE_COVERAGE=false ;;

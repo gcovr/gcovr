@@ -133,6 +133,7 @@ jobs:
       tag: ${{ needs.changelog.outputs.tag }}
       tag_message: ${{ needs.changelog.outputs.tag_message }}
       gcovr_version_output: ${{ steps.gcov_version.outputs.gcovr_version_output }}
+      gcovr_compiler_list: ${{ steps.gcovr_compiler.outputs.gcovr_compiler_list }}
 
       # The variables used for publishing the data
       publish_run_job: >-
@@ -177,12 +178,19 @@ jobs:
         run: |
           nox --non-interactive --session build_distribution
 
-      - name: Set output variables
-        id: gcov_version
+      - name: Set GCOVR version
+        id: gcovr_version
         run: |
           . .nox/check_distribution/bin/activate
           gcovr_version_output="$(gcovr --version | head -n 1)"
-          echo "gcovr_version_output=$gcovr_version_output" >> $GITHUB_OUTPUT
+          echo "gcovr_version_output=$gcovr_version_output" | tee --append $GITHUB_OUTPUT
+
+      - name: Set compiler test versions
+        id: gcovr_compiler
+        run: |
+          . .nox/check_distribution/bin/activate
+          echo "gcovr_compiler_list=$(nox -l -k docker_run_compiler --json | jq -c '[map(select(.call_spec != {}))[].call_spec.cc]')" \
+            | tee --append $GITHUB_OUTPUT
 
       - name: Upload distribution 📦
         uses: actions/upload-artifact@v4
@@ -315,24 +323,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gcc:
-          - gcc-5
-          - gcc-6
-          - gcc-8
-          - gcc-9
-          - gcc-10
-          - gcc-11
-          - gcc-12
-          - gcc-13
-          - gcc-14
-          - clang-10
-          - clang-13
-          - clang-14
-          - clang-15
-          - clang-16
-          - clang-17
-          - clang-18
-          - clang-19
+        gcc: ${{ fromJson(needs.build-package.outputs.gcovr_compiler_list) }}
 
   # -----------------------------------------------------------------------------------------------
   publish-push-tag:

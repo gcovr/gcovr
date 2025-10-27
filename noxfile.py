@@ -43,23 +43,8 @@ else:
 
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 ALL_COMPILER_VERSIONS = [
-    "gcc-5",
-    "gcc-6",
-    "gcc-8",
-    "gcc-9",
-    "gcc-10",
-    "gcc-11",
-    "gcc-12",
-    "gcc-13",
-    "gcc-14",
-    "clang-10",
-    "clang-13",
-    "clang-14",
-    "clang-15",
-    "clang-16",
-    "clang-17",
-    "clang-18",
-    "clang-19",
+    *[f"gcc-{v}" for v in range(5, 16)],
+    *[f"clang-{v}" for v in range(10, 21)],
 ]
 DEFAULT_COMPILER_VERSION = ALL_COMPILER_VERSIONS[0]
 
@@ -663,7 +648,7 @@ def docker_container_os_version(cc: str) -> str:
     """Get the version of the OS for the used GCC version."""
     if cc in ["gcc-5", "gcc-6"]:
         return "18.04"
-    if cc in ["gcc-8", "gcc-9", "clang-10"]:
+    if cc in ["gcc-7", "gcc-8", "gcc-9", "clang-10", "clang-11", "clang-12"]:
         return "20.04"
     if cc in ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"]:
         return "22.04"
@@ -677,6 +662,8 @@ def docker_container_os_version(cc: str) -> str:
         "clang-19",
     ]:
         return "24.04"
+    if cc in ["gcc-15", "clang-20"]:
+        return "25.04"
 
     raise RuntimeError(f"No container image defined for {cc}")
 
