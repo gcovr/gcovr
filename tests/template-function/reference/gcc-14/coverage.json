@@ -10,12 +10,7 @@
                     "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "gcovr/md5": "dba5047a1c46365f2bdb480dbbb2daf2",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "dba5047a1c46365f2bdb480dbbb2daf2"
                 },
                 {
                     "line_number": 5,
@@ -23,12 +18,7 @@
                     "block_ids": [],
                     "count": 6,
                     "branches": [],
-                    "gcovr/md5": "dba5047a1c46365f2bdb480dbbb2daf2",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "dba5047a1c46365f2bdb480dbbb2daf2"
                 },
                 {
                     "line_number": 9,
@@ -43,24 +33,14 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2,
-                            "destination_block_id": 3,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 3
                         },
                         {
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2,
-                            "destination_block_id": 7,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 7
                         }
                     ],
                     "conditions": [
@@ -71,20 +51,10 @@
                             "not_covered_false": [
                                 0
                             ],
-                            "not_covered_true": [],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "not_covered_true": []
                         }
                     ],
-                    "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208"
                 },
                 {
                     "line_number": 9,
@@ -99,24 +69,14 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2,
-                            "destination_block_id": 3,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 3
                         },
                         {
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2,
-                            "destination_block_id": 7,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 7
                         }
                     ],
                     "conditions": [
@@ -127,20 +87,10 @@
                             "not_covered_false": [
                                 0
                             ],
-                            "not_covered_true": [],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "not_covered_true": []
                         }
                     ],
-                    "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208"
                 },
                 {
                     "line_number": 10,
@@ -157,50 +107,25 @@
                         {
                             "source_block_id": 3,
                             "destination_block_id": 1,
-                            "returned": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 4
                         },
                         {
                             "source_block_id": 4,
                             "destination_block_id": 1,
-                            "returned": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 4
                         },
                         {
                             "source_block_id": 5,
                             "destination_block_id": 1,
-                            "returned": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 4
                         },
                         {
                             "source_block_id": 6,
                             "destination_block_id": 1,
-                            "returned": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 4
                         }
                     ],
-                    "gcovr/md5": "ce89f0561eba0edab1b15fcc27331db0",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "ce89f0561eba0edab1b15fcc27331db0"
                 },
                 {
                     "line_number": 10,
@@ -217,50 +142,25 @@
                         {
                             "source_block_id": 3,
                             "destination_block_id": 1,
-                            "returned": 6,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 6
                         },
                         {
                             "source_block_id": 4,
                             "destination_block_id": 1,
-                            "returned": 6,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 6
                         },
                         {
                             "source_block_id": 5,
                             "destination_block_id": 1,
-                            "returned": 6,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 6
                         },
                         {
                             "source_block_id": 6,
                             "destination_block_id": 1,
-                            "returned": 6,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 6
                         }
                     ],
-                    "gcovr/md5": "ce89f0561eba0edab1b15fcc27331db0",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "ce89f0561eba0edab1b15fcc27331db0"
                 },
                 {
                     "line_number": 12,
@@ -281,72 +181,42 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 7,
-                            "destination_block_id": 8,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 8
                         },
                         {
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 7,
-                            "destination_block_id": 14,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 14
                         },
                         {
                             "count": 2,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 8,
-                            "destination_block_id": 9,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 9
                         },
                         {
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 8,
-                            "destination_block_id": 10,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 10
                         },
                         {
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 9,
-                            "destination_block_id": 10,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 10
                         },
                         {
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 9,
-                            "destination_block_id": 14,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 14
                         }
                     ],
                     "conditions": [
@@ -355,12 +225,7 @@
                             "count": 2,
                             "covered": 2,
                             "not_covered_false": [],
-                            "not_covered_true": [],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "not_covered_true": []
                         },
                         {
                             "conditionno": 1,
@@ -369,11 +234,6 @@
                             "not_covered_false": [],
                             "not_covered_true": [
                                 1
-                            ],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
                             ]
                         }
                     ],
@@ -381,50 +241,25 @@
                         {
                             "source_block_id": 10,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         },
                         {
                             "source_block_id": 11,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         },
                         {
                             "source_block_id": 12,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         },
                         {
                             "source_block_id": 13,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "a177367d02d536dc6534ded90eceddb1",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "a177367d02d536dc6534ded90eceddb1"
                 },
                 {
                     "line_number": 12,
@@ -445,72 +280,42 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 7,
-                            "destination_block_id": 8,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 8
                         },
                         {
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 7,
-                            "destination_block_id": 14,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 14
                         },
                         {
                             "count": 4,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 8,
-                            "destination_block_id": 9,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 9
                         },
                         {
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 8,
-                            "destination_block_id": 10,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 10
                         },
                         {
                             "count": 1,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 9,
-                            "destination_block_id": 10,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 10
                         },
                         {
                             "count": 3,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 9,
-                            "destination_block_id": 14,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 14
                         }
                     ],
                     "conditions": [
@@ -519,74 +324,39 @@
                             "count": 2,
                             "covered": 2,
                             "not_covered_false": [],
-                            "not_covered_true": [],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "not_covered_true": []
                         },
                         {
                             "conditionno": 1,
                             "count": 4,
                             "covered": 4,
                             "not_covered_false": [],
-                            "not_covered_true": [],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "not_covered_true": []
                         }
                     ],
                     "calls": [
                         {
                             "source_block_id": 10,
                             "destination_block_id": 1,
-                            "returned": 2,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 2
                         },
                         {
                             "source_block_id": 11,
                             "destination_block_id": 1,
-                            "returned": 2,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 2
                         },
                         {
                             "source_block_id": 12,
                             "destination_block_id": 1,
-                            "returned": 2,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 2
                         },
                         {
                             "source_block_id": 13,
                             "destination_block_id": 1,
-                            "returned": 2,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 2
                         }
                     ],
-                    "gcovr/md5": "a177367d02d536dc6534ded90eceddb1",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "a177367d02d536dc6534ded90eceddb1"
                 },
                 {
                     "line_number": 13,
@@ -601,24 +371,14 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 14,
-                            "destination_block_id": 15,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 15
                         },
                         {
                             "count": 4,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 14,
-                            "destination_block_id": 19,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 19
                         }
                     ],
                     "conditions": [
@@ -629,20 +389,10 @@
                             "not_covered_false": [],
                             "not_covered_true": [
                                 0
-                            ],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
                             ]
                         }
                     ],
-                    "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b"
                 },
                 {
                     "line_number": 13,
@@ -657,24 +407,14 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 14,
-                            "destination_block_id": 15,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 15
                         },
                         {
                             "count": 5,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 14,
-                            "destination_block_id": 19,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 19
                         }
                     ],
                     "conditions": [
@@ -683,20 +423,10 @@
                             "count": 2,
                             "covered": 2,
                             "not_covered_false": [],
-                            "not_covered_true": [],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "not_covered_true": []
                         }
                     ],
-                    "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b"
                 },
                 {
                     "line_number": 14,
@@ -713,50 +443,25 @@
                         {
                             "source_block_id": 15,
                             "destination_block_id": 1,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 0
                         },
                         {
                             "source_block_id": 16,
                             "destination_block_id": 1,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 0
                         },
                         {
                             "source_block_id": 17,
                             "destination_block_id": 1,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 0
                         },
                         {
                             "source_block_id": 18,
                             "destination_block_id": 1,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 0
                         }
                     ],
-                    "gcovr/md5": "99f611279210618e94c36e076b6faca1",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "99f611279210618e94c36e076b6faca1"
                 },
                 {
                     "line_number": 14,
@@ -773,50 +478,25 @@
                         {
                             "source_block_id": 15,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         },
                         {
                             "source_block_id": 16,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         },
                         {
                             "source_block_id": 17,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         },
                         {
                             "source_block_id": 18,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "99f611279210618e94c36e076b6faca1",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "99f611279210618e94c36e076b6faca1"
                 },
                 {
                     "line_number": 17,
@@ -824,12 +504,7 @@
                     "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "gcovr/md5": "dd73f8311b6b70ff0270945514d01946",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "dd73f8311b6b70ff0270945514d01946"
                 },
                 {
                     "line_number": 17,
@@ -837,12 +512,7 @@
                     "block_ids": [],
                     "count": 6,
                     "branches": [],
-                    "gcovr/md5": "dd73f8311b6b70ff0270945514d01946",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "dd73f8311b6b70ff0270945514d01946"
                 },
                 {
                     "line_number": 18,
@@ -850,12 +520,7 @@
                     "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
                 },
                 {
                     "line_number": 18,
@@ -863,12 +528,7 @@
                     "block_ids": [],
                     "count": 6,
                     "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
                 },
                 {
                     "line_number": 20,
@@ -876,12 +536,7 @@
                     "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "gcovr/md5": "8d67155636b37662864495d7e3fb7b60",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "8d67155636b37662864495d7e3fb7b60"
                 },
                 {
                     "line_number": 24,
@@ -896,24 +551,14 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2,
-                            "destination_block_id": 3,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 3
                         },
                         {
                             "count": 0,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 2,
-                            "destination_block_id": 6,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 6
                         }
                     ],
                     "conditions": [
@@ -924,30 +569,15 @@
                             "not_covered_false": [
                                 0
                             ],
-                            "not_covered_true": [],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "not_covered_true": []
                         }
                     ],
                     "gcovr/decision": {
                         "type": "conditional",
                         "count_true": 4,
-                        "count_false": 0,
-                        "gcovr/data_sources": [
-                            [
-                                "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                            ]
-                        ]
+                        "count_false": 0
                     },
-                    "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "f66af655b72ef7464d537db0e3d9b208"
                 },
                 {
                     "line_number": 25,
@@ -963,40 +593,20 @@
                         {
                             "source_block_id": 3,
                             "destination_block_id": 1,
-                            "returned": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 4
                         },
                         {
                             "source_block_id": 4,
                             "destination_block_id": 1,
-                            "returned": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 4
                         },
                         {
                             "source_block_id": 5,
                             "destination_block_id": 1,
-                            "returned": 4,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 4
                         }
                     ],
-                    "gcovr/md5": "14c28cf4d8b1835c38e8b587023d0b16",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "14c28cf4d8b1835c38e8b587023d0b16"
                 },
                 {
                     "line_number": 27,
@@ -1016,72 +626,42 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 6,
-                            "destination_block_id": 7,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 7
                         },
                         {
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 6,
-                            "destination_block_id": 12,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 12
                         },
                         {
                             "count": 2,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 7,
-                            "destination_block_id": 8,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 8
                         },
                         {
                             "count": 1,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 7,
-                            "destination_block_id": 9,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 9
                         },
                         {
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 8,
-                            "destination_block_id": 9,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 9
                         },
                         {
                             "count": 2,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 8,
-                            "destination_block_id": 12,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 12
                         }
                     ],
                     "conditions": [
@@ -1090,12 +670,7 @@
                             "count": 2,
                             "covered": 2,
                             "not_covered_false": [],
-                            "not_covered_true": [],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "not_covered_true": []
                         },
                         {
                             "conditionno": 1,
@@ -1104,62 +679,32 @@
                             "not_covered_false": [],
                             "not_covered_true": [
                                 1
-                            ],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
                             ]
                         }
                     ],
                     "gcovr/decision": {
                         "type": "conditional",
                         "count_true": 4,
-                        "count_false": 0,
-                        "gcovr/data_sources": [
-                            [
-                                "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                            ]
-                        ]
+                        "count_false": 0
                     },
                     "calls": [
                         {
                             "source_block_id": 9,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         },
                         {
                             "source_block_id": 10,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         },
                         {
                             "source_block_id": 11,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "22945f39b1c2ea4c646a07f2156e4921",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "22945f39b1c2ea4c646a07f2156e4921"
                 },
                 {
                     "line_number": 28,
@@ -1174,24 +719,14 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 12,
-                            "destination_block_id": 13,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 13
                         },
                         {
                             "count": 4,
                             "fallthrough": false,
                             "throw": false,
                             "source_block_id": 12,
-                            "destination_block_id": 16,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "destination_block_id": 16
                         }
                     ],
                     "conditions": [
@@ -1202,30 +737,15 @@
                             "not_covered_false": [],
                             "not_covered_true": [
                                 0
-                            ],
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
                             ]
                         }
                     ],
                     "gcovr/decision": {
                         "type": "conditional",
                         "count_true": 0,
-                        "count_false": 4,
-                        "gcovr/data_sources": [
-                            [
-                                "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                            ]
-                        ]
+                        "count_false": 4
                     },
-                    "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "dc5662cf133af0c98728b2fb22bfbb6b"
                 },
                 {
                     "line_number": 29,
@@ -1241,40 +761,20 @@
                         {
                             "source_block_id": 13,
                             "destination_block_id": 1,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 0
                         },
                         {
                             "source_block_id": 14,
                             "destination_block_id": 1,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 0
                         },
                         {
                             "source_block_id": 15,
                             "destination_block_id": 1,
-                            "returned": 0,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 0
                         }
                     ],
-                    "gcovr/md5": "7db834cf0dd22eab9ac8ddcb973c23ec",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "7db834cf0dd22eab9ac8ddcb973c23ec"
                 },
                 {
                     "line_number": 32,
@@ -1282,12 +782,7 @@
                     "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "gcovr/md5": "dd73f8311b6b70ff0270945514d01946",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "dd73f8311b6b70ff0270945514d01946"
                 },
                 {
                     "line_number": 33,
@@ -1295,12 +790,7 @@
                     "block_ids": [],
                     "count": 4,
                     "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
                 },
                 {
                     "line_number": 35,
@@ -1308,12 +798,7 @@
                     "block_ids": [],
                     "count": 1,
                     "branches": [],
-                    "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "d9d7d650613a8ac26f6dfe250d77e8ea"
                 },
                 {
                     "line_number": 36,
@@ -1327,20 +812,10 @@
                         {
                             "source_block_id": 2,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947"
                 },
                 {
                     "line_number": 37,
@@ -1354,20 +829,10 @@
                         {
                             "source_block_id": 3,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947"
                 },
                 {
                     "line_number": 38,
@@ -1381,20 +846,10 @@
                         {
                             "source_block_id": 4,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947"
                 },
                 {
                     "line_number": 39,
@@ -1408,20 +863,10 @@
                         {
                             "source_block_id": 5,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947"
                 },
                 {
                     "line_number": 40,
@@ -1435,20 +880,10 @@
                         {
                             "source_block_id": 6,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947"
                 },
                 {
                     "line_number": 41,
@@ -1462,20 +897,10 @@
                         {
                             "source_block_id": 7,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "c2cd3420307f2562bbfa2d17b22c0947"
                 },
                 {
                     "line_number": 43,
@@ -1489,20 +914,10 @@
                         {
                             "source_block_id": 8,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "f926c1b20456ccc0b69a267e5d7b5f78",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "f926c1b20456ccc0b69a267e5d7b5f78"
                 },
                 {
                     "line_number": 44,
@@ -1516,20 +931,10 @@
                         {
                             "source_block_id": 9,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "f926c1b20456ccc0b69a267e5d7b5f78",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "f926c1b20456ccc0b69a267e5d7b5f78"
                 },
                 {
                     "line_number": 45,
@@ -1543,20 +948,10 @@
                         {
                             "source_block_id": 10,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "f926c1b20456ccc0b69a267e5d7b5f78",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "f926c1b20456ccc0b69a267e5d7b5f78"
                 },
                 {
                     "line_number": 46,
@@ -1570,20 +965,10 @@
                         {
                             "source_block_id": 11,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "f926c1b20456ccc0b69a267e5d7b5f78",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "f926c1b20456ccc0b69a267e5d7b5f78"
                 },
                 {
                     "line_number": 48,
@@ -1597,20 +982,10 @@
                         {
                             "source_block_id": 12,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2"
                 },
                 {
                     "line_number": 49,
@@ -1624,20 +999,10 @@
                         {
                             "source_block_id": 13,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2"
                 },
                 {
                     "line_number": 50,
@@ -1651,20 +1016,10 @@
                         {
                             "source_block_id": 14,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2"
                 },
                 {
                     "line_number": 51,
@@ -1678,20 +1033,10 @@
                         {
                             "source_block_id": 15,
                             "destination_block_id": 1,
-                            "returned": 1,
-                            "gcovr/data_sources": [
-                                [
-                                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                                ]
-                            ]
+                            "returned": 1
                         }
                     ],
-                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2"
                 },
                 {
                     "line_number": 53,
@@ -1701,12 +1046,7 @@
                     ],
                     "count": 1,
                     "branches": [],
-                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
-                    ]
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 }
             ],
             "functions": [
@@ -1719,11 +1059,6 @@
                     "pos": [
                         "5:6",
                         "18:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
                     ]
                 },
                 {
@@ -1735,11 +1070,6 @@
                     "pos": [
                         "5:6",
                         "18:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
                     ]
                 },
                 {
@@ -1751,11 +1081,6 @@
                     "pos": [
                         "20:6",
                         "33:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
                     ]
                 },
                 {
@@ -1767,18 +1092,8 @@
                     "pos": [
                         "35:5",
                         "54:1"
-                    ],
-                    "gcovr/data_sources": [
-                        [
-                            "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                        ]
                     ]
                 }
-            ],
-            "gcovr/data_sources": [
-                [
-                    "testcase-main##5940c760ba8111d9bdfc59d0a3332237.gcov.json.gz"
-                ]
             ]
         }
     ]

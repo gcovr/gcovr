@@ -2205,8 +2205,8 @@ class FileCoverage(CoverageBase):
 
     def serialize(self, options: Options) -> dict[str, Any]:
         """Serialize the object."""
-        # Only write data in verbose mode
-        if options.verbose:
+        # Only write data source files if requested
+        if options.json_trace_data_source:
 
             def get_data_sources(cov: CoverageBase) -> dict[str, Any]:
                 """Return the printable data sources."""

@@ -39,8 +39,7 @@ def test_different_branches(gcovr_test_exec: "GcovrTestExec") -> None:
         cwd=[build_dir for _, build_dir in outputs()],
     )
     gcovr_test_exec.gcovr(
-        "--verbose",
-        "--gcov-keep",
+        "--json-trace-data-source",
         "--json-pretty",
         "--json=coverage.json",
     )
@@ -93,9 +92,9 @@ def test_different_functions(  # type: ignore[no-untyped-def]
 
     if merge_mode_function == "strict":
         process = gcovr_test_exec.gcovr(
+            "--json-trace-data-source",
             "--json-pretty",
             "--json=coverage.json",
-            "--gcov-keep",
             use_main=True,
         )
         with check:
