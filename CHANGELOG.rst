@@ -21,6 +21,9 @@ Bug fixes and small improvements:
 - Add :option:`--json-trace-data-source` to include the trace data source in the JSON report
   independent from :option:`--verbose`. (:issue:`1178`)
 - Remove generated gcov files on error and catch additional gcov error message. (:issue:`1182`)
+- Change default HTML theme excluded line color. (:issue:`1179`)
+- Move theme colors to a separate CSS file so they can be overridden with a simple
+  `--html-template-directory` directory with only the style.colors.css file (:issue:`1179`)
 
 Documentation:
 
