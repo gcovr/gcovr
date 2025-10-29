@@ -8,8 +8,7 @@
         "dockerfile": "../admin/Dockerfile.qa",
         "args": {
             "UBUNTU_TAG": "20.04",
-            "CC": "clang-10",
-            "CXX": "clang-10",
+            "CC": "gcc-8",
             "NOX_ENV_DIR": "/workspaces/gcovr/.nox-devcontainer"
         },
         "context": ".."
@@ -35,7 +34,11 @@
             // cspell:enable
             "settings": {
                 "editor.formatOnSave": true,
+                "python.defaultInterpreterPath": "python3",
                 "mypy-type-checker.importStrategy": "fromEnvironment",
+                "bandit.interpreter": [
+                    "/home/docker/.pyenv/shims/python3"
+                ],
                 "python.testing.pytestArgs": [
                     "doc",
                     "src",
@@ -59,7 +62,7 @@
             }
         }
     },
-    "postCreateCommand": "set -ex ; sed --silent --regexp-extended -e '/^(dev|dependencies) = \\[$/, /^\\]$/ { s/^ *//; s/,$//; /^\"/ { s/\"// g; p; } ; };' pyproject.toml | tee /tmp/requirements.txt ; pip install -r /tmp/requirements.txt",
+    "postCreateCommand": "set -ex ; sed --silent --regexp-extended -e '/^(dev|dependencies) = \\[$/, /^\\]$/ { s/^ *//; s/,//; /^\"/ { s/\"// g; p; } ; };' pyproject.toml | tee /tmp/requirements.txt ; /usr/local/bin/docker_entrypoint.sh pip install -r /tmp/requirements.txt",
     // Features to add to the dev container. More info: https://containers.dev/features.
     // "features": {},
     // Use 'forwardPorts' to make a list of ports inside the container available locally.

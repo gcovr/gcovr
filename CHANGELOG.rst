@@ -38,6 +38,7 @@ Internal changes:
 
 - Activate parallel test execution by default and improve IDE support. (:issue:`1174`)
 - Add ``gcc-7``, ``gcc-15``, ``clang-11``, ``clang-12`` and ``clang-20`` to the test suite. (:issue:`1177`)
+- Use pyenv to install python independent from OS version in docker image for testing. (:issue:`1181`)
 
 .. _release_8_4:
 

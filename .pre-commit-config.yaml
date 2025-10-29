@@ -36,22 +36,25 @@ repos:
     hooks:
       - id: bandit-files
         name: Run nox bandit session
-        entry: python3 -m nox -rs bandit --
-        language: system
+        entry: nox -rs bandit --
+        language: python
+        additional_dependencies: [nox]
         types: [python]
         pass_filenames: true
         require_serial: true
       - id: pylint-files
         name: Run nox pylint session
-        entry: python3 -m nox -rs pylint --
-        language: system
+        entry: nox -rs pylint --
+        language: python
+        additional_dependencies: [nox]
         types: [python]
         pass_filenames: true
         require_serial: true
       - id: mypy-files
         name: Run nox mypy session
-        entry: python3 -m nox -rs mypy --
-        language: system
+        entry: nox -rs mypy --
+        language: python
+        additional_dependencies: [nox]
         types: [python]
         pass_filenames: true
         require_serial: true
