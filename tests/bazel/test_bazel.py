@@ -60,7 +60,6 @@ def test_run_on_our_own(gcovr_test_exec: "GcovrTestExec") -> None:
             additional_options += ["--root", "/proc/self/cwd"]
 
         gcovr_test_exec.gcovr(
-            "--verbose",
             "--json-pretty",
             "--json=coverage.json",
             *additional_options,
@@ -100,8 +99,14 @@ def test_bazel_coverage(gcovr_test_exec: "GcovrTestExec") -> None:
 
         additional_options = []
         if gcovr_test_exec.use_gcc_json_format():
-            additional_options += ["--root", "/proc/self/cwd"]
+            additional_options += [
+                "--root",
+                "/proc/self/cwd",
+                "--gcov-use-existing",
+                "--gcov-keep",
+            ]
         gcovr_test_exec.gcovr(
+            "--verbose",
             "--json-pretty",
             "--json=coverage.json",
             *additional_options,
