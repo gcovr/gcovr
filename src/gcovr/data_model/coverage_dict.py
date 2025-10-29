@@ -18,12 +18,10 @@
 # ****************************************************************************
 
 from __future__ import annotations
-import logging
 from typing import Optional, TypeVar
 
 from .merging import MergeOptions
 
-LOGGER = logging.getLogger("gcovr")
 
 LinecovCollectionKeyType = int
 LinecovKeyType = str

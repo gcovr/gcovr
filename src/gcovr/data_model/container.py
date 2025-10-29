@@ -18,7 +18,6 @@
 # ****************************************************************************
 
 from __future__ import annotations
-import logging
 import os
 import re
 from typing import (
@@ -32,6 +31,7 @@ from typing import (
     ValuesView,
 )
 
+from ..logging import LOGGER
 from ..options import Options
 from ..utils import commonpath, force_unix_separator
 
@@ -39,8 +39,6 @@ from .coverage import FileCoverage
 from .coverage_dict import CoverageDict
 from .merging import MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
-
-LOGGER = logging.getLogger("gcovr")
 
 
 class ContainerBase:

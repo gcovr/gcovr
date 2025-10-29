@@ -39,6 +39,7 @@ from lxml import etree  # nosec # Data is trusted.
 from yaxmldiff import compare_xml
 
 from gcovr.__main__ import main as gcovr_main
+from gcovr.formats.gcov.parser.json import GCOV_JSON_VERSION
 
 LOGGER = logging.getLogger(__name__)
 
@@ -51,6 +52,12 @@ IS_LINUX = platform.system() == "Linux"
 IS_DARWIN = platform.system() == "Darwin"
 IS_DARWIN_HOST = os.getenv("HOST_OS") == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
+
+# Clear color environment variables to avoid colored output in tests.
+# The used escape sequences may interfere with the output comparison.
+for envvar in ["FORCE_COLOR", "NO_COLOR"]:
+    if envvar in os.environ:
+        del os.environ[envvar]
 
 CC = Path(str(shutil.which(os.environ.get("CC", "gcc-5"))))
 os.environ["CC"] = str(CC)
@@ -71,6 +78,13 @@ _CC_HELP_OUTPUT = subprocess.run(  # nosec: B603
 ).stdout
 _CC_VERSION_OUTPUT = subprocess.run(  # nosec: B603
     [CC, "--version"],
+    capture_output=True,
+    text=True,
+    check=True,
+    shell=False,
+).stdout
+_GCOV_VERSION_OUTPUT = subprocess.run(  # nosec: B603
+    [*GCOV, "--version"],
     capture_output=True,
     text=True,
     check=True,
@@ -104,7 +118,7 @@ else:
     raise AssertionError(f"Unable to get compiler version from:\n{_CC_VERSION_OUTPUT}")
 
 USE_GCC_JSON_INTERMEDIATE_FORMAT = (
-    IS_GCC and "JSON format version: 2" in _CC_VERSION_OUTPUT
+    IS_GCC and f"JSON format version: {GCOV_JSON_VERSION}" in _GCOV_VERSION_OUTPUT
 )
 GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS = "c++20" in _CC_HELP_OUTPUT
 

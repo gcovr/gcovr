@@ -22,12 +22,10 @@ Heuristics for ignoring data on lines that don't look like actual code.
 """
 
 import re
-import logging
 
 from ..data_model.coverage import FileCoverage
+from ..logging import LOGGER
 
-
-LOGGER = logging.getLogger("gcovr")
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")

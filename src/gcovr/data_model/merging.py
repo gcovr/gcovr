@@ -18,12 +18,8 @@
 # ****************************************************************************
 
 from dataclasses import dataclass, field
-import logging
 
 from ..options import Options
-
-
-LOGGER = logging.getLogger("gcovr")
 
 
 @dataclass

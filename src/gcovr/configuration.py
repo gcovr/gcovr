@@ -23,7 +23,6 @@ from __future__ import annotations
 from argparse import _ArgumentGroup, ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
-import logging
 from typing import Iterable, Any, Optional, Callable, TextIO
 from dataclasses import dataclass
 import datetime
@@ -31,7 +30,7 @@ import os
 import re
 
 from . import formats
-from .timestamps import parse_timestamp
+from .logging import LOGGER
 from .options import (
     FilterOption,
     GcovrConfigOption,
@@ -44,8 +43,7 @@ from .options import (
     check_percentage,
     relative_path,
 )
-
-LOGGER = logging.getLogger("gcovr")
+from .timestamps import parse_timestamp
 
 
 def timestamp(value: str) -> datetime.datetime:
@@ -730,6 +728,30 @@ GCOVR_CONFIG_OPTIONS = [
         group="filter_options",
         help=(
             "Exclude source files that match this filter. "
+            "Can be specified multiple times."
+        ),
+        action="append",
+        type=NonEmptyFilterOption,
+        default=[],
+    ),
+    GcovrConfigOption(
+        "trace_include_filter",
+        ["--trace-include"],
+        group="filter_options",
+        help=(
+            "Log very verbose output for files that match this filter. "
+            "Can be specified multiple times."
+        ),
+        action="append",
+        type=NonEmptyFilterOption,
+        default=[],
+    ),
+    GcovrConfigOption(
+        "trace_exclude_filter",
+        ["--trace-exclude"],
+        group="filter_options",
+        help=(
+            "Do not log very verbose output for files that match this filter. "
             "Can be specified multiple times."
         ),
         action="append",

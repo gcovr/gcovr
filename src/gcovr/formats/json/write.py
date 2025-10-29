@@ -17,17 +17,13 @@
 #
 # ****************************************************************************
 
-import logging
 import os
 from typing import Any
 
+from ...data_model import version
 from ...data_model.container import CoverageContainer
 from ...options import Options
 from ...utils import force_unix_separator, write_json_output
-
-from ...data_model import version
-
-LOGGER = logging.getLogger("gcovr")
 
 SUMMARY_FORMAT_VERSION = (
     # BEGIN summary version

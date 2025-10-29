@@ -66,7 +66,6 @@ which may not be the same as the input value.
 
 from __future__ import annotations
 from abc import abstractmethod
-import logging
 import os
 import re
 from typing import (
@@ -81,7 +80,7 @@ from typing import (
 )
 
 from ..filter import is_file_excluded
-
+from ..logging import LOGGER
 from ..utils import force_unix_separator
 from ..options import Options
 
@@ -97,7 +96,6 @@ from .coverage_dict import (
 from .merging import DEFAULT_MERGE_OPTIONS, MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
-LOGGER = logging.getLogger("gcovr")
 
 GCOVR_DATA_SOURCES = "gcovr/data_sources"
 GCOVR_EXCLUDED = "gcovr/excluded"

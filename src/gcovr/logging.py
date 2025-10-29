@@ -20,12 +20,12 @@
 import logging
 import os
 import sys
-from typing import Any, Optional
+from typing import Any, Optional, cast, TYPE_CHECKING
 from colorlog import ColoredFormatter
 
-from .options import Options
+if TYPE_CHECKING:
+    from .options import Options
 
-LOGGER = logging.getLogger("gcovr")
 DEFAULT_LOGGING_HANDLER = logging.StreamHandler(sys.stderr)
 
 LOG_FORMAT = "(%(levelname)s) %(message)s"
@@ -33,15 +33,34 @@ LOG_FORMAT_THREADS = "(%(levelname)s) - %(threadName)s - %(message)s"
 COLOR_LOG_FORMAT = f"%(log_color)s{LOG_FORMAT}"
 COLOR_LOG_FORMAT_THREADS = f"%(log_color)s{LOG_FORMAT_THREADS}"
 
+TRACE = logging.INFO + 1
 
-def __colored_formatter(options: Optional[Options] = None) -> ColoredFormatter:
+
+class GcovrLogger(logging.getLoggerClass()):  # type: ignore[misc]
+    """Custom logger class for gcovr with TRACE level."""
+
+    def __init__(self, name: str, level: int = logging.NOTSET):
+        super().__init__(name, level)
+        logging.addLevelName(TRACE, "TRACE")
+
+    def trace(self, msg: str, *args: Any, **kwargs: Any) -> None:
+        """Log 'msg % args' with severity 'TRACE'."""
+        if self.isEnabledFor(TRACE):
+            self._log(TRACE, msg, args, **kwargs)
+
+
+logging.setLoggerClass(GcovrLogger)
+LOGGER = cast("GcovrLogger", logging.getLogger("gcovr"))
+
+
+def __colored_formatter(options: "Optional[Options]" = None) -> ColoredFormatter:
     """Configure the colored logging formatter."""
     if options is not None:
         log_format = (
             COLOR_LOG_FORMAT_THREADS if options.gcov_parallel != 1 else COLOR_LOG_FORMAT
         )
-        force_color = getattr(options, "force_color", False)
-        no_color = getattr(options, "no_color", False)
+        force_color = options.force_color
+        no_color = options.no_color
     else:
         log_format = COLOR_LOG_FORMAT
         force_color = False
@@ -54,6 +73,7 @@ def __colored_formatter(options: Optional[Options] = None) -> ColoredFormatter:
         log_colors={
             "DEBUG": "cyan",
             "INFO": "blue",
+            "TRACE": "purple",
             "WARNING": "yellow",
             "ERROR": "red",
             "CRITICAL": "red,bg_white",
@@ -115,7 +135,7 @@ def configure_logging() -> None:
     sys.excepthook = exception_hook
 
 
-def update_logging(options: Options) -> None:
+def update_logging(options: "Options") -> None:
     """Update the logger configuration depending on the options."""
     if options.verbose:
         LOGGER.setLevel(logging.DEBUG)

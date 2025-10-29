@@ -20,7 +20,6 @@
 # cspell:ignore xmlcharrefreplace
 
 import functools
-import logging
 import os
 import re
 from typing import Any, Callable, Iterable, Iterator, Optional, Union
@@ -44,10 +43,6 @@ from pygments.token import _TokenType, Token
 from pygments.style import Style
 from pygments.styles.default import DefaultStyle
 
-from ...data_model.coverage_dict import FunctioncovKeyType
-
-from ...exclusions.markers import _EXCLUDE_FLAG, get_markers_regex
-
 from ...data_model.container import CoverageContainer, CoverageContainerDirectory
 from ...data_model.coverage import (
     DecisionCoverageConditional,
@@ -55,8 +50,12 @@ from ...data_model.coverage import (
     DecisionCoverageUncheckable,
     FileCoverage,
     LineCoverage,
+    CoverageStat,
+    DecisionCoverageStat,
 )
-from ...data_model.coverage import CoverageStat, DecisionCoverageStat
+from ...data_model.coverage_dict import FunctioncovKeyType
+from ...exclusions.markers import _EXCLUDE_FLAG, get_markers_regex
+from ...logging import LOGGER
 from ...options import Options
 from ...utils import (
     GZIP_SUFFIX,
@@ -69,7 +68,6 @@ from ...utils import (
 )
 
 
-LOGGER = logging.getLogger("gcovr")
 PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
 
 

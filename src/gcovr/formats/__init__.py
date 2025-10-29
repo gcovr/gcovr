@@ -17,13 +17,13 @@
 #
 # ****************************************************************************
 
-import logging
 from typing import Callable, Optional
 
 from ..data_model.coverage import FileCoverage
 from ..data_model.container import CoverageContainer
 from ..data_model.merging import get_merge_mode_from_options
 from ..filter import is_file_excluded
+from ..logging import LOGGER
 from ..options import GcovrConfigOption, Options, OutputOrDefault
 from ..utils import search_file
 
@@ -41,8 +41,6 @@ from .lcov import LcovHandler
 from .markdown import MarkdownHandler
 from .sonarqube import SonarqubeHandler
 from .txt import TxtHandler
-
-LOGGER = logging.getLogger("gcovr")
 
 
 def get_options() -> list[GcovrConfigOption]:

@@ -31,7 +31,6 @@ The behavior of this parser was informed by the following sources:
 # pylint: disable=too-many-lines
 # cspell:ignore getpreferredencoding
 
-import logging
 import os
 from locale import getpreferredencoding
 from typing import Any, Optional
@@ -41,24 +40,27 @@ from gcovr.utils import get_md5_hexdigest
 from ....data_model.coverage import FileCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 from ....filter import Filter, is_file_excluded
+from ....logging import LOGGER
 from .common import (
     SUSPICIOUS_COUNTER,
     check_hits,
 )
 
 GCOV_JSON_VERSION = "2"
-LOGGER = logging.getLogger("gcovr")
+
 DEFAULT_SOURCE_ENCODING = getpreferredencoding()
 
 
 def parse_coverage(
     data_fname: str,
     gcov_json_data: dict[str, Any],
+    *,
     include_filter: list[Filter],
     exclude_filter: list[Filter],
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
+    trace_file: bool = False,
 ) -> list[tuple[FileCoverage, list[str]]]:
     """Process a GCOV JSON output."""
 
@@ -125,6 +127,7 @@ def parse_coverage(
             source_lines=encoded_source_lines,
             ignore_parse_errors=ignore_parse_errors,
             suspicious_hits_threshold=suspicious_hits_threshold,
+            trace_file=trace_file,
         )
 
         files_coverage.append((filecov, encoded_source_lines))
@@ -134,11 +137,13 @@ def parse_coverage(
 
 def _parse_file_node(
     data_fname: str,
+    *,
     gcov_file_node: dict[str, Any],
     filename: str,
     source_lines: list[str],
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
+    trace_file: bool = False,
 ) -> FileCoverage:
     """
     Extract coverage data from a json gcov report.
@@ -168,6 +173,10 @@ def _parse_file_node(
     filecov = FileCoverage(data_fname, filename=filename)
     for line in gcov_file_node["lines"]:
         persistent_states.update(location=(filename, line["line_number"]))
+        if trace_file:
+            LOGGER.trace(
+                f"Reading {':'.join(str(e) for e in persistent_states['location'])} of function {line.get('function_name')}"
+            )
         linecov = filecov.insert_line_coverage(
             str(data_fname),
             lineno=line["line_number"],

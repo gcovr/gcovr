@@ -19,7 +19,6 @@
 
 # cspell:ignore ault
 
-import logging
 import re
 from typing import Optional
 
@@ -30,8 +29,7 @@ from .data_model.coverage import (
     FileCoverage,
     LineCoverage,
 )
-
-LOGGER = logging.getLogger("gcovr")
+from .logging import LOGGER
 
 _CHARACTERS_TO_ADD_SPACES = re.compile(r"([;:\(\)\{\}])")
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")

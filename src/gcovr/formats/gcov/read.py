@@ -18,8 +18,7 @@
 # ****************************************************************************
 
 import gzip
-from json import loads as json_loads
-import logging
+from json import loads as json_loads, dumps as json_dumps
 import os
 import re
 import shlex
@@ -35,8 +34,10 @@ from ...exclusions import (
     get_exclusion_options_from_options,
 )
 from ...filter import Filter, is_file_excluded
+from ...logging import LOGGER
 from ...options import Options
 from ...utils import (
+    PRETTY_JSON_INDENT,
     commonpath,
     fix_case_of_path,
     is_fs_case_insensitive,
@@ -47,8 +48,6 @@ from .parser import (
     text,
 )
 from .workers import Workers, locked_directory
-
-LOGGER = logging.getLogger("gcovr")
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_error_re = re.compile(
@@ -180,21 +179,31 @@ def find_datafiles(
 # Process a single gcov datafile
 #
 def process_gcov_json_data(
-    data_fname: str, covdata: CoverageContainer, options: Options
+    data_fname: str,
+    covdata: CoverageContainer,
+    options: Options,
 ) -> None:
     """Process a GCOV JSON output."""
+    trace_file = not is_file_excluded(
+        data_fname, options.trace_include_filter, options.trace_exclude_filter
+    )
 
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json_loads(fh_in.read())
+        if trace_file:
+            LOGGER.trace(
+                f"Parsing gcov data file {data_fname}:\n{json_dumps(gcov_json_data, indent=PRETTY_JSON_INDENT)}<<EOF"
+            )
 
     coverage = json.parse_coverage(
         data_fname,
-        gcov_json_data=gcov_json_data,
+        gcov_json_data,
         include_filter=options.include_filter,
         exclude_filter=options.exclude_filter,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
+        trace_file=trace_file,
     )
 
     merge_options = get_merge_mode_from_options(options)
@@ -225,16 +234,23 @@ def process_gcov_text_data(
     current_dir: Optional[str] = None,
 ) -> None:
     """Process a GCOV text output."""
+    trace_file = not is_file_excluded(
+        data_fname, options.trace_include_filter, options.trace_exclude_filter
+    )
     with open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
     ) as fh_in:
-        lines = fh_in.read().splitlines()
+        content = fh_in.read()
+        if trace_file:
+            LOGGER.trace(f"Parsing gcov data file {data_fname}:\n{content}<<EOF")
+        lines = content.splitlines()
 
     # Find the source file
     metadata = text.parse_metadata(
         data_fname,
         lines,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
+        trace_file=trace_file,
     )
     source = metadata.get("Source")
     if source is None:
@@ -269,6 +285,7 @@ def process_gcov_text_data(
         filename=key,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
+        trace_file=trace_file,
     )
 
     LOGGER.debug(f"Apply exclusions for {fname}")
@@ -852,7 +869,6 @@ def run_gcov_and_process_files(
                         raise AssertionError(
                             f"Sanity check failed, output file {gcov_filename} doesn't exist but no error from GCOV detected."
                         )
-
                     if gcov_filename.endswith(".gcov"):
                         process_gcov_text_data(
                             gcov_filename, filename, covdata, options, chdir

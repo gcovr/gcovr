@@ -17,7 +17,6 @@
 #
 # ****************************************************************************
 
-import logging
 import os
 from typing import Union
 
@@ -25,8 +24,6 @@ from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
 from ...utils import force_unix_separator
-
-LOGGER = logging.getLogger("gcovr")
 
 
 class JsonHandler(BaseHandler):
