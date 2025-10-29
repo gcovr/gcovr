@@ -51,7 +51,7 @@ from .workers import Workers, locked_directory
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_error_re = re.compile(
-    r"(?:[Cc](?:annot|ould not) open (?:source|graph) file|: No such file or directory)"
+    r"(?:[Cc](?:annot|ould not) open (?:source|graph|notes) file|: No such file or directory)"
 )
 output_error_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied|Read-only file system)"
@@ -756,7 +756,18 @@ class GcovProgram:
         LOGGER.debug(
             f"GCOV return code was {gcov_process.returncode}, stdout was:\n{out}<<, stderr was:\n{err}<<"
         )
+
+        def remove_generated_files() -> None:
+            """Remove the generated files from gcov output."""
+            for line in out.splitlines():
+                found = output_re.search(line.strip())
+                if found is not None:
+                    fname = found.group(1)
+                    if os.path.exists(fname):
+                        os.remove(fname)
+
         if gcov_process.returncode < 0:
+            remove_generated_files()
             raise RuntimeError(
                 f"GCOV returncode was {gcov_process.returncode} (exited by signal).\n"
                 f"Stdout of gcov was >>{out}<< End of stdout\n"
@@ -764,6 +775,7 @@ class GcovProgram:
             )
 
         if gcov_process.returncode not in GcovProgram.__exitcode_to_ignore:
+            remove_generated_files()
             raise RuntimeError(
                 f"GCOV returncode was {gcov_process.returncode}.\n"
                 f"Stdout of gcov was >>{out}<< End of stdout\n"
@@ -815,6 +827,7 @@ def run_gcov_and_process_files(
                 object_directory = os.path.relpath(object_directory, chdir)
             except OSError:  # pragma: no cover # nosec
                 pass
+
             out, err = gcov_cmd.run_with_args(
                 [
                     abs_filename,

@@ -20,6 +20,7 @@ Bug fixes and small improvements:
 - Fix exclusion filter :option:`--gcov-exclude`. (:issue:`1176`)
 - Add :option:`--json-trace-data-source` to include the trace data source in the JSON report
   independent from :option:`--verbose`. (:issue:`1178`)
+- Remove generated gcov files on error and catch additional gcov error message. (:issue:`1182`)
 
 Documentation:
 
