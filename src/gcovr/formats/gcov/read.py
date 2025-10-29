@@ -51,7 +51,7 @@ from .workers import Workers, locked_directory
 
 output_re = re.compile(r"[Cc]reating [`'](.*)'$")
 source_error_re = re.compile(
-    r"(?:[Cc](?:annot|ould not) open (?:source|graph) file|: No such file or directory)"
+    r"(?:[Cc](?:annot|ould not) open (?:source|graph|notes) file|: No such file or directory)"
 )
 output_error_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied|Read-only file system)"
