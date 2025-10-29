@@ -14,18 +14,16 @@ LABEL org.opencontainers.image.title="Image used to test GCOVR in the CI and dur
 LABEL org.opencontainers.image.source="https://github.com/gcovr/gcovr/blob/main/admin/Dockerfile.qa"
 LABEL org.opencontainers.image.version="$CC"
 
+COPY admin/docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
+
 RUN <<EOS
 set -e
 export DEBIAN_FRONTEND=noninteractive
-
-export CXX=$(echo "$CC" | sed 's/gcc/g++/ ; s/clang/clang++/')
 
 apt-get update
 # Install base requirements
 apt-get install -y software-properties-common \
                    sudo \
-                   $CC \
-                   $CXX \
                    make \
                    cmake \
                    ninja-build \
@@ -39,93 +37,37 @@ apt-get install -y software-properties-common \
                    texlive-latex-recommended \
                    texlive-latex-extra
 
+# Install compiler
+apt-get install -y $CC \
+                   $(echo "$CC" | sed 's/gcc/g++/ ; s/clang/clang++/')
+
+
+# cspell:disable
+# Install python build dependencies
+apt-get install -y libssl-dev \
+                   zlib1g-dev \
+                   libbz2-dev \
+                   libreadline-dev \
+                   libsqlite3-dev \
+                   curl \
+                   git \
+                   libncursesw5-dev \
+                   xz-utils \
+                   tk-dev \
+                   libxml2-dev \
+                   libxmlsec1-dev \
+                   libffi-dev \
+                   liblzma-dev
+# cspell:enable
+
 # Mark the compiler to not be removed
 apt-mark manual $CC $CXX
 
-if [ "$UBUNTU_TAG" = "18.04" ]; then
-  # cspell:disable
-  apt install -y wget \
-                 checkinstall \
-                 libreadline-gplv2-dev \
-                 libncursesw5-dev \
-                 libssl-dev \
-                 libsqlite3-dev \
-                 tk-dev \
-                 libgdbm-dev \
-                 libc6-dev \
-                 libbz2-dev \
-                 libffi-dev \
-                 zlib1g-dev
-  # cspell:enable
-  cd /tmp
-  PythonVersion=3.9.20
-  wget https://www.python.org/ftp/python/$PythonVersion/Python-$PythonVersion.tgz
-  tar xzf Python-$PythonVersion.tgz
-  cd Python-$PythonVersion
-  # cspell:ignore rpath
-  ./configure --enable-optimizations --enable-shared --prefix=/usr/local LDFLAGS=-Wl,-rpath=/usr/local/lib
-  # cspell:ignore altinstall
-  make altinstall
-  update-alternatives --install /usr/local/bin/python3 python3 /usr/local/bin/python3.9 10
-  cd /tmp
-  rm -rf Python-$PythonVersion
-  # cspell:disable
-  apt remove -y libreadline-gplv2-dev \
-                libncursesw5-dev \
-                libssl-dev \
-                libsqlite3-dev \
-                tk-dev \
-                libgdbm-dev \
-                libbz2-dev \
-                libffi-dev \
-                zlib1g-dev
-  # cspell:enable
-elif [ "$UBUNTU_TAG" = "20.04" ]; then
-  apt install -y software-properties-common
-  add-apt-repository ppa:deadsnakes/ppa
-  apt-get update
-  apt install -y python3.9-dev python3.9-venv python3.9
-  update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 10
-else
-  add-apt-repository ppa:deadsnakes/ppa
-  apt-get install -y \
-    python3.13-venv \
-    python3.13-dev
-  update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 10
-fi
-python3 --version
-
-# Install pip, nox and requests
-if [ "$UBUNTU_TAG" = "18.04" -o "$UBUNTU_TAG" = "20.04" -o "$UBUNTU_TAG" = "22.04" ]; then
-  # Install dependencies.
-  #
-  # Installing pip is a bit more complicated though:
-  # * `apt install python3-pip` -> pulls in >100MB of unneeded stuff
-  # * `get-pip.py` script -> depends on distutils standard library module, removed by Debian
-  curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  python3 get-pip.py
-  rm get-pip.py
-  python3 -m pip install --upgrade pip
-  python3 -m pip install --no-cache-dir nox requests
-else
-  apt-get install -y python3-pip python3-nox python3-requests
-fi
-
-# cspell:ignore autoremove
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
-EOS
-
-ENV \
-  CC=$CC \
-  GCOVR_ISOLATED_TEST=zkQEVaBpXF1i \
-  NOX_ENV_DIR=$NOX_ENV_DIR \
-  XDG_CACHE_HOME=$NOX_ENV_DIR/.cache
-
-RUN <<EOS
-set -e
+# Install googletest
 git clone -q \
     --branch=release-1.12.1 \
     --depth=1 \
@@ -137,10 +79,7 @@ CXX=$(echo "$CC" | sed 's/gcc/g++/ ; s/clang/clang++/') cmake .. || ( cat CMakeF
 make
 make install
 rm -rf /tmp/googletest
-EOS
 
-RUN <<EOS
-set -e
 # Install bazel
 if [ "$TARGETARCH" = "arm64" ] ; then
   echo "4e815a3f92a0285e76f306c5179a4c639e019cb9 -" > /tmp/bazel.sha1sum
@@ -151,16 +90,22 @@ curl -fsSL https://github.com/bazelbuild/bazelisk/releases/download/v1.21.0/baze
   | tee /usr/local/bin/bazel \
   | sha1sum -c /tmp/bazel.sha1sum
 chmod 0755 /usr/local/bin/bazel
-EOS
 
 # Create new user "docker" and set password to "docker"
-RUN <<EOS
-set -e
 addgroup docker
 id -un "$USERID" && userdel $(id -un "$USERID") || true
 useradd --create-home $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
 echo "docker:docker" | chpasswd
+
+# Make entrypoint executable
+chmod 0755 /usr/local/bin/docker_entrypoint.sh
 EOS
+
+ENV \
+  CC=$CC \
+  GCOVR_ISOLATED_TEST=zkQEVaBpXF1i \
+  NOX_ENV_DIR=$NOX_ENV_DIR \
+  XDG_CACHE_HOME=$NOX_ENV_DIR/.cache
 
 USER docker:docker
 
@@ -168,7 +113,21 @@ USER docker:docker
 # Unicode is necessary for some tools to work.
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
+COPY pyproject.toml /tmp/pyproject.toml
+
+RUN <<EOS
+set -e
+
+curl -fsSL https://pyenv.run | bash
+/usr/local/bin/docker_entrypoint.sh pyenv install 3.9
+/usr/local/bin/docker_entrypoint.sh pyenv global 3.9
+
+/usr/local/bin/docker_entrypoint.sh python3 --version
+/usr/local/bin/docker_entrypoint.sh pip --version
+/usr/local/bin/docker_entrypoint.sh pip --no-cache-dir install nox pre-commit
+EOS
+
 WORKDIR /gcovr
 
-ENTRYPOINT ["sh", "-c", "python3 -m nox --envdir $NOX_ENV_DIR \"$@\""]
+ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]
 CMD []

@@ -10,13 +10,11 @@ def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "--gcov-keep",
         "--decision",
         "--json-pretty",
         "--json=coverage.json",
     )
     gcovr_test_exec.gcovr(
-        "--gcov-keep",
         "--merge-lines",
         "--decision",
         "--json-pretty",

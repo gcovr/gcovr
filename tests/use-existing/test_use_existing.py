@@ -4,7 +4,7 @@ if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
-def test_all(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_all(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """A test that verifies coverage when using existing *.gcov coverage files."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -21,8 +21,25 @@ def test_all(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.gcovr(
         "--gcov-use-existing-files",
         "--gcov-delete",
+        "--gcov-keep",
         "--json-pretty",
         "--json=coverage.json",
+    )
+    check.is_true(
+        list(gcovr_test_exec.output_dir.glob("*.gcda")),
+        "*.gcda files should be touched",
+    )
+    check.is_true(
+        list(gcovr_test_exec.output_dir.glob("*.gcov")), "*.gcov files should be kept"
+    )
+    gcovr_test_exec.gcovr(
+        "--gcov-use-existing-files",
+        "--json-pretty",
+        "--json=coverage.json",
+    )
+    check.is_false(
+        list(gcovr_test_exec.output_dir.glob("*.gcov")),
+        "*.gcov files should be removed",
     )
     gcovr_test_exec.compare_json()
 

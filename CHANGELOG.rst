@@ -18,6 +18,8 @@ Bug fixes and small improvements:
 - Fix not excluded conditions if branches are excluded by comments. (:issue:`1171`)
 - Fix reported excluded branches in ``LCOV`` report. (:issue:`1171`)
 - Fix exclusion filter :option:`--gcov-exclude`. (:issue:`1176`)
+- Add :option:`--json-trace-data-source` to include the trace data source in the JSON report
+  independent from :option:`--verbose`. (:issue:`1178`)
 
 Documentation:
 
@@ -38,6 +40,7 @@ Internal changes:
 - Add :option:`--trace-include` and :option:`--trace-exclude` to get additional output
   from parsing of included gcov files. (:issue:`1175`)
 - Add ``gcc-7``, ``gcc-15``, ``clang-11``, ``clang-12`` and ``clang-20`` to the test suite. (:issue:`1177`)
+- Use pyenv to install python independent from OS version in docker image for testing. (:issue:`1181`)
 
 .. _release_8_4:
 
