@@ -42,6 +42,8 @@ Internal changes:
   from parsing of included gcov files. (:issue:`1175`)
 - Add ``gcc-7``, ``gcc-15``, ``clang-11``, ``clang-12`` and ``clang-20`` to the test suite. (:issue:`1177`)
 - Use pyenv to install python independent from OS version in docker image for testing. (:issue:`1181`)
+- Reorganize docker images. Create one image per OS which contains several compiler versions to
+  improve image build time and build cache size on local system. (:issue:`1184`)
 
 .. _release_8_4:
 
