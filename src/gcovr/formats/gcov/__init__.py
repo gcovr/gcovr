@@ -36,6 +36,8 @@ class GcovHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
         return [
+            # Global options used for output
+            "verbose",
             # Global options needed for report
             "show_decision",
             # Global options used for merging end exclusion processing.
