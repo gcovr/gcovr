@@ -8,10 +8,13 @@
         "dockerfile": "../admin/Dockerfile.qa",
         "args": {
             "UBUNTU_TAG": "20.04",
-            "CC": "gcc-8",
+            "COMPILER_VERSIONS": "gcc-8",
             "NOX_ENV_DIR": "/workspaces/gcovr/.nox-devcontainer"
         },
         "context": ".."
+    },
+    "containerEnv": {
+        "CC": "$COMPILER_VERSIONS"
     },
     "customizations": {
         "vscode": {

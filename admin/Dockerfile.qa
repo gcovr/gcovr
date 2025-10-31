@@ -5,19 +5,18 @@ FROM ubuntu:${UBUNTU_TAG:-ToBeDefined}
 ARG TARGETARCH
 ARG UBUNTU_TAG
 ARG USERID
-ARG CC
-ARG NOX_ENV_DIR=/gcovr/.nox-containerized/$CC.uid_$USERID
+ARG COMPILER_VERSIONS
 
 LABEL org.opencontainers.image.authors="GCOVR developers"
 LABEL org.opencontainers.image.title="Image used to test GCOVR in the CI and during development"
 
 LABEL org.opencontainers.image.source="https://github.com/gcovr/gcovr/blob/main/admin/Dockerfile.qa"
-LABEL org.opencontainers.image.version="$CC"
+LABEL org.opencontainers.image.version="$COMPILER_VERSIONS"
 
 COPY admin/docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 
 RUN <<EOS
-set -e
+set -ex
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
@@ -38,13 +37,26 @@ apt-get install -y software-properties-common \
                    texlive-latex-extra
 
 # Install compiler
-apt-get install -y $CC \
-                   $(echo "$CC" | sed 's/gcc/g++/ ; s/clang/clang++/')
-
+# cspell:ignore libclang
+for cc in $COMPILER_VERSIONS ; do
+  if [ "$(echo "$cc" | sed 's/-.*//')" = "clang" ] ; then
+    cc_version="$(echo "$cc" | sed 's/clang-\(.*\)/\1/')"
+    apt-get install -y --no-install-recommends --no-install-suggests \
+                       $cc \
+                       clang++-$cc_version \
+                       llvm-$cc_version-dev \
+                       $(if [ $cc_version -ge 16 ] ; then echo "libclang-rt-$cc_version-dev" ; fi)
+  else
+    apt-get install -y --no-install-recommends --no-install-suggests \
+                      $cc \
+                      $(echo "$cc" | sed 's/gcc/g++/')
+  fi
+done
 
 # cspell:disable
 # Install python build dependencies
-apt-get install -y libssl-dev \
+apt-get install -y --no-install-recommends --no-install-suggests \
+                   libssl-dev \
                    zlib1g-dev \
                    libbz2-dev \
                    libreadline-dev \
@@ -60,9 +72,6 @@ apt-get install -y libssl-dev \
                    liblzma-dev
 # cspell:enable
 
-# Mark the compiler to not be removed
-apt-mark manual $CC $CXX
-
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
@@ -75,7 +84,8 @@ git clone -q \
 cd /tmp/googletest
 mkdir build
 cd build
-CXX=$(echo "$CC" | sed 's/gcc/g++/ ; s/clang/clang++/') cmake .. || ( cat CMakeFiles/*.log && exit 1 )
+CC=$(echo "$COMPILER_VERSIONS" | sed 's/ .*//') CXX=$(echo "$COMPILER_VERSIONS" | sed 's/ .*// ; s/gcc/g++/ ; s/clang/clang++/') cmake -DGTEST_CREATE_SHARED_LIBRARY=1 .. \
+  || ( cat CMakeFiles/*.log && exit 1 )
 make
 make install
 rm -rf /tmp/googletest
@@ -102,10 +112,8 @@ chmod 0755 /usr/local/bin/docker_entrypoint.sh
 EOS
 
 ENV \
-  CC=$CC \
-  GCOVR_ISOLATED_TEST=zkQEVaBpXF1i \
-  NOX_ENV_DIR=$NOX_ENV_DIR \
-  XDG_CACHE_HOME=$NOX_ENV_DIR/.cache
+  COMPILER_VERSIONS=$COMPILER_VERSIONS \
+  GCOVR_ISOLATED_TEST=zkQEVaBpXF1i
 
 USER docker:docker
 
@@ -119,6 +127,8 @@ RUN <<EOS
 set -e
 
 curl -fsSL https://pyenv.run | bash
+export CC=$(echo "$COMPILER_VERSIONS" | sed 's/ .*//')
+export CXX=$(echo "$COMPILER_VERSIONS" | sed 's/ .*// ; s/gcc/g++/ ; s/clang/clang++/')
 /usr/local/bin/docker_entrypoint.sh pyenv install 3.9
 /usr/local/bin/docker_entrypoint.sh pyenv global 3.9
 
