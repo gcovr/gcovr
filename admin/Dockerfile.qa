@@ -13,8 +13,9 @@ LABEL org.opencontainers.image.title="Image used to test GCOVR in the CI and dur
 LABEL org.opencontainers.image.source="https://github.com/gcovr/gcovr/blob/main/admin/Dockerfile.qa"
 LABEL org.opencontainers.image.version="$COMPILER_VERSIONS"
 
-COPY admin/docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
-
+# -------------------------------------------------------------------------------------------------
+# Do compiler independent setup
+# -------------------------------------------------------------------------------------------------
 RUN <<EOS
 set -ex
 export DEBIAN_FRONTEND=noninteractive
@@ -36,23 +37,6 @@ apt-get install -y software-properties-common \
                    texlive-latex-recommended \
                    texlive-latex-extra
 
-# Install compiler
-# cspell:ignore libclang
-for cc in $COMPILER_VERSIONS ; do
-  if [ "$(echo "$cc" | sed 's/-.*//')" = "clang" ] ; then
-    cc_version="$(echo "$cc" | sed 's/clang-\(.*\)/\1/')"
-    apt-get install -y --no-install-recommends --no-install-suggests \
-                       $cc \
-                       clang++-$cc_version \
-                       llvm-$cc_version-dev \
-                       $(if [ $cc_version -ge 16 ] ; then echo "libclang-rt-$cc_version-dev" ; fi)
-  else
-    apt-get install -y --no-install-recommends --no-install-suggests \
-                      $cc \
-                      $(echo "$cc" | sed 's/gcc/g++/')
-  fi
-done
-
 # cspell:disable
 # Install python build dependencies
 apt-get install -y --no-install-recommends --no-install-suggests \
@@ -72,6 +56,72 @@ apt-get install -y --no-install-recommends --no-install-suggests \
                    liblzma-dev
 # cspell:enable
 
+# Install bazel
+if [ "$TARGETARCH" = "arm64" ] ; then
+  echo "4e815a3f92a0285e76f306c5179a4c639e019cb9 -" > /tmp/bazel.sha1sum
+else
+  echo "627291b8ef18762dd98b1535fe5c84b1792ac2d0 -" > /tmp/bazel.sha1sum
+fi
+curl -fsSL https://github.com/bazelbuild/bazelisk/releases/download/v1.21.0/bazelisk-linux-$TARGETARCH \
+  | tee /usr/local/bin/bazel \
+  | sha1sum -c /tmp/bazel.sha1sum
+chmod 0755 /usr/local/bin/bazel
+
+# Create new user "docker" and set password to "docker"
+addgroup docker
+id -un "$USERID" && userdel $(id -un "$USERID") || true
+useradd --create-home $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
+echo "docker:docker" | chpasswd
+EOS
+
+USER docker:docker
+
+# Select language-agnostic "C" locale.
+# Unicode is necessary for some tools to work.
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+
+RUN <<EOS
+set -e
+
+curl -fsSL https://pyenv.run | bash
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
+pyenv install 3.9
+pyenv global 3.9
+
+python3 --version
+pip --version
+pip --no-cache-dir install nox pre-commit
+EOS
+
+# -------------------------------------------------------------------------------------------------
+# Switch back to root and do the compiler specific stuff.
+# -------------------------------------------------------------------------------------------------
+USER root
+
+COPY admin/docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
+
+RUN <<EOS
+set -ex
+export DEBIAN_FRONTEND=noninteractive
+
+# Install compiler
+# cspell:ignore libclang
+for cc in $COMPILER_VERSIONS ; do
+  if [ "$(echo "$cc" | sed 's/-.*//')" = "clang" ] ; then
+    cc_version="$(echo "$cc" | sed 's/clang-\(.*\)/\1/')"
+    apt-get install -y --no-install-recommends --no-install-suggests \
+                       $cc \
+                       clang++-$cc_version \
+                       llvm-$cc_version-dev \
+                       $(if [ $cc_version -ge 16 ] ; then echo "libclang-rt-$cc_version-dev" ; fi)
+  else
+    apt-get install -y --no-install-recommends --no-install-suggests \
+                      $cc \
+                      $(echo "$cc" | sed 's/gcc/g++/')
+  fi
+done
+
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
@@ -90,23 +140,6 @@ make
 make install
 rm -rf /tmp/googletest
 
-# Install bazel
-if [ "$TARGETARCH" = "arm64" ] ; then
-  echo "4e815a3f92a0285e76f306c5179a4c639e019cb9 -" > /tmp/bazel.sha1sum
-else
-  echo "627291b8ef18762dd98b1535fe5c84b1792ac2d0 -" > /tmp/bazel.sha1sum
-fi
-curl -fsSL https://github.com/bazelbuild/bazelisk/releases/download/v1.21.0/bazelisk-linux-$TARGETARCH \
-  | tee /usr/local/bin/bazel \
-  | sha1sum -c /tmp/bazel.sha1sum
-chmod 0755 /usr/local/bin/bazel
-
-# Create new user "docker" and set password to "docker"
-addgroup docker
-id -un "$USERID" && userdel $(id -un "$USERID") || true
-useradd --create-home $(if [ -n "$USERID" ] ; then echo "-u $USERID" ; fi) -g docker -g sudo -s /bin/bash docker
-echo "docker:docker" | chpasswd
-
 # Make entrypoint executable
 chmod 0755 /usr/local/bin/docker_entrypoint.sh
 EOS
@@ -116,26 +149,6 @@ ENV \
   GCOVR_ISOLATED_TEST=zkQEVaBpXF1i
 
 USER docker:docker
-
-# Select language-agnostic "C" locale.
-# Unicode is necessary for some tools to work.
-ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
-
-COPY pyproject.toml /tmp/pyproject.toml
-
-RUN <<EOS
-set -e
-
-curl -fsSL https://pyenv.run | bash
-export CC=$(echo "$COMPILER_VERSIONS" | sed 's/ .*//')
-export CXX=$(echo "$COMPILER_VERSIONS" | sed 's/ .*// ; s/gcc/g++/ ; s/clang/clang++/')
-/usr/local/bin/docker_entrypoint.sh pyenv install 3.9
-/usr/local/bin/docker_entrypoint.sh pyenv global 3.9
-
-/usr/local/bin/docker_entrypoint.sh python3 --version
-/usr/local/bin/docker_entrypoint.sh pip --version
-/usr/local/bin/docker_entrypoint.sh pip --no-cache-dir install nox pre-commit
-EOS
 
 WORKDIR /gcovr
 
