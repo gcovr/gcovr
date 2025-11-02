@@ -714,8 +714,6 @@ def docker_build_compiler_clang(session: nox.Session) -> None:
 def docker_build_compiler(session: nox.Session, cc: str) -> None:
     """Build the docker container for a specific GCC version."""
     ubuntu_tag = docker_container_os_version(cc)
-    container_tag = docker_container_tag(cc)
-
     cache_options = []
     if CI_RUN:
         session.log(
@@ -742,7 +740,7 @@ def docker_build_compiler(session: nox.Session, cc: str) -> None:
         if os.environ["GITHUB_REF"] == "refs/heads/main":
             cache_options += [
                 "--cache-to",
-                f"type=gha,mode=max,scope={container_tag}",
+                f"type=gha,mode=max,scope={cc}",
             ]
         compiler_versions = cc
     else:
@@ -753,7 +751,7 @@ def docker_build_compiler(session: nox.Session, cc: str) -> None:
         "build",
         *cache_options,
         "--tag",
-        container_tag,
+        docker_container_tag(cc),
         "--build-arg",
         f"UBUNTU_TAG={ubuntu_tag}",
         "--build-arg",
