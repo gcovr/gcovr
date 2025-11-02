@@ -734,7 +734,7 @@ def docker_build_compiler(session: nox.Session, cc: str) -> None:
         cache_options += [
             "--builder=gha-container",
             "--cache-from",
-            f"type=gha,scope={container_tag}",
+            f"type=gha,scope={cc}",
         ]
         # Only update cache on main branch. The cache size is restricted
         # and updating from PR branch destroys cache of main branch.
