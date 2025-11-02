@@ -13,7 +13,7 @@ SKIP_TEST = not IS_LINUX and not (IS_DARWIN and not IS_GCC and CC_VERSION == 17)
 
 @pytest.mark.skipif(
     SKIP_TEST,
-    reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_summary(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test of text summary."""
@@ -35,7 +35,7 @@ def test_summary(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     SKIP_TEST,
-    reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_summary_full(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test of text summary."""
@@ -59,7 +59,7 @@ def test_summary_full(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     SKIP_TEST,
-    reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_default(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test text output coverage."""
@@ -75,7 +75,7 @@ def test_default(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     SKIP_TEST,
-    reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test branch metric in text output."""
@@ -93,7 +93,7 @@ def test_branches(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     SKIP_TEST,
-    reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_report_covered(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test covered lines in text output."""
@@ -111,7 +111,7 @@ def test_report_covered(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     SKIP_TEST,
-    reason="Format is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_report_covered_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test branch metric with covered report in text output."""

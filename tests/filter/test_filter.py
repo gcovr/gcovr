@@ -421,7 +421,7 @@ def test_relative_lib_from_unfiltered_tracefile(
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="File inclusion is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="File inclusion is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_include(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test include filtering and multiple HTML themes."""

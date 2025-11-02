@@ -12,7 +12,7 @@ from tests.conftest import IS_LINUX, GcovrTestExec
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Merging of branches is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Merging of branches is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_different_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test merging different branch information for same line."""
@@ -48,7 +48,7 @@ def test_different_branches(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Merging of functions is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Merging of functions is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.parametrize(
     "merge_mode_function",

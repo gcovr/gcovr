@@ -5,7 +5,7 @@ from tests.conftest import IS_LINUX, GcovrTestExec
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Split of signature is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Split of signature is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test split-signature coverage."""

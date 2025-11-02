@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
 
 @pytest.mark.skipif(
     platform.system() == "Windows",
-    reason="Dor-folders have no special meaning on Windows and we do not want to have separate data wor Windows and Darwin.",
+    reason="Dor-folders have no special meaning on Windows and we do not want to have separate data for Windows and Darwin.",
 )
 def test(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test adding a tracefile output."""
@@ -46,9 +46,7 @@ def test(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-un
             regex.search(process.stderr),
             f"Expected TRACE log running gcov for {filename} found.",
         )
-        regex = re.compile(
-            rf"^\(TRACE\) Stdout of gcov was >>File .+{filename}.+$", re.MULTILINE
-        )
+        regex = re.compile(rf"^\(TRACE\) STDOUT >>File .+{filename}.+$", re.MULTILINE)
         check.is_true(
             regex.search(process.stderr),
             f"Expected TRACE log for gcov stdout of {filename} found.",
@@ -68,9 +66,7 @@ def test(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-un
             regex.search(process.stderr),
             f"Unexpected TRACE log running gcov for {filename} found.",
         )
-        regex = re.compile(
-            rf"^\(TRACE\) Stdout of gcov was >>File .+{filename}.+$", re.MULTILINE
-        )
+        regex = re.compile(rf"^\(TRACE\) STDOUT >>File .+{filename}.+$", re.MULTILINE)
         check.is_false(
             regex.search(process.stderr),
             f"Unexpected TRACE log for gcov stdout of {filename} found",
