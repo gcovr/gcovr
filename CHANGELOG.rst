@@ -12,6 +12,9 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add support for clang ``Source-based Code Coverage`` instead of ``gcov`` text format. (:issue:`1188`)
+
+
 Bug fixes and small improvements:
 
 - Fix coveralls report if there are several coverage elements per line. (:issue:`1165`)
