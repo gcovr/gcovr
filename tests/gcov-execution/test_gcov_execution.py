@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 from pathlib import Path
+import re
 import subprocess  # nosec
 import typing
 
@@ -8,6 +9,7 @@ import pytest
 from tests.conftest import (
     GCOVR_ISOLATED_TEST,
     IS_DARWIN_HOST,
+    IS_WINDOWS,
     USE_GCC_JSON_INTERMEDIATE_FORMAT,
     GcovrTestExec,
 )
@@ -77,6 +79,10 @@ def test_wd_not_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type:
         check.is_in(
             "To ignore this error use option --gcov-ignore-errors=no_working_dir_found.",
             exc.value.stderr,
+        )
+        check.is_false(
+            (gcovr_test_exec.output_dir / "coverage.json").exists(),
+            "No output file must be written.",
         )
 
 
@@ -212,3 +218,39 @@ def test_ignore_no_working_dir_found(gcovr_test_exec: "GcovrTestExec", check) ->
             process.stderr,
         )
     gcovr_test_exec.compare_json()
+
+
+@pytest.mark.skipif(IS_WINDOWS, reason="GCOV stub script isn't working under Windows")
+def test_worker_exception(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+    """Test a gcovr worker exception."""
+
+    gcovr_test_exec.cxx_link("testcase", "src/main.cpp")
+
+    gcovr_test_exec.run("./testcase")
+    with pytest.raises(subprocess.CalledProcessError) as exc:
+        gcovr_test_exec.gcovr(
+            "--verbose",
+            "--gcov-executable=./gcov-stub",
+            "--json=coverage.json",
+        )
+
+    check.equal(
+        exc.value.returncode, 64, "Gcovr must return exit code 64 on worker exception."
+    )
+    check.is_true(
+        re.search(
+            r"AssertionError: Sanity check failed, output file .+does#not#exist.gcov doesn't exist but no error from GCOV detected.",
+            exc.value.stderr,
+        ),
+        "Sanity check exception found in stderr.",
+    )
+    check.is_in(
+        "RuntimeError: Worker thread raised exception, workers canceled.",
+        exc.value.stderr,
+        "Workers canceled exception found in stderr.",
+    )
+
+    check.is_false(
+        (gcovr_test_exec.output_dir / "coverage.json").exists(),
+        "No output file must be written.",
+    )
