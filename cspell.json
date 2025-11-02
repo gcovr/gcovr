@@ -144,6 +144,7 @@
         "realpath",
         "sdist",
         "setuptools",
+        "SIGSEGV",
         "sonarqube",
         "sourceline",
         "stylesheet",

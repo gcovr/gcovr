@@ -40,13 +40,41 @@ def test(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-un
     )
     for filename in ["File2", "File4"]:
         regex = re.compile(
+            rf"^\(TRACE\) Running gcov in .+: .+{filename}.cpp.gcda .+$", re.MULTILINE
+        )
+        check.is_true(
+            regex.search(process.stderr),
+            f"Expected TRACE log running gcov for {filename} found.",
+        )
+        regex = re.compile(
+            rf"^\(TRACE\) Stdout of gcov was >>File .+{filename}.+$", re.MULTILINE
+        )
+        check.is_true(
+            regex.search(process.stderr),
+            f"Expected TRACE log for gcov stdout of {filename} found.",
+        )
+        regex = re.compile(
             rf"^\(TRACE\) Parsing gcov data file .+{filename}.+:$", re.MULTILINE
         )
         check.is_true(
             regex.search(process.stderr),
-            f"Expected TRACE log for {filename} found.",
+            f"Expected TRACE log for parsing {filename} found.",
         )
     for filename in ["file1", "file3", "file5", "File6", "main"]:
+        regex = re.compile(
+            rf"^\(TRACE\) Running gcov in .+: .+{filename}.cpp.gcda .+$", re.MULTILINE
+        )
+        check.is_false(
+            regex.search(process.stderr),
+            f"Unexpected TRACE log running gcov for {filename} found.",
+        )
+        regex = re.compile(
+            rf"^\(TRACE\) Stdout of gcov was >>File .+{filename}.+$", re.MULTILINE
+        )
+        check.is_false(
+            regex.search(process.stderr),
+            f"Unexpected TRACE log for gcov stdout of {filename} found",
+        )
         regex = re.compile(
             rf"^\(TRACE\) Parsing gcov data file .+{filename}.+:$", re.MULTILINE
         )

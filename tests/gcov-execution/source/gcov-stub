@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+if [[ "$1" == "--help" || "$1" == "--help-hidden" || "$1" == "--version" ]]; then
+    ${GCOV:-gcov} "$@"
+else
+    if [[ -n "$GCOV_STUB_KILL_BY_SIGNAL" ]]; then
+        kill -s "$GCOV_STUB_KILL_BY_SIGNAL" $$ &
+        sleep 2
+    fi
+    ${GCOV:-gcov} $GCOV_STUB_ADDITIONAL_CLA "$@"
+    echo "$GCOV_STUB_ADDITIONAL_STDOUT"
+    echo "$GCOV_STUB_ADDITIONAL_STDERR" >&2
+fi
