@@ -9,6 +9,25 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1187:
+
+Detection of version mismatch between gcc and gcov doesn't work
+---------------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1187`
+
+The regular version for detecting version mismatch between ``gcc`` and ``gcov``
+didn't match the following strings:
+
+- ``...:version '...', prefer '...'``
+- ``...:version '...', prefer version '...'``
+
 .. _fix_1176:
 
 Exclusion filter for existing GCOV files doesn't work

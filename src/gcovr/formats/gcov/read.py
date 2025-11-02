@@ -56,8 +56,7 @@ source_error_re = re.compile(
 output_error_re = re.compile(
     r"(?:[Cc](?:annot|ould not) open output file|Operation not permitted|Permission denied|Read-only file system)"
 )
-unknown_cla_re = re.compile(r"Unknown command line argument")
-version_mismatch_re = re.compile(r":version '[']+', prefer '[']+'")
+version_mismatch_re = re.compile(r":version '[^']+', prefer.*'[^']+'")
 
 
 def read_report(options: Options) -> CoverageContainer:
@@ -788,12 +787,6 @@ class GcovProgram:
                 f"Stdout of gcov was >>{out}<< End of stdout"
             )
 
-        if unknown_cla_re.search(err):
-            # gcov tossed errors: throw exception
-            raise self.GcovExecutionError(
-                f"Error in gcov command line.\n"
-                f"Stderr of gcov was >>{err}<< End of stderr"
-            )
         if version_mismatch_re.search(err):
             # gcov tossed errors: throw exception
             raise self.GcovExecutionError(

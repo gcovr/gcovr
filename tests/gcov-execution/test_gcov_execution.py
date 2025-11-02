@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import os
 from pathlib import Path
 import re
 import subprocess  # nosec
@@ -32,6 +33,107 @@ def chmod(mode: int, *paths: Path) -> typing.Iterator[None]:
     finally:
         for index, mode in enumerate(modes):
             paths[index].chmod(mode)
+
+
+@pytest.mark.skipif(IS_WINDOWS, reason="GCOV stub script isn't working under Windows")
+def test_kill_by_signal(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+    """Test a unknown CLA."""
+
+    gcovr_test_exec.cxx_link("testcase", "src/main.cpp")
+
+    gcovr_test_exec.run("./testcase")
+    with pytest.raises(subprocess.CalledProcessError) as exc:
+        env = os.environ.copy()
+        env.update({"GCOV_STUB_KILL_BY_SIGNAL": "SIGSEGV"})
+        gcovr_test_exec.gcovr(
+            "--verbose",
+            "--gcov-executable=./gcov-stub",
+            "--json=coverage.json",
+            env=env,
+        )
+
+    check.equal(
+        exc.value.returncode, 64, "Gcovr must return exit code 64 on worker exception."
+    )
+    check.is_in(
+        "GCOV returncode was -11 (exited by signal).",
+        exc.value.stderr,
+    )
+    check.is_in(
+        "RuntimeError: Worker thread raised exception, workers canceled.",
+        exc.value.stderr,
+        "Workers canceled exception found in stderr.",
+    )
+
+
+@pytest.mark.skipif(IS_WINDOWS, reason="GCOV stub script isn't working under Windows")
+def test_unknown_cla(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+    """Test a unknown CLA."""
+
+    gcovr_test_exec.cxx_link("testcase", "src/main.cpp")
+
+    gcovr_test_exec.run("./testcase")
+    with pytest.raises(subprocess.CalledProcessError) as exc:
+        env = os.environ.copy()
+        env.update({"GCOV_STUB_ADDITIONAL_CLA": "--cla-does-not-exist"})
+        gcovr_test_exec.gcovr(
+            "--verbose",
+            "--gcov-executable=./gcov-stub",
+            "--json=coverage.json",
+            env=env,
+        )
+
+    check.equal(
+        exc.value.returncode, 64, "Gcovr must return exit code 64 on worker exception."
+    )
+    check.is_true(
+        re.search(
+            r": (?:unrecognized option|Unknown command line argument) ['`]--cla-does-not-exist'",
+            exc.value.stderr,
+        ),
+        "Unknown CLA message found in stderr.",
+    )
+    check.is_in(
+        "RuntimeError: Worker thread raised exception, workers canceled.",
+        exc.value.stderr,
+        "Workers canceled exception found in stderr.",
+    )
+
+
+@pytest.mark.skipif(IS_WINDOWS, reason="GCOV stub script isn't working under Windows")
+def test_wrong_version(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+    """Test a version mismatch between gcc and gcov."""
+
+    gcovr_test_exec.cxx_link("testcase", "src/main.cpp")
+
+    gcovr_test_exec.run("./testcase")
+    with pytest.raises(subprocess.CalledProcessError) as exc:
+        env = os.environ.copy()
+        env.update(
+            {
+                "GCOV_STUB_ADDITIONAL_STDERR": "./dummy.gcda:version 'B32*', prefer version 'B42*'"
+            }
+        )
+        gcovr_test_exec.gcovr(
+            "--verbose",
+            "--gcov-executable=./gcov-stub",
+            "--json=coverage.json",
+            "--trace-include=.*",
+            env=env,
+        )
+
+    check.equal(
+        exc.value.returncode, 64, "Gcovr must return exit code 64 on worker exception."
+    )
+    check.is_in(
+        "Version mismatch gcc/gcov.",
+        exc.value.stderr,
+    )
+    check.is_in(
+        "RuntimeError: Worker thread raised exception, workers canceled.",
+        exc.value.stderr,
+        "Workers canceled exception found in stderr.",
+    )
 
 
 @pytest.mark.skipif(
@@ -228,10 +330,13 @@ def test_worker_exception(gcovr_test_exec: "GcovrTestExec", check) -> None:  # t
 
     gcovr_test_exec.run("./testcase")
     with pytest.raises(subprocess.CalledProcessError) as exc:
+        env = os.environ.copy()
+        env.update({"GCOV_STUB_ADDITIONAL_STDOUT": "Creating 'does#not#exist.gcov'"})
         gcovr_test_exec.gcovr(
             "--verbose",
             "--gcov-executable=./gcov-stub",
             "--json=coverage.json",
+            env=env,
         )
 
     check.equal(
